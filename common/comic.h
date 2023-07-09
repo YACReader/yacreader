@@ -164,7 +164,7 @@ class PDFComic : public Comic
 
 private:
 // pdf
-#if defined Q_OS_MAC && defined USE_PDFKIT
+#if defined Q_OS_MACOS && defined USE_PDFKIT
     std::unique_ptr<MacOSXPDFComic> pdfComic;
 #elif defined USE_PDFIUM
     std::unique_ptr<PdfiumComic> pdfComic;

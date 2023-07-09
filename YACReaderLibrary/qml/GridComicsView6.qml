@@ -76,7 +76,7 @@ SplitView {
                     //samples: 17
                     color: "#FF000000"
                     source: realCell
-                    visible: (Qt.platform.os === "osx") ? false : true;
+                    visible: showDropShadow;
                 }
 
                 Rectangle {
@@ -137,7 +137,7 @@ SplitView {
                             rightMargin  : commonBorder ? -commonBorderWidth : -rBorderwidth
                         }
 
-                        border.color: (Qt.platform.os === "osx") ? selectedBorderColor : "#ffcc00"
+                        border.color: selectedBorderColor
                         border.width: 3
 
                         opacity: (dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index) ? 1 : 0
@@ -283,6 +283,16 @@ SplitView {
 
                 }
 
+                //is new
+                Rectangle {
+                    width: 10
+                    height: 10
+                    radius: 5
+                    anchors { left: coverElement.left; top: coverElement.top; topMargin: 5; leftMargin: 5; }
+                    color: "#FFFFCC00"
+                    visible: (((new Date() / 1000) - added_date) < recent_range) && show_recent
+                }
+
                 //border
                 Rectangle {
                     width: coverElement.width
@@ -425,7 +435,7 @@ SplitView {
                     height: showCurrentComic ? 270 : 20
 
                     Rectangle {
-                        color: (Qt.platform.os === "osx") ? "#88FFFFFF" : "#88000000"
+                        color: currentComicBackgroundColor
 
                         id: currentComicVisualView
 
@@ -462,7 +472,7 @@ SplitView {
                             //samples: 17
                             color: "#FF000000"
                             source: currentCoverElement
-                            visible: (Qt.platform.os === "osx") ? false : true;
+                            visible: showDropShadow;
                         }
 
                         ColumnLayout
@@ -493,7 +503,7 @@ SplitView {
                                 font.pixelSize: 21
                                 wrapMode: Text.WordWrap
 
-                                text: currentComic.getTitleIncludingNumber()
+                                text: currentComic?.getTitleIncludingNumber() ?? ""
                             }
 
                             Flow {
@@ -525,6 +535,33 @@ SplitView {
                                     text: currentComicInfo.number + "/" + currentComicInfo.count
                                     rightPadding: 20
                                     visible : currentComicInfo.number ? true : false
+                                }
+
+                                Text {
+                                    id: currentComicInfoArc
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.getStoryArcInfoString()
+                                    rightPadding: 20
+                                    visible : currentComicInfo.getStoryArcInfoString().length > 0
+                                }
+
+                                Text {
+                                    id: currentComicInfoAlternate
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.getAlternateSeriesString()
+                                    rightPadding: 20
+                                    visible : currentComicInfo.getStoryArcInfoString().length > 0
+                                }
+
+                                Text {
+                                    id: currentComicInfoSeriesGroup
+                                    color: currentComicDetailsFlowView.infoFlowTextColor
+                                    font: currentComicDetailsFlowView.infoFont
+                                    text: currentComicInfo.seriesGroup ? currentComicInfo.seriesGroup : ""
+                                    rightPadding: 20
+                                    visible: currentComicInfo.seriesGroup ? true : false
                                 }
 
                                 Text {
@@ -649,7 +686,7 @@ SplitView {
                             //samples: 17
                             color: "#AA000000"
                             source: readButton
-                            visible: ((Qt.platform.os === "osx") ? false : true) && !readButton.pressed
+                            visible: showDropShadow && !readButton.pressed
                         }
                     }
                 }

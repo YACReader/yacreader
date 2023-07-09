@@ -7,7 +7,6 @@
 #include "check_new_version.h"
 #include "comic.h"
 #include "bookmarks_dialog.h"
-#include "shortcuts_dialog.h"
 #include "width_slider.h"
 #include "qnaturalsorting.h"
 #include "help_about_dialog.h"
@@ -188,7 +187,7 @@ void MainWindowViewer::createActions()
     openAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_ACTION_Y));
     connect(openAction, &QAction::triggered, this, QOverload<>::of(&MainWindowViewer::open));
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     newInstanceAction = new QAction(tr("New instance"), this);
     newInstanceAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(NEW_INSTANCE_ACTION_Y));
     connect(newInstanceAction, &QAction::triggered,
@@ -473,7 +472,7 @@ QAction *MainWindowViewer::addActionWithShortcut(const QString &text, const QStr
 
 void MainWindowViewer::createToolBars()
 {
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     comicToolBar = new YACReaderMacOSXToolbar(this);
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     comicToolBar->setIconSize(QSize(18, 18));
@@ -482,12 +481,12 @@ void MainWindowViewer::createToolBars()
     comicToolBar = addToolBar(tr("&File"));
 #endif
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     comicToolBar->setStyleSheet("QToolBar{border:none;}");
     comicToolBar->setIconSize(QSize(18, 18));
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/open")), openAction));
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/openFolder")), openFolderAction));
 #else
@@ -565,7 +564,7 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/flow")), showFlowAction));
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/info")), showInfoAction));
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     comicToolBar->addStretch();
 #else
     comicToolBar->addWidget(new YACReaderToolBarStretch());
@@ -575,7 +574,7 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/options")), optionsAction));
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/help")), helpAboutAction));
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     comicToolBar->setMovable(false);
 #endif
 
@@ -625,7 +624,7 @@ void MainWindowViewer::createToolBars()
     viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
 
     // MacOSX app menus
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     auto menuBar = this->menuBar();
     // about / preferences
     // TODO
@@ -799,8 +798,12 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     else
         setWindowTitle("YACReader - " + fi.fileName());
 
-    viewer->setMangaWithoutStoringSetting(comic.info.manga.toBool());
-    doubleMangaPageAction->setChecked(comic.info.manga.toBool());
+    auto type = comic.info.type.value<YACReader::FileType>();
+    // TODO: support comic.info.type by adjusting the scrolling and double page mode behaviour depending on the actual type, for now type is mapped to manga mode
+    auto isManga = type == YACReader::FileType::Manga;
+
+    viewer->setMangaWithoutStoringSetting(isManga);
+    doubleMangaPageAction->setChecked(isManga);
 
     viewer->open(path, comic);
     enableActions();
@@ -940,7 +943,7 @@ void MainWindowViewer::saveImage()
 void MainWindowViewer::enableActions()
 {
     setActionsEnabled(true);
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     activateWindow();
     raise();
 #endif
@@ -1062,7 +1065,7 @@ void MainWindowViewer::toggleToolBars()
     toolbars ? hideToolBars() : showToolBars();
 
     Configuration::getConfiguration().setShowToolbars(toolbars);
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     comicToolBar->setMovable(false);
 #endif
 }
@@ -1159,7 +1162,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                  << toggleFullScreenAction
                                                  << toggleToolbarsAction
                                                  << showEditShortcutsAction
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
                                                  << newInstanceAction
 #endif
     );
@@ -1249,6 +1252,11 @@ void MainWindowViewer::setUpShortcutsManagement()
     auto *const goToLastPageAction = addActionWithShortcut(tr("Go to the last page"), GO_TO_LAST_PAGE_ACTION_Y);
     connect(goToLastPageAction, &QAction::triggered, viewer, &Viewer::goToLastPage);
 
+    auto *const offsetDoublePageToTheLeft = addActionWithShortcut(tr("Offset double page to the left"), OFFSET_DOUBLE_PAGE_TO_THE_LEFT_Y);
+    connect(offsetDoublePageToTheLeft, &QAction::triggered, viewer, &Viewer::offsetDoublePageToTheLeft);
+    auto *const offsetDoublePageToTheRight = addActionWithShortcut(tr("Offset double page to the right"), OFFSET_DOUBLE_PAGE_TO_THE_RIGHT_Y);
+    connect(offsetDoublePageToTheRight, &QAction::triggered, viewer, &Viewer::offsetDoublePageToTheRight);
+
     loadedComicActions = { autoScrollForwardAction,
                            autoScrollBackwardAction,
                            autoScrollForwardHorizontalFirstAction,
@@ -1260,7 +1268,9 @@ void MainWindowViewer::setUpShortcutsManagement()
                            moveLeftAction,
                            moveRightAction,
                            goToFirstPageAction,
-                           goToLastPageAction };
+                           goToLastPageAction,
+                           offsetDoublePageToTheLeft,
+                           offsetDoublePageToTheRight };
 
     editShortcutsDialog->addActionsGroup(tr("Reading"), QIcon(":/images/shortcuts_group_reading.svg"),
                                          tmpList = QList<QAction *>()
@@ -1290,7 +1300,7 @@ void MainWindowViewer::toggleFitToWidthSlider()
 {
     int y;
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     y = 0;
 #else
     y = this->comicToolBar->frameSize().height();
@@ -1576,7 +1586,7 @@ void MainWindowViewer::sendComic()
     auto client = new YACReaderLocalClient;
 
     connect(client, &YACReaderLocalClient::finished, client, &YACReaderLocalClient::deleteLater);
-    currentComicDB.info.lastTimeOpened = QDateTime::currentMSecsSinceEpoch() / 1000;
+    currentComicDB.info.lastTimeOpened = QDateTime::currentSecsSinceEpoch();
 
     viewer->updateComic(currentComicDB);
 

@@ -15,6 +15,7 @@ class YACReaderFieldEdit;
 class YACReaderFieldPlainTextEdit;
 class QDialogButtonBox;
 class QCheckBox;
+class QComboBox;
 // class YACReaderBusyWidget;
 class QToolButton;
 
@@ -36,6 +37,7 @@ private:
     QScrollArea *sa;
 
     QWidget *generalInfoBox;
+    YACReaderFieldEdit *series;
     YACReaderFieldEdit *title;
     YACReaderFieldEdit *numPagesEdit;
     QLabel *size;
@@ -46,7 +48,6 @@ private:
 
     YACReaderFieldEdit *numberEdit;
     QIntValidator numberValidator;
-    QCheckBox *isBisCheck;
     YACReaderFieldEdit *countEdit;
     QIntValidator countValidator;
 
@@ -57,6 +58,12 @@ private:
     YACReaderFieldEdit *arcCountEdit;
     QIntValidator arcCountValidator;
 
+    YACReaderFieldEdit *alternateSeriesEdit;
+    YACReaderFieldEdit *alternateNumberEdit;
+    YACReaderFieldEdit *alternateCountEdit;
+
+    YACReaderFieldEdit *seriesGroupEdit;
+
     YACReaderFieldEdit *genereEdit;
 
     YACReaderFieldPlainTextEdit *writer;
@@ -65,6 +72,8 @@ private:
     YACReaderFieldPlainTextEdit *colorist;
     YACReaderFieldPlainTextEdit *letterer;
     YACReaderFieldPlainTextEdit *coverArtist;
+    YACReaderFieldPlainTextEdit *editor;
+    YACReaderFieldPlainTextEdit *imprint;
 
     YACReaderFieldEdit *dayEdit;
     QIntValidator dayValidator;
@@ -76,17 +85,26 @@ private:
     YACReaderFieldEdit *formatEdit;
     QCheckBox *colorCheck;
     YACReaderFieldEdit *ageRatingEdit;
-    QCheckBox *mangaCheck;
+    QComboBox *typeCombo;
+    YACReaderFieldEdit *languageEdit;
 
     YACReaderFieldPlainTextEdit *synopsis;
     YACReaderFieldPlainTextEdit *characters;
-    YACReaderFieldPlainTextEdit *notes;
+    YACReaderFieldPlainTextEdit *teams;
+    YACReaderFieldPlainTextEdit *locations;
+    YACReaderFieldEdit *mainCharacterOrTeamEdit;
 
     QWidget *authorsBox;
 
     QWidget *publishingBox;
 
     QWidget *plotBox;
+
+    QWidget *notesBox;
+
+    YACReaderFieldPlainTextEdit *review;
+    YACReaderFieldPlainTextEdit *notes;
+    YACReaderFieldPlainTextEdit *tags;
 
     QDialogButtonBox *buttonBox;
     QPushButton *closeButton;
@@ -107,6 +125,7 @@ private:
     void createAuthorsBox();
     void createPublishingBox();
     void createPlotBox();
+    void createNotesBox();
 
     void createButtonBox();
 

@@ -8,12 +8,13 @@
 #include <QCloseEvent>
 #include <QSettings>
 
-#ifdef Q_OS_MAC
+#include "yacreader_global.h"
+
+#ifdef Y_MAC_UI
 #include "yacreader_macosx_toolbar.h"
 #endif
 
 #include "comic_db.h"
-#include "yacreader_global.h"
 
 class Comic;
 class Viewer;
@@ -102,7 +103,7 @@ private:
     EditShortcutsDialog *editShortcutsDialog;
 
     //! ToolBars
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     YACReaderMacOSXToolbar *comicToolBar;
 #else
     QToolBar *comicToolBar;
@@ -110,7 +111,7 @@ private:
 
     //! Actions
     QAction *openAction;
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     QAction *newInstanceAction; // needed in macos
 #endif
     QAction *openFolderAction;

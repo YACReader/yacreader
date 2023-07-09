@@ -57,7 +57,7 @@ QList<qulonglong> YACReader::mimeDataToComicsIds(const QMimeData *data)
 QString YACReader::addExtensionToIconPath(const QString &path)
 {
 #ifdef YACREADER_LIBRARY
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS // TODO_Y_MAC_UI
     return path + ".png";
 #else
     return path + ".svg";

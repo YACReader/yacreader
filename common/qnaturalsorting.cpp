@@ -7,6 +7,7 @@ int naturalCompare(const QString &s1, const QString &s2, Qt::CaseSensitivity cas
     QCollator c;
     c.setCaseSensitivity(caseSensitivity);
     c.setNumericMode(true);
+    c.setIgnorePunctuation(false);
     return c.compare(s1, s2);
 }
 bool naturalSortLessThanCS(const QString &left, const QString &right)

@@ -85,6 +85,7 @@ HEADERS += comic_flow.h \
   library_creator.h \
   library_window.h \
   add_library_dialog.h \
+  recent_visibility_coordinator.h \
   rename_library_dialog.h \
   properties_dialog.h \
   options_dialog.h \
@@ -171,6 +172,7 @@ SOURCES += comic_flow.cpp \
     library_window.cpp \
     main.cpp \
     add_library_dialog.cpp \
+    recent_visibility_coordinator.cpp \
     rename_library_dialog.cpp \
     properties_dialog.cpp \
     options_dialog.cpp \
@@ -262,6 +264,7 @@ include(./comic_vine/comic_vine.pri)
 include(../third_party/QsLog/QsLog.pri)
 include(../shortcuts_management/shortcuts_management.pri)
 include(../third_party/QrCode/QrCode.pri)
+include(../third_party/KDToolBox/KDToolBox.pri)
 
 RESOURCES += images.qrc files.qrc
 win32:RESOURCES += images_win.qrc

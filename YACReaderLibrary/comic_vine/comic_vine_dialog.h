@@ -58,16 +58,11 @@ protected slots:
     void showSelectComic(const QString &json);
     void showSortVolumeComics(const QString &json);
     void queryTimeOut();
-    ComicDB parseComicInfo(ComicDB &comic, const QString &json, int count, const QString &publisher);
     void setLoadingMessage(const QString &message);
     void goToNextComic();
 
 private:
     void clearState();
-    QString getCharacters(const QVariant &json_characters);
-    QMultiMap<QString, QString> getAuthors(const QVariant &json_authors);
-    QPair<QString, QString> getFirstStoryArcIdAndName(const QVariant &json_story_arcs);
-    QPair<QString, QString> getArcNumberAndArcCount(const QString &storyArcId, const QString &comicId);
 
     void toggleSkipButton();
 

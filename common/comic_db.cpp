@@ -1,5 +1,7 @@
 #include "comic_db.h"
 
+#include "yacreader_global.h"
+
 #include <QVariant>
 #include <QFileInfo>
 
@@ -103,8 +105,9 @@ QString ComicDB::toTXT()
     if (!info.ageRating.isNull())
         txt.append(QString("ageRating:%1\r\n").arg(info.ageRating.toString()));
 
-    if (!info.manga.isNull())
-        txt.append(QString("manga:%1\r\n").arg(info.manga.toString()));
+    if (!info.type.isNull())
+        txt.append(QString("manga:%1\r\n").arg(info.type.value<YACReader::FileType>() == YACReader::FileType::Manga ? "1" : "0"));
+
     // Argumento
     if (!info.synopsis.isNull())
         txt.append(QString("synopsis:%1\r\n").arg(info.synopsis.toString()));
@@ -117,6 +120,51 @@ QString ComicDB::toTXT()
 
     if (!info.lastTimeOpened.isNull())
         txt.append(QString("lastTimeOpened:%1\r\n").arg(info.lastTimeOpened.toULongLong()));
+
+    if (!info.added.isNull())
+        txt.append(QString("added:%1\r\n").arg(info.added.toULongLong()));
+
+    if (!info.type.isNull())
+        txt.append(QString("type:%1\r\n").arg(info.type.toInt()));
+
+    if (!info.editor.isNull())
+        txt.append(QString("editor:%1\r\n").arg(info.editor.toString()));
+
+    if (!info.imprint.isNull())
+        txt.append(QString("imprint:%1\r\n").arg(info.imprint.toString()));
+
+    if (!info.teams.isNull())
+        txt.append(QString("teams:%1\r\n").arg(info.teams.toString()));
+
+    if (!info.locations.isNull())
+        txt.append(QString("locations:%1\r\n").arg(info.locations.toString()));
+
+    if (!info.series.isNull())
+        txt.append(QString("series:%1\r\n").arg(info.series.toString()));
+
+    if (!info.alternateSeries.isNull())
+        txt.append(QString("alternateSeries:%1\r\n").arg(info.alternateSeries.toString()));
+
+    if (!info.alternateNumber.isNull())
+        txt.append(QString("alternateNumber:%1\r\n").arg(info.alternateNumber.toString()));
+
+    if (!info.alternateCount.isNull())
+        txt.append(QString("alternateCount:%1\r\n").arg(info.alternateCount.toString()));
+
+    if (!info.languageISO.isNull())
+        txt.append(QString("languageISO:%1\r\n").arg(info.languageISO.toString()));
+
+    if (!info.seriesGroup.isNull())
+        txt.append(QString("seriesGroup:%1\r\n").arg(info.seriesGroup.toString()));
+
+    if (!info.mainCharacterOrTeam.isNull())
+        txt.append(QString("mainCharacterOrTeam:%1\r\n").arg(info.mainCharacterOrTeam.toString()));
+
+    if (!info.review.isNull())
+        txt.append(QString("review:%1\r\n").arg(info.review.toString()));
+
+    if (!info.tags.isNull())
+        txt.append(QString("tags:%1\r\n").arg(info.tags.toString()));
 
     return txt;
 }
@@ -167,6 +215,35 @@ QString ComicDB::getTitleIncludingNumber() const
     }
 
     return getTitleOrFileName();
+}
+
+QString ComicDB::getInfoTitle() const
+{
+    if (!info.number.isNull() && !info.title.isNull() && !info.series.isNull())
+        return "#" + info.number.toString() + " - " + info.title.toString() + " (" + info.series.toString() + ")";
+
+    if (!info.title.isNull() && !info.series.isNull())
+        return info.title.toString() + " (" + info.series.toString() + ")";
+
+    if (!info.number.isNull() && !info.title.isNull())
+        return "#" + info.number.toString() + " - " + info.title.toString();
+
+    if (!info.number.isNull() && !info.series.isNull())
+        return "#" + info.number.toString() + " - " + info.series.toString();
+
+    if (!info.number.isNull())
+        return "#" + info.number.toString() + " - " + getTitleOrFileName();
+
+    if (!info.title.isNull() && !info.series.isNull())
+        return info.title.toString() + " (" + info.series.toString() + ")";
+
+    if (!info.title.isNull())
+        return info.title.toString();
+
+    if (!info.series.isNull())
+        return info.series.toString();
+
+    return QFileInfo(path).fileName();
 }
 
 //-----------------------------------------------------------------------------
@@ -232,11 +309,26 @@ void ComicInfo::deleteMetadata()
     format = QVariant();
     color = QVariant();
     ageRating = QVariant();
-    manga = QVariant();
 
     synopsis = QVariant();
     characters = QVariant();
     notes = QVariant();
+
+    // type = QVariant(); reset or not???
+    editor = QVariant();
+    imprint = QVariant();
+    teams = QVariant();
+    locations = QVariant();
+    series = QVariant();
+    alternateSeries = QVariant();
+    alternateNumber = QVariant();
+    alternateCount = QVariant();
+    languageISO = QVariant();
+    seriesGroup = QVariant();
+    mainCharacterOrTeam = QVariant();
+    review = QVariant();
+
+    // tags = QVariant(); reset or not???
 
     comicVineID = QVariant();
 }
@@ -280,7 +372,6 @@ ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
     publisher = comicInfo.publisher;
     format = comicInfo.format;
     color = comicInfo.color;
-    manga = comicInfo.manga;
     ageRating = comicInfo.ageRating;
     synopsis = comicInfo.synopsis;
     characters = comicInfo.characters;
@@ -292,134 +383,24 @@ ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
     coverSizeRatio = comicInfo.coverSizeRatio;
     originalCoverSize = comicInfo.originalCoverSize;
 
+    added = comicInfo.added;
+    type = comicInfo.type;
+    editor = comicInfo.editor;
+    imprint = comicInfo.imprint;
+    teams = comicInfo.teams;
+    locations = comicInfo.locations;
+    series = comicInfo.series;
+    alternateSeries = comicInfo.alternateSeries;
+    alternateNumber = comicInfo.alternateNumber;
+    alternateCount = comicInfo.alternateCount;
+    languageISO = comicInfo.languageISO;
+    seriesGroup = comicInfo.seriesGroup;
+    mainCharacterOrTeam = comicInfo.mainCharacterOrTeam;
+    review = comicInfo.review;
+    tags = comicInfo.tags;
+
     return *this;
 }
-
-// set fields
-/*
-void ComicInfo::setTitle(QString value)
-{
-        setValue(title,value);
-}
-
-void ComicInfo::setCoverPage(int value)
-{
-        setValue(coverPage,value);
-}
-void ComicInfo::setNumPages(int value)
-{
-        setValue(numPages,value);
-}
-
-void ComicInfo::setNumber(int value)
-{
-        setValue(number,value);
-}
-
-void ComicInfo::setIsBis(bool value)
-{
-        setValue(isBis,value);
-}
-
-void ComicInfo::setCount(int value)
-{
-        setValue(count,value);
-}
-
-void ComicInfo::setVolume(QString value)
-{
-        setValue(volume,value);
-}
-
-void ComicInfo::setStoryArc(QString value)
-{
-        setValue(storyArc,value);
-}
-
-void ComicInfo::setArcNumber(int value)
-{
-        setValue(arcNumber,value);
-}
-
-void ComicInfo::setArcCount(int value)
-{
-        setValue(arcCount,value);
-}
-
-void ComicInfo::setGenere(QString value)
-{
-        setValue(genere,value);
-}
-
-void ComicInfo::setWriter(QString value)
-{
-        setValue(writer,value);
-}
-
-void ComicInfo::setPenciller(QString value)
-{
-        setValue(penciller,value);
-}
-
-void ComicInfo::setInker(QString value)
-{
-        setValue(inker,value);
-}
-
-void ComicInfo::setColorist(QString value)
-{
-        setValue(colorist,value);
-}
-
-void ComicInfo::setLetterer(QString value)
-{
-        setValue(letterer,value);
-}
-
-void ComicInfo::setCoverArtist(QString value)
-{
-        setValue(coverArtist,value);
-}
-
-void ComicInfo::setDate(QString value)
-{
-        setValue(date,value);
-}
-
-void ComicInfo::setPublisher(QString value)
-{
-        setValue(publisher,value);
-}
-
-void ComicInfo::setFormat(QString value)
-{
-        setValue(format,value);
-}
-
-void ComicInfo::setColor(bool value)
-{
-        setValue(color,value);
-}
-
-void ComicInfo::setAgeRating(QString value)
-{
-        setValue(ageRating,value);
-}
-
-void ComicInfo::setSynopsis(QString value)
-{
-        setValue(synopsis,value);
-}
-
-void ComicInfo::setCharacters(QString value)
-{
-        setValue(characters,value);
-}
-
-void ComicInfo::setNotes(QString value)
-{
-        setValue(notes,value);
-}*/
 
 QPixmap ComicInfo::getCover(const QString &basePath)
 {
@@ -485,6 +466,24 @@ QStringList ComicInfo::getCoverArtists()
     return QStringList();
 }
 
+QStringList ComicInfo::getEditors()
+{
+    if (editor.toString().length() > 0) {
+        return editor.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getImprint()
+{
+    if (imprint.toString().length() > 0) {
+        return imprint.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
 QStringList ComicInfo::getCharacters()
 {
     if (characters.toString().length() > 0) {
@@ -492,6 +491,75 @@ QStringList ComicInfo::getCharacters()
     }
 
     return QStringList();
+}
+
+QStringList ComicInfo::getTeams()
+{
+    if (teams.toString().length() > 0) {
+        return teams.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getLocations()
+{
+    if (locations.toString().length() > 0) {
+        return locations.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList ComicInfo::getTags()
+{
+    if (tags.toString().length() > 0) {
+        return tags.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QString ComicInfo::getTypeString()
+{
+    switch (type.value<YACReader::FileType>()) {
+    case YACReader::FileType::Comic:
+        return "Comic";
+    case YACReader::FileType::Manga:
+        return "Manga";
+    case YACReader::FileType::WesternManga:
+        return "Western Manga";
+    case YACReader::FileType::WebComic:
+        return "Web Comic";
+    case YACReader::FileType::Yonkoma:
+        return "4-Koma";
+    }
+}
+
+QString ComicInfo::getStoryArcInfoString()
+{
+    if (arcNumber.toString().length() > 0 && arcCount.toString().length() > 0 && storyArc.toString().length() > 0) {
+        return "(" + arcNumber.toString() + "/" + arcCount.toString() + ") " + storyArc.toString();
+    }
+
+    if (arcNumber.toString().length() > 0 && storyArc.toString().length() > 0) {
+        return "(" + arcNumber.toString() + ") " + storyArc.toString();
+    }
+
+    return storyArc.toString().length() > 0 ? storyArc.toString() : "";
+}
+
+QString ComicInfo::getAlternateSeriesString()
+{
+    if (alternateNumber.toString().length() > 0 && alternateCount.toString().length() > 0 && alternateSeries.toString().length() > 0) {
+        return "(" + alternateNumber.toString() + "/" + alternateCount.toString() + ") " + alternateSeries.toString();
+    }
+
+    if (alternateNumber.toString().length() > 0 && alternateSeries.toString().length() > 0) {
+        return "(" + alternateNumber.toString() + ") " + alternateSeries.toString();
+    }
+
+    return alternateSeries.toString().length() > 0 ? alternateSeries.toString() : "";
 }
 
 void ComicInfo::setRead(bool r)
@@ -586,7 +654,6 @@ QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo)
     stream << comicInfo.format;
     stream << comicInfo.color;
     stream << comicInfo.ageRating;
-    stream << comicInfo.manga;
 
     stream << comicInfo.synopsis;
     stream << comicInfo.characters;
@@ -598,6 +665,24 @@ QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo)
 
     stream << comicInfo.coverSizeRatio;
     stream << comicInfo.originalCoverSize;
+
+    stream << comicInfo.added;
+    stream << comicInfo.type;
+    stream << comicInfo.added;
+    stream << comicInfo.type;
+    stream << comicInfo.editor;
+    stream << comicInfo.imprint;
+    stream << comicInfo.teams;
+    stream << comicInfo.locations;
+    stream << comicInfo.series;
+    stream << comicInfo.alternateSeries;
+    stream << comicInfo.alternateNumber;
+    stream << comicInfo.alternateCount;
+    stream << comicInfo.languageISO;
+    stream << comicInfo.seriesGroup;
+    stream << comicInfo.mainCharacterOrTeam;
+    stream << comicInfo.review;
+    stream << comicInfo.tags;
 
     return stream;
 }
@@ -648,7 +733,6 @@ QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo)
     stream >> comicInfo.format;
     stream >> comicInfo.color;
     stream >> comicInfo.ageRating;
-    stream >> comicInfo.manga;
 
     stream >> comicInfo.synopsis;
     stream >> comicInfo.characters;
@@ -660,6 +744,24 @@ QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo)
 
     stream >> comicInfo.coverSizeRatio;
     stream >> comicInfo.originalCoverSize;
+
+    stream >> comicInfo.added;
+    stream >> comicInfo.type;
+    stream >> comicInfo.added;
+    stream >> comicInfo.type;
+    stream >> comicInfo.editor;
+    stream >> comicInfo.imprint;
+    stream >> comicInfo.teams;
+    stream >> comicInfo.locations;
+    stream >> comicInfo.series;
+    stream >> comicInfo.alternateSeries;
+    stream >> comicInfo.alternateNumber;
+    stream >> comicInfo.alternateCount;
+    stream >> comicInfo.languageISO;
+    stream >> comicInfo.seriesGroup;
+    stream >> comicInfo.mainCharacterOrTeam;
+    stream >> comicInfo.review;
+    stream >> comicInfo.tags;
 
     return stream;
 }

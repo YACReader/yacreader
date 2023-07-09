@@ -4,6 +4,29 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
 
+### YACReaderLibrary
+* Avoid showing stale information in the server config dialog by updating the connection information when the dialog is opened.
+* Add new metadata support, it improves compatibility with ComicInfo.xml
+* Add support for showing a "recently added/updated" indicator. The number of days to consider something recent can be configured in the settings.
+* Improved comic metadata dialog.
+* Add textual tags support that can be queried through the search engine.
+* Make = in the search engine work as : does.
+* Add new operators to the search engine: exact match ==, <, >, <=, >=.
+* Support filtering by since/before dates in the search engine. e.g. `added > 7` means recent content added since 7 days ago, and `added < 30` means content added before the last 30 days.
+* Show the full library path in the dialog shown to warn about missing libraries.
+* Fix scroll bar in the info comics view in Qt6 builds.
+* New `Recent` smart list, it will show recent comics added.
+* Try to detect changed files with the same name on libraries updates, there is also a new setting to decide if the modified date of a file should be used as an indicator to know if the file has been changed since it was added (disabled by default).
+* Fix alphanumeric navigation in the folders tree view. Shortcuts were interfering the default behaviour, now some shortcuts will be ignored if the folders tree has the focus.
+* Fix sorting in the Comic Vine series selection dialog.
+* Fix getting only distinct rows when querying folders through the search engine.
+
+### YACReader
+* Add shortcuts for moving by one the double page mode to the left/right, by default CTRL + SHIFT + LEFT, and,  CTRL + SHIFT + RIGHT. Remember that you can change any shortcut in the shortcuts dialog. You can also achieve this functionality using the "Go to page flow" and chossing the page you want to be on the left/right (depending on the reading mode comic/manga).
+
+### All Apps
+* New icons for macos.
+
 ## 9.12
 
 ### YACReaderLibrary

@@ -1,5 +1,6 @@
 
 HEADERS += \
+    $$PWD/comic_vine_json_parser.h \
 	comic_vine/comic_vine_dialog.h \
 	comic_vine/comic_vine_client.h \
 	comic_vine/scraper_lineedit.h \
@@ -24,6 +25,7 @@ HEADERS += \
     $$PWD/comic_vine_all_volume_comics_retriever.h
 
 SOURCES += \
+    $$PWD/comic_vine_json_parser.cpp \
 	comic_vine/comic_vine_dialog.cpp \
 	comic_vine/comic_vine_client.cpp \
 	comic_vine/scraper_lineedit.cpp \

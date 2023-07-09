@@ -9,8 +9,8 @@
 #include <vector>
 #include <list>
 
-#define SEARCH_FOLDERS_QUERY "SELECT DISTINCT f.id, f.parentId, f.name, f.path, f.finished, f.completed, f.numChildren, f.firstChildHash FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE "
-#define SEARCH_COMICS_QUERY "SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.coverSizeRatio,ci.lastTimeOpened,ci.manga FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) LEFT JOIN folder f ON (f.id == c.parentId) WHERE "
+#define SEARCH_FOLDERS_QUERY "SELECT DISTINCT f.* FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE "
+#define SEARCH_COMICS_QUERY "SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date,ci.added,ci.type FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) LEFT JOIN folder f ON (f.id == c.parentId) WHERE "
 
 /**
  * This class is used to generate an SQL query string from a search expression,
@@ -25,7 +25,9 @@
  *   and_expression ::= not_expression [ [ 'and' ] and_expression ]
  *   not_expression ::= [ 'not' ] location_expression
  *   location_expression ::= base_token | ( '(' or_expression ')' )
- *   base_token ::= a sequence of letters and colons, perhaps quoted
+ *   expression :: base_token | base_token 'operator' base_token
+ *   operator :: [':' '=' '<' '>' '<=' '=>']
+ *   base_token ::= a sequence of letters, perhaps quoted
  *
  * Usage Example:
  *    QSqlQuery selectQuery(db);
@@ -47,9 +49,10 @@ public:
     struct TreeNode {
         std::string t;
         std::vector<TreeNode> children;
+        std::string expOperator;
 
-        explicit TreeNode(std::string t, std::vector<TreeNode> children)
-            : t(t), children(children)
+        explicit TreeNode(std::string t, std::vector<TreeNode> children, std::string expOperator = "")
+            : t(t), children(children), expOperator(expOperator)
         {
         }
 
@@ -78,14 +81,19 @@ private:
         return std::find(v.begin(), v.end(), e) != v.end();
     }
 
+    bool isOperatorToken(Token::Type type);
+
     enum class FieldType { unknown,
                            numeric,
                            text,
                            boolean,
                            date,
+                           dateFolder,
                            folder,
                            booleanFolder,
-                           filename };
+                           filename,
+                           enumField,
+                           enumFieldFolder };
     static FieldType fieldType(const std::string &str);
 
     static std::string join(const QStringList &strings, const std::string &delim);
@@ -95,6 +103,7 @@ private:
     TreeNode andExpression();
     TreeNode notExpression();
     TreeNode locationExpression();
+    TreeNode expression();
     TreeNode baseToken();
 
     static const std::map<FieldType, std::vector<std::string>> fieldNames;

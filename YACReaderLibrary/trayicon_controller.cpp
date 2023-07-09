@@ -36,7 +36,7 @@ TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *windo
 #endif
     }
 
-    connect(&trayIcon, &QSystemTrayIcon::activated,
+    connect(&trayIcon, &QSystemTrayIcon::activated, this,
             [=](QSystemTrayIcon::ActivationReason reason) {
 #ifdef Q_OS_LINUX
                 auto expectedReason = QSystemTrayIcon::Trigger;
@@ -69,7 +69,7 @@ void TrayIconController::updateIconVisibility()
 
 bool TrayIconController::handleCloseToTrayIcon(QCloseEvent *event)
 {
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
     if (!event->spontaneous() || !window->isVisible()) {
         return false;
     }
@@ -83,7 +83,7 @@ bool TrayIconController::handleCloseToTrayIcon(QCloseEvent *event)
                                         "of the system tray icon."));
             settings->setValue(CLOSE_TO_TRAY_NOTIFIED, true);
         }
-#ifdef Q_OS_OSX
+#ifdef Q_OS_MACOS
         OSXHideDockIcon();
 #endif
         window->hide();

@@ -66,13 +66,10 @@ public:
     void setupModelData(QString path);
     QString getDatabase();
     QString getFolderPath(const QModelIndex &folder);
-    // QModelIndex indexFromItem(FolderItem * item, int column);
-
-    // bool isFilterEnabled(){return filterEnabled;};
 
     void updateFolderCompletedStatus(const QModelIndexList &list, bool status);
     void updateFolderFinishedStatus(const QModelIndexList &list, bool status);
-    void updateFolderManga(const QModelIndexList &list, bool manga);
+    void updateFolderType(const QModelIndexList &list, YACReader::FileType type);
 
     QStringList getSubfoldersNames(const QModelIndex &mi);
     FolderModel *getSubfoldersModel(const QModelIndex &mi);
@@ -80,28 +77,38 @@ public:
     Folder getFolder(const QModelIndex &mi);
     QModelIndex getIndexFromFolder(const Folder &folder, const QModelIndex &parent = QModelIndex());
 
-    void fetchMoreFromDB(const QModelIndex &parent);
-
     QModelIndex addFolderAtParent(const QString &folderName, const QModelIndex &parent);
 
     Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString &hash) const;
 
+    void setShowRecent(bool showRecent);
+    void setRecentRange(int days);
+
     enum Columns {
         Name = 0,
-        Path = 1,
-        Finished = 2,
-        Completed = 3,
-        Manga = 4,
-        FirstChildHash = 5
-    }; // id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, name TEXT NOT NULL, path TEXT NOT NULL
+        Path,
+        Finished,
+        Completed,
+        NumChildren,
+        FirstChildHash,
+        CustomImage,
+        Type, // FileType
+        Added,
+        Updated,
+    };
 
     enum Roles {
         FinishedRole = Qt::UserRole + 1,
         CompletedRole,
         IdRole,
-        MangaRole,
         CoverPathRole,
-        FolderName,
+        FolderNameRole,
+        NumChildrenRole,
+        TypeRole,
+        AddedRole,
+        UpdatedRole,
+        ShowRecentRole,
+        RecentRangeRole,
     };
 
     bool isSubfolder;
@@ -112,9 +119,7 @@ public slots:
 
 private:
     void fullSetup(QSqlQuery &sqlquery, FolderItem *parent);
-
     void setupModelData(QSqlQuery &sqlquery, FolderItem *parent);
-    void updateFolderModelData(QSqlQuery &sqlquery, FolderItem *parent);
 
     FolderItem *rootItem; // el árbol
     QMap<unsigned long long int, FolderItem *> items; // relación entre folders
@@ -123,6 +128,9 @@ private:
 
     QIcon folderIcon;
     QIcon folderFinishedIcon;
+
+    bool showRecent;
+    qlonglong recentDays;
 };
 
 #endif

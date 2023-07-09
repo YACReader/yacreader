@@ -44,7 +44,7 @@ void logSystemAndConfig()
 #if !defined use_unarr && !defined use_libarchive
 #ifdef Q_OS_WIN
     if (QLibrary::isLibrary(QApplication::applicationDirPath() + "/utils/7z.dll"))
-#elif defined Q_OS_UNIX && !defined Q_OS_MAC
+#elif defined Q_OS_UNIX && !defined Q_OS_MACOS
     if (QLibrary::isLibrary(QString(LIBDIR) + "/yacreader/7z.so") | QLibrary::isLibrary(QString(LIBDIR) + "/p7zip/7z.so"))
 #else
     if (QLibrary::isLibrary(QApplication::applicationDirPath() + "/utils/7z.so"))
@@ -58,7 +58,7 @@ void logSystemAndConfig()
     QLOG_INFO() << "using unarr decompression backend";
 #endif // use_unarr
 
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     if (QFileInfo(QString(BINDIR) + "/qrencode").exists())
 #else
     if (QFileInfo(QApplication::applicationDirPath() + "/utils/qrencode.exe").exists() || QFileInfo("./util/qrencode").exists())
@@ -169,7 +169,7 @@ int main(int argc, char **argv)
     logger.addDestination(std::move(fileDestination));
 
     QTranslator translator;
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     translator.load(QLocale(), "yacreaderlibrary", "_", QString(DATADIR) + "/yacreader/languages");
 #else
     translator.load(QLocale(), "yacreaderlibrary", "_", "languages");
@@ -177,7 +177,7 @@ int main(int argc, char **argv)
     app.installTranslator(&translator);
 
     /*QTranslator viewerTranslator;
-    #if defined Q_OS_UNIX && !defined Q_OS_MAC
+    #if defined Q_OS_UNIX && !defined Q_OS_MACOS
         viewerTranslator.load(QString(DATADIR) + "/yacreader/languages/yacreader_" + sufix);
     #else
         viewerTranslator.load(QCoreApplication::applicationDirPath() + "/languages/yacreader_" + sufix);

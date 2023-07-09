@@ -2,6 +2,7 @@
 
 #include "folder_model.h"
 #include "grid_comics_view.h"
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_tool_bar_stretch.h"
 
@@ -13,7 +14,7 @@
 
 using namespace YACReader;
 
-FolderContentView::FolderContentView(QWidget *parent)
+FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWidget *parent)
     : QWidget { parent }, parent(QModelIndex()), comicModel(new ComicModel()), folderModel(new FolderModel())
 {
     qmlRegisterType<FolderModel>("com.yacreader.FolderModel", 1, 0, "FolderModel");
@@ -30,7 +31,7 @@ FolderContentView::FolderContentView(QWidget *parent)
 
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
-            view, &QQuickWidget::statusChanged,
+            view, &QQuickWidget::statusChanged, this,
             [=](QQuickWidget::Status status) {
                 if (status == QQuickWidget::Error) {
                     QLOG_ERROR() << view->errors();
@@ -59,7 +60,11 @@ FolderContentView::FolderContentView(QWidget *parent)
     connect(coverSizeSlider, &QAbstractSlider::valueChanged, this, &FolderContentView::setCoversSize);
 
     toolbar = new QToolBar();
+    toolbar->setStyleSheet("QToolBar {border: none;}");
+    toolbar->setIconSize(QSize(18, 18));
     toolbar->addWidget(new YACReaderToolBarStretch);
+    toolbar->addAction(toogleRecentVisibilityAction);
+    toolbar->addSeparator();
     toolbar->addWidget(coverSizeSliderWidget);
 
     auto l = new QVBoxLayout;
@@ -73,7 +78,7 @@ FolderContentView::FolderContentView(QWidget *parent)
     QQmlContext *ctxt = view->rootContext();
 
     LibraryUITheme theme;
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     theme = Light;
 #else
     theme = Dark;
@@ -203,6 +208,16 @@ void FolderContentView::reloadContinueReadingModel()
     if (!folderModel->isSubfolder) {
         comicModel->reloadContinueReading();
     }
+}
+
+void FolderContentView::setShowRecent(bool visible)
+{
+    folderModel->setShowRecent(visible);
+}
+
+void FolderContentView::setRecentRange(int days)
+{
+    folderModel->setRecentRange(days);
 }
 
 void FolderContentView::openFolder(int index)

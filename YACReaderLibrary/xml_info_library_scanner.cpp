@@ -46,7 +46,7 @@ void XMLInfoLibraryScanner::run()
 {
 #if !defined use_unarr && !defined use_libarchive
 // check for 7z lib
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     QLibrary *sevenzLib = new QLibrary(QString(LIBDIR) + "/p7zip/7z.so");
 #else
     QLibrary *sevenzLib = new QLibrary(QCoreApplication::applicationDirPath() + "/utils/7z");

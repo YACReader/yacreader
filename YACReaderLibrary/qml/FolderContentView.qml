@@ -131,6 +131,16 @@ Rectangle {
                 }
             }
 
+            //is new
+            Rectangle {
+                width: 10
+                height: 10
+                radius: 5
+                anchors { left: coverElement.left; top: coverElement.top; topMargin: 10; leftMargin: 10; }
+                color: "#FFFFCC00"
+                visible: (((new Date() / 1000) - added) < recent_range || ((new Date() / 1000) - updated) < recent_range) && show_recent
+            }
+
             //border
             Rectangle {
                 width: coverElement.width

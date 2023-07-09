@@ -30,7 +30,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     QQmlContext *ctxt = view->rootContext();
 
     LibraryUITheme theme;
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     theme = Light;
 #else
     theme = Dark;
@@ -44,6 +44,7 @@ GridComicsView::GridComicsView(QWidget *parent)
         ctxt->setContextProperty("borderColor", "#DBDBDB");
         ctxt->setContextProperty("titleColor", "#121212");
         ctxt->setContextProperty("textColor", "#636363");
+        ctxt->setContextProperty("showDropShadow", QVariant(false));
         // fonts settings
         ctxt->setContextProperty("fontSize", 11);
         ctxt->setContextProperty("fontFamily", QApplication::font().family());
@@ -66,15 +67,17 @@ GridComicsView::GridComicsView(QWidget *parent)
 
         ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
+
+        ctxt->setContextProperty("currentComicBackgroundColor", "#88FFFFFF");
     } else {
         ctxt->setContextProperty("backgroundColor", "#2A2A2A");
         ctxt->setContextProperty("cellColor", "#212121");
         ctxt->setContextProperty("selectedColor", "#121212");
-        ctxt->setContextProperty("selectedBorderColor", "#121212");
+        ctxt->setContextProperty("selectedBorderColor", "#FFCC00");
         ctxt->setContextProperty("borderColor", "#121212");
         ctxt->setContextProperty("titleColor", "#FFFFFF");
         ctxt->setContextProperty("textColor", "#A8A8A8");
-        ctxt->setContextProperty("dropShadow", QVariant(false));
+        ctxt->setContextProperty("showDropShadow", QVariant(true));
         // fonts settings
         int fontSize = QApplication::font().pointSize();
         if (fontSize == -1)
@@ -100,13 +103,9 @@ GridComicsView::GridComicsView(QWidget *parent)
 
         ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
         ctxt->setContextProperty("readTickCheckedColor", "#E84852");
+
+        ctxt->setContextProperty("currentComicBackgroundColor", "#88000000");
     }
-
-#ifdef Q_OS_MAC
-
-#else
-
-#endif
 
     ctxt->setContextProperty("backgroundImage", QUrl());
     ctxt->setContextProperty("backgroundBlurOpacity", 0.0);
@@ -170,7 +169,6 @@ GridComicsView::~GridComicsView()
 
 void GridComicsView::createCoverSizeSliderWidget()
 {
-    toolBarStretch = new YACReaderToolBarStretch(this);
     coverSizeSliderWidget = new QWidget(this);
     coverSizeSliderWidget->setFixedWidth(200);
     coverSizeSlider = new QSlider();
@@ -206,7 +204,7 @@ void GridComicsView::setToolBar(QToolBar *toolBar)
 
     createCoverSizeSliderWidget();
 
-    toolBarStretchAction = toolBar->addWidget(toolBarStretch);
+    startSeparatorAction = toolBar->addSeparator();
     toolBar->addAction(showInfoAction);
     showInfoSeparatorAction = toolBar->addSeparator();
     coverSizeSliderAction = toolBar->addWidget(coverSizeSliderWidget);
@@ -285,7 +283,7 @@ void GridComicsView::updateBackgroundConfig()
         ctxt->setContextProperty("backgroundBlurVisible", QVariant(false));
     }
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     ctxt->setContextProperty("cellColor", useBackgroundImage ? "#99FFFFFF" : "#FFFFFF");
     ctxt->setContextProperty("selectedColor", "#FFFFFF");
 #else
@@ -553,7 +551,7 @@ void GridComicsView::setShowMarks(bool show)
 
 void GridComicsView::closeEvent(QCloseEvent *event)
 {
-    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(startSeparatorAction);
     toolbar->removeAction(showInfoAction);
     toolbar->removeAction(showInfoSeparatorAction);
     toolbar->removeAction(coverSizeSliderAction);

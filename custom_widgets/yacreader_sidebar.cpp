@@ -8,6 +8,8 @@
 #include "yacreader_library_list_widget.h"
 #include "yacreader_search_line_edit.h"
 #include "yacreader_titled_toolbar.h"
+
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 YACReaderSideBar::YACReaderSideBar(QWidget *parent)
@@ -23,7 +25,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     readingListsView = new YACReaderReadingListsView;
     selectedLibrary = new YACReaderLibraryListWidget;
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
     foldersTitle = new YACReaderTitledToolBar(tr("Folders"));
     readingListsTitle = new YACReaderTitledToolBar(tr("Reading Lists"));
@@ -36,7 +38,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     splitter->setStyleSheet("QSplitter::handle { "
                             " image: none; background-color = black; "
                             " }"
@@ -55,20 +57,20 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
 
     // LIBRARIES-------------------------------------------------------
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     l->addSpacing(5);
 #endif
 
     l->addWidget(librariesTitle);
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     l->addSpacing(4);
     l->addWidget(new YACReaderSideBarSeparator(this));
     l->addSpacing(3);
 #endif
 
     l->addWidget(selectedLibrary);
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     l->addSpacing(11);
 #else
     l->addSpacing(6);
@@ -82,7 +84,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     foldersLayout->setContentsMargins(0, 0, 0, 0);
     foldersLayout->setSpacing(0);
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     // foldersLayout->addSpacing(6);
 
     // foldersLayout->addSpacing(5);
@@ -94,7 +96,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
 
     foldersLayout->addWidget(foldersTitle);
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     foldersLayout->addSpacing(4);
     foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
     foldersLayout->addSpacing(4);
@@ -114,7 +116,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     readingListsHeaderLayout->setContentsMargins(0, 0, 0, 0);
     readingListsHeaderLayout->setSpacing(0);
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     // readingListsHeaderLayout->addSpacing(6);
 
     // readingListsHeaderLayout->addSpacing(5);
@@ -126,7 +128,7 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
 
     readingListsHeaderLayout->addWidget(readingListsTitle);
 
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     readingListsHeaderLayout->addSpacing(4);
     readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
     readingListsHeaderLayout->addSpacing(4);
@@ -152,7 +154,7 @@ void YACReaderSideBar::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     QPainter painter(this);
 
     painter.fillRect(0, 0, width(), height(), QColor("#F1F1F1"));

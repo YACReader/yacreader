@@ -72,6 +72,13 @@ void SearchController::getFolders(int libraryId, QSqlQuery &sqlQuery, QJsonArray
         folder["folder_name"] = sqlQuery.value("name").toString();
         folder["num_children"] = sqlQuery.value("numChildren").toInt();
         folder["first_comic_hash"] = sqlQuery.value("firstChildHash").toString();
+        // 9.13
+        folder["finished"] = sqlQuery.value("finished").toBool();
+        folder["completed"] = sqlQuery.value("completed").toBool();
+        folder["custom_image"] = sqlQuery.value("customImage").toString();
+        folder["file_type"] = sqlQuery.value("type").toInt();
+        folder["added"] = sqlQuery.value("added").toLongLong();
+        folder["updated"] = sqlQuery.value("updated").toLongLong();
 
         items.append(folder);
     }
@@ -96,7 +103,10 @@ void SearchController::getComics(int libraryId, QSqlQuery &sqlQuery, QJsonArray 
         json["title"] = sqlQuery.value("title").toString();
         json["number"] = sqlQuery.value("number").toInt();
         json["last_time_opened"] = sqlQuery.value("lastTimeOpened").toLongLong();
-        json["manga"] = sqlQuery.value("manga").toBool();
+        auto typeVariant = sqlQuery.value("type");
+        auto type = typeVariant.value<YACReader::FileType>();
+        json["manga"] = type == YACReader::FileType::Manga; // legacy, kept for compatibility with old clients
+        json["file_type"] = typeVariant.toInt(); // 9.13
 
         items.append(json);
     }

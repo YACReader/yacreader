@@ -35,7 +35,7 @@ QString Static::getConfigDir()
         return configDir;
     }
 // Search config file
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     QString binDir = (QString(DATADIR) + "/yacreader");
 #else
     QString binDir = QCoreApplication::applicationDirPath();

@@ -1,5 +1,7 @@
 #include "classic_comics_view.h"
 
+#include "yacreader_global.h"
+
 #include "QStackedWidget"
 
 #include "comic_flow_widget.h"
@@ -78,7 +80,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
 
     layout->setContentsMargins(0, 0, 0, 0);
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     sVertical->setCollapsible(1, false);
 #endif
 
@@ -90,7 +92,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     hideFlowViewAction->setText(tr("Hide comic flow"));
     hideFlowViewAction->setData(HIDE_COMIC_VIEW_ACTION_YL);
     hideFlowViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HIDE_COMIC_VIEW_ACTION_YL));
-    hideFlowViewAction->setIcon(QIcon(":/images/comics_view_toolbar/hideComicFlow.png"));
+    hideFlowViewAction->setIcon(QIcon(":/images/comics_view_toolbar/hideComicFlow.svg"));
     hideFlowViewAction->setCheckable(true);
     hideFlowViewAction->setChecked(false);
 
@@ -120,9 +122,7 @@ void ClassicComicsView::setToolBar(QToolBar *toolBar)
     static_cast<QVBoxLayout *>(comics->layout())->insertWidget(0, toolBar);
     this->toolbar = toolBar;
 
-    toolBarStretch = new YACReaderToolBarStretch(this);
-
-    toolBarStretchAction = toolBar->addWidget(toolBarStretch);
+    startSeparatorAction = toolBar->addSeparator();
     toolBar->addAction(hideFlowViewAction);
 }
 
@@ -343,7 +343,7 @@ void ClassicComicsView::removeItemsFromFlow(const QModelIndex &parent, int from,
 
 void ClassicComicsView::closeEvent(QCloseEvent *event)
 {
-    toolbar->removeAction(toolBarStretchAction);
+    toolbar->removeAction(startSeparatorAction);
     toolbar->removeAction(hideFlowViewAction);
 
     saveTableHeadersStatus();

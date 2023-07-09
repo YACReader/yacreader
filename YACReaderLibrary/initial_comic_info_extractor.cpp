@@ -13,6 +13,9 @@ bool InitialComicInfoExtractor::crash = false;
 InitialComicInfoExtractor::InitialComicInfoExtractor(QString fileSource, QString target, int coverPage, bool getXMLMetadata)
     : _fileSource(fileSource), _target(target), _numPages(0), _coverPage(coverPage), getXMLMetadata(getXMLMetadata), _xmlInfoData()
 {
+    if (coverPage <= 0) {
+        _coverPage = 1;
+    }
 }
 
 void InitialComicInfoExtractor::extract()
@@ -26,7 +29,7 @@ void InitialComicInfoExtractor::extract()
     }
 #ifndef NO_PDF
     if (fi.suffix().compare("pdf", Qt::CaseInsensitive) == 0) {
-#if defined Q_OS_MAC && defined USE_PDFKIT
+#if defined Q_OS_MACOS && defined USE_PDFKIT
         auto pdfComic = std::make_unique<MacOSXPDFComic>();
         if (!pdfComic->openComic(_fileSource)) {
             return;
@@ -57,7 +60,7 @@ void InitialComicInfoExtractor::extract()
 #endif
         _numPages = pdfComic->numPages();
         if (_numPages >= _coverPage) {
-#if defined Q_OS_MAC || defined USE_PDFIUM
+#if defined Q_OS_MACOS || defined USE_PDFIUM
             QImage p = pdfComic->getPage(_coverPage - 1); // TODO check if the page is valid
 #else
             QImage p = pdfComic->page(_coverPage - 1)->renderToImage(72, 72);

@@ -87,10 +87,10 @@ void CreateLibraryDialog::create()
     QFileInfo f(path->text());
     if (f.exists() && f.isDir() && f.isWritable()) {
         if (!libraries.contains(nameEdit->text())) {
-            emit(createLibrary(QDir::cleanPath(path->text()), QDir::cleanPath(path->text()) + "/.yacreaderlibrary", nameEdit->text()));
+            emit createLibrary(QDir::cleanPath(path->text()), QDir::cleanPath(path->text()) + "/.yacreaderlibrary", nameEdit->text());
             close();
         } else
-            emit(libraryExists(nameEdit->text()));
+            emit libraryExists(nameEdit->text());
     } else
         QMessageBox::critical(NULL, tr("Path not found"), tr("The selected path does not exist or is not a valid path. Be sure that you have write access to this folder"));
 }

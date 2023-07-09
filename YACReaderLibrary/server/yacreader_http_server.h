@@ -17,6 +17,8 @@ public:
     void start(quint16 port = 0);
     void stop();
 
+    bool isRunning();
+
     QString getPort();
 
 signals:

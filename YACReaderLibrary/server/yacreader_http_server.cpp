@@ -48,7 +48,7 @@ void YACReaderHttpServer::start(quint16 port)
     QString baseTemplatePath = QString("./server/templates");
     QString templatePath;
 
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     templatePath = QFileInfo(QString(DATADIR) + "/yacreader", baseTemplatePath).absoluteFilePath();
 #else
     templatePath = QFileInfo(QCoreApplication::applicationDirPath(), baseTemplatePath).absoluteFilePath();
@@ -76,7 +76,7 @@ void YACReaderHttpServer::start(quint16 port)
     QString basedocroot = "./server/docroot";
     QString docroot;
 
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     QFileInfo configFile(QString(DATADIR) + "/yacreader");
     docroot = QFileInfo(QString(DATADIR) + "/yacreader", basedocroot).absoluteFilePath();
 #else
@@ -162,6 +162,15 @@ void YACReaderHttpServer::stop()
     }
 }
 
+bool YACReaderHttpServer::isRunning()
+{
+    if (listener == nullptr) {
+        return false;
+    }
+
+    return listener->isListening();
+}
+
 YACReaderHttpServer::YACReaderHttpServer()
     : QObject(nullptr), listener(nullptr)
 {
@@ -169,5 +178,9 @@ YACReaderHttpServer::YACReaderHttpServer()
 
 QString YACReaderHttpServer::getPort()
 {
+    if (listener == nullptr) {
+        return "-1";
+    }
+
     return QString("%1").arg(listener->serverPort());
 }

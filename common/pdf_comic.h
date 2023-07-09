@@ -7,7 +7,7 @@
 #include <QMutex>
 #include <QtGlobal>
 
-#if defined Q_OS_MAC && defined USE_PDFKIT
+#if defined Q_OS_MACOS && defined USE_PDFKIT
 class MacOSXPDFComic
 {
 public:
@@ -51,5 +51,5 @@ private:
 #else
 #include "poppler-qt5.h"
 #endif // QT_VERSION
-#endif // Q_OS_MAC
+#endif // Q_OS_MACOS
 #endif // PDF_COMIC_H

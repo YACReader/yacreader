@@ -1,5 +1,6 @@
 #include "yacreader_library_item_widget.h"
 
+#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 #include <QHBoxLayout>
@@ -56,7 +57,7 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
         mainLayout->addWidget(down);*/
 
     setLayout(mainLayout);
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     QString styleSheet = "background-color:transparent; color:#DDDFDF;";
     setStyleSheet(styleSheet);
 #endif
@@ -117,7 +118,7 @@ bool YACReaderLibraryItemWidget::eventFilter(QObject *object, QEvent *event){
 void YACReaderLibraryItemWidget::deselect()
 {
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     QString styleSheet = "background-color:transparent;";
     setStyleSheet(styleSheet);
 #else
@@ -137,7 +138,7 @@ void YACReaderLibraryItemWidget::deselect()
 
 void YACReaderLibraryItemWidget::select()
 {
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     // QString styleSheet ="color: white; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;";
     QString styleSheet = "color: white; background-color:#91c4f4; border-bottom:1px solid #91c4f4;";
 #else

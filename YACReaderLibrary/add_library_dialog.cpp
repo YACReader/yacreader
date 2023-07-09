@@ -68,8 +68,7 @@ void AddLibraryDialog::setupUI()
 
 void AddLibraryDialog::add()
 {
-    // accept->setEnabled(false);
-    emit(addLibrary(QDir::cleanPath(path->text()), nameEdit->text()));
+    emit addLibrary(QDir::cleanPath(path->text()), nameEdit->text());
 }
 
 void AddLibraryDialog::nameSetted(const QString &text)

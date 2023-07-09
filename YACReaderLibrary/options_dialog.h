@@ -24,6 +24,7 @@ private slots:
     void backgroundImageOpacitySliderChanged(int value);
     void backgroundImageBlurRadiusSliderChanged(int value);
     void useCurrentComicCoverCheckClicked(bool checked);
+    void numDaysToConsiderRecentChanged(int value);
     void resetToDefaults();
 
 private:
@@ -38,6 +39,9 @@ private:
     QCheckBox *trayIconCheckbox;
     QCheckBox *startToTrayCheckbox;
     QCheckBox *comicInfoXMLCheckbox;
+    QSlider *recentIntervalSlider;
+    QLabel *numDaysLabel;
+    QCheckBox *compareModifiedDateWhenUpdatingLibrariesCheck;
 };
 
 #endif

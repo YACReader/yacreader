@@ -64,22 +64,28 @@ static QString fields = "title,"
                         //"coverSizeRatio," cover may have changed since the info was exported...
                         //"originalCoverSize," // h/w
                         // new 9.8 fields
-                        "manga";
+                        // "manga," //removed in 9.13
+                        // new 9.13 fields
+                        "added,"
+                        "type,"
+                        "editor,"
+                        "imprint,"
+                        "teams,"
+                        "locations,"
+                        "series,"
+                        "alternateSeries,"
+                        "alternateNumber,"
+                        "alternateCount,"
+                        "languageISO,"
+                        "seriesGroup,"
+                        "mainCharacterOrTeam,"
+                        "review,"
+                        "tags";
 
 DataBaseManagement::DataBaseManagement()
     : QObject(), dataBasesList()
 {
 }
-
-/*TreeModel * DataBaseManagement::newTreeModel(QString path)
-{
-        //la consulta se ejecuta...
-        QSqlQuery selectQuery(loadDatabase(path));
-        selectQuery.setForwardOnly(true);
-        selectQuery.exec("select * from folder order by parentId,name");
-        //selectQuery.finish();
-        return new TreeModel(selectQuery);
-}*/
 
 QSqlDatabase DataBaseManagement::createDatabase(QString name, QString path)
 {
@@ -102,12 +108,12 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
         // pragma.finish();
         DataBaseManagement::createTables(db);
 
-        QSqlQuery query("INSERT INTO folder (parentId, name, path) "
-                        "VALUES (1,'root', '/')",
-                        db);
+        QSqlQuery insertRootQuery(db);
+        insertRootQuery.prepare("INSERT INTO folder (parentId, name, path, added) "
+                                "VALUES (1, 'root', '/', :added)");
+        insertRootQuery.bindValue(":added", QDateTime::currentSecsSinceEpoch());
+        insertRootQuery.exec();
     }
-    // query.finish();
-    // db.close();
 
     return db;
 }
@@ -156,13 +162,13 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                                "coverPage INTEGER DEFAULT 1,"
                                "numPages INTEGER,"
 
-                               "number INTEGER,"
+                               "number TEXT," // changed to text from INTEGER (9.13)
                                "isBis BOOLEAN,"
                                "count INTEGER,"
 
                                "volume TEXT,"
                                "storyArc TEXT,"
-                               "arcNumber INTEGER,"
+                               "arcNumber TEXT," // changed to text from INTEGER (9.13)
                                "arcCount INTEGER,"
 
                                "genere TEXT,"
@@ -174,11 +180,11 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                                "letterer TEXT,"
                                "coverArtist TEXT,"
 
-                               "date TEXT," // dd/mm/yyyy --> se mostrará en 3 campos diferentes
+                               "date TEXT," // publication date dd/mm/yyyy --> se mostrará en 3 campos diferentes
                                "publisher TEXT,"
                                "format TEXT,"
                                "color BOOLEAN,"
-                               "ageRating BOOLEAN," // this is actually a string (TEXT), funny thing is that the current implementation works
+                               "ageRating TEXT,"
 
                                "synopsis TEXT,"
                                "characters TEXT,"
@@ -190,7 +196,7 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                                // new 7.0 fields
 
                                "hasBeenOpened BOOLEAN DEFAULT 0,"
-                               "rating INTEGER DEFAULT 0,"
+                               "rating INTEGER DEFAULT 0," // TODO_METADATA change type to REAL with two decimals
                                "currentPage INTEGER DEFAULT 1, "
                                "bookmark1 INTEGER DEFAULT -1, "
                                "bookmark2 INTEGER DEFAULT -1, "
@@ -205,8 +211,23 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                                "coverSizeRatio REAL,"
                                "originalCoverSize STRING," // h/w
                                // new 9.8 fields
-                               "manga BOOLEAN DEFAULT 0"
-
+                               "manga BOOLEAN DEFAULT 0," // deprecated 9.13
+                               // new 9.13 fields
+                               "added INTEGER,"
+                               "type INTEGER DEFAULT 0," // 0 = comic, 1 = manga, 2 = manga left to right, 3 = webcomic, 4 = 4koma
+                               "editor TEXT,"
+                               "imprint TEXT,"
+                               "teams TEXT,"
+                               "locations TEXT,"
+                               "series TEXT,"
+                               "alternateSeries TEXT,"
+                               "alternateNumber TEXT,"
+                               "alternateCount INTEGER,"
+                               "languageISO TEXT,"
+                               "seriesGroup TEXT,"
+                               "mainCharacterOrTeam TEXT,"
+                               "review TEXT,"
+                               "tags TEXT"
                                ")");
         success = success && queryComicInfo.exec();
         // queryComicInfo.finish();
@@ -226,7 +247,11 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                             "firstChildHash TEXT,"
                             "customImage TEXT,"
                             // new 9.8 fields
-                            "manga BOOLEAN DEFAULT 0,"
+                            "manga BOOLEAN DEFAULT 0," // deprecated 9.13
+                            // new 9.13 fields
+                            "type INTEGER DEFAULT 0," // 0 = comic, 1 = manga, 2 = manga left to right, 3 = webcomic, 4 = 4koma
+                            "added INTEGER,"
+                            "updated INTEGER," // updated when the folder gets new content
                             "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE)");
         success = success && queryFolder.exec();
 
@@ -290,7 +315,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                    "name TEXT NOT NULL, "
                                                    "finished BOOLEAN DEFAULT 0, "
                                                    "completed BOOLEAN DEFAULT 1, "
-                                                   "manga BOOLEAN DEFAULT 0, "
+                                                   "manga BOOLEAN DEFAULT 0, " // TODO never used, replace with `type`
                                                    "FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)");
 
         QSqlQuery queryIndexReadingList(database);
@@ -460,7 +485,25 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            //--
 
                            // new 9.8 fields
-                           "manga = :manga"
+                           // "manga = :manga," //removed in 9.13
+
+                           // new 9.13 fields
+                           "added = :added,"
+                           "type = :type," // 0 = comic, 1 = manga, 2 = manga left to right, 3 = webcomic,
+                           "editor = :editor,"
+                           "imprint = :imprint,"
+                           "teams = :teams,"
+                           "locations = :locations,"
+                           "series = :series,"
+                           "alternateSeries = :alternateSeries,"
+                           "alternateNumber = :alternateNumber,"
+                           "alternateCount = :alternateCount,"
+                           "languageISO = :languageISO,"
+                           "seriesGroup = :seriesGroup,"
+                           "mainCharacterOrTeam = :mainCharacterOrTeam,"
+                           "review = :review,"
+                           "tags = :tags"
+
                            //--
                            " WHERE hash = :hash ");
 
@@ -496,6 +539,20 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            "comicVineID,"
                            "lastTimeOpened,"
                            "coverSizeRatio,"
+                           "added,"
+                           "type,"
+                           "editor,"
+                           "imprint,"
+                           "teams,"
+                           "locations,"
+                           "series,"
+                           "alternateSeries,"
+                           "alternateNumber,"
+                           "alternateCount,"
+                           "languageISO,"
+                           "seriesGroup,"
+                           "mainCharacterOrTeam,"
+                           "review,"
                            "hash)"
 
                            "VALUES (:title,"
@@ -524,7 +581,6 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            ":format,"
                            ":color,"
                            ":ageRating,"
-                           ":manga,"
 
                            ":synopsis,"
                            ":characters,"
@@ -538,6 +594,22 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
                            ":coverSizeRatio,"
                            ":originalCoverSize,"
+
+                           ":added,"
+                           ":type,"
+                           ":editor,"
+                           ":imprint,"
+                           ":teams,"
+                           ":locations,"
+                           ":series,"
+                           ":alternateSeries,"
+                           ":alternateNumber,"
+                           ":alternateCount,"
+                           ":languageISO,"
+                           ":seriesGroup,"
+                           ":mainCharacterOrTeam,"
+                           ":review,"
+                           ":tags,"
 
                            ":hash )");
 
@@ -596,6 +668,8 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
     return b;
 }
+
+// TODO: update fields
 // TODO fix these bindings
 void DataBaseManagement::bindValuesFromRecord(const QSqlRecord &record, QSqlQuery &query)
 {
@@ -627,7 +701,6 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord &record, QSqlQuer
     bindValue("format", record, query);
     bindValue("color", record, query);
     bindValue("ageRating", record, query);
-    bindValue("manga", record, query);
 
     bindValue("synopsis", record, query);
     bindValue("characters", record, query);
@@ -653,6 +726,22 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord &record, QSqlQuer
 
     bindValue("coverSizeRatio", record, query);
     bindValue("originalCoverSize", record, query);
+
+    bindValue("added", record, query);
+    bindValue("type", record, query);
+    bindValue("editor", record, query);
+    bindValue("imprint", record, query);
+    bindValue("teams", record, query);
+    bindValue("locations", record, query);
+    bindValue("series", record, query);
+    bindValue("alternateSeries", record, query);
+    bindValue("alternateNumber", record, query);
+    bindValue("alternateCount", record, query);
+    bindValue("languageISO", record, query);
+    bindValue("seriesGroup", record, query);
+    bindValue("mainCharacterOrTeam", record, query);
+    bindValue("review", record, query);
+    bindValue("tags", record, query);
 
     bindValue("hash", record, query);
 }
@@ -757,6 +846,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
     bool pre8 = false;
     bool pre9_5 = false;
     bool pre9_8 = false;
+    bool pre9_13 = false;
 
     QString fullPath = path + "/library.ydb";
 
@@ -770,6 +860,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
         pre9_5 = true;
     if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.8.0") < 0)
         pre9_8 = true;
+    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.13.0") < 0)
+        pre9_13 = true;
 
     QString connectionName = "";
     bool returnValue = false;
@@ -893,6 +985,53 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
                     columnDefs << "manga BOOLEAN DEFAULT 0";
                     bool successAddingColumns = addColumns("folder", columnDefs, db);
                     returnValue = returnValue && successAddingColumns;
+                }
+            }
+
+            if (pre9_13) {
+                { // comic_info
+                    QStringList columnDefs;
+                    columnDefs << "added INTEGER";
+                    columnDefs << "type INTEGER DEFAULT 0"; // 0 = comic, 1 = manga, 2 = manga left to right, 3 = webcomic,
+                    columnDefs << "editor TEXT";
+                    columnDefs << "imprint TEXT";
+                    columnDefs << "teams TEXT";
+                    columnDefs << "locations TEXT";
+                    columnDefs << "series TEXT";
+                    columnDefs << "alternateSeries TEXT";
+                    columnDefs << "alternateNumber TEXT";
+                    columnDefs << "alternateCount INTEGER";
+                    columnDefs << "languageISO TEXT";
+                    columnDefs << "seriesGroup TEXT";
+                    columnDefs << "mainCharacterOrTeam TEXT";
+                    columnDefs << "review TEXT";
+                    columnDefs << "tags TEXT";
+                    bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
+
+                    QSqlQuery updateTypeQueryToManga(db);
+                    updateTypeQueryToManga.prepare("UPDATE comic_info SET type = manga");
+                    bool successMigratingManga = updateTypeQueryToManga.exec();
+                    returnValue = returnValue && successMigratingManga;
+
+                    QSqlQuery updateNumberQueryToBis(db);
+                    updateNumberQueryToBis.prepare("UPDATE comic_info SET number = number + 0.5 WHERE isBis = 1");
+                    bool successMigratingBis = updateNumberQueryToBis.exec();
+                    returnValue = returnValue && successMigratingBis;
+                }
+                { // folder
+                    QStringList columnDefs;
+                    columnDefs << "added INTEGER";
+                    columnDefs << "updated INTEGER";
+                    columnDefs << "type INTEGER DEFAULT 0";
+
+                    bool successAddingColumns = addColumns("folder", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
+
+                    QSqlQuery updateTypeQueryToManga(db);
+                    updateTypeQueryToManga.prepare("UPDATE folder SET type = manga");
+                    bool successMigratingManga = updateTypeQueryToManga.exec();
+                    returnValue = returnValue && successMigratingManga;
                 }
             }
         }

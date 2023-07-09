@@ -21,7 +21,7 @@ using namespace QsLogging;
 #define new DEBUG_NEW
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
 #include <QEvent>
 #include <QFileOpenEvent>
 class YACReaderApplication : public QApplication
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     YACReaderApplication app(argc, argv);
 #else
     QApplication app(argc, argv);
@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
     logger.addDestination(std::move(fileDestination));
 
     QTranslator translator;
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     translator.load(QLocale(), "yacreader", "_", QString(DATADIR) + "/yacreader/languages");
 #else
     translator.load(QLocale(), "yacreader", "_", "languages");
@@ -202,7 +202,7 @@ int main(int argc, char *argv[])
         mwv->openComicFromPath(arglist.at(0));
     }
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     app.setWindow(mwv);
 #endif
     mwv->show();

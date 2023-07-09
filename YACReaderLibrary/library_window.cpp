@@ -1,6 +1,6 @@
 #include "library_window.h"
-#include "custom_widgets.h"
-#include "folder_item.h"
+
+#include "yacreader_global.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -21,8 +21,8 @@
 #include <thread>
 #include <future>
 
+#include "folder_item.h"
 #include "data_base_management.h"
-#include "yacreader_global.h"
 #include "no_libraries_widget.h"
 #include "import_widget.h"
 
@@ -31,7 +31,6 @@
 #include "library_creator.h"
 #include "package_manager.h"
 #include "xml_info_library_scanner.h"
-#include "comic_flow_widget.h"
 #include "create_library_dialog.h"
 #include "rename_library_dialog.h"
 #include "properties_dialog.h"
@@ -45,9 +44,7 @@
 #include "server_config_dialog.h"
 #include "comic_model.h"
 #include "yacreader_tool_bar_stretch.h"
-#include "yacreader_table_view.h"
 
-#include "yacreader_dark_menu.h"
 #include "yacreader_titled_toolbar.h"
 #include "yacreader_main_toolbar.h"
 
@@ -87,6 +84,8 @@
 
 #include "library_comic_opener.h"
 
+#include "recent_visibility_coordinator.h"
+
 #include "QsLog.h"
 
 #include "yacreader_http_server.h"
@@ -95,6 +94,8 @@ extern YACReaderHttpServer *httpServer;
 #ifdef Q_OS_WIN
 #include <shellapi.h>
 #endif
+
+#include <KDSignalThrottler.h>
 
 namespace {
 template<class Remover>
@@ -159,6 +160,34 @@ bool LibraryWindow::eventFilter(QObject *object, QEvent *event)
         }
     }
 
+    if (this->foldersView->hasFocus() && event->type() == QEvent::Shortcut) {
+        auto shortcutEvent = static_cast<QShortcutEvent *>(event);
+        auto keySequence = shortcutEvent->key();
+
+        if (keySequence.count() > 1) {
+            return QMainWindow::eventFilter(object, event);
+        }
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        auto keyCombination = keySequence[0];
+
+        if (keyCombination.keyboardModifiers() != Qt::NoModifier) {
+            return QMainWindow::eventFilter(object, event);
+        }
+#endif
+
+        auto string = keySequence.toString();
+
+        if (string.size() > 1) {
+            return QMainWindow::eventFilter(object, event);
+        }
+
+        event->ignore();
+
+        foldersView->keyboardSearch(keySequence.toString());
+        return true;
+    }
+
     return QMainWindow::eventFilter(object, event);
 }
 
@@ -204,6 +233,8 @@ void LibraryWindow::setupUI()
     createToolBars();
     createMenus();
 
+    setupCoordinators();
+
     navigationController = new YACReaderNavigationController(this, contentViewsManager);
 
     createConnections();
@@ -222,29 +253,11 @@ void LibraryWindow::setupUI()
     trayIconController = new TrayIconController(settings, this);
 }
 
-/*void LibraryWindow::changeEvent(QEvent *event)
-{
-    QMainWindow::changeEvent(event);
-
-    if (event->type() == QEvent::WindowStateChange && isMinimized() &&
-        trayIcon.isVisible()) {
-#ifdef Q_OS_MACOS
-        OSXHideDockIcon();
-#endif
-        hide();
-    } else if (event->type() == QEvent::WindowStateChange) {
-#ifdef Q_OS_MACOS
-        OSXShowDockIcon();
-#endif
-        show();
-    }
-}*/
-
 void LibraryWindow::doLayout()
 {
     // LAYOUT ELEMENTS------------------------------------------------------------
     auto sHorizontal = new QSplitter(Qt::Horizontal); // spliter principal
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
 #else
     sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
@@ -255,7 +268,7 @@ void LibraryWindow::doLayout()
     editInfoToolBar = new QToolBar();
     editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     libraryToolBar = new YACReaderMacOSXToolbar(this);
 #else
     libraryToolBar = new YACReaderMainToolBar(this);
@@ -263,7 +276,7 @@ void LibraryWindow::doLayout()
 
     // FOLDERS FILTER-------------------------------------------------------------
     //---------------------------------------------------------------------------
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     // in MacOSX the searchEdit is created using the toolbar wrapper
     searchEdit = new YACReaderSearchLineEdit();
 #endif
@@ -304,7 +317,7 @@ void LibraryWindow::doLayout()
     contentViewsManager = new YACReaderContentViewsManager(settings, this);
 
     sHorizontal->addWidget(sideBar);
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     QVBoxLayout *rightLayout = new QVBoxLayout;
     rightLayout->addWidget(libraryToolBar);
     rightLayout->addWidget(contentViewsManager->containerWidget());
@@ -339,7 +352,7 @@ void LibraryWindow::doLayout()
     connect(noLibrariesWidget, &NoLibrariesWidget::addExistingLibrary, this, &LibraryWindow::showAddLibrary);
 
     // collapsible disabled in macosx (only temporaly)
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     sHorizontal->setCollapsible(0, false);
 #endif
 }
@@ -461,8 +474,9 @@ void LibraryWindow::setUpShortcutsManagement()
     editShortcutsDialog->addActionsGroup("Visualization", QIcon(":/images/shortcuts_group_visualization.svg"),
                                          tmpList = QList<QAction *>()
                                                  << showHideMarksAction
-#ifndef Q_OS_MAC
-                                                 << toggleFullScreenAction
+                                                 << toogleShowRecentIndicatorAction
+#ifndef Q_OS_MACOS
+                                                 << toggleFullScreenAction // Think about what to do in macos if the default theme is used
 #endif
                                                  << toggleComicsViewAction);
 
@@ -483,6 +497,11 @@ void LibraryWindow::doModels()
     // lists
     listsModel = new ReadingListModel(this);
     listsModelProxy = new ReadingListModelProxy(this);
+}
+
+void LibraryWindow::setupCoordinators()
+{
+    recentVisibilityCoordinator = new RecentVisibilityCoordinator(settings, foldersModel, contentViewsManager->folderContentView, comicsModel);
 }
 
 void LibraryWindow::createActions()
@@ -587,25 +606,34 @@ void LibraryWindow::createActions()
     setAsNonReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NON_READ_ACTION_YL));
     setAsNonReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setUnread.svg"));
 
-    setMangaAction = new QAction(tr("Set as manga"), this);
+    setMangaAction = new QAction(tr("manga"), this);
     setMangaAction->setToolTip(tr("Set issue as manga"));
     setMangaAction->setData(SET_AS_MANGA_ACTION_YL);
     setMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_MANGA_ACTION_YL));
     setMangaAction->setIcon(QIcon(":/images/comics_view_toolbar/setManga.svg"));
 
-    setNormalAction = new QAction(tr("Set as normal"), this);
+    setNormalAction = new QAction(tr("comic"), this);
     setNormalAction->setToolTip(tr("Set issue as normal"));
     setNormalAction->setData(SET_AS_NORMAL_ACTION_YL);
     setNormalAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NORMAL_ACTION_YL));
     setNormalAction->setIcon(QIcon(":/images/comics_view_toolbar/setNormal.svg"));
 
-    /*setAllAsReadAction = new QAction(tr("Set all as read"),this);
-        setAllAsReadAction->setToolTip(tr("Set all comics as read"));
-        setAllAsReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setAllRead.png"));
+    setWesternMangaAction = new QAction(tr("western manga"), this);
+    setWesternMangaAction->setToolTip(tr("Set issue as western manga"));
+    setWesternMangaAction->setData(SET_AS_WESTERN_MANGA_ACTION_YL);
+    setWesternMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_WESTERN_MANGA_ACTION_YL));
+    // setWesternMangaAction->setIcon(QIcon(":/images/comics_view_toolbar/setWesternManga.svg"));
 
-        setAllAsNonReadAction = new QAction(tr("Set all as unread"),this);
-        setAllAsNonReadAction->setToolTip(tr("Set all comics as unread"));
-        setAllAsNonReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setAllUnread.png"));*/
+    setWebComicAction = new QAction(tr("web comic"), this);
+    setWebComicAction->setToolTip(tr("Set issue as web comic"));
+    setWebComicAction->setData(SET_AS_WEB_COMIC_ACTION_YL);
+    setWebComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_WEB_COMIC_ACTION_YL));
+    // setWebComicAction->setIcon(QIcon(":/images/comics_view_toolbar/setWebComic.svg"));
+
+    setYonkomaAction = new QAction(tr("yonkoma"), this);
+    setYonkomaAction->setToolTip(tr("Set issue as yonkoma"));
+    setYonkomaAction->setData(SET_AS_YONKOMA_ACTION_YL);
+    setYonkomaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_YONKOMA_ACTION_YL));
 
     showHideMarksAction = new QAction(tr("Show/Hide marks"), this);
     showHideMarksAction->setToolTip(tr("Show or hide read marks"));
@@ -614,7 +642,16 @@ void LibraryWindow::createActions()
     showHideMarksAction->setCheckable(true);
     showHideMarksAction->setIcon(QIcon(":/images/comics_view_toolbar/showMarks.svg"));
     showHideMarksAction->setChecked(true);
-#ifndef Q_OS_MAC
+
+    toogleShowRecentIndicatorAction = new QAction(tr("Show/Hide recent indicator"), this);
+    toogleShowRecentIndicatorAction->setToolTip(tr("Show or hide recent indicator"));
+    toogleShowRecentIndicatorAction->setData(SHOW_HIDE_RECENT_INDICATOR_ACTION_YL);
+    toogleShowRecentIndicatorAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_HIDE_RECENT_INDICATOR_ACTION_YL));
+    toogleShowRecentIndicatorAction->setCheckable(true);
+    toogleShowRecentIndicatorAction->setIcon(QIcon(":/images/comics_view_toolbar/showRecentIndicator.svg"));
+    toogleShowRecentIndicatorAction->setChecked(settings->value(DISPLAY_RECENTLY_INDICATOR, true).toBool());
+
+#ifndef Q_OS_MACOS
     toggleFullScreenAction = new QAction(tr("Fullscreen mode on/off"), this);
     toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off"));
     toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_YL);
@@ -722,14 +759,29 @@ void LibraryWindow::createActions()
     setFolderAsUnreadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_UNREAD_ACTION_YL));
 
     setFolderAsMangaAction = new QAction(this);
-    setFolderAsMangaAction->setText(tr("Set as manga"));
+    setFolderAsMangaAction->setText(tr("manga"));
     setFolderAsMangaAction->setData(SET_FOLDER_AS_MANGA_ACTION_YL);
     setFolderAsMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_MANGA_ACTION_YL));
 
     setFolderAsNormalAction = new QAction(this);
-    setFolderAsNormalAction->setText(tr("Set as comic"));
+    setFolderAsNormalAction->setText(tr("comic"));
     setFolderAsNormalAction->setData(SET_FOLDER_AS_NORMAL_ACTION_YL);
     setFolderAsNormalAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_NORMAL_ACTION_YL));
+
+    setFolderAsWesternMangaAction = new QAction(this);
+    setFolderAsWesternMangaAction->setText(tr("western manga (left to right)"));
+    setFolderAsWesternMangaAction->setData(SET_FOLDER_AS_WESTERN_MANGA_ACTION_YL);
+    setFolderAsWesternMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_WESTERN_MANGA_ACTION_YL));
+
+    setFolderAsWebComicAction = new QAction(this);
+    setFolderAsWebComicAction->setText(tr("web comic"));
+    setFolderAsWebComicAction->setData(SET_FOLDER_AS_WEB_COMIC_ACTION_YL);
+    setFolderAsWebComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_WEB_COMIC_ACTION_YL));
+
+    setFolderAsYonkomaAction = new QAction(this);
+    setFolderAsYonkomaAction->setText(tr("yonkoma"));
+    setFolderAsYonkomaAction->setData(SET_FOLDER_AS_YONKOMA_ACTION_YL);
+    setFolderAsYonkomaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_YONKOMA_ACTION_YL));
 
     //----
 
@@ -867,9 +919,12 @@ void LibraryWindow::createActions()
     this->addAction(setFolderAsUnreadAction);
     this->addAction(setFolderAsMangaAction);
     this->addAction(setFolderAsNormalAction);
+    this->addAction(setFolderAsWesternMangaAction);
+    this->addAction(setFolderAsWebComicAction);
+    this->addAction(setFolderAsYonkomaAction);
     this->addAction(deleteMetadataAction);
     this->addAction(rescanXMLFromCurrentFolderAction);
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     this->addAction(toggleFullScreenAction);
 #endif
 
@@ -879,7 +934,7 @@ void LibraryWindow::createActions()
 void LibraryWindow::disableComicsActions(bool disabled)
 {
     // if there aren't comics, no fullscreen option will be available
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     toggleFullScreenAction->setDisabled(disabled);
 #endif
     // edit toolbar
@@ -891,6 +946,9 @@ void LibraryWindow::disableComicsActions(bool disabled)
     setAsNonReadAction->setDisabled(disabled);
     setNormalAction->setDisabled(disabled);
     setMangaAction->setDisabled(disabled);
+    setWebComicAction->setDisabled(disabled);
+    setWesternMangaAction->setDisabled(disabled);
+    setYonkomaAction->setDisabled(disabled);
     // setAllAsReadAction->setDisabled(disabled);
     // setAllAsNonReadAction->setDisabled(disabled);
     showHideMarksAction->setDisabled(disabled);
@@ -947,7 +1005,7 @@ void LibraryWindow::disableAllActions()
 void LibraryWindow::createToolBars()
 {
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     // libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
 
     libraryToolBar->addAction(backAction);
@@ -983,7 +1041,9 @@ void LibraryWindow::createToolBars()
     libraryToolBar->serverButton->setDefaultAction(serverConfigAction);
     libraryToolBar->helpButton->setDefaultAction(helpAboutAction);
     libraryToolBar->toggleComicsViewButton->setDefaultAction(toggleComicsViewAction);
+#ifndef Q_OS_MACOS
     libraryToolBar->fullscreenButton->setDefaultAction(toggleFullScreenAction);
+#endif
     libraryToolBar->setSearchWidget(searchEdit);
 #endif
 
@@ -1001,20 +1061,30 @@ void LibraryWindow::createToolBars()
     editInfoToolBar->addSeparator();
 
     editInfoToolBar->addAction(setAsReadAction);
-    // editInfoToolBar->addAction(setAllAsReadAction);
     editInfoToolBar->addAction(setAsNonReadAction);
-    // editInfoToolBar->addAction(setAllAsNonReadAction);
 
     editInfoToolBar->addAction(showHideMarksAction);
 
     editInfoToolBar->addSeparator();
 
-    editInfoToolBar->addAction(setNormalAction);
-    editInfoToolBar->addAction(setMangaAction);
+    auto setTypeToolButton = new QToolButton();
+    setTypeToolButton->addAction(setNormalAction);
+    setTypeToolButton->addAction(setMangaAction);
+    setTypeToolButton->addAction(setWesternMangaAction);
+    setTypeToolButton->addAction(setWebComicAction);
+    setTypeToolButton->addAction(setYonkomaAction);
+    setTypeToolButton->setPopupMode(QToolButton::InstantPopup);
+    setTypeToolButton->setDefaultAction(setNormalAction);
+    editInfoToolBar->addWidget(setTypeToolButton);
 
     editInfoToolBar->addSeparator();
 
     editInfoToolBar->addAction(deleteComicsAction);
+
+    auto toolBarStretch = new YACReaderToolBarStretch(this);
+    editInfoToolBar->addWidget(toolBarStretch);
+
+    editInfoToolBar->addAction(toogleShowRecentIndicatorAction);
 
     contentViewsManager->comicsView->setToolBar(editInfoToolBar);
 }
@@ -1037,8 +1107,11 @@ void LibraryWindow::createMenus()
     foldersView->addAction(setFolderAsUnreadAction);
     YACReader::addSperator(foldersView);
 
-    foldersView->addAction(setFolderAsMangaAction);
     foldersView->addAction(setFolderAsNormalAction);
+    foldersView->addAction(setFolderAsMangaAction);
+    foldersView->addAction(setFolderAsWesternMangaAction);
+    foldersView->addAction(setFolderAsWebComicAction);
+    foldersView->addAction(setFolderAsYonkomaAction);
 
     selectedLibrary->addAction(updateLibraryAction);
     selectedLibrary->addAction(renameLibraryAction);
@@ -1056,7 +1129,7 @@ void LibraryWindow::createMenus()
     selectedLibrary->addAction(importLibraryAction);
 
 // MacOSX app menus
-#ifdef Q_OS_MACX
+#ifdef Q_OS_MACOS
     QMenuBar *menu = this->menuBar();
     // about / preferences
     // TODO
@@ -1093,8 +1166,11 @@ void LibraryWindow::createMenus()
     folderMenu->addAction(setFolderAsReadAction);
     folderMenu->addAction(setFolderAsUnreadAction);
     folderMenu->addSeparator();
-    foldersView->addAction(setFolderAsMangaAction);
     foldersView->addAction(setFolderAsNormalAction);
+    foldersView->addAction(setFolderAsMangaAction);
+    foldersView->addAction(setFolderAsWesternMangaAction);
+    foldersView->addAction(setFolderAsWebComicAction);
+    foldersView->addAction(setFolderAsYonkomaAction);
 
     // comic
     QMenu *comicMenu = new QMenu(tr("Comic"));
@@ -1133,7 +1209,7 @@ void LibraryWindow::createConnections()
     connect(libraryCreator, &LibraryCreator::comicAdded, importWidget, &ImportWidget::newComic);
     // libraryCreator errors
     connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryWindow::manageCreatingError);
-    connect(libraryCreator, SIGNAL(failedUpdatingDB(QString)), this, SLOT(manageUpdatingError(QString))); // TODO: implement failedUpdatingDB
+    // connect(libraryCreator, SIGNAL(failedUpdatingDB(QString)), this, SLOT(manageUpdatingError(QString))); // TODO: implement failedUpdatingDB
 
     connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::showRootWidget);
     connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryWindow::reloadCurrentFolderComicsContent);
@@ -1185,10 +1261,22 @@ void LibraryWindow::createConnections()
     connect(openLibraryAction, &QAction::triggered, this, &LibraryWindow::showAddLibrary);
     connect(setAsReadAction, &QAction::triggered, this, &LibraryWindow::setCurrentComicReaded);
     connect(setAsNonReadAction, &QAction::triggered, this, &LibraryWindow::setCurrentComicUnreaded);
-    connect(setNormalAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsNormal);
-    connect(setMangaAction, &QAction::triggered, this, &LibraryWindow::setSelectedComicsAsManga);
-    // connect(setAllAsReadAction,SIGNAL(triggered()),this,SLOT(setComicsReaded()));
-    // connect(setAllAsNonReadAction,SIGNAL(triggered()),this,SLOT(setComicsUnreaded()));
+
+    connect(setNormalAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::Comic);
+    });
+    connect(setMangaAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::Manga);
+    });
+    connect(setWesternMangaAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::WesternManga);
+    });
+    connect(setWebComicAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::WebComic);
+    });
+    connect(setYonkomaAction, &QAction::triggered, this, [=]() {
+        setSelectedComicsType(FileType::Yonkoma);
+    });
 
     // comicsInfoManagement
     connect(exportComicsInfoAction, &QAction::triggered, this, &LibraryWindow::showExportComicsInfo);
@@ -1212,7 +1300,7 @@ void LibraryWindow::createConnections()
     connect(setRootIndexAction, &QAction::triggered, this, &LibraryWindow::setRootIndex);
     connect(expandAllNodesAction, &QAction::triggered, foldersView, &QTreeView::expandAll);
     connect(colapseAllNodesAction, &QAction::triggered, foldersView, &QTreeView::collapseAll);
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     connect(toggleFullScreenAction, &QAction::triggered, this, &LibraryWindow::toggleFullScreen);
 #endif
     connect(toggleComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::toggleComicsView);
@@ -1223,11 +1311,20 @@ void LibraryWindow::createConnections()
     connect(optionsDialog, &YACReaderOptionsDialog::optionsChanged, this, &LibraryWindow::reloadOptions);
     connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
 
+    auto searchDebouncer = new KDToolBox::KDSignalDebouncer(this);
+    searchDebouncer->setTimeout(400);
+
 // Search filter
-#ifdef Q_OS_MAC
-    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
+#ifdef Y_MAC_UI
+    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
+    connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
+        setSearchFilter(searchEdit->text());
+    });
 #else
-    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, this, &LibraryWindow::setSearchFilter);
+    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
+    connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
+        setSearchFilter(searchEdit->text());
+    });
 #endif
     connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);
     qRegisterMetaType<FolderItem *>("FolderItem *");
@@ -1241,8 +1338,22 @@ void LibraryWindow::createConnections()
     connect(setFolderAsReadAction, &QAction::triggered, this, &LibraryWindow::setFolderAsRead);
     connect(setFolderAsUnreadAction, &QAction::triggered, this, &LibraryWindow::setFolderAsUnread);
     connect(openContainingFolderAction, &QAction::triggered, this, &LibraryWindow::openContainingFolder);
-    connect(setFolderAsMangaAction, &QAction::triggered, this, &LibraryWindow::setFolderAsManga);
-    connect(setFolderAsNormalAction, &QAction::triggered, this, &LibraryWindow::setFolderAsNormal);
+
+    connect(setFolderAsMangaAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::Manga);
+    });
+    connect(setFolderAsNormalAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::Comic);
+    });
+    connect(setFolderAsWesternMangaAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::WesternManga);
+    });
+    connect(setFolderAsWebComicAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::WebComic);
+    });
+    connect(setFolderAsYonkomaAction, &QAction::triggered, this, [=]() {
+        setFolderType(FileType::Yonkoma);
+    });
 
     connect(resetComicRatingAction, &QAction::triggered, this, &LibraryWindow::resetComicRating);
 
@@ -1288,6 +1399,8 @@ void LibraryWindow::createConnections()
     // upgrade library
     connect(this, &LibraryWindow::libraryUpgraded, this, &LibraryWindow::loadLibrary, Qt::QueuedConnection);
     connect(this, &LibraryWindow::errorUpgradingLibrary, this, &LibraryWindow::showErrorUpgradingLibrary, Qt::QueuedConnection);
+
+    connect(toogleShowRecentIndicatorAction, &QAction::toggled, recentVisibilityCoordinator, &RecentVisibilityCoordinator::toggleVisibility);
 }
 
 void LibraryWindow::showErrorUpgradingLibrary(const QString &path)
@@ -1362,7 +1475,7 @@ void LibraryWindow::loadLibrary(const QString &name)
                     rescanLibraryForXMLInfoAction->setDisabled(true);
 
                     disableComicsActions(true);
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
                     toggleFullScreenAction->setEnabled(true);
 #endif
 
@@ -1397,7 +1510,7 @@ void LibraryWindow::loadLibrary(const QString &name)
 
             // si la librería no existe en disco, se ofrece al usuario la posibiliad de eliminarla
             if (!d.exists(path)) {
-                QString currentLibrary = selectedLibrary->currentText();
+                QString currentLibrary = selectedLibrary->currentText() + " -> " + libraries.getPath(name);
                 if (QMessageBox::question(this, tr("Library not available"), tr("Library '%1' is no longer available. Do you want to remove it?").arg(currentLibrary), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
                     deleteCurrentLibrary();
                 }
@@ -1582,12 +1695,18 @@ void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
 {
     if (getCurrentFolderIndex() == mi) {
         auto item = static_cast<FolderItem *>(mi.internalPointer());
-        auto id = item->id;
-        foldersModel->reload(mi);
-        auto newMi = foldersModel->index(id);
 
-        foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newMi));
-        navigationController->loadFolderInfo(newMi);
+        if (item == nullptr) {
+            foldersModel->reload();
+            navigationController->loadFolderInfo(QModelIndex());
+        } else {
+            auto id = item->id;
+            foldersModel->reload(mi);
+            auto newMi = foldersModel->index(id);
+
+            foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newMi));
+            navigationController->loadFolderInfo(newMi);
+        }
     }
 
     enableNeededActions();
@@ -1779,8 +1898,13 @@ void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
     menu.addAction(setAsReadAction);
     menu.addAction(setAsNonReadAction);
     menu.addSeparator();
-    menu.addAction(setNormalAction);
-    menu.addAction(setMangaAction);
+    auto typeMenu = new QMenu(tr("Set type"));
+    menu.addMenu(typeMenu);
+    typeMenu->addAction(setNormalAction);
+    typeMenu->addAction(setMangaAction);
+    typeMenu->addAction(setWesternMangaAction);
+    typeMenu->addAction(setWebComicAction);
+    typeMenu->addAction(setYonkomaAction);
     menu.addSeparator();
     menu.addAction(deleteMetadataAction);
     menu.addSeparator();
@@ -1790,7 +1914,7 @@ void LibraryWindow::showComicsViewContextMenu(const QPoint &point)
     QMenu subMenu;
     setupAddToSubmenu(subMenu);
 
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
     menu.addSeparator();
     menu.addAction(toggleFullScreenAction);
 #endif
@@ -1817,8 +1941,13 @@ void LibraryWindow::showComicsItemContextMenu(const QPoint &point)
     menu.addAction(setAsReadAction);
     menu.addAction(setAsNonReadAction);
     menu.addSeparator();
-    menu.addAction(setNormalAction);
-    menu.addAction(setMangaAction);
+    auto typeMenu = new QMenu(tr("Set type"));
+    menu.addMenu(typeMenu);
+    typeMenu->addAction(setNormalAction);
+    typeMenu->addAction(setMangaAction);
+    typeMenu->addAction(setWesternMangaAction);
+    typeMenu->addAction(setWebComicAction);
+    typeMenu->addAction(setYonkomaAction);
     menu.addSeparator();
     menu.addAction(deleteMetadataAction);
     menu.addSeparator();
@@ -1857,30 +1986,43 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     setFolderAsUnreadAction->setText(tr("Set as unread"));
 
     auto setFolderAsMangaAction = new QAction();
-    setFolderAsMangaAction->setText(tr("Set as manga"));
+    setFolderAsMangaAction->setText(tr("manga"));
 
     auto setFolderAsNormalAction = new QAction();
-    setFolderAsNormalAction->setText(tr("Set as comic"));
+    setFolderAsNormalAction->setText(tr("comic"));
+
+    auto setFolderAsWesternMangaAction = new QAction();
+    setFolderAsMangaAction->setText(tr("manga (or left to right)"));
+
+    auto setFolderAsWebComicAction = new QAction();
+    setFolderAsNormalAction->setText(tr("web comic"));
+
+    auto setFolderAs4KomaAction = new QAction();
+    setFolderAsMangaAction->setText(tr("4koma (or top to botom"));
 
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
     menu.addSeparator();
     menu.addAction(rescanLibraryForXMLInfoAction);
     menu.addSeparator();
-    if (folder.isCompleted())
+    if (folder.completed)
         menu.addAction(setFolderAsNotCompletedAction);
     else
         menu.addAction(setFolderAsCompletedAction);
     menu.addSeparator();
-    if (folder.isFinished())
+    if (folder.finished)
         menu.addAction(setFolderAsUnreadAction);
     else
         menu.addAction(setFolderAsReadAction);
     menu.addSeparator();
-    if (folder.isManga())
-        menu.addAction(setFolderAsNormalAction);
-    else
-        menu.addAction(setFolderAsMangaAction);
+
+    auto typeMenu = new QMenu(tr("Set type"));
+    menu.addMenu(typeMenu);
+    typeMenu->addAction(setFolderAsNormalAction);
+    typeMenu->addAction(setFolderAsMangaAction);
+    typeMenu->addAction(setFolderAsWesternMangaAction);
+    typeMenu->addAction(setFolderAsWebComicAction);
+    typeMenu->addAction(setFolderAs4KomaAction);
 
     auto subfolderModel = contentViewsManager->folderContentView->currentFolderModel();
 
@@ -1910,12 +2052,24 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
         subfolderModel->updateFolderFinishedStatus(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), false);
     });
     connect(setFolderAsMangaAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderManga(QModelIndexList() << foldersModel->getIndexFromFolder(folder), true);
-        subfolderModel->updateFolderManga(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), true);
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Manga);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Manga);
     });
     connect(setFolderAsNormalAction, &QAction::triggered, this, [=]() {
-        foldersModel->updateFolderManga(QModelIndexList() << foldersModel->getIndexFromFolder(folder), false);
-        subfolderModel->updateFolderManga(QModelIndexList() << subfolderModel->getIndexFromFolder(folder), false);
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Comic);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Comic);
+    });
+    connect(setFolderAsWesternMangaAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WesternManga);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WesternManga);
+    });
+    connect(setFolderAsWebComicAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WebComic);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::WebComic);
+    });
+    connect(setFolderAs4KomaAction, &QAction::triggered, this, [=]() {
+        foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
+        subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
     });
 
     menu.exec(contentViewsManager->folderContentView->mapToGlobal(point));
@@ -1980,7 +2134,7 @@ void LibraryWindow::onAddComicsToLabel()
 
 void LibraryWindow::setToolbarTitle(const QModelIndex &modelIndex)
 {
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     if (!modelIndex.isValid())
         libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
     else
@@ -2029,7 +2183,7 @@ void LibraryWindow::checkEmptyFolder()
         disableComicsActions(false);
     } else {
         disableComicsActions(true);
-#ifndef Q_OS_MAC
+#ifndef Q_OS_MACOS
         if (comicsModel->rowCount() > 0)
             toggleFullScreenAction->setEnabled(true);
 #endif
@@ -2091,14 +2245,9 @@ void LibraryWindow::setCurrentComicUnreaded()
     this->setCurrentComicsStatusReaded(YACReader::Unread);
 }
 
-void LibraryWindow::setSelectedComicsAsNormal()
+void LibraryWindow::setSelectedComicsType(FileType type)
 {
-    comicsModel->setComicsManga(getSelectedComics(), false);
-}
-
-void LibraryWindow::setSelectedComicsAsManga()
-{
-    comicsModel->setComicsManga(getSelectedComics(), true);
+    comicsModel->setComicsType(getSelectedComics(), type);
 }
 
 void LibraryWindow::createLibrary()
@@ -2109,7 +2258,7 @@ void LibraryWindow::createLibrary()
 
 void LibraryWindow::create(QString source, QString dest, QString name)
 {
-    QLOG_INFO() << QString("About to create a library from '%1' to '%2' with name '%3'").arg(source).arg(dest).arg(name);
+    QLOG_INFO() << QString("About to create a library from '%1' to '%2' with name '%3'").arg(source, dest, name);
     libraryCreator->createLibrary(source, dest);
     libraryCreator->start();
     _lastAdded = name;
@@ -2254,7 +2403,7 @@ void LibraryWindow::rename(QString newName) // TODO replace
             selectedLibrary->renameCurrentLibrary(newName);
             libraries.save();
             renameLibraryDialog->close();
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
             if (!foldersModelProxy->mapToSource(foldersView->currentIndex()).isValid())
                 libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
 #endif
@@ -2399,7 +2548,7 @@ void LibraryWindow::toNormal()
     else
         showNormal();
 
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     auto timer = new QTimer();
     timer->setSingleShot(true);
     timer->start();
@@ -2564,12 +2713,12 @@ void LibraryWindow::openContainingFolderComic()
 {
     QModelIndex modelIndex = contentViewsManager->comicsView->currentIndex();
     QFileInfo file(QDir::cleanPath(currentPath() + comicsModel->getComicPath(modelIndex)));
-#if defined Q_OS_UNIX && !defined Q_OS_MAC
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
     QString path = file.absolutePath();
     QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
 #endif
 
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     QString filePath = file.absoluteFilePath();
     QStringList args;
     args << "-e";
@@ -2625,14 +2774,9 @@ void LibraryWindow::setFolderAsUnread()
     foldersModel->updateFolderFinishedStatus(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
 }
 
-void LibraryWindow::setFolderAsManga()
+void LibraryWindow::setFolderType(FileType type)
 {
-    foldersModel->updateFolderManga(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), true);
-}
-
-void LibraryWindow::setFolderAsNormal()
-{
-    foldersModel->updateFolderManga(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), false);
+    foldersModel->updateFolderType(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), type);
 }
 
 void LibraryWindow::exportLibrary(QString destPath)
@@ -2654,6 +2798,8 @@ void LibraryWindow::reloadOptions()
     contentViewsManager->comicsView->updateConfig(settings);
 
     trayIconController->updateIconVisibility();
+
+    recentVisibilityCoordinator->updateTimeRange();
 }
 
 QString LibraryWindow::currentPath()
@@ -2722,7 +2868,7 @@ void LibraryWindow::showNoLibrariesWidget()
 
 void LibraryWindow::showRootWidget()
 {
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     libraryToolBar->setDisabled(false);
 #endif
     searchEdit->setEnabled(true);
@@ -2733,7 +2879,7 @@ void LibraryWindow::showImportingWidget()
 {
     disableAllActions();
     importWidget->clear();
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     libraryToolBar->setDisabled(true);
 #endif
     searchEdit->setDisabled(true);
@@ -2872,10 +3018,9 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 
     bool isCompleted = sourceMI.data(FolderModel::CompletedRole).toBool();
     bool isRead = sourceMI.data(FolderModel::FinishedRole).toBool();
-    bool isManga = sourceMI.data(FolderModel::MangaRole).toBool();
 
     QMenu menu;
-    // QMenu * folderMenu = new QMenu(tr("Folder"));
+
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
     menu.addSeparator(); //-------------------------------
@@ -2891,10 +3036,13 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     else
         menu.addAction(setFolderAsReadAction);
     menu.addSeparator(); //-------------------------------
-    if (isManga)
-        menu.addAction(setFolderAsNormalAction);
-    else
-        menu.addAction(setFolderAsMangaAction);
+    auto typeMenu = new QMenu(tr("Set type"));
+    menu.addMenu(typeMenu);
+    typeMenu->addAction(setFolderAsNormalAction);
+    typeMenu->addAction(setFolderAsMangaAction);
+    typeMenu->addAction(setFolderAsWesternMangaAction);
+    typeMenu->addAction(setFolderAsWebComicAction);
+    typeMenu->addAction(setFolderAsYonkomaAction);
 
     menu.exec(foldersView->mapToGlobal(point));
 }

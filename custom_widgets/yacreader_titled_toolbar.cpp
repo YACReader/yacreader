@@ -1,5 +1,7 @@
 #include "yacreader_titled_toolbar.h"
 
+#include "yacreader_global.h"
+
 #include <QAction>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -40,7 +42,7 @@ void DropShadowLabel::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     painter.setFont(font());
-#ifndef Q_OS_MAC
+#ifndef Y_MAC_UI
     drawTextEffect(&painter, QPoint(contentsMargins().left(), 1));
 #endif
     drawText(&painter, QPoint(contentsMargins().left(), 0));
@@ -68,7 +70,7 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
 
     nameLabel = new DropShadowLabel(this);
     nameLabel->setText(title);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
     nameLabel->setColor(QColor("#808080"));
     // nameLabel->setDropShadowColor(QColor("#F9FAFB"));
@@ -94,7 +96,7 @@ void YACReaderTitledToolBar::addAction(QAction *action)
     QHBoxLayout *mainLayout = dynamic_cast<QHBoxLayout *>(layout());
 
 // fix for QToolButton and retina support in OSX
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS // TODO_Y_MAC_UI
     QPushButton *pb = new QPushButton(this);
     pb->setCursor(QCursor(Qt::ArrowCursor));
     pb->setIcon(action->icon());
@@ -128,7 +130,7 @@ void YACReaderTitledToolBar::addSepartor()
 
     QWidget *w = new QWidget(this);
     w->setFixedSize(1, 14);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
     w->setStyleSheet("QWidget {background-color:#AFAFAF;}");
 #else
     w->setStyleSheet("QWidget {background-color:#6F6F6F;}");

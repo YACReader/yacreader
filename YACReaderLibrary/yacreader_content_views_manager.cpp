@@ -1,5 +1,7 @@
 #include "yacreader_content_views_manager.h"
 
+#include "yacreader_global.h"
+
 #include "library_window.h"
 
 #include "classic_comics_view.h"
@@ -45,7 +47,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     doComicsViewConnections();
 
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
-    comicsViewStack->addWidget(folderContentView = new FolderContentView());
+    comicsViewStack->addWidget(folderContentView = new FolderContentView(parent->toogleShowRecentIndicatorAction));
     comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
     comicsViewStack->addWidget(emptySpecialList = new EmptySpecialListWidget());
     comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());
@@ -212,7 +214,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
         QIcon icoViewsButton;
         icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/info"), QSize(), QIcon::Normal);
         libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
         if (gridComicsView == nullptr)
@@ -229,7 +231,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
         QIcon icoViewsButton;
         icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/flow"), QSize(), QIcon::Normal);
         libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
         if (infoComicsView == nullptr)
@@ -245,7 +247,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
         QIcon icoViewsButton;
         icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/grid"), QSize(), QIcon::Normal);
         libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Q_OS_MAC
+#ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
         if (classicComicsView == nullptr)

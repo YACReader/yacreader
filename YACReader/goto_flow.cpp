@@ -1,6 +1,5 @@
 #include "goto_flow.h"
 #include "configuration.h"
-#include "comic.h"
 
 #include <QVBoxLayout>
 #include <QSize>
@@ -21,6 +20,7 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QTimer>
 
 #include "yacreader_flow.h"
 

@@ -69,9 +69,10 @@ public:
         Separator
     };
 
-    enum TypeSpecialList {
-        Reading,
-        Favorites
+    enum class TypeSpecialList : int {
+        Reading = 0,
+        Favorites,
+        Recent,
     };
 
 signals:
@@ -112,5 +113,7 @@ private:
 
     QString _databasePath;
 };
+
+Q_DECLARE_METATYPE(ReadingListModel::TypeSpecialList)
 
 #endif // READING_LIST_MODEL_H

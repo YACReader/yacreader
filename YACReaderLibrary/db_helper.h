@@ -65,7 +65,8 @@ public:
     static void update(ComicDB *comics, QSqlDatabase &db);
     static void update(ComicInfo *comicInfo, QSqlDatabase &db);
     static void updateRead(ComicInfo *comicInfo, QSqlDatabase &db);
-    static void update(const Folder &folder, QSqlDatabase &db);
+    static void updateAdded(ComicInfo *comicInfo, QSqlDatabase &db);
+    static void update(const Folder &folder, QSqlDatabase &db); // only for finished/completed fields
     static void propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db);
     static Folder updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
     static void updateChildrenInfo(QSqlDatabase &db);
@@ -89,11 +90,12 @@ public:
     static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<Label> getLabels(qulonglong libraryId);
 
-    static void updateFolderTreeManga(qulonglong id, QSqlDatabase &db, bool manga);
+    static void updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type);
 
     // load
     static Folder loadFolder(qulonglong id, QSqlDatabase &db);
     static Folder loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db);
+    static void readFolderFromQuery(Folder &folder, QSqlQuery &query);
     static ComicDB loadComic(qulonglong id, QSqlDatabase &db, bool &found);
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase &database);
     static ComicInfo loadComicInfo(QString hash, QSqlDatabase &db);

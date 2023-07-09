@@ -36,7 +36,7 @@ void ComicFlow::setImagePaths(const QStringList &paths)
         addSlide(img);
         s = imageFiles.at(i);
         s.remove(s.size() - 4, 4);
-        if (QFileInfo(s + ".r").exists())
+        if (QFileInfo::exists(s + ".r"))
             markSlide(i);
     }
 

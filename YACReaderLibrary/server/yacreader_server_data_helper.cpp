@@ -6,8 +6,8 @@ QString YACReaderServerDataHelper::folderToYSFormat(const qulonglong libraryId, 
             .arg(libraryId)
             .arg(folder.id)
             .arg(folder.name)
-            .arg(folder.getNumChildren())
-            .arg(folder.getFirstChildHash());
+            .arg(folder.numChildren)
+            .arg(folder.firstChildHash);
 }
 
 QString YACReaderServerDataHelper::comicToYSFormat(const qulonglong libraryId, const ComicDB &comic)
@@ -31,8 +31,15 @@ QJsonObject YACReaderServerDataHelper::folderToJSON(const qulonglong libraryId, 
     json["id"] = QString::number(folder.id);
     json["library_id"] = QString::number(libraryId);
     json["folder_name"] = folder.name;
-    json["num_children"] = folder.getNumChildren();
-    json["first_comic_hash"] = folder.getFirstChildHash();
+    json["num_children"] = folder.numChildren;
+    json["first_comic_hash"] = folder.firstChildHash;
+    // 9.13
+    json["finished"] = folder.finished;
+    json["completed"] = folder.completed;
+    json["custom_image"] = folder.customImage;
+    json["file_type"] = static_cast<typename std::underlying_type<YACReader::FileType>::type>(folder.type);
+    json["added"] = folder.added;
+    json["updated"] = folder.updated;
 
     return json;
 }
@@ -47,14 +54,18 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     json["file_name"] = comic.name;
     json["file_size"] = QString::number(comic.getFileSize());
     json["hash"] = comic.info.hash;
+    json["cover_page"] = comic.info.coverPage.toInt(); // 9.13
     json["current_page"] = comic.info.currentPage;
     json["num_pages"] = comic.info.numPages.toInt();
     json["read"] = comic.info.read;
     json["cover_size_ratio"] = comic.info.coverSizeRatio.toFloat();
     json["title"] = comic.info.title.toString();
-    json["number"] = comic.info.number.toInt();
+    json["number"] = comic.info.number.toInt(); // 9.13 legacy, kept for compatibility with old clients
+    json["universal_number"] = comic.info.number.toString(); // 9.13, text based number
     json["last_time_opened"] = comic.info.lastTimeOpened.toLongLong();
-    json["manga"] = comic.info.manga.toBool();
+    auto type = comic.info.type.value<YACReader::FileType>();
+    json["manga"] = type == YACReader::FileType::Manga; // legacy, kept for compatibility with old clients
+    json["file_type"] = comic.info.type.toInt(); // 9.13
 
     return json;
 }
@@ -69,6 +80,42 @@ QJsonObject YACReaderServerDataHelper::fullComicToJSON(const qulonglong libraryI
     json["date"] = comic.info.date.toString();
 
     json["synopsis"] = comic.info.synopsis.toString();
+
+    // 9.13
+    json["count"] = comic.info.count.toInt();
+    json["story_arc"] = comic.info.storyArc.toString();
+    json["arc_number"] = comic.info.arcNumber.toString();
+    json["arc_count"] = comic.info.arcCount.toInt();
+    json["writer"] = comic.info.writer.toString();
+    json["penciller"] = comic.info.penciller.toString();
+    json["inker"] = comic.info.inker.toString();
+    json["colorist"] = comic.info.colorist.toString();
+    json["letterer"] = comic.info.letterer.toString();
+    json["cover_artist"] = comic.info.coverArtist.toString();
+    json["publisher"] = comic.info.publisher.toString();
+    json["format"] = comic.info.format.toString();
+    json["color"] = comic.info.color.toBool();
+    json["age_rating"] = comic.info.ageRating.toString();
+    json["editor"] = comic.info.editor.toString();
+    json["characters"] = comic.info.characters.toString();
+    json["notes"] = comic.info.notes.toString();
+    json["added"] = comic.info.added.toLongLong();
+    json["editor"] = comic.info.editor.toString();
+    json["imprint"] = comic.info.imprint.toString();
+    json["teams"] = comic.info.teams.toString();
+    json["locations"] = comic.info.locations.toString();
+    json["series"] = comic.info.series.toString();
+    json["alternate_series"] = comic.info.alternateSeries.toString();
+    json["alternate_number"] = comic.info.alternateNumber.toString();
+    json["alternate_count"] = comic.info.alternateCount.toInt();
+    json["language_iso"] = comic.info.languageISO.toString();
+    json["series_group"] = comic.info.seriesGroup.toString();
+    json["main_character_or_team"] = comic.info.mainCharacterOrTeam.toString();
+    json["review"] = comic.info.review.toString();
+    json["tags"] = comic.info.tags.toString();
+    auto type = comic.info.type.value<YACReader::FileType>();
+    json["manga"] = type == YACReader::FileType::Manga; // legacy, kept for compatibility with old clients
+    json["file_type"] = comic.info.type.toInt(); // 9.13
 
     return json;
 }

@@ -952,7 +952,7 @@ void Viewer::configureContent(QString msg)
 
 void Viewer::hideCursor()
 {
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS // TODO_Y_MAC_UI isn't BlankCursor supported in macos?
     setCursor(QCursor(QBitmap(1, 1), QBitmap(1, 1)));
 #else
     setCursor(Qt::BlankCursor);
@@ -1081,6 +1081,36 @@ void Viewer::updateFilters(int brightness, int contrast, int gamma)
 void Viewer::setBookmarks()
 {
     bd->setBookmarks(*render->getBookmarks());
+}
+
+void Viewer::offsetDoublePageToTheLeft()
+{
+    if (!doublePage) {
+        return;
+    }
+
+    if (doubleMangaPage) {
+        render->previousPage();
+    } else {
+        render->nextPage();
+    }
+
+    updateInformation();
+}
+
+void Viewer::offsetDoublePageToTheRight()
+{
+    if (!doublePage) {
+        return;
+    }
+
+    if (doubleMangaPage) {
+        render->nextPage();
+    } else {
+        render->previousPage();
+    }
+
+    updateInformation();
 }
 
 void Viewer::showIsCoverMessage()

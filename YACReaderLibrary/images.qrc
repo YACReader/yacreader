@@ -25,6 +25,7 @@
         <file>../images/comics_view_toolbar/show_comic_info.svg</file>
         <file>../images/comics_view_toolbar/setManga.svg</file>
         <file>../images/comics_view_toolbar/setNormal.svg</file>
+        <file>../images/comics_view_toolbar/showRecentIndicator.svg</file>
         <file>../images/defaultCover.png</file>
         <file>../images/edit.png</file>
         <file>../images/empty_current_readings.png</file>
@@ -95,6 +96,8 @@
 
         <file>../images/lists/default_0.svg</file>
         <file>../images/lists/default_1.svg</file>
+        <file>../images/lists/default_2.svg</file>
+
         <file>../images/lists/label_blue.svg</file>
         <file>../images/lists/label_cyan.svg</file>
         <file>../images/lists/label_dark.svg</file>

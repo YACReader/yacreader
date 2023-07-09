@@ -69,6 +69,11 @@ Rectangle {
             contentWidth: infoView.width
             contentHeight: infoView.height
 
+            ComicInfoView {
+                id: infoView
+                width: info_container.width - 14
+            }
+
             WheelHandler {
                 onWheel: {
                     if (infoFlickable.contentHeight <= infoFlickable.height) {
@@ -96,11 +101,6 @@ Rectangle {
                         radius: 2
                     }
                 }
-            }
-
-            ComicInfoView {
-                id: infoView
-                width: info_container.width - 14
             }
         }
     }

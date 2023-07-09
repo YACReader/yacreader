@@ -33,7 +33,7 @@ public:
     QString hash;
     bool existOnDb;
 
-    int rating;
+    int rating; // TODO_METADATA: change to float
 
     bool hasBeenOpened;
 
@@ -52,13 +52,13 @@ public:
     QVariant coverPage; // int
     QVariant numPages; // int
 
-    QVariant number; // int
+    QVariant number; // string (changed in 9.13 from int)
     QVariant isBis; // bool
     QVariant count; // int
 
     QVariant volume; // string
     QVariant storyArc; // string
-    QVariant arcNumber; // int
+    QVariant arcNumber; // string (changed in 9.13 from int)
     QVariant arcCount; // int
 
     QVariant genere; // string
@@ -80,7 +80,6 @@ public:
     QVariant format; // string
     QVariant color; // bool
     QVariant ageRating; // string
-    QVariant manga; // bool
 
     QVariant synopsis; // string
     QVariant characters; // string
@@ -94,38 +93,21 @@ public:
     QVariant coverSizeRatio; // h/w
     QVariant originalCoverSize; // string "WxH"
 
-    /*void setTitle(QVariant value);
-
-    void setCoverPage(QVariant value);
-    void setNumPages(QVariant value);
-
-    void setNumber(QVariant value);
-    void setIsBis(QVariant value);
-    void setCount(QVariant value);
-
-    void setVolume(QVariant value);
-    void setStoryArc(QVariant value);
-    void setArcNumber(QVariant value);
-    void setArcCount(QVariant value);
-
-    void setGenere(QVariant value);
-
-    void setWriter(QVariant value);
-    void setPenciller(QVariant value);
-    void setInker(QVariant value);
-    void setColorist(QVariant value);
-    void setLetterer(QVariant value);
-    void setCoverArtist(QVariant value);
-
-    void setDate(QVariant value);
-    void setPublisher(QVariant value);
-    void setFormat(QVariant value);
-    void setColor(QVariant value);
-    void setAgeRating(QVariant value);
-
-    void setSynopsis(QVariant value);
-    void setCharacters(QVariant value);
-    void setNotes(QVariant value);*/
+    QVariant added; // integer/date
+    QVariant type; // enum
+    QVariant editor; // string
+    QVariant imprint; // string
+    QVariant teams; // string/list
+    QVariant locations; // string/list
+    QVariant series; // string
+    QVariant alternateSeries; // string
+    QVariant alternateNumber; // string
+    QVariant alternateCount; // int
+    QVariant languageISO; // string
+    QVariant seriesGroup; // string
+    QVariant mainCharacterOrTeam; // string
+    QVariant review; // string
+    QVariant tags; // string/list
 
     QPixmap getCover(const QString &basePath);
 
@@ -135,8 +117,20 @@ public:
     Q_INVOKABLE QStringList getColorists();
     Q_INVOKABLE QStringList getLetterers();
     Q_INVOKABLE QStringList getCoverArtists();
+    Q_INVOKABLE QStringList getEditors();
+    Q_INVOKABLE QStringList getImprint();
 
     Q_INVOKABLE QStringList getCharacters();
+
+    Q_INVOKABLE QStringList getTeams();
+    Q_INVOKABLE QStringList getLocations();
+
+    Q_INVOKABLE QStringList getTags();
+
+    Q_INVOKABLE QString getTypeString();
+
+    Q_INVOKABLE QString getStoryArcInfoString();
+    Q_INVOKABLE QString getAlternateSeriesString();
 
     friend QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo);
 
@@ -191,7 +185,6 @@ public:
     Q_PROPERTY(QVariant format MEMBER format CONSTANT)
     Q_PROPERTY(QVariant color MEMBER color CONSTANT)
     Q_PROPERTY(QVariant ageRating MEMBER ageRating CONSTANT)
-    Q_PROPERTY(QVariant manga MEMBER manga CONSTANT)
 
     Q_PROPERTY(QVariant synopsis MEMBER synopsis CONSTANT)
     Q_PROPERTY(QVariant characters MEMBER characters CONSTANT)
@@ -206,11 +199,27 @@ public:
     Q_PROPERTY(QVariant coverSizeRatio MEMBER coverSizeRatio CONSTANT)
     Q_PROPERTY(QVariant originalCoverSize MEMBER originalCoverSize CONSTANT)
 
+    Q_PROPERTY(QVariant added MEMBER added CONSTANT)
+    Q_PROPERTY(QVariant type MEMBER type CONSTANT)
+    Q_PROPERTY(QVariant editor MEMBER editor CONSTANT)
+    Q_PROPERTY(QVariant imprint MEMBER imprint CONSTANT)
+    Q_PROPERTY(QVariant teams MEMBER teams CONSTANT)
+    Q_PROPERTY(QVariant locations MEMBER locations CONSTANT)
+    Q_PROPERTY(QVariant series MEMBER series CONSTANT)
+    Q_PROPERTY(QVariant alternateSeries MEMBER alternateSeries CONSTANT)
+    Q_PROPERTY(QVariant alternateNumber MEMBER alternateNumber CONSTANT)
+    Q_PROPERTY(QVariant alternateCount MEMBER alternateCount CONSTANT)
+    Q_PROPERTY(QVariant languageISO MEMBER languageISO CONSTANT)
+    Q_PROPERTY(QVariant seriesGroup MEMBER seriesGroup CONSTANT)
+    Q_PROPERTY(QVariant mainCharacterOrTeam MEMBER mainCharacterOrTeam CONSTANT)
+    Q_PROPERTY(QVariant review MEMBER review CONSTANT)
+    Q_PROPERTY(QVariant tags MEMBER tags CONSTANT)
+
     //-new properties, not loaded from the DB automatically
     bool isFavorite;
     Q_PROPERTY(bool isFavorite MEMBER isFavorite WRITE setFavorite NOTIFY favoriteChanged)
 
-    // setters, used in QML only by now
+    // setters, used in QML only for now
     void setRead(bool r);
     void setRating(int r);
     void setFavorite(bool f);
@@ -248,6 +257,7 @@ public:
     Q_INVOKABLE qulonglong getFileSize() const;
 
     Q_INVOKABLE QString getTitleIncludingNumber() const;
+    Q_INVOKABLE QString getInfoTitle() const;
 
     QString toTXT();
 

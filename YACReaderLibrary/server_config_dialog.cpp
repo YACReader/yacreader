@@ -33,11 +33,9 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     qrMessage->setWordWrap(true);
     qrMessage->setFixedWidth(200);
 
-    QLabel *propaganda = new QLabel(tr("YACReader is available for iOS devices. <a href='http://ios.yacreader.com' style='color:rgb(193, 148, 65)'> Discover it! </a>"), this);
+    QLabel *propaganda = new QLabel(tr("YACReader is available for iOS and Android devices.<br/>Discover it for <a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'>iOS</a> or <a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'>Android</a>."), this);
     propaganda->move(332, 505);
     propaganda->setStyleSheet("QLabel {color:#4D4D4D; font-size:13px; font-family: Arial; font-style: italic;}");
-    /*propaganda->setWordWrap(true);
-    propaganda->setFixedWidth(590);*/
     propaganda->setOpenExternalLinks(true);
 
     // FORM---------------------------------------------------------------------
@@ -62,10 +60,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     connect(port, &QLineEdit::textChanged, this, [=](const QString &portValue) {
         accept->setEnabled(!portValue.isEmpty());
     });
-    // port->setFixedWidth(100);
-    // port->move(332, 244);
 
-    // port->move(520,110);
     QValidator *validator = new QIntValidator(1024, 65535, this);
     port->setValidator(validator);
 
@@ -76,8 +71,8 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     portWidgetLayout->setContentsMargins(0, 0, 0, 0);
     portWidget->setLayout(portWidgetLayout);
     portWidget->move(332, 244);
-    // accept->move(514,149);
     connect(accept, &QAbstractButton::pressed, this, &ServerConfigDialog::updatePort);
+
     // END FORM-----------------------------------------------------------------
 
     check = new QCheckBox(this);
@@ -85,12 +80,6 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     check->setText(tr("enable the server"));
     check->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
 
-    performanceWorkaroundCheck = new QCheckBox(this);
-    performanceWorkaroundCheck->move(332, 354);
-    performanceWorkaroundCheck->setText(tr("display less information about folders in the browser\nto improve the performance"));
-    performanceWorkaroundCheck->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
-
-    // set black background
     QPalette palette;
     QImage image(":/images/serverConfigBackground.png");
     palette.setBrush(this->backgroundRole(), QBrush(image));
@@ -99,7 +88,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
 
     this->setFixedSize(image.size());
 
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
     if (settings->value(SERVER_ON, true).toBool()) {
@@ -113,17 +102,21 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
         check->setChecked(false);
     }
 
-    performanceWorkaroundCheck->setChecked(settings->value(REMOTE_BROWSE_PERFORMANCE_WORKAROUND, false).toBool());
-
     settings->endGroup();
 
     connect(check, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableServer);
-    connect(performanceWorkaroundCheck, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableperformanceWorkaround);
+}
+
+void ServerConfigDialog::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent(event);
+
+    generateQR();
 }
 
 void ServerConfigDialog::enableServer(int status)
 {
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
+    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
     if (status == Qt::Checked) {
@@ -144,21 +137,11 @@ void ServerConfigDialog::enableServer(int status)
     settings->endGroup();
 }
 
-void ServerConfigDialog::enableperformanceWorkaround(int status)
-{
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
-    settings->beginGroup("libraryConfig");
-
-    if (status == Qt::Checked) {
-        settings->setValue(REMOTE_BROWSE_PERFORMANCE_WORKAROUND, true);
-    } else {
-        settings->setValue(REMOTE_BROWSE_PERFORMANCE_WORKAROUND, false);
-    }
-    settings->endGroup();
-}
-
 void ServerConfigDialog::generateQR()
 {
+    if (!httpServer->isRunning())
+        return;
+
     ip->clear();
 
     auto addresses = getIpAddresses();
@@ -207,7 +190,6 @@ void ServerConfigDialog::regenerateQR(const QString &ip)
 
 void ServerConfigDialog::updatePort()
 {
-
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("listener");
     settings->setValue("port", port->text().toInt());

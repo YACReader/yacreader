@@ -84,7 +84,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 
     l->addWidget(new QLabel("<font color=\"#FFFFFF\">" + tr("Click on any image to go to the bookmark") + "</font>"), 0, Qt::AlignCenter);
     l->addLayout(layout);
-#ifdef Q_OS_MAC
+#ifdef Q_OS_MACOS
     l->addLayout(buttons);
 #endif
 

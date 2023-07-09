@@ -11,6 +11,12 @@ public:
         opcode,
         word,
         quotedWord,
+        equal, // =
+        exactEqual, // ==
+        minor,
+        major,
+        minorOrEqual,
+        majorOrEqual,
         undefined
     };
 
@@ -50,6 +56,9 @@ private:
     Token single(Token::Type type);
     Token word();
     Token quotedWord();
+    Token minor();
+    Token major();
+    Token equal();
 
     bool isSpace(char c);
 };

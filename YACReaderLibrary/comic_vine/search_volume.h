@@ -12,7 +12,6 @@ public:
     SearchVolume(QWidget *parent = nullptr);
     void clean();
     void setVolumeInfo(const QString &volume);
-public slots:
     QString getVolumeInfo() const;
 
 private:
