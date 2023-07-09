@@ -2,7 +2,7 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## WIP
+## 9.13
 
 ### YACReaderLibrary
 * Avoid showing stale information in the server config dialog by updating the connection information when the dialog is opened.
