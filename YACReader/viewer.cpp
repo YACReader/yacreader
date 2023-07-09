@@ -1083,6 +1083,36 @@ void Viewer::setBookmarks()
     bd->setBookmarks(*render->getBookmarks());
 }
 
+void Viewer::offsetDoublePageToTheLeft()
+{
+    if (!doublePage) {
+        return;
+    }
+
+    if (doubleMangaPage) {
+        render->previousPage();
+    } else {
+        render->nextPage();
+    }
+
+    updateInformation();
+}
+
+void Viewer::offsetDoublePageToTheRight()
+{
+    if (!doublePage) {
+        return;
+    }
+
+    if (doubleMangaPage) {
+        render->nextPage();
+    } else {
+        render->previousPage();
+    }
+
+    updateInformation();
+}
+
 void Viewer::showIsCoverMessage()
 {
     if (!shouldOpenPrevious) {

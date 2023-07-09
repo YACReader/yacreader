@@ -1252,6 +1252,11 @@ void MainWindowViewer::setUpShortcutsManagement()
     auto *const goToLastPageAction = addActionWithShortcut(tr("Go to the last page"), GO_TO_LAST_PAGE_ACTION_Y);
     connect(goToLastPageAction, &QAction::triggered, viewer, &Viewer::goToLastPage);
 
+    auto *const offsetDoublePageToTheLeft = addActionWithShortcut(tr("Offset double page to the left"), OFFSET_DOUBLE_PAGE_TO_THE_LEFT_Y);
+    connect(offsetDoublePageToTheLeft, &QAction::triggered, viewer, &Viewer::offsetDoublePageToTheLeft);
+    auto *const offsetDoublePageToTheRight = addActionWithShortcut(tr("Offset double page to the right"), OFFSET_DOUBLE_PAGE_TO_THE_RIGHT_Y);
+    connect(offsetDoublePageToTheRight, &QAction::triggered, viewer, &Viewer::offsetDoublePageToTheRight);
+
     loadedComicActions = { autoScrollForwardAction,
                            autoScrollBackwardAction,
                            autoScrollForwardHorizontalFirstAction,
@@ -1263,7 +1268,9 @@ void MainWindowViewer::setUpShortcutsManagement()
                            moveLeftAction,
                            moveRightAction,
                            goToFirstPageAction,
-                           goToLastPageAction };
+                           goToLastPageAction,
+                           offsetDoublePageToTheLeft,
+                           offsetDoublePageToTheRight };
 
     editShortcutsDialog->addActionsGroup(tr("Reading"), QIcon(":/images/shortcuts_group_reading.svg"),
                                          tmpList = QList<QAction *>()

@@ -101,6 +101,8 @@ public slots:
     void showMessageErrorOpening(QString);
     void processCRCError(QString message);
     void setBookmarks();
+    void offsetDoublePageToTheLeft();
+    void offsetDoublePageToTheRight();
     // deprecated
     void updateImageOptions();
     void updateFilters(int brightness, int contrast, int gamma);
