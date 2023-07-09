@@ -21,6 +21,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix sorting in the Comic Vine series selection dialog.
 * Fix getting only distinct rows when querying folders through the search engine.
 
+### YACReader
+* Add shortcuts for moving by one the double page mode to the left/right, by default CTRL + SHIFT + LEFT, and,  CTRL + SHIFT + RIGHT. Remember that you can change any shortcut in the shortcuts dialog. You can also achieve this functionality using the "Go to page flow" and chossing the page you want to be on the left/right (depending on the reading mode comic/manga).
+
 ### All Apps
 * New icons for macos.
 
