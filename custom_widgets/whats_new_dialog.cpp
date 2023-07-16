@@ -67,6 +67,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; Fix alphanumeric navigation in the folders tree view. Shortcuts were interfering the default behaviour, now some shortcuts will be ignored if the folders tree has the focus.<br/>"
                   "   &#8226; Fix sorting in the Comic Vine series selection dialog.<br/>"
                   "   &#8226; Fix getting only distinct rows when querying folders through the search engine. The fix is noticeable only in the iOS and Android clients.<br/>"
+                  "   &#8226; Fix crash when dropping comics in sublists. (new in 9.13.1)<br/>"
                   "<br/>"
                   "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:#E8B800;\">Patreon</a> "
                   "or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. "
