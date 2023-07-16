@@ -218,8 +218,13 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
             QByteArray rawData = data->data(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
             QDataStream in(&rawData, QIODevice::ReadOnly);
             in >> sublistsRows; // deserialize the list of indentifiers
+
+            if (sublistsRows.isEmpty())
+                return false;
+
             if (parent.row() != sublistsRows.at(0).second)
                 return false;
+
             return data->formats().contains(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
         }
     }

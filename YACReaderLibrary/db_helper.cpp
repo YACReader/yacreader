@@ -1363,10 +1363,10 @@ void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDat
 
 void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db)
 {
-    QSqlQuery getNumComicsInFavoritesQuery(QString("SELECT count(*) FROM comic_label WHERE label_id = %1;").arg(labelId), db);
-    getNumComicsInFavoritesQuery.next();
+    QSqlQuery getNumComics(QString("SELECT count(*) FROM comic_label WHERE label_id = %1;").arg(labelId), db);
+    getNumComics.next();
 
-    int numComics = getNumComicsInFavoritesQuery.value(0).toInt();
+    int numComics = getNumComics.value(0).toInt();
 
     db.transaction();
 
@@ -1388,10 +1388,10 @@ void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong 
 
 void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db)
 {
-    QSqlQuery getNumComicsInFavoritesQuery("SELECT count(*) FROM comic_reading_list;", db);
-    getNumComicsInFavoritesQuery.next();
+    QSqlQuery getNumComics("SELECT count(*) FROM comic_reading_list;", db);
+    getNumComics.next();
 
-    int numComics = getNumComicsInFavoritesQuery.value(0).toInt();
+    int numComics = getNumComics.value(0).toInt();
 
     db.transaction();
 

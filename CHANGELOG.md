@@ -2,6 +2,11 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.13.1
+
+### YACReaderLibrary
+* Fix crash when dropping comics in sublists
+
 ## 9.13
 
 ### YACReaderLibrary
