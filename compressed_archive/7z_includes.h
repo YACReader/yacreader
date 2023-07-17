@@ -20,6 +20,10 @@ extern "C" {
 #include "lib7zip/CPP/7zip/IPassword.h"
 #include "lib7zip/CPP/7zip/MyVersion.h"
 
+#include "lib7zip/CPP/Windows/FileDir.h"
+#include "lib7zip/CPP/Windows/FileFind.h"
+#include "lib7zip/CPP/Windows/FileName.h"
+#include "lib7zip/CPP/Windows/NtCheck.h"
 #include "lib7zip/CPP/Windows/PropVariant.h"
 #include "lib7zip/CPP/Windows/PropVariantConv.h"
 
