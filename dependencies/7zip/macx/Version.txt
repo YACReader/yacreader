@@ -1,1 +1,3 @@
-p7zip 16.02 built from the orignal sources using makefile.macosx_llvm_64bits
+7zip 23.01 built from the original sources using the Format7zF bundle
+
+TODO: try to get the optimized version of 7z.so by using the custom makefiles.
