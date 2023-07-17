@@ -123,10 +123,8 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
         CMyComPtr<IInStream> file = fileSpec;
 
         YCArchiveOpenCallback *openCallbackSpec = new YCArchiveOpenCallback;
-        CMyComPtr<IArchiveOpenCallback> openCallback = openCallbackSpec;
+        CMyComPtr<IArchiveOpenCallback> openCallback(openCallbackSpec);
         openCallbackSpec->PasswordIsDefined = false;
-        // openCallbackSpec->PasswordIsDefined = true;
-        // openCallbackSpec->Password = L"1";
 
         // get file type from suffix
         int i = -1;
@@ -136,10 +134,6 @@ CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
             return;
         QByteArray magicNumber = filex.read(8); // read first 8 bytes
 
-        // if (memcmp(magicNumber,rar5,8)==0)
-        // return; //rar5 is not supported
-        // qDebug() << memcmp(magicNumber,rar,7);
-        // TODO: this suffix matching is rather primitive - better approach?
 #ifdef Q_OS_UNIX
         if (memcmp(magicNumber, rar, 6) != 0) {
             // match suffix to GUID list
