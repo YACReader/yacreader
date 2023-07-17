@@ -34,6 +34,7 @@ SOURCES += \
     $$PWD/lib7zip/CPP/Windows/TimeUtils.cpp \
     $$PWD/lib7zip/CPP/Common/UTFConvert.cpp \
     $$PWD/lib7zip/CPP/Common/MyWindows.cpp \
+    $$PWD/lib7zip/CPP/Common/StringConvert.cpp \
 }
 
 HEADERS += \
