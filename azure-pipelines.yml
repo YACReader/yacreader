@@ -191,7 +191,7 @@ jobs:
       mkdir $(Build.SourcesDirectory)\compressed_archive
       wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O $(Build.SourcesDirectory)\compressed_archive\7z2301-src.7z
       7z x $(Build.SourcesDirectory)\compressed_archive\7z2301-src.7z -o$(Build.SourcesDirectory)\compressed_archive\lib7zip
-      ls -lah -o$(Build.SourcesDirectory)\compressed_archive\lib7zip
+      ls -lah $(Build.SourcesDirectory)\compressed_archive\lib7zip
     displayName: 'Install dependencies'
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - task: InstallAppleCertificate@2
