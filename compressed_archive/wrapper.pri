@@ -13,27 +13,28 @@ INCLUDEPATH += \
 
 SOURCES += \
     $$PWD/compressed_archive.cpp \
+    $$PWD/lib7zip/CPP/Windows/FileIO.cpp \
+    $$PWD/lib7zip/CPP/Windows/PropVariant.cpp \
+    $$PWD/lib7zip/CPP/Windows/PropVariantConv.cpp \
     $$PWD/lib7zip/CPP/Common/IntToString.cpp \
-    $$PWD/lib7zip/CPP/Common/NewHandler.cpp \
     $$PWD/lib7zip/CPP/Common/MyString.cpp \
     $$PWD/lib7zip/CPP/Common/MyVector.cpp \
-    $$PWD/lib7zip/CPP/Common/StringConvert.cpp \
-    $$PWD/lib7zip/CPP/Common/StringToInt.cpp \
     $$PWD/lib7zip/CPP/Common/Wildcard.cpp \
+    $$PWD/lib7zip/CPP/7zip/Common/FileStreams.cpp \
+    $$PWD/lib7zip/C/Alloc.c \
+    $$PWD/lib7zip/CPP/7zip/Common/StreamObjects.cpp
+
+unix{
+SOURCES += \
+    $$PWD/lib7zip/CPP/Common/NewHandler.cpp \
     $$PWD/lib7zip/CPP/Windows/DLL.cpp \
     $$PWD/lib7zip/CPP/Windows/FileDir.cpp \
     $$PWD/lib7zip/CPP/Windows/FileFind.cpp \
-    $$PWD/lib7zip/CPP/Windows/FileIO.cpp \
     $$PWD/lib7zip/CPP/Windows/FileName.cpp \
-    $$PWD/lib7zip/CPP/Windows/PropVariant.cpp \
-    $$PWD/lib7zip/CPP/Windows/PropVariantConv.cpp \
-    $$PWD/lib7zip/CPP/7zip/Common/FileStreams.cpp \
-    $$PWD/lib7zip/CPP/7zip/Common/StreamObjects.cpp \
-    $$PWD/lib7zip/CPP/7zip/Common/StreamUtils.cpp \
-    $$PWD/lib7zip/C/Alloc.c \
     $$PWD/lib7zip/CPP/Windows/TimeUtils.cpp \
     $$PWD/lib7zip/CPP/Common/UTFConvert.cpp \
     $$PWD/lib7zip/CPP/Common/MyWindows.cpp \
+}
 
 HEADERS += \
     $$PWD/lib7zip/CPP/Common/Common.h \
