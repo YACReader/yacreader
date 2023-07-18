@@ -338,7 +338,8 @@ jobs:
     dependsOn:
     - Linux
     - MacOS
-    - MacOS_qt6
+    - MacOS_qt6_Apple
+    - MacOS_qt6_Intel
     - Windows_x86
     - Windows_x64
     - Windows_x64_qt6
@@ -378,7 +379,8 @@ jobs:
     dependsOn:
     - Linux
     - MacOS
-    - MacOS_qt6
+    - MacOS_qt6_Apple
+    - MacOS_qt6_Intel
     - Windows_x86
     - Windows_x64
     - Windows_x64_qt6
