@@ -367,6 +367,8 @@ jobs:
   - job: PublishDevBuilds
     dependsOn:
     - Linux
+    - Linux_qt6
+    - Linux_qt6_7zip
     - MacOS
     - MacOS_qt6_Apple
     - MacOS_qt6_Intel
@@ -408,6 +410,8 @@ jobs:
   - job: Release
     dependsOn:
     - Linux
+    - Linux_qt6
+    - Linux_qt6_7zip
     - MacOS
     - MacOS_qt6_Apple
     - MacOS_qt6_Intel
