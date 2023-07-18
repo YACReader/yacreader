@@ -1,5 +1,5 @@
 {
-    "title": "YACReader-#VERSION#.#BUILD_NUMBER##QT_VERSION#",
+    "title": "YACReader-9.14.0.0Qt6",
     "icon": "icon.icns",
     "background": "background.png",
     "window": {
@@ -19,31 +19,31 @@
             "x": 80,
             "y": 90,
             "type": "file",
-            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/YACReader.app"
+            "path": "YACReader-9.14.0.0 MacOSX-Apple Qt6/YACReader.app"
         },
         {
             "x": 235,
             "y": 90,
             "type": "file",
-            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/YACReaderLibrary.app"
+            "path": "YACReader-9.14.0.0 MacOSX-Apple Qt6/YACReaderLibrary.app"
         },
         {
             "x": 470,
             "y": 295,
             "type": "file",
-            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/YACReaderLibraryServer"
+            "path": "YACReader-9.14.0.0 MacOSX-Apple Qt6/YACReaderLibraryServer"
         },
         {
             "x": 120,
             "y": 295,
             "type": "file",
-            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/README.md"
+            "path": "YACReader-9.14.0.0 MacOSX-Apple Qt6/README.md"
         },
         {
             "x": 290,
             "y": 295,
             "type": "file",
-            "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-Intel #QT_VERSION#/COPYING.txt"
+            "path": "YACReader-9.14.0.0 MacOSX-Apple Qt6/COPYING.txt"
         }
     ]
 }
