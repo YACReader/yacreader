@@ -175,7 +175,16 @@ bool CompressedArchive::loadFunctions()
 {
     // LOAD library
     if (sevenzLib == 0) {
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
+        QFileInfo sevenzlibrary(QString(LIBDIR) + "/yacreader/7z.so");
+        if (sevenzlibrary.exists()) {
+            sevenzLib = new QLibrary(sevenzlibrary.absoluteFilePath());
+        } else {
+            sevenzLib = new QLibrary(QString(LIBDIR) + "/7zip/7z.so");
+        }
+#else
         sevenzLib = new QLibrary(QCoreApplication::applicationDirPath() + "/utils/7z");
+#endif
     }
     if (!sevenzLib->load()) {
         qDebug() << "Error Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;
