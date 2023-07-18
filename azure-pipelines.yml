@@ -166,7 +166,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       path: $(Build.ArtifactStagingDirectory)
-      artifactName: Macos qt6 $(Build.BuildNumber) dmg
+      artifactName: Macos qt6 Intel $(Build.BuildNumber) dmg
 
 #
 # MacOS qt6(apple)
@@ -225,7 +225,7 @@ jobs:
   - task: PublishPipelineArtifact@1
     inputs:
       path: $(Build.ArtifactStagingDirectory)
-      artifactName: Macos qt6 $(Build.BuildNumber) dmg
+      artifactName: Macos qt6 Apple $(Build.BuildNumber) dmg
 
 #
 # MacOS
