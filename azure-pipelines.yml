@@ -111,6 +111,36 @@ jobs:
     displayName: 'Run tests'
 
 #
+# Linux qt6 7zip
+#
+
+- job: Linux_qt6_7zip
+  timeoutInMinutes: 90
+  dependsOn: CodeFormatValidation
+  pool:
+    vmImage: 'ubuntu-22.04'
+  steps:
+  - script: |
+      sudo apt-get update
+      sudo apt-get install -y qtchooser qt6-tools-dev qt6-base-dev-tools qmake6 qmake6-bin \
+      qt6-base-dev qt6-multimedia-dev qt6-tools-dev-tools libgl-dev qt6-l10n-tools \
+      libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev
+      mkdir $(Build.SourcesDirectory)\compressed_archive
+      wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O $(Build.SourcesDirectory)/compressed_archive/7z2301-src.7z
+      7z x $(Build.SourcesDirectory)/compressed_archive/7z2301-src.7z -o$(Build.SourcesDirectory)/compressed_archive/lib7zip
+    displayName: 'Install dependencies'
+  - script: |
+      qtchooser -list-versions
+      export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
+      qmake6 CONFIG+="7zip no_pdf" $DEFINES_VAR
+      qmake6 -v
+      make
+    displayName: 'Build'
+  - script: |
+      make check TESTARGS="-maxwarnings 100000"
+    displayName: 'Run tests'
+
+#
 # MacOS qt6(intel)
 #
 
