@@ -9,29 +9,42 @@ SKIP_CODESIGN=${3:-false}
 
 QT_VERSION=${4:-""}
 
-echo "building macos binaries with these params: ${VERSION} ${BUILD_NUMBER} ${SKIP_CODESIGN} ${QT_VERSION}"
+ARCH=${5:-"arm64"}
 
-if [ "$5" == "clean" ]; then
-./cleanOSX.sh
+echo "building macos binaries with these params: ${VERSION} ${BUILD_NUMBER} ${SKIP_CODESIGN} ${QT_VERSION} ${ARCH}"
+
+if [ "$6" == "clean" ]; then
+    ./cleanOSX.sh
 fi
+
+if [ "$ARCH" == "arm64" ]; then
+	ARCH_NAME="Apple"
+elif [ "$ARCH" == "x86_64" ]; then
+	ARCH_NAME="Intel"
+else
+	echo "Unknown arch: $ARCH"
+	exit 1
+fi
+
+echo "Building for $ARCH_NAME"
 
 hash qmake 2>/dev/null || { echo >&2 "Qmake command not available. Please add the bin subfolder of your Qt installation to the PATH environment variable."; exit 1; }
 
 echo "Compiling YACReader"
 cd YACReader
-qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\""
+qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="${ARCH}"
 make
 cd ..
 
 echo "Compiling YACReaderLibrary"
 cd YACReaderLibrary
-qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\""
+qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="${ARCH}"
 make
 cd ..
 
 echo "Compiling YACReaderLibraryServer"
 cd YACReaderLibraryServer
-qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\""
+qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="${ARCH}"
 make
 cd ..
 
@@ -53,9 +66,9 @@ mkdir -p YACReader.app/Contents/MacOS/utils
 mkdir -p YACReaderLibrary.app/Contents/MacOS/utils
 mkdir -p YACReaderLibraryServer.app/Contents/MacOS/utils
 
-cp -R dependencies/7zip/macx/* YACReader.app/Contents/MacOS/utils/
-cp -R dependencies/7zip/macx/* YACReaderLibrary.app/Contents/MacOS/utils/
-cp -R dependencies/7zip/macx/* YACReaderLibraryServer.app/Contents/MacOS/utils/
+cp -R dependencies/7zip/macx/${ARCH}/* YACReader.app/Contents/MacOS/utils/
+cp -R dependencies/7zip/macx/${ARCH}/* YACReaderLibrary.app/Contents/MacOS/utils/
+cp -R dependencies/7zip/macx/${ARCH}/* YACReaderLibraryServer.app/Contents/MacOS/utils/
 
 cp -R release/server YACReaderLibrary.app/Contents/MacOS/
 cp -R release/server YACReaderLibraryServer.app/Contents/MacOS/
@@ -74,7 +87,7 @@ fi
 
 echo "Preparing apps for release, Done."
 
-dest="YACReader-$VERSION.$BUILD_NUMBER MacOSX-Intel ${QT_VERSION}"
+dest="YACReader-$VERSION.$BUILD_NUMBER MacOSX-$ARCH_NAME ${QT_VERSION}"
 echo "Copying to destination folder ${dest}"
 mkdir -p "$dest"
 cp -R YACReader.app "${dest}/YACReader.app"
@@ -98,6 +111,7 @@ echo "Creating dmg package"
 sed -i'' -e "s/#VERSION#/$VERSION/g" dmg.json
 sed -i'' -e "s/#BUILD_NUMBER#/$BUILD_NUMBER/g" dmg.json
 sed -i'' -e "s/#QT_VERSION#/$QT_VERSION/g" dmg.json
+sed -i'' -e "s/#ARCH_NAME#/$ARCH_NAME/g" dmg.json
 appdmg dmg.json "$dest.dmg"
 
 if [ "$SKIP_CODESIGN" = false ]; then

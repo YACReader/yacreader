@@ -1,0 +1,1 @@
+Get 7z.so prebuilt binaires for 7zip 23.01 using Format7zF bundle with asm support.
