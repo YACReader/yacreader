@@ -52,9 +52,9 @@ If you are interested in contributing to the project the first step should be to
 Contributions are not restricted to coding; you can help the project by bringing new UI/UX ideas, designing new assets, writing manuals or tutorials, translating the apps, etc. If you are interested in DevOps, YACReader uses Azure Pipelines for CI/CD, any improvements in that area are welcome. Testing pre-releases is also really appreciated.
 
 #### Dev Setup
-YACReader is developed in *c++/Qt*, so the first thing you need to do is to install a *C++* compiler or environment that supports at least *C++17* and *Qt*. In *Windows* I use *Visual Studio Community Edition 2019* as build system and in *macos* I use Xcode, but I do all the coding using *QtCreator*. The project is adding support to *Qt6* and it already compiles under it but it is not ready to ship, so you need to make sure that everything works in both *Qt5* and *Qt6*, you only need to install *Qt5* for now and *CI* will check that everything builds with *Qt6*.
+YACReader is developed in *c++/Qt*, so the first thing you need to do is to install a *C++* compiler or environment that supports at least *C++17* and *Qt*. In *Windows* I use *Visual Studio Community Edition 2019* as build system and in *macos* I use Xcode, but I do all the coding using *QtCreator*. The project support *Qt5* and *Qt6* at the moment so you need to make sure that everything works in both *Qt5* and *Qt6*, you only need to install one flavor of *Qt* and *CI* will check that everything builds with both, I recommend using *Qt6*.
 
-The repo includes binaries for the dependencies needed for *Windows* (MSVC compiler) and *macos* (clang) but you need to configure *7zip/p7zip* dependency manually, please take a look at *compressed_archive/README_7zip.txt*.
+The repo includes binaries for the dependencies needed for *Windows* (MSVC compiler) and *macos* (clang) but you need to configure *7zip* dependency manually, please take a look at *compressed_archive/README_7zip.txt*.
 
 ##### Running and debugging
 YACReader needs to find its dependencies at runtime, make sure that *Qt* binaries are in your *PATH* and the third-party binaries are next to the executable. The best way to make sure you have all the third-party binaries in place is to check YACReader installation and copy the binaries in your output folder.
