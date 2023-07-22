@@ -17,13 +17,10 @@ if [ "$6" == "clean" ]; then
     ./cleanOSX.sh
 fi
 
-if [ "$ARCH" == "arm64" ]; then
-	ARCH_NAME="Apple"
-elif [ "$ARCH" == "x86_64" ]; then
+if [ "$ARCH" == "x86_64" ]; then
 	ARCH_NAME="Intel"
-else
-	echo "Unknown arch: $ARCH"
-	exit 1
+elif [ "$ARCH" == "x86_64" ]; then
+	ARCH_NAME="U"
 fi
 
 echo "Building for $ARCH_NAME"
@@ -32,19 +29,19 @@ hash qmake 2>/dev/null || { echo >&2 "Qmake command not available. Please add th
 
 echo "Compiling YACReader"
 cd YACReader
-qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="${ARCH}"
+qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"
 make
 cd ..
 
 echo "Compiling YACReaderLibrary"
 cd YACReaderLibrary
-qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="${ARCH}"
+qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"
 make
 cd ..
 
 echo "Compiling YACReaderLibraryServer"
 cd YACReaderLibraryServer
-qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="${ARCH}"
+qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"
 make
 cd ..
 
@@ -87,7 +84,7 @@ fi
 
 echo "Preparing apps for release, Done."
 
-dest="YACReader-$VERSION.$BUILD_NUMBER MacOSX-$ARCH_NAME ${QT_VERSION}"
+dest="YACReader-$VERSION.$BUILD_NUMBER MacOSX $ARCH_NAME ${QT_VERSION}"
 echo "Copying to destination folder ${dest}"
 mkdir -p "$dest"
 cp -R YACReader.app "${dest}/YACReader.app"
