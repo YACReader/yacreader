@@ -1,3 +1,5 @@
 7zip 23.01 built from the original sources using the Format7zF bundle
 
-TODO: try to get the optimized version of 7z.so by using the custom makefiles.
+Universal binary created using lipo:
+
+lipo -create -arch arm64 arm64/7z.so -arch x86_64 x86_64/7z.so -o universal/7z.so
