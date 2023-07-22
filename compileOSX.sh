@@ -18,8 +18,10 @@ if [ "$6" == "clean" ]; then
 fi
 
 if [ "$ARCH" == "x86_64" ]; then
+    ARCHS="x86_64"
 	ARCH_NAME="Intel"
-elif [ "$ARCH" == "x86_64" ]; then
+else
+    ARCHS="x86_64 arm64"
 	ARCH_NAME="U"
 fi
 
@@ -29,19 +31,19 @@ hash qmake 2>/dev/null || { echo >&2 "Qmake command not available. Please add th
 
 echo "Compiling YACReader"
 cd YACReader
-qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"
+qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="$ARCHS"
 make
 cd ..
 
 echo "Compiling YACReaderLibrary"
 cd YACReaderLibrary
-qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"
+qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="$ARCHS"
 make
 cd ..
 
 echo "Compiling YACReaderLibraryServer"
 cd YACReaderLibraryServer
-qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="x86_64 arm64"
+qmake DEFINES+="BUILD_NUMBER=\\\\\\\"${BUILD_NUMBER}\\\\\\\"" QMAKE_APPLE_DEVICE_ARCHS="$ARCHS"
 make
 cd ..
 
