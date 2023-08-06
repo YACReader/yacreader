@@ -1420,7 +1420,7 @@ void LibraryWindow::loadLibrary(const QString &name)
         QString dbVersion;
         if (d.exists(path) && d.exists(path + "/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path + "/library.ydb")) != "") // si existe en disco la biblioteca seleccionada, y es válida..
         {
-            int comparation = DataBaseManagement::compareVersions(dbVersion, VERSION);
+            int comparation = DataBaseManagement::compareVersions(dbVersion, DB_VERSION);
 
             if (comparation < 0) {
                 int ret = QMessageBox::question(this, tr("Update needed"), tr("This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?"), QMessageBox::Yes, QMessageBox::No);

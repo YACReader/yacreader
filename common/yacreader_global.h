@@ -8,6 +8,10 @@
 
 #define VERSION "9.13.1"
 
+// Used to check if the database needs to be updated, the version is stored in the database.
+// This value is only incremented when the database structure changes.
+#define DB_VERSION "9.13.1"
+
 #define IMPORT_COMIC_INFO_XML_METADATA "IMPORT_COMIC_INFO_XML_METADATA"
 #define COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES "COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES"
 
