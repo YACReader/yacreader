@@ -1992,13 +1992,13 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     setFolderAsNormalAction->setText(tr("comic"));
 
     auto setFolderAsWesternMangaAction = new QAction();
-    setFolderAsMangaAction->setText(tr("manga (or left to right)"));
+    setFolderAsWesternMangaAction->setText(tr("manga (or left to right)"));
 
     auto setFolderAsWebComicAction = new QAction();
-    setFolderAsNormalAction->setText(tr("web comic"));
+    setFolderAsWebComicAction->setText(tr("web comic"));
 
     auto setFolderAs4KomaAction = new QAction();
-    setFolderAsMangaAction->setText(tr("4koma (or top to botom"));
+    setFolderAs4KomaAction->setText(tr("4koma (or top to botom"));
 
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
