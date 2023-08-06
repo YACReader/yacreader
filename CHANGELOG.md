@@ -2,6 +2,12 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## WIP
+
+### YACReaderLibrary
+* Fix "Set type" context menu the grid view for folders.
+* Add a different versioning strategy for databases. DBs version will change only when the structure changes and not when YACReader version changes.
+
 ## 9.13.1
 
 ### YACReaderLibrary
