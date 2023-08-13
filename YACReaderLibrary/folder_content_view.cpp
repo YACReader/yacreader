@@ -203,6 +203,12 @@ void FolderContentView::setContinueReadingModel(ComicModel *model)
     }
 }
 
+void FolderContentView::reloadContent()
+{
+    folderModel->reload();
+    reloadContinueReadingModel();
+}
+
 void FolderContentView::reloadContinueReadingModel()
 {
     if (!folderModel->isSubfolder) {
