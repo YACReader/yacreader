@@ -1289,10 +1289,10 @@ void LibraryWindow::createConnections()
     connect(importComicsInfoAction, &QAction::triggered, this, &LibraryWindow::showImportComicsInfo);
 
     // properties & config
-    connect(propertiesDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::reselectCurrentSource);
+    connect(propertiesDialog, &QDialog::accepted, contentViewsManager, &YACReaderContentViewsManager::updateCurrentContentView);
 
     // comic vine
-    connect(comicVineDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::reselectCurrentSource, Qt::QueuedConnection);
+    connect(comicVineDialog, &QDialog::accepted, contentViewsManager, &YACReaderContentViewsManager::updateCurrentContentView, Qt::QueuedConnection);
 
     connect(updateLibraryAction, &QAction::triggered, this, &LibraryWindow::updateLibrary);
     connect(renameLibraryAction, &QAction::triggered, this, &LibraryWindow::renameLibrary);
