@@ -1698,15 +1698,11 @@ void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
 
         if (item == nullptr) {
             foldersModel->reload();
-            navigationController->loadFolderInfo(QModelIndex());
         } else {
-            auto id = item->id;
             foldersModel->reload(mi);
-            auto newMi = foldersModel->index(id);
-
-            foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newMi));
-            navigationController->loadFolderInfo(newMi);
         }
+
+        contentViewsManager->updateCurrentContentView();
     }
 
     enableNeededActions();
@@ -2270,8 +2266,10 @@ void LibraryWindow::create(QString source, QString dest, QString name)
 
 void LibraryWindow::reloadCurrentLibrary()
 {
-    qDebug() << "reloadCurrentLibrary";
-    loadLibrary(selectedLibrary->currentText());
+    foldersModel->reload();
+    contentViewsManager->updateCurrentContentView();
+
+    enableNeededActions();
 }
 
 void LibraryWindow::openLastCreated()
