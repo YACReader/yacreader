@@ -28,7 +28,7 @@ private slots:
     void resetToDefaults();
 
 private:
-    // General tabss
+    // General tabs
     QCheckBox *displayContinueReadingBannerCheck;
     QCheckBox *trayIconCheckbox;
     QCheckBox *startToTrayCheckbox;
