@@ -48,6 +48,13 @@ void ComicsView::setModel(ComicModel *m)
     model = m;
 }
 
+void ComicsView::reloadContent()
+{
+    if (model != nullptr) {
+        model->reload();
+    }
+}
+
 void ComicsView::updateInfoForIndex(int index)
 {
     QQmlContext *ctxt = view->rootContext();
