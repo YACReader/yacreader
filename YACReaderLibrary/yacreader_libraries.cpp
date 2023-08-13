@@ -83,13 +83,13 @@ bool YACReaderLibraries::contains(int id)
 
 void YACReaderLibraries::remove(const QString &name)
 {
-    auto library = std::find_if(libraries.cbegin(), libraries.cend(), [name](const YACReaderLibrary &library) { return library.getName() == name; });
+    auto library = std::find_if(libraries.begin(), libraries.end(), [name](const YACReaderLibrary &library) { return library.getName() == name; });
     libraries.erase(library);
 }
 
 void YACReaderLibraries::rename(const QString &oldName, const QString &newName)
 {
-    auto library = std::find_if(libraries.cbegin(), libraries.cend(), [oldName](const YACReaderLibrary &library) { return library.getName() == oldName; });
+    auto library = std::find_if(libraries.begin(), libraries.end(), [oldName](const YACReaderLibrary &library) { return library.getName() == oldName; });
     libraries.erase(library);
     libraries.append(YACReaderLibrary(newName, library->getPath(), library->getLegacyId(), library->getId()));
 }
