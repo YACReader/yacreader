@@ -756,18 +756,7 @@ void YACReaderFlowGL::populate(int n)
         insert(s.toLocal8Bit().data(), defaultTexture, x, y);
     }
 
-    /*
-        for(int i = 0;i<n;i++){
-                QPixmap img = QPixmap(QString("./cover%1.jpg").arg(i+1));
-                GLuint cover = bindTexture(img, GL_TEXTURE_2D);
-                float y = 0.5 * (float(img.height())/img.width());
-                Insert("cover", cover, x, y);
-        }*/
-
     loaded = QVector<bool>(n, false);
-    // marks = QVector<bool>(n,false);
-
-    // worker->start();
 }
 
 void YACReaderFlowGL::reset()

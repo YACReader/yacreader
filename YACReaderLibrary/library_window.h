@@ -145,7 +145,7 @@ public:
     ComicModel *comicsModel;
     ReadingListModel *listsModel;
     ReadingListModelProxy *listsModelProxy;
-    // QStringList paths;
+
     YACReaderLibraries libraries;
 
     QStackedWidget *mainWidget;
