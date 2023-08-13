@@ -64,7 +64,10 @@ public:
     unsigned long long int id;
     QList<QString> comicNames;
     FolderItem *originalItem;
+    void setData(const QList<QVariant> &data);
     void setData(int column, const QVariant &value);
+    void addChild(FolderItem *child, int childIndex);
+    void removeChild(FolderItem *child);
     void removeChild(int childIndex);
     void clearChildren();
     QList<FolderItem *> children();

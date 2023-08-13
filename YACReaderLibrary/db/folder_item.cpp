@@ -65,6 +65,17 @@ void FolderItem::setData(int column, const QVariant &value)
     itemData[column] = value;
 }
 
+void FolderItem::addChild(FolderItem *child, int childIndex)
+{
+    child->parentItem = this;
+    childItems.insert(childIndex, child);
+}
+
+void FolderItem::removeChild(FolderItem *child)
+{
+    childItems.removeOne(child);
+}
+
 void FolderItem::removeChild(int childIndex)
 {
     childItems.removeAt(childIndex);
@@ -84,6 +95,11 @@ QList<FolderItem *> FolderItem::children()
 FolderItem *FolderItem::parent()
 {
     return parentItem;
+}
+
+void FolderItem::setData(const QList<QVariant> &data)
+{
+    itemData = data;
 }
 
 int FolderItem::row() const
