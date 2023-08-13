@@ -20,7 +20,7 @@ public:
                           StyleEllipse,
                           StyleArc };
 
-    explicit BusyIndicator(QWidget *parent = 0);
+    explicit BusyIndicator(QWidget *parent = 0, int size = 30);
 
     void paintEvent(QPaintEvent *);
     QSize minimumSizeHint() const;
@@ -47,6 +47,7 @@ private:
     IndicatorStyle m_style;
 
     QColor fillColor;
+    int size;
 };
 
 #endif // BUSYINDICATOR_H
