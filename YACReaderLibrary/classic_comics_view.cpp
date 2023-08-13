@@ -135,6 +135,7 @@ void ClassicComicsView::setModel(ComicModel *model)
     } else {
         connect(model, &QAbstractItemModel::dataChanged, this, &ClassicComicsView::applyModelChanges, Qt::UniqueConnection);
         connect(model, &QAbstractItemModel::rowsRemoved, this, &ClassicComicsView::removeItemsFromFlow, Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::rowsInserted, this, &ClassicComicsView::addItemsToFlow, Qt::UniqueConnection);
         // TODO: Missing method resortCovers?
         connect(model, &ComicModel::resortedIndexes, comicFlow, &ComicFlowWidget::resortCovers, Qt::UniqueConnection);
         connect(model, &ComicModel::newSelectedIndex, this, &ClassicComicsView::setCurrentIndex, Qt::UniqueConnection);
@@ -339,6 +340,15 @@ void ClassicComicsView::removeItemsFromFlow(const QModelIndex &parent, int from,
     Q_UNUSED(parent);
     for (int i = from; i <= to; i++)
         comicFlow->remove(i);
+}
+
+void ClassicComicsView::addItemsToFlow(const QModelIndex &parent, int from, int to)
+{
+    Q_UNUSED(parent);
+    for (int i = from; i <= to; i++) {
+        auto coverPath = model->index(i, 0).data(ComicModel::CoverPathRole).toString();
+        comicFlow->add(coverPath.remove("file:"), i); // TODO: find a better way to get the path, file:+the_path is the way the URL is created for QML
+    }
 }
 
 void ClassicComicsView::closeEvent(QCloseEvent *event)

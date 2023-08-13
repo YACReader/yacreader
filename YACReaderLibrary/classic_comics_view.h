@@ -42,6 +42,7 @@ public slots:
     void saveSplitterStatus();
     void applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
     void removeItemsFromFlow(const QModelIndex &parent, int from, int to);
+    void addItemsToFlow(const QModelIndex &parent, int from, int to);
     // ComicsView
     void setShowMarks(bool show) override;
     void selectAll() override;
