@@ -24,6 +24,7 @@ public:
     void setImagePaths(const QStringList &paths);
     // bool eventFilter(QObject *target, QEvent *event);
     void keyPressEvent(QKeyEvent *event) override;
+    void insertSlide(const QString &path, int index);
     void removeSlide(int cover);
     void resortCovers(QList<int> newOrder);
 

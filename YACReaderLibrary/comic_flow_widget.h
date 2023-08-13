@@ -30,6 +30,7 @@ public slots:
     virtual void setFlowType(FlowType flowType) = 0;
     virtual void render() = 0;
     virtual void updateConfig(QSettings *settings) = 0;
+    virtual void add(const QString &path, int index) = 0;
     virtual void remove(int cover) = 0;
     virtual void resortCovers(QList<int> newOrder) = 0;
 signals:
@@ -61,6 +62,7 @@ public:
     void setFlowType(FlowType flowType) override;
     void render() override;
     void updateConfig(QSettings *settings) override;
+    void add(const QString &path, int index) override;
     void remove(int cover) override;
     void resortCovers(QList<int> newOrder) override;
 
@@ -101,6 +103,7 @@ public:
     void setFlowType(FlowType flowType) override;
     void render() override;
     void updateConfig(QSettings *settings) override;
+    void add(const QString &path, int index) override;
     void remove(int cover) override;
     void resortCovers(QList<int> newOrder) override;
     // public slots:
