@@ -9,6 +9,7 @@
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_libraries.h"
+#include "libraries_update_coordinator.h"
 
 #include "yacreader_navigation_controller.h"
 #include "comic_query_result_processor.h"
@@ -147,6 +148,7 @@ public:
     ReadingListModelProxy *listsModelProxy;
 
     YACReaderLibraries libraries;
+    LibrariesUpdateCoordinator *librariesUpdateCoordinator;
 
     QStackedWidget *mainWidget;
     NoLibrariesWidget *noLibrariesWidget;
@@ -314,7 +316,7 @@ public:
     QPoint _pos;
 
 protected:
-    virtual void closeEvent(QCloseEvent *event);
+    virtual void closeEvent(QCloseEvent *event) override;
 
 public:
     LibraryWindow();
