@@ -68,6 +68,16 @@ enum class FileType : int {
     Yonkoma, // 4Koma
 };
 
+enum class LibrariesUpdateInterval : int {
+    Minutes30 = 0,
+    Hourly,
+    Hours2,
+    Hours4,
+    Hours8,
+    Hours12,
+    Daily,
+};
+
 struct OpenComicSource {
     enum Source {
         Folder = 0,
