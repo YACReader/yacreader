@@ -207,6 +207,8 @@ public:
     void insert(char *name, QOpenGLTexture *texture, float x, float y, int item = -1);
     // removes a item
     virtual void remove(int item);
+    // inserts a default texture into `item` and set is as pending to load
+    void add(int item);
     // replaces the texture of the item 'item' with Tex
     void replace(char *name, QOpenGLTexture *texture, float x, float y, int item);
     // create n covers with the default nu
@@ -295,6 +297,7 @@ public:
     void setImagePaths(QStringList paths);
     void updateImageData();
     void remove(int item);
+    void add(const QString &path, int index);
     void resortCovers(QList<int> newOrder);
     friend class ImageLoaderGL;
 
