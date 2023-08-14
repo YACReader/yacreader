@@ -11,6 +11,8 @@
 #include "yacreader_libraries.h"
 #include "yacreader_local_server.h"
 
+#include "libraries_update_coordinator.h"
+
 #include "libraries_updater.h"
 
 #include "console_ui_library_creator.h"
@@ -237,6 +239,16 @@ int main(int argc, char **argv)
         updater.updateIfNeeded();
 
         YACReaderLocalServer *localServer = new YACReaderLocalServer();
+
+        YACReaderLibraries libraries;
+        auto librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries);
+
+        app.connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, &app, []() {
+            QLOG_INFO() << "Starting libraries update";
+        });
+        app.connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, &app, []() {
+            QLOG_INFO() << "Done updating libraries";
+        });
 
         int ret = app.exec();
 
