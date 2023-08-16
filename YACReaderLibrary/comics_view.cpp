@@ -52,6 +52,7 @@ void ComicsView::reloadContent()
 {
     if (model != nullptr) {
         model->reload();
+        updateInfoForIndex(currentIndex().row());
     }
 }
 
