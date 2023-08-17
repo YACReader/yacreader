@@ -1290,6 +1290,9 @@ void LibraryWindow::createConnections()
 
     // properties & config
     connect(propertiesDialog, &QDialog::accepted, contentViewsManager, &YACReaderContentViewsManager::updateCurrentContentView);
+    connect(propertiesDialog, &PropertiesDialog::coverChangedSignal, this, [=](const ComicDB &comic) {
+        comicsModel->notifyCoverChange(comic);
+    });
 
     // comic vine
     connect(comicVineDialog, &QDialog::accepted, contentViewsManager, &YACReaderContentViewsManager::updateCurrentContentView, Qt::QueuedConnection);
