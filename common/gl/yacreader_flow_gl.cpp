@@ -712,7 +712,7 @@ void YACReaderFlowGL::remove(int item)
     QOpenGLTexture *texture = images[item].texture;
 
     int count = item;
-    while (count <= numObjects - 2) {
+    while (count <= numObjects - 1) {
         images[count].index--;
         count++;
     }
