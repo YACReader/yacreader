@@ -1165,6 +1165,25 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
+void ComicModel::notifyCoverChange(const ComicDB &comic)
+{
+    auto it = std::find_if(_data.begin(), _data.end(), [comic](ComicItem *item) { return item->data(ComicModel::Id).toULongLong() == comic.id; });
+    auto itemIndex = std::distance(_data.begin(), it);
+    auto item = _data[itemIndex];
+
+    // emiting a dataChage doesn't work in QML for some reason, CoverPathRole is requested but the view doesn't update the image
+    // removing and reading again works with the flow views without any additional code, but it's not the best solution
+    beginRemoveRows(QModelIndex(), itemIndex, itemIndex);
+    _data.removeAt(itemIndex);
+    endRemoveRows();
+
+    beginInsertRows(QModelIndex(), itemIndex, itemIndex);
+    _data.insert(itemIndex, item);
+    endInsertRows();
+
+    // this doesn't work in QML -> emit dataChanged(index(itemIndex, 0), index(itemIndex, 0), QVector<int>() << CoverPathRole);
+}
+
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
 {
     return QUrl("file:" + _databasePath + "/covers/" + hash + ".jpg");
