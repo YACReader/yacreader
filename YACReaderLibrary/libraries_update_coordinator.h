@@ -13,6 +13,7 @@ class LibrariesUpdateCoordinator : public QObject
 public:
     LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, QObject *parent = 0);
 
+    void init();
     void updateLibraries();
     void stop();
     void cancel();
@@ -29,7 +30,7 @@ private slots:
 private:
     QSettings *settings;
     YACReaderLibraries &libraries;
-    QTimer *timer;
+    QTimer timer;
     QElapsedTimer elapsedTimer;
     std::future<void> updateFuture;
     bool canceled;

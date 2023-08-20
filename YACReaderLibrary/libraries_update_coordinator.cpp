@@ -6,16 +6,20 @@
 #include "yacreader_global.h"
 
 LibrariesUpdateCoordinator::LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, QObject *parent)
-    : QObject(parent), libraries(libraries), timer(new QTimer(this))
+    : QObject(parent), libraries(libraries)
 {
     libraries.load();
 
     this->settings = settings;
 
-    timer->setInterval(1000 * 60);
-    timer->start();
-    connect(timer, &QTimer::timeout, this, &LibrariesUpdateCoordinator::checkUpdatePolicy);
+    timer.setInterval(1000 * 60);
 
+    connect(&timer, &QTimer::timeout, this, &LibrariesUpdateCoordinator::checkUpdatePolicy);
+}
+
+void LibrariesUpdateCoordinator::init()
+{
+    timer.start();
     elapsedTimer.start();
 
     if (settings->value(UPDATE_LIBRARIES_AT_STARTUP, false).toBool()) {
