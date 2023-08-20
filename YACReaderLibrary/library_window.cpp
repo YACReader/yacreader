@@ -2851,6 +2851,10 @@ void LibraryWindow::closeEvent(QCloseEvent *event)
 void LibraryWindow::prepareToCloseApp()
 {
     httpServer->stop();
+
+    libraryCreator->stop();
+    librariesUpdateCoordinator->stop();
+
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
 
     contentViewsManager->comicsView->close();
