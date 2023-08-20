@@ -110,6 +110,7 @@ void LibraryCreator::processLibrary(const QString &source, const QString &target
 void LibraryCreator::run()
 {
     stopRunning = false;
+    canceled = false;
 #if !defined use_unarr && !defined use_libarchive
 // check for 7z lib
 #if defined Q_OS_UNIX && !defined Q_OS_MACOS
@@ -187,13 +188,15 @@ void LibraryCreator::run()
                 update(QDir(_source));
             }
 
-            if (partialUpdate) {
-                auto folder = DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
-                DBHelper::propagateFolderUpdatesToParent(folder, _database);
-            } else
-                DBHelper::updateChildrenInfo(_database);
+            if (!canceled) {
+                if (partialUpdate) {
+                    auto folder = DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
+                    DBHelper::propagateFolderUpdatesToParent(folder, _database);
+                } else
+                    DBHelper::updateChildrenInfo(_database);
 
-            _database.commit();
+                _database.commit();
+            }
             _database.close();
         }
 
@@ -221,6 +224,13 @@ void LibraryCreator::run()
 void LibraryCreator::stop()
 {
     QSqlDatabase::database(_databaseConnection).commit();
+    stopRunning = true;
+}
+
+void LibraryCreator::cancel()
+{
+    QSqlDatabase::database(_databaseConnection).rollback();
+    canceled = true;
     stopRunning = true;
 }
 
@@ -291,7 +301,7 @@ QString pseudoHash(const QFileInfo &fileInfo)
     QCryptographicHash crypto(QCryptographicHash::Sha1);
     QFile file(fileInfo.absoluteFilePath());
     file.open(QFile::ReadOnly);
-    crypto.addData(file.read(524288));
+    crypto.addData(file.read(52428));
     file.close();
     // hash Sha1 del primer 0.5MB + filesize
     return QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
@@ -376,6 +386,10 @@ void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &
 
 void LibraryCreator::update(QDir dirS)
 {
+    if (stopRunning) {
+        return;
+    }
+
     auto _database = QSqlDatabase::database(_databaseConnection);
     // QLOG_TRACE() << "Updating" << dirS.absolutePath();
     // QLOG_TRACE() << "Getting info from dir" << dirS.absolutePath();

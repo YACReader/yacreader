@@ -26,7 +26,8 @@ public:
     void createLibrary(const QString &source, const QString &target);
     void updateLibrary(const QString &source, const QString &target);
     void updateFolder(const QString &source, const QString &target, const QString &folder, const QModelIndex &dest);
-    void stop();
+    void stop(); // used to stop the process and keep the changes
+    void cancel(); // cancels this run and changes in the DB are rolled back
 
 private:
     void processLibrary(const QString &source, const QString &target);
@@ -51,6 +52,7 @@ private:
     // qulonglong insertFolder(qulonglong parentId,const Folder & folder);
     // qulonglong insertComic(const Comic & comic);
     bool stopRunning;
+    bool canceled;
     // LibraryCreator está en modo creación si creation == true;
     bool creation;
     bool partialUpdate;
