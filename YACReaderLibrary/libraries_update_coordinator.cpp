@@ -83,10 +83,14 @@ void LibrariesUpdateCoordinator::startUpdate()
         return;
     }
 
+    canceled = false;
+
     updateFuture = std::async(std::launch::async, [this] {
         emit updateStarted();
         for (auto library : libraries.getLibraries()) {
-            updateLibrary(library.getPath());
+            if (!canceled) {
+                updateLibrary(library.getPath());
+            }
         }
         emit updateEnded();
     });
@@ -100,14 +104,34 @@ void LibrariesUpdateCoordinator::updateLibrary(const QString &path)
     }
 
     QEventLoop eventLoop;
-    LibraryCreator *libraryCreator = new LibraryCreator(settings);
+    auto libraryCreator = new LibraryCreator(settings);
+    std::shared_ptr<LibraryCreator> sharedPtr(libraryCreator);
+    currentLibraryCreator = sharedPtr;
+
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
     libraryCreator->updateLibrary(cleanPath, QDir::cleanPath(pathDir.absolutePath() + "/.yacreaderlibrary"));
 
     connect(libraryCreator, &LibraryCreator::finished, &eventLoop, &QEventLoop::quit);
-    connect(libraryCreator, &LibraryCreator::finished, libraryCreator, &QObject::deleteLater);
 
     libraryCreator->start();
     eventLoop.exec();
+}
+
+void LibrariesUpdateCoordinator::stop()
+{
+    canceled = true;
+
+    if (auto libraryCreator = currentLibraryCreator.lock()) {
+        libraryCreator->stop();
+    }
+}
+
+void LibrariesUpdateCoordinator::cancel()
+{
+    canceled = true;
+
+    if (auto libraryCreator = currentLibraryCreator.lock()) {
+        libraryCreator->cancel();
+    }
 }

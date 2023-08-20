@@ -5,6 +5,7 @@
 #include <QtCore>
 
 class YACReaderLibraries;
+class LibraryCreator;
 
 class LibrariesUpdateCoordinator : public QObject
 {
@@ -13,6 +14,7 @@ public:
     LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, QObject *parent = 0);
 
     void updateLibraries();
+    void cancel();
 
 signals:
     void updateStarted();
@@ -29,6 +31,8 @@ private:
     QTimer *timer;
     QElapsedTimer elapsedTimer;
     std::future<void> updateFuture;
+    bool canceled;
+    std::weak_ptr<LibraryCreator> currentLibraryCreator;
 };
 
 #endif // LIBRARIES_UPDATE_COORDINATOR_H
