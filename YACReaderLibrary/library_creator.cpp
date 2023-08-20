@@ -301,7 +301,7 @@ QString pseudoHash(const QFileInfo &fileInfo)
     QCryptographicHash crypto(QCryptographicHash::Sha1);
     QFile file(fileInfo.absoluteFilePath());
     file.open(QFile::ReadOnly);
-    crypto.addData(file.read(52428));
+    crypto.addData(file.read(524288));
     file.close();
     // hash Sha1 del primer 0.5MB + filesize
     return QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
