@@ -14,6 +14,7 @@ public:
     LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, QObject *parent = 0);
 
     void updateLibraries();
+    void stop();
     void cancel();
 
 signals:
