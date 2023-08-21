@@ -75,6 +75,14 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(target);
 
+        if (!db.isValid()) {
+            QString error = "Unable to find database at: " + _target;
+            QLOG_ERROR() << error;
+            emit failedOpeningDB(error);
+            emit finished();
+            return;
+        }
+
         foreach (QString folderName, folders) {
             if (folderName.isEmpty()) {
                 break;
@@ -170,11 +178,20 @@ void LibraryCreator::run()
         }
         {
             auto _database = DataBaseManagement::loadDatabase(_target);
+
+            if (!_database.isValid()) {
+                QString error = "Unable to find database at: " + _target;
+                QLOG_ERROR() << error;
+                emit failedOpeningDB(error);
+                emit finished();
+                return;
+            }
+
             _databaseConnection = _database.connectionName();
 
             //_database.setDatabaseName(_target+"/library.ydb");
             if (!_database.open()) {
-                QLOG_ERROR() << "Unable to open data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
+                QLOG_ERROR() << "Unable to open database" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
                 emit failedOpeningDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
                 emit finished();
                 creation = false;
