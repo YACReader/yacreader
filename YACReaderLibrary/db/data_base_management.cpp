@@ -120,7 +120,10 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 
 QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 {
-    // TODO check path
+    if (!QFile::exists(path + "/library.ydb")) {
+        return QSqlDatabase();
+    }
+
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", path + threadId);
     db.setDatabaseName(path + "/library.ydb");
@@ -134,7 +137,10 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 
 QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
 {
-    // TODO check path
+    if (!QFile::exists(filePath)) {
+        return QSqlDatabase();
+    }
+
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", filePath + threadId);
     db.setDatabaseName(filePath);
@@ -196,7 +202,7 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
                                // new 7.0 fields
 
                                "hasBeenOpened BOOLEAN DEFAULT 0,"
-                               "rating INTEGER DEFAULT 0," // TODO_METADATA change type to REAL with two decimals
+                               "rating REAL DEFAULT 0," // changed to REAL from INTEGER (9.13)
                                "currentPage INTEGER DEFAULT 1, "
                                "bookmark1 INTEGER DEFAULT -1, "
                                "bookmark2 INTEGER DEFAULT -1, "
@@ -401,6 +407,7 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
+// TODO_METADATA: validate imported info
 bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 {
     QString error;
