@@ -108,6 +108,9 @@ QHash<int, QByteArray> FolderModel::roleNames() const
 
 void FolderModel::reload()
 {
+    if (rootItem == nullptr)
+        return;
+
     if (!isSubfolder) {
         auto newModelData = createModelData(_databasePath);
 
