@@ -42,7 +42,9 @@ void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 {
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = false;
-    processLibrary(source, target);
+    _source = source;
+    _target = target;
+    _mode = UPDATER;
 }
 
 void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, const QModelIndex &dest)
