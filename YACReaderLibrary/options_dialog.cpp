@@ -278,6 +278,8 @@ QWidget *OptionsDialog::createLibrariesTab()
     librariesBoxLayout->addWidget(updateLibrariesAtCertainTimeCheck);
     librariesBoxLayout->addLayout(updateLibrariesAtCertainTimeLayout);
 
+    librariesBoxLayout->addWidget(new QLabel(tr("WARNING! During library updates writes to the database are disabled!\nDon't schedule updates while you may be using the app actively.")));
+
     auto librariesBox = new QGroupBox(tr("Libraries"));
     librariesBox->setLayout(librariesBoxLayout);
 
