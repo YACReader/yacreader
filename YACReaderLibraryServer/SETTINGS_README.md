@@ -2,7 +2,7 @@
 
 When you launch `yacreaderlibraryserver` the app uses a settings file to determine some behaviors. The path to the settings file is printed as part of the help when you run `yacreaderlibraryserver` with no commands.
 
-The settings file follows the `INI` format and it contains various sections, the one you should modify is `[libraryConfig]`. The settings file is shared between `YACReaderLibrary`` and `YACReaderLibraryServer`, this file only describes the settings relevant for `YACReaderLibraryServer`
+The settings file follows the `INI` format and it contains various sections, the one you should modify is `[libraryConfig]`. The settings file is shared between `YACReaderLibrary` and `YACReaderLibraryServer`, this file only describes the settings relevant for `YACReaderLibraryServer`.
 
 The following is a template for the settings available for `YACReaderLibraryServer`, it includes the default values and the values available for each setting:
 
@@ -35,3 +35,5 @@ UPDATE_LIBRARIES_AT_CERTAIN_TIME=false
 UPDATE_LIBRARIES_AT_CERTAIN_TIME_TIME=00:00
 
 ```
+
+WARNING! During library updates writes to the database are disabled! Don't schedule updates while you may be using the app actively."
