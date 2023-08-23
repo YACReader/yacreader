@@ -11,7 +11,7 @@ class LibrariesUpdateCoordinator : public QObject
 {
     Q_OBJECT
 public:
-    LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, QObject *parent = 0);
+    LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, const std::function<bool()> &canStartUpdateProvider, QObject *parent = 0);
 
     void init();
     void updateLibraries();
@@ -37,6 +37,8 @@ private:
     std::future<void> updateFuture;
     bool canceled;
     std::weak_ptr<LibraryCreator> currentLibraryCreator;
+
+    std::function<bool()> canStartUpdateProvider;
 };
 
 #endif // LIBRARIES_UPDATE_COORDINATOR_H

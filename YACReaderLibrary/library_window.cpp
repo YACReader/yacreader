@@ -502,7 +502,12 @@ void LibraryWindow::doModels()
 void LibraryWindow::setupCoordinators()
 {
     recentVisibilityCoordinator = new RecentVisibilityCoordinator(settings, foldersModel, contentViewsManager->folderContentView, comicsModel);
-    librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries, this);
+
+    auto canStartUpdateProvider = [this]() {
+        return comicVineDialog->isVisible() == false &&
+                propertiesDialog->isVisible() == false;
+    };
+    librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries, canStartUpdateProvider, this);
 
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, sideBar->librariesTitle, &YACReaderTitledToolBar::showBusyIndicator);
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, sideBar->librariesTitle, &YACReaderTitledToolBar::hideBusyIndicator);

@@ -5,8 +5,8 @@
 #include "yacreader_libraries.h"
 #include "yacreader_global.h"
 
-LibrariesUpdateCoordinator::LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, QObject *parent)
-    : QObject(parent), libraries(libraries)
+LibrariesUpdateCoordinator::LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, const std::function<bool()> &canStartUpdateProvider, QObject *parent)
+    : QObject(parent), libraries(libraries), canStartUpdateProvider(canStartUpdateProvider)
 {
     libraries.load();
 
@@ -78,7 +78,9 @@ void LibrariesUpdateCoordinator::checkUpdatePolicy()
 
 void LibrariesUpdateCoordinator::updateLibraries()
 {
-    startUpdate();
+    if (canStartUpdateProvider()) {
+        startUpdate();
+    }
 }
 
 void LibrariesUpdateCoordinator::startUpdate()
