@@ -22,15 +22,17 @@ public:
 
     explicit BusyIndicator(QWidget *parent = 0, int size = 30);
 
-    void paintEvent(QPaintEvent *);
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
+    void paintEvent(QPaintEvent *) override;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 
     void setIndicatorStyle(IndicatorStyle);
     void setColor(QColor color);
     IndicatorStyle indicatorStyle() const;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 signals:
+    void clicked();
 
 private slots:
     void rotate();

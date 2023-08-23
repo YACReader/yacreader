@@ -63,6 +63,12 @@ BusyIndicator::IndicatorStyle BusyIndicator::indicatorStyle() const
     return m_style;
 }
 
+void BusyIndicator::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    emit clicked();
+}
+
 QPixmap BusyIndicator::generatePixmap(int side)
 {
     QPixmap pixmap(QSize(side, side));

@@ -71,6 +71,7 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
 
     nameLabel = new DropShadowLabel(this);
     busyIndicator = new BusyIndicator(this, 12);
+    connect(busyIndicator, &BusyIndicator::clicked, this, &YACReaderTitledToolBar::cancelOperationRequested);
     busyIndicator->setIndicatorStyle(BusyIndicator::StyleArc);
 #ifdef Y_MAC_UI
     busyIndicator->setColor(QColor("#808080"));

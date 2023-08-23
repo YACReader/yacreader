@@ -15,6 +15,8 @@ public:
 
     void init();
     void updateLibraries();
+
+public slots:
     void stop();
     void cancel();
 

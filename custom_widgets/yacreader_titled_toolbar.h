@@ -34,6 +34,7 @@ public:
     explicit YACReaderTitledToolBar(const QString &title, QWidget *parent = 0);
 
 signals:
+    void cancelOperationRequested();
 
 public slots:
     void addAction(QAction *action);

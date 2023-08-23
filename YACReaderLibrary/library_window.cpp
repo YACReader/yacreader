@@ -513,6 +513,8 @@ void LibraryWindow::setupCoordinators()
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, this, &LibraryWindow::reloadCurrentLibrary);
 
     librariesUpdateCoordinator->init();
+
+    connect(sideBar->librariesTitle, &YACReaderTitledToolBar::cancelOperationRequested, librariesUpdateCoordinator, &LibrariesUpdateCoordinator::cancel);
 }
 
 void LibraryWindow::createActions()
