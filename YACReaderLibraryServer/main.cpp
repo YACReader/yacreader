@@ -246,7 +246,9 @@ int main(int argc, char **argv)
         YACReaderLocalServer *localServer = new YACReaderLocalServer();
 
         YACReaderLibraries libraries;
-        auto librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries);
+        auto librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries, []() {
+            return true;
+        });
 
         app.connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, &app, []() {
             QLOG_INFO() << "Starting libraries update";
