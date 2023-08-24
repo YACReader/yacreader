@@ -83,6 +83,11 @@ void LibrariesUpdateCoordinator::updateLibraries()
     }
 }
 
+bool LibrariesUpdateCoordinator::isRunning() const
+{
+    return updateFuture.valid() && updateFuture.wait_for(std::chrono::seconds(0)) != std::future_status::ready;
+}
+
 void LibrariesUpdateCoordinator::startUpdate()
 {
     if (updateFuture.valid() && updateFuture.wait_for(std::chrono::seconds(0)) != std::future_status::ready) {

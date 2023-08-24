@@ -15,6 +15,7 @@ public:
 
     void init();
     void updateLibraries();
+    bool isRunning() const;
 
 public slots:
     void stop();

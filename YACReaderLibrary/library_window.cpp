@@ -951,6 +951,11 @@ void LibraryWindow::createActions()
 }
 void LibraryWindow::disableComicsActions(bool disabled)
 {
+    if (!disabled && librariesUpdateCoordinator->isRunning()) {
+        disableComicsActions(true);
+        return;
+    }
+
     // if there aren't comics, no fullscreen option will be available
 #ifndef Q_OS_MACOS
     toggleFullScreenAction->setDisabled(disabled);

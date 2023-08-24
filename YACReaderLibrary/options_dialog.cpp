@@ -278,7 +278,10 @@ QWidget *OptionsDialog::createLibrariesTab()
     librariesBoxLayout->addWidget(updateLibrariesAtCertainTimeCheck);
     librariesBoxLayout->addLayout(updateLibrariesAtCertainTimeLayout);
 
-    librariesBoxLayout->addWidget(new QLabel(tr("WARNING! During library updates writes to the database are disabled!\nDon't schedule updates while you may be using the app actively.\nTo stop an automatic update tap on the loading indicator next to the Libraries title.")));
+    librariesBoxLayout->addWidget(new QLabel(tr("WARNING! During library updates writes to the database are disabled!\n"
+                                                "Don't schedule updates while you may be using the app actively.\n"
+                                                "During automatic updates the app will block some of the actions until the update is finished.\n"
+                                                "To stop an automatic update tap on the loading indicator next to the Libraries title.")));
 
     auto librariesBox = new QGroupBox(tr("Libraries"));
     librariesBox->setLayout(librariesBoxLayout);
