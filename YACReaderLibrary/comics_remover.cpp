@@ -21,7 +21,9 @@ void ComicsRemover::process()
     while (i.hasPrevious() && i2.hasPrevious()) {
         QModelIndex mi = i.previous();
         currentComicPath = i2.previous();
-        if (QFile::remove(currentComicPath))
+        if (QFile::moveToTrash(currentComicPath))
+            emit remove(mi.row());
+        else if (QFile::remove(currentComicPath))
             emit remove(mi.row());
         else
             emit removeError();
@@ -50,7 +52,9 @@ void FoldersRemover::process()
         QModelIndex mi = i.previous();
         currentFolderPath = i2.previous();
         QDir d(currentFolderPath);
-        if (d.removeRecursively() || !d.exists()) // the folder is in the DB but no in the drive...
+        if (QFile::moveToTrash(currentFolderPath))
+            emit remove(mi);
+        else if (d.removeRecursively() || !d.exists()) // the folder is in the DB but no in the drive...
             emit remove(mi);
         else
             emit removeError();
