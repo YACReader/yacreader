@@ -36,4 +36,4 @@ UPDATE_LIBRARIES_AT_CERTAIN_TIME_TIME=00:00
 
 ```
 
-WARNING! During library updates writes to the database are disabled! Don't schedule updates while you may be using the app actively."
+WARNING! During library updates writes to the database are disabled! Don't schedule updates while you may be using the app actively.
