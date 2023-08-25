@@ -133,6 +133,11 @@ void ComicFlowWidgetSW::updateConfig(QSettings *settings)
     }
 }
 
+void ComicFlowWidgetSW::add(const QString &path, int index)
+{
+    flow->insertSlide(path, index);
+}
+
 void ComicFlowWidgetSW::remove(int cover)
 {
     flow->removeSlide(cover);
@@ -325,6 +330,11 @@ void ComicFlowWidgetGL::updateConfig(QSettings *settings)
     /*	flow->setVisibility(settings->value("visibilityDistance").toInt());
         flow->setLightStrenght(settings->value("lightStrength").toInt())*/
     ;
+}
+
+void ComicFlowWidgetGL::add(const QString &path, int index)
+{
+    flow->add(path, index);
 }
 
 void ComicFlowWidgetGL::remove(int cover)

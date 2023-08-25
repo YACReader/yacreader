@@ -147,7 +147,7 @@
 <context>
     <name>ClassicComicsView</name>
     <message>
-        <location filename="classic_comics_view.cpp" line="90"/>
+        <location filename="classic_comics_view.cpp" line="92"/>
         <source>Hide comic flow</source>
         <translation>隐藏漫画流</translation>
     </message>
@@ -155,57 +155,82 @@
 <context>
     <name>ComicInfoView</name>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="279"/>
-        <source>Authors</source>
-        <translation type="unfinished">作者</translation>
-    </message>
-    <message>
-        <location filename="qml/ComicInfoView.qml" line="309"/>
-        <source>writer</source>
+        <location filename="qml/ComicInfoView.qml" line="338"/>
+        <source>Main character or team</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="331"/>
-        <source>penciller</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/ComicInfoView.qml" line="353"/>
-        <source>inker</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="qml/ComicInfoView.qml" line="375"/>
-        <source>colorist</source>
+        <location filename="qml/ComicInfoView.qml" line="363"/>
+        <source>Teams</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="qml/ComicInfoView.qml" line="397"/>
+        <source>Locations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="429"/>
+        <source>Authors</source>
+        <translation type="unfinished">作者</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="461"/>
+        <source>writer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="483"/>
+        <source>penciller</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="505"/>
+        <source>inker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="527"/>
+        <source>colorist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="549"/>
         <source>letterer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="419"/>
+        <location filename="qml/ComicInfoView.qml" line="571"/>
         <source>cover artist</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="434"/>
+        <location filename="qml/ComicInfoView.qml" line="593"/>
+        <source>editor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="615"/>
+        <source>imprint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/ComicInfoView.qml" line="630"/>
         <source>Publisher</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="474"/>
+        <location filename="qml/ComicInfoView.qml" line="682"/>
         <source>color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="474"/>
+        <location filename="qml/ComicInfoView.qml" line="682"/>
         <source>b/w</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="502"/>
+        <location filename="qml/ComicInfoView.qml" line="306"/>
         <source>Characters</source>
         <translation type="unfinished"></translation>
     </message>
@@ -213,52 +238,52 @@
 <context>
     <name>ComicModel</name>
     <message>
-        <location filename="db/comic_model.cpp" line="311"/>
+        <location filename="db/comic_model.cpp" line="329"/>
         <source>yes</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="311"/>
+        <location filename="db/comic_model.cpp" line="329"/>
         <source>no</source>
         <translation>否</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="343"/>
+        <location filename="db/comic_model.cpp" line="361"/>
         <source>Title</source>
         <translation>标题</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="345"/>
+        <location filename="db/comic_model.cpp" line="363"/>
         <source>File Name</source>
         <translation>文件名</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="347"/>
+        <location filename="db/comic_model.cpp" line="365"/>
         <source>Pages</source>
         <translation>页数</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="349"/>
+        <location filename="db/comic_model.cpp" line="367"/>
         <source>Size</source>
         <translation>大小</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="351"/>
+        <location filename="db/comic_model.cpp" line="369"/>
         <source>Read</source>
         <translation>阅读</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="353"/>
+        <location filename="db/comic_model.cpp" line="371"/>
         <source>Current Page</source>
         <translation>当前页</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="355"/>
+        <location filename="db/comic_model.cpp" line="373"/>
         <source>Publication Date</source>
         <translation>发行日期</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="357"/>
+        <location filename="db/comic_model.cpp" line="375"/>
         <source>Rating</source>
         <translation>评分</translation>
     </message>
@@ -293,14 +318,14 @@
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="143"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="257"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="763"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="797"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="573"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="607"/>
         <source>Looking for volume...</source>
         <translation>搜索卷...</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="141"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="725"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="535"/>
         <source>comic %1 of %2 - %3</source>
         <translation>第 %1 本 共 %2 本 - %3</translation>
     </message>
@@ -321,12 +346,12 @@
         <translation>正在检索标签: %1</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="778"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="588"/>
         <source>Retrieving volume info...</source>
         <translation>正在接收卷信息...</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="804"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="614"/>
         <source>Looking for comic...</source>
         <translation>搜索漫画中...</translation>
     </message>
@@ -377,27 +402,27 @@
 <context>
     <name>EditShortcutsDialog</name>
     <message>
-        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="21"/>
+        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="23"/>
         <source>Restore defaults</source>
         <translation>恢复默认</translation>
     </message>
     <message>
-        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="22"/>
+        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="24"/>
         <source>To change a shortcut, double click in the key combination and type the new keys.</source>
         <translation>更改快捷键: 双击按键组合并输入新的映射.</translation>
     </message>
     <message>
-        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="69"/>
+        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="71"/>
         <source>Shortcuts settings</source>
         <translation>快捷键设置</translation>
     </message>
     <message>
-        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="94"/>
+        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="96"/>
         <source>Shortcut in use</source>
         <translation>快捷键被占用</translation>
     </message>
     <message>
-        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="94"/>
+        <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="96"/>
         <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
         <translation>快捷键 &quot;%1&quot; 已被映射至其他功能</translation>
     </message>
@@ -405,18 +430,18 @@
 <context>
     <name>EmptyFolderWidget</name>
     <message>
-        <location filename="empty_folder_widget.cpp" line="75"/>
-        <location filename="empty_folder_widget.cpp" line="140"/>
+        <location filename="empty_folder_widget.cpp" line="77"/>
+        <location filename="empty_folder_widget.cpp" line="142"/>
         <source>Subfolders in this folder</source>
         <translation>建立子文件夹</translation>
     </message>
     <message>
-        <location filename="empty_folder_widget.cpp" line="138"/>
+        <location filename="empty_folder_widget.cpp" line="140"/>
         <source>Empty folder</source>
         <translation>空文件夹</translation>
     </message>
     <message>
-        <location filename="empty_folder_widget.cpp" line="138"/>
+        <location filename="empty_folder_widget.cpp" line="140"/>
         <source>Drag and drop folders and comics here</source>
         <translation>拖动文件夹或者漫画到这里</translation>
     </message>
@@ -540,7 +565,7 @@
 <context>
     <name>FolderContentView</name>
     <message>
-        <location filename="qml/FolderContentView.qml" line="238"/>
+        <location filename="qml/FolderContentView.qml" line="248"/>
         <source>Continue Reading...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -548,7 +573,7 @@
 <context>
     <name>FolderContentView6</name>
     <message>
-        <location filename="qml/FolderContentView6.qml" line="240"/>
+        <location filename="qml/FolderContentView6.qml" line="250"/>
         <source>Continue Reading...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -556,7 +581,7 @@
 <context>
     <name>GridComicsView</name>
     <message>
-        <location filename="grid_comics_view.cpp" line="147"/>
+        <location filename="grid_comics_view.cpp" line="146"/>
         <source>Show info</source>
         <translation>显示信息</translation>
     </message>
@@ -701,518 +726,592 @@
 <context>
     <name>LibraryWindow</name>
     <message>
-        <location filename="library_window.cpp" line="188"/>
+        <location filename="library_window.cpp" line="242"/>
         <source>YACReader Library</source>
         <translation>YACReader 库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1042"/>
+        <location filename="library_window.cpp" line="1161"/>
         <source>Library</source>
         <translation>库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="486"/>
+        <location filename="library_window.cpp" line="546"/>
         <source>Create a new library</source>
         <translation>创建一个新的库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="492"/>
+        <location filename="library_window.cpp" line="552"/>
         <source>Open an existing library</source>
         <translation>打开现有的库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="497"/>
-        <location filename="library_window.cpp" line="498"/>
+        <location filename="library_window.cpp" line="557"/>
+        <location filename="library_window.cpp" line="558"/>
         <source>Export comics info</source>
         <translation>导出漫画信息</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="503"/>
-        <location filename="library_window.cpp" line="504"/>
+        <location filename="library_window.cpp" line="563"/>
+        <location filename="library_window.cpp" line="564"/>
         <source>Import comics info</source>
         <translation>导入漫画信息</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="509"/>
+        <location filename="library_window.cpp" line="569"/>
         <source>Pack covers</source>
         <translation>打包封面</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="510"/>
+        <location filename="library_window.cpp" line="570"/>
         <source>Pack the covers of the selected library</source>
         <translation>打包所选库的封面</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="515"/>
+        <location filename="library_window.cpp" line="575"/>
         <source>Unpack covers</source>
         <translation>解压封面</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="516"/>
+        <location filename="library_window.cpp" line="576"/>
         <source>Unpack a catalog</source>
         <translation>解压目录</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="521"/>
+        <location filename="library_window.cpp" line="581"/>
         <source>Update library</source>
         <translation>更新库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="522"/>
+        <location filename="library_window.cpp" line="582"/>
         <source>Update current library</source>
         <translation>更新当前库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="527"/>
+        <location filename="library_window.cpp" line="587"/>
         <source>Rename library</source>
         <translation>重命名库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="528"/>
+        <location filename="library_window.cpp" line="588"/>
         <source>Rename current library</source>
         <translation>重命名当前库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="533"/>
+        <location filename="library_window.cpp" line="593"/>
         <source>Remove library</source>
         <translation>移除库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="534"/>
+        <location filename="library_window.cpp" line="594"/>
         <source>Remove current library from your collection</source>
         <translation>从您的集合中移除当前库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="544"/>
+        <location filename="library_window.cpp" line="604"/>
         <source>Open current comic</source>
         <translation>打开当前漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="545"/>
+        <location filename="library_window.cpp" line="605"/>
         <source>Open current comic on YACReader</source>
         <translation>用YACReader打开漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="550"/>
+        <location filename="library_window.cpp" line="610"/>
         <source>Save selected covers to...</source>
         <translation>选中的封面保存到...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="551"/>
+        <location filename="library_window.cpp" line="611"/>
         <source>Save covers of the selected comics as JPG files</source>
         <translation>保存所选的封面为jpg</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="555"/>
-        <location filename="library_window.cpp" line="692"/>
-        <location filename="library_window.cpp" line="1831"/>
+        <location filename="library_window.cpp" line="615"/>
+        <location filename="library_window.cpp" line="770"/>
+        <location filename="library_window.cpp" line="2005"/>
         <source>Set as read</source>
         <translation>设为已读</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="556"/>
+        <location filename="library_window.cpp" line="616"/>
         <source>Set comic as read</source>
         <translation>漫画设为已读</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="561"/>
-        <location filename="library_window.cpp" line="697"/>
-        <location filename="library_window.cpp" line="1834"/>
-        <location filename="library_window.cpp" line="1906"/>
+        <location filename="library_window.cpp" line="621"/>
+        <location filename="library_window.cpp" line="775"/>
+        <location filename="library_window.cpp" line="2008"/>
+        <location filename="library_window.cpp" line="2105"/>
         <source>Set as unread</source>
         <translation>设为未读</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="562"/>
+        <location filename="library_window.cpp" line="622"/>
         <source>Set comic as unread</source>
         <translation>漫画设为未读</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="587"/>
+        <location filename="library_window.cpp" line="627"/>
+        <location filename="library_window.cpp" line="780"/>
+        <location filename="library_window.cpp" line="2011"/>
+        <source>manga</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="633"/>
+        <location filename="library_window.cpp" line="785"/>
+        <location filename="library_window.cpp" line="2014"/>
+        <source>comic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="639"/>
+        <source>western manga</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="640"/>
+        <source>Set issue as western manga</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="645"/>
+        <location filename="library_window.cpp" line="795"/>
+        <location filename="library_window.cpp" line="2020"/>
+        <source>web comic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="646"/>
+        <source>Set issue as web comic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="651"/>
+        <location filename="library_window.cpp" line="800"/>
+        <source>yonkoma</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="652"/>
+        <source>Set issue as yonkoma</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="656"/>
         <source>Show/Hide marks</source>
         <translation>显示/隐藏标记</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="636"/>
+        <location filename="library_window.cpp" line="664"/>
+        <source>Show/Hide recent indicator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="665"/>
+        <source>Show or hide recent indicator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="714"/>
         <source>Collapse all nodes</source>
         <translation>折叠所有节点</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="738"/>
+        <location filename="library_window.cpp" line="790"/>
+        <source>western manga (left to right)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="831"/>
         <source>Assign current order to comics</source>
         <translation>将当前序号分配给漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1378"/>
+        <location filename="library_window.cpp" line="1540"/>
         <source>Library not available</source>
         <oldsource>Library &apos;</oldsource>
         <translation>库不可用</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="595"/>
-        <location filename="library_window.cpp" line="596"/>
+        <location filename="library_window.cpp" line="673"/>
+        <location filename="library_window.cpp" line="674"/>
         <source>Fullscreen mode on/off</source>
         <translation>全屏模式 开/关</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="539"/>
-        <location filename="library_window.cpp" line="1822"/>
+        <location filename="library_window.cpp" line="599"/>
+        <location filename="library_window.cpp" line="1996"/>
         <source>Rescan library for XML info</source>
         <translation>重新扫描库的 XML 信息</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="540"/>
+        <location filename="library_window.cpp" line="600"/>
         <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
         <translation>尝试查找漫画文件内嵌的 XML 信息。只有当创建库的 YACReaderLibrary 版本低于 9.8.2 或者使用第三方软件嵌入 XML 信息时，才需要执行该操作。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="567"/>
-        <location filename="library_window.cpp" line="702"/>
-        <location filename="library_window.cpp" line="1837"/>
         <source>Set as manga</source>
-        <translation>设为日漫</translation>
+        <translation type="vanished">设为日漫</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="568"/>
+        <location filename="library_window.cpp" line="628"/>
         <source>Set issue as manga</source>
         <translation>Set issue as manga</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="573"/>
         <source>Set as normal</source>
-        <translation>设置为正常向</translation>
+        <translation type="vanished">设置为正常向</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="574"/>
+        <location filename="library_window.cpp" line="634"/>
         <source>Set issue as normal</source>
         <translation>设置发行状态为正常发行</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="604"/>
+        <location filename="library_window.cpp" line="682"/>
         <source>Help, About YACReader</source>
         <translation>帮助, 关于 YACReader</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="617"/>
-        <location filename="library_window.cpp" line="1635"/>
+        <location filename="library_window.cpp" line="695"/>
+        <location filename="library_window.cpp" line="1799"/>
         <source>Delete folder</source>
         <translation>删除文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="626"/>
+        <location filename="library_window.cpp" line="704"/>
         <source>Select root node</source>
         <translation>选择根节点</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="630"/>
+        <location filename="library_window.cpp" line="708"/>
         <source>Expand all nodes</source>
         <translation>展开所有节点</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="642"/>
+        <location filename="library_window.cpp" line="720"/>
         <source>Show options dialog</source>
         <translation>显示选项对话框</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="650"/>
+        <location filename="library_window.cpp" line="728"/>
         <source>Show comics server options dialog</source>
         <translation>显示漫画服务器选项对话框</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="676"/>
-        <location filename="library_window.cpp" line="1816"/>
+        <location filename="library_window.cpp" line="754"/>
+        <location filename="library_window.cpp" line="1990"/>
         <source>Open folder...</source>
         <translation>打开文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="682"/>
-        <location filename="library_window.cpp" line="1825"/>
+        <location filename="library_window.cpp" line="760"/>
+        <location filename="library_window.cpp" line="1999"/>
         <source>Set as uncompleted</source>
         <translation>设为未完成</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="687"/>
-        <location filename="library_window.cpp" line="1828"/>
+        <location filename="library_window.cpp" line="765"/>
+        <location filename="library_window.cpp" line="2002"/>
         <source>Set as completed</source>
         <translation>设为已完成</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="707"/>
-        <location filename="library_window.cpp" line="1840"/>
         <source>Set as comic</source>
-        <translation>设置为漫画</translation>
+        <translation type="vanished">设置为漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="714"/>
+        <location filename="library_window.cpp" line="807"/>
         <source>Open containing folder...</source>
         <translation>打开包含文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="720"/>
+        <location filename="library_window.cpp" line="813"/>
         <source>Reset comic rating</source>
         <translation>重置漫画评分</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="726"/>
+        <location filename="library_window.cpp" line="819"/>
         <source>Select all comics</source>
         <translation>全选漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="732"/>
+        <location filename="library_window.cpp" line="825"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="744"/>
+        <location filename="library_window.cpp" line="837"/>
         <source>Update cover</source>
         <translation>更新封面</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="750"/>
+        <location filename="library_window.cpp" line="843"/>
         <source>Delete selected comics</source>
         <translation>删除所选的漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="756"/>
+        <location filename="library_window.cpp" line="849"/>
         <source>Delete metadata from selected comics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="763"/>
+        <location filename="library_window.cpp" line="856"/>
         <source>Download tags from Comic Vine</source>
         <translation>从 Comic Vine 下载标签</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="767"/>
+        <location filename="library_window.cpp" line="860"/>
         <source>Focus search line</source>
         <translation>聚焦于搜索行</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="773"/>
+        <location filename="library_window.cpp" line="866"/>
         <source>Focus comics view</source>
         <translation>聚焦于漫画视图</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="778"/>
+        <location filename="library_window.cpp" line="871"/>
         <source>Edit shortcuts</source>
         <translation>编辑快捷键</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="784"/>
+        <location filename="library_window.cpp" line="877"/>
         <source>&amp;Quit</source>
         <translation>退出(&amp;Q)</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="791"/>
-        <location filename="library_window.cpp" line="1819"/>
+        <location filename="library_window.cpp" line="884"/>
+        <location filename="library_window.cpp" line="1993"/>
         <source>Update folder</source>
         <translation>更新文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="794"/>
+        <location filename="library_window.cpp" line="887"/>
         <source>Update current folder</source>
         <translation>更新当前文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="799"/>
+        <location filename="library_window.cpp" line="892"/>
         <source>Scan legacy XML metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="803"/>
+        <location filename="library_window.cpp" line="896"/>
         <source>Add new reading list</source>
         <translation>添加新的阅读列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="806"/>
+        <location filename="library_window.cpp" line="899"/>
         <source>Add a new reading list to the current library</source>
         <translation>在当前库添加新的阅读列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="809"/>
+        <location filename="library_window.cpp" line="902"/>
         <source>Remove reading list</source>
         <translation>移除阅读列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="812"/>
+        <location filename="library_window.cpp" line="905"/>
         <source>Remove current reading list from the library</source>
         <translation>从当前库移除阅读列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="815"/>
+        <location filename="library_window.cpp" line="908"/>
         <source>Add new label</source>
         <translation>添加新标签</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="818"/>
+        <location filename="library_window.cpp" line="911"/>
         <source>Add a new label to this library</source>
         <translation>在当前库添加标签</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="821"/>
+        <location filename="library_window.cpp" line="914"/>
         <source>Rename selected list</source>
         <translation>重命名列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="824"/>
+        <location filename="library_window.cpp" line="917"/>
         <source>Rename any selected labels or lists</source>
         <translation>重命名任何选定的标签或列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="828"/>
+        <location filename="library_window.cpp" line="921"/>
         <source>Add to...</source>
         <translation>添加到...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="830"/>
+        <location filename="library_window.cpp" line="923"/>
         <source>Favorites</source>
         <translation>收藏夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="833"/>
+        <location filename="library_window.cpp" line="926"/>
         <source>Add selected comics to favorites list</source>
         <translation>将所选漫画添加到收藏夹列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1061"/>
+        <location filename="library_window.cpp" line="1180"/>
         <source>Folder</source>
         <translation>文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1077"/>
+        <location filename="library_window.cpp" line="1199"/>
         <source>Comic</source>
         <translation>漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1272"/>
+        <location filename="library_window.cpp" line="1434"/>
         <source>Upgrade failed</source>
         <translation>更新失败</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1272"/>
+        <location filename="library_window.cpp" line="1434"/>
         <source>There were errors during library upgrade in: </source>
         <translation>漫画库更新时出现错误: </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1290"/>
+        <location filename="library_window.cpp" line="1452"/>
         <source>Update needed</source>
         <translation>需要更新</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1290"/>
+        <location filename="library_window.cpp" line="1452"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
         <translation>此库是使用旧版本的YACReaderLibrary创建的. 它需要更新. 现在更新?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1357"/>
+        <location filename="library_window.cpp" line="1519"/>
         <source>Download new version</source>
         <translation>下载新版本</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1357"/>
+        <location filename="library_window.cpp" line="1519"/>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
         <translation>此库是使用较新版本的YACReaderLibrary创建的。 立即下载新版本?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1378"/>
+        <location filename="library_window.cpp" line="1540"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
         <translation>库 &apos;%1&apos; 不再可用。 你想删除它吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1397"/>
+        <location filename="library_window.cpp" line="1559"/>
         <source>Old library</source>
         <translation>旧的库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1397"/>
+        <location filename="library_window.cpp" line="1559"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
         <translation>库 &apos;%1&apos; 是通过旧版本的YACReaderLibrary创建的。 必须再次创建。 你想现在创建吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1430"/>
-        <location filename="library_window.cpp" line="1466"/>
+        <location filename="library_window.cpp" line="1592"/>
+        <location filename="library_window.cpp" line="1628"/>
         <source>Copying comics...</source>
         <translation>复制漫画中...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1447"/>
-        <location filename="library_window.cpp" line="1485"/>
+        <location filename="library_window.cpp" line="1609"/>
+        <location filename="library_window.cpp" line="1647"/>
         <source>Moving comics...</source>
         <translation>移动漫画中...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1600"/>
+        <location filename="library_window.cpp" line="1764"/>
         <source>Folder name:</source>
         <translation>文件夹名称:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1629"/>
+        <location filename="library_window.cpp" line="1793"/>
         <source>No folder selected</source>
         <translation>没有选中的文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1629"/>
+        <location filename="library_window.cpp" line="1793"/>
         <source>Please, select a folder first</source>
         <translation>请先选择一个文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1633"/>
+        <location filename="library_window.cpp" line="1797"/>
         <source>Error in path</source>
         <translation>路径错误</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1633"/>
+        <location filename="library_window.cpp" line="1797"/>
         <source>There was an error accessing the folder&apos;s path</source>
         <translation>访问文件夹的路径时出错</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1635"/>
+        <location filename="library_window.cpp" line="1799"/>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
         <translation>所选文件夹及其所有内容将从磁盘中删除。 你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1661"/>
+        <location filename="library_window.cpp" line="1825"/>
         <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
         <translation>尝试删除所选文件夹时出现问题。 请检查写入权限，并确保没有其他应用程序在使用这些文件夹或文件。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1673"/>
+        <location filename="library_window.cpp" line="1837"/>
         <source>Add new reading lists</source>
         <translation>添加新的阅读列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1674"/>
-        <location filename="library_window.cpp" line="1723"/>
+        <location filename="library_window.cpp" line="1838"/>
+        <location filename="library_window.cpp" line="1887"/>
         <source>List name:</source>
         <translation>列表名称:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1692"/>
+        <location filename="library_window.cpp" line="1856"/>
         <source>Delete list/label</source>
         <translation>删除 列表/标签</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1692"/>
+        <location filename="library_window.cpp" line="1856"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
         <translation>所选项目将被删除，您的漫画或文件夹将不会从您的磁盘中删除。 你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1722"/>
+        <location filename="library_window.cpp" line="1886"/>
         <source>Rename list name</source>
         <translation>重命名列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1971"/>
+        <location filename="library_window.cpp" line="1923"/>
+        <location filename="library_window.cpp" line="1966"/>
+        <location filename="library_window.cpp" line="2041"/>
+        <location filename="library_window.cpp" line="3067"/>
+        <source>Set type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="2017"/>
+        <source>manga (or left to right)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="2023"/>
+        <source>4koma (or top to botom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="2170"/>
         <source>Save covers</source>
         <translation>保存封面</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1990"/>
+        <location filename="library_window.cpp" line="2189"/>
         <source>You are adding too many libraries.</source>
         <translation>您添加的库太多了。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1990"/>
+        <location filename="library_window.cpp" line="2189"/>
         <source>You are adding too many libraries.
 
 You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
@@ -1225,141 +1324,141 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低的库数量来提升性能。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2048"/>
-        <location filename="library_window.cpp" line="2050"/>
+        <location filename="library_window.cpp" line="2247"/>
+        <location filename="library_window.cpp" line="2249"/>
         <source>YACReader not found</source>
         <translation>YACReader 未找到</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2139"/>
+        <location filename="library_window.cpp" line="2335"/>
         <source>Library not found</source>
         <translation>未找到库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2139"/>
+        <location filename="library_window.cpp" line="2335"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
         <translation>所选文件夹不包含任何库。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2194"/>
+        <location filename="library_window.cpp" line="2390"/>
         <source>Are you sure?</source>
         <translation>你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2194"/>
+        <location filename="library_window.cpp" line="2390"/>
         <source>Do you want remove </source>
         <translation>你想要删除 </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2194"/>
+        <location filename="library_window.cpp" line="2390"/>
         <source> library?</source>
         <translation> 库?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2195"/>
+        <location filename="library_window.cpp" line="2391"/>
         <source>Remove and delete metadata</source>
         <translation>移除并删除元数据</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2521"/>
+        <location filename="library_window.cpp" line="2717"/>
         <source>Assign comics numbers</source>
         <translation>分配漫画编号</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2522"/>
+        <location filename="library_window.cpp" line="2718"/>
         <source>Assign numbers starting in:</source>
         <translation>从以下位置开始分配编号:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1661"/>
-        <location filename="library_window.cpp" line="2490"/>
+        <location filename="library_window.cpp" line="1825"/>
+        <location filename="library_window.cpp" line="2686"/>
         <source>Unable to delete</source>
         <translation>无法删除</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="588"/>
+        <location filename="library_window.cpp" line="657"/>
         <source>Show or hide read marks</source>
         <translation>显示或隐藏阅读标记</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="611"/>
-        <location filename="library_window.cpp" line="1599"/>
+        <location filename="library_window.cpp" line="689"/>
+        <location filename="library_window.cpp" line="1763"/>
         <source>Add new folder</source>
         <translation>添加新的文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="614"/>
+        <location filename="library_window.cpp" line="692"/>
         <source>Add new folder to the current library</source>
         <translation>在当前库下添加新的文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="620"/>
+        <location filename="library_window.cpp" line="698"/>
         <source>Delete current folder from disk</source>
         <translation>从磁盘上删除当前文件夹</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="657"/>
-        <location filename="library_window.cpp" line="658"/>
+        <location filename="library_window.cpp" line="735"/>
+        <location filename="library_window.cpp" line="736"/>
         <source>Change between comics views</source>
         <translation>漫画视图之间的变化</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2048"/>
+        <location filename="library_window.cpp" line="2247"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>未找到YACReader. YACReader应安装在与YACReaderLibrary相同的文件夹中.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2050"/>
+        <location filename="library_window.cpp" line="2249"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>未找到YACReader. YACReader的安装可能有问题.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2490"/>
+        <location filename="library_window.cpp" line="2686"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>尝试删除所选漫画时出现问题。 请检查所选文件或包含文件夹中的写入权限。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2722"/>
+        <location filename="library_window.cpp" line="2919"/>
         <source>Error creating the library</source>
         <translation>创建库时出错</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2727"/>
+        <location filename="library_window.cpp" line="2924"/>
         <source>Error updating the library</source>
         <translation>更新库时出错</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2732"/>
+        <location filename="library_window.cpp" line="2929"/>
         <source>Error opening the library</source>
         <translation>打开库时出错</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2781"/>
+        <location filename="library_window.cpp" line="2978"/>
         <source>Delete comics</source>
         <translation>删除漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2781"/>
+        <location filename="library_window.cpp" line="2978"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>所有选定的漫画都将从您的磁盘中删除。你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2818"/>
+        <location filename="library_window.cpp" line="3015"/>
         <source>Remove comics</source>
         <translation>移除漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2818"/>
+        <location filename="library_window.cpp" line="3015"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>漫画只会从当前标签/列表中删除。 你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2894"/>
+        <location filename="library_window.cpp" line="3093"/>
         <source>Library name already exists</source>
         <translation>库名已存在</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2894"/>
+        <location filename="library_window.cpp" line="3093"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>已存在另一个名为&apos;%1&apos;的库。</translation>
     </message>
@@ -1436,97 +1535,194 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="47"/>
+        <location filename="options_dialog.cpp" line="147"/>
         <source>Tray icon settings (experimental)</source>
         <translation>托盘图标设置 (实验特性)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="50"/>
+        <location filename="options_dialog.cpp" line="150"/>
         <source>Close to tray</source>
         <translation>关闭至托盘</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="51"/>
+        <location filename="options_dialog.cpp" line="151"/>
         <source>Start into the system tray</source>
         <translation>启动至系统托盘</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="69"/>
+        <location filename="options_dialog.cpp" line="169"/>
         <source>Edit Comic Vine API key</source>
         <translation>编辑Comic Vine API 密匙</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="72"/>
+        <location filename="options_dialog.cpp" line="172"/>
         <source>Comic Vine API key</source>
         <translation>Comic Vine API 密匙</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="77"/>
+        <location filename="options_dialog.cpp" line="177"/>
         <source>ComicInfo.xml legacy support</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="79"/>
+        <location filename="options_dialog.cpp" line="179"/>
         <source>Import metada from ComicInfo.xml when adding new comics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="90"/>
+        <location filename="options_dialog.cpp" line="189"/>
+        <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="217"/>
+        <source>Update libraries at startup</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="222"/>
+        <source>Try to detect changes automatically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="227"/>
+        <source>Update libraries periodically</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="233"/>
+        <source>Interval:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="235"/>
+        <source>30 minutes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="236"/>
+        <source>1 hour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="237"/>
+        <source>2 hours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="238"/>
+        <source>4 hours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="239"/>
+        <source>8 hours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="240"/>
+        <source>12 hours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="241"/>
+        <source>daily</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="248"/>
+        <source>Update libraries at certain time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="254"/>
+        <source>Time:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="281"/>
+        <source>WARNING! During library updates writes to the database are disabled!
+Don&apos;t schedule updates while you may be using the app actively.
+During automatic updates the app will block some of the actions until the update is finished.
+To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
+        <oldsource>WARNING! During library updates writes to the database are disabled!
+Don&apos;t schedule updates while you may be using the app actively.
+To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="289"/>
+        <source>Modifications detection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="291"/>
+        <source>Compare the modified date of files when updating a library (not recommended)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="340"/>
         <source>Enable background image</source>
         <translation>启用背景图片</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="92"/>
+        <location filename="options_dialog.cpp" line="342"/>
         <source>Opacity level</source>
         <translation>透明度</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="97"/>
+        <location filename="options_dialog.cpp" line="347"/>
         <source>Blur level</source>
         <translation>模糊</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="102"/>
+        <location filename="options_dialog.cpp" line="352"/>
         <source>Use selected comic cover as background</source>
         <translation>使用选定的漫画封面做背景</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="104"/>
+        <location filename="options_dialog.cpp" line="354"/>
         <source>Restore defautls</source>
         <translation>恢复默认值</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="115"/>
+        <location filename="options_dialog.cpp" line="365"/>
         <source>Background</source>
         <translation>背景</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="118"/>
+        <location filename="options_dialog.cpp" line="368"/>
         <source>Display continue reading banner</source>
         <translation>显示继续阅读横幅</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="123"/>
+        <location filename="options_dialog.cpp" line="373"/>
         <source>Continue reading</source>
         <translation>继续阅读</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="158"/>
+        <location filename="options_dialog.cpp" line="27"/>
         <source>Comic Flow</source>
         <translation>漫画流</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="160"/>
+        <location filename="options_dialog.cpp" line="26"/>
+        <location filename="options_dialog.cpp" line="286"/>
+        <source>Libraries</source>
+        <translation type="unfinished">库</translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="29"/>
         <source>Grid view</source>
         <translation>网格视图</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="157"/>
+        <location filename="options_dialog.cpp" line="25"/>
         <source>General</source>
         <translation>常规</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="169"/>
+        <location filename="options_dialog.cpp" line="42"/>
         <source>Options</source>
         <translation>选项</translation>
     </message>
@@ -1534,179 +1730,249 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
 <context>
     <name>PropertiesDialog</name>
     <message>
-        <location filename="properties_dialog.cpp" line="82"/>
+        <location filename="properties_dialog.cpp" line="83"/>
         <source>General info</source>
         <translation>基本信息</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="83"/>
+        <location filename="properties_dialog.cpp" line="85"/>
         <source>Authors</source>
         <translation>作者</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="84"/>
+        <location filename="properties_dialog.cpp" line="86"/>
         <source>Publishing</source>
         <translation>出版</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="85"/>
+        <location filename="properties_dialog.cpp" line="84"/>
         <source>Plot</source>
         <translation>情节</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="94"/>
+        <location filename="properties_dialog.cpp" line="87"/>
+        <source>Notes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="96"/>
         <source>Cover page</source>
         <translation>封面</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="143"/>
+        <location filename="properties_dialog.cpp" line="145"/>
+        <source>Series:</source>
+        <translation type="unfinished">系列:</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="146"/>
         <source>Title:</source>
         <translation>标题:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="151"/>
-        <location filename="properties_dialog.cpp" line="168"/>
+        <location filename="properties_dialog.cpp" line="150"/>
+        <location filename="properties_dialog.cpp" line="164"/>
+        <location filename="properties_dialog.cpp" line="175"/>
         <source>of:</source>
         <translation>of:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="158"/>
+        <location filename="properties_dialog.cpp" line="155"/>
         <source>Issue number:</source>
         <translation>发行数量:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="160"/>
+        <location filename="properties_dialog.cpp" line="157"/>
         <source>Volume:</source>
         <translation>卷:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="164"/>
+        <location filename="properties_dialog.cpp" line="162"/>
         <source>Arc number:</source>
         <translation>世界线数量:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="173"/>
+        <location filename="properties_dialog.cpp" line="168"/>
         <source>Story arc:</source>
         <translation>故事线:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="175"/>
+        <location filename="properties_dialog.cpp" line="173"/>
+        <source>alt. number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="179"/>
+        <source>Alternate series:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="181"/>
+        <source>Series Group:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="183"/>
         <source>Genre:</source>
         <oldsource>Genere:</oldsource>
         <translation>类型:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="177"/>
+        <location filename="properties_dialog.cpp" line="185"/>
         <source>Size:</source>
         <translation>大小:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="197"/>
+        <location filename="properties_dialog.cpp" line="205"/>
         <source>Writer(s):</source>
         <translation>作者:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="200"/>
+        <location filename="properties_dialog.cpp" line="208"/>
         <source>Penciller(s):</source>
         <translation>线稿:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="207"/>
+        <location filename="properties_dialog.cpp" line="215"/>
         <source>Inker(s):</source>
         <translation>墨稿:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="210"/>
+        <location filename="properties_dialog.cpp" line="218"/>
         <source>Colorist(s):</source>
         <translation>上色:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="217"/>
+        <location filename="properties_dialog.cpp" line="225"/>
         <source>Letterer(s):</source>
         <translation>文本:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="220"/>
+        <location filename="properties_dialog.cpp" line="228"/>
         <source>Cover Artist(s):</source>
         <translation>封面设计:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="240"/>
+        <location filename="properties_dialog.cpp" line="235"/>
+        <source>Editor(s):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="238"/>
+        <source>Imprint:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="259"/>
         <source>Day:</source>
         <translation>日:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="244"/>
+        <location filename="properties_dialog.cpp" line="263"/>
         <source>Month:</source>
         <translation>月:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="248"/>
+        <location filename="properties_dialog.cpp" line="267"/>
         <source>Year:</source>
         <translation>年:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="256"/>
+        <location filename="properties_dialog.cpp" line="275"/>
         <source>Publisher:</source>
         <translation>出版者:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="257"/>
+        <location filename="properties_dialog.cpp" line="276"/>
         <source>Format:</source>
         <translation>格式:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="258"/>
+        <location filename="properties_dialog.cpp" line="277"/>
         <source>Color/BW:</source>
         <translation>彩色/黑白:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="259"/>
+        <location filename="properties_dialog.cpp" line="278"/>
         <source>Age rating:</source>
         <translation>年龄等级:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="260"/>
-        <source>Manga:</source>
-        <translation>日漫:</translation>
+        <location filename="properties_dialog.cpp" line="279"/>
+        <source>Type:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="273"/>
+        <location filename="properties_dialog.cpp" line="280"/>
+        <source>Language (ISO):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Manga:</source>
+        <translation type="vanished">日漫:</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="301"/>
         <source>Synopsis:</source>
         <translation>概要:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="274"/>
+        <location filename="properties_dialog.cpp" line="308"/>
         <source>Characters:</source>
         <translation>角色:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="275"/>
+        <location filename="properties_dialog.cpp" line="311"/>
+        <source>Teams:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="317"/>
+        <source>Locations:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="323"/>
+        <source>Main character or team:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="345"/>
+        <source>Review:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="346"/>
         <source>Notes:</source>
         <translation>笔记:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="369"/>
+        <location filename="properties_dialog.cpp" line="347"/>
+        <source>Tags:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="443"/>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
         <translation>Comic Vine 连接: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; 查看 &lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="394"/>
+        <location filename="properties_dialog.cpp" line="468"/>
         <source>Not found</source>
         <translation>未找到</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="394"/>
+        <location filename="properties_dialog.cpp" line="468"/>
         <source>Comic not found. You should update your library.</source>
         <translation>未找到漫画,请先更新您的库.</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="501"/>
+        <location filename="properties_dialog.cpp" line="599"/>
         <source>Edit selected comics information</source>
         <translation>编辑选中的漫画信息</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="467"/>
+        <location filename="properties_dialog.cpp" line="565"/>
         <source>Edit comic information</source>
         <translation>编辑漫画信息</translation>
     </message>
@@ -1904,27 +2170,27 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="comic_vine/select_volume.cpp" line="68"/>
+        <location filename="comic_vine/select_volume.cpp" line="64"/>
         <source>volumes</source>
         <translation>卷</translation>
     </message>
     <message>
-        <location filename="comic_vine/select_volume.cpp" line="138"/>
+        <location filename="comic_vine/select_volume.cpp" line="134"/>
         <source>Nothing found, clear the filter if any.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="comic_vine/select_volume.cpp" line="144"/>
+        <location filename="comic_vine/select_volume.cpp" line="140"/>
         <source>loading cover</source>
         <translation>加载封面</translation>
     </message>
     <message>
-        <location filename="comic_vine/select_volume.cpp" line="145"/>
+        <location filename="comic_vine/select_volume.cpp" line="141"/>
         <source>loading description</source>
         <translation>加载描述</translation>
     </message>
     <message>
-        <location filename="comic_vine/select_volume.cpp" line="185"/>
+        <location filename="comic_vine/select_volume.cpp" line="181"/>
         <source>description unavailable</source>
         <translation>描述不可用</translation>
     </message>
@@ -1950,51 +2216,53 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
 <context>
     <name>ServerConfigDialog</name>
     <message>
-        <location filename="server_config_dialog.cpp" line="86"/>
+        <location filename="server_config_dialog.cpp" line="20"/>
         <source>set port</source>
         <translation>设置端口</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="92"/>
+        <location filename="server_config_dialog.cpp" line="26"/>
         <source>Server connectivity information</source>
         <translation>服务器连接信息</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="96"/>
+        <location filename="server_config_dialog.cpp" line="30"/>
         <source>Scan it!</source>
         <translation>扫一扫!</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="102"/>
-        <source>YACReader is available for iOS devices. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
-        <translation>YACReader适用于iOS设备. &lt;a href=&apos;http://ios.yacreader.com&apos;style =&apos;color：rgb（193,148,65）&apos;&gt;下载&lt;/a&gt;</translation>
+        <location filename="server_config_dialog.cpp" line="36"/>
+        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="111"/>
+        <source>YACReader is available for iOS devices. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
+        <translation type="vanished">YACReader适用于iOS设备. &lt;a href=&apos;http://ios.yacreader.com&apos;style =&apos;color：rgb（193,148,65）&apos;&gt;下载&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="server_config_dialog.cpp" line="43"/>
         <source>Choose an IP address</source>
         <translation>选择IP地址</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="115"/>
+        <location filename="server_config_dialog.cpp" line="47"/>
         <source>Port</source>
         <translation>端口</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="147"/>
+        <location filename="server_config_dialog.cpp" line="80"/>
         <source>enable the server</source>
         <translation>启用服务器</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="152"/>
         <source>display less information about folders in the browser
 to improve the performance</source>
-        <translation>在浏览器中尽量少显示文件夹信息
+        <translation type="vanished">在浏览器中尽量少显示文件夹信息
 以提升浏览性能</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="268"/>
         <source>Could not load libqrencode.</source>
-        <translation>无法载入libqrencode.</translation>
+        <translation type="vanished">无法载入libqrencode.</translation>
     </message>
 </context>
 <context>
@@ -2098,7 +2366,7 @@ to improve the performance</source>
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="102"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="110"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
@@ -2290,14 +2558,19 @@ to improve the performance</source>
 <context>
     <name>YACReaderNavigationController</name>
     <message>
-        <location filename="yacreader_navigation_controller.cpp" line="123"/>
+        <location filename="yacreader_navigation_controller.cpp" line="126"/>
         <source>No favorites</source>
         <translation>没有收藏</translation>
     </message>
     <message>
-        <location filename="yacreader_navigation_controller.cpp" line="127"/>
+        <location filename="yacreader_navigation_controller.cpp" line="130"/>
         <source>You are not reading anything yet, come on!!</source>
         <translation>你还没有阅读任何东西，加油!!</translation>
+    </message>
+    <message>
+        <location filename="yacreader_navigation_controller.cpp" line="134"/>
+        <source>There are no recent comics!</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2331,7 +2604,7 @@ to improve the performance</source>
 <context>
     <name>YACReaderSearchLineEdit</name>
     <message>
-        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="74"/>
+        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="76"/>
         <source>type to search</source>
         <translation>搜索类型</translation>
     </message>
@@ -2339,32 +2612,32 @@ to improve the performance</source>
 <context>
     <name>YACReaderSideBar</name>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="27"/>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="29"/>
         <source>Libraries</source>
         <translation>库</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="30"/>
         <source>Folders</source>
         <translation>文件夹</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="29"/>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="31"/>
         <source>Reading Lists</source>
         <translation>阅读列表</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="31"/>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="33"/>
         <source>LIBRARIES</source>
         <translation>库</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="32"/>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="34"/>
         <source>FOLDERS</source>
         <translation>文件夹</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="33"/>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="35"/>
         <source>READING LISTS</source>
         <translation>阅读列表</translation>
     </message>

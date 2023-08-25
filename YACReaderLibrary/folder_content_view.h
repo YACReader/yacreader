@@ -22,6 +22,7 @@ public:
     explicit FolderContentView(QAction *toogleRecentVisibilityAction, QWidget *parent = nullptr);
     void setModel(const QModelIndex &parent, FolderModel *model);
     void setContinueReadingModel(ComicModel *model);
+    void reloadContent();
     void reloadContinueReadingModel();
     void setShowRecent(bool visible);
     void setRecentRange(int days);

@@ -8,6 +8,7 @@
 #include <QPoint>
 
 class QIcon;
+class BusyIndicator;
 
 class DropShadowLabel : public QLabel
 {
@@ -33,14 +34,18 @@ public:
     explicit YACReaderTitledToolBar(const QString &title, QWidget *parent = 0);
 
 signals:
+    void cancelOperationRequested();
 
 public slots:
     void addAction(QAction *action);
     void addSpacing(int space);
     void addSepartor();
+    void showBusyIndicator();
+    void hideBusyIndicator();
 
 private:
     DropShadowLabel *nameLabel;
+    BusyIndicator *busyIndicator;
 };
 
 #endif // YACREADER_TITLED_TOOLBAR_H

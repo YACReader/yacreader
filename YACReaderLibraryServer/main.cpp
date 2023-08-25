@@ -11,6 +11,8 @@
 #include "yacreader_libraries.h"
 #include "yacreader_local_server.h"
 
+#include "libraries_update_coordinator.h"
+
 #include "libraries_updater.h"
 
 #include "console_ui_library_creator.h"
@@ -125,8 +127,13 @@ int main(int argc, char **argv)
 #endif
     app.installTranslator(&translator);
 
+    auto settingsPath = YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini";
+
     QCommandLineParser parser;
-    parser.setApplicationDescription(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary"));
+    parser.setApplicationDescription(QString(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary.\n\n"
+                                                                  "This appplication support persisten settings, to set them up edit this file %1\n"
+                                                                  "To learn about the available settings please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md"))
+                                             .arg(settingsPath));
     parser.addHelpOption();
     const QCommandLineOption versionOption = parser.addVersionOption();
     parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries, set-port]");
@@ -144,7 +151,7 @@ int main(int argc, char **argv)
         return 0;
     }
 
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
+    QSettings *settings = new QSettings(settingsPath, QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
 
     if (command == "start") {
@@ -237,6 +244,18 @@ int main(int argc, char **argv)
         updater.updateIfNeeded();
 
         YACReaderLocalServer *localServer = new YACReaderLocalServer();
+
+        YACReaderLibraries libraries;
+        auto librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries, []() {
+            return true;
+        });
+
+        app.connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, &app, []() {
+            QLOG_INFO() << "Starting libraries update";
+        });
+        app.connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, &app, []() {
+            QLOG_INFO() << "Done updating libraries";
+        });
 
         int ret = app.exec();
 

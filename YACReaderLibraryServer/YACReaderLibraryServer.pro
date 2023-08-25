@@ -66,7 +66,8 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/ip_config_helper.h \
            ../YACReaderLibrary/db/query_lexer.h \
            ../YACReaderLibrary/db/query_parser.h \
-           ../YACReaderLibrary/db/search_query.h
+           ../YACReaderLibrary/db/search_query.h \
+           ../YACReaderLibrary/libraries_update_coordinator.h \
 
 
 SOURCES += ../YACReaderLibrary/library_creator.cpp \
@@ -96,6 +97,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/db/query_lexer.cpp \
            ../YACReaderLibrary/db/query_parser.cpp \
            ../YACReaderLibrary/db/search_query.cpp \
+           ../YACReaderLibrary/libraries_update_coordinator.cpp \
 
 include(../YACReaderLibrary/server/server.pri)
 

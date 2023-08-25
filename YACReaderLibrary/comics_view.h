@@ -30,6 +30,7 @@ public:
     virtual void selectIndex(int index) = 0;
     virtual void updateCurrentComicView() = 0;
     virtual void focusComicsNavigation(Qt::FocusReason reason) = 0;
+    virtual void reloadContent();
 
 public slots:
     virtual void updateInfoForIndex(int index);

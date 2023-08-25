@@ -38,6 +38,7 @@ public:
         PublicationDate = 13,
         Added = 14,
         Type = 15,
+        LastTimeOpened = 16,
     };
 
     enum Roles {
@@ -69,12 +70,12 @@ public:
         Reading,
         Recent,
         Label,
-        ReadingList
+        ReadingList,
+        SearchResult
     };
 
 public:
     explicit ComicModel(QObject *parent = nullptr);
-    explicit ComicModel(QSqlQuery &sqlquery, QObject *parent = nullptr);
     ~ComicModel() override;
 
     QVariant data(const QModelIndex &index, int role) const override;
@@ -123,6 +124,7 @@ public:
     void reload();
     void reload(const ComicDB &comic);
     void resetComicRating(const QModelIndex &mi);
+    void notifyCoverChange(const ComicDB &comic);
 
     Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString &hash) const;
 
@@ -162,8 +164,18 @@ public slots:
 
 protected:
 private:
-    void setupModelData(QSqlQuery &sqlquery);
-    void setupModelDataForList(QSqlQuery &sqlquery);
+    QList<ComicItem *> createModelData(QSqlQuery &sqlquery) const;
+    QList<ComicItem *> createModelDataForList(QSqlQuery &sqlquery) const;
+
+    QList<ComicItem *> createFolderModelData(unsigned long long parentLabel, const QString &databasePath) const;
+    QList<ComicItem *> createLabelModelData(unsigned long long parentLabel, const QString &databasePath) const;
+    QList<ComicItem *> createReadingListData(unsigned long long parentReadingList, const QString &databasePath, bool &enableResorting) const;
+    QList<ComicItem *> createFavoritesModelData(const QString &databasePath) const;
+    QList<ComicItem *> createReadingModelData(const QString &databasePath) const;
+    QList<ComicItem *> createRecentModelData(const QString &databasePath) const;
+
+    void takeData(const QList<ComicItem *> &data);
+    void takeUpdatedData(const QList<ComicItem *> &updatedData, std::function<bool(ComicItem *, ComicItem *)> comparator);
     ComicDB _getComic(const QModelIndex &mi);
     QList<ComicItem *> _data;
 

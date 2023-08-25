@@ -23,10 +23,11 @@ void YACReaderBusyWidget::paintEvent(QPaintEvent *event)
     painter.drawPixmap(0, 0, width(), height(), QPixmap(":/images/busy_background.png"));
 }
 
-BusyIndicator::BusyIndicator(QWidget *parent)
+BusyIndicator::BusyIndicator(QWidget *parent, int size)
     : QWidget(parent),
       startAngle(0),
-      m_style(StyleArc)
+      m_style(StyleArc),
+      size(size)
 {
     QSizePolicy policy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     policy.setHeightForWidth(true);
@@ -60,6 +61,12 @@ void BusyIndicator::setColor(QColor color)
 BusyIndicator::IndicatorStyle BusyIndicator::indicatorStyle() const
 {
     return m_style;
+}
+
+void BusyIndicator::mouseReleaseEvent(QMouseEvent *event)
+{
+    Q_UNUSED(event);
+    emit clicked();
 }
 
 QPixmap BusyIndicator::generatePixmap(int side)
@@ -177,10 +184,10 @@ void BusyIndicator::paintEvent(QPaintEvent *)
 
 QSize BusyIndicator::minimumSizeHint() const
 {
-    return QSize(30, 30);
+    return QSize(size, size);
 }
 
 QSize BusyIndicator::sizeHint() const
 {
-    return QSize(30, 30);
+    return QSize(size, size);
 }

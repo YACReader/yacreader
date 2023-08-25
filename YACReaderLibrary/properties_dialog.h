@@ -171,5 +171,8 @@ public slots:
     void loadNextCover();
     void loadPreviousCover();
     bool close();
+
+signals:
+    void coverChangedSignal(const ComicDB &comic);
 };
 #endif

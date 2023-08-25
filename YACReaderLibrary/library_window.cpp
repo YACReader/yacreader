@@ -502,6 +502,24 @@ void LibraryWindow::doModels()
 void LibraryWindow::setupCoordinators()
 {
     recentVisibilityCoordinator = new RecentVisibilityCoordinator(settings, foldersModel, contentViewsManager->folderContentView, comicsModel);
+
+    auto canStartUpdateProvider = [this]() {
+        return comicVineDialog->isVisible() == false &&
+                propertiesDialog->isVisible() == false;
+    };
+    librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries, canStartUpdateProvider, this);
+
+    connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, sideBar->librariesTitle, &YACReaderTitledToolBar::showBusyIndicator);
+    connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, sideBar->librariesTitle, &YACReaderTitledToolBar::hideBusyIndicator);
+
+    connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, this, [=]() {
+        disableAllActions();
+    });
+    connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, this, &LibraryWindow::reloadCurrentLibrary);
+
+    librariesUpdateCoordinator->init();
+
+    connect(sideBar->librariesTitle, &YACReaderTitledToolBar::cancelOperationRequested, librariesUpdateCoordinator, &LibrariesUpdateCoordinator::cancel);
 }
 
 void LibraryWindow::createActions()
@@ -933,6 +951,11 @@ void LibraryWindow::createActions()
 }
 void LibraryWindow::disableComicsActions(bool disabled)
 {
+    if (!disabled && librariesUpdateCoordinator->isRunning()) {
+        disableComicsActions(true);
+        return;
+    }
+
     // if there aren't comics, no fullscreen option will be available
 #ifndef Q_OS_MACOS
     toggleFullScreenAction->setDisabled(disabled);
@@ -1283,10 +1306,13 @@ void LibraryWindow::createConnections()
     connect(importComicsInfoAction, &QAction::triggered, this, &LibraryWindow::showImportComicsInfo);
 
     // properties & config
-    connect(propertiesDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::reselectCurrentSource);
+    connect(propertiesDialog, &QDialog::accepted, contentViewsManager, &YACReaderContentViewsManager::updateCurrentContentView);
+    connect(propertiesDialog, &PropertiesDialog::coverChangedSignal, this, [=](const ComicDB &comic) {
+        comicsModel->notifyCoverChange(comic);
+    });
 
     // comic vine
-    connect(comicVineDialog, &QDialog::accepted, navigationController, &YACReaderNavigationController::reselectCurrentSource, Qt::QueuedConnection);
+    connect(comicVineDialog, &QDialog::accepted, contentViewsManager, &YACReaderContentViewsManager::updateCurrentContentView, Qt::QueuedConnection);
 
     connect(updateLibraryAction, &QAction::triggered, this, &LibraryWindow::updateLibrary);
     connect(renameLibraryAction, &QAction::triggered, this, &LibraryWindow::renameLibrary);
@@ -1698,15 +1724,11 @@ void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
 
         if (item == nullptr) {
             foldersModel->reload();
-            navigationController->loadFolderInfo(QModelIndex());
         } else {
-            auto id = item->id;
             foldersModel->reload(mi);
-            auto newMi = foldersModel->index(id);
-
-            foldersView->setCurrentIndex(foldersModelProxy->mapFromSource(newMi));
-            navigationController->loadFolderInfo(newMi);
         }
+
+        contentViewsManager->updateCurrentContentView();
     }
 
     enableNeededActions();
@@ -2270,8 +2292,10 @@ void LibraryWindow::create(QString source, QString dest, QString name)
 
 void LibraryWindow::reloadCurrentLibrary()
 {
-    qDebug() << "reloadCurrentLibrary";
-    loadLibrary(selectedLibrary->currentText());
+    foldersModel->reload();
+    contentViewsManager->updateCurrentContentView();
+
+    enableNeededActions();
 }
 
 void LibraryWindow::openLastCreated()
@@ -2844,6 +2868,10 @@ void LibraryWindow::closeEvent(QCloseEvent *event)
 void LibraryWindow::prepareToCloseApp()
 {
     httpServer->stop();
+
+    libraryCreator->stop();
+    librariesUpdateCoordinator->stop();
+
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
 
     contentViewsManager->comicsView->close();

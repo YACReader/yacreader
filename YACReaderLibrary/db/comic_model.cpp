@@ -10,22 +10,27 @@
 #include "qnaturalsorting.h"
 #include "comic_db.h"
 #include "db_helper.h"
-#include "query_parser.h"
 #include "reading_list_model.h"
 
 // ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #include "QsLog.h"
 
+auto defaultFolderContentSortFunction = [](const ComicItem *c1, const ComicItem *c2) {
+    if (c1->data(ComicModel::Number).isNull() && c2->data(ComicModel::Number).isNull()) {
+        return naturalSortLessThanCI(c1->data(ComicModel::FileName).toString(), c2->data(ComicModel::FileName).toString());
+    } else {
+        if (c1->data(ComicModel::Number).isNull() == false && c2->data(ComicModel::Number).isNull() == false) {
+            return naturalSortLessThanCI(c1->data(ComicModel::Number).toString(), c2->data(ComicModel::Number).toString());
+        } else {
+            return c2->data(ComicModel::Number).isNull();
+        }
+    }
+};
+
 ComicModel::ComicModel(QObject *parent)
     : QAbstractItemModel(parent), showRecent(false), recentDays(1)
 
 {
-}
-
-ComicModel::ComicModel(QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent), showRecent(false), recentDays(1)
-{
-    setupModelData(sqlquery);
 }
 
 ComicModel::~ComicModel()
@@ -456,7 +461,30 @@ QStringList ComicModel::getPaths(const QString &_source)
     return paths;
 }
 
-#define COMIC_MODEL_QUERY_FIELDS "ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date,ci.added,ci.type"
+#define COMIC_MODEL_QUERY_FIELDS "ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date,ci.added,ci.type,ci.lastTimeOpened"
+
+QList<ComicItem *> ComicModel::createFolderModelData(unsigned long long folderId, const QString &databasePath) const
+{
+    QList<ComicItem *> modelData;
+
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "WHERE c.parentId = :parentId");
+        selectQuery.bindValue(":parentId", folderId);
+        selectQuery.exec();
+
+        modelData = createModelData(selectQuery);
+
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return modelData;
+}
 
 void ComicModel::setupFolderModelData(unsigned long long int folderId, const QString &databasePath)
 {
@@ -469,20 +497,33 @@ void ComicModel::setupFolderModelData(unsigned long long int folderId, const QSt
     _data.clear();
 
     _databasePath = databasePath;
+
+    takeData(createFolderModelData(folderId, databasePath));
+
+    endResetModel();
+}
+
+QList<ComicItem *> ComicModel::createLabelModelData(unsigned long long parentLabel, const QString &databasePath) const
+{
+    QList<ComicItem *> modelData;
+
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "WHERE c.parentId = :parentId");
-        selectQuery.bindValue(":parentId", folderId);
+                            "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
+                            "WHERE cl.label_id = :parentLabelId "
+                            "ORDER BY cl.ordering");
+        selectQuery.bindValue(":parentLabelId", parentLabel);
         selectQuery.exec();
-        setupModelData(selectQuery);
+        modelData = createModelDataForList(selectQuery);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
-    endResetModel();
+
+    return modelData;
 }
 
 void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QString &databasePath)
@@ -496,34 +537,16 @@ void ComicModel::setupLabelModelData(unsigned long long parentLabel, const QStri
     _data.clear();
 
     _databasePath = databasePath;
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
-                            "WHERE cl.label_id = :parentLabelId "
-                            "ORDER BY cl.ordering");
-        selectQuery.bindValue(":parentLabelId", parentLabel);
-        selectQuery.exec();
-        setupModelDataForList(selectQuery);
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
+
+    takeData(createLabelModelData(parentLabel, databasePath));
+
     endResetModel();
 }
 
-void ComicModel::setupReadingListModelData(unsigned long long parentReadingList, const QString &databasePath)
+QList<ComicItem *> ComicModel::createReadingListData(unsigned long long parentReadingList, const QString &databasePath, bool &enableResorting) const
 {
-    mode = ReadingList;
-    sourceId = parentReadingList;
+    QList<ComicItem *> modelData;
 
-    beginResetModel();
-    qDeleteAll(_data);
-    _data.clear();
-
-    _databasePath = databasePath;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
@@ -552,18 +575,52 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
             selectQuery.bindValue(":parentReadingList", id);
             selectQuery.exec();
 
-            // TODO, extra information is needed (resorting)
-            QList<ComicItem *> tempData = _data;
-            _data.clear();
-
-            setupModelDataForList(selectQuery);
-
-            _data = tempData << _data;
+            modelData << createModelDataForList(selectQuery);
         }
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+
+    return modelData;
+}
+
+void ComicModel::setupReadingListModelData(unsigned long long parentReadingList, const QString &databasePath)
+{
+    mode = ReadingList;
+    sourceId = parentReadingList;
+
+    beginResetModel();
+    qDeleteAll(_data);
+    _data.clear();
+
+    _databasePath = databasePath;
+
+    takeData(createReadingListData(parentReadingList, databasePath, enableResorting));
+
     endResetModel();
+}
+
+QList<ComicItem *> ComicModel::createFavoritesModelData(const QString &databasePath) const
+{
+    QList<ComicItem *> modelData;
+
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        QSqlQuery selectQuery(db);
+        selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
+                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                            "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
+                            "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
+                            "ORDER BY cdrl.ordering");
+        selectQuery.bindValue(":parentDefaultListId", 1);
+        selectQuery.exec();
+        modelData = createModelDataForList(selectQuery);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return modelData;
 }
 
 void ComicModel::setupFavoritesModelData(const QString &databasePath)
@@ -577,22 +634,32 @@ void ComicModel::setupFavoritesModelData(const QString &databasePath)
     _data.clear();
 
     _databasePath = databasePath;
+
+    takeData(createFavoritesModelData(databasePath));
+
+    endResetModel();
+}
+
+QList<ComicItem *> ComicModel::createReadingModelData(const QString &databasePath) const
+{
+    QList<ComicItem *> modelData;
+
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
-                            "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
-                            "ORDER BY cdrl.ordering");
-        selectQuery.bindValue(":parentDefaultListId", 1);
+                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
+                            "ORDER BY ci.lastTimeOpened DESC");
         selectQuery.exec();
-        setupModelDataForList(selectQuery);
+
+        modelData = createModelDataForList(selectQuery);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
-    endResetModel();
+
+    return modelData;
 }
 
 void ComicModel::setupReadingModelData(const QString &databasePath)
@@ -606,21 +673,33 @@ void ComicModel::setupReadingModelData(const QString &databasePath)
     _data.clear();
 
     _databasePath = databasePath;
+
+    takeData(createReadingModelData(databasePath));
+
+    endResetModel();
+}
+
+QList<ComicItem *> ComicModel::createRecentModelData(const QString &databasePath) const
+{
+    QList<ComicItem *> modelData;
+
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
-                            "ORDER BY ci.lastTimeOpened DESC");
+                            "WHERE ci.added > :limit "
+                            "ORDER BY ci.added DESC");
+        selectQuery.bindValue(":limit", QDateTime::currentDateTime().addDays(-recentDays).toSecsSinceEpoch());
         selectQuery.exec();
 
-        setupModelDataForList(selectQuery);
+        modelData = createModelDataForList(selectQuery);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
-    endResetModel();
+
+    return modelData;
 }
 
 void ComicModel::setupRecentModelData(const QString &databasePath)
@@ -635,26 +714,17 @@ void ComicModel::setupRecentModelData(const QString &databasePath)
 
     _databasePath = databasePath;
 
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "WHERE ci.added > :limit "
-                            "ORDER BY ci.added DESC");
-        selectQuery.bindValue(":limit", QDateTime::currentDateTime().addDays(-recentDays).toSecsSinceEpoch());
-        selectQuery.exec();
+    takeData(createRecentModelData(databasePath));
 
-        setupModelDataForList(selectQuery);
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
     endResetModel();
 }
 
 void ComicModel::setModelData(QList<ComicItem *> *data, const QString &databasePath)
 {
+    enableResorting = false;
+    mode = SearchResult;
+    sourceId = -1;
+
     _databasePath = databasePath;
 
     beginResetModel();
@@ -679,8 +749,10 @@ QString ComicModel::getComicPath(QModelIndex mi)
     return "";
 }
 
-void ComicModel::setupModelData(QSqlQuery &sqlquery)
+QList<ComicItem *> ComicModel::createModelData(QSqlQuery &sqlquery) const
 {
+    QList<ComicItem *> modelData;
+
     int numColumns = sqlquery.record().count();
 
     while (sqlquery.next()) {
@@ -689,25 +761,19 @@ void ComicModel::setupModelData(QSqlQuery &sqlquery)
         for (int i = 0; i < numColumns; i++)
             data << sqlquery.value(i);
 
-        _data.append(new ComicItem(data));
+        modelData.append(new ComicItem(data));
     }
 
-    std::sort(_data.begin(), _data.end(), [](const ComicItem *c1, const ComicItem *c2) {
-        if (c1->data(ComicModel::Number).isNull() && c2->data(ComicModel::Number).isNull()) {
-            return naturalSortLessThanCI(c1->data(ComicModel::FileName).toString(), c2->data(ComicModel::FileName).toString());
-        } else {
-            if (c1->data(ComicModel::Number).isNull() == false && c2->data(ComicModel::Number).isNull() == false) {
-                return naturalSortLessThanCI(c1->data(ComicModel::Number).toString(), c2->data(ComicModel::Number).toString());
-            } else {
-                return c2->data(ComicModel::Number).isNull();
-            }
-        }
-    });
+    std::sort(modelData.begin(), modelData.end(), defaultFolderContentSortFunction);
+
+    return modelData;
 }
 
-// comics are sorted by "ordering", the sorting is done in the sql query
-void ComicModel::setupModelDataForList(QSqlQuery &sqlquery)
+// the sorting is done in the sql query
+QList<ComicItem *> ComicModel::createModelDataForList(QSqlQuery &sqlquery) const
 {
+    QList<ComicItem *> modelData;
+
     int numColumns = sqlquery.record().count();
 
     while (sqlquery.next()) {
@@ -715,7 +781,92 @@ void ComicModel::setupModelDataForList(QSqlQuery &sqlquery)
         for (int i = 0; i < numColumns; i++)
             data << sqlquery.value(i);
 
-        _data.append(new ComicItem(data));
+        modelData.append(new ComicItem(data));
+    }
+
+    return modelData;
+}
+
+void ComicModel::takeData(const QList<ComicItem *> &data)
+{
+    qDeleteAll(_data);
+    _data = data;
+}
+
+void ComicModel::takeUpdatedData(const QList<ComicItem *> &updatedData, std::function<bool(ComicItem *, ComicItem *)> comparator)
+{
+    int lenght = _data.size();
+    int lenghtUpdated = updatedData.size();
+
+    int i; // index of the internal data
+    int j; // index of the updated children
+    for (i = 0, j = 0; i < lenght && j < lenghtUpdated;) {
+        auto comic = _data.at(i);
+        auto updatedComic = updatedData.at(j);
+
+        auto sameComic = comic->data(ComicModel::Id) == updatedComic->data(ComicModel::Id);
+        if (sameComic) {
+            if (comic->getData() != updatedComic->getData()) {
+                auto modelIndexToUpdate = index(i, 0, QModelIndex());
+
+                comic->setData(updatedComic->getData());
+
+                emit dataChanged(modelIndexToUpdate, modelIndexToUpdate);
+            }
+
+            i++;
+            j++;
+            continue;
+        }
+
+        auto lessThan = comparator(comic, updatedComic);
+
+        // comic added
+        if (!lessThan) {
+            beginInsertRows(QModelIndex(), i, i);
+
+            _data.insert(i, updatedComic);
+
+            endInsertRows();
+
+            i++;
+            j++;
+            lenght++;
+            continue;
+        }
+
+        // comic removed
+        if (lessThan) {
+            beginRemoveRows(QModelIndex(), i, i);
+
+            _data.removeAt(i);
+
+            endRemoveRows();
+
+            lenght--;
+            continue;
+        }
+    }
+
+    // add remaining comics
+    for (; j < lenghtUpdated; j++) {
+        beginInsertRows(QModelIndex(), i, i);
+
+        _data.append(updatedData.at(j));
+
+        endInsertRows();
+
+        i++;
+    }
+
+    // remove remaining comics {
+    for (; i < lenght; i++) {
+        beginRemoveRows(QModelIndex(), i, i);
+
+        delete _data.at(i);
+        _data.removeAt(i);
+
+        endRemoveRows();
     }
 }
 
@@ -929,6 +1080,7 @@ void ComicModel::removeInTransaction(int row)
 
     DBHelper::removeFromDB(&c, dbTransaction);
     beginRemoveRows(QModelIndex(), row, row);
+
     removeRow(row);
     delete _data.at(row);
     _data.removeAt(row);
@@ -941,26 +1093,34 @@ void ComicModel::reloadContinueReading()
     setupReadingModelData(_databasePath);
 }
 
+// The `comparator` passed to `takeUpdatedData` is used to determine if a row has been removed or added
 void ComicModel::reload()
 {
     switch (mode) {
     case Folder:
-        setupFolderModelData(sourceId, _databasePath);
+        takeUpdatedData(createFolderModelData(sourceId, _databasePath), defaultFolderContentSortFunction);
         break;
     case Favorites:
-        setupFavoritesModelData(_databasePath);
+        setupFavoritesModelData(_databasePath); // TODO we need a comparator
         break;
     case Reading:
-        setupReadingModelData(_databasePath);
+        takeUpdatedData(createReadingModelData(_databasePath), [](const ComicItem *c1, const ComicItem *c2) {
+            return c1->data(ComicModel::LastTimeOpened).toDateTime() > c2->data(ComicModel::LastTimeOpened).toDateTime();
+        });
         break;
     case Recent:
-        setupRecentModelData(_databasePath);
+        takeUpdatedData(createRecentModelData(_databasePath), [](const ComicItem *c1, const ComicItem *c2) {
+            return c1->data(ComicModel::Added).toDateTime() > c2->data(ComicModel::Added).toDateTime();
+        });
         break;
     case Label:
-        setupLabelModelData(sourceId, _databasePath);
+        setupLabelModelData(sourceId, _databasePath); // TODO we need a comparator
         break;
     case ReadingList:
-        setupReadingListModelData(sourceId, _databasePath);
+        setupReadingListModelData(sourceId, _databasePath); // TODO we need a comparator
+        break;
+    case SearchResult:
+        // TODO: reload search results, we don't have a way to recreate the query in this class
         break;
     }
 }
@@ -1003,6 +1163,25 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+}
+
+void ComicModel::notifyCoverChange(const ComicDB &comic)
+{
+    auto it = std::find_if(_data.begin(), _data.end(), [comic](ComicItem *item) { return item->data(ComicModel::Id).toULongLong() == comic.id; });
+    auto itemIndex = std::distance(_data.begin(), it);
+    auto item = _data[itemIndex];
+
+    // emiting a dataChage doesn't work in QML for some reason, CoverPathRole is requested but the view doesn't update the image
+    // removing and reading again works with the flow views without any additional code, but it's not the best solution
+    beginRemoveRows(QModelIndex(), itemIndex, itemIndex);
+    _data.removeAt(itemIndex);
+    endRemoveRows();
+
+    beginInsertRows(QModelIndex(), itemIndex, itemIndex);
+    _data.insert(itemIndex, item);
+    endInsertRows();
+
+    // this doesn't work in QML -> emit dataChanged(index(itemIndex, 0), index(itemIndex, 0), QVector<int>() << CoverPathRole);
 }
 
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
