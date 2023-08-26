@@ -14,6 +14,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve content reloading. Navigation and selection state is no longer reseted after content changes (e.g. library updates, tags edits, etc.)
 * The app will try to move comics and folders to the trash bin when deletions are requested, if the file system used doesn't support trash bin the files will be removed permanetly.
 
+### YACReaderLibrary
+* Add `rescan-xml-info` command.
+
 ## 9.13.1
 
 ### YACReaderLibrary
