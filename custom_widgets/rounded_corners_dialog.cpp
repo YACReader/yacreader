@@ -25,7 +25,8 @@ void YACReader::RoundedCornersDialog::paintEvent(QPaintEvent *)
     p.setPen(Qt::NoPen);
 
     // Set the brush from palette role.
-    p.setBrush(palette().brush(backgroundRole()));
+    // p.setBrush(palette().brush(backgroundRole()));
+    p.setBrush(QBrush(QColor(255, 255, 255))); // TODO: the rest of the colors are hardcoded
     // Got radius?  Otherwise draw a quicker rect.
     if (radius > 0.0)
         p.drawRoundedRect(rect, radius, radius, Qt::AbsoluteSize);
