@@ -15,14 +15,6 @@ YACReaderBusyWidget::YACReaderBusyWidget(QWidget *parent)
     busy->move(20, 20);
 }
 
-void YACReaderBusyWidget::paintEvent(QPaintEvent *event)
-{
-    Q_UNUSED(event);
-    QPainter painter(this);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.drawPixmap(0, 0, width(), height(), QPixmap(":/images/busy_background.png"));
-}
-
 BusyIndicator::BusyIndicator(QWidget *parent, int size)
     : QWidget(parent),
       startAngle(0),
@@ -167,13 +159,14 @@ void BusyIndicator::paintEvent(QPaintEvent *)
                           .arg(m_style);
 
     QPixmap pixmap;
+    pixmap.setDevicePixelRatio(devicePixelRatioF());
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
 
     int side = qMin(width(), height());
 
     if (!QPixmapCache::find(key, &pixmap)) {
-        pixmap = generatePixmap(side);
+        pixmap = generatePixmap(side * devicePixelRatioF());
         QPixmapCache::insert(key, pixmap);
     }
 

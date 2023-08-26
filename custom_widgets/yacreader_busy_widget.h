@@ -9,7 +9,6 @@ class YACReaderBusyWidget : public QWidget
     Q_OBJECT
 public:
     explicit YACReaderBusyWidget(QWidget *parent = 0);
-    void paintEvent(QPaintEvent *);
 };
 
 class BusyIndicator : public QWidget
