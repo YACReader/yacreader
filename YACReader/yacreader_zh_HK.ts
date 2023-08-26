@@ -200,22 +200,22 @@
         <translation>選擇</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="97"/>
+        <location filename="options_dialog.cpp" line="99"/>
         <source>Quick Navigation Mode</source>
         <translation>快速導航模式</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="98"/>
+        <location filename="options_dialog.cpp" line="100"/>
         <source>Disable mouse over activation</source>
         <translation>禁用滑鼠啟動</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="197"/>
+        <location filename="options_dialog.cpp" line="199"/>
         <source>Restart is needed</source>
         <translation>需要重啟</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="141"/>
+        <location filename="options_dialog.cpp" line="143"/>
         <source>Brightness</source>
         <translation>亮度</translation>
     </message>
@@ -226,76 +226,81 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="74"/>
+        <source>Disable scroll animations and smooth scrolling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="75"/>
         <source>Do not turn page using scroll</source>
         <translation>滾動時不翻頁</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="75"/>
+        <location filename="options_dialog.cpp" line="76"/>
         <source>Use single scroll step to turn page</source>
         <translation>使用單滾動步驟翻頁</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="142"/>
+        <location filename="options_dialog.cpp" line="144"/>
         <source>Contrast</source>
         <translation>對比度</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="143"/>
+        <location filename="options_dialog.cpp" line="145"/>
         <source>Gamma</source>
         <translation>Gamma值</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="147"/>
+        <location filename="options_dialog.cpp" line="149"/>
         <source>Reset</source>
         <translation>重置</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="152"/>
+        <location filename="options_dialog.cpp" line="154"/>
         <source>Image options</source>
         <translation>圖片選項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="156"/>
+        <location filename="options_dialog.cpp" line="158"/>
         <source>Fit options</source>
         <translation>適應項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="158"/>
+        <location filename="options_dialog.cpp" line="160"/>
         <source>Enlarge images to fit width/height</source>
         <translation>放大圖片以適應寬度/高度</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="169"/>
+        <location filename="options_dialog.cpp" line="171"/>
         <source>Double Page options</source>
         <translation>雙頁選項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="171"/>
+        <location filename="options_dialog.cpp" line="173"/>
         <source>Show covers as single page</source>
         <translation>顯示封面為單頁</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="189"/>
+        <location filename="options_dialog.cpp" line="191"/>
         <source>General</source>
         <translation>常規</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="190"/>
+        <location filename="options_dialog.cpp" line="192"/>
         <source>Page Flow</source>
         <translation>頁面流</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="191"/>
+        <location filename="options_dialog.cpp" line="193"/>
         <source>Image adjustment</source>
         <translation>圖像調整</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="206"/>
+        <location filename="options_dialog.cpp" line="208"/>
         <source>Options</source>
         <translation>選項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="213"/>
+        <location filename="options_dialog.cpp" line="215"/>
         <source>Comics directory</source>
         <translation>漫畫目錄</translation>
     </message>
@@ -403,7 +408,7 @@
     <name>Viewer</name>
     <message>
         <location filename="viewer.cpp" line="51"/>
-        <location filename="viewer.cpp" line="915"/>
+        <location filename="viewer.cpp" line="924"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>按下 &apos;O&apos; 以打開漫畫.</translation>
     </message>
@@ -428,22 +433,22 @@
         <translation>CRC 校驗失敗</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="927"/>
+        <location filename="viewer.cpp" line="936"/>
         <source>Loading...please wait!</source>
         <translation>載入中... 請稍候!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="937"/>
+        <location filename="viewer.cpp" line="946"/>
         <source>Page not available!</source>
         <translation>頁面不可用!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1119"/>
+        <location filename="viewer.cpp" line="1128"/>
         <source>Cover!</source>
         <translation>封面!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1133"/>
+        <location filename="viewer.cpp" line="1142"/>
         <source>Last page!</source>
         <translation>尾頁!</translation>
     </message>

@@ -42,6 +42,7 @@ private:
 
     QCheckBox *doNotTurnPageOnScroll;
     QCheckBox *useSingleScrollStepToTurnPage;
+    QCheckBox *disableScrollAnimations;
 
     YACReaderSpinSliderWidget *brightnessS;
 

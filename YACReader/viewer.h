@@ -162,7 +162,7 @@ private:
     bool restoreMagnifyingGlass;
     void setMagnifyingGlassShown(bool shown);
 
-    //! Manejadores de evento:
+    //! Event handlers:
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -178,6 +178,10 @@ private:
     bool isEdge(scrollDirection d);
     void scrollZigzag(scrollDirection d1, scrollDirection d2, bool forward);
     void scrollTo(int x, int y);
+
+    // Zero when animations are disabled
+    int animationDuration() const;
+    void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta);
 
 public:
     Viewer(QWidget *parent = nullptr);

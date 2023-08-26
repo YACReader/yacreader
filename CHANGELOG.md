@@ -4,6 +4,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## WIP
 
+### YACReader
+* Add setting to disable scroll animations and scroll smoothing, recommended if you are using a touch pad or if you find the mouse wheel behaviour laggy.
+
 ### YACReaderLibrary
 * Fix "Set type" context menu the grid view for folders.
 * Add a different versioning strategy for databases. DBs version will change only when the structure changes and not when YACReader version changes.

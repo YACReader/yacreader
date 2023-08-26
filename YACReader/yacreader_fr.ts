@@ -551,12 +551,12 @@
 <context>
     <name>OptionsDialog</name>
     <message>
-        <location filename="options_dialog.cpp" line="143"/>
+        <location filename="options_dialog.cpp" line="145"/>
         <source>Gamma</source>
         <translation>Gamma</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="147"/>
+        <location filename="options_dialog.cpp" line="149"/>
         <source>Reset</source>
         <translation>Remise à zéro</translation>
     </message>
@@ -566,7 +566,7 @@
         <translation>Chemin de mes bandes dessinées</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="191"/>
+        <location filename="options_dialog.cpp" line="193"/>
         <source>Image adjustment</source>
         <translation>Ajustement de l&apos;image</translation>
     </message>
@@ -581,27 +581,27 @@
         <translation>Choisir</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="152"/>
+        <location filename="options_dialog.cpp" line="154"/>
         <source>Image options</source>
         <translation>Option de l&apos;image</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="142"/>
+        <location filename="options_dialog.cpp" line="144"/>
         <source>Contrast</source>
         <translation>Contraste</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="206"/>
+        <location filename="options_dialog.cpp" line="208"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="213"/>
+        <location filename="options_dialog.cpp" line="215"/>
         <source>Comics directory</source>
         <translation>Répertoire des bandes dessinées</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="97"/>
+        <location filename="options_dialog.cpp" line="99"/>
         <source>Quick Navigation Mode</source>
         <translation>Mode navigation rapide</translation>
     </message>
@@ -617,56 +617,61 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="74"/>
-        <source>Do not turn page using scroll</source>
+        <source>Disable scroll animations and smooth scrolling</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="75"/>
+        <source>Do not turn page using scroll</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="76"/>
         <source>Use single scroll step to turn page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="98"/>
+        <location filename="options_dialog.cpp" line="100"/>
         <source>Disable mouse over activation</source>
         <translation>Désactiver la souris sur l&apos;activation</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="190"/>
+        <location filename="options_dialog.cpp" line="192"/>
         <source>Page Flow</source>
         <translation>Flux des pages</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="189"/>
+        <location filename="options_dialog.cpp" line="191"/>
         <source>General</source>
         <translation>Général</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="141"/>
+        <location filename="options_dialog.cpp" line="143"/>
         <source>Brightness</source>
         <translation>Luminosité</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="197"/>
+        <location filename="options_dialog.cpp" line="199"/>
         <source>Restart is needed</source>
         <translation>Redémarrage nécessaire</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="156"/>
+        <location filename="options_dialog.cpp" line="158"/>
         <source>Fit options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="158"/>
+        <location filename="options_dialog.cpp" line="160"/>
         <source>Enlarge images to fit width/height</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="169"/>
+        <location filename="options_dialog.cpp" line="171"/>
         <source>Double Page options</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="171"/>
+        <location filename="options_dialog.cpp" line="173"/>
         <source>Show covers as single page</source>
         <translation type="unfinished"></translation>
     </message>
@@ -773,13 +778,13 @@
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="937"/>
+        <location filename="viewer.cpp" line="946"/>
         <source>Page not available!</source>
         <translation>Page non disponible !</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="51"/>
-        <location filename="viewer.cpp" line="915"/>
+        <location filename="viewer.cpp" line="924"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>Appuyez sur &quot;O&quot; pour ouvrir une bande dessinée.</translation>
     </message>
@@ -789,7 +794,7 @@
         <translation>Erreur d&apos;ouverture de la bande dessinée</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1119"/>
+        <location filename="viewer.cpp" line="1128"/>
         <source>Cover!</source>
         <translation>Couverture!</translation>
     </message>
@@ -809,12 +814,12 @@
         <translation>Introuvable</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1133"/>
+        <location filename="viewer.cpp" line="1142"/>
         <source>Last page!</source>
         <translation>Dernière page!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="927"/>
+        <location filename="viewer.cpp" line="936"/>
         <source>Loading...please wait!</source>
         <translation>Chargement... Patientez</translation>
     </message>
