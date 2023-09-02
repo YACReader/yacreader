@@ -273,7 +273,7 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
         // queryDBInfo.finish();
 
         QSqlQuery query("INSERT INTO db_info (version) "
-                        "VALUES ('" VERSION "')",
+                        "VALUES ('" DB_VERSION "')",
                         database);
         // query.finish();
 
@@ -393,7 +393,7 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
         queryDBInfo.exec();
 
         QSqlQuery query("INSERT INTO dest.db_info (version) "
-                        "VALUES ('" VERSION "')",
+                        "VALUES ('" DB_VERSION "')",
                         destDB);
         query.exec();
 
@@ -879,7 +879,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
             QSqlQuery updateVersion(db);
             updateVersion.prepare("UPDATE db_info SET "
                                   "version = :version");
-            updateVersion.bindValue(":version", VERSION);
+            updateVersion.bindValue(":version", DB_VERSION);
             updateVersion.exec();
 
             if (updateVersion.numRowsAffected() > 0)
