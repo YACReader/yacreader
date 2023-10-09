@@ -13,6 +13,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add support for updating libraries automatically with various settings to chose from. During automatic library updates most actions are disabled, you can stop an update by clicking on the busy indicator next to the Libraries title.
 * Improve content reloading. Navigation and selection state is no longer reseted after content changes (e.g. library updates, tags edits, etc.)
 * The app will try to move comics and folders to the trash bin when deletions are requested, if the file system used doesn't support trash bin the files will be removed permanetly.
+* Add menu to choose what columns are displayed in the table comics view (do a right click on the header to show it). The view has new 3 new headers to choose from (Series, Volume and Story arc).
 
 ### YACReaderLibrary
 * Add `rescan-xml-info` command.
