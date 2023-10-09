@@ -23,22 +23,28 @@ class ComicModel : public QAbstractItemModel
 public:
     enum Columns {
         Number = 0,
-        Title = 1,
-        FileName = 2,
-        NumPages = 3,
-        Id = 4,
-        Parent_Id = 5,
-        Path = 6,
-        Hash = 7,
-        ReadColumn = 8,
-        IsBis = 9, // TODO_METADATA: Remove this column
-        CurrentPage = 10,
-        Rating = 11,
-        HasBeenOpened = 12,
-        PublicationDate = 13,
-        Added = 14,
-        Type = 15,
-        LastTimeOpened = 16,
+        Title,
+        FileName,
+        NumPages,
+        Id,
+        Parent_Id,
+        Path,
+        Hash,
+        ReadColumn,
+        CurrentPage,
+        Rating,
+        HasBeenOpened,
+        PublicationDate,
+        Added,
+        Type,
+        LastTimeOpened,
+        Series,
+        Volume,
+        StoryArc,
+    };
+
+    enum CalculatedColumns {
+        Size = Columns::StoryArc + 1,
     };
 
     enum Roles {
@@ -51,7 +57,6 @@ public:
         PathRole,
         HashRole,
         ReadColumnRole,
-        IsBisRole,
         CurrentPageRole,
         RatingRole,
         HasBeenOpenedRole,
@@ -62,6 +67,10 @@ public:
         TypeRole,
         ShowRecentRole,
         RecentRangeRole,
+        SizeRole,
+        SeriesRole,
+        VolumeRole,
+        StoryArcRole,
     };
 
     enum Mode {

@@ -43,7 +43,7 @@ int ComicModel::columnCount(const QModelIndex &parent) const
     Q_UNUSED(parent)
     if (_data.isEmpty())
         return 0;
-    return _data.first()->columnCount();
+    return _data.first()->columnCount() + 1 /* + the number of calculated columns */;
 }
 
 bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
@@ -238,7 +238,6 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[PathRole] = "path";
     roles[HashRole] = "hash";
     roles[ReadColumnRole] = "read_column";
-    roles[IsBisRole] = "is_bis";
     roles[CurrentPageRole] = "current_page";
     roles[RatingRole] = "rating";
     roles[HasBeenOpenedRole] = "has_been_opened";
@@ -249,6 +248,10 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[TypeRole] = "type";
     roles[ShowRecentRole] = "show_recent";
     roles[RecentRangeRole] = "recent_range";
+    roles[SizeRole] = "size";
+    roles[SeriesRole] = "series";
+    roles[VolumeRole] = "volume";
+    roles[StoryArcRole] = "story_arc";
 
     return roles;
 }
@@ -269,7 +272,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
         case ComicModel::NumPages:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-        case ComicModel::Hash:
+        case ComicModel::Size:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
         case ComicModel::CurrentPage:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
@@ -282,6 +285,10 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     // these roles will be used from QML/GridView
 
     auto item = static_cast<ComicItem *>(index.internalPointer());
+
+    auto sizeString = [=] {
+        return QString::number(item->data(ComicModel::Hash).toString().right(item->data(ComicModel::Hash).toString().length() - 40).toInt() / 1024.0 / 1024.0, 'f', 2) + "Mb";
+    };
 
     if (role == NumberRole)
         return item->data(Number);
@@ -306,7 +313,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     else if (role == ReadColumnRole)
         return item->data(ReadColumn).toBool();
     else if (role == HasBeenOpenedRole)
-        return item->data(ComicModel::HasBeenOpened);
+        return item->data(HasBeenOpened);
     else if (role == IdRole)
         return item->data(Id);
     else if (role == PublicationDateRole)
@@ -317,14 +324,24 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(Type);
     else if (role == ShowRecentRole)
         return showRecent;
-    else if (role == ComicModel::RecentRangeRole)
+    else if (role == RecentRangeRole)
         return recentDays * 86400;
+    else if (role == SizeRole)
+        return sizeString();
+    else if (role == SeriesRole)
+        return item->data(Series);
+    else if (role == VolumeRole)
+        return item->data(Volume);
+    else if (role == StoryArcRole)
+        return item->data(StoryArc);
 
     if (role != Qt::DisplayRole)
         return QVariant();
 
     if (index.column() == ComicModel::Hash)
-        return QString::number(item->data(index.column()).toString().right(item->data(index.column()).toString().length() - 40).toInt() / 1024.0 / 1024.0, 'f', 2) + "Mb";
+        return item->data(ComicModel::Hash).toString();
+    if (index.column() == ComicModel::Size)
+        return sizeString();
     if (index.column() == ComicModel::ReadColumn)
         return (item->data(ComicModel::CurrentPage).toInt() == item->data(ComicModel::NumPages).toInt() || item->data(ComicModel::ReadColumn).toBool()) ? QVariant(tr("yes")) : QVariant(tr("no"));
     if (index.column() == ComicModel::CurrentPage)
@@ -353,8 +370,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
                                 int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-        switch (section) // TODO obtener esto de la query
-        {
+        switch (section) {
         case ComicModel::Number:
             return QVariant(QString("#"));
         case ComicModel::Title:
@@ -363,7 +379,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
             return QVariant(QString(tr("File Name")));
         case ComicModel::NumPages:
             return QVariant(QString(tr("Pages")));
-        case ComicModel::Hash:
+        case ComicModel::Size:
             return QVariant(QString(tr("Size")));
         case ComicModel::ReadColumn:
             return QVariant(QString(tr("Read")));
@@ -373,17 +389,22 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
             return QVariant(QString(tr("Publication Date")));
         case ComicModel::Rating:
             return QVariant(QString(tr("Rating")));
+        case ComicModel::Series:
+            return QVariant(QString(tr("Series")));
+        case ComicModel::Volume:
+            return QVariant(QString(tr("Volume")));
+        case ComicModel::StoryArc:
+            return QVariant(QString(tr("Story Arc")));
         }
     }
 
     if (orientation == Qt::Horizontal && role == Qt::TextAlignmentRole) {
-        switch (section) // TODO obtener esto de la query
-        {
+        switch (section) {
         case ComicModel::Number:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
         case ComicModel::NumPages:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
-        case ComicModel::Hash:
+        case ComicModel::Size:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
         case ComicModel::CurrentPage:
             return QVariant(Qt::AlignRight | Qt::AlignVCenter);
@@ -461,7 +482,7 @@ QStringList ComicModel::getPaths(const QString &_source)
     return paths;
 }
 
-#define COMIC_MODEL_QUERY_FIELDS "ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.isBis,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date,ci.added,ci.type,ci.lastTimeOpened"
+#define COMIC_MODEL_QUERY_FIELDS "ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date,ci.added,ci.type,ci.lastTimeOpened,ci.series,ci.volume,ci.storyArc"
 
 QList<ComicItem *> ComicModel::createFolderModelData(unsigned long long folderId, const QString &databasePath) const
 {
