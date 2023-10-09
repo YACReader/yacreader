@@ -52,6 +52,7 @@ protected slots:
     void hideComicFlow(bool hide);
     void requestedViewContextMenu(const QPoint &point);
     void requestedItemContextMenu(const QPoint &point);
+    void requestedHeaderContextMenu(const QPoint &point);
 
 private:
     YACReaderTableView *tableView;
