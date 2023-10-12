@@ -164,6 +164,8 @@ void ClassicComicsView::setModel(ComicModel *model)
             } catch (...) {
                 loadDefaults = true;
             }
+        } else {
+            loadDefaults = true;
         }
 
         if (loadDefaults) {
