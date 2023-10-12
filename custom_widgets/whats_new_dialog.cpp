@@ -57,7 +57,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; Add support for updating libraries automatically with various settings to chose from. During automatic library updates most actions are disabled, you can stop an update by clicking on the busy indicator next to the Libraries title.<br/>"
                   "   &#8226; Improve content reloading. Navigation and selection state is no longer reseted after content changes (e.g. library updates, tags edits, etc.).<br/>"
                   "   &#8226; The app will try to move comics and folders to the trash bin when deletions are requested, if the file system used doesn't support trash bin the files will be removed permanetly.<br/>"
-                  "<br/>"
+                  "   &#8226; Add menu to choose what columns are displayed in the table comics view (do a right click on the header to show it). The view has new 3 new headers to choose from (Series, Volume and Story arc).<br/>"
                   "<span style=\"font-weight:600\">YACReaderLibraryServer</span><br/>"
                   "   &#8226; Add `rescan-xml-info` command.<br/>"
                   "<br/>"
