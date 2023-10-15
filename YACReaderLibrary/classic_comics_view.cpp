@@ -188,6 +188,14 @@ void ClassicComicsView::setModel(ComicModel *model)
             tableView->horizontalHeader()->moveSection(ComicModel::Size, 5);
         }
 
+        // make sure that columns without title are hidden
+        for (int i = 0; i < tableView->horizontalHeader()->count(); i++) {
+            auto title = tableView->model()->headerData(i, Qt::Horizontal).toString();
+            if (title.isEmpty()) {
+                tableView->horizontalHeader()->hideSection(i);
+            }
+        }
+
         tableView->resizeColumnsToContents();
 
         tableView->horizontalHeader()->setStretchLastSection(true);
