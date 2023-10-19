@@ -1292,13 +1292,22 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
     query.bindValue(":path", comic->path);
     query.exec();
 
+    // loop through parents and update their updated field
+    // TODO: use stored procedures
     QSqlQuery updateFolder(db);
     updateFolder.prepare("UPDATE folder SET "
                          "updated = :updated "
                          "WHERE id = :id ");
-    updateFolder.bindValue(":updated", added);
-    updateFolder.bindValue(":id", comic->parentId);
-    updateFolder.exec();
+    auto currentParentId = comic->parentId;
+    while (currentParentId != 1 && currentParentId != 0) {
+        updateFolder.bindValue(":updated", added);
+        updateFolder.bindValue(":id", currentParentId);
+        updateFolder.exec();
+
+        auto f = loadFolder(currentParentId, db);
+        currentParentId = f.parentId;
+    }
+    //----
 
     return query.lastInsertId().toULongLong();
 }
