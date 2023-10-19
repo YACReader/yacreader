@@ -15,6 +15,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * The app will try to move comics and folders to the trash bin when deletions are requested, if the file system used doesn't support trash bin the files will be removed permanetly.
 * Add menu to choose what columns are displayed in the table comics view (do a right click on the header to show it). The view has new 3 new headers to choose from (Series, Volume and Story arc).
 * Migrate `number` and `arcNumber` data types to `TEXT`. This only affects databases created before 9.13 and fixes problems with some formats of numbers (e.g. 1.10).
+* Propage update date to all the parent folders.
 
 ### YACReaderLibrary
 * Add `rescan-xml-info` command.
