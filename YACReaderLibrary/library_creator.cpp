@@ -231,12 +231,12 @@ void LibraryCreator::run()
         }
         QLOG_INFO() << "Update library END";
     }
-    // msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
+
     if (partialUpdate) {
         emit updatedCurrentFolder(folderDestinationModelIndex);
-        emit finished();
-    } else // TODO check this part!!
-        emit finished();
+    }
+
+    emit finished();
     creation = false;
 }
 
