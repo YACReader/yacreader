@@ -533,6 +533,8 @@ QString ComicInfo::getTypeString()
         return "Web Comic";
     case YACReader::FileType::Yonkoma:
         return "4-Koma";
+    default:
+        return "Unknown";
     }
 }
 
