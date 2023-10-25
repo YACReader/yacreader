@@ -1267,6 +1267,10 @@ void YACReaderComicFlowGL::resortCovers(QList<int> newOrder)
 
     int index = 0;
     foreach (int i, newOrder) {
+        if (i < 0 || i >= images.size()) {
+            continue;
+        }
+
         pathsNew << paths.at(i);
         loadedNew << loaded.at(i);
         marksNew << marks.at(i);

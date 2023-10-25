@@ -16,9 +16,13 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add menu to choose what columns are displayed in the table comics view (do a right click on the header to show it). The view has new 3 new headers to choose from (Series, Volume and Story arc).
 * Migrate `number` and `arcNumber` data types to `TEXT`. This only affects databases created before 9.13 and fixes problems with some formats of numbers (e.g. 1.10).
 * Propage update date to all the parent folders.
+* Fix crash when resorting comics in reading lists in table view view and the comic flow is hidden.
 
-### YACReaderLibrary
+### YACReaderLibraryServer
 * Add `rescan-xml-info` command.
+
+## All Apps
+* New universal builds for macos.
 
 ## 9.13.1
 
