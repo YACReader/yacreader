@@ -1307,6 +1307,9 @@ void ComicModel::deleteComicsFromSpecialList(const QList<QModelIndex> &comicsLis
     case ReadingListModel::TypeSpecialList::Favorites:
         deleteComicsFromFavorites(comicsList);
         break;
+    case ReadingListModel::TypeSpecialList::Recent:
+        // do nothing, recent is read only
+        break;
     }
 }
 
