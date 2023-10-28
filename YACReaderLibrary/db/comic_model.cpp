@@ -172,7 +172,10 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         case ReadingList:
             DBHelper::reasignOrderToComicsInReadingList(sourceId, allComicIds, db);
             break;
-        default:
+        case Folder:
+        case Reading:
+        case Recent:
+        case SearchResult:
             break;
         }
         connectionName = db.connectionName();
@@ -1306,6 +1309,9 @@ void ComicModel::deleteComicsFromSpecialList(const QList<QModelIndex> &comicsLis
         break;
     case ReadingListModel::TypeSpecialList::Favorites:
         deleteComicsFromFavorites(comicsList);
+        break;
+    case ReadingListModel::TypeSpecialList::Recent:
+        // do nothing, recent is read only
         break;
     }
 }
