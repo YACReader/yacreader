@@ -7,11 +7,17 @@ CONFIG += c++17
 win32 {
     #enable c++17 explicitly in msvc
     QMAKE_CXXFLAGS += /std:c++17 /Zc:__cplusplus /permissive-
+    #treat missing branches for enums as error
+    QMAKE_CXXFLAGS += /we4061
 }
 
 DEFINES += NOMINMAX
 
-if(unix|mingw):QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
+if(unix|mingw) {
+    QMAKE_CXXFLAGS_RELEASE += -DNDEBUG
+    #treat missing branches for enums as error
+    QMAKE_CXXFLAGS += -Werror=switch
+}
 win32:msvc:QMAKE_CXXFLAGS_RELEASE += /DNDEBUG
 
 # check Qt version
