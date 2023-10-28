@@ -522,6 +522,11 @@ QStringList ComicInfo::getTags()
 
 QString ComicInfo::getTypeString()
 {
+    if (!type.canConvert<YACReader::FileType>()) {
+        assert(false);
+        return "Unknown";
+    }
+
     switch (type.value<YACReader::FileType>()) {
     case YACReader::FileType::Comic:
         return "Comic";
@@ -533,9 +538,10 @@ QString ComicInfo::getTypeString()
         return "Web Comic";
     case YACReader::FileType::Yonkoma:
         return "4-Koma";
-    default:
-        return "Unknown";
     }
+
+    assert(false);
+    return "Unknown";
 }
 
 QString ComicInfo::getStoryArcInfoString()
