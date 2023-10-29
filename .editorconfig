@@ -17,5 +17,8 @@ indent_size = 2
 [CMakeLists.txt]
 indent_size = 2
 
+[*.md]
+indent_size = 2
+
 [*.cmake]
 indent_size = 2
