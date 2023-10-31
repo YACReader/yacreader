@@ -1,0 +1,52 @@
+add_library(comic_vine)
+target_sources(
+  comic_vine
+  PRIVATE api_key_dialog.cpp
+          api_key_dialog.h
+          comic_vine_all_volume_comics_retriever.cpp
+          comic_vine_all_volume_comics_retriever.h
+          comic_vine_client.cpp
+          comic_vine_client.h
+          comic_vine_dialog.cpp
+          comic_vine_dialog.h
+          comic_vine_json_parser.cpp
+          comic_vine_json_parser.h
+          model/comics_model.cpp
+          model/comics_model.h
+          model/json_model.cpp
+          model/json_model.h
+          model/local_comic_list_model.cpp
+          model/local_comic_list_model.h
+          model/response_parser.cpp
+          model/response_parser.h
+          model/volume_comics_model.cpp
+          model/volume_comics_model.h
+          model/volumes_model.cpp
+          model/volumes_model.h
+          scraper_lineedit.cpp
+          scraper_lineedit.h
+          scraper_results_paginator.cpp
+          scraper_results_paginator.h
+          scraper_scroll_label.cpp
+          scraper_scroll_label.h
+          scraper_selector.cpp
+          scraper_selector.h
+          scraper_tableview.cpp
+          scraper_tableview.h
+          search_single_comic.cpp
+          search_single_comic.h
+          search_volume.cpp
+          search_volume.h
+          select_comic.cpp
+          select_comic.h
+          select_volume.cpp
+          select_volume.h
+          series_question.cpp
+          series_question.h
+          sort_volume_comics.cpp
+          sort_volume_comics.h
+          title_header.cpp
+          title_header.h)
+target_include_directories(comic_vine PUBLIC . model ..)
+target_link_libraries(comic_vine Qt::Widgets yr_global naturalsort db_helper
+                      custom_widgets_library)
