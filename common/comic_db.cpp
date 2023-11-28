@@ -522,6 +522,10 @@ QStringList ComicInfo::getTags()
 
 QString ComicInfo::getTypeString()
 {
+    if (type.isNull()) {
+        return QStringLiteral("Null");
+    }
+
     if (!type.canConvert<YACReader::FileType>()) {
         assert(false);
         return QStringLiteral("Unknown");
