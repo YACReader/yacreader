@@ -784,7 +784,7 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
 
 QUrl FolderModel::getCoverUrlPathForComicHash(const QString &hash) const
 {
-    return QUrl("file:" + _databasePath + "/covers/" + hash + ".jpg");
+    return QUrl::fromLocalFile(_databasePath + "/covers/" + hash + ".jpg");
 }
 
 void FolderModel::setShowRecent(bool showRecent)
