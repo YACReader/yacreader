@@ -79,11 +79,15 @@ set_property(CACHE OPENGL PROPERTY STRINGS "desktop" "angle" "force-angle"
 
 # Handle dependencies for backends
 if(DECOMPRESSION_BACKEND STREQUAL "unarr")
-  find_package("unarr" REQUIRED)
+  find_package("unarr")
+  # old unarr only ships PKGCONFIG
+  if(NOT unarr_FOUND)
+    pkg_check_modules(unarr IMPORTED_TARGET "libunarr" REQUIRED)
+  endif()
 elseif(DECOMPRESSION_BACKEND STREQUAL "7zip")
   find_package("7zip" REQUIRED)
 elseif(DECOMPRESSION_BACKEND STREQUAL "libarchive")
-  find_package("LibArchive::LibArchive" REQUIRED)
+  find_package("LibArchive" REQUIRED)
 else()
   message(FATAL_ERROR "No valid decompression backend specified.")
 endif()
