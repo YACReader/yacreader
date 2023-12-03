@@ -7,7 +7,11 @@ if(DECOMPRESSION_BACKEND STREQUAL "unarr")
                         unarr/extract_delegate.h)
   target_include_directories(cbx_backend PUBLIC unarr)
   target_compile_definitions(cbx_backend PUBLIC use_unarr)
-  target_link_libraries(cbx_backend unarr::unarr Qt::Core)
+  if(TARGET unarr:unarr)
+    target_link_libraries(cbx_backend unarr::unarr Qt::Core)
+  else()
+    target_link_libraries(cbx_backend PkgConfig::unarr Qt::Core)
+  endif()
 
 elseif(DECOMPRESSION_BACKEND STREQUAL "libarchive")
 
