@@ -48,7 +48,7 @@ public:
     bool operator!=(const YACReaderLibrary &other) const;
     friend QDataStream &operator<<(QDataStream &out, const YACReaderLibrary &library);
     friend QDataStream &operator>>(QDataStream &in, YACReaderLibrary &library);
-    operator QString() const { return QString("%1 [%2, %3, %4]").arg(name).arg(legacyId).arg(id.toString(QUuid::WithoutBraces).arg(path)); }
+    operator QString() const { return QString("%1 [%2, %3, %4]").arg(name, QString::number(legacyId), id.toString(QUuid::WithoutBraces), path); }
 
 private:
     QString name;
