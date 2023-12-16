@@ -17,6 +17,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Migrate `number` and `arcNumber` data types to `TEXT`. This only affects databases created before 9.13 and fixes problems with some formats of numbers (e.g. 1.10).
 * Propage update date to all the parent folders.
 * Fix crash when resorting comics in reading lists in table view view and the comic flow is hidden.
+* Fix cover loading in QML views due to malformed URLs.
+* Improve style of the webui status page.
 
 ### YACReaderLibraryServer
 * Add `rescan-xml-info` command.
