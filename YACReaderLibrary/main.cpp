@@ -38,8 +38,10 @@ using namespace QsLogging;
 void logSystemAndConfig()
 {
     QLOG_INFO() << "---------- System & configuration ----------";
+    QLOG_INFO() << "YACReader version:" << VERSION;
+    QLOG_INFO() << "Qt version:" << qVersion();
     QLOG_INFO() << "OS:" << QSysInfo::prettyProductName() << "Version: " << QSysInfo::productVersion();
-    QLOG_INFO() << "Kernel:" << QSysInfo::kernelType() << QSysInfo::kernelVersion() << "Architecture:" << QSysInfo::currentCpuArchitecture();
+    QLOG_INFO() << "Kernel:" << QSysInfo::kernelType() << QSysInfo::kernelVersion() << "Architecture:" << QSysInfo::currentCpuArchitecture() << "ABI:" << QSysInfo::buildAbi();
 
 #if !defined use_unarr && !defined use_libarchive
 #ifdef Q_OS_WIN
