@@ -35,6 +35,7 @@
 #include "controllers/v2/comicfullinfocontroller_v2.h"
 #include "controllers/v2/comiccontrollerinreadinglist_v2.h"
 #include "controllers/v2/searchcontroller_v2.h"
+#include "controllers/v2/foldermetadatacontroller_v2.h"
 
 #include "controllers/webui/statuspagecontroller.h"
 
@@ -237,7 +238,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
 {
     QByteArray path = request.getPath();
 
-    QRegExp folderInfo("/v2/library/.+/folder/[0-9]+/info/?"); // get folder info
+    QRegExp folderInfo("/v2/library/.+/folder/[0-9]+/info/?"); // get folder info (all comics in a folder including subfolders recursively)
     QRegExp comicDownloadInfo("/v2/library/.+/comic/[0-9]+/info/?"); // get comic info (full download info)
     QRegExp comicOpenForDownloading("/v2/library/.+/comic/[0-9]+/?"); // get comic info (full info + opening)
     QRegExp comicOpenForRemoteReading("/v2/library/.+/comic/[0-9]+/remote/?"); // the server will open for reading the comic
@@ -250,6 +251,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     QRegExp comicPageRemote("/v2/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); // get comic page (remote reading)
     QRegExp serverVersion("/v2/version/?");
     QRegExp folderContent("/v2/library/.+/folder/[0-9]+/content/?");
+    QRegExp folderMetadata("/v2/library/.+/folder/[0-9]+/metadata/?"); // get the folder metadata json (9.14)
     QRegExp favs("/v2/library/.+/favs/?");
     QRegExp reading("/v2/library/.+/reading/?");
     QRegExp tags("/v2/library/.+/tags/?");
@@ -322,6 +324,11 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
                     TagInfoControllerV2().service(request, response);
                 } else if (search.exactMatch(path)) {
                     SearchController().service(request, response);
+                } else if (folderMetadata.exactMatch(path)) {
+                    FolderMetadataControllerV2().service(request, response);
+                } else {
+                    response.setStatus(404, "not found");
+                    response.write("404 not found", true);
                 }
             } else {
                 // response.writeText(library.cap(1));
