@@ -9,6 +9,7 @@ DEPENDPATH += $$PWD/controllers/v2
 
 
 HEADERS += \
+    $$PWD/controllers/v2/foldermetadatacontroller_v2.h \
     $$PWD/controllers/v2/searchcontroller_v2.h \
     $$PWD/static.h \
     $$PWD/requestmapper.h \
@@ -54,6 +55,7 @@ HEADERS += \
 
 
 SOURCES += \
+    $$PWD/controllers/v2/foldermetadatacontroller_v2.cpp \
     $$PWD/controllers/v2/searchcontroller_v2.cpp \
     $$PWD/static.cpp \
     $$PWD/requestmapper.cpp \
@@ -100,4 +102,4 @@ SOURCES += \
 include(../../third_party/QtWebApp/httpserver/httpserver.pri)
 include(../../third_party/QtWebApp/templateengine/templateengine.pri)
 
-DEFINES += SERVER_VERSION_NUMBER=\\\"2.0\\\"
+DEFINES += SERVER_VERSION_NUMBER=\\\"2.1\\\"
