@@ -292,7 +292,7 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
+        selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio,ci.number "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
                             "ORDER BY ci.lastTimeOpened DESC");
@@ -301,6 +301,7 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
         while (selectQuery.next()) {
             ComicDB comic;
 
+            // TODO: use QVariant when possible to keep nulls
             comic.id = selectQuery.value(0).toULongLong();
             comic.parentId = selectQuery.value(1).toULongLong();
             comic.name = selectQuery.value(2).toString();
@@ -310,6 +311,7 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
             comic.info.hash = selectQuery.value(6).toString();
             comic.info.read = selectQuery.value(7).toBool();
             comic.info.coverSizeRatio = selectQuery.value(8).toFloat();
+            comic.info.number = selectQuery.value(9);
 
             list.append(comic);
         }
