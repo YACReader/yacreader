@@ -25,6 +25,7 @@ public:
     int getId(const QString &name);
     YACReaderLibraries &operator=(const YACReaderLibraries &source);
     QList<YACReaderLibrary> getLibraries() const;
+    QUuid getLibraryIdFromLegacyId(int legacyId) const;
 public slots:
     void addLibrary(const QString &name, const QString &path);
     void load();

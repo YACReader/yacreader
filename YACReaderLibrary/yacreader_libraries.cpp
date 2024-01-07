@@ -111,6 +111,12 @@ QList<YACReaderLibrary> YACReaderLibraries::getLibraries() const
     return libraries;
 }
 
+QUuid YACReaderLibraries::getLibraryIdFromLegacyId(int legacyId) const
+{
+    auto library = std::find_if(libraries.cbegin(), libraries.cend(), [legacyId](const YACReaderLibrary &library) { return library.getLegacyId() == legacyId; });
+    return library != libraries.cend() ? library->getId() : QUuid();
+}
+
 void YACReaderLibraries::addLibrary(const QString &name, const QString &path)
 {
     int legacyId = 0;
