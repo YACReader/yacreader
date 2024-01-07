@@ -31,6 +31,7 @@ public:
     static ComicDB getComicInfo(qulonglong libraryId, qulonglong id);
     static QList<ComicDB> getSiblings(qulonglong libraryId, qulonglong parentId);
     static QString getFolderName(qulonglong libraryId, qulonglong id);
+    static Folder getFolder(qulonglong libraryId, qulonglong id);
     static QList<QString> getLibrariesNames();
     static QString getLibraryName(int id);
     static QList<ComicDB> getLabelComics(qulonglong libraryId, qulonglong labelId);

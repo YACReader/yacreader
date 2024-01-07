@@ -189,6 +189,57 @@ QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
     QSqlDatabase::removeDatabase(connectionName);
     return name;
 }
+
+Folder DBHelper::getFolder(qulonglong libraryId, qulonglong id)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+
+    Folder folder;
+    QString connectionName = "";
+
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+        QSqlQuery selectQuery(db); // TODO check
+        selectQuery.prepare("SELECT * FROM folder WHERE id = :id");
+        selectQuery.bindValue(":id", id);
+        selectQuery.exec();
+
+        auto record = selectQuery.record();
+
+        int name = record.indexOf("name");
+        int path = record.indexOf("path");
+        int finished = record.indexOf("finished");
+        int completed = record.indexOf("completed");
+        int id = record.indexOf("id");
+        int parentId = record.indexOf("parentId");
+        int numChildren = record.indexOf("numChildren");
+        int firstChildHash = record.indexOf("firstChildHash");
+        int customImage = record.indexOf("customImage");
+        int type = record.indexOf("type");
+        int added = record.indexOf("added");
+        int updated = record.indexOf("updated");
+
+        if (selectQuery.next()) {
+            folder = Folder(selectQuery.value(id).toULongLong(), parentId, selectQuery.value(name).toString(), selectQuery.value(path).toString());
+
+            folder.finished = selectQuery.value(finished).toBool();
+            folder.completed = selectQuery.value(completed).toBool();
+            if (!selectQuery.value(numChildren).isNull() && selectQuery.value(numChildren).isValid()) {
+                folder.numChildren = selectQuery.value(numChildren).toInt();
+            }
+            folder.firstChildHash = selectQuery.value(firstChildHash).toString();
+            folder.customImage = selectQuery.value(customImage).toString();
+            folder.type = selectQuery.value(type).value<YACReader::FileType>();
+            folder.added = selectQuery.value(added).toLongLong();
+            folder.updated = selectQuery.value(updated).toLongLong();
+        }
+        connectionName = db.connectionName();
+    }
+
+    QSqlDatabase::removeDatabase(connectionName);
+    return folder;
+}
+
 QList<QString> DBHelper::getLibrariesNames()
 {
     auto names = getLibraries().getNames();
