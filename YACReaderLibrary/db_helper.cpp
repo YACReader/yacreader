@@ -1063,13 +1063,18 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
 
             foreach (ComicInfo comicInfo, comics[libraryId]) {
                 bool found;
+                // TODO: sanitize this -> comicInfo.id contains comic id
                 ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
 
                 if (comic.info.hash == comicInfo.hash) {
                     bool isMoreRecent = false;
 
                     // completion takes precedence over lastTimeOpened, if we just want to synchronize the lastest status we should use only lastTimeOpened
-                    if ((comic.info.currentPage > 1 && comic.info.currentPage > comicInfo.currentPage) || comic.info.hasBeenOpened || (comic.info.read && !comicInfo.read)) {
+                    if ((comic.info.currentPage > 1 && comic.info.currentPage > comicInfo.currentPage) || (comic.info.read && !comicInfo.read)) {
+                        isMoreRecent = true;
+                    }
+
+                    if (comic.info.hasBeenOpened && comic.info.currentPage > comicInfo.currentPage) {
                         isMoreRecent = true;
                     }
 
