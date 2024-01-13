@@ -86,6 +86,7 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
 
     json["type"] = "comic";
     json["id"] = QString::number(comic.id);
+    json["comic_info_id"] = QString::number(comic.info.id);
     json["parent_id"] = QString::number(comic.parentId); // 9.14
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
