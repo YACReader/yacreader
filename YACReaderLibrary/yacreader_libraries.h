@@ -23,6 +23,7 @@ public:
     void remove(const QString &name);
     void rename(const QString &oldName, const QString &newName);
     int getId(const QString &name);
+    int getIdFromUuid(const QUuid &uuid);
     YACReaderLibraries &operator=(const YACReaderLibraries &source);
     QList<YACReaderLibrary> getLibraries() const;
     QUuid getLibraryIdFromLegacyId(int legacyId) const;

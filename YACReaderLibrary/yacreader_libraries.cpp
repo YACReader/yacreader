@@ -100,6 +100,12 @@ int YACReaderLibraries::getId(const QString &name)
     return library != libraries.cend() ? library->getLegacyId() : -1;
 }
 
+int YACReaderLibraries::getIdFromUuid(const QUuid &uuid)
+{
+    auto library = std::find_if(libraries.cbegin(), libraries.cend(), [uuid](const YACReaderLibrary &library) { return library.getId() == uuid; });
+    return library != libraries.cend() ? library->getLegacyId() : -1;
+}
+
 YACReaderLibraries &YACReaderLibraries::operator=(const YACReaderLibraries &source)
 {
     libraries = source.libraries;
