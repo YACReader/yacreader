@@ -1,4 +1,5 @@
 #include "yacreader_libraries.h"
+#include "qnaturalsorting.h"
 #include "yacreader_global.h"
 
 void writeIdToLibraryFolder(const QString &path, const QUuid &id)
@@ -115,6 +116,13 @@ YACReaderLibraries &YACReaderLibraries::operator=(const YACReaderLibraries &sour
 QList<YACReaderLibrary> YACReaderLibraries::getLibraries() const
 {
     return libraries;
+}
+
+QList<YACReaderLibrary> YACReaderLibraries::sortedLibraries() const
+{
+    auto sortedLibraries = libraries;
+    std::sort(sortedLibraries.begin(), sortedLibraries.end(), [](const YACReaderLibrary &library1, const YACReaderLibrary &library2) { return naturalSortLessThanCI(library1.getName(), library2.getName()); });
+    return sortedLibraries;
 }
 
 QUuid YACReaderLibraries::getLibraryIdFromLegacyId(int legacyId) const
