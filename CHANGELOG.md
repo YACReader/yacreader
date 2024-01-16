@@ -22,6 +22,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReaderLibraryServer
 * Add `rescan-xml-info` command.
+* Improved API to provide better integration with the clients (Android 1.4.0 and iOS 3.29.0). 
 
 ## All Apps
 * New universal builds for macos.
