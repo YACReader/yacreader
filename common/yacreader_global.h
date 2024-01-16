@@ -6,7 +6,7 @@
 #include <QMetaType>
 #include <QAbstractItemModel>
 
-#define VERSION "9.14.0"
+#define VERSION "9.14.1"
 
 // Used to check if the database needs to be updated, the version is stored in the database.
 // This value is only incremented when the database structure changes.

@@ -2,6 +2,7 @@
 
 #include "db_helper.h"
 #include "reading_list.h"
+#include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
 using stefanfrings::HttpRequest;
@@ -26,12 +27,14 @@ void ReadingListsControllerV2::service(HttpRequest &request, HttpResponse &respo
 
 void ReadingListsControllerV2::serviceContent(const int library, HttpResponse &response)
 {
+    auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(library);
+
     QList<ReadingList> readingLists = DBHelper::getReadingLists(library);
 
     QJsonArray items;
 
     for (QList<ReadingList>::const_iterator itr = readingLists.constBegin(); itr != readingLists.constEnd(); itr++) {
-        items.append(YACReaderServerDataHelper::readingListToJSON(library, *itr));
+        items.append(YACReaderServerDataHelper::readingListToJSON(library, libraryUuid, *itr));
     }
 
     QJsonDocument output(items);

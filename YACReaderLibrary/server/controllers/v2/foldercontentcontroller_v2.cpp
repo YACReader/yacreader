@@ -6,6 +6,7 @@
 #include "comic_db.h"
 #include "folder.h"
 
+#include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
 #include "qnaturalsorting.h"
@@ -41,6 +42,8 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
 #ifdef QT_DEBUG
     auto started = std::chrono::high_resolution_clock::now();
 #endif
+    auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(library);
+
     QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(library, folderId);
     QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library, folderId);
 
@@ -56,10 +59,10 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
     for (QList<LibraryItem *>::const_iterator itr = folderContent.constBegin(); itr != folderContent.constEnd(); itr++) {
         if ((*itr)->isDir()) {
             currentFolder = (Folder *)(*itr);
-            items.append(YACReaderServerDataHelper::folderToJSON(library, *currentFolder));
+            items.append(YACReaderServerDataHelper::folderToJSON(library, libraryUuid, *currentFolder));
         } else {
             currentComic = (ComicDB *)(*itr);
-            items.append(YACReaderServerDataHelper::comicToJSON(library, *currentComic));
+            items.append(YACReaderServerDataHelper::comicToJSON(library, libraryUuid, *currentComic));
         }
     }
 

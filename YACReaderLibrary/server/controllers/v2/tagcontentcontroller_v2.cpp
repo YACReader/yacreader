@@ -3,6 +3,7 @@
 #include "db_helper.h"
 #include "comic_db.h"
 
+#include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
 #include <QUrl>
@@ -30,12 +31,14 @@ void TagContentControllerV2::service(HttpRequest &request, HttpResponse &respons
 
 void TagContentControllerV2::serviceContent(const int &library, const qulonglong &tagId, HttpResponse &response)
 {
+    auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(library);
+
     QList<ComicDB> comics = DBHelper::getLabelComics(library, tagId);
 
     QJsonArray items;
 
     for (const ComicDB &comic : comics) {
-        items.append(YACReaderServerDataHelper::comicToJSON(library, comic));
+        items.append(YACReaderServerDataHelper::comicToJSON(library, libraryUuid, comic));
     }
 
     QJsonDocument output(items);

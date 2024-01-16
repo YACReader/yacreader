@@ -3,6 +3,7 @@
 #include "db_helper.h"
 #include "comic_db.h"
 
+#include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
 using stefanfrings::HttpRequest;
@@ -25,12 +26,14 @@ void FavoritesControllerV2::service(HttpRequest &request, HttpResponse &response
 
 void FavoritesControllerV2::serviceContent(const int library, HttpResponse &response)
 {
+    auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(library);
+
     QList<ComicDB> comics = DBHelper::getFavorites(library);
 
     QJsonArray items;
 
     for (const ComicDB &comic : comics) {
-        items.append(YACReaderServerDataHelper::comicToJSON(library, comic));
+        items.append(YACReaderServerDataHelper::comicToJSON(library, libraryUuid, comic));
     }
 
     QJsonDocument output(items);

@@ -2,11 +2,6 @@
 #include "db_helper.h" //get libraries
 #include "yacreader_libraries.h"
 
-#include "template.h"
-#include "../static.h"
-
-#include "QsLog.h"
-
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
 
@@ -16,20 +11,18 @@ void LibrariesControllerV2::service(HttpRequest & /* request */, HttpResponse &r
 {
     response.setHeader("Content-Type", "application/json");
 
-    YACReaderLibraries libraries = DBHelper::getLibraries();
-    QList<QString> names = DBHelper::getLibrariesNames();
+    auto libraries = DBHelper::getLibraries().sortedLibraries();
 
     QJsonArray librariesJson;
 
-    int currentId = 0;
-    foreach (QString name, names) {
-        currentId = libraries.getId(name);
-        QJsonObject library;
+    foreach (YACReaderLibrary library, libraries) {
+        QJsonObject libraryJson;
 
-        library["name"] = name;
-        library["id"] = currentId;
+        libraryJson["name"] = library.getName();
+        libraryJson["id"] = library.getLegacyId();
+        libraryJson["uuid"] = library.getId().toString();
 
-        librariesJson.append(library);
+        librariesJson.append(libraryJson);
     }
 
     QJsonDocument output(librariesJson);

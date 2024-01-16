@@ -4,11 +4,9 @@
 
 #include "db_helper.h"
 #include "comic_db.h"
-#include "folder.h"
 
+#include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
-
-#include "qnaturalsorting.h"
 
 #include <ctime>
 
@@ -35,9 +33,11 @@ void ComicFullinfoController_v2::service(HttpRequest &request, HttpResponse &res
 
 void ComicFullinfoController_v2::serviceContent(const int &libraryId, const qulonglong &comicId, HttpResponse &response)
 {
+    auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
+
     ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
 
-    QJsonObject json = YACReaderServerDataHelper::fullComicToJSON(libraryId, comic);
+    QJsonObject json = YACReaderServerDataHelper::fullComicToJSON(libraryId, libraryUuid, comic);
 
     QJsonDocument output(json);
 
