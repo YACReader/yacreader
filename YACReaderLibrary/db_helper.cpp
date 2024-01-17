@@ -220,7 +220,7 @@ Folder DBHelper::getFolder(qulonglong libraryId, qulonglong id)
         int updated = record.indexOf("updated");
 
         if (selectQuery.next()) {
-            folder = Folder(selectQuery.value(id).toULongLong(), parentId, selectQuery.value(name).toString(), selectQuery.value(path).toString());
+            folder = Folder(selectQuery.value(id).toULongLong(), selectQuery.value(parentId).toULongLong(), selectQuery.value(name).toString(), selectQuery.value(path).toString());
 
             folder.finished = selectQuery.value(finished).toBool();
             folder.completed = selectQuery.value(completed).toBool();
