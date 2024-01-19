@@ -19,6 +19,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix crash when resorting comics in reading lists in table view view and the comic flow is hidden.
 * Fix cover loading in QML views due to malformed URLs.
 * Improve style of the webui status page.
+* Fix type not being propagated to new files in a folder.
+* Mark the current type in the context menu so the user can know the current type.
 
 ### YACReaderLibraryServer
 * Add `rescan-xml-info` command.
