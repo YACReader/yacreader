@@ -1030,6 +1030,12 @@ void ComicModel::setComicsType(QList<QModelIndex> list, FileType type)
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+
+    foreach (QModelIndex mi, list) {
+        _data.value(mi.row())->setData(ComicModel::Type, QVariant::fromValue(type));
+    }
+
+    emit dataChanged(index(list.first().row(), ComicModel::Type), index(list.last().row(), ComicModel::Type), QVector<int>() << TypeRole);
 }
 
 qint64 ComicModel::asignNumbers(QList<QModelIndex> list, int startingNumber)

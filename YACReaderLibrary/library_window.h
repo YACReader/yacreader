@@ -425,6 +425,7 @@ public slots:
     void addSelectedComicsToFavorites();
     void showComicsViewContextMenu(const QPoint &point);
     void showComicsItemContextMenu(const QPoint &point);
+    void showComicsContextMenu(const QPoint &point, bool showFullScreenAction);
     void setupAddToSubmenu(QMenu &menu);
     void onAddComicsToLabel();
     void setToolbarTitle(const QModelIndex &modelIndex);
