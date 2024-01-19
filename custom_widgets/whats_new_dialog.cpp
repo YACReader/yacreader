@@ -50,6 +50,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "<br/>"
                   "<span style=\"font-weight:600\">YACReader</span><br/>"
                   "   &#8226; Add a setting to disable scroll animations and scroll smoothing, recommended if you are using a touch pad or if you find the mouse wheel behaviour laggy.<br/>"
+                  "   &#8226; Fix missing translation when opening YACReader from YACReaderLibrary.<br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">YACReaderLibrary</span><br/>"
                   "   &#8226; Fix \"Set type\" context menu the grid view for folders<br/>"

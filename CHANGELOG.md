@@ -6,6 +6,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReader
 * Add setting to disable scroll animations and scroll smoothing, recommended if you are using a touch pad or if you find the mouse wheel behaviour laggy.
+* Fix missing translation when opening YACReader from YACReaderLibrary.
 
 ### YACReaderLibrary
 * Fix "Set type" context menu the grid view for folders.
