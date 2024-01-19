@@ -1323,13 +1323,15 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
     if (!comic->info.existOnDb) {
         QSqlQuery comicInfoInsert(db);
 
-        comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages,coverSizeRatio,originalCoverSize,added) "
-                                "VALUES (:hash,:numPages,:coverSizeRatio,:originalCoverSize,:added)");
+        comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages,coverSizeRatio,originalCoverSize,added,type) "
+                                "VALUES (:hash,:numPages,:coverSizeRatio,:originalCoverSize,:added,:type)");
         comicInfoInsert.bindValue(":hash", comic->info.hash);
         comicInfoInsert.bindValue(":numPages", comic->info.numPages);
         comicInfoInsert.bindValue(":coverSizeRatio", comic->info.coverSizeRatio);
         comicInfoInsert.bindValue(":originalCoverSize", comic->info.originalCoverSize);
         comicInfoInsert.bindValue(":added", added);
+        auto intType = static_cast<int>(comic->info.type.value<YACReader::FileType>());
+        comicInfoInsert.bindValue(":type", intType);
         comicInfoInsert.exec();
         comic->info.id = comicInfoInsert.lastInsertId().toULongLong();
         comic->info.added = added;

@@ -361,7 +361,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
         }
 
         comic.parentId = _currentPathFolders.last().id;
-        comic.info.type = QVariant::fromValue(_currentPathFolders.last().type); // TODO_METADATA test this
+        comic.info.type = QVariant::fromValue(_currentPathFolders.last().type);
 
         DBHelper::insert(&comic, _database, parsed);
     }
