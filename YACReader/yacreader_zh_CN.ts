@@ -947,7 +947,7 @@
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="110"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="115"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>

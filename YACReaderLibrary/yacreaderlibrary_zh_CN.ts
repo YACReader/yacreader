@@ -147,7 +147,7 @@
 <context>
     <name>ClassicComicsView</name>
     <message>
-        <location filename="classic_comics_view.cpp" line="92"/>
+        <location filename="classic_comics_view.cpp" line="95"/>
         <source>Hide comic flow</source>
         <translation>隐藏漫画流</translation>
     </message>
@@ -238,54 +238,69 @@
 <context>
     <name>ComicModel</name>
     <message>
-        <location filename="db/comic_model.cpp" line="329"/>
+        <location filename="db/comic_model.cpp" line="349"/>
         <source>yes</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="329"/>
+        <location filename="db/comic_model.cpp" line="349"/>
         <source>no</source>
         <translation>否</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="361"/>
+        <location filename="db/comic_model.cpp" line="380"/>
         <source>Title</source>
         <translation>标题</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="363"/>
+        <location filename="db/comic_model.cpp" line="382"/>
         <source>File Name</source>
         <translation>文件名</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="365"/>
+        <location filename="db/comic_model.cpp" line="384"/>
         <source>Pages</source>
         <translation>页数</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="367"/>
+        <location filename="db/comic_model.cpp" line="386"/>
         <source>Size</source>
         <translation>大小</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="369"/>
+        <location filename="db/comic_model.cpp" line="388"/>
         <source>Read</source>
         <translation>阅读</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="371"/>
+        <location filename="db/comic_model.cpp" line="390"/>
         <source>Current Page</source>
         <translation>当前页</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="373"/>
+        <location filename="db/comic_model.cpp" line="392"/>
         <source>Publication Date</source>
         <translation>发行日期</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="375"/>
+        <location filename="db/comic_model.cpp" line="394"/>
         <source>Rating</source>
         <translation>评分</translation>
+    </message>
+    <message>
+        <location filename="db/comic_model.cpp" line="396"/>
+        <source>Series</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="db/comic_model.cpp" line="398"/>
+        <source>Volume</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="db/comic_model.cpp" line="400"/>
+        <source>Story Arc</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -830,7 +845,7 @@
     <message>
         <location filename="library_window.cpp" line="615"/>
         <location filename="library_window.cpp" line="770"/>
-        <location filename="library_window.cpp" line="2005"/>
+        <location filename="library_window.cpp" line="2034"/>
         <source>Set as read</source>
         <translation>设为已读</translation>
     </message>
@@ -842,8 +857,8 @@
     <message>
         <location filename="library_window.cpp" line="621"/>
         <location filename="library_window.cpp" line="775"/>
-        <location filename="library_window.cpp" line="2008"/>
-        <location filename="library_window.cpp" line="2105"/>
+        <location filename="library_window.cpp" line="2037"/>
+        <location filename="library_window.cpp" line="2158"/>
         <source>Set as unread</source>
         <translation>设为未读</translation>
     </message>
@@ -855,14 +870,16 @@
     <message>
         <location filename="library_window.cpp" line="627"/>
         <location filename="library_window.cpp" line="780"/>
-        <location filename="library_window.cpp" line="2011"/>
+        <location filename="library_window.cpp" line="1920"/>
+        <location filename="library_window.cpp" line="2040"/>
         <source>manga</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="633"/>
         <location filename="library_window.cpp" line="785"/>
-        <location filename="library_window.cpp" line="2014"/>
+        <location filename="library_window.cpp" line="1917"/>
+        <location filename="library_window.cpp" line="2043"/>
         <source>comic</source>
         <translation type="unfinished"></translation>
     </message>
@@ -879,7 +896,8 @@
     <message>
         <location filename="library_window.cpp" line="645"/>
         <location filename="library_window.cpp" line="795"/>
-        <location filename="library_window.cpp" line="2020"/>
+        <location filename="library_window.cpp" line="1926"/>
+        <location filename="library_window.cpp" line="2049"/>
         <source>web comic</source>
         <translation type="unfinished"></translation>
     </message>
@@ -921,6 +939,8 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="790"/>
+        <location filename="library_window.cpp" line="1923"/>
+        <location filename="library_window.cpp" line="2046"/>
         <source>western manga (left to right)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -943,7 +963,7 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="599"/>
-        <location filename="library_window.cpp" line="1996"/>
+        <location filename="library_window.cpp" line="2025"/>
         <source>Rescan library for XML info</source>
         <translation>重新扫描库的 XML 信息</translation>
     </message>
@@ -1003,19 +1023,19 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="754"/>
-        <location filename="library_window.cpp" line="1990"/>
+        <location filename="library_window.cpp" line="2019"/>
         <source>Open folder...</source>
         <translation>打开文件夹...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="760"/>
-        <location filename="library_window.cpp" line="1999"/>
+        <location filename="library_window.cpp" line="2028"/>
         <source>Set as uncompleted</source>
         <translation>设为未完成</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="765"/>
-        <location filename="library_window.cpp" line="2002"/>
+        <location filename="library_window.cpp" line="2031"/>
         <source>Set as completed</source>
         <translation>设为已完成</translation>
     </message>
@@ -1085,7 +1105,7 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="884"/>
-        <location filename="library_window.cpp" line="1993"/>
+        <location filename="library_window.cpp" line="2022"/>
         <source>Update folder</source>
         <translation>更新文件夹</translation>
     </message>
@@ -1283,35 +1303,30 @@
         <translation>重命名列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1923"/>
-        <location filename="library_window.cpp" line="1966"/>
-        <location filename="library_window.cpp" line="2041"/>
-        <location filename="library_window.cpp" line="3067"/>
+        <location filename="library_window.cpp" line="1929"/>
+        <location filename="library_window.cpp" line="2052"/>
+        <source>4koma (top to botom)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="1988"/>
+        <location filename="library_window.cpp" line="2094"/>
+        <location filename="library_window.cpp" line="3151"/>
         <source>Set type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2017"/>
-        <source>manga (or left to right)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="2023"/>
-        <source>4koma (or top to botom</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="2170"/>
+        <location filename="library_window.cpp" line="2223"/>
         <source>Save covers</source>
         <translation>保存封面</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2189"/>
+        <location filename="library_window.cpp" line="2242"/>
         <source>You are adding too many libraries.</source>
         <translation>您添加的库太多了。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2189"/>
+        <location filename="library_window.cpp" line="2242"/>
         <source>You are adding too many libraries.
 
 You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
@@ -1324,54 +1339,54 @@ YACReaderLibrary will not stop you from creating more libraries but you should k
 YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低的库数量来提升性能。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2247"/>
-        <location filename="library_window.cpp" line="2249"/>
+        <location filename="library_window.cpp" line="2300"/>
+        <location filename="library_window.cpp" line="2302"/>
         <source>YACReader not found</source>
         <translation>YACReader 未找到</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2335"/>
+        <location filename="library_window.cpp" line="2388"/>
         <source>Library not found</source>
         <translation>未找到库</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2335"/>
+        <location filename="library_window.cpp" line="2388"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
         <translation>所选文件夹不包含任何库。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2390"/>
+        <location filename="library_window.cpp" line="2443"/>
         <source>Are you sure?</source>
         <translation>你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2390"/>
+        <location filename="library_window.cpp" line="2443"/>
         <source>Do you want remove </source>
         <translation>你想要删除 </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2390"/>
+        <location filename="library_window.cpp" line="2443"/>
         <source> library?</source>
         <translation> 库?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2391"/>
+        <location filename="library_window.cpp" line="2444"/>
         <source>Remove and delete metadata</source>
         <translation>移除并删除元数据</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2717"/>
+        <location filename="library_window.cpp" line="2770"/>
         <source>Assign comics numbers</source>
         <translation>分配漫画编号</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2718"/>
+        <location filename="library_window.cpp" line="2771"/>
         <source>Assign numbers starting in:</source>
         <translation>从以下位置开始分配编号:</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="1825"/>
-        <location filename="library_window.cpp" line="2686"/>
+        <location filename="library_window.cpp" line="2739"/>
         <source>Unable to delete</source>
         <translation>无法删除</translation>
     </message>
@@ -1403,62 +1418,62 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <translation>漫画视图之间的变化</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2247"/>
+        <location filename="library_window.cpp" line="2300"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>未找到YACReader. YACReader应安装在与YACReaderLibrary相同的文件夹中.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2249"/>
+        <location filename="library_window.cpp" line="2302"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>未找到YACReader. YACReader的安装可能有问题.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2686"/>
+        <location filename="library_window.cpp" line="2739"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>尝试删除所选漫画时出现问题。 请检查所选文件或包含文件夹中的写入权限。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2919"/>
+        <location filename="library_window.cpp" line="2972"/>
         <source>Error creating the library</source>
         <translation>创建库时出错</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2924"/>
+        <location filename="library_window.cpp" line="2977"/>
         <source>Error updating the library</source>
         <translation>更新库时出错</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2929"/>
+        <location filename="library_window.cpp" line="2982"/>
         <source>Error opening the library</source>
         <translation>打开库时出错</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2978"/>
+        <location filename="library_window.cpp" line="3031"/>
         <source>Delete comics</source>
         <translation>删除漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2978"/>
+        <location filename="library_window.cpp" line="3031"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>所有选定的漫画都将从您的磁盘中删除。你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3015"/>
+        <location filename="library_window.cpp" line="3068"/>
         <source>Remove comics</source>
         <translation>移除漫画</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3015"/>
+        <location filename="library_window.cpp" line="3068"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>漫画只会从当前标签/列表中删除。 你确定吗?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3093"/>
+        <location filename="library_window.cpp" line="3177"/>
         <source>Library name already exists</source>
         <translation>库名已存在</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3093"/>
+        <location filename="library_window.cpp" line="3177"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>已存在另一个名为&apos;%1&apos;的库。</translation>
     </message>
@@ -1566,7 +1581,8 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     </message>
     <message>
         <location filename="options_dialog.cpp" line="179"/>
-        <source>Import metada from ComicInfo.xml when adding new comics</source>
+        <source>Import metadata from ComicInfo.xml when adding new comics</source>
+        <oldsource>Import metada from ComicInfo.xml when adding new comics</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2366,7 +2382,7 @@ to improve the performance</source>
 <context>
     <name>YACReader::WhatsNewDialog</name>
     <message>
-        <location filename="../custom_widgets/whats_new_dialog.cpp" line="110"/>
+        <location filename="../custom_widgets/whats_new_dialog.cpp" line="115"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>

@@ -176,7 +176,7 @@ QWidget *OptionsDialog::createGeneralTab()
 
     auto comicInfoXMLBox = new QGroupBox(tr("ComicInfo.xml legacy support"));
 
-    comicInfoXMLCheckbox = new QCheckBox(tr("Import metada from ComicInfo.xml when adding new comics"));
+    comicInfoXMLCheckbox = new QCheckBox(tr("Import metadata from ComicInfo.xml when adding new comics"));
     connect(comicInfoXMLCheckbox, &QCheckBox::clicked, this,
             [=](bool checked) {
                 settings->setValue(IMPORT_COMIC_INFO_XML_METADATA, checked);

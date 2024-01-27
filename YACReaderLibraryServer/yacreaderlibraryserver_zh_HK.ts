@@ -65,7 +65,7 @@
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="main.cpp" line="133"/>
+        <location filename="main.cpp" line="82"/>
         <source>
 YACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary.
 
