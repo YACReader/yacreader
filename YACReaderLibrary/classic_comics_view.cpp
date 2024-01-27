@@ -384,8 +384,8 @@ void ClassicComicsView::addItemsToFlow(const QModelIndex &parent, int from, int 
 {
     Q_UNUSED(parent);
     for (int i = from; i <= to; i++) {
-        auto coverPath = model->index(i, 0).data(ComicModel::CoverPathRole).toString();
-        comicFlow->add(coverPath.remove("file:"), i); // TODO: find a better way to get the path, file:+the_path is the way the URL is created for QML
+        auto coverPath = model->index(i, 0).data(ComicModel::CoverPathRole).toUrl().toLocalFile();
+        comicFlow->add(coverPath, i);
     }
 }
 
