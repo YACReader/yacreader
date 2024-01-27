@@ -2049,7 +2049,7 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     setFolderAsWebComicAction->setText(tr("web comic"));
 
     auto setFolderAs4KomaAction = new QAction();
-    setFolderAs4KomaAction->setText(tr("4koma (top to botom"));
+    setFolderAs4KomaAction->setText(tr("4koma (top to botom)"));
 
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
