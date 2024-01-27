@@ -1200,7 +1200,7 @@ void YACReaderComicFlowGL::updateImageData()
         count = 12;
         break;
     case ultraHigh:
-        count = 14;
+        count = 16;
         break;
     }
     int *indexes = new int[2 * count + 1];
