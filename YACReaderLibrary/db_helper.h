@@ -73,8 +73,7 @@ public:
     static void updateChildrenInfo(QSqlDatabase &db);
     static void updateProgress(qulonglong libraryId, const ComicInfo &comicInfo);
     static void setComicAsReading(qulonglong libraryId, const ComicInfo &comicInfo);
-    static void updateFromRemoteClient(qulonglong libraryId, const ComicInfo &comicInfo);
-    static void updateFromRemoteClientWithHash(const ComicInfo &comicInfo);
+    [[deprecated("Server v1")]] static void updateFromRemoteClient(qulonglong libraryId, const ComicInfo &comicInfo);
     static void updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatabase &db);
     static QMap<qulonglong, QList<ComicDB>> updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics);
     static void updateFromRemoteClientWithHash(const QList<ComicInfo> &comics);

@@ -964,6 +964,7 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
     updateComicInfo.clear();
 }
 
+// server v1
 void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &comicInfo)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
@@ -995,46 +996,6 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &com
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
-}
-
-void DBHelper::updateFromRemoteClientWithHash(const ComicInfo &comicInfo)
-{
-    YACReaderLibraries libraries = DBHelper::getLibraries();
-
-    QStringList names = libraries.getNames();
-    QString connectionName = "";
-
-    foreach (QString name, names) {
-        QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
-
-        {
-            QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-            ComicInfo info = loadComicInfo(comicInfo.hash, db);
-
-            if (!info.existOnDb) {
-                continue;
-            }
-
-            if (comicInfo.currentPage > 0) {
-                info.currentPage = comicInfo.currentPage;
-
-                if (info.currentPage == info.numPages)
-                    info.read = true;
-
-                info.hasBeenOpened = true;
-
-                if (info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
-                    info.lastTimeOpened = comicInfo.lastTimeOpened;
-            }
-
-            if (comicInfo.rating > 0)
-                info.rating = comicInfo.rating;
-
-            DBHelper::update(&info, db);
-            connectionName = db.connectionName();
-        }
-        QSqlDatabase::removeDatabase(connectionName);
-    }
 }
 
 QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics)
