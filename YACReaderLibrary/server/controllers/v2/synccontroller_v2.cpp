@@ -37,13 +37,17 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
         auto libraries = DBHelper::getLibraries();
 
+        bool clientSendsHasBeenOpened = false;
+
         foreach (QString comicInfo, data) {
             QList<QString> comicInfoProgress = comicInfo.split("\t");
 
-            if (comicInfoProgress.length() >= 8) {
+            if (comicInfoProgress.length() >= 9) {
                 if (comicInfoProgress.at(0) != "u") {
                     continue;
                 }
+
+                clientSendsHasBeenOpened = true;
 
                 auto libraryUuid = QUuid(comicInfoProgress.at(1));
                 if (!libraryUuid.isNull()) {
@@ -66,7 +70,9 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                     lastTimeOpened = comicInfoProgress.at(6).toULong();
                     info.lastTimeOpened = lastTimeOpened;
 
-                    info.read = comicInfoProgress.at(7).toInt();
+                    info.hasBeenOpened = comicInfoProgress.at(7).toInt();
+
+                    info.read = comicInfoProgress.at(8).toInt();
 
                     if (!comics.contains(libraryId)) {
                         comics[libraryId] = QList<ComicInfo>();
@@ -121,7 +127,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         QJsonArray items;
 
         if (!comics.isEmpty()) {
-            auto moreRecentComicsFound = DBHelper::updateFromRemoteClient(comics);
+            auto moreRecentComicsFound = DBHelper::updateFromRemoteClient(comics, clientSendsHasBeenOpened);
 
             foreach (qulonglong libraryId, moreRecentComicsFound.keys()) {
                 auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);

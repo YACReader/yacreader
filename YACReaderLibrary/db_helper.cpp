@@ -998,7 +998,7 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &com
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics)
+QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics, bool clientSendsHasBeenOpened)
 {
     QMap<qulonglong, QList<ComicDB>> moreRecentComics;
 
@@ -1050,7 +1050,11 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
 
                     comic.info.read = comic.info.read || comicInfo.read;
 
-                    comic.info.hasBeenOpened = comic.info.hasBeenOpened || comicInfo.currentPage > 0;
+                    if (clientSendsHasBeenOpened) {
+                        comic.info.hasBeenOpened = comic.info.hasBeenOpened || comicInfo.hasBeenOpened; // android
+                    } else {
+                        comic.info.hasBeenOpened = comic.info.hasBeenOpened || comicInfo.currentPage > 0; // ios (legacy)
+                    }
 
                     if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong() && comicInfo.lastTimeOpened.toULongLong() > 0)
                         comic.info.lastTimeOpened = comicInfo.lastTimeOpened;

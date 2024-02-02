@@ -112,6 +112,7 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     variantToJson("title", QMetaType::QString, comic.info.title, json);
     variantToJson("universal_number", QMetaType::QString, comic.info.number, json);
     variantToJson("last_time_opened", QMetaType::LongLong, comic.info.lastTimeOpened, json);
+    json["has_been_opened"] = comic.info.hasBeenOpened;
 
     variantToJson("added", QMetaType::LongLong, comic.info.added, json);
 
@@ -163,7 +164,6 @@ QJsonObject YACReaderServerDataHelper::fullComicToJSON(const qulonglong libraryI
     variantToJson("comic_vine_id", QMetaType::QString, comic.info.comicVineID, json);
     variantToJson("original_cover_size", QMetaType::QString, comic.info.originalCoverSize, json);
     json["edited"] = comic.info.edited;
-    json["has_been_opened"] = comic.info.hasBeenOpened;
     json["bookmark1"] = comic.info.bookmark1;
     json["bookmark2"] = comic.info.bookmark2;
     json["bookmark3"] = comic.info.bookmark3;
