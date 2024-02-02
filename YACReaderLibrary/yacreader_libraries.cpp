@@ -154,7 +154,7 @@ void YACReaderLibraries::load()
     if (settings.value(LIBRARIES).isValid()) {
         QByteArray data = settings.value(LIBRARIES).toByteArray();
 
-        // in 9.14 the format of libraries has changeg, so we need to check if we can do a migration
+        // in 9.14 the format of libraries has changed, so we need to check if we can do a migration
         QDataStream legacyIn(&data, QIODevice::ReadOnly);
         QMap<QString, QPair<int, QString>> legacyLibraries;
         legacyIn >> legacyLibraries;
