@@ -27,7 +27,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add `rescan-xml-info` command.
 * Improved API to provide better integration with the clients (Android 1.4.0 and iOS 3.29.0). 
 
-## All Apps
+### All Apps
 * New universal builds for macos.
 
 ## 9.13.1
