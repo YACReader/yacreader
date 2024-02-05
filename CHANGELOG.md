@@ -2,7 +2,7 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## WIP
+## 9.14.1
 
 ### YACReader
 * Add setting to disable scroll animations and scroll smoothing, recommended if you are using a touch pad or if you find the mouse wheel behaviour laggy.
