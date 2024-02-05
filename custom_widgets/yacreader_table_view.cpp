@@ -16,6 +16,7 @@
 #include "QsLog.h"
 
 #include "comic_item.h"
+#include "comic_model.h"
 
 YACReaderTableView::YACReaderTableView(QWidget *parent)
     : QTableView(parent), showDelete(false), editing(false), myeditor(0)
@@ -67,7 +68,7 @@ YACReaderTableView::YACReaderTableView(QWidget *parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    setItemDelegateForColumn(11, new YACReaderRatingDelegate(this));
+    setItemDelegateForColumn(ComicModel::Rating, new YACReaderRatingDelegate(this));
     setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     setMouseTracking(true);
@@ -90,7 +91,7 @@ void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
     if (mi.isValid()) {
         QList<QModelIndex> selectedIndexes = this->selectedIndexes();
         if (selectedIndexes.contains(mi)) {
-            if (mi.column() == 11) {
+            if (mi.column() == ComicModel::Rating) {
                 if (!editing) {
                     editing = true;
                     currentIndexEditing = mi;
@@ -121,7 +122,7 @@ void YACReaderTableView::mousePressEvent(QMouseEvent *event)
     if (mi.isValid()) {
         QList<QModelIndex> selectedIndexes = this->selectedIndexes();
         if (selectedIndexes.contains(mi)) {
-            if (mi.column() == 11) {
+            if (mi.column() == ComicModel::Rating) {
                 if (!editing) {
                     editing = true;
                     currentIndexEditing = mi;
@@ -242,7 +243,7 @@ void YACReaderTableView::resizeEvent(QResizeEvent *event)
 void YACReaderRatingDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const
 {
-    int rating = ((ComicItem *)index.internalPointer())->data(11).toInt();
+    int rating = ((ComicItem *)index.internalPointer())->data(ComicModel::Rating).toInt();
 
     StarRating starRating(rating);
 
@@ -262,7 +263,7 @@ QSize YACReaderRatingDelegate::sizeHint(const QStyleOptionViewItem &option,
                                         const QModelIndex &index) const
 {
     Q_UNUSED(option)
-    int rating = ((ComicItem *)index.internalPointer())->data(11).toInt();
+    int rating = ((ComicItem *)index.internalPointer())->data(ComicModel::Rating).toInt();
     StarRating starRating(rating);
     return starRating.sizeHint();
 }

@@ -4,12 +4,8 @@
 #include "yacreader_libraries.h"
 
 #include "reading_list.h"
-#include "../static.h"
-#include "yacreader_global.h"
 
 #include "yacreader_server_data_helper.h"
-
-#include "QsLog.h"
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
@@ -26,10 +22,12 @@ void TagsControllerV2::service(HttpRequest &request, HttpResponse &response)
 
     QList<Label> labels = DBHelper::getLabels(libraryId);
 
+    auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
+
     QJsonArray items;
 
     for (QList<Label>::const_iterator itr = labels.constBegin(); itr != labels.constEnd(); itr++) {
-        items.append(YACReaderServerDataHelper::labelToJSON(libraryId, *itr));
+        items.append(YACReaderServerDataHelper::labelToJSON(libraryId, libraryUuid, *itr));
     }
 
     QJsonDocument output(items);

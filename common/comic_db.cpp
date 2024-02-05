@@ -522,18 +522,30 @@ QStringList ComicInfo::getTags()
 
 QString ComicInfo::getTypeString()
 {
+    if (type.isNull()) {
+        return QStringLiteral("Null");
+    }
+
+    if (!type.canConvert<YACReader::FileType>()) {
+        assert(false);
+        return QStringLiteral("Unknown");
+    }
+
     switch (type.value<YACReader::FileType>()) {
     case YACReader::FileType::Comic:
-        return "Comic";
+        return QStringLiteral("Comic");
     case YACReader::FileType::Manga:
-        return "Manga";
+        return QStringLiteral("Manga");
     case YACReader::FileType::WesternManga:
-        return "Western Manga";
+        return QStringLiteral("Western Manga");
     case YACReader::FileType::WebComic:
-        return "Web Comic";
+        return QStringLiteral("Web Comic");
     case YACReader::FileType::Yonkoma:
-        return "4-Koma";
+        return QStringLiteral("4-Koma");
     }
+
+    assert(false);
+    return QStringLiteral("Unknown");
 }
 
 QString ComicInfo::getStoryArcInfoString()

@@ -189,6 +189,57 @@ QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
     QSqlDatabase::removeDatabase(connectionName);
     return name;
 }
+
+Folder DBHelper::getFolder(qulonglong libraryId, qulonglong id)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+
+    Folder folder;
+    QString connectionName = "";
+
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+        QSqlQuery selectQuery(db); // TODO check
+        selectQuery.prepare("SELECT * FROM folder WHERE id = :id");
+        selectQuery.bindValue(":id", id);
+        selectQuery.exec();
+
+        auto record = selectQuery.record();
+
+        int name = record.indexOf("name");
+        int path = record.indexOf("path");
+        int finished = record.indexOf("finished");
+        int completed = record.indexOf("completed");
+        int id = record.indexOf("id");
+        int parentId = record.indexOf("parentId");
+        int numChildren = record.indexOf("numChildren");
+        int firstChildHash = record.indexOf("firstChildHash");
+        int customImage = record.indexOf("customImage");
+        int type = record.indexOf("type");
+        int added = record.indexOf("added");
+        int updated = record.indexOf("updated");
+
+        if (selectQuery.next()) {
+            folder = Folder(selectQuery.value(id).toULongLong(), selectQuery.value(parentId).toULongLong(), selectQuery.value(name).toString(), selectQuery.value(path).toString());
+
+            folder.finished = selectQuery.value(finished).toBool();
+            folder.completed = selectQuery.value(completed).toBool();
+            if (!selectQuery.value(numChildren).isNull() && selectQuery.value(numChildren).isValid()) {
+                folder.numChildren = selectQuery.value(numChildren).toInt();
+            }
+            folder.firstChildHash = selectQuery.value(firstChildHash).toString();
+            folder.customImage = selectQuery.value(customImage).toString();
+            folder.type = selectQuery.value(type).value<YACReader::FileType>();
+            folder.added = selectQuery.value(added).toLongLong();
+            folder.updated = selectQuery.value(updated).toLongLong();
+        }
+        connectionName = db.connectionName();
+    }
+
+    QSqlDatabase::removeDatabase(connectionName);
+    return folder;
+}
+
 QList<QString> DBHelper::getLibrariesNames()
 {
     auto names = getLibraries().getNames();
@@ -292,7 +343,7 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio "
+        selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio,ci.number "
                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
                             "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
                             "ORDER BY ci.lastTimeOpened DESC");
@@ -301,6 +352,7 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
         while (selectQuery.next()) {
             ComicDB comic;
 
+            // TODO: use QVariant when possible to keep nulls
             comic.id = selectQuery.value(0).toULongLong();
             comic.parentId = selectQuery.value(1).toULongLong();
             comic.name = selectQuery.value(2).toString();
@@ -310,6 +362,7 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
             comic.info.hash = selectQuery.value(6).toString();
             comic.info.read = selectQuery.value(7).toBool();
             comic.info.coverSizeRatio = selectQuery.value(8).toFloat();
+            comic.info.number = selectQuery.value(9);
 
             list.append(comic);
         }
@@ -911,6 +964,7 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
     updateComicInfo.clear();
 }
 
+// server v1
 void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &comicInfo)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
@@ -944,47 +998,7 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &com
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-void DBHelper::updateFromRemoteClientWithHash(const ComicInfo &comicInfo)
-{
-    YACReaderLibraries libraries = DBHelper::getLibraries();
-
-    QStringList names = libraries.getNames();
-    QString connectionName = "";
-
-    foreach (QString name, names) {
-        QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
-
-        {
-            QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
-            ComicInfo info = loadComicInfo(comicInfo.hash, db);
-
-            if (!info.existOnDb) {
-                continue;
-            }
-
-            if (comicInfo.currentPage > 0) {
-                info.currentPage = comicInfo.currentPage;
-
-                if (info.currentPage == info.numPages)
-                    info.read = true;
-
-                info.hasBeenOpened = true;
-
-                if (info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
-                    info.lastTimeOpened = comicInfo.lastTimeOpened;
-            }
-
-            if (comicInfo.rating > 0)
-                info.rating = comicInfo.rating;
-
-            DBHelper::update(&info, db);
-            connectionName = db.connectionName();
-        }
-        QSqlDatabase::removeDatabase(connectionName);
-    }
-}
-
-QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics)
+QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics, bool clientSendsHasBeenOpened)
 {
     QMap<qulonglong, QList<ComicDB>> moreRecentComics;
 
@@ -1010,13 +1024,18 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
 
             foreach (ComicInfo comicInfo, comics[libraryId]) {
                 bool found;
+                // TODO: sanitize this -> comicInfo.id contains comic id
                 ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
 
                 if (comic.info.hash == comicInfo.hash) {
                     bool isMoreRecent = false;
 
                     // completion takes precedence over lastTimeOpened, if we just want to synchronize the lastest status we should use only lastTimeOpened
-                    if ((comic.info.currentPage > 1 && comic.info.currentPage > comicInfo.currentPage) || comic.info.hasBeenOpened || (comic.info.read && !comicInfo.read)) {
+                    if ((comic.info.currentPage > 1 && comic.info.currentPage > comicInfo.currentPage) || (comic.info.read && !comicInfo.read)) {
+                        isMoreRecent = true;
+                    }
+
+                    if (comic.info.hasBeenOpened && comic.info.currentPage > comicInfo.currentPage) {
                         isMoreRecent = true;
                     }
 
@@ -1031,7 +1050,11 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
 
                     comic.info.read = comic.info.read || comicInfo.read;
 
-                    comic.info.hasBeenOpened = comic.info.hasBeenOpened || comicInfo.currentPage > 0;
+                    if (clientSendsHasBeenOpened) {
+                        comic.info.hasBeenOpened = comic.info.hasBeenOpened || comicInfo.hasBeenOpened; // android
+                    } else {
+                        comic.info.hasBeenOpened = comic.info.hasBeenOpened || comicInfo.currentPage > 0; // ios (legacy)
+                    }
 
                     if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong() && comicInfo.lastTimeOpened.toULongLong() > 0)
                         comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
@@ -1265,13 +1288,15 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
     if (!comic->info.existOnDb) {
         QSqlQuery comicInfoInsert(db);
 
-        comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages,coverSizeRatio,originalCoverSize,added) "
-                                "VALUES (:hash,:numPages,:coverSizeRatio,:originalCoverSize,:added)");
+        comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages,coverSizeRatio,originalCoverSize,added,type) "
+                                "VALUES (:hash,:numPages,:coverSizeRatio,:originalCoverSize,:added,:type)");
         comicInfoInsert.bindValue(":hash", comic->info.hash);
         comicInfoInsert.bindValue(":numPages", comic->info.numPages);
         comicInfoInsert.bindValue(":coverSizeRatio", comic->info.coverSizeRatio);
         comicInfoInsert.bindValue(":originalCoverSize", comic->info.originalCoverSize);
         comicInfoInsert.bindValue(":added", added);
+        auto intType = static_cast<int>(comic->info.type.value<YACReader::FileType>());
+        comicInfoInsert.bindValue(":type", intType);
         comicInfoInsert.exec();
         comic->info.id = comicInfoInsert.lastInsertId().toULongLong();
         comic->info.added = added;
@@ -1292,13 +1317,22 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
     query.bindValue(":path", comic->path);
     query.exec();
 
+    // loop through parents and update their updated field
+    // TODO: use stored procedures
     QSqlQuery updateFolder(db);
     updateFolder.prepare("UPDATE folder SET "
                          "updated = :updated "
                          "WHERE id = :id ");
-    updateFolder.bindValue(":updated", added);
-    updateFolder.bindValue(":id", comic->parentId);
-    updateFolder.exec();
+    auto currentParentId = comic->parentId;
+    while (currentParentId != 1 && currentParentId != 0) {
+        updateFolder.bindValue(":updated", added);
+        updateFolder.bindValue(":id", currentParentId);
+        updateFolder.exec();
+
+        auto f = loadFolder(currentParentId, db);
+        currentParentId = f.parentId;
+    }
+    //----
 
     return query.lastInsertId().toULongLong();
 }

@@ -39,6 +39,7 @@ public:
 
     NoSearchResultsWidget *noSearchResultsWidget;
 
+    void updateCurrentContentView();
     void updateCurrentComicView();
     void updateContinueReadingView();
 

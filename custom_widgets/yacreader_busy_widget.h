@@ -9,7 +9,6 @@ class YACReaderBusyWidget : public QWidget
     Q_OBJECT
 public:
     explicit YACReaderBusyWidget(QWidget *parent = 0);
-    void paintEvent(QPaintEvent *);
 };
 
 class BusyIndicator : public QWidget
@@ -20,17 +19,19 @@ public:
                           StyleEllipse,
                           StyleArc };
 
-    explicit BusyIndicator(QWidget *parent = 0);
+    explicit BusyIndicator(QWidget *parent = 0, int size = 30);
 
-    void paintEvent(QPaintEvent *);
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
+    void paintEvent(QPaintEvent *) override;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 
     void setIndicatorStyle(IndicatorStyle);
     void setColor(QColor color);
     IndicatorStyle indicatorStyle() const;
+    void mouseReleaseEvent(QMouseEvent *event) override;
 
 signals:
+    void clicked();
 
 private slots:
     void rotate();
@@ -47,6 +48,7 @@ private:
     IndicatorStyle m_style;
 
     QColor fillColor;
+    int size;
 };
 
 #endif // BUSYINDICATOR_H

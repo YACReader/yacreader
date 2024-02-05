@@ -22,6 +22,16 @@ int ComicItem::columnCount() const
 {
     return itemData.count();
 }
+
+QList<QVariant> ComicItem::getData() const
+{
+    return itemData;
+}
+
+void ComicItem::setData(const QList<QVariant> &data)
+{
+    itemData = data;
+}
 //! [5]
 
 //! [6]

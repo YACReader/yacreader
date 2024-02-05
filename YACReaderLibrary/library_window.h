@@ -9,6 +9,7 @@
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_libraries.h"
+#include "libraries_update_coordinator.h"
 
 #include "yacreader_navigation_controller.h"
 #include "comic_query_result_processor.h"
@@ -145,8 +146,9 @@ public:
     ComicModel *comicsModel;
     ReadingListModel *listsModel;
     ReadingListModelProxy *listsModelProxy;
-    // QStringList paths;
+
     YACReaderLibraries libraries;
+    LibrariesUpdateCoordinator *librariesUpdateCoordinator;
 
     QStackedWidget *mainWidget;
     NoLibrariesWidget *noLibrariesWidget;
@@ -314,7 +316,7 @@ public:
     QPoint _pos;
 
 protected:
-    virtual void closeEvent(QCloseEvent *event);
+    virtual void closeEvent(QCloseEvent *event) override;
 
 public:
     LibraryWindow();
@@ -423,6 +425,7 @@ public slots:
     void addSelectedComicsToFavorites();
     void showComicsViewContextMenu(const QPoint &point);
     void showComicsItemContextMenu(const QPoint &point);
+    void showComicsContextMenu(const QPoint &point, bool showFullScreenAction);
     void setupAddToSubmenu(QMenu &menu);
     void onAddComicsToLabel();
     void setToolbarTitle(const QModelIndex &modelIndex);

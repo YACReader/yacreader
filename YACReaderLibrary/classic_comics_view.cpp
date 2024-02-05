@@ -60,10 +60,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     sVertical->addWidget(comics);
 
     tableView->setContextMenuPolicy(Qt::CustomContextMenu);
-
-    // config--------------------------------------------------
-    if (settings->contains(COMICS_VIEW_HEADERS))
-        tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
+    tableView->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
 
     // connections---------------------------------------------
     connect(tableView, &QAbstractItemView::clicked, this, &ClassicComicsView::centerComicFlow);
@@ -75,6 +72,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(tableView->horizontalHeader(), &QHeaderView::sectionResized, this, &ClassicComicsView::saveTableHeadersStatus);
     connect(comicFlow, &QWidget::customContextMenuRequested, this, &ClassicComicsView::requestedViewContextMenu);
     connect(tableView, &QWidget::customContextMenuRequested, this, &ClassicComicsView::requestedItemContextMenu);
+    connect(tableView->horizontalHeader(), &QWidget::customContextMenuRequested, this, &ClassicComicsView::requestedHeaderContextMenu);
     layout->addWidget(sVertical);
     setLayout(layout);
 
@@ -84,8 +82,13 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     sVertical->setCollapsible(1, false);
 #endif
 
-    if (settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS))
-        sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
+    if (settings->contains(COMICS_VIEW_FLOW_SPLITTER_STATUS)) {
+        try {
+            sVertical->restoreState(settings->value(COMICS_VIEW_FLOW_SPLITTER_STATUS).toByteArray());
+        } catch (...) {
+            // do nothing
+        }
+    }
 
     // hide flow widgets
     hideFlowViewAction = new QAction(this);
@@ -135,6 +138,7 @@ void ClassicComicsView::setModel(ComicModel *model)
     } else {
         connect(model, &QAbstractItemModel::dataChanged, this, &ClassicComicsView::applyModelChanges, Qt::UniqueConnection);
         connect(model, &QAbstractItemModel::rowsRemoved, this, &ClassicComicsView::removeItemsFromFlow, Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::rowsInserted, this, &ClassicComicsView::addItemsToFlow, Qt::UniqueConnection);
         // TODO: Missing method resortCovers?
         connect(model, &ComicModel::resortedIndexes, comicFlow, &ComicFlowWidget::resortCovers, Qt::UniqueConnection);
         connect(model, &ComicModel::newSelectedIndex, this, &ClassicComicsView::setCurrentIndex, Qt::UniqueConnection);
@@ -149,34 +153,48 @@ void ClassicComicsView::setModel(ComicModel *model)
 #else
         tableView->horizontalHeader()->setMovable(true);
 #endif
-        // TODO parametrizar la configuración de las columnas
-        /*if(!settings->contains(COMICS_VIEW_HEADERS))
-        {*/
-        for (int i = 0; i < tableView->horizontalHeader()->count(); i++)
-            tableView->horizontalHeader()->hideSection(i);
-
-        tableView->horizontalHeader()->showSection(ComicModel::Number);
-        tableView->horizontalHeader()->showSection(ComicModel::Title);
-        tableView->horizontalHeader()->showSection(ComicModel::FileName);
-        tableView->horizontalHeader()->showSection(ComicModel::NumPages);
-        tableView->horizontalHeader()->showSection(ComicModel::Hash); // Size is part of the Hash...TODO add Columns::Size to Columns
-        tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
-        tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
-        tableView->horizontalHeader()->showSection(ComicModel::PublicationDate);
-        tableView->horizontalHeader()->showSection(ComicModel::Rating);
-        //}
-
-        // debido a un bug, qt4 no es capaz de ajustar el ancho teniendo en cuenta todas la filas (no sólo las visibles)
-        // así que se ecala la primera vez y después se deja el control al usuario.
-        // if(!settings->contains(COMICS_VIEW_HEADERS))
-
         QStringList paths = model->getPaths(model->getCurrentPath()); // TODO ComicsView: get currentpath from somewhere currentPath());
         comicFlow->setImagePaths(paths);
         comicFlow->setMarks(model->getReadList());
-        // comicFlow->setFocus(Qt::OtherFocusReason);
 
-        if (settings->contains(COMICS_VIEW_HEADERS))
-            tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
+        bool loadDefaults = false;
+        if (settings->contains(COMICS_VIEW_HEADERS)) {
+            try {
+                loadDefaults = !tableView->horizontalHeader()->restoreState(settings->value(COMICS_VIEW_HEADERS).toByteArray());
+            } catch (...) {
+                loadDefaults = true;
+            }
+        } else {
+            loadDefaults = true;
+        }
+
+        if (loadDefaults) {
+            // default columns and order
+            for (int i = 0; i < tableView->horizontalHeader()->count(); i++)
+                tableView->horizontalHeader()->hideSection(i);
+
+            tableView->horizontalHeader()->showSection(ComicModel::Number);
+            tableView->horizontalHeader()->showSection(ComicModel::Title);
+            tableView->horizontalHeader()->showSection(ComicModel::FileName);
+            tableView->horizontalHeader()->showSection(ComicModel::NumPages);
+            tableView->horizontalHeader()->showSection(ComicModel::Size);
+            tableView->horizontalHeader()->showSection(ComicModel::ReadColumn);
+            tableView->horizontalHeader()->showSection(ComicModel::CurrentPage);
+            tableView->horizontalHeader()->showSection(ComicModel::PublicationDate);
+            tableView->horizontalHeader()->showSection(ComicModel::Rating);
+
+            tableView->horizontalHeader()->moveSection(ComicModel::CurrentPage, 3);
+            tableView->horizontalHeader()->moveSection(ComicModel::Rating, 12);
+            tableView->horizontalHeader()->moveSection(ComicModel::Size, 5);
+        }
+
+        // make sure that columns without title are hidden
+        for (int i = 0; i < tableView->horizontalHeader()->count(); i++) {
+            auto title = tableView->model()->headerData(i, Qt::Horizontal).toString();
+            if (title.isEmpty()) {
+                tableView->horizontalHeader()->hideSection(i);
+            }
+        }
 
         tableView->resizeColumnsToContents();
 
@@ -289,6 +307,27 @@ void ClassicComicsView::requestedItemContextMenu(const QPoint &point)
     emit customContextMenuItemRequested(tableView->mapTo(this, point));
 }
 
+void ClassicComicsView::requestedHeaderContextMenu(const QPoint &point)
+{
+    QMenu menu;
+
+    for (int i = 0; i < tableView->model()->columnCount(); ++i) {
+        auto title = tableView->model()->headerData(i, Qt::Horizontal).toString();
+
+        if (!title.isEmpty()) {
+            auto action = menu.addAction(tableView->model()->headerData(i, Qt::Horizontal).toString());
+            action->setCheckable(true);
+            action->setChecked(!tableView->isColumnHidden(i));
+            connect(action, &QAction::toggled, tableView, [this, i](bool checked) {
+                tableView->horizontalHeader()->setSectionHidden(i, !checked);
+            });
+            connect(action, &QAction::toggled, this, &ClassicComicsView::saveTableHeadersStatus);
+        }
+    }
+
+    menu.exec(this->tableView->horizontalHeader()->mapToGlobal(point));
+}
+
 void ClassicComicsView::setShowMarks(bool show)
 {
     comicFlow->setShowMarks(show);
@@ -339,6 +378,15 @@ void ClassicComicsView::removeItemsFromFlow(const QModelIndex &parent, int from,
     Q_UNUSED(parent);
     for (int i = from; i <= to; i++)
         comicFlow->remove(i);
+}
+
+void ClassicComicsView::addItemsToFlow(const QModelIndex &parent, int from, int to)
+{
+    Q_UNUSED(parent);
+    for (int i = from; i <= to; i++) {
+        auto coverPath = model->index(i, 0).data(ComicModel::CoverPathRole).toUrl().toLocalFile();
+        comicFlow->add(coverPath, i);
+    }
 }
 
 void ClassicComicsView::closeEvent(QCloseEvent *event)

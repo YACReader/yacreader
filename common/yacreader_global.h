@@ -6,10 +6,20 @@
 #include <QMetaType>
 #include <QAbstractItemModel>
 
-#define VERSION "9.13.1"
+#define VERSION "9.14.1"
+
+// Used to check if the database needs to be updated, the version is stored in the database.
+// This value is only incremented when the database structure changes.
+#define DB_VERSION "9.14.0"
 
 #define IMPORT_COMIC_INFO_XML_METADATA "IMPORT_COMIC_INFO_XML_METADATA"
 #define COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES "COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES"
+#define UPDATE_LIBRARIES_AT_STARTUP "UPDATE_LIBRARIES_AT_STARTUP"
+#define DETECT_CHANGES_IN_LIBRARIES_AUTOMATICALLY "DETECT_CHANGES_IN_LIBRARIES_AUTOMATICALLY"
+#define UPDATE_LIBRARIES_PERIODICALLY "UPDATE_LIBRARIES_PERIODICALLY"
+#define UPDATE_LIBRARIES_PERIODICALLY_INTERVAL "UPDATE_LIBRARIES_PERIODICALLY_INTERVAL"
+#define UPDATE_LIBRARIES_AT_CERTAIN_TIME "UPDATE_LIBRARIES_AT_CERTAIN_TIME"
+#define UPDATE_LIBRARIES_AT_CERTAIN_TIME_TIME "UPDATE_LIBRARIES_AT_CERTAIN_TIME_TIME"
 
 #define NUM_DAYS_BETWEEN_VERSION_CHECKS "NUM_DAYS_BETWEEN_VERSION_CHECKS"
 #define LAST_VERSION_CHECK "LAST_VERSION_CHECK"
@@ -62,6 +72,16 @@ enum class FileType : int {
     WesternManga,
     WebComic, // continuous vertical reading
     Yonkoma, // 4Koma
+};
+
+enum class LibrariesUpdateInterval : int {
+    Minutes30 = 0,
+    Hourly,
+    Hours2,
+    Hours4,
+    Hours8,
+    Hours12,
+    Daily,
 };
 
 struct OpenComicSource {

@@ -120,7 +120,10 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 
 QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 {
-    // TODO check path
+    if (!QFile::exists(path + "/library.ydb")) {
+        return QSqlDatabase();
+    }
+
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", path + threadId);
     db.setDatabaseName(path + "/library.ydb");
@@ -134,7 +137,10 @@ QSqlDatabase DataBaseManagement::loadDatabase(QString path)
 
 QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
 {
-    // TODO check path
+    if (!QFile::exists(filePath)) {
+        return QSqlDatabase();
+    }
+
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", filePath + threadId);
     db.setDatabaseName(filePath);
@@ -154,83 +160,7 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
 
     {
         // COMIC INFO (representa la información de un cómic, cada cómic tendrá un idéntificador único formado por un hash sha1'de los primeros 512kb' + su tamaño en bytes)
-        QSqlQuery queryComicInfo(database);
-        queryComicInfo.prepare("CREATE TABLE comic_info ("
-                               "id INTEGER PRIMARY KEY,"
-                               "title TEXT,"
-
-                               "coverPage INTEGER DEFAULT 1,"
-                               "numPages INTEGER,"
-
-                               "number TEXT," // changed to text from INTEGER (9.13)
-                               "isBis BOOLEAN,"
-                               "count INTEGER,"
-
-                               "volume TEXT,"
-                               "storyArc TEXT,"
-                               "arcNumber TEXT," // changed to text from INTEGER (9.13)
-                               "arcCount INTEGER,"
-
-                               "genere TEXT,"
-
-                               "writer TEXT,"
-                               "penciller TEXT,"
-                               "inker TEXT,"
-                               "colorist TEXT,"
-                               "letterer TEXT,"
-                               "coverArtist TEXT,"
-
-                               "date TEXT," // publication date dd/mm/yyyy --> se mostrará en 3 campos diferentes
-                               "publisher TEXT,"
-                               "format TEXT,"
-                               "color BOOLEAN,"
-                               "ageRating TEXT,"
-
-                               "synopsis TEXT,"
-                               "characters TEXT,"
-                               "notes TEXT,"
-
-                               "hash TEXT UNIQUE NOT NULL,"
-                               "edited BOOLEAN DEFAULT 0,"
-                               "read BOOLEAN DEFAULT 0,"
-                               // new 7.0 fields
-
-                               "hasBeenOpened BOOLEAN DEFAULT 0,"
-                               "rating INTEGER DEFAULT 0," // TODO_METADATA change type to REAL with two decimals
-                               "currentPage INTEGER DEFAULT 1, "
-                               "bookmark1 INTEGER DEFAULT -1, "
-                               "bookmark2 INTEGER DEFAULT -1, "
-                               "bookmark3 INTEGER DEFAULT -1, "
-                               "brightness INTEGER DEFAULT -1, "
-                               "contrast INTEGER DEFAULT -1, "
-                               "gamma INTEGER DEFAULT -1, "
-                               // new 7.1 fields
-                               "comicVineID TEXT,"
-                               // new 9.5 fields
-                               "lastTimeOpened INTEGER,"
-                               "coverSizeRatio REAL,"
-                               "originalCoverSize STRING," // h/w
-                               // new 9.8 fields
-                               "manga BOOLEAN DEFAULT 0," // deprecated 9.13
-                               // new 9.13 fields
-                               "added INTEGER,"
-                               "type INTEGER DEFAULT 0," // 0 = comic, 1 = manga, 2 = manga left to right, 3 = webcomic, 4 = 4koma
-                               "editor TEXT,"
-                               "imprint TEXT,"
-                               "teams TEXT,"
-                               "locations TEXT,"
-                               "series TEXT,"
-                               "alternateSeries TEXT,"
-                               "alternateNumber TEXT,"
-                               "alternateCount INTEGER,"
-                               "languageISO TEXT,"
-                               "seriesGroup TEXT,"
-                               "mainCharacterOrTeam TEXT,"
-                               "review TEXT,"
-                               "tags TEXT"
-                               ")");
-        success = success && queryComicInfo.exec();
-        // queryComicInfo.finish();
+        success = success && DataBaseManagement::createComicInfoTable(database, "comic_info");
 
         // FOLDER (representa una carpeta en disco)
         QSqlQuery queryFolder(database);
@@ -267,7 +197,7 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
         // queryDBInfo.finish();
 
         QSqlQuery query("INSERT INTO db_info (version) "
-                        "VALUES ('" VERSION "')",
+                        "VALUES ('" DB_VERSION "')",
                         database);
         // query.finish();
 
@@ -276,6 +206,87 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
     }
 
     return success;
+}
+
+bool DataBaseManagement::createComicInfoTable(QSqlDatabase &database, QString tableName)
+{
+    QSqlQuery queryComicInfo(database);
+    queryComicInfo.prepare("CREATE TABLE " + tableName + " ("
+                                                         "id INTEGER PRIMARY KEY,"
+                                                         "title TEXT,"
+
+                                                         "coverPage INTEGER DEFAULT 1,"
+                                                         "numPages INTEGER,"
+
+                                                         "number TEXT," // changed to text from INTEGER (9.13)
+                                                         "isBis BOOLEAN,"
+                                                         "count INTEGER,"
+
+                                                         "volume TEXT,"
+                                                         "storyArc TEXT,"
+                                                         "arcNumber TEXT," // changed to text from INTEGER (9.13)
+                                                         "arcCount INTEGER,"
+
+                                                         "genere TEXT,"
+
+                                                         "writer TEXT,"
+                                                         "penciller TEXT,"
+                                                         "inker TEXT,"
+                                                         "colorist TEXT,"
+                                                         "letterer TEXT,"
+                                                         "coverArtist TEXT,"
+
+                                                         "date TEXT," // publication date dd/mm/yyyy --> se mostrará en 3 campos diferentes
+                                                         "publisher TEXT,"
+                                                         "format TEXT,"
+                                                         "color BOOLEAN,"
+                                                         "ageRating TEXT,"
+
+                                                         "synopsis TEXT,"
+                                                         "characters TEXT,"
+                                                         "notes TEXT,"
+
+                                                         "hash TEXT UNIQUE NOT NULL,"
+                                                         "edited BOOLEAN DEFAULT 0,"
+                                                         "read BOOLEAN DEFAULT 0,"
+                                                         // new 7.0 fields
+
+                                                         "hasBeenOpened BOOLEAN DEFAULT 0,"
+                                                         "rating REAL DEFAULT 0," // changed to REAL from INTEGER (9.13)
+                                                         "currentPage INTEGER DEFAULT 1, "
+                                                         "bookmark1 INTEGER DEFAULT -1, "
+                                                         "bookmark2 INTEGER DEFAULT -1, "
+                                                         "bookmark3 INTEGER DEFAULT -1, "
+                                                         "brightness INTEGER DEFAULT -1, "
+                                                         "contrast INTEGER DEFAULT -1, "
+                                                         "gamma INTEGER DEFAULT -1, "
+                                                         // new 7.1 fields
+                                                         "comicVineID TEXT,"
+                                                         // new 9.5 fields
+                                                         "lastTimeOpened INTEGER,"
+                                                         "coverSizeRatio REAL,"
+                                                         "originalCoverSize STRING," // h/w
+                                                         // new 9.8 fields
+                                                         "manga BOOLEAN DEFAULT 0," // deprecated 9.13
+                                                         // new 9.13 fields
+                                                         "added INTEGER,"
+                                                         "type INTEGER DEFAULT 0," // 0 = comic, 1 = manga, 2 = manga left to right, 3 = webcomic, 4 = 4koma
+                                                         "editor TEXT,"
+                                                         "imprint TEXT,"
+                                                         "teams TEXT,"
+                                                         "locations TEXT,"
+                                                         "series TEXT,"
+                                                         "alternateSeries TEXT,"
+                                                         "alternateNumber TEXT,"
+                                                         "alternateCount INTEGER,"
+                                                         "languageISO TEXT,"
+                                                         "seriesGroup TEXT,"
+                                                         "mainCharacterOrTeam TEXT,"
+                                                         "review TEXT,"
+                                                         "tags TEXT"
+                                                         ")");
+
+    return queryComicInfo.exec();
 }
 
 bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
@@ -387,7 +398,7 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
         queryDBInfo.exec();
 
         QSqlQuery query("INSERT INTO dest.db_info (version) "
-                        "VALUES ('" VERSION "')",
+                        "VALUES ('" DB_VERSION "')",
                         destDB);
         query.exec();
 
@@ -401,6 +412,7 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
+// TODO_METADATA: validate imported info
 bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 {
     QString error;
@@ -847,6 +859,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
     bool pre9_5 = false;
     bool pre9_8 = false;
     bool pre9_13 = false;
+    bool pre9_14 = false;
 
     QString fullPath = path + "/library.ydb";
 
@@ -862,22 +875,15 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
         pre9_8 = true;
     if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.13.0") < 0)
         pre9_13 = true;
+    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.14.0") < 0)
+        pre9_14 = true;
 
     QString connectionName = "";
-    bool returnValue = false;
+    bool returnValue = true;
 
     {
         QSqlDatabase db = loadDatabaseFromFile(fullPath);
         if (db.isValid() && db.isOpen()) {
-            QSqlQuery updateVersion(db);
-            updateVersion.prepare("UPDATE db_info SET "
-                                  "version = :version");
-            updateVersion.bindValue(":version", VERSION);
-            updateVersion.exec();
-
-            if (updateVersion.numRowsAffected() > 0)
-                returnValue = true;
-
             if (pre7) // TODO: execute only if previous version was < 7.0
             {
                 // new 7.0 fields
@@ -1033,6 +1039,52 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
                     bool successMigratingManga = updateTypeQueryToManga.exec();
                     returnValue = returnValue && successMigratingManga;
                 }
+            }
+
+            // ensure that INTEGER types migrated to TEXT are actually changed in the table definition to avoid internal type castings, this happened in 9.13 but a migration wasn't shipped with that version.
+            if (pre9_14) {
+                {
+                    bool pre9_14_successfulMigration = true;
+
+                    QSqlQuery pragmaFKOFF(db);
+                    pragmaFKOFF.prepare("PRAGMA foreign_keys=OFF");
+                    pre9_14_successfulMigration = pre9_14_successfulMigration && pragmaFKOFF.exec();
+
+                    db.transaction();
+
+                    pre9_14_successfulMigration = pre9_14_successfulMigration && createComicInfoTable(db, "comic_info_migration");
+
+                    QSqlQuery copyComicInfoToComicInfoMigration(db);
+                    copyComicInfoToComicInfoMigration.prepare("INSERT INTO comic_info_migration SELECT * FROM comic_info");
+                    pre9_14_successfulMigration = pre9_14_successfulMigration && copyComicInfoToComicInfoMigration.exec();
+
+                    QSqlQuery dropComicInfo(db);
+                    dropComicInfo.prepare("DROP TABLE comic_info");
+                    pre9_14_successfulMigration = pre9_14_successfulMigration && dropComicInfo.exec();
+
+                    QSqlQuery renameComicInfoMigrationToComicInfo(db);
+                    renameComicInfoMigrationToComicInfo.prepare("ALTER TABLE comic_info_migration RENAME TO comic_info");
+                    pre9_14_successfulMigration = pre9_14_successfulMigration && renameComicInfoMigrationToComicInfo.exec();
+
+                    if (pre9_14_successfulMigration)
+                        db.commit();
+                    else
+                        db.rollback();
+
+                    QSqlQuery pragmaFKON1("PRAGMA foreign_keys=ON", db);
+
+                    returnValue = returnValue && pre9_14_successfulMigration;
+                }
+            }
+
+            if (returnValue) {
+                QSqlQuery updateVersion(db);
+                updateVersion.prepare("UPDATE db_info SET "
+                                      "version = :version");
+                updateVersion.bindValue(":version", DB_VERSION);
+                updateVersion.exec();
+
+                returnValue = updateVersion.numRowsAffected() > 0;
             }
         }
         connectionName = db.connectionName();

@@ -42,7 +42,9 @@ void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 {
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = false;
-    processLibrary(source, target);
+    _source = source;
+    _target = target;
+    _mode = UPDATER;
 }
 
 void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, const QModelIndex &dest)
@@ -72,6 +74,14 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(target);
+
+        if (!db.isValid()) {
+            QString error = "Unable to find database at: " + _target;
+            QLOG_ERROR() << error;
+            emit failedOpeningDB(error);
+            emit finished();
+            return;
+        }
 
         foreach (QString folderName, folders) {
             if (folderName.isEmpty()) {
@@ -110,6 +120,7 @@ void LibraryCreator::processLibrary(const QString &source, const QString &target
 void LibraryCreator::run()
 {
     stopRunning = false;
+    canceled = false;
 #if !defined use_unarr && !defined use_libarchive
 // check for 7z lib
 #if defined Q_OS_UNIX && !defined Q_OS_MACOS
@@ -167,11 +178,20 @@ void LibraryCreator::run()
         }
         {
             auto _database = DataBaseManagement::loadDatabase(_target);
+
+            if (!_database.isValid()) {
+                QString error = "Unable to find database at: " + _target;
+                QLOG_ERROR() << error;
+                emit failedOpeningDB(error);
+                emit finished();
+                return;
+            }
+
             _databaseConnection = _database.connectionName();
 
             //_database.setDatabaseName(_target+"/library.ydb");
             if (!_database.open()) {
-                QLOG_ERROR() << "Unable to open data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
+                QLOG_ERROR() << "Unable to open database" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
                 emit failedOpeningDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
                 emit finished();
                 creation = false;
@@ -187,13 +207,15 @@ void LibraryCreator::run()
                 update(QDir(_source));
             }
 
-            if (partialUpdate) {
-                auto folder = DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
-                DBHelper::propagateFolderUpdatesToParent(folder, _database);
-            } else
-                DBHelper::updateChildrenInfo(_database);
+            if (!canceled) {
+                if (partialUpdate) {
+                    auto folder = DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
+                    DBHelper::propagateFolderUpdatesToParent(folder, _database);
+                } else
+                    DBHelper::updateChildrenInfo(_database);
 
-            _database.commit();
+                _database.commit();
+            }
             _database.close();
         }
 
@@ -209,18 +231,25 @@ void LibraryCreator::run()
         }
         QLOG_INFO() << "Update library END";
     }
-    // msleep(100);//TODO try to solve the problem with the udpate dialog (ya no se usa más...)
+
     if (partialUpdate) {
         emit updatedCurrentFolder(folderDestinationModelIndex);
-        emit finished();
-    } else // TODO check this part!!
-        emit finished();
+    }
+
+    emit finished();
     creation = false;
 }
 
 void LibraryCreator::stop()
 {
     QSqlDatabase::database(_databaseConnection).commit();
+    stopRunning = true;
+}
+
+void LibraryCreator::cancel()
+{
+    QSqlDatabase::database(_databaseConnection).rollback();
+    canceled = true;
     stopRunning = true;
 }
 
@@ -332,7 +361,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
         }
 
         comic.parentId = _currentPathFolders.last().id;
-        comic.info.type = QVariant::fromValue(_currentPathFolders.last().type); // TODO_METADATA test this
+        comic.info.type = QVariant::fromValue(_currentPathFolders.last().type);
 
         DBHelper::insert(&comic, _database, parsed);
     }
@@ -376,6 +405,10 @@ void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &
 
 void LibraryCreator::update(QDir dirS)
 {
+    if (stopRunning) {
+        return;
+    }
+
     auto _database = QSqlDatabase::database(_databaseConnection);
     // QLOG_TRACE() << "Updating" << dirS.absolutePath();
     // QLOG_TRACE() << "Getting info from dir" << dirS.absolutePath();

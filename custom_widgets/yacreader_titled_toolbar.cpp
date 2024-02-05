@@ -1,6 +1,7 @@
 #include "yacreader_titled_toolbar.h"
 
 #include "yacreader_global.h"
+#include "yacreader_busy_widget.h"
 
 #include <QAction>
 #include <QHBoxLayout>
@@ -69,6 +70,16 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
     setStyleSheet(styleSheet);
 
     nameLabel = new DropShadowLabel(this);
+    busyIndicator = new BusyIndicator(this, 12);
+    connect(busyIndicator, &BusyIndicator::clicked, this, &YACReaderTitledToolBar::cancelOperationRequested);
+    busyIndicator->setIndicatorStyle(BusyIndicator::StyleArc);
+#ifdef Y_MAC_UI
+    busyIndicator->setColor(QColor("#808080"));
+#else
+    busyIndicator->setColor(Qt::white);
+#endif
+    busyIndicator->setHidden(true);
+
     nameLabel->setText(title);
 #ifdef Y_MAC_UI
     QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
@@ -81,7 +92,8 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
 #endif
     nameLabel->setStyleSheet(nameLabelStyleSheet);
 
-    mainLayout->addWidget(nameLabel, Qt::AlignLeft);
+    mainLayout->addWidget(nameLabel);
+    mainLayout->addWidget(busyIndicator);
     mainLayout->addStretch();
 
     setLayout(mainLayout);
@@ -139,4 +151,14 @@ void YACReaderTitledToolBar::addSepartor()
     mainLayout->addSpacing(10);
     mainLayout->addWidget(w);
     mainLayout->addSpacing(10);
+}
+
+void YACReaderTitledToolBar::showBusyIndicator()
+{
+    busyIndicator->setHidden(false);
+}
+
+void YACReaderTitledToolBar::hideBusyIndicator()
+{
+    busyIndicator->setHidden(true);
 }

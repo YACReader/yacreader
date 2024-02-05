@@ -1,1 +1,5 @@
-p7zip 16.02 built from the orignal sources using makefile.macosx_llvm_64bits
+7zip 23.01 built from the original sources using the Format7zF bundle
+
+Universal binary created using lipo:
+
+lipo -create -arch arm64 arm64/7z.so -arch x86_64 x86_64/7z.so -o universal/7z.so

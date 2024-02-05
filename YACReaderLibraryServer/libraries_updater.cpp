@@ -20,7 +20,7 @@ void LibrariesUpdater::updateIfNeeded()
 
         QString dbVersion;
         if (d.exists(path) && d.exists(path + "/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path + "/library.ydb")) != "") {
-            int comparation = DataBaseManagement::compareVersions(dbVersion, VERSION);
+            int comparation = DataBaseManagement::compareVersions(dbVersion, DB_VERSION);
 
             if (comparation < 0) {
                 bool updated = DataBaseManagement::updateToCurrentVersion(path);

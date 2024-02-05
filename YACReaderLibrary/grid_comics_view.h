@@ -51,6 +51,7 @@ public:
     QByteArray getMimeDataFromSelection();
     void updateCurrentComicView() override;
     void focusComicsNavigation(Qt::FocusReason reason) override;
+    void reloadContent() override;
 
 public slots:
     // ComicsView

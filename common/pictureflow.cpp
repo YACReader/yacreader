@@ -1084,6 +1084,13 @@ void PictureFlow::addSlide(const QPixmap &pixmap)
     addSlide(pixmap.toImage());
 }
 
+void PictureFlow::insertSlide(int index)
+{
+    d->state->slideImages.insert(index, new QImage());
+    d->state->marks.insert(index, YACReader::Unread);
+    triggerRender();
+}
+
 void PictureFlow::removeSlide(int index)
 {
     int c = d->state->slideImages.count();

@@ -4,6 +4,9 @@
 
 #include "library_creator.h"
 #include "yacreader_libraries.h"
+#include "xml_info_library_scanner.h"
+
+using namespace YACReader;
 
 ConsoleUILibraryCreator::ConsoleUILibraryCreator(QSettings *settings, QObject *parent)
     : QObject(parent), numComicsProcessed(0), settings(settings)
@@ -112,6 +115,29 @@ void ConsoleUILibraryCreator::removeLibrary(const QString &name)
     yacreaderLibraries.save();
 
     std::cout << "Library removed : " << name.toUtf8().constData() << std::endl;
+}
+
+void ConsoleUILibraryCreator::rescanXMLInfoLibrary(const QString &path)
+{
+    QDir pathDir(path);
+    if (!pathDir.exists()) {
+        std::cout << "Directory not found." << std::endl;
+        return;
+    }
+
+    QEventLoop eventLoop;
+    XMLInfoLibraryScanner *scanner = new XMLInfoLibraryScanner();
+    QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
+
+    connect(scanner, &XMLInfoLibraryScanner::finished, this, &ConsoleUILibraryCreator::done);
+    connect(scanner, &XMLInfoLibraryScanner::comicScanned, this, &ConsoleUILibraryCreator::newComic);
+
+    connect(scanner, &XMLInfoLibraryScanner::finished, &eventLoop, &QEventLoop::quit);
+
+    std::cout << "Scanning comics";
+    scanner->scanLibrary(cleanPath, QDir::cleanPath(pathDir.absolutePath() + "/.yacreaderlibrary"));
+
+    eventLoop.exec();
 }
 
 void ConsoleUILibraryCreator::newComic(const QString & /*relativeComicPath*/, const QString & /*coverPath*/)

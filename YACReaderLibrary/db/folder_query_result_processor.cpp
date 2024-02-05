@@ -60,22 +60,10 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
 
     QSqlRecord record = sqlquery.record();
 
-    int name = record.indexOf("name");
-    int path = record.indexOf("path");
-    int finished = record.indexOf("finished");
-    int completed = record.indexOf("completed");
     int parentIdIndex = record.indexOf("parentId");
 
-    while (sqlquery.next()) { // se procesan todos los folders que cumplen con el filtro
-        // datos de la base de datos
-        QList<QVariant> data;
-
-        data << sqlquery.value(name).toString();
-        data << sqlquery.value(path).toString();
-        data << sqlquery.value(finished).toBool();
-        data << sqlquery.value(completed).toBool();
-
-        auto item = new FolderItem(data);
+    while (sqlquery.next()) {
+        auto item = new FolderItem(QList<QVariant>()); // no need for data, we just need the ids of the folders in the search result
         item->id = sqlquery.value(0).toULongLong();
 
         // id del padre

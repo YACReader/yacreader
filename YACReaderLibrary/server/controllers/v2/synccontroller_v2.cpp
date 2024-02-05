@@ -5,6 +5,7 @@
 
 #include "comic_db.h"
 #include "db_helper.h"
+#include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
 using stefanfrings::HttpRequest;
@@ -33,10 +34,52 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         QString hash;
         QMap<qulonglong, QList<ComicInfo>> comics;
         QList<ComicInfo> comicsWithNoLibrary;
+
+        auto libraries = DBHelper::getLibraries();
+
+        bool clientSendsHasBeenOpened = false;
+
         foreach (QString comicInfo, data) {
             QList<QString> comicInfoProgress = comicInfo.split("\t");
 
-            if (comicInfoProgress.length() >= 6) {
+            if (comicInfoProgress.length() >= 9) {
+                if (comicInfoProgress.at(0) != "u") {
+                    continue;
+                }
+
+                clientSendsHasBeenOpened = true;
+
+                auto libraryUuid = QUuid(comicInfoProgress.at(1));
+                if (!libraryUuid.isNull()) {
+                    auto libraryId = libraries.getIdFromUuid(libraryUuid);
+                    if (libraryId == -1) {
+                        continue;
+                    }
+                    comicId = comicInfoProgress.at(2).toULongLong();
+                    hash = comicInfoProgress.at(3);
+                    currentPage = comicInfoProgress.at(4).toInt();
+
+                    ComicInfo info;
+                    info.currentPage = currentPage;
+                    info.hash = hash; // TODO remove the hash check and add UUIDs for libraries
+                    info.id = comicId;
+
+                    currentRating = comicInfoProgress.at(5).toInt();
+                    info.rating = currentRating;
+
+                    lastTimeOpened = comicInfoProgress.at(6).toULong();
+                    info.lastTimeOpened = lastTimeOpened;
+
+                    info.hasBeenOpened = comicInfoProgress.at(7).toInt();
+
+                    info.read = comicInfoProgress.at(8).toInt();
+
+                    if (!comics.contains(libraryId)) {
+                        comics[libraryId] = QList<ComicInfo>();
+                    }
+                    comics[libraryId].push_back(info);
+                }
+            } else if (comicInfoProgress.length() >= 6) {
                 if (comicInfoProgress.at(0) != "unknown") {
                     libraryId = comicInfoProgress.at(0).toULongLong();
                     comicId = comicInfoProgress.at(1).toULongLong();
@@ -81,13 +124,17 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
             }
         }
 
-        auto moreRecentComicsFound = DBHelper::updateFromRemoteClient(comics);
-
         QJsonArray items;
 
-        foreach (qulonglong libraryId, moreRecentComicsFound.keys()) {
-            foreach (ComicDB comic, moreRecentComicsFound[libraryId]) {
-                items.append(YACReaderServerDataHelper::comicToJSON(libraryId, comic));
+        if (!comics.isEmpty()) {
+            auto moreRecentComicsFound = DBHelper::updateFromRemoteClient(comics, clientSendsHasBeenOpened);
+
+            foreach (qulonglong libraryId, moreRecentComicsFound.keys()) {
+                auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
+
+                foreach (ComicDB comic, moreRecentComicsFound[libraryId]) {
+                    items.append(YACReaderServerDataHelper::comicToJSON(libraryId, libraryUuid, comic));
+                }
             }
         }
 

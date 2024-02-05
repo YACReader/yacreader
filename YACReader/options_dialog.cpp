@@ -71,9 +71,11 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto scrollBox = new QGroupBox(tr("Scroll behaviour"));
     auto scrollLayout = new QVBoxLayout;
 
+    disableScrollAnimations = new QCheckBox(tr("Disable scroll animations and smooth scrolling"));
     doNotTurnPageOnScroll = new QCheckBox(tr("Do not turn page using scroll"));
     useSingleScrollStepToTurnPage = new QCheckBox(tr("Use single scroll step to turn page"));
 
+    scrollLayout->addWidget(disableScrollAnimations);
     scrollLayout->addWidget(doNotTurnPageOnScroll);
     scrollLayout->addWidget(useSingleScrollStepToTurnPage);
 
@@ -242,6 +244,7 @@ void OptionsDialog::saveOptions()
 
     settings->setValue(DO_NOT_TURN_PAGE_ON_SCROLL, doNotTurnPageOnScroll->isChecked());
     settings->setValue(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, useSingleScrollStepToTurnPage->isChecked());
+    settings->setValue(DISABLE_SCROLL_ANIMATION, disableScrollAnimations->isChecked());
 
     YACReaderOptionsDialog::saveOptions();
 }
@@ -283,6 +286,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     doNotTurnPageOnScroll->setChecked(settings->value(DO_NOT_TURN_PAGE_ON_SCROLL, false).toBool());
     useSingleScrollStepToTurnPage->setChecked(settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool());
+    disableScrollAnimations->setChecked(settings->value(DISABLE_SCROLL_ANIMATION, false).toBool());
 }
 
 void OptionsDialog::updateColor(const QColor &color)

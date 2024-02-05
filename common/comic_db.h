@@ -8,9 +8,6 @@
 #include <QImage>
 #include <QMetaType>
 
-typedef QPair<QString, QString> YACReaderComicInfoPair;
-Q_DECLARE_METATYPE(YACReaderComicInfoPair)
-
 class ComicInfo : public QObject
 {
     Q_OBJECT

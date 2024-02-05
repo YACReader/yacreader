@@ -1,0 +1,52 @@
+Steps for building 7z.so (Done with Ubuntu 23.10 mantic, and 7zip 23.01)
+
+apt-get source 7zip (you may need to add src sources to sources.list -> sudo sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list)
+
+add the architectures you need if you are cross compiling, e.g.
+dpkg --add-architecture arm64
+apt-get update
+
+
+in 7zip-23.01+dfsg/rules enable rar support by removing all DISABLE_RAR* lines, we need RAR support
+
+
+Build time
+
+
+in 7zip-23.01+dfsg, run the following command to build on the current architecture
+
+dpkg-buildpackage -us -uc -b
+
+and run with --host-arch to cross compile
+
+dpkg-buildpackage -us -uc -b --host-arch [arch] (e.g. dpkg-buildpackage -us -uc -b --host-arch arm64)
+
+you'll find the binaries in 7zip-23.01+dfsg/debian/7zip/usr/lib/7zip
+
+
+additional compilers you may need to install to be able to cross compile:
+
+arm64
+apt-get install gcc-aarch64-linux-gnu
+apt-get install g++-aarch64-linux-gnu
+
+x86
+apt-get install gcc-i686-linux-gnu
+apt-get install g++-i686-linux-gnu
+
+armhf (failed to compile)
+apt-get install gcc-arm-linux-gnueabihf
+apt-get install g++-arm-linux-gnueabihf
+
+armel (failed to compile)
+apt-get install gcc-arm-linux-gnueabi
+apt-get install g++-arm-linux-gnueabi
+
+
+
+Contribution
+
+Please, feel free to add more architectures by opening a PR. Just make sure 7z.so is compiled from Format7zF with rar support and test it using 7z executable which loads 7z.so to do the decompresion.
+
+
+

@@ -81,6 +81,7 @@ HEADERS += comic_flow.h \
   db/search_query.h \
   folder_content_view.h \
   initial_comic_info_extractor.h \
+  libraries_update_coordinator.h \
   library_comic_opener.h \
   library_creator.h \
   library_window.h \
@@ -167,6 +168,7 @@ SOURCES += comic_flow.cpp \
     db/search_query.cpp \
     folder_content_view.cpp \
     initial_comic_info_extractor.cpp \
+    libraries_update_coordinator.cpp \
     library_comic_opener.cpp \
     library_creator.cpp \
     library_window.cpp \

@@ -48,6 +48,7 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/db/reading_list.h \
            ../YACReaderLibrary/initial_comic_info_extractor.h \
            ../YACReaderLibrary/xml_info_parser.h \
+           ../YACReaderLibrary/xml_info_library_scanner.h \
            ../common/comic_db.h \
            ../common/folder.h \
            ../common/library_item.h \
@@ -66,7 +67,8 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../YACReaderLibrary/ip_config_helper.h \
            ../YACReaderLibrary/db/query_lexer.h \
            ../YACReaderLibrary/db/query_parser.h \
-           ../YACReaderLibrary/db/search_query.h
+           ../YACReaderLibrary/db/search_query.h \
+           ../YACReaderLibrary/libraries_update_coordinator.h \
 
 
 SOURCES += ../YACReaderLibrary/library_creator.cpp \
@@ -77,6 +79,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/db/reading_list.cpp \
            ../YACReaderLibrary/initial_comic_info_extractor.cpp \
            ../YACReaderLibrary/xml_info_parser.cpp \
+           ../YACReaderLibrary/xml_info_library_scanner.cpp \
            ../common/comic_db.cpp \
            ../common/folder.cpp \
            ../common/library_item.cpp \
@@ -96,6 +99,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../YACReaderLibrary/db/query_lexer.cpp \
            ../YACReaderLibrary/db/query_parser.cpp \
            ../YACReaderLibrary/db/search_query.cpp \
+           ../YACReaderLibrary/libraries_update_coordinator.cpp \
 
 include(../YACReaderLibrary/server/server.pri)
 

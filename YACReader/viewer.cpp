@@ -445,7 +445,7 @@ void Viewer::scrollDown()
         next();
     } else {
         int currentPos = verticalScrollBar()->sliderPosition();
-        verticalScroller->setDuration(250);
+        verticalScroller->setDuration(animationDuration());
         verticalScroller->setStartValue(currentPos);
         verticalScroller->setEndValue(nextPos);
 
@@ -461,7 +461,7 @@ void Viewer::scrollUp()
         prev();
     } else {
         int currentPos = verticalScrollBar()->sliderPosition();
-        verticalScroller->setDuration(250);
+        verticalScroller->setDuration(animationDuration());
         verticalScroller->setStartValue(currentPos);
         verticalScroller->setEndValue(nextPos);
 
@@ -604,14 +604,23 @@ void Viewer::scrollTo(int x, int y)
 {
     if (groupScroller->state() == QAbstractAnimation::Running)
         return;
-    horizontalScroller->setDuration(250);
+    horizontalScroller->setDuration(animationDuration());
     horizontalScroller->setStartValue(horizontalScrollBar()->sliderPosition());
     horizontalScroller->setEndValue(x);
-    verticalScroller->setDuration(250);
+    verticalScroller->setDuration(animationDuration());
     verticalScroller->setStartValue(verticalScrollBar()->sliderPosition());
     verticalScroller->setEndValue(y);
     groupScroller->start();
     emit backgroundChanges();
+}
+
+int Viewer::animationDuration() const
+{
+    if (Configuration::getConfiguration().getDisableScrollAnimation()) {
+        return 0;
+    } else {
+        return 250;
+    }
 }
 
 void Viewer::moveView(Qt::Key directionKey)
@@ -621,7 +630,7 @@ void Viewer::moveView(Qt::Key directionKey)
     emit backgroundChanges();
 }
 
-static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta)
+void Viewer::animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta)
 {
     int deltaNotFinished = 0;
     if (scroller.state() == QAbstractAnimation::Running) {
@@ -630,7 +639,7 @@ static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scroll
     }
 
     const int currentPos = scrollBar.sliderPosition();
-    scroller.setDuration(250);
+    scroller.setDuration(animationDuration());
     scroller.setStartValue(currentPos);
     scroller.setEndValue(currentPos - delta - deltaNotFinished);
 
@@ -639,9 +648,9 @@ static void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scroll
 
 void Viewer::wheelEvent(QWheelEvent *event)
 {
-    auto delta = event->angleDelta();
-
     if (render->hasLoadedComic()) {
+        auto delta = event->angleDelta();
+
         if (delta.x() != 0) {
             animateScroll(*horizontalScroller, *horizontalScrollBar(), delta.x());
             return;

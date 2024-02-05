@@ -712,7 +712,7 @@ void YACReaderFlowGL::remove(int item)
     QOpenGLTexture *texture = images[item].texture;
 
     int count = item;
-    while (count <= numObjects - 2) {
+    while (count <= numObjects - 1) {
         images[count].index--;
         count++;
     }
@@ -722,6 +722,24 @@ void YACReaderFlowGL::remove(int item)
         delete (texture);
 
     numObjects--;
+}
+
+void YACReaderFlowGL::add(int item)
+{
+    float x = 1;
+    float y = 1 * (700.f / 480.0f);
+    QString s = "cover";
+
+    images.insert(item, YACReader3DImage());
+    loaded.insert(item, false);
+    marks.insert(item, Unread);
+    numObjects++;
+
+    for (int i = item + 1; i < numObjects; i++) {
+        images[i].index++;
+    }
+
+    insert(s.toLocal8Bit().data(), defaultTexture, x, y, item);
 }
 
 /*Info*/
@@ -747,6 +765,7 @@ void YACReaderFlowGL::replace(char *name, QOpenGLTexture *texture, float x, floa
 void YACReaderFlowGL::populate(int n)
 {
     emit centerIndexChanged(0);
+
     float x = 1;
     float y = 1 * (700.f / 480.0f);
     int i;
@@ -756,18 +775,7 @@ void YACReaderFlowGL::populate(int n)
         insert(s.toLocal8Bit().data(), defaultTexture, x, y);
     }
 
-    /*
-        for(int i = 0;i<n;i++){
-                QPixmap img = QPixmap(QString("./cover%1.jpg").arg(i+1));
-                GLuint cover = bindTexture(img, GL_TEXTURE_2D);
-                float y = 0.5 * (float(img.height())/img.width());
-                Insert("cover", cover, x, y);
-        }*/
-
     loaded = QVector<bool>(n, false);
-    // marks = QVector<bool>(n,false);
-
-    // worker->start();
 }
 
 void YACReaderFlowGL::reset()
@@ -1192,7 +1200,7 @@ void YACReaderComicFlowGL::updateImageData()
         count = 12;
         break;
     case ultraHigh:
-        count = 14;
+        count = 16;
         break;
     }
     int *indexes = new int[2 * count + 1];
@@ -1229,8 +1237,21 @@ void YACReaderComicFlowGL::remove(int item)
     worker->lock();
     worker->reset();
     YACReaderFlowGL::remove(item);
-    if (item >= 0 && item < paths.size())
+    if (item >= 0 && item < paths.size()) {
         paths.removeAt(item);
+    }
+    worker->unlock();
+}
+
+void YACReaderComicFlowGL::add(const QString &path, int index)
+{
+    worker->lock();
+    worker->reset();
+
+    paths.insert(index, path);
+
+    YACReaderFlowGL::add(index);
+
     worker->unlock();
 }
 
@@ -1246,6 +1267,10 @@ void YACReaderComicFlowGL::resortCovers(QList<int> newOrder)
 
     int index = 0;
     foreach (int i, newOrder) {
+        if (i < 0 || i >= images.size()) {
+            continue;
+        }
+
         pathsNew << paths.at(i);
         loadedNew << loaded.at(i);
         marksNew << marks.at(i);

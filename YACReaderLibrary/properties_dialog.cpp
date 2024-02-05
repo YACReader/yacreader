@@ -737,7 +737,7 @@ void PropertiesDialog::setMultipleCover()
 {
     ComicDB lastComic = comics.last();
     QPixmap last = lastComic.info.getCover(basePath);
-    last = last.scaledToHeight(444, Qt::SmoothTransformation);
+    last = last.scaledToHeight(575, Qt::SmoothTransformation);
 
     coverImage = QPixmap::fromImage(blurred(last.toImage(), QRect(0, 0, last.width(), last.height()), 15));
 
@@ -961,6 +961,8 @@ void PropertiesDialog::save()
                 comics[currentComicIndex].info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
                 comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
             }
+
+            emit coverChangedSignal(comics[currentComicIndex]);
         }
     }
 }

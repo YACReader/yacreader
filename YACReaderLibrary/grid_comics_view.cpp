@@ -493,6 +493,12 @@ void GridComicsView::focusComicsNavigation(Qt::FocusReason reason)
     view->setFocus(reason);
 }
 
+void GridComicsView::reloadContent()
+{
+    ComicsView::reloadContent();
+    updateCurrentComicView();
+}
+
 void GridComicsView::startDrag()
 {
     auto drag = new QDrag(this);

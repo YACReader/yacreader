@@ -53,20 +53,20 @@ void drawMacOSXFinishedFolderIcon()
 
 #define ROOT 1
 
+FolderItem *createRoot()
+{
+    QList<QVariant> rootData;
+    rootData << "root";
+    auto root = new FolderItem(rootData);
+    root->id = ROOT;
+    root->parentItem = nullptr;
+
+    return root;
+}
+
 FolderModel::FolderModel(QObject *parent)
     : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), folderIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg")), folderFinishedIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.svg")), showRecent(false), recentDays(1)
 {
-}
-
-FolderModel::FolderModel(QSqlQuery &sqlquery, QObject *parent)
-    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), showRecent(false), recentDays(1)
-{
-    QList<QVariant> rootData;
-    rootData << "root"; // id 1, parent 1, title "root"
-    rootItem = new FolderItem(rootData);
-    rootItem->id = ROOT;
-    rootItem->parentItem = nullptr;
-    setupModelData(sqlquery, rootItem);
 }
 
 FolderModel::~FolderModel()
@@ -108,13 +108,150 @@ QHash<int, QByteArray> FolderModel::roleNames() const
 
 void FolderModel::reload()
 {
-    setupModelData(_databasePath);
+    if (rootItem == nullptr)
+        return;
+
+    if (!isSubfolder) {
+        auto newModelData = createModelData(_databasePath);
+
+        takeUpdatedChildrenInfo(rootItem, QModelIndex(), newModelData.rootItem);
+
+        // copy items from newModelData to this model that are not in this model
+        foreach (auto key, newModelData.items.keys()) {
+            if (!items.contains(key)) {
+                items[key] = (newModelData.items[key]);
+            }
+        }
+
+        delete newModelData.rootItem;
+    } else {
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+
+            QSqlQuery selectQuery(db);
+            selectQuery.prepare("SELECT * FROM folder WHERE parentId = :parentId and id <> 1");
+            selectQuery.bindValue(":parentId", rootItem->id);
+            selectQuery.exec();
+
+            auto tempRoot = new FolderItem(rootItem->getData(), rootItem->parentItem);
+            tempRoot->id = rootItem->id;
+            auto newModelData = createModelData(selectQuery, tempRoot);
+            takeUpdatedChildrenInfo(rootItem, QModelIndex(), newModelData.rootItem);
+
+            items = newModelData.items;
+
+            // copy items from newModelData to this model that are not in this model
+            foreach (auto key, newModelData.items.keys()) {
+                if (!items.contains(key)) {
+                    items[key] = (newModelData.items[key]);
+                }
+            }
+
+            delete newModelData.rootItem;
+
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+    }
+}
+
+void FolderModel::takeUpdatedChildrenInfo(FolderItem *parent, const QModelIndex &parentModelIndex, FolderItem *updated)
+{
+    auto currentChildren = parent->children();
+    auto updatedChildren = updated->children();
+
+    int lenght = currentChildren.size();
+    int lenghtUpdated = updatedChildren.size();
+
+    int m; // index that reflects modifications on the actual model for this parent
+    int i; // index of the original children before update
+    int j; // index of the updated children
+    for (m = 0, i = 0, j = 0; (i < lenght) && (j < lenghtUpdated);) {
+        auto child = currentChildren[i];
+        auto updatedChild = updatedChildren[j];
+
+        // same folder
+        auto sameFolderId = child->id == updatedChild->id; // and also same name
+        if (sameFolderId) {
+            // 1. check if child data needs to be udpated
+            if (child->getData() != updatedChild->getData()) {
+                auto modelIndexToUpdate = index(m, 0, parentModelIndex);
+
+                child->setData(updatedChild->getData());
+
+                emit dataChanged(modelIndexToUpdate, modelIndexToUpdate);
+            }
+
+            // 2. update children info
+            takeUpdatedChildrenInfo(child, index(m, 0, parentModelIndex), updatedChild);
+
+            m++;
+            i++;
+            j++;
+            continue;
+        }
+
+        auto childName = child->data(Name).toString();
+        auto childUpdatedName = updatedChild->data(Name).toString();
+
+        // folder added
+        if (!naturalSortLessThanCI(childName, childUpdatedName)) {
+            beginInsertRows(parentModelIndex, m, m);
+
+            parent->addChild(updatedChild, m);
+            updated->removeChild(updatedChild);
+
+            endInsertRows();
+
+            m++;
+            j++;
+            continue;
+        }
+
+        // folder removed
+        if (naturalSortLessThanCI(childName, childUpdatedName)) {
+            beginRemoveRows(parentModelIndex, m, m);
+
+            delete parent->child(m);
+            parent->removeChild(m);
+
+            endRemoveRows();
+
+            i++;
+            continue;
+        }
+    }
+
+    // add remaining children
+    for (; j < lenghtUpdated; j++) {
+        auto updatedChild = updatedChildren[j];
+
+        beginInsertRows(parentModelIndex, m, m);
+
+        parent->addChild(updatedChild, m);
+        updated->removeChild(updatedChild);
+
+        endInsertRows();
+
+        m++;
+    }
+
+    // remove remaining children
+    for (; i < lenght; i++) {
+        beginRemoveRows(parentModelIndex, m, m);
+
+        delete parent->child(m);
+        parent->removeChild(m);
+
+        endRemoveRows();
+    }
 }
 
 void FolderModel::reload(const QModelIndex &index)
 {
     // TODO: reload just the content under index for better efficiency
-    setupModelData(_databasePath);
+    reload();
 }
 
 QVariant FolderModel::data(const QModelIndex &index, int role) const
@@ -290,48 +427,49 @@ int FolderModel::rowCount(const QModelIndex &parent) const
 void FolderModel::setupModelData(QString path)
 {
     beginResetModel();
+
     if (rootItem != nullptr)
         delete rootItem; // TODO comprobar que se libera bien la memoria
 
     rootItem = nullptr;
-
-    // inicializar el nodo ra�z
-    QList<QVariant> rootData;
-    rootData << "root"; // id 0, padre 0, title "root" (el id, y el id del padre van a ir en la clase TreeItem)
-    rootItem = new FolderItem(rootData);
-    rootItem->id = ROOT;
-    rootItem->parentItem = nullptr;
-
-    // cargar la base de datos
     _databasePath = path;
-    // crear la consulta
+
+    setModelData(createModelData(path));
+
+    endResetModel();
+}
+
+void FolderModel::setModelData(const ModelData &modelData)
+{
+    rootItem = modelData.rootItem;
+    items = modelData.items;
+}
+
+FolderModel::ModelData FolderModel::createModelData(const QString &path) const
+{
+    ModelData modelData;
+
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(path);
         QSqlQuery selectQuery("select * from folder where id <> 1 order by parentId,name", db);
 
-        setupModelData(selectQuery, rootItem);
+        auto root = createRoot();
+        modelData = createModelData(selectQuery, root);
+
         connectionName = db.connectionName();
     }
-    // selectQuery.finish();
     QSqlDatabase::removeDatabase(connectionName);
-    endResetModel();
+
+    return modelData;
 }
 
-void FolderModel::fullSetup(QSqlQuery &sqlquery, FolderItem *parent)
+FolderModel::ModelData FolderModel::createModelData(QSqlQuery &sqlquery, FolderItem *parent) const
 {
-    rootItem = parent;
+    QMap<unsigned long long int, FolderItem *> itemsLookup;
 
-    setupModelData(sqlquery, parent);
-}
-
-void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
-{
-    // 64 bits para la primary key, es decir la misma precisi�n que soporta sqlit 2^64
-    // el diccionario permitir� encontrar cualquier nodo del �rbol r�pidamente, de forma que a�adir un hijo a un padre sea O(1)
-    items.clear();
-    // se a�ade el nodo 0
-    items.insert(parent->id, parent);
+    // add parent to the lookup
+    itemsLookup.insert(parent->id, parent);
 
     QSqlRecord record = sqlquery.record();
 
@@ -366,11 +504,13 @@ void FolderModel::setupModelData(QSqlQuery &sqlquery, FolderItem *parent)
 
         item->id = sqlquery.value(id).toULongLong();
         // la inserci�n de hijos se hace de forma ordenada
-        FolderItem *parent = items.value(sqlquery.value(parentId).toULongLong());
+        FolderItem *parent = itemsLookup.value(sqlquery.value(parentId).toULongLong());
         parent->appendChild(item);
         // se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
-        items.insert(item->id, item);
+        itemsLookup.insert(item->id, item);
     }
+
+    return FolderModel::ModelData { parent, itemsLookup };
 }
 
 QString FolderModel::getDatabase()
@@ -518,7 +658,7 @@ FolderModel *FolderModel::getSubfoldersModel(const QModelIndex &mi)
         selectQuery.exec();
 
         if (parent != nullptr) {
-            model->fullSetup(selectQuery, parent);
+            model->setModelData(createModelData(selectQuery, parent));
         }
 
         connectionName = db.connectionName();
@@ -553,7 +693,7 @@ Folder FolderModel::getFolder(const QModelIndex &mi)
     return folder;
 }
 
-QModelIndex FolderModel::getIndexFromFolder(const Folder &folder, const QModelIndex &parent)
+QModelIndex FolderModel::getIndexFromFolderId(qulonglong folderId, const QModelIndex &parent)
 {
     if (rootItem == nullptr) {
         return QModelIndex();
@@ -566,16 +706,16 @@ QModelIndex FolderModel::getIndexFromFolder(const Folder &folder, const QModelIn
         if (modelIndex.isValid()) {
             auto folderItem = static_cast<FolderItem *>(modelIndex.internalPointer());
 
-            if (folderItem->id == folder.id) {
+            if (folderItem->id == folderId) {
                 return modelIndex;
             }
 
-            auto childModelIndex = getIndexFromFolder(folder, modelIndex);
+            auto childModelIndex = getIndexFromFolderId(folderId, modelIndex);
 
             if (childModelIndex.isValid()) {
                 auto folderItem = static_cast<FolderItem *>(childModelIndex.internalPointer());
 
-                if (folderItem->id == folder.id) {
+                if (folderItem->id == folderId) {
                     return childModelIndex;
                 }
             }
@@ -583,6 +723,11 @@ QModelIndex FolderModel::getIndexFromFolder(const Folder &folder, const QModelIn
     }
 
     return QModelIndex();
+}
+
+QModelIndex FolderModel::getIndexFromFolder(const Folder &folder, const QModelIndex &parent)
+{
+    return getIndexFromFolderId(folder.id, parent);
 }
 
 QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QModelIndex &parent)
@@ -639,7 +784,7 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
 
 QUrl FolderModel::getCoverUrlPathForComicHash(const QString &hash) const
 {
-    return QUrl("file:" + _databasePath + "/covers/" + hash + ".jpg");
+    return QUrl::fromLocalFile(_databasePath + "/covers/" + hash + ".jpg");
 }
 
 void FolderModel::setShowRecent(bool showRecent)

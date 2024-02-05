@@ -44,26 +44,8 @@ class YCArchiveExtractCallback : public IArchiveExtractCallback,
                                  public ICryptoGetTextPassword,
                                  public CMyUnknownImp
 {
-public:
-    MY_UNKNOWN_IMP1(ICryptoGetTextPassword)
-
-    // IProgress
-    STDMETHOD(SetTotal)
-    (UInt64 size);
-    STDMETHOD(SetCompleted)
-    (const UInt64 *completeValue);
-
-    // IArchiveExtractCallback
-    STDMETHOD(GetStream)
-    (UInt32 index, ISequentialOutStream **outStream, Int32 askExtractMode);
-    STDMETHOD(PrepareOperation)
-    (Int32 askExtractMode);
-    STDMETHOD(SetOperationResult)
-    (Int32 resultEOperationResult);
-
-    // ICryptoGetTextPassword
-    STDMETHOD(CryptoGetTextPassword)
-    (BSTR *aPassword);
+    Z7_IFACES_IMP_UNK_2(IArchiveExtractCallback, ICryptoGetTextPassword)
+    Z7_IFACE_COM7_IMP(IProgress)
 
 private:
     CMyComPtr<IInArchive> _archiveHandler;
@@ -108,18 +90,18 @@ void YCArchiveExtractCallback::Init(IInArchive *archiveHandler, const UString &d
     directoryPath; // unused
 }
 
-STDMETHODIMP YCArchiveExtractCallback::SetTotal(UInt64 /* size */)
+Z7_COM7F_IMF(YCArchiveExtractCallback::SetTotal(UInt64 /* size */))
 {
     return S_OK;
 }
 
-STDMETHODIMP YCArchiveExtractCallback::SetCompleted(const UInt64 * /* completeValue */)
+Z7_COM7F_IMF(YCArchiveExtractCallback::SetCompleted(const UInt64 * /* completeValue */))
 {
     return S_OK;
 }
 
-STDMETHODIMP YCArchiveExtractCallback::GetStream(UInt32 index,
-                                                 ISequentialOutStream **outStream, Int32 askExtractMode)
+Z7_COM7F_IMF(YCArchiveExtractCallback::GetStream(UInt32 index,
+                                                 ISequentialOutStream **outStream, Int32 askExtractMode))
 {
     *outStream = 0;
     _outFileStream.Release();
@@ -220,7 +202,7 @@ STDMETHODIMP YCArchiveExtractCallback::GetStream(UInt32 index,
       }*/
         if (newFileSizeDefined) {
             CBufPtrSeqOutStream *outStreamSpec = new CBufPtrSeqOutStream;
-            CMyComPtr<CBufPtrSeqOutStream> outStreamLocal(outStreamSpec);
+            CMyComPtr<ISequentialOutStream> outStreamLocal(outStreamSpec);
             data = (Byte *)MidAlloc(newFileSize);
             outStreamSpec->Init(data, newFileSize);
             *outStream = outStreamLocal.Detach();
@@ -230,7 +212,7 @@ STDMETHODIMP YCArchiveExtractCallback::GetStream(UInt32 index,
     return S_OK;
 }
 
-STDMETHODIMP YCArchiveExtractCallback::PrepareOperation(Int32 askExtractMode)
+Z7_COM7F_IMF(YCArchiveExtractCallback::PrepareOperation(Int32 askExtractMode))
 {
     _extractMode = false;
     switch (askExtractMode) {
@@ -248,7 +230,7 @@ STDMETHODIMP YCArchiveExtractCallback::PrepareOperation(Int32 askExtractMode)
     return S_OK;
 }
 
-STDMETHODIMP YCArchiveExtractCallback::SetOperationResult(Int32 operationResult)
+Z7_COM7F_IMF(YCArchiveExtractCallback::SetOperationResult(Int32 operationResult))
 {
     switch (operationResult) {
     case NArchive::NExtract::NOperationResult::kOK:
@@ -303,7 +285,7 @@ STDMETHODIMP YCArchiveExtractCallback::SetOperationResult(Int32 operationResult)
     return S_OK;
 }
 
-STDMETHODIMP YCArchiveExtractCallback::CryptoGetTextPassword(BSTR *password)
+Z7_COM7F_IMF(YCArchiveExtractCallback::CryptoGetTextPassword(BSTR *password))
 {
     if (!PasswordIsDefined) {
         // You can ask real password here from user

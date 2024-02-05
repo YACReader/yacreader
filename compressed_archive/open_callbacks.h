@@ -10,17 +10,8 @@ class YCArchiveOpenCallback : public IArchiveOpenCallback,
                               public ICryptoGetTextPassword,
                               public CMyUnknownImp
 {
+    Z7_IFACES_IMP_UNK_2(IArchiveOpenCallback, ICryptoGetTextPassword)
 public:
-    MY_UNKNOWN_IMP1(ICryptoGetTextPassword)
-
-    STDMETHOD(SetTotal)
-    (const UInt64 *files, const UInt64 *bytes);
-    STDMETHOD(SetCompleted)
-    (const UInt64 *files, const UInt64 *bytes);
-
-    STDMETHOD(CryptoGetTextPassword)
-    (BSTR *password);
-
     bool PasswordIsDefined;
     UString Password;
 
@@ -28,17 +19,17 @@ public:
         : PasswordIsDefined(false) { }
 };
 
-STDMETHODIMP YCArchiveOpenCallback::SetTotal(const UInt64 * /* files */, const UInt64 * /* bytes */)
+Z7_COM7F_IMF(YCArchiveOpenCallback::SetTotal(const UInt64 * /* files */, const UInt64 * /* bytes */))
 {
     return S_OK;
 }
 
-STDMETHODIMP YCArchiveOpenCallback::SetCompleted(const UInt64 * /* files */, const UInt64 * /* bytes */)
+Z7_COM7F_IMF(YCArchiveOpenCallback::SetCompleted(const UInt64 * /* files */, const UInt64 * /* bytes */))
 {
     return S_OK;
 }
 
-STDMETHODIMP YCArchiveOpenCallback::CryptoGetTextPassword(BSTR *password)
+Z7_COM7F_IMF(YCArchiveOpenCallback::CryptoGetTextPassword(BSTR *password))
 {
     if (!PasswordIsDefined) {
         // You can ask real password here from user

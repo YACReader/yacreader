@@ -12,6 +12,8 @@ public:
     ComicItem(const QList<QVariant> &data);
     ~ComicItem() override;
     int columnCount() const;
+    QList<QVariant> getData() const;
+    void setData(const QList<QVariant> &data);
     QVariant data(int column) const;
     void setData(int column, const QVariant &value);
     int row() const;

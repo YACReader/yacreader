@@ -28,6 +28,24 @@ private slots:
     void resetToDefaults();
 
 private:
+    // General tabs
+    QCheckBox *displayContinueReadingBannerCheck;
+    QCheckBox *trayIconCheckbox;
+    QCheckBox *startToTrayCheckbox;
+    QCheckBox *comicInfoXMLCheckbox;
+    QSlider *recentIntervalSlider;
+    QLabel *numDaysLabel;
+
+    // Libraries tab
+    QCheckBox *updateLibrariesAtStartupCheck;
+    QCheckBox *detectChangesAutomaticallyCheck;
+    QCheckBox *updateLibrariesPeriodicallyCheck;
+    QComboBox *intervalComboBox;
+    QCheckBox *updateLibrariesAtCertainTimeCheck;
+    QTimeEdit *updateLibrariesTimeEdit;
+    QCheckBox *compareModifiedDateWhenUpdatingLibrariesCheck;
+
+    // Grid tab
     QCheckBox *useBackgroundImageCheck;
     QCheckBox *useCurrentComicCoverCheck;
     QSlider *backgroundImageOpacitySlider;
@@ -35,13 +53,11 @@ private:
     QLabel *opacityLabel;
     QLabel *blurLabel;
     QPushButton *resetButton;
-    QCheckBox *displayContinueReadingBannerCheck;
-    QCheckBox *trayIconCheckbox;
-    QCheckBox *startToTrayCheckbox;
-    QCheckBox *comicInfoXMLCheckbox;
-    QSlider *recentIntervalSlider;
-    QLabel *numDaysLabel;
-    QCheckBox *compareModifiedDateWhenUpdatingLibrariesCheck;
+
+    QWidget *createGeneralTab();
+    QWidget *createLibrariesTab();
+    QWidget *createFlowTab();
+    QWidget *createGridTab();
 };
 
 #endif

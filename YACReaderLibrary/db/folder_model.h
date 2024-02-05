@@ -44,7 +44,6 @@ class FolderModel : public QAbstractItemModel
 
 public:
     explicit FolderModel(QObject *parent = nullptr);
-    explicit FolderModel(QSqlQuery &sqlquery, QObject *parent = nullptr);
     ~FolderModel() override;
 
     // QAbstractItemModel methods
@@ -72,9 +71,10 @@ public:
     void updateFolderType(const QModelIndexList &list, YACReader::FileType type);
 
     QStringList getSubfoldersNames(const QModelIndex &mi);
-    FolderModel *getSubfoldersModel(const QModelIndex &mi);
+    FolderModel *getSubfoldersModel(const QModelIndex &mi); // it creates a model that contains just the direct subfolders
 
     Folder getFolder(const QModelIndex &mi);
+    QModelIndex getIndexFromFolderId(qulonglong folderId, const QModelIndex &parent = QModelIndex());
     QModelIndex getIndexFromFolder(const Folder &folder, const QModelIndex &parent = QModelIndex());
 
     QModelIndex addFolderAtParent(const QString &folderName, const QModelIndex &parent);
@@ -118,11 +118,20 @@ public slots:
     void updateFolderChildrenInfo(qulonglong folderId);
 
 private:
-    void fullSetup(QSqlQuery &sqlquery, FolderItem *parent);
-    void setupModelData(QSqlQuery &sqlquery, FolderItem *parent);
+    struct ModelData {
+        FolderItem *rootItem; // items tree
+        QMap<unsigned long long int, FolderItem *> items; // items lookup
+    };
 
-    FolderItem *rootItem; // el árbol
-    QMap<unsigned long long int, FolderItem *> items; // relación entre folders
+    void setModelData(const ModelData &modelData);
+    ModelData createModelData(const QString &path) const;
+    ModelData createModelData(QSqlQuery &sqlquery, FolderItem *parent) const;
+
+    // parent contains the current data in the model (parentModelIndex is its index), updated contains fresh info loaded from the DB,
+    void takeUpdatedChildrenInfo(FolderItem *parent, const QModelIndex &parentModelIndex, FolderItem *updated);
+
+    FolderItem *rootItem; // items tree
+    QMap<unsigned long long int, FolderItem *> items; // items lookup
 
     QString _databasePath;
 

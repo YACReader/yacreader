@@ -2,6 +2,34 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.14.1
+
+### YACReader
+* Add setting to disable scroll animations and scroll smoothing, recommended if you are using a touch pad or if you find the mouse wheel behaviour laggy.
+* Fix missing translation when opening YACReader from YACReaderLibrary.
+
+### YACReaderLibrary
+* Fix "Set type" context menu the grid view for folders.
+* Add a different versioning strategy for databases. DBs version will change only when the structure changes and not when YACReader version changes.
+* Add support for updating libraries automatically with various settings to chose from. During automatic library updates most actions are disabled, you can stop an update by clicking on the busy indicator next to the Libraries title.
+* Improve content reloading. Navigation and selection state is no longer reseted after content changes (e.g. library updates, tags edits, etc.)
+* The app will try to move comics and folders to the trash bin when deletions are requested, if the file system used doesn't support trash bin the files will be removed permanetly.
+* Add menu to choose what columns are displayed in the table comics view (do a right click on the header to show it). The view has new 3 new headers to choose from (Series, Volume and Story arc).
+* Migrate `number` and `arcNumber` data types to `TEXT`. This only affects databases created before 9.13 and fixes problems with some formats of numbers (e.g. 1.10).
+* Propage update date to all the parent folders.
+* Fix crash when resorting comics in reading lists in table view view and the comic flow is hidden.
+* Fix cover loading in QML views due to malformed URLs.
+* Improve style of the webui status page.
+* Fix type not being propagated to new files in a folder.
+* Mark the current type in the context menu so the user can know the current type.
+
+### YACReaderLibraryServer
+* Add `rescan-xml-info` command.
+* Improved API to provide better integration with the clients (Android 1.4.0 and iOS 3.29.0). 
+
+### All Apps
+* New universal builds for macos.
+
 ## 9.13.1
 
 ### YACReaderLibrary

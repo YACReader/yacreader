@@ -112,6 +112,18 @@ void ComicFlow::wheelEvent(QWheelEvent *event)
     event->accept();
 }
 
+void ComicFlow::insertSlide(const QString &path, int index)
+{
+    imageFiles.insert(index, path);
+    imagesLoaded.insert(index, false);
+    imagesSetted.insert(index, false);
+
+    YACReaderFlow::insertSlide(index);
+
+    resetWorkerIndex();
+    preload();
+}
+
 void ComicFlow::removeSlide(int cover)
 {
     imageFiles.removeAt(cover);
