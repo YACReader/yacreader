@@ -2,6 +2,11 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## WIP
+
+### YACReaderLibrary
+* Fix columns in the search results.
+
 ## 9.14.1
 
 ### YACReader
