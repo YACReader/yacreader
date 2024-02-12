@@ -54,7 +54,7 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     folderDestinationModelIndex = dest;
 
     _currentPathFolders.clear();
-    _currentPathFolders.append(Folder(1, 1, "root", "/"));
+    _currentPathFolders.append(Folder::rootFolder());
 
     QString relativeFolderPath = sourceFolder;
     relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(source));
@@ -139,7 +139,7 @@ void LibraryCreator::run()
     if (_mode == CREATOR) {
         QLOG_INFO() << "Starting to create new library ( " << _source << "," << _target << ")";
         _currentPathFolders.clear();
-        _currentPathFolders.append(Folder(1, 1, "root", "/"));
+        _currentPathFolders.append(Folder::rootFolder());
         // se crean los directorios .yacreaderlibrary y .yacreaderlibrary/covers
         QDir dir;
         dir.mkpath(_target + "/covers");
@@ -173,7 +173,7 @@ void LibraryCreator::run()
         QLOG_INFO() << "Starting to update folder" << _sourceFolder << "in library ( " << _source << "," << _target << ")";
         if (!partialUpdate) {
             _currentPathFolders.clear();
-            _currentPathFolders.append(Folder(1, 1, "root", "/"));
+            _currentPathFolders.append(Folder::rootFolder());
             QLOG_DEBUG() << "update whole library";
         }
         {

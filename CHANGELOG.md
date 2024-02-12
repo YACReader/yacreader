@@ -6,6 +6,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReaderLibrary
 * Fix columns in the search results.
+* Fix type not being propagated to new folders from their parents.
+* Fix default type set to folders in the root folder when they are added.
 
 ## 9.14.1
 
