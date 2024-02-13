@@ -11,6 +11,9 @@
 #include "comic_db.h"
 #include "db_helper.h"
 #include "reading_list_model.h"
+#ifdef use_unarr
+#include <unarr.h>
+#endif
 
 // ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #include "QsLog.h"
@@ -433,7 +436,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
             return QVariant(QIcon(":/images/zip.png"));
         else if (ext.compare("rar", Qt::CaseInsensitive) == 0)
             return QVariant(QIcon(":/images/rar.png"));
-#ifndef use_unarr
+#if !defined(use_unarr) || (UNARR_API_VERSION >= 110)
         else if (ext.compare("7z", Qt::CaseInsensitive) == 0)
             return QVariant(QIcon(":/images/7z.png"));
         else if (ext.compare("cb7", Qt::CaseInsensitive) == 0)
