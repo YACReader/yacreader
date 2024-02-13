@@ -290,7 +290,18 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     auto item = static_cast<ComicItem *>(index.internalPointer());
 
     auto sizeString = [=] {
-        return QString::number(item->data(ComicModel::Hash).toString().right(item->data(ComicModel::Hash).toString().length() - 40).toInt() / 1024.0 / 1024.0, 'f', 2) + "Mb";
+        auto bytes = item->data(ComicModel::Hash).toString().right(item->data(ComicModel::Hash).toString().length() - 40).toULongLong();
+
+        QStringList units = { "B", "KB", "MB", "GB", "TB" };
+        int i;
+        double outputSize = bytes;
+        for (i = 0; i < units.size() - 1; i++) {
+            if (outputSize < 1024) {
+                break;
+            }
+            outputSize = outputSize / 1024;
+        }
+        return QString("%1 %2").arg(outputSize, 0, 'f', 2).arg(units[i]);
     };
 
     if (role == NumberRole)
