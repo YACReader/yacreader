@@ -70,6 +70,14 @@ Folder &Folder::operator=(const Folder &other)
 
     return *this;
 }
+
+Folder Folder::rootFolder()
+{
+    auto root = Folder(1, 1, "root", "/");
+    root.type = YACReader::FileType::Comic; // TODO: make this configurable by the user so it can set a default type for a library
+    return root;
+}
+
 Folder::Folder(const QString &folderName, const QString &folderPath)
     : knownParent(false),
       knownId(false),

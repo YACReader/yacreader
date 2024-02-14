@@ -35,6 +35,10 @@
 #include <QDate>
 #include <QMenuBar>
 
+#ifdef use_unarr
+#include "unarr.h"
+#endif
+
 MainWindowViewer::MainWindowViewer()
     : QMainWindow(), fullscreen(false), toolbars(true), currentDirectory("."), currentDirectoryImgDest("."), isClient(false)
 {
@@ -781,8 +785,10 @@ void MainWindowViewer::open()
     QFileDialog openDialog;
 #ifndef use_unarr
     QString pathFile = openDialog.getOpenFileName(this, tr("Open Comic"), currentDirectory, tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.7z *.cb7 *.arj *.cbt)");
-#else
+#elif (UNARR_API_VERSION < 110)
     QString pathFile = openDialog.getOpenFileName(this, tr("Open Comic"), currentDirectory, tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.cbt)");
+#else
+    QString pathFile = openDialog.getOpenFileName(this, tr("Open Comic"), currentDirectory, tr("Comic files") + "(*.cbr *.cbz *.rar *.zip *.tar *.pdf *.cbt *.7z *.cb7)");
 #endif
     if (!pathFile.isEmpty()) {
         openComicFromPath(pathFile);
@@ -1435,6 +1441,10 @@ void MainWindowViewer::getSiblingComics(QString path, QString currentComic)
                                    << "*.zip"
                                    << "*.tar"
                                    << "*.pdf"
+#if (UNARR_API_VERSION >= 110)
+                                   << "*.7z"
+                                   << "*.cb7"
+#endif
                                    << "*.cbt");
 #endif
     d.setSorting(QDir::Name | QDir::IgnoreCase | QDir::LocaleAware);

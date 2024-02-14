@@ -1270,12 +1270,14 @@ qulonglong DBHelper::insert(Folder *folder, QSqlDatabase &db)
     folder->added = added;
 
     QSqlQuery query(db);
-    query.prepare("INSERT INTO folder (parentId, name, path, added) "
-                  "VALUES (:parentId, :name, :path, :added)");
+    query.prepare("INSERT INTO folder (parentId, name, path, added, type) "
+                  "VALUES (:parentId, :name, :path, :added, :type)");
     query.bindValue(":parentId", folder->parentId);
     query.bindValue(":name", folder->name);
     query.bindValue(":path", folder->path);
     query.bindValue(":added", added);
+    auto intType = static_cast<int>(folder->type);
+    query.bindValue(":type", intType);
     query.exec();
 
     return query.lastInsertId().toULongLong();

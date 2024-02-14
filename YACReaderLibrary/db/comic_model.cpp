@@ -11,6 +11,9 @@
 #include "comic_db.h"
 #include "db_helper.h"
 #include "reading_list_model.h"
+#ifdef use_unarr
+#include <unarr.h>
+#endif
 
 // ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read
 #include "QsLog.h"
@@ -290,7 +293,18 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     auto item = static_cast<ComicItem *>(index.internalPointer());
 
     auto sizeString = [=] {
-        return QString::number(item->data(ComicModel::Hash).toString().right(item->data(ComicModel::Hash).toString().length() - 40).toInt() / 1024.0 / 1024.0, 'f', 2) + "Mb";
+        auto bytes = item->data(ComicModel::Hash).toString().right(item->data(ComicModel::Hash).toString().length() - 40).toULongLong();
+
+        QStringList units = { "B", "KB", "MB", "GB", "TB" };
+        int i;
+        double outputSize = bytes;
+        for (i = 0; i < units.size() - 1; i++) {
+            if (outputSize < 1024) {
+                break;
+            }
+            outputSize = outputSize / 1024;
+        }
+        return QString("%1 %2").arg(outputSize, 0, 'f', 2).arg(units[i]);
     };
 
     if (role == NumberRole)
@@ -433,7 +447,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
             return QVariant(QIcon(":/images/zip.png"));
         else if (ext.compare("rar", Qt::CaseInsensitive) == 0)
             return QVariant(QIcon(":/images/rar.png"));
-#ifndef use_unarr
+#if !defined(use_unarr) || (UNARR_API_VERSION >= 110)
         else if (ext.compare("7z", Qt::CaseInsensitive) == 0)
             return QVariant(QIcon(":/images/7z.png"));
         else if (ext.compare("cb7", Qt::CaseInsensitive) == 0)
