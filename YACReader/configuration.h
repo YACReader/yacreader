@@ -36,6 +36,8 @@ public:
     void setDefaultPath(QString defaultPath) { settings->setValue(PATH, defaultPath); }
     QSize getMagnifyingGlassSize() { return settings->value(MAG_GLASS_SIZE).toSize(); }
     void setMagnifyingGlassSize(const QSize &mgs) { settings->setValue(MAG_GLASS_SIZE, mgs); }
+    float getMagnifyingGlassZoom() { return settings->value(MAG_GLASS_ZOOM, 0.5).toFloat(); }
+    void setMagnifyingGlassZoom(float mgz) { settings->setValue(MAG_GLASS_ZOOM, mgz); }
     QSize getGotoSlideSize() { return settings->value(GO_TO_FLOW_SIZE).toSize(); }
     void setGotoSlideSize(const QSize &gss) { settings->setValue(GO_TO_FLOW_SIZE, gss); }
     float getZoomLevel() { return settings->value(ZOOM_LEVEL).toFloat(); }

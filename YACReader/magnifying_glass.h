@@ -23,8 +23,8 @@ private:
     bool shrinkHeight(int &h) const;
 
 public:
-    MagnifyingGlass(int width, int height, QWidget *parent);
-    MagnifyingGlass(const QSize &size, QWidget *parent);
+    MagnifyingGlass(int width, int height, float zoomLevel, QWidget *parent);
+    MagnifyingGlass(const QSize &size, float zoomLevel, QWidget *parent);
     void mouseMoveEvent(QMouseEvent *event) override;
 public slots:
     void updateImage(int x, int y);
@@ -38,6 +38,11 @@ public slots:
     void heightDown();
     void widthUp();
     void widthDown();
+    void reset();
+
+signals:
+    void sizeChanged(QSize newSize);
+    void zoomChanged(float newZoomLevel);
 };
 
 #endif

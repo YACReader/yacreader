@@ -210,6 +210,7 @@ signals:
     void magnifyingGlassSizeDown();
     void magnifyingGlassZoomIn();
     void magnifyingGlassZoomOut();
+    void resetMagnifyingGlass();
 };
 
 #endif

@@ -61,7 +61,18 @@ Viewer::Viewer(QWidget *parent)
     palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor());
     setPalette(palette);
     //---------------------------------------
-    mglass = new MagnifyingGlass(Configuration::getConfiguration().getMagnifyingGlassSize(), this);
+    mglass = new MagnifyingGlass(
+            Configuration::getConfiguration().getMagnifyingGlassSize(),
+            Configuration::getConfiguration().getMagnifyingGlassZoom(),
+            this);
+
+    connect(mglass, &MagnifyingGlass::sizeChanged, this, [](QSize size) {
+        Configuration::getConfiguration().setMagnifyingGlassSize(size);
+    });
+    connect(mglass, &MagnifyingGlass::zoomChanged, this, [](float zoom) {
+        Configuration::getConfiguration().setMagnifyingGlassZoom(zoom);
+    });
+
     mglass->hide();
     content->setMouseTracking(true);
     setMouseTracking(true);
@@ -159,6 +170,7 @@ void Viewer::createConnections()
     connect(this, &Viewer::magnifyingGlassSizeDown, mglass, &MagnifyingGlass::sizeDown);
     connect(this, &Viewer::magnifyingGlassZoomIn, mglass, &MagnifyingGlass::zoomIn);
     connect(this, &Viewer::magnifyingGlassZoomOut, mglass, &MagnifyingGlass::zoomOut);
+    connect(this, &Viewer::resetMagnifyingGlass, mglass, &MagnifyingGlass::reset);
 
     // goToDialog
     connect(goToDialog, &GoToDialog::goToPage, this, &Viewer::goTo);

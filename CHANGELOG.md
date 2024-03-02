@@ -2,6 +2,12 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## WIP (9.15.0)
+
+### YACReader
+* Save magnifying glass size and zoom level.
+* Add shortcut to reset the magnifying glass to its defaults (size and zoom), it is `slash` by default but it can be reasigned.
+
 ## 9.14.2
 
 ### YACReaderLibrary
