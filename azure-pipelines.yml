@@ -67,7 +67,7 @@ jobs:
     displayName: 'Create tarball'
   - script: |
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
-      qmake CONFIG+="unarr" $DEFINES_VAR
+      qmake CONFIG+="unarr poppler" $DEFINES_VAR
       make
     displayName: 'Build'
   - script: |
@@ -97,12 +97,12 @@ jobs:
       sudo apt-get update
       sudo apt-get install -y qtchooser qt6-tools-dev qt6-base-dev-tools qmake6 qmake6-bin \
       qt6-base-dev qt6-multimedia-dev qt6-tools-dev-tools libgl-dev qt6-l10n-tools \
-      libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev
+      libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev libpoppler-qt6-dev
     displayName: 'Install dependencies'
   - script: |
       qtchooser -list-versions
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
-      qmake6 CONFIG+="unarr no_pdf" $DEFINES_VAR
+      qmake6 CONFIG+="unarr poppler" $DEFINES_VAR
       qmake6 -v
       make
     displayName: 'Build'
@@ -124,7 +124,7 @@ jobs:
       sudo apt-get update
       sudo apt-get install -y qtchooser qt6-tools-dev qt6-base-dev-tools qmake6 qmake6-bin \
       qt6-base-dev qt6-multimedia-dev qt6-tools-dev-tools libgl-dev qt6-l10n-tools \
-      libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev
+      libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev libpoppler-qt6-dev
       mkdir $(Build.SourcesDirectory)\compressed_archive
       wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O $(Build.SourcesDirectory)/compressed_archive/7z2301-src.7z
       7z x $(Build.SourcesDirectory)/compressed_archive/7z2301-src.7z -o$(Build.SourcesDirectory)/compressed_archive/lib7zip
@@ -132,7 +132,7 @@ jobs:
   - script: |
       qtchooser -list-versions
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
-      qmake6 CONFIG+="7zip no_pdf" $DEFINES_VAR
+      qmake6 CONFIG+="7zip poppler" $DEFINES_VAR
       qmake6 -v
       make
     displayName: 'Build'
