@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 
 project(
   YACReader
-  VERSION 9.13.1
+  VERSION 9.14.2
   LANGUAGES C CXX)
 
 # enable Objective-C for macOSX

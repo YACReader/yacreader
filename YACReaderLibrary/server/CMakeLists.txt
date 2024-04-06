@@ -42,6 +42,8 @@ add_library(
   controllers/v2/folderinfocontroller_v2.h
   controllers/v2/librariescontroller_v2.cpp
   controllers/v2/librariescontroller_v2.h
+  controllers/v2/foldermetadatacontroller_v2.cpp
+  controllers/v2/foldermetadatacontroller_v2.h
   controllers/v2/pagecontroller_v2.cpp
   controllers/v2/pagecontroller_v2.h
   controllers/v2/readingcomicscontroller_v2.cpp
