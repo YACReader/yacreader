@@ -34,7 +34,7 @@ if(PDF_BACKEND STREQUAL "pdfium")
   target_link_libraries(comic_backend PkgConfig::PDFIUM)
 elseif(PDF_BACKEND STREQUAL "poppler")
   target_link_libraries(comic_backend PkgConfig::POPPLER)
-elseif(APPLE and PDF_BACKEND STREQUAL "pdfkit")
+elseif(APPLE AND (PDF_BACKEND STREQUAL "pdfkit"))
   # TODO
 else()
   target_compile_definitions(comic_backend PUBLIC NO_PDF)
