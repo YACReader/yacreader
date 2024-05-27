@@ -212,8 +212,8 @@ jobs:
     vmImage: 'macOS-latest'
   steps:
   - script: |
-      brew install qt@5
-      brew link qt@5 --force
+      brew install qt@5.15.10
+      brew link qt@5.15.10 --force
       brew install create-dmg
       brew install node
       brew link --overwrite node
