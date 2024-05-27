@@ -212,11 +212,8 @@ jobs:
     vmImage: 'macOS-latest'
   steps:
   - script: |
-      brew install qt@5.15.10
-      brew link qt@5.15.10 --force
-      brew install create-dmg
-      brew install node
-      brew link --overwrite node
+      pip3 install aqtinstall
+      python3 -m aqt install 5.15.10 mac desktop
       npm install -g appdmg
       mkdir $(Build.SourcesDirectory)\compressed_archive
       wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O $(Build.SourcesDirectory)/compressed_archive/7z2301-src.7z
