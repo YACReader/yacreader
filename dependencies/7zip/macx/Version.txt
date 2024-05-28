@@ -1,5 +1,19 @@
 7zip 23.01 built from the original sources using the Format7zF bundle
 
+x86_64 build (built in an Apple silicon mac):
+
+export MACOSX_DEPLOYMENT_TARGET=10.13
+export CC="clang -arch x86_64"
+export CXX="clang++ -arch x86_64"
+make -j -f makefile.gcc
+
+arm64 build (built in an Apple silicon mac):
+
+export MACOSX_DEPLOYMENT_TARGET=10.13 // minimum will be 11
+export CC="clang -arch arm64"
+export CXX="clang++ -arch arm64"
+make -j -f makefile.gcc
+
 Universal binary created using lipo:
 
 lipo -create -arch arm64 arm64/7z.so -arch x86_64 x86_64/7z.so -o universal/7z.so
