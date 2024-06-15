@@ -151,7 +151,7 @@ jobs:
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - group: macos-codesign
   pool:
-    vmImage: 'macOS-latest'
+    vmImage: 'macOS-11'
   steps:
   - script: |
       pip3 install aqtinstall
@@ -210,7 +210,7 @@ jobs:
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - group: macos-codesign
   pool:
-    vmImage: 'macOS-latest'
+    vmImage: 'macOS-11'
   steps:
   - script: |
       brew install qt@5
