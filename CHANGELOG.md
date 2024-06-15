@@ -8,6 +8,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Save magnifying glass size and zoom level.
 * Add shortcut to reset the magnifying glass to its defaults (size and zoom), it is `slash` by default but it can be reasigned.
 
+###
+* Fix headers in the table view getting stuck in a non moveable state.
+
 ## 9.14.2
 
 ### YACReaderLibrary
