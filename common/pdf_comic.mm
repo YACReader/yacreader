@@ -55,7 +55,7 @@ QImage MacOSXPDFComic::getPage(const int pageNum)
     // CGPDFPageRef page = [self getPage:page_number];
 
     CGRect pageRect = CGPDFPageGetBoxRect(page, kCGPDFMediaBox);
-    int width = 1200;
+    int width = 2560;
 
     // NSLog(@"-----%f",pageRect.size.width);
     CGFloat pdfScale = float(width) / pageRect.size.width;
