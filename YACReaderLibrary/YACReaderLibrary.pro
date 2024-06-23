@@ -86,6 +86,7 @@ HEADERS += comic_flow.h \
   library_creator.h \
   library_window.h \
   add_library_dialog.h \
+  library_window_actions.h \
   recent_visibility_coordinator.h \
   rename_library_dialog.h \
   properties_dialog.h \
@@ -172,6 +173,7 @@ SOURCES += comic_flow.cpp \
     library_comic_opener.cpp \
     library_creator.cpp \
     library_window.cpp \
+    library_window_actions.cpp \
     main.cpp \
     add_library_dialog.cpp \
     recent_visibility_coordinator.cpp \
