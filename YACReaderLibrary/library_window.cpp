@@ -541,6 +541,75 @@ void LibraryWindow::createMenus()
     selectedLibrary->addAction(actions.removeLibraryAction);
     YACReader::addSperator(selectedLibrary);
 
+    auto setNormalAction = new QAction();
+    setNormalAction->setText(tr("comic"));
+
+    auto setMangaAction = new QAction();
+    setMangaAction->setText(tr("manga"));
+
+    auto setWesternMangaAction = new QAction();
+    setWesternMangaAction->setText(tr("western manga (left to right)"));
+
+    auto setWebComicAction = new QAction();
+    setWebComicAction->setText(tr("web comic"));
+
+    auto setYonkomaAction = new QAction();
+    setYonkomaAction->setText(tr("4koma (top to botom)"));
+
+    setNormalAction->setCheckable(true);
+    setMangaAction->setCheckable(true);
+    setWesternMangaAction->setCheckable(true);
+    setWebComicAction->setCheckable(true);
+    setYonkomaAction->setCheckable(true);
+
+    auto setupActions = [=](FileType type) {
+        setNormalAction->setChecked(false);
+        setMangaAction->setChecked(false);
+        setWesternMangaAction->setChecked(false);
+        setWebComicAction->setChecked(false);
+        setYonkomaAction->setChecked(false);
+
+        switch (type) {
+        case YACReader::FileType::Comic:
+            setNormalAction->setChecked(true);
+            break;
+        case YACReader::FileType::Manga:
+            setMangaAction->setChecked(true);
+            break;
+        case YACReader::FileType::WesternManga:
+            setWesternMangaAction->setChecked(true);
+            break;
+        case YACReader::FileType::WebComic:
+            setWebComicAction->setChecked(true);
+            break;
+        case YACReader::FileType::Yonkoma:
+            setYonkomaAction->setChecked(true);
+            break;
+        }
+    };
+
+    connect(setNormalAction, &QAction::triggered, this, [=]() { setCurrentLibraryAs(FileType::Comic); });
+    connect(setMangaAction, &QAction::triggered, this, [=]() { setCurrentLibraryAs(FileType::Manga); });
+    connect(setWesternMangaAction, &QAction::triggered, this, [=]() { setCurrentLibraryAs(FileType::WesternManga); });
+    connect(setWebComicAction, &QAction::triggered, this, [=]() { setCurrentLibraryAs(FileType::WebComic); });
+    connect(setYonkomaAction, &QAction::triggered, this, [=]() { setCurrentLibraryAs(FileType::Yonkoma); });
+
+    auto typeMenu = new QMenu(tr("Set type"), selectedLibrary);
+
+    connect(typeMenu, &QMenu::aboutToShow, this, [=]() {
+        auto rootIndex = foldersModel->index(0, 0);
+        auto folder = foldersModel->getFolder(rootIndex);
+        setupActions(folder.type);
+    });
+
+    selectedLibrary->addAction(typeMenu->menuAction());
+    YACReader::addSperator(selectedLibrary);
+    typeMenu->addAction(setNormalAction);
+    typeMenu->addAction(setMangaAction);
+    typeMenu->addAction(setWesternMangaAction);
+    typeMenu->addAction(setWebComicAction);
+    typeMenu->addAction(setYonkomaAction);
+
     selectedLibrary->addAction(actions.rescanLibraryForXMLInfoAction);
     YACReader::addSperator(selectedLibrary);
 
@@ -563,6 +632,9 @@ void LibraryWindow::createMenus()
     libraryMenu->addAction(updateLibraryAction);
     libraryMenu->addAction(renameLibraryAction);
     libraryMenu->addAction(removeLibraryAction);
+    libraryMenu->addSeparator();
+
+    libraryMenu->addAction(typeMenu);
     libraryMenu->addSeparator();
 
     libraryMenu->addAction(rescanLibraryForXMLInfoAction);
@@ -725,6 +797,11 @@ void LibraryWindow::createConnections()
 void LibraryWindow::showErrorUpgradingLibrary(const QString &path)
 {
     QMessageBox::critical(this, tr("Upgrade failed"), tr("There were errors during library upgrade in: ") + path + "/library.ydb");
+}
+
+void LibraryWindow::setCurrentLibraryAs(FileType fileType)
+{
+    foldersModel->updateTreeType(fileType);
 }
 
 void LibraryWindow::loadLibrary(const QString &name)

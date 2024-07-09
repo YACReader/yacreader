@@ -333,6 +333,7 @@ public slots:
     void saveSelectedCoversTo();
     void checkMaxNumLibraries();
     void showErrorUpgradingLibrary(const QString &path);
+    void setCurrentLibraryAs(FileType fileType);
 
     void prepareToCloseApp();
     void closeApp();
