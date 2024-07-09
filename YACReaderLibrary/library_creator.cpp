@@ -41,7 +41,7 @@ Folder rootFolder(QSqlDatabase &db)
     root.type = selectQuery.value("type").value<YACReader::FileType>();
 
     return root;
-    }
+}
 
 //--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator(QSettings *settings)
