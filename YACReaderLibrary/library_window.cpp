@@ -431,20 +431,20 @@ void LibraryWindow::createToolBars()
 #ifdef Y_MAC_UI
     // libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
 
-    libraryToolBar->addAction(backAction);
-    libraryToolBar->addAction(forwardAction);
+    libraryToolBar->addAction(actions.backAction);
+    libraryToolBar->addAction(actions.forwardAction);
 
     libraryToolBar->addSpace(10);
 
 #ifdef SERVER_RELEASE
-    libraryToolBar->addAction(serverConfigAction);
+    libraryToolBar->addAction(actions.serverConfigAction);
 #endif
-    libraryToolBar->addAction(optionsAction);
-    libraryToolBar->addAction(helpAboutAction);
+    libraryToolBar->addAction(actions.optionsAction);
+    libraryToolBar->addAction(actions.helpAboutAction);
 
     libraryToolBar->addSpace(10);
 
-    libraryToolBar->addAction(toggleComicsViewAction);
+    libraryToolBar->addAction(actions.toggleComicsViewAction);
 
     libraryToolBar->addStretch();
 
@@ -634,7 +634,7 @@ void LibraryWindow::createMenus()
     libraryMenu->addAction(actions.removeLibraryAction);
     libraryMenu->addSeparator();
 
-    libraryMenu->addAction(typeMenu);
+    libraryMenu->addMenu(typeMenu);
     libraryMenu->addSeparator();
 
     libraryMenu->addAction(actions.rescanLibraryForXMLInfoAction);
