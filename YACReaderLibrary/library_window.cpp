@@ -629,49 +629,49 @@ void LibraryWindow::createMenus()
     // library
     QMenu *libraryMenu = new QMenu(tr("Library"));
 
-    libraryMenu->addAction(updateLibraryAction);
-    libraryMenu->addAction(renameLibraryAction);
-    libraryMenu->addAction(removeLibraryAction);
+    libraryMenu->addAction(actions.updateLibraryAction);
+    libraryMenu->addAction(actions.renameLibraryAction);
+    libraryMenu->addAction(actions.removeLibraryAction);
     libraryMenu->addSeparator();
 
     libraryMenu->addAction(typeMenu);
     libraryMenu->addSeparator();
 
-    libraryMenu->addAction(rescanLibraryForXMLInfoAction);
+    libraryMenu->addAction(actions.rescanLibraryForXMLInfoAction);
     libraryMenu->addSeparator();
 
-    libraryMenu->addAction(exportComicsInfoAction);
-    libraryMenu->addAction(importComicsInfoAction);
+    libraryMenu->addAction(actions.exportComicsInfoAction);
+    libraryMenu->addAction(actions.importComicsInfoAction);
 
     libraryMenu->addSeparator();
 
-    libraryMenu->addAction(exportLibraryAction);
-    libraryMenu->addAction(importLibraryAction);
+    libraryMenu->addAction(actions.exportLibraryAction);
+    libraryMenu->addAction(actions.importLibraryAction);
 
     // folder
     QMenu *folderMenu = new QMenu(tr("Folder"));
-    folderMenu->addAction(openContainingFolderAction);
-    folderMenu->addAction(updateFolderAction);
+    folderMenu->addAction(actions.openContainingFolderAction);
+    folderMenu->addAction(actions.updateFolderAction);
     folderMenu->addSeparator();
-    folderMenu->addAction(rescanXMLFromCurrentFolderAction);
+    folderMenu->addAction(actions.rescanXMLFromCurrentFolderAction);
     folderMenu->addSeparator();
-    folderMenu->addAction(setFolderAsNotCompletedAction);
-    folderMenu->addAction(setFolderAsCompletedAction);
+    folderMenu->addAction(actions.setFolderAsNotCompletedAction);
+    folderMenu->addAction(actions.setFolderAsCompletedAction);
     folderMenu->addSeparator();
-    folderMenu->addAction(setFolderAsReadAction);
-    folderMenu->addAction(setFolderAsUnreadAction);
+    folderMenu->addAction(actions.setFolderAsReadAction);
+    folderMenu->addAction(actions.setFolderAsUnreadAction);
     folderMenu->addSeparator();
-    foldersView->addAction(setFolderAsNormalAction);
-    foldersView->addAction(setFolderAsMangaAction);
-    foldersView->addAction(setFolderAsWesternMangaAction);
-    foldersView->addAction(setFolderAsWebComicAction);
-    foldersView->addAction(setFolderAsYonkomaAction);
+    foldersView->addAction(actions.setFolderAsNormalAction);
+    foldersView->addAction(actions.setFolderAsMangaAction);
+    foldersView->addAction(actions.setFolderAsWesternMangaAction);
+    foldersView->addAction(actions.setFolderAsWebComicAction);
+    foldersView->addAction(actions.setFolderAsYonkomaAction);
 
     // comic
     QMenu *comicMenu = new QMenu(tr("Comic"));
-    comicMenu->addAction(openContainingFolderComicAction);
+    comicMenu->addAction(actions.openContainingFolderComicAction);
     comicMenu->addSeparator();
-    comicMenu->addAction(resetComicRatingAction);
+    comicMenu->addAction(actions.resetComicRatingAction);
 
     menu->addMenu(libraryMenu);
     menu->addMenu(folderMenu);
