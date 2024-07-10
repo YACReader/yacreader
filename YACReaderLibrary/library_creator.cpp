@@ -1,5 +1,4 @@
 #include "library_creator.h"
-#include "custom_widgets.h"
 
 #include <QMutex>
 #include <QDebug>
@@ -24,6 +23,25 @@
 
 using namespace std;
 using namespace YACReader;
+
+Folder rootFolder(QSqlDatabase &db)
+{
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT * FROM folder WHERE id = 1");
+    selectQuery.exec();
+
+    auto root = Folder(1, 1, "root", "/");
+
+    if (!selectQuery.next()) {
+
+        root.type = YACReader::FileType::Comic;
+        return root;
+    }
+
+    root.type = selectQuery.value("type").value<YACReader::FileType>();
+
+    return root;
+}
 
 //--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator(QSettings *settings)
@@ -54,7 +72,6 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     folderDestinationModelIndex = dest;
 
     _currentPathFolders.clear();
-    _currentPathFolders.append(Folder::rootFolder());
 
     QString relativeFolderPath = sourceFolder;
     relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(source));
@@ -82,6 +99,8 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
             emit finished();
             return;
         }
+
+        _currentPathFolders.append(rootFolder(db));
 
         foreach (QString folderName, folders) {
             if (folderName.isEmpty()) {
@@ -139,7 +158,6 @@ void LibraryCreator::run()
     if (_mode == CREATOR) {
         QLOG_INFO() << "Starting to create new library ( " << _source << "," << _target << ")";
         _currentPathFolders.clear();
-        _currentPathFolders.append(Folder::rootFolder());
         // se crean los directorios .yacreaderlibrary y .yacreaderlibrary/covers
         QDir dir;
         dir.mkpath(_target + "/covers");
@@ -155,6 +173,8 @@ void LibraryCreator::run()
                 creation = false;
                 return;
             }
+
+            _currentPathFolders.append(rootFolder(_database));
 
             /*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
             _database.transaction();
@@ -173,7 +193,6 @@ void LibraryCreator::run()
         QLOG_INFO() << "Starting to update folder" << _sourceFolder << "in library ( " << _source << "," << _target << ")";
         if (!partialUpdate) {
             _currentPathFolders.clear();
-            _currentPathFolders.append(Folder::rootFolder());
             QLOG_DEBUG() << "update whole library";
         }
         {
@@ -197,6 +216,9 @@ void LibraryCreator::run()
                 creation = false;
                 return;
             }
+
+            _currentPathFolders.append(rootFolder(_database));
+
             QSqlQuery pragma("PRAGMA foreign_keys = ON", _database);
             pragma.exec();
             _database.transaction();

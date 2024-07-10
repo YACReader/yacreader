@@ -69,6 +69,7 @@ public:
     void updateFolderCompletedStatus(const QModelIndexList &list, bool status);
     void updateFolderFinishedStatus(const QModelIndexList &list, bool status);
     void updateFolderType(const QModelIndexList &list, YACReader::FileType type);
+    void updateTreeType(YACReader::FileType type);
 
     QStringList getSubfoldersNames(const QModelIndex &mi);
     FolderModel *getSubfoldersModel(const QModelIndex &mi); // it creates a model that contains just the direct subfolders
@@ -112,7 +113,6 @@ public:
     };
 
     bool isSubfolder;
-
 public slots:
     void deleteFolder(const QModelIndex &mi);
     void updateFolderChildrenInfo(qulonglong folderId);

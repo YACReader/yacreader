@@ -41,8 +41,6 @@ public:
     Folder(const Folder &folder);
     Folder &operator=(const Folder &other);
 
-    static Folder rootFolder();
-
     inline void setId(qulonglong sid)
     {
         id = sid;

@@ -1668,6 +1668,21 @@ void DBHelper::updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::
     }
 }
 
+void DBHelper::updateDBType(QSqlDatabase &db, YACReader::FileType type)
+{
+    QSqlQuery updateFolderQuery(db);
+    updateFolderQuery.prepare("UPDATE folder "
+                              "SET type = :type");
+    updateFolderQuery.bindValue(":type", static_cast<int>(type));
+    updateFolderQuery.exec();
+
+    QSqlQuery updateComicInfo(db);
+    updateComicInfo.prepare("UPDATE comic_info "
+                            "SET type = :type");
+    updateComicInfo.bindValue(":type", static_cast<int>(type));
+    updateComicInfo.exec();
+}
+
 Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
 {
     QSqlQuery query(db);

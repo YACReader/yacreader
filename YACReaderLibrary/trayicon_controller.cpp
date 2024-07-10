@@ -55,7 +55,7 @@ TrayIconController::TrayIconController(QSettings *settings, LibraryWindow *windo
     trayIconMenu = new QMenu(this->window);
     trayIconMenu->addAction(restoreAction);
     trayIconMenu->addSeparator();
-    trayIconMenu->addAction(this->window->quitAction);
+    trayIconMenu->addAction(this->window->actions.quitAction);
 
     trayIcon.setContextMenu(trayIconMenu);
 
