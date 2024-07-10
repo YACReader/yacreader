@@ -9,8 +9,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add shortcut to reset the magnifying glass to its defaults (size and zoom), it is `slash` by default but it can be reasigned.
 * Bump PDF render size.
 
-###
+### YACReaderLibrary
 * Fix headers in the table view getting stuck in a non moveable state.
+* Add option to set the type of a library. It will convert all the content to desired type (comic, manga, etc) and it will set that type as the default one for that library. Available in the library context menu.
 
 ## 9.14.2
 
@@ -18,7 +19,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix columns in the search results.
 * Fix type not being propagated to new folders from their parents.
 * Fix default type set to folders in the root folder when they are added.
-* Improve and fix comic file size format. 
+* Improve and fix comic file size format.
 
 ## 9.14.1
 
