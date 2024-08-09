@@ -1067,6 +1067,13 @@ void comic_pages_sort(QList<QString> &pageNames, YACReaderPageSortingMode sortin
     case YACReaderHeuristicSorting: {
         std::sort(pageNames.begin(), pageNames.end(), naturalSortLessThanCI);
 
+        // This heuristic tries to find spreads named like 1011.jpg, which means page 10 and 11 toghether in a single image file
+        // if the issue has more than 1000 pages lets not use this heuristic to avoid false positives.
+        // Alternativelly the heuristic could be improved but I don't think it's worth the effort.
+        if (pageNames.size() >= 1000) {
+            return;
+        }
+
         QList<QString> singlePageNames;
         QList<QString> doublePageNames;
 

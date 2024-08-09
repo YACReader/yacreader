@@ -13,6 +13,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix headers in the table view getting stuck in a non moveable state.
 * Add option to set the type of a library. It will convert all the content to desired type (comic, manga, etc) and it will set that type as the default one for that library. Available in the library context menu.
 
+### All apps
+* Sorting heuristic to try to find spreads in the content of a comic is now only used for files with less than 1000 pages to avoid false positives.
+
 ## 9.14.2
 
 ### YACReaderLibrary
