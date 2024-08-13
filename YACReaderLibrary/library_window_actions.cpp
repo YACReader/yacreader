@@ -4,6 +4,7 @@
 #include "library_window.h"
 #include "shortcuts_manager.h"
 #include "yacreader_history_controller.h"
+#include "recent_visibility_coordinator.h"
 
 #include "help_about_dialog.h"
 #include "export_library_dialog.h"
@@ -458,7 +459,8 @@ void LibraryWindowActions::createConnections(
         EditShortcutsDialog *editShortcutsDialog,
         YACReaderFoldersView *foldersView,
         YACReaderOptionsDialog *optionsDialog,
-        ServerConfigDialog *serverConfigDialog)
+        ServerConfigDialog *serverConfigDialog,
+        RecentVisibilityCoordinator *recentVisibilityCoordinator)
 {
     // history navigation
     QObject::connect(backAction, &QAction::triggered, historyController, &YACReaderHistoryController::backward);
@@ -576,6 +578,8 @@ void LibraryWindowActions::createConnections(
 
     // save covers
     QObject::connect(saveCoversToAction, &QAction::triggered, window, &LibraryWindow::saveSelectedCoversTo);
+
+    QObject::connect(toogleShowRecentIndicatorAction, &QAction::toggled, recentVisibilityCoordinator, &RecentVisibilityCoordinator::toggleVisibility);
 }
 
 void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editShortcutsDialog)

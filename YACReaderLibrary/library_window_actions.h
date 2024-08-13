@@ -15,6 +15,7 @@ class YACReaderContentViewsManager;
 class YACReaderFoldersView;
 class YACReaderOptionsDialog;
 class ServerConfigDialog;
+class RecentVisibilityCoordinator;
 
 class LibraryWindowActions
 {
@@ -115,16 +116,16 @@ public:
 
     LibraryWindowActions();
     void createActions(LibraryWindow *window, QSettings *settings);
-    void createConnections(
-            YACReaderHistoryController *historyController,
-            LibraryWindow *window,
-            HelpAboutDialog *had,
-            ExportLibraryDialog *exportLibraryDialog,
-            YACReaderContentViewsManager *contentViewsManager,
-            EditShortcutsDialog *editShortcutsDialog,
-            YACReaderFoldersView *foldersView,
-            YACReaderOptionsDialog *optionsDialog,
-            ServerConfigDialog *serverConfigDialog);
+    void createConnections(YACReaderHistoryController *historyController,
+                           LibraryWindow *window,
+                           HelpAboutDialog *had,
+                           ExportLibraryDialog *exportLibraryDialog,
+                           YACReaderContentViewsManager *contentViewsManager,
+                           EditShortcutsDialog *editShortcutsDialog,
+                           YACReaderFoldersView *foldersView,
+                           YACReaderOptionsDialog *optionsDialog,
+                           ServerConfigDialog *serverConfigDialog,
+                           RecentVisibilityCoordinator *recentVisibilityCoordinator);
 
     void disableComicsActions(bool disabled);
     void disableLibrariesActions(bool disabled);

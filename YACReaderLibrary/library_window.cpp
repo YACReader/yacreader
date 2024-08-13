@@ -690,7 +690,8 @@ void LibraryWindow::createConnections()
             editShortcutsDialog,
             foldersView,
             optionsDialog,
-            serverConfigDialog);
+            serverConfigDialog,
+            recentVisibilityCoordinator);
     QObject::connect(actions.focusSearchLineAction, &QAction::triggered, searchEdit, [this] { searchEdit->setFocus(Qt::ShortcutFocusReason); });
 
     // libraryCreator connections
