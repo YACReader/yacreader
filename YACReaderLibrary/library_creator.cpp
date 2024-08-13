@@ -191,10 +191,6 @@ void LibraryCreator::run()
         QLOG_INFO() << "Create library END";
     } else {
         QLOG_INFO() << "Starting to update folder" << _sourceFolder << "in library ( " << _source << "," << _target << ")";
-        if (!partialUpdate) {
-            _currentPathFolders.clear();
-            QLOG_DEBUG() << "update whole library";
-        }
         {
             auto _database = DataBaseManagement::loadDatabase(_target);
 
@@ -217,7 +213,11 @@ void LibraryCreator::run()
                 return;
             }
 
-            _currentPathFolders.append(rootFolder(_database));
+            if (!partialUpdate) {
+                _currentPathFolders.clear();
+                _currentPathFolders.append(rootFolder(_database));
+                QLOG_DEBUG() << "update whole library";
+            }
 
             QSqlQuery pragma("PRAGMA foreign_keys = ON", _database);
             pragma.exec();
