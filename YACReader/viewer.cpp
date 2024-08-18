@@ -660,21 +660,45 @@ void Viewer::animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrol
 
 void Viewer::wheelEvent(QWheelEvent *event)
 {
-    if (render->hasLoadedComic()) {
-        auto delta = event->angleDelta();
+    if (!render->hasLoadedComic()) {
+        return;
+    }
 
-        if (delta.x() != 0) {
-            animateScroll(*horizontalScroller, *horizontalScrollBar(), delta.x());
+    if (!event->pixelDelta().isNull()) {
+        wheelEventTrackpad(event);
+    } else {
+        wheelEventMouse(event);
+    }
+}
+
+void Viewer::wheelEventMouse(QWheelEvent *event)
+{
+    auto delta = event->angleDelta();
+
+    if (delta.x() != 0) {
+        animateScroll(*horizontalScroller, *horizontalScrollBar(), delta.x());
+        return;
+    }
+
+    auto turnPageOnScroll = !Configuration::getConfiguration().getDoNotTurnPageOnScroll();
+    auto getUseSingleScrollStepToTurnPage = Configuration::getConfiguration().getUseSingleScrollStepToTurnPage();
+
+    if ((delta.y() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum()) && turnPageOnScroll) {
+        if (wheelStop || getUseSingleScrollStepToTurnPage || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
+            if (getMovement(event) == Forward) {
+                next();
+                verticalScroller->stop();
+                event->accept();
+                wheelStop = false;
+            }
             return;
-        }
-
-        auto turnPageOnScroll = !Configuration::getConfiguration().getDoNotTurnPageOnScroll();
-        auto getUseSingleScrollStepToTurnPage = Configuration::getConfiguration().getUseSingleScrollStepToTurnPage();
-
-        if ((delta.y() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum()) && turnPageOnScroll) {
+        } else
+            wheelStop = true;
+    } else {
+        if ((delta.y() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum()) && turnPageOnScroll) {
             if (wheelStop || getUseSingleScrollStepToTurnPage || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
-                if (getMovement(event) == Forward) {
-                    next();
+                if (getMovement(event) == Backward) {
+                    prev();
                     verticalScroller->stop();
                     event->accept();
                     wheelStop = false;
@@ -682,22 +706,55 @@ void Viewer::wheelEvent(QWheelEvent *event)
                 return;
             } else
                 wheelStop = true;
+        }
+    }
+
+    animateScroll(*verticalScroller, *verticalScrollBar(), delta.y());
+}
+
+void Viewer::wheelEventTrackpad(QWheelEvent *event)
+{
+    auto delta = event->pixelDelta();
+
+    // Apply delta to horizontal scrollbar
+    if (delta.x() != 0) {
+        int newHorizontalValue = horizontalScrollBar()->value() - delta.x();
+        horizontalScrollBar()->setValue(newHorizontalValue);
+    }
+
+    // Apply delta to vertical scrollbar
+    if (delta.y() != 0) {
+        int newVerticalValue = verticalScrollBar()->value() - delta.y();
+        verticalScrollBar()->setValue(newVerticalValue);
+    }
+
+    auto turnPageOnScroll = !Configuration::getConfiguration().getDoNotTurnPageOnScroll();
+    auto getUseSingleScrollStepToTurnPage = Configuration::getConfiguration().getUseSingleScrollStepToTurnPage();
+
+    if ((delta.y() < 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->maximum()) && turnPageOnScroll) {
+        if (wheelStop || getUseSingleScrollStepToTurnPage || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
+            if (getMovement(event) == Forward) {
+                next();
+                event->accept();
+                wheelStop = false;
+            }
+            return;
         } else {
-            if ((delta.y() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum()) && turnPageOnScroll) {
-                if (wheelStop || getUseSingleScrollStepToTurnPage || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
-                    if (getMovement(event) == Backward) {
-                        prev();
-                        verticalScroller->stop();
-                        event->accept();
-                        wheelStop = false;
-                    }
-                    return;
-                } else
-                    wheelStop = true;
+            wheelStop = true;
+        }
+    } else {
+        if ((delta.y() > 0) && (verticalScrollBar()->sliderPosition() == verticalScrollBar()->minimum()) && turnPageOnScroll) {
+            if (wheelStop || getUseSingleScrollStepToTurnPage || verticalScrollBar()->maximum() == verticalScrollBar()->minimum()) {
+                if (getMovement(event) == Backward) {
+                    prev();
+                    event->accept();
+                    wheelStop = false;
+                }
+                return;
+            } else {
+                wheelStop = true;
             }
         }
-
-        animateScroll(*verticalScroller, *verticalScrollBar(), delta.y());
     }
 }
 

@@ -8,6 +8,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Save magnifying glass size and zoom level.
 * Add shortcut to reset the magnifying glass to its defaults (size and zoom), it is `slash` by default but it can be reasigned.
 * Bump PDF render size.
+* Fix trackpad scrolling, it makes using trackpads more reponsive and natural.
 
 ### YACReaderLibrary
 * Fix headers in the table view getting stuck in a non moveable state.
