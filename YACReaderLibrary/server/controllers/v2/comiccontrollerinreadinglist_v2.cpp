@@ -44,6 +44,12 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
 
     ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
 
+    if (!comic.info.existOnDb) {
+        response.setStatus(404, "Not Found");
+        response.write("", true);
+        return;
+    }
+
     Comic *comicFile = FactoryComic::newComic(libraries.getPath(libraryId) + comic.path);
 
     if (comicFile != nullptr) {
