@@ -86,7 +86,7 @@ fi
 
 echo "Preparing apps for release, Done."
 
-dest="YACReader-$VERSION.$BUILD_NUMBER MacOSX-$ARCH_NAME ${QT_VERSION}"
+dest="YACReader-$VERSION.$BUILD_NUMBER macos-$ARCH_NAME ${QT_VERSION}"
 echo "Copying to destination folder ${dest}"
 mkdir -p "$dest"
 cp -R YACReader.app "${dest}/YACReader.app"
