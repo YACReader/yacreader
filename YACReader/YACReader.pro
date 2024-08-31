@@ -89,9 +89,19 @@ macx {
     LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
     lessThan(QT_MAJOR_VERSION, 6): QT += macextras
+
+    contains(QMAKE_APPLE_DEVICE_ARCHS, arm64) {
+        QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
+        DEFINES += __ARM_NEON__
+    }
+
+    contains(QMAKE_APPLE_DEVICE_ARCHS, x86_64) {
+        QMAKE_CXXFLAGS += -msse4.2 -mavx2 -mfma
+        DEFINES += __AVX__ __AVX2__
+    }
 }
 
-unix|mingw {
+unix|mingw:!macx {
     contains(QMAKE_HOST.arch, arm) {
         QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
         DEFINES += __ARM_NEON__
