@@ -4,6 +4,7 @@
 #include <QtConcurrent>
 #include <QImage>
 #include <QColor>
+#include <cstring>
 
 QPixmap scalePixmapBicubic(const QPixmap &pixmap, int width, int height);
 QPixmap scalePixmapLanczos(const QPixmap &pixmap, int width, int height);
