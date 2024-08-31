@@ -352,7 +352,6 @@ QVector<QRgb> processRow(int y, int targetWidth, int targetHeight, const QImage 
 
 #endif
 
-// Main function to scale the image
 QImage scaleImageLanczos(const QImage &sourceImage, int targetWidth, int targetHeight, int a = 3)
 {
     QImage targetImage(targetWidth, targetHeight, QImage::Format_ARGB32);
@@ -362,24 +361,18 @@ QImage scaleImageLanczos(const QImage &sourceImage, int targetWidth, int targetH
         rows[i] = i;
     }
 
-    // Use a QVector to store the results of the processed rows
-    QVector<QVector<QRgb>> results(targetHeight);
+    uchar *imgBits = targetImage.bits();
+    int bytesPerLine = targetImage.bytesPerLine();
 
-    // Launch concurrent tasks using QtConcurrent::map, which modifies the container in place
-    QtConcurrent::blockingMap(rows, [&results, targetWidth, targetHeight, &sourceImage, a](int y) {
-        results[y] = processRow(y, targetWidth, targetHeight, sourceImage, a);
+    QtConcurrent::blockingMap(rows, [targetWidth, targetHeight, &sourceImage, a, imgBits, bytesPerLine](int y) {
+        QVector<QRgb> rowPixels = processRow(y, targetWidth, targetHeight, sourceImage, a);
+        uchar *rowPtr = imgBits + y * bytesPerLine;
+        std::memcpy(rowPtr, rowPixels.constData(), targetWidth * sizeof(QRgb));
     });
-
-    // Set the pixels in the target image
-    for (int y = 0; y < targetHeight; ++y) {
-        const QVector<QRgb> &row = results[y];
-        for (int x = 0; x < targetWidth; ++x) {
-            targetImage.setPixel(x, y, row[x]);
-        }
-    }
 
     return targetImage;
 }
+
 QPixmap scalePixmapLanczosQt(const QPixmap &pixmap, int targetWidth, int targetHeight, int a)
 {
     QImage sourceImage = pixmap.toImage();
