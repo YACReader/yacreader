@@ -99,23 +99,23 @@ macx {
         QMAKE_CXXFLAGS += -msse4.2 -mavx2 -mfma
         DEFINES += __AVX__ __AVX2__
     }
-}
+} else {
+    unix|mingw {
+        contains(QMAKE_HOST.arch, arm) {
+            QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
+            DEFINES += __ARM_NEON__
+        } else {
+            # Enable general SIMD optimizations
+            QMAKE_CXXFLAGS += -msse2  # Baseline for x86
 
-unix|mingw:!macx {
-    contains(QMAKE_HOST.arch, arm) {
-        QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
-        DEFINES += __ARM_NEON__
-    } else {
-        # Enable general SIMD optimizations
-        QMAKE_CXXFLAGS += -msse2  # Baseline for x86
-
-        # Architecture-specific optimizations (adjust as needed)
-        contains(QMAKE_TARGET.arch, x86_64) {
-            QMAKE_CXXFLAGS += -mavx2 -mfma
-            DEFINES += __AVX__ __AVX2__
-        } else { # Assuming x86 (32-bit)
-            QMAKE_CXXFLAGS += -msse4.2
-            DEFINES += __SSE4_2__
+            # Architecture-specific optimizations (adjust as needed)
+            contains(QMAKE_TARGET.arch, x86_64) {
+                QMAKE_CXXFLAGS += -mavx2 -mfma
+                DEFINES += __AVX__ __AVX2__
+            } else { # Assuming x86 (32-bit)
+                QMAKE_CXXFLAGS += -msse4.2
+                DEFINES += __SSE4_2__
+            }
         }
     }
 }
