@@ -55,6 +55,12 @@ INCLUDEPATH += ../common \
     INCLUDEPATH += ../common/gl
 }
 
+message (ANDROID:$$ANDROID_TARGET_ARCH)
+message (HOST:$$QMAKE_HOST)
+message (HOST:$$QMAKE_HOST.arch)
+message (TARGET:$$QMAKE_TARGET)
+message (TARGET:$$QMAKE_TARGET.arch)
+
 #there are going to be two builds for windows, OpenGL based and ANGLE based
 win32 {
     CONFIG(force_angle) {
