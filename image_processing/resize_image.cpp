@@ -1,5 +1,6 @@
 #include "resize_image.h"
 
+#include "qmath.h"
 #include <QtConcurrent>
 #include <QImage>
 #include <QColor>
@@ -293,14 +294,17 @@ QImage scaleImageLanczos(const QImage &sourceImage, int targetWidth, int targetH
         rows[i] = i;
     }
 
-    QFuture<QVector<QRgb>> future = QtConcurrent::mapped(rows, [targetWidth, targetHeight, &sourceImage, a](int y) {
-        return processRow(y, targetWidth, targetHeight, sourceImage, a);
+    // Use a QVector to store the results of the processed rows
+    QVector<QVector<QRgb>> results(targetHeight);
+
+    // Launch concurrent tasks using QtConcurrent::map, which modifies the container in place
+    QtConcurrent::blockingMap(rows, [&results, targetWidth, targetHeight, &sourceImage, a](int y) {
+        results[y] = processRow(y, targetWidth, targetHeight, sourceImage, a);
     });
 
-    future.waitForFinished();
-
+    // Set the pixels in the target image
     for (int y = 0; y < targetHeight; ++y) {
-        QVector<QRgb> row = future.resultAt(y);
+        const QVector<QRgb> &row = results[y];
         for (int x = 0; x < targetWidth; ++x) {
             targetImage.setPixel(x, y, row[x]);
         }
@@ -308,7 +312,6 @@ QImage scaleImageLanczos(const QImage &sourceImage, int targetWidth, int targetH
 
     return targetImage;
 }
-
 QPixmap scalePixmapLanczosQt(const QPixmap &pixmap, int targetWidth, int targetHeight, int a)
 {
     QImage sourceImage = pixmap.toImage();
