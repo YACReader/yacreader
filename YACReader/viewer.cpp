@@ -393,7 +393,6 @@ void Viewer::updateContentSize()
 
         // scale the image to fit the container
         auto devicePixelRatioF = content->devicePixelRatioF();
-        QLOG_ERROR() << "src size: " << currentPage->size() << " content size: " << content->size() << " target size " << QSize(content->width() * devicePixelRatioF, content->height() * devicePixelRatioF);
         QPixmap page = smartScalePixmap(*currentPage, content->width() * devicePixelRatioF, content->height() * devicePixelRatioF); // currentPage->scaled(content->width() * devicePixelRatioF(), content->height() * devicePixelRatioF(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
         page.setDevicePixelRatio(devicePixelRatioF);
         content->setPixmap(page);
