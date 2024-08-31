@@ -55,10 +55,7 @@ INCLUDEPATH += ../common \
     INCLUDEPATH += ../common/gl
 }
 
-message (ANDROID:$$ANDROID_TARGET_ARCH)
-message (HOST:$$QMAKE_HOST)
 message (HOST:$$QMAKE_HOST.arch)
-message (TARGET:$$QMAKE_TARGET)
 message (TARGET:$$QMAKE_TARGET.arch)
 
 #there are going to be two builds for windows, OpenGL based and ANGLE based
@@ -80,11 +77,9 @@ win32 {
 
         # Enable AVX and AVX2 support
          QMAKE_CXXFLAGS += /arch:AVX
-         DEFINES += __AVX__
 
          # Enable AVX2 if supported
          win32:QMAKE_CXXFLAGS += /arch:AVX2
-         DEFINES += __AVX2__
     }
     CONFIG -= embed_manifest_exe
 }
@@ -98,18 +93,15 @@ macx {
 
     contains(QMAKE_TARGET.arch, arm64) {
         QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
-        DEFINES += __ARM_NEON__
     }
 
     contains(QMAKE_TARGET.arch, x86_64) {
         QMAKE_CXXFLAGS += -msse4.2 -mavx2 -mfma
-        DEFINES += __AVX__ __AVX2__
     }
 } else {
     unix|mingw {
         contains(QMAKE_TARGET.arch, arm) {
             QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
-            DEFINES += __ARM_NEON__
         } else {
             # Enable general SIMD optimizations
             QMAKE_CXXFLAGS += -msse2  # Baseline for x86
@@ -117,10 +109,8 @@ macx {
             # Architecture-specific optimizations (adjust as needed)
             contains(QMAKE_TARGET.arch, x86_64) {
                 QMAKE_CXXFLAGS += -mavx2 -mfma
-                DEFINES += __AVX__ __AVX2__
             } else { # Assuming x86 (32-bit)
                 QMAKE_CXXFLAGS += -msse4.2
-                DEFINES += __SSE4_2__
             }
         }
     }
