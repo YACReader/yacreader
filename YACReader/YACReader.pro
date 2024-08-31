@@ -90,18 +90,18 @@ macx {
 
     lessThan(QT_MAJOR_VERSION, 6): QT += macextras
 
-    contains(QMAKE_APPLE_DEVICE_ARCHS, arm64) {
+    contains(QMAKE_TARGET.arch, arm64) {
         QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
         DEFINES += __ARM_NEON__
     }
 
-    contains(QMAKE_APPLE_DEVICE_ARCHS, x86_64) {
+    contains(QMAKE_TARGET.arch, x86_64) {
         QMAKE_CXXFLAGS += -msse4.2 -mavx2 -mfma
         DEFINES += __AVX__ __AVX2__
     }
 } else {
     unix|mingw {
-        contains(QMAKE_HOST.arch, arm) {
+        contains(QMAKE_TARGET.arch, arm) {
             QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
             DEFINES += __ARM_NEON__
         } else {
