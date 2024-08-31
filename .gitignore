@@ -6,6 +6,7 @@ dependencies/create-dmg
 signapps.sh
 lib7zip
 libp7zip
+image_processing/opencv
 
 # C++ objects and libs
 *.slo
