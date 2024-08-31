@@ -195,17 +195,45 @@ QVector<QRgb> processRow(int y, int targetWidth, int targetHeight, const QImage 
 
 inline float64x2_t lanczosKernelNEON(const float64x2_t &x, int a)
 {
+    // Load constants
     float64x2_t zero = vdupq_n_f64(0.0);
     float64x2_t one = vdupq_n_f64(1.0);
     float64x2_t a_val = vdupq_n_f64(a);
+
+    // Convert to scalar arrays
+    double x_array[2];
+    vst1q_f64(x_array, x);
+    double a_val_array[2] = { static_cast<double>(a), static_cast<double>(a) };
+
+    // Compute sin(x * pi)
     float64x2_t pix = vmulq_f64(vdupq_n_f64(M_PI), x);
-    float64x2_t sin_pix = vsin_f64(pix);
-    float64x2_t sin_pix_a = vsin_f64(vdivq_f64(pix, a_val));
+    double pix_array[2];
+    vst1q_f64(pix_array, pix);
+
+    double sin_pix_array[2];
+    sin_pix_array[0] = std::sin(pix_array[0]);
+    sin_pix_array[1] = std::sin(pix_array[1]);
+    float64x2_t sin_pix = vld1q_f64(sin_pix_array);
+
+    // Compute sin(x * pi / a)
+    float64x2_t pix_div_a = vdivq_f64(pix, a_val);
+    double pix_div_a_array[2];
+    vst1q_f64(pix_div_a_array, pix_div_a);
+
+    double sin_pix_div_a_array[2];
+    sin_pix_div_a_array[0] = std::sin(pix_div_a_array[0]);
+    sin_pix_div_a_array[1] = std::sin(pix_div_a_array[1]);
+    float64x2_t sin_pix_a = vld1q_f64(sin_pix_div_a_array);
+
+    // Compute Lanczos kernel
     float64x2_t numerator = vmulq_f64(vmulq_f64(a_val, sin_pix), sin_pix_a);
     float64x2_t denominator = vmulq_f64(pix, pix);
     float64x2_t result = vdivq_f64(numerator, denominator);
+
+    // Handle the case where x is zero
     uint64x2_t mask = vceqq_f64(x, zero);
     result = vbslq_f64(mask, one, result);
+
     return result;
 }
 
