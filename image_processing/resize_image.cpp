@@ -76,13 +76,53 @@ QPixmap scalePixmapArea(const QPixmap &pixmap, int width, int height)
 // Define SIMD intrinsics for different platforms
 #if defined(__AVX__) || defined(__AVX2__)
 
+// Function to normalize angles in radians to the range [-PI, PI]
+__m256d normalize_angle(__m256d x)
+{
+    const __m256d pi = _mm256_set1_pd(M_PI);
+    const __m256d two_pi = _mm256_set1_pd(2 * M_PI);
+    // Calculate the quotient of x / (2*PI)
+    __m256d quotient = _mm256_div_pd(x, two_pi);
+    // Use floor to get the nearest lower integer
+    quotient = _mm256_floor_pd(quotient);
+    // Calculate the remainder
+    __m256d remainder = _mm256_sub_pd(x, _mm256_mul_pd(quotient, two_pi));
+    // Adjust the range to [-PI, PI]
+    __m256d adjust = _mm256_cmp_pd(remainder, pi, _CMP_GT_OS);
+    remainder = _mm256_sub_pd(remainder, _mm256_and_pd(adjust, two_pi));
+    return remainder;
+}
+
+// Improved sine approximation function for __m256d using the normalized angle
+__m256d sin_pd_approx(__m256d x)
+{
+    x = normalize_angle(x); // Normalize x to the range [-PI, PI]
+
+    // Sine approximation coefficients
+    const __m256d a0 = _mm256_set1_pd(-0.16666666666666666);
+    const __m256d a1 = _mm256_set1_pd(0.008333333333333333);
+    const __m256d a2 = _mm256_set1_pd(-0.0001984126984126984);
+
+    __m256d x2 = _mm256_mul_pd(x, x);
+    __m256d x3 = _mm256_mul_pd(x2, x);
+    __m256d x5 = _mm256_mul_pd(x3, x2);
+    __m256d x7 = _mm256_mul_pd(x5, x2);
+
+    // Compute the polynomial approximation
+    __m256d result = _mm256_add_pd(x, _mm256_mul_pd(a0, x3));
+    result = _mm256_add_pd(result, _mm256_mul_pd(a1, x5));
+    result = _mm256_add_pd(result, _mm256_mul_pd(a2, x7));
+
+    return result;
+}
+
 inline __m256d lanczosKernelAVX(const __m256d &x, const __m256d &a_val)
 {
     __m256d zero = _mm256_setzero_pd();
     __m256d one = _mm256_set1_pd(1.0);
     __m256d pix = _mm256_mul_pd(_mm256_set1_pd(M_PI), x);
-    __m256d sin_pix = _mm256_sin_pd(pix);
-    __m256d sin_pix_a = _mm256_sin_pd(_mm256_div_pd(pix, a_val));
+    __m256d sin_pix = sin_pd_approx(pix);
+    __m256d sin_pix_a = sin_pd_approx(_mm256_div_pd(pix, a_val));
     __m256d numerator = _mm256_mul_pd(_mm256_mul_pd(a_val, sin_pix), sin_pix_a);
     __m256d denominator = _mm256_mul_pd(pix, pix);
     __m256d result = _mm256_div_pd(numerator, denominator);
