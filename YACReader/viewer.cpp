@@ -16,6 +16,7 @@
 #include "notifications_label_widget.h"
 #include "comic_db.h"
 #include "shortcuts_manager.h"
+#include "resize_image.h"
 
 #include "opengl_checker.h"
 
@@ -387,16 +388,14 @@ void Viewer::updateContentSize()
         if (zoom != 100) {
             pagefit.scale(floor(pagefit.width() * zoom / 100.0f), 0, Qt::KeepAspectRatioByExpanding);
         }
-        // apply scaling
+        // apply size to the container
         content->resize(pagefit);
 
-        // TODO: updtateContentSize should only scale the pixmap once
-        if (devicePixelRatioF() > 1) // only in HDPI displays
-        {
-            QPixmap page = currentPage->scaled(content->width() * devicePixelRatioF(), content->height() * devicePixelRatioF(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            page.setDevicePixelRatio(devicePixelRatioF());
-            content->setPixmap(page);
-        }
+        // scale the image to fit the container
+        auto devicePixelRatioF = content->devicePixelRatioF();
+        QPixmap page = smartScalePixmap(*currentPage, content->width() * devicePixelRatioF, content->height() * devicePixelRatioF); // currentPage->scaled(content->width() * devicePixelRatioF(), content->height() * devicePixelRatioF(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        page.setDevicePixelRatio(devicePixelRatioF);
+        content->setPixmap(page);
 
         emit backgroundChanges();
     }

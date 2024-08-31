@@ -10,7 +10,23 @@ DEFINES += YACREADER
 
 #load default build flags
 include (../config.pri)
+
+CONFIG(7zip) {
+include(../compressed_archive/wrapper.pri)
+} else:CONFIG(unarr) {
+include(../compressed_archive/unarr/unarr-wrapper.pri)
+} else:CONFIG(libarchive) {
+include(../compressed_archive/libarchive/libarchive-wrapper.pri)
+} else {
+  error(No compression backend specified. Did you mess with the build system?)
+}
+
+include(../custom_widgets/custom_widgets_yacreader.pri)
+include(../image_processing/image_processing.pri)
 include (../dependencies/pdf_backend.pri)
+include(../shortcuts_management/shortcuts_management.pri)
+
+include(../third_party/QsLog/QsLog.pri)
 
 CONFIG(force_angle) {
     contains(QMAKE_TARGET.arch, x86_64) {
@@ -30,7 +46,7 @@ CONFIG(force_angle) {
     }
 }
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
 
 INCLUDEPATH += ../common \
                ../custom_widgets
@@ -38,6 +54,9 @@ INCLUDEPATH += ../common \
 !CONFIG(no_opengl) {
     INCLUDEPATH += ../common/gl
 }
+
+message (HOST:$$QMAKE_HOST.arch)
+message (TARGET:$$QMAKE_TARGET.arch)
 
 #there are going to be two builds for windows, OpenGL based and ANGLE based
 win32 {
@@ -55,6 +74,12 @@ win32 {
     msvc {
         QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
         QMAKE_LFLAGS_RELEASE += /LTCG
+
+        # Enable AVX and AVX2 support
+         QMAKE_CXXFLAGS += /arch:AVX
+
+         # Enable AVX2 if supported
+         win32:QMAKE_CXXFLAGS += /arch:AVX2
     }
     CONFIG -= embed_manifest_exe
 }
@@ -65,9 +90,33 @@ macx {
     LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
     lessThan(QT_MAJOR_VERSION, 6): QT += macextras
+
+    contains(QMAKE_TARGET.arch, arm64) {
+        QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
+    }
+
+    contains(QMAKE_TARGET.arch, x86_64) {
+        QMAKE_CXXFLAGS += -msse4.2 -mavx2 -mfma
+    }
+} else {
+    unix|mingw {
+        contains(QMAKE_TARGET.arch, arm) {
+            QMAKE_CXXFLAGS += -mfpu=neon -mfloat-abi=hard
+        } else {
+            # Enable general SIMD optimizations
+            QMAKE_CXXFLAGS += -msse2  # Baseline for x86
+
+            # Architecture-specific optimizations (adjust as needed)
+            contains(QMAKE_TARGET.arch, x86_64) {
+                QMAKE_CXXFLAGS += -mavx2 -mfma
+            } else { # Assuming x86 (32-bit)
+                QMAKE_CXXFLAGS += -msse4.2
+            }
+        }
+    }
 }
 
-QT += network widgets core multimedia svg
+QT += network widgets core multimedia svg concurrent
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets core5compat
 
@@ -106,7 +155,7 @@ HEADERS +=  ../common/comic.h \
             ../common/exit_check.h \
             ../common/scroll_management.h \
             ../common/opengl_checker.h \
-            ../common/pdf_comic.h
+            ../common/pdf_comic.h \
 
 !CONFIG(no_opengl) {
     HEADERS += ../common/gl/yacreader_flow_gl.h \
@@ -143,30 +192,15 @@ SOURCES +=  ../common/comic.cpp \
             ../common/yacreader_global_gui.cpp \
             ../common/exit_check.cpp \
             ../common/scroll_management.cpp \
-            ../common/opengl_checker.cpp
+            ../common/opengl_checker.cpp \
 
 !CONFIG(no_opengl) {
         SOURCES += ../common/gl/yacreader_flow_gl.cpp \
                     goto_flow_gl.cpp
 }
 
-include(../custom_widgets/custom_widgets_yacreader.pri)
-
-CONFIG(7zip) {
-include(../compressed_archive/wrapper.pri)
-} else:CONFIG(unarr) {
-include(../compressed_archive/unarr/unarr-wrapper.pri)
-} else:CONFIG(libarchive) {
-include(../compressed_archive/libarchive/libarchive-wrapper.pri)
-} else {
-  error(No compression backend specified. Did you mess with the build system?)
-}
-include(../shortcuts_management/shortcuts_management.pri)
-
 RESOURCES += yacreader_images.qrc \
              yacreader_files.qrc
-
-include(../third_party/QsLog/QsLog.pri)
 
 RC_FILE = icon.rc
 
