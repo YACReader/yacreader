@@ -22,7 +22,8 @@ QString YACReader::getGlobalInfo()
     text.append(QString("Product info: %1\n").arg(QSysInfo::prettyProductName()));
 
     text.append("\nAPP INFORMATION\n");
-    text.append(QString("Image formats supported: %1\n").arg(QImageReader::supportedImageFormats().join(", ")));
+    QString supportedImageFormats = QImageReader::supportedImageFormats().join(", ");
+    text.append(QString("Image formats supported: %1\n").arg(supportedImageFormats));
     // append if sqlite driver is available
 #ifdef YACREADER_LIBRARY
     text.append(QString("SQLite driver available: %1\n").arg(QSqlDatabase::isDriverAvailable("QSQLITE") ? "yes" : "no"));
