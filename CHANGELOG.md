@@ -9,10 +9,15 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add shortcut to reset the magnifying glass to its defaults (size and zoom), it is `slash` by default but it can be reasigned.
 * Bump PDF render size.
 * Fix trackpad scrolling, it makes using trackpads more reponsive and natural.
+* Added more info to Help -> System info.
 
 ### YACReaderLibrary
 * Fix headers in the table view getting stuck in a non moveable state.
 * Add option to set the type of a library. It will convert all the content to desired type (comic, manga, etc) and it will set that type as the default one for that library. Available in the library context menu.
+* Added more info to Help -> System info.
+
+### YACReaderLibraryServer
+* New command --system-info to print information about the execution environment and available resources (including what image formats are supported and what libraries are used by the app).
 
 ### All apps
 * Sorting heuristic to try to find spreads in the content of a comic is now only used for files with less than 1000 pages to avoid false positives.
