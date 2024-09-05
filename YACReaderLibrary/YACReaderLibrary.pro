@@ -154,7 +154,8 @@ HEADERS += comic_flow.h \
   db/reading_list.h \
   db/query_parser.h \
   current_comic_view_helper.h \
-  ip_config_helper.h
+  ip_config_helper.h \
+  ../common/global_info_provider.h \
 
 !CONFIG(no_opengl) {
         HEADERS += ../common/gl/yacreader_flow_gl.h
@@ -240,7 +241,8 @@ SOURCES += comic_flow.cpp \
     db/reading_list.cpp \
     current_comic_view_helper.cpp \
     db/query_parser.cpp \
-    ip_config_helper.cpp
+    ip_config_helper.cpp \
+    ../common/global_info_provider.cpp \
 
 !CONFIG(no_opengl) {
     SOURCES += ../common/gl/yacreader_flow_gl.cpp
