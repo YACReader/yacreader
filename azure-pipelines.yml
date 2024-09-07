@@ -102,7 +102,7 @@ jobs:
   - script: |
       qtchooser -list-versions
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
-      qmake6 CONFIG+="unarr" $DEFINES_VAR
+      qmake6 CONFIG+="unarr pdfium" $DEFINES_VAR
       qmake6 -v
       make
     displayName: 'Build'
@@ -132,7 +132,7 @@ jobs:
   - script: |
       qtchooser -list-versions
       export DEFINES_VAR=DEFINES+\=\"BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\"\"
-      qmake6 CONFIG+="7zip" $DEFINES_VAR
+      qmake6 CONFIG+="7zip pdfium" $DEFINES_VAR
       qmake6 -v
       make
     displayName: 'Build'
