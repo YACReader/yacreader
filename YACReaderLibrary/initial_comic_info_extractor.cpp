@@ -156,15 +156,15 @@ void InitialComicInfoExtractor::saveCover(const QString &path, const QImage &cov
 {
     QImage scaled;
     if (cover.width() > cover.height()) {
-        scaled = cover.scaledToWidth(820, Qt::SmoothTransformation);
+        scaled = cover.scaledToWidth(640, Qt::SmoothTransformation);
     } else {
         auto aspectRatio = static_cast<double>(cover.width()) / static_cast<double>(cover.height());
         auto maxAllowedAspectRatio = 0.5;
         if (aspectRatio < maxAllowedAspectRatio) { // cover is too tall, e.g. webtoon
-            scaled = cover.scaledToHeight(1220, Qt::SmoothTransformation);
+            scaled = cover.scaledToHeight(960, Qt::SmoothTransformation);
         } else {
-            scaled = cover.scaledToWidth(640, Qt::SmoothTransformation);
+            scaled = cover.scaledToWidth(480, Qt::SmoothTransformation);
         }
     }
-    scaled.save(_target, "WEBP", 75);
+    scaled.save(_target, 0, 75);
 }
