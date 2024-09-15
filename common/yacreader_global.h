@@ -6,6 +6,8 @@
 #include <QMetaType>
 #include <QAbstractItemModel>
 
+class QLibrary;
+
 #define VERSION "9.15.0"
 
 // Used to check if the database needs to be updated, the version is stored in the database.
@@ -100,6 +102,7 @@ QDataStream &operator>>(QDataStream &stream, OpenComicSource &source);
 QString getSettingsPath();
 QString colorToName(LabelColors colors);
 QString labelColorToRGBString(LabelColors color);
+QLibrary *load7zLibrary();
 
 void iterate(const QModelIndex &index,
              const QAbstractItemModel *model,

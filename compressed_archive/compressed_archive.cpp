@@ -2,6 +2,7 @@
 
 #include "compressed_archive.h"
 #include "extract_delegate.h"
+#include "yacreader_global.h"
 
 #include <QLibrary>
 #include <QFileInfo>
@@ -78,7 +79,7 @@ const unsigned char tar[6] = "ustar";
 const unsigned char arj[2] = { static_cast<unsigned char>(0x60), static_cast<unsigned char>(0xEA) };
 
 CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)
-    : QObject(parent), sevenzLib(0), valid(false), tools(false)
+    : QObject(parent), sevenzLib(nullptr), tools(false), valid(false)
 {
     szInterface = new SevenZipInterface;
     // load functions
@@ -174,18 +175,10 @@ CompressedArchive::~CompressedArchive()
 bool CompressedArchive::loadFunctions()
 {
     // LOAD library
-    if (sevenzLib == 0) {
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-        QFileInfo sevenzlibrary(QString(LIBDIR) + "/yacreader/7z.so");
-        if (sevenzlibrary.exists()) {
-            sevenzLib = new QLibrary(sevenzlibrary.absoluteFilePath());
-        } else {
-            sevenzLib = new QLibrary(QString(LIBDIR) + "/7zip/7z.so");
-        }
-#else
-        sevenzLib = new QLibrary(QCoreApplication::applicationDirPath() + "/utils/7z");
-#endif
+    if (sevenzLib == nullptr) {
+        sevenzLib = YACReader::load7zLibrary();
     }
+
     if (!sevenzLib->load()) {
         qDebug() << "Error Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;
         QCoreApplication::exit(700); // TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
