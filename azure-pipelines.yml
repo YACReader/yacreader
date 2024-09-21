@@ -322,7 +322,7 @@ jobs:
         --file $(Build.SourcesDirectory)/docker/Dockerfile \
         --file $(Build.SourcesDirectory)/docker/Dockerfile.aarch64 \
         -t yacreaderlibraryserver:develop \
-        --output type=docker,dest=$(Build.ArtifactStagingDirectory)/multiarch.tar \
+        --output type=oci,dest=$(Build.ArtifactStagingDirectory)/multiarch.tar \
         $(Build.SourcesDirectory)/docker
     displayName: 'Build and Push Multi-Platform Docker Image'
 
