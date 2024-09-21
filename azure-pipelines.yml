@@ -307,7 +307,7 @@ jobs:
 #
 
 - job: BuildDockerImages
-  timeoutInMinutes: 120
+  timeoutInMinutes: 360
   displayName: 'Build Docker Images'
   dependsOn: CodeFormatValidation
   pool:
