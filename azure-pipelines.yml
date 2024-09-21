@@ -318,12 +318,13 @@ jobs:
     displayName: 'Set up Docker Buildx'
 
   - script: |
-      docker buildx build --no-cache --platform linux/amd64,linux/arm64 \
-        --file $(Build.SourcesDirectory)/docker/Dockerfile \
-        --file $(Build.SourcesDirectory)/docker/Dockerfile.aarch64 \
-        -t yacreaderlibraryserver:develop \
-        --output type=oci,dest=$(Build.ArtifactStagingDirectory)/multiarch.tar \
-        $(Build.SourcesDirectory)/docker
+      docker buildx build --no-cache --platform linux/amd64 -f $(Build.SourcesDirectory)/docker/Dockerfile -t yacreaderlibraryserver:develop-amd64 .
+      docker buildx build --no-cache --platform linux/arm64 -f $(Build.SourcesDirectory)/docker/Dockerfile.aarch64 -t yacreaderlibraryserver:develop-arm64 .
+      docker manifest create yacreaderlibraryserver:develop \
+        --amend yacreaderlibraryserver:develop-amd64 \
+        --amend yacreaderlibraryserver:develop-arm64
+      docker manifest inspect yacreaderlibraryserver:develop
+      docker save yacreaderlibraryserver:develop -o $(Build.ArtifactStagingDirectory)/multiarch.tar
     displayName: 'Build and Push Multi-Platform Docker Image'
 
 #
@@ -416,6 +417,11 @@ jobs:
         VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
         echo "##vso[task.setvariable variable=VERSION]$VERSION"
       displayName: 'Version'
+    - script: |
+        docker tag yacreaderlibraryserver:develop yacreaderlibraryserver:latest
+        docker tag yacreaderlibraryserver:develop yacreaderlibraryserver:$(VERSION)
+        docker rmi yacreaderlibraryserver:develop || true
+        displayName: 'Tag Image as Latest and Versioned and Remove Develop Tag'
     - task: Docker@2
       displayName: 'Push Multi-Platform Docker Image'
       inputs:
