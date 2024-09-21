@@ -311,7 +311,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - task: UseDocker@0
+  - task: Docker@2
     displayName: 'Set up Docker Buildx'
     inputs:
       command: 'setupBuildx'
