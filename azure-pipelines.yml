@@ -307,6 +307,7 @@ jobs:
 #
 
 - job: BuildDockerImages
+  timeoutInMinutes: 120
   displayName: 'Build Docker Images'
   dependsOn: CodeFormatValidation
   pool:
@@ -326,7 +327,7 @@ jobs:
         --amend yacreaderlibraryserver:develop-arm64
       docker manifest inspect yacreaderlibraryserver:develop
       docker save yacreaderlibraryserver:develop -o $(Build.ArtifactStagingDirectory)/multiarch.tar
-    displayName: 'Build and Push Multi-Platform Docker Image'
+    displayName: 'Build Multi-Platform Docker Image'
 
 #
 # Dev builds publication
