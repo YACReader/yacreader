@@ -311,11 +311,10 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - task: Docker@2
+  - script: |
+      docker buildx create --use
+      docker buildx inspect --bootstrap
     displayName: 'Set up Docker Buildx'
-    inputs:
-      command: 'setupBuildx'
-      buildxVersion: 'latest'
 
   - script: |
       docker buildx create --use
