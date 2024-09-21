@@ -1,0 +1,91 @@
+FROM ghcr.io/linuxserver/baseimage-ubuntu:arm64v8-noble
+
+# version, it can be a TAG or a branch
+ARG YACR_VERSION="develop"
+
+# env variables
+ARG DEBIAN_FRONTEND="noninteractive"
+ENV APPNAME="YACReaderLibraryServer"
+ENV HOME="/config"
+LABEL maintainer="luisangelsm"
+
+# install build & runtime packages
+RUN \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+       build-essential \
+       desktop-file-utils \
+       g++ \
+       git \
+       libglu1-mesa-dev \
+       libpoppler-qt5-dev \
+       libpoppler-qt5-1 \
+       libqt5core5a \
+       libqt5gui5 \
+       libqt5multimedia5 \
+       libqt5network5 \
+       libqt5opengl5-dev \
+       libqt5qml5 \
+       libqt5quickcontrols2-5 \
+       libqt5script5 \
+       libqt5sql5-sqlite \
+       libqt5sql5 \
+       libqt5svg5-dev \
+       libsqlite3-dev \
+       make \
+       7zip \
+       7zip-rar \
+       qtchooser \
+       qtbase5-dev-tools \
+       qt5-qmake \
+       qtbase5-dev \
+       qtmultimedia5-dev \
+       qt5-image-formats-plugins \
+       qtdeclarative5-dev \
+       qtquickcontrols2-5-dev \
+       qtscript5-dev \
+       qttools5-dev-tools \
+       sqlite3 \
+       unzip \
+       wget && \
+    ldconfig
+
+# clone YACReader repo
+RUN git clone https://github.com/YACReader/yacreader.git /src/git && \
+    cd /src/git && \
+    git checkout $YACR_VERSION
+
+# get 7zip source
+RUN cd /src/git/compressed_archive && \
+    wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O /src/git/compressed_archive/7z2301-src.7z && \
+    7z x /src/git/compressed_archive/7z2301-src.7z -o/src/git/compressed_archive/lib7zip
+
+# build yacreaderlibraryserver
+RUN cd /src/git/YACReaderLibraryServer && \
+    qmake PREFIX=/app CONFIG+="7zip server_standalone" YACReaderLibraryServer.pro && \
+    make  && \
+    make install
+    
+# clean up
+RUN cd / && \
+    apt-get clean && \
+    apt-get purge -y build-essential g++ git make qt5-qmake unzip wget && \
+    apt-get -y autoremove && \
+    rm -rf \
+       /src \
+       /tmp/* \
+       /var/cache/apt \
+       /var/lib/apt/lists/*
+
+# set ENV
+ENV LC_ALL="en_US.UTF-8" \
+    PATH="/app/bin:${PATH}"
+
+# copy files
+COPY root.tar.gz /
+# Extract the contents of root.tar.gz into the / directory
+RUN tar -xvpzf /root.tar.gz -C /
+
+# ports and volumes
+EXPOSE 8080
+VOLUME ["/config", "/comics"]

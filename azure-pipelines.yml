@@ -303,6 +303,34 @@ jobs:
     vc_vars: 'vcvars32.bat'
 
 #
+# Docker
+#
+
+- job: BuildDockerImages
+  displayName: 'Build Docker Images'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: UseDocker@0
+    displayName: 'Set up Docker Buildx'
+    inputs:
+      command: 'setupBuildx'
+      buildxVersion: 'latest'
+
+  - script: |
+      docker buildx create --use
+      docker buildx inspect --bootstrap
+    displayName: 'Create and Inspect Buildx Builder'
+
+  - script: |
+      docker buildx build --no-cache --platform linux/amd64,linux/arm64 \
+        --file $(Build.SourcesDirectory)/docker/Dockerfile \
+        --file $(Build.SourcesDirectory)/docker/Dockerfile.aarch64 \
+        -t yacreaderlibraryserver:develop \
+        --output type=docker,dest=$(Build.ArtifactStagingDirectory)/multiarch.tar
+    displayName: 'Build and Push Multi-Platform Docker Image'
+
+#
 # Dev builds publication
 #
 
@@ -317,6 +345,7 @@ jobs:
     - Windows_x86
     - Windows_x64
     - Windows_x64_qt6
+    - BuildDockerImages
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), true)
     variables:
     - group: github-releases
@@ -328,13 +357,24 @@ jobs:
         buildType: 'current'
         targetPath: $(Build.ArtifactStagingDirectory)
     - script: |
+        docker load -i $(Build.ArtifactStagingDirectory)/multiarch.tar
+      displayName: 'Load Multi-Platform Docker Image'
+    - script: |
         find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
       displayName: 'flatten artifact staging directory'
     - script: |
         VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' ).$(Build.BuildNumber)"
         echo "##vso[task.setvariable variable=VERSION]$VERSION"
       displayName: 'Version'
-    - task: GitHubRelease@0
+    - task: Docker@2
+      displayName: 'Push Multi-Platform Docker Image'
+      inputs:
+        command: 'push'
+        repository: yacreaderlibraryserver
+        tags: |
+          develop
+        containerRegistry: $(docker-hub)
+    - task: GitHubRelease@1
       inputs:
         gitHubConnection: yacreader-releases
         repositoryName: YACReader/yacreader-dev-builds
@@ -359,6 +399,7 @@ jobs:
     - Windows_x86
     - Windows_x64
     - Windows_x64_qt6
+    - BuildDockerImages
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
     - group: github-releases
@@ -370,13 +411,25 @@ jobs:
         buildType: 'current'
         targetPath: $(Build.ArtifactStagingDirectory)
     - script: |
+        docker load -i $(Build.ArtifactStagingDirectory)/multiarch.tar
+      displayName: 'Load Multi-Platform Docker Image'
+    - script: |
         find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
       displayName: 'flatten artifact staging directory'
     - script: |
         VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
         echo "##vso[task.setvariable variable=VERSION]$VERSION"
       displayName: 'Version'
-    - task: GitHubRelease@0
+    - task: Docker@2
+      displayName: 'Push Multi-Platform Docker Image'
+      inputs:
+        command: 'push'
+        repository: yacreaderlibraryserver
+        tags: |
+          latest
+          $(VERSION)
+        containerRegistry: $(docker-hub)
+    - task: GitHubRelease@1
       inputs:
         gitHubConnection: yacreader-releases
         title: $(VERSION)
