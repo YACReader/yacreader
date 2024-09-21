@@ -308,6 +308,7 @@ jobs:
 
 - job: BuildDockerImages
   displayName: 'Build Docker Images'
+  dependsOn: CodeFormatValidation
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -317,16 +318,12 @@ jobs:
     displayName: 'Set up Docker Buildx'
 
   - script: |
-      docker buildx create --use
-      docker buildx inspect --bootstrap
-    displayName: 'Create and Inspect Buildx Builder'
-
-  - script: |
       docker buildx build --no-cache --platform linux/amd64,linux/arm64 \
         --file $(Build.SourcesDirectory)/docker/Dockerfile \
         --file $(Build.SourcesDirectory)/docker/Dockerfile.aarch64 \
         -t yacreaderlibraryserver:develop \
-        --output type=docker,dest=$(Build.ArtifactStagingDirectory)/multiarch.tar
+        --output type=docker,dest=$(Build.ArtifactStagingDirectory)/multiarch.tar \
+        $(Build.SourcesDirectory)/docker
     displayName: 'Build and Push Multi-Platform Docker Image'
 
 #
