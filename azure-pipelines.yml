@@ -318,8 +318,9 @@ jobs:
     displayName: 'Set up Docker Buildx'
 
   - script: |
-      docker buildx build --no-cache --platform linux/amd64 -f $(Build.SourcesDirectory)/docker/Dockerfile -t yacreaderlibraryserver:develop-amd64 .
-      docker buildx build --no-cache --platform linux/arm64 -f $(Build.SourcesDirectory)/docker/Dockerfile.aarch64 -t yacreaderlibraryserver:develop-arm64 .
+      cd $(Build.SourcesDirectory)/docker/
+      docker buildx build --no-cache --platform linux/amd64 -f Dockerfile -t yacreaderlibraryserver:develop-amd64 .
+      docker buildx build --no-cache --platform linux/arm64 -f Dockerfile.aarch64 -t yacreaderlibraryserver:develop-arm64 .
       docker manifest create yacreaderlibraryserver:develop \
         --amend yacreaderlibraryserver:develop-amd64 \
         --amend yacreaderlibraryserver:develop-arm64
