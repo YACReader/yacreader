@@ -2,6 +2,7 @@
 
 #include <QModelIndex>
 #include <QLibrary>
+#include <QFileInfo>
 #include <QCoreApplication>
 
 using namespace YACReader;
