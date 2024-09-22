@@ -1,5 +1,5 @@
 {
-    "title": "YACReader-#VERSION#.#BUILD_NUMBER##QT_VERSION#",
+    "title": "YACReader-#VERSION#.#QT_VERSION#",
     "icon": "icon.icns",
     "background": "background.png",
     "window": {
