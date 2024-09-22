@@ -1,4 +1,4 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:arm64v8-noble
+FROM ghcr.io/linuxserver/baseimage-ubuntu:arm64v8-noble AS builder
 
 # version, it can be a TAG or a branch
 ARG YACR_VERSION="develop"
@@ -65,17 +65,38 @@ RUN cd /src/git/YACReaderLibraryServer && \
     qmake PREFIX=/app CONFIG+="7zip server_standalone" YACReaderLibraryServer.pro && \
     make  && \
     make install
+
+# install 7z.so with RAR support
+RUN echo "Building and installing 7z.so with RAR support..." && \
+    cd "/src/git/compressed_archive/lib7zip/CPP/7zip/Bundles/Format7zF" && \
+    make -f makefile.gcc && \
+    mkdir -p /app/lib/7zip && \
+    cp ./_o/7z.so /app/lib/7zip
     
-# clean up
-RUN cd / && \
+FROM ghcr.io/linuxserver/baseimage-ubuntu:arm64v8-noble
+
+# env variables
+ENV APPNAME="YACReaderLibraryServer"
+ENV HOME="/config"
+LABEL maintainer="luisangelsm"
+
+# Copy the built application from the builder stage
+COPY --from=builder /app /app
+    
+# runtime packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+       libqt5core5a \
+       libqt5network5 \
+       libqt5script5 \
+       libqt5sql5-sqlite \
+       libqt5sql5 \
+       libqt5svg5 \
+       libsqlite3-0 \
+       libpoppler-qt5-1 \
+       qt5-image-formats-plugins && \
     apt-get clean && \
-    apt-get purge -y build-essential g++ git make qt5-qmake unzip wget && \
-    apt-get -y autoremove && \
-    rm -rf \
-       /src \
-       /tmp/* \
-       /var/cache/apt \
-       /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # set ENV
 ENV LC_ALL="en_US.UTF-8" \

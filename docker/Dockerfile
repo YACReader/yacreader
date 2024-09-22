@@ -1,4 +1,4 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble
+FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS builder
 
 # version, it can be a TAG or a branch
 ARG YACR_VERSION="develop"
@@ -73,20 +73,34 @@ RUN cd /src/git/YACReaderLibraryServer && \
     make  && \
     make install
 
-# clean up
-RUN cd / && \
-    apt-get clean && \
-    apt-get purge -y build-essential g++ gcc git make qmake6 qtchooser unzip wget && \
-    apt-get -y autoremove && \
+# install 7z.so with RAR support
+RUN echo "Building and installing 7z.so with RAR support..." && \
+    cd "/src/git/compressed_archive/lib7zip/CPP/7zip/Bundles/Format7zF" && \
+    make -f makefile.gcc && \
+    mkdir -p /app/lib/7zip && \
+    cp ./_o/7z.so /app/lib/7zip    
+
+# Stage 2: Runtime stage
+FROM ghcr.io/linuxserver/baseimage-ubuntu:noble
+
+# env variables
+ENV APPNAME="YACReaderLibraryServer"
+ENV HOME="/config"
+LABEL maintainer="luisangelsm"
+
+# Copy the built application from the builder stage
+COPY --from=builder /app /app
+
+# runtime packages
+RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-       dos2unix \
-       libqt6core5compat6-dev \
-       libpoppler-qt6-dev && \
-    rm -rf \
-       /src \
-       /tmp/* \
-       /var/cache/apt \
-       /var/lib/apt/lists/*
+       libqt6core5compat6 \
+       libpoppler-qt6-3t64 \
+       qt6-image-formats-plugins \ 
+       libqt6network6t64 \
+       libqt6sql6-sqlite && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # set ENV
 ENV LC_ALL="en_US.UTF-8" \
