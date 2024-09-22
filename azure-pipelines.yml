@@ -303,31 +303,48 @@ jobs:
     vc_vars: 'vcvars32.bat'
 
 #
-# Docker
+# Docker amd64
 #
 
-- job: BuildDockerImages
+- job: BuildAmd64Image
   timeoutInMinutes: 360
-  displayName: 'Build Docker Images'
-  dependsOn: CodeFormatValidation
+  displayName: 'Build amd64 Docker Image'
   pool:
     vmImage: 'ubuntu-latest'
   steps:
   - script: |
-      docker buildx create --use
-      docker buildx inspect --bootstrap
-    displayName: 'Set up Docker Buildx'
-
-  - script: |
       cd $(Build.SourcesDirectory)/docker/
       docker build --no-cache --platform linux/amd64 -f Dockerfile -t yacreaderlibraryserver:develop-amd64 .
-      docker buildx build --no-cache --platform linux/arm64 -f Dockerfile.aarch64 -t yacreaderlibraryserver:develop-arm64 .
-      docker manifest create yacreaderlibraryserver:develop \
-        --amend yacreaderlibraryserver:develop-amd64 \
-        --amend yacreaderlibraryserver:develop-arm64
-      docker manifest inspect yacreaderlibraryserver:develop
-      docker save yacreaderlibraryserver:develop -o $(Build.ArtifactStagingDirectory)/multiarch.tar
-    displayName: 'Build Multi-Platform Docker Image'
+      docker save yacreaderlibraryserver:develop-amd64 -o $(Build.ArtifactStagingDirectory)/amd64.tar
+    displayName: 'Build amd64 Image and Save as Artifact'
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)/amd64.tar
+      artifactName: amd64_image
+    displayName: 'Publish amd64 Image Artifact'
+
+#
+# Docker arm64
+#
+
+- job: BuildArm64Image
+  timeoutInMinutes: 360
+  displayName: 'Build arm64 Docker Image'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+      cd $(Build.SourcesDirectory)/docker/
+      docker buildx create --use
+      docker buildx inspect --bootstrap
+      docker buildx build --no-cache --platform linux/arm64 -f Dockerfile.aarch64 -t yacreaderlibraryserver:develop-arm64 --load .
+      docker save yacreaderlibraryserver:develop-arm64 -o $(Build.ArtifactStagingDirectory)/arm64.tar
+    displayName: 'Build arm64 Image and Save as Artifact'
+  - task: PublishPipelineArtifact@1
+    inputs:
+      targetPath: $(Build.ArtifactStagingDirectory)/arm64.tar
+      artifactName: arm64_image
+    displayName: 'Publish arm64 Image Artifact'
 
 #
 # Dev builds publication
@@ -356,7 +373,14 @@ jobs:
         buildType: 'current'
         targetPath: $(Build.ArtifactStagingDirectory)
     - script: |
-        docker load -i $(Build.ArtifactStagingDirectory)/multiarch.tar
+        docker load -i $(Build.ArtifactStagingDirectory)/amd64.tar
+        docker load -i $(Build.ArtifactStagingDirectory)/arm64.tar
+        docker manifest create yacreaderlibraryserver:develop \
+          --amend yacreaderlibraryserver:develop-amd64 \
+          --amend yacreaderlibraryserver:develop-arm64
+        docker manifest inspect yacreaderlibraryserver:develop
+        rm $(Build.ArtifactStagingDirectory)/amd64.tar
+        rm $(Build.ArtifactStagingDirectory)/arm64.tar
       displayName: 'Load Multi-Platform Docker Image'
     - script: |
         find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
@@ -410,8 +434,16 @@ jobs:
         buildType: 'current'
         targetPath: $(Build.ArtifactStagingDirectory)
     - script: |
-        docker load -i $(Build.ArtifactStagingDirectory)/multiarch.tar
-      displayName: 'Load Multi-Platform Docker Image'
+        docker load -i $(Build.ArtifactStagingDirectory)/amd64.tar
+        docker load -i $(Build.ArtifactStagingDirectory)/arm64.tar
+        docker manifest create yacreaderlibraryserver:latest \
+          --amend yacreaderlibraryserver:develop-amd64 \
+          --amend yacreaderlibraryserver:develop-arm64
+        docker manifest inspect yacreaderlibraryserver:latest
+        rm $(Build.ArtifactStagingDirectory)/amd64.tar
+        rm $(Build.ArtifactStagingDirectory)/arm64.tar
+        docker tag yacreaderlibraryserver:latest yacreaderlibraryserver:$(VERSION)
+      displayName: 'Load docker image with latest and VERSION tags'
     - script: |
         find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
       displayName: 'flatten artifact staging directory'
@@ -419,11 +451,6 @@ jobs:
         VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
         echo "##vso[task.setvariable variable=VERSION]$VERSION"
       displayName: 'Version'
-    - script: |
-        docker tag yacreaderlibraryserver:develop yacreaderlibraryserver:latest
-        docker tag yacreaderlibraryserver:develop yacreaderlibraryserver:$(VERSION)
-        docker rmi yacreaderlibraryserver:develop || true
-        displayName: 'Tag Image as Latest and Versioned and Remove Develop Tag'
     - task: Docker@2
       displayName: 'Push Multi-Platform Docker Image'
       inputs:
