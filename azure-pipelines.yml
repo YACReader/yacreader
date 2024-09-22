@@ -376,6 +376,9 @@ jobs:
         buildType: 'current'
         targetPath: $(Build.ArtifactStagingDirectory)
     - script: |
+        find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
+      displayName: 'flatten artifact staging directory'
+    - script: |
         docker load -i $(Build.ArtifactStagingDirectory)/amd64.tar
         docker load -i $(Build.ArtifactStagingDirectory)/arm64.tar
         docker manifest create yacreaderlibraryserver:develop \
@@ -385,9 +388,6 @@ jobs:
         rm $(Build.ArtifactStagingDirectory)/amd64.tar
         rm $(Build.ArtifactStagingDirectory)/arm64.tar
       displayName: 'Load Multi-Platform Docker Image'
-    - script: |
-        find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
-      displayName: 'flatten artifact staging directory'
     - script: |
         VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' ).$(Build.BuildNumber)"
         echo "##vso[task.setvariable variable=VERSION]$VERSION"
@@ -438,6 +438,9 @@ jobs:
         buildType: 'current'
         targetPath: $(Build.ArtifactStagingDirectory)
     - script: |
+        find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
+      displayName: 'flatten artifact staging directory'
+    - script: |
         docker load -i $(Build.ArtifactStagingDirectory)/amd64.tar
         docker load -i $(Build.ArtifactStagingDirectory)/arm64.tar
         docker manifest create yacreaderlibraryserver:latest \
@@ -448,9 +451,6 @@ jobs:
         rm $(Build.ArtifactStagingDirectory)/arm64.tar
         docker tag yacreaderlibraryserver:latest yacreaderlibraryserver:$(VERSION)
       displayName: 'Load docker image with latest and VERSION tags'
-    - script: |
-        find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
-      displayName: 'flatten artifact staging directory'
     - script: |
         VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
         echo "##vso[task.setvariable variable=VERSION]$VERSION"
