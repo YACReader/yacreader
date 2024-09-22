@@ -15,6 +15,8 @@
 #include "7z_includes.h"
 #include "lib7zip/CPP/Common/MyInitGuid.h"
 
+#include "QsLog.h"
+
 #define _MY_WINAPI WINAPI
 
 typedef quint32(_MY_WINAPI *CreateObjectFunc)(const GUID *clsID, const GUID *interfaceID, void **outObject);
@@ -180,7 +182,7 @@ bool CompressedArchive::loadFunctions()
     }
 
     if (!sevenzLib->load()) {
-        qDebug() << "Error Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;
+        QLOG_ERROR() << "Error Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;
         QCoreApplication::exit(700); // TODO yacreader_global can't be used here, it is GUI dependant, YACReader::SevenZNotFound
         return false;
     } else {
