@@ -328,7 +328,7 @@ jobs:
 # Docker arm64
 #
 
-- job: Docker_Amd64_Image
+- job: Docker_Arm64_Image
   timeoutInMinutes: 360
   dependsOn: CodeFormatValidation  
   displayName: 'Build arm64 Docker Image'
