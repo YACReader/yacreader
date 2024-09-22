@@ -9,7 +9,7 @@ ENV APPNAME="YACReaderLibraryServer"
 ENV HOME="/config"
 LABEL maintainer="luisangelsm"
 
-# install build & runtime packages
+# install build packages
 RUN \
     apt-get update && \
     apt-get install -y --no-install-recommends \

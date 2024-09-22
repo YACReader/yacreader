@@ -9,7 +9,7 @@ ENV APPNAME="YACReaderLibraryServer"
 ENV HOME="/config"
 LABEL maintainer="luisangelsm"
 
-# install build & runtime packages
+# install build packages
 RUN \
     apt-get update && \
     apt-get install -y --no-install-recommends \
@@ -65,9 +65,8 @@ RUN cd /src/git/compressed_archive && \
     wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O /src/git/compressed_archive/7z2301-src.7z && \
     7z x /src/git/compressed_archive/7z2301-src.7z -o/src/git/compressed_archive/lib7zip 
 
-# build yacrederlibraryserver
+# build yacreaderlibraryserver
 RUN cd /src/git/YACReaderLibraryServer && \
-    # qtchooser -list-versions && \
     qmake6 PREFIX=/app CONFIG+="7zip server_standalone" YACReaderLibraryServer.pro && \
     qmake6 -v && \
     make  && \
