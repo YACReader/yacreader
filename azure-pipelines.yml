@@ -399,7 +399,7 @@ jobs:
         repository: yacreaderlibraryserver
         tags: |
           develop
-        containerRegistry: $(docker-hub)
+        containerRegistry: docker-hub
     - task: GitHubRelease@1
       inputs:
         gitHubConnection: yacreader-releases
@@ -463,7 +463,7 @@ jobs:
         tags: |
           latest
           $(VERSION)
-        containerRegistry: $(docker-hub)
+        containerRegistry: docker-hub
     - task: GitHubRelease@1
       inputs:
         gitHubConnection: yacreader-releases
