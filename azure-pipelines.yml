@@ -306,8 +306,9 @@ jobs:
 # Docker amd64
 #
 
-- job: BuildAmd64Image
+- job: Docker_Amd64_Image
   timeoutInMinutes: 360
+  dependsOn: CodeFormatValidation
   displayName: 'Build amd64 Docker Image'
   pool:
     vmImage: 'ubuntu-latest'
@@ -327,8 +328,9 @@ jobs:
 # Docker arm64
 #
 
-- job: BuildArm64Image
+- job: Docker_Amd64_Image
   timeoutInMinutes: 360
+  dependsOn: CodeFormatValidation  
   displayName: 'Build arm64 Docker Image'
   pool:
     vmImage: 'ubuntu-latest'
