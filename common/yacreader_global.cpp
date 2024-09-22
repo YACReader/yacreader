@@ -129,8 +129,22 @@ QLibrary *YACReader::load7zLibrary()
     auto yacreader7zPath = QString(LIBDIR) + "/yacreader/7z.so";
     QFileInfo sevenzlibrary(yacreader7zPath);
     if (sevenzlibrary.exists()) {
+        auto rarPath = QString(LIBDIR) + "/yacreader/Codecs/Rar.so";
+        QFileInfo rarCodec(rarPath);
+        if (rarCodec.exists()) {
+            QLibrary *rarLibrary = new QLibrary(rarPath);
+            rarLibrary->load();
+        }
+
         return new QLibrary(yacreader7zPath);
     } else {
+        auto rarPath = QString(LIBDIR) + "/7zip/Codecs/Rar.so";
+        QFileInfo rarCodec(rarPath);
+        if (rarCodec.exists()) {
+            QLibrary *rarLibrary = new QLibrary(rarPath);
+            rarLibrary->load();
+        }
+
         return new QLibrary(QString(LIBDIR) + "/7zip/7z.so");
     }
 #else
