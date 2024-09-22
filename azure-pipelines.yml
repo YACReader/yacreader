@@ -363,7 +363,8 @@ jobs:
     - Windows_x86
     - Windows_x64
     - Windows_x64_qt6
-    - BuildDockerImages
+    - Docker_Amd64_Image
+    - Docker_Arm64_Image
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), true)
     variables:
     - group: github-releases
@@ -424,7 +425,8 @@ jobs:
     - Windows_x86
     - Windows_x64
     - Windows_x64_qt6
-    - BuildDockerImages
+    - Docker_Amd64_Image
+    - Docker_Arm64_Image
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     variables:
     - group: github-releases
