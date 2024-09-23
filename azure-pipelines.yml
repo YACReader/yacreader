@@ -399,7 +399,7 @@ jobs:
             yacreader/yacreaderlibraryserver:develop-amd64 \
             yacreader/yacreaderlibraryserver:develop-arm64
       displayName: 'Push Docker manifest to develop tag'
-    - task: GitHubRelease@1
+    - task: GitHubRelease@0
       inputs:
         gitHubConnection: yacreader-releases
         repositoryName: YACReader/yacreader-dev-builds
@@ -466,7 +466,7 @@ jobs:
             yacreader/yacreaderlibraryserver:latest-amd64 \
             yacreader/yacreaderlibraryserver:latest-arm64
       displayName: 'Push Docker manifest with latest and VERSION tags'
-    - task: GitHubRelease@1
+    - task: GitHubRelease@0
       inputs:
         gitHubConnection: yacreader-releases
         title: $(VERSION)
