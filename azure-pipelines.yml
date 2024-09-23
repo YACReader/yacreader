@@ -379,6 +379,15 @@ jobs:
         find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
       displayName: 'flatten artifact staging directory'
     - script: |
+        VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' ).$(Build.BuildNumber)"
+        echo "##vso[task.setvariable variable=VERSION]$VERSION"
+      displayName: 'Version'
+    - task: Docker@2
+      displayName: 'Docker Hub login'
+      inputs:
+        command: 'login'
+        containerRegistry: docker-hub
+    - script: |
         docker load -i $(Build.ArtifactStagingDirectory)/amd64.tar
         docker load -i $(Build.ArtifactStagingDirectory)/arm64.tar
         docker manifest create yacreaderlibraryserver:develop \
@@ -387,19 +396,8 @@ jobs:
         docker manifest inspect yacreaderlibraryserver:develop
         rm $(Build.ArtifactStagingDirectory)/amd64.tar
         rm $(Build.ArtifactStagingDirectory)/arm64.tar
+        docker manifest push yacreader/yacreaderlibraryserver:develop
       displayName: 'Load Multi-Platform Docker Image'
-    - script: |
-        VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' ).$(Build.BuildNumber)"
-        echo "##vso[task.setvariable variable=VERSION]$VERSION"
-      displayName: 'Version'
-    - task: Docker@2
-      displayName: 'Push Multi-Platform Docker Image'
-      inputs:
-        command: 'push'
-        repository: yacreaderlibraryserver
-        tags: |
-          develop
-        containerRegistry: docker-hub
     - task: GitHubRelease@1
       inputs:
         gitHubConnection: yacreader-releases
@@ -441,6 +439,15 @@ jobs:
         find $(Build.ArtifactStagingDirectory) -name '*.*' -exec cp {} $(Build.ArtifactStagingDirectory) \;
       displayName: 'flatten artifact staging directory'
     - script: |
+        VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
+        echo "##vso[task.setvariable variable=VERSION]$VERSION"
+      displayName: 'Version'
+    - task: Docker@2
+      displayName: 'Docker Hub login'
+      inputs:
+        command: login
+        containerRegistry: docker-hub
+    - script: |
         docker load -i $(Build.ArtifactStagingDirectory)/amd64.tar
         docker load -i $(Build.ArtifactStagingDirectory)/arm64.tar
         docker manifest create yacreaderlibraryserver:latest \
@@ -450,20 +457,8 @@ jobs:
         rm $(Build.ArtifactStagingDirectory)/amd64.tar
         rm $(Build.ArtifactStagingDirectory)/arm64.tar
         docker tag yacreaderlibraryserver:latest yacreaderlibraryserver:$(VERSION)
+        docker manifest push yacreaderlibraryserver:latest
       displayName: 'Load docker image with latest and VERSION tags'
-    - script: |
-        VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
-        echo "##vso[task.setvariable variable=VERSION]$VERSION"
-      displayName: 'Version'
-    - task: Docker@2
-      displayName: 'Push Multi-Platform Docker Image'
-      inputs:
-        command: 'push'
-        repository: yacreaderlibraryserver
-        tags: |
-          latest
-          $(VERSION)
-        containerRegistry: docker-hub
     - task: GitHubRelease@1
       inputs:
         gitHubConnection: yacreader-releases
