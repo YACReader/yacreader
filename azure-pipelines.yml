@@ -315,8 +315,8 @@ jobs:
   steps:
   - script: |
       cd $(Build.SourcesDirectory)/docker/
-      docker build --no-cache --platform linux/amd64 -f Dockerfile -t yacreaderlibraryserver:develop-amd64 .
-      docker save yacreaderlibraryserver:develop-amd64 -o $(Build.ArtifactStagingDirectory)/amd64.tar
+      docker build --no-cache --platform linux/amd64 -f Dockerfile -t yacreader/yacreaderlibraryserver:develop-amd64 .
+      docker save yacreader/yacreaderlibraryserver:develop-amd64 -o $(Build.ArtifactStagingDirectory)/amd64.tar
     displayName: 'Build amd64 Image and Save as Artifact'
   - task: PublishPipelineArtifact@1
     inputs:
@@ -339,8 +339,8 @@ jobs:
       cd $(Build.SourcesDirectory)/docker/
       docker buildx create --use
       docker buildx inspect --bootstrap
-      docker buildx build --no-cache --platform linux/arm64 -f Dockerfile.aarch64 -t yacreaderlibraryserver:develop-arm64 --load .
-      docker save yacreaderlibraryserver:develop-arm64 -o $(Build.ArtifactStagingDirectory)/arm64.tar
+      docker buildx build --no-cache --platform linux/arm64 -f Dockerfile.aarch64 -t yacreader/yacreaderlibraryserver:develop-arm64 --load .
+      docker save yacreader/yacreaderlibraryserver:develop-arm64 -o $(Build.ArtifactStagingDirectory)/arm64.tar
     displayName: 'Build arm64 Image and Save as Artifact'
   - task: PublishPipelineArtifact@1
     inputs:
@@ -386,16 +386,18 @@ jobs:
     - script: |
         docker login -u $(dockerUser) -p $(dockerPassword)
 
-        docker load -i $(Build.ArtifactStagingDirectory)/amd64.tar
-        docker load -i $(Build.ArtifactStagingDirectory)/arm64.tar
-        docker manifest create yacreaderlibraryserver:develop \
-          --amend yacreaderlibraryserver:develop-amd64 \
-          --amend yacreaderlibraryserver:develop-arm64
-        docker manifest inspect yacreaderlibraryserver:develop
-        rm $(Build.ArtifactStagingDirectory)/amd64.tar
-        rm $(Build.ArtifactStagingDirectory)/arm64.tar
+        for arch in amd64 arm64; do
+            docker load -i $(Build.ArtifactStagingDirectory)/${arch}.tar
+            docker push yacreader/yacreaderlibraryserver:develop-${arch}
+            rm $(Build.ArtifactStagingDirectory)/${arch}.tar
+        done
 
-        docker manifest push yacreader/yacreaderlibraryserver:develop
+        docker buildx create --use
+
+        docker buildx imagetools create \
+            -t yacreader/yacreaderlibraryserver:develop \
+            yacreader/yacreaderlibraryserver:develop-amd64 \
+            yacreader/yacreaderlibraryserver:develop-arm64
       displayName: 'Push Docker manifest to develop tag'
     - task: GitHubRelease@1
       inputs:
@@ -445,17 +447,24 @@ jobs:
     - script: |
         docker login -u $(dockerUser) -p $(dockerPassword)
 
-        docker load -i $(Build.ArtifactStagingDirectory)/amd64.tar
-        docker load -i $(Build.ArtifactStagingDirectory)/arm64.tar
-        docker manifest create yacreaderlibraryserver:latest \
-          --amend yacreaderlibraryserver:develop-amd64 \
-          --amend yacreaderlibraryserver:develop-arm64
-        docker manifest inspect yacreaderlibraryserver:latest
-        rm $(Build.ArtifactStagingDirectory)/amd64.tar
-        rm $(Build.ArtifactStagingDirectory)/arm64.tar
-        docker tag yacreaderlibraryserver:latest yacreaderlibraryserver:$(VERSION)
+        for arch in amd64 arm64; do
+            docker load -i $(Build.ArtifactStagingDirectory)/${arch}.tar
+            docker tag yacreader/yacreaderlibraryserver:develop-${arch} yacreader/yacreaderlibraryserver:latest-${arch}
+            docker push yacreader/yacreaderlibraryserver:latest-${arch}
+            rm $(Build.ArtifactStagingDirectory)/${arch}.tar
+        done
 
-        docker manifest push yacreaderlibraryserver:latest
+        docker buildx create --use
+
+        docker buildx imagetools create \
+            -t yacreader/yacreaderlibraryserver:latest \
+            yacreader/yacreaderlibraryserver:latest-amd64 \
+            yacreader/yacreaderlibraryserver:latest-arm64
+
+        docker buildx imagetools create \
+            -t yacreader/yacreaderlibraryserver:$(VERSION) \
+            yacreader/yacreaderlibraryserver:latest-amd64 \
+            yacreader/yacreaderlibraryserver:latest-arm64
       displayName: 'Push Docker manifest with latest and VERSION tags'
     - task: GitHubRelease@1
       inputs:
