@@ -15,7 +15,7 @@ public:
         QList<int> bookmarks;
         QDateTime added;
         Bookmark()
-            : lastPage(0) {};
+            : lastPage(0) { };
         friend QDataStream &operator<<(QDataStream &out, const Bookmark &bm)
         {
             out << bm.lastPage;
