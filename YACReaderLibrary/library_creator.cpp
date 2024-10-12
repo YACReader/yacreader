@@ -553,7 +553,7 @@ void LibraryCreator::update(QDir dirS)
                 {
 
                     if (nameS != "/.yacreaderlibrary") {
-                        // QLOG_WARN() << "dir source < dest" << nameS << nameD;
+                    // QLOG_WARN() << "dir source < dest" << nameS << nameD;
 #ifdef Q_OS_MACOS
                         QStringList src = _source.split("/");
                         QString filePath = fileInfoS.absoluteFilePath();
