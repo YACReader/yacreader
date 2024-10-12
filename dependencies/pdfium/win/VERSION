@@ -1,6 +1,8 @@
+TODO: this file needs to be updated
+
 YACReader for Windows uses a shared library version of pdfium.
 
-pdfium branch used for building: chromium/3729
+pdfium branch used for building: chromium/6668
 
 Build parameters used (gn args):
 

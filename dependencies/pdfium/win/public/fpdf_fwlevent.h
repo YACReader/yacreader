@@ -1,4 +1,4 @@
-// Copyright 2014 PDFium Authors. All rights reserved.
+// Copyright 2014 The PDFium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -14,17 +14,6 @@
 extern "C" {
 #endif  // __cplusplus
 
-typedef int FPDF_INT32;
-typedef unsigned int FPDF_UINT32;
-typedef float FPDF_FLOAT;
-
-// Event types.
-typedef enum {
-  FWL_EVENTTYPE_Mouse = 0,
-  FWL_EVENTTYPE_MouseWheel,
-  FWL_EVENTTYPE_Key,
-} FWL_EVENTTYPE;
-
 // Key flags.
 typedef enum {
   FWL_EVENTFLAG_ShiftKey = 1 << 0,
@@ -37,40 +26,6 @@ typedef enum {
   FWL_EVENTFLAG_MiddleButtonDown = 1 << 7,
   FWL_EVENTFLAG_RightButtonDown = 1 << 8,
 } FWL_EVENTFLAG;
-
-// Mouse messages.
-typedef enum {
-  FWL_EVENTMOUSECMD_LButtonDown = 1,
-  FWL_EVENTMOUSECMD_LButtonUp,
-  FWL_EVENTMOUSECMD_LButtonDblClk,
-  FWL_EVENTMOUSECMD_RButtonDown,
-  FWL_EVENTMOUSECMD_RButtonUp,
-  FWL_EVENTMOUSECMD_RButtonDblClk,
-  FWL_EVENTMOUSECMD_MButtonDown,
-  FWL_EVENTMOUSECMD_MButtonUp,
-  FWL_EVENTMOUSECMD_MButtonDblClk,
-  FWL_EVENTMOUSECMD_MouseMove,
-  FWL_EVENTMOUSECMD_MouseEnter,
-  FWL_EVENTMOUSECMD_MouseHover,
-  FWL_EVENTMOUSECMD_MouseLeave,
-} FWL_EVENT_MOUSECMD;
-
-// Mouse events.
-struct FWL_EVENT_MOUSE {
-  FPDF_UINT32 command;
-  FPDF_DWORD flag;
-  FPDF_FLOAT x;
-  FPDF_FLOAT y;
-};
-
-// Mouse wheel events.
-struct FWL_EVENT_MOUSEWHEEL {
-  FPDF_DWORD flag;
-  FPDF_FLOAT x;
-  FPDF_FLOAT y;
-  FPDF_FLOAT deltaX;
-  FPDF_FLOAT deltaY;
-};
 
 // Virtual keycodes.
 typedef enum {
@@ -244,38 +199,6 @@ typedef enum {
   FWL_VKEY_OEM_Clear = 0xFE,
   FWL_VKEY_Unknown = 0,
 } FWL_VKEYCODE;
-
-// Key event commands.
-typedef enum {
-  FWL_EVENTKEYCMD_KeyDown = 1,
-  FWL_EVENTKEYCMD_KeyUp,
-  FWL_EVENTKEYCMD_Char,
-} FWL_EVENTKEYCMD;
-
-// Key events.
-struct FWL_EVENT_KEY {
-  FPDF_UINT32 command;
-  FPDF_DWORD flag;
-  union {
-    // Virtual key code.
-    FPDF_UINT32 vkcode;
-    // Character code.
-    FPDF_DWORD charcode;
-  } code;
-};
-
-// Event types.
-struct FWL_EVENT {
-  // Structure size.
-  FPDF_UINT32 size;
-  // FWL_EVENTTYPE.
-  FPDF_UINT32 type;
-  union {
-    struct FWL_EVENT_MOUSE mouse;
-    struct FWL_EVENT_MOUSEWHEEL wheel;
-    struct FWL_EVENT_KEY key;
-  } s;
-};
 
 #ifdef __cplusplus
 }  // extern "C"
