@@ -57,5 +57,5 @@ bool YACReader::openComicInThirdPartyApp(const QString &command, const QString &
         fullCommand = mutableCommand + " \"" + path + "\"";
     }
 
-    return QProcess::startDetached(fullCommand);
+    return QProcess::startDetached(fullCommand, {});
 }
