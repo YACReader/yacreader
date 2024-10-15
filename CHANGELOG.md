@@ -15,6 +15,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix headers in the table view getting stuck in a non moveable state.
 * Add option to set the type of a library. It will convert all the content to desired type (comic, manga, etc) and it will set that type as the default one for that library. Available in the library context menu.
 * Added more info to Help -> System info.
+* New setting to open comics in third party reader apps, it works by entering a command that will launch the app, e.g. "/path/to/the/app {comic_file_path}". You can use `{comic_file_path}` as a placeholder where `YACReaderLibrary` will place thet path to the comic file.
 
 ### YACReaderLibraryServer
 * New command --system-info to print information about the execution environment and available resources (including what image formats are supported and what libraries are used by the app).

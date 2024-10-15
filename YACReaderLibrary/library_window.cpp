@@ -1674,14 +1674,23 @@ void LibraryWindow::openComic(const ComicDB &comic, const ComicModel::Mode mode)
         source = OpenComicSource::Source::Folder;
     }
 
-    auto yacreaderFound = YACReader::openComic(comic, libraryId, currentPath(), OpenComicSource { source, comicsModel->getSourceId() });
+    auto thirdPartyReaderCommand = settings->value(THIRD_PARTY_READER_COMMAND, "").toString();
+    if (thirdPartyReaderCommand.isEmpty()) {
+        auto yacreaderFound = YACReader::openComic(comic, libraryId, currentPath(), OpenComicSource { source, comicsModel->getSourceId() });
 
-    if (!yacreaderFound) {
+        if (!yacreaderFound) {
 #ifdef Q_OS_WIN
-        QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
+            QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
 #else
-        QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. There might be a problem with your YACReader installation."));
+            QMessageBox::critical(this, tr("YACReader not found"), tr("YACReader not found. There might be a problem with your YACReader installation."));
 #endif
+        }
+    } else {
+        auto exec = YACReader::openComicInThirdPartyApp(thirdPartyReaderCommand, QDir::cleanPath(currentPath() + comic.path));
+
+        if (!exec) {
+            QMessageBox::critical(this, tr("Error"), tr("Error opening comic with third party reader."));
+        }
     }
 }
 

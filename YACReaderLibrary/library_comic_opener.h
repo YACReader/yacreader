@@ -13,6 +13,9 @@ bool openComic(const ComicDB &comic,
                const QString &path,
                OpenComicSource source);
 
+bool openComicInThirdPartyApp(const QString &command,
+                              const QString &path);
+
 }
 
 #endif // LIBRARYCOMICOPENER_H
