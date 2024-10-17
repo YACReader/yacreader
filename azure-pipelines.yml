@@ -141,6 +141,32 @@ jobs:
     displayName: 'Run tests'
 
 #
+# Linux qt6
+#
+
+- job: Linux_qt6_cmake
+  timeoutInMinutes: 90
+  dependsOn: CodeFormatValidation
+  pool:
+    vmImage: 'ubuntu-22.04'
+  steps:
+  - script: |
+      sudo apt-get update
+      sudo apt-get install -y qtchooser qt6-tools-dev qt6-base-dev-tools qmake6 qmake6-bin \
+      qt6-base-dev qt6-multimedia-dev qt6-tools-dev-tools libgl-dev qt6-l10n-tools \
+      libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev \
+      ninja-build
+    displayName: 'Install dependencies'
+  - task: CMake@1
+    inputs:
+      cmakeArgs: '-DPDF_BACKEND=no_pdf -GNinja ..'
+    displayName: 'Generate CMake cache'
+  - task: CMake@1
+    inputs:
+      cmakeArgs: '--build .'
+    displayName: 'Build'
+
+#
 # MacOS Qt6(universal)
 #
 
