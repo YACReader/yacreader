@@ -897,12 +897,12 @@ void ComicModel::takeUpdatedData(const QList<ComicItem *> &updatedData, std::fun
         i++;
     }
 
-    // remove remaining comics {
-    for (; i < length; i++) {
-        beginRemoveRows(QModelIndex(), i, i);
+    // remove remaining comics
+    for (int k = length - 1; k >= i; k--) {
+        beginRemoveRows(QModelIndex(), k, k);
 
-        delete _data.at(i);
-        _data.removeAt(i);
+        delete _data.at(k);
+        _data.removeAt(k);
 
         endRemoveRows();
     }
