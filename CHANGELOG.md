@@ -18,6 +18,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * New setting to open comics in third party reader apps, it works by entering a command that will launch the app, e.g. "/path/to/the/app {comic_file_path}". You can use `{comic_file_path}` as a placeholder where `YACReaderLibrary` will place thet path to the comic file.
 * Purge covers and metadata not being used after a full library update.
 * Fix crash when updating the current folder content after a library update.
+* Fix crash when current folders is empty after an update.
 
 ### YACReaderLibraryServer
 * New command --system-info to print information about the execution environment and available resources (including what image formats are supported and what libraries are used by the app).
