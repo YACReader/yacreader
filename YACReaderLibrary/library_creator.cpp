@@ -228,11 +228,13 @@ void LibraryCreator::run()
                 if (partialUpdate) {
                     auto folder = DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
                     DBHelper::propagateFolderUpdatesToParent(folder, _database);
-                } else
+                } else {
                     DBHelper::updateChildrenInfo(_database);
-
-                _database.commit();
+                    cleanup(_database, _target);
+                }
             }
+
+            _database.commit();
             _database.close();
         }
 
@@ -268,6 +270,38 @@ void LibraryCreator::cancel()
     QSqlDatabase::database(_databaseConnection).rollback();
     canceled = true;
     stopRunning = true;
+}
+
+void LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
+{
+    QDir coversDir(target + "/covers/");
+    if (!coversDir.exists()) {
+        return;
+    }
+
+    // delete from comic_info all the comics that don't have a comic associated from the comic table
+    QSqlQuery infoToDeleteQuery(db);
+    infoToDeleteQuery.prepare("SELECT ci.id, ci.hash FROM comic_info ci WHERE ci.id NOT IN (SELECT c.comicInfoId FROM comic c)");
+
+    if (!infoToDeleteQuery.exec()) {
+        QLOG_ERROR() << "Error getting comics to delete";
+        return;
+    }
+
+    while (infoToDeleteQuery.next()) {
+        QString hash = infoToDeleteQuery.value(1).toString();
+        QString cover = hash + ".jpg";
+
+        auto fullPath = coversDir.absoluteFilePath(cover);
+        QFile::remove(fullPath);
+    }
+
+    QSqlQuery deleteQuery(db);
+    deleteQuery.prepare("DELETE FROM comic_info WHERE id NOT IN (SELECT comicInfoId FROM comic)");
+    if (!deleteQuery.exec()) {
+        QLOG_ERROR() << "Error purging info from comic_info";
+        return;
+    }
 }
 
 // retorna el id del ultimo de los folders

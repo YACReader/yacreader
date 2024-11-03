@@ -59,6 +59,7 @@ private:
     QModelIndex folderDestinationModelIndex;
     QSettings *settings;
     bool checkModifiedDatesOnUpdate;
+    void cleanup(QSqlDatabase &db, const QString &target);
 
 signals:
     void finished();
