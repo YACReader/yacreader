@@ -833,12 +833,12 @@ void ComicModel::takeData(const QList<ComicItem *> &data)
 
 void ComicModel::takeUpdatedData(const QList<ComicItem *> &updatedData, std::function<bool(ComicItem *, ComicItem *)> comparator)
 {
-    int lenght = _data.size();
-    int lenghtUpdated = updatedData.size();
+    int length = _data.size();
+    int lengthUpdated = updatedData.size();
 
     int i; // index of the internal data
     int j; // index of the updated children
-    for (i = 0, j = 0; i < lenght && j < lenghtUpdated;) {
+    for (i = 0, j = 0; i < length && j < lengthUpdated;) {
         auto comic = _data.at(i);
         auto updatedComic = updatedData.at(j);
 
@@ -869,7 +869,7 @@ void ComicModel::takeUpdatedData(const QList<ComicItem *> &updatedData, std::fun
 
             i++;
             j++;
-            lenght++;
+            length++;
             continue;
         }
 
@@ -881,13 +881,13 @@ void ComicModel::takeUpdatedData(const QList<ComicItem *> &updatedData, std::fun
 
             endRemoveRows();
 
-            lenght--;
+            length--;
             continue;
         }
     }
 
     // add remaining comics
-    for (; j < lenghtUpdated; j++) {
+    for (; j < lengthUpdated; j++) {
         beginInsertRows(QModelIndex(), i, i);
 
         _data.append(updatedData.at(j));
@@ -898,7 +898,7 @@ void ComicModel::takeUpdatedData(const QList<ComicItem *> &updatedData, std::fun
     }
 
     // remove remaining comics {
-    for (; i < lenght; i++) {
+    for (; i < length; i++) {
         beginRemoveRows(QModelIndex(), i, i);
 
         delete _data.at(i);
