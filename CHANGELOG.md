@@ -19,6 +19,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Purge covers and metadata not being used after a full library update.
 * Fix crash when updating the current folder content after a library update.
 * Fix crash when current folders is empty after an update.
+* Enable dropping content on the FolderContentView.
 
 ### YACReaderLibraryServer
 * New command --system-info to print information about the execution environment and available resources (including what image formats are supported and what libraries are used by the app).
