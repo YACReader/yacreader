@@ -5,6 +5,8 @@
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_tool_bar_stretch.h"
+#include "comic.h"
+#include "comic_files_manager.h"
 
 #include "QsLog.h"
 
@@ -164,6 +166,7 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
     ctxt->setContextProperty("showCurrentComic", QVariant(false));
 
     ctxt->setContextProperty("openHelper", this);
+    ctxt->setContextProperty("dropManager", this);
     ctxt->setContextProperty("contextMenuHelper", this);
 
     view->setSource(QUrl("qrc:/qml/FolderContentView.qml"));
@@ -290,10 +293,31 @@ void FolderContentView::showEvent(QShowEvent *event)
     setCoversSize(coverSize);
 }
 
-void FolderContentView::dragEnterEvent(QDragEnterEvent *event)
+bool FolderContentView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
 {
+    if (action == Qt::CopyAction) {
+        QString currentPath;
+        foreach (QUrl url, urls) {
+            // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            currentPath = url.toLocalFile();
+            if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
+                return true;
+        }
+    }
+    return false;
 }
 
-void FolderContentView::dropEvent(QDropEvent *event)
+bool FolderContentView::canDropFormats(const QString &formats)
 {
+    return true;
+}
+
+void FolderContentView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action)
+{
+    bool validAction = action == Qt::CopyAction; // TODO add move
+
+    if (validAction) {
+        QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(urls);
+        emit copyComicsToCurrentFolder(droppedFiles);
+    }
 }

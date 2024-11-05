@@ -67,6 +67,20 @@ QWidget *YACReaderContentViewsManager::containerWidget()
 
 void YACReaderContentViewsManager::updateCurrentContentView()
 {
+    libraryWindow->comicsModel->reload();
+
+    if (comicsViewStack->currentWidget() == folderContentView && libraryWindow->comicsModel->rowCount() > 0) {
+        comicsView->reloadContent();
+        showComicsView();
+        return;
+    }
+
+    if (comicsViewStack->currentWidget() == comicsView && libraryWindow->comicsModel->rowCount() == 0) {
+        showFolderContentView();
+        folderContentView->reloadContent();
+        return;
+    }
+
     if (comicsViewStack->currentWidget() == comicsView) {
         comicsView->reloadContent();
     }

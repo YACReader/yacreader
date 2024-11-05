@@ -48,6 +48,9 @@ protected slots:
     void openComicFromContinueReadingList(int index);
     void requestedFolderContextMenu(QPoint point, int index);
     void requestedContinueReadingComicContextMenu(QPoint point, int index);
+    bool canDropUrls(const QList<QUrl> &urls, Qt::DropAction action);
+    bool canDropFormats(const QString &formats);
+    void droppedFiles(const QList<QUrl> &urls, Qt::DropAction action);
 
 protected:
     QQuickWidget *view;
@@ -55,10 +58,6 @@ protected:
 
     std::unique_ptr<ComicModel> comicModel;
     FolderModel *folderModel;
-
-    // Drop to import
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
 
 private:
     QSettings *settings;
