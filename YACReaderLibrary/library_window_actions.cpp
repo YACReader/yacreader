@@ -442,6 +442,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     window->addAction(setFolderAsYonkomaAction);
     window->addAction(deleteMetadataAction);
     window->addAction(rescanXMLFromCurrentFolderAction);
+    window->addAction(openContainingFolderComicAction);
 #ifndef Q_OS_MACOS
     window->addAction(toggleFullScreenAction);
 #endif
