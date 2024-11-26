@@ -251,6 +251,7 @@ public slots:
     void removeLibrary();
     void renameLibrary();
     void rescanLibraryForXMLInfo();
+    void showLibraryInfo();
     void rescanCurrentFolderForXMLInfo();
     void rescanFolderForXMLInfo(QModelIndex modelIndex);
     void rename(QString newName);

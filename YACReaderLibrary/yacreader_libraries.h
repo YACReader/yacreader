@@ -15,6 +15,7 @@ public:
     QList<QString> getNames();
     QString getPath(const QString &name);
     QString getPath(int id);
+    QString getPath(const QUuid &id);
     QString getDBPath(int id);
     QString getName(int id);
     bool isEmpty();
@@ -23,6 +24,7 @@ public:
     void remove(const QString &name);
     void rename(const QString &oldName, const QString &newName);
     int getId(const QString &name);
+    QUuid getUuid(const QString &name);
     int getIdFromUuid(const QUuid &uuid);
     YACReaderLibraries &operator=(const YACReaderLibraries &source);
     QList<YACReaderLibrary> getLibraries() const;

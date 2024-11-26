@@ -2022,3 +2022,39 @@ bool DBHelper::isFavoriteComic(qulonglong id, QSqlDatabase &db)
 
     return false;
 }
+
+QString DBHelper::getLibraryInfo(QUuid id)
+{
+    QString info;
+    QString libraryPath = DBHelper::getLibraries().getPath(id);
+
+    info = "<b>Library path</b>:<br/>" + libraryPath + "<br/><br/>";
+
+    QString connectionName = "";
+    QList<LibraryItem *> list;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryPath + "/.yacreaderlibrary");
+        connectionName = db.connectionName();
+
+        // num folders
+        auto foldersQuery = db.exec("SELECT COUNT(*) FROM folder WHERE id <> 1");
+        foldersQuery.next();
+
+        info += "<b>Number of folders</b>:<br/>" + foldersQuery.value(0).toString() + "<br/><br/>";
+
+        // num comics
+        auto comicsQuery = db.exec("SELECT COUNT(*) FROM comic");
+        comicsQuery.next();
+
+        info += "<b>Number of comics</b>:<br/>" + comicsQuery.value(0).toString() + "<br/><br/>";
+
+        // num read comics
+        auto readComicsQuery = db.exec("SELECT count(*) FROM comic c INNER JOIN comic_info ci ON c.comicInfoId = ci.id WHERE ci.read = 1");
+        readComicsQuery.next();
+
+        info += "<b>Number of read comics</b>:<br/>" + readComicsQuery.value(0).toString() + "<br/><br/>";
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return info;
+}

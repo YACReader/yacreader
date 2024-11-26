@@ -619,6 +619,9 @@ void LibraryWindow::createMenus()
 
     selectedLibrary->addAction(actions.exportLibraryAction);
     selectedLibrary->addAction(actions.importLibraryAction);
+    YACReader::addSperator(selectedLibrary);
+
+    selectedLibrary->addAction(actions.showLibraryInfo);
 
 // MacOSX app menus
 #ifdef Q_OS_MACOS
@@ -647,6 +650,10 @@ void LibraryWindow::createMenus()
 
     libraryMenu->addAction(actions.exportLibraryAction);
     libraryMenu->addAction(actions.importLibraryAction);
+
+    libraryMenu->addSeparator();
+
+    libraryMenu->addAction(actions.showLibraryInfo);
 
     // folder
     QMenu *folderMenu = new QMenu(tr("Folder"));
@@ -1892,6 +1899,23 @@ void LibraryWindow::rescanLibraryForXMLInfo()
     _lastAdded = currentLibrary;
 
     xmlInfoLibraryScanner->scanLibrary(path, path + "/.yacreaderlibrary");
+}
+
+void LibraryWindow::showLibraryInfo()
+{
+    auto id = libraries.getUuid(selectedLibrary->currentText());
+    auto info = DBHelper::getLibraryInfo(id);
+
+    // TODO: use something nicer than a QMessageBox
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(tr("Library info"));
+    msgBox.setText(info);
+    QSpacerItem *horizontalSpacer = new QSpacerItem(420, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    QGridLayout *layout = (QGridLayout *)msgBox.layout();
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    msgBox.setStandardButtons(QMessageBox::Close);
+    msgBox.setDefaultButton(QMessageBox::Close);
+    msgBox.exec();
 }
 
 void LibraryWindow::rescanCurrentFolderForXMLInfo()

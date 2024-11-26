@@ -21,6 +21,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix crash when current folders is empty after an update.
 * Enable dropping content on the FolderContentView.
 * Fix `open containing folder...` shortcut for comics.
+* Add a dialog to show information about a library, it includes the number of folders and comics and the number of read comics.
 
 ### YACReaderLibraryServer
 * New command --system-info to print information about the execution environment and available resources (including what image formats are supported and what libraries are used by the app).

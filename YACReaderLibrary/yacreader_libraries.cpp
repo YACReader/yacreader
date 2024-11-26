@@ -54,6 +54,12 @@ QString YACReaderLibraries::getPath(int id)
     return library != libraries.cend() ? library->getPath() : "";
 }
 
+QString YACReaderLibraries::getPath(const QUuid &id)
+{
+    auto library = std::find_if(libraries.cbegin(), libraries.cend(), [id](const YACReaderLibrary &library) { return library.getId() == id; });
+    return library != libraries.cend() ? library->getPath() : "";
+}
+
 QString YACReaderLibraries::getDBPath(int id)
 {
     return getPath(id) + "/.yacreaderlibrary";
@@ -99,6 +105,12 @@ int YACReaderLibraries::getId(const QString &name)
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [name](const YACReaderLibrary &library) { return library.getName() == name; });
     return library != libraries.cend() ? library->getLegacyId() : -1;
+}
+
+QUuid YACReaderLibraries::getUuid(const QString &name)
+{
+    auto library = std::find_if(libraries.cbegin(), libraries.cend(), [name](const YACReaderLibrary &library) { return library.getName() == name; });
+    return library != libraries.cend() ? library->getId() : QUuid();
 }
 
 int YACReaderLibraries::getIdFromUuid(const QUuid &uuid)

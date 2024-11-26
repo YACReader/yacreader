@@ -101,6 +101,11 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     rescanLibraryForXMLInfoAction->setData(RESCAN_LIBRARY_XML_INFO_ACTION_YL);
     rescanLibraryForXMLInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESCAN_LIBRARY_XML_INFO_ACTION_YL));
 
+    showLibraryInfo = new QAction(tr("Show library info"), window);
+    showLibraryInfo->setToolTip(tr("Show information about the current library"));
+    showLibraryInfo->setData(SHOW_LIBRARY_INFO_ACTION_YL);
+    showLibraryInfo->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_LIBRARY_INFO_ACTION_YL));
+
     openComicAction = new QAction(tr("Open current comic"), window);
     openComicAction->setToolTip(tr("Open current comic on YACReader"));
     openComicAction->setData(OPEN_COMIC_ACTION_YL);
@@ -559,6 +564,8 @@ void LibraryWindowActions::createConnections(
     // connect(deleteLibraryAction,SIGNAL(triggered()),window,SLOT(deleteLibrary()));
     QObject::connect(removeLibraryAction, &QAction::triggered, window, &LibraryWindow::removeLibrary);
     QObject::connect(rescanLibraryForXMLInfoAction, &QAction::triggered, window, &LibraryWindow::rescanLibraryForXMLInfo);
+    QObject::connect(showLibraryInfo, &QAction::triggered, window, &LibraryWindow::showLibraryInfo);
+
     QObject::connect(openComicAction, &QAction::triggered, window, QOverload<>::of(&LibraryWindow::openComic));
     QObject::connect(helpAboutAction, &QAction::triggered, had, &QWidget::show);
     QObject::connect(addFolderAction, &QAction::triggered, window, &LibraryWindow::addFolderToCurrentIndex);
@@ -659,7 +666,8 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << updateLibraryAction
                                                  << renameLibraryAction
                                                  << removeLibraryAction
-                                                 << rescanLibraryForXMLInfoAction);
+                                                 << rescanLibraryForXMLInfoAction
+                                                 << showLibraryInfo);
 
     allActions << tmpList;
 

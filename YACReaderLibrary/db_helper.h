@@ -104,6 +104,9 @@ public:
     static QList<QString> loadSubfoldersNames(qulonglong folderId, QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
+
+    // library
+    static QString getLibraryInfo(QUuid id);
 };
 
 #endif

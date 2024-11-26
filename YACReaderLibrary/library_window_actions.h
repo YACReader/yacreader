@@ -39,6 +39,9 @@ public:
     QAction *removeLibraryAction;
     QAction *helpAboutAction;
     QAction *renameLibraryAction;
+
+    QAction *showLibraryInfo;
+
 #ifndef Q_OS_MACOS
     QAction *toggleFullScreenAction;
 #endif
