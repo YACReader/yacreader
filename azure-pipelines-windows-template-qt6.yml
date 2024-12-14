@@ -36,14 +36,14 @@ jobs:
       wget "${{ parameters.vc_redist_url }}" -O $(Build.SourcesDirectory)\${{ parameters.vc_redist_file_name }}
     displayName: 'Install dependencies'
   - script: |
-      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
+      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
       qmake CONFIG+="7zip" %DEFINES_VAR%
       nmake
     displayName: 'Build'
   - script: |
-      call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
+      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}"
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       nmake check TESTARGS="-maxwarnings 100000"
     displayName: 'Run tests'
