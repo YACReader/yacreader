@@ -1,9 +1,9 @@
 parameters:
   name: Windows_x64
   architecture: 'x64'
-  qt_version: '6.2.2'
-  qt_spec: 'msvc2019_64'
-  qt_aqt_spec: 'win64_msvc2019_64'
+  qt_version: '6.8.1'
+  qt_spec: 'msvc2022_64'
+  qt_aqt_spec: 'win64_msvc2022_64'
   vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
   vc_redist_file_name: 'vc_redist.x64.exe'
   vc_vars: 'vcvars64.bat'
@@ -16,7 +16,7 @@ jobs:
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - group: windows-codesign
   pool:
-    vmImage: 'windows-2019'
+    vmImage: 'windows-2022'
   steps:
   - task: UsePythonVersion@0
     inputs:
