@@ -46,7 +46,6 @@ Source: Qt6Network.dll; DestDir: {app}
 Source: Qt6OpenGL.dll; DestDir: {app}
 Source: Qt6OpenGLWidgets.dll; DestDir: {app}
 Source: Qt6Qml.dll; DestDir: {app}
-Source: Qt6QmlLocalStorage.dll; DestDir: {app}
 Source: Qt6QmlModels.dll; DestDir: {app}
 Source: Qt6QmlWorkerScript.dll; DestDir: {app}
 Source: Qt6QmlXmlListModel.dll; DestDir: {app}
