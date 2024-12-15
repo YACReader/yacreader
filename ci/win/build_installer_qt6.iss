@@ -61,23 +61,17 @@ Source: Qt6Sql.dll; DestDir: {app}
 Source: Qt6Svg.dll; DestDir: {app}
 Source: Qt6ShaderTools.dll; DestDir: {app}
 
-
 ;Qt Angle
 Source: opengl32sw.dll; DestDir: {app}
 Source: D3Dcompiler_47.dll; DestDir: {app}
 
-;Qt QML
-Source: QtQml\*; DestDir: {app}\QtQml\; Flags: recursesubdirs
-Source: QtQuick\*; DestDir: {app}\QtQuick\; Flags: recursesubdirs
-
-;Qt5 Compat
-Source: Qt5Compat\*; DestDir: {app}\Qt5Compat\; Flags: recursesubdirs
-
 ;Qt PlugIns
+Source:generic\*;  DestDir: {app}\generic\
 Source:iconengines\*;  DestDir: {app}\iconengines\
 Source:imageformats\*;  DestDir: {app}\imageformats\
 Source:networkinformation\*;  DestDir: {app}\networkinformation\
 Source:platforms\*;  DestDir: {app}\platforms\
+Source:qml\*;  DestDir: {app}\qml\; Flags: recursesubdirs
 Source:qmltooling\*;  DestDir: {app}\qmltooling\
 Source:sqldrivers\qsqlite.dll;  DestDir: {app}\sqldrivers\
 Source:styles\*;  DestDir: {app}\styles\
