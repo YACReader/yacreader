@@ -47,21 +47,19 @@ Source: Qt6OpenGL.dll; DestDir: {app}
 Source: Qt6OpenGLWidgets.dll; DestDir: {app}
 Source: Qt6Qml.dll; DestDir: {app}
 Source: Qt6QmlModels.dll; DestDir: {app}
+Source: Qt6QmlMeta.dll; DestDir: {app}
 Source: Qt6QmlWorkerScript.dll; DestDir: {app}
-Source: Qt6QmlXmlListModel.dll; DestDir: {app}
 Source: Qt6Quick.dll; DestDir: {app}
+Source: Qt6QuickEffects.dll; DestDir: {app}
 Source: Qt6QuickControls2.dll; DestDir: {app}
 Source: Qt6QuickControls2Impl.dll; DestDir: {app}
-Source: Qt6QuickDialogs2.dll; DestDir: {app}
-Source: Qt6QuickDialogs2QuickImpl.dll; DestDir: {app}
-Source: Qt6QuickDialogs2Utils.dll; DestDir: {app}
 Source: Qt6QuickLayouts.dll; DestDir: {app}
-Source: Qt6QuickParticles.dll; DestDir: {app}
 Source: Qt6QuickShapes.dll; DestDir: {app}
 Source: Qt6QuickTemplates2.dll; DestDir: {app}
 Source: Qt6QuickWidgets.dll; DestDir: {app}
 Source: Qt6Sql.dll; DestDir: {app}
 Source: Qt6Svg.dll; DestDir: {app}
+Source: Qt6ShaderTools.dll; DestDir: {app}
 
 
 ;Qt Angle
