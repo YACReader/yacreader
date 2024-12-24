@@ -57,9 +57,7 @@ Viewer::Viewer(QWidget *parent)
     setFrameStyle(QFrame::NoFrame);
     setAlignment(Qt::AlignCenter);
 
-    QPalette palette;
-    palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor());
-    setPalette(palette);
+    updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor());
     //---------------------------------------
     mglass = new MagnifyingGlass(
             Configuration::getConfiguration().getMagnifyingGlassSize(),
@@ -1032,9 +1030,7 @@ void Viewer::updateOptions()
 
 void Viewer::updateBackgroundColor(const QColor &color)
 {
-    QPalette palette;
-    palette.setColor(backgroundRole(), color);
-    setPalette(palette);
+    setStyleSheet(QString("background-color: %1;").arg(color.name()));
 }
 
 void Viewer::animateShowTranslator()
@@ -1099,9 +1095,7 @@ void Viewer::updateConfig(QSettings *settings)
 {
     goToFlow->updateConfig(settings);
 
-    QPalette palette;
-    palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor());
-    setPalette(palette);
+    updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor());
 }
 
 // deprecated
