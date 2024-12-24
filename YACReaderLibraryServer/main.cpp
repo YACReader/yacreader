@@ -245,6 +245,8 @@ int start(QCoreApplication &app, QCommandLineParser &parser, const QStringList &
         QLOG_INFO() << "Done updating libraries";
     });
 
+    librariesUpdateCoordinator->init();
+
     int ret = app.exec();
 
     QLOG_INFO() << "YACReaderLibrary closed with exit code :" << ret;

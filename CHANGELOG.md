@@ -25,6 +25,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReaderLibraryServer
 * New command --system-info to print information about the execution environment and available resources (including what image formats are supported and what libraries are used by the app).
+* Fix automatic libraries updates not being triggered.
 
 ### All apps
 * Sorting heuristic to try to find spreads in the content of a comic is now only used for files with less than 1000 pages to avoid false positives.
