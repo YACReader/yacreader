@@ -202,6 +202,14 @@ int main(int argc, char *argv[])
         mwv->openComicFromPath(arglist.at(0));
     }
 
+// This forces the style that was being used before Qt6.7. Qt6.7 introduced a new style for Windows 11. The new style seems to have somo known bugs.
+// There is a bug in the Windows 11 style that causes checked QToolButton to not have a background color (css doesn't work either).
+// So it makes imposible for the user to see if the button is checked or not.
+// QTBUG-132443
+#if defined(Q_OS_WIN) && QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
+    QApplication::setStyle("windowsvista");
+#endif
+
 #ifdef Q_OS_MACOS
     app.setWindow(mwv);
 #endif
