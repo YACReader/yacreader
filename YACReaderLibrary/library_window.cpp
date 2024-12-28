@@ -706,7 +706,7 @@ void LibraryWindow::createConnections()
     connect(createLibraryDialog, &CreateLibraryDialog::libraryExists, this, &LibraryWindow::libraryAlreadyExists);
     connect(importComicsInfoDialog, &QDialog::finished, this, &LibraryWindow::reloadCurrentLibrary);
 
-    connect(libraryCreator, &LibraryCreator::completed, this, &LibraryWindow::showRootWidget);
+    connect(libraryCreator, &LibraryCreator::finished, this, &LibraryWindow::showRootWidget);
     connect(libraryCreator, &LibraryCreator::updated, this, &LibraryWindow::reloadCurrentLibrary);
     connect(libraryCreator, &LibraryCreator::created, this, &LibraryWindow::openLastCreated);
     connect(libraryCreator, &LibraryCreator::updatedCurrentFolder, this, &LibraryWindow::reloadAfterCopyMove);

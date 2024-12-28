@@ -96,7 +96,6 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
             QString error = "Unable to find database at: " + _target;
             QLOG_ERROR() << error;
             emit failedOpeningDB(error);
-            emit completed();
             return;
         }
 
@@ -164,7 +163,6 @@ void LibraryCreator::run()
             if (!_database.isOpen()) {
                 QLOG_ERROR() << "Unable to create data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
                 emit failedCreatingDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
-                emit completed();
                 creation = false;
                 return;
             }
@@ -193,7 +191,6 @@ void LibraryCreator::run()
                 QString error = "Unable to find database at: " + _target;
                 QLOG_ERROR() << error;
                 emit failedOpeningDB(error);
-                emit completed();
                 return;
             }
 
@@ -203,7 +200,6 @@ void LibraryCreator::run()
             if (!_database.open()) {
                 QLOG_ERROR() << "Unable to open database" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
                 emit failedOpeningDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
-                emit completed();
                 creation = false;
                 return;
             }
@@ -255,7 +251,6 @@ void LibraryCreator::run()
         emit updatedCurrentFolder(folderDestinationModelIndex);
     }
 
-    emit completed();
     creation = false;
 }
 
