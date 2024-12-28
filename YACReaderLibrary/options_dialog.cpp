@@ -75,6 +75,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     blurLabel->setVisible(useBackgroundImage);
     useCurrentComicCoverCheck->setVisible(useBackgroundImage);
 
+    displayGlobalContinueReadingBannerCheck->setChecked(settings->value(DISPLAY_GLOBAL_CONTINUE_READING_IN_GRID_VIEW, true).toBool());
     displayContinueReadingBannerCheck->setChecked(settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool());
 
     updateLibrariesAtStartupCheck->setChecked(settings->value(UPDATE_LIBRARIES_AT_STARTUP, false).toBool());
@@ -384,9 +385,11 @@ QWidget *OptionsDialog::createGridTab()
     auto gridBackgroundGroup = new QGroupBox(tr("Background"));
     gridBackgroundGroup->setLayout(gridBackgroundLayout);
 
-    displayContinueReadingBannerCheck = new QCheckBox(tr("Display continue reading banner"));
+    displayGlobalContinueReadingBannerCheck = new QCheckBox(tr("Display continue reading banner"));
+    displayContinueReadingBannerCheck = new QCheckBox(tr("Display current comic banner"));
 
     auto continueReadingLayout = new QVBoxLayout();
+    continueReadingLayout->addWidget(displayGlobalContinueReadingBannerCheck);
     continueReadingLayout->addWidget(displayContinueReadingBannerCheck);
 
     auto continueReadingGroup = new QGroupBox(tr("Continue reading"));
@@ -398,6 +401,12 @@ QWidget *OptionsDialog::createGridTab()
     connect(useCurrentComicCoverCheck, &QCheckBox::clicked, this, &OptionsDialog::useCurrentComicCoverCheckClicked);
     connect(resetButton, &QPushButton::clicked, this, &OptionsDialog::resetToDefaults);
     // end grid view background config
+
+    connect(displayGlobalContinueReadingBannerCheck, &QCheckBox::clicked, this, [this]() {
+        this->settings->setValue(DISPLAY_GLOBAL_CONTINUE_READING_IN_GRID_VIEW, this->displayGlobalContinueReadingBannerCheck->isChecked());
+
+        emit optionsChanged();
+    });
 
     connect(displayContinueReadingBannerCheck, &QCheckBox::clicked, this, [this]() {
         this->settings->setValue(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, this->displayContinueReadingBannerCheck->isChecked());

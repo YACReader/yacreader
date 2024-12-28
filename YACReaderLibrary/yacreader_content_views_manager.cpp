@@ -38,6 +38,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     default:
         comicsView = gridComicsView = new GridComicsView();
         connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
+        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::finished, gridComicsView, &GridComicsView::updateSettings); // TODO: we can link constante changes to updateSettings because of bad performance
         comicsViewStatus = Grid;
         break;
     }
@@ -58,6 +59,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     // connections
     connect(folderContentView, &FolderContentView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
     connect(folderContentView, &FolderContentView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
+    connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, folderContentView, &FolderContentView::updateSettings);
 }
 
 QWidget *YACReaderContentViewsManager::containerWidget()
@@ -245,6 +247,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
 
         switchToComicsView(classicComicsView, gridComicsView);
         connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
+        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::finished, gridComicsView, &GridComicsView::updateSettings); // TODO: we can link constante changes to updateSettings because of bad performance
         comicsViewStatus = Grid;
 
         break;

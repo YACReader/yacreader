@@ -28,6 +28,9 @@ public:
     void setRecentRange(int days);
 
     FolderModel *currentFolderModel() { return folderModel; }
+public slots:
+    void updateSettings();
+
 signals:
     void subfolderSelected(QModelIndex, int);
     void openComic(const ComicDB &comic, const ComicModel::Mode mode);

@@ -163,7 +163,8 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
     ctxt->setContextProperty("comicsList", comicModel.get());
     ctxt->setContextProperty("foldersList", folderModel);
 
-    ctxt->setContextProperty("showCurrentComic", QVariant(false));
+    auto showContinueReading = settings->value(DISPLAY_GLOBAL_CONTINUE_READING_IN_GRID_VIEW, true).toBool();
+    ctxt->setContextProperty("showContinueReading", QVariant(showContinueReading));
 
     ctxt->setContextProperty("openHelper", this);
     ctxt->setContextProperty("dropManager", this);
@@ -227,6 +228,14 @@ void FolderContentView::setShowRecent(bool visible)
 void FolderContentView::setRecentRange(int days)
 {
     folderModel->setRecentRange(days);
+}
+
+void FolderContentView::updateSettings()
+{
+    QQmlContext *ctxt = view->rootContext();
+
+    auto showContinueReading = settings->value(DISPLAY_GLOBAL_CONTINUE_READING_IN_GRID_VIEW, true).toBool();
+    ctxt->setContextProperty("showContinueReading", QVariant(showContinueReading));
 }
 
 void FolderContentView::openFolder(int index)

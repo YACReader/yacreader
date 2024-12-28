@@ -30,6 +30,7 @@ private slots:
 
 private:
     // General tabs
+    QCheckBox *displayGlobalContinueReadingBannerCheck;
     QCheckBox *displayContinueReadingBannerCheck;
     QCheckBox *trayIconCheckbox;
     QCheckBox *startToTrayCheckbox;

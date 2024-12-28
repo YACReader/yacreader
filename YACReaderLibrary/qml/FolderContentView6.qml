@@ -193,7 +193,7 @@ Rectangle {
                 id: continueReadingTopView
                 color: "#00000000"
 
-                height: list.count > 0 ? main.continuReadingHeight : main.topContentMargin
+                height: list.count > 0 && showContinueReading ? main.continuReadingHeight : main.topContentMargin
 
                 Rectangle {
                     color: continueReadingBackgroundColor
@@ -203,7 +203,7 @@ Rectangle {
                     width: main.width
                     height: main.continuReadingHeight - main.topContentMargin
 
-                    visible: list.count > 0
+                    visible: list.count > 0 && showContinueReading
 
                     Text {
                         id: continueReadingText
