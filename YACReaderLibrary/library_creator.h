@@ -62,7 +62,7 @@ private:
     void cleanup(QSqlDatabase &db, const QString &target);
 
 signals:
-    void finished();
+    void completed();
     void coverExtracted(QString);
     void folderUpdated(QString);
     void comicAdded(QString, QString);
