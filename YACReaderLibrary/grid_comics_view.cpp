@@ -436,6 +436,10 @@ void GridComicsView::dummyUpdater()
 
 void GridComicsView::setCurrentComicIfNeeded()
 {
+    if (model == nullptr) {
+        return;
+    }
+
     bool found;
     currentComic = currentComicFromModel(model, found);
 
