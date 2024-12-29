@@ -68,6 +68,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; Add a dialog to show information about a library, including the number of folders, comics, and read comics<br/>"
                   "   &#8226; Fix occasional crashes when using automatic library updates<br/>"
                   "   &#8226; Add setting to hide the \"Continue Reading...\" banner from the home view<br/>"
+                  "   &#8226; Improve Grid and Flow Info comics view scroll performance<br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">YACReaderLibraryServer</span><br/>"
                   "   &#8226; New command --system-info to print information about the execution environment and available resources (including what image formats are supported and what libraries are used by the app).<br/>"
