@@ -24,6 +24,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add a dialog to show information about a library, it includes the number of folders and comics and the number of read comics.
 * Fix ocasional crashes when using automatic library updates.
 * Add setting to hide the "Continue Reading..." banner from the home view.
+* Improve Grid view performance.
 
 ### YACReaderLibraryServer
 * New command --system-info to print information about the execution environment and available resources (including what image formats are supported and what libraries are used by the app).
