@@ -65,15 +65,19 @@ SplitView {
                     NumberAnimation { duration: 90 }
                 }
 
-                DropShadow {
-                    anchors.fill: realCell
-                    horizontalOffset: 0
-                    verticalOffset: 0
-                    radius: 8.0
-                    samples: 17
-                    color: "#FF000000"
-                    source: realCell
-                    visible: showDropShadow;
+                BorderImage {
+                    anchors {
+                        top: realCell.top
+                        left: realCell.left
+                        right: realCell.right
+                        bottom: realCell.bottom
+                        margins: -10
+                    }
+                    border { left: 10; top: 10; right: 10; bottom: 10 }
+                    horizontalTileMode: BorderImage.Stretch
+                    verticalTileMode: BorderImage.Stretch
+                    source: "prerendered_cover_shadow.png"
+                    visible: showDropShadow
                 }
 
                 Rectangle {

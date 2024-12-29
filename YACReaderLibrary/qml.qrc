@@ -27,5 +27,6 @@
         <file>qml/InfoTick.qml</file>
         <file>qml/InfoFavorites.qml</file>
         <file>qml/InfoRating.qml</file>
+        <file>qml/prerendered_cover_shadow.png</file>
     </qresource>
 </RCC>

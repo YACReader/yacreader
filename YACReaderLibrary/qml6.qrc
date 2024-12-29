@@ -27,5 +27,6 @@
         <file>qml/info-tag@2x.png</file>
         <file>qml/info-tick.png</file>
         <file>qml/info-tick@2x.png</file>
+        <file>qml/prerendered_cover_shadow.png</file>
     </qresource>
 </RCC>
