@@ -2,7 +2,7 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## WIP (9.15.0)
+## 9.15.0
 
 ### YACReader
 * Save magnifying glass size and zoom level.
