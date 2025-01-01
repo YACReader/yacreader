@@ -22,7 +22,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Enable dropping content on the FolderContentView.
 * Fix `open containing folder...` shortcut for comics.
 * Add a dialog to show information about a library, it includes the number of folders and comics and the number of read comics.
-* Fix ocasional crashes when using automatic library updates.
+* Fix occasional crashes when using automatic library updates.
 * Add setting to hide the "Continue Reading..." banner from the home view.
 * Improve Grid and Flow Info comics view scroll performance.
 
