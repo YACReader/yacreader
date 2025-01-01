@@ -381,6 +381,12 @@ void GridComicsView::triggerOpenCurrentComic()
     emit openComic(currentComic, model->getMode());
 }
 
+void GridComicsView::updateSettings()
+{
+    updateBackgroundConfig();
+    setCurrentComicIfNeeded();
+}
+
 void GridComicsView::rate(int index, int rating)
 {
     model->updateRating(rating, model->index(index, 0));
@@ -430,6 +436,10 @@ void GridComicsView::dummyUpdater()
 
 void GridComicsView::setCurrentComicIfNeeded()
 {
+    if (model == nullptr) {
+        return;
+    }
+
     bool found;
     currentComic = currentComicFromModel(model, found);
 
@@ -442,16 +452,9 @@ void GridComicsView::setCurrentComicIfNeeded()
             (mode == ComicModel::Mode::Folder || mode == ComicModel::Mode::ReadingList) &&
             settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool();
 
-    if (showCurrentComic) {
-        ctxt->setContextProperty("currentComic", &currentComic);
-        ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
-        ctxt->setContextProperty("showCurrentComic", QVariant(true));
-    } else {
-        ctxt->setContextProperty("currentComic", &currentComic);
-        ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
-        ctxt->setContextProperty("showCurrentComic", QVariant(false));
-        // ctxt->setContextProperty("currentComic", nullptr);
-    }
+    ctxt->setContextProperty("currentComic", &currentComic);
+    ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
+    ctxt->setContextProperty("showCurrentComic", QVariant(showCurrentComic));
 }
 
 void GridComicsView::resetScroll()

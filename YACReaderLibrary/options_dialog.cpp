@@ -75,6 +75,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     blurLabel->setVisible(useBackgroundImage);
     useCurrentComicCoverCheck->setVisible(useBackgroundImage);
 
+    displayGlobalContinueReadingBannerCheck->setChecked(settings->value(DISPLAY_GLOBAL_CONTINUE_READING_IN_GRID_VIEW, true).toBool());
     displayContinueReadingBannerCheck->setChecked(settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool());
 
     updateLibrariesAtStartupCheck->setChecked(settings->value(UPDATE_LIBRARIES_AT_STARTUP, false).toBool());
@@ -85,6 +86,14 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     updateLibrariesTimeEdit->setTime(settings->value(UPDATE_LIBRARIES_AT_CERTAIN_TIME_TIME, "00:00").toTime());
 
     compareModifiedDateWhenUpdatingLibrariesCheck->setChecked(settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool());
+
+    thirdPartyReaderEdit->setText(settings->value(THIRD_PARTY_READER_COMMAND, "").toString());
+}
+
+void OptionsDialog::saveOptions()
+{
+    settings->setValue(THIRD_PARTY_READER_COMMAND, thirdPartyReaderEdit->text());
+    YACReaderOptionsDialog::saveOptions();
 }
 
 void OptionsDialog::useBackgroundImageCheckClicked(bool checked)
@@ -198,12 +207,23 @@ QWidget *OptionsDialog::createGeneralTab()
 
     connect(recentIntervalSlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::numDaysToConsiderRecentChanged);
 
+    auto thirdPartyReaderBox = new QGroupBox(tr("Third party reader"));
+    thirdPartyReaderEdit = new QLineEdit();
+    thirdPartyReaderEdit->setPlaceholderText(tr("Write {comic_file_path} where the path should go in the command"));
+    auto clearButton = new QPushButton(tr("Clear"));
+    auto thirdPartyReaderLayout = new QHBoxLayout();
+    thirdPartyReaderLayout->addWidget(thirdPartyReaderEdit, 1);
+    thirdPartyReaderLayout->addWidget(clearButton);
+    thirdPartyReaderBox->setLayout(thirdPartyReaderLayout);
+    connect(clearButton, &QPushButton::clicked, thirdPartyReaderEdit, &QLineEdit::clear);
+
     auto generalLayout = new QVBoxLayout();
     generalLayout->addWidget(trayIconBox);
     generalLayout->addWidget(shortcutsBox);
     generalLayout->addWidget(apiKeyBox);
     generalLayout->addWidget(comicInfoXMLBox);
     generalLayout->addWidget(recentlyAddedBox);
+    generalLayout->addWidget(thirdPartyReaderBox);
     generalLayout->addStretch();
 
     auto generalW = new QWidget;
@@ -365,9 +385,11 @@ QWidget *OptionsDialog::createGridTab()
     auto gridBackgroundGroup = new QGroupBox(tr("Background"));
     gridBackgroundGroup->setLayout(gridBackgroundLayout);
 
-    displayContinueReadingBannerCheck = new QCheckBox(tr("Display continue reading banner"));
+    displayGlobalContinueReadingBannerCheck = new QCheckBox(tr("Display continue reading banner"));
+    displayContinueReadingBannerCheck = new QCheckBox(tr("Display current comic banner"));
 
     auto continueReadingLayout = new QVBoxLayout();
+    continueReadingLayout->addWidget(displayGlobalContinueReadingBannerCheck);
     continueReadingLayout->addWidget(displayContinueReadingBannerCheck);
 
     auto continueReadingGroup = new QGroupBox(tr("Continue reading"));
@@ -379,6 +401,12 @@ QWidget *OptionsDialog::createGridTab()
     connect(useCurrentComicCoverCheck, &QCheckBox::clicked, this, &OptionsDialog::useCurrentComicCoverCheckClicked);
     connect(resetButton, &QPushButton::clicked, this, &OptionsDialog::resetToDefaults);
     // end grid view background config
+
+    connect(displayGlobalContinueReadingBannerCheck, &QCheckBox::clicked, this, [this]() {
+        this->settings->setValue(DISPLAY_GLOBAL_CONTINUE_READING_IN_GRID_VIEW, this->displayGlobalContinueReadingBannerCheck->isChecked());
+
+        emit optionsChanged();
+    });
 
     connect(displayContinueReadingBannerCheck, &QCheckBox::clicked, this, [this]() {
         this->settings->setValue(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, this->displayContinueReadingBannerCheck->isChecked());

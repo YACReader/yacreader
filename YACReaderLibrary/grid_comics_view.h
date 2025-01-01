@@ -59,9 +59,8 @@ public slots:
     void selectAll() override;
     void selectIndex(int index) override;
     void triggerOpenCurrentComic();
-
+    void updateSettings();
     void updateBackgroundConfig();
-
     void showInfo();
 
 protected slots:

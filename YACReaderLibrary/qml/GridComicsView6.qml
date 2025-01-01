@@ -67,16 +67,19 @@ SplitView {
                     NumberAnimation { duration: 90 }
                 }
 
-                DropShadow {
-                    anchors.fill: realCell
-                    transparentBorder: true
-                    horizontalOffset: 0
-                    verticalOffset: 0
-                    radius: 10.0
-                    //samples: 17
-                    color: "#FF000000"
-                    source: realCell
-                    visible: showDropShadow;
+                BorderImage {
+                    anchors {
+                        top: realCell.top
+                        left: realCell.left
+                        right: realCell.right
+                        bottom: realCell.bottom
+                        margins: -10
+                    }
+                    border { left: 10; top: 10; right: 10; bottom: 10 }
+                    horizontalTileMode: BorderImage.Stretch
+                    verticalTileMode: BorderImage.Stretch
+                    source: "prerendered_cover_shadow.png"
+                    visible: showDropShadow
                 }
 
                 Rectangle {
@@ -376,30 +379,38 @@ SplitView {
                             comicsSelectionHelper.clear();
                             comicsSelectionHelper.selectIndex(index);
                             grid.currentIndex = index;
-                            ratingConextMenu.popup();
-                        }
-                    }
+                            ratingLoader.active = true;
+                            ratingLoader.item.popup();
+                           }
+                       }
 
-                    Menu {
-                        background: Rectangle {
-                            implicitWidth: 42
-                            implicitHeight: 100
-                            //border.color: "#222"
-                            //color: "#444"
-                        }
+                       Loader {
+                           id: ratingLoader
+                           active: false
+                           sourceComponent: ratingConextMenuComponent
+                       }
 
-                        id: ratingConextMenu
+                       Component {
+                           id: ratingConextMenuComponent
+                           Menu {
+                               background: Rectangle {
+                                   implicitWidth: 42
+                                   implicitHeight: 100
+                               }
 
-                        Action { text: "1"; enabled: true; onTriggered: comicRatingHelper.rate(index,1) }
-                        Action { text: "2"; enabled: true; onTriggered: comicRatingHelper.rate(index,2) }
-                        Action { text: "3"; enabled: true; onTriggered: comicRatingHelper.rate(index,3) }
-                        Action { text: "4"; enabled: true; onTriggered: comicRatingHelper.rate(index,4) }
-                        Action { text: "5"; enabled: true; onTriggered: comicRatingHelper.rate(index,5) }
+                               id: ratingConextMenu
 
-                        delegate: MenuItem {
-                            implicitHeight: 30
-                        }
-                    }
+                               Action { text: "1"; enabled: true; onTriggered: comicRatingHelper.rate(index,1) }
+                               Action { text: "2"; enabled: true; onTriggered: comicRatingHelper.rate(index,2) }
+                               Action { text: "3"; enabled: true; onTriggered: comicRatingHelper.rate(index,3) }
+                               Action { text: "4"; enabled: true; onTriggered: comicRatingHelper.rate(index,4) }
+                               Action { text: "5"; enabled: true; onTriggered: comicRatingHelper.rate(index,5) }
+
+                               delegate: MenuItem {
+                                   implicitHeight: 30
+                               }
+                           }
+                       }
                 }
 
                 //comic rating

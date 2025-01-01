@@ -22,6 +22,12 @@ void ComicDownloadInfoControllerV2::service(HttpRequest &request, HttpResponse &
 
     ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
 
+    if (!comic.info.existOnDb) {
+        response.setStatus(404, "Not Found");
+        response.write("", true);
+        return;
+    }
+
     // TODO: check if the comic wasn't found;
     response.write(QString("fileName:%1\r\n").arg(comic.getFileName()).toUtf8());
     response.write(QString("fileSize:%1\r\n").arg(comic.getFileSize()).toUtf8());

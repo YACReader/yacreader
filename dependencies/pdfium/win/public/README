@@ -4,6 +4,8 @@ The header files in this directory are the only ones that should ever be
 included by an embedder of PDFium.  If there arises a need for functionality
 beyond what is present here, then a new API must be added here to provide it.
 
+Documentation for the API is within the headers. Start by reading fpdfview.h.
+
 These header files must be entirely contained in this directory; they must
 never include other header files from outside of it.
 

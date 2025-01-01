@@ -1,6 +1,7 @@
 #include "help_about_dialog.h"
 
 #include "opengl_checker.h"
+#include "global_info_provider.h"
 
 #include <QtCore>
 #include <QVBoxLayout>
@@ -97,54 +98,12 @@ QString HelpAboutDialog::fileToString(const QString &path)
 
 void HelpAboutDialog::loadSystemInfo()
 {
-    QString text;
-
-    text.append("SYSTEM INFORMATION\n");
-    text.append(QString("Qt version: %1\n").arg(qVersion()));
-    text.append(QString("Build ABI: %1\n").arg(QSysInfo::buildAbi()));
-    text.append(QString("build CPU architecture: %1\n").arg(QSysInfo::buildCpuArchitecture()));
-    text.append(QString("CPU architecture: %1\n").arg(QSysInfo::currentCpuArchitecture()));
-    text.append(QString("Kernel type: %1\n").arg(QSysInfo::kernelType()));
-    text.append(QString("Kernel version: %1\n").arg(QSysInfo::kernelVersion()));
-    text.append(QString("Product info: %1\n").arg(QSysInfo::prettyProductName()));
-
-    //    QProcess systemInfoProcess;
-    //    QString tempOutput;
-
-    //    if (QSysInfo::kernelType() == "winnt") {
-    //        QString cpuname = "wmic cpu get name";
-    //        systemInfoProcess.start("cmd", QList<QString>() << "/C" << cpuname);
-    //        systemInfoProcess.waitForFinished();
-    //        tempOutput = QString(systemInfoProcess.readAllStandardOutput()).replace("\n", " ");
-    //        text.append(QString("CPU: %1\n").arg(tempOutput));
-    //    }
-
-    //    if (QSysInfo::kernelType() == "linux") {
-    //        QString cpuname = "cat /proc/cpuinfo | grep 'model name' | uniq";
-    //        systemInfoProcess.start("bash", QList<QString>() << "-c" << cpuname);
-    //        systemInfoProcess.waitForFinished();
-    //        tempOutput = systemInfoProcess.readAllStandardOutput();
-    //        text.append(QString("CPU: %1\n").arg(tempOutput));
-    //    }
+    auto text = YACReader::getGlobalInfo();
 
     auto openGLChecker = OpenGLChecker();
     text.append("\nGRAPHIC INFORMATION\n");
     text.append(QString("Screen pixel ratio: %1\n").arg(devicePixelRatioF()));
     text.append(QString("OpenGL version: %1\n").arg(openGLChecker.textVersionDescription()));
-
-    //    if (QSysInfo::kernelType() == "winnt") {
-    //        QString gpu = "wmic PATH Win32_videocontroller get VideoProcessor";
-    //        systemInfoProcess.start("cmd", QList<QString>() << "/C" << gpu);
-    //        systemInfoProcess.waitForFinished();
-    //        tempOutput = systemInfoProcess.readAllStandardOutput();
-    //        text.append(QString("GPU: %1\n").arg(tempOutput));
-
-    //        QString gpuram = "wmic PATH Win32_VideoController get AdapterRAM";
-    //        systemInfoProcess.start("cmd", QList<QString>() << "/C" << gpuram);
-    //        systemInfoProcess.waitForFinished();
-    //        tempOutput = systemInfoProcess.readAllStandardOutput();
-    //        text.append(QString("GPU RAM: %1\n").arg(tempOutput));
-    //    }
 
     systemInfoText->setText(text);
 }

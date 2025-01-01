@@ -27,8 +27,8 @@ void Configuration::load(QSettings *settings)
         settings->setValue(GO_TO_FLOW_SIZE, QSize(126, 200));
     if (!settings->contains(MAG_GLASS_SIZE))
         settings->setValue(MAG_GLASS_SIZE, QSize(350, 175));
-    if (!settings->contains(ZOOM_LEVEL))
-        settings->setValue(MAG_GLASS_SIZE, QSize(350, 175));
+    if (!settings->contains(MAG_GLASS_ZOOM))
+        settings->setValue(MAG_GLASS_ZOOM, 0.5);
     if (!settings->contains(FLOW_TYPE))
         settings->setValue(FLOW_TYPE, 0);
     if (!settings->contains(FULLSCREEN))

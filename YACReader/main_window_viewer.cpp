@@ -1187,8 +1187,12 @@ void MainWindowViewer::setUpShortcutsManagement()
     auto *const zoomOutMglassAction = addActionWithShortcut(tr("Zoom out magnifying glass"), ZOOM_OUT_MGLASS_ACTION_Y);
     connect(zoomOutMglassAction, &QAction::triggered, viewer, &Viewer::magnifyingGlassZoomOut);
 
+    auto *const resetMglassAction = addActionWithShortcut(tr("Reset magnifying glass"), RESET_MGLASS_ACTION_Y);
+    connect(resetMglassAction, &QAction::triggered, viewer, &Viewer::resetMagnifyingGlass);
+
     mglassActions = { sizeUpMglassAction, sizeDownMglassAction,
-                      zoomInMglassAction, zoomOutMglassAction };
+                      zoomInMglassAction, zoomOutMglassAction,
+                      resetMglassAction };
 
     editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"), QIcon(":/images/shortcuts_group_mglass.svg"),
                                          tmpList = QList<QAction *>()

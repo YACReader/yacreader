@@ -187,53 +187,13 @@ Rectangle {
             grid.contentX = grid.originX
         }
 
-        DropArea {
-            anchors.fill: parent
-
-            onEntered: {
-                if(drag.hasUrls)
-                {
-                    if(dropManager.canDropUrls(drag.urls, drag.action))
-                    {
-                        drag.accepted = true;
-                    }else
-                        drag.accepted = false;
-                }
-                else if (dropManager.canDropFormats(drag.formats)) {
-                    drag.accepted = true;
-                } else
-                    drag.accepted = false;
-            }
-
-            onDropped: {
-                if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
-                {
-                    dropManager.droppedFiles(drop.urls, drop.action);
-                }
-                else{
-                    if (dropManager.canDropFormats(drop.formats))
-                    {
-                        var destItem = grid.itemAt(drop.x,drop.y + grid.contentY);
-                        var destLocalX = grid.mapToItem(destItem,drop.x,drop.y + grid.contentY).x
-                        var realIndex = grid.indexAt(drop.x,drop.y + grid.contentY);
-
-                        if(realIndex === -1)
-                            realIndex = grid.count - 1;
-
-                        var destIndex = destLocalX < (grid.cellWidth / 2) ? realIndex : realIndex + 1;
-                        dropManager.droppedComicsForResortingAt(drop.getDataAsString(), destIndex);
-                    }
-                }
-            }
-        }
-
         property Component continueReadingView: Component {
             id: continueReadingView
             Rectangle {
                 id: continueReadingTopView
                 color: "#00000000"
 
-                height: list.count > 0 ? main.continuReadingHeight : main.topContentMargin
+                height: list.count > 0 && showContinueReading ? main.continuReadingHeight : main.topContentMargin
 
                 Rectangle {
                     color: continueReadingBackgroundColor
@@ -243,7 +203,7 @@ Rectangle {
                     width: main.width
                     height: main.continuReadingHeight - main.topContentMargin
 
-                    visible: list.count > 0
+                    visible: list.count > 0 && showContinueReading
 
                     Text {
                         id: continueReadingText
@@ -471,6 +431,46 @@ Rectangle {
                         radius: 3.5
                     }
                 }
+            }
+
+            DropArea {
+                anchors.fill: parent
+
+                onEntered: drag => {
+                               if(drag.hasUrls)
+                               {
+                                   if(dropManager.canDropUrls(drag.urls, drag.action))
+                                   {
+                                       drag.accepted = true;
+                                   }else
+                                   drag.accepted = false;
+                               }
+                               else if (dropManager.canDropFormats(drag.formats)) {
+                                   drag.accepted = true;
+                               } else
+                               drag.accepted = false;
+                           }
+
+                onDropped: drop => {
+                               if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
+                               {
+                                   dropManager.droppedFiles(drop.urls, drop.action);
+                               }
+                               else{
+                                   if (dropManager.canDropFormats(drop.formats))
+                                   {
+                                       var destItem = grid.itemAt(drop.x,drop.y + grid.contentY);
+                                       var destLocalX = grid.mapToItem(destItem,drop.x,drop.y + grid.contentY).x
+                                       var realIndex = grid.indexAt(drop.x,drop.y + grid.contentY);
+
+                                       if(realIndex === -1)
+                                       realIndex = grid.count - 1;
+
+                                       var destIndex = destLocalX < (grid.cellWidth / 2) ? realIndex : realIndex + 1;
+                                       dropManager.droppedComicsForResortingAt("", destIndex);
+                                   }
+                               }
+                           }
             }
         }
     }

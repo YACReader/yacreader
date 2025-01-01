@@ -1,4 +1,4 @@
-// Copyright 2014 PDFium Authors. All rights reserved.
+// Copyright 2014 The PDFium Authors
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
@@ -50,7 +50,6 @@ typedef struct _FX_FILEAVAIL {
                            size_t offset,
                            size_t size);
 } FX_FILEAVAIL;
-typedef void* FPDF_AVAIL;
 
 // Create a document availability provider.
 //

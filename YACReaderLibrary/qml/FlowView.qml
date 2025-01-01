@@ -118,16 +118,20 @@ Rectangle {
                 running: coverElement.status === Image.Loading
                 }
 
-                DropShadow {
-                    anchors.fill: coverElement
-                    horizontalOffset: 0
-                    verticalOffset: 0
-                    radius: 6
-                    samples: 17
-                    color: "#BB000000"
-                    source: coverElement
-                    visible: showDropShadow;
+            BorderImage {
+                anchors {
+                    top: coverElement.top
+                    left: coverElement.left
+                    right: coverElement.right
+                    bottom: coverElement.bottom
+                    margins: -6
                 }
+                border { left: 10; top: 10; right: 10; bottom: 10 }
+                horizontalTileMode: BorderImage.Stretch
+                verticalTileMode: BorderImage.Stretch
+                source: "prerendered_cover_shadow.png"
+                visible: showDropShadow
+            }
 
                 Image {
                     id: coverElement

@@ -10,6 +10,7 @@
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 #include "yacreader_local_server.h"
+#include "global_info_provider.h"
 
 #include "libraries_update_coordinator.h"
 
@@ -88,6 +89,7 @@ int main(int argc, char **argv)
     parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries, set-port, rescan-xml-info]");
     parser.addOption({ "loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "info" });
     parser.addOption({ "port", "Set server port (temporary). Valid values: 1-65535", "port" });
+    parser.addOption({ "system-info", "Prints detailed information about the system environment, including OS version, hardware specifications, and available resources." });
     parser.parse(app.arguments());
 
     const QStringList args = parser.positionalArguments();
@@ -96,6 +98,15 @@ int main(int argc, char **argv)
     if (parser.isSet(versionOption)) {
         qout << "YACReaderLibraryServer"
              << " " << VERSION << Qt::endl;
+
+        return 0;
+    }
+
+    if (parser.isSet("system-info")) {
+        auto globalInfo = YACReader::getGlobalInfo();
+        for (const auto &line : globalInfo.split("\n")) {
+            qout << line << Qt::endl;
+        }
 
         return 0;
     }
@@ -233,6 +244,8 @@ int start(QCoreApplication &app, QCommandLineParser &parser, const QStringList &
     app.connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, &app, []() {
         QLOG_INFO() << "Done updating libraries";
     });
+
+    librariesUpdateCoordinator->init();
 
     int ret = app.exec();
 
@@ -444,8 +457,10 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 void logSystemAndConfig()
 {
     QLOG_INFO() << "---------- System & configuration ----------";
-    QLOG_INFO() << "OS:" << QSysInfo::prettyProductName() << "Version: " << QSysInfo::productVersion();
-    QLOG_INFO() << "Kernel:" << QSysInfo::kernelType() << QSysInfo::kernelVersion() << "Architecture:" << QSysInfo::currentCpuArchitecture();
+    auto globalInfo = YACReader::getGlobalInfo();
+    for (const auto &line : globalInfo.split("\n")) {
+        QLOG_INFO() << line;
+    }
     QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "--------------------------------------------";
 }

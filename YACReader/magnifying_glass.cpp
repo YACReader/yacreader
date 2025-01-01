@@ -4,14 +4,14 @@
 
 #include <QScrollBar>
 
-MagnifyingGlass::MagnifyingGlass(int w, int h, QWidget *parent)
-    : QLabel(parent), zoomLevel(0.5)
+MagnifyingGlass::MagnifyingGlass(int w, int h, float zoomLevel, QWidget *parent)
+    : QLabel(parent), zoomLevel(zoomLevel)
 {
     setup(QSize(w, h));
 }
 
-MagnifyingGlass::MagnifyingGlass(const QSize &size, QWidget *parent)
-    : QLabel(parent), zoomLevel(0.5)
+MagnifyingGlass::MagnifyingGlass(const QSize &size, float zoomLevel, QWidget *parent)
+    : QLabel(parent), zoomLevel(zoomLevel)
 {
     setup(size);
 }
@@ -178,6 +178,7 @@ void MagnifyingGlass::zoomIn()
 {
     if (zoomLevel > 0.2f) {
         zoomLevel -= 0.025f;
+        emit zoomChanged(zoomLevel);
         updateImage();
     }
 }
@@ -186,6 +187,7 @@ void MagnifyingGlass::zoomOut()
 {
     if (zoomLevel < 0.9f) {
         zoomLevel += 0.025f;
+        emit zoomChanged(zoomLevel);
         updateImage();
     }
 }
@@ -234,9 +236,17 @@ void MagnifyingGlass::widthDown()
         resizeAndUpdate(w, height());
 }
 
+void MagnifyingGlass::reset()
+{
+    zoomLevel = 0.5f;
+    emit zoomChanged(zoomLevel);
+    resizeAndUpdate(350, 175);
+}
+
 void MagnifyingGlass::resizeAndUpdate(int w, int h)
 {
     resize(w, h);
+    emit sizeChanged(size());
     updateImage();
 }
 

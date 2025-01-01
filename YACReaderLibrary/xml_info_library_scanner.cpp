@@ -45,12 +45,7 @@ void XMLInfoLibraryScanner::scanFolder(const QString &source, const QString &tar
 void XMLInfoLibraryScanner::run()
 {
 #if !defined use_unarr && !defined use_libarchive
-// check for 7z lib
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    QLibrary *sevenzLib = new QLibrary(QString(LIBDIR) + "/p7zip/7z.so");
-#else
-    QLibrary *sevenzLib = new QLibrary(QCoreApplication::applicationDirPath() + "/utils/7z");
-#endif
+    auto sevenzLib = YACReader::load7zLibrary();
 
     if (!sevenzLib->load()) {
         QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;

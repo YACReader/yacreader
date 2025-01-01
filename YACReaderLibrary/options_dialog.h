@@ -18,6 +18,7 @@ public:
 public slots:
     void editApiKey();
     void restoreOptions(QSettings *settings) override;
+    void saveOptions() override;
 
 private slots:
     void useBackgroundImageCheckClicked(bool checked);
@@ -29,12 +30,14 @@ private slots:
 
 private:
     // General tabs
+    QCheckBox *displayGlobalContinueReadingBannerCheck;
     QCheckBox *displayContinueReadingBannerCheck;
     QCheckBox *trayIconCheckbox;
     QCheckBox *startToTrayCheckbox;
     QCheckBox *comicInfoXMLCheckbox;
     QSlider *recentIntervalSlider;
     QLabel *numDaysLabel;
+    QLineEdit *thirdPartyReaderEdit;
 
     // Libraries tab
     QCheckBox *updateLibrariesAtStartupCheck;

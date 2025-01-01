@@ -148,7 +148,7 @@ procedure InitializeWizard();
 begin
 
   URLLabel := TNewStaticText.Create(WizardForm);
-  URLLabel.Caption:='Make a DONATION/Haz una DONACI�N';
+  URLLabel.Caption:='Make a DONATION/Haz una DONACIÓN';
   URLLabel.Cursor:=crHand;
   URLLabel.OnClick:=@URLLabelOnClick;
   URLLabel.Parent:=WizardForm;
@@ -162,7 +162,7 @@ begin
 donationPage := CreateOutputMsgPage(wpWelcome,
   'Iformation', 'Please read the following information before continuing.',
   'YACReader is FREE software. If you like it, please, consider to make a DONATION'#13#13 +
-  'YACReader es software libre y GRATUITO. Si te gusta, por favor, considera realizar una DONACI�N'#13#13)
+  'YACReader es software libre y GRATUITO. Si te gusta, por favor, considera realizar una DONACIÓN'#13#13)
 
 end;
 

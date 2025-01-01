@@ -1,7 +1,5 @@
 #include "yacreader_content_views_manager.h"
 
-#include "yacreader_global.h"
-
 #include "library_window.h"
 
 #include "classic_comics_view.h"
@@ -40,6 +38,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     default:
         comicsView = gridComicsView = new GridComicsView();
         connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
+        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::finished, gridComicsView, &GridComicsView::updateSettings); // TODO: we can link constante changes to updateSettings because of bad performance
         comicsViewStatus = Grid;
         break;
     }
@@ -47,7 +46,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     doComicsViewConnections();
 
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
-    comicsViewStack->addWidget(folderContentView = new FolderContentView(parent->toogleShowRecentIndicatorAction));
+    comicsViewStack->addWidget(folderContentView = new FolderContentView(parent->actions.toogleShowRecentIndicatorAction));
     comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
     comicsViewStack->addWidget(emptySpecialList = new EmptySpecialListWidget());
     comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());
@@ -60,6 +59,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     // connections
     connect(folderContentView, &FolderContentView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
     connect(folderContentView, &FolderContentView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
+    connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, folderContentView, &FolderContentView::updateSettings);
 }
 
 QWidget *YACReaderContentViewsManager::containerWidget()
@@ -69,6 +69,20 @@ QWidget *YACReaderContentViewsManager::containerWidget()
 
 void YACReaderContentViewsManager::updateCurrentContentView()
 {
+    libraryWindow->comicsModel->reload();
+
+    if (comicsViewStack->currentWidget() == folderContentView && libraryWindow->comicsModel->rowCount() > 0) {
+        comicsView->reloadContent();
+        showComicsView();
+        return;
+    }
+
+    if (comicsViewStack->currentWidget() == comicsView && libraryWindow->comicsModel->rowCount() == 0) {
+        showFolderContentView();
+        folderContentView->reloadContent();
+        return;
+    }
+
     if (comicsViewStack->currentWidget() == comicsView) {
         comicsView->reloadContent();
     }
@@ -163,10 +177,10 @@ void YACReaderContentViewsManager::focusComicsViewViaShortcut()
 void YACReaderContentViewsManager::disconnectComicsViewConnections(ComicsView *widget)
 {
     disconnect(widget, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating);
-    disconnect(libraryWindow->showHideMarksAction, &QAction::toggled, widget, &ComicsView::setShowMarks);
+    disconnect(libraryWindow->actions.showHideMarksAction, &QAction::toggled, widget, &ComicsView::setShowMarks);
     disconnect(widget, &ComicsView::selected, libraryWindow, QOverload<>::of(&LibraryWindow::openComic));
     disconnect(widget, &ComicsView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
-    disconnect(libraryWindow->selectAllComicsAction, &QAction::triggered, widget, &ComicsView::selectAll);
+    disconnect(libraryWindow->actions.selectAllComicsAction, &QAction::triggered, widget, &ComicsView::selectAll);
     disconnect(comicsView, &ComicsView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
     disconnect(comicsView, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
     disconnect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
@@ -176,11 +190,11 @@ void YACReaderContentViewsManager::disconnectComicsViewConnections(ComicsView *w
 void YACReaderContentViewsManager::doComicsViewConnections()
 {
     connect(comicsView, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating);
-    connect(libraryWindow->showHideMarksAction, &QAction::toggled, comicsView, &ComicsView::setShowMarks);
+    connect(libraryWindow->actions.showHideMarksAction, &QAction::toggled, comicsView, &ComicsView::setShowMarks);
     connect(comicsView, &ComicsView::selected, libraryWindow, QOverload<>::of(&LibraryWindow::openComic));
     connect(comicsView, &ComicsView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
 
-    connect(libraryWindow->selectAllComicsAction, &QAction::triggered, comicsView, &ComicsView::selectAll);
+    connect(libraryWindow->actions.selectAllComicsAction, &QAction::triggered, comicsView, &ComicsView::selectAll);
 
     connect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
     connect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
@@ -224,7 +238,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
     case Flow: {
         QIcon icoViewsButton;
         icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/info"), QSize(), QIcon::Normal);
-        libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
+        libraryWindow->actions.toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
@@ -233,6 +247,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
 
         switchToComicsView(classicComicsView, gridComicsView);
         connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
+        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::finished, gridComicsView, &GridComicsView::updateSettings); // TODO: we can link constante changes to updateSettings because of bad performance
         comicsViewStatus = Grid;
 
         break;
@@ -241,7 +256,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
     case Grid: {
         QIcon icoViewsButton;
         icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/flow"), QSize(), QIcon::Normal);
-        libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
+        libraryWindow->actions.toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif
@@ -257,7 +272,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
     case Info: {
         QIcon icoViewsButton;
         icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/grid"), QSize(), QIcon::Normal);
-        libraryWindow->toggleComicsViewAction->setIcon(icoViewsButton);
+        libraryWindow->actions.toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
 #endif

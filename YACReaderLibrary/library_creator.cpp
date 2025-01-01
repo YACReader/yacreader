@@ -1,5 +1,4 @@
 #include "library_creator.h"
-#include "custom_widgets.h"
 
 #include <QMutex>
 #include <QDebug>
@@ -24,6 +23,25 @@
 
 using namespace std;
 using namespace YACReader;
+
+Folder rootFolder(QSqlDatabase &db)
+{
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT * FROM folder WHERE id = 1");
+    selectQuery.exec();
+
+    auto root = Folder(1, 1, "root", "/");
+
+    if (!selectQuery.next()) {
+
+        root.type = YACReader::FileType::Comic;
+        return root;
+    }
+
+    root.type = selectQuery.value("type").value<YACReader::FileType>();
+
+    return root;
+}
 
 //--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator(QSettings *settings)
@@ -54,7 +72,6 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     folderDestinationModelIndex = dest;
 
     _currentPathFolders.clear();
-    _currentPathFolders.append(Folder::rootFolder());
 
     QString relativeFolderPath = sourceFolder;
     relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(source));
@@ -79,9 +96,10 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
             QString error = "Unable to find database at: " + _target;
             QLOG_ERROR() << error;
             emit failedOpeningDB(error);
-            emit finished();
             return;
         }
+
+        _currentPathFolders.append(rootFolder(db));
 
         foreach (QString folderName, folders) {
             if (folderName.isEmpty()) {
@@ -122,12 +140,7 @@ void LibraryCreator::run()
     stopRunning = false;
     canceled = false;
 #if !defined use_unarr && !defined use_libarchive
-// check for 7z lib
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    QLibrary *sevenzLib = new QLibrary(QString(LIBDIR) + "/p7zip/7z.so");
-#else
-    QLibrary *sevenzLib = new QLibrary(QCoreApplication::applicationDirPath() + "/utils/7z");
-#endif
+    auto sevenzLib = YACReader::load7zLibrary();
 
     if (!sevenzLib->load()) {
         QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;
@@ -139,7 +152,6 @@ void LibraryCreator::run()
     if (_mode == CREATOR) {
         QLOG_INFO() << "Starting to create new library ( " << _source << "," << _target << ")";
         _currentPathFolders.clear();
-        _currentPathFolders.append(Folder::rootFolder());
         // se crean los directorios .yacreaderlibrary y .yacreaderlibrary/covers
         QDir dir;
         dir.mkpath(_target + "/covers");
@@ -151,10 +163,11 @@ void LibraryCreator::run()
             if (!_database.isOpen()) {
                 QLOG_ERROR() << "Unable to create data base" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
                 emit failedCreatingDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
-                emit finished();
                 creation = false;
                 return;
             }
+
+            _currentPathFolders.append(rootFolder(_database));
 
             /*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
             _database.transaction();
@@ -171,11 +184,6 @@ void LibraryCreator::run()
         QLOG_INFO() << "Create library END";
     } else {
         QLOG_INFO() << "Starting to update folder" << _sourceFolder << "in library ( " << _source << "," << _target << ")";
-        if (!partialUpdate) {
-            _currentPathFolders.clear();
-            _currentPathFolders.append(Folder::rootFolder());
-            QLOG_DEBUG() << "update whole library";
-        }
         {
             auto _database = DataBaseManagement::loadDatabase(_target);
 
@@ -183,7 +191,6 @@ void LibraryCreator::run()
                 QString error = "Unable to find database at: " + _target;
                 QLOG_ERROR() << error;
                 emit failedOpeningDB(error);
-                emit finished();
                 return;
             }
 
@@ -193,10 +200,16 @@ void LibraryCreator::run()
             if (!_database.open()) {
                 QLOG_ERROR() << "Unable to open database" << _database.lastError().databaseText() + "-" + _database.lastError().driverText();
                 emit failedOpeningDB(_database.lastError().databaseText() + "-" + _database.lastError().driverText());
-                emit finished();
                 creation = false;
                 return;
             }
+
+            if (!partialUpdate) {
+                _currentPathFolders.clear();
+                _currentPathFolders.append(rootFolder(_database));
+                QLOG_DEBUG() << "update whole library";
+            }
+
             QSqlQuery pragma("PRAGMA foreign_keys = ON", _database);
             pragma.exec();
             _database.transaction();
@@ -211,11 +224,13 @@ void LibraryCreator::run()
                 if (partialUpdate) {
                     auto folder = DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
                     DBHelper::propagateFolderUpdatesToParent(folder, _database);
-                } else
+                } else {
                     DBHelper::updateChildrenInfo(_database);
-
-                _database.commit();
+                    cleanup(_database, _target);
+                }
             }
+
+            _database.commit();
             _database.close();
         }
 
@@ -236,7 +251,6 @@ void LibraryCreator::run()
         emit updatedCurrentFolder(folderDestinationModelIndex);
     }
 
-    emit finished();
     creation = false;
 }
 
@@ -251,6 +265,38 @@ void LibraryCreator::cancel()
     QSqlDatabase::database(_databaseConnection).rollback();
     canceled = true;
     stopRunning = true;
+}
+
+void LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
+{
+    QDir coversDir(target + "/covers/");
+    if (!coversDir.exists()) {
+        return;
+    }
+
+    // delete from comic_info all the comics that don't have a comic associated from the comic table
+    QSqlQuery infoToDeleteQuery(db);
+    infoToDeleteQuery.prepare("SELECT ci.id, ci.hash FROM comic_info ci WHERE ci.id NOT IN (SELECT c.comicInfoId FROM comic c)");
+
+    if (!infoToDeleteQuery.exec()) {
+        QLOG_ERROR() << "Error getting comics to delete";
+        return;
+    }
+
+    while (infoToDeleteQuery.next()) {
+        QString hash = infoToDeleteQuery.value(1).toString();
+        QString cover = hash + ".jpg";
+
+        auto fullPath = coversDir.absoluteFilePath(cover);
+        QFile::remove(fullPath);
+    }
+
+    QSqlQuery deleteQuery(db);
+    deleteQuery.prepare("DELETE FROM comic_info WHERE id NOT IN (SELECT comicInfoId FROM comic)");
+    if (!deleteQuery.exec()) {
+        QLOG_ERROR() << "Error purging info from comic_info";
+        return;
+    }
 }
 
 // retorna el id del ultimo de los folders
@@ -536,7 +582,7 @@ void LibraryCreator::update(QDir dirS)
                 {
 
                     if (nameS != "/.yacreaderlibrary") {
-                        // QLOG_WARN() << "dir source < dest" << nameS << nameD;
+                    // QLOG_WARN() << "dir source < dest" << nameS << nameD;
 #ifdef Q_OS_MACOS
                         QStringList src = _source.split("/");
                         QString filePath = fileInfoS.absoluteFilePath();

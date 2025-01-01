@@ -6,6 +6,9 @@ dependencies/create-dmg
 signapps.sh
 lib7zip
 libp7zip
+YACReader/build
+YACReaderLibrary/build
+YACReaderLibraryServer/build
 
 # C++ objects and libs
 *.slo

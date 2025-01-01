@@ -6,6 +6,7 @@
 #include <QModelIndex>
 #include <QFileInfo>
 
+#include "library_window_actions.h"
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_libraries.h"
@@ -158,99 +159,7 @@ public:
 
     int i;
 
-    QAction *backAction;
-    QAction *forwardAction;
-
-    QAction *openComicAction;
-    QAction *createLibraryAction;
-    QAction *openLibraryAction;
-
-    QAction *exportComicsInfoAction;
-    QAction *importComicsInfoAction;
-
-    QAction *exportLibraryAction;
-    QAction *importLibraryAction;
-
-    QAction *rescanLibraryForXMLInfoAction;
-
-    QAction *updateLibraryAction;
-    QAction *removeLibraryAction;
-    QAction *helpAboutAction;
-    QAction *renameLibraryAction;
-#ifndef Q_OS_MACOS
-    QAction *toggleFullScreenAction;
-#endif
-    QAction *optionsAction;
-    QAction *serverConfigAction;
-    QAction *toggleComicsViewAction;
-    // QAction * socialAction;
-
-    // tree actions
-    QAction *addFolderAction;
-    QAction *deleteFolderAction;
-    //--
-    QAction *setRootIndexAction;
-    QAction *expandAllNodesAction;
-    QAction *colapseAllNodesAction;
-
-    QAction *openContainingFolderAction;
-    QAction *saveCoversToAction;
-    //--
-    QAction *setFolderAsNotCompletedAction;
-    QAction *setFolderAsCompletedAction;
-    //--
-    QAction *setFolderAsReadAction;
-    QAction *setFolderAsUnreadAction;
-    //--
-    QAction *setFolderAsMangaAction;
-    QAction *setFolderAsNormalAction;
-    QAction *setFolderAsWesternMangaAction;
-    QAction *setFolderAsWebComicAction;
-    QAction *setFolderAsYonkomaAction;
-
-    QAction *openContainingFolderComicAction;
-    QAction *setAsReadAction;
-    QAction *setAsNonReadAction;
-
-    QAction *setMangaAction;
-    QAction *setNormalAction;
-    QAction *setWesternMangaAction;
-    QAction *setWebComicAction;
-    QAction *setYonkomaAction;
-
-    QAction *showHideMarksAction;
-    QAction *getInfoAction; // comic vine
-    QAction *resetComicRatingAction;
-
-    QAction *toogleShowRecentIndicatorAction;
-
-    // edit info actions
-    QAction *selectAllComicsAction;
-    QAction *editSelectedComicsAction;
-    QAction *asignOrderAction;
-    QAction *forceCoverExtractedAction;
-    QAction *deleteComicsAction;
-    QAction *deleteMetadataAction;
-
-    QAction *focusSearchLineAction;
-    QAction *focusComicsViewAction;
-
-    QAction *showEditShortcutsAction;
-
-    QAction *quitAction;
-
-    QAction *updateFolderAction;
-    QAction *updateCurrentFolderAction;
-    QAction *rescanXMLFromCurrentFolderAction;
-
-    // reading lists actions
-    QAction *addReadingListAction;
-    QAction *deleteReadingListAction;
-    QAction *addLabelAction;
-    QAction *renameListAction;
-    //--
-    QAction *addToMenuAction;
-    QAction *addToFavoritesAction;
+    LibraryWindowActions actions;
 
 #ifdef Y_MAC_UI
     YACReaderMacOSXToolbar *libraryToolBar;
@@ -282,7 +191,6 @@ public:
     void createSettings();
     void setupOpenglSetting();
     void setupUI();
-    void createActions();
     void createToolBars();
     void createMenus();
     void createConnections();
@@ -291,14 +199,6 @@ public:
     void setUpShortcutsManagement();
     void doModels();
     void setupCoordinators();
-
-    // ACTIONS MANAGEMENT
-    void disableComicsActions(bool disabled);
-    void disableLibrariesActions(bool disabled);
-    void disableNoUpdatedLibrariesActions(bool disabled);
-    void disableFoldersActions(bool disabled);
-
-    void disableAllActions();
 
     QString currentPath();
     QString currentFolderPath();
@@ -351,6 +251,7 @@ public slots:
     void removeLibrary();
     void renameLibrary();
     void rescanLibraryForXMLInfo();
+    void showLibraryInfo();
     void rescanCurrentFolderForXMLInfo();
     void rescanFolderForXMLInfo(QModelIndex modelIndex);
     void rename(QString newName);
@@ -415,6 +316,7 @@ public slots:
     void reloadAfterCopyMove(const QModelIndex &mi);
     QModelIndex getCurrentFolderIndex();
     void enableNeededActions();
+    void disableComicsActions(bool disabled);
     void addFolderToCurrentIndex();
     void deleteSelectedFolder();
     void errorDeletingFolder();
@@ -432,6 +334,7 @@ public slots:
     void saveSelectedCoversTo();
     void checkMaxNumLibraries();
     void showErrorUpgradingLibrary(const QString &path);
+    void setCurrentLibraryAs(FileType fileType);
 
     void prepareToCloseApp();
     void closeApp();

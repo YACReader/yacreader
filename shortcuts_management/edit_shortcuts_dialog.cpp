@@ -61,7 +61,7 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
 
     connect(resetButton, &QAbstractButton::clicked, this, &EditShortcutsDialog::resetToDefaults);
     connect(actionsGroupsListView->selectionModel(), &QItemSelectionModel::currentChanged, this, &EditShortcutsDialog::loadShortcuts); // clicked(QModelIndex) doesn't work :S
-    connect(actionsModel, &ActionsShortcutsModel::conflict, this, &EditShortcutsDialog::processConflict);
+    connect(actionsModel, &ActionsShortcutsModel::conflict, this, &EditShortcutsDialog::processConflict, Qt::QueuedConnection);
 
 #ifdef Y_MAC_UI
     setFixedSize(760, 500);

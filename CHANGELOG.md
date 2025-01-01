@@ -2,13 +2,44 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.15.0
+
+### YACReader
+* Save magnifying glass size and zoom level.
+* Add shortcut to reset the magnifying glass to its defaults (size and zoom), it is `slash` by default but it can be reasigned.
+* Bump PDF render size.
+* Fix trackpad scrolling, it makes using trackpads more reponsive and natural.
+* Added more info to Help -> System info.
+
+### YACReaderLibrary
+* Fix headers in the table view getting stuck in a non moveable state.
+* Add option to set the type of a library. It will convert all the content to desired type (comic, manga, etc) and it will set that type as the default one for that library. Available in the library context menu.
+* Added more info to Help -> System info.
+* New setting to open comics in third party reader apps, it works by entering a command that will launch the app, e.g. "/path/to/the/app {comic_file_path}". You can use `{comic_file_path}` as a placeholder where `YACReaderLibrary` will place thet path to the comic file.
+* Purge covers and metadata not being used after a full library update.
+* Fix crash when updating the current folder content after a library update.
+* Fix crash when current folders is empty after an update.
+* Enable dropping content on the FolderContentView.
+* Fix `open containing folder...` shortcut for comics.
+* Add a dialog to show information about a library, it includes the number of folders and comics and the number of read comics.
+* Fix occasional crashes when using automatic library updates.
+* Add setting to hide the "Continue Reading..." banner from the home view.
+* Improve Grid and Flow Info comics view scroll performance.
+
+### YACReaderLibraryServer
+* New command --system-info to print information about the execution environment and available resources (including what image formats are supported and what libraries are used by the app).
+* Fix automatic libraries updates not being triggered.
+
+### All apps
+* Sorting heuristic to try to find spreads in the content of a comic is now only used for files with less than 1000 pages to avoid false positives.
+
 ## 9.14.2
 
 ### YACReaderLibrary
 * Fix columns in the search results.
 * Fix type not being propagated to new folders from their parents.
 * Fix default type set to folders in the root folder when they are added.
-* Improve and fix comic file size format. 
+* Improve and fix comic file size format.
 
 ## 9.14.1
 

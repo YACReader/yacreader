@@ -106,7 +106,8 @@ HEADERS +=  ../common/comic.h \
             ../common/exit_check.h \
             ../common/scroll_management.h \
             ../common/opengl_checker.h \
-            ../common/pdf_comic.h
+            ../common/pdf_comic.h \
+            ../common/global_info_provider.h \
 
 !CONFIG(no_opengl) {
     HEADERS += ../common/gl/yacreader_flow_gl.h \
@@ -143,7 +144,8 @@ SOURCES +=  ../common/comic.cpp \
             ../common/yacreader_global_gui.cpp \
             ../common/exit_check.cpp \
             ../common/scroll_management.cpp \
-            ../common/opengl_checker.cpp
+            ../common/opengl_checker.cpp \
+            ../common/global_info_provider.cpp \
 
 !CONFIG(no_opengl) {
         SOURCES += ../common/gl/yacreader_flow_gl.cpp \

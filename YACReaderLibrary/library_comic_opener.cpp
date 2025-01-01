@@ -46,3 +46,16 @@ bool YACReader::openComic(const ComicDB &comic,
 
     return yacreaderFound;
 }
+
+bool YACReader::openComicInThirdPartyApp(const QString &command, const QString &path)
+{
+    QString mutableCommand = command;
+    QString fullCommand;
+    if (mutableCommand.contains("{comic_file_path}")) {
+        fullCommand = mutableCommand.replace("{comic_file_path}", "\"" + path + "\"");
+    } else {
+        fullCommand = mutableCommand + " \"" + path + "\"";
+    }
+
+    return QProcess::startDetached(fullCommand, {});
+}

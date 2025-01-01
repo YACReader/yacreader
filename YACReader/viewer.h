@@ -165,6 +165,8 @@ private:
     //! Event handlers:
     void resizeEvent(QResizeEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+    void wheelEventMouse(QWheelEvent *event);
+    void wheelEventTrackpad(QWheelEvent *event);
     void mouseMoveEvent(QMouseEvent *event) override;
 
     int verticalScrollStep() const;
@@ -210,6 +212,7 @@ signals:
     void magnifyingGlassSizeDown();
     void magnifyingGlassZoomIn();
     void magnifyingGlassZoomOut();
+    void resetMagnifyingGlass();
 };
 
 #endif

@@ -53,11 +53,76 @@ void drawMacOSXFinishedFolderIcon()
 
 #define ROOT 1
 
-FolderItem *createRoot()
+struct FolderColumns {
+    int name;
+    int path;
+    int finished;
+    int completed;
+    int id;
+    int parentId;
+    int numChildren;
+    int firstChildHash;
+    int customImage;
+    int type;
+    int added;
+    int updated;
+
+    FolderColumns(QSqlQuery &sqlquery)
+    {
+        auto record = sqlquery.record();
+
+        name = record.indexOf("name");
+        path = record.indexOf("path");
+        finished = record.indexOf("finished");
+        completed = record.indexOf("completed");
+        id = record.indexOf("id");
+        parentId = record.indexOf("parentId");
+        numChildren = record.indexOf("numChildren");
+        firstChildHash = record.indexOf("firstChildHash");
+        customImage = record.indexOf("customImage");
+        type = record.indexOf("type");
+        added = record.indexOf("added");
+        updated = record.indexOf("updated");
+    }
+};
+
+QList<QVariant> folderDataFromQuery(QSqlQuery &query, const FolderColumns &columns)
 {
-    QList<QVariant> rootData;
-    rootData << "root";
-    auto root = new FolderItem(rootData);
+    QList<QVariant> data;
+
+    data << query.value(columns.name);
+    data << query.value(columns.path);
+    data << query.value(columns.finished);
+    data << query.value(columns.completed);
+    data << query.value(columns.numChildren);
+    data << query.value(columns.firstChildHash);
+    data << query.value(columns.customImage);
+    data << query.value(columns.type);
+    data << query.value(columns.added);
+    data << query.value(columns.updated);
+
+    return data;
+}
+
+// TODO: load from DB, type is pretty much needed
+FolderItem *createRoot(QSqlDatabase &db)
+{
+    QList<QVariant> data;
+
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT * FROM folder WHERE id = 1");
+    selectQuery.exec();
+
+    auto columns = FolderColumns(selectQuery);
+
+    if (!selectQuery.next()) {
+        return nullptr;
+    }
+
+    data = folderDataFromQuery(selectQuery, columns);
+    data[0] = "root";
+
+    auto root = new FolderItem(data);
     root->id = ROOT;
     root->parentItem = nullptr;
 
@@ -83,7 +148,7 @@ int FolderModel::columnCount(const QModelIndex &parent) const
         if (rootItem == nullptr) {
             return 0;
         }
-        return rootItem->columnCount();
+        return 1;
     }
 }
 
@@ -454,7 +519,7 @@ FolderModel::ModelData FolderModel::createModelData(const QString &path) const
         QSqlDatabase db = DataBaseManagement::loadDatabase(path);
         QSqlQuery selectQuery("select * from folder where id <> 1 order by parentId,name", db);
 
-        auto root = createRoot();
+        auto root = createRoot(db);
         modelData = createModelData(selectQuery, root);
 
         connectionName = db.connectionName();
@@ -471,40 +536,14 @@ FolderModel::ModelData FolderModel::createModelData(QSqlQuery &sqlquery, FolderI
     // add parent to the lookup
     itemsLookup.insert(parent->id, parent);
 
-    QSqlRecord record = sqlquery.record();
-
-    int name = record.indexOf("name");
-    int path = record.indexOf("path");
-    int finished = record.indexOf("finished");
-    int completed = record.indexOf("completed");
-    int id = record.indexOf("id");
-    int parentId = record.indexOf("parentId");
-    int numChildren = record.indexOf("numChildren");
-    int firstChildHash = record.indexOf("firstChildHash");
-    int customImage = record.indexOf("customImage");
-    int type = record.indexOf("type");
-    int added = record.indexOf("added");
-    int updated = record.indexOf("updated");
+    auto columns = FolderColumns(sqlquery);
 
     while (sqlquery.next()) {
-        QList<QVariant> data;
+        auto item = new FolderItem(folderDataFromQuery(sqlquery, columns));
 
-        data << sqlquery.value(name);
-        data << sqlquery.value(path);
-        data << sqlquery.value(finished);
-        data << sqlquery.value(completed);
-        data << sqlquery.value(numChildren);
-        data << sqlquery.value(firstChildHash);
-        data << sqlquery.value(customImage);
-        data << sqlquery.value(type);
-        data << sqlquery.value(added);
-        data << sqlquery.value(updated);
-
-        auto item = new FolderItem(data);
-
-        item->id = sqlquery.value(id).toULongLong();
+        item->id = sqlquery.value(columns.id).toULongLong();
         // la inserci�n de hijos se hace de forma ordenada
-        FolderItem *parent = itemsLookup.value(sqlquery.value(parentId).toULongLong());
+        FolderItem *parent = itemsLookup.value(sqlquery.value(columns.parentId).toULongLong());
         parent->appendChild(item);
         // se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
         itemsLookup.insert(item->id, item);
@@ -603,6 +642,35 @@ void FolderModel::updateFolderType(const QModelIndexList &list, YACReader::FileT
     QSqlDatabase::removeDatabase(connectionName);
 
     emit dataChanged(index(list.first().row(), FolderModel::Name), index(list.last().row(), FolderModel::Updated));
+}
+
+void FolderModel::updateTreeType(YACReader::FileType type)
+{
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+
+        auto item = rootItem;
+
+        std::function<void(FolderItem *, YACReader::FileType)> setType;
+        setType = [&setType](FolderItem *item, YACReader::FileType type) -> void {
+            item->setData(FolderModel::Type, QVariant::fromValue(type));
+
+            for (auto child : item->children()) {
+                setType(child, type);
+            }
+        };
+
+        setType(item, type);
+
+        if (!isSubfolder) {
+            DBHelper::updateDBType(db, type);
+        }
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)

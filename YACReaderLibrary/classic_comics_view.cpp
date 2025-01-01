@@ -147,12 +147,6 @@ void ClassicComicsView::setModel(ComicModel *model)
         if (model->rowCount() > 0)
             tableView->setCurrentIndex(model->index(0, 0));
 
-        tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-#if QT_VERSION >= 0x050000
-        tableView->horizontalHeader()->setSectionsMovable(true);
-#else
-        tableView->horizontalHeader()->setMovable(true);
-#endif
         QStringList paths = model->getPaths(model->getCurrentPath()); // TODO ComicsView: get currentpath from somewhere currentPath());
         comicFlow->setImagePaths(paths);
         comicFlow->setMarks(model->getReadList());
@@ -197,7 +191,8 @@ void ClassicComicsView::setModel(ComicModel *model)
         }
 
         tableView->resizeColumnsToContents();
-
+        tableView->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+        tableView->horizontalHeader()->setSectionsMovable(true);
         tableView->horizontalHeader()->setStretchLastSection(true);
     }
 }

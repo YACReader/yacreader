@@ -21,8 +21,8 @@ class Render;
 class ImageFilter
 {
 public:
-    ImageFilter() {};
-    virtual ~ImageFilter() {};
+    ImageFilter() { };
+    virtual ~ImageFilter() { };
     virtual QImage setFilter(const QImage &image) = 0;
     inline int getLevel() { return level; };
     inline void setLevel(int l) { level = l; };

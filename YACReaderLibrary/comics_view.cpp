@@ -63,6 +63,13 @@ void ComicsView::updateInfoForIndex(int index)
     if (comicDB != nullptr)
         delete comicDB;
 
+    if ((index < 0) || (index >= model->rowCount())) {
+        ctxt->setContextProperty("comic", nullptr);
+        ctxt->setContextProperty("comicInfo", nullptr);
+        ctxt->setContextProperty("comic_info_index", -1);
+        return;
+    }
+
     comicDB = new ComicDB(model->getComic(this->model->index(index, 0)));
     ComicInfo *comicInfo = &(comicDB->info);
     comicInfo->isFavorite = model->isFavorite(model->index(index, 0));

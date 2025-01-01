@@ -91,6 +91,7 @@ public:
     static QList<Label> getLabels(qulonglong libraryId);
 
     static void updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type);
+    static void updateDBType(QSqlDatabase &db, YACReader::FileType type);
 
     // load
     static Folder loadFolder(qulonglong id, QSqlDatabase &db);
@@ -103,6 +104,9 @@ public:
     static QList<QString> loadSubfoldersNames(qulonglong folderId, QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
+
+    // library
+    static QString getLibraryInfo(QUuid id);
 };
 
 #endif

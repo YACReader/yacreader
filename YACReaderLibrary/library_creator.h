@@ -59,9 +59,9 @@ private:
     QModelIndex folderDestinationModelIndex;
     QSettings *settings;
     bool checkModifiedDatesOnUpdate;
+    void cleanup(QSqlDatabase &db, const QString &target);
 
 signals:
-    void finished();
     void coverExtracted(QString);
     void folderUpdated(QString);
     void comicAdded(QString, QString);

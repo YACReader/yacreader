@@ -1,6 +1,9 @@
 #include "yacreader_global.h"
 
 #include <QModelIndex>
+#include <QLibrary>
+#include <QFileInfo>
+#include <QCoreApplication>
 
 using namespace YACReader;
 
@@ -118,4 +121,19 @@ void YACReader::iterate(const QModelIndex &index,
     auto rows = model->rowCount(index);
     for (int i = 0; i < rows; ++i)
         iterate(model->index(i, 0, index), model, iteration);
+}
+
+QLibrary *YACReader::load7zLibrary()
+{
+#if defined Q_OS_UNIX && !defined Q_OS_MACOS
+    auto yacreader7zPath = QString(LIBDIR) + "/yacreader/7z.so";
+    QFileInfo sevenzlibrary(yacreader7zPath);
+    if (sevenzlibrary.exists()) {
+        return new QLibrary(yacreader7zPath);
+    } else {
+        return new QLibrary(QString(LIBDIR) + "/7zip/7z.so");
+    }
+#else
+    return new QLibrary(QCoreApplication::applicationDirPath() + "/utils/7z");
+#endif
 }
