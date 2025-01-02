@@ -23,8 +23,8 @@ copy %exe_path%\YACReader.exe .
 copy %exe_path%\YACReaderLibrary.exe .
 copy %exe_path%\YACReaderLibraryServer.exe .
 
-windeployqt --release YACReader.exe
-windeployqt --release --qmldir %src_path%\YACReaderLibrary\qml YACReaderLibrary.exe
+windeployqt --release -qml YACReader.exe
+windeployqt --release -qml --qmldir %src_path%\YACReaderLibrary\qml YACReaderLibrary.exe
 windeployqt YACReaderLibraryServer.exe
 
 mkdir utils

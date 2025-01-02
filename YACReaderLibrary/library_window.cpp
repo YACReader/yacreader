@@ -89,6 +89,7 @@
 extern YACReaderHttpServer *httpServer;
 
 #ifdef Q_OS_WIN
+#include <windows.h>
 #include <shellapi.h>
 #endif
 
