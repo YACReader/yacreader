@@ -84,7 +84,16 @@ public:
     bool getDoNotTurnPageOnScroll() { return settings->value(DO_NOT_TURN_PAGE_ON_SCROLL, false).toBool(); }
     bool getUseSingleScrollStepToTurnPage() { return settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool(); }
     void setDisableScrollAnimation(bool b) { settings->setValue(DISABLE_SCROLL_ANIMATION, b); }
-    bool getDisableScrollAnimation() { return settings->value(DISABLE_SCROLL_ANIMATION, false).toBool(); }
+    bool getDisableScrollAnimation()
+    {
+#ifdef Q_OS_MACOS
+        auto defaultValue = true;
+#else
+        auto defaultValue = false;
+#endif
+
+        return settings->value(DISABLE_SCROLL_ANIMATION, defaultValue).toBool();
+    }
 };
 
 #endif

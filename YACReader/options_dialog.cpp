@@ -286,7 +286,13 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     doNotTurnPageOnScroll->setChecked(settings->value(DO_NOT_TURN_PAGE_ON_SCROLL, false).toBool());
     useSingleScrollStepToTurnPage->setChecked(settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool());
-    disableScrollAnimations->setChecked(settings->value(DISABLE_SCROLL_ANIMATION, false).toBool());
+
+#ifdef Q_OS_MACOS
+    auto defaultDisableScrollAnimationsValue = true;
+#else
+    auto defaultDisableScrollAnimationsValue = false;
+#endif
+    disableScrollAnimations->setChecked(settings->value(DISABLE_SCROLL_ANIMATION, defaultDisableScrollAnimationsValue).toBool());
 }
 
 void OptionsDialog::updateColor(const QColor &color)
