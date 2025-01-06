@@ -2,6 +2,11 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## WIP (9.15.1)
+
+### YACReaderLibrary
+* Improve flexibility of the open comic in third party app setting so more complex commands can be used. e.g. `open -a "/Applications/My Reader.app" "{comic_file_path}"`.
+
 ## 9.15.0
 
 ### YACReader

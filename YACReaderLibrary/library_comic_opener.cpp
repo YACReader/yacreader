@@ -47,15 +47,45 @@ bool YACReader::openComic(const ComicDB &comic,
     return yacreaderFound;
 }
 
+QStringList parseCommand(const QString &input)
+{
+    QRegularExpression regex(R"((?:\"([^\"]*)\")|(\S+))");
+    QStringList result;
+    auto it = regex.globalMatch(input);
+    while (it.hasNext()) {
+        QRegularExpressionMatch match = it.next();
+        if (match.hasMatch()) {
+            result << (match.captured(1).isEmpty() ? match.captured(2) : match.captured(1));
+        }
+    }
+    return result;
+}
+
 bool YACReader::openComicInThirdPartyApp(const QString &command, const QString &path)
 {
-    QString mutableCommand = command;
-    QString fullCommand;
-    if (mutableCommand.contains("{comic_file_path}")) {
-        fullCommand = mutableCommand.replace("{comic_file_path}", "\"" + path + "\"");
-    } else {
-        fullCommand = mutableCommand + " \"" + path + "\"";
+    QStringList parsed = parseCommand(command);
+    if (parsed.isEmpty()) {
+        qDebug() << "Empty command";
+        return false;
     }
 
-    return QProcess::startDetached(fullCommand, {});
+    QString program = parsed.takeFirst();
+    QStringList rawArguments = parsed;
+    QStringList arguments;
+
+    auto placeholderFound = false;
+    for (auto argument : rawArguments) {
+        if (argument.contains("{comic_file_path}")) {
+            placeholderFound = true;
+            arguments << argument.replace("{comic_file_path}", path);
+        } else {
+            arguments << argument;
+        }
+    }
+
+    if (!placeholderFound) {
+        arguments << path;
+    }
+
+    return QProcess::startDetached(program, arguments);
 }
