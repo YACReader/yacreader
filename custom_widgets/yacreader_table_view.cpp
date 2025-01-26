@@ -285,7 +285,7 @@ QWidget *YACReaderRatingDelegate::createEditor(QWidget *parent,
 void YACReaderRatingDelegate::setEditorData(QWidget *editor,
                                             const QModelIndex &index) const
 {
-    int rating = ((ComicItem *)index.internalPointer())->data(11).toInt();
+    int rating = ((ComicItem *)index.internalPointer())->data(ComicModel::Rating).toInt();
 
     StarRating starRating(rating);
 
