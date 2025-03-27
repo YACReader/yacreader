@@ -62,7 +62,7 @@ QString YACReaderLibraries::getPath(const QUuid &id)
 
 QString YACReaderLibraries::getDBPath(int id)
 {
-    return getPath(id) + "/.yacreaderlibrary";
+    return YACReaderLibrary::libraryDataPath(getPath(id));
 }
 
 QString YACReaderLibraries::getName(int id)
