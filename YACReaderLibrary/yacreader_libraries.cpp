@@ -228,7 +228,7 @@ QString YACReaderLibrary::getPath() const
 
 QString YACReaderLibrary::getDBPath() const
 {
-    return path + "/.yacreaderlibrary";
+    return YACReaderLibrary::libraryDataPath(path);
 }
 
 int YACReaderLibrary::getLegacyId() const
@@ -249,6 +249,21 @@ bool YACReaderLibrary::operator==(const YACReaderLibrary &other) const
 bool YACReaderLibrary::operator!=(const YACReaderLibrary &other) const
 {
     return !(*this == other);
+}
+
+QString YACReaderLibrary::libraryDataPath(const QString &libraryPath)
+{
+    return QDir(libraryPath).filePath(".yacreaderlibrary");
+}
+
+QString YACReaderLibrary::libraryDatabasePath(const QString &libraryPath)
+{
+    return QDir(YACReaderLibrary::libraryDataPath(libraryPath)).filePath("library.ydb");
+}
+
+QString YACReaderLibrary::libraryCoversFolderPath(const QString &libraryPath)
+{
+    return QDir(YACReaderLibrary::libraryDataPath(libraryPath)).filePath("covers");
 }
 
 QDataStream &operator<<(QDataStream &out, const YACReaderLibrary &library)

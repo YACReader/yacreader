@@ -55,6 +55,10 @@ public:
     friend QDataStream &operator>>(QDataStream &in, YACReaderLibrary &library);
     operator QString() const { return QString("%1 [%2, %3, %4]").arg(name, QString::number(legacyId), id.toString(QUuid::WithoutBraces), path); }
 
+    static QString libraryDataPath(const QString &libraryPath); // libraryPath + /.yacreaderlibrary
+    static QString libraryDatabasePath(const QString &libraryPath); // libraryPath + /.yacreaderlibrary/library.ydb
+    static QString libraryCoversFolderPath(const QString &libraryPath); // libraryPath + /.yacreaderlibrary/covers
+
 private:
     QString name;
     QString path;
