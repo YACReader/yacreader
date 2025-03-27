@@ -33,7 +33,7 @@ void ConsoleUILibraryCreator::createLibrary(const QString &name, const QString &
         return;
     }
 
-    libraryCreator->createLibrary(cleanPath, QDir::cleanPath(pathDir.absolutePath() + "/.yacreaderlibrary"));
+    libraryCreator->createLibrary(cleanPath, YACReaderLibrary::libraryDataPath(cleanPath));
 
     connect(libraryCreator, &LibraryCreator::finished, this, &ConsoleUILibraryCreator::done);
     connect(libraryCreator, &LibraryCreator::comicAdded, this, &ConsoleUILibraryCreator::newComic);
@@ -62,7 +62,7 @@ void ConsoleUILibraryCreator::updateLibrary(const QString &path)
     LibraryCreator *libraryCreator = new LibraryCreator(settings);
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
-    libraryCreator->updateLibrary(cleanPath, QDir::cleanPath(pathDir.absolutePath() + "/.yacreaderlibrary"));
+    libraryCreator->updateLibrary(cleanPath, YACReaderLibrary::libraryDataPath(cleanPath));
 
     connect(libraryCreator, &LibraryCreator::finished, this, &ConsoleUILibraryCreator::done);
     connect(libraryCreator, &LibraryCreator::comicAdded, this, &ConsoleUILibraryCreator::newComic);
@@ -85,8 +85,8 @@ void ConsoleUILibraryCreator::addExistingLibrary(const QString &name, const QStr
     }
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
-    if (!QDir(cleanPath + "/.yacreaderlibrary").exists()) {
-        std::cout << "No library database found in directory." << std::endl;
+    if (!QDir(YACReaderLibrary::libraryDataPath(cleanPath)).exists()) {
+        std::cout << "No data folder found in path: " << cleanPath.toStdString() << std::endl;
         return;
     }
 
@@ -135,7 +135,7 @@ void ConsoleUILibraryCreator::rescanXMLInfoLibrary(const QString &path)
     connect(scanner, &XMLInfoLibraryScanner::finished, &eventLoop, &QEventLoop::quit);
 
     std::cout << "Scanning comics";
-    scanner->scanLibrary(cleanPath, QDir::cleanPath(pathDir.absolutePath() + "/.yacreaderlibrary"));
+    scanner->scanLibrary(cleanPath, YACReaderLibrary::libraryDataPath(cleanPath));
 
     eventLoop.exec();
 }
