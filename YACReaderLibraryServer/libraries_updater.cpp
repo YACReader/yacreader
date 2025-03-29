@@ -14,9 +14,9 @@ void LibrariesUpdater::updateIfNeeded()
     libraries.load();
 
     foreach (QString name, libraries.getNames()) {
-        QString root = libraries.getPath(name);
-        QString libraryDataPath = YACReader::LibraryPaths::libraryDataPath(root);
-        QString databasePath = YACReader::LibraryPaths::libraryDatabasePath(root);
+        QString libraryPath = libraries.getPath(name);
+        QString libraryDataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
+        QString databasePath = YACReader::LibraryPaths::libraryDatabasePath(libraryPath);
 
         QDir d;
 
@@ -25,7 +25,7 @@ void LibrariesUpdater::updateIfNeeded()
             int comparation = DataBaseManagement::compareVersions(dbVersion, DB_VERSION);
 
             if (comparation < 0) {
-                bool updated = DataBaseManagement::updateToCurrentVersion(libraryDataPath);
+                bool updated = DataBaseManagement::updateToCurrentVersion(libraryPath);
                 if (!updated) {
                     // TODO log error
                 }

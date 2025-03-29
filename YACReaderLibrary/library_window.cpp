@@ -831,8 +831,8 @@ void LibraryWindow::loadLibrary(const QString &name)
                     importWidget->setUpgradeLook();
                     showImportingWidget();
 
-                    upgradeLibraryFuture = std::async(std::launch::async, [this, name, path] {
-                        bool updated = DataBaseManagement::updateToCurrentVersion(path);
+                    upgradeLibraryFuture = std::async(std::launch::async, [this, name, path, rootPath] {
+                        bool updated = DataBaseManagement::updateToCurrentVersion(rootPath);
 
                         if (!updated)
                             emit errorUpgradingLibrary(path);
