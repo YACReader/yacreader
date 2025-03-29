@@ -23,6 +23,7 @@ jobs:
       versionSpec: '3.13'
       architecture: 'x64'
   - script: |
+      pip install -U pip
       pip install aqtinstall
       mkdir C:\Qt
       python -m aqt install-qt windows desktop ${{ parameters.qt_version }} ${{ parameters.qt_aqt_spec }} -O c:\Qt
