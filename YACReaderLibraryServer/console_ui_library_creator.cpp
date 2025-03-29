@@ -33,7 +33,7 @@ void ConsoleUILibraryCreator::createLibrary(const QString &name, const QString &
         return;
     }
 
-    libraryCreator->createLibrary(cleanPath, YACReaderLibrary::libraryDataPath(cleanPath));
+    libraryCreator->createLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath));
 
     connect(libraryCreator, &LibraryCreator::finished, this, &ConsoleUILibraryCreator::done);
     connect(libraryCreator, &LibraryCreator::comicAdded, this, &ConsoleUILibraryCreator::newComic);
@@ -62,7 +62,7 @@ void ConsoleUILibraryCreator::updateLibrary(const QString &path)
     LibraryCreator *libraryCreator = new LibraryCreator(settings);
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
-    libraryCreator->updateLibrary(cleanPath, YACReaderLibrary::libraryDataPath(cleanPath));
+    libraryCreator->updateLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath));
 
     connect(libraryCreator, &LibraryCreator::finished, this, &ConsoleUILibraryCreator::done);
     connect(libraryCreator, &LibraryCreator::comicAdded, this, &ConsoleUILibraryCreator::newComic);
@@ -85,7 +85,7 @@ void ConsoleUILibraryCreator::addExistingLibrary(const QString &name, const QStr
     }
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
-    if (!QDir(YACReaderLibrary::libraryDataPath(cleanPath)).exists()) {
+    if (!QDir(LibraryPaths::libraryDataPath(cleanPath)).exists()) {
         std::cout << "No data folder found in path: " << cleanPath.toStdString() << std::endl;
         return;
     }
@@ -135,7 +135,7 @@ void ConsoleUILibraryCreator::rescanXMLInfoLibrary(const QString &path)
     connect(scanner, &XMLInfoLibraryScanner::finished, &eventLoop, &QEventLoop::quit);
 
     std::cout << "Scanning comics";
-    scanner->scanLibrary(cleanPath, YACReaderLibrary::libraryDataPath(cleanPath));
+    scanner->scanLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath));
 
     eventLoop.exec();
 }

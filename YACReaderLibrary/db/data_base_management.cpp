@@ -4,6 +4,7 @@
 #include "initial_comic_info_extractor.h"
 #include "check_new_version.h"
 #include "db_helper.h"
+#include "yacreader_libraries.h"
 
 #include "QsLog.h"
 
@@ -118,15 +119,15 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
     return db;
 }
 
-QSqlDatabase DataBaseManagement::loadDatabase(QString path)
+QSqlDatabase DataBaseManagement::loadDatabase(QString libraryDataPath)
 {
-    if (!QFile::exists(path + "/library.ydb")) {
+    if (!QFile::exists(libraryDataPath + "/library.ydb")) {
         return QSqlDatabase();
     }
 
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", path + threadId);
-    db.setDatabaseName(path + "/library.ydb");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", libraryDataPath + threadId);
+    db.setDatabaseName(libraryDataPath + "/library.ydb");
     if (!db.open()) {
         return QSqlDatabase();
     }
@@ -667,7 +668,8 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                 QString basePath = QString(dest).remove("/.yacreaderlibrary/library.ydb");
                 QString path = basePath + getComic.record().value("path").toString();
                 int coverPage = getComic.record().value("coverPage").toInt();
-                InitialComicInfoExtractor ie(path, basePath + "/.yacreaderlibrary/covers/" + hash + ".jpg", coverPage);
+                auto coverPath = LibraryPaths::coverPath(basePath, hash);
+                InitialComicInfoExtractor ie(path, coverPath, coverPage);
                 ie.extract();
             }
         }
@@ -851,7 +853,7 @@ int DataBaseManagement::compareVersions(const QString &v1, const QString v2)
     return 0;
 }
 
-bool DataBaseManagement::updateToCurrentVersion(const QString &path)
+bool DataBaseManagement::updateToCurrentVersion(const QString &libraryDataPath)
 {
     bool pre7 = false;
     bool pre7_1 = false;
@@ -861,7 +863,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
     bool pre9_13 = false;
     bool pre9_14 = false;
 
-    QString fullPath = path + "/library.ydb";
+    QString fullPath = libraryDataPath + "/library.ydb";
 
     if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "7.0.0") < 0)
         pre7 = true;
@@ -966,7 +968,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
 
                     QImageReader thumbnail;
                     while (selectQuery.next()) {
-                        thumbnail.setFileName(path % "/covers/" % selectQuery.value(1).toString() % ".jpg");
+                        thumbnail.setFileName(libraryDataPath % "/covers/" % selectQuery.value(1).toString() % ".jpg");
 
                         float coverSizeRatio = static_cast<float>(thumbnail.size().width()) / thumbnail.size().height();
                         updateCoverInfo.bindValue(":coverSizeRatio", coverSizeRatio);

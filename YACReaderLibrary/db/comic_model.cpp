@@ -11,6 +11,7 @@
 #include "comic_db.h"
 #include "db_helper.h"
 #include "reading_list_model.h"
+
 #ifdef use_unarr
 #include <unarr.h>
 #endif
@@ -489,11 +490,10 @@ int ComicModel::rowCount(const QModelIndex &parent) const
 QStringList ComicModel::getPaths(const QString &_source)
 {
     QStringList paths;
-    QString source = _source + "/.yacreaderlibrary/covers/";
     QList<ComicItem *>::ConstIterator itr;
     for (itr = _data.constBegin(); itr != _data.constEnd(); itr++) {
         QString hash = (*itr)->data(ComicModel::Hash).toString();
-        paths << source + hash + ".jpg";
+        paths << LibraryPaths::coverPath(_source, hash);
     }
 
     return paths;

@@ -5,6 +5,7 @@
 #include <QDataStream>
 #include <QMetaType>
 #include <QAbstractItemModel>
+#include <QDir>
 
 class QLibrary;
 
@@ -108,7 +109,41 @@ void iterate(const QModelIndex &index,
              const QAbstractItemModel *model,
              const std::function<bool(const QModelIndex &)> &iteration);
 
-}
+struct LibraryPaths {
+    LibraryPaths() = delete; // Prevent instantiation
+
+    static QString libraryDataPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary
+    {
+        return QDir(libraryPath).filePath(".yacreaderlibrary");
+    }
+
+    static QString libraryDatabasePath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/library.ydb
+    {
+        return QDir(libraryDataPath(libraryPath)).filePath("library.ydb");
+    }
+
+    static QString libraryCoversFolderPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/covers
+    {
+        return QDir(libraryDataPath(libraryPath)).filePath("covers");
+    }
+
+    static QString coverPath(const QString &libraryPath, const QString &hash) // libraryPath + /.yacreaderlibrary/covers/hash + .jpg
+    {
+        return QDir(libraryCoversFolderPath(libraryPath)).filePath(hash + ".jpg");
+    }
+
+    static QString coverPathWithFileName(const QString &libraryPath, const QString &fileName) // libraryPath + /.yacreaderlibrary/covers/hash + fileName
+    {
+        return QDir(libraryCoversFolderPath(libraryPath)).filePath(fileName);
+    }
+
+    static QString idPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/id
+    {
+        return QDir(libraryDataPath(libraryPath)).filePath("id");
+    }
+};
+
+} // namespace YACReader
 
 Q_DECLARE_METATYPE(YACReader::OpenComicSource::Source)
 Q_DECLARE_METATYPE(YACReader::OpenComicSource)

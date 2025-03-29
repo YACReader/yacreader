@@ -2,9 +2,11 @@
 #include "qnaturalsorting.h"
 #include "yacreader_global.h"
 
+using namespace YACReader;
+
 void writeIdToLibraryFolder(const QString &path, const QUuid &id)
 {
-    QFile file(path + "/.yacreaderlibrary/id");
+    QFile file(LibraryPaths::idPath(path));
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream stream(&file);
         stream << id.toString(QUuid::WithoutBraces);
@@ -14,7 +16,7 @@ void writeIdToLibraryFolder(const QString &path, const QUuid &id)
 
 QUuid readFromLibraryFolder(const QString &path)
 {
-    QFile file(path + "/.yacreaderlibrary/id");
+    QFile file(LibraryPaths::idPath(path));
     if (file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream stream(&file);
         QString id = stream.readLine();
@@ -62,7 +64,7 @@ QString YACReaderLibraries::getPath(const QUuid &id)
 
 QString YACReaderLibraries::getDBPath(int id)
 {
-    return YACReaderLibrary::libraryDataPath(getPath(id));
+    return LibraryPaths::libraryDataPath(getPath(id));
 }
 
 QString YACReaderLibraries::getName(int id)
@@ -228,7 +230,7 @@ QString YACReaderLibrary::getPath() const
 
 QString YACReaderLibrary::getDBPath() const
 {
-    return YACReaderLibrary::libraryDataPath(path);
+    return LibraryPaths::libraryDataPath(path);
 }
 
 int YACReaderLibrary::getLegacyId() const
@@ -249,21 +251,6 @@ bool YACReaderLibrary::operator==(const YACReaderLibrary &other) const
 bool YACReaderLibrary::operator!=(const YACReaderLibrary &other) const
 {
     return !(*this == other);
-}
-
-QString YACReaderLibrary::libraryDataPath(const QString &libraryPath)
-{
-    return QDir(libraryPath).filePath(".yacreaderlibrary");
-}
-
-QString YACReaderLibrary::libraryDatabasePath(const QString &libraryPath)
-{
-    return QDir(YACReaderLibrary::libraryDataPath(libraryPath)).filePath("library.ydb");
-}
-
-QString YACReaderLibrary::libraryCoversFolderPath(const QString &libraryPath)
-{
-    return QDir(YACReaderLibrary::libraryDataPath(libraryPath)).filePath("covers");
 }
 
 QDataStream &operator<<(QDataStream &out, const YACReaderLibrary &library)

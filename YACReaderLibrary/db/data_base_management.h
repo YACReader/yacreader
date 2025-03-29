@@ -46,7 +46,7 @@ public:
     static QSqlDatabase createDatabase(QString name, QString path);
     static QSqlDatabase createDatabase(QString dest);
     // carga una base de datos desde la ruta path
-    static QSqlDatabase loadDatabase(QString path);
+    static QSqlDatabase loadDatabase(QString libraryDataPath);
     static QSqlDatabase loadDatabaseFromFile(QString path);
     static bool createTables(QSqlDatabase &database);
     static bool createComicInfoTable(QSqlDatabase &database, QString tableName);
