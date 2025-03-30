@@ -405,7 +405,7 @@ ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
 QPixmap ComicInfo::getCover(const QString &basePath)
 {
     if (cover.isNull()) {
-        cover.load(basePath + "/.yacreaderlibrary/covers/" + hash + ".jpg");
+        cover.load(YACReader::LibraryPaths::coverPath(basePath, hash));
     }
     QPixmap c;
     c.convertFromImage(cover);

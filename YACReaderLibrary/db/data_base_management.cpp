@@ -4,6 +4,7 @@
 #include "initial_comic_info_extractor.h"
 #include "check_new_version.h"
 #include "db_helper.h"
+#include "yacreader_libraries.h"
 
 #include "QsLog.h"
 
@@ -118,15 +119,15 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
     return db;
 }
 
-QSqlDatabase DataBaseManagement::loadDatabase(QString path)
+QSqlDatabase DataBaseManagement::loadDatabase(QString libraryDataPath)
 {
-    if (!QFile::exists(path + "/library.ydb")) {
+    if (!QFile::exists(libraryDataPath + "/library.ydb")) {
         return QSqlDatabase();
     }
 
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", path + threadId);
-    db.setDatabaseName(path + "/library.ydb");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", libraryDataPath + threadId);
+    db.setDatabaseName(libraryDataPath + "/library.ydb");
     if (!db.open()) {
         return QSqlDatabase();
     }
@@ -667,7 +668,8 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                 QString basePath = QString(dest).remove("/.yacreaderlibrary/library.ydb");
                 QString path = basePath + getComic.record().value("path").toString();
                 int coverPage = getComic.record().value("coverPage").toInt();
-                InitialComicInfoExtractor ie(path, basePath + "/.yacreaderlibrary/covers/" + hash + ".jpg", coverPage);
+                auto coverPath = LibraryPaths::coverPath(basePath, hash);
+                InitialComicInfoExtractor ie(path, coverPath, coverPage);
                 ie.extract();
             }
         }
@@ -851,7 +853,7 @@ int DataBaseManagement::compareVersions(const QString &v1, const QString v2)
     return 0;
 }
 
-bool DataBaseManagement::updateToCurrentVersion(const QString &path)
+bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
 {
     bool pre7 = false;
     bool pre7_1 = false;
@@ -861,28 +863,28 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
     bool pre9_13 = false;
     bool pre9_14 = false;
 
-    QString fullPath = path + "/library.ydb";
+    QString libraryDatabasePath = LibraryPaths::libraryDatabasePath(libraryPath);
 
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "7.0.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "7.0.0") < 0)
         pre7 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "7.0.3") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "7.0.3") < 0)
         pre7_1 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "8.0.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "8.0.0") < 0)
         pre8 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.5.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.5.0") < 0)
         pre9_5 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.8.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.8.0") < 0)
         pre9_8 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.13.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.13.0") < 0)
         pre9_13 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.14.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.14.0") < 0)
         pre9_14 = true;
 
     QString connectionName = "";
     bool returnValue = true;
 
     {
-        QSqlDatabase db = loadDatabaseFromFile(fullPath);
+        QSqlDatabase db = loadDatabaseFromFile(libraryDatabasePath);
         if (db.isValid() && db.isOpen()) {
             if (pre7) // TODO: execute only if previous version was < 7.0
             {
@@ -966,7 +968,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
 
                     QImageReader thumbnail;
                     while (selectQuery.next()) {
-                        thumbnail.setFileName(path % "/covers/" % selectQuery.value(1).toString() % ".jpg");
+                        auto coverPath = LibraryPaths::coverPath(libraryPath, selectQuery.value(1).toString());
+                        thumbnail.setFileName(coverPath);
 
                         float coverSizeRatio = static_cast<float>(thumbnail.size().width()) / thumbnail.size().height();
                         updateCoverInfo.bindValue(":coverSizeRatio", coverSizeRatio);

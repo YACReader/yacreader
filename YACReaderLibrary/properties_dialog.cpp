@@ -954,7 +954,8 @@ void PropertiesDialog::save()
 
     if (sequentialEditing) {
         if (coverChanged) {
-            InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, basePath + "/.yacreaderlibrary/covers/" + comics[currentComicIndex].info.hash + ".jpg", comics[currentComicIndex].info.coverPage.toInt());
+            auto coverPath = LibraryPaths::coverPath(basePath, comics[currentComicIndex].info.hash);
+            InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, coverPath, comics[currentComicIndex].info.coverPage.toInt());
             ie.extract();
 
             if (ie.getOriginalCoverSize().second > 0) {

@@ -11,6 +11,7 @@
 #include "comic_db.h"
 #include "db_helper.h"
 #include "reading_list_model.h"
+
 #ifdef use_unarr
 #include <unarr.h>
 #endif
@@ -489,11 +490,10 @@ int ComicModel::rowCount(const QModelIndex &parent) const
 QStringList ComicModel::getPaths(const QString &_source)
 {
     QStringList paths;
-    QString source = _source + "/.yacreaderlibrary/covers/";
     QList<ComicItem *>::ConstIterator itr;
     for (itr = _data.constBegin(); itr != _data.constEnd(); itr++) {
         QString hash = (*itr)->data(ComicModel::Hash).toString();
-        paths << source + hash + ".jpg";
+        paths << LibraryPaths::coverPath(_source, hash);
     }
 
     return paths;
@@ -1228,10 +1228,10 @@ void ComicModel::notifyCoverChange(const ComicDB &comic)
     // this doesn't work in QML -> emit dataChanged(index(itemIndex, 0), index(itemIndex, 0), QVector<int>() << CoverPathRole);
 }
 
-// ????
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
 {
-    return QUrl::fromLocalFile(_databasePath + "/covers/" + hash + ".jpg");
+    auto coverPath = LibraryPaths::coverPathFromLibraryDataPath(_databasePath, hash);
+    return QUrl::fromLocalFile(coverPath);
 }
 
 void ComicModel::addComicsToFavorites(const QList<qulonglong> &comicIds)

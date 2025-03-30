@@ -13,6 +13,8 @@
 
 #include <algorithm>
 
+using namespace YACReader;
+
 #ifdef Y_MAC_UI
 #include <QFileIconProvider>
 QIcon finishedFolderIcon;
@@ -852,7 +854,8 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
 
 QUrl FolderModel::getCoverUrlPathForComicHash(const QString &hash) const
 {
-    return QUrl::fromLocalFile(_databasePath + "/covers/" + hash + ".jpg");
+    auto coverPath = LibraryPaths::coverPathFromLibraryDataPath(_databasePath, hash);
+    return QUrl::fromLocalFile(coverPath);
 }
 
 void FolderModel::setShowRecent(bool showRecent)

@@ -1,10 +1,13 @@
 #include "create_library_dialog.h"
+#include "yacreader_global.h"
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QFileDialog>
 #include <QSizePolicy>
 #include <QMessageBox>
+
+using namespace YACReader;
 
 CreateLibraryDialog::CreateLibraryDialog(QWidget *parent)
     : QDialog(parent)
@@ -87,7 +90,7 @@ void CreateLibraryDialog::create()
     QFileInfo f(path->text());
     if (f.exists() && f.isDir() && f.isWritable()) {
         if (!libraries.contains(nameEdit->text())) {
-            emit createLibrary(QDir::cleanPath(path->text()), QDir::cleanPath(path->text()) + "/.yacreaderlibrary", nameEdit->text());
+            emit createLibrary(QDir::cleanPath(path->text()), LibraryPaths::libraryDataPath(QDir::cleanPath(path->text())), nameEdit->text());
             close();
         } else
             emit libraryExists(nameEdit->text());

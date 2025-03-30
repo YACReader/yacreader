@@ -46,7 +46,7 @@ public:
     static QSqlDatabase createDatabase(QString name, QString path);
     static QSqlDatabase createDatabase(QString dest);
     // carga una base de datos desde la ruta path
-    static QSqlDatabase loadDatabase(QString path);
+    static QSqlDatabase loadDatabase(QString libraryDataPath);
     static QSqlDatabase loadDatabaseFromFile(QString path);
     static bool createTables(QSqlDatabase &database);
     static bool createComicInfoTable(QSqlDatabase &database, QString tableName);
@@ -57,7 +57,7 @@ public:
 
     static QString checkValidDB(const QString &fullPath); // retorna "" si la DB es inválida ó la versión si es válida.
     static int compareVersions(const QString &v1, const QString v2); // retorna <0 si v1 < v2, 0 si v1 = v2 y >0 si v1 > v2
-    static bool updateToCurrentVersion(const QString &path);
+    static bool updateToCurrentVersion(const QString &libraryPath);
 };
 
 #endif
