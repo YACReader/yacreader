@@ -5,6 +5,7 @@
 #include <QImageReader>
 
 #include "comic_db.h"
+#include "data_base_management.h"
 #include "db_helper.h"
 #include "yacreader_http_server.h"
 #include "yacreader_global.h"
@@ -461,7 +462,14 @@ void logSystemAndConfig()
     for (const auto &line : globalInfo.split("\n")) {
         QLOG_INFO() << line;
     }
-    QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
+
+    auto libraries = DBHelper::getLibraries().getLibraries();
+    QLOG_INFO() << "Libraries: ";
+    for (auto library : libraries) {
+        QLOG_INFO() << "    " << library;
+        auto access = DataBaseManagement::getDatabaseAccess(library.getPath());
+        QLOG_INFO() << "     > STATUS: " << access;
+    }
     QLOG_INFO() << "--------------------------------------------";
 }
 

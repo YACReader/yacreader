@@ -1097,6 +1097,52 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
     return returnValue;
 }
 
+DatabaseAccess DataBaseManagement::getDatabaseAccess(const QString &libraryPath)
+{
+    DatabaseAccess access = { false, false, false, false };
+
+    auto libraryDataPath = LibraryPaths::libraryDataPath(libraryPath);
+    auto libraryDatabasePath = LibraryPaths::libraryDatabasePath(libraryPath);
+
+    QFile libraryDatabase(libraryDatabasePath);
+    if (!libraryDatabase.exists()) {
+        return access;
+    }
+
+    access.libraryExists = true;
+
+    QDir libraryData(libraryDataPath);
+    QFile testFile(libraryData.filePath("test"));
+    if (testFile.open(QIODevice::WriteOnly)) {
+        access.canWriteToFolder = true;
+        testFile.close();
+        testFile.remove();
+    }
+
+    QString connectionName = "test";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabaseFromFile(libraryDatabasePath);
+
+        QSqlQuery versionQuery(db);
+        bool read = versionQuery.exec("SELECT version FROM db_info");
+
+        read = read && versionQuery.next();
+        read = read && !versionQuery.record().value(0).toString().isEmpty();
+
+        access.canRead = read;
+
+        QSqlQuery writeQuery(db);
+        bool write = db.transaction();
+        write = write && writeQuery.exec("CREATE TABLE test_write (id INTEGER);");
+        write = write && db.rollback();
+
+        access.canWrite = write;
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return access;
+}
+
 // COMICS_INFO_EXPORTER
 ComicsInfoExporter::ComicsInfoExporter()
     : QThread()
