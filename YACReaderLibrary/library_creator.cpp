@@ -154,7 +154,7 @@ void LibraryCreator::run()
         _currentPathFolders.clear();
         // se crean los directorios .yacreaderlibrary y .yacreaderlibrary/covers
         QDir dir;
-        dir.mkpath(_target + "/covers");
+        dir.mkpath(LibraryPaths::libraryCoversPathFromLibraryDataPath(_target));
 
         // se crea la base de datos .yacreaderlibrary/library.ydb
         {
@@ -269,7 +269,8 @@ void LibraryCreator::cancel()
 
 void LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
 {
-    QDir coversDir(target + "/covers/");
+    auto coversPath = LibraryPaths::libraryCoversPathFromLibraryDataPath(target);
+    QDir coversDir(coversPath);
     if (!coversDir.exists()) {
         return;
     }
@@ -285,10 +286,8 @@ void LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
 
     while (infoToDeleteQuery.next()) {
         QString hash = infoToDeleteQuery.value(1).toString();
-        QString cover = hash + ".jpg";
-
-        auto fullPath = coversDir.absoluteFilePath(cover);
-        QFile::remove(fullPath);
+        QString coverPath = LibraryPaths::coverPathFromLibraryDataPath(target, hash);
+        QFile::remove(coverPath);
     }
 
     QSqlQuery deleteQuery(db);
@@ -358,7 +357,7 @@ void LibraryCreator::create(QDir dir)
 
 bool LibraryCreator::checkCover(const QString &hash)
 {
-    return QFile::exists(_target + "/covers/" + hash + ".jpg");
+    return QFile::exists(LibraryPaths::coverPathFromLibraryDataPath(_target, hash));
 }
 
 QString pseudoHash(const QFileInfo &fileInfo)
@@ -383,14 +382,15 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
     QPair<int, int> originalCoverSize = { 0, 0 };
     bool exists = checkCover(hash);
 
-    YACReader::InitialComicInfoExtractor ie(QDir::cleanPath(fileInfo.absoluteFilePath()), _target + "/covers/" + hash + ".jpg", comic.info.coverPage.toInt(), settings->value(IMPORT_COMIC_INFO_XML_METADATA, false).toBool());
+    auto coverPath = LibraryPaths::coverPathFromLibraryDataPath(_target, hash);
+    YACReader::InitialComicInfoExtractor ie(QDir::cleanPath(fileInfo.absoluteFilePath()), coverPath, comic.info.coverPage.toInt(), settings->value(IMPORT_COMIC_INFO_XML_METADATA, false).toBool());
 
     if (!(comic.hasCover() && exists)) {
         ie.extract();
         numPages = ie.getNumPages();
         originalCoverSize = ie.getOriginalCoverSize();
         if (numPages > 0) {
-            emit comicAdded(relativePath, _target + "/covers/" + hash + ".jpg");
+            emit comicAdded(relativePath, coverPath);
         }
     }
 

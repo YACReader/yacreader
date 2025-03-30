@@ -1228,10 +1228,10 @@ void ComicModel::notifyCoverChange(const ComicDB &comic)
     // this doesn't work in QML -> emit dataChanged(index(itemIndex, 0), index(itemIndex, 0), QVector<int>() << CoverPathRole);
 }
 
-// ????
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
 {
-    return QUrl::fromLocalFile(_databasePath + "/covers/" + hash + ".jpg");
+    auto coverPath = LibraryPaths::coverPathFromLibraryDataPath(_databasePath, hash);
+    return QUrl::fromLocalFile(coverPath);
 }
 
 void ComicModel::addComicsToFavorites(const QList<qulonglong> &comicIds)

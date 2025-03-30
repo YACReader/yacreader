@@ -127,9 +127,24 @@ struct LibraryPaths {
         return QDir(libraryDataPath(libraryPath)).filePath("covers");
     }
 
+    static QString libraryCoversPathFromLibraryDataPath(const QString &libraryDataPath) // libraryDataPath + /covers
+    {
+        return QDir(libraryDataPath).filePath("covers");
+    }
+
     static QString coverPath(const QString &libraryPath, const QString &hash) // libraryPath + /.yacreaderlibrary/covers/hash + .jpg
     {
-        return QDir(libraryCoversFolderPath(libraryPath)).filePath(hash + ".jpg");
+        return QDir(libraryCoversFolderPath(libraryPath)).filePath(coverFileName(hash));
+    }
+
+    static QString coverPathFromLibraryDataPath(const QString &libraryDataPath, const QString &hash) // libraryDataPath + /covers/hash + .jpg
+    {
+        return QDir(libraryCoversPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(hash));
+    }
+
+    static QString coverFileName(const QString &hash) // hash + .jpg
+    {
+        return hash + ".jpg";
     }
 
     static QString coverPathWithFileName(const QString &libraryPath, const QString &fileName) // libraryPath + /.yacreaderlibrary/covers/hash + fileName
