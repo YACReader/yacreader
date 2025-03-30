@@ -9,6 +9,10 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReaderLibrary
 * Improve flexibility of the open comic in third party app setting so more complex commands can be used. e.g. `open -a "/Applications/My Reader.app" "{comic_file_path}"`.
 * Fix setting the comic rating in the table view.
+* Log libraries validation when the app starts.
+
+### YACReaderLibraryServer
+* Log libraries validation when the app starts.
 
 ## 9.15.0
 
