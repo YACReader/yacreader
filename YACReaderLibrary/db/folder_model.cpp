@@ -13,6 +13,8 @@
 
 #include <algorithm>
 
+using namespace YACReader;
+
 #ifdef Y_MAC_UI
 #include <QFileIconProvider>
 QIcon finishedFolderIcon;
