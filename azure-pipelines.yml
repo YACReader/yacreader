@@ -297,7 +297,7 @@ jobs:
     architecture: 'arm64'
     qt_version: '6.8.1'
     qt_spec: 'msvc2022_arm64'
-    qt_aqt_spec: 'win64_msvc2022_arm64'
+    qt_aqt_spec: 'win64_msvc2022_arm64_cross_compiled'
     vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.arm64.exe'
     vc_redist_file_name: 'vc_redist.arm64.exe'
     vc_vars: 'vcvarsall.bat'
