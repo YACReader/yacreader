@@ -35,21 +35,13 @@ jobs:
       7z x $(Build.SourcesDirectory)\compressed_archive\7z2301-src.7z -o$(Build.SourcesDirectory)\compressed_archive\lib7zip
       wget "${{ parameters.vc_redist_url }}" -O $(Build.SourcesDirectory)\${{ parameters.vc_redist_file_name }}
     displayName: 'Install dependencies'
-
   - script: |
       call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}" amd64_arm64
       set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
       set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
       qmake CONFIG+="7zip" %DEFINES_VAR%
       nmake
-    displayName: 'Build (Cross-Compiling ARM64)'
-
-  - script: |
-      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}" amd64_arm64
-      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
-      nmake check TESTARGS="-maxwarnings 100000"
-    displayName: 'Run tests'
-
+    displayName: 'Build'
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - task: DownloadSecureFile@1
       name: pfxFile
