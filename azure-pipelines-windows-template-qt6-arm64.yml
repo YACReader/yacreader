@@ -25,6 +25,9 @@ jobs:
   - script: |
       pip install aqtinstall
       mkdir C:\Qt
+# the arm64 desktop version also requires win64_msvc2022_64:  You are installing the MSVC Arm64 version of Qt, which requires that the desktop version of Qt is also installed. You can install it with the following command:
+#          `aqt install-qt windows desktop 6.8.1 win64_msvc2022_64`     
+      python -m aqt install-qt windows desktop ${{ parameters.qt_version }} win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
       python -m aqt install-qt windows desktop ${{ parameters.qt_version }} ${{ parameters.qt_aqt_spec }} -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
       dir C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
       choco install -y wget
