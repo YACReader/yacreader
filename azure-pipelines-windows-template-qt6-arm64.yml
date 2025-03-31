@@ -26,7 +26,7 @@ jobs:
       pip install aqtinstall
       mkdir C:\Qt  
       python -m aqt install-qt windows desktop ${{ parameters.qt_version }} win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
-      python -m aqt install-qt windows desktop ${{ parameters.qt_version }} ${{ parameters.qt_aqt_spec }} -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
+      python -m aqt install-qt windows desktop ${{ parameters.qt_version }} ${{ parameters.qt_aqt_spec }} -O c:\Qt
       dir C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
       choco install -y wget
       choco install innosetup
