@@ -18,6 +18,10 @@ jobs:
   pool:
     vmImage: 'windows-2022'
   steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.10'
+      architecture: 'x64'
   - script: |
       pip install aqtinstall
       mkdir C:\Qt
