@@ -1,0 +1,80 @@
+parameters:
+  name: Windows_ARM64
+  architecture: 'arm64'
+  qt_version: '6.8.1'
+  qt_spec: 'msvc2022_arm64'
+  qt_aqt_spec: 'win64_msvc2022_arm64'
+  vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.arm64.exe'
+  vc_redist_file_name: 'vc_redist.arm64.exe'
+  vc_vars: 'vcvarsall.bat'
+
+jobs:
+- job: ${{ parameters.name }}
+  timeoutInMinutes: 90
+  dependsOn: CodeFormatValidation
+  variables:
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - group: windows-codesign
+  pool:
+    vmImage: 'windows-2022'
+  steps:
+  - script: |
+      pip install aqtinstall
+      mkdir C:\Qt
+      python -m aqt install-qt windows desktop ${{ parameters.qt_version }} ${{ parameters.qt_aqt_spec }} -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
+      dir C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin
+      choco install -y wget
+      choco install innosetup
+      mkdir $(Build.SourcesDirectory)\compressed_archive
+      wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O $(Build.SourcesDirectory)\compressed_archive\7z2301-src.7z
+      7z x $(Build.SourcesDirectory)\compressed_archive\7z2301-src.7z -o$(Build.SourcesDirectory)\compressed_archive\lib7zip
+      wget "${{ parameters.vc_redist_url }}" -O $(Build.SourcesDirectory)\${{ parameters.vc_redist_file_name }}
+    displayName: 'Install dependencies'
+
+  - script: |
+      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}" amd64_arm64
+      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+      set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
+      qmake CONFIG+="7zip" %DEFINES_VAR%
+      nmake
+    displayName: 'Build (Cross-Compiling ARM64)'
+
+  - script: |
+      call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\${{ parameters.vc_vars }}" amd64_arm64
+      set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+      nmake check TESTARGS="-maxwarnings 100000"
+    displayName: 'Run tests'
+
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - task: DownloadSecureFile@1
+      name: pfxFile
+      displayName: 'Get the pfx file certificate'
+      inputs:
+        secureFile: 'certificate.pfx'
+
+  - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
+    - script: |
+        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+        cd $(Build.SourcesDirectory)\ci\win
+        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6 $(pfxFile.secureFilePath) %PASSWORD%
+      env:
+        PASSWORD: $(pfxPassword)
+      displayName: 'Create installer'
+
+  - ${{ else }}:
+    - script: |
+        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+        cd $(Build.SourcesDirectory)\ci\win
+        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6
+      displayName: 'Create installer'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: $(Build.SourcesDirectory)\ci\win\Output\
+      contents: '*'
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishPipelineArtifact@1
+    inputs:
+      path: $(Build.ArtifactStagingDirectory)
+      artifactName: Windows ${{ parameters.architecture }} $(Build.BuildNumber) 7z Qt6 Installer

@@ -288,6 +288,21 @@ jobs:
     vc_vars: 'vcvars64.bat'
 
 #
+# Windows arm64 qt6
+#
+
+- template: azure-pipelines-windows-template-qt6-arm64.yml
+  parameters:
+    name: Windows_arm64_qt6
+    architecture: 'arm64'
+    qt_version: '6.8.1'
+    qt_spec: 'msvc2022_arm64'
+    qt_aqt_spec: 'win64_msvc2022_arm64'
+    vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.arm64.exe'
+    vc_redist_file_name: 'vc_redist.arm64.exe'
+    vc_vars: 'vcvarsall.bat'
+
+#
 # Windows x86
 #
 
