@@ -3,6 +3,7 @@ parameters:
   architecture: 'arm64'
   qt_version: '6.8.1'
   qt_spec: 'msvc2022_arm64'
+  qt_spec_native: 'msvc2022_64' # windeployqt.exe and other tools are here
   qt_aqt_spec: 'win64_msvc2022_arm64_cross_compiled'
   vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.arm64.exe'
   vc_redist_file_name: 'vc_redist.arm64.exe'
@@ -56,7 +57,7 @@ jobs:
 
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - script: |
-        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec_native }}\bin;%PATH%
         cd $(Build.SourcesDirectory)\ci\win
         .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6 $(pfxFile.secureFilePath) %PASSWORD%
       env:
@@ -65,7 +66,7 @@ jobs:
 
   - ${{ else }}:
     - script: |
-        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin;%PATH%
+        set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec_native }}\bin;%PATH%
         cd $(Build.SourcesDirectory)\ci\win
         .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6
       displayName: 'Create installer'
