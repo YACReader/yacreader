@@ -41,7 +41,7 @@ jobs:
       set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"$(Build.BuildNumber)\\\\\\\""
       qmake CONFIG+="7zip" %DEFINES_VAR%
       nmake
-      namke release
+      type Makefile
     displayName: 'Build'
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - task: DownloadSecureFile@1
