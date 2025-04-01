@@ -50,7 +50,7 @@ isEmpty(QMAKE_TARGET.arch) {
   QMAKE_TARGET.arch = $$QMAKE_HOST.arch
 }
 contains(QMAKE_TARGET.arch, arm.*)|contains(QMAKE_TARGET.arch, aarch.*) {
-  !macx { # Apple silicon supports opengl
+  !macx:!win32 { # Apple silicon supports opengl (for now lets flag windows as experimental)
     CONFIG += no_opengl
     message("Building for ARM architecture. Disabling OpenGL coverflow. If you know that your ARM arquitecture supports opengl, please edit config.pri to enable it.")
   }
