@@ -58,8 +58,9 @@ jobs:
   - ${{ if and(eq(variables['System.TeamFoundationCollectionUri'], 'https://dev.azure.com/luisangelsm/'), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))) }}:
     - script: |
         set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec_native }}\bin;%PATH%
+        set QTPATHS_ARM64=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin\qtpaths.exe
         cd $(Build.SourcesDirectory)\ci\win
-        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6 $(pfxFile.secureFilePath) %PASSWORD%
+        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6 %QTPATHS_ARM64% $(pfxFile.secureFilePath) %PASSWORD% 
       env:
         PASSWORD: $(pfxPassword)
       displayName: 'Create installer'
@@ -67,8 +68,9 @@ jobs:
   - ${{ else }}:
     - script: |
         set PATH=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec_native }}\bin;%PATH%
+        set QTPATHS_ARM64=C:\Qt\${{ parameters.qt_version }}\${{ parameters.qt_spec }}\bin\qtpaths.exe
         cd $(Build.SourcesDirectory)\ci\win
-        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6
+        .\create_installer.cmd ${{ parameters.architecture }} 7z $(Build.BuildNumber) qt6 %QTPATHS_ARM64%
       displayName: 'Create installer'
 
   - task: CopyFiles@2
