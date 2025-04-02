@@ -13,8 +13,8 @@ OutputDir=..\Output
 ChangesAssociations=true
 SetupIconFile=setup.ico
 UninstallDisplayIcon=uninstall.ico
-ArchitecturesInstallIn64BitMode=x64
-ArchitecturesAllowed=x64
+ArchitecturesInstallIn64BitMode={#PLATFORM}
+ArchitecturesAllowed={#PLATFORM}
 #if CODE_SIGN == "true"
   SignTool=signtool
 #endif
