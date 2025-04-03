@@ -62,8 +62,8 @@ Source: Qt6Svg.dll; DestDir: {app}
 Source: Qt6ShaderTools.dll; DestDir: {app}
 
 ;Qt Angle
-Source: opengl32sw.dll; DestDir: {app}
-Source: D3Dcompiler_47.dll; DestDir: {app}
+Source: opengl32sw.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
+Source: D3Dcompiler_47.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
 
 ;Qt PlugIns
 Source:generic\*;  DestDir: {app}\generic\
