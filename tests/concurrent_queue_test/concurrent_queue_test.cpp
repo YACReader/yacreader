@@ -209,6 +209,7 @@ void waitAndPrint(const ConcurrentQueue &queue, const QueueControlMessagePrinter
     printer.printEndWaitingMessage();
 }
 
+#if QT_VERSION < QT_VERSION_CHECK(6, 9, 0)
 template<typename T, std::size_t size>
 QDebug operator<<(QDebug debug, const std::array<T, size> &array)
 {
@@ -225,6 +226,7 @@ QDebug operator<<(QDebug debug, const std::array<T, size> &array)
 
     return debug;
 }
+#endif
 
 using RandomEngine = std::mt19937_64;
 
