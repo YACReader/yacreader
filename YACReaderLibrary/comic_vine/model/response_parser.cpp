@@ -2,6 +2,7 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonParseError>
+#include <QVariantMap>
 
 ResponseParser::ResponseParser(QObject *parent)
     : QObject(parent), error(false), errorTxt("None"), numResults(-1), currentPage(-1), totalPages(-1)
