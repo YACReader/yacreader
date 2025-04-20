@@ -180,4 +180,29 @@ KDSignalLeadingDebouncer::KDSignalLeadingDebouncer(QObject *parent)
 
 KDSignalLeadingDebouncer::~KDSignalLeadingDebouncer() = default;
 
+
+KDStringSignalDebouncer::KDStringSignalDebouncer(QObject *parent)
+    : QObject(parent), m_debouncer(KDGenericSignalThrottler::Kind::Debouncer,
+                  KDGenericSignalThrottler::EmissionPolicy::Trailing,
+                  parent)
+{
+    connect(&m_debouncer, &KDGenericSignalThrottler::triggered,
+            this, [=] {
+        emit triggered(this->value);
+    });
+}
+
+void KDStringSignalDebouncer::setTimeout(int msec) {
+    m_debouncer.setTimeout(msec);
+}
+
+int KDStringSignalDebouncer::timeout() const {
+    return m_debouncer.timeout();
+}
+
+void KDStringSignalDebouncer::throttle(QString value) {
+    this->value = value;
+    m_debouncer.throttle();
+}
+
 } // namespace KDToolBox

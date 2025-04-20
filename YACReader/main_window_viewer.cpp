@@ -1319,7 +1319,11 @@ void MainWindowViewer::toggleFitToWidthSlider()
     if (zoomSliderAction->isVisible()) {
         zoomSliderAction->hide();
     } else {
+#if defined(Y_MAC_UI) && (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+        zoomSliderAction->move((this->width() - zoomSliderAction->width()) / 2, y);
+#else
         zoomSliderAction->move(250, y);
+#endif
         zoomSliderAction->show();
     }
 }

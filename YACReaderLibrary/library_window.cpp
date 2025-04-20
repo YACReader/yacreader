@@ -770,19 +770,20 @@ void LibraryWindow::createConnections()
     connect(optionsDialog, &YACReaderOptionsDialog::optionsChanged, this, &LibraryWindow::reloadOptions);
     connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
 
-    auto searchDebouncer = new KDToolBox::KDSignalDebouncer(this);
+    auto searchDebouncer = new KDToolBox::KDStringSignalDebouncer(this);
     searchDebouncer->setTimeout(400);
 
 // Search filter
 #ifdef Y_MAC_UI
-    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
-    connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
-        setSearchFilter(searchEdit->text());
+    connect(libraryToolBar, &YACReaderMacOSXToolbar::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
+    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
+    connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, this, [=](QString filter) {
+        setSearchFilter(filter);
     });
 #else
-    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
-    connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
-        setSearchFilter(searchEdit->text());
+    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
+    connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, this, [=](QString filter) {
+        setSearchFilter(filter);
     });
 #endif
     connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);

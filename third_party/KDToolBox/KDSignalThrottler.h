@@ -125,6 +125,26 @@ public:
     ~KDSignalLeadingDebouncer() override;
 };
 
+class KDStringSignalDebouncer : public QObject {
+    Q_OBJECT
+
+public:
+    explicit KDStringSignalDebouncer(QObject *parent = nullptr);
+
+    void setTimeout(int msec);
+    int timeout() const;
+
+public slots:
+    void throttle(QString value);
+
+signals:
+    void triggered(QString value);
+
+private:
+    QString value;
+    KDGenericSignalThrottler m_debouncer;
+};
+
 } // namespace KDToolBox
 
 #endif // KDSIGNALTHROTTLER_H

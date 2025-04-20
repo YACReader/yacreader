@@ -9,6 +9,7 @@ libp7zip
 YACReader/build
 YACReaderLibrary/build
 YACReaderLibraryServer/build
+build/
 
 # C++ objects and libs
 *.slo
