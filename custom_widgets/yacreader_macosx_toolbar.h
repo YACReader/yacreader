@@ -136,10 +136,10 @@ public:
     void attachToWindow(QMainWindow *window);
     void addStretch();
 
-    void setMovable(bool movable) {};
-    void addSeparator() {};
+    void setMovable(bool movable) { };
+    void addSeparator() { };
 
-    void setIconSize(const QSize &size) {};
+    void setIconSize(const QSize &size) { };
 
 public slots:
     void setHidden(bool hidden);
