@@ -57,6 +57,7 @@ Viewer::Viewer(QWidget *parent)
     setFrameStyle(QFrame::NoFrame);
     setAlignment(Qt::AlignCenter);
 
+    setObjectName("YACReaderViewer");
     updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor());
     //---------------------------------------
     mglass = new MagnifyingGlass(
@@ -1030,7 +1031,8 @@ void Viewer::updateOptions()
 
 void Viewer::updateBackgroundColor(const QColor &color)
 {
-    setStyleSheet(QString("background-color: %1;").arg(color.name()));
+    setStyleSheet(QString("#YACReaderViewer { background-color: %1; }").arg(color.name()));
+    content->setStyleSheet(QString("background-color: %1;").arg(color.name()));
 }
 
 void Viewer::animateShowTranslator()
