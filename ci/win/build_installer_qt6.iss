@@ -53,6 +53,10 @@ Source: Qt6Quick.dll; DestDir: {app}
 Source: Qt6QuickEffects.dll; DestDir: {app}
 Source: Qt6QuickControls2.dll; DestDir: {app}
 Source: Qt6QuickControls2Impl.dll; DestDir: {app}
+Source: Qt6QuickControls2Basic.dll; DestDir: {app}
+Source: Qt6QuickControls2BasicStyleImpl.dll; DestDir: {app}
+Source: Qt6QuickControls2Fusion.dll; DestDir: {app}
+Source: Qt6QuickControls2FusionStyleImpl.dll; DestDir: {app}
 Source: Qt6QuickLayouts.dll; DestDir: {app}
 Source: Qt6QuickShapes.dll; DestDir: {app}
 Source: Qt6QuickTemplates2.dll; DestDir: {app}
