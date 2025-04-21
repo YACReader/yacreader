@@ -77,7 +77,6 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     l->addWidget(label, 0);
     l->addSpacing(5);
     l->addLayout(content, 1);
-    l->addLayout(sortButtonsLayout, 0);
 
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
