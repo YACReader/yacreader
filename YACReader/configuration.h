@@ -22,8 +22,13 @@ enum FitMode {
     ToWidth = 0x01,
     ToHeight = 0x02,
     FullRes = 0x03,
-    FullPage = 0x04 //,
-    // Text=0x05
+    FullPage = 0x04
+};
+
+enum MouseMode {
+    Normal,
+    LeftRightNavigation,
+    HotAreas
 };
 
 class Configuration : public QObject
@@ -96,7 +101,6 @@ public:
     bool getUseSingleScrollStepToTurnPage() { return settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool(); }
     void setDisableScrollAnimation(bool b) { settings->setValue(DISABLE_SCROLL_ANIMATION, b); }
     bool getDisableScrollAnimation()
-
     {
 #ifdef Q_OS_MACOS
         auto defaultValue = true;
@@ -106,6 +110,9 @@ public:
 
         return settings->value(DISABLE_SCROLL_ANIMATION, defaultValue).toBool();
     }
+
+    MouseMode getMouseMode() { return static_cast<MouseMode>(settings->value(MOUSE_MODE, MouseMode::Normal).toInt()); }
+    void setMouseMode(MouseMode mouseMode) { settings->setValue(MOUSE_MODE, static_cast<int>(mouseMode)); }
 };
 
 }
