@@ -97,14 +97,6 @@ enum ComicsViewStatus {
     Info
 };
 
-enum FitMode {
-    ToWidth = 0x01,
-    ToHeight = 0x02,
-    FullRes = 0x03,
-    FullPage = 0x04 //,
-    // Text=0x05
-};
-
 enum LibraryUITheme {
     Light,
     Dark
