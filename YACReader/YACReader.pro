@@ -80,6 +80,7 @@ HEADERS +=  ../common/comic.h \
             goto_dialog.h \
             magnifying_glass.h \
             main_window_viewer.h \
+            mouse_handler.h \
             viewer.h \
             goto_flow.h \
             options_dialog.h \
@@ -119,6 +120,7 @@ SOURCES +=  ../common/comic.cpp \
             goto_dialog.cpp \
             magnifying_glass.cpp \
             main_window_viewer.cpp \
+            mouse_handler.cpp \
             viewer.cpp \
             goto_flow.cpp \
             options_dialog.cpp \
