@@ -17,6 +17,8 @@ public:
 
 private:
     Viewer *viewer;
+    QPointF dragOrigin;
+    QPointF dragLatestPosition;
 };
 }
 

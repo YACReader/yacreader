@@ -148,9 +148,6 @@ private:
     int translatorXPos;
     QPropertyAnimation *translatorAnimation;
 
-    int yDragOrigin;
-    int xDragOrigin;
-
     NotificationsLabelWidget *notificationsLabel;
 
     bool shouldOpenNext;

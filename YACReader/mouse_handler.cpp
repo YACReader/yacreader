@@ -25,9 +25,7 @@ void YACReader::MouseHandler::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         viewer->drag = true;
-        auto position = event->position();
-        viewer->yDragOrigin = position.y();
-        viewer->xDragOrigin = position.x();
+        dragOrigin = dragLatestPosition = event->position();
         viewer->setCursor(Qt::ClosedHandCursor);
         event->accept();
         return;
@@ -88,10 +86,9 @@ void YACReader::MouseHandler::mouseMoveEvent(QMouseEvent *event)
         if (viewer->drag) {
             int currentPosY = viewer->verticalScrollBar()->sliderPosition();
             int currentPosX = viewer->horizontalScrollBar()->sliderPosition();
-            viewer->verticalScrollBar()->setSliderPosition(currentPosY + (viewer->yDragOrigin - position.y()));
-            viewer->horizontalScrollBar()->setSliderPosition(currentPosX + (viewer->xDragOrigin - position.x()));
-            viewer->yDragOrigin = position.y();
-            viewer->xDragOrigin = position.x();
+            viewer->verticalScrollBar()->setSliderPosition(currentPosY + (dragLatestPosition.y() - position.y()));
+            viewer->horizontalScrollBar()->setSliderPosition(currentPosX + (dragLatestPosition.x() - position.x()));
+            dragLatestPosition = position;
         }
     }
 }
