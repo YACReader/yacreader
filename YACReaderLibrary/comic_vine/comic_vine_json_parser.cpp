@@ -2,6 +2,7 @@
 #include "comic_vine_json_parser.h"
 
 #include "comic_vine_client.h"
+#include "selected_volume_info.h"
 
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -12,7 +13,7 @@ QPair<QString, QString> getFirstStoryArcIdAndName(const QVariant &json_story_arc
 QPair<QString, QString> getArcNumberAndArcCount(const QString &storyArcId, const QString &comicId);
 QList<QString> getNamesFromList(const QVariant &json_list);
 
-ComicDB YACReader::parseCVJSONComicInfo(ComicDB &comic, const QString &json, int count, const QString &publisher)
+ComicDB YACReader::parseCVJSONComicInfo(ComicDB &comic, const QString &json, const SelectedVolumeInfo &volumeInfo)
 {
     QJsonParseError Err;
 
@@ -61,8 +62,12 @@ ComicDB YACReader::parseCVJSONComicInfo(ComicDB &comic, const QString &json, int
             }
         }
 
-        if (result.contains("description") && !result.value("description").isNull()) {
+        if (result.contains("description") && !result.value("description").isNull() && !result.value("description").toString().trimmed().isEmpty()) {
             comic.info.synopsis = result.value("description");
+        } else if (result.contains("deck") && !result.value("deck").isNull() && !result.value("deck").toString().trimmed().isEmpty()) {
+            comic.info.synopsis = result.value("deck");
+        } else if (!volumeInfo.description.trimmed().isEmpty() && volumeInfo.numIssues < 2) {
+            comic.info.synopsis = volumeInfo.description.trimmed();
         }
 
         if (result.contains("character_credits") && !result.value("character_credits").isNull()) {
@@ -101,9 +106,9 @@ ComicDB YACReader::parseCVJSONComicInfo(ComicDB &comic, const QString &json, int
             comic.info.characters = getNamesFromList(result.value("character_credits")).join("\n");
         }
 
-        comic.info.count = count;
+        comic.info.count = volumeInfo.numIssues;
 
-        comic.info.publisher = publisher;
+        comic.info.publisher = volumeInfo.publisher;
 
         comic.info.edited = true;
     }

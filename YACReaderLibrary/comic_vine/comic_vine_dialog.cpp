@@ -22,6 +22,7 @@
 #include "search_volume.h"
 #include "select_comic.h"
 #include "select_volume.h"
+#include "selected_volume_info.h"
 #include "sort_volume_comics.h"
 #include "db_helper.h"
 #include "response_parser.h"
@@ -144,7 +145,7 @@ void ComicVineDialog::goNext()
             searchVolume(title);
         }
     } else if (content->currentWidget() == selectVolumeWidget) {
-        currentVolumeId = selectVolumeWidget->getSelectedVolumeId();
+        currentVolumeId = selectVolumeWidget->getSelectedVolumeInfo().id;
         getVolumeComicsInfo(currentVolumeId);
 
     } else if (content->currentWidget() == sortVolumeComicsWidget) {
@@ -152,24 +153,23 @@ void ComicVineDialog::goNext()
 
         // ComicDB-ComicVineID
         QList<QPair<ComicDB, QString>> matchingInfo = sortVolumeComicsWidget->getMatchingInfo();
-        int count = selectVolumeWidget->getSelectedVolumeNumIssues();
-        QString publisher = selectVolumeWidget->getSelectedVolumePublisher();
+        auto volumeInfo = selectVolumeWidget->getSelectedVolumeInfo();
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        QtConcurrent::run(&ComicVineDialog::getComicsInfo, this, matchingInfo, count, publisher);
+        QtConcurrent::run(&ComicVineDialog::getComicsInfo, this, matchingInfo, volumeInfo);
 #else
-        QtConcurrent::run(this, &ComicVineDialog::getComicsInfo, matchingInfo, count, publisher);
+        QtConcurrent::run(this, &ComicVineDialog::getComicsInfo, matchingInfo, volumeInfo);
 #endif
 
     } else if (content->currentWidget() == selectComicWidget) {
         showLoading();
         QString comicId = selectComicWidget->getSelectedComicId();
-        int count = selectVolumeWidget->getSelectedVolumeNumIssues();
-        QString publisher = selectVolumeWidget->getSelectedVolumePublisher();
+        auto volumeInfo = selectVolumeWidget->getSelectedVolumeInfo();
+
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-        QtConcurrent::run(&ComicVineDialog::getComicInfo, this, comicId, count, publisher);
+        QtConcurrent::run(&ComicVineDialog::getComicInfo, this, comicId, volumeInfo);
 #else
-        QtConcurrent::run(this, &ComicVineDialog::getComicInfo, comicId, count, publisher);
+        QtConcurrent::run(this, &ComicVineDialog::getComicInfo, comicId, volumeInfo);
 #endif
     }
 }
@@ -300,6 +300,7 @@ void ComicVineDialog::processClientResults(const QString &string)
         QMessageBox::critical(0, tr("Error connecting to ComicVine"), p.errorDescription());
         goBack();
     } else {
+
         switch (mode) {
         case ScraperMode::SingleComic:
         case ScraperMode::SingleComicInList:
@@ -456,7 +457,7 @@ void ComicVineDialog::queryTimeOut()
     }
 }
 
-void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, int count, const QString &publisher)
+void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo)
 {
     QPair<ComicDB, QString> p;
     QList<ComicDB> comics;
@@ -470,7 +471,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo,
         QByteArray result = comicVineClient->getComicDetail(p.second, error, timeout); // TODO check timeOut or Connection error
         if (error || timeout)
             continue; // TODO
-        ComicDB comic = YACReader::parseCVJSONComicInfo(p.first, result, count, publisher); // TODO check result error
+        ComicDB comic = YACReader::parseCVJSONComicInfo(p.first, result, volumeInfo); // TODO check result error
         comic.info.comicVineID = p.second;
         comics.push_back(comic);
 
@@ -482,7 +483,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo,
     emit accepted();
 }
 
-void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QString &publisher)
+void ComicVineDialog::getComicInfo(const QString &comicId, const SelectedVolumeInfo &volumeInfo)
 {
 
     auto comicVineClient = new ComicVineClient;
@@ -498,7 +499,7 @@ void ComicVineDialog::getComicInfo(const QString &comicId, int count, const QStr
         }
     }
 
-    ComicDB comic = YACReader::parseCVJSONComicInfo(comics[currentIndex], result, count, publisher); // TODO check result error
+    ComicDB comic = YACReader::parseCVJSONComicInfo(comics[currentIndex], result, volumeInfo); // TODO check result error
     comic.info.comicVineID = comicId;
     setLoadingMessage(tr("Retrieving tags for : %1").arg(comics[currentIndex].getFileName()));
     QString connectionName = "";

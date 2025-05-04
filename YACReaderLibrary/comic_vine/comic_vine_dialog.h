@@ -17,6 +17,7 @@ class SearchSingleComic;
 class SearchVolume;
 class SelectComic;
 class SelectVolume;
+struct SelectedVolumeInfo;
 class SortVolumeComics;
 
 // TODO this should use a QStateMachine
@@ -31,8 +32,8 @@ public:
     void setComics(const QList<ComicDB> &comics);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
-    void getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, int count, const QString &publisher);
-    void getComicInfo(const QString &comicId, int count, const QString &publisher);
+    void getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo);
+    void getComicInfo(const QString &comicId, const SelectedVolumeInfo &volumeInfo);
     void closeEvent(QCloseEvent *event) override;
 signals:
 

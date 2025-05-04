@@ -24,6 +24,8 @@
 #include "response_parser.h"
 #include "scraper_results_paginator.h"
 
+#include "selected_volume_info.h"
+
 SelectVolume::SelectVolume(QWidget *parent)
     : ScraperSelector(parent), model(0)
 {
@@ -176,22 +178,29 @@ void SelectVolume::setDescription(const QString &jsonDetail)
         return;
     }
 
-    QVariant descriptionValues = sc.value("results").toMap().value("description");
-    bool valid = !descriptionValues.isNull() && descriptionValues.isValid();
-    detailLabel->setText(valid ? descriptionValues.toString().replace("<a", "<a style = 'color:#827A68; text-decoration:none;'") : tr("description unavailable"));
+    auto resultMap = sc.value("results").toMap();
+    QVariant descriptionValues = resultMap.value("description");
+    auto description = descriptionValues.toString().trimmed();
+    QVariant deckValues = resultMap.value("deck");
+    auto deck = deckValues.toString().trimmed();
+    bool valid = !descriptionValues.isNull() && descriptionValues.isValid() && !description.isEmpty();
+    bool validDeck = !deckValues.isNull() && deckValues.isValid() && !deck.isEmpty();
+    if (valid) {
+        selectedVolumeDescription = description;
+        detailLabel->setText(description.replace("<a", "<a style = 'color:#827A68; text-decoration:none;'"));
+    } else if (validDeck) {
+        selectedVolumeDescription = deck;
+        detailLabel->setText(deck.replace("<a", "<a style = 'color:#827A68; text-decoration:none;'"));
+    } else {
+        detailLabel->setText(tr("volume description unavailable"));
+    }
 }
 
-QString SelectVolume::getSelectedVolumeId()
+SelectedVolumeInfo SelectVolume::getSelectedVolumeInfo()
 {
-    return model->getVolumeId(proxyModel->mapToSource(tableVolumes->currentIndex()));
-}
+    auto volumeId = model->getVolumeId(proxyModel->mapToSource(tableVolumes->currentIndex()));
+    auto numIssues = model->getNumIssues(proxyModel->mapToSource(tableVolumes->currentIndex()));
+    auto publisher = model->getPublisher(proxyModel->mapToSource(tableVolumes->currentIndex()));
 
-int SelectVolume::getSelectedVolumeNumIssues()
-{
-    return model->getNumIssues(proxyModel->mapToSource(tableVolumes->currentIndex()));
-}
-
-QString SelectVolume::getSelectedVolumePublisher()
-{
-    return model->getPublisher(proxyModel->mapToSource(tableVolumes->currentIndex()));
+    return { volumeId, numIssues, publisher, selectedVolumeDescription };
 }

@@ -130,9 +130,20 @@ void SelectComic::setDescription(const QString &jsonDetail)
         return;
     }
 
-    QVariant descriptionValues = sc.value("results").toMap().value("description");
-    bool valid = !descriptionValues.isNull() && descriptionValues.isValid();
-    detailLabel->setText(valid ? descriptionValues.toString().replace("<a", "<a style = 'color:#827A68; text-decoration:none;'") : tr("description unavailable"));
+    auto resultMap = sc.value("results").toMap();
+    QVariant descriptionValues = resultMap.value("description");
+    auto description = descriptionValues.toString().trimmed();
+    QVariant deckValues = resultMap.value("deck");
+    auto deck = deckValues.toString().trimmed();
+    bool valid = !descriptionValues.isNull() && descriptionValues.isValid() && !description.isEmpty();
+    bool validDeck = !deckValues.isNull() && deckValues.isValid() && !deck.isEmpty();
+    if (valid) {
+        detailLabel->setText(description.replace("<a", "<a style = 'color:#827A68; text-decoration:none;'"));
+    } else if (validDeck) {
+        detailLabel->setText(deck.replace("<a", "<a style = 'color:#827A68; text-decoration:none;'"));
+    } else {
+        detailLabel->setText(tr("comic description unavailable"));
+    }
 }
 
 QString SelectComic::getSelectedComicId()

@@ -1,6 +1,7 @@
 
 HEADERS += \
     $$PWD/comic_vine_json_parser.h \
+    $$PWD/model/selected_volume_info.h \
 	comic_vine/comic_vine_dialog.h \
 	comic_vine/comic_vine_client.h \
 	comic_vine/scraper_lineedit.h \

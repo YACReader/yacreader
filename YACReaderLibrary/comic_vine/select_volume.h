@@ -2,6 +2,7 @@
 #define SELECT_VOLUME_H
 
 #include "scraper_selector.h"
+#include "selected_volume_info.h"
 
 class QLabel;
 class VolumesModel;
@@ -26,9 +27,7 @@ public slots:
     void loadVolumeInfo(const QModelIndex &mi);
     void setCover(const QByteArray &);
     void setDescription(const QString &jsonDetail);
-    QString getSelectedVolumeId();
-    int getSelectedVolumeNumIssues();
-    QString getSelectedVolumePublisher();
+    SelectedVolumeInfo getSelectedVolumeInfo();
 
 private:
     QLabel *cover;
@@ -37,6 +36,7 @@ private:
     VolumesModel *model;
     QSortFilterProxyModel *proxyModel;
     ScraperLineEdit *filterEdit;
+    QString selectedVolumeDescription;
 };
 
 #endif // SELECT_VOLUME_H
