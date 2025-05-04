@@ -291,7 +291,7 @@ void ComicVineDialog::doLoading()
     content->addWidget(w);
 }
 
-void ComicVineDialog::debugClientResults(const QString &string)
+void ComicVineDialog::processClientResults(const QString &string)
 {
     ResponseParser p;
     p.loadJSONResponse(string);
