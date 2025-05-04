@@ -202,6 +202,7 @@ void ComicVineDialog::goBack()
     case ScraperStatus::AskingForInfo:
     case ScraperStatus::SearchingSingleComic:
     case ScraperStatus::SearchingVolume:
+    case ScraperStatus::SearchingExactVolume:
     case ScraperStatus::GettingVolumeComics:
         if (mode == ScraperMode::Volume)
             showSearchVolume();
@@ -434,6 +435,7 @@ void ComicVineDialog::queryTimeOut()
             showSearchSingleComic();
         break;
     case ScraperStatus::SearchingVolume:
+    case ScraperStatus::SearchingExactVolume:
         if (mode == ScraperMode::Volume)
             showSearchVolume();
         else

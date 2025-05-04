@@ -73,12 +73,13 @@ private:
     };
 
     enum class ScraperStatus {
-        AutoSearching,
-        AskingForInfo,
+        AutoSearching, // Searching for volumes maching a single comic
+        AskingForInfo, // The dialog is showing some UI to ask the user for some info
         SelectingComic,
         SelectingSeries,
         SearchingSingleComic,
         SearchingVolume,
+        SearchingExactVolume,
         SortingComics,
         GettingVolumeComics
     };
