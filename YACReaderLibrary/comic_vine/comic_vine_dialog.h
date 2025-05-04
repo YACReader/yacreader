@@ -66,13 +66,13 @@ private:
 
     void toggleSkipButton();
 
-    enum ScraperMode {
+    enum class ScraperMode {
         SingleComic, // the scraper has been opened for a single comic
         Volume, // the scraper is trying to get comics info for a whole volume
         SingleComicInList // the scraper has been opened for a list of unrelated comics
     };
 
-    enum ScraperStatus {
+    enum class ScraperStatus {
         AutoSearching,
         AskingForInfo,
         SelectingComic,
