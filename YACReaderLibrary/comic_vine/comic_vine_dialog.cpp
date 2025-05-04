@@ -305,7 +305,7 @@ void ComicVineDialog::processClientResults(const QString &string)
         case ScraperMode::SingleComicInList:
             if (p.getNumResults() == 0)
                 showSearchSingleComic();
-            else if (status == ScraperStatus::SearchingVolume)
+            else if (status == ScraperStatus::SearchingVolume || status == ScraperStatus::SearchingExactVolume)
                 showSelectVolume(string);
             else
                 showSelectComic(string);
@@ -587,7 +587,7 @@ void ComicVineDialog::searchVolume(const QString &v, int page)
     currentVolumeSearchString = v;
 
     auto comicVineClient = new ComicVineClient;
-    connect(comicVineClient, &ComicVineClient::searchResult, this, &ComicVineDialog::debugClientResults);
+    connect(comicVineClient, &ComicVineClient::searchResult, this, &ComicVineDialog::processClientResults);
     connect(comicVineClient, &ComicVineClient::timeOut, this, &ComicVineDialog::queryTimeOut);
     connect(comicVineClient, &ComicVineClient::finished, comicVineClient, &QObject::deleteLater);
     comicVineClient->search(v, page);
