@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 
     QCommandLineParser parser;
     parser.setApplicationDescription(QString(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary.\n\n"
-                                                                  "This appplication support persisten settings, to set them up edit this file %1\n"
+                                                                  "This appplication supports persistent settings, to set them up edit this file %1\n"
                                                                   "To learn about the available settings please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md"))
                                              .arg(settingsPath));
     parser.addHelpOption();
