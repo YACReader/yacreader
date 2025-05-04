@@ -260,6 +260,10 @@ void Viewer::processCRCError(QString message)
 
 void Viewer::next()
 {
+    if (!render->hasLoadedComic()) {
+        return;
+    }
+
     direction = 1;
     if (doublePage && render->currentPageIsDoublePage()) {
         render->nextDoublePage();
@@ -272,6 +276,10 @@ void Viewer::next()
 
 void Viewer::left()
 {
+    if (!render->hasLoadedComic()) {
+        return;
+    }
+
     if (doubleMangaPage) {
         next();
     } else {
@@ -281,6 +289,10 @@ void Viewer::left()
 
 void Viewer::right()
 {
+    if (!render->hasLoadedComic()) {
+        return;
+    }
+
     if (doubleMangaPage) {
         prev();
     } else {
@@ -290,6 +302,10 @@ void Viewer::right()
 
 void Viewer::prev()
 {
+    if (!render->hasLoadedComic()) {
+        return;
+    }
+
     direction = -1;
     if (doublePage && render->previousPageIsDoublePage()) {
         render->previousDoublePage();
