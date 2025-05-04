@@ -625,7 +625,7 @@ void MainWindowViewer::createToolBars()
 
     viewer->addAction(closeAction);
 
-    viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
+    updateContextMenuPolicy();
 
     // MacOSX app menus
 #ifdef Q_OS_MACOS
@@ -777,7 +777,23 @@ void MainWindowViewer::openComicFromRecentAction(QAction *action)
 
 void MainWindowViewer::reloadOptions()
 {
+    updateContextMenuPolicy();
     viewer->updateConfig(settings);
+}
+
+void MainWindowViewer::updateContextMenuPolicy()
+{
+    auto mouseMode = Configuration::getConfiguration().getMouseMode();
+    switch (mouseMode) {
+
+    case Normal:
+    case HotAreas:
+        viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
+        break;
+    case LeftRightNavigation:
+        viewer->setContextMenuPolicy(Qt::NoContextMenu);
+        break;
+    }
 }
 
 void MainWindowViewer::open()
@@ -970,9 +986,11 @@ void MainWindowViewer::disablePreviousNextComicActions()
 
 void MainWindowViewer::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        toggleFullScreen();
-        event->accept();
+    if (Configuration::getConfiguration().getMouseMode() == MouseMode::Normal) {
+        if (event->button() == Qt::LeftButton) {
+            toggleFullScreen();
+            event->accept();
+        }
     }
 }
 

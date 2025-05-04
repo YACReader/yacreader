@@ -51,6 +51,11 @@ private:
     YACReaderSpinSliderWidget *gammaS;
 
     QColor currentColor;
+
+    QRadioButton *normalMouseModeRadioButton;
+    QRadioButton *leftRightNavigationMouseModeRadioButton;
+    QRadioButton *hotAreasMouseModeRadioButton;
+
 public slots:
     void saveOptions() override;
     void restoreOptions(QSettings *settings) override;

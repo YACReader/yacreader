@@ -81,11 +81,25 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     scrollBox->setLayout(scrollLayout);
 
+    auto mouseModeBox = new QGroupBox(tr("Mouse mode"));
+    auto mouseModeLayout = new QVBoxLayout();
+
+    normalMouseModeRadioButton = new QRadioButton(tr("Only Back/Forward buttons can turn pages"));
+    leftRightNavigationMouseModeRadioButton = new QRadioButton(tr("Use the Left/Right buttons to turn pages."));
+    hotAreasMouseModeRadioButton = new QRadioButton(tr("Click left or right half of the screen to turn pages."));
+
+    mouseModeLayout->addWidget(normalMouseModeRadioButton);
+    mouseModeLayout->addWidget(leftRightNavigationMouseModeRadioButton);
+    mouseModeLayout->addWidget(hotAreasMouseModeRadioButton);
+
+    mouseModeBox->setLayout(mouseModeLayout);
+
     layoutGeneral->addWidget(pathBox);
     layoutGeneral->addWidget(slideSizeBox);
     // layoutGeneral->addWidget(fitBox);
     layoutGeneral->addWidget(colorBox);
     layoutGeneral->addWidget(scrollBox);
+    layoutGeneral->addWidget(mouseModeBox);
     layoutGeneral->addWidget(shortcutsBox);
     layoutGeneral->addStretch();
 
@@ -246,6 +260,18 @@ void OptionsDialog::saveOptions()
     settings->setValue(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, useSingleScrollStepToTurnPage->isChecked());
     settings->setValue(DISABLE_SCROLL_ANIMATION, disableScrollAnimations->isChecked());
 
+    // get checked radio button to get the mouse mode
+    YACReader::MouseMode mouseMode = Normal;
+    if (normalMouseModeRadioButton->isChecked()) {
+        mouseMode = Normal;
+        ;
+    } else if (leftRightNavigationMouseModeRadioButton->isChecked()) {
+        mouseMode = LeftRightNavigation;
+    } else if (hotAreasMouseModeRadioButton->isChecked()) {
+        mouseMode = HotAreas;
+    }
+    Configuration::getConfiguration().setMouseMode(mouseMode);
+
     YACReaderOptionsDialog::saveOptions();
 }
 
@@ -293,6 +319,20 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     auto defaultDisableScrollAnimationsValue = false;
 #endif
     disableScrollAnimations->setChecked(settings->value(DISABLE_SCROLL_ANIMATION, defaultDisableScrollAnimationsValue).toBool());
+
+    auto mouseMode = Configuration::getConfiguration().getMouseMode();
+
+    switch (mouseMode) {
+    case Normal:
+        normalMouseModeRadioButton->setChecked(true);
+        break;
+    case LeftRightNavigation:
+        leftRightNavigationMouseModeRadioButton->setChecked(true);
+        break;
+    case HotAreas:
+        hotAreasMouseModeRadioButton->setChecked(true);
+        break;
+    }
 }
 
 void OptionsDialog::updateColor(const QColor &color)
