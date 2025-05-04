@@ -198,7 +198,11 @@ void ComicVineDialog::goBack()
         else
             showSearchSingleComic();
         break;
-    default:
+
+    case ScraperStatus::AskingForInfo:
+    case ScraperStatus::SearchingSingleComic:
+    case ScraperStatus::SearchingVolume:
+    case ScraperStatus::GettingVolumeComics:
         if (mode == ScraperMode::Volume)
             showSearchVolume();
         else
@@ -441,7 +445,11 @@ void ComicVineDialog::queryTimeOut()
     case ScraperStatus::GettingVolumeComics:
         showSelectVolume();
         break;
-    default:
+
+    case ScraperStatus::AskingForInfo:
+    case ScraperStatus::SelectingComic:
+    case ScraperStatus::SelectingSeries:
+    case ScraperStatus::SortingComics:
         break;
     }
 }
@@ -562,7 +570,9 @@ void ComicVineDialog::search()
     case ScraperMode::Volume:
         launchSearchVolume();
         break;
-    default:
+
+    case ScraperMode::SingleComic:
+    case ScraperMode::SingleComicInList:
         launchSearchComic();
         break;
     }
