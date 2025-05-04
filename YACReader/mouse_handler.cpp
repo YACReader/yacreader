@@ -34,13 +34,6 @@ void YACReader::MouseHandler::mousePressEvent(QMouseEvent *event)
 
 void YACReader::MouseHandler::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        viewer->drag = false;
-        viewer->setCursor(Qt::OpenHandCursor);
-        event->accept();
-        return;
-    }
-
     if (event->button() == Qt::ForwardButton) {
         viewer->right();
         event->accept();
@@ -52,6 +45,55 @@ void YACReader::MouseHandler::mouseReleaseEvent(QMouseEvent *event)
         event->accept();
         return;
     }
+
+    auto wasDragging = viewer->drag;
+
+    if (event->button() == Qt::LeftButton) {
+        viewer->drag = false;
+        viewer->setCursor(Qt::OpenHandCursor);
+        event->accept();
+    }
+
+    auto position = event->position();
+    auto dragDistance = QLineF(position, dragOrigin).length();
+
+    auto mouseMode = Configuration::getConfiguration().getMouseMode();
+    switch (mouseMode) {
+    case Normal:
+        return;
+    case LeftRightNavigation:
+        if (wasDragging && (dragDistance > 25)) {
+            return;
+        }
+
+        if (event->button() == Qt::LeftButton) {
+            viewer->left();
+            event->accept();
+            return;
+        }
+
+        if (event->button() == Qt::RightButton) {
+            viewer->right();
+            event->accept();
+            return;
+        }
+
+        break;
+    case HotAreas:
+        if (wasDragging && (dragDistance > 25)) {
+            return;
+        }
+
+        if (event->button() == Qt::LeftButton) {
+            if (position.x() < viewer->width() / 2) {
+                viewer->left();
+            } else {
+                viewer->right();
+            }
+        }
+
+        break;
+    };
 }
 
 void YACReader::MouseHandler::mouseMoveEvent(QMouseEvent *event)
