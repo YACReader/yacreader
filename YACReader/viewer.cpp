@@ -1,5 +1,4 @@
 #include "viewer.h"
-#include "magnifying_glass.h"
 #include "configuration.h"
 #include "magnifying_glass.h"
 #include "goto_flow.h"
@@ -38,7 +37,8 @@ Viewer::Viewer(QWidget *parent)
       shouldOpenNext(false),
       shouldOpenPrevious(false),
       magnifyingGlassShown(false),
-      restoreMagnifyingGlass(false)
+      restoreMagnifyingGlass(false),
+      mouseHandler(std::make_unique<YACReader::MouseHandler>(this))
 {
     translator = new YACReaderTranslator(this);
     translator->hide();
@@ -260,6 +260,10 @@ void Viewer::processCRCError(QString message)
 
 void Viewer::next()
 {
+    if (!render->hasLoadedComic()) {
+        return;
+    }
+
     direction = 1;
     if (doublePage && render->currentPageIsDoublePage()) {
         render->nextDoublePage();
@@ -272,6 +276,10 @@ void Viewer::next()
 
 void Viewer::left()
 {
+    if (!render->hasLoadedComic()) {
+        return;
+    }
+
     if (doubleMangaPage) {
         next();
     } else {
@@ -281,6 +289,10 @@ void Viewer::left()
 
 void Viewer::right()
 {
+    if (!render->hasLoadedComic()) {
+        return;
+    }
+
     if (doubleMangaPage) {
         prev();
     } else {
@@ -290,6 +302,10 @@ void Viewer::right()
 
 void Viewer::prev()
 {
+    if (!render->hasLoadedComic()) {
+        return;
+    }
+
     direction = -1;
     if (doublePage && render->previousPageIsDoublePage()) {
         render->previousDoublePage();
@@ -767,44 +783,6 @@ void Viewer::resizeEvent(QResizeEvent *event)
     QScrollArea::resizeEvent(event);
 }
 
-void Viewer::mouseMoveEvent(QMouseEvent *event)
-{
-    showCursor();
-    hideCursorTimer->start(2500);
-
-    if (magnifyingGlassShown)
-        mglass->move(static_cast<int>(event->x() - float(mglass->width()) / 2), static_cast<int>(event->y() - float(mglass->height()) / 2));
-
-    if (render->hasLoadedComic()) {
-        if (showGoToFlowAnimation->state() != QPropertyAnimation::Running) {
-            if (Configuration::getConfiguration().getDisableShowOnMouseOver() == false) {
-                if (goToFlow->isVisible()) {
-                    QPoint gtfPos = goToFlow->mapFrom(this, event->pos());
-                    if (gtfPos.y() < 0 || gtfPos.x() < 0 || gtfPos.x() > goToFlow->width()) // TODO this extra check is for Mavericks (mouseMove over goToFlowGL seems to be broken)
-                        animateHideGoToFlow();
-                    // goToFlow->hide();
-                } else {
-                    int umbral = (width() - goToFlow->width()) / 2;
-                    if ((event->y() > height() - 15) && (event->x() > umbral) && (event->x() < width() - umbral)) {
-
-                        animateShowGoToFlow();
-                        hideCursorTimer->stop();
-                    }
-                }
-            }
-        }
-
-        if (drag) {
-            int currentPosY = verticalScrollBar()->sliderPosition();
-            int currentPosX = horizontalScrollBar()->sliderPosition();
-            verticalScrollBar()->setSliderPosition(currentPosY + (yDragOrigin - event->y()));
-            horizontalScrollBar()->setSliderPosition(currentPosX + (xDragOrigin - event->x()));
-            yDragOrigin = event->y();
-            xDragOrigin = event->x();
-        }
-    }
-}
-
 QPixmap Viewer::pixmap() const
 {
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -1093,36 +1071,17 @@ void Viewer::animateHideTranslator()
 
 void Viewer::mousePressEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        drag = true;
-        yDragOrigin = event->y();
-        xDragOrigin = event->x();
-        setCursor(Qt::ClosedHandCursor);
-        event->accept();
-        return;
-    }
+    mouseHandler->mousePressEvent(event);
 }
 
 void Viewer::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        drag = false;
-        setCursor(Qt::OpenHandCursor);
-        event->accept();
-        return;
-    }
+    mouseHandler->mouseReleaseEvent(event);
+}
 
-    if (event->button() == Qt::ForwardButton) {
-        right();
-        event->accept();
-        return;
-    }
-
-    if (event->button() == Qt::BackButton) {
-        left();
-        event->accept();
-        return;
-    }
+void Viewer::mouseMoveEvent(QMouseEvent *event)
+{
+    mouseHandler->mouseMoveEvent(event);
 }
 
 void Viewer::updateZoomRatio(int ratio)

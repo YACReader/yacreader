@@ -1,5 +1,6 @@
 #ifndef __CONFIGURATION_H
 #define __CONFIGURATION_H
+
 #include <QByteArray>
 #include <QString>
 #include <QSize>
@@ -14,6 +15,21 @@
 #define SLIDE_ASPECT_RATIO 1.585
 
 using namespace YACReader;
+
+namespace YACReader {
+
+enum FitMode {
+    ToWidth = 0x01,
+    ToHeight = 0x02,
+    FullRes = 0x03,
+    FullPage = 0x04
+};
+
+enum MouseMode {
+    Normal,
+    LeftRightNavigation,
+    HotAreas
+};
 
 class Configuration : public QObject
 {
@@ -94,6 +110,11 @@ public:
 
         return settings->value(DISABLE_SCROLL_ANIMATION, defaultValue).toBool();
     }
+
+    MouseMode getMouseMode() { return static_cast<MouseMode>(settings->value(MOUSE_MODE, MouseMode::Normal).toInt()); }
+    void setMouseMode(MouseMode mouseMode) { settings->setValue(MOUSE_MODE, static_cast<int>(mouseMode)); }
 };
+
+}
 
 #endif

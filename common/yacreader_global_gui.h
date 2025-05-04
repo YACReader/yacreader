@@ -36,6 +36,7 @@
 #define DO_NOT_TURN_PAGE_ON_SCROLL "DO_NOT_TURN_PAGE_ON_SCROLL"
 #define USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE "USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE"
 #define DISABLE_SCROLL_ANIMATION "DISABLE_SCROLL_ANIMATION"
+#define MOUSE_MODE "MOUSE_MODE"
 
 #define FLOW_TYPE_GL "FLOW_TYPE_GL"
 #define Y_POSITION "Y_POSITION"
@@ -95,14 +96,6 @@ enum ComicsViewStatus {
     Flow,
     Grid,
     Info
-};
-
-enum FitMode {
-    ToWidth = 0x01,
-    ToHeight = 0x02,
-    FullRes = 0x03,
-    FullPage = 0x04 //,
-    // Text=0x05
 };
 
 enum LibraryUITheme {
