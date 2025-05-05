@@ -66,8 +66,8 @@ protected slots:
 
 private:
     void clearState();
-
     void toggleSkipButton();
+    QString volumeSearchStringFromComic(const ComicDB &comic);
 
     enum class ScraperMode {
         SingleComic, // the scraper has been opened for a single comic

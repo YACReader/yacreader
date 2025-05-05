@@ -143,9 +143,7 @@ void ComicVineDialog::goNext()
 
             showLoading(tr("Looking for volume..."));
 
-            // TODO: option to handle exact matches?
-            // TODO: parse the file name to create better searches
-            searchVolume({ title, 1, true });
+            searchVolume({ volumeSearchStringFromComic(comic), 1, true });
         }
     } else if (content->currentWidget() == selectVolumeWidget) {
         currentVolumeId = selectVolumeWidget->getSelectedVolumeInfo().id;
@@ -260,10 +258,11 @@ void ComicVineDialog::show()
         mode = ScraperMode::SingleComic;
 
         ComicDB singleComic = comics[0];
+
         QString title = singleComic.getTitleOrFileName();
         titleHeader->setSubTitle(title);
 
-        showSearchSingleComic(singleComic.getParentFolderName());
+        showSearchSingleComic(volumeSearchStringFromComic(singleComic));
     } else if (comics.length() > 1) {
         titleHeader->setSubTitle(tr("%1 comics selected").arg(comics.length()));
         showSeriesQuestion();
@@ -533,6 +532,25 @@ void ComicVineDialog::toggleSkipButton()
         skipButton->setHidden(true);
 }
 
+QString ComicVineDialog::volumeSearchStringFromComic(const ComicDB &comic)
+{
+    auto volume = comic.info.volume.toString().trimmed();
+    if (!volume.isEmpty())
+        return volume;
+
+    auto series = comic.info.series.toString().trimmed();
+    if (!series.isEmpty())
+        return series;
+
+    auto alternateSeries = comic.info.alternateSeries.toString().trimmed();
+    if (!alternateSeries.isEmpty())
+        return alternateSeries;
+
+    // extract information from file name
+    auto parentFolderName = comic.getParentFolderName();
+    return parentFolderName;
+}
+
 void ComicVineDialog::goToNextComic()
 {
     if (mode == ScraperMode::SingleComic || currentIndex == (comics.count() - 1)) {
@@ -543,11 +561,11 @@ void ComicVineDialog::goToNextComic()
     currentIndex++;
 
     ComicDB comic = comics[currentIndex];
+
     QString title = comic.getTitleOrFileName();
     titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
 
-    // TODO: parse title
-    showSearchSingleComic(title);
+    showSearchSingleComic(volumeSearchStringFromComic(comic));
 }
 
 void ComicVineDialog::clearState()
