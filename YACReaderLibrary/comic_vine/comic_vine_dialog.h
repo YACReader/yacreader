@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include "comic_db.h"
+#include "volume_search_query.h"
 
 class QPushButton;
 class QStackedWidget;
@@ -19,6 +20,7 @@ class SelectComic;
 class SelectVolume;
 struct SelectedVolumeInfo;
 class SortVolumeComics;
+struct VolumeSearchQuery;
 
 // TODO this should use a QStateMachine
 //----------------------------------------
@@ -46,11 +48,11 @@ protected slots:
     void processClientResults(const QString &string);
     // show widget methods
     void showSeriesQuestion();
-    void showSearchSingleComic();
+    void showSearchSingleComic(const QString &volume = "");
     void showSearchVolume(const QString &volume = "");
     void showLoading(const QString &message = "");
     void search();
-    void searchVolume(const QString &v, int page = 1);
+    void searchVolume(const VolumeSearchQuery &query);
     void getVolumeComicsInfo(const QString &vID, int page = 1);
     void launchSearchVolume();
     void launchSearchComic();
@@ -120,7 +122,7 @@ private:
     SelectComic *selectComicWidget;
     SortVolumeComics *sortVolumeComicsWidget;
 
-    QString currentVolumeSearchString;
+    VolumeSearchQuery currentVolumeSearchQuery;
     QString currentVolumeId;
 };
 

@@ -2,6 +2,8 @@
 HEADERS += \
     $$PWD/comic_vine_json_parser.h \
     $$PWD/model/selected_volume_info.h \
+    $$PWD/model/volume_search_query.h \
+    $$PWD/scraper_checkbox.h \
 	comic_vine/comic_vine_dialog.h \
 	comic_vine/comic_vine_client.h \
 	comic_vine/scraper_lineedit.h \
@@ -21,12 +23,12 @@ HEADERS += \
     comic_vine/model/volume_comics_model.h \
     comic_vine/scraper_scroll_label.h \
     comic_vine/scraper_results_paginator.h \
-    comic_vine/scraper_selector.h \
     comic_vine/api_key_dialog.h \
     $$PWD/comic_vine_all_volume_comics_retriever.h
 
 SOURCES += \
     $$PWD/comic_vine_json_parser.cpp \
+    $$PWD/scraper_checkbox.cpp \
 	comic_vine/comic_vine_dialog.cpp \
 	comic_vine/comic_vine_client.cpp \
 	comic_vine/scraper_lineedit.cpp \
@@ -46,6 +48,5 @@ SOURCES += \
     comic_vine/model/volume_comics_model.cpp \
     comic_vine/scraper_scroll_label.cpp \
     comic_vine/scraper_results_paginator.cpp \
-    comic_vine/scraper_selector.cpp \
     comic_vine/api_key_dialog.cpp \
     $$PWD/comic_vine_all_volume_comics_retriever.cpp

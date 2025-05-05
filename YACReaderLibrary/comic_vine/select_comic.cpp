@@ -11,7 +11,7 @@
 #include <QLayout>
 
 SelectComic::SelectComic(QWidget *parent)
-    : ScraperSelector(parent), model(0)
+    : QWidget(parent), model(0)
 {
     QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 
@@ -35,6 +35,9 @@ SelectComic::SelectComic(QWidget *parent)
     // connections
     connect(tableComics, &QAbstractItemView::clicked, this, &SelectComic::loadComicInfo);
 
+    paginator = new ScraperResultsPaginator;
+    connect(paginator, &ScraperResultsPaginator::loadNextPage, this, &SelectComic::loadNextPage);
+    connect(paginator, &ScraperResultsPaginator::loadPreviousPage, this, &SelectComic::loadPreviousPage);
     paginator->setCustomLabel(tr("comics"));
 
     left->addWidget(cover);
@@ -62,7 +65,7 @@ SelectComic::SelectComic(QWidget *parent)
     setContentsMargins(0, 0, 0, 0);
 }
 
-void SelectComic::load(const QString &json, const QString &searchString)
+void SelectComic::load(const QString &json, const QString &volumeId)
 {
     auto tempM = new VolumeComicsModel();
     tempM->load(json);
@@ -80,7 +83,18 @@ void SelectComic::load(const QString &json, const QString &searchString)
 
     tableComics->resizeColumnToContents(0);
 
-    ScraperSelector::load(json, searchString);
+    currentVolumeId = volumeId;
+    paginator->update(json);
+}
+
+void SelectComic::loadNextPage()
+{
+    emit loadPage(currentVolumeId, paginator->getCurrentPage() + 1);
+}
+
+void SelectComic::loadPreviousPage()
+{
+    emit loadPage(currentVolumeId, paginator->getCurrentPage() - 1);
 }
 
 SelectComic::~SelectComic() { }

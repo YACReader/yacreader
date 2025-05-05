@@ -18,6 +18,13 @@ static const QString CV_SEARCH = CV_WEB_ADDRESS + "/search/?api_key=" + CV_API_K
         "&query=%1&page=%2";
 // http://www.comicvine.com/api/search/?api_key=46680bebb358f1de690a5a365e15d325f9649f91&format=json&limit=100&resources=volume&field_list=name,start_year,publisher,id,image,count_of_issues,deck&query=superman
 
+// look for exact match volumes
+static const QString CV_EXACT_VOLUME_SEARCH = CV_WEB_ADDRESS + "/volumes/?api_key=" + CV_API_KEY +
+        "&format=json&limit=100"
+        "&field_list=name,start_year,publisher,id,image,count_of_issues,deck"
+        "&sort=name:asc"
+        "&filter=name:%1&offset=%2";
+
 // gets the detail for a volume %1
 static const QString CV_SERIES_DETAIL = CV_WEB_ADDRESS + "/volume/4050-%1/?api_key=" + CV_API_KEY +
         "&format=json&field_list=name,start_year,publisher,image,count_of_issues,id,description";
@@ -69,6 +76,17 @@ void ComicVineClient::search(const QString &query, int page)
     connect(search, &QThread::finished, search, &QObject::deleteLater);
     search->get();
 }
+
+// CV_EXACT_VOLUME_SEARCH
+void ComicVineClient::searchExactVolume(const QString &query, int page)
+{
+    HttpWorker *search = new HttpWorker(QString(CV_EXACT_VOLUME_SEARCH).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(query).arg((page - 1) * 100));
+    connect(search, &HttpWorker::dataReady, this, &ComicVineClient::proccessVolumesSearchData);
+    connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut);
+    connect(search, &QThread::finished, search, &QObject::deleteLater);
+    search->get();
+}
+
 // CV_SEARCH result
 void ComicVineClient::proccessVolumesSearchData(const QByteArray &data)
 {
@@ -120,7 +138,7 @@ void ComicVineClient::getSeriesCover(const QString &url)
 // CV_COMIC_IDS
 void ComicVineClient::getVolumeComicsInfo(const QString &idVolume, int page)
 {
-    HttpWorker *search = new HttpWorker(QString(CV_COMICS_INFO).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(idVolume).arg((page - 1) * 100)); // page doesn't work for search, using offset instead
+    HttpWorker *search = new HttpWorker(QString(CV_COMICS_INFO).replace(CV_WEB_ADDRESS, baseURL).replace(CV_API_KEY, settings->value(COMIC_VINE_API_KEY, CV_API_KEY_DEFAULT).toString()).arg(idVolume).arg((page - 1) * 100));
     connect(search, &HttpWorker::dataReady, this, &ComicVineClient::processVolumeComicsInfo);
     connect(search, &HttpWorker::timeout, this, &ComicVineClient::timeOut); // TODO
     connect(search, &QThread::finished, search, &QObject::deleteLater);

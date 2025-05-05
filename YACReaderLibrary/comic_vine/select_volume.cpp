@@ -27,7 +27,7 @@
 #include "selected_volume_info.h"
 
 SelectVolume::SelectVolume(QWidget *parent)
-    : ScraperSelector(parent), model(0)
+    : QWidget(parent), model(0)
 {
     proxyModel = new QSortFilterProxyModel;
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
@@ -63,6 +63,9 @@ SelectVolume::SelectVolume(QWidget *parent)
     connect(tableVolumes->horizontalHeader(), qOverload<int, Qt::SortOrder>(&QHeaderView::sortIndicatorChanged), tableVolumes, qOverload<int, Qt::SortOrder>(&QTableView::sortByColumn));
     connect(tableVolumes, &QAbstractItemView::clicked, this, &SelectVolume::loadVolumeInfo);
 
+    paginator = new ScraperResultsPaginator;
+    connect(paginator, &ScraperResultsPaginator::loadNextPage, this, &SelectVolume::loadNextPage);
+    connect(paginator, &ScraperResultsPaginator::loadPreviousPage, this, &SelectVolume::loadPreviousPage);
     paginator->setCustomLabel(tr("volumes"));
 
     top->addWidget(label);
@@ -93,7 +96,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     setContentsMargins(0, 0, 0, 0);
 }
 
-void SelectVolume::load(const QString &json, const QString &searchString)
+void SelectVolume::load(const QString &json, const VolumeSearchQuery &searchQuery)
 {
     auto tempM = new VolumesModel();
     tempM->load(json);
@@ -116,7 +119,18 @@ void SelectVolume::load(const QString &json, const QString &searchString)
 
     tableVolumes->setColumnWidth(0, 350);
 
-    ScraperSelector::load(json, searchString);
+    currentSearchQuery = searchQuery;
+    paginator->update(json);
+}
+
+void SelectVolume::loadNextPage()
+{
+    emit loadPage({ currentSearchQuery.volume, paginator->getCurrentPage() + 1, currentSearchQuery.exactMatch });
+}
+
+void SelectVolume::loadPreviousPage()
+{
+    emit loadPage({ currentSearchQuery.volume, paginator->getCurrentPage() - 1, currentSearchQuery.exactMatch });
 }
 
 void SelectVolume::clearFilter()

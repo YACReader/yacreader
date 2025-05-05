@@ -94,7 +94,7 @@ void ComicVineDialog::doLayout()
 
     setLayout(mainLayout);
 
-    setWindowTitle("Comic Vine Scraper (beta)");
+    setWindowTitle("Comic Vine Scraper");
 }
 
 void ComicVineDialog::doStackedWidgets()
@@ -116,9 +116,9 @@ void ComicVineDialog::doConnections()
     connect(searchButton, &QAbstractButton::clicked, this, &ComicVineDialog::search);
     connect(skipButton, &QAbstractButton::clicked, this, &ComicVineDialog::goToNextComic);
 
-    connect(selectVolumeWidget, &ScraperSelector::loadPage, this, &ComicVineDialog::searchVolume);
-    connect(selectComicWidget, &ScraperSelector::loadPage, this, &ComicVineDialog::getVolumeComicsInfo);
-    connect(sortVolumeComicsWidget, &ScraperSelector::loadPage, this, &ComicVineDialog::getVolumeComicsInfo);
+    connect(selectVolumeWidget, &SelectVolume::loadPage, this, &ComicVineDialog::searchVolume);
+    connect(selectComicWidget, &SelectComic::loadPage, this, &ComicVineDialog::getVolumeComicsInfo);
+    connect(sortVolumeComicsWidget, &SortVolumeComics::loadPage, this, &ComicVineDialog::getVolumeComicsInfo);
 
     connect(this, &QDialog::accepted, this, &QWidget::close, Qt::QueuedConnection);
 }
@@ -142,7 +142,10 @@ void ComicVineDialog::goNext()
             titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
 
             showLoading(tr("Looking for volume..."));
-            searchVolume(title);
+
+            // TODO: option to handle exact matches?
+            // TODO: parse the file name to create better searches
+            searchVolume({ title, 1, true });
         }
     } else if (content->currentWidget() == selectVolumeWidget) {
         currentVolumeId = selectVolumeWidget->getSelectedVolumeInfo().id;
@@ -181,9 +184,9 @@ void ComicVineDialog::goBack()
     switch (status) {
     case ScraperStatus::SelectingSeries:
         if (mode == ScraperMode::Volume)
-            showSearchVolume();
+            showSearchVolume(currentVolumeSearchQuery.volume);
         else
-            showSearchSingleComic();
+            showSearchSingleComic(currentVolumeSearchQuery.volume);
         break;
     case ScraperStatus::SortingComics:
         showSelectVolume();
@@ -194,9 +197,9 @@ void ComicVineDialog::goBack()
         break;
     case ScraperStatus::AutoSearching:
         if (mode == ScraperMode::Volume)
-            showSearchVolume();
+            showSearchVolume(currentVolumeSearchQuery.volume);
         else
-            showSearchSingleComic();
+            showSearchSingleComic(currentVolumeSearchQuery.volume);
         break;
 
     case ScraperStatus::AskingForInfo:
@@ -205,9 +208,9 @@ void ComicVineDialog::goBack()
     case ScraperStatus::SearchingExactVolume:
     case ScraperStatus::GettingVolumeComics:
         if (mode == ScraperMode::Volume)
-            showSearchVolume();
+            showSearchVolume(currentVolumeSearchQuery.volume);
         else
-            showSearchSingleComic();
+            showSearchSingleComic(currentVolumeSearchQuery.volume);
         break;
     }
 }
@@ -253,16 +256,14 @@ void ComicVineDialog::show()
     searchVolumeWidget->clean();
 
     if (comics.length() == 1) {
-        status = ScraperStatus::AutoSearching;
+        status = ScraperStatus::AskingForInfo;
         mode = ScraperMode::SingleComic;
 
         ComicDB singleComic = comics[0];
         QString title = singleComic.getTitleOrFileName();
         titleHeader->setSubTitle(title);
-        showLoading(tr("Looking for volume..."));
 
-        searchVolume(singleComic.getParentFolderName());
-        QLOG_TRACE() << singleComic.getParentFolderName();
+        showSearchSingleComic(singleComic.getParentFolderName());
     } else if (comics.length() > 1) {
         titleHeader->setSubTitle(tr("%1 comics selected").arg(comics.length()));
         showSeriesQuestion();
@@ -305,7 +306,7 @@ void ComicVineDialog::processClientResults(const QString &string)
         case ScraperMode::SingleComic:
         case ScraperMode::SingleComicInList:
             if (p.getNumResults() == 0)
-                showSearchSingleComic();
+                showSearchSingleComic(currentVolumeSearchQuery.volume);
             else if (status == ScraperStatus::SearchingVolume || status == ScraperStatus::SearchingExactVolume)
                 showSelectVolume(string);
             else
@@ -313,7 +314,7 @@ void ComicVineDialog::processClientResults(const QString &string)
             break;
         case ScraperMode::Volume:
             if (p.getNumResults() == 0)
-                showSearchVolume();
+                showSearchVolume(currentVolumeSearchQuery.volume);
             else
                 showSelectVolume(string);
             break;
@@ -336,8 +337,10 @@ void ComicVineDialog::showSeriesQuestion()
     toggleSkipButton();
 }
 
-void ComicVineDialog::showSearchSingleComic()
+void ComicVineDialog::showSearchSingleComic(const QString &volume)
 {
+    searchSingleComicWidget->setVolumeInfo(volume);
+
     status = ScraperStatus::AskingForInfo;
     content->setCurrentWidget(searchSingleComicWidget);
     backButton->setHidden(true);
@@ -370,7 +373,7 @@ void ComicVineDialog::showSearchVolume(const QString &volume)
 void ComicVineDialog::showSelectVolume(const QString &json)
 {
     showSelectVolume();
-    selectVolumeWidget->load(json, currentVolumeSearchString);
+    selectVolumeWidget->load(json, currentVolumeSearchQuery);
 }
 
 void ComicVineDialog::showSelectVolume()
@@ -431,19 +434,19 @@ void ComicVineDialog::queryTimeOut()
     switch (status) {
     case ScraperStatus::AutoSearching:
         if (mode == ScraperMode::Volume)
-            showSearchVolume();
+            showSearchVolume(currentVolumeSearchQuery.volume);
         else
-            showSearchSingleComic();
+            showSearchSingleComic(currentVolumeSearchQuery.volume);
         break;
     case ScraperStatus::SearchingVolume:
     case ScraperStatus::SearchingExactVolume:
         if (mode == ScraperMode::Volume)
-            showSearchVolume();
+            showSearchVolume(currentVolumeSearchQuery.volume);
         else
-            showSearchSingleComic();
+            showSearchSingleComic(currentVolumeSearchQuery.volume);
         break;
     case ScraperStatus::SearchingSingleComic:
-        showSearchSingleComic();
+        showSearchSingleComic(currentVolumeSearchQuery.volume);
         break;
     case ScraperStatus::GettingVolumeComics:
         showSelectVolume();
@@ -539,11 +542,12 @@ void ComicVineDialog::goToNextComic()
 
     currentIndex++;
 
-    showSearchSingleComic();
-
     ComicDB comic = comics[currentIndex];
     QString title = comic.getTitleOrFileName();
     titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
+
+    // TODO: parse title
+    showSearchSingleComic(title);
 }
 
 void ComicVineDialog::clearState()
@@ -581,19 +585,23 @@ void ComicVineDialog::search()
     }
 }
 
-void ComicVineDialog::searchVolume(const QString &v, int page)
+void ComicVineDialog::searchVolume(const VolumeSearchQuery &query)
 {
     showLoading(tr("Looking for volume..."));
 
-    currentVolumeSearchString = v;
+    currentVolumeSearchQuery = query;
 
     auto comicVineClient = new ComicVineClient;
     connect(comicVineClient, &ComicVineClient::searchResult, this, &ComicVineDialog::processClientResults);
     connect(comicVineClient, &ComicVineClient::timeOut, this, &ComicVineDialog::queryTimeOut);
     connect(comicVineClient, &ComicVineClient::finished, comicVineClient, &QObject::deleteLater);
-    comicVineClient->search(v, page);
-
-    status = ScraperStatus::SearchingVolume;
+    if (query.exactMatch) {
+        status = ScraperStatus::SearchingExactVolume;
+        comicVineClient->searchExactVolume(query.volume, query.page);
+    } else {
+        status = ScraperStatus::SearchingVolume;
+        comicVineClient->search(query.volume, query.page);
+    }
 }
 
 void ComicVineDialog::getVolumeComicsInfo(const QString &vID, int /* page */)
@@ -615,21 +623,28 @@ void ComicVineDialog::getVolumeComicsInfo(const QString &vID, int /* page */)
     comicVineClient->getAllVolumeComicsInfo(vID);
 }
 
+// TODO: get the search configuration for exact match or not
 void ComicVineDialog::launchSearchVolume()
 {
     showLoading(tr("Looking for volume..."));
     // TODO: check if volume info is empty.
-    searchVolume(searchVolumeWidget->getVolumeInfo());
+
+    QString volumeInfo = searchVolumeWidget->getVolumeInfo();
+    bool exactMatch = searchVolumeWidget->getExactMatch();
+
+    searchVolume({ volumeInfo, 1, exactMatch });
 }
 
+// TODO: get the search configuration for exact match or not
 void ComicVineDialog::launchSearchComic()
 {
     showLoading(tr("Looking for comic..."));
 
     QString volumeInfo = searchSingleComicWidget->getVolumeInfo();
+    bool exactMatch = searchSingleComicWidget->getExactMatch();
     // QString comicInfo = searchSingleComicWidget->getComicInfo();
     // int comicNumber = searchSingleComicWidget->getComicNumber();
 
     // if(comicInfo.isEmpty() && comicNumber == -1)
-    searchVolume(volumeInfo);
+    searchVolume({ volumeInfo, 1, exactMatch });
 }
