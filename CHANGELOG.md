@@ -13,6 +13,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix setting the comic rating in the table view.
 * Log libraries validation when the app starts.
 * New toolbar on macos.
+* New setting in Comic Vine scraper to force exact volume matches.
+* Better default search query in the Comic Vine scraper.
+* Improved navigation in Comic Vine scraper, including keeping the current query around to make edits and refined searches easier.
 
 ### YACReaderLibraryServer
 * Log libraries validation when the app starts.
