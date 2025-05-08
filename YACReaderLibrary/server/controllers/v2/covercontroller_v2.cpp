@@ -18,7 +18,8 @@ void CoverControllerV2::service(HttpRequest &request, HttpResponse &response)
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
     QString libraryName = DBHelper::getLibraryName(pathElements.at(3).toInt());
-    QString fileName = pathElements.at(5);
+    QStringList remainingPathElements = pathElements.mid(5);
+    QString fileName = remainingPathElements.join('/');
 
     QImage img(YACReader::LibraryPaths::coverPathWithFileName(libraries.getPath(libraryName), fileName));
     if (!img.isNull()) {

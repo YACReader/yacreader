@@ -370,8 +370,12 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     if (role == FolderModel::IdRole)
         return item->id;
 
-    if (role == FolderModel::CoverPathRole)
-        return getCoverUrlPathForComicHash(item->data(FirstChildHash).toString());
+    if (role == FolderModel::CoverPathRole) {
+        if (item->data(FolderModel::CustomImage).toString().isEmpty())
+            return getCoverUrlPathForComicHash(item->data(FirstChildHash).toString());
+        else
+            return getCoverUrlPathForFolderId(item->id);
+    }
 
     if (role == FolderModel::NumChildrenRole)
         return item->data(NumChildren);
@@ -675,6 +679,50 @@ void FolderModel::updateTreeType(YACReader::FileType type)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
+void FolderModel::setCustomFolderCover(const QModelIndex &index, const QString &path)
+{
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+
+        auto item = static_cast<FolderItem *>(index.internalPointer());
+        item->setData(FolderModel::CustomImage, path);
+
+        Folder f = DBHelper::loadFolder(item->id, db);
+        f.customImage = path;
+        DBHelper::update(f, db);
+
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    emit dataChanged(index, index);
+}
+
+void FolderModel::resetFolderCover(const QModelIndex &index)
+{
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
+
+        auto item = static_cast<FolderItem *>(index.internalPointer());
+        item->setData(FolderModel::CustomImage, "");
+
+        Folder f = DBHelper::loadFolder(item->id, db);
+        f.customImage = "";
+        DBHelper::update(f, db);
+
+        db.commit();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    emit dataChanged(index, index);
+}
+
 QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
 {
     QStringList result;
@@ -855,6 +903,12 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
 QUrl FolderModel::getCoverUrlPathForComicHash(const QString &hash) const
 {
     auto coverPath = LibraryPaths::coverPathFromLibraryDataPath(_databasePath, hash);
+    return QUrl::fromLocalFile(coverPath);
+}
+
+QUrl FolderModel::getCoverUrlPathForFolderId(qulonglong folderId) const
+{
+    auto coverPath = LibraryPaths::customFolderCoverPathFromDataPath(_databasePath, QString::number(folderId));
     return QUrl::fromLocalFile(coverPath);
 }
 

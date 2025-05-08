@@ -16,6 +16,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * New setting in Comic Vine scraper to force exact volume matches.
 * Better default search query in the Comic Vine scraper.
 * Improved navigation in Comic Vine scraper, including keeping the current query around to make edits and refined searches easier.
+* Add support for adding custom covers for folders using the context menu.
 
 ### YACReaderLibraryServer
 * Log libraries validation when the app starts.

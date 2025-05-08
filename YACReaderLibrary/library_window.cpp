@@ -83,6 +83,8 @@
 
 #include "recent_visibility_coordinator.h"
 
+#include "cover_utils.h"
+
 #include "QsLog.h"
 
 #include "yacreader_http_server.h"
@@ -536,6 +538,10 @@ void LibraryWindow::createMenus()
     foldersView->addAction(actions.setFolderAsWesternMangaAction);
     foldersView->addAction(actions.setFolderAsWebComicAction);
     foldersView->addAction(actions.setFolderAsYonkomaAction);
+    YACReader::addSperator(foldersView);
+
+    foldersView->addAction(actions.setFolderCoverAction);
+    foldersView->addAction(actions.deleteCustomFolderCoverAction);
 
     selectedLibrary->addAction(actions.updateLibraryAction);
     selectedLibrary->addAction(actions.renameLibraryAction);
@@ -669,11 +675,14 @@ void LibraryWindow::createMenus()
     folderMenu->addAction(actions.setFolderAsReadAction);
     folderMenu->addAction(actions.setFolderAsUnreadAction);
     folderMenu->addSeparator();
-    foldersView->addAction(actions.setFolderAsNormalAction);
-    foldersView->addAction(actions.setFolderAsMangaAction);
-    foldersView->addAction(actions.setFolderAsWesternMangaAction);
-    foldersView->addAction(actions.setFolderAsWebComicAction);
-    foldersView->addAction(actions.setFolderAsYonkomaAction);
+    folderMenu->addAction(actions.setFolderAsNormalAction);
+    folderMenu->addAction(actions.setFolderAsMangaAction);
+    folderMenu->addAction(actions.setFolderAsWesternMangaAction);
+    folderMenu->addAction(actions.setFolderAsWebComicAction);
+    folderMenu->addAction(actions.setFolderAsYonkomaAction);
+    folderMenu->addSeparator();
+    folderMenu->addAction(actions.setFolderCoverAction);
+    folderMenu->addAction(actions.deleteCustomFolderCoverAction);
 
     // comic
     QMenu *comicMenu = new QMenu(tr("Comic"));
@@ -823,11 +832,15 @@ void LibraryWindow::loadLibrary(const QString &name)
         showRootWidget();
         QString rootPath = libraries.getPath(name);
         QString path = LibraryPaths::libraryDataPath(rootPath);
+        QString customFolderCoversPath = LibraryPaths::libraryCustomFoldersCoverPath(rootPath);
         QString databasePath = LibraryPaths::libraryDatabasePath(rootPath);
         QDir d; // TODO change this by static methods (utils class?? with delTree for example)
         QString dbVersion;
         if (d.exists(path) && d.exists(databasePath) && (dbVersion = DataBaseManagement::checkValidDB(databasePath)) != "") // si existe en disco la biblioteca seleccionada, y es válida..
         {
+            // this folde was added in 9.16, it needs to exist before the user starts importing custom covers for folders
+            d.mkdir(customFolderCoversPath);
+
             int comparation = DataBaseManagement::compareVersions(dbVersion, DB_VERSION);
 
             if (comparation < 0) {
@@ -1441,6 +1454,12 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     auto setFolderAs4KomaAction = new QAction();
     setFolderAs4KomaAction->setText(tr("4koma (top to botom)"));
 
+    auto setFolderCoverAction = new QAction();
+    setFolderCoverAction->setText(tr("Set custom cover"));
+
+    auto deleteCustomFolderCoverAction = new QAction();
+    deleteCustomFolderCoverAction->setText(tr("Delete custom cover"));
+
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
     menu.addSeparator();
@@ -1536,6 +1555,20 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
         foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
         subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
     });
+    connect(setFolderCoverAction, &QAction::triggered, this, [=]() {
+        setCustomFolderCover(folder);
+    });
+
+    connect(deleteCustomFolderCoverAction, &QAction::triggered, this, [=]() {
+        resetFolderCover(folder);
+    });
+
+    menu.addSeparator();
+
+    menu.addAction(setFolderCoverAction);
+    if (!folder.customImage.isEmpty()) {
+        menu.addAction(deleteCustomFolderCoverAction);
+    }
 
     menu.exec(contentViewsManager->folderContentView->mapToGlobal(point));
 }
@@ -2272,6 +2305,55 @@ void LibraryWindow::setFolderType(FileType type)
     foldersModel->updateFolderType(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), type);
 }
 
+void LibraryWindow::setFolderCover()
+{
+    auto folder = foldersModel->getFolder(foldersModelProxy->mapToSource(foldersView->currentIndex()));
+    setCustomFolderCover(folder);
+}
+
+void LibraryWindow::setCustomFolderCover(Folder folder)
+{
+    QString supportedImageFormatsString;
+    for (const QByteArray &format : QImageReader::supportedImageFormats()) {
+        supportedImageFormatsString += QString("*.%1 ").arg(QString(format));
+    }
+
+    QString customCoverPath = QFileDialog::getOpenFileName(this, tr("Select custom cover"), QDir::homePath(), tr("Images (%1)").arg(supportedImageFormatsString));
+    if (!customCoverPath.isEmpty()) {
+        QImage cover(customCoverPath);
+        if (cover.isNull()) {
+            QMessageBox::warning(this, tr("Invalid image"), tr("The selected file is not a valid image."));
+            return;
+        }
+
+        auto folderCoverPath = LibraryPaths::customFolderCoverPath(libraries.getPath(selectedLibrary->currentText()), QString::number(folder.id));
+        if (!YACReader::saveCover(folderCoverPath, cover)) {
+            QMessageBox::warning(this, tr("Error saving cover"), tr("There was an error saving the cover image."));
+        }
+
+        QModelIndex folderIndex = foldersModel->getIndexFromFolder(folder);
+        auto coversPath = LibraryPaths::libraryCoversFolderPath(libraries.getPath(selectedLibrary->currentText()));
+        auto relativePath = folderCoverPath.remove(coversPath);
+        foldersModel->setCustomFolderCover(folderIndex, relativePath);
+    }
+}
+
+void LibraryWindow::deleteCustomFolderCover()
+{
+    auto folder = foldersModel->getFolder(foldersModelProxy->mapToSource(foldersView->currentIndex()));
+    resetFolderCover(folder);
+}
+
+void LibraryWindow::resetFolderCover(Folder folder)
+{
+    auto folderCoverPath = LibraryPaths::customFolderCoverPath(libraries.getPath(selectedLibrary->currentText()), QString::number(folder.id));
+    if (QFile::exists(folderCoverPath)) {
+        QFile::remove(folderCoverPath);
+    }
+    QModelIndex folderIndex = foldersModel->getIndexFromFolder(folder);
+    foldersModel->resetFolderCover(folderIndex);
+}
+
 void LibraryWindow::exportLibrary(QString destPath)
 {
     QString currentLibrary = selectedLibrary->currentText();
@@ -2513,9 +2595,7 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 {
     QModelIndex sourceMI = foldersModelProxy->mapToSource(foldersView->indexAt(point));
 
-    bool isCompleted = sourceMI.data(FolderModel::CompletedRole).toBool();
-    bool isRead = sourceMI.data(FolderModel::FinishedRole).toBool();
-    auto type = sourceMI.data(FolderModel::TypeRole).value<YACReader::FileType>();
+    auto folder = foldersModel->getFolder(sourceMI);
 
     actions.setFolderAsNormalAction->setCheckable(true);
     actions.setFolderAsMangaAction->setCheckable(true);
@@ -2529,7 +2609,7 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     actions.setFolderAsWebComicAction->setChecked(false);
     actions.setFolderAsYonkomaAction->setChecked(false);
 
-    switch (type) {
+    switch (folder.type) {
     case FileType::Comic:
         actions.setFolderAsNormalAction->setChecked(true);
         break;
@@ -2554,12 +2634,12 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     menu.addSeparator(); //-------------------------------
     menu.addAction(actions.rescanXMLFromCurrentFolderAction);
     menu.addSeparator(); //-------------------------------
-    if (isCompleted)
+    if (folder.completed)
         menu.addAction(actions.setFolderAsNotCompletedAction);
     else
         menu.addAction(actions.setFolderAsCompletedAction);
     menu.addSeparator(); //-------------------------------
-    if (isRead)
+    if (folder.finished)
         menu.addAction(actions.setFolderAsUnreadAction);
     else
         menu.addAction(actions.setFolderAsReadAction);
@@ -2571,6 +2651,11 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     typeMenu->addAction(actions.setFolderAsWesternMangaAction);
     typeMenu->addAction(actions.setFolderAsWebComicAction);
     typeMenu->addAction(actions.setFolderAsYonkomaAction);
+    menu.addSeparator(); //-------------------------------
+    menu.addAction(actions.setFolderCoverAction);
+    if (!folder.customImage.isEmpty()) {
+        menu.addAction(actions.deleteCustomFolderCoverAction);
+    }
 
     menu.exec(foldersView->mapToGlobal(point));
 }

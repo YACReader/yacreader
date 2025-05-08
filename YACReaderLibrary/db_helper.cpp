@@ -824,13 +824,34 @@ void DBHelper::updateAdded(ComicInfo *comicInfo, QSqlDatabase &db)
 void DBHelper::update(const Folder &folder, QSqlDatabase &db)
 {
     QSqlQuery updateFolderInfo(db);
+
     updateFolderInfo.prepare("UPDATE folder SET "
+                             "parentId = :parentId, "
+                             "name = :name, "
+                             "path = :path, "
                              "finished = :finished, "
-                             "completed = :completed "
-                             "WHERE id = :id ");
+                             "completed = :completed, "
+                             "numChildren = :numChildren, "
+                             "firstChildHash = :firstChildHash, "
+                             "customImage = :customImage, "
+                             "type = :type, "
+                             "added = :added, "
+                             "updated = :updated "
+                             "WHERE id = :id");
+
+    updateFolderInfo.bindValue(":parentId", folder.parentId);
+    updateFolderInfo.bindValue(":name", folder.name);
+    updateFolderInfo.bindValue(":path", folder.path);
     updateFolderInfo.bindValue(":finished", folder.finished ? 1 : 0);
     updateFolderInfo.bindValue(":completed", folder.completed ? 1 : 0);
+    updateFolderInfo.bindValue(":numChildren", folder.numChildren);
+    updateFolderInfo.bindValue(":firstChildHash", folder.firstChildHash);
+    updateFolderInfo.bindValue(":customImage", folder.customImage);
+    updateFolderInfo.bindValue(":type", static_cast<int>(folder.type));
+    updateFolderInfo.bindValue(":added", folder.added);
+    updateFolderInfo.bindValue(":updated", folder.updated);
     updateFolderInfo.bindValue(":id", folder.id);
+
     updateFolderInfo.exec();
 }
 

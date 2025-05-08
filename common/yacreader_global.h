@@ -109,6 +109,7 @@ void iterate(const QModelIndex &index,
              const QAbstractItemModel *model,
              const std::function<bool(const QModelIndex &)> &iteration);
 
+// TODO: remove all the dataPath variants and always use the root folder of a library `libraryPath` to get all the paths.
 struct LibraryPaths {
     LibraryPaths() = delete; // Prevent instantiation
 
@@ -137,14 +138,34 @@ struct LibraryPaths {
         return QDir(libraryCoversFolderPath(libraryPath)).filePath(coverFileName(hash));
     }
 
+    static QString libraryCustomFoldersCoverPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/covers/folders
+    {
+        return QDir(libraryCoversFolderPath(libraryPath)).filePath("folders");
+    }
+
+    static QString libraryCustomFoldersCoverPathFromLibraryDataPath(const QString &libraryDataPath)
+    {
+        return QDir(libraryCoversPathFromLibraryDataPath(libraryDataPath)).filePath("folders");
+    }
+
+    static QString customFolderCoverPath(const QString &libraryPath, const QString &folderId)
+    {
+        return QDir(libraryCustomFoldersCoverPath(libraryPath)).filePath(coverFileName(folderId));
+    }
+
+    static QString customFolderCoverPathFromDataPath(const QString &libraryDataPath, const QString &folderId)
+    {
+        return QDir(libraryCustomFoldersCoverPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(folderId));
+    }
+
     static QString coverPathFromLibraryDataPath(const QString &libraryDataPath, const QString &hash) // libraryDataPath + /covers/hash + .jpg
     {
         return QDir(libraryCoversPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(hash));
     }
 
-    static QString coverFileName(const QString &hash) // hash + .jpg
+    static QString coverFileName(const QString &id) // id + .jpg (it can be a comic hash or a folder id)
     {
-        return hash + ".jpg";
+        return id + ".jpg";
     }
 
     static QString coverPathWithFileName(const QString &libraryPath, const QString &fileName) // libraryPath + /.yacreaderlibrary/covers/hash + fileName
