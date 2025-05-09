@@ -182,6 +182,8 @@ public slots:
     void loadCustomCoverImageFromPath(const QString &path);
     void setCoverPage(int pageNumber);
     bool close();
+    void updateCoverBoxForMultipleComics();
+    void updateCoverBoxForSingleComic();
 
 signals:
     void coverChangedSignal(const ComicDB &comic);

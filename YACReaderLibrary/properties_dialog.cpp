@@ -482,7 +482,7 @@ void PropertiesDialog::loadComic(ComicDB &comic)
         showNextCoverPageButton->setEnabled(true);
 
         coverChanged = false;
-        coverBox->show();
+        updateCoverBoxForSingleComic();
 
         if (!QFileInfo(basePath + comic.path).exists()) {
             QMessageBox::warning(this, tr("Not found"), tr("Comic not found. You should update your library."));
@@ -617,7 +617,7 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
     updateButtons();
 
     if (comics.length() > 1) {
-        coverBox->hide();
+        updateCoverBoxForMultipleComics();
 
         setDisableUniqueValues(true);
         this->setWindowTitle(tr("Edit selected comics information"));
@@ -753,6 +753,40 @@ void PropertiesDialog::updateComics()
                 DBHelper::update(&(itr->info), db);
                 updated = true;
             }
+
+            if (!sequentialEditing && coverChanged) {
+                auto coverPath = LibraryPaths::coverPath(basePath, itr->info.hash);
+
+                if (customCover.isNull()) { // reseted, we need to restore the default cover
+                    itr->info.coverPage = QVariant();
+
+                    InitialComicInfoExtractor ie(basePath + itr->path, coverPath, 1);
+                    ie.extract();
+
+                    if (ie.getOriginalCoverSize().second > 0) {
+                        itr->info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
+                        itr->info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
+                    }
+
+                    emit coverChangedSignal(*itr);
+
+                    DBHelper::update(&(itr->info), db);
+                    updated = true;
+                } else {
+                    itr->info.coverPage = QVariant();
+                    YACReader::saveCover(coverPath, customCover);
+
+                    auto width = customCover.width();
+                    auto height = customCover.height();
+                    itr->info.originalCoverSize = QString("%1x%2").arg(width).arg(height);
+                    itr->info.coverSizeRatio = static_cast<float>(width) / height;
+
+                    DBHelper::update(&(itr->info), db);
+                    updated = true;
+
+                    emit coverChangedSignal(*itr);
+                }
+            }
         }
         db.commit();
         connectionName = db.connectionName();
@@ -782,13 +816,14 @@ void PropertiesDialog::setFilename(const QString &nameString)
 {
     title->setText(nameString);
 }
+
 void PropertiesDialog::setNumpages(int pagesNum)
 {
     numPagesEdit->setText(QString::number(pagesNum));
 }
+
 void PropertiesDialog::setSize(float sizeFloat)
 {
-
     size->setText(QString::number(sizeFloat, 'f', 2) + " MB");
 }
 
@@ -996,8 +1031,17 @@ void PropertiesDialog::save()
                     comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
                 }
 
+                comics[currentComicIndex].info.edited = true;
+
                 emit coverChangedSignal(comics[currentComicIndex]);
             } else {
+                auto width = customCover.width();
+                auto height = customCover.height();
+
+                comics[currentComicIndex].info.originalCoverSize = QString("%1x%2").arg(width).arg(height);
+                comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(width) / height;
+
+                comics[currentComicIndex].info.edited = true;
 
                 YACReader::saveCover(coverPath, customCover);
                 emit coverChangedSignal(comics[currentComicIndex]);
@@ -1160,8 +1204,22 @@ void PropertiesDialog::loadPreviousCover()
 
 void PropertiesDialog::resetCover()
 {
-    setCoverPage(1);
-    coverChanged = true; // it could be that the cover is a custom cover, so we need to always update it
+    if (sequentialEditing) {
+        setCoverPage(1);
+        coverChanged = true; // it could be that the cover is a custom cover, so we need to always update it
+    } else {
+        InitialComicInfoExtractor ie(basePath + comics.last().path, "", 1);
+        ie.extract();
+        auto cover = ie.getCover();
+        cover = cover.scaledToHeight(575, Qt::SmoothTransformation);
+
+        auto coverImage = QPixmap::fromImage(blurred(cover.toImage(), QRect(0, 0, cover.width(), cover.height()), 15));
+
+        this->cover->setPixmap(coverImage);
+
+        customCover = QImage();
+        coverChanged = true;
+    }
 }
 
 void PropertiesDialog::loadCustomCoverImage()
@@ -1205,4 +1263,18 @@ bool PropertiesDialog::close()
     }
 
     return QDialog::close();
+}
+
+void PropertiesDialog::updateCoverBoxForMultipleComics()
+{
+    showPreviousCoverPageButton->hide();
+    showNextCoverPageButton->hide();
+    coverPageNumberLabel->hide();
+}
+
+void PropertiesDialog::updateCoverBoxForSingleComic()
+{
+    showPreviousCoverPageButton->show();
+    showNextCoverPageButton->show();
+    coverPageNumberLabel->show();
 }
