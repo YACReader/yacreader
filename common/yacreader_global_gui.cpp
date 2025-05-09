@@ -115,36 +115,33 @@ QString YACReader::imageFileLoader(QWidget *parent)
 QString YACReader::imagePathFromMimeData(const QMimeData *mimeData)
 {
     QString filePath;
-    
-    // Check for URLs (drag from browser or file explorer)
+
     if (mimeData->hasUrls()) {
         QList<QUrl> urlList = mimeData->urls();
-        
-        // We only handle the first URL for simplicity
+
         if (!urlList.isEmpty()) {
             QUrl url = urlList.first();
             if (url.isLocalFile()) {
                 filePath = url.toLocalFile();
-                
-                // Verify it's an image file using the extension
+
                 QFileInfo fileInfo(filePath);
                 QString extension = fileInfo.suffix().toLower();
                 QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
                 bool isSupported = false;
-                
+
                 for (const QByteArray &format : supportedFormats) {
                     if (extension == QString(format).toLower()) {
                         isSupported = true;
                         break;
                     }
                 }
-                
+
                 if (!isSupported) {
-                    filePath.clear(); // Not a supported image format
+                    filePath.clear();
                 }
             }
         }
     }
-    
+
     return filePath;
 }
