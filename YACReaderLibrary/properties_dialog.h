@@ -117,6 +117,8 @@ private:
     QToolButton *showNextCoverPageButton;
     QLabel *coverPageNumberLabel;
 
+    QToolButton *resetCoverButton;
+
     void createTabBar();
     void createCoverBox();
     void createGeneralInfoBox();
@@ -168,6 +170,8 @@ public slots:
     void setSize(float size);
     void loadNextCover();
     void loadPreviousCover();
+    void resetCover();
+    void setCoverPage(int pageNumber);
     bool close();
 
 signals:

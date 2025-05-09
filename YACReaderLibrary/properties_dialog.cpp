@@ -107,6 +107,10 @@ void PropertiesDialog::createCoverBox()
     showNextCoverPageButton->setIcon(QIcon(":/images/nextCoverPage.png"));
     showNextCoverPageButton->setStyleSheet("QToolButton {border:none;}");
 
+    resetCoverButton = new QToolButton();
+    resetCoverButton->setIcon(QIcon(":/images/resetCover.svg"));
+    resetCoverButton->setStyleSheet("QToolButton {border:none;}");
+
     coverPageNumberLabel = new QLabel("-");
 
     coverPageNumberLabel->setStyleSheet("QLabel {color: white; font-weight:bold; font-size:14px;}");
@@ -116,6 +120,8 @@ void PropertiesDialog::createCoverBox()
     layout->addWidget(coverPageNumberLabel, 0, Qt::AlignVCenter);
     layout->addSpacing(5);
     layout->addWidget(showNextCoverPageButton, 0, Qt::AlignVCenter);
+    layout->addSpacing(5);
+    layout->addWidget(resetCoverButton, 0, Qt::AlignVCenter);
 
     coverPageEdit->setStyleSheet("QLineEdit {border:none;}");
     layout->setSpacing(0);
@@ -132,6 +138,7 @@ void PropertiesDialog::createCoverBox()
 
     connect(showPreviousCoverPageButton, &QAbstractButton::clicked, this, &PropertiesDialog::loadPreviousCover);
     connect(showNextCoverPageButton, &QAbstractButton::clicked, this, &PropertiesDialog::loadNextCover);
+    connect(resetCoverButton, &QAbstractButton::clicked, this, &PropertiesDialog::resetCover);
 }
 
 void PropertiesDialog::createGeneralInfoBox()
@@ -1095,17 +1102,9 @@ void PropertiesDialog::loadNextCover()
     else
         next = current + 1;
 
-    updateCoverPageNumberLabel(next);
+    setCoverPage(next);
 
-    InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", next);
-    ie.extract();
-    setCover(ie.getCover());
-    repaint();
-
-    if (next != comics[currentComicIndex].info.coverPage)
-        coverChanged = true;
-    else
-        coverChanged = false;
+    coverChanged = next != comics[currentComicIndex].info.coverPage;
 }
 
 void PropertiesDialog::loadPreviousCover()
@@ -1118,16 +1117,24 @@ void PropertiesDialog::loadPreviousCover()
     else
         previous = current - 1;
 
-    updateCoverPageNumberLabel(previous);
-    InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", previous);
+    setCoverPage(previous);
+
+    coverChanged = previous != comics[currentComicIndex].info.coverPage.toInt();
+}
+
+void PropertiesDialog::resetCover()
+{
+    setCoverPage(1);
+    coverChanged = 1 != comics[currentComicIndex].info.coverPage.toInt();
+}
+
+void PropertiesDialog::setCoverPage(int pageNumber)
+{
+    updateCoverPageNumberLabel(pageNumber);
+    InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", pageNumber);
     ie.extract();
     setCover(ie.getCover());
     repaint();
-
-    if (previous != comics[currentComicIndex].info.coverPage.toInt())
-        coverChanged = true;
-    else
-        coverChanged = false;
 }
 
 bool PropertiesDialog::close()
