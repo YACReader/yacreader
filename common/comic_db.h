@@ -84,8 +84,6 @@ public:
 
     QVariant comicVineID; // string
 
-    // QImage cover;
-
     QVariant lastTimeOpened; // integer/date
     QVariant coverSizeRatio; // h/w
     QVariant originalCoverSize; // string "WxH"
