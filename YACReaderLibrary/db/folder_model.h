@@ -70,6 +70,8 @@ public:
     void updateFolderFinishedStatus(const QModelIndexList &list, bool status);
     void updateFolderType(const QModelIndexList &list, YACReader::FileType type);
     void updateTreeType(YACReader::FileType type);
+    void setCustomFolderCover(const QModelIndex &index, const QString &path);
+    void resetFolderCover(const QModelIndex &index);
 
     QStringList getSubfoldersNames(const QModelIndex &mi);
     FolderModel *getSubfoldersModel(const QModelIndex &mi); // it creates a model that contains just the direct subfolders
@@ -81,6 +83,7 @@ public:
     QModelIndex addFolderAtParent(const QString &folderName, const QModelIndex &parent);
 
     Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString &hash) const;
+    Q_INVOKABLE QUrl getCoverUrlPathForFolderId(qulonglong folderId) const;
 
     void setShowRecent(bool showRecent);
     void setRecentRange(int days);
