@@ -734,14 +734,14 @@ void PropertiesDialog::setMultipleCover()
     QPixmap last = lastComic.info.getCover(basePath);
     last = last.scaledToHeight(575, Qt::SmoothTransformation);
 
-    coverImage = QPixmap::fromImage(blurred(last.toImage(), QRect(0, 0, last.width(), last.height()), 15));
+    auto coverImage = QPixmap::fromImage(blurred(last.toImage(), QRect(0, 0, last.width(), last.height()), 15));
 
     cover->setPixmap(coverImage);
 }
 
 void PropertiesDialog::setCover(const QPixmap &coverI)
 {
-    coverImage = coverI.scaledToHeight(575, Qt::SmoothTransformation);
+    auto coverImage = coverI.scaledToHeight(575, Qt::SmoothTransformation);
 
     cover->setPixmap(coverImage);
 }

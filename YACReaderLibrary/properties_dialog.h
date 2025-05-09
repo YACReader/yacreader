@@ -113,8 +113,6 @@ private:
     QPushButton *previousButton;
     QPushButton *restoreButton; //??
 
-    QPixmap coverImage;
-
     QToolButton *showPreviousCoverPageButton;
     QToolButton *showNextCoverPageButton;
     QLabel *coverPageNumberLabel;
