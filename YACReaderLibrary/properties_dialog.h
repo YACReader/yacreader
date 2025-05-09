@@ -19,6 +19,10 @@ class QComboBox;
 // class YACReaderBusyWidget;
 class QToolButton;
 
+namespace YACReader {
+class CoverLabel;
+}
+
 #include "comic_db.h"
 
 class PropertiesDialog : public QDialog
@@ -33,7 +37,7 @@ private:
     QTabWidget *tabBar;
 
     QWidget *coverBox;
-    QLabel *cover;
+    YACReader::CoverLabel *cover;
     QScrollArea *sa;
 
     QWidget *generalInfoBox;
@@ -175,6 +179,7 @@ public slots:
     void loadPreviousCover();
     void resetCover();
     void loadCustomCoverImage();
+    void loadCustomCoverImageFromPath(const QString &path);
     void setCoverPage(int pageNumber);
     bool close();
 

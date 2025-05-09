@@ -113,5 +113,6 @@ QString addExtensionToIconPathInToolbar(const QString &path);
 QAction *actionWithCustomIcon(const QIcon &icon, QAction *action);
 QPixmap hdpiPixmap(const QString &file, QSize size);
 QString imageFileLoader(QWidget *parent);
+QString imagePathFromMimeData(const QMimeData *mimeData);
 }
 #endif

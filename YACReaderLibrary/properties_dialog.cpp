@@ -8,6 +8,7 @@
 #include "yacreader_field_edit.h"
 #include "yacreader_field_plain_text_edit.h"
 #include "db_helper.h"
+#include "yacreader_cover_label.h"
 
 #include <QHBoxLayout>
 #include <QApplication>
@@ -39,7 +40,8 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     createTabBar();
     auto rootLayout = new QGridLayout;
 
-    cover = new QLabel();
+    cover = new YACReader::CoverLabel();
+    connect(cover, &YACReader::CoverLabel::imageDropped, this, &PropertiesDialog::loadCustomCoverImageFromPath);
 
     mainLayout = new QGridLayout;
     mainLayout->addWidget(tabBar, 0, 0);
@@ -1165,7 +1167,11 @@ void PropertiesDialog::resetCover()
 void PropertiesDialog::loadCustomCoverImage()
 {
     auto path = YACReader::imageFileLoader(this);
+    loadCustomCoverImageFromPath(path);
+}
 
+void PropertiesDialog::loadCustomCoverImageFromPath(const QString &path)
+{
     if (path.isEmpty()) {
         return;
     }
