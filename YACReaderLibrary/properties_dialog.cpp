@@ -1,5 +1,8 @@
 #include "properties_dialog.h"
 
+#include "yacreader_global_gui.h"
+
+#include "cover_utils.h"
 #include "data_base_management.h"
 #include "initial_comic_info_extractor.h"
 #include "yacreader_field_edit.h"
@@ -102,14 +105,22 @@ void PropertiesDialog::createCoverBox()
 
     showPreviousCoverPageButton = new QToolButton();
     showPreviousCoverPageButton->setIcon(QIcon(":/images/previousCoverPage.png"));
+    showPreviousCoverPageButton->setToolTip(tr("Load previous page as cover"));
     showPreviousCoverPageButton->setStyleSheet("QToolButton {border:none;}");
     showNextCoverPageButton = new QToolButton();
     showNextCoverPageButton->setIcon(QIcon(":/images/nextCoverPage.png"));
+    showNextCoverPageButton->setToolTip(tr("Load next page as cover"));
     showNextCoverPageButton->setStyleSheet("QToolButton {border:none;}");
 
     resetCoverButton = new QToolButton();
     resetCoverButton->setIcon(QIcon(":/images/resetCover.svg"));
+    resetCoverButton->setToolTip(tr("Reset cover to the default image"));
     resetCoverButton->setStyleSheet("QToolButton {border:none;}");
+
+    loadCustomCoverImageButton = new QToolButton();
+    loadCustomCoverImageButton->setIcon(QIcon(":/images/loadCustomCover.svg"));
+    loadCustomCoverImageButton->setToolTip(tr("Load custom cover image"));
+    loadCustomCoverImageButton->setStyleSheet("QToolButton {border:none;}");
 
     coverPageNumberLabel = new QLabel("-");
 
@@ -122,6 +133,8 @@ void PropertiesDialog::createCoverBox()
     layout->addWidget(showNextCoverPageButton, 0, Qt::AlignVCenter);
     layout->addSpacing(5);
     layout->addWidget(resetCoverButton, 0, Qt::AlignVCenter);
+    layout->addSpacing(5);
+    layout->addWidget(loadCustomCoverImageButton, 0, Qt::AlignVCenter);
 
     coverPageEdit->setStyleSheet("QLineEdit {border:none;}");
     layout->setSpacing(0);
@@ -139,6 +152,7 @@ void PropertiesDialog::createCoverBox()
     connect(showPreviousCoverPageButton, &QAbstractButton::clicked, this, &PropertiesDialog::loadPreviousCover);
     connect(showNextCoverPageButton, &QAbstractButton::clicked, this, &PropertiesDialog::loadNextCover);
     connect(resetCoverButton, &QAbstractButton::clicked, this, &PropertiesDialog::resetCover);
+    connect(loadCustomCoverImageButton, &QAbstractButton::clicked, this, &PropertiesDialog::loadCustomCoverImage);
 }
 
 void PropertiesDialog::createGeneralInfoBox()
@@ -441,6 +455,8 @@ QImage blurred(const QImage &image, const QRect &rect, int radius, bool alphaOnl
 
 void PropertiesDialog::loadComic(ComicDB &comic)
 {
+    customCover = QImage();
+
     if (!comic.info.series.isNull())
         series->setText(comic.info.series.toString());
     if (!comic.info.title.isNull())
@@ -583,8 +599,12 @@ void PropertiesDialog::updateButtons()
 
 void PropertiesDialog::setComics(QList<ComicDB> comics)
 {
-    updated = false;
     sequentialEditing = false;
+
+    updated = false;
+    currentComicIndex = 0;
+    coverChanged = false;
+    customCover = QImage();
 
     this->comics = comics;
 
@@ -702,8 +722,11 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
 
 void PropertiesDialog::setComicsForSequentialEditing(int currentComicIndex, QList<ComicDB> comics)
 {
-    updated = false;
     sequentialEditing = true;
+
+    updated = false;
+    coverChanged = false;
+    customCover = QImage();
 
     this->comics = comics;
     this->currentComicIndex = currentComicIndex;
@@ -789,7 +812,11 @@ void PropertiesDialog::save()
 
         if (sequentialEditing)
             if (coverChanged) {
-                itr->info.coverPage = coverPageNumberLabel->text().toInt();
+                if (customCover.isNull()) {
+                    itr->info.coverPage = coverPageNumberLabel->text().toInt();
+                } else {
+                    itr->info.coverPage = QVariant();
+                }
                 edited = true;
             }
 
@@ -957,15 +984,22 @@ void PropertiesDialog::save()
     if (sequentialEditing) {
         if (coverChanged) {
             auto coverPath = LibraryPaths::coverPath(basePath, comics[currentComicIndex].info.hash);
-            InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, coverPath, comics[currentComicIndex].info.coverPage.toInt());
-            ie.extract();
 
-            if (ie.getOriginalCoverSize().second > 0) {
-                comics[currentComicIndex].info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
-                comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
+            if (customCover.isNull()) {
+                InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, coverPath, comics[currentComicIndex].info.coverPage.toInt());
+                ie.extract();
+
+                if (ie.getOriginalCoverSize().second > 0) {
+                    comics[currentComicIndex].info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
+                    comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
+                }
+
+                emit coverChangedSignal(comics[currentComicIndex]);
+            } else {
+
+                YACReader::saveCover(coverPath, customCover);
+                emit coverChangedSignal(comics[currentComicIndex]);
             }
-
-            emit coverChangedSignal(comics[currentComicIndex]);
         }
     }
 }
@@ -1125,11 +1159,32 @@ void PropertiesDialog::loadPreviousCover()
 void PropertiesDialog::resetCover()
 {
     setCoverPage(1);
-    coverChanged = 1 != comics[currentComicIndex].info.coverPage.toInt();
+    coverChanged = true; // it could be that the cover is a custom cover, so we need to always update it
+}
+
+void PropertiesDialog::loadCustomCoverImage()
+{
+    auto path = YACReader::imageFileLoader(this);
+
+    if (path.isEmpty()) {
+        return;
+    }
+
+    customCover = QImage(path);
+    coverChanged = true;
+
+    if (customCover.isNull()) {
+        QMessageBox::warning(this, tr("Invalid cover"), tr("The image is invalid."));
+        return;
+    }
+
+    setCover(QPixmap::fromImage(customCover));
 }
 
 void PropertiesDialog::setCoverPage(int pageNumber)
 {
+    customCover = QImage();
+
     updateCoverPageNumberLabel(pageNumber);
     InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", pageNumber);
     ie.extract();

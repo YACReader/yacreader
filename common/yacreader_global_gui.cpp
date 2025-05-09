@@ -2,6 +2,8 @@
 
 #include <QtCore>
 #include <QAction>
+#include <QImageReader>
+#include <QFileDialog>
 
 using namespace YACReader;
 
@@ -98,4 +100,14 @@ QAction *YACReader::actionWithCustomIcon(const QIcon &icon, QAction *action)
 QPixmap YACReader::hdpiPixmap(const QString &file, QSize size)
 {
     return QIcon(file).pixmap(size);
+}
+
+QString YACReader::imageFileLoader(QWidget *parent)
+{
+    QString supportedImageFormatsString;
+    for (const QByteArray &format : QImageReader::supportedImageFormats()) {
+        supportedImageFormatsString += QString("*.%1 ").arg(QString(format));
+    }
+
+    return QFileDialog::getOpenFileName(parent, QObject::tr("Select custom cover"), QDir::homePath(), QObject::tr("Images (%1)").arg(supportedImageFormatsString));
 }

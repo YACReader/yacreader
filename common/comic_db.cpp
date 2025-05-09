@@ -404,12 +404,7 @@ ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
 
 QPixmap ComicInfo::getCover(const QString &basePath)
 {
-    if (cover.isNull()) {
-        cover.load(YACReader::LibraryPaths::coverPath(basePath, hash));
-    }
-    QPixmap c;
-    c.convertFromImage(cover);
-    return c;
+    return QPixmap(YACReader::LibraryPaths::coverPath(basePath, hash));
 }
 
 QStringList ComicInfo::getWriters()

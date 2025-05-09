@@ -84,7 +84,7 @@ public:
 
     QVariant comicVineID; // string
 
-    QImage cover;
+    // QImage cover;
 
     QVariant lastTimeOpened; // integer/date
     QVariant coverSizeRatio; // h/w
@@ -188,8 +188,6 @@ public:
     Q_PROPERTY(QVariant notes MEMBER notes CONSTANT)
 
     Q_PROPERTY(QVariant comicVineID MEMBER comicVineID CONSTANT)
-
-    Q_PROPERTY(QImage cover MEMBER cover CONSTANT)
 
     Q_PROPERTY(QVariant lastTimeOpened MEMBER lastTimeOpened CONSTANT)
 

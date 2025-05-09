@@ -118,6 +118,7 @@ private:
     QLabel *coverPageNumberLabel;
 
     QToolButton *resetCoverButton;
+    QToolButton *loadCustomCoverImageButton;
 
     void createTabBar();
     void createCoverBox();
@@ -143,6 +144,8 @@ private:
     float coverSizeRatio;
     bool updated;
     QString originalCoverSize;
+
+    QImage customCover;
 
 public:
     PropertiesDialog(QWidget *parent = nullptr);
@@ -171,6 +174,7 @@ public slots:
     void loadNextCover();
     void loadPreviousCover();
     void resetCover();
+    void loadCustomCoverImage();
     void setCoverPage(int pageNumber);
     bool close();
 
