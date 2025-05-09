@@ -456,11 +456,6 @@ void PropertiesDialog::loadComic(ComicDB &comic)
         showPreviousCoverPageButton->setEnabled(true);
         showNextCoverPageButton->setEnabled(true);
 
-        if (coverPage == 1)
-            showPreviousCoverPageButton->setDisabled(true);
-        if (coverPage == comic.info.numPages.toInt())
-            showNextCoverPageButton->setDisabled(true);
-
         coverChanged = false;
         coverBox->show();
 
@@ -469,9 +464,9 @@ void PropertiesDialog::loadComic(ComicDB &comic)
             showPreviousCoverPageButton->setDisabled(true);
             showNextCoverPageButton->setDisabled(true);
         }
+    } else {
+        coverPageNumberLabel->setText("1");
     }
-    /*if(comic.info.numPages != NULL)
-        numPagesEdit->setText(QString::number(*comic.info.numPages));*/
 
     if (!comic.info.number.isNull())
         numberEdit->setText(comic.info.number.toString());
@@ -1093,46 +1088,46 @@ void PropertiesDialog::updateCoverPageNumberLabel(int n)
 void PropertiesDialog::loadNextCover()
 {
     int current = coverPageNumberLabel->text().toInt();
-    if (current < comics[currentComicIndex].info.numPages.toInt()) {
-        updateCoverPageNumberLabel(current + 1);
+    int next;
 
-        InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", current + 1);
-        ie.extract();
-        setCover(ie.getCover());
-        repaint();
+    if (current == comics[currentComicIndex].info.numPages.toInt())
+        next = 1;
+    else
+        next = current + 1;
 
-        if ((current + 1) == comics[currentComicIndex].info.numPages.toInt()) {
-            showNextCoverPageButton->setDisabled(true);
-        }
+    updateCoverPageNumberLabel(next);
 
-        showPreviousCoverPageButton->setEnabled(true);
-        if (current + 1 != comics[currentComicIndex].info.coverPage)
-            coverChanged = true;
-        else
-            coverChanged = false;
-    }
+    InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", next);
+    ie.extract();
+    setCover(ie.getCover());
+    repaint();
+
+    if (next != comics[currentComicIndex].info.coverPage)
+        coverChanged = true;
+    else
+        coverChanged = false;
 }
 
 void PropertiesDialog::loadPreviousCover()
 {
     int current = coverPageNumberLabel->text().toInt();
-    if (current != 1) {
-        updateCoverPageNumberLabel(current - 1);
-        InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", current - 1);
-        ie.extract();
-        setCover(ie.getCover());
-        repaint();
+    int previous;
 
-        if ((current - 1) == 1) {
-            showPreviousCoverPageButton->setDisabled(true);
-        }
+    if (current == 1)
+        previous = comics[currentComicIndex].info.numPages.toInt();
+    else
+        previous = current - 1;
 
-        showNextCoverPageButton->setEnabled(true);
-        if (current - 1 != comics[currentComicIndex].info.coverPage.toInt())
-            coverChanged = true;
-        else
-            coverChanged = false;
-    }
+    updateCoverPageNumberLabel(previous);
+    InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", previous);
+    ie.extract();
+    setCover(ie.getCover());
+    repaint();
+
+    if (previous != comics[currentComicIndex].info.coverPage.toInt())
+        coverChanged = true;
+    else
+        coverChanged = false;
 }
 
 bool PropertiesDialog::close()
