@@ -16,7 +16,11 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * New setting in Comic Vine scraper to force exact volume matches.
 * Better default search query in the Comic Vine scraper.
 * Improved navigation in Comic Vine scraper, including keeping the current query around to make edits and refined searches easier.
-* Add support for adding custom covers for folders using the context menu.
+* Add support for custom covers for any folder using the context menu.
+* The edit cover buttons now support looping through pages, going forward from the last returns to the first, and going backward from the first jumps to the last.
+* Add support for custom covers for comics using the edit metadata dialog, you can use a pick file button or drag&drop an image into the cover view in the dialog.
+* Covers can be set in bulk for various comics at once.
+* New button to reset to the default cover of a comic.
 
 ### YACReaderLibraryServer
 * Log libraries validation when the app starts.

@@ -1,6 +1,7 @@
 #include "library_window.h"
 
 #include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -2313,12 +2314,7 @@ void LibraryWindow::setFolderCover()
 
 void LibraryWindow::setCustomFolderCover(Folder folder)
 {
-    QString supportedImageFormatsString;
-    for (const QByteArray &format : QImageReader::supportedImageFormats()) {
-        supportedImageFormatsString += QString("*.%1 ").arg(QString(format));
-    }
-
-    QString customCoverPath = QFileDialog::getOpenFileName(this, tr("Select custom cover"), QDir::homePath(), tr("Images (%1)").arg(supportedImageFormatsString));
+    auto customCoverPath = YACReader::imageFileLoader(this);
     if (!customCoverPath.isEmpty()) {
         QImage cover(customCoverPath);
         if (cover.isNull()) {
