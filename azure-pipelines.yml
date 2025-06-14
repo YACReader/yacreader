@@ -370,7 +370,7 @@ jobs:
     - group: github-releases
     - group: docker-hub-credentials    
     pool:
-      vmImage: 'ubuntu-20.04'
+      vmImage: 'ubuntu-24.04'
     steps:
     - task: DownloadPipelineArtifact@2
       inputs:
@@ -431,7 +431,7 @@ jobs:
     - group: github-releases
     - group: docker-hub-credentials
     pool:
-      vmImage: 'ubuntu-20.04'
+      vmImage: 'ubuntu-24.04'
     steps:
     - task: DownloadPipelineArtifact@2
       inputs:
