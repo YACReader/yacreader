@@ -72,6 +72,7 @@ public:
     static Folder updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
     static void updateChildrenInfo(QSqlDatabase &db);
     static void updateProgress(qulonglong libraryId, const ComicInfo &comicInfo);
+    static void updateImageFilters(qulonglong libraryId, const ComicInfo &comicInfo);
     static void setComicAsReading(qulonglong libraryId, const ComicInfo &comicInfo);
     [[deprecated("Server v1")]] static void updateFromRemoteClient(qulonglong libraryId, const ComicInfo &comicInfo);
     static void updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatabase &db);

@@ -39,9 +39,9 @@ public:
     int bookmark1;
     int bookmark2;
     int bookmark3;
-    int brightness;
-    int contrast;
-    int gamma;
+    [[deprecated("Use imageFiltersJson")]] int brightness;
+    [[deprecated("Use imageFiltersJson")]] int contrast;
+    [[deprecated("Use imageFiltersJson")]] int gamma;
     //-----------------
 
     QVariant title; // string
@@ -103,6 +103,12 @@ public:
     QVariant mainCharacterOrTeam; // string
     QVariant review; // string
     QVariant tags; // string/list
+
+    QVariant imageFiltersJson; // string, JSON with image filters
+    QVariant lastTimeImageFiltersSet; // integer/date, last time image filters were set
+    QVariant lastTimeCoverSet; // integer/date, last time cover was set
+    QVariant usesExternalCover; // bool, whether the cover is external or not
+    QVariant lastTimeMetadataSet; // integer/date, last time metadata was set
 
     QPixmap getCover(const QString &basePath);
 
@@ -207,6 +213,12 @@ public:
     Q_PROPERTY(QVariant mainCharacterOrTeam MEMBER mainCharacterOrTeam CONSTANT)
     Q_PROPERTY(QVariant review MEMBER review CONSTANT)
     Q_PROPERTY(QVariant tags MEMBER tags CONSTANT)
+
+    Q_PROPERTY(QVariant imageFiltersJson MEMBER imageFiltersJson CONSTANT)
+    Q_PROPERTY(QVariant lastTimeImageFiltersSet MEMBER lastTimeImageFiltersSet CONSTANT)
+    Q_PROPERTY(QVariant lastTimeCoverSet MEMBER lastTimeCoverSet CONSTANT)
+    Q_PROPERTY(QVariant usesExternalCover MEMBER usesExternalCover CONSTANT)
+    Q_PROPERTY(QVariant lastTimeMetadataSet MEMBER lastTimeMetadataSet CONSTANT)
 
     //-new properties, not loaded from the DB automatically
     bool isFavorite;

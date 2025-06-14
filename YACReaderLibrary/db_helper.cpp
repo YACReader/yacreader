@@ -712,7 +712,14 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             "seriesGroup = :seriesGroup,"
                             "mainCharacterOrTeam = :mainCharacterOrTeam,"
                             "review = :review,"
-                            "tags = :tags"
+                            "tags = :tags,"
+
+                            // new 9.16 fields
+                            "imageFiltersJson = :imageFiltersJson,"
+                            "lastTimeImageFiltersSet = :lastTimeImageFiltersSet,"
+                            "lastTimeCoverSet = :lastTimeCoverSet,"
+                            "usesExternalCover = :usesExternalCover,"
+                            "lastTimeMetadataSet = :lastTimeMetadataSet"
 
                             //--
                             " WHERE id = :id");
@@ -789,6 +796,12 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":mainCharacterOrTeam", comicInfo->mainCharacterOrTeam);
     updateComicInfo.bindValue(":review", comicInfo->review);
     updateComicInfo.bindValue(":tags", comicInfo->tags);
+
+    updateComicInfo.bindValue(":imageFiltersJson", comicInfo->imageFiltersJson);
+    updateComicInfo.bindValue(":lastTimeImageFiltersSet", comicInfo->lastTimeImageFiltersSet);
+    updateComicInfo.bindValue(":lastTimeCoverSet", comicInfo->lastTimeCoverSet);
+    updateComicInfo.bindValue(":usesExternalCover", comicInfo->usesExternalCover);
+    updateComicInfo.bindValue(":lastTimeMetadataSet", comicInfo->lastTimeMetadataSet);
 
     updateComicInfo.exec();
 
@@ -955,6 +968,41 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
         comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
 
         DBHelper::updateReadingRemoteProgress(comic.info, db);
+
+        connectionName = db.connectionName();
+    }
+
+    QSqlDatabase::removeDatabase(connectionName);
+}
+
+void DBHelper::updateImageFilters(qulonglong libraryId, const ComicInfo &comicInfo)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
+
+        bool found;
+        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
+
+        if (found && comic.info.lastTimeImageFiltersSet.toULongLong() < comicInfo.lastTimeImageFiltersSet.toULongLong()) {
+            QSqlQuery updateComicInfo(db);
+            updateComicInfo.prepare("UPDATE comic_info SET "
+                                    "lastTimeImageFiltersSet = :lastTimeImageFiltersSet, "
+                                    "imageFiltersJson = :imageFiltersJson "
+                                    " WHERE id = :id ");
+
+            updateComicInfo.bindValue(":lastTimeImageFiltersSet", comicInfo.lastTimeImageFiltersSet.toULongLong());
+            updateComicInfo.bindValue(":imageFiltersJson", comicInfo.imageFiltersJson);
+            updateComicInfo.bindValue(":id", comic.info.id);
+
+            auto ret = updateComicInfo.exec();
+            if (!ret) {
+                QLOG_ERROR() << "Error updating image filters for comic ID:" << comicInfo.id;
+                QLOG_ERROR() << updateComicInfo.lastError().databaseText();
+                QLOG_ERROR() << updateComicInfo.lastError().text();
+            }
+        }
 
         connectionName = db.connectionName();
     }
@@ -1944,6 +1992,12 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     int review = record.indexOf("review");
     int tags = record.indexOf("tags");
 
+    int imageFiltersJson = record.indexOf("imageFiltersJson");
+    int lastTimeImageFiltersSet = record.indexOf("lastTimeImageFiltersSet");
+    int lastTimeCoverSet = record.indexOf("lastTimeCoverSet");
+    int usesExternalCover = record.indexOf("usesExternalCover");
+    int lastTimeMetadataSet = record.indexOf("lastTimeMetadataSet");
+
     ComicInfo comicInfo;
 
     comicInfo.hash = query.value(hash).toString();
@@ -2024,6 +2078,14 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     comicInfo.mainCharacterOrTeam = query.value(mainCharacterOrTeam);
     comicInfo.review = query.value(review);
     comicInfo.tags = query.value(tags);
+    //--
+
+    // new 9.16 fields
+    comicInfo.imageFiltersJson = query.value(imageFiltersJson);
+    comicInfo.lastTimeImageFiltersSet = query.value(lastTimeImageFiltersSet);
+    comicInfo.lastTimeCoverSet = query.value(lastTimeCoverSet);
+    comicInfo.usesExternalCover = query.value(usesExternalCover).toBool();
+    comicInfo.lastTimeMetadataSet = query.value(lastTimeMetadataSet);
     //--
 
     comicInfo.existOnDb = true;

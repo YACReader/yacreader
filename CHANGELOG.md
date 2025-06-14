@@ -2,7 +2,7 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## WIP (9.15.1)
+## WIP (9.16.0)
 ### YACReader
 * Don't use scroll animations on macos by default, it where hdpi scroll is most likely to be used.
 * New toolbar on macos.
@@ -21,6 +21,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add support for custom covers for comics using the edit metadata dialog, you can use a pick file button or drag&drop an image into the cover view in the dialog.
 * Covers can be set in bulk for various comics at once.
 * New button to reset to the default cover of a comic.
+* Support for storing the new image filters from iOS and Android apps.
 
 ### YACReaderLibraryServer
 * Log libraries validation when the app starts.

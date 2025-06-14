@@ -166,6 +166,23 @@ QString ComicDB::toTXT()
     if (!info.tags.isNull())
         txt.append(QString("tags:%1\r\n").arg(info.tags.toString()));
 
+    // 9.16
+
+    if (!info.imageFiltersJson.isNull())
+        txt.append(QString("imageFiltersJson:%1\r\n").arg(info.imageFiltersJson.toString()));
+
+    if (!info.lastTimeImageFiltersSet.isNull())
+        txt.append(QString("lastTimeImageFiltersSet:%1\r\n").arg(info.lastTimeImageFiltersSet.toULongLong()));
+
+    if (!info.lastTimeCoverSet.isNull())
+        txt.append(QString("lastTimeCoverSet:%1\r\n").arg(info.lastTimeCoverSet.toULongLong()));
+
+    if (!info.usesExternalCover.isNull())
+        txt.append(QString("usesExternalCover:%1\r\n").arg(info.usesExternalCover.toBool() ? "1" : "0"));
+
+    if (!info.lastTimeMetadataSet.isNull())
+        txt.append(QString("lastTimeMetadataSet:%1\r\n").arg(info.lastTimeMetadataSet.toULongLong()));
+
     return txt;
 }
 
@@ -398,6 +415,12 @@ ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
     mainCharacterOrTeam = comicInfo.mainCharacterOrTeam;
     review = comicInfo.review;
     tags = comicInfo.tags;
+
+    imageFiltersJson = comicInfo.imageFiltersJson;
+    lastTimeImageFiltersSet = comicInfo.lastTimeImageFiltersSet;
+    lastTimeCoverSet = comicInfo.lastTimeCoverSet;
+    usesExternalCover = comicInfo.usesExternalCover;
+    lastTimeMetadataSet = comicInfo.lastTimeMetadataSet;
 
     return *this;
 }
@@ -691,6 +714,12 @@ QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo)
     stream << comicInfo.review;
     stream << comicInfo.tags;
 
+    stream << comicInfo.imageFiltersJson;
+    stream << comicInfo.lastTimeImageFiltersSet;
+    stream << comicInfo.lastTimeCoverSet;
+    stream << comicInfo.usesExternalCover;
+    stream << comicInfo.lastTimeMetadataSet;
+
     return stream;
 }
 
@@ -769,6 +798,12 @@ QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo)
     stream >> comicInfo.mainCharacterOrTeam;
     stream >> comicInfo.review;
     stream >> comicInfo.tags;
+
+    stream >> comicInfo.imageFiltersJson;
+    stream >> comicInfo.lastTimeImageFiltersSet;
+    stream >> comicInfo.lastTimeCoverSet;
+    stream >> comicInfo.usesExternalCover;
+    stream >> comicInfo.lastTimeMetadataSet;
 
     return stream;
 }

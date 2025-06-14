@@ -170,6 +170,12 @@ QJsonObject YACReaderServerDataHelper::fullComicToJSON(const qulonglong libraryI
     json["brightness"] = comic.info.brightness;
     json["contrast"] = comic.info.contrast;
     json["gamma"] = comic.info.gamma;
+    // 9.16
+    variantToJson("image_filters_json", QMetaType::QString, comic.info.imageFiltersJson, json);
+    variantToJson("last_time_image_filters_set", QMetaType::LongLong, comic.info.lastTimeImageFiltersSet, json);
+    variantToJson("last_time_cover_set", QMetaType::LongLong, comic.info.lastTimeCoverSet, json);
+    variantToJson("uses_external_cover", QMetaType::Bool, comic.info.usesExternalCover, json);
+    variantToJson("last_time_metadata_set", QMetaType::LongLong, comic.info.lastTimeMetadataSet, json);
 
     return json;
 }
