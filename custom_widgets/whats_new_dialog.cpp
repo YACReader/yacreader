@@ -43,7 +43,9 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     versionLabel->setAlignment(Qt::AlignCenter);
     versionLabel->setStyleSheet("padding:0 0 0 0;"
                                 "background-color:transparent;"
-                                "color:#858585;");    auto text = new QLabel();
+                                "color:#858585;");
+
+    auto text = new QLabel();
     text->setText("This version brings exciting new features, improved functionality, enhanced customization options, bug fixes, and performance improvements across all apps: <br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">YACReader</span><br/>"
@@ -73,6 +75,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:#E8B800;\">Pay-Pal</a> and help keeping the project alive. "
                   "Remember that there is an iOS version available in the <a href=\"https://apps.apple.com/app/id635717885\" style=\"color:#E8B800;\">Apple App Store</a>, "
                   "and there is a brand new app for Android that you can get on the <a href=\"https://play.google.com/store/apps/details?id=com.yacreader.yacreader\" style=\"color:#E8B800;\">Google Play Store</a>.");
+
     QFont textLabelFont("Arial", 15, QFont::Light);
     text->setFont(textLabelFont);
     text->setStyleSheet("padding:51px;"
