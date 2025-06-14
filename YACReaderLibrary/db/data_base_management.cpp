@@ -81,7 +81,13 @@ static QString fields = "title,"
                         "seriesGroup,"
                         "mainCharacterOrTeam,"
                         "review,"
-                        "tags";
+                        "tags,"
+                        // new 9.16 fields
+                        "imageFiltersJson,"
+                        "lastTimeImageFiltersSet,"
+                        "lastTimeCoverSet,"
+                        "usesExternalCover,"
+                        "lastTimeMetadataSet";
 
 DataBaseManagement::DataBaseManagement()
     : QObject(), dataBasesList()
@@ -284,7 +290,13 @@ bool DataBaseManagement::createComicInfoTable(QSqlDatabase &database, QString ta
                                                          "seriesGroup TEXT,"
                                                          "mainCharacterOrTeam TEXT,"
                                                          "review TEXT,"
-                                                         "tags TEXT"
+                                                         "tags TEXT,"
+                                                         // new 9.16 fields
+                                                         "imageFiltersJson TEXT,"
+                                                         "lastTimeImageFiltersSet INTEGER DEFAULT 0,"
+                                                         "lastTimeCoverSet INTEGER DEFAULT 0,"
+                                                         "usesExternalCover BOOLEAN DEFAULT 0,"
+                                                         "lastTimeMetadataSet INTEGER DEFAULT 0"
                                                          ")");
 
     return queryComicInfo.exec();
@@ -862,6 +874,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
     bool pre9_8 = false;
     bool pre9_13 = false;
     bool pre9_14 = false;
+    bool pre9_16 = false;
 
     QString libraryDatabasePath = LibraryPaths::libraryDatabasePath(libraryPath);
 
@@ -879,6 +892,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
         pre9_13 = true;
     if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.14.0") < 0)
         pre9_14 = true;
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.16.0") < 0)
+        pre9_16 = true;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1077,6 +1092,22 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
                     QSqlQuery pragmaFKON1("PRAGMA foreign_keys=ON", db);
 
                     returnValue = returnValue && pre9_14_successfulMigration;
+                }
+            }
+
+            if (pre9_16) {
+                { // comic_info
+                    QStringList columnDefs;
+                    columnDefs << "imageFiltersJson TEXT";
+                    columnDefs << "lastTimeImageFiltersSet INTEGER DEFAULT 0";
+
+                    columnDefs << "lastTimeCoverSet INTEGER DEFAULT 0";
+                    columnDefs << "usesExternalCover BOOLEAN DEFAULT 0";
+
+                    columnDefs << "lastTimeMetadataSet INTEGER DEFAULT 0";
+
+                    bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                    returnValue = returnValue && successAddingColumns;
                 }
             }
 
