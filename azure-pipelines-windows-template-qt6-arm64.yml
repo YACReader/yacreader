@@ -1,7 +1,7 @@
 parameters:
   name: Windows_ARM64
   architecture: 'arm64'
-  qt_version: '6.8.1'
+  qt_version: '6.8.3'
   qt_spec: 'msvc2022_arm64'
   qt_spec_native: 'msvc2022_64' # windeployqt.exe and other tools are here
   qt_aqt_spec: 'win64_msvc2022_arm64_cross_compiled'

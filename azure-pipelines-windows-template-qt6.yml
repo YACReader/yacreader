@@ -1,7 +1,7 @@
 parameters:
   name: Windows_x64
   architecture: 'x64'
-  qt_version: '6.8.1'
+  qt_version: '6.8.3'
   qt_spec: 'msvc2022_64'
   qt_aqt_spec: 'win64_msvc2022_64'
   vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
