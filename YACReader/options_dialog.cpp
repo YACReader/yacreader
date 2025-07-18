@@ -38,6 +38,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"), ""));
     pathBox->setLayout(path);
 
+    QGroupBox *displayBox = new QGroupBox(tr("Display"));
+    auto displayLayout = new QHBoxLayout();
+    showTimeInInformationLabel = new QCheckBox(tr("Show time in current page information label"));
+    displayLayout->addWidget(showTimeInInformationLabel);
+    displayBox->setLayout(displayLayout);
+
     connect(pathFindButton, &QAbstractButton::clicked, this, &OptionsDialog::findFolder);
 
     QGroupBox *slideSizeBox = new QGroupBox(tr("\"Go to flow\" size"));
@@ -95,6 +101,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     mouseModeBox->setLayout(mouseModeLayout);
 
     layoutGeneral->addWidget(pathBox);
+    layoutGeneral->addWidget(displayBox);
     layoutGeneral->addWidget(slideSizeBox);
     // layoutGeneral->addWidget(fitBox);
     layoutGeneral->addWidget(colorBox);
@@ -251,6 +258,8 @@ void OptionsDialog::saveOptions()
 
     settings->setValue(PATH, pathEdit->text());
 
+    Configuration::getConfiguration().setShowTimeInInformation(showTimeInInformationLabel->isChecked());
+
     settings->setValue(BACKGROUND_COLOR, currentColor);
     // settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
     settings->setValue(QUICK_NAVI_MODE, quickNavi->isChecked());
@@ -296,6 +305,8 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     }
 
     pathEdit->setText(settings->value(PATH).toString());
+
+    showTimeInInformationLabel->setChecked(Configuration::getConfiguration().getShowTimeInInformation());
 
     updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
     // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);

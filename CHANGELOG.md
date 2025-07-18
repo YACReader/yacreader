@@ -6,7 +6,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReader
 * Don't use scroll animations on macos by default, it where hdpi scroll is most likely to be used.
 * New toolbar on macos.
-* New mouse modes to turn pages. You can setup the app to use the left/right buttons to turn pages directly or you can click on the left/right part of the screen to turn pages. 
+* New mouse modes to turn pages. You can setup the app to use the left/right buttons to turn pages directly or you can click on the left/right part of the screen to turn pages.
+* New setting to control whether the time is shown in the 'current page/total' label.
 
 ### YACReaderLibrary
 * Improve flexibility of the open comic in third party app setting so more complex commands can be used. e.g. `open -a "/Applications/My Reader.app" "{comic_file_path}"`.

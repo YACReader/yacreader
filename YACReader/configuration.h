@@ -91,6 +91,8 @@ public:
     void setShowToolbars(bool b) { settings->setValue(SHOW_TOOLBARS, b); }
     bool getShowInformation() { return settings->value(SHOW_INFO, false).toBool(); }
     void setShowInformation(bool b) { settings->setValue(SHOW_INFO, b); }
+    bool getShowTimeInInformation() { return settings->value(SHOW_TIME_IN_INFO, true).toBool(); }
+    void setShowTimeInInformation(bool b) { settings->setValue(SHOW_TIME_IN_INFO, b); }
     QDate getLastVersionCheck() { return settings->value(LAST_VERSION_CHECK).toDate(); }
     void setLastVersionCheck(const QDate &date) { settings->setValue(LAST_VERSION_CHECK, date); }
     int getNumDaysBetweenVersionChecks() { return settings->value(NUM_DAYS_BETWEEN_VERSION_CHECKS, 1).toInt(); }

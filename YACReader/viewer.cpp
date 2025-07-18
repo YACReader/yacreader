@@ -825,6 +825,7 @@ void Viewer::setMagnifyingGlassShown(bool shown)
 
 void Viewer::informationSwitch()
 {
+    informationLabel->updatePosition();
     information ? informationLabel->hide() : informationLabel->show();
     // informationLabel->move(QPoint((width()-informationLabel->width())/2,0));
     information = !information;
@@ -837,9 +838,16 @@ void Viewer::informationSwitch()
 void Viewer::updateInformation()
 {
     if (render->hasLoadedComic()) {
-        informationLabel->setText(render->getCurrentPagesInformation() + " - " + QTime::currentTime().toString("HH:mm"));
+        auto displayTime = Configuration::getConfiguration().getShowTimeInInformation();
+        if (displayTime) {
+            informationLabel->setText(render->getCurrentPagesInformation() + " - " + QTime::currentTime().toString("HH:mm"));
+        } else {
+            informationLabel->setText(render->getCurrentPagesInformation());
+        }
+
         informationLabel->adjustSize();
         informationLabel->update(); // TODO it shouldn't be neccesary
+        informationLabel->updatePosition();
     }
 }
 
@@ -1024,10 +1032,10 @@ void Viewer::showCursor()
 
 void Viewer::updateOptions()
 {
-
     goToFlow->setFlowType(Configuration::getConfiguration().getFlowType());
     updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor());
     updateContentSize();
+    updateInformation();
 }
 
 void Viewer::updateBackgroundColor(const QColor &color)

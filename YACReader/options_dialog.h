@@ -22,6 +22,9 @@ private:
     // QLabel * pathLabel;
     QLineEdit *pathEdit;
     QPushButton *pathFindButton;
+
+    QCheckBox *showTimeInInformationLabel;
+
     QCheckBox *quickNavi;
     QCheckBox *disableShowOnMouseOver;
     QCheckBox *scaleCheckbox;
