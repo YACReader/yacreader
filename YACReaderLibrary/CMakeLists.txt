@@ -1,0 +1,205 @@
+add_library(
+  library_common
+  bundle_creator.cpp
+  bundle_creator.h
+  comic_files_manager.cpp
+  comic_files_manager.h
+  comics_remover.cpp
+  comics_remover.h
+  initial_comic_info_extractor.cpp
+  initial_comic_info_extractor.h
+  ip_config_helper.cpp
+  ip_config_helper.h
+  libraries_update_coordinator.cpp
+  libraries_update_coordinator.h
+  library_creator.cpp
+  library_creator.h
+  package_manager.cpp
+  package_manager.h
+  xml_info_library_scanner.cpp
+  xml_info_library_scanner.h
+  xml_info_parser.cpp
+  xml_info_parser.h
+  yacreader_libraries.cpp
+  yacreader_libraries.h
+  yacreader_local_server.cpp
+  yacreader_local_server.h)
+
+target_link_libraries(library_common Qt::Network QsLog db_helper yr_global)
+
+add_library(
+  db_helper
+  db_helper.cpp
+  db_helper.h
+  db/comic_item.cpp
+  db/comic_item.h
+  db/comic_model.cpp
+  db/comic_model.h
+  db/comic_query_result_processor.cpp
+  db/comic_query_result_processor.h
+  db/data_base_management.cpp
+  db/data_base_management.h
+  db/folder_item.cpp
+  db/folder_item.h
+  db/folder_model.cpp
+  db/folder_model.h
+  db/folder_query_result_processor.cpp
+  db/folder_query_result_processor.h
+  db/query_lexer.cpp
+  db/query_lexer.h
+  db/query_parser.cpp
+  db/query_parser.h
+  db/reading_list_item.cpp
+  db/reading_list_item.h
+  db/reading_list_model.cpp
+  db/reading_list_model.h
+  db/reading_list.cpp
+  db/reading_list.h
+  db/search_query.cpp
+  db/search_query.h)
+
+target_link_libraries(
+  db_helper
+  comic_backend
+  concurrent_queue
+  QrCode
+  QsLog
+  Qt::Gui
+  Qt::Sql
+  Qt::Widgets
+  server
+  yr_global)
+target_include_directories(db_helper PUBLIC db .)
+
+add_subdirectory(comic_vine)
+
+add_executable(YACReaderLibrary main.cpp)
+
+target_sources(
+  YACReaderLibrary
+  PRIVATE add_label_dialog.cpp
+          add_label_dialog.h
+          add_library_dialog.cpp
+          add_library_dialog.h
+          classic_comics_view.cpp
+          classic_comics_view.h
+          comic_flow_widget.cpp
+          comic_flow_widget.h
+          comic_flow.cpp
+          comic_flow.h
+          comics_view.cpp
+          comics_view.h
+          comics_view_transition.cpp
+          comics_view_transition.h
+          create_library_dialog.cpp
+          create_library_dialog.h
+          current_comic_view_helper.cpp
+          current_comic_view_helper.h
+          empty_container_info.cpp
+          empty_container_info.h
+          empty_folder_widget.cpp
+          empty_folder_widget.h
+          empty_label_widget.cpp
+          empty_label_widget.h
+          empty_reading_list_widget.cpp
+          empty_reading_list_widget.h
+          empty_special_list.cpp
+          empty_special_list.h
+          export_comics_info_dialog.cpp
+          export_comics_info_dialog.h
+          export_library_dialog.cpp
+          export_library_dialog.h
+          folder_content_view.cpp
+          folder_content_view.h
+          grid_comics_view.cpp
+          grid_comics_view.h
+          import_comics_info_dialog.cpp
+          import_comics_info_dialog.h
+          import_library_dialog.cpp
+          import_library_dialog.h
+          import_widget.cpp
+          import_widget.h
+          info_comics_view.cpp
+          info_comics_view.h
+          library_comic_opener.cpp
+          library_comic_opener.h
+          library_window.cpp
+          library_window.h
+          no_libraries_widget.cpp
+          no_libraries_widget.h
+          no_search_results_widget.cpp
+          no_search_results_widget.h
+          options_dialog.cpp
+          options_dialog.h
+          properties_dialog.cpp
+          properties_dialog.h
+          recent_visibility_coordinator.cpp
+          recent_visibility_coordinator.h
+          rename_library_dialog.cpp
+          rename_library_dialog.h
+          server_config_dialog.cpp
+          server_config_dialog.h
+          trayicon_controller.cpp
+          trayicon_controller.h
+          yacreader_comic_info_helper.cpp
+          yacreader_comic_info_helper.h
+          yacreader_comics_selection_helper.cpp
+          yacreader_comics_selection_helper.h
+          yacreader_content_views_manager.cpp
+          yacreader_content_views_manager.h
+          yacreader_folders_view.cpp
+          yacreader_folders_view.h
+          yacreader_history_controller.cpp
+          yacreader_history_controller.h
+          yacreader_main_toolbar.cpp
+          yacreader_main_toolbar.h
+          yacreader_navigation_controller.cpp
+          yacreader_navigation_controller.h
+          yacreader_reading_lists_view.cpp
+          yacreader_reading_lists_view.h)
+
+qt_add_resources(library qml6.qrc qml_win.qrc images.qrc images_win.qrc
+                 files.qrc)
+target_sources(YACReaderLibrary PRIVATE ${library})
+
+qt_add_translations(
+  YACReaderLibrary
+  TS_FILES
+  yacreaderlibrary_de.ts
+  yacreaderlibrary_en.ts
+  yacreaderlibrary_es.ts
+  yacreaderlibrary_fr.ts
+  yacreaderlibrary_it.ts
+  yacreaderlibrary_nl.ts
+  yacreaderlibrary_pt.ts
+  yacreaderlibrary_ru.ts
+  yacreaderlibrary_tr.ts
+  yacreaderlibrary_zh_CN.ts
+  yacreaderlibrary_zh_HK.ts
+  yacreaderlibrary_zh_TW.ts
+  QM_FILES_OUTPUT_VARIABLE
+  library_translations)
+
+target_link_libraries(
+  YACReaderLibrary
+  comic_vine
+  common_all
+  common_gui
+  custom_widgets_library
+  db_helper
+  KDSignalThrottler
+  library_common
+  QsLog
+  Qt::Core5Compat
+  Qt::Network
+  Qt::OpenGLWidgets
+  Qt::QuickControls2
+  Qt::QuickWidgets
+  Qt::Sql
+  Qt::Svg
+  server
+  worker
+  yr_global)
+
+target_compile_definitions(YACReaderLibrary PRIVATE SERVER_RELEASE
+                                                    YACREADER_LIBRARY)
