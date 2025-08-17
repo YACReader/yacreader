@@ -155,8 +155,8 @@ jobs:
   steps:
   - script: |
       pip3 install aqtinstall
-      python3 -m aqt install-qt mac desktop 6.3.1 -m qt5compat qtmultimedia qtimageformats
-      echo '##vso[task.prependpath]$(Build.SourcesDirectory)/6.3.1/macos/bin'
+      python3 -m aqt install-qt mac desktop 6.8.3 -m qt5compat qtmultimedia qtimageformats
+      echo '##vso[task.prependpath]$(Build.SourcesDirectory)/6.8.3/macos/bin'
       brew install create-dmg
       brew install node
       brew link --overwrite node
@@ -280,12 +280,27 @@ jobs:
   parameters:
     name: Windows_x64_qt6
     architecture: 'x64'
-    qt_version: '6.3.1'
-    qt_spec: 'msvc2019_64'
-    qt_aqt_spec: 'win64_msvc2019_64'
+    qt_version: '6.8.3'
+    qt_spec: 'msvc2022_64'
+    qt_aqt_spec: 'win64_msvc2022_64'
     vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.x64.exe'
     vc_redist_file_name: 'vc_redist.x64.exe'
     vc_vars: 'vcvars64.bat'
+
+#
+# Windows arm64 qt6
+#
+
+- template: azure-pipelines-windows-template-qt6-arm64.yml
+  parameters:
+    name: Windows_arm64_qt6
+    architecture: 'arm64'
+    qt_version: '6.8.3'
+    qt_spec: 'msvc2022_arm64'
+    qt_aqt_spec: 'win64_msvc2022_arm64_cross_compiled'
+    vc_redist_url: 'https://aka.ms/vs/17/release/vc_redist.arm64.exe'
+    vc_redist_file_name: 'vc_redist.arm64.exe'
+    vc_vars: 'vcvarsall.bat'
 
 #
 # Windows x86
