@@ -145,6 +145,7 @@ private:
     QAction *resetZoomAction;
     QAction *showZoomSliderlAction;
     QAction *increasePageZoomAction;
+    QAction *increasePageZoomAltAction;
     QAction *decreasePageZoomAction;
     QAction *showFlowAction;
 

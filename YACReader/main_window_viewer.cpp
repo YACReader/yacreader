@@ -344,6 +344,11 @@ void MainWindowViewer::createActions()
     increasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_PLUS_ACTION_Y));
     connect(increasePageZoomAction, &QAction::triggered, this, &MainWindowViewer::increasePageZoomLevel);
 
+    increasePageZoomAltAction = new QAction(tr("Zoom+"), this);
+    increasePageZoomAltAction->setData(ZOOM_PLUS_ACTION_Y_ALT);
+    increasePageZoomAltAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_PLUS_ACTION_Y_ALT));
+    connect(increasePageZoomAltAction, &QAction::triggered, this, &MainWindowViewer::increasePageZoomLevel);
+
     decreasePageZoomAction = new QAction(tr("Zoom-"), this);
     decreasePageZoomAction->setData(ZOOM_MINUS_ACTION_Y);
     decreasePageZoomAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ZOOM_MINUS_ACTION_Y));
@@ -604,6 +609,7 @@ void MainWindowViewer::createToolBars()
 
     viewer->addAction(showMagnifyingGlassAction);
     viewer->addAction(increasePageZoomAction);
+    viewer->addAction(increasePageZoomAltAction);
     viewer->addAction(decreasePageZoomAction);
     viewer->addAction(resetZoomAction);
     YACReader::addSperator(viewer);
@@ -666,6 +672,7 @@ void MainWindowViewer::createToolBars()
     viewMenu->addAction(adjustToFullSizeAction);
     viewMenu->addSeparator();
     viewMenu->addAction(increasePageZoomAction);
+    viewMenu->addAction(increasePageZoomAltAction);
     viewMenu->addAction(decreasePageZoomAction);
     viewMenu->addAction(resetZoomAction);
     viewMenu->addAction(showZoomSliderlAction);
@@ -1235,6 +1242,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                  << adjustToFullSizeAction
                                                  << fitToPageAction
                                                  << increasePageZoomAction
+                                                 << increasePageZoomAltAction
                                                  << decreasePageZoomAction
                                                  << resetZoomAction);
 
@@ -1529,6 +1537,7 @@ void MainWindowViewer::setActionsEnabled(bool enabled)
                            fitToPageAction,
                            showZoomSliderlAction,
                            increasePageZoomAction,
+                           increasePageZoomAltAction,
                            decreasePageZoomAction,
                            resetZoomAction,
                            showBookmarksAction,
