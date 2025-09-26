@@ -76,6 +76,7 @@ MainWindowViewer::~MainWindowViewer()
     delete doublePageAction;
     delete doubleMangaPageAction;
     delete increasePageZoomAction;
+    delete increasePageZoomAltAction;
     delete decreasePageZoomAction;
     delete resetZoomAction;
     delete goToPageAction;
