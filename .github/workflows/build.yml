@@ -642,7 +642,8 @@ jobs:
       - name: Flatten artifacts
         run: |
           mkdir -p staging
-          find artifacts -type f -exec cp {} staging/ \;
+          # Copy all files except those from unsigned Windows artifact directories
+          find artifacts -type f ! -path "*/windows-*-unsigned-*/*" -exec cp {} staging/ \;
       
       - name: Get version
         id: version
@@ -712,7 +713,8 @@ jobs:
       - name: Flatten artifacts
         run: |
           mkdir -p staging
-          find artifacts -type f -exec cp {} staging/ \;
+          # Copy all files except those from unsigned Windows artifact directories
+          find artifacts -type f ! -path "*/windows-*-unsigned-*/*" -exec cp {} staging/ \;
       
       - name: Get version
         id: version
