@@ -337,12 +337,22 @@ jobs:
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         shell: pwsh
         run: |
+          Write-Host "=== Files in signed directory before move ==="
+          Get-ChildItem -Path "ci/win/Output/signed" -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name) - $($_.Length) bytes" }
+          
           $signedFiles = Get-ChildItem -Path "ci/win/Output/signed" -Filter "*.exe"
           foreach ($signedFile in $signedFiles) {
             $destPath = "ci/win/Output/$($signedFile.Name)"
+            Write-Host "Moving signed: $($signedFile.Name) -> $destPath"
             Move-Item -Path $signedFile.FullName -Destination $destPath -Force
+            Write-Host "  Moved successfully"
           }
+          
+          Write-Host "=== Files in Output directory after move ==="
+          Get-ChildItem -Path "ci/win/Output" -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name) - $($_.Length) bytes" }
+          
           Remove-Item -Path "ci/win/Output/signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Cleaned up signed directory"
       
       - name: Upload installer
         uses: actions/upload-artifact@v4
@@ -453,12 +463,22 @@ jobs:
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         shell: pwsh
         run: |
+          Write-Host "=== Files in signed directory before move ==="
+          Get-ChildItem -Path "ci/win/Output/signed" -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name) - $($_.Length) bytes" }
+          
           $signedFiles = Get-ChildItem -Path "ci/win/Output/signed" -Filter "*.exe"
           foreach ($signedFile in $signedFiles) {
             $destPath = "ci/win/Output/$($signedFile.Name)"
+            Write-Host "Moving signed: $($signedFile.Name) -> $destPath"
             Move-Item -Path $signedFile.FullName -Destination $destPath -Force
+            Write-Host "  Moved successfully"
           }
+          
+          Write-Host "=== Files in Output directory after move ==="
+          Get-ChildItem -Path "ci/win/Output" -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name) - $($_.Length) bytes" }
+          
           Remove-Item -Path "ci/win/Output/signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Cleaned up signed directory"
       
       - name: Upload installer
         uses: actions/upload-artifact@v4
@@ -553,12 +573,22 @@ jobs:
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         shell: pwsh
         run: |
+          Write-Host "=== Files in signed directory before move ==="
+          Get-ChildItem -Path "ci/win/Output/signed" -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name) - $($_.Length) bytes" }
+          
           $signedFiles = Get-ChildItem -Path "ci/win/Output/signed" -Filter "*.exe"
           foreach ($signedFile in $signedFiles) {
             $destPath = "ci/win/Output/$($signedFile.Name)"
+            Write-Host "Moving signed: $($signedFile.Name) -> $destPath"
             Move-Item -Path $signedFile.FullName -Destination $destPath -Force
+            Write-Host "  Moved successfully"
           }
+          
+          Write-Host "=== Files in Output directory after move ==="
+          Get-ChildItem -Path "ci/win/Output" -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name) - $($_.Length) bytes" }
+          
           Remove-Item -Path "ci/win/Output/signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Cleaned up signed directory"
       
       - name: Upload installer
         uses: actions/upload-artifact@v4
@@ -639,11 +669,53 @@ jobs:
         with:
           path: artifacts
       
-      - name: Flatten artifacts
+      - name: List downloaded artifacts
+        run: |
+          echo "=== All artifacts downloaded ==="
+          ls -lR artifacts/
+          echo ""
+          echo "=== Windows artifacts only ==="
+          ls -l artifacts/windows-*/
+      
+      - name: Flatten artifacts (exclude unsigned Windows installers)
         run: |
           mkdir -p staging
           # Copy all files except those from unsigned Windows artifact directories
           find artifacts -type f ! -path "*/windows-*-unsigned-*/*" -exec cp {} staging/ \;
+          echo ""
+          echo "=== Files copied to staging ==="
+          ls -lh staging/
+          echo ""
+          echo "=== Windows installers in staging ==="
+          ls -lh staging/YACReader*.exe || echo "No Windows installers found"
+      
+      - name: Verify Windows installer signatures
+        run: |
+          echo "=== Installing osslsigncode to verify signatures ==="
+          sudo apt-get update
+          sudo apt-get install -y osslsigncode
+          
+          echo ""
+          echo "=== Checking signatures on Windows installers ==="
+          for installer in staging/YACReader*.exe; do
+            if [ -f "$installer" ]; then
+              echo "Checking: $(basename $installer)"
+              echo "File size: $(stat -c%s $installer) bytes"
+              
+              # Try to extract signature info
+              if osslsigncode verify -in "$installer" 2>&1 | grep -q "Signature verification: ok"; then
+                echo "  ✓ SIGNED - Signature verified successfully"
+                osslsigncode verify -in "$installer" 2>&1 | grep -E "(Signed|Signer|Timestamp)"
+              else
+                echo "  ✗ UNSIGNED or INVALID - No valid signature found"
+                osslsigncode verify -in "$installer" 2>&1 | head -20
+              fi
+              echo ""
+            fi
+          done
+          
+          echo "=== Summary ==="
+          echo "Total installers in staging: $(ls staging/YACReader*.exe 2>/dev/null | wc -l)"
       
       - name: Get version
         id: version
@@ -710,11 +782,53 @@ jobs:
         with:
           path: artifacts
       
-      - name: Flatten artifacts
+      - name: List downloaded artifacts
+        run: |
+          echo "=== All artifacts downloaded ==="
+          ls -lR artifacts/
+          echo ""
+          echo "=== Windows artifacts only ==="
+          ls -l artifacts/windows-*/
+      
+      - name: Flatten artifacts (exclude unsigned Windows installers)
         run: |
           mkdir -p staging
           # Copy all files except those from unsigned Windows artifact directories
           find artifacts -type f ! -path "*/windows-*-unsigned-*/*" -exec cp {} staging/ \;
+          echo ""
+          echo "=== Files copied to staging ==="
+          ls -lh staging/
+          echo ""
+          echo "=== Windows installers in staging ==="
+          ls -lh staging/YACReader*.exe || echo "No Windows installers found"
+      
+      - name: Verify Windows installer signatures
+        run: |
+          echo "=== Installing osslsigncode to verify signatures ==="
+          sudo apt-get update
+          sudo apt-get install -y osslsigncode
+          
+          echo ""
+          echo "=== Checking signatures on Windows installers ==="
+          for installer in staging/YACReader*.exe; do
+            if [ -f "$installer" ]; then
+              echo "Checking: $(basename $installer)"
+              echo "File size: $(stat -c%s $installer) bytes"
+              
+              # Try to extract signature info
+              if osslsigncode verify -in "$installer" 2>&1 | grep -q "Signature verification: ok"; then
+                echo "  ✓ SIGNED - Signature verified successfully"
+                osslsigncode verify -in "$installer" 2>&1 | grep -E "(Signed|Signer|Timestamp)"
+              else
+                echo "  ✗ UNSIGNED or INVALID - No valid signature found"
+                osslsigncode verify -in "$installer" 2>&1 | head -20
+              fi
+              echo ""
+            fi
+          done
+          
+          echo "=== Summary ==="
+          echo "Total installers in staging: $(ls staging/YACReader*.exe 2>/dev/null | wc -l)"
       
       - name: Get version
         id: version
