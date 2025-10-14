@@ -327,7 +327,7 @@ jobs:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
           project-slug: 'yacreader'
-          signing-policy-slug: ${{ github.ref == 'refs/heads/master' && 'release-signing' || 'test-signing' }}
+          signing-policy-slug: 'release-signing'
           artifact-configuration-slug: 'windows-installer'
           github-artifact-id: ${{ steps.upload_unsigned.outputs.artifact-id }}
           wait-for-completion: true
@@ -453,7 +453,7 @@ jobs:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
           project-slug: 'yacreader'
-          signing-policy-slug: ${{ github.ref == 'refs/heads/master' && 'release-signing' || 'test-signing' }}
+          signing-policy-slug: 'release-signing'
           artifact-configuration-slug: 'windows-installer-qt6'
           github-artifact-id: ${{ steps.upload_unsigned.outputs.artifact-id }}
           wait-for-completion: true
@@ -563,7 +563,7 @@ jobs:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
           project-slug: 'yacreader'
-          signing-policy-slug: ${{ github.ref == 'refs/heads/master' && 'release-signing' || 'test-signing' }}
+          signing-policy-slug: 'release-signing'
           artifact-configuration-slug: 'windows-installer-x86'
           github-artifact-id: ${{ steps.upload_unsigned.outputs.artifact-id }}
           wait-for-completion: true
