@@ -157,8 +157,8 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install --break-system-packages aqtinstall
-          python3 -m aqt install-qt mac desktop 6.3.1 -m qt5compat qtmultimedia qtimageformats
-          echo "${{ github.workspace }}/6.3.1/macos/bin" >> $GITHUB_PATH
+          python3 -m aqt install-qt mac desktop 6.9.3 -m qt5compat qtmultimedia qtimageformats qtshadertools
+          echo "${{ github.workspace }}/6.9.3/macos/bin" >> $GITHUB_PATH
           brew install create-dmg
           npm install -g appdmg
           mkdir -p ${{ github.workspace }}/compressed_archive
@@ -423,8 +423,8 @@ jobs:
           pip install -U pip
           pip install aqtinstall
           mkdir C:\Qt
-          python -m aqt install-qt windows desktop 6.3.1 win64_msvc2019_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats
-          dir C:\Qt\6.3.1\msvc2019_64\bin
+          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
+          dir C:\Qt\6.9.3\msvc2022_64\bin
           choco install -y wget
           choco install innosetup
           mkdir %GITHUB_WORKSPACE%\compressed_archive
@@ -451,8 +451,8 @@ jobs:
       - name: Build
         shell: cmd
         run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" -vcvars_ver=14.29
-          set PATH=C:\Qt\6.3.1\msvc2019_64\bin;%PATH%
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
           set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"${{ needs.initialization.outputs.build_number }}\\\\\\\""
           qmake CONFIG+="7zip" %DEFINES_VAR%
           nmake
@@ -460,8 +460,8 @@ jobs:
       - name: Run tests
         shell: cmd
         run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" -vcvars_ver=14.29
-          set PATH=C:\Qt\6.3.1\msvc2019_64\bin;%PATH%
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
           nmake check TESTARGS="-maxwarnings 100000"
       
       - name: Upload executables for signing
@@ -507,8 +507,8 @@ jobs:
         shell: cmd
         working-directory: ci/win
         run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" -vcvars_ver=14.29
-          set PATH=C:\Qt\6.3.1\msvc2019_64\bin;%PATH%
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+          set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
           .\create_installer.cmd x64 7z ${{ needs.initialization.outputs.build_number }} qt6
       
       - name: Verify installer was created
@@ -567,6 +567,137 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-x64-qt6-${{ needs.initialization.outputs.build_number }}
+          path: ci/win/Output/YACReader*.exe
+
+  # Windows ARM64 Qt6 build
+  windows-arm64-qt6:
+    name: Windows ARM64 (Qt6)
+    runs-on: windows-2022
+    needs: [initialization, code-format-validation]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          architecture: 'x64'
+      
+      - name: Install dependencies
+        shell: cmd
+        run: |
+          pip install -U pip
+          pip install aqtinstall
+          mkdir C:\Qt
+          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
+          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_arm64_cross_compiled -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
+          dir C:\Qt\6.9.3\msvc2022_arm64\bin
+          choco install -y wget
+          choco install innosetup
+          mkdir %GITHUB_WORKSPACE%\compressed_archive
+          wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O %GITHUB_WORKSPACE%\compressed_archive\7z2301-src.7z
+          7z x %GITHUB_WORKSPACE%\compressed_archive\7z2301-src.7z -o%GITHUB_WORKSPACE%\compressed_archive\lib7zip
+          wget "https://aka.ms/vs/17/release/vc_redist.arm64.exe" -O %GITHUB_WORKSPACE%\vc_redist.arm64.exe
+      
+      - name: Build
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64_arm64
+          set PATH=C:\Qt\6.9.3\msvc2022_arm64\bin;%PATH%
+          set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"${{ needs.initialization.outputs.build_number }}\\\\\\\""
+          qmake CONFIG+="7zip" %DEFINES_VAR%
+          nmake
+      
+      - name: Upload executables for signing
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: actions/upload-artifact@v4
+        id: upload_executables
+        with:
+          name: windows-arm64-qt6-executables-unsigned-${{ needs.initialization.outputs.build_number }}
+          path: |
+            release64/YACReader.exe
+            release64/YACReaderLibrary.exe
+            release64/YACReaderLibraryServer.exe
+      
+      - name: Submit to SignPath
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: 'yacreader'
+          signing-policy-slug: 'release-signing'
+          artifact-configuration-slug: 'zipped-files'
+          github-artifact-id: ${{ steps.upload_executables.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: 'release64/signed'
+      
+      - name: Replace executables with signed versions
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        shell: pwsh
+        run: |
+          Copy-Item "release64/signed/YACReader.exe" "release64/YACReader.exe" -Force
+          Copy-Item "release64/signed/YACReaderLibrary.exe" "release64/YACReaderLibrary.exe" -Force  
+          Copy-Item "release64/signed/YACReaderLibraryServer.exe" "release64/YACReaderLibraryServer.exe" -Force
+          Remove-Item -Path "release64/signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Signed executables are ready for installer creation"
+      
+      - name: Create installer
+        shell: cmd
+        working-directory: ci/win
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64_arm64
+          set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
+          .\create_installer.cmd arm64 7z ${{ needs.initialization.outputs.build_number }} qt6
+      
+      - name: Verify installer was created
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        shell: pwsh
+        run: |
+          if (-not (Test-Path "ci/win/Output/YACReader*.exe")) {
+            throw "Installer file was not created"
+          }
+          Get-ChildItem "ci/win/Output/YACReader*.exe"
+      
+      - name: Upload unsigned installer
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: actions/upload-artifact@v4
+        id: upload_unsigned
+        with:
+          name: windows-arm64-qt6-unsigned-${{ needs.initialization.outputs.build_number }}
+          path: ci/win/Output/YACReader*.exe
+      
+      - name: Submit to SignPath
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: 'yacreader'
+          signing-policy-slug: 'release-signing'
+          artifact-configuration-slug: 'zipped-files'
+          github-artifact-id: ${{ steps.upload_unsigned.outputs.artifact-id }}
+          wait-for-completion: true
+          output-artifact-directory: 'ci/win/Output/signed'
+      
+      - name: Replace with signed installer and cleanup
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        shell: pwsh
+        working-directory: ci/win/Output
+        run: |
+          $signedFiles = Get-ChildItem "signed/YACReader*.exe"
+          foreach ($file in $signedFiles) {
+            $destName = $file.Name
+            Copy-Item $file.FullName $destName -Force
+            Write-Host "Replaced with signed: $destName"
+          }
+          Remove-Item -Path "signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Cleaned up signed directory"
+      
+      - name: Upload installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-arm64-qt6-${{ needs.initialization.outputs.build_number }}
           path: ci/win/Output/YACReader*.exe
 
   # Windows x86 Qt5 build
@@ -777,6 +908,7 @@ jobs:
       - windows-x86
       - windows-x64
       - windows-x64-qt6
+      - windows-arm64-qt6
       - docker-amd64
       - docker-arm64
     steps:
@@ -890,6 +1022,7 @@ jobs:
       - windows-x86
       - windows-x64
       - windows-x64-qt6
+      - windows-arm64-qt6
       - docker-amd64
       - docker-arm64
     steps:
