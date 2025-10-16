@@ -295,6 +295,45 @@ jobs:
           set PATH=C:\Qt\5.15.2\msvc2019_64\bin;%PATH%
           nmake check TESTARGS="-maxwarnings 100000"
       
+      - name: Upload executables for signing
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: actions/upload-artifact@v4
+        id: upload_executables
+        with:
+          name: windows-x64-executables-unsigned-${{ needs.initialization.outputs.build_number }}
+          path: |
+            release64/YACReader.exe
+            release64/YACReaderLibrary.exe
+            release64/YACReaderLibraryServer.exe
+      
+      - name: Sign executables with SignPath
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: 'yacreader'
+          signing-policy-slug: 'release-signing'
+          artifact-configuration-slug: 'zipped-files'
+          github-artifact-id: ${{ steps.upload_executables.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: "3600"
+          output-artifact-directory: release64/signed
+      
+      - name: Replace with signed executables
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        shell: pwsh
+        run: |
+          Write-Host "=== Replacing executables with signed versions ==="
+          Get-ChildItem -Path "release64/signed" -Filter "*.exe" | ForEach-Object {
+            $destPath = "release64/$($_.Name)"
+            Write-Host "Moving signed: $($_.Name) -> $destPath"
+            Move-Item -Path $_.FullName -Destination $destPath -Force
+            Write-Host "  Moved successfully"
+          }
+          Remove-Item -Path "release64/signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Signed executables are ready for installer creation"
+      
       - name: Create installer
         shell: cmd
         working-directory: ci/win
@@ -328,9 +367,10 @@ jobs:
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
           project-slug: 'yacreader'
           signing-policy-slug: 'release-signing'
-          artifact-configuration-slug: 'windows-installer'
+          artifact-configuration-slug: 'zipped-files'
           github-artifact-id: ${{ steps.upload_unsigned.outputs.artifact-id }}
           wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: "3600"
           output-artifact-directory: ci/win/Output/signed
       
       - name: Replace with signed installer
@@ -421,6 +461,45 @@ jobs:
           set PATH=C:\Qt\6.3.1\msvc2019_64\bin;%PATH%
           nmake check TESTARGS="-maxwarnings 100000"
       
+      - name: Upload executables for signing
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: actions/upload-artifact@v4
+        id: upload_executables
+        with:
+          name: windows-x64-qt6-executables-unsigned-${{ needs.initialization.outputs.build_number }}
+          path: |
+            release64/YACReader.exe
+            release64/YACReaderLibrary.exe
+            release64/YACReaderLibraryServer.exe
+      
+      - name: Sign executables with SignPath
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: 'yacreader'
+          signing-policy-slug: 'release-signing'
+          artifact-configuration-slug: 'zipped-files'
+          github-artifact-id: ${{ steps.upload_executables.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: "3600"
+          output-artifact-directory: release64/signed
+      
+      - name: Replace with signed executables
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        shell: pwsh
+        run: |
+          Write-Host "=== Replacing executables with signed versions ==="
+          Get-ChildItem -Path "release64/signed" -Filter "*.exe" | ForEach-Object {
+            $destPath = "release64/$($_.Name)"
+            Write-Host "Moving signed: $($_.Name) -> $destPath"
+            Move-Item -Path $_.FullName -Destination $destPath -Force
+            Write-Host "  Moved successfully"
+          }
+          Remove-Item -Path "release64/signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Signed executables are ready for installer creation"
+      
       - name: Create installer
         shell: cmd
         working-directory: ci/win
@@ -454,9 +533,10 @@ jobs:
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
           project-slug: 'yacreader'
           signing-policy-slug: 'release-signing'
-          artifact-configuration-slug: 'windows-installer-qt6'
+          artifact-configuration-slug: 'zipped-files'
           github-artifact-id: ${{ steps.upload_unsigned.outputs.artifact-id }}
           wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: "3600"
           output-artifact-directory: ci/win/Output/signed
       
       - name: Replace with signed installer
@@ -531,6 +611,45 @@ jobs:
           set PATH=C:\Qt\5.15.2\msvc2019\bin;%PATH%
           nmake check TESTARGS="-maxwarnings 100000"
       
+      - name: Upload executables for signing
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: actions/upload-artifact@v4
+        id: upload_executables
+        with:
+          name: windows-x86-executables-unsigned-${{ needs.initialization.outputs.build_number }}
+          path: |
+            release/YACReader.exe
+            release/YACReaderLibrary.exe
+            release/YACReaderLibraryServer.exe
+      
+      - name: Sign executables with SignPath
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
+          project-slug: 'yacreader'
+          signing-policy-slug: 'release-signing'
+          artifact-configuration-slug: 'zipped-files'
+          github-artifact-id: ${{ steps.upload_executables.outputs.artifact-id }}
+          wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: "3600"
+          output-artifact-directory: release/signed
+      
+      - name: Replace with signed executables
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        shell: pwsh
+        run: |
+          Write-Host "=== Replacing executables with signed versions ==="
+          Get-ChildItem -Path "release/signed" -Filter "*.exe" | ForEach-Object {
+            $destPath = "release/$($_.Name)"
+            Write-Host "Moving signed: $($_.Name) -> $destPath"
+            Move-Item -Path $_.FullName -Destination $destPath -Force
+            Write-Host "  Moved successfully"
+          }
+          Remove-Item -Path "release/signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Write-Host "Signed executables are ready for installer creation"
+      
       - name: Create installer
         shell: cmd
         working-directory: ci/win
@@ -564,9 +683,10 @@ jobs:
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
           project-slug: 'yacreader'
           signing-policy-slug: 'release-signing'
-          artifact-configuration-slug: 'windows-installer-x86'
+          artifact-configuration-slug: 'zipped-files'
           github-artifact-id: ${{ steps.upload_unsigned.outputs.artifact-id }}
           wait-for-completion: true
+          wait-for-completion-timeout-in-seconds: "3600"
           output-artifact-directory: ci/win/Output/signed
       
       - name: Replace with signed installer
