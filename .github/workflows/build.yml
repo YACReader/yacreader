@@ -739,23 +739,18 @@ jobs:
           name: docker-amd64
           path: docker/amd64.tar
 
-  # Docker arm64 build
+  # Docker arm64 build (native)
   docker-arm64:
     name: Docker arm64 Image
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
     needs: [initialization, code-format-validation]
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Build arm64 Image
+      - name: Build arm64 Image (native)
         working-directory: docker
         run: |
-          docker buildx create --use
-          docker buildx inspect --bootstrap
-          docker buildx build --no-cache --platform linux/arm64 -f Dockerfile.aarch64 -t yacreader/yacreaderlibraryserver:develop-arm64 --load .
+          docker build --no-cache -f Dockerfile.aarch64 -t yacreader/yacreaderlibraryserver:develop-arm64 .
           docker save yacreader/yacreaderlibraryserver:develop-arm64 -o arm64.tar
       
       - name: Upload Docker Image
