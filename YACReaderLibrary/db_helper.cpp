@@ -1084,7 +1084,7 @@ void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &com
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics, bool clientSendsHasBeenOpened)
+QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics, bool clientSendsHasBeenOpened, bool clientSendsImageFilters)
 {
     QMap<qulonglong, QList<ComicDB>> moreRecentComics;
 
@@ -1105,7 +1105,9 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
                                     "currentPage = :currentPage, "
                                     "hasBeenOpened = :hasBeenOpened, "
                                     "lastTimeOpened = :lastTimeOpened, "
-                                    "rating = :rating"
+                                    "rating = :rating, "
+                                    "imageFiltersJson = :imageFiltersJson, "
+                                    "lastTimeImageFiltersSet = :lastTimeImageFiltersSet "
                                     " WHERE id = :id ");
 
             foreach (ComicInfo comicInfo, comics[libraryId]) {
@@ -1129,6 +1131,12 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
                         isMoreRecent = true;
                     }
 
+                    if (clientSendsImageFilters) {
+                        if (comic.info.lastTimeImageFiltersSet.toULongLong() > comicInfo.lastTimeImageFiltersSet.toULongLong()) {
+                            isMoreRecent = true;
+                        }
+                    }
+
                     comic.info.currentPage = qMax(comic.info.currentPage, comicInfo.currentPage);
 
                     if (comic.info.currentPage == comic.info.numPages)
@@ -1148,12 +1156,21 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
                     if (comicInfo.rating > 0)
                         comic.info.rating = comicInfo.rating;
 
+                    if (clientSendsImageFilters) {
+                        if (comic.info.lastTimeImageFiltersSet.toULongLong() < comicInfo.lastTimeImageFiltersSet.toULongLong()) {
+                            comic.info.imageFiltersJson = comicInfo.imageFiltersJson;
+                            comic.info.lastTimeImageFiltersSet = comicInfo.lastTimeImageFiltersSet;
+                        }
+                    }
+
                     updateComicInfo.bindValue(":read", comic.info.read ? 1 : 0);
                     updateComicInfo.bindValue(":currentPage", comic.info.currentPage);
                     updateComicInfo.bindValue(":hasBeenOpened", comic.info.hasBeenOpened ? 1 : 0);
                     updateComicInfo.bindValue(":lastTimeOpened", comic.info.lastTimeOpened);
                     updateComicInfo.bindValue(":id", comic.info.id);
                     updateComicInfo.bindValue(":rating", comic.info.rating);
+                    updateComicInfo.bindValue(":imageFiltersJson", comic.info.imageFiltersJson);
+                    updateComicInfo.bindValue(":lastTimeImageFiltersSet", comic.info.lastTimeImageFiltersSet);
                     updateComicInfo.exec();
 
                     if (isMoreRecent) {

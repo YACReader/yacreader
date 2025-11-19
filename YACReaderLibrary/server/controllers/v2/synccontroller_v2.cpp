@@ -38,48 +38,70 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         auto libraries = DBHelper::getLibraries();
 
         bool clientSendsHasBeenOpened = false;
+        bool clientSendsImageFilters = false;
 
         foreach (QString comicInfo, data) {
+            if (comicInfo.isEmpty()) {
+                continue;
+            }
+
             QList<QString> comicInfoProgress = comicInfo.split("\t");
 
-            if (comicInfoProgress.length() >= 9) {
-                if (comicInfoProgress.at(0) != "u") {
+            if (comicInfoProgress.isEmpty()) {
+                continue;
+            }
+
+            if (comicInfoProgress.at(0) == "u") { // Android
+                clientSendsHasBeenOpened = true;
+
+                if (comicInfoProgress.length() < 9) {
                     continue;
                 }
 
-                clientSendsHasBeenOpened = true;
-
                 auto libraryUuid = QUuid(comicInfoProgress.at(1));
-                if (!libraryUuid.isNull()) {
-                    auto libraryId = libraries.getIdFromUuid(libraryUuid);
-                    if (libraryId == -1) {
-                        continue;
-                    }
-                    comicId = comicInfoProgress.at(2).toULongLong();
-                    hash = comicInfoProgress.at(3);
-                    currentPage = comicInfoProgress.at(4).toInt();
 
-                    ComicInfo info;
-                    info.currentPage = currentPage;
-                    info.hash = hash; // TODO remove the hash check and add UUIDs for libraries
-                    info.id = comicId;
-
-                    currentRating = comicInfoProgress.at(5).toInt();
-                    info.rating = currentRating;
-
-                    lastTimeOpened = comicInfoProgress.at(6).toULong();
-                    info.lastTimeOpened = lastTimeOpened;
-
-                    info.hasBeenOpened = comicInfoProgress.at(7).toInt();
-
-                    info.read = comicInfoProgress.at(8).toInt();
-
-                    if (!comics.contains(libraryId)) {
-                        comics[libraryId] = QList<ComicInfo>();
-                    }
-                    comics[libraryId].push_back(info);
+                if (libraryUuid.isNull()) {
+                    continue;
                 }
-            } else if (comicInfoProgress.length() >= 6) {
+
+                auto libraryId = libraries.getIdFromUuid(libraryUuid);
+                if (libraryId == -1) {
+                    continue;
+                }
+                comicId = comicInfoProgress.at(2).toULongLong();
+                hash = comicInfoProgress.at(3);
+                currentPage = comicInfoProgress.at(4).toInt();
+
+                ComicInfo info;
+                info.currentPage = currentPage;
+                info.hash = hash; // TODO remove the hash check and add UUIDs for libraries
+                info.id = comicId;
+
+                currentRating = comicInfoProgress.at(5).toInt();
+                info.rating = currentRating;
+
+                lastTimeOpened = comicInfoProgress.at(6).toULong();
+                info.lastTimeOpened = lastTimeOpened;
+
+                info.hasBeenOpened = comicInfoProgress.at(7).toInt();
+
+                info.read = comicInfoProgress.at(8).toInt();
+
+                if (comicInfoProgress.length() >= 11) { // info includes image filters
+                    info.lastTimeImageFiltersSet = comicInfoProgress.at(9);
+                    info.imageFiltersJson = comicInfoProgress.at(10);
+                    clientSendsImageFilters = true;
+                }
+
+                if (!comics.contains(libraryId)) {
+                    comics[libraryId] = QList<ComicInfo>();
+                }
+                comics[libraryId].push_back(info);
+            } else { // iOS
+                if (comicInfoProgress.length() < 6) {
+                    continue;
+                }
+
                 if (comicInfoProgress.at(0) != "unknown") {
                     libraryId = comicInfoProgress.at(0).toULongLong();
                     comicId = comicInfoProgress.at(1).toULongLong();
@@ -104,7 +126,16 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                     if (!comics.contains(libraryId)) {
                         comics[libraryId] = QList<ComicInfo>();
                     }
+
+                    if (comicInfoProgress.length() >= 9) { // info includes image filters
+                        info.lastTimeImageFiltersSet = comicInfoProgress.at(7);
+                        info.imageFiltersJson = comicInfoProgress.at(8);
+
+                        clientSendsImageFilters = true;
+                    }
+
                     comics[libraryId].push_back(info);
+
                 } else {
                     hash = comicInfoProgress.at(2);
                     currentPage = comicInfoProgress.at(3).toInt();
@@ -119,6 +150,13 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                     lastTimeOpened = comicInfoProgress.at(5).toULong();
                     info.lastTimeOpened = lastTimeOpened;
 
+                    if (comicInfoProgress.length() >= 9) { // info includes image filters
+                        info.lastTimeImageFiltersSet = comicInfoProgress.at(7);
+                        info.imageFiltersJson = comicInfoProgress.at(8);
+
+                        clientSendsImageFilters = true;
+                    }
+
                     comicsWithNoLibrary.push_back(info);
                 }
             }
@@ -127,13 +165,13 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         QJsonArray items;
 
         if (!comics.isEmpty()) {
-            auto moreRecentComicsFound = DBHelper::updateFromRemoteClient(comics, clientSendsHasBeenOpened);
+            auto moreRecentComicsFound = DBHelper::updateFromRemoteClient(comics, clientSendsHasBeenOpened, clientSendsImageFilters);
 
             foreach (qulonglong libraryId, moreRecentComicsFound.keys()) {
                 auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
 
                 foreach (ComicDB comic, moreRecentComicsFound[libraryId]) {
-                    items.append(YACReaderServerDataHelper::comicToJSON(libraryId, libraryUuid, comic));
+                    items.append(YACReaderServerDataHelper::fullComicToJSON(libraryId, libraryUuid, comic));
                 }
             }
         }
