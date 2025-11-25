@@ -486,7 +486,10 @@ void MainWindowViewer::createToolBars()
 #endif
 
 #ifndef Y_MAC_UI
-    comicToolBar->setStyleSheet("QToolBar{border:none;}");
+    comicToolBar->setStyleSheet(R"(
+        QToolBar { border: none; }
+        QToolButton:checked { background-color: #cccccc; }
+    )");
     comicToolBar->setIconSize(QSize(18, 18));
 #endif
 

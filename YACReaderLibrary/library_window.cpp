@@ -267,7 +267,10 @@ void LibraryWindow::doLayout()
     // TOOLBARS-------------------------------------------------------------------
     //---------------------------------------------------------------------------
     editInfoToolBar = new QToolBar();
-    editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
+    editInfoToolBar->setStyleSheet(R"(
+        QToolBar { border: none; }
+        QToolButton:checked { background-color: #cccccc; }
+    )");
 
 #ifdef Y_MAC_UI
     libraryToolBar = new YACReaderMacOSXToolbar(this);

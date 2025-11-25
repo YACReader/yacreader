@@ -62,7 +62,10 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
     connect(coverSizeSlider, &QAbstractSlider::valueChanged, this, &FolderContentView::setCoversSize);
 
     toolbar = new QToolBar();
-    toolbar->setStyleSheet("QToolBar {border: none;}");
+    toolbar->setStyleSheet(R"(
+        QToolBar { border: none; }
+        QToolButton:checked { background-color: #cccccc; }
+    )");
     toolbar->setIconSize(QSize(18, 18));
     toolbar->addWidget(new YACReaderToolBarStretch);
     toolbar->addAction(toogleRecentVisibilityAction);
