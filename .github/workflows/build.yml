@@ -159,7 +159,6 @@ jobs:
           pip3 install --break-system-packages aqtinstall
           python3 -m aqt install-qt mac desktop 6.9.3 -m qt5compat qtmultimedia qtimageformats qtshadertools
           echo "${{ github.workspace }}/6.9.3/macos/bin" >> $GITHUB_PATH
-          brew install create-dmg
           npm install -g appdmg
           mkdir -p ${{ github.workspace }}/compressed_archive
           wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O ${{ github.workspace }}/compressed_archive/7z2301-src.7z
@@ -207,13 +206,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
       - name: Install dependencies
         run: |
           brew install qt@5
           brew link qt@5 --force
-          brew install create-dmg
-          brew install node
-          brew link --overwrite node
           npm install -g appdmg
           mkdir -p ${{ github.workspace }}/compressed_archive
           wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O ${{ github.workspace }}/compressed_archive/7z2301-src.7z
