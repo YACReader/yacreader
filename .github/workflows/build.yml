@@ -144,7 +144,7 @@ jobs:
   # macOS Qt6 Universal build
   macos-qt6-universal:
     name: macOS (Qt6 Universal)
-    runs-on: macos-14
+    runs-on: macos-15
     needs: [initialization, code-format-validation]
     steps:
       - uses: actions/checkout@v4
@@ -201,7 +201,7 @@ jobs:
   # macOS Qt5 build
   macos:
     name: macOS (Qt5)
-    runs-on: macos-14
+    runs-on: macos-15-intel
     needs: [initialization, code-format-validation]
     steps:
       - uses: actions/checkout@v4
