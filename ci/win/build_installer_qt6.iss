@@ -1,6 +1,7 @@
 [Setup]
 DefaultGroupName=YACReader
 LanguageDetectionMethod=locale
+AppId={{019AC70F-0312-76B8-BD8F-BE9DCBF49E25}
 AppName=YACReader
 AppVerName=YACReader v{#VERSION}.{#BUILD_NUMBER}
 AppVersion={#VERSION}.{#BUILD_NUMBER}
@@ -137,6 +138,60 @@ CompileLogMethod=append
 [Code]
 var donationPage: TOutputMsgWizardPage;
 var URLLabel: TNewStaticText;
+
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  // First try the new AppId-based key
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  
+  // If not found, try the old AppName-based key (for versions without AppId)
+  if sUnInstallString = '' then begin
+    sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\YACReader_is1';
+    if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+      RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  end;
+  
+  Result := sUnInstallString;
+end;
+
+function IsUpgrade(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+  Result := 0;
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/SILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if (CurStep=ssInstall) then
+  begin
+    if (IsUpgrade()) then
+    begin
+      UnInstallOldVersion();
+    end;
+  end;
+end;
 
 procedure URLLabelOnClick(Sender: TObject);
 var ErrorCode: Integer;
