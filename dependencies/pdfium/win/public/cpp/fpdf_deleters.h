@@ -5,15 +5,15 @@
 #ifndef PUBLIC_CPP_FPDF_DELETERS_H_
 #define PUBLIC_CPP_FPDF_DELETERS_H_
 
-#include "public/fpdf_annot.h"
-#include "public/fpdf_dataavail.h"
-#include "public/fpdf_edit.h"
-#include "public/fpdf_formfill.h"
-#include "public/fpdf_javascript.h"
-#include "public/fpdf_structtree.h"
-#include "public/fpdf_text.h"
-#include "public/fpdf_transformpage.h"
-#include "public/fpdfview.h"
+#include "../fpdf_annot.h"
+#include "../fpdf_dataavail.h"
+#include "../fpdf_edit.h"
+#include "../fpdf_formfill.h"
+#include "../fpdf_javascript.h"
+#include "../fpdf_structtree.h"
+#include "../fpdf_text.h"
+#include "../fpdf_transformpage.h"
+#include "../fpdfview.h"
 
 // Custom deleters for using FPDF_* types with std::unique_ptr<>.
 

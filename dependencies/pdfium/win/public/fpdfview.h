@@ -203,9 +203,6 @@ typedef int FPDF_ANNOT_APPEARANCEMODE;
 // Dictionary value types.
 typedef int FPDF_OBJECT_TYPE;
 
-// #if defined(COMPONENT_BUILD)
-// FPDF_EXPORT should be consistent with |export| in the pdfium_fuzzer
-// template in testing/fuzzers/BUILD.gn.
 #if defined(WIN32)
 #if defined(FPDF_IMPLEMENTATION)
 #define FPDF_EXPORT __declspec(dllexport)
@@ -219,9 +216,6 @@ typedef int FPDF_OBJECT_TYPE;
 #define FPDF_EXPORT
 #endif  // defined(FPDF_IMPLEMENTATION)
 #endif  // defined(WIN32)
-// #else
-// #define FPDF_EXPORT
-// #endif  // defined(COMPONENT_BUILD)
 
 #if defined(WIN32) && defined(FPDFSDK_EXPORTS)
 #define FPDF_CALLCONV __stdcall
@@ -701,6 +695,8 @@ FPDF_EXPORT FPDF_PAGE FPDF_CALLCONV FPDF_LoadPage(FPDF_DOCUMENT document,
 // Return value:
 //          Page width (excluding non-displayable area) measured in points.
 //          One point is 1/72 inch (around 0.3528 mm).
+// Comments:
+//          Changing the rotation of |page| affects the return value.
 FPDF_EXPORT float FPDF_CALLCONV FPDF_GetPageWidthF(FPDF_PAGE page);
 
 // Function: FPDF_GetPageWidth
@@ -713,6 +709,8 @@ FPDF_EXPORT float FPDF_CALLCONV FPDF_GetPageWidthF(FPDF_PAGE page);
 // Note:
 //          Prefer FPDF_GetPageWidthF() above. This will be deprecated in the
 //          future.
+// Comments:
+//          Changing the rotation of |page| affects the return value.
 FPDF_EXPORT double FPDF_CALLCONV FPDF_GetPageWidth(FPDF_PAGE page);
 
 // Experimental API
@@ -723,6 +721,8 @@ FPDF_EXPORT double FPDF_CALLCONV FPDF_GetPageWidth(FPDF_PAGE page);
 // Return value:
 //          Page height (excluding non-displayable area) measured in points.
 //          One point is 1/72 inch (around 0.3528 mm)
+// Comments:
+//          Changing the rotation of |page| affects the return value.
 FPDF_EXPORT float FPDF_CALLCONV FPDF_GetPageHeightF(FPDF_PAGE page);
 
 // Function: FPDF_GetPageHeight
@@ -735,6 +735,8 @@ FPDF_EXPORT float FPDF_CALLCONV FPDF_GetPageHeightF(FPDF_PAGE page);
 // Note:
 //          Prefer FPDF_GetPageHeightF() above. This will be deprecated in the
 //          future.
+// Comments:
+//          Changing the rotation of |page| affects the return value.
 FPDF_EXPORT double FPDF_CALLCONV FPDF_GetPageHeight(FPDF_PAGE page);
 
 // Experimental API.
@@ -850,15 +852,16 @@ typedef struct FPDF_COLORSCHEME_ {
 //          flags       -   0 for normal display, or combination of flags
 //                          defined above.
 // Return value:
-//          None.
-FPDF_EXPORT void FPDF_CALLCONV FPDF_RenderPage(HDC dc,
-                                               FPDF_PAGE page,
-                                               int start_x,
-                                               int start_y,
-                                               int size_x,
-                                               int size_y,
-                                               int rotate,
-                                               int flags);
+//          Returns true if the page is rendered successfully, false otherwise.
+
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FPDF_RenderPage(HDC dc,
+                                                    FPDF_PAGE page,
+                                                    int start_x,
+                                                    int start_y,
+                                                    int size_x,
+                                                    int size_y,
+                                                    int rotate,
+                                                    int flags);
 #endif
 
 // Function: FPDF_RenderPageBitmap
@@ -1087,7 +1090,13 @@ FPDF_EXPORT FPDF_BITMAP FPDF_CALLCONV FPDFBitmap_Create(int width,
 // 4 bytes per pixel, byte order: blue, green, red, unused.
 #define FPDFBitmap_BGRx 3
 // 4 bytes per pixel, byte order: blue, green, red, alpha.
+// Pixel components are independent of alpha.
 #define FPDFBitmap_BGRA 4
+// 4 bytes per pixel, byte order: blue, green, red, alpha.
+// Pixel components are premultiplied by alpha.
+// Note that this is experimental and only supported when rendering with
+// |FPDF_RENDERER_TYPE| is set to |FPDF_RENDERERTYPE_SKIA|.
+#define FPDFBitmap_BGRA_Premul 5
 
 // Function: FPDFBitmap_CreateEx
 //          Create a device independent bitmap (FXDIB)

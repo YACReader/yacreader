@@ -27,6 +27,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReaderLibraryServer
 * Log libraries validation when the app starts.
 
+### All apps
+* PDF libraries have been updated for all Windows builds.
+
 ## 9.15.0
 
 ### YACReader
