@@ -100,7 +100,7 @@
         <location filename="goto_dialog.cpp" line="39"/>
         <location filename="goto_dialog.cpp" line="71"/>
         <source>Total pages : </source>
-        <translation>Páginas totales:</translation>
+        <translation>Páginas totales : </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="25"/>
@@ -110,7 +110,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="15"/>
         <source>Page : </source>
-        <translation>Página :</translation>
+        <translation>Página : </translation>
     </message>
 </context>
 <context>
@@ -477,12 +477,12 @@
     <message>
         <location filename="options_dialog.cpp" line="41"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualización</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="43"/>
         <source>Show time in current page information label</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar la hora en la etiqueta de información de la página actual</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="77"/>
@@ -507,22 +507,22 @@
     <message>
         <location filename="options_dialog.cpp" line="90"/>
         <source>Mouse mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modo del ratón</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="93"/>
         <source>Only Back/Forward buttons can turn pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Solo los botones Atrás/Adelante pueden cambiar de página</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="94"/>
         <source>Use the Left/Right buttons to turn pages.</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar los botones Izquierda/Derecha para cambiar de página.</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="95"/>
         <source>Click left or right half of the screen to turn pages.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hacer clic en la mitad izquierda o derecha de la pantalla para cambiar de página.</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="121"/>
@@ -1093,7 +1093,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="1211"/>
         <source>Reset magnifying glass</source>
-        <translation type="unfinished"></translation>
+        <translation>Resetear lupa</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1218"/>
