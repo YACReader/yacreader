@@ -11,7 +11,7 @@
 #include "volume_comics_model.h"
 
 SortVolumeComics::SortVolumeComics(QWidget *parent)
-    : ScraperSelector(parent)
+    : QWidget(parent)
 {
     QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
 
@@ -55,6 +55,9 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     // connect(tableVolumeComics, SIGNAL(pressed(QModelIndex)), tableFiles, SLOT(setCurrentIndex(QModelIndex)));
     // connect(tableFiles, SIGNAL(pressed(QModelIndex)), tableVolumeComics, SLOT(setCurrentIndex(QModelIndex)));
 
+    paginator = new ScraperResultsPaginator;
+    connect(paginator, &ScraperResultsPaginator::loadNextPage, this, &SortVolumeComics::loadNextPage);
+    connect(paginator, &ScraperResultsPaginator::loadPreviousPage, this, &SortVolumeComics::loadPreviousPage);
     paginator->setCustomLabel(tr("issues"));
     paginator->setMinimumWidth(422);
 
@@ -77,7 +80,6 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     l->addWidget(label, 0);
     l->addSpacing(5);
     l->addLayout(content, 1);
-    l->addLayout(sortButtonsLayout, 0);
 
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
@@ -120,7 +122,18 @@ void SortVolumeComics::setData(QList<ComicDB> &comics, const QString &json, cons
 
     tableVolumeComics->resizeColumnToContents(0);
 
-    ScraperSelector::load(json, vID);
+    currentVolumeId = vID;
+    paginator->update(json);
+}
+
+void SortVolumeComics::loadNextPage()
+{
+    emit loadPage(currentVolumeId, paginator->getCurrentPage() + 1);
+}
+
+void SortVolumeComics::loadPreviousPage()
+{
+    emit loadPage(currentVolumeId, paginator->getCurrentPage() - 1);
 }
 
 void SortVolumeComics::synchronizeScroll(int pos)

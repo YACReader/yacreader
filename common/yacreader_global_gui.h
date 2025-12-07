@@ -30,12 +30,14 @@
 #define CONTRAST "CONTRAST"
 #define GAMMA "GAMMA"
 #define SHOW_INFO "SHOW_INFO"
+#define SHOW_TIME_IN_INFO "SHOW_TIME_IN_INFO"
 #define QUICK_NAVI_MODE "QUICK_NAVI_MODE"
 #define DISABLE_MOUSE_OVER_GOTO_FLOW "DISABLE_MOUSE_OVER_GOTO_FLOW"
 #define ENLARGE_IMAGES "ENLARGE_IMAGES"
 #define DO_NOT_TURN_PAGE_ON_SCROLL "DO_NOT_TURN_PAGE_ON_SCROLL"
 #define USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE "USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE"
 #define DISABLE_SCROLL_ANIMATION "DISABLE_SCROLL_ANIMATION"
+#define MOUSE_MODE "MOUSE_MODE"
 
 #define FLOW_TYPE_GL "FLOW_TYPE_GL"
 #define Y_POSITION "Y_POSITION"
@@ -97,14 +99,6 @@ enum ComicsViewStatus {
     Info
 };
 
-enum FitMode {
-    ToWidth = 0x01,
-    ToHeight = 0x02,
-    FullRes = 0x03,
-    FullPage = 0x04 //,
-    // Text=0x05
-};
-
 enum LibraryUITheme {
     Light,
     Dark
@@ -119,6 +113,7 @@ QString addExtensionToIconPath(const QString &path);
 QString addExtensionToIconPathInToolbar(const QString &path);
 QAction *actionWithCustomIcon(const QIcon &icon, QAction *action);
 QPixmap hdpiPixmap(const QString &file, QSize size);
-
+QString imageFileLoader(QWidget *parent);
+QString imagePathFromMimeData(const QMimeData *mimeData);
 }
 #endif

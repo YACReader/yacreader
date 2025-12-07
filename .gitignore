@@ -9,6 +9,7 @@ libp7zip
 YACReader/build
 YACReaderLibrary/build
 YACReaderLibraryServer/build
+build/
 
 # C++ objects and libs
 *.slo
@@ -21,6 +22,7 @@ YACReaderLibraryServer/build
 *.dll
 *.dylib
 *.pch
+*.obj
 
 # Qt-es
 object_script.*.Release

@@ -1,10 +1,8 @@
 #include "covercontroller_v2.h"
 #include "db_helper.h" //get libraries
+#include <QImage>
 #include "yacreader_libraries.h"
-#include "yacreader_http_session.h"
-
-#include "template.h"
-#include "../static.h"
+#include "yacreader_global.h"
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
@@ -20,9 +18,10 @@ void CoverControllerV2::service(HttpRequest &request, HttpResponse &response)
     QString path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
     QStringList pathElements = path.split('/');
     QString libraryName = DBHelper::getLibraryName(pathElements.at(3).toInt());
-    QString fileName = pathElements.at(5);
+    QStringList remainingPathElements = pathElements.mid(5);
+    QString fileName = remainingPathElements.join('/');
 
-    QImage img(libraries.getPath(libraryName) + "/.yacreaderlibrary/covers/" + fileName);
+    QImage img(YACReader::LibraryPaths::coverPathWithFileName(libraries.getPath(libraryName), fileName));
     if (!img.isNull()) {
         QByteArray ba;
         QBuffer buffer(&ba);

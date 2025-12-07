@@ -5,6 +5,8 @@
 #include "yacreader_libraries.h"
 #include "yacreader_global.h"
 
+using namespace YACReader;
+
 LibrariesUpdateCoordinator::LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, const std::function<bool()> &canStartUpdateProvider, QObject *parent)
     : QObject(parent), libraries(libraries), canStartUpdateProvider(canStartUpdateProvider)
 {
@@ -121,7 +123,7 @@ void LibrariesUpdateCoordinator::updateLibrary(const QString &path)
 
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
-    libraryCreator->updateLibrary(cleanPath, QDir::cleanPath(pathDir.absolutePath() + "/.yacreaderlibrary"));
+    libraryCreator->updateLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath));
 
     connect(libraryCreator, &LibraryCreator::finished, &eventLoop, &QEventLoop::quit);
 

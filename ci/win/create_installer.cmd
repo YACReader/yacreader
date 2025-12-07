@@ -2,10 +2,15 @@
 
 SET src_path=..\..\..
 
-IF "%1"=="x64" (
-	SET exe_path=%src_path%\release64
+set ARCH=%1
+set COMPRESSION=%2
+set BUILD_NUMBER=%3
+set QT_VERSION=%4
+
+IF "%ARCH%"=="x64" (
+    SET exe_path=%src_path%\release64
 ) ELSE (
-	SET exe_path=%src_path%\release
+    SET exe_path=%src_path%\release
 )
 
 rmdir /S /Q installer_contents
@@ -23,53 +28,45 @@ copy %exe_path%\YACReader.exe .
 copy %exe_path%\YACReaderLibrary.exe .
 copy %exe_path%\YACReaderLibraryServer.exe .
 
-windeployqt --release YACReader.exe
-windeployqt --release --qmldir %src_path%\YACReaderLibrary\qml YACReaderLibrary.exe
+windeployqt --release -qml YACReader.exe
+windeployqt --release -qml --qmldir %src_path%\YACReaderLibrary\qml YACReaderLibrary.exe
 windeployqt YACReaderLibraryServer.exe
 
 mkdir utils
 
-IF "%2"=="7z" (
-	copy %src_path%\dependencies\7zip\win\%1\7z.dll .\utils\7z.dll
+IF "%COMPRESSION%"=="7z" (
+    copy %src_path%\dependencies\7zip\win\%ARCH%\7z.dll .\utils\7z.dll
 ) ELSE (
-    copy %src_path%\dependencies\unarr\win\%1\unarr.dll .
+    copy %src_path%\dependencies\unarr\win\%ARCH%\unarr.dll .
 )
 
-mkdir openssl
+copy %src_path%\dependencies\pdfium\win\%ARCH%\pdfium.dll .
 
-copy %src_path%\dependencies\pdfium\win\%1\pdfium.dll .
-copy %src_path%\dependencies\openssl\win\%1\* .\openssl\
+mkdir openssl
+copy %src_path%\dependencies\openssl\win\%ARCH%\* .\openssl\
 
 xcopy %src_path%\release\server .\server /i /e
 xcopy %src_path%\release\languages .\languages /i /e
 
-copy %src_path%\vc_redist.%1.exe .
+copy %src_path%\vc_redist.%ARCH%.exe .
 
 type %src_path%\common\yacreader_global.h | findstr /R /C:"#define VERSION " > tmp
 set /p VERSION= < tmp
 set VERSION=%VERSION:#define VERSION "=%
 set VERSION=%VERSION:"=%
 echo %VERSION%
-del
+del tmp
 
-if "%1"=="x86" (
-	type build_installer.iss | findstr /v ArchitecturesInstallIn64BitMode | findstr /v ArchitecturesAllowed > copy_build_installer.iss
-	type copy_build_installer.iss > build_installer.iss
+if "%ARCH%"=="x86" (
+    type build_installer.iss | findstr /v ArchitecturesInstallIn64BitMode | findstr /v ArchitecturesAllowed > copy_build_installer.iss
+    type copy_build_installer.iss > build_installer.iss
 )
 
 echo "iscc start"
-if "%~5" == "" (
-	if "%4"=="qt6" (
-		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=false build_installer_qt6.iss || exit /b
-	) else (
-		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=false build_installer.iss || exit /b
-	)
+if "%QT_VERSION%"=="qt6" (
+	iscc /DVERSION=%VERSION% /DPLATFORM=%ARCH% /DCOMPRESSED_ARCHIVE_BACKEND=%COMPRESSION% /DBUILD_NUMBER=%BUILD_NUMBER% build_installer_qt6.iss || exit /b
 ) else (
-	if "%4"=="qt6" (
-		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=true build_installer_qt6.iss "/Ssigntool=$qC:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe$q sign /f %5 /p %6 $f" || exit /b
-	) else (
-		iscc /DVERSION=%VERSION% /DPLATFORM=%1 /DCOMPRESSED_ARCHIVE_BACKEND=%2 /DBUILD_NUMBER=%3 /DCODE_SIGN=true build_installer.iss "/Ssigntool=$qC:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\SignTool.exe$q sign /f %5 /p %6 $f" || exit /b
-	)
+	iscc /DVERSION=%VERSION% /DPLATFORM=%ARCH% /DCOMPRESSED_ARCHIVE_BACKEND=%COMPRESSION% /DBUILD_NUMBER=%BUILD_NUMBER% build_installer.iss || exit /b
 )
 echo "iscc done!"
 

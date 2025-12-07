@@ -1,6 +1,7 @@
 [Setup]
 DefaultGroupName=YACReader
 LanguageDetectionMethod=locale
+AppId={{019AC70F-0312-76B8-BD8F-BE9DCBF49E25}
 AppName=YACReader
 AppVerName=YACReader v{#VERSION}.{#BUILD_NUMBER}
 AppVersion={#VERSION}.{#BUILD_NUMBER}
@@ -13,11 +14,8 @@ OutputDir=..\Output
 ChangesAssociations=true
 SetupIconFile=setup.ico
 UninstallDisplayIcon=uninstall.ico
-ArchitecturesInstallIn64BitMode=x64
-ArchitecturesAllowed=x64
-#if CODE_SIGN == "true"
-  SignTool=signtool
-#endif
+ArchitecturesInstallIn64BitMode={#PLATFORM}
+ArchitecturesAllowed={#PLATFORM}
 
 [Registry]
 Root: HKCR; SubKey: .cbz; ValueType: string; ValueData: Comic Book (zip); Flags: uninsdeletekey; Tasks: File_association
@@ -46,41 +44,36 @@ Source: Qt6Network.dll; DestDir: {app}
 Source: Qt6OpenGL.dll; DestDir: {app}
 Source: Qt6OpenGLWidgets.dll; DestDir: {app}
 Source: Qt6Qml.dll; DestDir: {app}
-Source: Qt6QmlLocalStorage.dll; DestDir: {app}
 Source: Qt6QmlModels.dll; DestDir: {app}
+Source: Qt6QmlMeta.dll; DestDir: {app}
 Source: Qt6QmlWorkerScript.dll; DestDir: {app}
-Source: Qt6QmlXmlListModel.dll; DestDir: {app}
 Source: Qt6Quick.dll; DestDir: {app}
+Source: Qt6QuickEffects.dll; DestDir: {app}
 Source: Qt6QuickControls2.dll; DestDir: {app}
 Source: Qt6QuickControls2Impl.dll; DestDir: {app}
-Source: Qt6QuickDialogs2.dll; DestDir: {app}
-Source: Qt6QuickDialogs2QuickImpl.dll; DestDir: {app}
-Source: Qt6QuickDialogs2Utils.dll; DestDir: {app}
+Source: Qt6QuickControls2Basic.dll; DestDir: {app}
+Source: Qt6QuickControls2BasicStyleImpl.dll; DestDir: {app}
+Source: Qt6QuickControls2Fusion.dll; DestDir: {app}
+Source: Qt6QuickControls2FusionStyleImpl.dll; DestDir: {app}
 Source: Qt6QuickLayouts.dll; DestDir: {app}
-Source: Qt6QuickParticles.dll; DestDir: {app}
 Source: Qt6QuickShapes.dll; DestDir: {app}
 Source: Qt6QuickTemplates2.dll; DestDir: {app}
 Source: Qt6QuickWidgets.dll; DestDir: {app}
 Source: Qt6Sql.dll; DestDir: {app}
 Source: Qt6Svg.dll; DestDir: {app}
-
+Source: Qt6ShaderTools.dll; DestDir: {app}
 
 ;Qt Angle
-Source: opengl32sw.dll; DestDir: {app}
-Source: D3Dcompiler_47.dll; DestDir: {app}
-
-;Qt QML
-Source: QtQml\*; DestDir: {app}\QtQml\; Flags: recursesubdirs
-Source: QtQuick\*; DestDir: {app}\QtQuick\; Flags: recursesubdirs
-
-;Qt5 Compat
-Source: Qt5Compat\*; DestDir: {app}\Qt5Compat\; Flags: recursesubdirs
+Source: opengl32sw.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
+Source: D3Dcompiler_47.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
 
 ;Qt PlugIns
+Source:generic\*;  DestDir: {app}\generic\
 Source:iconengines\*;  DestDir: {app}\iconengines\
 Source:imageformats\*;  DestDir: {app}\imageformats\
 Source:networkinformation\*;  DestDir: {app}\networkinformation\
 Source:platforms\*;  DestDir: {app}\platforms\
+Source:qml\*;  DestDir: {app}\qml\; Flags: recursesubdirs
 Source:qmltooling\*;  DestDir: {app}\qmltooling\
 Source:sqldrivers\qsqlite.dll;  DestDir: {app}\sqldrivers\
 Source:styles\*;  DestDir: {app}\styles\
@@ -145,6 +138,60 @@ CompileLogMethod=append
 [Code]
 var donationPage: TOutputMsgWizardPage;
 var URLLabel: TNewStaticText;
+
+function GetUninstallString(): String;
+var
+  sUnInstPath: String;
+  sUnInstallString: String;
+begin
+  // First try the new AppId-based key
+  sUnInstPath := ExpandConstant('Software\Microsoft\Windows\CurrentVersion\Uninstall\{#emit SetupSetting("AppId")}_is1');
+  sUnInstallString := '';
+  if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+    RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  
+  // If not found, try the old AppName-based key (for versions without AppId)
+  if sUnInstallString = '' then begin
+    sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\YACReader_is1';
+    if not RegQueryStringValue(HKLM, sUnInstPath, 'UninstallString', sUnInstallString) then
+      RegQueryStringValue(HKCU, sUnInstPath, 'UninstallString', sUnInstallString);
+  end;
+  
+  Result := sUnInstallString;
+end;
+
+function IsUpgrade(): Boolean;
+begin
+  Result := (GetUninstallString() <> '');
+end;
+
+function UnInstallOldVersion(): Integer;
+var
+  sUnInstallString: String;
+  iResultCode: Integer;
+begin
+  Result := 0;
+  sUnInstallString := GetUninstallString();
+  if sUnInstallString <> '' then begin
+    sUnInstallString := RemoveQuotes(sUnInstallString);
+    if Exec(sUnInstallString, '/VERYSILENT /NORESTART /SUPPRESSMSGBOXES','', SW_HIDE, ewWaitUntilTerminated, iResultCode) then
+      Result := 3
+    else
+      Result := 2;
+  end else
+    Result := 1;
+end;
+
+procedure CurStepChanged(CurStep: TSetupStep);
+begin
+  if (CurStep=ssInstall) then
+  begin
+    if (IsUpgrade()) then
+    begin
+      UnInstallOldVersion();
+    end;
+  end;
+end;
 
 procedure URLLabelOnClick(Sender: TObject);
 var ErrorCode: Integer;

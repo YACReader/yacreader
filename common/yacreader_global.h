@@ -5,14 +5,15 @@
 #include <QDataStream>
 #include <QMetaType>
 #include <QAbstractItemModel>
+#include <QDir>
 
 class QLibrary;
 
-#define VERSION "9.15.0"
+#define VERSION "9.16.0"
 
 // Used to check if the database needs to be updated, the version is stored in the database.
 // This value is only incremented when the database structure changes.
-#define DB_VERSION "9.14.0"
+#define DB_VERSION "9.16.0"
 
 #define IMPORT_COMIC_INFO_XML_METADATA "IMPORT_COMIC_INFO_XML_METADATA"
 #define COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES "COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES"
@@ -108,7 +109,77 @@ void iterate(const QModelIndex &index,
              const QAbstractItemModel *model,
              const std::function<bool(const QModelIndex &)> &iteration);
 
-}
+// TODO: remove all the dataPath variants and always use the root folder of a library `libraryPath` to get all the paths.
+struct LibraryPaths {
+    LibraryPaths() = delete; // Prevent instantiation
+
+    static QString libraryDataPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary
+    {
+        return QDir(libraryPath).filePath(".yacreaderlibrary");
+    }
+
+    static QString libraryDatabasePath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/library.ydb
+    {
+        return QDir(libraryDataPath(libraryPath)).filePath("library.ydb");
+    }
+
+    static QString libraryCoversFolderPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/covers
+    {
+        return QDir(libraryDataPath(libraryPath)).filePath("covers");
+    }
+
+    static QString libraryCoversPathFromLibraryDataPath(const QString &libraryDataPath) // libraryDataPath + /covers
+    {
+        return QDir(libraryDataPath).filePath("covers");
+    }
+
+    static QString coverPath(const QString &libraryPath, const QString &hash) // libraryPath + /.yacreaderlibrary/covers/hash + .jpg
+    {
+        return QDir(libraryCoversFolderPath(libraryPath)).filePath(coverFileName(hash));
+    }
+
+    static QString libraryCustomFoldersCoverPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/covers/folders
+    {
+        return QDir(libraryCoversFolderPath(libraryPath)).filePath("folders");
+    }
+
+    static QString libraryCustomFoldersCoverPathFromLibraryDataPath(const QString &libraryDataPath)
+    {
+        return QDir(libraryCoversPathFromLibraryDataPath(libraryDataPath)).filePath("folders");
+    }
+
+    static QString customFolderCoverPath(const QString &libraryPath, const QString &folderId)
+    {
+        return QDir(libraryCustomFoldersCoverPath(libraryPath)).filePath(coverFileName(folderId));
+    }
+
+    static QString customFolderCoverPathFromDataPath(const QString &libraryDataPath, const QString &folderId)
+    {
+        return QDir(libraryCustomFoldersCoverPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(folderId));
+    }
+
+    static QString coverPathFromLibraryDataPath(const QString &libraryDataPath, const QString &hash) // libraryDataPath + /covers/hash + .jpg
+    {
+        return QDir(libraryCoversPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(hash));
+    }
+
+    static QString coverFileName(const QString &id) // id + .jpg (it can be a comic hash or a folder id)
+    {
+        return id + ".jpg";
+    }
+
+    static QString coverPathWithFileName(const QString &libraryPath, const QString &fileName) // libraryPath + /.yacreaderlibrary/covers/hash + fileName
+    {
+        return QDir(libraryCoversFolderPath(libraryPath)).filePath(fileName);
+    }
+
+    static QString idPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/id
+    {
+        return QDir(libraryDataPath(libraryPath)).filePath("id");
+    }
+};
+
+} // namespace YACReader
 
 Q_DECLARE_METATYPE(YACReader::OpenComicSource::Source)
 Q_DECLARE_METATYPE(YACReader::OpenComicSource)

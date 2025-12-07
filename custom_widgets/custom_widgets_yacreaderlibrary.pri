@@ -21,7 +21,8 @@ HEADERS += \
         $$PWD/yacreader_library_list_widget.h \
         $$PWD/yacreader_library_item_widget.h \
         $$PWD/yacreader_treeview.h \
-        $$PWD/yacreader_busy_widget.h
+        $$PWD/yacreader_busy_widget.h \
+        $$PWD/yacreader_cover_label.h
 !CONFIG(no_opengl){
 	HEADERS += $$PWD/yacreader_gl_flow_config_widget.h
 }
@@ -50,8 +51,8 @@ SOURCES += \
         $$PWD/yacreader_library_list_widget.cpp \
         $$PWD/yacreader_library_item_widget.cpp \
         $$PWD/yacreader_treeview.cpp \
-        $$PWD/yacreader_busy_widget.cpp
-
+        $$PWD/yacreader_busy_widget.cpp \
+        $$PWD/yacreader_cover_label.cpp
 !CONFIG(no_opengl){
         SOURCES += $$PWD/yacreader_gl_flow_config_widget.cpp
 }

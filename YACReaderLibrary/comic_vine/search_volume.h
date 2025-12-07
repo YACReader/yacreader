@@ -1,9 +1,11 @@
 #ifndef SEARCH_VOLUME_H
 #define SEARCH_VOLUME_H
 
-#include <QWidget>
+#include <QtWidgets>
+#include "scraper_checkbox.h"
 
 class ScraperLineEdit;
+class ScraperCheckBox;
 
 class SearchVolume : public QWidget
 {
@@ -13,9 +15,11 @@ public:
     void clean();
     void setVolumeInfo(const QString &volume);
     QString getVolumeInfo() const;
+    bool getExactMatch() const { return exactMatchCheckBox->isChecked(); }
 
 private:
     ScraperLineEdit *volumeEdit;
+    ScraperCheckBox *exactMatchCheckBox;
 };
 
 #endif // SEARCH_VOLUME_H

@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include "comic_db.h"
+#include "volume_search_query.h"
 
 class QPushButton;
 class QStackedWidget;
@@ -17,7 +18,9 @@ class SearchSingleComic;
 class SearchVolume;
 class SelectComic;
 class SelectVolume;
+struct SelectedVolumeInfo;
 class SortVolumeComics;
+struct VolumeSearchQuery;
 
 // TODO this should use a QStateMachine
 //----------------------------------------
@@ -31,8 +34,8 @@ public:
     void setComics(const QList<ComicDB> &comics);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
-    void getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, int count, const QString &publisher);
-    void getComicInfo(const QString &comicId, int count, const QString &publisher);
+    void getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo);
+    void getComicInfo(const QString &comicId, const SelectedVolumeInfo &volumeInfo);
     void closeEvent(QCloseEvent *event) override;
 signals:
 
@@ -42,14 +45,14 @@ public slots:
 protected slots:
     void goNext();
     void goBack();
-    void debugClientResults(const QString &string);
+    void processClientResults(const QString &string);
     // show widget methods
     void showSeriesQuestion();
-    void showSearchSingleComic();
+    void showSearchSingleComic(const QString &volume = "");
     void showSearchVolume(const QString &volume = "");
     void showLoading(const QString &message = "");
     void search();
-    void searchVolume(const QString &v, int page = 1);
+    void searchVolume(const VolumeSearchQuery &query);
     void getVolumeComicsInfo(const QString &vID, int page = 1);
     void launchSearchVolume();
     void launchSearchComic();
@@ -63,22 +66,23 @@ protected slots:
 
 private:
     void clearState();
-
     void toggleSkipButton();
+    QString volumeSearchStringFromComic(const ComicDB &comic);
 
-    enum ScraperMode {
+    enum class ScraperMode {
         SingleComic, // the scraper has been opened for a single comic
         Volume, // the scraper is trying to get comics info for a whole volume
         SingleComicInList // the scraper has been opened for a list of unrelated comics
     };
 
-    enum ScraperStatus {
-        AutoSearching,
-        AskingForInfo,
+    enum class ScraperStatus {
+        AutoSearching, // Searching for volumes maching a single comic
+        AskingForInfo, // The dialog is showing some UI to ask the user for some info
         SelectingComic,
         SelectingSeries,
         SearchingSingleComic,
         SearchingVolume,
+        SearchingExactVolume,
         SortingComics,
         GettingVolumeComics
     };
@@ -118,7 +122,7 @@ private:
     SelectComic *selectComicWidget;
     SortVolumeComics *sortVolumeComicsWidget;
 
-    QString currentVolumeSearchString;
+    VolumeSearchQuery currentVolumeSearchQuery;
     QString currentVolumeId;
 };
 

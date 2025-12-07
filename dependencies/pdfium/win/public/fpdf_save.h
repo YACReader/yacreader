@@ -52,7 +52,8 @@ typedef struct FPDF_FILEWRITE_ {
 //          document        -   Handle to document, as returned by
 //                              FPDF_LoadDocument() or FPDF_CreateNewDocument().
 //          pFileWrite      -   A pointer to a custom file write structure.
-//          flags           -   The creating flags.
+//          flags           -   Flags above that affect how the PDF gets saved.
+//                              Pass in 0 when there are no flags.
 // Return value:
 //          TRUE for succeed, FALSE for failed.
 //

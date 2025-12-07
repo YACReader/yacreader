@@ -4,9 +4,11 @@
 
 #include "comic_db.h"
 
+struct SelectedVolumeInfo;
+
 namespace YACReader {
 
-ComicDB parseCVJSONComicInfo(ComicDB &comic, const QString &json, int count, const QString &publisher);
+ComicDB parseCVJSONComicInfo(ComicDB &comic, const QString &json, const SelectedVolumeInfo &volumeInfo);
 
 }
 

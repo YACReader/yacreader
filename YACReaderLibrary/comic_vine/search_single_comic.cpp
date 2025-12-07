@@ -11,12 +11,16 @@ SearchSingleComic::SearchSingleComic(QWidget *parent)
 {
 
     // QLabel * label = new QLabel(tr("Please provide some additional information. At least one field is needed."));
-    QLabel *label = new QLabel(tr("Please provide some additional information."));
+    QLabel *label = new QLabel(tr("Please provide some additional information for this comic."));
     label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
 
     // titleEdit = new ScraperLineEdit(tr("Title:"));
     // numberEdit = new ScraperLineEdit(tr("Number:"));
     volumeEdit = new ScraperLineEdit(tr("Series:"));
+    volumeEdit->setClearButtonEnabled(true);
+
+    exactMatchCheckBox = new ScraperCheckBox(tr("Use exact match search. Disable if you want to find volumes that match some of the words in the name."));
+    exactMatchCheckBox->setChecked(true);
 
     // numberEdit->setMaximumWidth(126);
 
@@ -29,6 +33,7 @@ SearchSingleComic::SearchSingleComic(QWidget *parent)
     l->addWidget(label);
     // l->addLayout(hl);
     l->addWidget(volumeEdit);
+    l->addWidget(exactMatchCheckBox);
     l->addStretch();
 
     l->setContentsMargins(0, 0, 0, 0);
@@ -36,9 +41,14 @@ SearchSingleComic::SearchSingleComic(QWidget *parent)
     setContentsMargins(0, 0, 0, 0);
 }
 
-QString SearchSingleComic::getVolumeInfo()
+QString SearchSingleComic::getVolumeInfo() const
 {
     return volumeEdit->text();
+}
+
+void SearchSingleComic::setVolumeInfo(const QString &volume)
+{
+    volumeEdit->setText(volume);
 }
 
 QString SearchSingleComic::getComicInfo()

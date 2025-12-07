@@ -17,6 +17,7 @@
 #include "yacreader_http_server.h"
 #include "yacreader_local_server.h"
 #include "comic_db.h"
+#include "data_base_management.h"
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 #include "exit_check.h"
@@ -85,7 +86,13 @@ void logSystemAndConfig()
     OpenGLChecker checker;
     QLOG_INFO() << "OpenGL version : " << checker.textVersionDescription();
 
-    QLOG_INFO() << "Libraries: " << DBHelper::getLibraries().getLibraries();
+    auto libraries = DBHelper::getLibraries().getLibraries();
+    QLOG_INFO() << "Libraries: ";
+    for (auto library : libraries) {
+        QLOG_INFO() << "    " << library;
+        auto access = DataBaseManagement::getDatabaseAccess(library.getPath());
+        QLOG_INFO() << "     > STATUS: " << access;
+    }
     QLOG_INFO() << "--------------------------------------------";
 }
 

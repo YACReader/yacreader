@@ -54,6 +54,8 @@ ScraperTableView::ScraperTableView(QWidget *parent)
 
     setAlternatingRowColors(true);
 
+    horizontalHeader()->setMinimumSectionSize(85);
+
     verticalHeader()->hide();
 
     setSelectionMode(QAbstractItemView::SingleSelection);

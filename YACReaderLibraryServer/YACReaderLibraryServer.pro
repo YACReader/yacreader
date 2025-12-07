@@ -57,6 +57,7 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../common/bookmarks.h \
            ../common/qnaturalsorting.h \
            ../common/yacreader_global.h \
+           ../common/cover_utils.h \
            ../YACReaderLibrary/yacreader_local_server.h \
            ../YACReaderLibrary/comics_remover.h \
            ../common/http_worker.h \
@@ -87,6 +88,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../common/comic.cpp \
            ../common/bookmarks.cpp \
            ../common/qnaturalsorting.cpp \
+           ../common/cover_utils.cpp \
            ../YACReaderLibrary/yacreader_local_server.cpp \
            ../YACReaderLibrary/comics_remover.cpp \
            ../common/http_worker.cpp \

@@ -2,6 +2,35 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.16.0
+
+### YACReader
+* Don't use scroll animations on macos by default, it where hdpi scroll is most likely to be used.
+* New toolbar on macos.
+* New mouse modes to turn pages. You can setup the app to use the left/right buttons to turn pages directly or you can click on the left/right part of the screen to turn pages.
+* New setting to control whether the time is shown in the 'current page/total' label.
+
+### YACReaderLibrary
+* Improve flexibility of the open comic in third party app setting so more complex commands can be used. e.g. `open -a "/Applications/My Reader.app" "{comic_file_path}"`.
+* Fix setting the comic rating in the table view.
+* Log libraries validation when the app starts.
+* New toolbar on macos.
+* New setting in Comic Vine scraper to force exact volume matches.
+* Better default search query in the Comic Vine scraper.
+* Improved navigation in Comic Vine scraper, including keeping the current query around to make edits and refined searches easier.
+* Add support for custom covers for any folder using the context menu.
+* The edit cover buttons now support looping through pages, going forward from the last returns to the first, and going backward from the first jumps to the last.
+* Add support for custom covers for comics using the edit metadata dialog, you can use a pick file button or drag&drop an image into the cover view in the dialog.
+* Covers can be set in bulk for various comics at once.
+* New button to reset to the default cover of a comic.
+* Support for storing the new image filters from iOS and Android apps.
+
+### YACReaderLibraryServer
+* Log libraries validation when the app starts.
+
+### All apps
+* PDF libraries have been updated for all Windows builds.
+
 ## 9.15.0
 
 ### YACReader

@@ -2,12 +2,25 @@
 
 #include <QCollator>
 
-int naturalCompare(const QString &s1, const QString &s2, Qt::CaseSensitivity caseSensitivity)
-{
+static QCollator collatorCI = [] {
     QCollator c;
-    c.setCaseSensitivity(caseSensitivity);
     c.setNumericMode(true);
     c.setIgnorePunctuation(false);
+    c.setCaseSensitivity(Qt::CaseInsensitive);
+    return c;
+}();
+
+static QCollator collatorCS = [] {
+    QCollator c;
+    c.setNumericMode(true);
+    c.setIgnorePunctuation(false);
+    c.setCaseSensitivity(Qt::CaseSensitive);
+    return c;
+}();
+
+int naturalCompare(const QString &s1, const QString &s2, Qt::CaseSensitivity caseSensitivity)
+{
+    QCollator &c = (caseSensitivity == Qt::CaseSensitive) ? collatorCS : collatorCI;
     return c.compare(s1, s2);
 }
 bool naturalSortLessThanCS(const QString &left, const QString &right)

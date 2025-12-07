@@ -1,13 +1,13 @@
 #ifndef SORT_VOLUME_COMICS_H
 #define SORT_VOLUME_COMICS_H
 
-#include "scraper_selector.h"
-
+#include <QtWidgets>
 #include <QModelIndex>
 #include <QPushButton>
 #include <QPainter>
 
 #include "comic_db.h"
+#include "scraper_results_paginator.h"
 
 class ScraperTableView;
 class LocalComicListModel;
@@ -63,13 +63,11 @@ private:
     Appearance appearance;
 };
 
-class SortVolumeComics : public ScraperSelector
+class SortVolumeComics : public QWidget
 {
     Q_OBJECT
 public:
     explicit SortVolumeComics(QWidget *parent = nullptr);
-
-signals:
 
 public slots:
     void setData(QList<ComicDB> &comics, const QString &json, const QString &vID);
@@ -86,6 +84,13 @@ protected slots:
     void restoreAllComics();
     void showRemovedComicsSelector();
 
+signals:
+    void loadPage(QString, int);
+
+private slots:
+    void loadNextPage();
+    void loadPreviousPage();
+
 private:
     ScraperTableView *tableFiles;
     ScraperTableView *tableVolumeComics;
@@ -97,6 +102,9 @@ private:
     ScrapperToolButton *moveDownButtonCL;
     ScrapperToolButton *moveUpButtonIL;
     ScrapperToolButton *moveDownButtonIL;
+
+    QString currentVolumeId;
+    ScraperResultsPaginator *paginator;
 };
 
 #endif // SORT_VOLUME_COMICS_H

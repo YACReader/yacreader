@@ -281,6 +281,16 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     setFolderAsUnreadAction->setData(SET_FOLDER_AS_UNREAD_ACTION_YL);
     setFolderAsUnreadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_AS_UNREAD_ACTION_YL));
 
+    setFolderCoverAction = new QAction(window);
+    setFolderCoverAction->setText(tr("Set custom cover"));
+    setFolderCoverAction->setData(SET_FOLDER_COVER_ACTION_YL);
+    setFolderCoverAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_FOLDER_COVER_ACTION_YL));
+
+    deleteCustomFolderCoverAction = new QAction(window);
+    deleteCustomFolderCoverAction->setText(tr("Delete custom cover"));
+    deleteCustomFolderCoverAction->setData(DELETE_CUSTOM_FOLDER_COVER_ACTION_YL);
+    deleteCustomFolderCoverAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DELETE_CUSTOM_FOLDER_COVER_ACTION_YL));
+
     setFolderAsMangaAction = new QAction(window);
     setFolderAsMangaAction->setText(tr("manga"));
     setFolderAsMangaAction->setData(SET_FOLDER_AS_MANGA_ACTION_YL);
@@ -445,6 +455,8 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     window->addAction(setFolderAsWesternMangaAction);
     window->addAction(setFolderAsWebComicAction);
     window->addAction(setFolderAsYonkomaAction);
+    window->addAction(setFolderCoverAction);
+    window->addAction(deleteCustomFolderCoverAction);
     window->addAction(deleteMetadataAction);
     window->addAction(rescanXMLFromCurrentFolderAction);
     window->addAction(openContainingFolderComicAction);
@@ -512,6 +524,8 @@ void LibraryWindowActions::createConnections(
     QObject::connect(setFolderAsReadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsRead);
     QObject::connect(setFolderAsUnreadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsUnread);
     QObject::connect(openContainingFolderAction, &QAction::triggered, window, &LibraryWindow::openContainingFolder);
+    QObject::connect(setFolderCoverAction, &QAction::triggered, window, &LibraryWindow::setFolderCover);
+    QObject::connect(deleteCustomFolderCoverAction, &QAction::triggered, window, &LibraryWindow::deleteCustomFolderCover);
 
     QObject::connect(setFolderAsMangaAction, &QAction::triggered, window, [=]() {
         window->setFolderType(FileType::Manga);
@@ -630,7 +644,9 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << setFolderAsMangaAction
                                                  << setFolderAsNormalAction
                                                  << updateCurrentFolderAction
-                                                 << rescanXMLFromCurrentFolderAction);
+                                                 << rescanXMLFromCurrentFolderAction
+                                                 << setFolderCoverAction
+                                                 << deleteCustomFolderCoverAction);
     allActions << tmpList;
 
     editShortcutsDialog->addActionsGroup("Lists", QIcon(":/images/shortcuts_group_folders.svg"), // TODO change icon

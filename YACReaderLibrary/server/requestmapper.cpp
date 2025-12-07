@@ -246,7 +246,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     QRegExp comicFullInfo("/v2/library/.+/comic/[0-9]+/fullinfo/?"); // get comic info
     QRegExp comicUpdate("/v2/library/.+/comic/[0-9]+/update/?"); // get comic info
     QRegExp comicClose("/v2/library/.+/comic/[0-9]+/close/?"); // the server will close the comic and free memory
-    QRegExp cover("/v2/library/.+/cover/[0-9a-f]+.jpg"); // get comic cover (navigation)
+    QRegExp cover("/v2/library/.+/cover/.+"); // get comic cover (navigation)
     QRegExp comicPage("/v2/library/.+/comic/[0-9]+/page/[0-9]+/?"); // get comic page
     QRegExp comicPageRemote("/v2/library/.+/comic/[0-9]+/page/[0-9]+/remote?"); // get comic page (remote reading)
     QRegExp serverVersion("/v2/version/?");

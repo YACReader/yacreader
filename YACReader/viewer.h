@@ -17,6 +17,7 @@
 #include <QSettings>
 
 #include "scroll_management.h"
+#include "mouse_handler.h"
 
 class ComicDB;
 class Comic;
@@ -147,9 +148,6 @@ private:
     int translatorXPos;
     QPropertyAnimation *translatorAnimation;
 
-    int yDragOrigin;
-    int xDragOrigin;
-
     NotificationsLabelWidget *notificationsLabel;
 
     bool shouldOpenNext;
@@ -185,6 +183,9 @@ private:
     int animationDuration() const;
     void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta);
 
+    //! Mouse handler
+    std::unique_ptr<YACReader::MouseHandler> mouseHandler;
+
 public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
@@ -213,6 +214,8 @@ signals:
     void magnifyingGlassZoomIn();
     void magnifyingGlassZoomOut();
     void resetMagnifyingGlass();
+
+    friend class YACReader::MouseHandler;
 };
 
 #endif

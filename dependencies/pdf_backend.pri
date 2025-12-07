@@ -7,12 +7,14 @@ CONFIG(pdfium) {
   DEFINES += "USE_PDFIUM"
   SOURCES += ../common/pdf_comic.cpp
   msvc {
-    INCLUDEPATH += $$PWD/pdfium/win/public
-    contains(QMAKE_TARGET.arch, x86_64): {
-      LIBS += -L$$PWD/pdfium/win/x64 -lpdfium
-    } else {
-      LIBS += -L$$PWD/pdfium/win/x86 -lpdfium
-    }
+      INCLUDEPATH += $$PWD/pdfium/win/public
+      contains(QMAKE_TARGET.arch, x86_64): {
+          LIBS += -L$$PWD/pdfium/win/x64 -lpdfium
+      } else:contains(QMAKE_TARGET.arch, arm64): {
+          LIBS += -L$$PWD/pdfium/win/arm64 -lpdfium
+      } else {
+          LIBS += -L$$PWD/pdfium/win/x86 -lpdfium
+      }
   }
   unix|mingw {
     macx {

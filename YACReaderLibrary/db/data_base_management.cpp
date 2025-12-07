@@ -4,6 +4,7 @@
 #include "initial_comic_info_extractor.h"
 #include "check_new_version.h"
 #include "db_helper.h"
+#include "yacreader_libraries.h"
 
 #include "QsLog.h"
 
@@ -80,7 +81,13 @@ static QString fields = "title,"
                         "seriesGroup,"
                         "mainCharacterOrTeam,"
                         "review,"
-                        "tags";
+                        "tags,"
+                        // new 9.16 fields
+                        "imageFiltersJson,"
+                        "lastTimeImageFiltersSet,"
+                        "lastTimeCoverSet,"
+                        "usesExternalCover,"
+                        "lastTimeMetadataSet";
 
 DataBaseManagement::DataBaseManagement()
     : QObject(), dataBasesList()
@@ -118,15 +125,15 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
     return db;
 }
 
-QSqlDatabase DataBaseManagement::loadDatabase(QString path)
+QSqlDatabase DataBaseManagement::loadDatabase(QString libraryDataPath)
 {
-    if (!QFile::exists(path + "/library.ydb")) {
+    if (!QFile::exists(libraryDataPath + "/library.ydb")) {
         return QSqlDatabase();
     }
 
     QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", path + threadId);
-    db.setDatabaseName(path + "/library.ydb");
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", libraryDataPath + threadId);
+    db.setDatabaseName(libraryDataPath + "/library.ydb");
     if (!db.open()) {
         return QSqlDatabase();
     }
@@ -283,7 +290,13 @@ bool DataBaseManagement::createComicInfoTable(QSqlDatabase &database, QString ta
                                                          "seriesGroup TEXT,"
                                                          "mainCharacterOrTeam TEXT,"
                                                          "review TEXT,"
-                                                         "tags TEXT"
+                                                         "tags TEXT,"
+                                                         // new 9.16 fields
+                                                         "imageFiltersJson TEXT,"
+                                                         "lastTimeImageFiltersSet INTEGER DEFAULT 0,"
+                                                         "lastTimeCoverSet INTEGER DEFAULT 0,"
+                                                         "usesExternalCover BOOLEAN DEFAULT 0,"
+                                                         "lastTimeMetadataSet INTEGER DEFAULT 0"
                                                          ")");
 
     return queryComicInfo.exec();
@@ -667,7 +680,8 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                 QString basePath = QString(dest).remove("/.yacreaderlibrary/library.ydb");
                 QString path = basePath + getComic.record().value("path").toString();
                 int coverPage = getComic.record().value("coverPage").toInt();
-                InitialComicInfoExtractor ie(path, basePath + "/.yacreaderlibrary/covers/" + hash + ".jpg", coverPage);
+                auto coverPath = LibraryPaths::coverPath(basePath, hash);
+                InitialComicInfoExtractor ie(path, coverPath, coverPage);
                 ie.extract();
             }
         }
@@ -851,7 +865,7 @@ int DataBaseManagement::compareVersions(const QString &v1, const QString v2)
     return 0;
 }
 
-bool DataBaseManagement::updateToCurrentVersion(const QString &path)
+bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
 {
     bool pre7 = false;
     bool pre7_1 = false;
@@ -860,231 +874,256 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
     bool pre9_8 = false;
     bool pre9_13 = false;
     bool pre9_14 = false;
+    bool pre9_16 = false;
 
-    QString fullPath = path + "/library.ydb";
+    QString libraryDatabasePath = LibraryPaths::libraryDatabasePath(libraryPath);
 
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "7.0.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "7.0.0") < 0)
         pre7 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "7.0.3") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "7.0.3") < 0)
         pre7_1 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "8.0.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "8.0.0") < 0)
         pre8 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.5.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.5.0") < 0)
         pre9_5 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.8.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.8.0") < 0)
         pre9_8 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.13.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.13.0") < 0)
         pre9_13 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(fullPath), "9.14.0") < 0)
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.14.0") < 0)
         pre9_14 = true;
+    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.16.0") < 0)
+        pre9_16 = true;
 
     QString connectionName = "";
     bool returnValue = true;
 
     {
-        QSqlDatabase db = loadDatabaseFromFile(fullPath);
+        QSqlDatabase db = loadDatabaseFromFile(libraryDatabasePath);
         if (db.isValid() && db.isOpen()) {
-            if (pre7) // TODO: execute only if previous version was < 7.0
-            {
-                // new 7.0 fields
-                QStringList columnDefs;
-                columnDefs << "hasBeenOpened BOOLEAN DEFAULT 0"
-                           << "rating INTEGER DEFAULT 0"
-                           << "currentPage INTEGER DEFAULT 1"
-                           << "bookmark1 INTEGER DEFAULT -1"
-                           << "bookmark2 INTEGER DEFAULT -1"
-                           << "bookmark3 INTEGER DEFAULT -1"
-                           << "brightness INTEGER DEFAULT -1"
-                           << "contrast INTEGER DEFAULT -1"
-                           << "gamma INTEGER DEFAULT -1";
-
-                bool successAddingColumns = addColumns("comic_info", columnDefs, db);
-                returnValue = returnValue && successAddingColumns;
-            }
-            // TODO update hasBeenOpened value
-
-            if (pre7_1) {
-                {
+            if (!db.transaction()) {
+                QLOG_ERROR() << "Failed to start transaction for database update";
+                returnValue = false;
+            } else {
+                if (pre7) {
+                    // new 7.0 fields
                     QStringList columnDefs;
-                    columnDefs << "finished BOOLEAN DEFAULT 0"
-                               << "completed BOOLEAN DEFAULT 1";
-                    bool successAddingColumns = addColumns("folder", columnDefs, db);
-                    returnValue = returnValue && successAddingColumns;
-                }
+                    columnDefs << "hasBeenOpened BOOLEAN DEFAULT 0"
+                               << "rating INTEGER DEFAULT 0"
+                               << "currentPage INTEGER DEFAULT 1"
+                               << "bookmark1 INTEGER DEFAULT -1"
+                               << "bookmark2 INTEGER DEFAULT -1"
+                               << "bookmark3 INTEGER DEFAULT -1"
+                               << "brightness INTEGER DEFAULT -1"
+                               << "contrast INTEGER DEFAULT -1"
+                               << "gamma INTEGER DEFAULT -1";
 
-                { // comic_info
-                    QStringList columnDefs;
-                    columnDefs << "comicVineID TEXT DEFAULT NULL";
                     bool successAddingColumns = addColumns("comic_info", columnDefs, db);
                     returnValue = returnValue && successAddingColumns;
                 }
-            }
 
-            if (pre8) {
-                bool successCreatingNewTables = createV8Tables(db);
-                returnValue = returnValue && successCreatingNewTables;
-            }
-
-            if (pre9_5) {
-                { // folder
-                    QStringList columnDefs;
-                    // a full library update is needed after updating the table
-                    columnDefs << "numChildren INTEGER";
-                    columnDefs << "firstChildHash TEXT";
-                    columnDefs << "customImage TEXT";
-                    bool successAddingColumns = addColumns("folder", columnDefs, db);
-                    returnValue = returnValue && successAddingColumns;
-                }
-
-                { // comic_info
-                    QStringList columnDefs;
-                    columnDefs << "lastTimeOpened INTEGER";
-                    columnDefs << "coverSizeRatio REAL";
-                    columnDefs << "originalCoverSize TEXT";
-                    bool successAddingColumns = addColumns("comic_info", columnDefs, db);
-                    returnValue = returnValue && successAddingColumns;
-
-                    QSqlQuery queryIndexLastTimeOpened(db);
-                    bool successCreatingIndex = queryIndexLastTimeOpened.exec("CREATE INDEX last_time_opened_index ON comic_info (lastTimeOpened)");
-                    returnValue = returnValue && successCreatingIndex;
-                }
-
-                // update folders info
-                {
-                    DBHelper::updateChildrenInfo(db);
-                }
-
-                {
-                    QSqlQuery selectQuery(db);
-                    selectQuery.prepare("SELECT id, hash FROM comic_info");
-                    selectQuery.exec();
-
-                    db.transaction();
-
-                    QSqlQuery updateCoverInfo(db);
-                    updateCoverInfo.prepare("UPDATE comic_info SET coverSizeRatio = :coverSizeRatio WHERE id = :id");
-
-                    QImageReader thumbnail;
-                    while (selectQuery.next()) {
-                        thumbnail.setFileName(path % "/covers/" % selectQuery.value(1).toString() % ".jpg");
-
-                        float coverSizeRatio = static_cast<float>(thumbnail.size().width()) / thumbnail.size().height();
-                        updateCoverInfo.bindValue(":coverSizeRatio", coverSizeRatio);
-                        updateCoverInfo.bindValue(":id", selectQuery.value(0));
-
-                        updateCoverInfo.exec();
+                if (pre7_1) {
+                    {
+                        QStringList columnDefs;
+                        columnDefs << "finished BOOLEAN DEFAULT 0"
+                                   << "completed BOOLEAN DEFAULT 1";
+                        bool successAddingColumns = addColumns("folder", columnDefs, db);
+                        returnValue = returnValue && successAddingColumns;
                     }
 
-                    db.commit();
+                    { // comic_info
+                        QStringList columnDefs;
+                        columnDefs << "comicVineID TEXT DEFAULT NULL";
+                        bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                        returnValue = returnValue && successAddingColumns;
+                    }
                 }
-            }
 
-            if (pre9_8) {
-                { // comic_info
-                    QStringList columnDefs;
-                    columnDefs << "manga BOOLEAN DEFAULT 0";
-                    bool successAddingColumns = addColumns("comic_info", columnDefs, db);
-                    returnValue = returnValue && successAddingColumns;
+                if (pre8) {
+                    bool successCreatingNewTables = createV8Tables(db);
+                    returnValue = returnValue && successCreatingNewTables;
                 }
-                { // folder
-                    QStringList columnDefs;
-                    columnDefs << "manga BOOLEAN DEFAULT 0";
-                    bool successAddingColumns = addColumns("folder", columnDefs, db);
-                    returnValue = returnValue && successAddingColumns;
-                }
-            }
 
-            if (pre9_13) {
-                { // comic_info
-                    QStringList columnDefs;
-                    columnDefs << "added INTEGER";
-                    columnDefs << "type INTEGER DEFAULT 0"; // 0 = comic, 1 = manga, 2 = manga left to right, 3 = webcomic,
-                    columnDefs << "editor TEXT";
-                    columnDefs << "imprint TEXT";
-                    columnDefs << "teams TEXT";
-                    columnDefs << "locations TEXT";
-                    columnDefs << "series TEXT";
-                    columnDefs << "alternateSeries TEXT";
-                    columnDefs << "alternateNumber TEXT";
-                    columnDefs << "alternateCount INTEGER";
-                    columnDefs << "languageISO TEXT";
-                    columnDefs << "seriesGroup TEXT";
-                    columnDefs << "mainCharacterOrTeam TEXT";
-                    columnDefs << "review TEXT";
-                    columnDefs << "tags TEXT";
-                    bool successAddingColumns = addColumns("comic_info", columnDefs, db);
-                    returnValue = returnValue && successAddingColumns;
+                if (pre9_5) {
+                    { // folder
+                        QStringList columnDefs;
+                        // a full library update is needed after updating the table
+                        columnDefs << "numChildren INTEGER";
+                        columnDefs << "firstChildHash TEXT";
+                        columnDefs << "customImage TEXT";
+                        bool successAddingColumns = addColumns("folder", columnDefs, db);
+                        returnValue = returnValue && successAddingColumns;
+                    }
 
-                    QSqlQuery updateTypeQueryToManga(db);
-                    updateTypeQueryToManga.prepare("UPDATE comic_info SET type = manga");
-                    bool successMigratingManga = updateTypeQueryToManga.exec();
-                    returnValue = returnValue && successMigratingManga;
+                    { // comic_info
+                        QStringList columnDefs;
+                        columnDefs << "lastTimeOpened INTEGER";
+                        columnDefs << "coverSizeRatio REAL";
+                        columnDefs << "originalCoverSize TEXT";
+                        bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                        returnValue = returnValue && successAddingColumns;
 
-                    QSqlQuery updateNumberQueryToBis(db);
-                    updateNumberQueryToBis.prepare("UPDATE comic_info SET number = number + 0.5 WHERE isBis = 1");
-                    bool successMigratingBis = updateNumberQueryToBis.exec();
-                    returnValue = returnValue && successMigratingBis;
-                }
-                { // folder
-                    QStringList columnDefs;
-                    columnDefs << "added INTEGER";
-                    columnDefs << "updated INTEGER";
-                    columnDefs << "type INTEGER DEFAULT 0";
+                        QSqlQuery queryIndexLastTimeOpened(db);
+                        bool successCreatingIndex = queryIndexLastTimeOpened.exec("CREATE INDEX last_time_opened_index ON comic_info (lastTimeOpened)");
+                        returnValue = returnValue && successCreatingIndex;
+                    }
 
-                    bool successAddingColumns = addColumns("folder", columnDefs, db);
-                    returnValue = returnValue && successAddingColumns;
+                    // update folders info
+                    {
+                        DBHelper::updateChildrenInfo(db);
+                    }
 
-                    QSqlQuery updateTypeQueryToManga(db);
-                    updateTypeQueryToManga.prepare("UPDATE folder SET type = manga");
-                    bool successMigratingManga = updateTypeQueryToManga.exec();
-                    returnValue = returnValue && successMigratingManga;
-                }
-            }
+                    {
+                        QSqlQuery selectQuery(db);
+                        selectQuery.prepare("SELECT id, hash FROM comic_info");
+                        selectQuery.exec();
 
-            // ensure that INTEGER types migrated to TEXT are actually changed in the table definition to avoid internal type castings, this happened in 9.13 but a migration wasn't shipped with that version.
-            if (pre9_14) {
-                {
-                    bool pre9_14_successfulMigration = true;
+                        db.transaction();
 
-                    QSqlQuery pragmaFKOFF(db);
-                    pragmaFKOFF.prepare("PRAGMA foreign_keys=OFF");
-                    pre9_14_successfulMigration = pre9_14_successfulMigration && pragmaFKOFF.exec();
+                        QSqlQuery updateCoverInfo(db);
+                        updateCoverInfo.prepare("UPDATE comic_info SET coverSizeRatio = :coverSizeRatio WHERE id = :id");
 
-                    db.transaction();
+                        QImageReader thumbnail;
+                        while (selectQuery.next()) {
+                            auto coverPath = LibraryPaths::coverPath(libraryPath, selectQuery.value(1).toString());
+                            thumbnail.setFileName(coverPath);
 
-                    pre9_14_successfulMigration = pre9_14_successfulMigration && createComicInfoTable(db, "comic_info_migration");
+                            float coverSizeRatio = static_cast<float>(thumbnail.size().width()) / thumbnail.size().height();
+                            updateCoverInfo.bindValue(":coverSizeRatio", coverSizeRatio);
+                            updateCoverInfo.bindValue(":id", selectQuery.value(0));
 
-                    QSqlQuery copyComicInfoToComicInfoMigration(db);
-                    copyComicInfoToComicInfoMigration.prepare("INSERT INTO comic_info_migration SELECT * FROM comic_info");
-                    pre9_14_successfulMigration = pre9_14_successfulMigration && copyComicInfoToComicInfoMigration.exec();
+                            updateCoverInfo.exec();
+                        }
 
-                    QSqlQuery dropComicInfo(db);
-                    dropComicInfo.prepare("DROP TABLE comic_info");
-                    pre9_14_successfulMigration = pre9_14_successfulMigration && dropComicInfo.exec();
-
-                    QSqlQuery renameComicInfoMigrationToComicInfo(db);
-                    renameComicInfoMigrationToComicInfo.prepare("ALTER TABLE comic_info_migration RENAME TO comic_info");
-                    pre9_14_successfulMigration = pre9_14_successfulMigration && renameComicInfoMigrationToComicInfo.exec();
-
-                    if (pre9_14_successfulMigration)
                         db.commit();
-                    else
-                        db.rollback();
+                    }
+                }
 
-                    QSqlQuery pragmaFKON1("PRAGMA foreign_keys=ON", db);
+                if (pre9_8) {
+                    { // comic_info
+                        QStringList columnDefs;
+                        columnDefs << "manga BOOLEAN DEFAULT 0";
+                        bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                        returnValue = returnValue && successAddingColumns;
+                    }
+                    { // folder
+                        QStringList columnDefs;
+                        columnDefs << "manga BOOLEAN DEFAULT 0";
+                        bool successAddingColumns = addColumns("folder", columnDefs, db);
+                        returnValue = returnValue && successAddingColumns;
+                    }
+                }
 
-                    returnValue = returnValue && pre9_14_successfulMigration;
+                if (pre9_13) {
+                    { // comic_info
+                        QStringList columnDefs;
+                        columnDefs << "added INTEGER";
+                        columnDefs << "type INTEGER DEFAULT 0"; // 0 = comic, 1 = manga, 2 = manga left to right, 3 = webcomic,
+                        columnDefs << "editor TEXT";
+                        columnDefs << "imprint TEXT";
+                        columnDefs << "teams TEXT";
+                        columnDefs << "locations TEXT";
+                        columnDefs << "series TEXT";
+                        columnDefs << "alternateSeries TEXT";
+                        columnDefs << "alternateNumber TEXT";
+                        columnDefs << "alternateCount INTEGER";
+                        columnDefs << "languageISO TEXT";
+                        columnDefs << "seriesGroup TEXT";
+                        columnDefs << "mainCharacterOrTeam TEXT";
+                        columnDefs << "review TEXT";
+                        columnDefs << "tags TEXT";
+                        bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                        returnValue = returnValue && successAddingColumns;
+
+                        QSqlQuery updateTypeQueryToManga(db);
+                        updateTypeQueryToManga.prepare("UPDATE comic_info SET type = manga");
+                        bool successMigratingManga = updateTypeQueryToManga.exec();
+                        returnValue = returnValue && successMigratingManga;
+
+                        QSqlQuery updateNumberQueryToBis(db);
+                        updateNumberQueryToBis.prepare("UPDATE comic_info SET number = number + 0.5 WHERE isBis = 1");
+                        bool successMigratingBis = updateNumberQueryToBis.exec();
+                        returnValue = returnValue && successMigratingBis;
+                    }
+                    { // folder
+                        QStringList columnDefs;
+                        columnDefs << "added INTEGER";
+                        columnDefs << "updated INTEGER";
+                        columnDefs << "type INTEGER DEFAULT 0";
+
+                        bool successAddingColumns = addColumns("folder", columnDefs, db);
+                        returnValue = returnValue && successAddingColumns;
+
+                        QSqlQuery updateTypeQueryToManga(db);
+                        updateTypeQueryToManga.prepare("UPDATE folder SET type = manga");
+                        bool successMigratingManga = updateTypeQueryToManga.exec();
+                        returnValue = returnValue && successMigratingManga;
+                    }
+                }
+
+                // ensure that INTEGER types migrated to TEXT are actually changed in the table definition to avoid internal type castings, this happened in 9.13 but a migration wasn't shipped with that version.
+                if (pre9_14) {
+                    {
+                        bool pre9_14_successfulMigration = true;
+
+                        QSqlQuery pragmaFKOFF(db);
+                        pragmaFKOFF.prepare("PRAGMA foreign_keys=OFF");
+                        pre9_14_successfulMigration = pre9_14_successfulMigration && pragmaFKOFF.exec();
+
+                        pre9_14_successfulMigration = pre9_14_successfulMigration && createComicInfoTable(db, "comic_info_migration");
+
+                        QSqlQuery copyComicInfoToComicInfoMigration(db);
+                        copyComicInfoToComicInfoMigration.prepare("INSERT INTO comic_info_migration SELECT * FROM comic_info");
+                        pre9_14_successfulMigration = pre9_14_successfulMigration && copyComicInfoToComicInfoMigration.exec();
+
+                        QSqlQuery dropComicInfo(db);
+                        dropComicInfo.prepare("DROP TABLE comic_info");
+                        pre9_14_successfulMigration = pre9_14_successfulMigration && dropComicInfo.exec();
+
+                        QSqlQuery renameComicInfoMigrationToComicInfo(db);
+                        renameComicInfoMigrationToComicInfo.prepare("ALTER TABLE comic_info_migration RENAME TO comic_info");
+                        pre9_14_successfulMigration = pre9_14_successfulMigration && renameComicInfoMigrationToComicInfo.exec();
+
+                        QSqlQuery pragmaFKON1("PRAGMA foreign_keys=ON", db);
+
+                        returnValue = returnValue && pre9_14_successfulMigration;
+                    }
+                }
+
+                if (pre9_16) {
+                    { // comic_info
+                        QStringList columnDefs;
+                        columnDefs << "imageFiltersJson TEXT";
+                        columnDefs << "lastTimeImageFiltersSet INTEGER DEFAULT 0";
+
+                        columnDefs << "lastTimeCoverSet INTEGER DEFAULT 0";
+                        columnDefs << "usesExternalCover BOOLEAN DEFAULT 0";
+
+                        columnDefs << "lastTimeMetadataSet INTEGER DEFAULT 0";
+
+                        bool successAddingColumns = addColumns("comic_info", columnDefs, db);
+                        returnValue = returnValue && successAddingColumns;
+                    }
+                }
+
+                if (returnValue) {
+                    QSqlQuery updateVersion(db);
+                    updateVersion.prepare("UPDATE db_info SET "
+                                          "version = :version");
+                    updateVersion.bindValue(":version", DB_VERSION);
+                    updateVersion.exec();
+
+                    returnValue = updateVersion.numRowsAffected() > 0;
                 }
             }
 
             if (returnValue) {
-                QSqlQuery updateVersion(db);
-                updateVersion.prepare("UPDATE db_info SET "
-                                      "version = :version");
-                updateVersion.bindValue(":version", DB_VERSION);
-                updateVersion.exec();
-
-                returnValue = updateVersion.numRowsAffected() > 0;
+                if (!db.commit()) {
+                    QLOG_ERROR() << "Failed to commit transaction for database update";
+                    returnValue = false;
+                }
+            } else {
+                db.rollback();
             }
         }
         connectionName = db.connectionName();
@@ -1092,6 +1131,52 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &path)
 
     QSqlDatabase::removeDatabase(connectionName);
     return returnValue;
+}
+
+DatabaseAccess DataBaseManagement::getDatabaseAccess(const QString &libraryPath)
+{
+    DatabaseAccess access = { false, false, false, false };
+
+    auto libraryDataPath = LibraryPaths::libraryDataPath(libraryPath);
+    auto libraryDatabasePath = LibraryPaths::libraryDatabasePath(libraryPath);
+
+    QFile libraryDatabase(libraryDatabasePath);
+    if (!libraryDatabase.exists()) {
+        return access;
+    }
+
+    access.libraryExists = true;
+
+    QDir libraryData(libraryDataPath);
+    QFile testFile(libraryData.filePath("test"));
+    if (testFile.open(QIODevice::WriteOnly)) {
+        access.canWriteToFolder = true;
+        testFile.close();
+        testFile.remove();
+    }
+
+    QString connectionName = "test";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabaseFromFile(libraryDatabasePath);
+
+        QSqlQuery versionQuery(db);
+        bool read = versionQuery.exec("SELECT version FROM db_info");
+
+        read = read && versionQuery.next();
+        read = read && !versionQuery.record().value(0).toString().isEmpty();
+
+        access.canRead = read;
+
+        QSqlQuery writeQuery(db);
+        bool write = db.transaction();
+        write = write && writeQuery.exec("CREATE TABLE test_write (id INTEGER);");
+        write = write && db.rollback();
+
+        access.canWrite = write;
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return access;
 }
 
 // COMICS_INFO_EXPORTER

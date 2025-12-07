@@ -34,7 +34,6 @@ void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &respon
         ComicInfo info;
         info.currentPage = currentPage;
         info.id = comicId;
-        DBHelper::updateProgress(libraryId, info);
 
         if (data.length() > 1) {
             if (data.at(1).isEmpty() == false) {
@@ -43,7 +42,22 @@ void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &respon
                 info.id = nextComicId.toULongLong();
                 DBHelper::setComicAsReading(libraryId, info);
             }
+
+            if (data.length() > 2) {
+                QStringList imageFiltersData = data.at(2).split("\t");
+                auto epoch = imageFiltersData.at(0).toULongLong();
+                QString imageFiltersJson = imageFiltersData.at(1);
+
+                ComicInfo imageFiltersInfo;
+                imageFiltersInfo.id = comicId;
+                imageFiltersInfo.lastTimeImageFiltersSet = epoch;
+                imageFiltersInfo.imageFiltersJson = imageFiltersJson.isEmpty() ? QVariant() : imageFiltersJson;
+
+                DBHelper::updateImageFilters(libraryId, imageFiltersInfo);
+            }
         }
+
+        DBHelper::updateProgress(libraryId, info);
 
         error = false;
         updatedLibraryId = libraryId;

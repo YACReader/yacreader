@@ -75,3 +75,6 @@ YACReader is free but it needs money to keep being alive, so please, if you like
 
 ## Hacktoberfest
 If you are interested in YACReader, please contact me so we can discuss your next steps.
+
+## Sponsors 
+Free code signing on Windows provided by [SignPath.io](https://signpath.io/), certificate by [SignPath Foundation](https://signpath.org/)

@@ -22,6 +22,9 @@ private:
     // QLabel * pathLabel;
     QLineEdit *pathEdit;
     QPushButton *pathFindButton;
+
+    QCheckBox *showTimeInInformationLabel;
+
     QCheckBox *quickNavi;
     QCheckBox *disableShowOnMouseOver;
     QCheckBox *scaleCheckbox;
@@ -51,6 +54,11 @@ private:
     YACReaderSpinSliderWidget *gammaS;
 
     QColor currentColor;
+
+    QRadioButton *normalMouseModeRadioButton;
+    QRadioButton *leftRightNavigationMouseModeRadioButton;
+    QRadioButton *hotAreasMouseModeRadioButton;
+
 public slots:
     void saveOptions() override;
     void restoreOptions(QSettings *settings) override;

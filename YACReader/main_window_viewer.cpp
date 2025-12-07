@@ -486,7 +486,10 @@ void MainWindowViewer::createToolBars()
 #endif
 
 #ifndef Y_MAC_UI
-    comicToolBar->setStyleSheet("QToolBar{border:none;}");
+    comicToolBar->setStyleSheet(R"(
+        QToolBar { border: none; }
+        QToolButton:checked { background-color: #cccccc; }
+    )");
     comicToolBar->setIconSize(QSize(18, 18));
 #endif
 
@@ -625,7 +628,7 @@ void MainWindowViewer::createToolBars()
 
     viewer->addAction(closeAction);
 
-    viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
+    updateContextMenuPolicy();
 
     // MacOSX app menus
 #ifdef Q_OS_MACOS
@@ -777,7 +780,23 @@ void MainWindowViewer::openComicFromRecentAction(QAction *action)
 
 void MainWindowViewer::reloadOptions()
 {
+    updateContextMenuPolicy();
     viewer->updateConfig(settings);
+}
+
+void MainWindowViewer::updateContextMenuPolicy()
+{
+    auto mouseMode = Configuration::getConfiguration().getMouseMode();
+    switch (mouseMode) {
+
+    case Normal:
+    case HotAreas:
+        viewer->setContextMenuPolicy(Qt::ActionsContextMenu);
+        break;
+    case LeftRightNavigation:
+        viewer->setContextMenuPolicy(Qt::NoContextMenu);
+        break;
+    }
 }
 
 void MainWindowViewer::open()
@@ -970,9 +989,11 @@ void MainWindowViewer::disablePreviousNextComicActions()
 
 void MainWindowViewer::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        toggleFullScreen();
-        event->accept();
+    if (Configuration::getConfiguration().getMouseMode() == MouseMode::Normal) {
+        if (event->button() == Qt::LeftButton) {
+            toggleFullScreen();
+            event->accept();
+        }
     }
 }
 
@@ -1319,7 +1340,11 @@ void MainWindowViewer::toggleFitToWidthSlider()
     if (zoomSliderAction->isVisible()) {
         zoomSliderAction->hide();
     } else {
+#if defined(Y_MAC_UI) && (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+        zoomSliderAction->move((this->width() - zoomSliderAction->width()) / 2, y);
+#else
         zoomSliderAction->move(250, y);
+#endif
         zoomSliderAction->show();
     }
 }

@@ -67,6 +67,7 @@ public slots:
     void increasePageZoomLevel();
     void decreasePageZoomLevel();
     void reloadOptions();
+    void updateContextMenuPolicy();
     void fitToWidth();
     void fitToHeight();
     void toggleWidthHeight();

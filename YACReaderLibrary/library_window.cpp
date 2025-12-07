@@ -1,6 +1,7 @@
 #include "library_window.h"
 
 #include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -83,12 +84,15 @@
 
 #include "recent_visibility_coordinator.h"
 
+#include "cover_utils.h"
+
 #include "QsLog.h"
 
 #include "yacreader_http_server.h"
 extern YACReaderHttpServer *httpServer;
 
 #ifdef Q_OS_WIN
+#include <windows.h>
 #include <shellapi.h>
 #endif
 
@@ -263,7 +267,10 @@ void LibraryWindow::doLayout()
     // TOOLBARS-------------------------------------------------------------------
     //---------------------------------------------------------------------------
     editInfoToolBar = new QToolBar();
-    editInfoToolBar->setStyleSheet("QToolBar {border: none;}");
+    editInfoToolBar->setStyleSheet(R"(
+        QToolBar { border: none; }
+        QToolButton:checked { background-color: #cccccc; }
+    )");
 
 #ifdef Y_MAC_UI
     libraryToolBar = new YACReaderMacOSXToolbar(this);
@@ -535,6 +542,10 @@ void LibraryWindow::createMenus()
     foldersView->addAction(actions.setFolderAsWesternMangaAction);
     foldersView->addAction(actions.setFolderAsWebComicAction);
     foldersView->addAction(actions.setFolderAsYonkomaAction);
+    YACReader::addSperator(foldersView);
+
+    foldersView->addAction(actions.setFolderCoverAction);
+    foldersView->addAction(actions.deleteCustomFolderCoverAction);
 
     selectedLibrary->addAction(actions.updateLibraryAction);
     selectedLibrary->addAction(actions.renameLibraryAction);
@@ -668,11 +679,14 @@ void LibraryWindow::createMenus()
     folderMenu->addAction(actions.setFolderAsReadAction);
     folderMenu->addAction(actions.setFolderAsUnreadAction);
     folderMenu->addSeparator();
-    foldersView->addAction(actions.setFolderAsNormalAction);
-    foldersView->addAction(actions.setFolderAsMangaAction);
-    foldersView->addAction(actions.setFolderAsWesternMangaAction);
-    foldersView->addAction(actions.setFolderAsWebComicAction);
-    foldersView->addAction(actions.setFolderAsYonkomaAction);
+    folderMenu->addAction(actions.setFolderAsNormalAction);
+    folderMenu->addAction(actions.setFolderAsMangaAction);
+    folderMenu->addAction(actions.setFolderAsWesternMangaAction);
+    folderMenu->addAction(actions.setFolderAsWebComicAction);
+    folderMenu->addAction(actions.setFolderAsYonkomaAction);
+    folderMenu->addSeparator();
+    folderMenu->addAction(actions.setFolderCoverAction);
+    folderMenu->addAction(actions.deleteCustomFolderCoverAction);
 
     // comic
     QMenu *comicMenu = new QMenu(tr("Comic"));
@@ -769,19 +783,23 @@ void LibraryWindow::createConnections()
     connect(optionsDialog, &YACReaderOptionsDialog::optionsChanged, this, &LibraryWindow::reloadOptions);
     connect(optionsDialog, &YACReaderOptionsDialog::editShortcuts, editShortcutsDialog, &QWidget::show);
 
-    auto searchDebouncer = new KDToolBox::KDSignalDebouncer(this);
+    auto searchDebouncer = new KDToolBox::KDStringSignalDebouncer(this);
     searchDebouncer->setTimeout(400);
 
 // Search filter
 #ifdef Y_MAC_UI
-    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
-    connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
-        setSearchFilter(searchEdit->text());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    connect(libraryToolBar, &YACReaderMacOSXToolbar::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
+#else
+    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
+#endif
+    connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, this, [=](QString filter) {
+        setSearchFilter(filter);
     });
 #else
-    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDSignalThrottler::throttle);
-    connect(searchDebouncer, &KDToolBox::KDSignalThrottler::triggered, this, [=] {
-        setSearchFilter(searchEdit->text());
+    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
+    connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, this, [=](QString filter) {
+        setSearchFilter(filter);
     });
 #endif
     connect(&comicQueryResultProcessor, &ComicQueryResultProcessor::newData, this, &LibraryWindow::setComicSearchFilterData);
@@ -816,11 +834,17 @@ void LibraryWindow::loadLibrary(const QString &name)
         historyController->clear();
 
         showRootWidget();
-        QString path = libraries.getPath(name) + "/.yacreaderlibrary";
+        QString rootPath = libraries.getPath(name);
+        QString path = LibraryPaths::libraryDataPath(rootPath);
+        QString customFolderCoversPath = LibraryPaths::libraryCustomFoldersCoverPath(rootPath);
+        QString databasePath = LibraryPaths::libraryDatabasePath(rootPath);
         QDir d; // TODO change this by static methods (utils class?? with delTree for example)
         QString dbVersion;
-        if (d.exists(path) && d.exists(path + "/library.ydb") && (dbVersion = DataBaseManagement::checkValidDB(path + "/library.ydb")) != "") // si existe en disco la biblioteca seleccionada, y es válida..
+        if (d.exists(path) && d.exists(databasePath) && (dbVersion = DataBaseManagement::checkValidDB(databasePath)) != "") // si existe en disco la biblioteca seleccionada, y es válida..
         {
+            // this folde was added in 9.16, it needs to exist before the user starts importing custom covers for folders
+            d.mkdir(customFolderCoversPath);
+
             int comparation = DataBaseManagement::compareVersions(dbVersion, DB_VERSION);
 
             if (comparation < 0) {
@@ -829,8 +853,8 @@ void LibraryWindow::loadLibrary(const QString &name)
                     importWidget->setUpgradeLook();
                     showImportingWidget();
 
-                    upgradeLibraryFuture = std::async(std::launch::async, [this, name, path] {
-                        bool updated = DataBaseManagement::updateToCurrentVersion(path);
+                    upgradeLibraryFuture = std::async(std::launch::async, [this, name, path, rootPath] {
+                        bool updated = DataBaseManagement::updateToCurrentVersion(rootPath);
 
                         if (!updated)
                             emit errorUpgradingLibrary(path);
@@ -932,11 +956,9 @@ void LibraryWindow::loadLibrary(const QString &name)
                     QString currentLibrary = selectedLibrary->currentText();
                     QString path = libraries.getPath(selectedLibrary->currentText());
                     if (QMessageBox::question(this, tr("Old library"), tr("Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?").arg(currentLibrary), QMessageBox::Yes, QMessageBox::No) == QMessageBox::Yes) {
-                        QDir d(path + "/.yacreaderlibrary");
+                        QDir d(LibraryPaths::libraryDataPath(path));
                         d.removeRecursively();
-                        // d.rmdir(path+"/.yacreaderlibrary");
                         createLibraryDialog->setDataAndStart(currentLibrary, path);
-                        // create(path,path+"/.yacreaderlibrary",currentLibrary);
                     }
                     // será possible renombrar y borrar estas bibliotecas
                     actions.renameLibraryAction->setEnabled(true);
@@ -1070,9 +1092,9 @@ void LibraryWindow::updateFolder(const QModelIndex &miFolder)
     showImportingWidget();
 
     QString currentLibrary = selectedLibrary->currentText();
-    QString path = libraries.getPath(currentLibrary);
+    QString path = QDir::cleanPath(libraries.getPath(currentLibrary));
     _lastAdded = currentLibrary;
-    libraryCreator->updateFolder(QDir::cleanPath(path), QDir::cleanPath(path + "/.yacreaderlibrary"), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)), miFolder);
+    libraryCreator->updateFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)), miFolder);
     libraryCreator->start();
 }
 
@@ -1436,6 +1458,12 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
     auto setFolderAs4KomaAction = new QAction();
     setFolderAs4KomaAction->setText(tr("4koma (top to botom)"));
 
+    auto setFolderCoverAction = new QAction();
+    setFolderCoverAction->setText(tr("Set custom cover"));
+
+    auto deleteCustomFolderCoverAction = new QAction();
+    deleteCustomFolderCoverAction->setText(tr("Delete custom cover"));
+
     menu.addAction(openContainingFolderAction);
     menu.addAction(updateFolderAction);
     menu.addSeparator();
@@ -1531,6 +1559,20 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
         foldersModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
         subfolderModel->updateFolderType(QModelIndexList() << foldersModel->getIndexFromFolder(folder), FileType::Yonkoma);
     });
+    connect(setFolderCoverAction, &QAction::triggered, this, [=]() {
+        setCustomFolderCover(folder);
+    });
+
+    connect(deleteCustomFolderCoverAction, &QAction::triggered, this, [=]() {
+        resetFolderCover(folder);
+    });
+
+    menu.addSeparator();
+
+    menu.addAction(setFolderCoverAction);
+    if (!folder.customImage.isEmpty()) {
+        menu.addAction(deleteCustomFolderCoverAction);
+    }
 
     menu.exec(contentViewsManager->folderContentView->mapToGlobal(point));
 }
@@ -1773,7 +1815,8 @@ void LibraryWindow::openLibrary(QString path, QString name)
         // TODO: fix bug, /a/b/c/.yacreaderlibrary/d/e
         path.remove("/.yacreaderlibrary");
         QDir d; // TODO change this by static methods (utils class?? with delTree for example)
-        if (d.exists(path + "/.yacreaderlibrary")) {
+        auto libraryDataPath = LibraryPaths::libraryDataPath(path);
+        if (d.exists(libraryDataPath)) {
             _lastAdded = name;
             _sourceLastAdded = path;
             openLastCreated();
@@ -1805,7 +1848,7 @@ void LibraryWindow::updateLibrary()
     QString currentLibrary = selectedLibrary->currentText();
     QString path = libraries.getPath(currentLibrary);
     _lastAdded = currentLibrary;
-    libraryCreator->updateLibrary(path, path + "/.yacreaderlibrary");
+    libraryCreator->updateLibrary(path, LibraryPaths::libraryDataPath(path));
     libraryCreator->start();
 }
 
@@ -1814,8 +1857,7 @@ void LibraryWindow::deleteCurrentLibrary()
     QString path = libraries.getPath(selectedLibrary->currentText());
     libraries.remove(selectedLibrary->currentText());
     selectedLibrary->removeItem(selectedLibrary->currentIndex());
-    // selectedLibrary->setCurrentIndex(0);
-    path = path + "/.yacreaderlibrary";
+    path = LibraryPaths::libraryDatabasePath(path);
 
     QDir d(path);
     d.removeRecursively();
@@ -1895,7 +1937,7 @@ void LibraryWindow::rescanLibraryForXMLInfo()
     QString path = libraries.getPath(currentLibrary);
     _lastAdded = currentLibrary;
 
-    xmlInfoLibraryScanner->scanLibrary(path, path + "/.yacreaderlibrary");
+    xmlInfoLibraryScanner->scanLibrary(path, LibraryPaths::libraryDataPath(path));
 }
 
 void LibraryWindow::showLibraryInfo()
@@ -1929,7 +1971,7 @@ void LibraryWindow::rescanFolderForXMLInfo(QModelIndex modelIndex)
     QString path = libraries.getPath(currentLibrary);
     _lastAdded = currentLibrary;
 
-    xmlInfoLibraryScanner->scanFolder(path, path + "/.yacreaderlibrary", QDir::cleanPath(currentPath() + foldersModel->getFolderPath(modelIndex)), modelIndex);
+    xmlInfoLibraryScanner->scanFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(modelIndex)), modelIndex);
 }
 
 void LibraryWindow::cancelCreating()
@@ -1952,7 +1994,7 @@ void LibraryWindow::stopXMLScanning()
 void LibraryWindow::setRootIndex()
 {
     if (!libraries.isEmpty()) {
-        QString path = libraries.getPath(selectedLibrary->currentText()) + "/.yacreaderlibrary";
+        QString path = LibraryPaths::libraryDataPath(libraries.getPath(selectedLibrary->currentText()));
         QDir d; // TODO change this by static methods (utils class?? with delTree for example)
         if (d.exists(path)) {
             navigationController->selectedFolder(QModelIndex());
@@ -2267,10 +2309,54 @@ void LibraryWindow::setFolderType(FileType type)
     foldersModel->updateFolderType(QModelIndexList() << foldersModelProxy->mapToSource(foldersView->currentIndex()), type);
 }
 
+void LibraryWindow::setFolderCover()
+{
+    auto folder = foldersModel->getFolder(foldersModelProxy->mapToSource(foldersView->currentIndex()));
+    setCustomFolderCover(folder);
+}
+
+void LibraryWindow::setCustomFolderCover(Folder folder)
+{
+    auto customCoverPath = YACReader::imageFileLoader(this);
+    if (!customCoverPath.isEmpty()) {
+        QImage cover(customCoverPath);
+        if (cover.isNull()) {
+            QMessageBox::warning(this, tr("Invalid image"), tr("The selected file is not a valid image."));
+            return;
+        }
+
+        auto folderCoverPath = LibraryPaths::customFolderCoverPath(libraries.getPath(selectedLibrary->currentText()), QString::number(folder.id));
+        if (!YACReader::saveCover(folderCoverPath, cover)) {
+            QMessageBox::warning(this, tr("Error saving cover"), tr("There was an error saving the cover image."));
+        }
+
+        QModelIndex folderIndex = foldersModel->getIndexFromFolder(folder);
+        auto coversPath = LibraryPaths::libraryCoversFolderPath(libraries.getPath(selectedLibrary->currentText()));
+        auto relativePath = folderCoverPath.remove(coversPath);
+        foldersModel->setCustomFolderCover(folderIndex, relativePath);
+    }
+}
+
+void LibraryWindow::deleteCustomFolderCover()
+{
+    auto folder = foldersModel->getFolder(foldersModelProxy->mapToSource(foldersView->currentIndex()));
+    resetFolderCover(folder);
+}
+
+void LibraryWindow::resetFolderCover(Folder folder)
+{
+    auto folderCoverPath = LibraryPaths::customFolderCoverPath(libraries.getPath(selectedLibrary->currentText()), QString::number(folder.id));
+    if (QFile::exists(folderCoverPath)) {
+        QFile::remove(folderCoverPath);
+    }
+    QModelIndex folderIndex = foldersModel->getIndexFromFolder(folder);
+    foldersModel->resetFolderCover(folderIndex);
+}
+
 void LibraryWindow::exportLibrary(QString destPath)
 {
     QString currentLibrary = selectedLibrary->currentText();
-    QString path = libraries.getPath(currentLibrary) + "/.yacreaderlibrary";
+    QString path = LibraryPaths::libraryDataPath(libraries.getPath(currentLibrary));
     packageManager->createPackage(path, destPath + "/" + currentLibrary);
 }
 
@@ -2311,13 +2397,13 @@ QString LibraryWindow::currentFolderPath()
 
 void LibraryWindow::showExportComicsInfo()
 {
-    exportComicsInfoDialog->source = currentPath() + "/.yacreaderlibrary/library.ydb";
+    exportComicsInfoDialog->source = LibraryPaths::libraryDatabasePath(currentPath());
     exportComicsInfoDialog->open();
 }
 
 void LibraryWindow::showImportComicsInfo()
 {
-    importComicsInfoDialog->dest = currentPath() + "/.yacreaderlibrary/library.ydb";
+    importComicsInfoDialog->dest = currentPath() + LibraryPaths::libraryDatabasePath(currentPath());
     importComicsInfoDialog->open();
 }
 
@@ -2508,9 +2594,7 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 {
     QModelIndex sourceMI = foldersModelProxy->mapToSource(foldersView->indexAt(point));
 
-    bool isCompleted = sourceMI.data(FolderModel::CompletedRole).toBool();
-    bool isRead = sourceMI.data(FolderModel::FinishedRole).toBool();
-    auto type = sourceMI.data(FolderModel::TypeRole).value<YACReader::FileType>();
+    auto folder = foldersModel->getFolder(sourceMI);
 
     actions.setFolderAsNormalAction->setCheckable(true);
     actions.setFolderAsMangaAction->setCheckable(true);
@@ -2524,7 +2608,7 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     actions.setFolderAsWebComicAction->setChecked(false);
     actions.setFolderAsYonkomaAction->setChecked(false);
 
-    switch (type) {
+    switch (folder.type) {
     case FileType::Comic:
         actions.setFolderAsNormalAction->setChecked(true);
         break;
@@ -2549,12 +2633,12 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     menu.addSeparator(); //-------------------------------
     menu.addAction(actions.rescanXMLFromCurrentFolderAction);
     menu.addSeparator(); //-------------------------------
-    if (isCompleted)
+    if (folder.completed)
         menu.addAction(actions.setFolderAsNotCompletedAction);
     else
         menu.addAction(actions.setFolderAsCompletedAction);
     menu.addSeparator(); //-------------------------------
-    if (isRead)
+    if (folder.finished)
         menu.addAction(actions.setFolderAsUnreadAction);
     else
         menu.addAction(actions.setFolderAsReadAction);
@@ -2566,6 +2650,11 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     typeMenu->addAction(actions.setFolderAsWesternMangaAction);
     typeMenu->addAction(actions.setFolderAsWebComicAction);
     typeMenu->addAction(actions.setFolderAsYonkomaAction);
+    menu.addSeparator(); //-------------------------------
+    menu.addAction(actions.setFolderCoverAction);
+    if (!folder.customImage.isEmpty()) {
+        menu.addAction(actions.deleteCustomFolderCoverAction);
+    }
 
     menu.exec(foldersView->mapToGlobal(point));
 }
@@ -2609,7 +2698,7 @@ void LibraryWindow::updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 co
         }
         QString connectionName = "";
         {
-            QSqlDatabase db = DataBaseManagement::loadDatabase(path + "/.yacreaderlibrary");
+            QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(path));
             bool found;
             auto comic = DBHelper::loadComic(comicId, db, found);
             if (found) {

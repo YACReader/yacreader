@@ -9,7 +9,7 @@
 
 #include <stdint.h>
 
-// NOLINTNEXTLINE(build/include)
+// NOLINTNEXTLINE(build/include_directory)
 #include "fpdfview.h"
 
 #define FPDF_ARGB(a, r, g, b)                                      \
@@ -187,6 +187,24 @@ FPDF_EXPORT void FPDF_CALLCONV FPDFPage_SetRotation(FPDF_PAGE page, int rotate);
 FPDF_EXPORT void FPDF_CALLCONV
 FPDFPage_InsertObject(FPDF_PAGE page, FPDF_PAGEOBJECT page_object);
 
+// Insert |page_object| into |page| at the specified |index|.
+//
+//   page        - handle to a page
+//   page_object - handle to a page object as previously obtained by
+//                 FPDFPageObj_CreateNew{Path|Rect}() or
+//                 FPDFPageObj_New{Text|Image}Obj(). Ownership of the object
+//                 is transferred back to PDFium.
+//   index       - the index position to insert the object at. If index equals
+//                 the current object count, the object will be appended to the
+//                 end. If index is greater than the object count, the function
+//                 will fail and return false.
+//
+// Returns true if successful.
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FPDFPage_InsertObjectAtIndex(FPDF_PAGE page,
+                             FPDF_PAGEOBJECT page_object,
+                             size_t index);
+
 // Experimental API.
 // Remove |page_object| from |page|.
 //
@@ -259,6 +277,38 @@ FPDFPageObj_HasTransparency(FPDF_PAGEOBJECT page_object);
 // Returns one of the FPDF_PAGEOBJ_* values on success, FPDF_PAGEOBJ_UNKNOWN on
 // error.
 FPDF_EXPORT int FPDF_CALLCONV FPDFPageObj_GetType(FPDF_PAGEOBJECT page_object);
+
+// Experimental API.
+// Gets active state for |page_object| within page.
+//
+//   page_object - handle to a page object.
+//   active      - pointer to variable that will receive if the page object is
+//                 active. This is a required parameter. Not filled if FALSE
+//                 is returned.
+//
+// For page objects where |active| is filled with FALSE, the |page_object| is
+// treated as if it wasn't in the document even though it is still held
+// internally.
+//
+// Returns TRUE if the operation succeeded, FALSE if it failed.
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FPDFPageObj_GetIsActive(FPDF_PAGEOBJECT page_object, FPDF_BOOL* active);
+
+// Experimental API.
+// Sets if |page_object| is active within page.
+//
+//   page_object - handle to a page object.
+//   active      - a boolean specifying if the object is active.
+//
+// Returns TRUE on success.
+//
+// Page objects all start in the active state by default, and remain in that
+// state unless this function is called.
+//
+// When |active| is false, this makes the |page_object| be treated as if it
+// wasn't in the document even though it is still held internally.
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FPDFPageObj_SetIsActive(FPDF_PAGEOBJECT page_object, FPDF_BOOL active);
 
 // Transform |page_object| by the given matrix.
 //
@@ -424,17 +474,18 @@ FPDFPageObj_RemoveMark(FPDF_PAGEOBJECT page_object, FPDF_PAGEOBJECTMARK mark);
 //
 //   mark       - handle to a content mark.
 //   buffer     - buffer for holding the returned name in UTF-16LE. This is only
-//                modified if |buflen| is longer than the length of the name.
+//                modified if |buflen| is large enough to store the name.
 //                Optional, pass null to just retrieve the size of the buffer
 //                needed.
-//   buflen     - length of the buffer.
+//   buflen     - length of the buffer in bytes.
 //   out_buflen - pointer to variable that will receive the minimum buffer size
-//                to contain the name. Not filled if FALSE is returned.
+//                in bytes to contain the name. This is a required parameter.
+//                Not filled if FALSE is returned.
 //
 // Returns TRUE if the operation succeeded, FALSE if it failed.
 FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
 FPDFPageObjMark_GetName(FPDF_PAGEOBJECTMARK mark,
-                        void* buffer,
+                        FPDF_WCHAR* buffer,
                         unsigned long buflen,
                         unsigned long* out_buflen);
 
@@ -454,18 +505,19 @@ FPDFPageObjMark_CountParams(FPDF_PAGEOBJECTMARK mark);
 //   mark       - handle to a content mark.
 //   index      - index of the property.
 //   buffer     - buffer for holding the returned key in UTF-16LE. This is only
-//                modified if |buflen| is longer than the length of the key.
+//                modified if |buflen| is large enough to store the key.
 //                Optional, pass null to just retrieve the size of the buffer
 //                needed.
-//   buflen     - length of the buffer.
+//   buflen     - length of the buffer in bytes.
 //   out_buflen - pointer to variable that will receive the minimum buffer size
-//                to contain the key. Not filled if FALSE is returned.
+//                in bytes to contain the name. This is a required parameter.
+//                Not filled if FALSE is returned.
 //
 // Returns TRUE if the operation was successful, FALSE otherwise.
 FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
 FPDFPageObjMark_GetParamKey(FPDF_PAGEOBJECTMARK mark,
                             unsigned long index,
-                            void* buffer,
+                            FPDF_WCHAR* buffer,
                             unsigned long buflen,
                             unsigned long* out_buflen);
 
@@ -497,24 +549,40 @@ FPDFPageObjMark_GetParamIntValue(FPDF_PAGEOBJECTMARK mark,
                                  int* out_value);
 
 // Experimental API.
+// Get the value of a number property in a content mark by key as float.
+// FPDFPageObjMark_GetParamValueType() should have returned FPDF_OBJECT_NUMBER
+// for this property.
+//
+//   mark      - handle to a content mark.
+//   key       - string key of the property.
+//   out_value - pointer to variable that will receive the value. Not filled if
+//               false is returned.
+//
+// Returns TRUE if the key maps to a number value, FALSE otherwise.
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FPDFPageObjMark_GetParamFloatValue(FPDF_PAGEOBJECTMARK mark,
+                                   FPDF_BYTESTRING key,
+                                   float* out_value);
+
+// Experimental API.
 // Get the value of a string property in a content mark by key.
 //
 //   mark       - handle to a content mark.
 //   key        - string key of the property.
 //   buffer     - buffer for holding the returned value in UTF-16LE. This is
-//                only modified if |buflen| is longer than the length of the
-//                value.
+//                only modified if |buflen| is large enough to store the value.
 //                Optional, pass null to just retrieve the size of the buffer
 //                needed.
-//   buflen     - length of the buffer.
+//   buflen     - length of the buffer in bytes.
 //   out_buflen - pointer to variable that will receive the minimum buffer size
-//                to contain the value. Not filled if FALSE is returned.
+//                in bytes to contain the name. This is a required parameter.
+//                Not filled if FALSE is returned.
 //
 // Returns TRUE if the key maps to a string/blob value, FALSE otherwise.
 FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
 FPDFPageObjMark_GetParamStringValue(FPDF_PAGEOBJECTMARK mark,
                                     FPDF_BYTESTRING key,
-                                    void* buffer,
+                                    FPDF_WCHAR* buffer,
                                     unsigned long buflen,
                                     unsigned long* out_buflen);
 
@@ -524,18 +592,19 @@ FPDFPageObjMark_GetParamStringValue(FPDF_PAGEOBJECTMARK mark,
 //   mark       - handle to a content mark.
 //   key        - string key of the property.
 //   buffer     - buffer for holding the returned value. This is only modified
-//                if |buflen| is at least as long as the length of the value.
+//                if |buflen| is large enough to store the value.
 //                Optional, pass null to just retrieve the size of the buffer
 //                needed.
-//   buflen     - length of the buffer.
+//   buflen     - length of the buffer in bytes.
 //   out_buflen - pointer to variable that will receive the minimum buffer size
-//                to contain the value. Not filled if FALSE is returned.
+//                in bytes to contain the name. This is a required parameter.
+//                Not filled if FALSE is returned.
 //
 // Returns TRUE if the key maps to a string/blob value, FALSE otherwise.
 FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
 FPDFPageObjMark_GetParamBlobValue(FPDF_PAGEOBJECTMARK mark,
                                   FPDF_BYTESTRING key,
-                                  void* buffer,
+                                  unsigned char* buffer,
                                   unsigned long buflen,
                                   unsigned long* out_buflen);
 
@@ -557,6 +626,25 @@ FPDFPageObjMark_SetIntParam(FPDF_DOCUMENT document,
                             FPDF_PAGEOBJECTMARK mark,
                             FPDF_BYTESTRING key,
                             int value);
+
+// Experimental API.
+// Set the value of a float property in a content mark by key. If a parameter
+// with key |key| exists, its value is set to |value|. Otherwise, it is added as
+// a new parameter.
+//
+//   document    - handle to the document.
+//   page_object - handle to the page object with the mark.
+//   mark        - handle to a content mark.
+//   key         - string key of the property.
+//   value       - float value to set.
+//
+// Returns TRUE if the operation succeeded, FALSE otherwise.
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FPDFPageObjMark_SetFloatParam(FPDF_DOCUMENT document,
+                              FPDF_PAGEOBJECT page_object,
+                              FPDF_PAGEOBJECTMARK mark,
+                              FPDF_BYTESTRING key,
+                              float value);
 
 // Experimental API.
 // Set the value of a string property in a content mark by key. If a parameter
@@ -595,7 +683,7 @@ FPDFPageObjMark_SetBlobParam(FPDF_DOCUMENT document,
                              FPDF_PAGEOBJECT page_object,
                              FPDF_PAGEOBJECTMARK mark,
                              FPDF_BYTESTRING key,
-                             void* value,
+                             const unsigned char* value,
                              unsigned long value_len);
 
 // Experimental API.
@@ -806,6 +894,31 @@ FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
 FPDFImageObj_GetImagePixelSize(FPDF_PAGEOBJECT image_object,
                                unsigned int* width,
                                unsigned int* height);
+
+// Experimental API.
+// Get ICC profile decoded data of |image_object|. If the |image_object| is not
+// an image object or if it does not have an image, then the return value will
+// be false. It also returns false if the |image_object| has no ICC profile.
+// |buffer| is only modified if ICC profile exists and |buflen| is longer than
+// the length of the ICC profile decoded data.
+//
+//   image_object - handle to an image object; must not be NULL.
+//   page         - handle to the page containing |image_object|; must not be
+//                  NULL. Required for retrieving the image's colorspace.
+//   buffer       - Buffer to receive ICC profile data; may be NULL if querying
+//                  required size via |out_buflen|.
+//   buflen       - Length of the buffer in bytes. Ignored if |buffer| is NULL.
+//   out_buflen   - Pointer to receive the ICC profile data size in bytes; must
+//                  not be NULL. Will be set if this API returns true.
+//
+// Returns true if |out_buflen| is not null and an ICC profile exists for the
+// given |image_object|.
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FPDFImageObj_GetIccProfileDataDecoded(FPDF_PAGEOBJECT image_object,
+                                      FPDF_PAGE page,
+                                      uint8_t* buffer,
+                                      size_t buflen,
+                                      size_t* out_buflen);
 
 // Create a new path object at an initial position.
 //
@@ -1556,6 +1669,21 @@ FPDFFormObj_CountObjects(FPDF_PAGEOBJECT form_object);
 // Returns the handle to the page object, or NULL on error.
 FPDF_EXPORT FPDF_PAGEOBJECT FPDF_CALLCONV
 FPDFFormObj_GetObject(FPDF_PAGEOBJECT form_object, unsigned long index);
+
+// Experimental API.
+//
+// Remove |page_object| from |form_object|.
+//
+//   form_object - handle to a form object.
+//   page_object - handle to a page object to be removed from the form.
+//
+// Returns TRUE on success.
+//
+// Ownership of the removed |page_object| is transferred to the caller.
+// Call FPDFPageObj_Destroy() on the removed page_object to free it.
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV
+FPDFFormObj_RemoveObject(FPDF_PAGEOBJECT form_object,
+                         FPDF_PAGEOBJECT page_object);
 
 #ifdef __cplusplus
 }  // extern "C"

@@ -5,6 +5,7 @@
 #include "comic.h"
 #include "compressed_archive.h"
 #include "qnaturalsorting.h"
+#include "cover_utils.h"
 
 using namespace YACReader;
 
@@ -154,17 +155,5 @@ QByteArray InitialComicInfoExtractor::getXMLInfoRawData()
 
 void InitialComicInfoExtractor::saveCover(const QString &path, const QImage &cover)
 {
-    QImage scaled;
-    if (cover.width() > cover.height()) {
-        scaled = cover.scaledToWidth(640, Qt::SmoothTransformation);
-    } else {
-        auto aspectRatio = static_cast<double>(cover.width()) / static_cast<double>(cover.height());
-        auto maxAllowedAspectRatio = 0.5;
-        if (aspectRatio < maxAllowedAspectRatio) { // cover is too tall, e.g. webtoon
-            scaled = cover.scaledToHeight(960, Qt::SmoothTransformation);
-        } else {
-            scaled = cover.scaledToWidth(480, Qt::SmoothTransformation);
-        }
-    }
-    scaled.save(_target, 0, 75);
+    YACReader::saveCover(path, cover);
 }

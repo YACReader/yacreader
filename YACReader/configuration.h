@@ -1,5 +1,6 @@
 #ifndef __CONFIGURATION_H
 #define __CONFIGURATION_H
+
 #include <QByteArray>
 #include <QString>
 #include <QSize>
@@ -14,6 +15,21 @@
 #define SLIDE_ASPECT_RATIO 1.585
 
 using namespace YACReader;
+
+namespace YACReader {
+
+enum FitMode {
+    ToWidth = 0x01,
+    ToHeight = 0x02,
+    FullRes = 0x03,
+    FullPage = 0x04
+};
+
+enum MouseMode {
+    Normal,
+    LeftRightNavigation,
+    HotAreas
+};
 
 class Configuration : public QObject
 {
@@ -75,6 +91,8 @@ public:
     void setShowToolbars(bool b) { settings->setValue(SHOW_TOOLBARS, b); }
     bool getShowInformation() { return settings->value(SHOW_INFO, false).toBool(); }
     void setShowInformation(bool b) { settings->setValue(SHOW_INFO, b); }
+    bool getShowTimeInInformation() { return settings->value(SHOW_TIME_IN_INFO, true).toBool(); }
+    void setShowTimeInInformation(bool b) { settings->setValue(SHOW_TIME_IN_INFO, b); }
     QDate getLastVersionCheck() { return settings->value(LAST_VERSION_CHECK).toDate(); }
     void setLastVersionCheck(const QDate &date) { settings->setValue(LAST_VERSION_CHECK, date); }
     int getNumDaysBetweenVersionChecks() { return settings->value(NUM_DAYS_BETWEEN_VERSION_CHECKS, 1).toInt(); }
@@ -84,7 +102,21 @@ public:
     bool getDoNotTurnPageOnScroll() { return settings->value(DO_NOT_TURN_PAGE_ON_SCROLL, false).toBool(); }
     bool getUseSingleScrollStepToTurnPage() { return settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool(); }
     void setDisableScrollAnimation(bool b) { settings->setValue(DISABLE_SCROLL_ANIMATION, b); }
-    bool getDisableScrollAnimation() { return settings->value(DISABLE_SCROLL_ANIMATION, false).toBool(); }
+    bool getDisableScrollAnimation()
+    {
+#ifdef Q_OS_MACOS
+        auto defaultValue = true;
+#else
+        auto defaultValue = false;
+#endif
+
+        return settings->value(DISABLE_SCROLL_ANIMATION, defaultValue).toBool();
+    }
+
+    MouseMode getMouseMode() { return static_cast<MouseMode>(settings->value(MOUSE_MODE, MouseMode::Normal).toInt()); }
+    void setMouseMode(MouseMode mouseMode) { settings->setValue(MOUSE_MODE, static_cast<int>(mouseMode)); }
 };
+
+}
 
 #endif

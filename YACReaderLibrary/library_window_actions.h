@@ -72,6 +72,9 @@ public:
     QAction *setFolderAsWesternMangaAction;
     QAction *setFolderAsWebComicAction;
     QAction *setFolderAsYonkomaAction;
+    //--
+    QAction *setFolderCoverAction;
+    QAction *deleteCustomFolderCoverAction;
 
     QAction *openContainingFolderComicAction;
     QAction *setAsReadAction;

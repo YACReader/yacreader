@@ -38,6 +38,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"), ""));
     pathBox->setLayout(path);
 
+    QGroupBox *displayBox = new QGroupBox(tr("Display"));
+    auto displayLayout = new QHBoxLayout();
+    showTimeInInformationLabel = new QCheckBox(tr("Show time in current page information label"));
+    displayLayout->addWidget(showTimeInInformationLabel);
+    displayBox->setLayout(displayLayout);
+
     connect(pathFindButton, &QAbstractButton::clicked, this, &OptionsDialog::findFolder);
 
     QGroupBox *slideSizeBox = new QGroupBox(tr("\"Go to flow\" size"));
@@ -81,11 +87,26 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     scrollBox->setLayout(scrollLayout);
 
+    auto mouseModeBox = new QGroupBox(tr("Mouse mode"));
+    auto mouseModeLayout = new QVBoxLayout();
+
+    normalMouseModeRadioButton = new QRadioButton(tr("Only Back/Forward buttons can turn pages"));
+    leftRightNavigationMouseModeRadioButton = new QRadioButton(tr("Use the Left/Right buttons to turn pages."));
+    hotAreasMouseModeRadioButton = new QRadioButton(tr("Click left or right half of the screen to turn pages."));
+
+    mouseModeLayout->addWidget(normalMouseModeRadioButton);
+    mouseModeLayout->addWidget(leftRightNavigationMouseModeRadioButton);
+    mouseModeLayout->addWidget(hotAreasMouseModeRadioButton);
+
+    mouseModeBox->setLayout(mouseModeLayout);
+
     layoutGeneral->addWidget(pathBox);
+    layoutGeneral->addWidget(displayBox);
     layoutGeneral->addWidget(slideSizeBox);
     // layoutGeneral->addWidget(fitBox);
     layoutGeneral->addWidget(colorBox);
     layoutGeneral->addWidget(scrollBox);
+    layoutGeneral->addWidget(mouseModeBox);
     layoutGeneral->addWidget(shortcutsBox);
     layoutGeneral->addStretch();
 
@@ -237,6 +258,8 @@ void OptionsDialog::saveOptions()
 
     settings->setValue(PATH, pathEdit->text());
 
+    Configuration::getConfiguration().setShowTimeInInformation(showTimeInInformationLabel->isChecked());
+
     settings->setValue(BACKGROUND_COLOR, currentColor);
     // settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
     settings->setValue(QUICK_NAVI_MODE, quickNavi->isChecked());
@@ -245,6 +268,18 @@ void OptionsDialog::saveOptions()
     settings->setValue(DO_NOT_TURN_PAGE_ON_SCROLL, doNotTurnPageOnScroll->isChecked());
     settings->setValue(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, useSingleScrollStepToTurnPage->isChecked());
     settings->setValue(DISABLE_SCROLL_ANIMATION, disableScrollAnimations->isChecked());
+
+    // get checked radio button to get the mouse mode
+    YACReader::MouseMode mouseMode = Normal;
+    if (normalMouseModeRadioButton->isChecked()) {
+        mouseMode = Normal;
+        ;
+    } else if (leftRightNavigationMouseModeRadioButton->isChecked()) {
+        mouseMode = LeftRightNavigation;
+    } else if (hotAreasMouseModeRadioButton->isChecked()) {
+        mouseMode = HotAreas;
+    }
+    Configuration::getConfiguration().setMouseMode(mouseMode);
 
     YACReaderOptionsDialog::saveOptions();
 }
@@ -271,6 +306,8 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     pathEdit->setText(settings->value(PATH).toString());
 
+    showTimeInInformationLabel->setChecked(Configuration::getConfiguration().getShowTimeInInformation());
+
     updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
     // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 
@@ -286,7 +323,27 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     doNotTurnPageOnScroll->setChecked(settings->value(DO_NOT_TURN_PAGE_ON_SCROLL, false).toBool());
     useSingleScrollStepToTurnPage->setChecked(settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool());
-    disableScrollAnimations->setChecked(settings->value(DISABLE_SCROLL_ANIMATION, false).toBool());
+
+#ifdef Q_OS_MACOS
+    auto defaultDisableScrollAnimationsValue = true;
+#else
+    auto defaultDisableScrollAnimationsValue = false;
+#endif
+    disableScrollAnimations->setChecked(settings->value(DISABLE_SCROLL_ANIMATION, defaultDisableScrollAnimationsValue).toBool());
+
+    auto mouseMode = Configuration::getConfiguration().getMouseMode();
+
+    switch (mouseMode) {
+    case Normal:
+        normalMouseModeRadioButton->setChecked(true);
+        break;
+    case LeftRightNavigation:
+        leftRightNavigationMouseModeRadioButton->setChecked(true);
+        break;
+    case HotAreas:
+        hotAreasMouseModeRadioButton->setChecked(true);
+        break;
+    }
 }
 
 void OptionsDialog::updateColor(const QColor &color)
