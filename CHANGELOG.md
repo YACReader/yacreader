@@ -2,7 +2,8 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## WIP (9.16.0)
+## 9.16.0
+
 ### YACReader
 * Don't use scroll animations on macos by default, it where hdpi scroll is most likely to be used.
 * New toolbar on macos.
