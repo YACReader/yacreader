@@ -65,11 +65,11 @@
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="main.cpp" line="83"/>
+        <location filename="main.cpp" line="84"/>
         <source>
 YACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary.
 
-This appplication support persisten settings, to set them up edit this file %1
+This appplication supports persistent settings, to set them up edit this file %1
 To learn about the available settings please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</source>
         <translation type="unfinished"></translation>
     </message>
