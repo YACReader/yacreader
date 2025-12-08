@@ -67,6 +67,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; Covers can be set in bulk for various comics at once<br/>"
                   "   &#8226; New button to reset to the default cover of a comic<br/>"
                   "   &#8226; Support for storing the new image filters from iOS and Android apps<br/>"
+                  "   &#8226; Fixed cover loading in Comic Vine scraper (new in 9.16.1)<br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">YACReaderLibraryServer</span><br/>"
                   "   &#8226; Log libraries validation when the app starts<br/>"

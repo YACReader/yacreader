@@ -46,7 +46,13 @@ void HttpWorker::run()
     tT.setSingleShot(true);
     connect(&tT, &QTimer::timeout, &q, &QEventLoop::quit);
     connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
-    QNetworkReply *reply = manager.get(QNetworkRequest(url));
+
+    auto request = QNetworkRequest(url);
+
+    request.setHeader(QNetworkRequest::UserAgentHeader,
+                      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0 Safari/537.36");
+
+    QNetworkReply *reply = manager.get(request);
 
     tT.start(5000); // 5s timeout
     q.exec();
