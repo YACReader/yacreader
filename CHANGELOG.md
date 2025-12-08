@@ -2,6 +2,11 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.16.1
+
+### YACReaderLibrary
+* Fix cover loading in Comic Vine scraper.
+
 ## 9.16.0
 
 ### YACReader
