@@ -7,8 +7,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-ComicVineAllVolumeComicsRetriever::ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, QObject *parent)
-    : QObject(parent), volumeURLString(volumeURLString)
+ComicVineAllVolumeComicsRetriever::ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, const QString &userAgent, QObject *parent)
+    : QObject(parent), volumeURLString(volumeURLString), userAgent(userAgent)
 {
 }
 
@@ -19,7 +19,7 @@ void ComicVineAllVolumeComicsRetriever::getAllVolumeComics()
 
 void ComicVineAllVolumeComicsRetriever::getAllVolumeComics(int range)
 {
-    HttpWorker *search = new HttpWorker(volumeURLString.arg(range));
+    HttpWorker *search = new HttpWorker(volumeURLString.arg(range), userAgent);
     connect(search, &HttpWorker::dataReady, this, &ComicVineAllVolumeComicsRetriever::appendVolumeComicsInfo);
     connect(search, &HttpWorker::timeout, this, &ComicVineAllVolumeComicsRetriever::timeOut);
     connect(search, &HttpWorker::timeout, this, &ComicVineAllVolumeComicsRetriever::finished);

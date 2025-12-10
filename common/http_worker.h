@@ -4,13 +4,12 @@
 #include <QByteArray>
 #include <QThread>
 #include <QUrl>
-#include "yacreader_global.h"
 
 class HttpWorker : public QThread
 {
     Q_OBJECT
 public:
-    HttpWorker(const QString &urlString);
+    HttpWorker(const QString &urlString, const QString &userAgent);
 public slots:
     void get();
     QByteArray getResult();
@@ -20,6 +19,7 @@ public slots:
 private:
     void run();
     QUrl url;
+    QString userAgent;
     int httpGetId;
     QByteArray result;
     bool _error;

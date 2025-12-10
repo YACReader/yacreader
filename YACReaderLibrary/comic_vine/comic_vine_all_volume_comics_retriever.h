@@ -7,7 +7,7 @@ class ComicVineAllVolumeComicsRetriever : public QObject
 {
     Q_OBJECT
 public:
-    explicit ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, QObject *parent = nullptr);
+    explicit ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, const QString &userAgent, QObject *parent = nullptr);
     void getAllVolumeComics();
 
 protected:
@@ -21,6 +21,7 @@ protected slots:
 
 protected:
     QString volumeURLString;
+    QString userAgent;
     QList<QByteArray> jsonResponses;
 
     QString consolidateJSON();

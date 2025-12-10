@@ -9,7 +9,7 @@
 
 class QLibrary;
 
-#define VERSION "9.16.1"
+#define VERSION "9.16.2"
 
 // Used to check if the database needs to be updated, the version is stored in the database.
 // This value is only incremented when the database structure changes.

@@ -68,6 +68,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                   "   &#8226; New button to reset to the default cover of a comic<br/>"
                   "   &#8226; Support for storing the new image filters from iOS and Android apps<br/>"
                   "   &#8226; Fixed cover loading in Comic Vine scraper (new in 9.16.1)<br/>"
+                  "   &#8226; Added a customizable User Agent string to use it with Comic Vine. It can be set in YACReaderLibrary.ini in the [ComicVine] section using the COMIC_VINE_USER_AGENT key (new in 9.16.2)<br/>"
                   "<br/>"
                   "<span style=\"font-weight:600\">YACReaderLibraryServer</span><br/>"
                   "   &#8226; Log libraries validation when the app starts<br/>"

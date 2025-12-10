@@ -12,8 +12,8 @@
 
 #define PREVIOUS_VERSION "6.0.0"
 
-HttpWorker::HttpWorker(const QString &urlString)
-    : QThread(), url(urlString), _error(false), _timeout(false)
+HttpWorker::HttpWorker(const QString &urlString, const QString &userAgent)
+    : QThread(), url(urlString), userAgent(userAgent), _error(false), _timeout(false)
 {
 }
 
@@ -50,7 +50,7 @@ void HttpWorker::run()
     auto request = QNetworkRequest(url);
 
     request.setHeader(QNetworkRequest::UserAgentHeader,
-                      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0 Safari/537.36");
+                      userAgent);
 
     QNetworkReply *reply = manager.get(request);
 
