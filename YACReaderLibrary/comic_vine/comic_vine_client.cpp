@@ -60,7 +60,7 @@ ComicVineClient::ComicVineClient(QObject *parent)
     settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("ComicVine");
     baseURL = settings->value(COMIC_VINE_BASE_URL, "https://comicvine.gamespot.com/api").toString();
-    userAgent = settings->value(COMIC_VINE_USER_AGENT, QStringLiteral("YACReader - Yet Another Comic Reader/") + VERSION).toString();
+    userAgent = settings->value(COMIC_VINE_USER_AGENT, DEFAULT_USER_AGENT).toString();
 }
 
 ComicVineClient::~ComicVineClient()

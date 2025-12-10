@@ -1,5 +1,7 @@
 #include "check_new_version.h"
 
+#include "yacreader_global.h"
+
 #include <QUrl>
 #include <QtGlobal>
 #include <QStringList>
@@ -14,7 +16,7 @@
 #define PREVIOUS_VERSION_TESTING "6.0.0"
 
 HttpVersionChecker::HttpVersionChecker()
-    : HttpWorker("https://raw.githubusercontent.com/YACReader/yacreader/master/common/yacreader_global.h")
+    : HttpWorker("https://raw.githubusercontent.com/YACReader/yacreader/master/common/yacreader_global.h", DEFAULT_USER_AGENT)
 {
     connect(this, &HttpVersionChecker::dataReady, this, QOverload<const QByteArray &>::of(&HttpVersionChecker::checkNewVersion));
 }

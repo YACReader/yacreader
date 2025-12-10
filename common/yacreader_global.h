@@ -31,6 +31,8 @@ class QLibrary;
 
 #define LIBRARIES "LIBRARIES"
 
+#define DEFAULT_USER_AGENT "YACReader - Yet Another Comic Reader/" VERSION
+
 #define MAX_LIBRARIES_WARNING_NUM 10
 
 #ifdef Q_OS_MACOS
