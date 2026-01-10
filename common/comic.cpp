@@ -40,6 +40,8 @@ QStringList Comic::getSupportedImageLiteralFormats()
     for (QByteArray &item : supportedImageFormats) {
         supportedImageFormatStrings.append(QString::fromLocal8Bit(item));
     }
+    // Add custom supported formats (AVIF and JXL)
+    supportedImageFormatStrings << "avif" << "jxl";
     return supportedImageFormatStrings;
 }
 
@@ -50,7 +52,9 @@ const QStringList Comic::imageExtensions = QStringList() << "*.jpg"
                                                          << "*.tiff"
                                                          << "*.tif"
                                                          << "*.bmp"
-                                                         << "*.webp";
+                                                         << "*.webp"
+                                                         << "*.avif"
+                                                         << "*.jxl";
 const QStringList Comic::literalImageExtensions = QStringList() << "jpg"
                                                                 << "jpeg"
                                                                 << "png"
@@ -58,7 +62,9 @@ const QStringList Comic::literalImageExtensions = QStringList() << "jpg"
                                                                 << "tiff"
                                                                 << "tif"
                                                                 << "bmp"
-                                                                << "webp";
+                                                                << "webp"
+                                                                << "avif"
+                                                                << "jxl";
 
 #ifndef use_unarr
 const QStringList ComicArchiveExtensions = QStringList() << "*.cbr"

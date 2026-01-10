@@ -130,13 +130,14 @@ void InitialComicInfoExtractor::extract()
         int index = order.indexOf(fileNames.at(_coverPage - 1));
 
         if (_target == "") {
-            if (!_cover.loadFromData(archive.getRawDataAtIndex(index))) {
+            _cover = loadImageFromData(archive.getRawDataAtIndex(index));
+            if (_cover.isNull()) {
                 QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
                 _cover.load(":/images/notCover.png");
             }
         } else {
-            QImage p;
-            if (p.loadFromData(archive.getRawDataAtIndex(index))) {
+            QImage p = loadImageFromData(archive.getRawDataAtIndex(index));
+            if (!p.isNull()) {
                 _coverSize = QPair<int, int>(p.width(), p.height());
                 saveCover(_target, p);
             } else {

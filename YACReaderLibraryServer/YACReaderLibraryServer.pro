@@ -14,6 +14,20 @@ DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 # load default build flags
 # do a basic dependency check
 include(headless_config.pri)
+
+# AVIF and JXL image format support
+unix {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += libavif libjxl libjxl_threads
+}
+win32 {
+    # For Windows, manually specify paths if needed
+    LIBS += -lavif -ljxl -ljxl_threads
+}
+macx {
+    # For macOS, specify library paths if using Homebrew or MacPorts
+    LIBS += -lavif -ljxl -ljxl_threads
+}
 include(../dependencies/pdf_backend.pri)
 include(../third_party/QrCode/QrCode.pri)
 
@@ -58,6 +72,7 @@ HEADERS += ../YACReaderLibrary/library_creator.h \
            ../common/qnaturalsorting.h \
            ../common/yacreader_global.h \
            ../common/cover_utils.h \
+           ../common/image_decoders.h \
            ../YACReaderLibrary/yacreader_local_server.h \
            ../YACReaderLibrary/comics_remover.h \
            ../common/http_worker.h \
@@ -89,6 +104,7 @@ SOURCES += ../YACReaderLibrary/library_creator.cpp \
            ../common/bookmarks.cpp \
            ../common/qnaturalsorting.cpp \
            ../common/cover_utils.cpp \
+           ../common/image_decoders.cpp \
            ../YACReaderLibrary/yacreader_local_server.cpp \
            ../YACReaderLibrary/comics_remover.cpp \
            ../common/http_worker.cpp \

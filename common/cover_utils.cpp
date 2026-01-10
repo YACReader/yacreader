@@ -1,4 +1,21 @@
 #include "cover_utils.h"
+#include "image_decoders.h"
+
+QImage YACReader::loadImageFromData(const QByteArray &data)
+{
+    // Try AVIF first
+    if (isAvif(data)) {
+        return decodeAvif(data);
+    }
+    // Try JXL
+    if (isJxl(data)) {
+        return decodeJxl(data);
+    }
+    // Fall back to Qt's built-in loaders (JPEG, PNG, etc.)
+    QImage image;
+    image.loadFromData(data);
+    return image;
+}
 
 bool YACReader::saveCover(const QString &path, const QImage &cover)
 {

@@ -18,6 +18,20 @@ DEFINES += SERVER_RELEASE YACREADER_LIBRARY
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
 
+# AVIF and JXL image format support
+unix {
+    CONFIG += link_pkgconfig
+    PKGCONFIG += libavif libjxl libjxl_threads
+}
+win32 {
+    # For Windows, manually specify paths if needed
+    LIBS += -lavif -ljxl -ljxl_threads
+}
+macx {
+    # For macOS, specify library paths if using Homebrew or MacPorts
+    LIBS += -lavif -ljxl -ljxl_threads
+}
+
 INCLUDEPATH += ../common/gl
 
 # there are two builds for Windows, Desktop OpenGL based and ANGLE OpenGL ES based
@@ -75,6 +89,7 @@ greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets core5compat
 HEADERS += comic_flow.h \
   ../common/concurrent_queue.h \
     ../common/cover_utils.h \
+  ../common/image_decoders.h \
   create_library_dialog.h \
   db/comic_query_result_processor.h \
   db/folder_query_result_processor.h \
@@ -165,6 +180,7 @@ HEADERS += comic_flow.h \
 SOURCES += comic_flow.cpp \
     ../common/concurrent_queue.cpp \
     ../common/cover_utils.cpp \
+    ../common/image_decoders.cpp \
     create_library_dialog.cpp \
     db/comic_query_result_processor.cpp \
     db/folder_query_result_processor.cpp \

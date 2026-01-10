@@ -76,3 +76,9 @@ c_x86_64.pch
 
 compile_commands.json
 .ccls-cache
+
+local-build-logs
+
+# Test artifacts (generated during testing, should not be committed)
+tests/docker_config_test/
+tests/test_library/library/.yacreaderlibrary/
