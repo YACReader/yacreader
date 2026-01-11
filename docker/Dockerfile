@@ -1,87 +1,86 @@
 # ============================================================================
-# Stage 1: 7zip builder
+# Stage 0: Common base, defined here like a constant for multiple subsequent stages
 # ============================================================================
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS sevenzip-builder
+FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS base
+
+# ============================================================================
+# Stage 1: build-base for all build steps
+# ============================================================================
+FROM base AS plugin-base
 
 ARG DEBIAN_FRONTEND="noninteractive"
 
-# Install minimal build packages for 7z compilation
+# Install common build packages used by all plugin builders
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    7zip \
     build-essential \
-    gcc \
+    cmake \
+    extra-cmake-modules \
     g++ \
+    gcc \
+    git \
+    libavif-dev \
+    libheif-dev \
     make \
+    qt6-base-dev \
+    qt6-base-private-dev \
     unzip \
     wget \
-    7zip && \
+    pkg-config && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Download and extract 7z source
-RUN mkdir -p /src/7zip && \
-    cd /src/7zip && \
-    wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O 7z2301-src.7z && \
-    7z x 7z2301-src.7z -o/src/7zip/lib7zip && \
+# ============================================================================
+# Stage 2: 7zip builder
+# ============================================================================
+FROM plugin-base AS sevenzip-builder
+
+# Download 7z source
+RUN mkdir -p /src/7zip
+WORKDIR /src/7zip
+RUN wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O 7z2301-src.7z
+
+# Extract 7z source
+RUN 7z x 7z2301-src.7z -o/src/7zip/lib7zip && \
     rm 7z2301-src.7z
 
 # Build 7z.so with RAR support
-RUN cd "/src/7zip/lib7zip/CPP/7zip/Bundles/Format7zF" && \
-    make -f makefile.gcc -j$(nproc) && \
-    mkdir -p /app/lib/7zip && \
+WORKDIR /src/7zip/lib7zip/CPP/7zip/Bundles/Format7zF
+RUN mkdir -p _o
+RUN make -f makefile.gcc -j$(nproc)
+RUN mkdir -p /app/lib/7zip && \
     cp ./_o/7z.so /app/lib/7zip
 
 # ============================================================================
-# Stage 2: HEIC/HEIF plugin builder
+# Stage 3: HEIC/HEIF plugin builder
 # ============================================================================
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS heic-plugin-builder
-
-ARG DEBIAN_FRONTEND="noninteractive"
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    git \
-    qt6-base-dev \
-    qt6-base-private-dev \
-    libheif-dev \
-    extra-cmake-modules \
-    pkg-config && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+FROM plugin-base AS heic-plugin-builder
 
 WORKDIR /tmp/qt-heic
-RUN git clone https://github.com/novomesk/qt-heic-image-plugin.git . && \
-    mkdir build && cd build && \
-    cmake .. \
+RUN git clone https://github.com/novomesk/qt-heic-image-plugin.git .
+RUN mkdir build
+WORKDIR /tmp/qt-heic/build
+RUN cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DQT_MAJOR_VERSION=6 && \
-    make -j$(nproc) && \
-    make install DESTDIR=/output
+    -DQT_MAJOR_VERSION=6
+RUN make -j$(nproc)
+RUN make install DESTDIR=/output
 
 # ============================================================================
-# Stage 3: libjxl builder (0.10.2 required for JxlEncoderDistanceFromQuality)
+# Stage 4: libjxl + JXL plugin builder (merged)
+# (0.10.2 required for JxlEncoderDistanceFromQuality)
 # ============================================================================
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS libjxl-builder
+FROM plugin-base AS jxl-plugin-builder
 
-ARG DEBIAN_FRONTEND="noninteractive"
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    git \
-    pkg-config && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
+# Build libjxl 0.10.2
 WORKDIR /tmp/libjxl
-RUN git clone --depth 1 --branch v0.10.2 https://github.com/libjxl/libjxl.git . && \
-    ./deps.sh && \
-    mkdir build && cd build && \
-    cmake .. \
+RUN git clone --depth 1 --branch v0.10.2 https://github.com/libjxl/libjxl.git .
+RUN ./deps.sh
+RUN mkdir build
+WORKDIR /tmp/libjxl/build
+RUN cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DBUILD_TESTING=OFF \
     -DJPEGXL_ENABLE_BENCHMARK=OFF \
@@ -89,97 +88,57 @@ RUN git clone --depth 1 --branch v0.10.2 https://github.com/libjxl/libjxl.git . 
     -DJPEGXL_ENABLE_MANPAGES=OFF \
     -DJPEGXL_ENABLE_PLUGINS=OFF \
     -DJPEGXL_ENABLE_TOOLS=OFF \
-    -DCMAKE_INSTALL_PREFIX=/usr && \
-    make -j$(nproc) && \
-    make install DESTDIR=/output
+    -DCMAKE_INSTALL_PREFIX=/usr
+RUN make -j$(nproc)
+RUN make install
+RUN make install DESTDIR=/output
 
-# ============================================================================
-# Stage 4: JXL plugin builder (depends on libjxl 0.10.2)
-# ============================================================================
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS jxl-plugin-builder
-
-ARG DEBIAN_FRONTEND="noninteractive"
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    git \
-    qt6-base-dev \
-    qt6-base-private-dev \
-    extra-cmake-modules \
-    pkg-config && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy libjxl 0.10.2 from previous stage
-COPY --from=libjxl-builder /output/usr /usr
-
+# Build JXL plugin
 WORKDIR /tmp/qt-jxl
-RUN git clone https://github.com/novomesk/qt-jpegxl-image-plugin.git . && \
-    mkdir build && cd build && \
-    cmake .. \
+RUN git clone https://github.com/novomesk/qt-jpegxl-image-plugin.git .
+RUN mkdir build
+WORKDIR /tmp/qt-jxl/build
+RUN cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DQT_MAJOR_VERSION=6 && \
-    make -j$(nproc) && \
-    make install DESTDIR=/output
+    -DQT_MAJOR_VERSION=6
+RUN make -j$(nproc)
+RUN make install DESTDIR=/output
 
 # ============================================================================
 # Stage 5: AVIF plugin builder
 # ============================================================================
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS avif-plugin-builder
-
-ARG DEBIAN_FRONTEND="noninteractive"
-
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    build-essential \
-    cmake \
-    git \
-    qt6-base-dev \
-    qt6-base-private-dev \
-    libavif-dev \
-    extra-cmake-modules \
-    pkg-config && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+FROM plugin-base AS avif-plugin-builder
 
 WORKDIR /tmp/qt-avif
-RUN git clone https://github.com/novomesk/qt-avif-image-plugin.git . && \
-    mkdir build && cd build && \
-    cmake .. \
+RUN git clone https://github.com/novomesk/qt-avif-image-plugin.git .
+RUN mkdir build
+WORKDIR /tmp/qt-avif/build
+RUN cmake .. \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_INSTALL_PREFIX=/usr \
-    -DQT_MAJOR_VERSION=6 && \
-    make -j$(nproc) && \
-    make install DESTDIR=/output
+    -DQT_MAJOR_VERSION=6
+RUN make -j$(nproc)
+RUN make install DESTDIR=/output
 
 # ============================================================================
 # Stage 6: YACReader builder
 # ============================================================================
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS yacreader-builder
+FROM plugin-base AS yacreader-builder
 
 ARG YACR_VERSION="develop"
-ARG DEBIAN_FRONTEND="noninteractive"
 ENV APPNAME="YACReaderLibraryServer"
 ENV HOME="/config"
 LABEL maintainer="luisangelsm"
 
-# Install build packages
+# Install YACReader-specific build packages (common packages inherited from plugin-base)
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    build-essential \
     desktop-file-utils \
-    gcc \
-    g++ \
-    git \
-    cmake \
     qt6-tools-dev \
     qt6-base-dev-tools \
     qmake6 \
     qmake6-bin \
-    qt6-base-dev \
     qt6-multimedia-dev \
     qt6-tools-dev-tools \
     libgl-dev \
@@ -200,13 +159,8 @@ RUN apt-get update && \
     qt6-image-formats-plugins \
     libqt6sql6 \
     libqt6sql6-sqlite \
-    make \
     sqlite3 \
     libsqlite3-dev \
-    unzip \
-    wget \
-    libavif-dev \
-    7zip \
     7zip-rar \
     libpoppler-qt6-dev \
     zlib1g-dev && \
@@ -241,7 +195,7 @@ RUN cd /src/git/YACReaderLibraryServer && \
 # ============================================================================
 # Stage 7: Final runtime image (minimal, no build assets)
 # ============================================================================
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble
+FROM base AS runtime
 
 ENV APPNAME="YACReaderLibraryServer"
 ENV HOME="/config"
@@ -274,7 +228,7 @@ COPY --from=heic-plugin-builder /output/usr/lib/x86_64-linux-gnu/qt6/plugins/ima
     /usr/lib/x86_64-linux-gnu/qt6/plugins/imageformats/
 
 # Copy libjxl 0.10.2 runtime libraries (not available in Ubuntu noble)
-COPY --from=libjxl-builder /output/usr/lib/ /usr/lib/
+COPY --from=jxl-plugin-builder /output/usr/lib/ /usr/lib/
 
 # Refresh dynamic linker cache
 RUN ldconfig
