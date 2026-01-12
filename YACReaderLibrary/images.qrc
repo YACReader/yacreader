@@ -2,14 +2,14 @@
     <qresource prefix="/">
         <file>../images/accept_shortcut.svg</file>
         <file>../images/clear_shortcut.svg</file>
-        <file>../images/comic_vine/downArrow.png</file>
-        <file>../images/comic_vine/nextPage.png</file>
-        <file>../images/comic_vine/previousPage.png</file>
-        <file>../images/comic_vine/radioChecked.png</file>
-        <file>../images/comic_vine/radioUnchecked.png</file>
-        <file>../images/comic_vine/rowDown.png</file>
-        <file>../images/comic_vine/rowUp.png</file>
-        <file>../images/comic_vine/upArrow.png</file>
+        <file>../images/comic_vine/downArrow.svg</file>
+        <file>../images/comic_vine/nextPage.svg</file>
+        <file>../images/comic_vine/previousPage.svg</file>
+        <file>../images/comic_vine/radioChecked.svg</file>
+        <file>../images/comic_vine/radioUnchecked.svg</file>
+        <file>../images/comic_vine/rowDown.svg</file>
+        <file>../images/comic_vine/rowUp.svg</file>
+        <file>../images/comic_vine/upArrow.svg</file>
         <file>../images/comic_vine/checkBoxTick.svg</file>
         <file>../images/comics_view_toolbar/asignNumber.svg</file>
         <file>../images/comics_view_toolbar/big_size_grid_zoom.svg</file>
