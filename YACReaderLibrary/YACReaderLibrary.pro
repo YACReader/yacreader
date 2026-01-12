@@ -257,6 +257,8 @@ include(../third_party/QsLog/QsLog.pri)
 include(../shortcuts_management/shortcuts_management.pri)
 include(../third_party/QrCode/QrCode.pri)
 include(../third_party/KDToolBox/KDToolBox.pri)
+include(./themes/themes.pri)
+include(../common/themes/themes_common.pri)
 
 RESOURCES += images.qrc files.qrc
 win32:RESOURCES += images_win.qrc
