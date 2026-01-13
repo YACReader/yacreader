@@ -71,6 +71,7 @@ public:
     static QSqlDatabase loadDatabaseFromFile(QString path);
     static bool createTables(QSqlDatabase &database);
     static bool createComicInfoTable(QSqlDatabase &database, QString tableName);
+    static bool createComicInfoTable9_14(QSqlDatabase &database, QString tableName);
     static bool createV8Tables(QSqlDatabase &database);
 
     static void exportComicsInfo(QString source, QString dest);

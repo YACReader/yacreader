@@ -2,6 +2,11 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 9.16.4
+
+### YACReaderLibrary
+* Fix migration from pre-9.14 libraries.
+
 ## 9.16.3
 
 ### YACReader
