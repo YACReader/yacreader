@@ -10,6 +10,7 @@
 #include "notifications_label_widget.h"
 #include "comic_db.h"
 #include "shortcuts_manager.h"
+#include "theme_manager.h"
 
 #include <QFile>
 #include <QKeyEvent>
@@ -42,17 +43,12 @@ Viewer::Viewer(QWidget *parent)
     // current comic page
     content = new QLabel(this);
     configureContent(tr("Press 'O' to open comic."));
-    // scroll area configuration
-    setBackgroundRole(QPalette::Dark);
+
     setWidget(content);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setFrameStyle(QFrame::NoFrame);
     setAlignment(Qt::AlignCenter);
-
-    QPalette palette;
-    palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor());
-    setPalette(palette);
     //---------------------------------------
     mglass = new MagnifyingGlass(
             Configuration::getConfiguration().getMagnifyingGlassSize(),
@@ -116,6 +112,8 @@ Viewer::Viewer(QWidget *parent)
     informationLabel = new PageLabelWidget(this);
 
     setAcceptDrops(true);
+
+    initTheme(this);
 }
 
 Viewer::~Viewer()
@@ -1009,7 +1007,7 @@ void Viewer::showCursor()
 void Viewer::updateOptions()
 {
     goToFlow->setFlowType(Configuration::getConfiguration().getFlowType());
-    updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor());
+    updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
     updateContentSize();
     updateInformation();
 }
@@ -1019,6 +1017,16 @@ void Viewer::updateBackgroundColor(const QColor &color)
     QPalette palette;
     palette.setColor(backgroundRole(), color);
     setPalette(palette);
+}
+
+void Viewer::applyTheme()
+{
+    const auto viewerTheme = ThemeManager::instance().getCurrentTheme().viewer;
+
+    updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
+
+    const QString textColor = viewerTheme.defaultTextColor.name(QColor::HexArgb);
+    content->setStyleSheet(QStringLiteral("QLabel { color : %1; background: transparent; }").arg(textColor));
 }
 
 void Viewer::animateShowTranslator()
@@ -1084,7 +1092,7 @@ void Viewer::updateConfig(QSettings *settings)
     goToFlow->updateConfig(settings);
 
     QPalette palette;
-    palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor());
+    palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
     setPalette(palette);
 }
 

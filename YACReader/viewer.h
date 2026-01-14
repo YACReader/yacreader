@@ -18,6 +18,7 @@
 
 #include "scroll_management.h"
 #include "mouse_handler.h"
+#include "themable.h"
 
 class ComicDB;
 class Comic;
@@ -32,7 +33,7 @@ class Bookmarks;
 class PageLabelWidget;
 class NotificationsLabelWidget;
 
-class Viewer : public QScrollArea, public ScrollManagement
+class Viewer : public QScrollArea, public ScrollManagement, protected Themable
 {
     Q_OBJECT
 public:
@@ -185,6 +186,9 @@ private:
 
     //! Mouse handler
     std::unique_ptr<YACReader::MouseHandler> mouseHandler;
+
+protected:
+    void applyTheme() override;
 
 public:
     Viewer(QWidget *parent = nullptr);

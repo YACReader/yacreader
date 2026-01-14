@@ -2,6 +2,8 @@
 #include "viewer.h"
 #include "configuration.h"
 
+#include "theme_manager.h"
+
 #include <QScrollBar>
 
 MagnifyingGlass::MagnifyingGlass(int w, int h, float zoomLevel, QWidget *parent)
@@ -77,7 +79,7 @@ void MagnifyingGlass::updateImage(int x, int y)
         if (outImage) {
             QImage img(zoomWidth, zoomHeight, QImage::Format_RGB32);
             img.setDevicePixelRatio(devicePixelRatioF());
-            img.fill(Configuration::getConfiguration().getBackgroundColor());
+            img.fill(Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
             if (zw > 0 && zh > 0) {
                 QPainter painter(&img);
                 painter.drawPixmap(xOffset, yOffset, image.copy(xp, yp, zw, zh));
@@ -118,7 +120,7 @@ void MagnifyingGlass::updateImage(int x, int y)
         if (outImage) {
             QImage img(zoomWidth, zoomHeight, QImage::Format_RGB32);
             img.setDevicePixelRatio(devicePixelRatioF());
-            img.fill(Configuration::getConfiguration().getBackgroundColor());
+            img.fill(Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
             if (zw > 0 && zh > 0) {
                 QPainter painter(&img);
                 painter.drawPixmap(xOffset, yOffset, image.copy(xp, yp, zw, zh));

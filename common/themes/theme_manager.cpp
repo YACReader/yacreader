@@ -1,6 +1,7 @@
 #include "theme_manager.h"
 
 #include "theme.h"
+#include "theme_factory.h"
 
 #include <QGuiApplication>
 #include <QStyleHints>
@@ -46,5 +47,5 @@ void ThemeManager::setTheme(ThemeId themeId)
 
 void ThemeManager::updateCurrentTheme()
 {
-    // TODO
+    currentTheme = makeTheme(themeId);
 }

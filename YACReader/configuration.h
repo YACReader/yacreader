@@ -85,8 +85,8 @@ public:
     bool getEnlargeImages() { return settings->value(ENLARGE_IMAGES, true).toBool(); }
     void setEnlargeImages(bool b) { settings->setValue(ENLARGE_IMAGES, b); }
 
-    QColor getBackgroundColor() { return settings->value(BACKGROUND_COLOR).value<QColor>(); }
-    void setBackgroundColor(const QColor &color) { settings->value(BACKGROUND_COLOR, color); }
+    QColor getBackgroundColor(const QColor &color) { return settings->value(BACKGROUND_COLOR, color).value<QColor>(); }
+    void setBackgroundColor(const QColor &color) { settings->setValue(BACKGROUND_COLOR, color); }
     bool getShowToolbars() { return settings->value(SHOW_TOOLBARS).toBool(); }
     void setShowToolbars(bool b) { settings->setValue(SHOW_TOOLBARS, b); }
     bool getShowInformation() { return settings->value(SHOW_INFO, false).toBool(); }

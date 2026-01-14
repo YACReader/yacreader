@@ -87,5 +87,6 @@
     <file>../images/viewer_toolbar/toWidth_18x18.svg</file>
     <file>../images/viewer_toolbar/translator_18x18.svg</file>
     <file>../images/viewer_toolbar/zoom_18x18.svg</file>
+    <file>../images/viewer_toolbar/menuArrow.svg</file>
   </qresource>
 </RCC>

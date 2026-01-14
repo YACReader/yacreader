@@ -42,6 +42,7 @@ private:
 
     QLabel *backgroundColor;
     QPushButton *selectBackgroundColorButton;
+    QPushButton *clearBackgroundColorButton;
 
     QCheckBox *doNotTurnPageOnScroll;
     QCheckBox *useSingleScrollStepToTurnPage;
@@ -72,6 +73,7 @@ public slots:
     void resetImageConfig();
     void show();
     void setFilters(int brightness, int contrast, int gamma);
+    void clearBackgroundColor();
 
 signals:
     void changedOptions();

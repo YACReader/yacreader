@@ -18,6 +18,7 @@
 #include "yacreader_global.h"
 #include "edit_shortcuts_dialog.h"
 #include "shortcuts_manager.h"
+#include "theme_manager.h"
 
 #include "whats_new_controller.h"
 
@@ -40,11 +41,12 @@
 #endif
 
 MainWindowViewer::MainWindowViewer()
-    : QMainWindow(), fullscreen(false), toolbars(true), currentDirectory("."), currentDirectoryImgDest("."), isClient(false)
+    : QMainWindow(), fullscreen(false), toolbars(true), currentDirectory("."), currentDirectoryImgDest("."), openToolButton(nullptr), isClient(false)
 {
     loadConfiguration();
     setupUI();
     afterLaunchTasks();
+    initTheme(this);
 }
 
 void MainWindowViewer::afterLaunchTasks()
@@ -503,16 +505,16 @@ void MainWindowViewer::createToolBars()
     recentmenu->addAction(clearRecentFilesAction);
     refreshRecentFilesActionList();
 
-    auto tb = new QToolButton();
+    openToolButton = new QToolButton();
     auto open = actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/open")), openAction);
-    tb->addAction(open);
-    tb->addAction(actionWithCustomIcon(QIcon(), openLatestComicAction));
-    tb->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/openFolder")), openFolderAction));
-    tb->addAction(recentmenu->menuAction());
-    tb->setPopupMode(QToolButton::MenuButtonPopup);
-    tb->setDefaultAction(open);
+    openToolButton->addAction(open);
+    openToolButton->addAction(actionWithCustomIcon(QIcon(), openLatestComicAction));
+    openToolButton->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/openFolder")), openFolderAction));
+    openToolButton->addAction(recentmenu->menuAction());
+    openToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    openToolButton->setDefaultAction(open);
 
-    comicToolBar->addWidget(tb);
+    comicToolBar->addWidget(openToolButton);
 #endif
 
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/save")), saveImageAction));
@@ -1552,6 +1554,56 @@ void MainWindowViewer::setLoadedComicActionsEnabled(bool enabled)
 {
     for (auto *a : std::as_const(loadedComicActions))
         a->setEnabled(enabled);
+}
+
+void MainWindowViewer::applyTheme()
+{
+    const auto toolbarTheme = ThemeManager::instance().getCurrentTheme().toolbar;
+
+    if (comicToolBar) {
+        comicToolBar->setStyleSheet(toolbarTheme.toolbarQSS);
+    }
+
+    auto setIcon = [](QAction *action, const QIcon &icon, const QIcon &icon18x18) {
+        if (action) {
+            action->setIcon(icon);
+
+            auto action18x18 = action->property("customIconAction").value<QAction *>();
+            if (action18x18) {
+
+                action18x18->setIcon(icon18x18);
+            }
+        }
+    };
+
+    setIcon(openAction, toolbarTheme.openAction, toolbarTheme.openAction18x18);
+    setIcon(openFolderAction, toolbarTheme.openFolderAction, toolbarTheme.openFolderAction18x18);
+    setIcon(openLatestComicAction, toolbarTheme.openLatestComicAction, toolbarTheme.openLatestComicAction18x18);
+    setIcon(saveImageAction, toolbarTheme.saveImageAction, toolbarTheme.saveImageAction18x18);
+    setIcon(openComicOnTheLeftAction, toolbarTheme.openComicOnTheLeftAction, toolbarTheme.openComicOnTheLeftAction18x18);
+    setIcon(openComicOnTheRightAction, toolbarTheme.openComicOnTheRightAction, toolbarTheme.openComicOnTheRightAction18x18);
+    setIcon(goToPageOnTheLeftAction, toolbarTheme.goToPageOnTheLeftAction, toolbarTheme.goToPageOnTheLeftAction18x18);
+    setIcon(goToPageOnTheRightAction, toolbarTheme.goToPageOnTheRightAction, toolbarTheme.goToPageOnTheRightAction18x18);
+    setIcon(adjustHeightAction, toolbarTheme.adjustHeightAction, toolbarTheme.adjustHeightAction18x18);
+    setIcon(adjustWidthAction, toolbarTheme.adjustWidthAction, toolbarTheme.adjustWidthAction18x18);
+    setIcon(leftRotationAction, toolbarTheme.leftRotationAction, toolbarTheme.leftRotationAction18x18);
+    setIcon(rightRotationAction, toolbarTheme.rightRotationAction, toolbarTheme.rightRotationAction18x18);
+    setIcon(doublePageAction, toolbarTheme.doublePageAction, toolbarTheme.doublePageAction18x18);
+    setIcon(doubleMangaPageAction, toolbarTheme.doubleMangaPageAction, toolbarTheme.doubleMangaPageAction18x18);
+    setIcon(showZoomSliderlAction, toolbarTheme.showZoomSliderlAction, toolbarTheme.showZoomSliderlAction18x18);
+    setIcon(goToPageAction, toolbarTheme.goToPageAction, toolbarTheme.goToPageAction18x18);
+    setIcon(optionsAction, toolbarTheme.optionsAction, toolbarTheme.optionsAction18x18);
+    setIcon(helpAboutAction, toolbarTheme.helpAboutAction, toolbarTheme.helpAboutAction18x18);
+    setIcon(showMagnifyingGlassAction, toolbarTheme.showMagnifyingGlassAction, toolbarTheme.showMagnifyingGlassAction18x18);
+    setIcon(setBookmarkAction, toolbarTheme.setBookmarkAction, toolbarTheme.setBookmarkAction18x18);
+    setIcon(showBookmarksAction, toolbarTheme.showBookmarksAction, toolbarTheme.showBookmarksAction18x18);
+    setIcon(showShorcutsAction, toolbarTheme.showShorcutsAction, toolbarTheme.showShorcutsAction18x18);
+    setIcon(showInfoAction, toolbarTheme.showInfoAction, toolbarTheme.showInfoAction18x18);
+    setIcon(closeAction, toolbarTheme.closeAction, toolbarTheme.closeAction18x18);
+    setIcon(showDictionaryAction, toolbarTheme.showDictionaryAction, toolbarTheme.showDictionaryAction18x18);
+    setIcon(adjustToFullSizeAction, toolbarTheme.adjustToFullSizeAction, toolbarTheme.adjustToFullSizeAction18x18);
+    setIcon(fitToPageAction, toolbarTheme.fitToPageAction, toolbarTheme.fitToPageAction18x18);
+    setIcon(showFlowAction, toolbarTheme.showFlowAction, toolbarTheme.showFlowAction18x18);
 }
 
 void MainWindowViewer::dropEvent(QDropEvent *event)

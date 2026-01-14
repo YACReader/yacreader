@@ -37,8 +37,6 @@ void Configuration::load(QSettings *settings)
         settings->setValue(MAXIMIZED, false);
     if (!settings->contains(DOUBLE_PAGE))
         settings->setValue(DOUBLE_PAGE, false);
-    if (!settings->contains(BACKGROUND_COLOR))
-        settings->setValue(BACKGROUND_COLOR, QColor(40, 40, 40));
     if (!settings->contains(SHOW_TOOLBARS))
         settings->setValue(SHOW_TOOLBARS, true);
     if (!settings->contains(QUICK_NAVI_MODE))

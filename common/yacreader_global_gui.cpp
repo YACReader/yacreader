@@ -32,7 +32,7 @@ QIcon YACReader::noHighlightedIcon(const QString &path)
     return icon;
 }
 
-void YACReader::colorize(QImage &img, QColor &col)
+void YACReader::colorize(QImage &img, const QColor &col)
 {
     QRgb *data = (QRgb *)img.bits();
     QRgb *end = data + img.width() * img.height();
@@ -93,6 +93,9 @@ QAction *YACReader::actionWithCustomIcon(const QIcon &icon, QAction *action)
     });
     QObject::connect(a, &QAction::toggled, action, &QAction::setChecked);
     QObject::connect(action, &QAction::toggled, a, &QAction::setChecked);
+
+    // asign a to action somehow so we can retrieve it later
+    action->setProperty("customIconAction", QVariant::fromValue<QObject *>(a));
 
     return a;
 }
