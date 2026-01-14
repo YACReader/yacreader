@@ -3,9 +3,11 @@
 
 #include <QWidget>
 
+#include "themable.h"
+
 class QLabel;
 
-class TitleHeader : public QWidget
+class TitleHeader : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -18,6 +20,9 @@ public slots:
 private:
     QLabel *mainTitleLabel;
     QLabel *subTitleLabel;
+
+protected:
+    void applyTheme() override;
 };
 
 #endif // TITLE_HEADER_H

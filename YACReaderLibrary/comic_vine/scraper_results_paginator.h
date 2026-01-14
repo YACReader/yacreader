@@ -1,12 +1,14 @@
 #ifndef SCRAPER_RESULTS_PAGINATOR_H
 #define SCRAPER_RESULTS_PAGINATOR_H
 
+#include "themable.h"
+
 #include <QWidget>
 
 class QToolButton;
 class QLabel;
 
-class ScraperResultsPaginator : public QWidget
+class ScraperResultsPaginator : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -18,8 +20,6 @@ signals:
     void loadNextPage();
     void loadPreviousPage();
 
-public slots:
-
 private:
     QToolButton *nextPage;
     QToolButton *previousPage;
@@ -29,6 +29,9 @@ private:
     int currentPage;
 
     QString customLabel;
+
+protected:
+    void applyTheme() override;
 };
 
 #endif // SCRAPER_RESULTS_PAGINATOR_H

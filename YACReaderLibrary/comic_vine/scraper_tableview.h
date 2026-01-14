@@ -3,15 +3,16 @@
 
 #include <QTableView>
 
-class ScraperTableView : public QTableView
+#include "themable.h"
+
+class ScraperTableView : public QTableView, protected Themable
 {
     Q_OBJECT
 public:
     explicit ScraperTableView(QWidget *parent = nullptr);
 
-signals:
-
-public slots:
+protected:
+    void applyTheme() override;
 };
 
 #endif // SCRAPPER_TABLEVIEW_H

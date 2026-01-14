@@ -4,6 +4,7 @@
 #include "scraper_scroll_label.h"
 #include "scraper_tableview.h"
 #include "volume_comics_model.h"
+#include "theme_manager.h"
 
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -13,10 +14,7 @@
 SelectComic::SelectComic(QWidget *parent)
     : QWidget(parent), model(0)
 {
-    QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
-
-    QLabel *label = new QLabel(tr("Please, select the right comic info."));
-    label->setStyleSheet(labelStylesheet);
+    label = new QLabel(tr("Please, select the right comic info."));
 
     auto l = new QVBoxLayout;
     QWidget *leftWidget = new QWidget;
@@ -28,7 +26,6 @@ SelectComic::SelectComic(QWidget *parent)
     cover->setScaledContents(true);
     cover->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     cover->setMinimumSize(168, 168 * 5.0 / 3);
-    cover->setStyleSheet("QLabel {background-color: #2B2B2B; color:white; font-size:12px; font-family:Arial; }");
     detailLabel = new ScraperScrollLabel(this);
 
     tableComics = new ScraperTableView(this);
@@ -63,6 +60,8 @@ SelectComic::SelectComic(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
     setContentsMargins(0, 0, 0, 0);
+
+    initTheme(this);
 }
 
 void SelectComic::load(const QString &json, const QString &volumeId)
@@ -163,4 +162,12 @@ void SelectComic::setDescription(const QString &jsonDetail)
 QString SelectComic::getSelectedComicId()
 {
     return model->getComicId(tableComics->currentIndex());
+}
+
+void SelectComic::applyTheme()
+{
+    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+
+    label->setStyleSheet(comicVineTheme.defaultLabelQSS);
+    cover->setStyleSheet(comicVineTheme.coverLabelQSS);
 }

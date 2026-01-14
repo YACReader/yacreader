@@ -9,23 +9,60 @@
 #include "scraper_tableview.h"
 #include "local_comic_list_model.h"
 #include "volume_comics_model.h"
+#include "theme_manager.h"
+
+ScrapperToolButton::ScrapperToolButton(ScrapperToolButton::Appearance appearance, QWidget *parent)
+    : QPushButton(parent), appearance(appearance)
+{
+    setFixedSize(18, 17);
+    initTheme(this);
+}
+
+QWidget *ScrapperToolButton::getSeparator()
+{
+    QWidget *w = new QWidget;
+    w->setFixedWidth(1);
+    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    w->setStyleSheet(comicVineTheme.scraperToolButtonSeparatorQSS);
+    return w;
+}
+
+void ScrapperToolButton::paintEvent(QPaintEvent *e)
+{
+    QPainter p(this);
+
+    switch (appearance) {
+    case LEFT:
+        p.fillRect(16, 0, 2, 18, fillColor);
+        break;
+    case RIGHT:
+        p.fillRect(0, 0, 2, 18, fillColor);
+        break;
+    default:
+        break;
+    }
+
+    QPushButton::paintEvent(e);
+}
+
+void ScrapperToolButton::applyTheme()
+{
+    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    setStyleSheet(comicVineTheme.scraperToolButtonQSS);
+    fillColor = comicVineTheme.scraperToolButtonFillColor;
+    update();
+}
 
 SortVolumeComics::SortVolumeComics(QWidget *parent)
     : QWidget(parent)
 {
-    QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
+    label = new QLabel(tr("Please, sort the list of comics on the left until it matches the comics' information."));
 
-    QLabel *label = new QLabel(tr("Please, sort the list of comics on the left until it matches the comics' information."));
-    label->setStyleSheet(labelStylesheet);
-
-    QLabel *sortLabel = new QLabel(tr("sort comics to match comic information"));
-    sortLabel->setStyleSheet(labelStylesheet);
+    sortLabel = new QLabel(tr("sort comics to match comic information"));
 
     moveUpButtonCL = new ScrapperToolButton(ScrapperToolButton::LEFT);
-    moveUpButtonCL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
     moveUpButtonCL->setAutoRepeat(true);
     moveDownButtonCL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
-    moveDownButtonCL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
     moveDownButtonCL->setAutoRepeat(true);
     // moveUpButtonIL = new ScrapperToolButton(ScrapperToolButton::LEFT);
     // moveUpButtonIL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
@@ -98,6 +135,8 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     connect(removeItemFromList, &QAction::triggered, this, &SortVolumeComics::removeSelectedComics);
     connect(restoreAllItems, &QAction::triggered, this, &SortVolumeComics::restoreAllComics);
     // connect(restoreItems,SIGNAL(triggered()),this,SLOT(showRemovedComicsSelector()));
+
+    initTheme(this);
 }
 
 void SortVolumeComics::setData(QList<ComicDB> &comics, const QString &json, const QString &vID)
@@ -224,4 +263,17 @@ QList<QPair<ComicDB, QString>> SortVolumeComics::getMatchingInfo()
     }
 
     return l;
+}
+
+void SortVolumeComics::applyTheme()
+{
+    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+
+    label->setStyleSheet(comicVineTheme.defaultLabelQSS);
+    sortLabel->setStyleSheet(comicVineTheme.defaultLabelQSS);
+
+    moveUpButtonCL->setIconSize(comicVineTheme.rowUpIcon.size);
+    moveUpButtonCL->setIcon(comicVineTheme.rowUpIcon.icon);
+    moveDownButtonCL->setIconSize(comicVineTheme.rowDownIcon.size);
+    moveDownButtonCL->setIcon(comicVineTheme.rowDownIcon.icon);
 }

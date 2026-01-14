@@ -5,6 +5,7 @@
 
 #include "comic_db.h"
 #include "volume_search_query.h"
+#include "themable.h"
 
 class QPushButton;
 class QStackedWidget;
@@ -21,10 +22,11 @@ class SelectVolume;
 struct SelectedVolumeInfo;
 class SortVolumeComics;
 struct VolumeSearchQuery;
+class YACReaderBusyWidget;
 
 // TODO this should use a QStateMachine
 //----------------------------------------
-class ComicVineDialog : public QDialog
+class ComicVineDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 public:
@@ -107,6 +109,7 @@ private:
     QWidget *singleComicBrowser;
 
     QLabel *loadingMessage;
+    YACReaderBusyWidget *busyWidget;
 
     void doLayout();
     void doStackedWidgets();
@@ -124,6 +127,9 @@ private:
 
     VolumeSearchQuery currentVolumeSearchQuery;
     QString currentVolumeId;
+
+protected:
+    void applyTheme() override;
 };
 
 #endif // COMIC_VINE_DIALOG_H

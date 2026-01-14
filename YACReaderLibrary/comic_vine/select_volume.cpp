@@ -25,6 +25,7 @@
 #include "scraper_results_paginator.h"
 
 #include "selected_volume_info.h"
+#include "theme_manager.h"
 
 SelectVolume::SelectVolume(QWidget *parent)
     : QWidget(parent), model(0)
@@ -32,10 +33,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     proxyModel = new QSortFilterProxyModel;
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
-    QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
-
-    QLabel *label = new QLabel(tr("Please, select the right series for your comic."));
-    label->setStyleSheet(labelStylesheet);
+    label = new QLabel(tr("Please, select the right series for your comic."));
 
     auto l = new QVBoxLayout;
     QWidget *leftWidget = new QWidget;
@@ -48,7 +46,6 @@ SelectVolume::SelectVolume(QWidget *parent)
     cover->setScaledContents(true);
     cover->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     cover->setMinimumSize(168, 168 * 5.0 / 3);
-    cover->setStyleSheet("QLabel {background-color: #2B2B2B; color:white; font-size:12px; font-family:Arial; }");
     detailLabel = new ScraperScrollLabel();
 
     tableVolumes = new ScraperTableView();
@@ -94,6 +91,8 @@ SelectVolume::SelectVolume(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
     setContentsMargins(0, 0, 0, 0);
+
+    initTheme(this);
 }
 
 void SelectVolume::load(const QString &json, const VolumeSearchQuery &searchQuery)
@@ -217,4 +216,12 @@ SelectedVolumeInfo SelectVolume::getSelectedVolumeInfo()
     auto publisher = model->getPublisher(proxyModel->mapToSource(tableVolumes->currentIndex()));
 
     return { volumeId, numIssues, publisher, selectedVolumeDescription };
+}
+
+void SelectVolume::applyTheme()
+{
+    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+
+    label->setStyleSheet(comicVineTheme.defaultLabelQSS);
+    cover->setStyleSheet(comicVineTheme.coverLabelQSS);
 }

@@ -1,5 +1,7 @@
 #include "title_header.h"
 
+#include "theme_manager.h"
+
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -9,9 +11,6 @@ TitleHeader::TitleHeader(QWidget *parent)
 {
     mainTitleLabel = new QLabel();
     subTitleLabel = new QLabel();
-
-    mainTitleLabel->setStyleSheet("QLabel {color:white; font-size:18px;font-family:Arial;}");
-    subTitleLabel->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
 
     auto titleLayout = new QHBoxLayout;
     auto titleLabelsLayout = new QVBoxLayout;
@@ -28,6 +27,8 @@ TitleHeader::TitleHeader(QWidget *parent)
     setContentsMargins(0, 0, 0, 0);
 
     setTitle(tr("SEARCH"));
+
+    initTheme(this);
 }
 
 void TitleHeader::setTitle(const QString &title)
@@ -46,4 +47,12 @@ void TitleHeader::showButtons(bool show)
 
     } else {
     }
+}
+
+void TitleHeader::applyTheme()
+{
+    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+
+    mainTitleLabel->setStyleSheet(comicVineTheme.titleLabelQSS);
+    subTitleLabel->setStyleSheet(comicVineTheme.defaultLabelQSS);
 }

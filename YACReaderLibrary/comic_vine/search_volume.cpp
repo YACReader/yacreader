@@ -2,6 +2,7 @@
 
 #include "scraper_lineedit.h"
 #include "scraper_checkbox.h"
+#include "theme_manager.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -9,8 +10,7 @@
 SearchVolume::SearchVolume(QWidget *parent)
     : QWidget(parent)
 {
-    QLabel *label = new QLabel(tr("Please provide some additional information."));
-    label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
+    label = new QLabel(tr("Please provide some additional information."));
 
     volumeEdit = new ScraperLineEdit(tr("Series:"));
     volumeEdit->setClearButtonEnabled(true);
@@ -29,6 +29,8 @@ SearchVolume::SearchVolume(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
     setContentsMargins(0, 0, 0, 0);
+
+    initTheme(this);
 }
 
 void SearchVolume::clean()
@@ -44,4 +46,11 @@ void SearchVolume::setVolumeInfo(const QString &volume)
 QString SearchVolume::getVolumeInfo() const
 {
     return volumeEdit->text();
+}
+
+void SearchVolume::applyTheme()
+{
+    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+
+    label->setStyleSheet(comicVineTheme.defaultLabelQSS);
 }
