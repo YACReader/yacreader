@@ -42,21 +42,27 @@ OpenGLChecker::OpenGLChecker()
 
     description = QString("%1.%2 %3").arg(majorVersion).arg(minorVersion).arg(type);
 
-    if (format.renderableType() != QSurfaceFormat::OpenGL) // Desktop OpenGL
-        compatibleOpenGLVersion = false;
+    // Check for Desktop OpenGL OR OpenGL ES 3.0+
+    bool isDesktopGL = (format.renderableType() == QSurfaceFormat::OpenGL);
+    bool isOpenGLES = (format.renderableType() == QSurfaceFormat::OpenGLES);
 
-#ifdef Q_OS_WIN // TODO check Qt version, and set this values depending on the use of QOpenGLWidget or QGLWidget
-    static const int majorTargetVersion = 1;
-    static const int minorTargetVersion = 4;
+    if (isDesktopGL) {
+        // Desktop OpenGL requirements
+#ifdef Q_OS_WIN
+        if (majorVersion < 1 || (majorVersion == 1 && minorVersion < 4))
+            compatibleOpenGLVersion = false;
 #else
-    static const int majorTargetVersion = 2;
-    static const int minorTargetVersion = 0;
+        if (majorVersion < 2)
+            compatibleOpenGLVersion = false;
 #endif
-
-    if (majorVersion < majorTargetVersion)
+    } else if (isOpenGLES) {
+        // OpenGL ES requirements: 3.0 or higher
+        if (majorVersion < 3)
+            compatibleOpenGLVersion = false;
+    } else {
+        // Unknown or unsupported renderable type
         compatibleOpenGLVersion = false;
-    if (majorVersion == majorTargetVersion && minorVersion < minorTargetVersion)
-        compatibleOpenGLVersion = false;
+    }
 }
 
 QString OpenGLChecker::textVersionDescription()

@@ -1,4 +1,4 @@
-// OpenGL Coverflow API by J.Roth
+// OpenGL Coverflow API by J.Roth - Modernized with Shaders
 #ifndef __YACREADER_FLOW_GL_H
 #define __YACREADER_FLOW_GL_H
 
@@ -13,9 +13,13 @@
 #endif
 
 #include <QOpenGLFunctions>
+#include <QOpenGLFunctions_3_3_Core>
+#include <QOpenGLShaderProgram>
+#include <QOpenGLBuffer>
+#include <QOpenGLVertexArrayObject>
 #include <QtWidgets>
 
-#include "pictureflow.h" //TODO mover los tipos de flow de sitio
+#include "pictureflow.h"
 #include "scroll_management.h"
 
 class ImageLoaderGL;
@@ -39,7 +43,6 @@ struct YACReader3DVector {
 // the image/texture info struct
 struct YACReader3DImage {
     QOpenGLTexture *texture;
-    // char name[256];
 
     float width;
     float height;
@@ -105,7 +108,7 @@ extern struct Preset presetYACReaderFlowOverlappedStripeConfig;
 extern struct Preset pressetYACReaderFlowUpConfig;
 extern struct Preset pressetYACReaderFlowDownConfig;
 
-class YACReaderFlowGL : public QOpenGLWidget, public ScrollManagement
+class YACReaderFlowGL : public QOpenGLWidget, protected QOpenGLExtraFunctions, public ScrollManagement
 {
     Q_OBJECT
 protected:
@@ -118,11 +121,13 @@ protected:
     /*functions*/
     void calcPos(YACReader3DImage &image, int pos);
     void calcVector(YACReader3DVector &vector, int pos);
-    // returns true if the animation is finished for Current
     bool animate(YACReader3DVector &currentVector, YACReader3DVector &toVector);
     void drawCover(const YACReader3DImage &image);
+    void drawReflection(const YACReader3DImage &image);
+    void prepareInstanceData(const YACReader3DImage &image, bool isReflection, QVector<GLfloat> &data);
+    void drawMark(const YACReader3DImage &image, const QMatrix4x4 &viewProjectionMatrix);
 
-    void udpatePerspective(int width, int height);
+    void updatePerspective(int width, int height);
 
     int updateCount;
     int fontSize;
@@ -130,11 +135,19 @@ protected:
     QOpenGLTexture *defaultTexture = nullptr;
     QOpenGLTexture *markTexture = nullptr;
     QOpenGLTexture *readingTexture = nullptr;
+
+    // Shader program and buffers
+    QOpenGLShaderProgram *shaderProgram = nullptr;
+    QOpenGLBuffer *vbo = nullptr;
+    QOpenGLBuffer *instanceVBO = nullptr;
+    QOpenGLVertexArrayObject *vao = nullptr;
+
     void initializeGL();
     void paintGL();
     void timerEvent(QTimerEvent *);
+    void setupShaders();
+    void setupGeometry();
 
-    // number of Covers
     int numObjects;
     int lazyPopulateObjects;
     bool showMarks;
@@ -151,116 +164,81 @@ protected:
     /*** Animation Settings ***/
     Preset config;
 
-    // sets/returns the curent selected cover
     int currentSelected;
 
-    // defines the position of the centered cover
     YACReader3DVector centerPos;
 
     /*** Style ***/
-    // sets the amount of shading of the covers in the back (0-1)
     float shadingTop;
     float shadingBottom;
 
-    // sets the reflection strenght (0-1)
     float reflectionUp;
     float reflectionBottom;
+
+    /*** Theme Colors ***/
+    QColor backgroundColor;
+    QColor textColor;
+    QColor shadingColor;
 
     /*** System info ***/
     float viewRotate;
 
-    // sets the updateInterval in ms
     static int updateInterval;
 
-    // sets flow direction right-to-left (manga mode)
     bool flowRightToLeft;
 
     void startAnimationTimer();
     void stopAnimationTimer();
 
 public:
-    /*Constructor*/
     YACReaderFlowGL(QWidget *parent = 0, struct Preset p = pressetYACReaderFlowDownConfig);
     virtual ~YACReaderFlowGL();
 
-    // size;
     QSize minimumSizeHint() const;
-    // QSize sizeHint() const;
 
-    /*functions*/
-
-    // if called it moves the coverflow to the left
     void showPrevious();
-    // if called it moves the coverflow to the right
     void showNext();
-    // go to
     void setCurrentIndex(int pos);
-    // must be called whenever the coverflow animation is stopped
     void cleanupAnimation();
-    // Draws the coverflow
     void draw();
-    // updates the coverflow
     void updatePositions();
-    // inserts a new item to the coverflow
-    // if item is set to a value > -1 it updates a already set value
-    // otherwise a new entry is set
     void insert(char *name, QOpenGLTexture *texture, float x, float y, int item = -1);
-    // removes a item
     virtual void remove(int item);
-    // inserts a default texture into `item` and set is as pending to load
     void add(int item);
-    // replaces the texture of the item 'item' with Tex
     void replace(char *name, QOpenGLTexture *texture, float x, float y, int item);
-    // create n covers with the default nu
     void populate(int n);
-    /*Info*/
-    // retuns the YACReader3DImage Struct of the current selected item
-    // to read title or textures
     YACReader3DImage getCurrentSelected();
 
 public slots:
     void setCF_RX(int value);
-    // the Y Rotation of the Coverflow
     void setCF_RY(int value);
-    // the Z Rotation of the Coverflow
     void setCF_RZ(int value);
-
-    // perspective
     void setZoom(int zoom);
-
     void setRotation(int angle);
-    // sets the distance between the covers
     void setX_Distance(int distance);
-    // sets the distance between the centered and the non centered covers
     void setCenter_Distance(int distance);
-    // sets the pushback amount
     void setZ_Distance(int distance);
-
     void setCF_Y(int value);
     void setCF_Z(int value);
-
     void setY_Distance(int value);
-
     void setFadeOutDist(int value);
-
     void setLightStrenght(int value);
-
     void setMaxAngle(int value);
-
     void setPreset(const Preset &p);
-
     void setPerformance(Performance performance);
-
     void useVSync(bool b);
-
     void setFlowRightToLeft(bool b);
+
+    // Theme color setters
+    void setBackgroundColor(const QColor &color);
+    void setTextColor(const QColor &color);
+    void setShadingColor(const QColor &color);
 
     virtual void updateImageData() = 0;
 
     void reset();
     void reload();
 
-    // interface with yacreaderlibrary, compatibility
     void setShowMarks(bool value);
     void setMarks(QVector<YACReader::YACReaderComicReadStatus> marks);
     void setMarkImage(QImage &image);
@@ -272,16 +250,15 @@ public slots:
     void showSlide(int index);
     int centerIndex();
     void updateMarks();
-    // void setFlowType(PictureFlow::FlowType flowType);
     void render();
 
-    // void paintEvent(QPaintEvent *event);
     QVector3D getPlaneIntersection(int x, int y, YACReader3DImage plane);
     void mouseDoubleClickEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void resizeGL(int width, int height);
+
     friend class ImageLoaderGL;
     friend class ImageLoaderByteArrayGL;
 
@@ -329,7 +306,6 @@ class ImageLoaderGL : public QThread
 public:
     ImageLoaderGL(YACReaderFlowGL *flow);
     ~ImageLoaderGL();
-    // returns FALSE if worker is still busy and can't take the task
     bool busy() const;
     void generate(int index, const QString &fileName);
     void reset()
@@ -365,7 +341,6 @@ class ImageLoaderByteArrayGL : public QThread
 public:
     ImageLoaderByteArrayGL(YACReaderFlowGL *flow);
     ~ImageLoaderByteArrayGL();
-    // returns FALSE if worker is still busy and can't take the task
     bool busy() const;
     void generate(int index, const QByteArray &raw);
     void reset()

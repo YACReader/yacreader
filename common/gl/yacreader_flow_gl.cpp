@@ -4,9 +4,18 @@
 #include <QMatrix4x4>
 #include <cmath>
 
-/*** Animation Settings ***/
+// Structure for per-instance data
+struct InstanceData {
+    QMatrix4x4 modelMatrix;
+    float leftUpShading;
+    float leftDownShading;
+    float rightUpShading;
+    float rightDownShading;
+    float opacity;
+    float padding[3]; // Align to 16 bytes
+};
 
-/*** Position Configuration ***/
+/*** Preset Configurations ***/
 
 int YACReaderFlowGL::updateInterval = 16;
 
@@ -190,11 +199,10 @@ struct Preset pressetYACReaderFlowDownConfig = {
 };
 /*Constructor*/
 YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
-    : QOpenGLWidget(/*QOpenGLWidget migration QGLFormat(QGL::SampleBuffers),*/ parent), numObjects(0), lazyPopulateObjects(-1), hasBeenInitialized(false), bUseVSync(false), flowRightToLeft(false)
+    : QOpenGLWidget(parent), numObjects(0), lazyPopulateObjects(-1), hasBeenInitialized(false), bUseVSync(false), flowRightToLeft(false)
 {
     updateCount = 0;
     config = p;
-
     currentSelected = 0;
 
     centerPos.x = 0.f;
@@ -202,37 +210,39 @@ YACReaderFlowGL::YACReaderFlowGL(QWidget *parent, struct Preset p)
     centerPos.z = 1.f;
     centerPos.rot = 0.f;
 
-    /*** Style ***/
     shadingTop = 0.8f;
     shadingBottom = 0.02f;
     reflectionUp = 0.f;
     reflectionBottom = 0.6f;
 
-    /*** System variables ***/
+    setBackgroundColor(Qt::black);
+
     numObjects = 0;
-    // CFImage Dummy;
     viewRotate = 0.f;
     viewRotateActive = 0;
     stepBackup = config.animationStep / config.animationSpeedUp;
 
-    /*QTimer * timer = new QTimer();
-        connect(timer, SIGNAL(timeout()), this, SLOT(updateImageData()));
-        timer->start(70);
-        */
-
-    /*loader = new WidgetLoader(0,this);
-        loader->flow = this;
-        QThread * loaderThread = new QThread(parent);
-
-        loader->moveToThread(loaderThread);
-
-        loaderThread->start();*/
-
     QSurfaceFormat f = format();
-
     f.setSamples(4);
-    f.setVersion(2, 1);
     f.setSwapInterval(0);
+
+    // Detect if we should use OpenGL ES
+    // Check if app-level ES is forced (via Qt::AA_UseOpenGLES)
+    bool forceES = QCoreApplication::testAttribute(Qt::AA_UseOpenGLES);
+
+    if (forceES) {
+        // Use OpenGL ES 3.0
+        f.setRenderableType(QSurfaceFormat::OpenGLES);
+        f.setVersion(3, 0);
+        qDebug() << "YACReaderFlowGL: Requesting OpenGL ES 3.0 context";
+    } else {
+        // Use Desktop OpenGL 3.3 Core
+        f.setRenderableType(QSurfaceFormat::OpenGL);
+        f.setVersion(3, 3);
+        f.setProfile(QSurfaceFormat::CoreProfile);
+        qDebug() << "YACReaderFlowGL: Requesting Desktop OpenGL 3.3 Core context";
+    }
+
     setFormat(f);
 
     timerId = startTimer(updateInterval);
@@ -242,9 +252,6 @@ void YACReaderFlowGL::timerEvent(QTimerEvent *event)
 {
     if (timerId == event->timerId())
         update();
-
-    // if(!worker->isRunning())
-    // worker->start();
 }
 
 void YACReaderFlowGL::startAnimationTimer()
@@ -263,6 +270,34 @@ void YACReaderFlowGL::stopAnimationTimer()
 
 YACReaderFlowGL::~YACReaderFlowGL()
 {
+    makeCurrent();
+
+    delete vao;
+    delete vbo;
+    delete instanceVBO;
+    delete shaderProgram;
+
+    if (defaultTexture) {
+        if (defaultTexture->isCreated())
+            defaultTexture->destroy();
+        delete defaultTexture;
+    }
+
+#ifdef YACREADER_LIBRARY
+    if (markTexture) {
+        if (markTexture->isCreated())
+            markTexture->destroy();
+        delete markTexture;
+    }
+
+    if (readingTexture) {
+        if (readingTexture->isCreated())
+            readingTexture->destroy();
+        delete readingTexture;
+    }
+#endif
+
+    doneCurrent();
 }
 
 QSize YACReaderFlowGL::minimumSizeHint() const
@@ -270,20 +305,246 @@ QSize YACReaderFlowGL::minimumSizeHint() const
     return QSize(320, 200);
 }
 
-/*QSize YACReaderFlowGL::sizeHint() const
+void YACReaderFlowGL::setupShaders()
 {
-        return QSize(320, 200);
-}*/
+    bool isES = QOpenGLContext::currentContext()->isOpenGLES();
+
+    // Vertex Shader - Desktop GL 3.3
+    const char *vertexShaderSourceGL = R"(
+        #version 330 core
+        layout(location = 0) in vec3 position;
+        layout(location = 1) in vec2 texCoord;
+        layout(location = 2) in mat4 instanceModel;
+        layout(location = 6) in vec4 instanceShading1;
+        layout(location = 7) in float instanceOpacity;
+
+        out vec2 vTexCoord;
+        out vec4 vColor;
+
+        uniform mat4 viewProjectionMatrix;
+
+        void main()
+        {
+            gl_Position = viewProjectionMatrix * instanceModel * vec4(position, 1.0);
+            vTexCoord = texCoord;
+
+            float leftUpShading = instanceShading1.x;
+            float leftDownShading = instanceShading1.y;
+            float rightUpShading = instanceShading1.z;
+            float rightDownShading = instanceShading1.w;
+
+            float leftShading = mix(leftDownShading, leftUpShading, (position.y + 0.5));
+            float rightShading = mix(rightDownShading, rightUpShading, (position.y + 0.5));
+            float shading = mix(leftShading, rightShading, (position.x + 0.5));
+
+            vColor = vec4(shading * instanceOpacity);
+        }
+    )";
+
+    // Vertex Shader - OpenGL ES 3.0
+    const char *vertexShaderSourceES = R"(
+        #version 300 es
+        precision highp float;
+
+        layout(location = 0) in vec3 position;
+        layout(location = 1) in vec2 texCoord;
+        layout(location = 2) in mat4 instanceModel;
+        layout(location = 6) in vec4 instanceShading1;
+        layout(location = 7) in float instanceOpacity;
+
+        out vec2 vTexCoord;
+        out vec4 vColor;
+
+        uniform mat4 viewProjectionMatrix;
+
+        void main()
+        {
+            gl_Position = viewProjectionMatrix * instanceModel * vec4(position, 1.0);
+            vTexCoord = texCoord;
+
+            float leftUpShading = instanceShading1.x;
+            float leftDownShading = instanceShading1.y;
+            float rightUpShading = instanceShading1.z;
+            float rightDownShading = instanceShading1.w;
+
+            float leftShading = mix(leftDownShading, leftUpShading, (position.y + 0.5));
+            float rightShading = mix(rightDownShading, rightUpShading, (position.y + 0.5));
+            float shading = mix(leftShading, rightShading, (position.x + 0.5));
+
+            vColor = vec4(shading * instanceOpacity);
+        }
+    )";
+
+    // Fragment Shader - Desktop GL 3.3
+    const char *fragmentShaderSourceGL = R"(
+        #version 330 core
+        in vec2 vTexCoord;
+        in vec4 vColor;
+
+        out vec4 fragColor;
+
+        uniform sampler2D texture;
+        uniform bool isReflection;
+        uniform float reflectionUp;
+        uniform float reflectionDown;
+        uniform vec3 backgroundColor;
+        uniform vec3 shadingColor;
+
+        void main()
+        {
+            vec2 texCoord = vTexCoord;
+
+            if (isReflection) {
+                texCoord.y = 1.0 - vTexCoord.y;
+                vec4 texColor = texture2D(texture, texCoord);
+                float gradientFade = mix(1.0/3.0, reflectionUp / 2.0, vTexCoord.y);
+                float shadingAmount = vColor.r * gradientFade;
+                vec3 shadedColor = mix(backgroundColor, texColor.rgb, shadingAmount);
+                fragColor = vec4(shadedColor, texColor.a);
+            } else {
+                vec4 texColor = texture2D(texture, texCoord);
+                float shadingAmount = vColor.r;
+                vec3 shadedColor = mix(backgroundColor, texColor.rgb, shadingAmount);
+                fragColor = vec4(shadedColor, texColor.a);
+            }
+        }
+    )";
+
+    // Fragment Shader - OpenGL ES 3.0
+    const char *fragmentShaderSourceES = R"(
+        #version 300 es
+        precision highp float;
+
+        in vec2 vTexCoord;
+        in vec4 vColor;
+
+        out vec4 fragColor;
+
+        uniform sampler2D texture;
+        uniform bool isReflection;
+        uniform float reflectionUp;
+        uniform float reflectionDown;
+        uniform vec3 backgroundColor;
+        uniform vec3 shadingColor;
+
+        void main()
+        {
+            vec2 texCoord = vTexCoord;
+
+            if (isReflection) {
+                texCoord.y = 1.0 - vTexCoord.y;
+                vec4 texColor = texture(texture, texCoord);
+                float gradientFade = mix(1.0/3.0, reflectionUp / 2.0, vTexCoord.y);
+                float shadingAmount = vColor.r * gradientFade;
+                vec3 shadedColor = mix(backgroundColor, texColor.rgb, shadingAmount);
+                fragColor = vec4(shadedColor, texColor.a);
+            } else {
+                vec4 texColor = texture(texture, texCoord);
+                float shadingAmount = vColor.r;
+                vec3 shadedColor = mix(backgroundColor, texColor.rgb, shadingAmount);
+                fragColor = vec4(shadedColor, texColor.a);
+            }
+        }
+    )";
+
+    // Select shaders based on context type
+    const char *vertexShader = isES ? vertexShaderSourceES : vertexShaderSourceGL;
+    const char *fragmentShader = isES ? fragmentShaderSourceES : fragmentShaderSourceGL;
+
+    qDebug() << "YACReaderFlowGL: Using" << (isES ? "OpenGL ES 3.0" : "Desktop OpenGL 3.3") << "shaders";
+
+    shaderProgram = new QOpenGLShaderProgram(this);
+    shaderProgram->addShaderFromSourceCode(QOpenGLShader::Vertex, vertexShader);
+    shaderProgram->addShaderFromSourceCode(QOpenGLShader::Fragment, fragmentShader);
+
+    if (!shaderProgram->link()) {
+        qWarning() << "YACReaderFlowGL: Shader linking failed:" << shaderProgram->log();
+    }
+}
+
+void YACReaderFlowGL::setupGeometry()
+{
+    // VAO for regular covers
+    vao = new QOpenGLVertexArrayObject(this);
+    vao->create();
+    vao->bind();
+
+    vbo = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+    vbo->create();
+    vbo->bind();
+
+    // Quad vertices with texture coordinates
+    GLfloat vertices[] = {
+        // Position (x, y, z), TexCoord (u, v)
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-left
+        0.5f, -0.5f, 0.0f, 1.0f, 1.0f, // Bottom-right
+        0.5f, 0.5f, 0.0f, 1.0f, 0.0f, // Top-right
+        -0.5f, 0.5f, 0.0f, 0.0f, 0.0f // Top-left
+    };
+
+    vbo->allocate(vertices, sizeof(vertices));
+
+    // Position attribute
+    shaderProgram->enableAttributeArray(0);
+    shaderProgram->setAttributeBuffer(0, GL_FLOAT, 0, 3, 5 * sizeof(GLfloat));
+
+    // TexCoord attribute
+    shaderProgram->enableAttributeArray(1);
+    shaderProgram->setAttributeBuffer(1, GL_FLOAT, 3 * sizeof(GLfloat), 2, 5 * sizeof(GLfloat));
+
+    // Create instance buffer (will be filled per-frame)
+    instanceVBO = new QOpenGLBuffer(QOpenGLBuffer::VertexBuffer);
+    instanceVBO->create();
+    instanceVBO->bind();
+
+    // Per-instance attributes (model matrix = 4 vec4s, shading = 1 vec4, opacity = 1 float)
+    // Location 2-5: model matrix (mat4)
+    for (int i = 0; i < 4; i++) {
+        shaderProgram->enableAttributeArray(2 + i);
+        shaderProgram->setAttributeBuffer(2 + i, GL_FLOAT, i * 4 * sizeof(GLfloat), 4, 21 * sizeof(GLfloat));
+        glVertexAttribDivisor(2 + i, 1); // Advance once per instance
+    }
+
+    // Location 6: shading vec4 (leftUp, leftDown, rightUp, rightDown)
+    shaderProgram->enableAttributeArray(6);
+    shaderProgram->setAttributeBuffer(6, GL_FLOAT, 16 * sizeof(GLfloat), 4, 21 * sizeof(GLfloat));
+    glVertexAttribDivisor(6, 1);
+
+    // Location 7: opacity float
+    shaderProgram->enableAttributeArray(7);
+    shaderProgram->setAttributeBuffer(7, GL_FLOAT, 20 * sizeof(GLfloat), 1, 21 * sizeof(GLfloat));
+    glVertexAttribDivisor(7, 1);
+
+    vao->release();
+    instanceVBO->release();
+    vbo->release();
+}
 
 void YACReaderFlowGL::initializeGL()
 {
-    glShadeModel(GL_SMOOTH);
+    if (!context() || !context()->isValid()) {
+        qWarning() << "YACReaderFlowGL: Invalid OpenGL context";
+        return;
+    }
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    initializeOpenGLFunctions();
+
+    // Verify instancing support (available in OpenGL 3.3+ and ES 3.0+)
+    bool hasInstancing = context()->hasExtension(QByteArrayLiteral("GL_ARB_instanced_arrays")) ||
+            context()->format().majorVersion() >= 3;
+
+    if (!hasInstancing) {
+        qWarning() << "YACReaderFlowGL: Instanced rendering not supported!";
+        qWarning() << "YACReaderFlowGL: OpenGL version:" << context()->format().majorVersion() << "." << context()->format().minorVersion();
+        return;
+    }
+
+    setupShaders();
+    setupGeometry();
 
     defaultTexture = new QOpenGLTexture(QImage(":/images/defaultCover.png"));
     defaultTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear, QOpenGLTexture::LinearMipMapLinear);
+
 #ifdef YACREADER_LIBRARY
     markTexture = new QOpenGLTexture(QImage(":/images/readRibbon.png"));
     markTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear, QOpenGLTexture::LinearMipMapLinear);
@@ -291,6 +552,7 @@ void YACReaderFlowGL::initializeGL()
     readingTexture = new QOpenGLTexture(QImage(":/images/readingRibbon.png"));
     readingTexture->setMinMagFilters(QOpenGLTexture::LinearMipMapLinear, QOpenGLTexture::LinearMipMapLinear);
 #endif
+
     if (lazyPopulateObjects != -1)
         populate(lazyPopulateObjects);
 
@@ -299,31 +561,30 @@ void YACReaderFlowGL::initializeGL()
 
 void YACReaderFlowGL::paintGL()
 {
+    if (!context() || !context()->isValid() || !shaderProgram)
+        return;
+
     QPainter painter;
     painter.begin(this);
-
     painter.beginNativePainting();
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_BLEND);
     glEnable(GL_MULTISAMPLE);
-
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    glClearColor(0, 0, 0, 1);
+    glClearColor(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF(), 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     if (numObjects > 0) {
         updatePositions();
-        udpatePerspective(width(), height());
+        updatePerspective(width(), height());
         draw();
     }
 
     glDisable(GL_MULTISAMPLE);
     glDisable(GL_BLEND);
-    glDisable(GL_COLOR_MATERIAL);
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
 
@@ -333,8 +594,7 @@ void YACReaderFlowGL::paintGL()
     font.setFamily("Arial");
     font.setPointSize(fontSize);
     painter.setFont(font);
-
-    painter.setPen(QColor(76, 76, 76));
+    painter.setPen(textColor);
     painter.drawText(10, fontSize + 10, QString("%1/%2").arg(currentSelected + 1).arg(numObjects));
 
     painter.end();
@@ -342,32 +602,28 @@ void YACReaderFlowGL::paintGL()
 
 void YACReaderFlowGL::resizeGL(int width, int height)
 {
+    if (!context() || !context()->isValid())
+        return;
+
     fontSize = (width + height) * 0.010;
     if (fontSize < 10)
         fontSize = 10;
 
-    // int side = qMin(width, height);
-    udpatePerspective(width, height);
+    updatePerspective(width, height);
 
     if (numObjects > 0)
         updatePositions();
 }
 
-void YACReaderFlowGL::udpatePerspective(int width, int height)
+void YACReaderFlowGL::updatePerspective(int width, int height)
 {
+    if (!context() || !context()->isValid())
+        return;
+
     float pixelRatio = devicePixelRatioF();
     glViewport(0, 0, width * pixelRatio, height * pixelRatio);
-
-    glMatrixMode(GL_PROJECTION);
-    QMatrix4x4 perspectiveMatrix;
-    perspectiveMatrix.setToIdentity();
-    perspectiveMatrix.perspective(20.0, GLdouble(width) / (float)height, 1.0, 200.0);
-    glLoadMatrixf(perspectiveMatrix.constData());
-    glMatrixMode(GL_MODELVIEW);
 }
 
-//-----------------------------------------------------------------------------
-/*Private*/
 void YACReaderFlowGL::calcPos(YACReader3DImage &image, int pos)
 {
     if (flowRightToLeft) {
@@ -390,10 +646,10 @@ void YACReaderFlowGL::calcPos(YACReader3DImage &image, int pos)
         }
     }
 }
+
 void YACReaderFlowGL::calcVector(YACReader3DVector &vector, int pos)
 {
     calcPos(dummy, pos);
-
     vector.x = dummy.current.x;
     vector.y = dummy.current.y;
     vector.z = dummy.current.z;
@@ -410,7 +666,6 @@ bool YACReaderFlowGL::animate(YACReader3DVector &currentVector, YACReader3DVecto
     if (fabs(rotDiff) < 0.01 && fabs(xDiff) < 0.001 && fabs(yDiff) < 0.001 && fabs(zDiff) < 0.001)
         return true;
 
-    // calculate and apply positions
     currentVector.x = currentVector.x + (xDiff)*config.animationStep;
     currentVector.y = currentVector.y + (yDiff)*config.animationStep;
     currentVector.z = currentVector.z + (zDiff)*config.animationStep;
@@ -423,124 +678,160 @@ bool YACReaderFlowGL::animate(YACReader3DVector &currentVector, YACReader3DVecto
 
     return false;
 }
+
 void YACReaderFlowGL::drawCover(const YACReader3DImage &image)
 {
+    if (!shaderProgram || !vao || !image.texture)
+        return;
+
     float w = image.width;
     float h = image.height;
 
-    // fadeout
+    // Calculate opacity - original formula exactly
     float opacity = 1 - 1 / (config.animationFadeOutDist + config.viewRotateLightStrenght * fabs(viewRotate)) * fabs(0 - image.current.x);
 
-    glLoadIdentity();
-    glTranslatef(config.cfX, config.cfY, config.cfZ);
-    glRotatef(config.cfRX, 1, 0, 0);
-    glRotatef(viewRotate * config.viewAngle + config.cfRY, 0, 1, 0);
-    glRotatef(config.cfRZ, 0, 0, 1);
+    // Setup matrices
+    QMatrix4x4 projectionMatrix;
+    projectionMatrix.perspective(config.zoom, GLdouble(width()) / (float)height(), 1.0, 200.0);
 
-    glTranslatef(image.current.x, image.current.y, image.current.z);
+    QMatrix4x4 viewMatrix;
+    viewMatrix.translate(config.cfX, config.cfY, config.cfZ);
+    viewMatrix.rotate(config.cfRX, 1, 0, 0);
+    viewMatrix.rotate(viewRotate * config.viewAngle + config.cfRY, 0, 1, 0);
+    viewMatrix.rotate(config.cfRZ, 0, 0, 1);
 
-    glPushMatrix();
-    glRotatef(image.current.rot, 0, 1, 0);
+    QMatrix4x4 modelMatrix;
+    modelMatrix.translate(image.current.x, image.current.y, image.current.z);
+    modelMatrix.rotate(image.current.rot, 0, 1, 0);
+    modelMatrix.translate(0.0f, -0.5f + h / 2.0f, 0.0f);
+    modelMatrix.scale(w, h, 1.0f);
 
-    glEnable(GL_TEXTURE_2D);
-    image.texture->bind();
+    QMatrix4x4 mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
-    // calculate shading
+    // Calculate per-corner shading exactly as original
     float LShading = ((config.rotation != 0) ? ((image.current.rot < 0) ? 1 - 1 / config.rotation * image.current.rot : 1) : 1);
     float RShading = ((config.rotation != 0) ? ((image.current.rot > 0) ? 1 - 1 / (config.rotation * -1) * image.current.rot : 1) : 1);
     float LUP = shadingTop + (1 - shadingTop) * LShading;
     float LDOWN = shadingBottom + (1 - shadingBottom) * LShading;
     float RUP = shadingTop + (1 - shadingTop) * RShading;
     float RDOWN = shadingBottom + (1 - shadingBottom) * RShading;
-    ;
 
-    // DrawCover
-    glBegin(GL_QUADS);
+    // Bind shader and set uniforms
+    shaderProgram->bind();
+    shaderProgram->setUniformValue("mvpMatrix", mvpMatrix);
+    shaderProgram->setUniformValue("leftUpShading", LUP);
+    shaderProgram->setUniformValue("leftDownShading", LDOWN);
+    shaderProgram->setUniformValue("rightUpShading", RUP);
+    shaderProgram->setUniformValue("rightDownShading", RDOWN);
+    shaderProgram->setUniformValue("opacity", opacity);
+    shaderProgram->setUniformValue("isReflection", false);
 
-    // esquina inferior izquierda
-    glColor4f(LDOWN * opacity, LDOWN * opacity, LDOWN * opacity, 1);
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex3f(w / 2.f * -1.f, -0.5f, 0.f);
+    // Bind texture and VAO
+    image.texture->bind();
+    vao->bind();
 
-    // esquina inferior derecha
-    glColor4f(RDOWN * opacity, RDOWN * opacity, RDOWN * opacity, 1);
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex3f(w / 2.f, -0.5f, 0.f);
+    // Draw cover
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 
-    // esquina superior derecha
-    glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex3f(w / 2.f, -0.5f + h, 0.f);
-
-    // esquina superior izquierda
-    glColor4f(LUP * opacity, LUP * opacity, LUP * opacity, 1);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex3f(w / 2.f * -1.f, -0.5f + h, 0.f);
-
-    glEnd();
-
-    // Draw reflection
-    glBegin(GL_QUADS);
-
-    // esquina inferior izquierda
-    glColor4f(LUP * opacity * reflectionUp / 2, LUP * opacity * reflectionUp / 2, LUP * opacity * reflectionUp / 2, 1);
-    glTexCoord2f(0.0f, 0.0f);
-    glVertex3f(w / 2.f * -1.f, -0.5f - h, 0.f);
-
-    // esquina inferior derecha
-    glColor4f(RUP * opacity * reflectionUp / 2, RUP * opacity * reflectionUp / 2, RUP * opacity * reflectionUp / 2, 1);
-    glTexCoord2f(1.0f, 0.0f);
-    glVertex3f(w / 2.f, -0.5f - h, 0.f);
-
-    // esquina superior derecha
-    glColor4f(RDOWN * opacity / 3, RDOWN * opacity / 3, RDOWN * opacity / 3, 1);
-    glTexCoord2f(1.0f, 1.0f);
-    glVertex3f(w / 2.f, -0.5f, 0.f);
-
-    // esquina superior izquierda
-    glColor4f(LDOWN * opacity / 3, LDOWN * opacity / 3, LDOWN * opacity / 3, 1);
-    glTexCoord2f(0.0f, 1.0f);
-    glVertex3f(w / 2.f * -1.f, -0.5f, 0.f);
-
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
-
+    // Draw marks if needed
     if (showMarks && loaded[image.index] && marks[image.index] != Unread) {
-        glEnable(GL_TEXTURE_2D);
-        if (marks[image.index] == Read)
-            markTexture->bind();
-        else
-            readingTexture->bind();
-        glBegin(GL_QUADS);
+        QOpenGLTexture *markTex = (marks[image.index] == Read) ? markTexture : readingTexture;
 
-        // esquina inferior izquierda
-        glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
-        glTexCoord2f(0.0f, 1.0f);
-        glVertex3f(w / 2.f - 0.2, -0.688f + h, 0.001f);
+        QMatrix4x4 markModel;
+        markModel.translate(image.current.x, image.current.y, image.current.z);
+        markModel.rotate(image.current.rot, 0, 1, 0);
 
-        // esquina inferior derecha
-        glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
-        glTexCoord2f(1.0f, 1.0f);
-        glVertex3f(w / 2.f - 0.05, -0.688f + h, 0.001f);
+        float markWidth = 0.15f;
+        float markHeight = 0.2f;
+        float markCenterX = w / 2.0f - 0.125f;
+        float markCenterY = -0.588f + h;
 
-        // esquina superior derecha
-        glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
-        glTexCoord2f(1.0f, 0.0f);
-        glVertex3f(w / 2.f - 0.05, -0.488f + h, 0.001f);
+        markModel.translate(markCenterX, markCenterY, 0.001f);
+        markModel.scale(markWidth, markHeight, 1.0f);
 
-        // esquina superior izquierda
-        glColor4f(RUP * opacity, RUP * opacity, RUP * opacity, 1);
-        glTexCoord2f(0.0f, 0.0f);
-        glVertex3f(w / 2.f - 0.2, -0.488f + h, 0.001f);
+        QMatrix4x4 mvpMark = projectionMatrix * viewMatrix * markModel;
 
-        glEnd();
-        glDisable(GL_TEXTURE_2D);
+        shaderProgram->setUniformValue("mvpMatrix", mvpMark);
+        shaderProgram->setUniformValue("leftUpShading", RUP * opacity);
+        shaderProgram->setUniformValue("leftDownShading", RUP * opacity);
+        shaderProgram->setUniformValue("rightUpShading", RUP * opacity);
+        shaderProgram->setUniformValue("rightDownShading", RUP * opacity);
+        shaderProgram->setUniformValue("opacity", 1.0f);
+        shaderProgram->setUniformValue("isReflection", false);
+
+        markTex->bind();
+        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
     }
 
-    glPopMatrix();
+    vao->release();
+    shaderProgram->release();
 }
 
-/*Public*/
+void YACReaderFlowGL::drawReflection(const YACReader3DImage &image)
+{
+    if (!shaderProgram || !vao || !image.texture)
+        return;
+
+    float w = image.width;
+    float h = image.height;
+
+    // Calculate opacity - original formula exactly
+    float opacity = 1 - 1 / (config.animationFadeOutDist + config.viewRotateLightStrenght * fabs(viewRotate)) * fabs(0 - image.current.x);
+
+    // Setup matrices
+    QMatrix4x4 projectionMatrix;
+    projectionMatrix.perspective(config.zoom, GLdouble(width()) / (float)height(), 1.0, 200.0);
+
+    QMatrix4x4 viewMatrix;
+    viewMatrix.translate(config.cfX, config.cfY, config.cfZ);
+    viewMatrix.rotate(config.cfRX, 1, 0, 0);
+    viewMatrix.rotate(viewRotate * config.viewAngle + config.cfRY, 0, 1, 0);
+    viewMatrix.rotate(config.cfRZ, 0, 0, 1);
+
+    // Calculate per-corner shading exactly as original
+    float LShading = ((config.rotation != 0) ? ((image.current.rot < 0) ? 1 - 1 / config.rotation * image.current.rot : 1) : 1);
+    float RShading = ((config.rotation != 0) ? ((image.current.rot > 0) ? 1 - 1 / (config.rotation * -1) * image.current.rot : 1) : 1);
+    float LUP = shadingTop + (1 - shadingTop) * LShading;
+    float LDOWN = shadingBottom + (1 - shadingBottom) * LShading;
+    float RUP = shadingTop + (1 - shadingTop) * RShading;
+    float RDOWN = shadingBottom + (1 - shadingBottom) * RShading;
+
+    // Draw reflection
+    // In the old code, the reflection quad had vertices from y=-0.5-h (bottom) to y=-0.5 (top)
+    // The OLD reflection shading was:
+    // - Bottom corners (y = -0.5-h): LUP*opacity*reflectionUp/2, RUP*opacity*reflectionUp/2
+    // - Top corners (y = -0.5): LDOWN*opacity/3, RDOWN*opacity/3
+    // This means the reflection uses INVERTED vertical shading (LUP/RUP at bottom, LDOWN/RDOWN at top)
+    // We need to pass swapped values to match this
+    QMatrix4x4 reflectionMatrix;
+    reflectionMatrix.translate(image.current.x, image.current.y, image.current.z);
+    reflectionMatrix.rotate(image.current.rot, 0, 1, 0);
+    reflectionMatrix.translate(0.0f, -0.5f - h / 2.0f, 0.0f);
+    reflectionMatrix.scale(w, h, 1.0f);
+
+    QMatrix4x4 mvpReflection = projectionMatrix * viewMatrix * reflectionMatrix;
+
+    shaderProgram->bind();
+    shaderProgram->setUniformValue("mvpMatrix", mvpReflection);
+    // Swap UP and DOWN for reflection to match old behavior
+    shaderProgram->setUniformValue("leftUpShading", LDOWN);
+    shaderProgram->setUniformValue("leftDownShading", LUP);
+    shaderProgram->setUniformValue("rightUpShading", RDOWN);
+    shaderProgram->setUniformValue("rightDownShading", RUP);
+    shaderProgram->setUniformValue("opacity", opacity);
+    shaderProgram->setUniformValue("isReflection", true);
+    shaderProgram->setUniformValue("reflectionUp", reflectionUp);
+    shaderProgram->setUniformValue("reflectionDown", reflectionBottom);
+
+    image.texture->bind();
+    vao->bind();
+
+    glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+    vao->release();
+    shaderProgram->release();
+}
+
 void YACReaderFlowGL::cleanupAnimation()
 {
     config.animationStep = stepBackup;
@@ -549,25 +840,189 @@ void YACReaderFlowGL::cleanupAnimation()
 
 void YACReaderFlowGL::draw()
 {
+    if (!shaderProgram || !vao || numObjects == 0)
+        return;
+
+    // Calculate view-projection matrix once
+    // Note: Old implementation used fixed 20.0 degrees FOV, not config.zoom
+    QMatrix4x4 projectionMatrix;
+    projectionMatrix.perspective(20.0, GLdouble(width()) / (float)height(), 1.0, 200.0);
+
+    QMatrix4x4 viewMatrix;
+    viewMatrix.translate(config.cfX, config.cfY, config.cfZ);
+    viewMatrix.rotate(config.cfRX, 1, 0, 0);
+    viewMatrix.rotate(viewRotate * config.viewAngle + config.cfRY, 0, 1, 0);
+    viewMatrix.rotate(config.cfRZ, 0, 0, 1);
+
+    QMatrix4x4 viewProjectionMatrix = projectionMatrix * viewMatrix;
+
+    // Bind shader once
+    shaderProgram->bind();
+    shaderProgram->setUniformValue("viewProjectionMatrix", viewProjectionMatrix);
+    shaderProgram->setUniformValue("backgroundColor",
+                                   QVector3D(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF()));
+    shaderProgram->setUniformValue("shadingColor",
+                                   QVector3D(shadingColor.redF(), shadingColor.greenF(), shadingColor.blueF()));
+
     int CS = currentSelected;
-    int count;
 
-    // Draw right Covers
-    for (count = numObjects - 1; count > -1; count--) {
+    // Prepare instance data for all covers
+    QVector<GLfloat> instanceData;
+    QVector<int> drawOrder;
+
+    // Build draw order (back to front)
+    for (int count = numObjects - 1; count > -1; count--) {
         if (count > CS) {
-            drawCover(images[count]);
+            drawOrder.append(count);
         }
     }
-
-    // Draw left Covers
-    for (count = 0; count < numObjects - 1; count++) {
+    for (int count = 0; count < numObjects - 1; count++) {
         if (count < CS) {
-            drawCover(images[count]);
+            drawOrder.append(count);
+        }
+    }
+    drawOrder.append(CS);
+
+    // Draw reflections first
+    shaderProgram->setUniformValue("isReflection", true);
+    shaderProgram->setUniformValue("reflectionUp", reflectionUp);
+    shaderProgram->setUniformValue("reflectionDown", reflectionBottom);
+
+    for (int idx : drawOrder) {
+        if (images[idx].texture) {
+            prepareInstanceData(images[idx], true, instanceData);
+
+            instanceVBO->bind();
+            instanceVBO->allocate(instanceData.data(), instanceData.size() * sizeof(GLfloat));
+
+            images[idx].texture->bind();
+            vao->bind();
+            glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, 1);
+
+            instanceData.clear();
         }
     }
 
-    // Draw Center Cover
-    drawCover(images[CS]);
+    // Draw covers
+    shaderProgram->setUniformValue("isReflection", false);
+
+    for (int idx : drawOrder) {
+        if (images[idx].texture) {
+            prepareInstanceData(images[idx], false, instanceData);
+
+            instanceVBO->bind();
+            instanceVBO->allocate(instanceData.data(), instanceData.size() * sizeof(GLfloat));
+
+            images[idx].texture->bind();
+            vao->bind();
+            glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, 1);
+
+            // Draw marks if needed
+            if (showMarks && loaded[images[idx].index] && marks[images[idx].index] != Unread) {
+                drawMark(images[idx], viewProjectionMatrix);
+            }
+
+            instanceData.clear();
+        }
+    }
+
+    vao->release();
+    shaderProgram->release();
+}
+
+void YACReaderFlowGL::prepareInstanceData(const YACReader3DImage &image, bool isReflection, QVector<GLfloat> &data)
+{
+    float w = image.width;
+    float h = image.height;
+
+    // Calculate opacity
+    float opacity = 1 - 1 / (config.animationFadeOutDist + config.viewRotateLightStrenght * fabs(viewRotate)) * fabs(0 - image.current.x);
+
+    // Calculate model matrix
+    QMatrix4x4 modelMatrix;
+    modelMatrix.translate(image.current.x, image.current.y, image.current.z);
+    modelMatrix.rotate(image.current.rot, 0, 1, 0);
+
+    if (isReflection) {
+        modelMatrix.translate(0.0f, -0.5f - h / 2.0f, 0.0f);
+    } else {
+        modelMatrix.translate(0.0f, -0.5f + h / 2.0f, 0.0f);
+    }
+    modelMatrix.scale(w, h, 1.0f);
+
+    // Calculate shading
+    float LShading = ((config.rotation != 0) ? ((image.current.rot < 0) ? 1 - 1 / config.rotation * image.current.rot : 1) : 1);
+    float RShading = ((config.rotation != 0) ? ((image.current.rot > 0) ? 1 - 1 / (config.rotation * -1) * image.current.rot : 1) : 1);
+    float LUP = shadingTop + (1 - shadingTop) * LShading;
+    float LDOWN = shadingBottom + (1 - shadingBottom) * LShading;
+    float RUP = shadingTop + (1 - shadingTop) * RShading;
+    float RDOWN = shadingBottom + (1 - shadingBottom) * RShading;
+
+    // For reflection, swap vertical shading
+    if (isReflection) {
+        float temp = LUP;
+        LUP = LDOWN;
+        LDOWN = temp;
+        temp = RUP;
+        RUP = RDOWN;
+        RDOWN = temp;
+    }
+
+    // Pack instance data: mat4 (16 floats) + vec4 shading (4 floats) + float opacity (1 float) = 21 floats
+    const float *matData = modelMatrix.constData();
+    for (int i = 0; i < 16; i++) {
+        data.append(matData[i]);
+    }
+    data.append(LUP);
+    data.append(LDOWN);
+    data.append(RUP);
+    data.append(RDOWN);
+    data.append(opacity);
+}
+
+void YACReaderFlowGL::drawMark(const YACReader3DImage &image, const QMatrix4x4 &viewProjectionMatrix)
+{
+    QOpenGLTexture *markTex = (marks[image.index] == Read) ? markTexture : readingTexture;
+
+    float w = image.width;
+    float h = image.height;
+    float opacity = 1 - 1 / (config.animationFadeOutDist + config.viewRotateLightStrenght * fabs(viewRotate)) * fabs(0 - image.current.x);
+
+    float LShading = ((config.rotation != 0) ? ((image.current.rot < 0) ? 1 - 1 / config.rotation * image.current.rot : 1) : 1);
+    float RShading = ((config.rotation != 0) ? ((image.current.rot > 0) ? 1 - 1 / (config.rotation * -1) * image.current.rot : 1) : 1);
+    float RUP = shadingTop + (1 - shadingTop) * RShading;
+
+    QMatrix4x4 markModel;
+    markModel.translate(image.current.x, image.current.y, image.current.z);
+    markModel.rotate(image.current.rot, 0, 1, 0);
+
+    float markWidth = 0.15f;
+    float markHeight = 0.2f;
+    float markCenterX = w / 2.0f - 0.125f;
+    float markCenterY = -0.588f + h;
+
+    markModel.translate(markCenterX, markCenterY, 0.001f);
+    markModel.scale(markWidth, markHeight, 1.0f);
+
+    // Prepare instance data for mark
+    QVector<GLfloat> markData;
+    const float *matData = markModel.constData();
+    for (int i = 0; i < 16; i++) {
+        markData.append(matData[i]);
+    }
+    float shadingValue = RUP * opacity;
+    markData.append(shadingValue);
+    markData.append(shadingValue);
+    markData.append(shadingValue);
+    markData.append(shadingValue);
+    markData.append(1.0f);
+
+    instanceVBO->bind();
+    instanceVBO->allocate(markData.data(), markData.size() * sizeof(GLfloat));
+
+    markTex->bind();
+    vao->bind();
+    glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, 4, 1);
 }
 
 void YACReaderFlowGL::showPrevious()
@@ -575,7 +1030,6 @@ void YACReaderFlowGL::showPrevious()
     startAnimationTimer();
 
     if (currentSelected > 0) {
-
         currentSelected--;
         emit centerIndexChanged(currentSelected);
         config.animationStep *= config.animationSpeedUp;
@@ -597,7 +1051,6 @@ void YACReaderFlowGL::showNext()
     startAnimationTimer();
 
     if (currentSelected < numObjects - 1) {
-
         currentSelected++;
         emit centerIndexChanged(currentSelected);
         config.animationStep *= config.animationSpeedUp;
@@ -624,7 +1077,6 @@ void YACReaderFlowGL::setCurrentIndex(int pos)
     startAnimationTimer();
 
     currentSelected = pos;
-
     config.animationStep *= config.animationSpeedUp;
 
     if (config.animationStep > config.animationStepMax) {
@@ -641,25 +1093,21 @@ void YACReaderFlowGL::setCurrentIndex(int pos)
 void YACReaderFlowGL::updatePositions()
 {
     int count;
-
     bool stopAnimation = true;
+
     for (count = numObjects - 1; count > -1; count--) {
         calcVector(images[count].animEnd, count - currentSelected);
         if (!animate(images[count].current, images[count].animEnd))
             stopAnimation = false;
     }
 
-    // slowly reset view angle
     if (!viewRotateActive) {
         viewRotate += (0 - viewRotate) * config.viewRotateSub;
     }
 
-    if (fabs(images[currentSelected].current.x - images[currentSelected].animEnd.x) < 1) // viewRotate < 0.2)
-    {
+    if (fabs(images[currentSelected].current.x - images[currentSelected].animEnd.x) < 1) {
         cleanupAnimation();
-        if (updateCount >= 0) // TODO parametrizar
-        {
-
+        if (updateCount >= 0) {
             updateCount = 0;
             updateImageData();
         } else
@@ -676,13 +1124,10 @@ void YACReaderFlowGL::insert(char *name, QOpenGLTexture *texture, float x, float
     startAnimationTimer();
 
     Q_UNUSED(name)
-    // set a new entry
     if (item == -1) {
         images.push_back(YACReader3DImage());
-
         item = numObjects;
         numObjects++;
-
         calcVector(images[item].current, item);
         images[item].current.z = images[item].current.z - 1;
     }
@@ -691,7 +1136,6 @@ void YACReaderFlowGL::insert(char *name, QOpenGLTexture *texture, float x, float
     images[item].width = x;
     images[item].height = y;
     images[item].index = item;
-    // strcpy(cfImages[item].name,name);
 }
 
 void YACReaderFlowGL::remove(int item)
@@ -704,7 +1148,6 @@ void YACReaderFlowGL::remove(int item)
     loaded.remove(item);
     marks.remove(item);
 
-    // reposition current selection
     if (item <= currentSelected && currentSelected != 0) {
         currentSelected--;
     }
@@ -742,7 +1185,6 @@ void YACReaderFlowGL::add(int item)
     insert(s.toLocal8Bit().data(), defaultTexture, x, y, item);
 }
 
-/*Info*/
 YACReader3DImage YACReaderFlowGL::getCurrentSelected()
 {
     return images[currentSelected];
@@ -781,7 +1223,6 @@ void YACReaderFlowGL::populate(int n)
 void YACReaderFlowGL::reset()
 {
     makeCurrent();
-
     startAnimationTimer();
 
     currentSelected = 0;
@@ -804,130 +1245,93 @@ void YACReaderFlowGL::reset()
 void YACReaderFlowGL::reload()
 {
     startAnimationTimer();
-
     int n = numObjects;
     reset();
     populate(n);
 }
 
-// slots
+// Slot implementations
 void YACReaderFlowGL::setCF_RX(int value)
 {
     startAnimationTimer();
-
     config.cfRX = value;
 }
 void YACReaderFlowGL::setCF_RY(int value)
 {
     startAnimationTimer();
-
     config.cfRY = value;
 }
 void YACReaderFlowGL::setCF_RZ(int value)
 {
     startAnimationTimer();
-
     config.cfRZ = value;
+}
+void YACReaderFlowGL::setRotation(int angle)
+{
+    startAnimationTimer();
+    config.rotation = -angle;
+}
+void YACReaderFlowGL::setX_Distance(int distance)
+{
+    startAnimationTimer();
+    config.xDistance = distance / 100.0;
+}
+void YACReaderFlowGL::setCenter_Distance(int distance)
+{
+    startAnimationTimer();
+    config.centerDistance = distance / 100.0;
+}
+void YACReaderFlowGL::setZ_Distance(int distance)
+{
+    startAnimationTimer();
+    config.zDistance = distance / 100.0;
+}
+void YACReaderFlowGL::setCF_Y(int value)
+{
+    startAnimationTimer();
+    config.cfY = value / 100.0;
+}
+void YACReaderFlowGL::setCF_Z(int value)
+{
+    startAnimationTimer();
+    config.cfZ = value;
+}
+void YACReaderFlowGL::setY_Distance(int value)
+{
+    startAnimationTimer();
+    config.yDistance = value / 100.0;
+}
+void YACReaderFlowGL::setFadeOutDist(int value)
+{
+    startAnimationTimer();
+    config.animationFadeOutDist = value;
+}
+void YACReaderFlowGL::setLightStrenght(int value)
+{
+    startAnimationTimer();
+    config.viewRotateLightStrenght = value;
+}
+void YACReaderFlowGL::setMaxAngle(int value)
+{
+    startAnimationTimer();
+    config.viewAngle = value;
+}
+void YACReaderFlowGL::setPreset(const Preset &p)
+{
+    startAnimationTimer();
+    config = p;
 }
 
 void YACReaderFlowGL::setZoom(int zoom)
 {
     startAnimationTimer();
-
-    int width = this->width();
-    int height = this->height();
-    glViewport(0, 0, width, height);
-
-    glMatrixMode(GL_PROJECTION);
-    QMatrix4x4 zoomMatrix;
-    zoomMatrix.setToIdentity();
-    zoomMatrix.perspective(zoom, (float)width / (float)height, 1.0, 200.0);
-    glLoadMatrixf(zoomMatrix.constData());
-    glMatrixMode(GL_MODELVIEW);
-}
-
-void YACReaderFlowGL::setRotation(int angle)
-{
-    startAnimationTimer();
-
-    config.rotation = -angle;
-}
-// sets the distance between the covers
-void YACReaderFlowGL::setX_Distance(int distance)
-{
-    startAnimationTimer();
-
-    config.xDistance = distance / 100.0;
-}
-// sets the distance between the centered and the non centered covers
-void YACReaderFlowGL::setCenter_Distance(int distance)
-{
-    startAnimationTimer();
-
-    config.centerDistance = distance / 100.0;
-}
-// sets the pushback amount
-void YACReaderFlowGL::setZ_Distance(int distance)
-{
-    startAnimationTimer();
-
-    config.zDistance = distance / 100.0;
-}
-
-void YACReaderFlowGL::setCF_Y(int value)
-{
-    startAnimationTimer();
-
-    config.cfY = value / 100.0;
-}
-
-void YACReaderFlowGL::setCF_Z(int value)
-{
-    startAnimationTimer();
-
-    config.cfZ = value;
-}
-
-void YACReaderFlowGL::setY_Distance(int value)
-{
-    startAnimationTimer();
-
-    config.yDistance = value / 100.0;
-}
-
-void YACReaderFlowGL::setFadeOutDist(int value)
-{
-    startAnimationTimer();
-
-    config.animationFadeOutDist = value;
-}
-
-void YACReaderFlowGL::setLightStrenght(int value)
-{
-    startAnimationTimer();
-
-    config.viewRotateLightStrenght = value;
-}
-
-void YACReaderFlowGL::setMaxAngle(int value)
-{
-    startAnimationTimer();
-
-    config.viewAngle = value;
-}
-
-void YACReaderFlowGL::setPreset(const Preset &p)
-{
-    startAnimationTimer();
-
-    config = p;
+    config.zoom = zoom;
 }
 
 void YACReaderFlowGL::setPerformance(Performance performance)
 {
     if (this->performance != performance) {
         startAnimationTimer();
-
         this->performance = performance;
         reload();
     }
@@ -937,61 +1341,47 @@ void YACReaderFlowGL::useVSync(bool b)
 {
     if (bUseVSync != b) {
         bUseVSync = b;
-        if (b) {
-            QSurfaceFormat f = format();
-            f.setVersion(2, 1);
-            f.setSwapInterval(1);
-            setFormat(f);
-        } else {
-            QSurfaceFormat f = format();
-            f.setVersion(2, 1);
-            f.setSwapInterval(0);
-            setFormat(f);
-        }
+        QSurfaceFormat f = format();
+        f.setVersion(3, 3);
+        f.setProfile(QSurfaceFormat::CoreProfile);
+        f.setSwapInterval(b ? 1 : 0);
+        setFormat(f);
         reset();
     }
 }
+
 void YACReaderFlowGL::setShowMarks(bool value)
 {
     startAnimationTimer();
-
     showMarks = value;
 }
 void YACReaderFlowGL::setMarks(QVector<YACReader::YACReaderComicReadStatus> marks)
 {
     startAnimationTimer();
-
     this->marks = marks;
 }
 void YACReaderFlowGL::setMarkImage(QImage &image)
 {
     Q_UNUSED(image);
-    // qué pasa la primera vez??
-    // deleteTexture(markTexture);
-    // markTexture = bindTexture(image,GL_TEXTURE_2D,GL_RGBA,QGLContext::LinearFilteringBindOption | QGLContext::MipmapBindOption);
 }
 void YACReaderFlowGL::markSlide(int index, YACReader::YACReaderComicReadStatus status)
 {
     startAnimationTimer();
-
     marks[index] = status;
 }
 void YACReaderFlowGL::unmarkSlide(int index)
 {
     startAnimationTimer();
-
     marks[index] = YACReader::Unread;
 }
 void YACReaderFlowGL::setSlideSize(QSize size)
 {
     Q_UNUSED(size);
-    // TODO calcular el tamaño del widget
 }
 void YACReaderFlowGL::clear()
 {
     reset();
 }
-
 void YACReaderFlowGL::setCenterIndex(unsigned int index)
 {
     setCurrentIndex(index);
@@ -1004,26 +1394,52 @@ int YACReaderFlowGL::centerIndex()
 {
     return currentSelected;
 }
-void YACReaderFlowGL::updateMarks()
-{
-    // do nothing
-}
-/*void YACReaderFlowGL::setFlowType(FlowType flowType)
-{
-        //TODO esperar a que se reimplemente flowtype
-}*/
-void YACReaderFlowGL::render()
-{
-    // do nothing
-}
-
+void YACReaderFlowGL::updateMarks() { }
+void YACReaderFlowGL::render() { }
 void YACReaderFlowGL::setFlowRightToLeft(bool b)
 {
     flowRightToLeft = b;
 }
 
-// EVENTOS
+void YACReaderFlowGL::setBackgroundColor(const QColor &color)
+{
+    backgroundColor = color;
 
+    // Auto-calculate shadingColor based on background brightness
+    qreal luminance = (backgroundColor.redF() * 0.299 +
+                       backgroundColor.greenF() * 0.587 +
+                       backgroundColor.blueF() * 0.114);
+
+    if (luminance < 0.5) {
+        // Dark background - shade towards white
+        shadingColor = QColor(255, 255, 255);
+        // Use original shading values for dark backgrounds
+        shadingTop = 0.8f;
+        shadingBottom = 0.02f;
+    } else {
+        // Light background - shade towards black
+        shadingColor = QColor(0, 0, 0);
+        // Adjust shading range for better contrast on light backgrounds
+        shadingTop = 0.95f;
+        shadingBottom = 0.3f;
+    }
+
+    update();
+}
+
+void YACReaderFlowGL::setTextColor(const QColor &color)
+{
+    textColor = color;
+    update();
+}
+
+void YACReaderFlowGL::setShadingColor(const QColor &color)
+{
+    shadingColor = color;
+    update();
+}
+
+// Event handlers
 void YACReaderFlowGL::wheelEvent(QWheelEvent *event)
 {
     Movement m = getMovement(event);
@@ -1062,7 +1478,6 @@ void YACReaderFlowGL::keyPressEvent(QKeyEvent *event)
     }
 
     if (event->key() == Qt::Key_Up) {
-        // emit selected(centerIndex());
         return;
     }
 
@@ -1096,44 +1511,60 @@ void YACReaderFlowGL::mouseDoubleClickEvent(QMouseEvent *event)
 
 QVector3D YACReaderFlowGL::getPlaneIntersection(int x, int y, YACReader3DImage plane)
 {
-    // get viewport and matrices
-    // TODO: these should be cached!!!
+    if (!context() || !context()->isValid())
+        return QVector3D(0, 0, 0);
+
     GLint viewport[4];
     QMatrix4x4 m_modelview;
     QMatrix4x4 m_projection;
+
     makeCurrent();
     glGetIntegerv(GL_VIEWPORT, viewport);
-    glGetFloatv(GL_MODELVIEW_MATRIX, m_modelview.data());
-    glGetFloatv(GL_PROJECTION_MATRIX, m_projection.data());
+
+    m_projection.perspective(config.zoom, GLdouble(width()) / (float)height(), 1.0, 200.0);
+
+    m_modelview.translate(config.cfX, config.cfY, config.cfZ);
+    m_modelview.rotate(config.cfRX, 1, 0, 0);
+    m_modelview.rotate(viewRotate * config.viewAngle + config.cfRY, 0, 1, 0);
+    m_modelview.rotate(config.cfRZ, 0, 0, 1);
+    m_modelview.translate(plane.current.x, plane.current.y, plane.current.z);
+    m_modelview.rotate(plane.current.rot, 0, 1, 0);
+    m_modelview.scale(plane.width, plane.height, 1.0f);
+
     doneCurrent();
 
-    // create the picking ray
     QVector3D ray_origin(x * devicePixelRatioF(), y * devicePixelRatioF(), 0);
     QVector3D ray_end(x * devicePixelRatioF(), y * devicePixelRatioF(), 1.0);
-
-    // TODO: These should be cached in the class
 
     ray_origin = ray_origin.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
     ray_end = ray_end.unproject(m_modelview, m_projection, QRect(viewport[0], viewport[1], viewport[2], viewport[3]));
 
     QVector3D ray_vector = ray_end - ray_origin;
 
-    // calculate the plane vectors
-    QVector3D plane_origin((plane.width / 2) * -1, -0.5, 0);
-    QVector3D plane_vektor_1 = QVector3D(plane.width / 2, -0.5, 0) - plane_origin;
-    QVector3D plane_vektor_2 = QVector3D((plane.width / 2) * -1, -0.5 * plane.height, 0) - plane_origin;
+    QVector3D plane_origin(-0.5f, -0.5f, 0);
+    QVector3D plane_vektor_1 = QVector3D(0.5f, -0.5f, 0) - plane_origin;
+    QVector3D plane_vektor_2 = QVector3D(-0.5f, 0.5f, 0) - plane_origin;
 
-    // get the intersection using Cramer's rule. We only x for the line, not the plane
-    double intersection_LES_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * (-1) * ray_vector.z()) + (plane_vektor_2.x() * (-1) * ray_vector.y() * plane_vektor_1.z()) + ((-1) * ray_vector.x() * plane_vektor_1.y() * plane_vektor_2.z()) - ((-1) * ray_vector.x() * plane_vektor_2.y() * plane_vektor_1.z()) - (plane_vektor_1.x() * (-1) * ray_vector.y() * plane_vektor_2.z()) - (plane_vektor_2.x() * plane_vektor_1.y() * (-1) * ray_vector.z()));
+    double intersection_LES_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * (-1) * ray_vector.z()) +
+                                           (plane_vektor_2.x() * (-1) * ray_vector.y() * plane_vektor_1.z()) +
+                                           ((-1) * ray_vector.x() * plane_vektor_1.y() * plane_vektor_2.z()) -
+                                           ((-1) * ray_vector.x() * plane_vektor_2.y() * plane_vektor_1.z()) -
+                                           (plane_vektor_1.x() * (-1) * ray_vector.y() * plane_vektor_2.z()) -
+                                           (plane_vektor_2.x() * plane_vektor_1.y() * (-1) * ray_vector.z()));
 
     QVector3D det = ray_origin - plane_origin;
 
-    double intersection_ray_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * det.z()) + (plane_vektor_2.x() * det.y() * plane_vektor_1.z()) + (det.x() * plane_vektor_1.y() * plane_vektor_2.z()) - (det.x() * plane_vektor_2.y() * plane_vektor_1.z()) - (plane_vektor_1.x() * det.y() * plane_vektor_2.z()) - (plane_vektor_2.x() * plane_vektor_1.y() * det.z()));
+    double intersection_ray_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * det.z()) +
+                                           (plane_vektor_2.x() * det.y() * plane_vektor_1.z()) +
+                                           (det.x() * plane_vektor_1.y() * plane_vektor_2.z()) -
+                                           (det.x() * plane_vektor_2.y() * plane_vektor_1.z()) -
+                                           (plane_vektor_1.x() * det.y() * plane_vektor_2.z()) -
+                                           (plane_vektor_2.x() * plane_vektor_1.y() * det.z()));
 
-    // return the intersection point
     return ray_origin + ray_vector * (intersection_ray_determinant / intersection_LES_determinant);
 }
 
+// YACReaderComicFlowGL implementation
 YACReaderComicFlowGL::YACReaderComicFlowGL(QWidget *parent, struct Preset p)
     : YACReaderFlowGL(parent, p)
 {
@@ -1150,22 +1581,13 @@ void YACReaderComicFlowGL::setImagePaths(QStringList paths)
         YACReaderFlowGL::populate(paths.size());
     lazyPopulateObjects = paths.size();
     this->paths = paths;
-    // numObjects = paths.size();
 }
-
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
 
 void YACReaderComicFlowGL::updateImageData()
 {
-    // can't do anything, wait for the next possibility
     if (worker->busy())
         return;
 
-    // set image of last one
     int idx = worker->index();
     if (idx >= 0 && !worker->result().isNull()) {
         if (!loaded[idx]) {
@@ -1186,8 +1608,6 @@ void YACReaderComicFlowGL::updateImageData()
         }
     }
 
-    // try to load only few images on the left and right side
-    // i.e. all visible ones plus some extra
     int count = 8;
     switch (performance) {
     case low:
@@ -1203,6 +1623,7 @@ void YACReaderComicFlowGL::updateImageData()
         count = 16;
         break;
     }
+
     int *indexes = new int[2 * count + 1];
     int center = currentSelected;
     indexes[0] = center;
@@ -1210,18 +1631,13 @@ void YACReaderComicFlowGL::updateImageData()
         indexes[j * 2 + 1] = center + j + 1;
         indexes[j * 2 + 2] = center - j - 1;
     }
+
     for (int c = 0; c < 2 * count + 1; c++) {
         int i = indexes[c];
         if ((i >= 0) && (i < numObjects))
-            if (!loaded[i]) // slide(i).isNull())
-            {
-                // loader->loadTexture(i);
-                // loaded[i]=true;
-                //  schedule thumbnail generation
+            if (!loaded[i]) {
                 if (paths.size() > 0) {
                     QString fname = paths.at(i);
-                    // loaded[i]=true;
-
                     worker->generate(i, fname);
                 }
                 delete[] indexes;
@@ -1247,19 +1663,17 @@ void YACReaderComicFlowGL::add(const QString &path, int index)
 {
     worker->lock();
     worker->reset();
-
     paths.insert(index, path);
-
     YACReaderFlowGL::add(index);
-
     worker->unlock();
 }
 
 void YACReaderComicFlowGL::resortCovers(QList<int> newOrder)
 {
     worker->lock();
-    worker->reset(); // is this necesary?
+    worker->reset();
     startAnimationTimer();
+
     QList<QString> pathsNew;
     QVector<bool> loadedNew;
     QVector<YACReaderComicReadStatus> marksNew;
@@ -1286,6 +1700,7 @@ void YACReaderComicFlowGL::resortCovers(QList<int> newOrder)
     worker->unlock();
 }
 
+// YACReaderPageFlowGL implementation
 YACReaderPageFlowGL::YACReaderPageFlowGL(QWidget *parent, struct Preset p)
     : YACReaderFlowGL(parent, p)
 {
@@ -1319,19 +1734,11 @@ YACReaderPageFlowGL::~YACReaderPageFlowGL()
     doneCurrent();
 }
 
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
 void YACReaderPageFlowGL::updateImageData()
 {
-    // can't do anything, wait for the next possibility
     if (worker->busy())
         return;
 
-    // set image of last one
     int idx = worker->index();
     if (idx >= 0 && !worker->result().isNull()) {
         if (!loaded[idx]) {
@@ -1353,8 +1760,6 @@ void YACReaderPageFlowGL::updateImageData()
         }
     }
 
-    // try to load only few images on the left and right side
-    // i.e. all visible ones plus some extra
     int count = 8;
     switch (performance) {
     case low:
@@ -1370,6 +1775,7 @@ void YACReaderPageFlowGL::updateImageData()
         count = 14;
         break;
     }
+
     int *indexes = new int[2 * count + 1];
     int center = currentSelected;
     indexes[0] = center;
@@ -1377,15 +1783,13 @@ void YACReaderPageFlowGL::updateImageData()
         indexes[j * 2 + 1] = center + j + 1;
         indexes[j * 2 + 2] = center - j - 1;
     }
+
     for (int c = 0; c < 2 * count + 1; c++) {
         int i = indexes[c];
         if ((i >= 0) && (i < numObjects))
             if (rawImages.size() > 0)
-
-                if (!loaded[i] && imagesReady[i]) // slide(i).isNull())
-                {
+                if (!loaded[i] && imagesReady[i]) {
                     worker->generate(i, rawImages.at(i));
-
                     delete[] indexes;
                     return;
                 }
@@ -1402,12 +1806,10 @@ void YACReaderPageFlowGL::populate(int n)
     lazyPopulateObjects = n;
     imagesReady = QVector<bool>(n, false);
     rawImages = QVector<QByteArray>(n);
-    imagesSetted = QVector<bool>(n, false); // puede sobrar
+    imagesSetted = QVector<bool>(n, false);
 }
 
-//-----------------------------------------------------------------------------
-// ImageLoader
-//-----------------------------------------------------------------------------
+// ImageLoaderGL implementation
 QImage ImageLoaderGL::loadImage(const QString &fileName)
 {
     QImage image;
@@ -1427,7 +1829,7 @@ QImage ImageLoaderGL::loadImage(const QString &fileName)
         image = image.scaledToWidth(320, Qt::SmoothTransformation);
         break;
     case ultraHigh:
-        break; // no scaling in ultraHigh
+        break;
     }
 
     return image;
@@ -1463,7 +1865,6 @@ void ImageLoaderGL::generate(int index, const QString &fileName)
     if (!isRunning())
         start();
     else {
-        // already running, wake up whenever ready
         restart = true;
         condition.wakeOne();
     }
@@ -1482,7 +1883,6 @@ void ImageLoaderGL::unlock()
 void ImageLoaderGL::run()
 {
     for (;;) {
-        // copy necessary data
         mutex.lock();
         this->working = true;
         QString fileName = this->fileName;
@@ -1490,13 +1890,11 @@ void ImageLoaderGL::run()
 
         QImage image = loadImage(fileName);
 
-        // let everyone knows it is ready
         mutex.lock();
         this->working = false;
         this->img = image;
         mutex.unlock();
 
-        // put to sleep
         mutex.lock();
         if (!this->restart)
             condition.wait(&mutex);
@@ -1510,9 +1908,7 @@ QImage ImageLoaderGL::result()
     return img;
 }
 
-//-----------------------------------------------------------------------------
-// ImageLoader
-//-----------------------------------------------------------------------------
+// ImageLoaderByteArrayGL implementation
 QImage ImageLoaderByteArrayGL::loadImage(const QByteArray &raw)
 {
     QImage image;
@@ -1569,7 +1965,6 @@ void ImageLoaderByteArrayGL::generate(int index, const QByteArray &raw)
     if (!isRunning())
         start();
     else {
-        // already running, wake up whenever ready
         restart = true;
         condition.wakeOne();
     }
@@ -1578,7 +1973,6 @@ void ImageLoaderByteArrayGL::generate(int index, const QByteArray &raw)
 void ImageLoaderByteArrayGL::run()
 {
     for (;;) {
-        // copy necessary data
         mutex.lock();
         this->working = true;
         QByteArray raw = this->rawData;
@@ -1586,13 +1980,11 @@ void ImageLoaderByteArrayGL::run()
 
         QImage image = loadImage(raw);
 
-        // let everyone knows it is ready
         mutex.lock();
         this->working = false;
         this->img = image;
         mutex.unlock();
 
-        // put to sleep
         mutex.lock();
         if (!this->restart)
             condition.wait(&mutex);
