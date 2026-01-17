@@ -86,6 +86,13 @@ Viewer::Viewer(QWidget *parent)
     // CONFIG GOTO_FLOW--------------------------------------------------------
 #ifndef NO_OPENGL
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0) && defined(YACREADER_USE_RHI)
+    // When using RHI, don't check OpenGL - assume hardware acceleration is available
+    bool openGLAvailable = true;
+
+    if (!settings->contains(USE_OPEN_GL))
+        settings->setValue(USE_OPEN_GL, 2);
+#else
     OpenGLChecker openGLChecker;
     bool openGLAvailable = openGLChecker.hasCompatibleOpenGLVersion();
 
@@ -93,6 +100,7 @@ Viewer::Viewer(QWidget *parent)
         settings->setValue(USE_OPEN_GL, 2);
     else if (!openGLAvailable)
         settings->setValue(USE_OPEN_GL, 0);
+#endif
 
     if ((settings->value(USE_OPEN_GL).toBool() == true))
         goToFlow = new GoToFlowGL(this, Configuration::getConfiguration().getFlowType());

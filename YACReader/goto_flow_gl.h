@@ -3,7 +3,15 @@
 
 #include "yacreader_global.h"
 #include "goto_flow_widget.h"
+
+// Conditional include based on Qt version and RHI availability
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0) && defined(YACREADER_USE_RHI)
+#include "yacreader_flow_rhi.h"
+using YACReaderPageFlowImpl = YACReaderPageFlow3D;
+#else
 #include "yacreader_flow_gl.h"
+using YACReaderPageFlowImpl = YACReaderPageFlowGL;
+#endif
 
 class QLineEdit;
 class QIntValidator;
@@ -28,7 +36,7 @@ public:
     void setFlowRightToLeft(bool b) override;
 
 private:
-    YACReaderPageFlowGL *flow;
+    YACReaderPageFlowImpl *flow;
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
     // Comic * comic;

@@ -83,8 +83,12 @@ void logSystemAndConfig()
     else
         QLOG_INFO() << "OpenGL : disabled";
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0) && defined(YACREADER_USE_RHI)
+    QLOG_INFO() << "Using RHI (Qt Rendering Hardware Interface) - graphics backend will be auto-selected";
+#else
     OpenGLChecker checker;
     QLOG_INFO() << "OpenGL version : " << checker.textVersionDescription();
+#endif
 
     auto libraries = DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "Libraries: ";
@@ -200,6 +204,8 @@ int main(int argc, char **argv)
 #endif
     parser.process(app);
 
+// When using RHI (Qt 6.7+), don't allow OpenGL attribute overrides
+#if !defined(YACREADER_USE_RHI) || QT_VERSION < QT_VERSION_CHECK(6, 7, 0)
 #ifdef Q_OS_WIN
     if (parser.isSet("opengl")) {
         QTextStream qout(stdout);
@@ -216,6 +222,7 @@ int main(int argc, char **argv)
             parser.showHelp();
         }
     }
+#endif
 #endif
 
     if (parser.isSet("loglevel")) {

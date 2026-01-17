@@ -158,10 +158,15 @@ void ComicFlowWidgetSW::resortCovers(QList<int> newOrder)
 ComicFlowWidgetGL::ComicFlowWidgetGL(QWidget *parent)
     : ComicFlowWidget(parent)
 {
-    flow = new YACReaderComicFlowGL(parent);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0) && defined(YACREADER_USE_RHI)
+    qDebug() << "ComicFlowWidgetGL: Creating YACReaderComicFlow3D (RHI implementation)";
+#else
+    qDebug() << "ComicFlowWidgetGL: Creating YACReaderComicFlowGL (OpenGL implementation)";
+#endif
+    flow = new YACReaderComicFlowImpl(this);
 
-    connect(flow, &YACReaderFlowGL::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
-    connect(flow, &YACReaderFlowGL::selected, this, &ComicFlowWidget::selected);
+    connect(flow, &YACReaderComicFlowImpl::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
+    connect(flow, &YACReaderComicFlowImpl::selected, this, &ComicFlowWidget::selected);
 
     auto l = new QVBoxLayout;
     l->addWidget(flow);

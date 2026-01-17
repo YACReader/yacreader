@@ -27,10 +27,20 @@ INCLUDEPATH += ../common \
 
 !CONFIG(no_opengl) {
     INCLUDEPATH += ../common/gl
+    greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
+        INCLUDEPATH += ../common/rhi
+        DEFINES += YACREADER_USE_RHI
+    }
 }
 
 win32 {
-    LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
+        LIBS += -loleaut32 -lole32 -lshell32 -luser32
+        # When using RHI (Qt 6.7+), don't link OpenGL directly - QRhiWidget handles graphics APIs
+        greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
+            message("RHI mode: not linking opengl32 (using QRhiWidget)")
+        } else {
+            LIBS += -lopengl32
+        }
 
     msvc {
         QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
@@ -50,6 +60,10 @@ macx {
 QT += network widgets core multimedia svg
 
 greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets core5compat
+
+greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
+    QT += gui-private
+}
 
 #CONFIG += release
 CONFIG -= flat
@@ -93,6 +107,10 @@ HEADERS +=  ../common/comic.h \
 !CONFIG(no_opengl) {
     HEADERS += ../common/gl/yacreader_flow_gl.h \
                 goto_flow_gl.h
+
+    greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
+        HEADERS += ../common/rhi/yacreader_flow_rhi.h
+    }
 }
 
 SOURCES +=  ../common/comic.cpp \
@@ -132,6 +150,11 @@ SOURCES +=  ../common/comic.cpp \
 !CONFIG(no_opengl) {
         SOURCES += ../common/gl/yacreader_flow_gl.cpp \
                     goto_flow_gl.cpp
+
+        greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
+            SOURCES += ../common/rhi/yacreader_flow_rhi.cpp
+            RESOURCES += ../common/rhi/shaders/shaders.qrc
+        }
 }
 
 include(../custom_widgets/custom_widgets_yacreader.pri)

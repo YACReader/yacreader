@@ -1,7 +1,5 @@
 #include "opengl_checker.h"
 
-#include "QsLog.h"
-
 OpenGLChecker::OpenGLChecker()
     : compatibleOpenGLVersion(true)
 {

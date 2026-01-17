@@ -15,17 +15,17 @@ GoToFlowGL::GoToFlowGL(QWidget *parent, FlowType flowType)
     : GoToFlowWidget(parent)
 {
     Q_UNUSED(flowType)
-    flow = new YACReaderPageFlowGL(this);
+    flow = new YACReaderPageFlowImpl(this);
     flow->setShowMarks(false);
 
     imageSize = Configuration::getConfiguration().getGotoSlideSize();
 
     flow->setSlideSize(imageSize);
-    connect(flow, &YACReaderFlowGL::centerIndexChanged, this, &GoToFlowWidget::setPageNumber);
-    connect(flow, &YACReaderFlowGL::selected, this, &GoToFlowGL::goToPage);
+    connect(flow, &YACReaderPageFlowImpl::centerIndexChanged, this, &GoToFlowWidget::setPageNumber);
+    connect(flow, &YACReaderPageFlowImpl::selected, this, &GoToFlowGL::goToPage);
 
     connect(toolBar, &GoToFlowToolBar::goToPage, this, &GoToFlowGL::goToPage);
-    connect(toolBar, &GoToFlowToolBar::setCenter, flow, &YACReaderFlowGL::setCenterIndex);
+    connect(toolBar, &GoToFlowToolBar::setCenter, flow, &YACReaderPageFlowImpl::setCenterIndex);
 
     mainLayout->addWidget(flow);
     toolBar->raise();

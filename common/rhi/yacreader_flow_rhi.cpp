@@ -1,0 +1,1744 @@
+#include "yacreader_flow_rhi.h"
+#include <QFile>
+#include <cmath>
+
+// Structure for per-instance data
+struct InstanceData {
+    QMatrix4x4 modelMatrix;
+    float leftUpShading;
+    float leftDownShading;
+    float rightUpShading;
+    float rightDownShading;
+    float opacity;
+    float padding[3]; // Align to 16 bytes
+};
+
+/*** Preset Configurations ***/
+// Note: The preset configurations are already defined in yacreader_flow_gl.cpp
+// We just reference them here as extern to avoid duplicate symbols
+
+int YACReaderFlow3D::updateInterval = 16;
+
+static QShader getShader(const QString &name)
+{
+    QFile f(name);
+    return f.open(QIODevice::ReadOnly) ? QShader::fromSerialized(f.readAll()) : QShader();
+}
+
+/*Constructor*/
+YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
+    : QRhiWidget(parent), numObjects(0), lazyPopulateObjects(-1), hasBeenInitialized(false), backgroundColor(Qt::black), textColor(Qt::white), shadingColor(Qt::black), flowRightToLeft(false), showMarks(true)
+{
+    updateCount = 0;
+    config = p;
+    currentSelected = 0;
+
+    centerPos.x = 0.f;
+    centerPos.y = 0.f;
+    centerPos.z = 1.f;
+    centerPos.rot = 0.f;
+
+    shadingTop = 0.8f;
+    shadingBottom = 0.02f;
+    reflectionUp = 0.f;
+    reflectionBottom = 0.6f;
+
+    setBackgroundColor(Qt::black);
+
+    numObjects = 0;
+    viewRotate = 0.f;
+    viewRotateActive = 0;
+    stepBackup = config.animationStep / config.animationSpeedUp;
+
+    // Request 4x MSAA for the QRhiWidget's render target
+    setSampleCount(4);
+
+    timerId = -1;
+}
+
+YACReaderFlow3D::~YACReaderFlow3D()
+{
+    if (timerId != -1) {
+        killTimer(timerId);
+        timerId = -1;
+    }
+}
+
+void YACReaderFlow3D::timerEvent(QTimerEvent *event)
+{
+    if (timerId == event->timerId())
+        update();
+}
+
+void YACReaderFlow3D::startAnimationTimer()
+{
+    if (timerId == -1)
+        timerId = startTimer(updateInterval);
+}
+
+void YACReaderFlow3D::stopAnimationTimer()
+{
+    if (timerId != -1) {
+        killTimer(timerId);
+        timerId = -1;
+    }
+}
+
+void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
+{
+    if (m_rhi != rhi()) {
+        releaseResources();
+        m_rhi = rhi();
+    }
+
+    if (!m_rhi)
+        return;
+
+    // Initialize default texture from image
+    if (!defaultTexture) {
+        QImage defaultImage(":/images/defaultCover.png");
+
+        defaultTexture = m_rhi->newTexture(QRhiTexture::BGRA8, defaultImage.size(), 1, QRhiTexture::MipMapped);
+        defaultTexture->create();
+        QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
+        batch->uploadTexture(defaultTexture, defaultImage);
+        cb->resourceUpdate(batch);
+        qDebug() << "YACReaderFlow3D: Created defaultTexture" << defaultImage.size();
+    }
+
+#ifdef YACREADER_LIBRARY
+    // Initialize mark textures
+    if (!markTexture) {
+        QImage markImage(":/images/readRibbon.png");
+        if (!markImage.isNull()) {
+            markTexture = m_rhi->newTexture(QRhiTexture::BGRA8, markImage.size(), 1, QRhiTexture::MipMapped);
+            markTexture->create();
+
+            QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
+            batch->uploadTexture(markTexture, markImage);
+            cb->resourceUpdate(batch);
+        }
+    }
+
+    if (!readingTexture) {
+        QImage readingImage(":/images/readingRibbon.png");
+        if (!readingImage.isNull()) {
+            readingTexture = m_rhi->newTexture(QRhiTexture::BGRA8, readingImage.size(), 1, QRhiTexture::MipMapped);
+            readingTexture->create();
+
+            QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
+            batch->uploadTexture(readingTexture, readingImage);
+            cb->resourceUpdate(batch);
+        }
+    }
+#endif
+
+    // Create vertex buffer (quad geometry)
+    if (!vertexBuffer) {
+        // Use a triangle list (two triangles = 6 vertices) because some RHI backends
+        // don't support TriangleFan. Each vertex: x,y,z,u,v (5 floats).
+        vertexBuffer = m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::VertexBuffer, 6 * 5 * sizeof(float));
+        vertexBuffer->create();
+
+        // Two triangles forming a quad (triangle list):
+        // Tri 1: bottom-left, bottom-right, top-right
+        // Tri 2: bottom-left, top-right, top-left
+        // Texture coords flipped vertically to match OpenGL convention
+        float vertices[] = {
+            // Position (x, y, z), TexCoord (u, v)
+            -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-left
+            0.5f, -0.5f, 0.0f, 1.0f, 1.0f, // Bottom-right
+            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, // Top-right
+
+            -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-left
+            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, // Top-right
+            -0.5f, 0.5f, 0.0f, 0.0f, 0.0f // Top-left
+        };
+
+        QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
+        batch->uploadStaticBuffer(vertexBuffer, vertices);
+        cb->resourceUpdate(batch);
+    }
+
+    // Initialize alignment for uniform buffers
+    if (alignedUniformSize == 0) {
+        alignedUniformSize = m_rhi->ubufAligned(sizeof(UniformData));
+    }
+
+    // Create sampler
+    if (!sampler) {
+        // Use no mipmap sampling to avoid LOD changes with camera Z
+        sampler = m_rhi->newSampler(
+                QRhiSampler::Linear,
+                QRhiSampler::Linear,
+                QRhiSampler::None,
+                QRhiSampler::ClampToEdge,
+                QRhiSampler::ClampToEdge);
+        sampler->create();
+    }
+
+    // Create instance buffer for per-draw instance data
+    if (!instanceBuffer) {
+        // Allocate buffer for per-instance data (model matrix + shading + opacity + flipFlag)
+        // mat4 (16 floats) + vec4 (4 floats) + float (1 float) + float (1 float) = 22 floats
+        instanceBuffer = m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, 22 * sizeof(float));
+        instanceBuffer->create();
+    }
+
+    // Setup graphics pipeline
+    if (!pipeline) {
+        // Load shaders
+        QShader vertShader = getShader(QLatin1String(":/shaders/flow.vert.qsb"));
+        QShader fragShader = getShader(QLatin1String(":/shaders/flow.frag.qsb"));
+
+        if (!vertShader.isValid() || !fragShader.isValid()) {
+            qWarning() << "YACReaderFlow3D: Failed to load shaders!";
+            return;
+        }
+
+        // Create default shader resource bindings for pipeline creation
+        // We'll create texture-specific ones on-demand in drawCover
+        shaderBindings = m_rhi->newShaderResourceBindings();
+        shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, uniformBuffer),
+                                      QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, defaultTexture, sampler) });
+        shaderBindings->create();
+
+        // Create pipeline
+        pipeline = m_rhi->newGraphicsPipeline();
+
+        // Disable alpha blending temporarily to test if blending causes darkening
+        QRhiGraphicsPipeline::TargetBlend blend;
+        blend.enable = true;
+        blend.srcColor = QRhiGraphicsPipeline::SrcAlpha;
+        blend.dstColor = QRhiGraphicsPipeline::OneMinusSrcAlpha;
+        blend.srcAlpha = QRhiGraphicsPipeline::One;
+        blend.dstAlpha = QRhiGraphicsPipeline::OneMinusSrcAlpha;
+        pipeline->setTargetBlends({ blend });
+
+        // Enable depth test (restore depth writes for normal rendering)
+        pipeline->setDepthTest(true);
+        pipeline->setDepthWrite(true);
+        pipeline->setDepthOp(QRhiGraphicsPipeline::Less);
+
+        // Diagnostic: disable culling to avoid missing-triangle artifacts
+        pipeline->setCullMode(QRhiGraphicsPipeline::Back);
+
+        // Determine the MSAA sample count to use. Query the RHI for supported counts
+        // and clamp to at most 4 samples for safety.
+        int requestedSamples = sampleCount();
+        int samplesToUse = 1;
+        if (requestedSamples > 1 && m_rhi) {
+            QVector<int> supported = m_rhi->supportedSampleCounts();
+            int maxSupported = 1;
+            for (int s : supported) {
+                if (s > maxSupported)
+                    maxSupported = s;
+            }
+            samplesToUse = qMin(requestedSamples, qMin(4, maxSupported));
+        }
+        if (samplesToUse > 1)
+            pipeline->setSampleCount(samplesToUse);
+
+        // Use triangle fan topology to match OpenGL draw mode (this makes the app to crash)
+        // pipeline->setTopology(QRhiGraphicsPipeline::TriangleFan);
+
+        // Set shaders
+        pipeline->setShaderStages({ { QRhiShaderStage::Vertex, vertShader },
+                                    { QRhiShaderStage::Fragment, fragShader } });
+
+        // Setup vertex input layout
+        QRhiVertexInputLayout inputLayout;
+        inputLayout.setBindings({
+                { 5 * sizeof(float) }, // Per-vertex data (position + texCoord)
+                { 22 * sizeof(float), QRhiVertexInputBinding::PerInstance } // Per-instance data (+ flip flag)
+        });
+        inputLayout.setAttributes({
+                // Per-vertex attributes
+                { 0, 0, QRhiVertexInputAttribute::Float3, 0 }, // position
+                { 0, 1, QRhiVertexInputAttribute::Float2, 3 * sizeof(float) }, // texCoord
+
+                // Per-instance attributes (model matrix as 4 vec4s)
+                { 1, 2, QRhiVertexInputAttribute::Float4, 0 * sizeof(float) }, // row 0
+                { 1, 3, QRhiVertexInputAttribute::Float4, 4 * sizeof(float) }, // row 1
+                { 1, 4, QRhiVertexInputAttribute::Float4, 8 * sizeof(float) }, // row 2
+                { 1, 5, QRhiVertexInputAttribute::Float4, 12 * sizeof(float) }, // row 3
+                { 1, 6, QRhiVertexInputAttribute::Float4, 16 * sizeof(float) }, // shading vec4
+                { 1, 7, QRhiVertexInputAttribute::Float, 20 * sizeof(float) }, // opacity
+                { 1, 8, QRhiVertexInputAttribute::Float, 21 * sizeof(float) } // flipFlag (1.0 = reflection)
+        });
+        pipeline->setVertexInputLayout(inputLayout);
+
+        // Set shader resource bindings and render pass descriptor
+        pipeline->setShaderResourceBindings(shaderBindings);
+        pipeline->setRenderPassDescriptor(renderTarget()->renderPassDescriptor());
+
+        if (!pipeline->create()) {
+            qWarning() << "YACReaderFlow3D: Failed to create graphics pipeline!";
+            delete pipeline;
+            pipeline = nullptr;
+        }
+    }
+
+    // Call populate only once per data loaded.
+    if (!hasBeenInitialized && lazyPopulateObjects != -1) {
+        populate(lazyPopulateObjects);
+        lazyPopulateObjects = -1;
+    }
+
+    hasBeenInitialized = true;
+}
+
+void YACReaderFlow3D::ensureUniformBufferCapacity(int requiredSlots)
+{
+    if (!m_rhi || alignedUniformSize == 0)
+        return;
+
+    // Check if we need to resize
+    if (uniformBufferCapacity >= requiredSlots && uniformBuffer)
+        return;
+
+    // Delete old buffer if it exists
+    if (uniformBuffer) {
+        delete uniformBuffer;
+        uniformBuffer = nullptr;
+    }
+
+    // Create new larger buffer
+    // Each draw needs its own uniform slot (cover + reflection + optional mark = 3 per object)
+    const int totalSize = requiredSlots * alignedUniformSize;
+    uniformBuffer = m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, totalSize);
+    if (uniformBuffer->create()) {
+        uniformBufferCapacity = requiredSlots;
+
+        // Invalidate shader bindings cache since the uniform buffer changed
+        for (auto *srb : shaderBindingsCache) {
+            delete srb;
+        }
+        shaderBindingsCache.clear();
+
+        // Recreate default shader bindings for pipeline
+        if (shaderBindings) {
+            delete shaderBindings;
+        }
+        shaderBindings = m_rhi->newShaderResourceBindings();
+        shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, uniformBuffer),
+                                      QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, defaultTexture, sampler) });
+        shaderBindings->create();
+    } else {
+        qWarning() << "YACReaderFlow3D: Failed to create uniform buffer of size" << totalSize;
+        uniformBufferCapacity = 0;
+    }
+}
+
+void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
+{
+    if (!m_rhi || numObjects == 0)
+        return;
+
+    const QSize outputSize = renderTarget()->pixelSize();
+    const QColor clearColor = backgroundColor;
+
+    // Update positions and animations
+    updatePositions();
+
+    // Prepare view-projection matrix
+    // Use fixed 20.0 degrees FOV - zoom is controlled via cfZ (camera distance)
+    QMatrix4x4 projectionMatrix;
+    projectionMatrix.perspective(20.0, float(outputSize.width()) / float(outputSize.height()), 1.0, 200.0);
+
+    QMatrix4x4 viewMatrix;
+    viewMatrix.translate(config.cfX, config.cfY, config.cfZ);
+    viewMatrix.rotate(config.cfRX, 1, 0, 0);
+    viewMatrix.rotate(viewRotate * config.viewAngle + config.cfRY, 0, 1, 0);
+    viewMatrix.rotate(config.cfRZ, 0, 0, 1);
+
+    QMatrix4x4 viewProjectionMatrix = projectionMatrix * viewMatrix;
+
+    // Build draw order (back to front for proper alpha blending)
+    QVector<int> drawOrder;
+    for (int count = numObjects - 1; count > -1; count--) {
+        if (count > currentSelected) {
+            drawOrder.append(count);
+        }
+    }
+    for (int count = 0; count < numObjects - 1; count++) {
+        if (count < currentSelected) {
+            drawOrder.append(count);
+        }
+    }
+    drawOrder.append(currentSelected);
+
+    // Structure to hold draw info
+    struct DrawInfo {
+        int imageIndex;
+        bool isReflection;
+        bool isMark;
+        QRhiTexture *texture;
+        float instanceData[22];
+        UniformData uniformData;
+    };
+
+    // Collect all draws we need to make
+    // Important: OpenGL draws reflections FIRST, then covers+marks (for correct depth sorting)
+    QVector<DrawInfo> draws;
+
+    // Phase 1: Add all reflections
+    for (int idx : drawOrder) {
+        if (idx < 0 || idx >= images.size() || !images[idx].texture)
+            continue;
+
+        DrawInfo reflDraw;
+        reflDraw.imageIndex = idx;
+        reflDraw.isReflection = true;
+        reflDraw.isMark = false;
+        reflDraw.texture = images[idx].texture;
+        prepareDrawData(images[idx], true, false, viewProjectionMatrix, reflDraw.instanceData, reflDraw.uniformData);
+        draws.append(reflDraw);
+    }
+
+    // Phase 2: Add all covers (and marks)
+    for (int idx : drawOrder) {
+        if (idx < 0 || idx >= images.size() || !images[idx].texture)
+            continue;
+
+        // Add cover draw
+        DrawInfo coverDraw;
+        coverDraw.imageIndex = idx;
+        coverDraw.isReflection = false;
+        coverDraw.isMark = false;
+        coverDraw.texture = images[idx].texture;
+        prepareDrawData(images[idx], false, false, viewProjectionMatrix, coverDraw.instanceData, coverDraw.uniformData);
+        draws.append(coverDraw);
+
+        if (idx < 0 || idx >= marks.size())
+            continue;
+
+        if (idx >= loaded.size())
+            continue;
+
+        // Add mark draw immediately after its cover
+        if (showMarks && loaded[idx] && marks[idx] != Unread) {
+            QRhiTexture *markTex = (marks[idx] == Read) ? markTexture : readingTexture;
+            if (markTex) {
+                DrawInfo markDraw;
+                markDraw.imageIndex = idx;
+                markDraw.isReflection = false;
+                markDraw.isMark = true;
+                markDraw.texture = markTex;
+                prepareDrawData(images[idx], false, true, viewProjectionMatrix, markDraw.instanceData, markDraw.uniformData);
+                draws.append(markDraw);
+            }
+        }
+    }
+
+    // Ensure uniform buffer is large enough
+    ensureUniformBufferCapacity(draws.size());
+
+    if (!uniformBuffer) {
+        qWarning() << "YACReaderFlow3D: No uniform buffer available for rendering";
+        return;
+    }
+
+    // Ensure instance buffer is large enough for all draws
+    const int requiredInstanceSize = draws.size() * 22 * sizeof(float);
+    if (!instanceBuffer || instanceBuffer->size() < requiredInstanceSize) {
+        if (instanceBuffer) {
+            delete instanceBuffer;
+        }
+        instanceBuffer = m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, requiredInstanceSize);
+        if (!instanceBuffer->create()) {
+            qWarning() << "YACReaderFlow3D: Failed to create instance buffer of size" << requiredInstanceSize;
+            return;
+        }
+    }
+
+    // === PHASE 1: PREPARE (BEFORE PASS) ===
+    // Update ALL uniform and instance data for ALL draws in one batch
+    QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
+
+    // Process pending texture uploads
+    if (!pendingTextureUploads.isEmpty()) {
+        for (const auto &upload : pendingTextureUploads) {
+            if (upload.index >= 0 && upload.index < images.size() && images[upload.index].texture) {
+                batch->uploadTexture(images[upload.index].texture, upload.image);
+            }
+        }
+        pendingTextureUploads.clear();
+    }
+
+    // Update uniform buffer with all draw data
+    for (int i = 0; i < draws.size(); ++i) {
+        int offset = i * alignedUniformSize;
+        batch->updateDynamicBuffer(uniformBuffer, offset, sizeof(UniformData), &draws[i].uniformData);
+    }
+
+    // Update instance buffer with all instance data
+    for (int i = 0; i < draws.size(); ++i) {
+        int offset = i * 22 * sizeof(float);
+        batch->updateDynamicBuffer(instanceBuffer, offset, 22 * sizeof(float), draws[i].instanceData);
+    }
+
+    // === PHASE 2: RENDER (DURING PASS) ===
+    cb->beginPass(renderTarget(), clearColor, { 1.0f, 0 }, batch);
+
+    if (pipeline) {
+        cb->setGraphicsPipeline(pipeline);
+        cb->setViewport(QRhiViewport(0, 0, outputSize.width(), outputSize.height()));
+
+        // Execute all draws
+        for (int i = 0; i < draws.size(); ++i) {
+            const DrawInfo &draw = draws[i];
+            executeDrawWithOffset(cb, draw.texture, draw.instanceData, i);
+        }
+    }
+
+    cb->endPass();
+}
+
+void YACReaderFlow3D::prepareDrawData(const YACReader3DImageRHI &image, bool isReflection, bool isMark,
+                                      const QMatrix4x4 &viewProjectionMatrix,
+                                      float *outInstanceData, UniformData &outUniformData)
+{
+    float w = image.width;
+    float h = image.height;
+
+    // Calculate opacity
+    float opacity = 1 - 1 / (config.animationFadeOutDist + config.viewRotateLightStrenght * fabs(viewRotate)) * fabs(0 - image.current.x);
+
+    // Calculate shading
+    float LShading = ((config.rotation != 0) ? ((image.current.rot < 0) ? 1 - 1 / config.rotation * image.current.rot : 1) : 1);
+    float RShading = ((config.rotation != 0) ? ((image.current.rot > 0) ? 1 - 1 / (config.rotation * -1) * image.current.rot : 1) : 1);
+    float LUP = shadingTop + (1 - shadingTop) * LShading;
+    float LDOWN = shadingBottom + (1 - shadingBottom) * LShading;
+    float RUP = shadingTop + (1 - shadingTop) * RShading;
+    float RDOWN = shadingBottom + (1 - shadingBottom) * RShading;
+
+    QMatrix4x4 modelMatrix;
+    modelMatrix.translate(image.current.x, image.current.y, image.current.z);
+    modelMatrix.rotate(image.current.rot, 0, 1, 0);
+
+    if (isMark) {
+        // Mark-specific transform
+        float markWidth = 0.15f;
+        float markHeight = 0.2f;
+        float markCenterX = w / 2.0f - 0.125f;
+        float markCenterY = -0.588f + h;
+        modelMatrix.translate(markCenterX, markCenterY, 0.001f);
+        modelMatrix.scale(markWidth, markHeight, 1.0f);
+
+        float shadingValue = RUP * opacity;
+        outInstanceData[16] = shadingValue;
+        outInstanceData[17] = shadingValue;
+        outInstanceData[18] = shadingValue;
+        outInstanceData[19] = shadingValue;
+        outInstanceData[20] = 1.0f;
+        outInstanceData[21] = isReflection ? 1.0f : 0.0f;
+    } else {
+        // Cover/reflection transform
+        if (isReflection) {
+            modelMatrix.translate(0.0f, -0.5f - h / 2.0f, 0.0f);
+            // Swap vertical shading for reflection
+            float temp = LUP;
+            LUP = LDOWN;
+            LDOWN = temp;
+            temp = RUP;
+            RUP = RDOWN;
+            RDOWN = temp;
+        } else {
+            modelMatrix.translate(0.0f, -0.5f + h / 2.0f, 0.0f);
+        }
+        modelMatrix.scale(w, h, 1.0f);
+
+        outInstanceData[16] = LUP;
+        outInstanceData[17] = LDOWN;
+        outInstanceData[18] = RUP;
+        outInstanceData[19] = RDOWN;
+        outInstanceData[20] = opacity;
+        outInstanceData[21] = isReflection ? 1.0f : 0.0f;
+    }
+
+    // Pack model matrix into instance data
+    const float *matData = modelMatrix.constData();
+    for (int i = 0; i < 16; i++) {
+        outInstanceData[i] = matData[i];
+    }
+
+    // Prepare uniform data
+    outUniformData.viewProjectionMatrix = viewProjectionMatrix;
+    outUniformData.backgroundColor = QVector3D(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF());
+    outUniformData.shadingColor = QVector3D(shadingColor.redF(), shadingColor.greenF(), shadingColor.blueF());
+    outUniformData.reflectionUp = reflectionUp;
+    outUniformData.reflectionDown = reflectionBottom;
+    outUniformData.isReflection = isReflection ? 1 : 0;
+}
+
+void YACReaderFlow3D::executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *texture,
+                                            const float *instanceData, int uniformSlot)
+{
+    if (!texture || !instanceBuffer || !vertexBuffer)
+        return;
+
+    // NOTE: We cannot update the instance buffer here during the render pass!
+    // Instead, we'll need to either:
+    // 1. Use the instance data from uniforms (move it to uniform buffer)
+    // 2. Or pre-upload all instance data before the pass
+    //
+    // For now, let's use approach #1: embed instance data in uniforms via a large instance buffer
+    // that we populate before the pass, similar to uniforms
+    //
+    // Actually, the simplest solution: update the instance buffer ONCE per draw using dynamic updates
+    // But we need to do this cleverly - we can't call resourceUpdate during pass.
+    //
+    // The solution: Create an instance buffer large enough for ALL draws, update it before pass,
+    // and use offsets during drawing.
+
+    // Get or create shader resource bindings for this texture with dynamic offset support
+    QRhiShaderResourceBindings *srb = shaderBindingsCache.value(texture, nullptr);
+    if (!srb) {
+        srb = m_rhi->newShaderResourceBindings();
+        srb->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, uniformBuffer),
+                           QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, texture, sampler) });
+        srb->create();
+        shaderBindingsCache.insert(texture, srb);
+    }
+
+    // Set shader resources with dynamic offset for uniform buffer
+    QRhiCommandBuffer::DynamicOffset dynOfs[] = {
+        { 0, quint32(uniformSlot * alignedUniformSize) }
+    };
+    cb->setShaderResources(srb, 1, dynOfs);
+
+    // Bind vertex buffers with offset into instance buffer
+    const QRhiCommandBuffer::VertexInput vbufBindings[] = {
+        { vertexBuffer, 0 },
+        { instanceBuffer, quint32(uniformSlot * 22 * sizeof(float)) } // Use slot index for instance data offset
+    };
+    cb->setVertexInput(0, 2, vbufBindings);
+
+    // Draw two triangles (6 vertices) forming a quad
+    cb->draw(6);
+}
+
+// Note: The old drawCover() and drawMark() methods have been removed.
+// Rendering now uses prepareDrawData() and executeDrawWithOffset() which properly
+// batch all resource updates before the render pass begins, following Qt RHI best practices.
+
+void YACReaderFlow3D::releaseResources()
+{
+    delete vertexBuffer;
+    vertexBuffer = nullptr;
+
+    delete instanceBuffer;
+    instanceBuffer = nullptr;
+
+    delete uniformBuffer;
+    uniformBuffer = nullptr;
+
+    delete sampler;
+    sampler = nullptr;
+
+    delete pipeline;
+    pipeline = nullptr;
+
+    delete shaderBindings;
+    shaderBindings = nullptr;
+
+    // Clean up shader bindings cache
+    for (auto *srb : shaderBindingsCache) {
+        delete srb;
+    }
+    shaderBindingsCache.clear();
+
+    delete defaultTexture;
+    defaultTexture = nullptr;
+
+    delete markTexture;
+    markTexture = nullptr;
+
+    delete readingTexture;
+    readingTexture = nullptr;
+
+    m_rhi = nullptr;
+}
+
+void YACReaderFlow3D::showEvent(QShowEvent *event)
+{
+    QRhiWidget::showEvent(event);
+    startAnimationTimer();
+}
+
+void YACReaderFlow3D::cleanupAnimation()
+{
+    config.animationStep = stepBackup;
+    viewRotateActive = 0;
+}
+
+void YACReaderFlow3D::draw()
+{
+    update();
+}
+
+void YACReaderFlow3D::calcPos(YACReader3DImageRHI &image, int pos)
+{
+    if (flowRightToLeft) {
+        pos = pos * -1;
+    }
+
+    if (pos == 0) {
+        image.current = centerPos;
+    } else {
+        if (pos > 0) {
+            image.current.x = (config.centerDistance) + (config.xDistance * pos);
+            image.current.y = config.yDistance * pos * -1;
+            image.current.z = config.zDistance * pos * -1;
+            image.current.rot = config.rotation;
+        } else {
+            image.current.x = (config.centerDistance) * -1 + (config.xDistance * pos);
+            image.current.y = config.yDistance * pos;
+            image.current.z = config.zDistance * pos;
+            image.current.rot = config.rotation * -1;
+        }
+    }
+}
+
+void YACReaderFlow3D::calcVector(YACReader3DVector &vector, int pos)
+{
+    calcPos(dummy, pos);
+    vector.x = dummy.current.x;
+    vector.y = dummy.current.y;
+    vector.z = dummy.current.z;
+    vector.rot = dummy.current.rot;
+}
+
+bool YACReaderFlow3D::animate(YACReader3DVector &currentVector, YACReader3DVector &toVector)
+{
+    float rotDiff = toVector.rot - currentVector.rot;
+    float xDiff = toVector.x - currentVector.x;
+    float yDiff = toVector.y - currentVector.y;
+    float zDiff = toVector.z - currentVector.z;
+
+    if (fabs(rotDiff) < 0.01 && fabs(xDiff) < 0.001 && fabs(yDiff) < 0.001 && fabs(zDiff) < 0.001)
+        return true;
+
+    currentVector.x = currentVector.x + (xDiff)*config.animationStep;
+    currentVector.y = currentVector.y + (yDiff)*config.animationStep;
+    currentVector.z = currentVector.z + (zDiff)*config.animationStep;
+
+    if (fabs(rotDiff) > 0.01) {
+        currentVector.rot = currentVector.rot + (rotDiff) * (config.animationStep * config.preRotation);
+    } else {
+        viewRotateActive = 0;
+    }
+
+    return false;
+}
+
+void YACReaderFlow3D::showPrevious()
+{
+    startAnimationTimer();
+
+    if (currentSelected > 0) {
+        currentSelected--;
+        emit centerIndexChanged(currentSelected);
+        config.animationStep *= config.animationSpeedUp;
+
+        if (config.animationStep > config.animationStepMax) {
+            config.animationStep = config.animationStepMax;
+        }
+
+        if (viewRotateActive && viewRotate > -1) {
+            viewRotate -= config.viewRotateAdd;
+        }
+
+        viewRotateActive = 1;
+    }
+}
+
+void YACReaderFlow3D::showNext()
+{
+    startAnimationTimer();
+
+    if (currentSelected < numObjects - 1) {
+        currentSelected++;
+        emit centerIndexChanged(currentSelected);
+        config.animationStep *= config.animationSpeedUp;
+
+        if (config.animationStep > config.animationStepMax) {
+            config.animationStep = config.animationStepMax;
+        }
+
+        if (viewRotateActive && viewRotate < 1) {
+            viewRotate += config.viewRotateAdd;
+        }
+
+        viewRotateActive = 1;
+    }
+}
+
+void YACReaderFlow3D::setCurrentIndex(int pos)
+{
+    if (!(pos >= 0 && pos < images.length() && images.length() > 0))
+        return;
+    if (pos >= images.length() && images.length() > 0)
+        pos = images.length() - 1;
+
+    startAnimationTimer();
+
+    currentSelected = pos;
+    config.animationStep *= config.animationSpeedUp;
+
+    if (config.animationStep > config.animationStepMax) {
+        config.animationStep = config.animationStepMax;
+    }
+
+    if (viewRotateActive && viewRotate < 1) {
+        viewRotate += config.viewRotateAdd;
+    }
+
+    viewRotateActive = 1;
+}
+
+void YACReaderFlow3D::updatePositions()
+{
+    int count;
+    bool stopAnimation = true;
+
+    for (count = numObjects - 1; count > -1; count--) {
+        calcVector(images[count].animEnd, count - currentSelected);
+        if (!animate(images[count].current, images[count].animEnd))
+            stopAnimation = false;
+    }
+
+    if (!viewRotateActive) {
+        viewRotate += (0 - viewRotate) * config.viewRotateSub;
+    }
+
+    if (fabs(images[currentSelected].current.x - images[currentSelected].animEnd.x) < 1) {
+        cleanupAnimation();
+        if (updateCount >= 0) {
+            updateCount = 0;
+            updateImageData();
+        } else
+            updateCount++;
+    } else
+        updateCount++;
+
+    if (stopAnimation)
+        stopAnimationTimer();
+}
+
+void YACReaderFlow3D::insert(char *name, QRhiTexture *texture, float x, float y, int item)
+{
+    startAnimationTimer();
+
+    Q_UNUSED(name)
+    if (item == -1) {
+        images.push_back(YACReader3DImageRHI());
+        item = numObjects;
+        numObjects++;
+        calcVector(images[item].current, item);
+        images[item].current.z = images[item].current.z - 1;
+    }
+
+    images[item].texture = texture;
+    images[item].width = x;
+    images[item].height = y;
+    images[item].index = item;
+}
+
+void YACReaderFlow3D::remove(int item)
+{
+    if (item < 0 || item >= images.size())
+        return;
+
+    startAnimationTimer();
+
+    loaded.remove(item);
+    marks.remove(item);
+
+    if (item <= currentSelected && currentSelected != 0) {
+        currentSelected--;
+    }
+
+    QRhiTexture *texture = images[item].texture;
+
+    int count = item;
+    while (count <= numObjects - 1) {
+        images[count].index--;
+        count++;
+    }
+    images.removeAt(item);
+
+    if (texture != defaultTexture)
+        delete texture;
+
+    numObjects--;
+}
+
+void YACReaderFlow3D::add(int item)
+{
+    float x = 1;
+    float y = 1 * (700.f / 480.0f);
+    QString s = "cover";
+
+    images.insert(item, YACReader3DImageRHI());
+    loaded.insert(item, false);
+    marks.insert(item, Unread);
+    numObjects++;
+
+    for (int i = item + 1; i < numObjects; i++) {
+        images[i].index++;
+    }
+
+    insert(s.toLocal8Bit().data(), defaultTexture, x, y, item);
+}
+
+YACReader3DImageRHI YACReaderFlow3D::getCurrentSelected()
+{
+    return images[currentSelected];
+}
+
+void YACReaderFlow3D::replace(char *name, QRhiTexture *texture, float x, float y, int item)
+{
+    startAnimationTimer();
+
+    Q_UNUSED(name)
+    if (images[item].index == item) {
+        images[item].texture = texture;
+        images[item].width = x;
+        images[item].height = y;
+        loaded[item] = true;
+    } else
+        loaded[item] = false;
+}
+
+void YACReaderFlow3D::populate(int n)
+{
+    if (hasBeenInitialized) {
+        clear();
+    }
+    emit centerIndexChanged(0);
+
+    float x = 1;
+    float y = 1 * (700.f / 480.0f);
+    int i;
+
+    for (i = 0; i < n; i++) {
+        QString s = "cover";
+        insert(s.toLocal8Bit().data(), defaultTexture, x, y);
+    }
+
+    loaded = QVector<bool>(n, false);
+}
+
+void YACReaderFlow3D::reset()
+{
+    startAnimationTimer();
+
+    currentSelected = 0;
+    loaded.clear();
+
+    for (int i = 0; i < numObjects; i++) {
+        if (images[i].texture != defaultTexture)
+            delete images[i].texture;
+    }
+
+    numObjects = 0;
+    images.clear();
+
+    if (!hasBeenInitialized)
+        lazyPopulateObjects = -1;
+}
+
+void YACReaderFlow3D::reload()
+{
+    startAnimationTimer();
+    int n = numObjects;
+    reset();
+    populate(n);
+}
+
+// Slot implementations
+void YACReaderFlow3D::setCF_RX(int value)
+{
+    startAnimationTimer();
+    config.cfRX = value;
+}
+
+void YACReaderFlow3D::setCF_RY(int value)
+{
+    startAnimationTimer();
+    config.cfRY = value;
+}
+
+void YACReaderFlow3D::setCF_RZ(int value)
+{
+    startAnimationTimer();
+    config.cfRZ = value;
+}
+
+void YACReaderFlow3D::setRotation(int angle)
+{
+    startAnimationTimer();
+    config.rotation = -angle;
+}
+
+void YACReaderFlow3D::setX_Distance(int distance)
+{
+    startAnimationTimer();
+    config.xDistance = distance / 100.0;
+}
+
+void YACReaderFlow3D::setCenter_Distance(int distance)
+{
+    startAnimationTimer();
+    config.centerDistance = distance / 100.0;
+}
+
+void YACReaderFlow3D::setZ_Distance(int distance)
+{
+    startAnimationTimer();
+    config.zDistance = distance / 100.0;
+}
+
+void YACReaderFlow3D::setCF_Y(int value)
+{
+    startAnimationTimer();
+    config.cfY = value / 100.0;
+}
+
+void YACReaderFlow3D::setCF_Z(int value)
+{
+    startAnimationTimer();
+    config.cfZ = value;
+}
+
+void YACReaderFlow3D::setY_Distance(int value)
+{
+    startAnimationTimer();
+    config.yDistance = value / 100.0;
+}
+
+void YACReaderFlow3D::setFadeOutDist(int value)
+{
+    startAnimationTimer();
+    config.animationFadeOutDist = value;
+}
+
+void YACReaderFlow3D::setLightStrenght(int value)
+{
+    startAnimationTimer();
+    config.viewRotateLightStrenght = value;
+}
+
+void YACReaderFlow3D::setMaxAngle(int value)
+{
+    startAnimationTimer();
+    config.viewAngle = value;
+}
+
+void YACReaderFlow3D::setPreset(const Preset &p)
+{
+    startAnimationTimer();
+    config = p;
+}
+
+void YACReaderFlow3D::setZoom(int zoom)
+{
+    startAnimationTimer();
+    config.zoom = zoom;
+}
+
+void YACReaderFlow3D::setPerformance(Performance performance)
+{
+    if (this->performance != performance) {
+        startAnimationTimer();
+        this->performance = performance;
+        reload();
+    }
+}
+
+void YACReaderFlow3D::useVSync(bool b)
+{
+    // No-op for RHI - VSync is handled by the platform
+    Q_UNUSED(b);
+}
+
+void YACReaderFlow3D::setShowMarks(bool value)
+{
+    startAnimationTimer();
+    showMarks = value;
+}
+
+void YACReaderFlow3D::setMarks(QVector<YACReader::YACReaderComicReadStatus> marks)
+{
+    startAnimationTimer();
+    this->marks = marks;
+}
+
+void YACReaderFlow3D::setMarkImage(QImage &image)
+{
+    Q_UNUSED(image);
+}
+
+void YACReaderFlow3D::markSlide(int index, YACReader::YACReaderComicReadStatus status)
+{
+    startAnimationTimer();
+    marks[index] = status;
+}
+
+void YACReaderFlow3D::unmarkSlide(int index)
+{
+    startAnimationTimer();
+    marks[index] = YACReader::Unread;
+}
+
+void YACReaderFlow3D::setSlideSize(QSize size)
+{
+    Q_UNUSED(size);
+}
+
+void YACReaderFlow3D::clear()
+{
+    reset();
+}
+
+void YACReaderFlow3D::setCenterIndex(unsigned int index)
+{
+    setCurrentIndex(index);
+}
+
+void YACReaderFlow3D::showSlide(int index)
+{
+    setCurrentIndex(index);
+}
+
+int YACReaderFlow3D::centerIndex()
+{
+    return currentSelected;
+}
+
+void YACReaderFlow3D::updateMarks() { }
+
+void YACReaderFlow3D::render()
+{
+    update();
+}
+
+void YACReaderFlow3D::resizeGL(int width, int height)
+{
+    Q_UNUSED(width);
+    Q_UNUSED(height);
+    // No-op for RHI - handled automatically
+}
+
+void YACReaderFlow3D::setFlowRightToLeft(bool b)
+{
+    flowRightToLeft = b;
+}
+
+void YACReaderFlow3D::setBackgroundColor(const QColor &color)
+{
+    backgroundColor = color;
+
+    // Auto-calculate shadingColor based on background brightness
+    qreal luminance = (backgroundColor.redF() * 0.299 +
+                       backgroundColor.greenF() * 0.587 +
+                       backgroundColor.blueF() * 0.114);
+
+    if (luminance < 0.5) {
+        // Dark background - shade towards white
+        shadingColor = QColor(255, 255, 255);
+        shadingTop = 0.8f;
+        shadingBottom = 0.02f;
+    } else {
+        // Light background - shade towards black
+        shadingColor = QColor(0, 0, 0);
+        shadingTop = 0.95f;
+        shadingBottom = 0.3f;
+    }
+
+    update();
+}
+
+void YACReaderFlow3D::setTextColor(const QColor &color)
+{
+    textColor = color;
+    update();
+}
+
+void YACReaderFlow3D::setShadingColor(const QColor &color)
+{
+    shadingColor = color;
+    update();
+}
+
+// Event handlers
+void YACReaderFlow3D::wheelEvent(QWheelEvent *event)
+{
+    Movement m = getMovement(event);
+    switch (m) {
+    case None:
+        return;
+    case Forward:
+        showNext();
+        break;
+    case Backward:
+        showPrevious();
+        break;
+    default:
+        break;
+    }
+}
+
+void YACReaderFlow3D::keyPressEvent(QKeyEvent *event)
+{
+    if ((event->key() == Qt::Key_Left && !flowRightToLeft) || (event->key() == Qt::Key_Right && flowRightToLeft)) {
+        if (event->modifiers() == Qt::ControlModifier)
+            setCurrentIndex((currentSelected - 10 < 0) ? 0 : currentSelected - 10);
+        else
+            showPrevious();
+        event->accept();
+        return;
+    }
+
+    if ((event->key() == Qt::Key_Right && !flowRightToLeft) || (event->key() == Qt::Key_Left && flowRightToLeft)) {
+        if (event->modifiers() == Qt::ControlModifier)
+            setCurrentIndex((currentSelected + 10 >= numObjects) ? numObjects - 1 : currentSelected + 10);
+        else
+            showNext();
+        event->accept();
+        return;
+    }
+
+    if (event->key() == Qt::Key_Up) {
+        return;
+    }
+
+    event->ignore();
+}
+
+void YACReaderFlow3D::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && currentSelected >= 0 && currentSelected < images.size()) {
+        auto position = event->position();
+        QVector3D intersection = getPlaneIntersection(position.x(), position.y(), images[currentSelected]);
+        if ((intersection.x() > 0.5 && !flowRightToLeft) || (intersection.x() < -0.5 && flowRightToLeft)) {
+            showNext();
+        } else if ((intersection.x() < -0.5 && !flowRightToLeft) || (intersection.x() > 0.5 && flowRightToLeft)) {
+            showPrevious();
+        }
+    } else {
+        QRhiWidget::mousePressEvent(event);
+    }
+}
+
+void YACReaderFlow3D::mouseDoubleClickEvent(QMouseEvent *event)
+{
+    if (currentSelected >= 0 && currentSelected < images.size()) {
+        auto position = event->position();
+        QVector3D intersection = getPlaneIntersection(position.x(), position.y(), images[currentSelected]);
+
+        if (intersection.x() < 0.5 && intersection.x() > -0.5) {
+            emit selected(centerIndex());
+            event->accept();
+        }
+    }
+}
+
+QVector3D YACReaderFlow3D::getPlaneIntersection(int x, int y, YACReader3DImageRHI plane)
+{
+    // Simplified for now - proper ray-plane intersection calculation needed
+    // This requires access to the viewport and matrices
+    const QSize outputSize = renderTarget()->pixelSize();
+
+    QMatrix4x4 m_projection;
+    m_projection.perspective(config.zoom, float(outputSize.width()) / float(outputSize.height()), 1.0, 200.0);
+
+    QMatrix4x4 m_modelview;
+    m_modelview.translate(config.cfX, config.cfY, config.cfZ);
+    m_modelview.rotate(config.cfRX, 1, 0, 0);
+    m_modelview.rotate(viewRotate * config.viewAngle + config.cfRY, 0, 1, 0);
+    m_modelview.rotate(config.cfRZ, 0, 0, 1);
+    m_modelview.translate(plane.current.x, plane.current.y, plane.current.z);
+    m_modelview.rotate(plane.current.rot, 0, 1, 0);
+    m_modelview.scale(plane.width, plane.height, 1.0f);
+
+    QVector3D ray_origin(x * devicePixelRatioF(), y * devicePixelRatioF(), 0);
+    QVector3D ray_end(x * devicePixelRatioF(), y * devicePixelRatioF(), 1.0);
+
+    ray_origin = ray_origin.unproject(m_modelview, m_projection, QRect(0, 0, outputSize.width(), outputSize.height()));
+    ray_end = ray_end.unproject(m_modelview, m_projection, QRect(0, 0, outputSize.width(), outputSize.height()));
+
+    QVector3D ray_vector = ray_end - ray_origin;
+
+    QVector3D plane_origin(-0.5f, -0.5f, 0);
+    QVector3D plane_vektor_1 = QVector3D(0.5f, -0.5f, 0) - plane_origin;
+    QVector3D plane_vektor_2 = QVector3D(-0.5f, 0.5f, 0) - plane_origin;
+
+    double intersection_LES_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * (-1) * ray_vector.z()) +
+                                           (plane_vektor_2.x() * (-1) * ray_vector.y() * plane_vektor_1.z()) +
+                                           ((-1) * ray_vector.x() * plane_vektor_1.y() * plane_vektor_2.z()) -
+                                           ((-1) * ray_vector.x() * plane_vektor_2.y() * plane_vektor_1.z()) -
+                                           (plane_vektor_1.x() * (-1) * ray_vector.y() * plane_vektor_2.z()) -
+                                           (plane_vektor_2.x() * plane_vektor_1.y() * (-1) * ray_vector.z()));
+
+    QVector3D det = ray_origin - plane_origin;
+
+    double intersection_ray_determinant = ((plane_vektor_1.x() * plane_vektor_2.y() * det.z()) +
+                                           (plane_vektor_2.x() * det.y() * plane_vektor_1.z()) +
+                                           (det.x() * plane_vektor_1.y() * plane_vektor_2.z()) -
+                                           (det.x() * plane_vektor_2.y() * plane_vektor_1.z()) -
+                                           (plane_vektor_1.x() * det.y() * plane_vektor_2.z()) -
+                                           (plane_vektor_2.x() * plane_vektor_1.y() * det.z()));
+
+    return ray_origin + ray_vector * (intersection_ray_determinant / intersection_LES_determinant);
+}
+
+QSize YACReaderFlow3D::minimumSizeHint() const
+{
+    return QSize(320, 200);
+}
+
+// YACReaderComicFlow3D implementation
+YACReaderComicFlow3D::YACReaderComicFlow3D(QWidget *parent, struct Preset p)
+    : YACReaderFlow3D(parent, p)
+{
+    worker = new ImageLoader3D(this);
+    worker->flow = this;
+}
+
+void YACReaderComicFlow3D::setImagePaths(QStringList paths)
+{
+    worker->reset();
+    reset();
+    numObjects = 0;
+
+    if (hasBeenInitialized) {
+        YACReaderFlow3D::populate(paths.size());
+    } else {
+        lazyPopulateObjects = paths.size();
+    }
+
+    this->paths = paths;
+}
+
+void YACReaderComicFlow3D::updateImageData()
+{
+    if (worker->busy())
+        return;
+
+    int idx = worker->index();
+    if (idx >= 0 && !worker->result().isNull()) {
+        if (!loaded[idx]) {
+            float x = 1;
+            QImage img = worker->result();
+
+            // // Ensure the loaded image is in RGBA8888 layout so QRhi interprets channels correctly
+            // if (img.format() != QImage::Format_RGBA8888)
+            //     img = img.convertToFormat(QImage::Format_RGBA8888);
+
+            // Create QRhiTexture from the loaded image
+            if (m_rhi) {
+                QRhiTexture *texture = m_rhi->newTexture(QRhiTexture::BGRA8, img.size(), 1,
+                                                         (performance == high || performance == ultraHigh) ? QRhiTexture::MipMapped : QRhiTexture::UsedAsTransferSource);
+
+                if (texture->create()) {
+                    // Queue texture upload (image already converted to RGBA8888)
+                    PendingTextureUpload upload;
+                    upload.index = idx;
+                    upload.image = img;
+                    upload.x = x;
+                    upload.y = 1 * (float(img.height()) / img.width());
+                    pendingTextureUploads.append(upload);
+
+                    QString s = "cover";
+                    replace(s.toLocal8Bit().data(), texture, upload.x, upload.y, idx);
+                }
+            }
+        }
+    }
+
+    int count = 8;
+    switch (performance) {
+    case low:
+        count = 8;
+        break;
+    case medium:
+        count = 10;
+        break;
+    case high:
+        count = 12;
+        break;
+    case ultraHigh:
+        count = 16;
+        break;
+    }
+
+    int *indexes = new int[2 * count + 1];
+    int center = currentSelected;
+    indexes[0] = center;
+    for (int j = 0; j < count; j++) {
+        indexes[j * 2 + 1] = center + j + 1;
+        indexes[j * 2 + 2] = center - j - 1;
+    }
+
+    for (int c = 0; c < 2 * count + 1; c++) {
+        int i = indexes[c];
+        if ((i >= 0) && (i < numObjects))
+            if (!loaded[i]) {
+                if (paths.size() > 0) {
+                    QString fname = paths.at(i);
+                    worker->generate(i, fname);
+                }
+                delete[] indexes;
+                return;
+            }
+    }
+
+    delete[] indexes;
+}
+
+void YACReaderComicFlow3D::remove(int item)
+{
+    worker->lock();
+    worker->reset();
+    YACReaderFlow3D::remove(item);
+    if (item >= 0 && item < paths.size()) {
+        paths.removeAt(item);
+    }
+    worker->unlock();
+}
+
+void YACReaderComicFlow3D::add(const QString &path, int index)
+{
+    worker->lock();
+    worker->reset();
+    paths.insert(index, path);
+    YACReaderFlow3D::add(index);
+    worker->unlock();
+}
+
+void YACReaderComicFlow3D::resortCovers(QList<int> newOrder)
+{
+    worker->lock();
+    worker->reset();
+    startAnimationTimer();
+
+    QList<QString> pathsNew;
+    QVector<bool> loadedNew;
+    QVector<YACReaderComicReadStatus> marksNew;
+    QVector<YACReader3DImageRHI> imagesNew;
+
+    int index = 0;
+    foreach (int i, newOrder) {
+        if (i < 0 || i >= images.size()) {
+            continue;
+        }
+
+        pathsNew << paths.at(i);
+        loadedNew << loaded.at(i);
+        marksNew << marks.at(i);
+        imagesNew << images.at(i);
+        imagesNew.last().index = index++;
+    }
+
+    paths = pathsNew;
+    loaded = loadedNew;
+    marks = marksNew;
+    images = imagesNew;
+
+    worker->unlock();
+}
+
+// YACReaderPageFlow3D implementation
+YACReaderPageFlow3D::YACReaderPageFlow3D(QWidget *parent, struct Preset p)
+    : YACReaderFlow3D(parent, p)
+{
+    worker = new ImageLoaderByteArray3D(this);
+    worker->flow = this;
+}
+
+YACReaderPageFlow3D::~YACReaderPageFlow3D()
+{
+    if (timerId != -1) {
+        this->killTimer(timerId);
+        timerId = -1;
+    }
+    rawImages.clear();
+
+    // Clean up textures
+    for (auto &image : images) {
+        if (image.texture != defaultTexture) {
+            delete image.texture;
+        }
+    }
+}
+
+void YACReaderPageFlow3D::updateImageData()
+{
+    if (worker->busy())
+        return;
+
+    int idx = worker->index();
+    if (idx >= 0 && !worker->result().isNull()) {
+        if (!loaded[idx]) {
+            float x = 1;
+            QImage img = worker->result();
+
+            // Create QRhiTexture from the loaded image
+            if (m_rhi) {
+                QRhiTexture *texture = m_rhi->newTexture(QRhiTexture::BGRA8, img.size(), 1,
+                                                         (performance == high || performance == ultraHigh) ? QRhiTexture::MipMapped : QRhiTexture::UsedAsTransferSource);
+
+                if (texture->create()) {
+                    float y = 1 * (float(img.height()) / img.width());
+                    QString s = "cover";
+                    replace(s.toLocal8Bit().data(), texture, x, y, idx);
+                    loaded[idx] = true;
+                }
+            }
+        }
+    }
+
+    int count = 8;
+    switch (performance) {
+    case low:
+        count = 8;
+        break;
+    case medium:
+        count = 10;
+        break;
+    case high:
+        count = 12;
+        break;
+    case ultraHigh:
+        count = 14;
+        break;
+    }
+
+    int *indexes = new int[2 * count + 1];
+    int center = currentSelected;
+    indexes[0] = center;
+    for (int j = 0; j < count; j++) {
+        indexes[j * 2 + 1] = center + j + 1;
+        indexes[j * 2 + 2] = center - j - 1;
+    }
+
+    for (int c = 0; c < 2 * count + 1; c++) {
+        int i = indexes[c];
+        if ((i >= 0) && (i < numObjects))
+            if (rawImages.size() > 0)
+                if (!loaded[i] && imagesReady[i]) {
+                    worker->generate(i, rawImages.at(i));
+                    delete[] indexes;
+                    return;
+                }
+    }
+
+    delete[] indexes;
+}
+
+void YACReaderPageFlow3D::populate(int n)
+{
+    worker->reset();
+
+    if (hasBeenInitialized) {
+        YACReaderFlow3D::populate(n);
+    } else {
+        lazyPopulateObjects = n;
+    }
+
+    imagesReady = QVector<bool>(n, false);
+    rawImages = QVector<QByteArray>(n);
+    imagesSetted = QVector<bool>(n, false);
+}
+
+// ImageLoader3D implementation
+QImage ImageLoader3D::loadImage(const QString &fileName)
+{
+    QImage image;
+
+    if (!image.load(fileName)) {
+        return QImage();
+    }
+
+    switch (flow->performance) {
+    case low:
+        image = image.scaledToWidth(200, Qt::SmoothTransformation);
+        break;
+    case medium:
+        image = image.scaledToWidth(256, Qt::SmoothTransformation);
+        break;
+    case high:
+        image = image.scaledToWidth(320, Qt::SmoothTransformation);
+        break;
+    case ultraHigh:
+        break;
+    }
+
+    return image;
+}
+
+ImageLoader3D::ImageLoader3D(YACReaderFlow3D *flow)
+    : QThread(), flow(flow), restart(false), working(false), idx(-1)
+{
+}
+
+ImageLoader3D::~ImageLoader3D()
+{
+    mutex.lock();
+    condition.wakeOne();
+    mutex.unlock();
+    wait();
+}
+
+bool ImageLoader3D::busy() const
+{
+    return isRunning() ? working : false;
+}
+
+void ImageLoader3D::generate(int index, const QString &fileName)
+{
+    mutex.lock();
+    this->idx = index;
+    this->fileName = fileName;
+    this->size = size;
+    this->img = QImage();
+    mutex.unlock();
+
+    if (!isRunning())
+        start();
+    else {
+        restart = true;
+        condition.wakeOne();
+    }
+}
+
+void ImageLoader3D::lock()
+{
+    mutex.lock();
+}
+
+void ImageLoader3D::unlock()
+{
+    mutex.unlock();
+}
+
+void ImageLoader3D::run()
+{
+    for (;;) {
+        mutex.lock();
+        this->working = true;
+        QString fileName = this->fileName;
+        mutex.unlock();
+
+        QImage image = loadImage(fileName);
+
+        mutex.lock();
+        this->working = false;
+        this->img = image;
+        mutex.unlock();
+
+        mutex.lock();
+        if (!this->restart)
+            condition.wait(&mutex);
+        restart = false;
+        mutex.unlock();
+    }
+}
+
+QImage ImageLoader3D::result()
+{
+    return img;
+}
+
+// ImageLoaderByteArray3D implementation
+QImage ImageLoaderByteArray3D::loadImage(const QByteArray &raw)
+{
+    QImage image;
+
+    if (!image.loadFromData(raw)) {
+        return QImage();
+    }
+
+    switch (flow->performance) {
+    case low:
+        image = image.scaledToWidth(128, Qt::SmoothTransformation);
+        break;
+    case medium:
+        image = image.scaledToWidth(196, Qt::SmoothTransformation);
+        break;
+    case high:
+        image = image.scaledToWidth(256, Qt::SmoothTransformation);
+        break;
+    case ultraHigh:
+        image = image.scaledToWidth(320, Qt::SmoothTransformation);
+        break;
+    }
+
+    return image;
+}
+
+ImageLoaderByteArray3D::ImageLoaderByteArray3D(YACReaderFlow3D *flow)
+    : QThread(), flow(flow), restart(false), working(false), idx(-1)
+{
+}
+
+ImageLoaderByteArray3D::~ImageLoaderByteArray3D()
+{
+    mutex.lock();
+    condition.wakeOne();
+    mutex.unlock();
+    wait();
+}
+
+bool ImageLoaderByteArray3D::busy() const
+{
+    return isRunning() ? working : false;
+}
+
+void ImageLoaderByteArray3D::generate(int index, const QByteArray &raw)
+{
+    mutex.lock();
+    this->idx = index;
+    this->rawData = raw;
+    this->size = size;
+    this->img = QImage();
+    mutex.unlock();
+
+    if (!isRunning())
+        start();
+    else {
+        restart = true;
+        condition.wakeOne();
+    }
+}
+
+void ImageLoaderByteArray3D::run()
+{
+    for (;;) {
+        mutex.lock();
+        this->working = true;
+        QByteArray raw = this->rawData;
+        mutex.unlock();
+
+        QImage image = loadImage(raw);
+
+        mutex.lock();
+        this->working = false;
+        this->img = image;
+        mutex.unlock();
+
+        mutex.lock();
+        if (!this->restart)
+            condition.wait(&mutex);
+        restart = false;
+        mutex.unlock();
+    }
+}
+
+QImage ImageLoaderByteArray3D::result()
+{
+    return img;
+}

@@ -26,10 +26,10 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
 
     view = new QQuickWidget();
 
-    // QQuickWidget requires rendering into OpenGL framebuffer objects
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    view->quickWindow()->setGraphicsApi(QSGRendererInterface::OpenGL);
-#endif
+    // In Qt 6, QQuickWidget supports Qt RHI and can use any graphics backend
+    // (Vulkan, Metal, Direct3D, OpenGL, or software rendering).
+    // The backend can be configured via QQuickWindow::setGraphicsApi() or QSG_RHI_BACKEND env var.
+    // Note: All widgets in the same top-level window must use the same graphics API.
 
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
