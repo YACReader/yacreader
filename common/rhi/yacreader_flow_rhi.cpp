@@ -51,6 +51,18 @@ YACReaderFlow3D::~YACReaderFlow3D()
         killTimer(timerId);
         timerId = -1;
     }
+
+    // Clean up image textures (not owned by Scene)
+    for (int i = 0; i < numObjects; i++) {
+        if (images[i].texture && images[i].texture != scene.defaultTexture.get()) {
+            delete images[i].texture;
+        }
+    }
+    images.clear();
+    numObjects = 0;
+
+    // Release all RHI resources
+    scene.reset();
 }
 
 void YACReaderFlow3D::timerEvent(QTimerEvent *event)
@@ -800,8 +812,15 @@ void YACReaderFlow3D::remove(int item)
     }
     images.removeAt(item);
 
-    if (texture != scene.defaultTexture.get())
+    if (texture != scene.defaultTexture.get()) {
+        // Remove shader bindings for this texture before deleting it
+        auto it = scene.shaderBindingsCache.find(texture);
+        if (it != scene.shaderBindingsCache.end()) {
+            delete it.value();
+            scene.shaderBindingsCache.erase(it);
+        }
         delete texture;
+    }
 
     numObjects--;
 }
@@ -869,9 +888,17 @@ void YACReaderFlow3D::reset()
     currentSelected = 0;
     loaded.clear();
 
+    // Clean up image textures and remove their entries from shader bindings cache
     for (int i = 0; i < numObjects; i++) {
-        if (images[i].texture != scene.defaultTexture.get())
+        if (images[i].texture != scene.defaultTexture.get()) {
+            // Remove shader bindings for this texture before deleting it
+            auto it = scene.shaderBindingsCache.find(images[i].texture);
+            if (it != scene.shaderBindingsCache.end()) {
+                delete it.value();
+                scene.shaderBindingsCache.erase(it);
+            }
             delete images[i].texture;
+        }
     }
 
     numObjects = 0;
@@ -1398,12 +1425,14 @@ YACReaderPageFlow3D::~YACReaderPageFlow3D()
     }
     rawImages.clear();
 
-    // Clean up textures
+    // Clean up textures and clear images to prevent double-delete in base destructor
     for (auto &image : images) {
         if (image.texture != scene.defaultTexture.get()) {
             delete image.texture;
         }
     }
+    images.clear();
+    numObjects = 0;
 }
 
 void YACReaderPageFlow3D::updateImageData()
