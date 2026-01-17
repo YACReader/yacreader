@@ -89,12 +89,10 @@ class YACReaderFlow3D : public QRhiWidget, public ScrollManagement
 protected:
     int timerId;
 
-    /*** System variables ***/
     YACReader3DImageRHI dummy;
     int viewRotateActive;
     float stepBackup;
 
-    /*functions*/
     void calcPos(YACReader3DImageRHI &image, int pos);
     void calcVector(YACReader3DVector &vector, int pos);
     bool animate(YACReader3DVector &currentVector, YACReader3DVector &toVector);
@@ -103,34 +101,7 @@ protected:
     int updateCount;
     int fontSize;
 
-    // RHI resources
-    QRhiTexture *defaultTexture = nullptr;
-    QRhiTexture *markTexture = nullptr;
-    QRhiTexture *readingTexture = nullptr;
-
-    QRhiBuffer *vertexBuffer = nullptr;
-    QRhiBuffer *instanceBuffer = nullptr;
-    QRhiBuffer *uniformBuffer = nullptr;
-    int alignedUniformSize = 0; // Cached aligned uniform buffer size
-    int uniformBufferCapacity = 0; // Number of uniform slots allocated
-
-    QRhiSampler *sampler = nullptr;
-    QRhiGraphicsPipeline *pipeline = nullptr;
-    QRhiShaderResourceBindings *shaderBindings = nullptr;
-
-    // Cache of shader resource bindings per texture (to avoid recreating every frame)
-    QMap<QRhiTexture *, QRhiShaderResourceBindings *> shaderBindingsCache;
-
-    // Pending texture uploads (for async image loading)
-    struct PendingTextureUpload {
-        int index;
-        QImage image;
-        float x;
-        float y;
-    };
-    QVector<PendingTextureUpload> pendingTextureUploads;
-
-    // Uniform buffer data structure
+    // Uniform buffer data structure (must match shader layout)
     struct UniformData {
         QMatrix4x4 viewProjectionMatrix;
         QVector3D backgroundColor;
@@ -143,7 +114,65 @@ protected:
         float _pad2;
     };
 
-    void timerEvent(QTimerEvent *);
+    // Pending texture uploads (for async image loading)
+    struct PendingTextureUpload {
+        int index;
+        QImage image;
+        float x;
+        float y;
+    };
+
+    // Scene struct encapsulating all RHI resources
+    struct Scene {
+        // Textures
+        std::unique_ptr<QRhiTexture> defaultTexture;
+        std::unique_ptr<QRhiTexture> markTexture;
+        std::unique_ptr<QRhiTexture> readingTexture;
+
+        // Buffers
+        std::unique_ptr<QRhiBuffer> vertexBuffer;
+        std::unique_ptr<QRhiBuffer> instanceBuffer;
+        std::unique_ptr<QRhiBuffer> uniformBuffer;
+
+        // Pipeline and bindings
+        std::unique_ptr<QRhiSampler> sampler;
+        std::unique_ptr<QRhiGraphicsPipeline> pipeline;
+        std::unique_ptr<QRhiShaderResourceBindings> shaderBindings;
+
+        // Cache of shader resource bindings per texture (raw pointers, owned by this struct)
+        QMap<QRhiTexture *, QRhiShaderResourceBindings *> shaderBindingsCache;
+
+        // Uniform buffer sizing
+        int alignedUniformSize = 0;
+        int uniformBufferCapacity = 0;
+
+        // Pending resource updates (accumulated between frames)
+        QRhiResourceUpdateBatch *resourceUpdates = nullptr;
+
+        // Reset all resources (cleans up cache manually)
+        void reset()
+        {
+            qDeleteAll(shaderBindingsCache);
+            shaderBindingsCache.clear();
+            defaultTexture.reset();
+            markTexture.reset();
+            readingTexture.reset();
+            vertexBuffer.reset();
+            instanceBuffer.reset();
+            uniformBuffer.reset();
+            sampler.reset();
+            pipeline.reset();
+            shaderBindings.reset();
+            alignedUniformSize = 0;
+            uniformBufferCapacity = 0;
+            resourceUpdates = nullptr;
+        }
+    };
+
+    Scene scene;
+    QVector<PendingTextureUpload> pendingTextureUploads;
+
+    void timerEvent(QTimerEvent *) override;
 
     int numObjects;
     int lazyPopulateObjects;
@@ -205,12 +234,6 @@ protected:
 
 protected:
     QRhi *m_rhi = nullptr;
-    std::unique_ptr<QRhiBuffer> m_vbuf;
-    std::unique_ptr<QRhiBuffer> m_ubuf;
-    std::unique_ptr<QRhiShaderResourceBindings> m_srb;
-    std::unique_ptr<QRhiGraphicsPipeline> m_pipeline;
-    QMatrix4x4 m_viewProjection;
-    float m_rotation = 0.0f;
 
 public:
     YACReaderFlow3D(QWidget *parent = nullptr, struct Preset p = pressetYACReaderFlowDownConfig);

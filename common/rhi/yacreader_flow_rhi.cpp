@@ -2,17 +2,6 @@
 #include <QFile>
 #include <cmath>
 
-// Structure for per-instance data
-struct InstanceData {
-    QMatrix4x4 modelMatrix;
-    float leftUpShading;
-    float leftDownShading;
-    float rightUpShading;
-    float rightDownShading;
-    float opacity;
-    float padding[3]; // Align to 16 bytes
-};
-
 /*** Preset Configurations ***/
 // Note: The preset configurations are already defined in yacreader_flow_gl.cpp
 // We just reference them here as extern to avoid duplicate symbols
@@ -87,58 +76,57 @@ void YACReaderFlow3D::stopAnimationTimer()
 void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
 {
     if (m_rhi != rhi()) {
-        releaseResources();
+        scene.reset();
         m_rhi = rhi();
     }
 
     if (!m_rhi)
         return;
 
+    // Helper to get or create resource update batch
+    auto getResourceBatch = [this]() {
+        if (!scene.resourceUpdates)
+            scene.resourceUpdates = m_rhi->nextResourceUpdateBatch();
+        return scene.resourceUpdates;
+    };
+
     // Initialize default texture from image
-    if (!defaultTexture) {
+    if (!scene.defaultTexture) {
         QImage defaultImage(":/images/defaultCover.png");
 
-        defaultTexture = m_rhi->newTexture(QRhiTexture::BGRA8, defaultImage.size(), 1, QRhiTexture::MipMapped);
-        defaultTexture->create();
-        QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
-        batch->uploadTexture(defaultTexture, defaultImage);
-        cb->resourceUpdate(batch);
+        scene.defaultTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, defaultImage.size(), 1, QRhiTexture::MipMapped));
+        scene.defaultTexture->create();
+        getResourceBatch()->uploadTexture(scene.defaultTexture.get(), defaultImage);
         qDebug() << "YACReaderFlow3D: Created defaultTexture" << defaultImage.size();
     }
 
 #ifdef YACREADER_LIBRARY
     // Initialize mark textures
-    if (!markTexture) {
+    if (!scene.markTexture) {
         QImage markImage(":/images/readRibbon.png");
         if (!markImage.isNull()) {
-            markTexture = m_rhi->newTexture(QRhiTexture::BGRA8, markImage.size(), 1, QRhiTexture::MipMapped);
-            markTexture->create();
-
-            QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
-            batch->uploadTexture(markTexture, markImage);
-            cb->resourceUpdate(batch);
+            scene.markTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, markImage.size(), 1, QRhiTexture::MipMapped));
+            scene.markTexture->create();
+            getResourceBatch()->uploadTexture(scene.markTexture.get(), markImage);
         }
     }
 
-    if (!readingTexture) {
+    if (!scene.readingTexture) {
         QImage readingImage(":/images/readingRibbon.png");
         if (!readingImage.isNull()) {
-            readingTexture = m_rhi->newTexture(QRhiTexture::BGRA8, readingImage.size(), 1, QRhiTexture::MipMapped);
-            readingTexture->create();
-
-            QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
-            batch->uploadTexture(readingTexture, readingImage);
-            cb->resourceUpdate(batch);
+            scene.readingTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, readingImage.size(), 1, QRhiTexture::MipMapped));
+            scene.readingTexture->create();
+            getResourceBatch()->uploadTexture(scene.readingTexture.get(), readingImage);
         }
     }
 #endif
 
     // Create vertex buffer (quad geometry)
-    if (!vertexBuffer) {
+    if (!scene.vertexBuffer) {
         // Use a triangle list (two triangles = 6 vertices) because some RHI backends
         // don't support TriangleFan. Each vertex: x,y,z,u,v (5 floats).
-        vertexBuffer = m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::VertexBuffer, 6 * 5 * sizeof(float));
-        vertexBuffer->create();
+        scene.vertexBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Immutable, QRhiBuffer::VertexBuffer, 6 * 5 * sizeof(float)));
+        scene.vertexBuffer->create();
 
         // Two triangles forming a quad (triangle list):
         // Tri 1: bottom-left, bottom-right, top-right
@@ -155,38 +143,36 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
             -0.5f, 0.5f, 0.0f, 0.0f, 0.0f // Top-left
         };
 
-        QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
-        batch->uploadStaticBuffer(vertexBuffer, vertices);
-        cb->resourceUpdate(batch);
+        getResourceBatch()->uploadStaticBuffer(scene.vertexBuffer.get(), vertices);
     }
 
     // Initialize alignment for uniform buffers
-    if (alignedUniformSize == 0) {
-        alignedUniformSize = m_rhi->ubufAligned(sizeof(UniformData));
+    if (scene.alignedUniformSize == 0) {
+        scene.alignedUniformSize = m_rhi->ubufAligned(sizeof(UniformData));
     }
 
     // Create sampler
-    if (!sampler) {
+    if (!scene.sampler) {
         // Use no mipmap sampling to avoid LOD changes with camera Z
-        sampler = m_rhi->newSampler(
+        scene.sampler.reset(m_rhi->newSampler(
                 QRhiSampler::Linear,
                 QRhiSampler::Linear,
                 QRhiSampler::None,
                 QRhiSampler::ClampToEdge,
-                QRhiSampler::ClampToEdge);
-        sampler->create();
+                QRhiSampler::ClampToEdge));
+        scene.sampler->create();
     }
 
     // Create instance buffer for per-draw instance data
-    if (!instanceBuffer) {
+    if (!scene.instanceBuffer) {
         // Allocate buffer for per-instance data (model matrix + shading + opacity + flipFlag)
         // mat4 (16 floats) + vec4 (4 floats) + float (1 float) + float (1 float) = 22 floats
-        instanceBuffer = m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, 22 * sizeof(float));
-        instanceBuffer->create();
+        scene.instanceBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, 22 * sizeof(float)));
+        scene.instanceBuffer->create();
     }
 
     // Setup graphics pipeline
-    if (!pipeline) {
+    if (!scene.pipeline) {
         // Load shaders
         QShader vertShader = getShader(QLatin1String(":/shaders/flow.vert.qsb"));
         QShader fragShader = getShader(QLatin1String(":/shaders/flow.frag.qsb"));
@@ -198,33 +184,31 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
 
         // Create default shader resource bindings for pipeline creation
         // We'll create texture-specific ones on-demand in drawCover
-        shaderBindings = m_rhi->newShaderResourceBindings();
-        shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, uniformBuffer),
-                                      QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, defaultTexture, sampler) });
-        shaderBindings->create();
+        scene.shaderBindings.reset(m_rhi->newShaderResourceBindings());
+        scene.shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, scene.uniformBuffer.get()),
+                                            QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, scene.defaultTexture.get(), scene.sampler.get()) });
+        scene.shaderBindings->create();
 
         // Create pipeline
-        pipeline = m_rhi->newGraphicsPipeline();
+        scene.pipeline.reset(m_rhi->newGraphicsPipeline());
 
-        // Disable alpha blending temporarily to test if blending causes darkening
+        // Setup alpha blending
         QRhiGraphicsPipeline::TargetBlend blend;
         blend.enable = true;
         blend.srcColor = QRhiGraphicsPipeline::SrcAlpha;
         blend.dstColor = QRhiGraphicsPipeline::OneMinusSrcAlpha;
         blend.srcAlpha = QRhiGraphicsPipeline::One;
         blend.dstAlpha = QRhiGraphicsPipeline::OneMinusSrcAlpha;
-        pipeline->setTargetBlends({ blend });
+        scene.pipeline->setTargetBlends({ blend });
 
-        // Enable depth test (restore depth writes for normal rendering)
-        pipeline->setDepthTest(true);
-        pipeline->setDepthWrite(true);
-        pipeline->setDepthOp(QRhiGraphicsPipeline::Less);
+        // Enable depth test
+        scene.pipeline->setDepthTest(true);
+        scene.pipeline->setDepthWrite(true);
+        scene.pipeline->setDepthOp(QRhiGraphicsPipeline::Less);
 
-        // Diagnostic: disable culling to avoid missing-triangle artifacts
-        pipeline->setCullMode(QRhiGraphicsPipeline::Back);
+        scene.pipeline->setCullMode(QRhiGraphicsPipeline::Back);
 
-        // Determine the MSAA sample count to use. Query the RHI for supported counts
-        // and clamp to at most 4 samples for safety.
+        // Determine the MSAA sample count to use
         int requestedSamples = sampleCount();
         int samplesToUse = 1;
         if (requestedSamples > 1 && m_rhi) {
@@ -237,20 +221,17 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
             samplesToUse = qMin(requestedSamples, qMin(4, maxSupported));
         }
         if (samplesToUse > 1)
-            pipeline->setSampleCount(samplesToUse);
-
-        // Use triangle fan topology to match OpenGL draw mode (this makes the app to crash)
-        // pipeline->setTopology(QRhiGraphicsPipeline::TriangleFan);
+            scene.pipeline->setSampleCount(samplesToUse);
 
         // Set shaders
-        pipeline->setShaderStages({ { QRhiShaderStage::Vertex, vertShader },
-                                    { QRhiShaderStage::Fragment, fragShader } });
+        scene.pipeline->setShaderStages({ { QRhiShaderStage::Vertex, vertShader },
+                                          { QRhiShaderStage::Fragment, fragShader } });
 
         // Setup vertex input layout
         QRhiVertexInputLayout inputLayout;
         inputLayout.setBindings({
                 { 5 * sizeof(float) }, // Per-vertex data (position + texCoord)
-                { 22 * sizeof(float), QRhiVertexInputBinding::PerInstance } // Per-instance data (+ flip flag)
+                { 22 * sizeof(float), QRhiVertexInputBinding::PerInstance } // Per-instance data
         });
         inputLayout.setAttributes({
                 // Per-vertex attributes
@@ -266,17 +247,22 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
                 { 1, 7, QRhiVertexInputAttribute::Float, 20 * sizeof(float) }, // opacity
                 { 1, 8, QRhiVertexInputAttribute::Float, 21 * sizeof(float) } // flipFlag (1.0 = reflection)
         });
-        pipeline->setVertexInputLayout(inputLayout);
+        scene.pipeline->setVertexInputLayout(inputLayout);
 
         // Set shader resource bindings and render pass descriptor
-        pipeline->setShaderResourceBindings(shaderBindings);
-        pipeline->setRenderPassDescriptor(renderTarget()->renderPassDescriptor());
+        scene.pipeline->setShaderResourceBindings(scene.shaderBindings.get());
+        scene.pipeline->setRenderPassDescriptor(renderTarget()->renderPassDescriptor());
 
-        if (!pipeline->create()) {
+        if (!scene.pipeline->create()) {
             qWarning() << "YACReaderFlow3D: Failed to create graphics pipeline!";
-            delete pipeline;
-            pipeline = nullptr;
+            scene.pipeline.reset();
         }
+    }
+
+    // Submit any pending resource updates
+    if (scene.resourceUpdates) {
+        cb->resourceUpdate(scene.resourceUpdates);
+        scene.resourceUpdates = nullptr;
     }
 
     // Call populate only once per data loaded.
@@ -290,43 +276,35 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
 
 void YACReaderFlow3D::ensureUniformBufferCapacity(int requiredSlots)
 {
-    if (!m_rhi || alignedUniformSize == 0)
+    if (!m_rhi || scene.alignedUniformSize == 0)
         return;
 
     // Check if we need to resize
-    if (uniformBufferCapacity >= requiredSlots && uniformBuffer)
+    if (scene.uniformBufferCapacity >= requiredSlots && scene.uniformBuffer)
         return;
 
-    // Delete old buffer if it exists
-    if (uniformBuffer) {
-        delete uniformBuffer;
-        uniformBuffer = nullptr;
-    }
+    // Reset uniform buffer
+    scene.uniformBuffer.reset();
 
     // Create new larger buffer
     // Each draw needs its own uniform slot (cover + reflection + optional mark = 3 per object)
-    const int totalSize = requiredSlots * alignedUniformSize;
-    uniformBuffer = m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, totalSize);
-    if (uniformBuffer->create()) {
-        uniformBufferCapacity = requiredSlots;
+    const int totalSize = requiredSlots * scene.alignedUniformSize;
+    scene.uniformBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, totalSize));
+    if (scene.uniformBuffer->create()) {
+        scene.uniformBufferCapacity = requiredSlots;
 
         // Invalidate shader bindings cache since the uniform buffer changed
-        for (auto *srb : shaderBindingsCache) {
-            delete srb;
-        }
-        shaderBindingsCache.clear();
+        qDeleteAll(scene.shaderBindingsCache);
+        scene.shaderBindingsCache.clear();
 
         // Recreate default shader bindings for pipeline
-        if (shaderBindings) {
-            delete shaderBindings;
-        }
-        shaderBindings = m_rhi->newShaderResourceBindings();
-        shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, uniformBuffer),
-                                      QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, defaultTexture, sampler) });
-        shaderBindings->create();
+        scene.shaderBindings.reset(m_rhi->newShaderResourceBindings());
+        scene.shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, scene.uniformBuffer.get()),
+                                            QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, scene.defaultTexture.get(), scene.sampler.get()) });
+        scene.shaderBindings->create();
     } else {
         qWarning() << "YACReaderFlow3D: Failed to create uniform buffer of size" << totalSize;
-        uniformBufferCapacity = 0;
+        scene.uniformBufferCapacity = 0;
     }
 }
 
@@ -418,7 +396,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
 
         // Add mark draw immediately after its cover
         if (showMarks && loaded[idx] && marks[idx] != Unread) {
-            QRhiTexture *markTex = (marks[idx] == Read) ? markTexture : readingTexture;
+            QRhiTexture *markTex = (marks[idx] == Read) ? scene.markTexture.get() : scene.readingTexture.get();
             if (markTex) {
                 DrawInfo markDraw;
                 markDraw.imageIndex = idx;
@@ -434,19 +412,16 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     // Ensure uniform buffer is large enough
     ensureUniformBufferCapacity(draws.size());
 
-    if (!uniformBuffer) {
+    if (!scene.uniformBuffer) {
         qWarning() << "YACReaderFlow3D: No uniform buffer available for rendering";
         return;
     }
 
     // Ensure instance buffer is large enough for all draws
     const int requiredInstanceSize = draws.size() * 22 * sizeof(float);
-    if (!instanceBuffer || instanceBuffer->size() < requiredInstanceSize) {
-        if (instanceBuffer) {
-            delete instanceBuffer;
-        }
-        instanceBuffer = m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, requiredInstanceSize);
-        if (!instanceBuffer->create()) {
+    if (!scene.instanceBuffer || scene.instanceBuffer->size() < requiredInstanceSize) {
+        scene.instanceBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, requiredInstanceSize));
+        if (!scene.instanceBuffer->create()) {
             qWarning() << "YACReaderFlow3D: Failed to create instance buffer of size" << requiredInstanceSize;
             return;
         }
@@ -468,21 +443,21 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
 
     // Update uniform buffer with all draw data
     for (int i = 0; i < draws.size(); ++i) {
-        int offset = i * alignedUniformSize;
-        batch->updateDynamicBuffer(uniformBuffer, offset, sizeof(UniformData), &draws[i].uniformData);
+        int offset = i * scene.alignedUniformSize;
+        batch->updateDynamicBuffer(scene.uniformBuffer.get(), offset, sizeof(UniformData), &draws[i].uniformData);
     }
 
     // Update instance buffer with all instance data
     for (int i = 0; i < draws.size(); ++i) {
         int offset = i * 22 * sizeof(float);
-        batch->updateDynamicBuffer(instanceBuffer, offset, 22 * sizeof(float), draws[i].instanceData);
+        batch->updateDynamicBuffer(scene.instanceBuffer.get(), offset, 22 * sizeof(float), draws[i].instanceData);
     }
 
     // === PHASE 2: RENDER (DURING PASS) ===
     cb->beginPass(renderTarget(), clearColor, { 1.0f, 0 }, batch);
 
-    if (pipeline) {
-        cb->setGraphicsPipeline(pipeline);
+    if (scene.pipeline) {
+        cb->setGraphicsPipeline(scene.pipeline.get());
         cb->setViewport(QRhiViewport(0, 0, outputSize.width(), outputSize.height()));
 
         // Execute all draws
@@ -575,43 +550,31 @@ void YACReaderFlow3D::prepareDrawData(const YACReader3DImageRHI &image, bool isR
 void YACReaderFlow3D::executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *texture,
                                             const float *instanceData, int uniformSlot)
 {
-    if (!texture || !instanceBuffer || !vertexBuffer)
+    if (!texture || !scene.instanceBuffer || !scene.vertexBuffer)
         return;
 
-    // NOTE: We cannot update the instance buffer here during the render pass!
-    // Instead, we'll need to either:
-    // 1. Use the instance data from uniforms (move it to uniform buffer)
-    // 2. Or pre-upload all instance data before the pass
-    //
-    // For now, let's use approach #1: embed instance data in uniforms via a large instance buffer
-    // that we populate before the pass, similar to uniforms
-    //
-    // Actually, the simplest solution: update the instance buffer ONCE per draw using dynamic updates
-    // But we need to do this cleverly - we can't call resourceUpdate during pass.
-    //
-    // The solution: Create an instance buffer large enough for ALL draws, update it before pass,
-    // and use offsets during drawing.
+    Q_UNUSED(instanceData)
 
     // Get or create shader resource bindings for this texture with dynamic offset support
-    QRhiShaderResourceBindings *srb = shaderBindingsCache.value(texture, nullptr);
+    QRhiShaderResourceBindings *srb = scene.shaderBindingsCache.value(texture, nullptr);
     if (!srb) {
         srb = m_rhi->newShaderResourceBindings();
-        srb->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, uniformBuffer),
-                           QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, texture, sampler) });
+        srb->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, scene.uniformBuffer.get()),
+                           QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, texture, scene.sampler.get()) });
         srb->create();
-        shaderBindingsCache.insert(texture, srb);
+        scene.shaderBindingsCache.insert(texture, srb);
     }
 
     // Set shader resources with dynamic offset for uniform buffer
     QRhiCommandBuffer::DynamicOffset dynOfs[] = {
-        { 0, quint32(uniformSlot * alignedUniformSize) }
+        { 0, quint32(uniformSlot * scene.alignedUniformSize) }
     };
     cb->setShaderResources(srb, 1, dynOfs);
 
     // Bind vertex buffers with offset into instance buffer
     const QRhiCommandBuffer::VertexInput vbufBindings[] = {
-        { vertexBuffer, 0 },
-        { instanceBuffer, quint32(uniformSlot * 22 * sizeof(float)) } // Use slot index for instance data offset
+        { scene.vertexBuffer.get(), 0 },
+        { scene.instanceBuffer.get(), quint32(uniformSlot * 22 * sizeof(float)) }
     };
     cb->setVertexInput(0, 2, vbufBindings);
 
@@ -625,39 +588,7 @@ void YACReaderFlow3D::executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *
 
 void YACReaderFlow3D::releaseResources()
 {
-    delete vertexBuffer;
-    vertexBuffer = nullptr;
-
-    delete instanceBuffer;
-    instanceBuffer = nullptr;
-
-    delete uniformBuffer;
-    uniformBuffer = nullptr;
-
-    delete sampler;
-    sampler = nullptr;
-
-    delete pipeline;
-    pipeline = nullptr;
-
-    delete shaderBindings;
-    shaderBindings = nullptr;
-
-    // Clean up shader bindings cache
-    for (auto *srb : shaderBindingsCache) {
-        delete srb;
-    }
-    shaderBindingsCache.clear();
-
-    delete defaultTexture;
-    defaultTexture = nullptr;
-
-    delete markTexture;
-    markTexture = nullptr;
-
-    delete readingTexture;
-    readingTexture = nullptr;
-
+    scene.reset();
     m_rhi = nullptr;
 }
 
@@ -869,7 +800,7 @@ void YACReaderFlow3D::remove(int item)
     }
     images.removeAt(item);
 
-    if (texture != defaultTexture)
+    if (texture != scene.defaultTexture.get())
         delete texture;
 
     numObjects--;
@@ -890,7 +821,7 @@ void YACReaderFlow3D::add(int item)
         images[i].index++;
     }
 
-    insert(s.toLocal8Bit().data(), defaultTexture, x, y, item);
+    insert(s.toLocal8Bit().data(), scene.defaultTexture.get(), x, y, item);
 }
 
 YACReader3DImageRHI YACReaderFlow3D::getCurrentSelected()
@@ -925,7 +856,7 @@ void YACReaderFlow3D::populate(int n)
 
     for (i = 0; i < n; i++) {
         QString s = "cover";
-        insert(s.toLocal8Bit().data(), defaultTexture, x, y);
+        insert(s.toLocal8Bit().data(), scene.defaultTexture.get(), x, y);
     }
 
     loaded = QVector<bool>(n, false);
@@ -939,7 +870,7 @@ void YACReaderFlow3D::reset()
     loaded.clear();
 
     for (int i = 0; i < numObjects; i++) {
-        if (images[i].texture != defaultTexture)
+        if (images[i].texture != scene.defaultTexture.get())
             delete images[i].texture;
     }
 
@@ -1469,7 +1400,7 @@ YACReaderPageFlow3D::~YACReaderPageFlow3D()
 
     // Clean up textures
     for (auto &image : images) {
-        if (image.texture != defaultTexture) {
+        if (image.texture != scene.defaultTexture.get()) {
             delete image.texture;
         }
     }
