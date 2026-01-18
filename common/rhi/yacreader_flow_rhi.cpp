@@ -51,6 +51,12 @@ YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
     setSampleCount(4);
 
     timerId = -1;
+
+    // Create and configure the index label
+    indexLabel = new QLabel(this);
+    indexLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+    indexLabel->setAutoFillBackground(false);
+    updateIndexLabelStyle();
 }
 
 YACReaderFlow3D::~YACReaderFlow3D()
@@ -369,6 +375,9 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     // Update positions and animations
     updatePositions();
 
+    // Update index label if values changed
+    updateIndexLabel();
+
     // Prepare view-projection matrix
     // Use fixed 20.0 degrees FOV - zoom is controlled via cfZ (camera distance)
     QMatrix4x4 projectionMatrix;
@@ -652,6 +661,12 @@ void YACReaderFlow3D::showEvent(QShowEvent *event)
 {
     QRhiWidget::showEvent(event);
     startAnimationTimer();
+}
+
+void YACReaderFlow3D::resizeEvent(QResizeEvent *event)
+{
+    QRhiWidget::resizeEvent(event);
+    updateIndexLabelStyle();
 }
 
 void YACReaderFlow3D::cleanupAnimation()
@@ -1168,6 +1183,11 @@ void YACReaderFlow3D::setBackgroundColor(const QColor &color)
 void YACReaderFlow3D::setTextColor(const QColor &color)
 {
     textColor = color;
+
+    QPalette palette = indexLabel->palette();
+    palette.setColor(QPalette::WindowText, textColor);
+    indexLabel->setPalette(palette);
+
     update();
 }
 
@@ -1297,6 +1317,39 @@ QVector3D YACReaderFlow3D::getPlaneIntersection(int x, int y, YACReader3DImageRH
                                            (plane_vektor_2.x() * plane_vektor_1.y() * det.z()));
 
     return ray_origin + ray_vector * (intersection_ray_determinant / intersection_LES_determinant);
+}
+
+void YACReaderFlow3D::updateIndexLabel()
+{
+    int currentDisplay = currentSelected + 1;
+    int totalDisplay = numObjects;
+
+    if (indexLabelState.current != currentDisplay || indexLabelState.total != totalDisplay) {
+        indexLabelState.current = currentDisplay;
+        indexLabelState.total = totalDisplay;
+        indexLabel->setText(QString("%1/%2").arg(currentDisplay).arg(totalDisplay));
+        indexLabel->adjustSize();
+    }
+}
+
+void YACReaderFlow3D::updateIndexLabelStyle()
+{
+    int w = width();
+    int h = height();
+
+    int newFontSize = static_cast<int>((w + h) * 0.010);
+    if (newFontSize < 10)
+        newFontSize = 10;
+
+    QFont font("Arial", newFontSize);
+    indexLabel->setFont(font);
+
+    QPalette palette = indexLabel->palette();
+    palette.setColor(QPalette::WindowText, textColor);
+    indexLabel->setPalette(palette);
+
+    indexLabel->move(10, 10);
+    indexLabel->adjustSize();
 }
 
 QSize YACReaderFlow3D::minimumSizeHint() const

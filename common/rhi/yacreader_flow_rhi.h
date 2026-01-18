@@ -79,6 +79,7 @@ extern struct Preset presetYACReaderFlowOverlappedStripeConfig;
 extern struct Preset pressetYACReaderFlowUpConfig;
 extern struct Preset pressetYACReaderFlowDownConfig;
 
+class QLabel;
 class ImageLoader3D;
 class ImageLoaderByteArray3D;
 class YACReaderComicFlow3D;
@@ -102,6 +103,12 @@ protected:
 
     int updateCount;
     int fontSize;
+
+    // Cached state for the index label to avoid unnecessary updates
+    struct IndexLabelState {
+        int current = -1;
+        int total = -1;
+    };
 
     // Uniform buffer data structure (must match shader layout)
     struct UniformData {
@@ -174,6 +181,10 @@ protected:
     Scene scene;
     QVector<PendingTextureUpload> pendingTextureUploads;
 
+    // Index label (shows "current/total" in top-left corner)
+    QLabel *indexLabel = nullptr;
+    IndexLabelState indexLabelState;
+
     void timerEvent(QTimerEvent *) override;
 
     int numObjects;
@@ -222,6 +233,11 @@ protected:
     void render(QRhiCommandBuffer *cb) override;
     void releaseResources() override;
     void showEvent(QShowEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
+
+    // Index label helpers
+    void updateIndexLabel();
+    void updateIndexLabelStyle();
 
     // Helper methods
     QRhiTexture *createTextureFromImage(QRhiCommandBuffer *cb, const QImage &image);
