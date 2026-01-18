@@ -315,18 +315,13 @@ void YACReaderFlow3D::ensurePipeline()
 
     // Determine the MSAA sample count to use
     int requestedSamples = sampleCount();
-    int samplesToUse = 1;
     if (requestedSamples > 1 && m_rhi) {
         QVector<int> supported = m_rhi->supportedSampleCounts();
-        int maxSupported = 1;
-        for (int s : std::as_const(supported)) {
-            if (s > maxSupported)
-                maxSupported = s;
-        }
-        samplesToUse = qMin(requestedSamples, qMin(4, maxSupported));
+        auto it = std::upper_bound(supported.begin(), supported.end(), requestedSamples);
+        int samplesToUse = (it != supported.begin()) ? *std::prev(it) : 1;
+        if (samplesToUse > 1)
+            scene.pipeline->setSampleCount(samplesToUse);
     }
-    if (samplesToUse > 1)
-        scene.pipeline->setSampleCount(samplesToUse);
 
     // Set shaders
     scene.pipeline->setShaderStages({ { QRhiShaderStage::Vertex, vertShader },
