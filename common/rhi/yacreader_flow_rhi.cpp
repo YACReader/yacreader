@@ -1257,8 +1257,3 @@ QSize YACReaderFlow3D::minimumSizeHint() const
 {
     return QSize(320, 200);
 }
-
-// YACReaderComicFlow3D implementation
-// YACReaderComicFlow3D implementation moved to common/rhi/yacreader_comic_flow_rhi.*
-
-// Implementations for derived flows and loaders live in their own files.
