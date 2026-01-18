@@ -16,7 +16,15 @@ static QShader getShader(const QString &name)
 
 /*Constructor*/
 YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
-    : QRhiWidget(parent), numObjects(0), lazyPopulateObjects(-1), hasBeenInitialized(false), backgroundColor(Qt::black), textColor(Qt::white), shadingColor(Qt::black), flowRightToLeft(false), showMarks(true)
+    : QRhiWidget(parent),
+      numObjects(0),
+      lazyPopulateObjects(-1),
+      showMarks(true),
+      hasBeenInitialized(false),
+      backgroundColor(Qt::black),
+      textColor(Qt::white),
+      shadingColor(Qt::black),
+      flowRightToLeft(false)
 {
     updateCount = 0;
     config = p;
