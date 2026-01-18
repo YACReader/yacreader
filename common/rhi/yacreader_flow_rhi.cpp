@@ -933,7 +933,6 @@ void YACReaderFlow3D::populate(int n)
     }
 
     loaded = QVector<bool>(n, false);
-    marks = QVector<YACReaderComicReadStatus>(n, Unread);
 }
 
 void YACReaderFlow3D::reset()
