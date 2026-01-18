@@ -2,8 +2,11 @@
 
 // Inputs from vertex shader
 layout(location = 0) in vec2 vTexCoord;
-layout(location = 1) in vec4 vColor;
-layout(location = 2) in float vIsReflection;
+layout(location = 1) in flat vec4 vInstanceShading;
+layout(location = 2) in flat float vInstanceOpacity;
+layout(location = 3) in flat float vIsReflection;
+layout(location = 4) in flat float vInstanceRotation;
+layout(location = 5) in vec2 vLocalPos;
 
 // Output
 layout(location = 0) out vec4 fragColor;
@@ -29,16 +32,30 @@ void main()
 {
     vec4 texColor = texture(coverTexture, vTexCoord);
 
-    // Apply shading: multiply texture by vColor.r to darken
-    float shadingAmount = vColor.r;
+    // Compute per-pixel shading using per-instance corner shading values
+    float leftUp = vInstanceShading.x;
+    float leftDown = vInstanceShading.y;
+    float rightUp = vInstanceShading.z;
+    float rightDown = vInstanceShading.w;
 
-    // For reflections, apply gradient fade (darker at bottom, fading to black)
+    // Use interpolated local vertex position to match original vertex-based shading.
+    // position.y in vertex ranges [-0.5..0.5], so map to [0..1] with +0.5
+    float y = clamp(vLocalPos.y + 0.5, 0.0, 1.0);
+    float x = clamp(vLocalPos.x + 0.5, 0.0, 1.0);
+    float leftShading = mix(leftDown, leftUp, y);
+    float rightShading = mix(rightDown, rightUp, y);
+    float shading = mix(leftShading, rightShading, x);
+
+    // Combine with per-instance opacity (opacity only darkens RGB, alpha preserved)
+    float shadingAmount = shading * vInstanceOpacity;
+
+    // For reflections, apply a gradient fade using reflection uniforms (darker further away)
     if (vIsReflection > 0.5) {
-        // vTexCoord.y goes from 1 (top of reflection, near cover) to 0 (bottom, far from cover)
-        // We want it brightest near the cover and fading away
+        // Legacy reflection fade: ramp from 0.0 to 0.33 using texture V coordinate
         float gradientFade = mix(0.0, 0.33, vTexCoord.y);
         shadingAmount *= gradientFade;
     }
 
+    // Final color: shaded RGB, keep source alpha
     fragColor = vec4(texColor.rgb * shadingAmount, texColor.a);
 }

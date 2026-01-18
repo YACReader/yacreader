@@ -157,7 +157,10 @@ SOURCES +=  ../common/comic.cpp \
             SOURCES += ../common/rhi/yacreader_flow_rhi.cpp
             SOURCES += ../common/rhi/yacreader_comic_flow_rhi.cpp \
                        ../common/rhi/yacreader_page_flow_rhi.cpp
-            RESOURCES += ../common/rhi/shaders/shaders.qrc
+                RESOURCES += ../common/rhi/shaders/shaders.qrc
+                # Make raw GLSL shader sources editable in Qt Creator
+                OTHER_FILES += ../common/rhi/shaders/flow.vert \
+                               ../common/rhi/shaders/flow.frag
         }
 }
 

@@ -12,11 +12,15 @@ layout(location = 5) in vec4 instanceModel_row3;
 layout(location = 6) in vec4 instanceShading1;
 layout(location = 7) in float instanceOpacity;
 layout(location = 8) in float instanceFlip;
+layout(location = 9) in float instanceRotation;
 
 // Outputs to fragment shader
 layout(location = 0) out vec2 vTexCoord;
-layout(location = 1) out vec4 vColor;
-layout(location = 2) out float vIsReflection;
+layout(location = 1) out flat vec4 vInstanceShading;
+layout(location = 2) out flat float vInstanceOpacity;
+layout(location = 3) out flat float vIsReflection;
+layout(location = 4) out flat float vInstanceRotation;
+layout(location = 5) out vec2 vLocalPos;
 
 // Uniform buffer
 layout(std140, binding = 0) uniform UniformBuffer
@@ -39,21 +43,16 @@ void main()
 
     gl_Position = viewProjectionMatrix * instanceModel * vec4(position, 1.0);
     vTexCoord = texCoord;
+    vLocalPos = position.xy;
 
     // Flip texture vertically per-instance when requested (reflection)
     if (instanceFlip != 0.0) {
-        vTexCoord.y = 1.0 - texCoord.y;
+        vTexCoord.y = 1.0 - vTexCoord.y;
     }
 
-    float leftUpShading = instanceShading1.x;
-    float leftDownShading = instanceShading1.y;
-    float rightUpShading = instanceShading1.z;
-    float rightDownShading = instanceShading1.w;
-
-    float leftShading = mix(leftDownShading, leftUpShading, (position.y + 0.5));
-    float rightShading = mix(rightDownShading, rightUpShading, (position.y + 0.5));
-    float shading = mix(leftShading, rightShading, (position.x + 0.5));
-
-    vColor = vec4(shading * instanceOpacity);
+    // Pass per-instance values to fragment shader as flat (no interpolation)
+    vInstanceShading = instanceShading1;
+    vInstanceOpacity = instanceOpacity;
     vIsReflection = instanceFlip;
+    vInstanceRotation = instanceRotation;
 }
