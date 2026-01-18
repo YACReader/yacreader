@@ -95,17 +95,18 @@ void YACReaderFlow3D::stopAnimationTimer()
 
 void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
 {
-    if (m_rhi != rhi()) {
+    auto newRhi = rhi();
+    if (m_rhi != newRhi) {
         scene.reset();
-        m_rhi = rhi();
+        m_rhi = newRhi;
     }
 
-    if (!m_rhi)
+    if (m_rhi == nullptr)
         return;
 
     // Helper to get or create resource update batch
     auto getResourceBatch = [this]() {
-        if (!scene.resourceUpdates)
+        if (scene.resourceUpdates == nullptr)
             scene.resourceUpdates = m_rhi->nextResourceUpdateBatch();
         return scene.resourceUpdates;
     };
@@ -191,93 +192,35 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
         scene.instanceBuffer->create();
     }
 
-    // Setup graphics pipeline
-    if (!scene.pipeline) {
-        // Load shaders
-        QShader vertShader = getShader(QLatin1String(":/shaders/flow.vert.qsb"));
-        QShader fragShader = getShader(QLatin1String(":/shaders/flow.frag.qsb"));
+    // Determine how many items we'll have (either already populated or pending lazy population)
+    const int itemCount = (lazyPopulateObjects != -1) ? lazyPopulateObjects : numObjects;
 
-        if (!vertShader.isValid() || !fragShader.isValid()) {
-            qWarning() << "YACReaderFlow3D: Failed to load shaders!";
-            return;
-        }
-
-        // Create default shader resource bindings for pipeline creation
-        // We'll create texture-specific ones on-demand in drawCover
-        scene.shaderBindings.reset(m_rhi->newShaderResourceBindings());
-        scene.shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, scene.uniformBuffer.get()),
-                                            QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, scene.defaultTexture.get(), scene.sampler.get()) });
-        scene.shaderBindings->create();
-
-        // Create pipeline
-        scene.pipeline.reset(m_rhi->newGraphicsPipeline());
-
-        // Setup alpha blending
-        QRhiGraphicsPipeline::TargetBlend blend;
-        blend.enable = true;
-        blend.srcColor = QRhiGraphicsPipeline::SrcAlpha;
-        blend.dstColor = QRhiGraphicsPipeline::OneMinusSrcAlpha;
-        blend.srcAlpha = QRhiGraphicsPipeline::One;
-        blend.dstAlpha = QRhiGraphicsPipeline::OneMinusSrcAlpha;
-        scene.pipeline->setTargetBlends({ blend });
-
-        // Enable depth test
-        scene.pipeline->setDepthTest(true);
-        scene.pipeline->setDepthWrite(true);
-        scene.pipeline->setDepthOp(QRhiGraphicsPipeline::Less);
-
-        scene.pipeline->setCullMode(QRhiGraphicsPipeline::Back);
-
-        // Determine the MSAA sample count to use
-        int requestedSamples = sampleCount();
-        int samplesToUse = 1;
-        if (requestedSamples > 1 && m_rhi) {
-            QVector<int> supported = m_rhi->supportedSampleCounts();
-            int maxSupported = 1;
-            for (int s : supported) {
-                if (s > maxSupported)
-                    maxSupported = s;
-            }
-            samplesToUse = qMin(requestedSamples, qMin(4, maxSupported));
-        }
-        if (samplesToUse > 1)
-            scene.pipeline->setSampleCount(samplesToUse);
-
-        // Set shaders
-        scene.pipeline->setShaderStages({ { QRhiShaderStage::Vertex, vertShader },
-                                          { QRhiShaderStage::Fragment, fragShader } });
-
-        // Setup vertex input layout
-        QRhiVertexInputLayout inputLayout;
-        inputLayout.setBindings({
-                { 5 * sizeof(float) }, // Per-vertex data (position + texCoord)
-                { 22 * sizeof(float), QRhiVertexInputBinding::PerInstance } // Per-instance data
-        });
-        inputLayout.setAttributes({
-                // Per-vertex attributes
-                { 0, 0, QRhiVertexInputAttribute::Float3, 0 }, // position
-                { 0, 1, QRhiVertexInputAttribute::Float2, 3 * sizeof(float) }, // texCoord
-
-                // Per-instance attributes (model matrix as 4 vec4s)
-                { 1, 2, QRhiVertexInputAttribute::Float4, 0 * sizeof(float) }, // row 0
-                { 1, 3, QRhiVertexInputAttribute::Float4, 4 * sizeof(float) }, // row 1
-                { 1, 4, QRhiVertexInputAttribute::Float4, 8 * sizeof(float) }, // row 2
-                { 1, 5, QRhiVertexInputAttribute::Float4, 12 * sizeof(float) }, // row 3
-                { 1, 6, QRhiVertexInputAttribute::Float4, 16 * sizeof(float) }, // shading vec4
-                { 1, 7, QRhiVertexInputAttribute::Float, 20 * sizeof(float) }, // opacity
-                { 1, 8, QRhiVertexInputAttribute::Float, 21 * sizeof(float) } // flipFlag (1.0 = reflection)
-        });
-        scene.pipeline->setVertexInputLayout(inputLayout);
-
-        // Set shader resource bindings and render pass descriptor
-        scene.pipeline->setShaderResourceBindings(scene.shaderBindings.get());
-        scene.pipeline->setRenderPassDescriptor(renderTarget()->renderPassDescriptor());
-
-        if (!scene.pipeline->create()) {
-            qWarning() << "YACReaderFlow3D: Failed to create graphics pipeline!";
-            scene.pipeline.reset();
+    // Create uniform buffer sized for the actual content
+    // Each item needs up to 3 draw slots: cover + reflection + mark
+    // If no items yet, we'll create the buffer later in ensureUniformBufferCapacity()
+    if (!scene.uniformBuffer && itemCount > 0) {
+        const int requiredSlots = itemCount * 3;
+        const int totalSize = requiredSlots * scene.alignedUniformSize;
+        scene.uniformBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::UniformBuffer, totalSize));
+        if (scene.uniformBuffer->create()) {
+            scene.uniformBufferCapacity = requiredSlots;
+        } else {
+            qWarning() << "YACReaderFlow3D: Failed to create uniform buffer for" << itemCount << "items";
+            scene.uniformBuffer.reset();
+            scene.uniformBufferCapacity = 0;
         }
     }
+
+    // Create shader bindings for pipeline (requires uniform buffer)
+    if (!scene.shaderBindings && scene.uniformBuffer) {
+        scene.shaderBindings.reset(m_rhi->newShaderResourceBindings());
+        scene.shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, scene.uniformBuffer.get(), sizeof(UniformData)),
+                                            QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, scene.defaultTexture.get(), scene.sampler.get()) });
+        scene.shaderBindings->create();
+    }
+
+    // Create pipeline if we have all prerequisites
+    ensurePipeline();
 
     // Submit any pending resource updates
     if (scene.resourceUpdates) {
@@ -317,14 +260,101 @@ void YACReaderFlow3D::ensureUniformBufferCapacity(int requiredSlots)
         qDeleteAll(scene.shaderBindingsCache);
         scene.shaderBindingsCache.clear();
 
-        // Recreate default shader bindings for pipeline
+        // Recreate default shader bindings for pipeline (using dynamic offset)
         scene.shaderBindings.reset(m_rhi->newShaderResourceBindings());
-        scene.shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, scene.uniformBuffer.get()),
+        scene.shaderBindings->setBindings({ QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, scene.uniformBuffer.get(), sizeof(UniformData)),
                                             QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, scene.defaultTexture.get(), scene.sampler.get()) });
         scene.shaderBindings->create();
+
+        // If pipeline doesn't exist yet (content added after initial empty initialization),
+        // we need to create it now. This is handled by ensurePipeline().
     } else {
         qWarning() << "YACReaderFlow3D: Failed to create uniform buffer of size" << totalSize;
         scene.uniformBufferCapacity = 0;
+    }
+}
+
+void YACReaderFlow3D::ensurePipeline()
+{
+    if (scene.pipeline || !m_rhi || !scene.uniformBuffer || !scene.shaderBindings)
+        return;
+
+    // Load shaders
+    QShader vertShader = getShader(QLatin1String(":/shaders/flow.vert.qsb"));
+    QShader fragShader = getShader(QLatin1String(":/shaders/flow.frag.qsb"));
+
+    if (!vertShader.isValid() || !fragShader.isValid()) {
+        qWarning() << "YACReaderFlow3D: Failed to load shaders!";
+        return;
+    }
+
+    // Create pipeline
+    scene.pipeline.reset(m_rhi->newGraphicsPipeline());
+
+    // Setup alpha blending
+    QRhiGraphicsPipeline::TargetBlend blend;
+    blend.enable = true;
+    blend.srcColor = QRhiGraphicsPipeline::SrcAlpha;
+    blend.dstColor = QRhiGraphicsPipeline::OneMinusSrcAlpha;
+    blend.srcAlpha = QRhiGraphicsPipeline::One;
+    blend.dstAlpha = QRhiGraphicsPipeline::OneMinusSrcAlpha;
+    scene.pipeline->setTargetBlends({ blend });
+
+    // Enable depth test
+    scene.pipeline->setDepthTest(true);
+    scene.pipeline->setDepthWrite(true);
+    scene.pipeline->setDepthOp(QRhiGraphicsPipeline::Less);
+
+    scene.pipeline->setCullMode(QRhiGraphicsPipeline::Back);
+
+    // Determine the MSAA sample count to use
+    int requestedSamples = sampleCount();
+    int samplesToUse = 1;
+    if (requestedSamples > 1 && m_rhi) {
+        QVector<int> supported = m_rhi->supportedSampleCounts();
+        int maxSupported = 1;
+        for (int s : std::as_const(supported)) {
+            if (s > maxSupported)
+                maxSupported = s;
+        }
+        samplesToUse = qMin(requestedSamples, qMin(4, maxSupported));
+    }
+    if (samplesToUse > 1)
+        scene.pipeline->setSampleCount(samplesToUse);
+
+    // Set shaders
+    scene.pipeline->setShaderStages({ { QRhiShaderStage::Vertex, vertShader },
+                                      { QRhiShaderStage::Fragment, fragShader } });
+
+    // Setup vertex input layout
+    QRhiVertexInputLayout inputLayout;
+    inputLayout.setBindings({
+            { 5 * sizeof(float) }, // Per-vertex data (position + texCoord)
+            { 22 * sizeof(float), QRhiVertexInputBinding::PerInstance } // Per-instance data
+    });
+    inputLayout.setAttributes({
+            // Per-vertex attributes
+            { 0, 0, QRhiVertexInputAttribute::Float3, 0 }, // position
+            { 0, 1, QRhiVertexInputAttribute::Float2, 3 * sizeof(float) }, // texCoord
+
+            // Per-instance attributes (model matrix as 4 vec4s)
+            { 1, 2, QRhiVertexInputAttribute::Float4, 0 * sizeof(float) }, // row 0
+            { 1, 3, QRhiVertexInputAttribute::Float4, 4 * sizeof(float) }, // row 1
+            { 1, 4, QRhiVertexInputAttribute::Float4, 8 * sizeof(float) }, // row 2
+            { 1, 5, QRhiVertexInputAttribute::Float4, 12 * sizeof(float) }, // row 3
+            { 1, 6, QRhiVertexInputAttribute::Float4, 16 * sizeof(float) }, // shading vec4
+            { 1, 7, QRhiVertexInputAttribute::Float, 20 * sizeof(float) }, // opacity
+            { 1, 8, QRhiVertexInputAttribute::Float, 21 * sizeof(float) } // flipFlag (1.0 = reflection)
+    });
+    scene.pipeline->setVertexInputLayout(inputLayout);
+
+    // Set shader resource bindings and render pass descriptor
+    scene.pipeline->setShaderResourceBindings(scene.shaderBindings.get());
+    scene.pipeline->setRenderPassDescriptor(renderTarget()->renderPassDescriptor());
+
+    if (!scene.pipeline->create()) {
+        qWarning() << "YACReaderFlow3D: Failed to create graphics pipeline!";
+        scene.pipeline.reset();
     }
 }
 
@@ -437,8 +467,16 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         return;
     }
 
+    // Ensure pipeline exists (may not exist if content was added after empty initialization)
+    ensurePipeline();
+
+    if (!scene.pipeline) {
+        qWarning() << "YACReaderFlow3D: No pipeline available for rendering";
+        return;
+    }
+
     // Ensure instance buffer is large enough for all draws
-    const int requiredInstanceSize = draws.size() * 22 * sizeof(float);
+    auto requiredInstanceSize = static_cast<quint32>(draws.size() * 22 * sizeof(float));
     if (!scene.instanceBuffer || scene.instanceBuffer->size() < requiredInstanceSize) {
         scene.instanceBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, requiredInstanceSize));
         if (!scene.instanceBuffer->create()) {
@@ -453,7 +491,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
 
     // Process pending texture uploads
     if (!pendingTextureUploads.isEmpty()) {
-        for (const auto &upload : pendingTextureUploads) {
+        for (const auto &upload : std::as_const(pendingTextureUploads)) {
             if (upload.index >= 0 && upload.index < images.size() && images[upload.index].texture) {
                 batch->uploadTexture(images[upload.index].texture, upload.image);
             }
@@ -476,15 +514,13 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     // === PHASE 2: RENDER (DURING PASS) ===
     cb->beginPass(renderTarget(), clearColor, { 1.0f, 0 }, batch);
 
-    if (scene.pipeline) {
-        cb->setGraphicsPipeline(scene.pipeline.get());
-        cb->setViewport(QRhiViewport(0, 0, outputSize.width(), outputSize.height()));
+    cb->setGraphicsPipeline(scene.pipeline.get());
+    cb->setViewport(QRhiViewport(0, 0, outputSize.width(), outputSize.height()));
 
-        // Execute all draws
-        for (int i = 0; i < draws.size(); ++i) {
-            const DrawInfo &draw = draws[i];
-            executeDrawWithOffset(cb, draw.texture, draw.instanceData, i);
-        }
+    // Execute all draws
+    for (int i = 0; i < draws.size(); ++i) {
+        const DrawInfo &draw = draws[i];
+        executeDrawWithOffset(cb, draw.texture, draw.instanceData, i);
     }
 
     cb->endPass();
@@ -579,7 +615,7 @@ void YACReaderFlow3D::executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *
     QRhiShaderResourceBindings *srb = scene.shaderBindingsCache.value(texture, nullptr);
     if (!srb) {
         srb = m_rhi->newShaderResourceBindings();
-        srb->setBindings({ QRhiShaderResourceBinding::uniformBuffer(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, scene.uniformBuffer.get()),
+        srb->setBindings({ QRhiShaderResourceBinding::uniformBufferWithDynamicOffset(0, QRhiShaderResourceBinding::VertexStage | QRhiShaderResourceBinding::FragmentStage, scene.uniformBuffer.get(), sizeof(UniformData)),
                            QRhiShaderResourceBinding::sampledTexture(1, QRhiShaderResourceBinding::FragmentStage, texture, scene.sampler.get()) });
         srb->create();
         scene.shaderBindingsCache.insert(texture, srb);
@@ -887,6 +923,7 @@ void YACReaderFlow3D::populate(int n)
     }
 
     loaded = QVector<bool>(n, false);
+    marks = QVector<YACReaderComicReadStatus>(n, Unread);
 }
 
 void YACReaderFlow3D::reset()
@@ -895,6 +932,7 @@ void YACReaderFlow3D::reset()
 
     currentSelected = 0;
     loaded.clear();
+    marks.clear();
 
     // Clean up image textures and remove their entries from shader bindings cache
     for (int i = 0; i < numObjects; i++) {

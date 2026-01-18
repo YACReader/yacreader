@@ -228,6 +228,7 @@ protected:
     void updateUniformBuffer(QRhiCommandBuffer *cb, const UniformData &data);
     void prepareMarkInstanceData(const YACReader3DImageRHI &image, QVector<float> &data);
     void ensureUniformBufferCapacity(int requiredSlots);
+    void ensurePipeline();
     void prepareDrawData(const YACReader3DImageRHI &image, bool isReflection, bool isMark,
                          const QMatrix4x4 &viewProjectionMatrix, float *outInstanceData,
                          UniformData &outUniformData);
