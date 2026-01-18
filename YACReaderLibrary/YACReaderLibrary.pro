@@ -157,6 +157,8 @@ HEADERS += comic_flow.h \
 
         greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
             HEADERS += ../common/rhi/yacreader_flow_rhi.h
+            HEADERS += ../common/rhi/yacreader_comic_flow_rhi.h \
+                       ../common/rhi/yacreader_page_flow_rhi.h
         }
 }
 
@@ -249,6 +251,8 @@ SOURCES += comic_flow.cpp \
 
     greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
         SOURCES += ../common/rhi/yacreader_flow_rhi.cpp
+        SOURCES += ../common/rhi/yacreader_comic_flow_rhi.cpp \
+             ../common/rhi/yacreader_page_flow_rhi.cpp
         RESOURCES += ../common/rhi/shaders/shaders.qrc
     }
 }

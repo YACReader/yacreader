@@ -81,6 +81,8 @@ extern struct Preset pressetYACReaderFlowDownConfig;
 
 class ImageLoader3D;
 class ImageLoaderByteArray3D;
+class YACReaderComicFlow3D;
+class YACReaderPageFlow3D;
 
 class YACReaderFlow3D : public QRhiWidget, public ScrollManagement
 {
@@ -312,105 +314,10 @@ signals:
     void selected(unsigned int);
 };
 
-class YACReaderComicFlow3D : public YACReaderFlow3D
-{
-public:
-    YACReaderComicFlow3D(QWidget *parent = nullptr, struct Preset p = defaultYACReaderFlowConfig);
-    void setImagePaths(QStringList paths);
-    void updateImageData() override;
-    void remove(int item) override;
-    void add(const QString &path, int index);
-    void resortCovers(QList<int> newOrder);
-    friend class ImageLoader3D;
-
-private:
-    ImageLoader3D *worker;
-
-protected:
-    QList<QString> paths;
-};
-
-class YACReaderPageFlow3D : public YACReaderFlow3D
-{
-public:
-    YACReaderPageFlow3D(QWidget *parent = nullptr, struct Preset p = defaultYACReaderFlowConfig);
-    ~YACReaderPageFlow3D();
-    void updateImageData() override;
-    void populate(int n);
-    QVector<bool> imagesReady;
-    QVector<QByteArray> rawImages;
-    QVector<bool> imagesSetted;
-    friend class ImageLoaderByteArray3D;
-
-private:
-    ImageLoaderByteArray3D *worker;
-};
-
-class ImageLoader3D : public QThread
-{
-public:
-    ImageLoader3D(YACReaderFlow3D *flow);
-    ~ImageLoader3D();
-    bool busy() const;
-    void generate(int index, const QString &fileName);
-    void reset()
-    {
-        idx = -1;
-        fileName = "";
-    }
-    int index() const { return idx; }
-    void lock();
-    void unlock();
-    QImage result();
-    YACReaderFlow3D *flow;
-    QImage loadImage(const QString &fileName);
-
-protected:
-    void run() override;
-
-private:
-    QMutex mutex;
-    QWaitCondition condition;
-
-    bool restart;
-    bool working;
-    int idx;
-    QString fileName;
-    QSize size;
-    QImage img;
-};
-
-class ImageLoaderByteArray3D : public QThread
-{
-public:
-    ImageLoaderByteArray3D(YACReaderFlow3D *flow);
-    ~ImageLoaderByteArray3D();
-    bool busy() const;
-    void generate(int index, const QByteArray &raw);
-    void reset()
-    {
-        idx = -1;
-        rawData.clear();
-    }
-    int index() const { return idx; }
-    QImage result();
-    YACReaderFlow3D *flow;
-    QImage loadImage(const QByteArray &rawData);
-
-protected:
-    void run() override;
-
-private:
-    QMutex mutex;
-    QWaitCondition condition;
-
-    bool restart;
-    bool working;
-    int idx;
-    QByteArray rawData;
-    QSize size;
-    QImage img;
-};
+/* Derived flow & loader classes moved to dedicated files:
+   - common/rhi/yacreader_comic_flow_rhi.h/.cpp
+   - common/rhi/yacreader_page_flow_rhi.h/.cpp
+*/
 
 #endif // QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
 

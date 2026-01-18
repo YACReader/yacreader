@@ -8,7 +8,7 @@
 #ifndef NO_OPENGL
 // Conditional include based on Qt version and RHI availability
 #if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0) && defined(YACREADER_USE_RHI)
-#include "yacreader_flow_rhi.h"
+#include "yacreader_comic_flow_rhi.h"
 using YACReaderComicFlowImpl = YACReaderComicFlow3D;
 #else
 #include "yacreader_flow_gl.h"
