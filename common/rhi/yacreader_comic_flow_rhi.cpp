@@ -37,8 +37,7 @@ void YACReaderComicFlow3D::updateImageData()
 
             // Create QRhiTexture from the loaded image
             if (m_rhi) {
-                QRhiTexture *texture = m_rhi->newTexture(QRhiTexture::BGRA8, img.size(), 1,
-                                                         (performance == high || performance == ultraHigh) ? QRhiTexture::MipMapped : QRhiTexture::UsedAsTransferSource);
+                QRhiTexture *texture = m_rhi->newTexture(QRhiTexture::BGRA8, img.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips);
 
                 if (texture->create()) {
                     PendingTextureUpload upload;
@@ -48,8 +47,7 @@ void YACReaderComicFlow3D::updateImageData()
                     upload.y = 1 * (float(img.height()) / img.width());
                     pendingTextureUploads.append(upload);
 
-                    QString s = "cover";
-                    replace(s.toLocal8Bit().data(), texture, upload.x, upload.y, idx);
+                    replace(texture, upload.x, upload.y, idx);
                 }
             }
         }

@@ -266,10 +266,10 @@ public:
     void cleanupAnimation();
     void draw();
     void updatePositions();
-    void insert(char *name, QRhiTexture *texture, float x, float y, int item = -1);
+    void insert(QRhiTexture *texture, float x, float y, int item = -1);
     virtual void remove(int item);
     void add(int item);
-    void replace(char *name, QRhiTexture *texture, float x, float y, int item);
+    void replace(QRhiTexture *texture, float x, float y, int item);
     void populate(int n);
     YACReader3DImageRHI getCurrentSelected();
 

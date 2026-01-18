@@ -121,9 +121,10 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
     if (!scene.defaultTexture) {
         QImage defaultImage(":/images/defaultCover.png");
 
-        scene.defaultTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, defaultImage.size(), 1, QRhiTexture::MipMapped));
+        scene.defaultTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, defaultImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
         scene.defaultTexture->create();
         getResourceBatch()->uploadTexture(scene.defaultTexture.get(), defaultImage);
+        getResourceBatch()->generateMips(scene.defaultTexture.get());
         qDebug() << "YACReaderFlow3D: Created defaultTexture" << defaultImage.size();
     }
 
@@ -132,18 +133,20 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
     if (!scene.markTexture) {
         QImage markImage(":/images/readRibbon.png");
         if (!markImage.isNull()) {
-            scene.markTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, markImage.size(), 1, QRhiTexture::MipMapped));
+            scene.markTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, markImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
             scene.markTexture->create();
             getResourceBatch()->uploadTexture(scene.markTexture.get(), markImage);
+            getResourceBatch()->generateMips(scene.markTexture.get());
         }
     }
 
     if (!scene.readingTexture) {
         QImage readingImage(":/images/readingRibbon.png");
         if (!readingImage.isNull()) {
-            scene.readingTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, readingImage.size(), 1, QRhiTexture::MipMapped));
+            scene.readingTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, readingImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
             scene.readingTexture->create();
             getResourceBatch()->uploadTexture(scene.readingTexture.get(), readingImage);
+            getResourceBatch()->generateMips(scene.readingTexture.get());
         }
     }
 #endif
@@ -178,13 +181,12 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
         scene.alignedUniformSize = m_rhi->ubufAligned(sizeof(UniformData));
     }
 
-    // Create sampler
+    // Create sampler with trilinear filtering (like the OpenGL version)
     if (!scene.sampler) {
-        // Use no mipmap sampling to avoid LOD changes with camera Z
         scene.sampler.reset(m_rhi->newSampler(
-                QRhiSampler::Linear,
-                QRhiSampler::Linear,
-                QRhiSampler::None,
+                QRhiSampler::Linear, // mag filter
+                QRhiSampler::Linear, // min filter
+                QRhiSampler::Linear, // mipmap filter (trilinear)
                 QRhiSampler::ClampToEdge,
                 QRhiSampler::ClampToEdge));
         scene.sampler->create();
@@ -498,6 +500,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         for (const auto &upload : std::as_const(pendingTextureUploads)) {
             if (upload.index >= 0 && upload.index < images.size() && images[upload.index].texture) {
                 batch->uploadTexture(images[upload.index].texture, upload.image);
+                batch->generateMips(images[upload.index].texture);
             }
         }
         pendingTextureUploads.clear();
@@ -824,11 +827,10 @@ void YACReaderFlow3D::updatePositions()
         stopAnimationTimer();
 }
 
-void YACReaderFlow3D::insert(char *name, QRhiTexture *texture, float x, float y, int item)
+void YACReaderFlow3D::insert(QRhiTexture *texture, float x, float y, int item)
 {
     startAnimationTimer();
 
-    Q_UNUSED(name)
     if (item == -1) {
         images.push_back(YACReader3DImageRHI());
         item = numObjects;
@@ -883,7 +885,6 @@ void YACReaderFlow3D::add(int item)
 {
     float x = 1;
     float y = 1 * (700.f / 480.0f);
-    QString s = "cover";
 
     images.insert(item, YACReader3DImageRHI());
     loaded.insert(item, false);
@@ -894,7 +895,7 @@ void YACReaderFlow3D::add(int item)
         images[i].index++;
     }
 
-    insert(s.toLocal8Bit().data(), scene.defaultTexture.get(), x, y, item);
+    insert(scene.defaultTexture.get(), x, y, item);
 }
 
 YACReader3DImageRHI YACReaderFlow3D::getCurrentSelected()
@@ -902,11 +903,10 @@ YACReader3DImageRHI YACReaderFlow3D::getCurrentSelected()
     return images[currentSelected];
 }
 
-void YACReaderFlow3D::replace(char *name, QRhiTexture *texture, float x, float y, int item)
+void YACReaderFlow3D::replace(QRhiTexture *texture, float x, float y, int item)
 {
     startAnimationTimer();
 
-    Q_UNUSED(name)
     if (images[item].index == item) {
         images[item].texture = texture;
         images[item].width = x;
@@ -928,8 +928,7 @@ void YACReaderFlow3D::populate(int n)
     int i;
 
     for (i = 0; i < n; i++) {
-        QString s = "cover";
-        insert(s.toLocal8Bit().data(), scene.defaultTexture.get(), x, y);
+        insert(scene.defaultTexture.get(), x, y);
     }
 
     loaded = QVector<bool>(n, false);
