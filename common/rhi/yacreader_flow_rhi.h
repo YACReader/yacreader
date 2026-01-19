@@ -115,11 +115,10 @@ protected:
         float viewProjectionMatrix[16]; // column-major 4x4
         float backgroundColor[3];
         float _pad0; // pad to vec4
-        
         float reflectionUp;
         float reflectionDown;
         float isReflection;
-        float _pad2;
+        float _pad1;
     };
 
     // Pending texture uploads (for async image loading)
@@ -215,7 +214,6 @@ protected:
     /*** Theme Colors ***/
     QColor backgroundColor;
     QColor textColor;
-    QColor shadingColor;
 
     /*** System info ***/
     float viewRotate;
@@ -295,7 +293,6 @@ public slots:
     // Theme color setters
     void setBackgroundColor(const QColor &color);
     void setTextColor(const QColor &color);
-    void setShadingColor(const QColor &color);
 
     virtual void updateImageData() = 0;
 

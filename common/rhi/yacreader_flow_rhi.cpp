@@ -23,7 +23,6 @@ YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
       hasBeenInitialized(false),
       backgroundColor(Qt::black),
       textColor(Qt::white),
-      shadingColor(Qt::black),
       flowRightToLeft(false)
 {
     updateCount = 0;
@@ -612,8 +611,6 @@ void YACReaderFlow3D::prepareDrawData(const YACReader3DImageRHI &image, bool isR
     outUniformData.backgroundColor[2] = backgroundColor.blueF();
     outUniformData._pad0 = 0.0f;
 
-    // shadingColor removed from uniform buffer; keep CPU-side shadingColor member intact
-
     outUniformData.reflectionUp = reflectionUp;
     outUniformData.reflectionDown = reflectionBottom;
     outUniformData.isReflection = isReflection ? 1.0f : 0.0f;
@@ -1173,12 +1170,6 @@ void YACReaderFlow3D::setTextColor(const QColor &color)
     palette.setColor(QPalette::WindowText, textColor);
     indexLabel->setPalette(palette);
 
-    update();
-}
-
-void YACReaderFlow3D::setShadingColor(const QColor &color)
-{
-    shadingColor = color;
     update();
 }
 
