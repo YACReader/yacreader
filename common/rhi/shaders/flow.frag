@@ -5,7 +5,6 @@ layout(location = 0) in vec2 vTexCoord;
 layout(location = 1) in flat vec4 vInstanceShading;
 layout(location = 2) in flat float vInstanceOpacity;
 layout(location = 3) in flat float vIsReflection;
-layout(location = 4) in flat float vInstanceRotation;
 layout(location = 5) in vec2 vLocalPos;
 
 // Output
@@ -17,12 +16,10 @@ layout(std140, binding = 0) uniform UniformBuffer
     mat4 viewProjectionMatrix;
     vec3 backgroundColor;
     float _pad0;
-    vec3 shadingColor;
-    float _pad1;
     float reflectionUp;
     float reflectionDown;
     int isReflection;
-    float _pad2;
+    float _pad1;
 };
 
 // Texture and sampler

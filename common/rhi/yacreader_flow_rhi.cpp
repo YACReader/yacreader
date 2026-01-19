@@ -194,9 +194,9 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
 
     // Create instance buffer for per-draw instance data
     if (!scene.instanceBuffer) {
-        // Allocate buffer for per-instance data (model matrix + shading + opacity + flipFlag + rotation)
-        // mat4 (16 floats) + vec4 (4 floats) + float (opacity) + float (flipFlag) + float (rotation) = 23 floats
-        scene.instanceBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, 23 * sizeof(float)));
+        // Allocate buffer for per-instance data (model matrix + shading + opacity + flipFlag)
+        // mat4 (16 floats) + vec4 (4 floats) + float (opacity) + float (flipFlag) = 22 floats
+        scene.instanceBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, 22 * sizeof(float)));
         scene.instanceBuffer->create();
     }
 
@@ -333,7 +333,7 @@ void YACReaderFlow3D::ensurePipeline()
     QRhiVertexInputLayout inputLayout;
     inputLayout.setBindings({
             { 5 * sizeof(float) }, // Per-vertex data (position + texCoord)
-            { 23 * sizeof(float), QRhiVertexInputBinding::PerInstance } // Per-instance data
+            { 22 * sizeof(float), QRhiVertexInputBinding::PerInstance } // Per-instance data
     });
     inputLayout.setAttributes({
             // Per-vertex attributes
@@ -348,7 +348,7 @@ void YACReaderFlow3D::ensurePipeline()
             { 1, 6, QRhiVertexInputAttribute::Float4, 16 * sizeof(float) }, // shading vec4
             { 1, 7, QRhiVertexInputAttribute::Float, 20 * sizeof(float) }, // opacity
             { 1, 8, QRhiVertexInputAttribute::Float, 21 * sizeof(float) }, // flipFlag (1.0 = reflection)
-            { 1, 9, QRhiVertexInputAttribute::Float, 22 * sizeof(float) } // rotation
+            // rotation removed
     });
     scene.pipeline->setVertexInputLayout(inputLayout);
 
@@ -409,7 +409,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         bool isReflection;
         bool isMark;
         QRhiTexture *texture;
-        float instanceData[23];
+        float instanceData[22];
         UniformData uniformData;
     };
 
@@ -483,7 +483,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     }
 
     // Ensure instance buffer is large enough for all draws
-    auto requiredInstanceSize = static_cast<quint32>(draws.size() * 23 * sizeof(float));
+    auto requiredInstanceSize = static_cast<quint32>(draws.size() * 22 * sizeof(float));
     if (!scene.instanceBuffer || scene.instanceBuffer->size() < requiredInstanceSize) {
         scene.instanceBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, requiredInstanceSize));
         if (!scene.instanceBuffer->create()) {
@@ -515,8 +515,8 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
 
     // Update instance buffer with all instance data
     for (int i = 0; i < draws.size(); ++i) {
-        int offset = i * 23 * sizeof(float);
-        batch->updateDynamicBuffer(scene.instanceBuffer.get(), offset, 23 * sizeof(float), draws[i].instanceData);
+        int offset = i * 22 * sizeof(float);
+        batch->updateDynamicBuffer(scene.instanceBuffer.get(), offset, 22 * sizeof(float), draws[i].instanceData);
     }
 
     // === PHASE 2: RENDER (DURING PASS) ===
@@ -602,9 +602,6 @@ void YACReaderFlow3D::prepareDrawData(const YACReader3DImageRHI &image, bool isR
         outInstanceData[i] = matData[i];
     }
 
-    // Store per-instance rotation in the instance data (new slot at index 22)
-    outInstanceData[22] = image.current.rot;
-
     // Prepare uniform data (copy float data into POD arrays)
     const float *vp = viewProjectionMatrix.constData();
     for (int m = 0; m < 16; ++m)
@@ -615,15 +612,12 @@ void YACReaderFlow3D::prepareDrawData(const YACReader3DImageRHI &image, bool isR
     outUniformData.backgroundColor[2] = backgroundColor.blueF();
     outUniformData._pad0 = 0.0f;
 
-    outUniformData.shadingColor[0] = shadingColor.redF();
-    outUniformData.shadingColor[1] = shadingColor.greenF();
-    outUniformData.shadingColor[2] = shadingColor.blueF();
-    outUniformData._pad1 = 0.0f;
+    // shadingColor removed from uniform buffer; keep CPU-side shadingColor member intact
 
     outUniformData.reflectionUp = reflectionUp;
     outUniformData.reflectionDown = reflectionBottom;
     outUniformData.isReflection = isReflection ? 1.0f : 0.0f;
-    outUniformData._pad2 = 0.0f;
+    outUniformData._pad1 = 0.0f;
 }
 
 void YACReaderFlow3D::executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *texture,
@@ -653,7 +647,7 @@ void YACReaderFlow3D::executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *
     // Bind vertex buffers with offset into instance buffer
     const QRhiCommandBuffer::VertexInput vbufBindings[] = {
         { scene.vertexBuffer.get(), 0 },
-        { scene.instanceBuffer.get(), quint32(uniformSlot * 23 * sizeof(float)) }
+        { scene.instanceBuffer.get(), quint32(uniformSlot * 22 * sizeof(float)) }
     };
     cb->setVertexInput(0, 2, vbufBindings);
 
@@ -1168,24 +1162,6 @@ void YACReaderFlow3D::setFlowRightToLeft(bool b)
 void YACReaderFlow3D::setBackgroundColor(const QColor &color)
 {
     backgroundColor = color;
-
-    // Auto-calculate shadingColor based on background brightness
-    qreal luminance = (backgroundColor.redF() * 0.299 +
-                       backgroundColor.greenF() * 0.587 +
-                       backgroundColor.blueF() * 0.114);
-
-    if (luminance < 0.5) {
-        // Dark background - shade towards white
-        shadingColor = QColor(255, 255, 255);
-        shadingTop = 0.8f;
-        shadingBottom = 0.02f;
-    } else {
-        // Light background - shade towards black
-        shadingColor = QColor(0, 0, 0);
-        shadingTop = 0.95f;
-        shadingBottom = 0.3f;
-    }
-
     update();
 }
 

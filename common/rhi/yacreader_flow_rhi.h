@@ -115,8 +115,7 @@ protected:
         float viewProjectionMatrix[16]; // column-major 4x4
         float backgroundColor[3];
         float _pad0; // pad to vec4
-        float shadingColor[3];
-        float _pad1; // pad to vec4
+        
         float reflectionUp;
         float reflectionDown;
         float isReflection;

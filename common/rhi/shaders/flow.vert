@@ -12,14 +12,12 @@ layout(location = 5) in vec4 instanceModel_row3;
 layout(location = 6) in vec4 instanceShading1;
 layout(location = 7) in float instanceOpacity;
 layout(location = 8) in float instanceFlip;
-layout(location = 9) in float instanceRotation;
 
 // Outputs to fragment shader
 layout(location = 0) out vec2 vTexCoord;
-layout(location = 1) out flat vec4 vInstanceShading;
-layout(location = 2) out flat float vInstanceOpacity;
-layout(location = 3) out flat float vIsReflection;
-layout(location = 4) out flat float vInstanceRotation;
+layout(location = 2) out flat vec4 vInstanceShading;
+layout(location = 3) out flat float vInstanceOpacity;
+layout(location = 4) out flat float vIsReflection;
 layout(location = 5) out vec2 vLocalPos;
 
 // Uniform buffer
@@ -28,12 +26,10 @@ layout(std140, binding = 0) uniform UniformBuffer
     mat4 viewProjectionMatrix;
     vec3 backgroundColor;
     float _pad0;
-    vec3 shadingColor;
-    float _pad1;
     float reflectionUp;
     float reflectionDown;
     int isReflection;
-    float _pad2;
+    float _pad1;
 };
 
 void main()
@@ -54,5 +50,4 @@ void main()
     vInstanceShading = instanceShading1;
     vInstanceOpacity = instanceOpacity;
     vIsReflection = instanceFlip;
-    vInstanceRotation = instanceRotation;
 }
