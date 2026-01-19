@@ -37,7 +37,7 @@ void YACReaderComicFlow3D::updateImageData()
 
             // Create QRhiTexture from the loaded image
             if (m_rhi) {
-                QRhiTexture *texture = m_rhi->newTexture(QRhiTexture::BGRA8, img.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips);
+                QRhiTexture *texture = m_rhi->newTexture(QRhiTexture::RGBA8, img.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips);
 
                 if (texture->create()) {
                     PendingTextureUpload upload;
@@ -168,7 +168,7 @@ QImage ImageLoader3D::loadImage(const QString &fileName)
         break;
     }
 
-    return image;
+    return image.convertToFormat(QImage::Format_RGBA8888);
 }
 
 ImageLoader3D::ImageLoader3D(YACReaderFlow3D *flow)

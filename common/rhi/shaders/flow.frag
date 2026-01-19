@@ -51,11 +51,19 @@ void main()
 
     // For reflections, apply a gradient fade using reflection uniforms (darker further away)
     if (vIsReflection > 0.5) {
-        // Legacy reflection fade: ramp from 0.0 to 0.33 using texture V coordinate
-        float gradientFade = mix(0.0, 0.33, vTexCoord.y);
+        float gradientFade = mix(reflectionUp, reflectionDown, vTexCoord.y);
         shadingAmount *= gradientFade;
     }
 
-    // Final color: shaded RGB, keep source alpha
-    fragColor = vec4(texColor.rgb * shadingAmount, texColor.a);
+    // Subtle dithering to break up bands (very low amplitude, within 8-bit quantization)
+    float rnd = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898,78.233))) * 43758.5453);
+    // scale to roughly +/- 0.5/255 range (adjust strength if needed)
+    float dither = (rnd - 0.5) / 255.0;
+
+    float shadedAmountDithered = clamp(shadingAmount + dither, 0.0, 1.0);
+
+    fragColor = vec4(
+        mix(backgroundColor, texColor.rgb, shadedAmountDithered),
+        texColor.a
+    );
 }

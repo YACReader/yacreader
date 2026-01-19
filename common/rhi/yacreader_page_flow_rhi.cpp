@@ -40,7 +40,7 @@ void YACReaderPageFlow3D::updateImageData()
 
             // Create QRhiTexture from the loaded image and queue the pixel upload
             if (m_rhi) {
-                QRhiTexture *texture = m_rhi->newTexture(QRhiTexture::BGRA8, img.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips);
+                QRhiTexture *texture = m_rhi->newTexture(QRhiTexture::RGBA8, img.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips);
 
                 if (texture->create()) {
                     // Queue the image upload so it happens together with other resource updates
@@ -136,7 +136,7 @@ QImage ImageLoaderByteArray3D::loadImage(const QByteArray &raw)
         break;
     }
 
-    return image;
+    return image.convertToFormat(QImage::Format_RGBA8888);
 }
 
 ImageLoaderByteArray3D::ImageLoaderByteArray3D(YACReaderFlow3D *flow)

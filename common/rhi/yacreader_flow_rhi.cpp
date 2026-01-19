@@ -37,8 +37,8 @@ YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
 
     shadingTop = 0.8f;
     shadingBottom = 0.02f;
-    reflectionUp = 0.f;
-    reflectionBottom = 0.6f;
+    reflectionUp = 0.0f;
+    reflectionBottom = 0.33f;
 
     setBackgroundColor(Qt::black);
 
@@ -119,9 +119,9 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
 
     // Initialize default texture from image
     if (!scene.defaultTexture) {
-        QImage defaultImage(":/images/defaultCover.png");
+        QImage defaultImage = QImage(":/images/defaultCover.png").convertToFormat(QImage::Format_RGBA8888);
 
-        scene.defaultTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, defaultImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
+        scene.defaultTexture.reset(m_rhi->newTexture(QRhiTexture::RGBA8, defaultImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
         scene.defaultTexture->create();
         getResourceBatch()->uploadTexture(scene.defaultTexture.get(), defaultImage);
         getResourceBatch()->generateMips(scene.defaultTexture.get());
@@ -131,9 +131,9 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
 #ifdef YACREADER_LIBRARY
     // Initialize mark textures
     if (!scene.markTexture) {
-        QImage markImage(":/images/readRibbon.png");
+        QImage markImage = QImage(":/images/readRibbon.png").convertToFormat(QImage::Format_RGBA8888);
         if (!markImage.isNull()) {
-            scene.markTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, markImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
+            scene.markTexture.reset(m_rhi->newTexture(QRhiTexture::RGBA8, markImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
             scene.markTexture->create();
             getResourceBatch()->uploadTexture(scene.markTexture.get(), markImage);
             getResourceBatch()->generateMips(scene.markTexture.get());
@@ -141,9 +141,9 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
     }
 
     if (!scene.readingTexture) {
-        QImage readingImage(":/images/readingRibbon.png");
+        QImage readingImage = QImage(":/images/readingRibbon.png").convertToFormat(QImage::Format_RGBA8888);
         if (!readingImage.isNull()) {
-            scene.readingTexture.reset(m_rhi->newTexture(QRhiTexture::BGRA8, readingImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
+            scene.readingTexture.reset(m_rhi->newTexture(QRhiTexture::RGBA8, readingImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
             scene.readingTexture->create();
             getResourceBatch()->uploadTexture(scene.readingTexture.get(), readingImage);
             getResourceBatch()->generateMips(scene.readingTexture.get());
@@ -605,13 +605,25 @@ void YACReaderFlow3D::prepareDrawData(const YACReader3DImageRHI &image, bool isR
     // Store per-instance rotation in the instance data (new slot at index 22)
     outInstanceData[22] = image.current.rot;
 
-    // Prepare uniform data
-    outUniformData.viewProjectionMatrix = viewProjectionMatrix;
-    outUniformData.backgroundColor = QVector3D(backgroundColor.redF(), backgroundColor.greenF(), backgroundColor.blueF());
-    outUniformData.shadingColor = QVector3D(shadingColor.redF(), shadingColor.greenF(), shadingColor.blueF());
+    // Prepare uniform data (copy float data into POD arrays)
+    const float *vp = viewProjectionMatrix.constData();
+    for (int m = 0; m < 16; ++m)
+        outUniformData.viewProjectionMatrix[m] = vp[m];
+
+    outUniformData.backgroundColor[0] = backgroundColor.redF();
+    outUniformData.backgroundColor[1] = backgroundColor.greenF();
+    outUniformData.backgroundColor[2] = backgroundColor.blueF();
+    outUniformData._pad0 = 0.0f;
+
+    outUniformData.shadingColor[0] = shadingColor.redF();
+    outUniformData.shadingColor[1] = shadingColor.greenF();
+    outUniformData.shadingColor[2] = shadingColor.blueF();
+    outUniformData._pad1 = 0.0f;
+
     outUniformData.reflectionUp = reflectionUp;
     outUniformData.reflectionDown = reflectionBottom;
-    outUniformData.isReflection = isReflection ? 1 : 0;
+    outUniformData.isReflection = isReflection ? 1.0f : 0.0f;
+    outUniformData._pad2 = 0.0f;
 }
 
 void YACReaderFlow3D::executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *texture,

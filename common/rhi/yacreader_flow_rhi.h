@@ -112,14 +112,14 @@ protected:
 
     // Uniform buffer data structure (must match shader layout)
     struct UniformData {
-        QMatrix4x4 viewProjectionMatrix;
-        QVector3D backgroundColor;
-        float _pad0;
-        QVector3D shadingColor;
-        float _pad1;
+        float viewProjectionMatrix[16]; // column-major 4x4
+        float backgroundColor[3];
+        float _pad0; // pad to vec4
+        float shadingColor[3];
+        float _pad1; // pad to vec4
         float reflectionUp;
         float reflectionDown;
-        int isReflection;
+        float isReflection;
         float _pad2;
     };
 
