@@ -89,6 +89,11 @@ struct ComicVineThemeTemplates {
     QSize rowIconSize = QSize(8, 7);
 };
 
+struct ComicFlowColors {
+    QColor backgroundColor;
+    QColor textColor;
+};
+
 struct ComicVineTheme {
     QString defaultLabelQSS;
     QString titleLabelQSS;
@@ -123,6 +128,7 @@ struct ComicVineTheme {
 };
 
 struct Theme {
+    ComicFlowColors comicFlow;
     ComicVineTheme comicVine;
 };
 

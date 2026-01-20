@@ -3,7 +3,6 @@
 #include "icon_utils.h"
 
 struct ComicVineParams {
-
     ComicVineThemeTemplates t;
 
     QColor contentTextColor;
@@ -53,6 +52,7 @@ struct ComicVineParams {
 struct ThemeParams {
     QString themeName;
 
+    ComicFlowColors comicFlowColors;
     ComicVineParams comicVineParams;
 };
 
@@ -60,6 +60,12 @@ Theme makeTheme(const ThemeParams &params)
 {
     Theme theme;
 
+    // Comic Flow
+    const auto &cf = params.comicFlowColors;
+    theme.comicFlow.backgroundColor = cf.backgroundColor;
+    theme.comicFlow.textColor = cf.textColor;
+
+    // Comic Vine
     const auto &cv = params.comicVineParams;
     const auto &t = cv.t;
 
@@ -135,6 +141,10 @@ ThemeParams classicThemeParams()
     ThemeParams params;
     params.themeName = "classic";
 
+    ComicFlowColors cf;
+    cf.backgroundColor = Qt::black;
+    cf.textColor = QColor(0x4C4C4C);
+
     ComicVineParams cv;
     cv.contentTextColor = Qt::white;
     cv.contentBackgroundColor = QColor(0x2B2B2B);
@@ -181,6 +191,7 @@ ThemeParams classicThemeParams()
 
     cv.t = ComicVineThemeTemplates();
 
+    params.comicFlowColors = cf;
     params.comicVineParams = cv;
 
     return params;
@@ -190,6 +201,10 @@ ThemeParams lightThemeParams()
 {
     ThemeParams params;
     params.themeName = "light";
+
+    ComicFlowColors cf;
+    cf.backgroundColor = Qt::white;
+    cf.textColor = Qt::black;
 
     ComicVineParams cv;
     cv.contentTextColor = Qt::black;
@@ -237,6 +252,7 @@ ThemeParams lightThemeParams()
 
     cv.t = ComicVineThemeTemplates();
 
+    params.comicFlowColors = cf;
     params.comicVineParams = cv;
 
     return params;
@@ -246,6 +262,10 @@ ThemeParams darkThemeParams()
 {
     ThemeParams params;
     params.themeName = "dark";
+
+    ComicFlowColors cf;
+    cf.backgroundColor = QColor(0x111111);
+    cf.textColor = QColor(0x888888);
 
     ComicVineParams cv;
     cv.contentTextColor = Qt::white;
@@ -293,6 +313,7 @@ ThemeParams darkThemeParams()
 
     cv.t = ComicVineThemeTemplates();
 
+    params.comicFlowColors = cf;
     params.comicVineParams = cv;
 
     return params;
