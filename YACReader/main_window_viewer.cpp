@@ -18,7 +18,6 @@
 #include "yacreader_global.h"
 #include "edit_shortcuts_dialog.h"
 #include "shortcuts_manager.h"
-#include "theme_manager.h"
 
 #include "whats_new_controller.h"
 
@@ -1556,9 +1555,9 @@ void MainWindowViewer::setLoadedComicActionsEnabled(bool enabled)
         a->setEnabled(enabled);
 }
 
-void MainWindowViewer::applyTheme()
+void MainWindowViewer::applyTheme(const Theme &theme)
 {
-    const auto toolbarTheme = ThemeManager::instance().getCurrentTheme().toolbar;
+    const auto toolbarTheme = theme.toolbar;
 
     if (comicToolBar) {
         comicToolBar->setStyleSheet(toolbarTheme.toolbarQSS);

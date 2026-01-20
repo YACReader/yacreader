@@ -23,7 +23,7 @@ private:
     QLabel *textLabel;
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SCRAPER_SCROLL_LABEL_H

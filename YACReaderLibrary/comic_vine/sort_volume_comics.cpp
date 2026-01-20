@@ -45,9 +45,9 @@ void ScrapperToolButton::paintEvent(QPaintEvent *e)
     QPushButton::paintEvent(e);
 }
 
-void ScrapperToolButton::applyTheme()
+void ScrapperToolButton::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
     setStyleSheet(comicVineTheme.scraperToolButtonQSS);
     fillColor = comicVineTheme.scraperToolButtonFillColor;
     update();
@@ -265,9 +265,9 @@ QList<QPair<ComicDB, QString>> SortVolumeComics::getMatchingInfo()
     return l;
 }
 
-void SortVolumeComics::applyTheme()
+void SortVolumeComics::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     label->setStyleSheet(comicVineTheme.defaultLabelQSS);
     sortLabel->setStyleSheet(comicVineTheme.defaultLabelQSS);

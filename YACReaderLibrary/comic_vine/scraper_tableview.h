@@ -12,7 +12,7 @@ public:
     explicit ScraperTableView(QWidget *parent = nullptr);
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SCRAPPER_TABLEVIEW_H

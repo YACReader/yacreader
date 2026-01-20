@@ -11,7 +11,7 @@ public:
     ScraperCheckBox(const QString &text, QWidget *parent = nullptr);
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SCRAPER_CHECKBOX_H

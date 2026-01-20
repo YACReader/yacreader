@@ -22,7 +22,7 @@ private:
     QLabel *subTitleLabel;
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // TITLE_HEADER_H

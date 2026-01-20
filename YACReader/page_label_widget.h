@@ -19,7 +19,7 @@ private:
 
 protected:
     void paintEvent(QPaintEvent *) override;
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 
 public:
     PageLabelWidget(QWidget *parent);

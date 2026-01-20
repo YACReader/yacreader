@@ -2,8 +2,6 @@
 
 #include <QtWidgets>
 
-#include "theme_manager.h"
-
 PageLabelWidget::PageLabelWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -111,9 +109,9 @@ void PageLabelWidget::updatePosition()
         move(QPoint((parent->geometry().size().width() - this->width()), -this->height()));
 }
 
-void PageLabelWidget::applyTheme()
+void PageLabelWidget::applyTheme(const Theme &theme)
 {
-    const auto viewerTheme = ThemeManager::instance().getCurrentTheme().viewer;
+    const auto viewerTheme = theme.viewer;
 
     infoBackgroundColor = viewerTheme.infoBackgroundColor;
 

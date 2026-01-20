@@ -1,7 +1,5 @@
 #include "scraper_lineedit.h"
 
-#include "theme_manager.h"
-
 #include <QLabel>
 
 ScraperLineEdit::ScraperLineEdit(const QString &title, QWidget *widget)
@@ -20,9 +18,9 @@ void ScraperLineEdit::resizeEvent(QResizeEvent *)
     titleLabel->move(6, (rect().bottom() + 1 - szl.height()) / 2);
 }
 
-void ScraperLineEdit::applyTheme()
+void ScraperLineEdit::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     titleLabel->setStyleSheet(comicVineTheme.scraperLineEditTitleLabelQSS);
     setStyleSheet(comicVineTheme.scraperLineEditQSS.arg(titleLabel->sizeHint().width() + 6));

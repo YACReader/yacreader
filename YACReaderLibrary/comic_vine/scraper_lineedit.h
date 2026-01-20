@@ -15,7 +15,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *) override;
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 
 private:
     QLabel *titleLabel;

@@ -188,7 +188,7 @@ private:
     std::unique_ptr<YACReader::MouseHandler> mouseHandler;
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 
 public:
     Viewer(QWidget *parent = nullptr);

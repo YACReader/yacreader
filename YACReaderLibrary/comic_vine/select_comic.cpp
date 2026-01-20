@@ -4,7 +4,6 @@
 #include "scraper_scroll_label.h"
 #include "scraper_tableview.h"
 #include "volume_comics_model.h"
-#include "theme_manager.h"
 
 #include <QJsonDocument>
 #include <QJsonParseError>
@@ -164,9 +163,9 @@ QString SelectComic::getSelectedComicId()
     return model->getComicId(tableComics->currentIndex());
 }
 
-void SelectComic::applyTheme()
+void SelectComic::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     label->setStyleSheet(comicVineTheme.defaultLabelQSS);
     cover->setStyleSheet(comicVineTheme.coverLabelQSS);

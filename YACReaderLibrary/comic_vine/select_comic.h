@@ -44,7 +44,7 @@ private:
     ScraperResultsPaginator *paginator;
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SELECT_COMIC_H

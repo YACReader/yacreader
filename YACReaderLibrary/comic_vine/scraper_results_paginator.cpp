@@ -1,6 +1,5 @@
 #include "scraper_results_paginator.h"
 #include "response_parser.h"
-#include "theme_manager.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -62,9 +61,9 @@ void ScraperResultsPaginator::setCustomLabel(const QString &label)
     customLabel = label;
 }
 
-void ScraperResultsPaginator::applyTheme()
+void ScraperResultsPaginator::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     numElements->setStyleSheet(comicVineTheme.defaultLabelQSS);
     numPages->setStyleSheet(comicVineTheme.defaultLabelQSS);

@@ -2,7 +2,6 @@
 
 #include "scraper_lineedit.h"
 #include "scraper_checkbox.h"
-#include "theme_manager.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -48,9 +47,9 @@ QString SearchVolume::getVolumeInfo() const
     return volumeEdit->text();
 }
 
-void SearchVolume::applyTheme()
+void SearchVolume::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     label->setStyleSheet(comicVineTheme.defaultLabelQSS);
 }

@@ -1,16 +1,14 @@
 #include "scraper_checkbox.h"
 
-#include "theme_manager.h"
-
 ScraperCheckBox::ScraperCheckBox(const QString &text, QWidget *parent)
     : QCheckBox(text, parent)
 {
     initTheme(this);
 }
 
-void ScraperCheckBox::applyTheme()
+void ScraperCheckBox::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     setStyleSheet(comicVineTheme.checkBoxQSS);
 }

@@ -27,8 +27,6 @@
 #include "db_helper.h"
 #include "response_parser.h"
 
-#include "theme_manager.h"
-
 #include "QsLog.h"
 
 ComicVineDialog::ComicVineDialog(QWidget *parent)
@@ -657,9 +655,9 @@ void ComicVineDialog::launchSearchComic()
     searchVolume({ volumeInfo, 1, exactMatch });
 }
 
-void ComicVineDialog::applyTheme()
+void ComicVineDialog::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     setStyleSheet(comicVineTheme.dialogQSS);
 

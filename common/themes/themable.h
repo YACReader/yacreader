@@ -12,13 +12,13 @@ protected:
                          &ThemeManager::themeChanged,
                          owner,
                          [this]() {
-                             applyTheme();
+                             applyTheme(ThemeManager::instance().getCurrentTheme());
                          });
 
-        applyTheme();
+        applyTheme(ThemeManager::instance().getCurrentTheme());
     }
 
-    virtual void applyTheme() = 0;
+    virtual void applyTheme(const Theme &theme) = 0;
 };
 
 #endif // THEMABLE_H

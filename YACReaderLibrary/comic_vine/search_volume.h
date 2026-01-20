@@ -24,7 +24,7 @@ private:
     QLabel *label;
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SEARCH_VOLUME_H

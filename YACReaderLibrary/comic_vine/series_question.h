@@ -23,7 +23,7 @@ private:
     QRadioButton *no;
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SERIES_QUESTION_H

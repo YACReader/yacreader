@@ -25,7 +25,6 @@
 #include "scraper_results_paginator.h"
 
 #include "selected_volume_info.h"
-#include "theme_manager.h"
 
 SelectVolume::SelectVolume(QWidget *parent)
     : QWidget(parent), model(0)
@@ -218,9 +217,9 @@ SelectedVolumeInfo SelectVolume::getSelectedVolumeInfo()
     return { volumeId, numIssues, publisher, selectedVolumeDescription };
 }
 
-void SelectVolume::applyTheme()
+void SelectVolume::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     label->setStyleSheet(comicVineTheme.defaultLabelQSS);
     cover->setStyleSheet(comicVineTheme.coverLabelQSS);

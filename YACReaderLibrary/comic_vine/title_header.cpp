@@ -1,7 +1,5 @@
 #include "title_header.h"
 
-#include "theme_manager.h"
-
 #include <QLabel>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -49,9 +47,9 @@ void TitleHeader::showButtons(bool show)
     }
 }
 
-void TitleHeader::applyTheme()
+void TitleHeader::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     mainTitleLabel->setStyleSheet(comicVineTheme.titleLabelQSS);
     subTitleLabel->setStyleSheet(comicVineTheme.defaultLabelQSS);

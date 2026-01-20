@@ -32,7 +32,7 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *e) override;
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 
 private:
     Appearance appearance;
@@ -85,7 +85,7 @@ private:
     ScraperResultsPaginator *paginator;
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SORT_VOLUME_COMICS_H

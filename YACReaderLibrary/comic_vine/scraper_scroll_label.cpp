@@ -1,7 +1,5 @@
 #include "scraper_scroll_label.h"
 
-#include "theme_manager.h"
-
 #include <QLabel>
 #include <QDesktopServices>
 #include <QUrl>
@@ -41,9 +39,9 @@ void ScraperScrollLabel::openLink(const QString &link)
     QDesktopServices::openUrl(QUrl("http://www.comicvine.com" + link));
 }
 
-void ScraperScrollLabel::applyTheme()
+void ScraperScrollLabel::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     textLabel->setStyleSheet(comicVineTheme.scraperScrollLabelTextQSS);
     setStyleSheet(comicVineTheme.scraperScrollLabelScrollAreaQSS);

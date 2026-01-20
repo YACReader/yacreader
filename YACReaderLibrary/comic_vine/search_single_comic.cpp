@@ -1,7 +1,6 @@
 #include "search_single_comic.h"
 
 #include "scraper_lineedit.h"
-#include "theme_manager.h"
 
 #include <QLabel>
 #include <QVBoxLayout>
@@ -73,9 +72,9 @@ void SearchSingleComic::clean()
     volumeEdit->clear();
 }
 
-void SearchSingleComic::applyTheme()
+void SearchSingleComic::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     label->setStyleSheet(comicVineTheme.defaultLabelQSS);
 }

@@ -1,7 +1,5 @@
 #include "scraper_tableview.h"
 
-#include "theme_manager.h"
-
 #include <QHeaderView>
 
 ScraperTableView::ScraperTableView(QWidget *parent)
@@ -44,9 +42,9 @@ ScraperTableView::ScraperTableView(QWidget *parent)
     initTheme(this);
 }
 
-void ScraperTableView::applyTheme()
+void ScraperTableView::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     setStyleSheet(comicVineTheme.scraperTableViewQSS);
 }

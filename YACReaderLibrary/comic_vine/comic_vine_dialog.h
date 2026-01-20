@@ -129,7 +129,7 @@ private:
     QString currentVolumeId;
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // COMIC_VINE_DIALOG_H

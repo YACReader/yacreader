@@ -1,7 +1,5 @@
 #include "series_question.h"
 
-#include "theme_manager.h"
-
 #include <QRadioButton>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -40,9 +38,9 @@ void SeriesQuestion::setYes(bool y)
     yes->setChecked(y);
 }
 
-void SeriesQuestion::applyTheme()
+void SeriesQuestion::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
+    auto comicVineTheme = theme.comicVine;
 
     questionLabel->setStyleSheet(comicVineTheme.defaultLabelQSS);
     yes->setStyleSheet(comicVineTheme.radioButtonQSS);

@@ -31,7 +31,7 @@ private:
     QString customLabel;
 
 protected:
-    void applyTheme() override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SCRAPER_RESULTS_PAGINATOR_H

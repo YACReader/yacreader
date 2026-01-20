@@ -1019,11 +1019,11 @@ void Viewer::updateBackgroundColor(const QColor &color)
     setPalette(palette);
 }
 
-void Viewer::applyTheme()
+void Viewer::applyTheme(const Theme &theme)
 {
-    const auto viewerTheme = ThemeManager::instance().getCurrentTheme().viewer;
+    const auto viewerTheme = theme.viewer;
 
-    updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
+    updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor(theme.viewer.defaultBackgroundColor));
 
     const QString textColor = viewerTheme.defaultTextColor.name(QColor::HexArgb);
     content->setStyleSheet(QStringLiteral("QLabel { color : %1; background: transparent; }").arg(textColor));
