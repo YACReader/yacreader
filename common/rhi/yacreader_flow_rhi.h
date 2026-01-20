@@ -38,6 +38,9 @@ struct YACReader3DImageRHI {
     float width;
     float height;
 
+    // Precomputed bounding sphere radius (world-space) for fast culling
+    float boundingRadius;
+
     int index;
 
     YACReader3DVector current;
@@ -245,6 +248,8 @@ protected:
     void prepareDrawData(const YACReader3DImageRHI &image, bool isReflection, bool isMark,
                          const QMatrix4x4 &viewProjectionMatrix, float *outInstanceData,
                          UniformData &outUniformData);
+    QMatrix4x4 buildModelMatrix(const YACReader3DImageRHI &image, bool isReflection, bool isMark);
+    QMatrix4x4 buildModelMatrixNoScale(const YACReader3DImageRHI &image, bool isReflection, bool isMark);
     void executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *texture,
                                const float *instanceData, int uniformSlot);
 

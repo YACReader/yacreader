@@ -412,6 +412,65 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         UniformData uniformData;
     };
 
+    auto isVisibleInNDC = [&](const YACReader3DImageRHI &image, bool isReflection, bool isMark) {
+        QMatrix4x4 modelMatrix;
+        modelMatrix.translate(image.current.x, image.current.y, image.current.z);
+        modelMatrix.rotate(image.current.rot, 0, 1, 0);
+
+        if (isMark) {
+            float markWidth = 0.15f;
+            float markHeight = 0.2f;
+            float markCenterX = image.width / 2.0f - 0.125f;
+            float markCenterY = -0.588f + image.height;
+            modelMatrix.translate(markCenterX, markCenterY, 0.001f);
+            modelMatrix.scale(markWidth, markHeight, 1.0f);
+        } else {
+            if (isReflection) {
+                modelMatrix.translate(0.0f, -0.5f - image.height / 2.0f, 0.0f);
+            } else {
+                modelMatrix.translate(0.0f, -0.5f + image.height / 2.0f, 0.0f);
+            }
+            modelMatrix.scale(image.width, image.height, 1.0f);
+        }
+
+        QVector4D center = modelMatrix * QVector4D(0, 0, 0, 1);
+        QVector4D clip = viewProjectionMatrix * center;
+        if (clip.w() == 0.0f)
+            return true; // be conservative
+
+        // Project a world-space edge to estimate a projected radius in NDC.
+        // Use the modelMatrix's X axis (includes rotation+scale) as direction,
+        // normalize it and multiply by cached boundingRadius (world units).
+        QVector4D rightV = modelMatrix * QVector4D(1, 0, 0, 0); // direction (w=0)
+        QVector3D right3(rightV.x(), rightV.y(), rightV.z());
+        float len = right3.length();
+        if (len == 0.0f)
+            return true; // conservative
+        right3 /= len;
+
+        float worldRadius = image.boundingRadius;
+        if (isMark) {
+            float markWidth = 0.15f;
+            float markHeight = 0.2f;
+            worldRadius = 0.5f * std::sqrt(markWidth * markWidth + markHeight * markHeight);
+        }
+
+        QVector4D edgeWorld = center + QVector4D(right3 * worldRadius, 0.0f);
+        QVector4D edgeClip = viewProjectionMatrix * edgeWorld;
+        if (edgeClip.w() == 0.0f)
+            return true;
+
+        QVector2D nc(clip.x() / clip.w(), clip.y() / clip.w());
+        QVector2D ne(edgeClip.x() / edgeClip.w(), edgeClip.y() / edgeClip.w());
+        float projectedRadius = (ne - nc).length();
+
+        const float margin = isMark ? 0.6f : 1.2f;
+        if (nc.x() + projectedRadius < -1.0f - margin || nc.x() - projectedRadius > 1.0f + margin ||
+            nc.y() + projectedRadius < -1.0f - margin || nc.y() - projectedRadius > 1.0f + margin)
+            return false;
+        return true;
+    };
+
     // Collect all draws we need to make
     // Important: OpenGL draws reflections FIRST, then covers+marks (for correct depth sorting)
     QVector<DrawInfo> draws;
@@ -421,11 +480,15 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         if (idx < 0 || idx >= images.size() || !images[idx].texture)
             continue;
 
+        if (!isVisibleInNDC(images[idx], true, false))
+            continue;
+
         DrawInfo reflDraw;
         reflDraw.imageIndex = idx;
         reflDraw.isReflection = true;
         reflDraw.isMark = false;
         reflDraw.texture = images[idx].texture;
+
         prepareDrawData(images[idx], true, false, viewProjectionMatrix, reflDraw.instanceData, reflDraw.uniformData);
         draws.append(reflDraw);
     }
@@ -435,7 +498,10 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         if (idx < 0 || idx >= images.size() || !images[idx].texture)
             continue;
 
-        // Add cover draw
+        if (!isVisibleInNDC(images[idx], false, false)) {
+            continue;
+        }
+
         DrawInfo coverDraw;
         coverDraw.imageIndex = idx;
         coverDraw.isReflection = false;
@@ -454,6 +520,8 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         if (showMarks && loaded[idx] && marks[idx] != Unread) {
             QRhiTexture *markTex = (marks[idx] == Read) ? scene.markTexture.get() : scene.readingTexture.get();
             if (markTex) {
+                if (!isVisibleInNDC(images[idx], false, true))
+                    continue;
                 DrawInfo markDraw;
                 markDraw.imageIndex = idx;
                 markDraw.isReflection = false;
