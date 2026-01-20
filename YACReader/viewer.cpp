@@ -1007,7 +1007,7 @@ void Viewer::showCursor()
 void Viewer::updateOptions()
 {
     goToFlow->setFlowType(Configuration::getConfiguration().getFlowType());
-    updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
+    updateBackgroundColor(Configuration::getConfiguration().getBackgroundColor(theme.viewer.defaultBackgroundColor));
     updateContentSize();
     updateInformation();
 }
@@ -1092,7 +1092,7 @@ void Viewer::updateConfig(QSettings *settings)
     goToFlow->updateConfig(settings);
 
     QPalette palette;
-    palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
+    palette.setColor(backgroundRole(), Configuration::getConfiguration().getBackgroundColor(theme.viewer.defaultBackgroundColor));
     setPalette(palette);
 }
 
