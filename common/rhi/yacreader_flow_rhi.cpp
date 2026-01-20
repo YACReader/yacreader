@@ -1,5 +1,8 @@
 #include "yacreader_flow_rhi.h"
 #include <QFile>
+#if defined(YACREADER_RHI_PERF)
+#include <QElapsedTimer>
+#endif
 #include <cmath>
 
 /*** Preset Configurations ***/
@@ -56,6 +59,16 @@ YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
     indexLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
     indexLabel->setAutoFillBackground(false);
     updateIndexLabelStyle();
+
+#if defined(YACREADER_RHI_PERF)
+    // Create performance label (shows averaged render time)
+    perfLabel = new QLabel(this);
+    perfLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
+    perfLabel->setAutoFillBackground(false);
+    perfLabel->setText(QString());
+    perfLabel->hide();
+    // Style will be applied by updateIndexLabelStyle()
+#endif
 }
 
 YACReaderFlow3D::~YACReaderFlow3D()
@@ -475,6 +488,12 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     // Important: OpenGL draws reflections FIRST, then covers+marks (for correct depth sorting)
     QVector<DrawInfo> draws;
 
+    // Start timing for this render call (measures CPU time spent in this function)
+#if defined(YACREADER_RHI_PERF)
+    QElapsedTimer perfTimer;
+    perfTimer.start();
+#endif
+
     // Phase 1: Add all reflections
     for (int idx : drawOrder) {
         if (idx < 0 || idx >= images.size() || !images[idx].texture)
@@ -599,6 +618,33 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     }
 
     cb->endPass();
+
+    // Measure elapsed CPU time for render and update perf label periodically
+#if defined(YACREADER_RHI_PERF)
+    qint64 ns = perfTimer.nsecsElapsed();
+    double ms = double(ns) / 1e6;
+
+    perfAccumMs += ms;
+    perfAccumCount += 1;
+    perfFrameCounter += 1;
+
+    if (perfFrameCounter >= perfUpdateEvery) {
+        // compute average
+        if (perfAccumCount > 0)
+            lastRenderMs = perfAccumMs / perfAccumCount;
+
+        // reset accumulators
+        perfAccumMs = 0.0;
+        perfAccumCount = 0;
+        perfFrameCounter = 0;
+
+        if (perfLabel) {
+            perfLabel->setText(QString("R: %1 ms").arg(lastRenderMs, 0, 'f', 2));
+            perfLabel->adjustSize();
+            perfLabel->show();
+        }
+    }
+#endif
 }
 
 void YACReaderFlow3D::prepareDrawData(const YACReader3DImageRHI &image, bool isReflection, bool isMark,
@@ -1394,6 +1440,18 @@ void YACReaderFlow3D::updateIndexLabelStyle()
 
     indexLabel->move(10, 10);
     indexLabel->adjustSize();
+
+    // Position and style performance label below index label
+#if defined(YACREADER_RHI_PERF)
+    if (perfLabel) {
+        perfLabel->setFont(font);
+        QPalette p = perfLabel->palette();
+        p.setColor(QPalette::WindowText, textColor);
+        perfLabel->setPalette(p);
+        perfLabel->move(10, 10 + indexLabel->height() + 4);
+        perfLabel->adjustSize();
+    }
+#endif
 }
 
 QSize YACReaderFlow3D::minimumSizeHint() const

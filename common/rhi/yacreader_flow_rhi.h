@@ -186,6 +186,18 @@ protected:
     QLabel *indexLabel = nullptr;
     IndexLabelState indexLabelState;
 
+#if defined(YACREADER_RHI_PERF)
+    // Performance label (shows averaged render time)
+    QLabel *perfLabel = nullptr;
+
+    // Performance measurement state
+    double perfAccumMs = 0.0; // accumulated ms over samples
+    int perfAccumCount = 0; // number of samples accumulated
+    int perfFrameCounter = 0; // frames since last label update
+    int perfUpdateEvery = 30; // update label every N frames (reduce overhead)
+    double lastRenderMs = 0.0; // last averaged render time in ms
+#endif
+
     void timerEvent(QTimerEvent *) override;
 
     int numObjects;
