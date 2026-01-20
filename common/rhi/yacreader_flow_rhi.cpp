@@ -5,10 +5,6 @@
 #endif
 #include <cmath>
 
-/*** Preset Configurations ***/
-// Note: The preset configurations are already defined in yacreader_flow_gl.cpp
-// We just reference them here as extern to avoid duplicate symbols
-
 int YACReaderFlow3D::updateInterval = 16;
 
 static QShader getShader(const QString &name)
@@ -765,10 +761,6 @@ void YACReaderFlow3D::executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *
     // Draw two triangles (6 vertices) forming a quad
     cb->draw(6);
 }
-
-// Note: The old drawCover() and drawMark() methods have been removed.
-// Rendering now uses prepareDrawData() and executeDrawWithOffset() which properly
-// batch all resource updates before the render pass begins, following Qt RHI best practices.
 
 void YACReaderFlow3D::releaseResources()
 {
