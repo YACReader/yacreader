@@ -16,7 +16,8 @@ protected:
                              applyTheme(theme);
                          });
 
-        applyTheme(ThemeManager::instance().getCurrentTheme());
+        theme = ThemeManager::instance().getCurrentTheme();
+        applyTheme(theme);
     }
 
     virtual void applyTheme(const Theme &theme) = 0;
