@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QSettings>
-#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 #include "yacreader_page_flow_rhi.h"
