@@ -1,12 +1,7 @@
 #include "viewer.h"
 #include "configuration.h"
 #include "magnifying_glass.h"
-#include "goto_flow.h"
-#ifndef NO_OPENGL
-#include "goto_flow_gl.h"
-#else
-#include <QtWidgets>
-#endif
+#include "goto_flow_widget.h"
 #include "bookmarks_dialog.h"
 #include "render.h"
 #include "goto_dialog.h"
@@ -15,8 +10,6 @@
 #include "notifications_label_widget.h"
 #include "comic_db.h"
 #include "shortcuts_manager.h"
-
-#include "opengl_checker.h"
 
 #include <QFile>
 #include <QKeyEvent>
@@ -81,34 +74,9 @@ Viewer::Viewer(QWidget *parent)
 
     goToDialog = new GoToDialog(this);
 
-    QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
-
     // CONFIG GOTO_FLOW--------------------------------------------------------
-#ifndef NO_OPENGL
+    goToFlow = new GoToFlowWidget(this, Configuration::getConfiguration().getFlowType());
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0) && defined(YACREADER_USE_RHI)
-    // When using RHI, don't check OpenGL - assume hardware acceleration is available
-    bool openGLAvailable = true;
-
-    if (!settings->contains(USE_OPEN_GL))
-        settings->setValue(USE_OPEN_GL, 2);
-#else
-    OpenGLChecker openGLChecker;
-    bool openGLAvailable = openGLChecker.hasCompatibleOpenGLVersion();
-
-    if (openGLAvailable && !settings->contains(USE_OPEN_GL))
-        settings->setValue(USE_OPEN_GL, 2);
-    else if (!openGLAvailable)
-        settings->setValue(USE_OPEN_GL, 0);
-#endif
-
-    if ((settings->value(USE_OPEN_GL).toBool() == true))
-        goToFlow = new GoToFlowGL(this, Configuration::getConfiguration().getFlowType());
-    else
-        goToFlow = new GoToFlow(this, Configuration::getConfiguration().getFlowType());
-#else
-    goToFlow = new GoToFlow(this, Configuration::getConfiguration().getFlowType());
-#endif
     goToFlow->setFocusPolicy(Qt::StrongFocus);
     goToFlow->hide();
     showGoToFlowAnimation = new QPropertyAnimation(goToFlow, "pos");

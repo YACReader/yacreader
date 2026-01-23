@@ -24,24 +24,13 @@ SOURCES += main.cpp
 
 INCLUDEPATH += ../common \
                ../custom_widgets
+INCLUDEPATH += ../common/rhi
 
-!CONFIG(no_opengl) {
-    INCLUDEPATH += ../common/gl
-    greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
-        INCLUDEPATH += ../common/rhi
-        DEFINES += YACREADER_USE_RHI
-    }
-}
+HEADERS += ../common/rhi/flow_types.h
+SOURCES += ../common/rhi/flow_types.cpp
 
 win32 {
-        LIBS += -loleaut32 -lole32 -lshell32 -luser32
-        # When using RHI (Qt 6.7+), don't link OpenGL directly - QRhiWidget handles graphics APIs
-        greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
-            message("RHI mode: not linking opengl32 (using QRhiWidget)")
-        } else {
-            LIBS += -lopengl32
-        }
-
+    LIBS += -loleaut32 -lole32 -lshell32 -luser32
     msvc {
         QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL
         QMAKE_LFLAGS_RELEASE += /LTCG
@@ -59,7 +48,7 @@ macx {
 
 QT += network widgets core multimedia svg
 
-greaterThan(QT_MAJOR_VERSION, 5): QT += openglwidgets core5compat
+greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
 
 greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
     QT += gui-private
@@ -76,7 +65,6 @@ HEADERS +=  ../common/comic.h \
             main_window_viewer.h \
             mouse_handler.h \
             viewer.h \
-            goto_flow.h \
             options_dialog.h \
             ../common/bookmarks.h \
             bookmarks_dialog.h \
@@ -87,7 +75,6 @@ HEADERS +=  ../common/comic.h \
             goto_flow_toolbar.h \
             width_slider.h \
             notifications_label_widget.h \
-            ../common/pictureflow.h \
             ../common/custom_widgets.h \
             ../common/check_new_version.h \
             ../common/qnaturalsorting.h \
@@ -100,20 +87,12 @@ HEADERS +=  ../common/comic.h \
             ../common/http_worker.h \
             ../common/exit_check.h \
             ../common/scroll_management.h \
-            ../common/opengl_checker.h \
             ../common/pdf_comic.h \
             ../common/global_info_provider.h \
+            ../common/rhi/yacreader_flow_rhi.h \
+            ../common/rhi/yacreader_comic_flow_rhi.h \
+            ../common/rhi/yacreader_page_flow_rhi.h
 
-!CONFIG(no_opengl) {
-    HEADERS += ../common/gl/yacreader_flow_gl.h \
-                goto_flow_gl.h
-
-    greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
-        HEADERS += ../common/rhi/yacreader_flow_rhi.h
-        HEADERS += ../common/rhi/yacreader_comic_flow_rhi.h \
-               ../common/rhi/yacreader_page_flow_rhi.h
-    }
-}
 
 SOURCES +=  ../common/comic.cpp \
             configuration.cpp \
@@ -122,7 +101,6 @@ SOURCES +=  ../common/comic.cpp \
             main_window_viewer.cpp \
             mouse_handler.cpp \
             viewer.cpp \
-            goto_flow.cpp \
             options_dialog.cpp \
             ../common/bookmarks.cpp \
             bookmarks_dialog.cpp \
@@ -133,7 +111,6 @@ SOURCES +=  ../common/comic.cpp \
             goto_flow_toolbar.cpp \
             width_slider.cpp \
             notifications_label_widget.cpp \
-            ../common/pictureflow.cpp \
             ../common/custom_widgets.cpp \
             ../common/check_new_version.cpp \
             ../common/qnaturalsorting.cpp \
@@ -146,23 +123,15 @@ SOURCES +=  ../common/comic.cpp \
             ../common/yacreader_global_gui.cpp \
             ../common/exit_check.cpp \
             ../common/scroll_management.cpp \
-            ../common/opengl_checker.cpp \
             ../common/global_info_provider.cpp \
+            ../common/rhi/yacreader_flow_rhi.cpp \
+            ../common/rhi/yacreader_comic_flow_rhi.cpp \
+            ../common/rhi/yacreader_page_flow_rhi.cpp
 
-!CONFIG(no_opengl) {
-        SOURCES += ../common/gl/yacreader_flow_gl.cpp \
-                    goto_flow_gl.cpp
-
-        greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
-            SOURCES += ../common/rhi/yacreader_flow_rhi.cpp
-            SOURCES += ../common/rhi/yacreader_comic_flow_rhi.cpp \
-                       ../common/rhi/yacreader_page_flow_rhi.cpp
-                RESOURCES += ../common/rhi/shaders/shaders.qrc
-                # Make raw GLSL shader sources editable in Qt Creator
-                OTHER_FILES += ../common/rhi/shaders/flow.vert \
-                               ../common/rhi/shaders/flow.frag
-        }
-}
+RESOURCES += ../common/rhi/shaders/shaders.qrc
+# Make raw GLSL shader sources editable in Qt Creator
+OTHER_FILES += ../common/rhi/shaders/flow.vert \
+               ../common/rhi/shaders/flow.frag
 
 include(../custom_widgets/custom_widgets_yacreader.pri)
 

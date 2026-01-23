@@ -1,17 +1,11 @@
 #include "options_dialog.h"
 
-#ifndef NO_OPENGL
-#include "yacreader_flow_gl.h"
-#include "yacreader_gl_flow_config_widget.h"
-#endif
-#include "yacreader_flow_config_widget.h"
+#include "yacreader_3d_flow_config_widget.h"
 #include "api_key_dialog.h"
 
 #include "yacreader_global_gui.h"
 
-#ifndef NO_OPENGL
 FlowType flowType = Strip;
-#endif
 
 OptionsDialog::OptionsDialog(QWidget *parent)
     : YACReaderOptionsDialog(parent)
@@ -25,9 +19,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     tabWidget->addTab(generalW, tr("General"));
     tabWidget->addTab(librariesW, tr("Libraries"));
     tabWidget->addTab(comicFlowW, tr("Comic Flow"));
-#ifndef NO_OPENGL
     tabWidget->addTab(gridViewW, tr("Grid view"));
-#endif
 
     auto buttons = new QHBoxLayout();
     buttons->addStretch();
@@ -333,20 +325,10 @@ QWidget *OptionsDialog::createFlowTab()
 {
     auto switchFlowType = new QHBoxLayout();
     switchFlowType->addStretch();
-#ifndef NO_OPENGL
-    switchFlowType->addWidget(useGL);
-#endif
 
     auto flowLayout = new QVBoxLayout;
-    flowLayout->addWidget(sw);
-#ifndef NO_OPENGL
     flowLayout->addWidget(gl);
-#endif
     flowLayout->addLayout(switchFlowType);
-
-#ifndef NO_OPENGL
-    sw->hide();
-#endif
 
     auto comicFlowW = new QWidget;
     comicFlowW->setLayout(flowLayout);

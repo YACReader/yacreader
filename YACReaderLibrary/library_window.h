@@ -189,7 +189,6 @@ public:
     NavigationStatus status;
 
     void createSettings();
-    void setupOpenglSetting();
     void setupUI();
     void createToolBars();
     void createMenus();

@@ -169,7 +169,6 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
         // Two triangles forming a quad (triangle list):
         // Tri 1: bottom-left, bottom-right, top-right
         // Tri 2: bottom-left, top-right, top-left
-        // Texture coords flipped vertically to match OpenGL convention
         float vertices[] = {
             // Position (x, y, z), TexCoord (u, v)
             -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // Bottom-left
@@ -189,7 +188,7 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
         scene.alignedUniformSize = m_rhi->ubufAligned(sizeof(UniformData));
     }
 
-    // Create sampler with trilinear filtering (like the OpenGL version)
+    // Create sampler with trilinear filtering
     if (!scene.sampler) {
         scene.sampler.reset(m_rhi->newSampler(
                 QRhiSampler::Linear, // mag filter
@@ -481,7 +480,6 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     };
 
     // Collect all draws we need to make
-    // Important: OpenGL draws reflections FIRST, then covers+marks (for correct depth sorting)
     QVector<DrawInfo> draws;
 
     // Start timing for this render call (measures CPU time spent in this function)
@@ -532,8 +530,8 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
             continue;
 
         // Add mark draw immediately after its cover
-        if (showMarks && loaded[idx] && marks[idx] != Unread) {
-            QRhiTexture *markTex = (marks[idx] == Read) ? scene.markTexture.get() : scene.readingTexture.get();
+        if (showMarks && loaded[idx] && marks[idx] != YACReader::Unread) {
+            QRhiTexture *markTex = (marks[idx] == YACReader::Read) ? scene.markTexture.get() : scene.readingTexture.get();
             if (markTex) {
                 if (!isVisibleInNDC(images[idx], false, true))
                     continue;
@@ -1001,7 +999,7 @@ void YACReaderFlow3D::add(int item)
 
     images.insert(item, YACReader3DImageRHI());
     loaded.insert(item, false);
-    marks.insert(item, Unread);
+    marks.insert(item, YACReader::Unread);
     numObjects++;
 
     for (int i = item + 1; i < numObjects; i++) {

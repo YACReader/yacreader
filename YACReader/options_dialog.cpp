@@ -14,10 +14,7 @@
 #include <QCheckBox>
 
 #include "yacreader_spin_slider_widget.h"
-#include "yacreader_flow_config_widget.h"
-#ifndef NO_OPENGL
-#include "yacreader_gl_flow_config_widget.h"
-#endif
+#include "yacreader_3d_flow_config_widget.h"
 
 OptionsDialog::OptionsDialog(QWidget *parent)
     : YACReaderOptionsDialog(parent)
@@ -120,19 +117,13 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
     disableShowOnMouseOver = new QCheckBox(tr("Disable mouse over activation"));
 
-    layoutFlow->addWidget(sw);
-#ifndef NO_OPENGL
     layoutFlow->addWidget(gl);
-    layoutFlow->addWidget(useGL);
-#endif
+
     layoutFlow->addWidget(quickNavi);
     layoutFlow->addWidget(disableShowOnMouseOver);
     layoutFlow->addStretch();
 
-    // disable vSyncCheck
-#ifndef NO_OPENGL
     gl->vSyncCheck->hide();
-#endif
 
     // PAGE FLOW END -------------------------------------
 
@@ -249,13 +240,6 @@ void OptionsDialog::saveOptions()
 {
     settings->setValue(GO_TO_FLOW_SIZE, QSize(static_cast<int>(slideSize->sliderPosition() / SLIDE_ASPECT_RATIO), slideSize->sliderPosition()));
 
-    if (sw->radio1->isChecked())
-        settings->setValue(FLOW_TYPE_SW, 0);
-    if (sw->radio2->isChecked())
-        settings->setValue(FLOW_TYPE_SW, 1);
-    if (sw->radio3->isChecked())
-        settings->setValue(FLOW_TYPE_SW, 2);
-
     settings->setValue(PATH, pathEdit->text());
 
     Configuration::getConfiguration().setShowTimeInInformation(showTimeInInformationLabel->isChecked());
@@ -289,20 +273,6 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     YACReaderOptionsDialog::restoreOptions(settings);
 
     slideSize->setSliderPosition(settings->value(GO_TO_FLOW_SIZE).toSize().height());
-    switch (settings->value(FLOW_TYPE_SW).toInt()) {
-    case 0:
-        sw->radio1->setChecked(true);
-        break;
-    case 1:
-        sw->radio2->setChecked(true);
-        break;
-    case 2:
-        sw->radio3->setChecked(true);
-        break;
-    default:
-        sw->radio1->setChecked(true);
-        break;
-    }
 
     pathEdit->setText(settings->value(PATH).toString());
 

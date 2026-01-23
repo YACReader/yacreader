@@ -71,7 +71,6 @@
 #include "db_helper.h"
 
 #include "reading_list_item.h"
-#include "opengl_checker.h"
 
 #include "yacreader_content_views_manager.h"
 #include "folder_content_view.h"
@@ -198,33 +197,8 @@ void LibraryWindow::createSettings()
     settings->beginGroup("libraryConfig");
 }
 
-void LibraryWindow::setupOpenglSetting()
-{
-#ifndef NO_OPENGL
-    // FLOW-----------------------------------------------------------------------
-    //---------------------------------------------------------------------------
-
-#if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0) && defined(YACREADER_USE_RHI)
-    // When using RHI, assume hardware acceleration is available
-    bool openGLAvailable = true;
-    if (!settings->contains(USE_OPEN_GL))
-        settings->setValue(USE_OPEN_GL, 2);
-#else
-    OpenGLChecker openGLChecker;
-    bool openGLAvailable = openGLChecker.hasCompatibleOpenGLVersion();
-
-    if (openGLAvailable && !settings->contains(USE_OPEN_GL))
-        settings->setValue(USE_OPEN_GL, 2);
-    else if (!openGLAvailable)
-        settings->setValue(USE_OPEN_GL, 0);
-#endif
-#endif
-}
-
 void LibraryWindow::setupUI()
 {
-    setupOpenglSetting();
-
     setUnifiedTitleAndToolBarOnMac(true);
 
     libraryCreator = new LibraryCreator(settings);

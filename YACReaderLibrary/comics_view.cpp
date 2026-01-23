@@ -17,11 +17,6 @@ ComicsView::ComicsView(QWidget *parent)
 
     view = new QQuickWidget();
 
-    // In Qt 6, QQuickWidget supports Qt RHI and can use any graphics backend
-    // (Vulkan, Metal, Direct3D, OpenGL, or software rendering).
-    // The backend can be configured via QQuickWindow::setGraphicsApi() or QSG_RHI_BACKEND env var.
-    // Note: All widgets in the same top-level window must use the same graphics API.
-
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
             view, &QQuickWidget::statusChanged, this,

@@ -121,7 +121,7 @@ void YACReaderComicFlow3D::resortCovers(QList<int> newOrder)
 
     QList<QString> pathsNew;
     QVector<bool> loadedNew;
-    QVector<YACReaderComicReadStatus> marksNew;
+    QVector<YACReader::YACReaderComicReadStatus> marksNew;
     QVector<YACReader3DImageRHI> imagesNew;
 
     int index = 0;

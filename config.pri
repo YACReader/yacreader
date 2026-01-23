@@ -49,17 +49,6 @@ CONFIG += silent
 isEmpty(QMAKE_TARGET.arch) {
   QMAKE_TARGET.arch = $$QMAKE_HOST.arch
 }
-contains(QMAKE_TARGET.arch, arm.*)|contains(QMAKE_TARGET.arch, aarch.*) {
-  !macx:!win32 { # Apple silicon supports opengl (for now lets flag windows as experimental)
-    CONFIG += no_opengl
-    message("Building for ARM architecture. Disabling OpenGL coverflow. If you know that your ARM arquitecture supports opengl, please edit config.pri to enable it.")
-  }
-}
-
-# build without opengl widget support
-CONFIG(no_opengl) {
-  DEFINES += NO_OPENGL
-}
 
 # default value for comic archive decompression backend
 unix:!macx:!CONFIG(unarr):!CONFIG(7zip):!CONFIG(libarchive) {

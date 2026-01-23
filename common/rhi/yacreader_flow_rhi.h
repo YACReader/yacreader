@@ -12,24 +12,9 @@
 #include <QtGui>
 #include <rhi/qrhi.h>
 
-#include "pictureflow.h"
+#include "flow_types.h"
+#include "yacreader_global.h"
 #include "scroll_management.h"
-
-// Reuse enums and structs from OpenGL version
-enum Performance {
-    low = 0,
-    medium,
-    high,
-    ultraHigh
-};
-
-// Cover Vector
-struct YACReader3DVector {
-    float x;
-    float y;
-    float z;
-    float rot;
-};
 
 // the image/texture info struct
 struct YACReader3DImageRHI {
@@ -46,41 +31,6 @@ struct YACReader3DImageRHI {
     YACReader3DVector current;
     YACReader3DVector animEnd;
 };
-
-struct Preset {
-    /*** Animation Settings ***/
-    float animationStep;
-    float animationSpeedUp;
-    float animationStepMax;
-    float animationFadeOutDist;
-    float preRotation;
-    float viewRotateLightStrenght;
-    float viewRotateAdd;
-    float viewRotateSub;
-    float viewAngle;
-
-    /*** Position Configuration ***/
-    float cfX;
-    float cfY;
-    float cfZ;
-    float cfRX;
-    float cfRY;
-    float cfRZ;
-    float rotation;
-    float xDistance;
-    float centerDistance;
-    float zDistance;
-    float yDistance;
-
-    float zoom;
-};
-
-extern struct Preset defaultYACReaderFlowConfig;
-extern struct Preset presetYACReaderFlowClassicConfig;
-extern struct Preset presetYACReaderFlowStripeConfig;
-extern struct Preset presetYACReaderFlowOverlappedStripeConfig;
-extern struct Preset pressetYACReaderFlowUpConfig;
-extern struct Preset pressetYACReaderFlowDownConfig;
 
 class QLabel;
 class ImageLoader3D;
@@ -204,7 +154,7 @@ protected:
     int lazyPopulateObjects;
     bool showMarks;
     QVector<bool> loaded;
-    QVector<YACReaderComicReadStatus> marks;
+    QVector<YACReader::YACReaderComicReadStatus> marks;
 
     QVector<YACReader3DImageRHI> images;
 

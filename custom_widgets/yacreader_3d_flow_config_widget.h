@@ -1,7 +1,7 @@
-#ifndef YACREADER_GL_FLOW_CONFIG_WIDGET_H
-#define YACREADER_GL_FLOW_CONFIG_WIDGET_H
+#ifndef YACREADER_3D_FLOW_CONFIG_WIDGET_H
+#define YACREADER_3D_FLOW_CONFIG_WIDGET_H
 
-#include "yacreader_flow_gl.h" //TODO
+#include "flow_types.h" //TODO
 #include <QWidget>
 
 class QRadioButton;
@@ -11,11 +11,11 @@ class QCheckBox;
 class QPushButton;
 class QGroupBox;
 
-class YACReaderGLFlowConfigWidget : public QWidget
+class YACReader3DFlowConfigWidget : public QWidget
 {
     Q_OBJECT
 public:
-    YACReaderGLFlowConfigWidget(QWidget *parent = 0);
+    YACReader3DFlowConfigWidget(QWidget *parent = 0);
 
     // GL.........................
     QRadioButton *radioClassic;
@@ -47,4 +47,4 @@ public slots:
     void avancedOptionToogled(bool show);
 };
 
-#endif // YACREADER_GL_FLOW_CONFIG_WIDGET_H
+#endif // YACREADER_3D_FLOW_CONFIG_WIDGET_H
