@@ -19,6 +19,7 @@ private:
     QIntValidator *v;
     QPushButton *centerButton;
     QPushButton *goToButton;
+    QPushButton *goToButton2;
     QLabel *pageHint;
     QWidget *bar;
     void paintEvent(QPaintEvent *) override;
