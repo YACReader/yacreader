@@ -12,10 +12,8 @@
     <file>../images/close.svg</file>
     <file>../images/up.png</file>
     <file>../images/down.png</file>
-    <file>../images/imgCenterSlide.png</file>
-    <file>../images/imgGoToSlide.png</file>
-    <file>../images/imgCenterSlidePressed.png</file>
-    <file>../images/imgGoToSlidePressed.png</file>
+    <file>../images/centerFlow.svg</file>
+    <file>../images/gotoFlow.svg</file>
     <file>../images/defaultCover.png</file>
     <file>../images/fromTo.png</file>
     <file>../images/dropDownArrow.png</file>

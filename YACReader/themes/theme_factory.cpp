@@ -23,11 +23,28 @@ struct ViewerParams {
     QColor infoTextColor;
 };
 
+struct GoToFlowWidgetParams {
+    GoToFlowWidgetThemeTemplates t;
+
+    QColor flowBackgroundColor;
+    QColor flowTextColor;
+    QColor toolbarBackgroundColor;
+    QColor sliderBorderColor;
+    QColor sliderGrooveColor;
+    QColor sliderHandleColor;
+    QColor editBorderColor;
+    QColor editBackgroundColor;
+    QColor editTextColor;
+    QColor labelTextColor;
+    QColor iconColor;
+};
+
 struct ThemeParams {
     QString themeName;
 
     ToolbarParams toolbarParams;
     ViewerParams viewerParams;
+    GoToFlowWidgetParams goToFlowWidgetParams;
 };
 
 void setToolbarIconPair(QIcon &icon,
@@ -113,6 +130,28 @@ Theme makeTheme(const ThemeParams &params)
     theme.viewer.infoLabelQSS = params.viewerParams.t.infoLabelQSS.arg(params.viewerParams.infoTextColor.name());
     // end Viewer
 
+    // GoToFlowWidget
+    auto &gotoParams = params.goToFlowWidgetParams;
+    theme.goToFlowWidget.flowBackgroundColor = gotoParams.flowBackgroundColor;
+    theme.goToFlowWidget.flowTextColor = gotoParams.flowTextColor;
+    theme.goToFlowWidget.toolbarBackgroundColor = gotoParams.toolbarBackgroundColor;
+    theme.goToFlowWidget.sliderQSS = gotoParams.t.sliderQSS.arg(
+            gotoParams.sliderBorderColor.name(QColor::HexArgb),
+            gotoParams.sliderGrooveColor.name(QColor::HexArgb),
+            gotoParams.sliderHandleColor.name(QColor::HexArgb));
+    theme.goToFlowWidget.editQSS = gotoParams.t.editQSS.arg(
+            gotoParams.editBorderColor.name(QColor::HexArgb),
+            gotoParams.editBackgroundColor.name(QColor::HexArgb),
+            gotoParams.editTextColor.name());
+    theme.goToFlowWidget.buttonQSS = gotoParams.t.buttonQSS;
+    theme.goToFlowWidget.labelQSS = gotoParams.t.labelQSS.arg(gotoParams.labelTextColor.name());
+
+    const QString centerIconPath = recoloredSvgToThemeFile(":/images/centerFlow.svg", gotoParams.iconColor, params.themeName);
+    const QString goToIconPath = recoloredSvgToThemeFile(":/images/gotoFlow.svg", gotoParams.iconColor, params.themeName);
+    theme.goToFlowWidget.centerIcon = QIcon(centerIconPath);
+    theme.goToFlowWidget.goToIcon = QIcon(goToIconPath);
+    // end GoToFlowWidget
+
     return theme;
 }
 
@@ -157,6 +196,22 @@ ThemeParams classicThemeParams()
 
     params.viewerParams = viewerParams;
 
+    GoToFlowWidgetParams goToFlowWidgetParams;
+    goToFlowWidgetParams.flowBackgroundColor = QColor(0x282828);
+    goToFlowWidgetParams.flowTextColor = Qt::white;
+    goToFlowWidgetParams.toolbarBackgroundColor = QColor::fromRgba(0x99000000);
+    goToFlowWidgetParams.sliderBorderColor = QColor::fromRgba(0x22FFFFFF);
+    goToFlowWidgetParams.sliderGrooveColor = QColor::fromRgba(0x77000000);
+    goToFlowWidgetParams.sliderHandleColor = QColor::fromRgba(0x55FFFFFF);
+    goToFlowWidgetParams.editBorderColor = QColor::fromRgba(0x77000000);
+    goToFlowWidgetParams.editBackgroundColor = QColor::fromRgba(0x55000000);
+    goToFlowWidgetParams.editTextColor = Qt::white;
+    goToFlowWidgetParams.labelTextColor = Qt::white;
+    goToFlowWidgetParams.iconColor = Qt::white;
+    goToFlowWidgetParams.t = GoToFlowWidgetThemeTemplates();
+
+    params.goToFlowWidgetParams = goToFlowWidgetParams;
+
     return params;
 }
 
@@ -185,6 +240,22 @@ ThemeParams lightThemeParams()
 
     params.viewerParams = viewerParams;
 
+    GoToFlowWidgetParams goToFlowWidgetParams;
+    goToFlowWidgetParams.flowBackgroundColor = QColor(0xF6F6F6);
+    goToFlowWidgetParams.flowTextColor = QColor(0x202020);
+    goToFlowWidgetParams.toolbarBackgroundColor = QColor::fromRgba(0xBBFFFFFF);
+    goToFlowWidgetParams.sliderBorderColor = QColor::fromRgba(0x22000000);
+    goToFlowWidgetParams.sliderGrooveColor = QColor::fromRgba(0x33000000);
+    goToFlowWidgetParams.sliderHandleColor = QColor::fromRgba(0x55000000);
+    goToFlowWidgetParams.editBorderColor = QColor::fromRgba(0x33000000);
+    goToFlowWidgetParams.editBackgroundColor = QColor::fromRgba(0x22000000);
+    goToFlowWidgetParams.editTextColor = QColor(0x202020);
+    goToFlowWidgetParams.labelTextColor = QColor(0x202020);
+    goToFlowWidgetParams.iconColor = QColor(0x404040);
+    goToFlowWidgetParams.t = GoToFlowWidgetThemeTemplates();
+
+    params.goToFlowWidgetParams = goToFlowWidgetParams;
+
     return params;
 }
 
@@ -212,6 +283,22 @@ ThemeParams darkThemeParams()
     viewerParams.t = ViewerThemeTemplates();
 
     params.viewerParams = viewerParams;
+
+    GoToFlowWidgetParams goToFlowWidgetParams;
+    goToFlowWidgetParams.flowBackgroundColor = QColor(40, 40, 40);
+    goToFlowWidgetParams.flowTextColor = Qt::white;
+    goToFlowWidgetParams.toolbarBackgroundColor = QColor::fromRgba(0x99000000);
+    goToFlowWidgetParams.sliderBorderColor = QColor::fromRgba(0x22FFFFFF);
+    goToFlowWidgetParams.sliderGrooveColor = QColor::fromRgba(0x77000000);
+    goToFlowWidgetParams.sliderHandleColor = QColor::fromRgba(0x55FFFFFF);
+    goToFlowWidgetParams.editBorderColor = QColor::fromRgba(0x77000000);
+    goToFlowWidgetParams.editBackgroundColor = QColor::fromRgba(0x55000000);
+    goToFlowWidgetParams.editTextColor = Qt::white;
+    goToFlowWidgetParams.labelTextColor = Qt::white;
+    goToFlowWidgetParams.iconColor = QColor(0xCCCCCC);
+    goToFlowWidgetParams.t = GoToFlowWidgetThemeTemplates();
+
+    params.goToFlowWidgetParams = goToFlowWidgetParams;
 
     return params;
 }

@@ -16,6 +16,26 @@ struct ViewerThemeTemplates {
     QString infoLabelQSS = "QLabel { color : %1; font-size:%2px; }";
 };
 
+struct GoToFlowWidgetThemeTemplates {
+    QString sliderQSS = "QSlider::groove:horizontal {"
+                        "  border: 1px solid %1;"
+                        "  border-radius: 1px;"
+                        "  background: %2;"
+                        "  margin: 2px 0;"
+                        "  padding: 1px;"
+                        "}"
+                        "QSlider::handle:horizontal {"
+                        "  background: %3;"
+                        "  width: 48px;"
+                        "  border-radius: 1px;"
+                        "}";
+    QString editQSS = "QLineEdit {border: 1px solid %1; background: %2; color: %3; padding: 3px 5px 5px 5px; margin: 13px 5px 12px 5px; font-weight:bold}";
+    QString buttonQSS = "QPushButton { border: none; padding: 0px; } "
+                        "QPushButton:focus { border: none; outline: none; } "
+                        "QPushButton:pressed { padding-top: 1px; padding-left: 1px; padding-bottom: -1px; padding-right: -1px; }";
+    QString labelQSS = "QLabel { color: %1; }";
+};
+
 struct ToolbarTheme {
     QString toolbarQSS;
 
@@ -92,9 +112,22 @@ struct ViewerTheme {
     QString infoLabelQSS;
 };
 
+struct GoToFlowWidgetTheme {
+    QColor flowBackgroundColor;
+    QColor flowTextColor;
+    QColor toolbarBackgroundColor;
+    QString sliderQSS;
+    QString editQSS;
+    QString buttonQSS;
+    QString labelQSS;
+    QIcon centerIcon;
+    QIcon goToIcon;
+};
+
 struct Theme {
     ToolbarTheme toolbar;
     ViewerTheme viewer;
+    GoToFlowWidgetTheme goToFlowWidget;
 };
 
 #endif // THEME_H

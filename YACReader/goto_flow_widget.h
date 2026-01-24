@@ -6,6 +6,7 @@
 #include "yacreader_global_gui.h"
 
 #include "yacreader_page_flow_rhi.h"
+#include "themable.h"
 
 using namespace YACReader;
 
@@ -14,9 +15,12 @@ class GoToFlowToolBar;
 class QVBoxLayout;
 class QKeyEvent;
 
-class GoToFlowWidget : public QWidget
+class GoToFlowWidget : public QWidget, protected Themable
 {
     Q_OBJECT
+protected:
+    void applyTheme(const Theme &theme) override;
+
 public:
     GoToFlowWidget(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~GoToFlowWidget() override;
