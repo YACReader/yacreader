@@ -247,7 +247,11 @@ void OptionsDialog::saveOptions()
 
     Configuration::getConfiguration().setShowTimeInInformation(showTimeInInformationLabel->isChecked());
 
-    settings->setValue(BACKGROUND_COLOR, currentColor);
+    if (currentColor != ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor) {
+        settings->setValue(BACKGROUND_COLOR, currentColor);
+    } else {
+        settings->remove(BACKGROUND_COLOR);
+    }
     // settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
     settings->setValue(QUICK_NAVI_MODE, quickNavi->isChecked());
     settings->setValue(DISABLE_MOUSE_OVER_GOTO_FLOW, disableShowOnMouseOver->isChecked());
