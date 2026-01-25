@@ -45,6 +45,7 @@ struct ThemeParams {
     ToolbarParams toolbarParams;
     ViewerParams viewerParams;
     GoToFlowWidgetParams goToFlowWidgetParams;
+    HelpAboutDialogTheme helpAboutDialogParams;
 };
 
 void setToolbarIconPair(QIcon &icon,
@@ -152,6 +153,10 @@ Theme makeTheme(const ThemeParams &params)
     theme.goToFlowWidget.goToIcon = QIcon(goToIconPath);
     // end GoToFlowWidget
 
+    // HelpAboutDialog
+    theme.helpAboutDialog = params.helpAboutDialogParams;
+    // end HelpAboutDialog
+
     return theme;
 }
 
@@ -212,6 +217,9 @@ ThemeParams classicThemeParams()
 
     params.goToFlowWidgetParams = goToFlowWidgetParams;
 
+    params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
+    params.helpAboutDialogParams.linkColor = QColor(0xC19441);
+
     return params;
 }
 
@@ -256,6 +264,9 @@ ThemeParams lightThemeParams()
 
     params.goToFlowWidgetParams = goToFlowWidgetParams;
 
+    params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
+    params.helpAboutDialogParams.linkColor = QColor(0xC19441);
+
     return params;
 }
 
@@ -299,6 +310,9 @@ ThemeParams darkThemeParams()
     goToFlowWidgetParams.t = GoToFlowWidgetThemeTemplates();
 
     params.goToFlowWidgetParams = goToFlowWidgetParams;
+
+    params.helpAboutDialogParams.headingColor = QColor(0xE0E0E0);
+    params.helpAboutDialogParams.linkColor = QColor(0xD4A84B);
 
     return params;
 }

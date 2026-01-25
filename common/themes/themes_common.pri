@@ -1,4 +1,5 @@
-INCLUDEPATH += $$PWD
+INCLUDEPATH += $$PWD \
+    $$PWD/shared
 
 HEADERS += \
     $$PWD/icon_utils.h \
@@ -6,6 +7,7 @@ HEADERS += \
     $$PWD/theme_manager.h \
     $$PWD/themable.h \
     $$PWD/yacreader_icon.h \
+    $$PWD/shared/help_about_dialog_theme.h \
 
 
 SOURCES += \

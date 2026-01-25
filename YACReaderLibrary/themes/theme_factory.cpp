@@ -54,6 +54,7 @@ struct ThemeParams {
 
     ComicFlowColors comicFlowColors;
     ComicVineParams comicVineParams;
+    HelpAboutDialogTheme helpAboutDialogParams;
 };
 
 Theme makeTheme(const ThemeParams &params)
@@ -114,6 +115,10 @@ Theme makeTheme(const ThemeParams &params)
 
     theme.comicVine.rowUpIcon = { QIcon(recolor(t.rowUpIcon, cv.rowIconColor)), t.rowIconSize };
     theme.comicVine.rowDownIcon = { QIcon(recolor(t.rowDownIcon, cv.rowIconColor)), t.rowIconSize };
+
+    // HelpAboutDialog
+    theme.helpAboutDialog = params.helpAboutDialogParams;
+    // end HelpAboutDialog
 
     return theme;
 }
@@ -194,6 +199,9 @@ ThemeParams classicThemeParams()
     params.comicFlowColors = cf;
     params.comicVineParams = cv;
 
+    params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
+    params.helpAboutDialogParams.linkColor = QColor(0xC19441);
+
     return params;
 }
 
@@ -255,6 +263,9 @@ ThemeParams lightThemeParams()
     params.comicFlowColors = cf;
     params.comicVineParams = cv;
 
+    params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
+    params.helpAboutDialogParams.linkColor = QColor(0xC19441);
+
     return params;
 }
 
@@ -315,6 +326,9 @@ ThemeParams darkThemeParams()
 
     params.comicFlowColors = cf;
     params.comicVineParams = cv;
+
+    params.helpAboutDialogParams.headingColor = QColor(0xE0E0E0);
+    params.helpAboutDialogParams.linkColor = QColor(0xD4A84B);
 
     return params;
 }

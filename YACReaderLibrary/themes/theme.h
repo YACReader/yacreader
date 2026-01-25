@@ -4,6 +4,7 @@
 #include <QtGui>
 
 #include "yacreader_icon.h"
+#include "help_about_dialog_theme.h"
 
 struct ComicVineThemeTemplates {
     QString defaultLabelQSS = "QLabel {color:%1; font-size:12px;font-family:Arial;}";
@@ -130,6 +131,7 @@ struct ComicVineTheme {
 struct Theme {
     ComicFlowColors comicFlow;
     ComicVineTheme comicVine;
+    HelpAboutDialogTheme helpAboutDialog;
 };
 
 #endif // THEME_H

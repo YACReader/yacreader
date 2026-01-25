@@ -3,6 +3,8 @@
 
 #include <QtGui>
 
+#include "help_about_dialog_theme.h"
+
 struct ToolbarThemeTemplates {
     QString toolbarQSS = "QToolBar { border: none; background: %1; }\n"
                          "QToolBar::separator { background: %2; width: 1px; margin: 5px 4px; }\n"
@@ -128,6 +130,7 @@ struct Theme {
     ToolbarTheme toolbar;
     ViewerTheme viewer;
     GoToFlowWidgetTheme goToFlowWidget;
+    HelpAboutDialogTheme helpAboutDialog;
 };
 
 #endif // THEME_H
