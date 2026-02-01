@@ -2,13 +2,6 @@
 
 #include "yacreader_global.h"
 
-QString recolorSvgXML(QString &svg,
-                      const QString &placeHolder,
-                      const QColor &color)
-{
-    return svg.replace(placeHolder, color.name(QColor::HexRgb), Qt::CaseInsensitive);
-}
-
 QString readSvg(const QString &resourcePath)
 {
     QFile in(resourcePath);
@@ -48,6 +41,25 @@ QString writeSvg(const QString &svg, const QString &resourcePath, const QString 
     return outPath;
 }
 
+QString recolorSvgXML(QString &svg,
+                      const QString &placeHolder,
+                      const QColor &color)
+{
+    return svg.replace(placeHolder, color.name(QColor::HexRgb), Qt::CaseInsensitive);
+}
+
+QString recoloredSvgToThemeFile(const QString &resourcePath,
+                                const QColor &color, // #f0f (magenta)
+                                const QString &themeName,
+                                const QString &suffix)
+{
+    auto svg = readSvg(resourcePath);
+
+    recolorSvgXML(svg, "#f0f", color);
+
+    return writeSvg(svg, resourcePath, themeName, suffix);
+}
+
 QString recoloredSvgToThemeFile(const QString &resourcePath,
                                 const QColor &color1, // #f0f (magenta)
                                 const QColor &color2, // #0ff (cyan)
@@ -63,13 +75,17 @@ QString recoloredSvgToThemeFile(const QString &resourcePath,
 }
 
 QString recoloredSvgToThemeFile(const QString &resourcePath,
-                                const QColor &color, // #f0f (magenta)
+                                const QColor &color1, // #f0f (magenta)
+                                const QColor &color2, // #0ff (cyan)
+                                const QColor &color3, // #ff0 (yellow)
                                 const QString &themeName,
                                 const QString &suffix)
 {
     auto svg = readSvg(resourcePath);
 
-    recolorSvgXML(svg, "#f0f", color);
+    recolorSvgXML(svg, "#f0f", color1);
+    recolorSvgXML(svg, "#0ff", color2);
+    recolorSvgXML(svg, "#ff0", color3);
 
     return writeSvg(svg, resourcePath, themeName, suffix);
 }
