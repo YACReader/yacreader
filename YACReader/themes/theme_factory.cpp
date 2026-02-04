@@ -66,11 +66,11 @@ void setToolbarIconPair(QIcon &icon,
     const QString normalPath = recoloredSvgToThemeFile(basePath, iconColor, themeName);
     const QString normalPath18 = recoloredSvgToThemeFile(path18, iconColor, themeName);
     // Disabled
-    const QString disabledPath = recoloredSvgToThemeFile(basePath, disabledColor, themeName, "_disabled");
-    const QString disabledPath18 = recoloredSvgToThemeFile(path18, disabledColor, themeName, "_disabled");
+    const QString disabledPath = recoloredSvgToThemeFile(basePath, disabledColor, themeName, { .suffix = "_disabled" });
+    const QString disabledPath18 = recoloredSvgToThemeFile(path18, disabledColor, themeName, { .suffix = "_disabled" });
     // Checked (On state)
-    const QString checkedPath = recoloredSvgToThemeFile(basePath, checkedColor, themeName, "_checked");
-    const QString checkedPath18 = recoloredSvgToThemeFile(path18, checkedColor, themeName, "_checked");
+    const QString checkedPath = recoloredSvgToThemeFile(basePath, checkedColor, themeName, { .suffix = "_checked" });
+    const QString checkedPath18 = recoloredSvgToThemeFile(path18, checkedColor, themeName, { .suffix = "_checked" });
 
     icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
     icon.addFile(disabledPath, QSize(), QIcon::Disabled, QIcon::Off);

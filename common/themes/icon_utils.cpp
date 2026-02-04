@@ -16,18 +16,18 @@ QString readSvg(const QString &resourcePath)
     return svg;
 }
 
-QString writeSvg(const QString &svg, const QString &resourcePath, const QString &themeName, const QString &suffix = QString())
+QString writeSvg(const QString &svg, const QString &resourcePath, const QString &themeName, const RecolorOptions &options)
 {
     const QString basePath = YACReader::getSettingsPath() + "/themes/" + themeName;
 
     QDir().mkpath(basePath);
 
-    QString fileName = QFileInfo(resourcePath).completeBaseName();
-    if (!suffix.isEmpty()) {
-        fileName += suffix;
+    QString outFileName = options.fileName.isEmpty() ? QFileInfo(resourcePath).completeBaseName() : options.fileName;
+    if (!options.suffix.isEmpty()) {
+        outFileName += options.suffix;
     }
-    fileName += "." + QFileInfo(resourcePath).suffix();
-    const QString outPath = basePath + "/" + fileName;
+    outFileName += "." + QFileInfo(resourcePath).suffix();
+    const QString outPath = basePath + "/" + outFileName;
 
     QFile out(outPath);
     if (!out.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
@@ -51,27 +51,27 @@ QString recolorSvgXML(QString &svg,
 QString recoloredSvgToThemeFile(const QString &resourcePath,
                                 const QColor &color, // #f0f (magenta)
                                 const QString &themeName,
-                                const QString &suffix)
+                                const RecolorOptions &options)
 {
     auto svg = readSvg(resourcePath);
 
     recolorSvgXML(svg, "#f0f", color);
 
-    return writeSvg(svg, resourcePath, themeName, suffix);
+    return writeSvg(svg, resourcePath, themeName, options);
 }
 
 QString recoloredSvgToThemeFile(const QString &resourcePath,
                                 const QColor &color1, // #f0f (magenta)
                                 const QColor &color2, // #0ff (cyan)
                                 const QString &themeName,
-                                const QString &suffix)
+                                const RecolorOptions &options)
 {
     auto svg = readSvg(resourcePath);
 
     recolorSvgXML(svg, "#f0f", color1);
     recolorSvgXML(svg, "#0ff", color2);
 
-    return writeSvg(svg, resourcePath, themeName, suffix);
+    return writeSvg(svg, resourcePath, themeName, options);
 }
 
 QString recoloredSvgToThemeFile(const QString &resourcePath,
@@ -79,7 +79,7 @@ QString recoloredSvgToThemeFile(const QString &resourcePath,
                                 const QColor &color2, // #0ff (cyan)
                                 const QColor &color3, // #ff0 (yellow)
                                 const QString &themeName,
-                                const QString &suffix)
+                                const RecolorOptions &options)
 {
     auto svg = readSvg(resourcePath);
 
@@ -87,5 +87,5 @@ QString recoloredSvgToThemeFile(const QString &resourcePath,
     recolorSvgXML(svg, "#0ff", color2);
     recolorSvgXML(svg, "#ff0", color3);
 
-    return writeSvg(svg, resourcePath, themeName, suffix);
+    return writeSvg(svg, resourcePath, themeName, options);
 }
