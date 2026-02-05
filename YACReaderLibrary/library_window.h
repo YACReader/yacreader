@@ -72,7 +72,6 @@ class ComicsView;
 class ClassicComicsView;
 class GridComicsView;
 class ComicsViewTransition;
-class EmptyFolderWidget;
 class NoSearchResultsWidget;
 class EditShortcutsDialog;
 class ComicFilesManager;
