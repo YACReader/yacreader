@@ -21,14 +21,14 @@
     <file>../images/speaker.png</file>
     <file>../images/clear_shortcut.svg</file>
     <file>../images/accept_shortcut.svg</file>
-    <file>../images/shortcuts_group_comics.svg</file>
-    <file>../images/shortcuts_group_folders.svg</file>
-    <file>../images/shortcuts_group_general.svg</file>
-    <file>../images/shortcuts_group_libraries.svg</file>
-    <file>../images/shortcuts_group_mglass.svg</file>
-    <file>../images/shortcuts_group_page.svg</file>
-    <file>../images/shortcuts_group_reading.svg</file>
-    <file>../images/shortcuts_group_visualization.svg</file>
+    <file>../images/shortcuts/shortcuts_group_comics.svg</file>
+    <file>../images/shortcuts/shortcuts_group_folders.svg</file>
+    <file>../images/shortcuts/shortcuts_group_general.svg</file>
+    <file>../images/shortcuts/shortcuts_group_libraries.svg</file>
+    <file>../images/shortcuts/shortcuts_group_mglass.svg</file>
+    <file>../images/shortcuts/shortcuts_group_page.svg</file>
+    <file>../images/shortcuts/shortcuts_group_reading.svg</file>
+    <file>../images/shortcuts/shortcuts_group_visualization.svg</file>
     <file>../images/custom_dialog/custom_close_button.svg</file>
     <file>../images/whats_new/whatsnew_header.svg</file>
     <file>../images/viewer_toolbar/bookmark.svg</file>

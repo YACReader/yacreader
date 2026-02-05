@@ -74,14 +74,14 @@
         <file>../images/resetCover.svg</file>
         <file>../images/searching_icon.png</file>
         <file>../images/serverConfigBackground.png</file>
-        <file>../images/shortcuts_group_comics.svg</file>
-        <file>../images/shortcuts_group_folders.svg</file>
-        <file>../images/shortcuts_group_general.svg</file>
-        <file>../images/shortcuts_group_libraries.svg</file>
-        <file>../images/shortcuts_group_mglass.svg</file>
-        <file>../images/shortcuts_group_page.svg</file>
-        <file>../images/shortcuts_group_reading.svg</file>
-        <file>../images/shortcuts_group_visualization.svg</file>
+        <file>../images/shortcuts/shortcuts_group_comics.svg</file>
+        <file>../images/shortcuts/shortcuts_group_folders.svg</file>
+        <file>../images/shortcuts/shortcuts_group_general.svg</file>
+        <file>../images/shortcuts/shortcuts_group_libraries.svg</file>
+        <file>../images/shortcuts/shortcuts_group_mglass.svg</file>
+        <file>../images/shortcuts/shortcuts_group_page.svg</file>
+        <file>../images/shortcuts/shortcuts_group_reading.svg</file>
+        <file>../images/shortcuts/shortcuts_group_visualization.svg</file>
         <file>../images/shownCovers.png</file>
         <file>../images/sidebar/branch-closed.svg</file>
         <file>../images/sidebar/branch-open.svg</file>

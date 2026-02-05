@@ -1162,7 +1162,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     QList<QAction *> allActions;
     QList<QAction *> tmpList;
 
-    editShortcutsDialog->addActionsGroup(tr("Comics"), QIcon(":/images/shortcuts_group_comics.svg"),
+    editShortcutsDialog->addActionsGroup(tr("Comics"), QIcon(":/images/shortcuts/shortcuts_group_comics.svg"),
                                          tmpList = { openAction,
                                                      openLatestComicAction,
                                                      openFolderAction,
@@ -1178,7 +1178,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     auto *const toggleToolbarsAction = addActionWithShortcut(tr("Hide/show toolbar"), TOGGLE_TOOL_BARS_ACTION_Y);
     connect(toggleToolbarsAction, &QAction::triggered, this, &MainWindowViewer::toggleToolBars);
 
-    editShortcutsDialog->addActionsGroup(tr("General"), QIcon(":/images/shortcuts_group_general.svg"),
+    editShortcutsDialog->addActionsGroup(tr("General"), QIcon(":/images/shortcuts/shortcuts_group_general.svg"),
                                          tmpList = QList<QAction *>()
                                                  << optionsAction
                                                  << helpAboutAction
@@ -1216,7 +1216,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                       zoomInMglassAction, zoomOutMglassAction,
                       resetMglassAction };
 
-    editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"), QIcon(":/images/shortcuts_group_mglass.svg"),
+    editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"), QIcon(":/images/shortcuts/shortcuts_group_mglass.svg"),
                                          tmpList = QList<QAction *>()
                                                  << showMagnifyingGlassAction
                                                  << mglassActions);
@@ -1227,7 +1227,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                                 CHANGE_FIT_ACTION_Y);
     connect(toggleFitToScreenAction, &QAction::triggered, this, &MainWindowViewer::toggleWidthHeight);
 
-    editShortcutsDialog->addActionsGroup(tr("Page adjustement"), QIcon(":/images/shortcuts_group_page.svg"),
+    editShortcutsDialog->addActionsGroup(tr("Page adjustement"), QIcon(":/images/shortcuts/shortcuts_group_page.svg"),
                                          tmpList = QList<QAction *>()
                                                  << adjustHeightAction
                                                  << adjustWidthAction
@@ -1304,7 +1304,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                            offsetDoublePageToTheLeft,
                            offsetDoublePageToTheRight };
 
-    editShortcutsDialog->addActionsGroup(tr("Reading"), QIcon(":/images/shortcuts_group_reading.svg"),
+    editShortcutsDialog->addActionsGroup(tr("Reading"), QIcon(":/images/shortcuts/shortcuts_group_reading.svg"),
                                          tmpList = QList<QAction *>()
                                                  << goToPageOnTheRightAction
                                                  << goToPageOnTheLeftAction
