@@ -5,7 +5,7 @@ layout(location = 0) in vec2 vTexCoord;
 layout(location = 1) in flat vec4 vInstanceShading;
 layout(location = 2) in flat float vInstanceOpacity;
 layout(location = 3) in flat float vIsReflection;
-layout(location = 5) in vec2 vLocalPos;
+layout(location = 4) in vec2 vLocalPos;
 
 // Output
 layout(location = 0) out vec4 fragColor;

@@ -15,10 +15,10 @@ layout(location = 8) in float instanceFlip;
 
 // Outputs to fragment shader
 layout(location = 0) out vec2 vTexCoord;
-layout(location = 2) out flat vec4 vInstanceShading;
-layout(location = 3) out flat float vInstanceOpacity;
-layout(location = 4) out flat float vIsReflection;
-layout(location = 5) out vec2 vLocalPos;
+layout(location = 1) out flat vec4 vInstanceShading;
+layout(location = 2) out flat float vInstanceOpacity;
+layout(location = 3) out flat float vIsReflection;
+layout(location = 4) out vec2 vLocalPos;
 
 // Uniform buffer
 layout(std140, binding = 0) uniform UniformBuffer
