@@ -18,7 +18,7 @@ Row {
 
             Image {
                 id: star
-                source: "info-rating.png"
+                source: "info-rating.svg"
             }
 
             ColorOverlay {

@@ -1,6 +1,6 @@
 import QtQuick
 
-import Qt5Compat.GraphicalEffects
+import QtQuick.Controls.impl
 
 Row {
     spacing: 0
@@ -16,14 +16,9 @@ Row {
             width: 25
             height: 20
 
-            Image {
+            ColorImage {
                 id: star
-                source: "info-rating.png"
-            }
-
-            ColorOverlay {
-                anchors.fill: star
-                source: star
+                source: "info-rating.svg"
                 color: index < (mouseIndex > 0 ? mouseIndex : rating) ? ratingSelectedColor : ratingUnselectedColor
             }
 

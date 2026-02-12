@@ -20,7 +20,7 @@ Item {
     Image {
         anchors.centerIn: parent
         id: favorites_button_compact
-        source: "info-favorites.png"
+        source: "info-favorites.svg"
     }
 
     ColorOverlay {

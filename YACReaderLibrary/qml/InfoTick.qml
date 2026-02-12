@@ -17,7 +17,7 @@ Item {
 
     Image {
         id: read_compact
-        source: "info-tick.png"
+        source: "info-tick.svg"
     }
 
     ColorOverlay {
