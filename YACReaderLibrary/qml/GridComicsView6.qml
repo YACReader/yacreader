@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import Qt5Compat.GraphicalEffects
+import QtQuick.Effects
 
 import com.yacreader.ComicModel 1.0
 
@@ -33,14 +33,16 @@ SplitView {
             mipmap: true
             asynchronous : true
             cache: false //TODO clear cache only when it is needed
-            opacity: 0
+            layer.enabled: true
             visible: false
         }
 
-        FastBlur {
+        MultiEffect {
             anchors.fill: backgroundImg
             source: backgroundImg
-            radius: backgroundBlurRadius
+            blurEnabled: true
+            blur: 1.0
+            blurMax: 64
             opacity: backgroundBlurOpacity
             visible: backgroundBlurVisible
         }
@@ -472,18 +474,16 @@ SplitView {
                             mipmap: true
                             asynchronous : true
                             cache: false //TODO clear cache only when it is needed
-                        }
 
-                        DropShadow {
-                            anchors.fill: currentCoverElement
-                            horizontalOffset: 0
-                            verticalOffset: 0
-                            radius: 8.0
-                            transparentBorder: true
-                            //samples: 17
-                            color: "#FF000000"
-                            source: currentCoverElement
-                            visible: showDropShadow;
+                            layer.enabled: showDropShadow
+                            layer.effect: MultiEffect {
+                                shadowEnabled: true
+                                shadowColor: "#FF000000"
+                                shadowBlur: 1.0
+                                blurMax: 8
+                                shadowHorizontalOffset: 0
+                                shadowVerticalOffset: 0
+                            }
                         }
 
                         ColumnLayout
@@ -685,19 +685,16 @@ SplitView {
                                 color: "white"
                                 text: readButton.text
                             }
-                        }
 
-
-                        DropShadow {
-                            anchors.fill: readButton
-                            transparentBorder: true
-                            horizontalOffset: 0
-                            verticalOffset: 0
-                            radius: 8.0
-                            //samples: 17
-                            color: "#AA000000"
-                            source: readButton
-                            visible: showDropShadow && !readButton.pressed
+                            layer.enabled: showDropShadow && !readButton.pressed
+                            layer.effect: MultiEffect {
+                                shadowEnabled: true
+                                shadowColor: "#AA000000"
+                                shadowBlur: 1.0
+                                blurMax: 8
+                                shadowHorizontalOffset: 0
+                                shadowVerticalOffset: 0
+                            }
                         }
                     }
                 }

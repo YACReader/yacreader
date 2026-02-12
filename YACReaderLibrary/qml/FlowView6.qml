@@ -2,7 +2,7 @@ import QtQuick
 
 import QtQuick.Controls
 
-import Qt5Compat.GraphicalEffects
+import QtQuick.Effects
 
 import com.yacreader.ComicModel 1.0
 
@@ -39,14 +39,16 @@ Rectangle {
         mipmap: true
         asynchronous : true
         cache: false //TODO clear cache only when it is needed
-        opacity: 0
+        layer.enabled: true
         visible: false
     }
 
-    FastBlur {
+    MultiEffect {
         anchors.fill: backgroundImg
         source: backgroundImg
-        radius: backgroundBlurRadius
+        blurEnabled: true
+        blur: 1.0
+        blurMax: 64
         opacity: backgroundBlurOpacity
         visible: backgroundBlurVisible
     }

@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-import Qt5Compat.GraphicalEffects
+import QtQuick.Effects
 
 import com.yacreader.ComicModel 1.0
 
@@ -119,17 +119,30 @@ Rectangle {
                     mipmap: true
                     asynchronous : true
                     cache: true
+                    visible: false
+                }
 
+                Item {
+                    id: coverMask
+                    anchors.fill: parent
                     layer.enabled: true
-                    layer.effect: OpacityMask {
+                    layer.smooth: true
+                    visible: false
+
+                    Rectangle {
                         anchors.fill: parent
-                        cached: true
-                        maskSource: Rectangle {
-                            width: coverElement.width
-                            height: coverElement.height
-                            radius: 10
-                        }
+                        radius: 10
+                        color: "black"
                     }
+                }
+
+                MultiEffect {
+                    source: coverImage
+                    anchors.fill: coverImage
+                    maskEnabled: true
+                    maskSource: coverMask
+                    maskThresholdMin: 0.5
+                    maskSpreadAtMin: 1.0
                 }
             }
 
