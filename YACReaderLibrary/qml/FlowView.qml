@@ -1,7 +1,8 @@
-import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick
 
-import QtGraphicalEffects 1.0
+import QtQuick.Controls
+
+import QtQuick.Effects
 
 import com.yacreader.ComicModel 1.0
 
@@ -38,14 +39,16 @@ Rectangle {
         mipmap: true
         asynchronous : true
         cache: false //TODO clear cache only when it is needed
-        opacity: 0
+        layer.enabled: true
         visible: false
     }
 
-    FastBlur {
+    MultiEffect {
         anchors.fill: backgroundImg
         source: backgroundImg
-        radius: backgroundBlurRadius
+        blurEnabled: true
+        blur: 1.0
+        blurMax: 64
         opacity: backgroundBlurOpacity
         visible: backgroundBlurVisible
     }
@@ -112,26 +115,32 @@ Rectangle {
 
                 color:"transparent"
 
+                scale: mouseArea.containsMouse ? 1.025 : 1
+
+                Behavior on scale {
+                    NumberAnimation { duration: 90 }
+                }
+
             BusyIndicator {
                 scale: 0.5
                 anchors.centerIn: parent
                 running: coverElement.status === Image.Loading
                 }
 
-            BorderImage {
-                anchors {
-                    top: coverElement.top
-                    left: coverElement.left
-                    right: coverElement.right
-                    bottom: coverElement.bottom
-                    margins: -6
+                BorderImage {
+                    anchors {
+                        top: coverElement.top
+                        left: coverElement.left
+                        right: coverElement.right
+                        bottom: coverElement.bottom
+                        margins: -6
+                    }
+                    border { left: 10; top: 10; right: 10; bottom: 10 }
+                    horizontalTileMode: BorderImage.Stretch
+                    verticalTileMode: BorderImage.Stretch
+                    source: "prerendered_cover_shadow.png"
+                    visible: showDropShadow
                 }
-                border { left: 10; top: 10; right: 10; bottom: 10 }
-                horizontalTileMode: BorderImage.Stretch
-                verticalTileMode: BorderImage.Stretch
-                source: "prerendered_cover_shadow.png"
-                visible: showDropShadow
-            }
 
                 Image {
                     id: coverElement
@@ -143,6 +152,7 @@ Rectangle {
                     asynchronous : true
                     cache: false
                 }
+
 
                 //mark
                 Image {

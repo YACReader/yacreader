@@ -2,12 +2,15 @@
     <qresource prefix="/">
         <file>qml/GridComicsView.qml</file>
         <file>qml/FolderContentView.qml</file>
+        <file>qml/FlowView.qml</file>
+        <file>qml/InfoTick.qml</file>
+        <file>qml/InfoFavorites.qml</file>
+        <file>qml/InfoRating.qml</file>
+        <file>qml/InfoComicsView.qml</file>
         <file>qml/tick.png</file>
         <file>qml/reading.png</file>
         <file>qml/star_menu.png</file>
         <file>qml/star_menu@2x.png</file>
-        <file>qml/InfoComicsView.qml</file>
-        <file>qml/FlowView.qml</file>
         <file>qml/info-indicator.png</file>
         <file>qml/info-shadow.png</file>
         <file>qml/info-indicator-light.png</file>
@@ -20,9 +23,6 @@
         <file>qml/info-rating.svg</file>
         <file>qml/info-tag.svg</file>
         <file>qml/info-tick.svg</file>
-        <file>qml/InfoTick.qml</file>
-        <file>qml/InfoFavorites.qml</file>
-        <file>qml/InfoRating.qml</file>
         <file>qml/prerendered_cover_shadow.png</file>
     </qresource>
 </RCC>

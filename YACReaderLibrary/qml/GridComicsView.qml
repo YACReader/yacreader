@@ -1,14 +1,16 @@
-import QtQuick 2.15
+import QtQuick
 
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.12
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import QtGraphicalEffects 1.0
+import QtQuick.Effects
 
 import com.yacreader.ComicModel 1.0
 
 import com.yacreader.ComicInfo 1.0
 import com.yacreader.ComicDB 1.0
+
+import QtQuick.Controls.Basic
 
 SplitView {
     orientation: Qt.Horizontal
@@ -31,14 +33,16 @@ SplitView {
             mipmap: true
             asynchronous : true
             cache: false //TODO clear cache only when it is needed
-            opacity: 0
+            layer.enabled: true
             visible: false
         }
 
-        FastBlur {
+        MultiEffect {
             anchors.fill: backgroundImg
             source: backgroundImg
-            radius: backgroundBlurRadius
+            blurEnabled: true
+            blur: 1.0
+            blurMax: 64
             opacity: backgroundBlurOpacity
             visible: backgroundBlurVisible
         }
@@ -377,30 +381,38 @@ SplitView {
                             comicsSelectionHelper.clear();
                             comicsSelectionHelper.selectIndex(index);
                             grid.currentIndex = index;
-                            ratingConextMenu.popup();
-                        }
-                    }
+                            ratingLoader.active = true;
+                            ratingLoader.item.popup();
+                           }
+                       }
 
-                    Menu {
-                        background: Rectangle {
-                            implicitWidth: 42
-                            implicitHeight: 100
-                            //border.color: "#222"
-                            //color: "#444"
-                        }
+                       Loader {
+                           id: ratingLoader
+                           active: false
+                           sourceComponent: ratingConextMenuComponent
+                       }
 
-                        id: ratingConextMenu
+                       Component {
+                           id: ratingConextMenuComponent
+                           Menu {
+                               background: Rectangle {
+                                   implicitWidth: 42
+                                   implicitHeight: 100
+                               }
 
-                        Action { text: "1"; enabled: true; onTriggered: comicRatingHelper.rate(index,1) }
-                        Action { text: "2"; enabled: true; onTriggered: comicRatingHelper.rate(index,2) }
-                        Action { text: "3"; enabled: true; onTriggered: comicRatingHelper.rate(index,3) }
-                        Action { text: "4"; enabled: true; onTriggered: comicRatingHelper.rate(index,4) }
-                        Action { text: "5"; enabled: true; onTriggered: comicRatingHelper.rate(index,5) }
+                               id: ratingConextMenu
 
-                        delegate: MenuItem {
-                            implicitHeight: 30
-                        }
-                    }
+                               Action { text: "1"; enabled: true; onTriggered: comicRatingHelper.rate(index,1) }
+                               Action { text: "2"; enabled: true; onTriggered: comicRatingHelper.rate(index,2) }
+                               Action { text: "3"; enabled: true; onTriggered: comicRatingHelper.rate(index,3) }
+                               Action { text: "4"; enabled: true; onTriggered: comicRatingHelper.rate(index,4) }
+                               Action { text: "5"; enabled: true; onTriggered: comicRatingHelper.rate(index,5) }
+
+                               delegate: MenuItem {
+                                   implicitHeight: 30
+                               }
+                           }
+                       }
                 }
 
                 //comic rating
@@ -462,17 +474,16 @@ SplitView {
                             mipmap: true
                             asynchronous : true
                             cache: false //TODO clear cache only when it is needed
-                        }
 
-                        DropShadow {
-                            anchors.fill: currentCoverElement
-                            horizontalOffset: 0
-                            verticalOffset: 0
-                            radius: 8.0
-                            samples: 17
-                            color: "#FF000000"
-                            source: currentCoverElement
-                            visible: showDropShadow;
+                            layer.enabled: showDropShadow
+                            layer.effect: MultiEffect {
+                                shadowEnabled: true
+                                shadowColor: "#FF000000"
+                                shadowBlur: 1.0
+                                blurMax: 8
+                                shadowHorizontalOffset: 0
+                                shadowVerticalOffset: 0
+                            }
                         }
 
                         ColumnLayout
@@ -503,7 +514,8 @@ SplitView {
                                 font.pixelSize: 21
                                 wrapMode: Text.WordWrap
 
-                                text: currentComic ? currentComic.getTitleIncludingNumber() : ""                            }
+                                text: currentComic?.getTitleIncludingNumber() ?? ""
+                            }
 
                             Flow {
                                 spacing: 0
@@ -615,6 +627,7 @@ SplitView {
 
                                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
+                                contentWidth: -1
                                 contentItem: currentComicInfoSinopsis
 
                                 id: synopsisScroller
@@ -645,6 +658,7 @@ SplitView {
                         }
 
                         Button {
+                            containmentMask: null
                             text: "Read"
                             id: readButton
                             x: currentCoverElement.anchors.rightMargin + currentCoverElement.paintedWidth + currentCoverElement.anchors.rightMargin
@@ -671,18 +685,16 @@ SplitView {
                                 color: "white"
                                 text: readButton.text
                             }
-                        }
 
-
-                        DropShadow {
-                            anchors.fill: readButton
-                            horizontalOffset: 0
-                            verticalOffset: 0
-                            radius: 8.0
-                            samples: 17
-                            color: "#AA000000"
-                            source: readButton
-                            visible: showDropShadow && !readButton.pressed
+                            layer.enabled: showDropShadow && !readButton.pressed
+                            layer.effect: MultiEffect {
+                                shadowEnabled: true
+                                shadowColor: "#AA000000"
+                                shadowBlur: 1.0
+                                blurMax: 8
+                                shadowHorizontalOffset: 0
+                                shadowVerticalOffset: 0
+                            }
                         }
                     }
                 }

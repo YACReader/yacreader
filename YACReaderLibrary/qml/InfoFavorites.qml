@@ -1,6 +1,6 @@
-import QtQuick 2.15
+import QtQuick
 
-import QtGraphicalEffects 1.0
+import QtQuick.Controls.impl
 
 Item {
     width: 20
@@ -17,15 +17,10 @@ Item {
         }
     }
 
-    Image {
+    ColorImage {
         anchors.centerIn: parent
         id: favorites_button_compact
         source: "info-favorites.svg"
-    }
-
-    ColorOverlay {
-        anchors.fill: favorites_button_compact
-        source: favorites_button_compact
         color: active ? favCheckedColor : favUncheckedColor
     }
 }

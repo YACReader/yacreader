@@ -1,8 +1,10 @@
-import QtQuick 2.15
+import QtQuick
 
-import QtQuick.Controls 2.15
+import QtQuick.Controls
 
 import com.yacreader.ComicModel 1.0
+
+import QtQuick.Controls.Basic
 
 Rectangle {
     id: main
