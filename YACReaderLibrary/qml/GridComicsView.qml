@@ -11,6 +11,7 @@ import com.yacreader.ComicInfo 1.0
 import com.yacreader.ComicDB 1.0
 
 import QtQuick.Controls.Basic
+import QtQuick.Controls.impl
 
 SplitView {
     orientation: Qt.Horizontal
@@ -315,7 +316,7 @@ SplitView {
                     id: mark
                     width: 23
                     height: 23
-                    source: read_column&&show_marks?"tick.png":has_been_opened&&show_marks?"reading.png":""
+                    source: read_column&&show_marks?"tick.svg":has_been_opened&&show_marks?"reading.svg":""
                     anchors {right: coverElement.right; top: coverElement.top; topMargin: 9; rightMargin: 9}
                     asynchronous : true
                 }
@@ -347,10 +348,11 @@ SplitView {
                 }
 
                 //page icon
-                Image {
+                ColorImage {
                     id: pageImage
-                    anchors {bottom: realCell.bottom; right: realCell.right; bottomMargin: 5; rightMargin: 4; leftMargin: 4}
-                    source: "page.png"
+                    anchors {bottom: realCell.bottom; right: realCell.right; bottomMargin: 6; rightMargin: 4; leftMargin: 4}
+                    source: "page.svg"
+                    color: textColor
                     width: 8
                     height: 10
                 }
@@ -367,11 +369,12 @@ SplitView {
                 }
 
                 //rating icon
-                Image {
+                ColorImage {
                     id: ratingImage
-                    anchors {bottom: realCell.bottom; right: pageImage.left; bottomMargin: 5; rightMargin: Math.floor(pages.width)+12}
-                    source: "star.png"
-                    width: 13
+                    anchors {bottom: realCell.bottom; right: pageImage.left; bottomMargin: 6.5; rightMargin: Math.floor(pages.width)+12}
+                    source: "star.svg"
+                    color: textColor
+                    width: 11
                     height: 11
 
                     MouseArea  {

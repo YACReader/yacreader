@@ -7,10 +7,10 @@
         <file>qml/InfoFavorites.qml</file>
         <file>qml/InfoRating.qml</file>
         <file>qml/InfoComicsView.qml</file>
-        <file>qml/tick.png</file>
-        <file>qml/reading.png</file>
-        <file>qml/star_menu.png</file>
-        <file>qml/star_menu@2x.png</file>
+        <file>qml/tick.svg</file>
+        <file>qml/reading.svg</file>
+        <file>qml/star.svg</file>
+        <file>qml/page.svg</file>
         <file>qml/info-indicator.png</file>
         <file>qml/info-shadow.png</file>
         <file>qml/info-indicator-light.png</file>
