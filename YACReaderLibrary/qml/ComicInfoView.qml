@@ -80,7 +80,8 @@ Rectangle {
                 Layout.topMargin: topMargin
 
                 InfoTick {
-                    Layout.alignment: Qt.AlignVCenter | Qt.AlignLeft
+                    Layout.alignment: Qt.AlignTop | Qt.AlignLeft
+                    Layout.topMargin: 5
 
                     read: comicInfo ? comicInfo.read ?? false : false
 
@@ -95,7 +96,7 @@ Rectangle {
                 }
 
                 InfoFavorites {
-                    Layout.topMargin: 1
+                    Layout.topMargin: 2
                     Layout.rightMargin: 17
                     Layout.alignment: Qt.AlignTop
 
