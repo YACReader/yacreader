@@ -1,4 +1,34 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS builder
+FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS base
+
+# ============================================================================
+# Stage: sevenzip-builder
+# ============================================================================
+FROM base AS sevenzip-builder
+
+# get 7zip source
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+       7zip \
+       build-essential \
+       make \
+       wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN cd /tmp && \
+    wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O 7z2301-src.7z && \
+    7z x 7z2301-src.7z -o/tmp/lib7zip
+
+# install 7z.so with RAR support
+RUN cd "/tmp/lib7zip/CPP/7zip/Bundles/Format7zF" && \
+    make -f makefile.gcc && \
+    mkdir -p /app/lib/7zip && \
+    cp ./_o/7z.so /app/lib/7zip
+
+# ============================================================================
+# Stage: yacreader-builder
+# ============================================================================
+FROM base AS yacreader-builder
 
 # version, it can be a TAG or a branch
 ARG YACR_VERSION="develop"
@@ -54,16 +84,14 @@ RUN \
        zlib1g-dev && \
     ldconfig
 
-
 # clone YACReader repo
 RUN git clone https://github.com/YACReader/yacreader.git /src/git && \
     cd /src/git && \
     git checkout $YACR_VERSION
 
-# get 7zip source
-RUN cd /src/git/compressed_archive && \
-    wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O /src/git/compressed_archive/7z2301-src.7z && \
-    7z x /src/git/compressed_archive/7z2301-src.7z -o/src/git/compressed_archive/lib7zip 
+# Copy pre-built 7z from sevenzip-builder stage
+COPY --from=sevenzip-builder /tmp/lib7zip /src/git/compressed_archive/lib7zip
+COPY --from=sevenzip-builder /app/lib/7zip /app/lib/7zip
 
 # build yacreaderlibraryserver
 RUN cd /src/git/YACReaderLibraryServer && \
@@ -72,15 +100,10 @@ RUN cd /src/git/YACReaderLibraryServer && \
     make  && \
     make install
 
-# install 7z.so with RAR support
-RUN echo "Building and installing 7z.so with RAR support..." && \
-    cd "/src/git/compressed_archive/lib7zip/CPP/7zip/Bundles/Format7zF" && \
-    make -f makefile.gcc && \
-    mkdir -p /app/lib/7zip && \
-    cp ./_o/7z.so /app/lib/7zip    
-
-# Stage 2: Runtime stage
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble
+# ============================================================================
+# Stage: runtime
+# ============================================================================
+FROM base AS runtime
 
 # env variables
 ENV APPNAME="YACReaderLibraryServer"
@@ -88,7 +111,7 @@ ENV HOME="/config"
 LABEL maintainer="luisangelsm"
 
 # Copy the built application from the builder stage
-COPY --from=builder /app /app
+COPY --from=yacreader-builder /app /app
 
 # runtime packages
 RUN apt-get update && \
@@ -106,7 +129,7 @@ ENV LC_ALL="en_US.UTF-8" \
     PATH="/app/bin:${PATH}"
 
 # copy files
-COPY root.tar.gz /
+COPY docker/root.tar.gz /
 # Extract the contents of root.tar.gz into the / directory
 RUN tar -xvpzf /root.tar.gz -C /
 
