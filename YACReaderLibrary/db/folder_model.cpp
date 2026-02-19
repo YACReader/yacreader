@@ -10,48 +10,47 @@
 #include "yacreader_global_gui.h"
 
 #include <QtGui>
+#include <QFileIconProvider>
 
 #include <algorithm>
 
 using namespace YACReader;
 
-#ifdef Y_MAC_UI
-#include <QFileIconProvider>
-QIcon finishedFolderIcon;
-void drawMacOSXFinishedFolderIcon()
+QIcon drawFinishedFolderIcon(const QPixmap &overlay)
 {
+    QIcon finishedIcon;
     QIcon ico = QFileIconProvider().icon(QFileIconProvider::Folder);
     QPixmap pixNormalOff = ico.pixmap(16, 16, QIcon::Normal, QIcon::Off);
     QPixmap pixNormalOn = ico.pixmap(16, 16, QIcon::Normal, QIcon::On);
     QPixmap pixSelectedOff = ico.pixmap(16, 16, QIcon::Selected, QIcon::Off);
     QPixmap pixSelectedOn = ico.pixmap(16, 16, QIcon::Selected, QIcon::On);
-    QPixmap tick(":/images/folder_finished_macosx.png");
 
     {
         QPainter p(&pixNormalOff);
-        p.drawPixmap(4, 7, tick);
+        p.drawPixmap(4, 7, overlay);
     }
-    finishedFolderIcon.addPixmap(pixNormalOff, QIcon::Normal, QIcon::Off);
+    finishedIcon.addPixmap(pixNormalOff, QIcon::Normal, QIcon::Off);
 
     {
         QPainter p(&pixNormalOn);
-        p.drawPixmap(4, 7, tick);
+        p.drawPixmap(4, 7, overlay);
     }
-    finishedFolderIcon.addPixmap(pixNormalOn, QIcon::Normal, QIcon::On);
+    finishedIcon.addPixmap(pixNormalOn, QIcon::Normal, QIcon::On);
 
     {
         QPainter p(&pixSelectedOff);
-        p.drawPixmap(4, 7, tick);
+        p.drawPixmap(4, 7, overlay);
     }
-    finishedFolderIcon.addPixmap(pixSelectedOff, QIcon::Selected, QIcon::Off);
+    finishedIcon.addPixmap(pixSelectedOff, QIcon::Selected, QIcon::Off);
 
     {
         QPainter p(&pixSelectedOn);
-        p.drawPixmap(4, 7, tick);
+        p.drawPixmap(4, 7, overlay);
     }
-    finishedFolderIcon.addPixmap(pixSelectedOn, QIcon::Selected, QIcon::On);
+    finishedIcon.addPixmap(pixSelectedOn, QIcon::Selected, QIcon::On);
+
+    return finishedIcon;
 }
-#endif
 
 #define ROOT 1
 
@@ -132,8 +131,22 @@ FolderItem *createRoot(QSqlDatabase &db)
 }
 
 FolderModel::FolderModel(QObject *parent)
-    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), folderIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg")), folderFinishedIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.svg")), showRecent(false), recentDays(1)
+    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), showRecent(false), recentDays(1)
 {
+    initTheme(this);
+}
+
+void FolderModel::applyTheme(const Theme &theme)
+{
+    const auto &sidebarIcons = theme.sidebarIcons;
+
+    if (sidebarIcons.useSystemFolderIcons) {
+        folderIcon = QFileIconProvider().icon(QFileIconProvider::Folder);
+        folderFinishedIcon = drawFinishedFolderIcon(sidebarIcons.folderReadOverlay);
+    } else {
+        folderIcon = sidebarIcons.folderIcon;
+        folderFinishedIcon = sidebarIcons.folderFinishedIcon;
+    }
 }
 
 FolderModel::~FolderModel()
@@ -368,22 +381,10 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == Qt::DecorationRole) {
-#ifdef Y_MAC_UI
-        if (item->data(FolderModel::Finished).toBool()) {
-            if (finishedFolderIcon.isNull()) {
-                drawMacOSXFinishedFolderIcon();
-            }
-
-            return QVariant(finishedFolderIcon);
-        } else {
-            return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder));
-        }
-#else
         if (item->data(FolderModel::Finished).toBool())
             return QVariant(folderFinishedIcon);
         else
             return QVariant(folderIcon);
-#endif
     }
 
     if (role == FolderModel::FolderNameRole) {

@@ -2804,19 +2804,6 @@ Migliora le prestazioni!</translation>
     </message>
 </context>
 <context>
-    <name>YACReaderDeletingProgress</name>
-    <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="35"/>
-        <source>cancel</source>
-        <translation>Cancella</translation>
-    </message>
-    <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="20"/>
-        <source>Please wait, deleting in progress...</source>
-        <translation>Aspetta, cancellazione in corso...</translation>
-    </message>
-</context>
-<context>
     <name>YACReaderFieldEdit</name>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>

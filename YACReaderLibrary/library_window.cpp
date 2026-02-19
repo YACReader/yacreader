@@ -54,7 +54,6 @@
 
 #include "comic_vine_dialog.h"
 #include "api_key_dialog.h"
-// #include "yacreader_social_dialog.h"
 
 #include "comics_view.h"
 
@@ -84,6 +83,8 @@
 #include "recent_visibility_coordinator.h"
 
 #include "cover_utils.h"
+
+#include "theme_manager.h"
 
 #include "QsLog.h"
 
@@ -233,25 +234,28 @@ void LibraryWindow::setupUI()
         showMaximized();
 
     trayIconController = new TrayIconController(settings, this);
+
+    initTheme(this);
+}
+
+void LibraryWindow::applyTheme(const Theme &theme)
+{
+    editInfoToolBar->setStyleSheet(theme.comicsViewToolbar.toolbarQSS);
+    mainSplitter->setStyleSheet(theme.contentSplitter.horizontalSplitterQSS);
+
+    // Update main toolbar and comics view toolbar icons
+    actions.updateTheme(theme);
 }
 
 void LibraryWindow::doLayout()
 {
     // LAYOUT ELEMENTS------------------------------------------------------------
-    auto sHorizontal = new QSplitter(Qt::Horizontal); // spliter principal
-#ifdef Y_MAC_UI
-    sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
-#else
-    sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
-#endif
+    mainSplitter = new QSplitter(Qt::Horizontal); // spliter principal
+    auto sHorizontal = mainSplitter; // Keep local alias for existing code
 
     // TOOLBARS-------------------------------------------------------------------
     //---------------------------------------------------------------------------
     editInfoToolBar = new QToolBar();
-    editInfoToolBar->setStyleSheet(R"(
-        QToolBar { border: none; }
-        QToolButton:checked { background-color: #cccccc; }
-    )");
 
 #ifdef Y_MAC_UI
     libraryToolBar = new YACReaderMacOSXToolbar(this);
@@ -1402,12 +1406,14 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
 {
     QMenu menu;
 
+    const auto &menuIcons = theme.menuIcons;
+
     auto openContainingFolderAction = new QAction();
     openContainingFolderAction->setText(tr("Open folder..."));
-    openContainingFolderAction->setIcon(QIcon(":/images/menus_icons/open_containing_folder.svg"));
+    openContainingFolderAction->setIcon(menuIcons.openContainingFolderIcon);
 
     auto updateFolderAction = new QAction(tr("Update folder"), this);
-    updateFolderAction->setIcon(QIcon(":/images/menus_icons/update_current_folder.svg"));
+    updateFolderAction->setIcon(menuIcons.updateCurrentFolderIcon);
 
     auto rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), this);
 
@@ -1563,7 +1569,7 @@ void LibraryWindow::showContinueReadingContextMenu(QPoint point, ComicDB comic)
 
     auto setAsUnReadAction = new QAction();
     setAsUnReadAction->setText(tr("Set as unread"));
-    setAsUnReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setUnread.svg"));
+    setAsUnReadAction->setIcon(theme.comicsViewToolbar.setAsUnreadIcon);
 
     menu.addAction(setAsUnReadAction);
 
@@ -2641,19 +2647,6 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 
     menu.exec(foldersView->mapToGlobal(point));
 }
-
-/*
-void LibraryWindow::showSocial()
-{
-        socialDialog->move(this->mapToGlobal(QPoint(width()-socialDialog->width()-10, centralWidget()->pos().y()+10)));
-
-        QModelIndexList indexList = getSelectedComics();
-
-        ComicDB comic = dmCV->getComic(indexList.at(0));
-
-        socialDialog->setComic(comic,currentPath());
-        socialDialog->setHidden(false);
-}*/
 
 void LibraryWindow::libraryAlreadyExists(const QString &name)
 {

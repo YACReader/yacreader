@@ -11,42 +11,45 @@
 
 #include "ip_config_helper.h"
 #include "qrcodegen.hpp"
+#include "theme_manager.h"
 
 extern YACReaderHttpServer *httpServer;
 
 ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     : QDialog(parent)
 {
+    // Background decoration (SVG on left side)
+    backgroundDecoration = new QLabel(this);
+    backgroundDecoration->move(0, 0);
+    backgroundDecoration->setFixedSize(329, 595);
+    backgroundDecoration->setScaledContents(true);
+
     accept = new QPushButton(tr("set port"), this);
+
     qrCode = new QLabel(this);
     qrCode->move(64, 112);
     qrCode->setFixedSize(200, 200);
     qrCode->setScaledContents(true);
 
-    QLabel *title1 = new QLabel(tr("Server connectivity information"), this);
-    title1->move(332, 61);
-    title1->setStyleSheet("QLabel {color:#474747; font-size:30px; font-family: Arial;}");
+    titleLabel = new QLabel(tr("Server connectivity information"), this);
+    titleLabel->move(332, 61);
 
-    QLabel *qrMessage = new QLabel(tr("Scan it!"), this);
-    qrMessage->move(135, 388); // 373,627);
-    qrMessage->setStyleSheet("QLabel {color:#A3A3A3; font-size:18px; font-family: Arial;}");
-    qrMessage->setWordWrap(true);
-    qrMessage->setFixedWidth(200);
+    qrMessageLabel = new QLabel(tr("Scan it!"), this);
+    qrMessageLabel->move(135, 388);
+    qrMessageLabel->setWordWrap(true);
+    qrMessageLabel->setFixedWidth(200);
 
-    QLabel *propaganda = new QLabel(tr("YACReader is available for iOS and Android devices.<br/>Discover it for <a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'>iOS</a> or <a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'>Android</a>."), this);
-    propaganda->move(332, 505);
-    propaganda->setStyleSheet("QLabel {color:#4D4D4D; font-size:13px; font-family: Arial; font-style: italic;}");
-    propaganda->setOpenExternalLinks(true);
+    propagandaLabel = new QLabel(tr("YACReader is available for iOS and Android devices.<br/>Discover it for <a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'>iOS</a> or <a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'>Android</a>."), this);
+    propagandaLabel->move(332, 505);
+    propagandaLabel->setOpenExternalLinks(true);
 
     // FORM---------------------------------------------------------------------
 
-    QLabel *ipLabel = new QLabel(tr("Choose an IP address"), this);
+    ipLabel = new QLabel(tr("Choose an IP address"), this);
     ipLabel->move(332, 117);
-    ipLabel->setStyleSheet("QLabel {color:#575757; font-size:18px; font-family: Arial;}");
 
-    QLabel *portLabel = new QLabel(tr("Port"), this);
+    portLabel = new QLabel(tr("Port"), this);
     portLabel->move(332, 211);
-    portLabel->setStyleSheet("QLabel {color:#575757; font-size:18px; font-family: Arial;}");
 
     ip = new QComboBox(this);
     connect(ip, &QComboBox::currentTextChanged, this, &ServerConfigDialog::regenerateQR);
@@ -78,15 +81,8 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     check = new QCheckBox(this);
     check->move(332, 314);
     check->setText(tr("enable the server"));
-    check->setStyleSheet("QCheckBox {color:#262626; font-size:13px; font-family: Arial;}");
 
-    QPalette palette;
-    QImage image(":/images/serverConfigBackground.png");
-    palette.setBrush(this->backgroundRole(), QBrush(image));
-
-    setPalette(palette);
-
-    this->setFixedSize(image.size());
+    this->setFixedSize(770, 595);
 
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings->beginGroup("libraryConfig");
@@ -105,6 +101,28 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     settings->endGroup();
 
     connect(check, &QCheckBox::stateChanged, this, &ServerConfigDialog::enableServer);
+
+    // Initialize theme
+    initTheme(this);
+}
+
+void ServerConfigDialog::applyTheme(const Theme &theme)
+{
+    // Apply pre-built QSS from theme
+    setStyleSheet(theme.serverConfigDialog.dialogQSS);
+    titleLabel->setStyleSheet(theme.serverConfigDialog.titleLabelQSS);
+    qrMessageLabel->setStyleSheet(theme.serverConfigDialog.qrMessageLabelQSS);
+    propagandaLabel->setStyleSheet(theme.serverConfigDialog.propagandaLabelQSS);
+    ipLabel->setStyleSheet(theme.serverConfigDialog.labelQSS);
+    portLabel->setStyleSheet(theme.serverConfigDialog.labelQSS);
+    check->setStyleSheet(theme.serverConfigDialog.checkBoxQSS);
+
+    // Set background decoration (SVG on left)
+    backgroundDecoration->setPixmap(theme.serverConfigDialog.backgroundDecoration);
+    backgroundDecoration->lower(); // Send to back so other widgets appear on top
+
+    // Regenerate QR code with new theme colors
+    generateQR();
 }
 
 void ServerConfigDialog::showEvent(QShowEvent *event)
@@ -156,16 +174,22 @@ void ServerConfigDialog::generateQR(const QString &serverAddress)
 {
     qrCode->clear();
 
+    auto backgroundColor = theme.serverConfigDialog.qrBackgroundColor;
+    auto foregroundColor = theme.serverConfigDialog.qrForegroundColor;
+
     qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(
             serverAddress.toLocal8Bit(),
             qrcodegen::QrCode::Ecc::LOW);
 
-    QBitmap image(code.getSize(), code.getSize());
-    image.fill();
-    QPainter painter;
-    painter.begin(&image);
-    for (int x = 0; x < code.getSize(); x++) {
-        for (int y = 0; y < code.getSize(); y++) {
+    int qrSize = code.getSize();
+    QPixmap qrPixmap(qrSize, qrSize);
+    qrPixmap.fill(backgroundColor);
+
+    QPainter painter(&qrPixmap);
+    painter.setPen(foregroundColor);
+    painter.setBrush(foregroundColor);
+    for (int x = 0; x < qrSize; x++) {
+        for (int y = 0; y < qrSize; y++) {
             if (code.getModule(x, y)) {
                 painter.drawPoint(x, y);
             }
@@ -173,14 +197,11 @@ void ServerConfigDialog::generateQR(const QString &serverAddress)
     }
     painter.end();
 
-    image = image.scaled(qrCode->size() * devicePixelRatioF());
+    // Scale to label size
+    qrPixmap = qrPixmap.scaled(qrCode->size() * devicePixelRatioF(), Qt::KeepAspectRatio, Qt::FastTransformation);
+    qrPixmap.setDevicePixelRatio(devicePixelRatioF());
 
-    QPixmap pMask(image.size());
-    pMask.fill(QColor(66, 66, 66));
-    pMask.setMask(image.createMaskFromColor(Qt::white));
-    pMask.setDevicePixelRatio(devicePixelRatioF());
-
-    qrCode->setPixmap(pMask);
+    qrCode->setPixmap(qrPixmap);
 }
 
 void ServerConfigDialog::regenerateQR(const QString &ip)

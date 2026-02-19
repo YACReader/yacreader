@@ -3,10 +3,15 @@
 
 #include <QCheckBox>
 
-class ScraperCheckBox : public QCheckBox
+#include "themable.h"
+
+class ScraperCheckBox : public QCheckBox, protected Themable
 {
 public:
     ScraperCheckBox(const QString &text, QWidget *parent = nullptr);
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SCRAPER_CHECKBOX_H

@@ -40,6 +40,16 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
     resize(static_cast<int>(5 * imageSize.width()), toolBar->height() + static_cast<int>(imageSize.height() * 1.7));
 
     this->setCursor(QCursor(Qt::ArrowCursor));
+
+    initTheme(this);
+}
+
+void GoToFlowWidget::applyTheme(const Theme &theme)
+{
+    auto goToFlowTheme = theme.goToFlowWidget;
+
+    flow->setBackgroundColor(goToFlowTheme.flowBackgroundColor);
+    flow->setTextColor(goToFlowTheme.flowTextColor);
 }
 
 GoToFlowWidget::~GoToFlowWidget()

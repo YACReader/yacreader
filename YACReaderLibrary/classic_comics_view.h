@@ -2,6 +2,7 @@
 #define CLASSIC_COMICS_VIEW_H
 
 #include "comics_view.h"
+#include "themable.h"
 
 #include <QModelIndex>
 #include <QModelIndexList>
@@ -15,11 +16,14 @@ class ComicModel;
 class YACReaderTableView;
 class YACReaderToolBarStretch;
 
-class ClassicComicsView : public ComicsView
+class ClassicComicsView : public ComicsView, protected Themable
 {
     Q_OBJECT
 public:
     explicit ClassicComicsView(QWidget *parent = nullptr);
+
+protected:
+    void applyTheme(const Theme &theme) override;
     void setToolBar(QToolBar *toolBar) override;
     void setModel(ComicModel *model) override;
 
@@ -69,6 +73,7 @@ private:
 
     QByteArray previousSplitterStatus;
     QWidget *searchingIcon;
+    QLabel *searchingIconLabel;
     bool searching;
     void setupSearchingIcon();
     void showSearchingIcon();

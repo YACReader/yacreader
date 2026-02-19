@@ -14,10 +14,25 @@ ComicFlowWidget::ComicFlowWidget(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
 
-    QPalette Pal(palette());
-    Pal.setColor(QPalette::Window, Qt::black);
     setAutoFillBackground(true);
-    setPalette(Pal);
+
+    initTheme(this);
+}
+
+void ComicFlowWidget::applyTheme(const Theme &theme)
+{
+    setBackgroundColor(theme.comicFlow.backgroundColor);
+    setTextColor(theme.comicFlow.textColor);
+}
+
+void ComicFlowWidget::setBackgroundColor(const QColor &color)
+{
+    flow->setBackgroundColor(color);
+}
+
+void ComicFlowWidget::setTextColor(const QColor &color)
+{
+    flow->setTextColor(color);
 }
 
 QSize ComicFlowWidget::minimumSizeHint() const

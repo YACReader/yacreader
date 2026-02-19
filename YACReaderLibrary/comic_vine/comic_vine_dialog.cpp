@@ -38,6 +38,8 @@ ComicVineDialog::ComicVineDialog(QWidget *parent)
     doLayout();
     doStackedWidgets();
     doConnections();
+
+    initTheme(this);
 }
 
 void ComicVineDialog::closeEvent(QCloseEvent *event)
@@ -49,12 +51,6 @@ void ComicVineDialog::closeEvent(QCloseEvent *event)
 
 void ComicVineDialog::doLayout()
 {
-    setStyleSheet(""
-                  "QDialog {background-color: #404040; }"
-                  "");
-
-    QString dialogButtonsStyleSheet = "QPushButton {border: 1px solid #242424; background: #2e2e2e; color:white; padding: 5px 26px 5px 26px; font-size:12px;font-family:Arial; font-weight:bold;}";
-
     skipButton = new QPushButton(tr("skip"));
     backButton = new QPushButton(tr("back"));
     nextButton = new QPushButton(tr("next"));
@@ -65,12 +61,6 @@ void ComicVineDialog::doLayout()
 
     closeButton->setDefault(false);
     closeButton->setAutoDefault(false);
-
-    skipButton->setStyleSheet(dialogButtonsStyleSheet);
-    backButton->setStyleSheet(dialogButtonsStyleSheet);
-    nextButton->setStyleSheet(dialogButtonsStyleSheet);
-    searchButton->setStyleSheet(dialogButtonsStyleSheet);
-    closeButton->setStyleSheet(dialogButtonsStyleSheet);
 
     content = new QStackedWidget(this);
 
@@ -274,13 +264,11 @@ void ComicVineDialog::doLoading()
     QWidget *w = new QWidget;
     auto l = new QVBoxLayout;
 
-    auto bw = new YACReaderBusyWidget;
+    busyWidget = new YACReaderBusyWidget;
     loadingMessage = new QLabel;
 
-    loadingMessage->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
-
     l->addStretch();
-    l->addWidget(bw, 0, Qt::AlignHCenter);
+    l->addWidget(busyWidget, 0, Qt::AlignHCenter);
     l->addStretch();
     l->addWidget(loadingMessage);
 
@@ -665,4 +653,20 @@ void ComicVineDialog::launchSearchComic()
 
     // if(comicInfo.isEmpty() && comicNumber == -1)
     searchVolume({ volumeInfo, 1, exactMatch });
+}
+
+void ComicVineDialog::applyTheme(const Theme &theme)
+{
+    auto comicVineTheme = theme.comicVine;
+
+    setStyleSheet(comicVineTheme.dialogQSS);
+
+    skipButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
+    backButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
+    nextButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
+    searchButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
+    closeButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
+
+    loadingMessage->setStyleSheet(comicVineTheme.defaultLabelQSS);
+    busyWidget->setColor(comicVineTheme.busyIndicatorColor);
 }

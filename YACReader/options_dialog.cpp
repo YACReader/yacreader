@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QColorDialog>
 #include <QCheckBox>
+#include "theme_manager.h"
 
 #include "yacreader_spin_slider_widget.h"
 #include "yacreader_3d_flow_config_widget.h"
@@ -32,7 +33,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     auto path = new QHBoxLayout();
     path->addWidget(pathEdit = new QLineEdit());
-    path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"), ""));
+    path->addWidget(pathFindButton = new QPushButton(""));
     pathBox->setLayout(path);
 
     QGroupBox *displayBox = new QGroupBox(tr("Display"));
@@ -65,10 +66,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     // backgroundColor->setMinimumWidth(100);
     colorSelection->addWidget(backgroundColor);
     colorSelection->addWidget(selectBackgroundColorButton = new QPushButton(tr("Choose")));
+    colorSelection->addWidget(clearBackgroundColorButton = new QPushButton(tr("Clear")));
     colorSelection->setStretchFactor(backgroundColor, 1);
     colorSelection->setStretchFactor(selectBackgroundColorButton, 0);
     // colorSelection->addStretch();
     connect(selectBackgroundColorButton, &QAbstractButton::clicked, this, &OptionsDialog::showColorDialog);
+    connect(clearBackgroundColorButton, &QAbstractButton::clicked, this, &OptionsDialog::clearBackgroundColor);
     colorBox->setLayout(colorSelection);
 
     auto scrollBox = new QGroupBox(tr("Scroll behaviour"));
@@ -220,6 +223,13 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     setWindowTitle(tr("Options"));
 
     this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+
+    initTheme(this);
+}
+
+void OptionsDialog::applyTheme(const Theme &theme)
+{
+    pathFindButton->setIcon(theme.dialogIcons.findFolderIcon);
 }
 
 void OptionsDialog::findFolder()
@@ -244,7 +254,11 @@ void OptionsDialog::saveOptions()
 
     Configuration::getConfiguration().setShowTimeInInformation(showTimeInInformationLabel->isChecked());
 
-    settings->setValue(BACKGROUND_COLOR, currentColor);
+    if (currentColor != theme.viewer.defaultBackgroundColor) {
+        settings->setValue(BACKGROUND_COLOR, currentColor);
+    } else {
+        settings->remove(BACKGROUND_COLOR);
+    }
     // settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
     settings->setValue(QUICK_NAVI_MODE, quickNavi->isChecked());
     settings->setValue(DISABLE_MOUSE_OVER_GOTO_FLOW, disableShowOnMouseOver->isChecked());
@@ -278,7 +292,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     showTimeInInformationLabel->setChecked(Configuration::getConfiguration().getShowTimeInInformation());
 
-    updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
+    updateColor(settings->value(BACKGROUND_COLOR, theme.viewer.defaultBackgroundColor).value<QColor>());
     // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 
     quickNavi->setChecked(settings->value(QUICK_NAVI_MODE).toBool());
@@ -323,8 +337,6 @@ void OptionsDialog::updateColor(const QColor &color)
     backgroundColor->setPalette(pal);
     backgroundColor->setAutoFillBackground(true);
     currentColor = color;
-
-    settings->setValue(BACKGROUND_COLOR, color);
 
     emit changedOptions();
 }
@@ -391,4 +403,11 @@ void OptionsDialog::setFilters(int brightness, int contrast, int gamma)
         gammaS->setValue(gamma);
     else
         gammaS->setValue(100);
+}
+
+void OptionsDialog::clearBackgroundColor()
+{
+    settings->remove(BACKGROUND_COLOR);
+
+    updateColor(theme.viewer.defaultBackgroundColor);
 }

@@ -25,27 +25,13 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     readingListsView = new YACReaderReadingListsView;
     selectedLibrary = new YACReaderLibraryListWidget;
 
-#ifdef Y_MAC_UI
-    librariesTitle = new YACReaderTitledToolBar(tr("Libraries"));
-    foldersTitle = new YACReaderTitledToolBar(tr("Folders"));
-    readingListsTitle = new YACReaderTitledToolBar(tr("Reading Lists"));
-#else
-    librariesTitle = new YACReaderTitledToolBar(tr("LIBRARIES"));
-    foldersTitle = new YACReaderTitledToolBar(tr("FOLDERS"));
-    readingListsTitle = new YACReaderTitledToolBar(tr("READING LISTS"));
-#endif
+    // Titles will be set from theme in applyTheme
+    librariesTitle = new YACReaderTitledToolBar("");
+    foldersTitle = new YACReaderTitledToolBar("");
+    readingListsTitle = new YACReaderTitledToolBar("");
 
     splitter = new QSplitter(this);
     splitter->setOrientation(Qt::Vertical);
-
-#ifndef Y_MAC_UI
-    splitter->setStyleSheet("QSplitter::handle { "
-                            " image: none; background-color = black; "
-                            " }"
-                            "QSplitter::handle:vertical { height: 39px;}");
-#else
-    splitter->setStyleSheet("QSplitter::handle:vertical { height: 26px; background-color: transparent;}");
-#endif
 
     selectedLibrary->setContextMenuPolicy(Qt::ActionsContextMenu);
     selectedLibrary->setAttribute(Qt::WA_MacShowFocusRect, false);
@@ -57,24 +43,18 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
 
     // LIBRARIES-------------------------------------------------------
-#ifndef Y_MAC_UI
     l->addSpacing(5);
-#endif
 
     l->addWidget(librariesTitle);
 
-#ifndef Y_MAC_UI
     l->addSpacing(4);
-    l->addWidget(new YACReaderSideBarSeparator(this));
+    auto sep1 = new YACReaderSideBarSeparator(this);
+    separators.append(sep1);
+    l->addWidget(sep1);
     l->addSpacing(3);
-#endif
 
     l->addWidget(selectedLibrary);
-#ifndef Y_MAC_UI
     l->addSpacing(11);
-#else
-    l->addSpacing(6);
-#endif
 
     // END LIBRARIES---------------------------------------------------
 
@@ -84,23 +64,18 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     foldersLayout->setContentsMargins(0, 0, 0, 0);
     foldersLayout->setSpacing(0);
 
-#ifndef Y_MAC_UI
-    // foldersLayout->addSpacing(6);
-
-    // foldersLayout->addSpacing(5);
-    foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
+    auto sep2 = new YACReaderSideBarSeparator(this);
+    separators.append(sep2);
+    foldersLayout->addWidget(sep2);
     foldersLayout->addSpacing(4);
-#else
-    // foldersLayout->addSpacing(6);
-#endif
 
     foldersLayout->addWidget(foldersTitle);
 
-#ifndef Y_MAC_UI
     foldersLayout->addSpacing(4);
-    foldersLayout->addWidget(new YACReaderSideBarSeparator(this));
+    auto sep3 = new YACReaderSideBarSeparator(this);
+    separators.append(sep3);
+    foldersLayout->addWidget(sep3);
     foldersLayout->addSpacing(4);
-#endif
 
     foldersLayout->addWidget(foldersView);
     foldersLayout->addSpacing(6);
@@ -116,28 +91,21 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     readingListsHeaderLayout->setContentsMargins(0, 0, 0, 0);
     readingListsHeaderLayout->setSpacing(0);
 
-#ifndef Y_MAC_UI
-    // readingListsHeaderLayout->addSpacing(6);
-
-    // readingListsHeaderLayout->addSpacing(5);
-    readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
+    auto sep4 = new YACReaderSideBarSeparator(this);
+    separators.append(sep4);
+    readingListsHeaderLayout->addWidget(sep4);
     readingListsHeaderLayout->addSpacing(4);
-#else
-    // readingListsHeaderLayout->addSpacing(6);
-#endif
 
     readingListsHeaderLayout->addWidget(readingListsTitle);
 
-#ifndef Y_MAC_UI
     readingListsHeaderLayout->addSpacing(4);
-    readingListsHeaderLayout->addWidget(new YACReaderSideBarSeparator(this));
+    auto sep5 = new YACReaderSideBarSeparator(this);
+    separators.append(sep5);
+    readingListsHeaderLayout->addWidget(sep5);
     readingListsHeaderLayout->addSpacing(4);
-#endif
 
-    // readingListsLayout->addWidget(readingListsView);
     readingListsHeaderLayout->addStretch();
     QSplitterHandle *handle = splitter->handle(1);
-    // handle->setCursor(QCursor(Qt::ArrowCursor));
     handle->setLayout(readingListsHeaderLayout);
     // END READING LISTS------------------------------------------------
 
@@ -148,30 +116,16 @@ YACReaderSideBar::YACReaderSideBar(QWidget *parent)
 
     if (settings->contains(SIDEBAR_SPLITTER_STATUS))
         splitter->restoreState(settings->value(SIDEBAR_SPLITTER_STATUS).toByteArray());
+
+    initTheme(this);
 }
 
 void YACReaderSideBar::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event)
 
-#ifdef Y_MAC_UI
     QPainter painter(this);
-
-    painter.fillRect(0, 0, width(), height(), QColor("#F1F1F1"));
-#else
-    QPainter painter(this);
-
-    painter.fillRect(0, 0, width(), height(), QColor("#454545"));
-    // QWidget::paintEvent(event);
-#endif
-
-    // QPixmap shadow(":/images/side_bar/shadow.png");
-    // painter.drawPixmap(width()-shadow.width(),0,shadow.width(),height(),shadow);
-
-    //   painter.setRenderHint(QPainter::Antialiasing);
-    // painter.drawLine(rect().topLeft(), rect().bottomRight());
-
-    // QWidget::paintEvent(event);
+    painter.fillRect(0, 0, width(), height(), theme.sidebar.backgroundColor);
 }
 
 void YACReaderSideBar::closeEvent(QCloseEvent *event)
@@ -186,10 +140,33 @@ QSize YACReaderSideBar::sizeHint() const
     return QSize(275, 200);
 }
 
+void YACReaderSideBar::applyTheme(const Theme &theme)
+{
+    splitter->setStyleSheet(theme.sidebar.splitterQSS);
+
+    // Titles are per-instance, toolbars handle their own colors via Themable
+    auto applyCase = [&](const QString &s) { return theme.sidebar.uppercaseLabels ? s.toUpper() : s; };
+    librariesTitle->setTitle(applyCase(QObject::tr("Libraries")));
+    foldersTitle->setTitle(applyCase(QObject::tr("Folders")));
+    readingListsTitle->setTitle(applyCase(QObject::tr("Reading Lists")));
+
+    for (auto separator : separators) {
+        separator->setColor(theme.sidebar.sectionSeparatorColor);
+    }
+
+    update(); // Trigger repaint for background color
+}
+
 YACReaderSideBarSeparator::YACReaderSideBarSeparator(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), separatorColor(QColor("#575757"))
 {
     setFixedHeight(1);
+}
+
+void YACReaderSideBarSeparator::setColor(const QColor &color)
+{
+    separatorColor = color;
+    update();
 }
 
 void YACReaderSideBarSeparator::paintEvent(QPaintEvent *event)
@@ -198,5 +175,5 @@ void YACReaderSideBarSeparator::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
 
-    painter.fillRect(5, 0, width() - 10, height(), QColor("#575757"));
+    painter.fillRect(5, 0, width() - 10, height(), separatorColor);
 }

@@ -11,6 +11,8 @@ DEFINES += YACREADER
 #load default build flags
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
+include (./themes/themes.pri)
+include (../common/themes/themes_common.pri)
 
 contains(QMAKE_TARGET.arch, x86_64) {
     Release:DESTDIR = ../release64

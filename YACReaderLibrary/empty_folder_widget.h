@@ -1,34 +1,17 @@
 #ifndef EMPTY_FOLDER_WIDGET_H
 #define EMPTY_FOLDER_WIDGET_H
 
-#include "empty_container_info.h"
 #include <QtWidgets>
+#include "empty_container_info.h"
 
 class EmptyFolderWidget : public EmptyContainerInfo
 {
     Q_OBJECT
 public:
     explicit EmptyFolderWidget(QWidget *parent = nullptr);
-    void setSubfolders(const QModelIndex &mi, const QStringList &foldersNames);
-signals:
-    void subfolderSelected(QModelIndex, int);
-
-    // Drops
-    void copyComicsToCurrentFolder(QList<QPair<QString, QString>>);
-    void moveComicsToCurrentFolder(QList<QPair<QString, QString>>);
-
-public slots:
-    void onItemClicked(const QModelIndex &mi);
 
 protected:
-    QListView *foldersView;
-    QModelIndex parent;
-    QStringListModel *subfoldersModel;
-    QString backgroundColor;
-
-    // Drop to import
-    void dragEnterEvent(QDragEnterEvent *event) override;
-    void dropEvent(QDropEvent *event) override;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // EMPTY_FOLDER_WIDGET_H

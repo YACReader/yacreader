@@ -4,11 +4,17 @@
 #include <QTimer>
 #include <QWidget>
 
+class BusyIndicator;
+
 class YACReaderBusyWidget : public QWidget
 {
     Q_OBJECT
 public:
     explicit YACReaderBusyWidget(QWidget *parent = 0);
+    void setColor(QColor color);
+
+private:
+    BusyIndicator *busyIndicator;
 };
 
 class BusyIndicator : public QWidget

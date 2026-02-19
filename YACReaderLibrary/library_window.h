@@ -16,6 +16,8 @@
 #include "comic_query_result_processor.h"
 #include "folder_query_result_processor.h"
 
+#include "themable.h"
+
 #include "comic_model.h"
 #include "comic_db.h"
 #include "folder.h"
@@ -72,7 +74,6 @@ class ComicsView;
 class ClassicComicsView;
 class GridComicsView;
 class ComicsViewTransition;
-class EmptyFolderWidget;
 class NoSearchResultsWidget;
 class EditShortcutsDialog;
 class ComicFilesManager;
@@ -95,13 +96,14 @@ class XMLInfoLibraryScanner;
 
 using namespace YACReader;
 
-class LibraryWindow : public QMainWindow
+class LibraryWindow : public QMainWindow, protected Themable
 {
     friend class YACReaderNavigationController;
 
     Q_OBJECT
 public:
     YACReaderSideBar *sideBar;
+    QSplitter *mainSplitter;
 
     CreateLibraryDialog *createLibraryDialog;
     ExportLibraryDialog *exportLibraryDialog;
@@ -116,7 +118,6 @@ public:
     PropertiesDialog *propertiesDialog;
     ComicVineDialog *comicVineDialog;
     EditShortcutsDialog *editShortcutsDialog;
-    // YACReaderSocialDialog * socialDialog;
     bool fullscreen;
     bool importedCovers; // if true, the library is read only (not updates,open comic or properties)
     bool fromMaximized;
@@ -216,6 +217,7 @@ public:
 
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
+    void applyTheme(const Theme &theme) override;
 
 public:
     LibraryWindow();
@@ -291,7 +293,6 @@ public slots:
     void deleteComics();
     void deleteComicsFromDisk();
     void deleteComicsFromList();
-    // void showSocial();
     void showFoldersContextMenu(const QPoint &point);
     void showGridFoldersContextMenu(QPoint point, Folder folder);
     void showContinueReadingContextMenu(QPoint point, ComicDB comic);

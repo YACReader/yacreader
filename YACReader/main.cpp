@@ -7,6 +7,7 @@
 #include "main_window_viewer.h"
 #include "configuration.h"
 #include "exit_check.h"
+#include "theme_manager.h"
 
 #include "QsLog.h"
 #include "QsLogDest.h"
@@ -114,6 +115,8 @@ int main(int argc, char *argv[])
 
     app.setApplicationName("YACReader");
     app.setOrganizationName("YACReader");
+
+    ThemeManager::instance().initialize();
 
     if (QIcon::hasThemeIcon("YACReader")) {
         app.setWindowIcon(QIcon::fromTheme("YACReader"));

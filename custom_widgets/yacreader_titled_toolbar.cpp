@@ -43,9 +43,7 @@ void DropShadowLabel::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
     painter.setFont(font());
-#ifndef Y_MAC_UI
     drawTextEffect(&painter, QPoint(contentsMargins().left(), 1));
-#endif
     drawText(&painter, QPoint(contentsMargins().left(), 0));
 }
 
@@ -73,23 +71,10 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
     busyIndicator = new BusyIndicator(this, 12);
     connect(busyIndicator, &BusyIndicator::clicked, this, &YACReaderTitledToolBar::cancelOperationRequested);
     busyIndicator->setIndicatorStyle(BusyIndicator::StyleArc);
-#ifdef Y_MAC_UI
-    busyIndicator->setColor(QColor("#808080"));
-#else
-    busyIndicator->setColor(Qt::white);
-#endif
     busyIndicator->setHidden(true);
 
     nameLabel->setText(title);
-#ifdef Y_MAC_UI
     QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
-    nameLabel->setColor(QColor("#808080"));
-    // nameLabel->setDropShadowColor(QColor("#F9FAFB"));
-#else
-    QString nameLabelStyleSheet = "QLabel {padding:0 0 0 10px; margin:0px; font-size:11px; font-weight:bold;}";
-    nameLabel->setColor(QColor("#BDBFBF"));
-    nameLabel->setDropShadowColor(QColor("#000000"));
-#endif
     nameLabel->setStyleSheet(nameLabelStyleSheet);
 
     mainLayout->addWidget(nameLabel);
@@ -101,32 +86,21 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Minimum);
 
     setMinimumHeight(25);
+
+    initTheme(this);
 }
 
 void YACReaderTitledToolBar::addAction(QAction *action)
 {
     QHBoxLayout *mainLayout = dynamic_cast<QHBoxLayout *>(layout());
 
-// fix for QToolButton and retina support in OSX
-#ifdef Q_OS_MACOS // TODO_Y_MAC_UI
-    QPushButton *pb = new QPushButton(this);
-    pb->setCursor(QCursor(Qt::ArrowCursor));
-    pb->setIcon(action->icon());
-    pb->addAction(action);
-
-    connect(pb, &QPushButton::clicked, action, &QAction::triggered);
-
-    mainLayout->addWidget(pb);
-#else
     QToolButton *tb = new QToolButton(this);
     tb->setCursor(QCursor(Qt::ArrowCursor));
     tb->setDefaultAction(action);
     tb->setIconSize(QSize(16, 16));
     tb->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
-    // tb->setStyleSheet("QToolButton:hover {background-color:#C5C5C5;}");
 
     mainLayout->addWidget(tb);
-#endif
 }
 
 void YACReaderTitledToolBar::addSpacing(int spacing)
@@ -142,11 +116,8 @@ void YACReaderTitledToolBar::addSepartor()
 
     QWidget *w = new QWidget(this);
     w->setFixedSize(1, 14);
-#ifdef Y_MAC_UI
-    w->setStyleSheet("QWidget {background-color:#AFAFAF;}");
-#else
-    w->setStyleSheet("QWidget {background-color:#6F6F6F;}");
-#endif
+    w->setStyleSheet(QString("QWidget {background-color:%1;}").arg(theme.sidebar.separatorColor.name()));
+    separators.append(w);
 
     mainLayout->addSpacing(10);
     mainLayout->addWidget(w);
@@ -161,4 +132,25 @@ void YACReaderTitledToolBar::showBusyIndicator()
 void YACReaderTitledToolBar::hideBusyIndicator()
 {
     busyIndicator->setHidden(true);
+}
+
+void YACReaderTitledToolBar::setTitle(const QString &title)
+{
+    nameLabel->setText(title);
+}
+
+void YACReaderTitledToolBar::applyTheme(const Theme &theme)
+{
+    auto sidebarTheme = theme.sidebar;
+
+    nameLabel->setColor(sidebarTheme.titleTextColor);
+    nameLabel->setDropShadowColor(sidebarTheme.titleDropShadowColor);
+    nameLabel->update();
+
+    busyIndicator->setColor(sidebarTheme.busyIndicatorColor);
+
+    QString qss = QString("QWidget {background-color:%1;}").arg(sidebarTheme.separatorColor.name());
+    for (auto separator : separators) {
+        separator->setStyleSheet(qss);
+    }
 }

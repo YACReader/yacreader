@@ -3,13 +3,16 @@
 
 #include <QWidget>
 
-class ComicsViewTransition : public QWidget
+#include "themable.h"
+
+class ComicsViewTransition : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
     explicit ComicsViewTransition(QWidget *parent = nullptr);
 
 protected:
+    void applyTheme(const Theme &theme) override;
     void paintEvent(QPaintEvent *) override;
 };
 

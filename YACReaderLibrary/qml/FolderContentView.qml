@@ -1,14 +1,16 @@
-import QtQuick 2.15
+import QtQuick
 
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.12
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import QtGraphicalEffects 1.0
+import QtQuick.Effects
 
 import com.yacreader.ComicModel 1.0
 
 import com.yacreader.ComicInfo 1.0
 import com.yacreader.ComicDB 1.0
+
+import QtQuick.Controls.Basic
 
 Rectangle {
     id: main
@@ -117,17 +119,30 @@ Rectangle {
                     mipmap: true
                     asynchronous : true
                     cache: true
+                    visible: false
+                }
 
+                Item {
+                    id: coverMask
+                    anchors.fill: parent
                     layer.enabled: true
-                    layer.effect: OpacityMask {
+                    layer.smooth: true
+                    visible: false
+
+                    Rectangle {
                         anchors.fill: parent
-                        cached: true
-                        maskSource: Rectangle {
-                            width: coverElement.width
-                            height: coverElement.height
-                            radius: 10
-                        }
+                        radius: 10
+                        color: "black"
                     }
+                }
+
+                MultiEffect {
+                    source: coverImage
+                    anchors.fill: coverImage
+                    maskEnabled: true
+                    maskSource: coverMask
+                    maskThresholdMin: 0.5
+                    maskSpreadAtMin: 1.0
                 }
             }
 
@@ -401,6 +416,14 @@ Rectangle {
                              var newValue =  Math.min((grid.contentHeight - grid.height + grid.originY), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
                              grid.contentY = newValue;
                          }
+            }
+
+            onOriginYChanged: {
+                console.log(" origin changed ", grid.originY)
+            }
+
+            onContentYChanged: {
+                console.log(" content y changed ", grid.contentY)
             }
 
             ScrollBar.vertical: ScrollBar {

@@ -3,6 +3,8 @@
 
 #include <QtWidgets>
 
+#include "themable.h"
+
 class YACReaderFoldersView;
 class YACReaderLibraryListWidget;
 class YACReaderSearchLineEdit;
@@ -14,12 +16,16 @@ class YACReaderSideBarSeparator : public QWidget
 {
 public:
     explicit YACReaderSideBarSeparator(QWidget *parent = 0);
+    void setColor(const QColor &color);
 
 protected:
     void paintEvent(QPaintEvent *event);
+
+private:
+    QColor separatorColor;
 };
 
-class YACReaderSideBar : public QWidget
+class YACReaderSideBar : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -40,8 +46,11 @@ public slots:
 protected:
     void paintEvent(QPaintEvent *);
     void closeEvent(QCloseEvent *event);
+    void applyTheme(const Theme &theme) override;
+
     QSettings *settings;
     QSplitter *splitter;
+    QList<YACReaderSideBarSeparator *> separators;
 };
 
 #endif // YACREADER_SIDEBAR_H

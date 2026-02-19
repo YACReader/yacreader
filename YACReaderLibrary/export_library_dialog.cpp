@@ -20,7 +20,7 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget *parent)
     connect(cancel, &QAbstractButton::clicked, this, &ExportLibraryDialog::close);
     connect(cancel, &QAbstractButton::clicked, this, &QDialog::rejected);
 
-    find = new QPushButton(QIcon(":/images/find_folder.png"), "");
+    find = new QPushButton("");
     connect(find, &QAbstractButton::clicked, this, &ExportLibraryDialog::findPath);
 
     auto libraryLayout = new QHBoxLayout;
@@ -48,9 +48,7 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget *parent)
     mainLayout->addLayout(bottomLayout);
 
     auto imgMainLayout = new QHBoxLayout;
-    QLabel *imgLabel = new QLabel(this);
-    QPixmap p(":/images/exportLibrary.png");
-    imgLabel->setPixmap(p);
+    imgLabel = new QLabel(this);
     imgMainLayout->addWidget(imgLabel);
     imgMainLayout->addLayout(mainLayout);
 
@@ -58,6 +56,14 @@ ExportLibraryDialog::ExportLibraryDialog(QWidget *parent)
 
     setModal(true);
     setWindowTitle(tr("Create covers package"));
+
+    initTheme(this);
+}
+
+void ExportLibraryDialog::applyTheme(const Theme &theme)
+{
+    imgLabel->setPixmap(theme.dialogIcons.exportLibraryIcon);
+    find->setIcon(theme.dialogIcons.findFolderIcon);
 }
 
 void ExportLibraryDialog::exportLibrary()

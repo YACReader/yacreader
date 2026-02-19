@@ -8,12 +8,17 @@
 #include <QComboBox>
 #include <QCheckBox>
 
-class ServerConfigDialog : public QDialog
+#include "themable.h"
+
+class ServerConfigDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 public:
     ServerConfigDialog(QWidget *parent = 0);
     void showEvent(QShowEvent *event) override;
+
+protected:
+    void applyTheme(const Theme &theme) override;
 
 private:
     QComboBox *ip;
@@ -24,6 +29,14 @@ private:
     QPushButton *close;
     QPushButton *accept;
     QLabel *qrCode;
+    
+    // Labels for themable styling
+    QLabel *titleLabel;
+    QLabel *qrMessageLabel;
+    QLabel *propagandaLabel;
+    QLabel *ipLabel;
+    QLabel *portLabel;
+    QLabel *backgroundDecoration;
 
 public slots:
     void generateQR();

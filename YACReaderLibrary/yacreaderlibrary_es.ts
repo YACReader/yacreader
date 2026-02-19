@@ -2823,19 +2823,6 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
 </context>
 <context>
-    <name>YACReaderDeletingProgress</name>
-    <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="35"/>
-        <source>cancel</source>
-        <translation>cancelar</translation>
-    </message>
-    <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="20"/>
-        <source>Please wait, deleting in progress...</source>
-        <translation>Borrando, por favor espera...</translation>
-    </message>
-</context>
-<context>
     <name>YACReaderFieldEdit</name>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>

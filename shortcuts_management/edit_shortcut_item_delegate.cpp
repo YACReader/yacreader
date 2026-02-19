@@ -63,12 +63,12 @@ KeySequenceLineEdit::KeySequenceLineEdit(QWidget *parent)
     acceptButton = new QToolButton(this);
     QString buttonsStyle = "QToolButton { border: none; padding: 0px; }";
 
-    clearButton->setIcon(QIcon(":/images/clear_shortcut.svg"));
+    clearButton->setIcon(QIcon(":/images/shortcuts/clear_shortcut.svg"));
     clearButton->setIconSize(QSize(15, 15));
     clearButton->setCursor(Qt::ArrowCursor);
     clearButton->setStyleSheet(buttonsStyle);
 
-    acceptButton->setIcon(QIcon(":/images/accept_shortcut.svg"));
+    acceptButton->setIcon(QIcon(":/images/shortcuts/accept_shortcut.svg"));
     acceptButton->setIconSize(QSize(15, 15));
     acceptButton->setCursor(Qt::ArrowCursor);
     acceptButton->setStyleSheet(buttonsStyle);

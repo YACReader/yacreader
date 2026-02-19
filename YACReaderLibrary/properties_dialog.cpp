@@ -106,21 +106,21 @@ void PropertiesDialog::createCoverBox()
     coverPageEdit = new YACReaderFieldEdit();
 
     showPreviousCoverPageButton = new QToolButton();
-    showPreviousCoverPageButton->setIcon(QIcon(":/images/previousCoverPage.png"));
+    showPreviousCoverPageButton->setIcon(QIcon(":/images/metadata_dialog/previousCoverPage.svg"));
     showPreviousCoverPageButton->setToolTip(tr("Load previous page as cover"));
     showPreviousCoverPageButton->setStyleSheet("QToolButton {border:none;}");
     showNextCoverPageButton = new QToolButton();
-    showNextCoverPageButton->setIcon(QIcon(":/images/nextCoverPage.png"));
+    showNextCoverPageButton->setIcon(QIcon(":/images/metadata_dialog/nextCoverPage.svg"));
     showNextCoverPageButton->setToolTip(tr("Load next page as cover"));
     showNextCoverPageButton->setStyleSheet("QToolButton {border:none;}");
 
     resetCoverButton = new QToolButton();
-    resetCoverButton->setIcon(QIcon(":/images/resetCover.svg"));
+    resetCoverButton->setIcon(QIcon(":/images/metadata_dialog/resetCover.svg"));
     resetCoverButton->setToolTip(tr("Reset cover to the default image"));
     resetCoverButton->setStyleSheet("QToolButton {border:none;}");
 
     loadCustomCoverImageButton = new QToolButton();
-    loadCustomCoverImageButton->setIcon(QIcon(":/images/loadCustomCover.svg"));
+    loadCustomCoverImageButton->setIcon(QIcon(":/images/metadata_dialog/loadCustomCover.svg"));
     loadCustomCoverImageButton->setToolTip(tr("Load custom cover image"));
     loadCustomCoverImageButton->setStyleSheet("QToolButton {border:none;}");
 

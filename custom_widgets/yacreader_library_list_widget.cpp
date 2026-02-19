@@ -75,9 +75,12 @@ void YACReaderLibraryListWidget::removeItem(int index)
 void YACReaderLibraryListWidget::mousePressEvent(QMouseEvent *event)
 {
     if (librariesList.count() > 0) {
-        int h = librariesList.at(0)->height();
-        int item = event->pos().y() / h;
-        if (item != currentLibraryIndex) {
+        QWidget *child = childAt(event->pos());
+        while (child && child->parentWidget() != this) {
+            child = child->parentWidget();
+        }
+        int item = librariesList.indexOf(qobject_cast<YACReaderLibraryItemWidget *>(child));
+        if (item != -1 && item != currentLibraryIndex) {
             setCurrentIndex(item);
         }
     }

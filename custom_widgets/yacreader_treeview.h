@@ -3,11 +3,16 @@
 
 #include <QtWidgets>
 
-class YACReaderTreeView : public QTreeView
+#include "themable.h"
+
+class YACReaderTreeView : public QTreeView, protected Themable
 {
     Q_OBJECT
 public:
     explicit YACReaderTreeView(QWidget *parent = 0);
+    QColor folderIndicatorColor() const { return theme.treeView.folderIndicatorColor; }
+
+private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 signals:
@@ -24,6 +29,7 @@ protected:
     void dropEvent(QDropEvent *event) override;
 
     void currentChanged(const QModelIndex &current, const QModelIndex &previous) override;
+    void applyTheme(const Theme &theme) override;
 
     // fix for drop auto expand
     QTimer expandTimer;

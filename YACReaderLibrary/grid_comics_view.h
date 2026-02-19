@@ -2,6 +2,7 @@
 #define GRID_COMICS_VIEW_H
 
 #include "comics_view.h"
+#include "themable.h"
 
 #include <QModelIndex>
 
@@ -32,11 +33,14 @@ const unsigned int YACREADER_MIN_COVER_WIDTH = YACREADER_MIN_GRID_ZOOM_WIDTH;
 const unsigned int YACREADER_MIN_ITEM_HEIGHT = YACREADER_MAX_COVER_HEIGHT + 51; // 51 is the height of the bottom rectangle used for title and other info
 const unsigned int YACREADER_MIN_ITEM_WIDTH = YACREADER_MIN_COVER_WIDTH;
 
-class GridComicsView : public ComicsView
+class GridComicsView : public ComicsView, protected Themable
 {
     Q_OBJECT
 public:
     explicit GridComicsView(QWidget *parent = nullptr);
+
+protected:
+    void applyTheme(const Theme &theme) override;
     ~GridComicsView() override;
     void setToolBar(QToolBar *toolBar) override;
     void setModel(ComicModel *model) override;
@@ -114,6 +118,10 @@ private:
     bool dummy;
     void closeEvent(QCloseEvent *event) override;
     void createCoverSizeSliderWidget();
+
+    // Zoom slider labels (for theming)
+    QLabel *smallZoomLabel;
+    QLabel *bigZoomLabel;
 };
 
 #endif // GRID_COMICS_VIEW_H

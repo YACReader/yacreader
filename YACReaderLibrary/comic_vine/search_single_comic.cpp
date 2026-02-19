@@ -11,8 +11,7 @@ SearchSingleComic::SearchSingleComic(QWidget *parent)
 {
 
     // QLabel * label = new QLabel(tr("Please provide some additional information. At least one field is needed."));
-    QLabel *label = new QLabel(tr("Please provide some additional information for this comic."));
-    label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
+    label = new QLabel(tr("Please provide some additional information for this comic."));
 
     // titleEdit = new ScraperLineEdit(tr("Title:"));
     // numberEdit = new ScraperLineEdit(tr("Number:"));
@@ -39,6 +38,8 @@ SearchSingleComic::SearchSingleComic(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
     setContentsMargins(0, 0, 0, 0);
+
+    initTheme(this);
 }
 
 QString SearchSingleComic::getVolumeInfo() const
@@ -69,4 +70,11 @@ int SearchSingleComic::getComicNumber()
 void SearchSingleComic::clean()
 {
     volumeEdit->clear();
+}
+
+void SearchSingleComic::applyTheme(const Theme &theme)
+{
+    auto comicVineTheme = theme.comicVine;
+
+    label->setStyleSheet(comicVineTheme.defaultLabelQSS);
 }

@@ -4,8 +4,9 @@
 #include <QtWidgets>
 
 #include "yacreader_global.h"
+#include "themable.h"
 
-class AddLabelDialog : public QDialog
+class AddLabelDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 public:
@@ -21,6 +22,8 @@ protected slots:
     void validateName(const QString &name);
 
 protected:
+    void applyTheme(const Theme &theme) override;
+
     QLineEdit *edit;
     QListWidget *list;
 

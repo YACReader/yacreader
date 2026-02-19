@@ -3,7 +3,11 @@
 
 #include <QWidget>
 
-class NoLibrariesWidget : public QWidget
+#include "themable.h"
+
+class QLabel;
+
+class NoLibrariesWidget : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -13,6 +17,14 @@ signals:
     void createNewLibrary();
     void addExistingLibrary();
 public slots:
+
+protected:
+    void applyTheme(const Theme &theme) override;
+
+private:
+    QLabel *iconLabel;
+    QLabel *text;
+    QLabel *textDescription;
 };
 
 #endif // NO_LIBRARIES_WIDGET_H

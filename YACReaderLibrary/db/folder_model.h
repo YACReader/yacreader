@@ -13,6 +13,7 @@
 #include "folder.h"
 #include "folder_query_result_processor.h"
 #include "yacreader_global.h"
+#include "themable.h"
 
 class FolderItem;
 
@@ -35,7 +36,7 @@ protected:
     bool filterEnabled;
 };
 
-class FolderModel : public QAbstractItemModel
+class FolderModel : public QAbstractItemModel, protected Themable
 {
     Q_OBJECT
 
@@ -146,6 +147,9 @@ private:
 
     bool showRecent;
     qlonglong recentDays;
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif

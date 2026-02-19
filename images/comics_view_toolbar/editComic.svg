@@ -1,1 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 18 18"><defs><style>.cls-1{filter:url(#drop-shadow-1);}.cls-2{fill:#404040;}</style></defs><g class="cls-1"><rect class="cls-2" x="4.15" y="7.35" width="9" height="4" transform="translate(-4.08 8.85) rotate(-45)"/><rect class="cls-2" x="12.24" y="2.76" width="2" height="4" transform="translate(.51 10.76) rotate(-45)"/><polyline class="cls-2" points="6.17 14.66 2.64 15.36 3.34 11.83"/></g></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 18 18">
+  <!-- Generator: Adobe Illustrator 29.8.4, SVG Export Plug-In . SVG Version: 2.1.1 Build 6)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #f0f;
+      }
+    </style>
+  </defs>
+  <rect class="st0" x="4.1" y="7.3" width="9" height="4" transform="translate(-4.1 8.9) rotate(-45)"/>
+  <rect class="st0" x="12.2" y="2.8" width="2" height="4" transform="translate(.5 10.8) rotate(-45)"/>
+  <polyline class="st0" points="6.2 14.7 2.6 15.4 3.3 11.8"/>
+</svg>

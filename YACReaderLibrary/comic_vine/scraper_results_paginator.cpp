@@ -10,27 +10,14 @@ ScraperResultsPaginator::ScraperResultsPaginator(QWidget *parent)
 {
     auto pagesButtonsLayout = new QHBoxLayout;
 
-    QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
-
     nextPage = new QToolButton;
-    nextPage->setStyleSheet("QToolButton {border:none;}");
-    QPixmap np(":/images/comic_vine/nextPage.png");
-    nextPage->setIconSize(np.size());
-    nextPage->setIcon(np);
-
     previousPage = new QToolButton;
-    previousPage->setStyleSheet("QToolButton {border:none;}");
-    QPixmap pp(":/images/comic_vine/previousPage.png");
-    previousPage->setIconSize(pp.size());
-    previousPage->setIcon(pp);
 
     connect(nextPage, &QAbstractButton::clicked, this, &ScraperResultsPaginator::loadNextPage);
     connect(previousPage, &QAbstractButton::clicked, this, &ScraperResultsPaginator::loadPreviousPage);
 
     numElements = new QLabel(tr("Number of volumes found : %1"));
-    numElements->setStyleSheet(labelStylesheet);
     numPages = new QLabel(tr("page %1 of %2"));
-    numPages->setStyleSheet(labelStylesheet);
 
     pagesButtonsLayout->addSpacing(15);
     pagesButtonsLayout->addWidget(numElements);
@@ -43,6 +30,8 @@ ScraperResultsPaginator::ScraperResultsPaginator(QWidget *parent)
     pagesButtonsLayout->setContentsMargins(0, 0, 0, 0);
 
     setLayout(pagesButtonsLayout);
+
+    initTheme(this);
 }
 
 void ScraperResultsPaginator::update(const QString &json)
@@ -70,4 +59,20 @@ int ScraperResultsPaginator::getCurrentPage()
 void ScraperResultsPaginator::setCustomLabel(const QString &label)
 {
     customLabel = label;
+}
+
+void ScraperResultsPaginator::applyTheme(const Theme &theme)
+{
+    auto comicVineTheme = theme.comicVine;
+
+    numElements->setStyleSheet(comicVineTheme.defaultLabelQSS);
+    numPages->setStyleSheet(comicVineTheme.defaultLabelQSS);
+
+    nextPage->setStyleSheet(comicVineTheme.noBorderToolButtonQSS);
+    nextPage->setIconSize(comicVineTheme.nextPageIcon.size);
+    nextPage->setIcon(comicVineTheme.nextPageIcon.icon);
+
+    previousPage->setStyleSheet(comicVineTheme.noBorderToolButtonQSS);
+    previousPage->setIconSize(comicVineTheme.previousPageIcon.size);
+    previousPage->setIcon(comicVineTheme.previousPageIcon.icon);
 }

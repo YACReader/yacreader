@@ -4,21 +4,27 @@
 #include <QWidget>
 #include <QStackedWidget>
 
+#include "themable.h"
+
 class QLineEdit;
 class QIntValidator;
 class QPushButton;
 class QSlider;
 class QLabel;
 
-class GoToFlowToolBar : public QStackedWidget
+class GoToFlowToolBar : public QStackedWidget, protected Themable
 {
     Q_OBJECT
+protected:
+    void applyTheme(const Theme &theme) override;
+
 private:
     QLineEdit *edit;
     QSlider *slider;
     QIntValidator *v;
     QPushButton *centerButton;
     QPushButton *goToButton;
+    QPushButton *goToButton2;
     QLabel *pageHint;
     QWidget *bar;
     void paintEvent(QPaintEvent *) override;

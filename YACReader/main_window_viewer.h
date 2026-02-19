@@ -3,12 +3,14 @@
 #include <QMainWindow>
 #include <QScrollArea>
 #include <QToolBar>
+#include <QToolButton>
 #include <QAction>
 #include <QMouseEvent>
 #include <QCloseEvent>
 #include <QSettings>
 
 #include "yacreader_global.h"
+#include "themable.h"
 
 #ifdef Y_MAC_UI
 #include "yacreader_macosx_toolbar.h"
@@ -28,7 +30,7 @@ class EditShortcutsDialog;
 
 namespace YACReader {
 
-class MainWindowViewer : public QMainWindow
+class MainWindowViewer : public QMainWindow, protected Themable
 {
     Q_OBJECT
 
@@ -153,6 +155,8 @@ private:
     QList<QAction *> mglassActions;
     QList<QAction *> loadedComicActions;
 
+    QToolButton *openToolButton;
+
     YACReaderSlider *zoomSliderAction;
 
     HttpVersionChecker *versionChecker;
@@ -195,6 +199,7 @@ protected:
     void sendComic();
     void updatePrevNextActions(bool thereIsPrevious, bool thereIsNext);
     void afterLaunchTasks();
+    void applyTheme(const Theme &theme) override;
 
 public:
     MainWindowViewer();

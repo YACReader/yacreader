@@ -8,6 +8,9 @@ class EmptyReadingListWidget : public EmptyContainerInfo
 {
 public:
     EmptyReadingListWidget(QWidget *parent = nullptr);
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // EMPTY_READING_LIST_WIDGET_H

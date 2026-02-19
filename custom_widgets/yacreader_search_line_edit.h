@@ -5,11 +5,12 @@
 #include <QCompleter>
 
 #include "yacreader_global.h"
+#include "themable.h"
 
 class QToolButton;
 class QLabel;
 
-class YACReaderSearchLineEdit : public QLineEdit
+class YACReaderSearchLineEdit : public QLineEdit, protected Themable
 {
     Q_OBJECT
 
@@ -20,6 +21,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *);
+    void applyTheme(const Theme &theme) override;
 
 signals:
     void filterChanged(QString);
@@ -31,6 +33,9 @@ private slots:
 private:
     QToolButton *clearButton;
     QLabel *searchLabel;
+
+    int paddingLeft;
+    int paddingRight;
 };
 
 #endif // YACREADER_SEARCH_LINE_EDIT_H

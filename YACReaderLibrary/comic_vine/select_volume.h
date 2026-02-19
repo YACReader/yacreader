@@ -6,6 +6,7 @@
 #include "scraper_results_paginator.h"
 #include "selected_volume_info.h"
 #include "volume_search_query.h"
+#include "themable.h"
 
 class QLabel;
 class VolumesModel;
@@ -17,7 +18,7 @@ class ScraperScrollLabel;
 class ScraperTableView;
 class ScraperLineEdit;
 
-class SelectVolume : public QWidget
+class SelectVolume : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -40,6 +41,7 @@ private slots:
     void loadPreviousPage();
 
 private:
+    QLabel *label;
     QLabel *cover;
     ScraperScrollLabel *detailLabel;
     ScraperTableView *tableVolumes;
@@ -49,6 +51,9 @@ private:
     QString selectedVolumeDescription;
     VolumeSearchQuery currentSearchQuery;
     ScraperResultsPaginator *paginator;
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SELECT_VOLUME_H

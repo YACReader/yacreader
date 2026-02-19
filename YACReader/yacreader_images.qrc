@@ -2,7 +2,7 @@
   <qresource>
     <file>../images/icon-new.svg</file>
     <file>../images/goto.png</file>
-    <file>../images/find_folder.png</file>
+    <file>../images/find_folder.svg</file>
     <file>../images/flow1.png</file>
     <file>../images/flow2.png</file>
     <file>../images/flow3.png</file>
@@ -12,25 +12,23 @@
     <file>../images/close.svg</file>
     <file>../images/up.png</file>
     <file>../images/down.png</file>
-    <file>../images/imgCenterSlide.png</file>
-    <file>../images/imgGoToSlide.png</file>
-    <file>../images/imgCenterSlidePressed.png</file>
-    <file>../images/imgGoToSlidePressed.png</file>
+    <file>../images/centerFlow.svg</file>
+    <file>../images/gotoFlow.svg</file>
     <file>../images/defaultCover.png</file>
     <file>../images/fromTo.png</file>
     <file>../images/dropDownArrow.png</file>
     <file>../images/translatorSearch.png</file>
     <file>../images/speaker.png</file>
-    <file>../images/clear_shortcut.svg</file>
-    <file>../images/accept_shortcut.svg</file>
-    <file>../images/shortcuts_group_comics.svg</file>
-    <file>../images/shortcuts_group_folders.svg</file>
-    <file>../images/shortcuts_group_general.svg</file>
-    <file>../images/shortcuts_group_libraries.svg</file>
-    <file>../images/shortcuts_group_mglass.svg</file>
-    <file>../images/shortcuts_group_page.svg</file>
-    <file>../images/shortcuts_group_reading.svg</file>
-    <file>../images/shortcuts_group_visualization.svg</file>
+    <file>../images/shortcuts/clear_shortcut.svg</file>
+    <file>../images/shortcuts/accept_shortcut.svg</file>
+    <file>../images/shortcuts/shortcuts_group_comics.svg</file>
+    <file>../images/shortcuts/shortcuts_group_folders.svg</file>
+    <file>../images/shortcuts/shortcuts_group_general.svg</file>
+    <file>../images/shortcuts/shortcuts_group_libraries.svg</file>
+    <file>../images/shortcuts/shortcuts_group_mglass.svg</file>
+    <file>../images/shortcuts/shortcuts_group_page.svg</file>
+    <file>../images/shortcuts/shortcuts_group_reading.svg</file>
+    <file>../images/shortcuts/shortcuts_group_visualization.svg</file>
     <file>../images/custom_dialog/custom_close_button.svg</file>
     <file>../images/whats_new/whatsnew_header.svg</file>
     <file>../images/viewer_toolbar/bookmark.svg</file>
@@ -87,5 +85,6 @@
     <file>../images/viewer_toolbar/toWidth_18x18.svg</file>
     <file>../images/viewer_toolbar/translator_18x18.svg</file>
     <file>../images/viewer_toolbar/zoom_18x18.svg</file>
+    <file>../images/viewer_toolbar/menuArrow.svg</file>
   </qresource>
 </RCC>

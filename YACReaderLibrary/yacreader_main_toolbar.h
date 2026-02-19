@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "themable.h"
+
 class QToolButton;
 class QLabel;
 class QResizeEvent;
@@ -10,7 +12,7 @@ class QPaintEvent;
 class QHBoxLayout;
 
 // TODO create methods for adding actions, separators and sctreches dynimically
-class YACReaderMainToolBar : public QWidget
+class YACReaderMainToolBar : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -40,8 +42,13 @@ private:
     QLabel *currentFolder;
     QString currentFolderName;
 
+    QList<QLabel *> dividers;
+
     void addDivider();
     void addWideDivider();
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // YACREADER_MAIN_TOOLBAR_H

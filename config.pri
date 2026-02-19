@@ -2,11 +2,11 @@
 # default values if they're not set on build time
 # for a more detailed description, see INSTALL.TXT
 
-CONFIG += c++17
+CONFIG += c++20
 
 win32 {
-    #enable c++17 explicitly in msvc
-    QMAKE_CXXFLAGS += /std:c++17 /Zc:__cplusplus /permissive-
+    #enable c++20 explicitly in msvc
+    QMAKE_CXXFLAGS += /std:c++20 /Zc:__cplusplus /permissive-
 }
 
 DEFINES += NOMINMAX

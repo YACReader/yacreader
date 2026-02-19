@@ -35,10 +35,10 @@ void ImportLibraryDialog::setupUI()
     connect(cancel, &QAbstractButton::clicked, this, &ImportLibraryDialog::close);
     // connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
 
-    find = new QPushButton(QIcon(":/images/find_folder.png"), "");
+    find = new QPushButton("");
     connect(find, &QAbstractButton::clicked, this, &ImportLibraryDialog::findPath);
 
-    findDest = new QPushButton(QIcon(":/images/find_folder.png"), "");
+    findDest = new QPushButton("");
     connect(findDest, &QAbstractButton::clicked, this, &ImportLibraryDialog::findDestination);
 
     auto content = new QGridLayout;
@@ -75,9 +75,7 @@ void ImportLibraryDialog::setupUI()
     mainLayout->addLayout(bottomLayout);
 
     auto imgMainLayout = new QHBoxLayout;
-    QLabel *imgLabel = new QLabel(this);
-    QPixmap p(":/images/importLibrary.png");
-    imgLabel->setPixmap(p);
+    imgLabel = new QLabel(this);
     imgMainLayout->addWidget(imgLabel);
     imgMainLayout->addLayout(mainLayout);
 
@@ -85,6 +83,15 @@ void ImportLibraryDialog::setupUI()
 
     setModal(true);
     setWindowTitle(tr("Extract a catalog"));
+
+    initTheme(this);
+}
+
+void ImportLibraryDialog::applyTheme(const Theme &theme)
+{
+    imgLabel->setPixmap(theme.dialogIcons.importLibraryIcon);
+    find->setIcon(theme.dialogIcons.findFolderIcon);
+    findDest->setIcon(theme.dialogIcons.findFolderIcon);
 }
 void ImportLibraryDialog::open(const YACReaderLibraries &libs)
 {

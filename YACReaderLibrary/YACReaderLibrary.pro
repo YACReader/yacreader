@@ -115,7 +115,6 @@ HEADERS += \
   ../common/exit_check.h \
   comics_view.h \
   classic_comics_view.h \
-  empty_folder_widget.h \
   no_search_results_widget.h \
   comic_files_manager.h \
   db/reading_list_model.h \
@@ -126,6 +125,7 @@ HEADERS += \
   yacreader_history_controller.h \
   yacreader_navigation_controller.h \
   empty_label_widget.h \
+  empty_folder_widget.h \
   empty_container_info.h \
   empty_special_list.h \
   empty_reading_list_widget.h \
@@ -201,7 +201,6 @@ SOURCES += \
     ../common/exit_check.cpp \
     comics_view.cpp \
     classic_comics_view.cpp \
-    empty_folder_widget.cpp \
     no_search_results_widget.cpp \
     comic_files_manager.cpp \
     db/reading_list_model.cpp \
@@ -212,6 +211,7 @@ SOURCES += \
     yacreader_history_controller.cpp \
     yacreader_navigation_controller.cpp \
     empty_label_widget.cpp \
+    empty_folder_widget.cpp \
     empty_container_info.cpp \
     empty_special_list.cpp \
     empty_reading_list_widget.cpp \
@@ -257,6 +257,8 @@ include(../third_party/QsLog/QsLog.pri)
 include(../shortcuts_management/shortcuts_management.pri)
 include(../third_party/QrCode/QrCode.pri)
 include(../third_party/KDToolBox/KDToolBox.pri)
+include(./themes/themes.pri)
+include(../common/themes/themes_common.pri)
 
 RESOURCES += images.qrc files.qrc
 win32:RESOURCES += images_win.qrc
@@ -314,14 +316,7 @@ HEADERS += grid_comics_view.h \
 SOURCES += grid_comics_view.cpp \
            comics_view_transition.cpp
 
-greaterThan(QT_MAJOR_VERSION, 5) {
-    RESOURCES += qml6.qrc
-} else {
-    RESOURCES += qml.qrc
-}
-win32:RESOURCES += qml_win.qrc
-unix:!macx:RESOURCES += qml_win.qrc
-macx:RESOURCES += qml_osx.qrc
+RESOURCES += qml.qrc
 
 unix:!macx {
 

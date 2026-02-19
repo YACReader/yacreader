@@ -24,7 +24,7 @@
 #define DOUBLE_PAGE "DOUBLE_PAGE"
 #define DOUBLE_MANGA_PAGE "DOUBLE_MANGA_PAGE"
 #define COVER_IS_SP "COVER_IS_SP"
-#define BACKGROUND_COLOR "BACKGROUND_COLOR"
+#define BACKGROUND_COLOR "BACKGROUND_COLOR_10"
 #define SHOW_TOOLBARS "SHOW_TOOLBARS"
 #define BRIGHTNESS "BRIGHTNESS"
 #define CONTRAST "CONTRAST"
@@ -108,9 +108,8 @@ enum LibraryUITheme {
 void addSperator(QWidget *w);
 QAction *createSeparator();
 QIcon noHighlightedIcon(const QString &path);
-void colorize(QImage &img, QColor &col);
+void colorize(QImage &img, const QColor &col);
 QList<qulonglong> mimeDataToComicsIds(const QMimeData *data);
-QString addExtensionToIconPath(const QString &path);
 QString addExtensionToIconPathInToolbar(const QString &path);
 QAction *actionWithCustomIcon(const QIcon &icon, QAction *action);
 QPixmap hdpiPixmap(const QString &file, QSize size);

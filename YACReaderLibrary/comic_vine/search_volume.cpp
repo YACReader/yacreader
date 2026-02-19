@@ -9,8 +9,7 @@
 SearchVolume::SearchVolume(QWidget *parent)
     : QWidget(parent)
 {
-    QLabel *label = new QLabel(tr("Please provide some additional information."));
-    label->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
+    label = new QLabel(tr("Please provide some additional information."));
 
     volumeEdit = new ScraperLineEdit(tr("Series:"));
     volumeEdit->setClearButtonEnabled(true);
@@ -29,6 +28,8 @@ SearchVolume::SearchVolume(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
     setContentsMargins(0, 0, 0, 0);
+
+    initTheme(this);
 }
 
 void SearchVolume::clean()
@@ -44,4 +45,11 @@ void SearchVolume::setVolumeInfo(const QString &volume)
 QString SearchVolume::getVolumeInfo() const
 {
     return volumeEdit->text();
+}
+
+void SearchVolume::applyTheme(const Theme &theme)
+{
+    auto comicVineTheme = theme.comicVine;
+
+    label->setStyleSheet(comicVineTheme.defaultLabelQSS);
 }

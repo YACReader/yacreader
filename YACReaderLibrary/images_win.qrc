@@ -1,31 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>../images/main_toolbar/back.svg</file>
-        <file>../images/main_toolbar/back_disabled.png</file>
-        <file>../images/main_toolbar/forward.svg</file>
-        <file>../images/main_toolbar/forward_disabled.png</file>
-        <file>../images/main_toolbar/settings.svg</file>
-        <file>../images/main_toolbar/server.svg</file>
-        <file>../images/main_toolbar/help.svg</file>
-        <file>../images/main_toolbar/fullscreen.svg</file>
-        <file>../images/main_toolbar/flow.svg</file>
-        <file>../images/main_toolbar/grid.svg</file>
-        <file>../images/main_toolbar/info.svg</file>
-        <file>../images/sidebar/libraryIcon.svg</file>
-        <file>../images/sidebar/setRoot.svg</file>
-        <file>../images/sidebar/expand.svg</file>
-        <file>../images/sidebar/colapse.svg</file>
-        <file>../images/sidebar/newLibraryIcon.svg</file>
-        <file>../images/sidebar/openLibraryIcon.svg</file>
-        <file>../images/sidebar/addNew_sidebar.svg</file>
-        <file>../images/sidebar/delete_sidebar.svg</file>
-        <file>../images/sidebar/addLabelIcon.svg</file>
-        <file>../images/sidebar/renameListIcon.svg</file>
-        <file>../images/empty_folder.png</file>
-        <file>../images/empty_search.png</file>
-        <file alias="images/iconSearch.svg">../images/iconSearchNew.svg</file>
-        <file alias="images/clearSearch.svg">../images/clearSearchNew.svg</file>
-        <file>../images/empty_reading_list.png</file>
         <file>../images/viewer_toolbar/close.svg</file>
         <file>icon.ico</file>
     </qresource>

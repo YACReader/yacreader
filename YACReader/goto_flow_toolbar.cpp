@@ -18,58 +18,38 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     quickNavi->setLayout(naviLayout);
 
     slider = new QSlider(Qt::Horizontal, this);
-    slider->setStyleSheet(
-            "QSlider::groove:horizontal {"
-            "  border: 1px solid #22FFFFFF;"
-            "  border-radius: 1px;"
-            "  background: #77000000;"
-            "  margin: 2px 0;"
-            "  padding: 1px;"
-            "}"
-            "QSlider::handle:horizontal {"
-            "  background: #55FFFFFF;"
-            "  width: 48px;"
-            "  border-radius: 1px;"
-            "}");
 
     connect(slider, &QSlider::valueChanged, this, &GoToFlowToolBar::setCenter);
     connect(slider, &QSlider::valueChanged, this, &GoToFlowToolBar::setPage);
 
     pageHint = new QLabel("<b>" + tr("Page : ") + "</b>", this);
-    v = new QIntValidator(this);
+    v = new QIntValidator();
     v->setBottom(1);
-    edit = new QLineEdit(this);
+    edit = new QLineEdit();
     edit->setValidator(v);
     edit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-    edit->setStyleSheet("QLineEdit {border: 1px solid #77000000; background: #55000000; color: white; padding: 3px 5px 5px 5px; margin: 13px 5px 12px 5px; font-weight:bold}");
     edit->setFixedSize(54, 50);
     edit->setAttribute(Qt::WA_MacShowFocusRect, false);
-    // edit->setAttribute(Qt::WA_LayoutUsesWidgetRect,true);
-    // edit->resize(QSize(54,50));
     edit->setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-    // edit->setAutoFillBackground(false);
     connect(edit, &QLineEdit::returnPressed, this, &GoToFlowToolBar::goTo);
 
-    QString centerButtonCSS = "QPushButton {background-image: url(:/images/imgCenterSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
-                              "QPushButton:focus { border: none; outline: none;}"
-                              "QPushButton:pressed  {background-image: url(:/images/imgCenterSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
-    centerButton = new QPushButton(this);
-    // centerButton->setIcon(QIcon(":/images/center.png"));
-    centerButton->setStyleSheet(centerButtonCSS);
+    centerButton = new QPushButton();
+    centerButton->setIconSize(QSize(12, 12));
     centerButton->setFixedSize(26, 50);
     centerButton->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
     connect(centerButton, &QAbstractButton::clicked, this, &GoToFlowToolBar::centerSlide);
 
-    QString goToButtonCSS = "QPushButton {background-image: url(:/images/imgGoToSlide.png); width: 100%; height:100%; background-repeat: none; border: none;} "
-                            "QPushButton:focus { border: none; outline: none;}"
-                            "QPushButton:pressed  {background-image: url(:/images/imgGoToSlidePressed.png); width: 100%; height:100%; background-repeat: none; border: none;} ";
-    goToButton = new QPushButton(this);
-    // goToButton->setIcon(QIcon(":/images/goto.png"));
-    goToButton->setStyleSheet(goToButtonCSS);
+    goToButton = new QPushButton();
+    goToButton->setIconSize(QSize(12, 12));
     goToButton->setFixedSize(32, 50);
     goToButton->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
-
     connect(goToButton, &QPushButton::clicked, this, &GoToFlowToolBar::goTo);
+
+    goToButton2 = new QPushButton();
+    goToButton2->setIconSize(QSize(12, 12));
+    goToButton2->setFixedSize(32, 50);
+    goToButton2->setAttribute(Qt::WA_LayoutUsesWidgetRect, true);
+    connect(goToButton2, &QPushButton::clicked, this, &GoToFlowToolBar::goTo);
 
     normalLayout->setContentsMargins(0, 0, 0, 0);
     normalLayout->setSpacing(0);
@@ -83,17 +63,42 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     naviLayout->setContentsMargins(5, 0, 0, 0);
     naviLayout->setSpacing(2);
     naviLayout->addWidget(slider);
-    naviLayout->addWidget(goToButton);
+    naviLayout->addWidget(goToButton2);
+
+    this->addWidget(normal);
+    this->addWidget(quickNavi);
 
     updateOptions();
 
     setFixedHeight(50);
+
+    initTheme(this);
+}
+
+void GoToFlowToolBar::applyTheme(const Theme &theme)
+{
+    auto goToFlowTheme = theme.goToFlowWidget;
+
+    slider->setStyleSheet(goToFlowTheme.sliderQSS);
+    edit->setStyleSheet(goToFlowTheme.editQSS);
+    pageHint->setStyleSheet(goToFlowTheme.labelQSS);
+
+    centerButton->setStyleSheet(goToFlowTheme.buttonQSS);
+    centerButton->setIcon(goToFlowTheme.centerIcon);
+
+    goToButton->setStyleSheet(goToFlowTheme.buttonQSS);
+    goToButton->setIcon(goToFlowTheme.goToIcon);
+
+    goToButton2->setStyleSheet(goToFlowTheme.buttonQSS);
+    goToButton2->setIcon(goToFlowTheme.goToIcon);
+
+    update();
 }
 
 void GoToFlowToolBar::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(0, 0, width(), height(), QColor(0x99000000));
+    painter.fillRect(0, 0, width(), height(), theme.goToFlowWidget.toolbarBackgroundColor);
 }
 
 void GoToFlowToolBar::setPage(int pageNumber)

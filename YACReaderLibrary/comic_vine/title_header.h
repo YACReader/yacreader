@@ -3,13 +3,16 @@
 
 #include <QWidget>
 
+#include "themable.h"
+
 class QLabel;
 
-class TitleHeader : public QWidget
+class TitleHeader : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
     TitleHeader(QWidget *parent = nullptr);
+
 public slots:
     void setTitle(const QString &title);
     void setSubTitle(const QString &title);
@@ -18,6 +21,9 @@ public slots:
 private:
     QLabel *mainTitleLabel;
     QLabel *subTitleLabel;
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // TITLE_HEADER_H

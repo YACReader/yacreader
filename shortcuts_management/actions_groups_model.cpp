@@ -62,6 +62,15 @@ QList<QAction *> ActionsGroupsModel::getActions(const QModelIndex &mi)
     return QList<QAction *>();
 }
 
+void ActionsGroupsModel::updateGroupIcon(int row, const QIcon &icon)
+{
+    if (row >= 0 && row < groups.size()) {
+        groups[row].setIcon(icon);
+        QModelIndex idx = index(row, 0);
+        emit dataChanged(idx, idx, { Qt::DecorationRole });
+    }
+}
+
 //-------------------------------------------------------------------
 
 ActionsGroup::ActionsGroup(const QString &name, const QIcon &icon, QList<QAction *> &actions)
@@ -72,6 +81,11 @@ ActionsGroup::ActionsGroup(const QString &name, const QIcon &icon, QList<QAction
 QString ActionsGroup::getName() const
 {
     return name;
+}
+
+void ActionsGroup::setIcon(const QIcon &newIcon)
+{
+    icon = newIcon;
 }
 
 QIcon ActionsGroup::getIcon() const

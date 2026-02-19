@@ -23,7 +23,7 @@ ExportComicsInfoDialog::ExportComicsInfoDialog(QWidget *parent)
     connect(cancel, &QAbstractButton::clicked, this, &ExportComicsInfoDialog::close);
     connect(cancel, &QAbstractButton::clicked, this, &QDialog::rejected);
 
-    find = new QPushButton(QIcon(":/images/find_folder.png"), "");
+    find = new QPushButton("");
     connect(find, &QAbstractButton::clicked, this, &ExportComicsInfoDialog::findPath);
 
     auto libraryLayout = new QHBoxLayout;
@@ -45,9 +45,7 @@ ExportComicsInfoDialog::ExportComicsInfoDialog(QWidget *parent)
     mainLayout->addLayout(bottomLayout);
 
     auto imgMainLayout = new QHBoxLayout;
-    QLabel *imgLabel = new QLabel(this);
-    QPixmap p(":/images/exportComicsInfo.png");
-    imgLabel->setPixmap(p);
+    imgLabel = new QLabel(this);
     imgMainLayout->addWidget(imgLabel);
     imgMainLayout->addLayout(mainLayout);
 
@@ -55,6 +53,14 @@ ExportComicsInfoDialog::ExportComicsInfoDialog(QWidget *parent)
 
     setModal(true);
     setWindowTitle(tr("Export comics info"));
+
+    initTheme(this);
+}
+
+void ExportComicsInfoDialog::applyTheme(const Theme &theme)
+{
+    imgLabel->setPixmap(theme.dialogIcons.exportComicsInfoIcon);
+    find->setIcon(theme.dialogIcons.findFolderIcon);
 }
 
 ExportComicsInfoDialog::~ExportComicsInfoDialog()

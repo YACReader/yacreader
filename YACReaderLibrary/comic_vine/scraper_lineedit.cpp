@@ -1,22 +1,27 @@
 #include "scraper_lineedit.h"
+
 #include <QLabel>
 
 ScraperLineEdit::ScraperLineEdit(const QString &title, QWidget *widget)
     : QLineEdit(widget)
 {
     titleLabel = new QLabel(title, this);
-    titleLabel->setStyleSheet("QLabel {color:white;}");
-
-    setStyleSheet(QString("QLineEdit {"
-                          "border:none; background-color: #2E2E2E; color : white; padding-left: %1; padding-bottom: 1px; margin-bottom: 0px;"
-                          "}")
-                          .arg(titleLabel->sizeHint().width() + 6));
 
     setFixedHeight(22);
+
+    initTheme(this);
 }
 
 void ScraperLineEdit::resizeEvent(QResizeEvent *)
 {
     QSize szl = titleLabel->sizeHint();
     titleLabel->move(6, (rect().bottom() + 1 - szl.height()) / 2);
+}
+
+void ScraperLineEdit::applyTheme(const Theme &theme)
+{
+    auto comicVineTheme = theme.comicVine;
+
+    titleLabel->setStyleSheet(comicVineTheme.scraperLineEditTitleLabelQSS);
+    setStyleSheet(comicVineTheme.scraperLineEditQSS.arg(titleLabel->sizeHint().width() + 6));
 }

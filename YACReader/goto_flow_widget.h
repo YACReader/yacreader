@@ -3,10 +3,10 @@
 
 #include <QWidget>
 #include <QSettings>
-#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 #include "yacreader_page_flow_rhi.h"
+#include "themable.h"
 
 using namespace YACReader;
 
@@ -15,9 +15,10 @@ class GoToFlowToolBar;
 class QVBoxLayout;
 class QKeyEvent;
 
-class GoToFlowWidget : public QWidget
+class GoToFlowWidget : public QWidget, protected Themable
 {
     Q_OBJECT
+
 public:
     GoToFlowWidget(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~GoToFlowWidget() override;
@@ -39,6 +40,7 @@ signals:
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void applyTheme(const Theme &theme) override;
 
 private:
     QVBoxLayout *mainLayout;

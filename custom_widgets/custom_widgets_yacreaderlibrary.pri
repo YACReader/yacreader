@@ -13,7 +13,6 @@ HEADERS += \
         $$PWD/yacreader_spin_slider_widget.h \
         $$PWD/yacreader_tool_bar_stretch.h \
         $$PWD/yacreader_titled_toolbar.h \
-        $$PWD/yacreader_deleting_progress.h \
         $$PWD/yacreader_table_view.h \
         $$PWD/yacreader_sidebar.h \
         $$PWD/yacreader_library_list_widget.h \
@@ -38,7 +37,6 @@ SOURCES += \
         $$PWD/yacreader_spin_slider_widget.cpp \
         $$PWD/yacreader_tool_bar_stretch.cpp \
         $$PWD/yacreader_titled_toolbar.cpp \
-        $$PWD/yacreader_deleting_progress.cpp \
         $$PWD/yacreader_table_view.cpp \
         $$PWD/yacreader_sidebar.cpp \
         $$PWD/yacreader_library_list_widget.cpp \

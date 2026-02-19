@@ -9,6 +9,12 @@ YACReader::RoundedCornersDialog::RoundedCornersDialog(QWidget *parent)
     setAttribute(Qt::WA_TranslucentBackground);
 }
 
+void YACReader::RoundedCornersDialog::setBackgroundColor(const QColor &color)
+{
+    m_backgroundColor = color;
+    update();
+}
+
 void YACReader::RoundedCornersDialog::paintEvent(QPaintEvent *)
 {
     qreal radius = 14.0; // desired radius in absolute pixels
@@ -26,7 +32,7 @@ void YACReader::RoundedCornersDialog::paintEvent(QPaintEvent *)
 
     // Set the brush from palette role.
     // p.setBrush(palette().brush(backgroundRole()));
-    p.setBrush(QBrush(QColor(255, 255, 255))); // TODO: the rest of the colors are hardcoded
+    p.setBrush(QBrush(m_backgroundColor));
     // Got radius?  Otherwise draw a quicker rect.
     if (radius > 0.0)
         p.drawRoundedRect(rect, radius, radius, Qt::AbsoluteSize);

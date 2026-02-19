@@ -12,11 +12,11 @@ public:
     explicit EmptyLabelWidget(QWidget *parent = nullptr);
     void setColor(YACReader::LabelColors color);
 
-signals:
-
-public slots:
-
 protected:
+    void applyTheme(const Theme &theme) override;
+
+private:
+    YACReader::LabelColors currentColor = YACReader::YRed;
 };
 
 #endif // EMPTY_LABEL_WIDGET_H

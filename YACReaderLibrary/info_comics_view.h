@@ -2,17 +2,22 @@
 #define INFOCOMICSVIEW_H
 
 #include "comics_view.h"
+#include <QQmlContext>
+#include "themable.h"
 
 class QQuickView;
 
 class YACReaderComicsSelectionHelper;
 class YACReaderComicInfoHelper;
 
-class InfoComicsView : public ComicsView
+class InfoComicsView : public ComicsView, protected Themable
 {
     Q_OBJECT
 public:
     explicit InfoComicsView(QWidget *parent = nullptr);
+
+protected:
+    void applyTheme(const Theme &theme) override;
     ~InfoComicsView() override;
     void setToolBar(QToolBar *toolBar) override;
     void setModel(ComicModel *model) override;

@@ -19,20 +19,15 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
 
     // installEventFilter(this);
 
-    QPixmap iconPixmap = hdpiPixmap(addExtensionToIconPath(":/images/sidebar/libraryIcon"), QSize(16, 16));
     icon = new QLabel(this);
-    icon->setPixmap(iconPixmap);
 
     nameLabel = new QLabel(name, this);
 
     options = new QToolButton(this);
 
-    QPixmap iconOptionsPixmap = hdpiPixmap(":/images/sidebar/libraryOptions.svg", QSize(8, 8));
-    iconOptionsPixmap.setDevicePixelRatio(devicePixelRatioF());
-    QLabel *helperLabel = new QLabel(options);
-    helperLabel->move(4, 3);
-    helperLabel->setFixedSize(14, 14);
-    helperLabel->setPixmap(iconOptionsPixmap);
+    optionsIconLabel = new QLabel(options);
+    optionsIconLabel->move(4, 3);
+    optionsIconLabel->setFixedSize(14, 14);
 
     options->setHidden(true);
     options->setIconSize(QSize(18, 18));
@@ -57,10 +52,6 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
         mainLayout->addWidget(down);*/
 
     setLayout(mainLayout);
-#ifndef Y_MAC_UI
-    QString styleSheet = "background-color:transparent; color:#DDDFDF;";
-    setStyleSheet(styleSheet);
-#endif
 
     QString iconStyleSheet = "QLabel {padding:0 0 0 24px; margin:0px}";
     icon->setStyleSheet(iconStyleSheet);
@@ -70,6 +61,35 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
 
     setMinimumHeight(20);
     setAttribute(Qt::WA_StyledBackground, true);
+
+    initTheme(this);
+}
+
+void YACReaderLibraryItemWidget::applyTheme(const Theme &theme)
+{
+    const auto &icons = theme.sidebarIcons;
+    const auto &li = theme.libraryItem;
+
+    // Update icon based on current selection state
+    QIcon iconToUse = isSelected ? li.libraryIconSelected : icons.libraryIcon;
+    icon->setPixmap(iconToUse.pixmap(16, 16));
+
+    // Update options icon (uses libraryItem theme since it's only shown when selected)
+    QPixmap optionsPixmap = li.libraryOptionsIcon.pixmap(8, 8);
+    optionsPixmap.setDevicePixelRatio(devicePixelRatioF());
+    optionsIconLabel->setPixmap(optionsPixmap);
+
+    // Update widget styling based on selection state
+    if (isSelected) {
+        QString styleSheet = QString("color: %1; background-color: %2; font-weight:bold;")
+                                     .arg(li.selectedTextColor.name())
+                                     .arg(li.selectedBackgroundColor.name());
+        setStyleSheet(styleSheet);
+    } else {
+        QString styleSheet = QString("background-color:transparent; color: %1;")
+                                     .arg(li.textColor.name());
+        setStyleSheet(styleSheet);
+    }
 }
 
 void YACReaderLibraryItemWidget::showUpDownButtons(bool show)
@@ -117,17 +137,11 @@ bool YACReaderLibraryItemWidget::eventFilter(QObject *object, QEvent *event){
 
 void YACReaderLibraryItemWidget::deselect()
 {
-
-#ifdef Y_MAC_UI
-    QString styleSheet = "background-color:transparent;";
+    QString styleSheet = QString("background-color:transparent; color: %1;")
+                                 .arg(theme.libraryItem.textColor.name());
     setStyleSheet(styleSheet);
-#else
-    QString styleSheet = "background-color:transparent; color:#DDDFDF;";
-    setStyleSheet(styleSheet);
-#endif
 
-    QPixmap iconPixmap = hdpiPixmap(addExtensionToIconPath(":/images/sidebar/libraryIcon"), QSize(16, 16));
-    icon->setPixmap(iconPixmap);
+    icon->setPixmap(theme.sidebarIcons.libraryIcon.pixmap(16, 16));
 
     /*up->setHidden(true);
         down->setHidden(true);*/
@@ -138,18 +152,15 @@ void YACReaderLibraryItemWidget::deselect()
 
 void YACReaderLibraryItemWidget::select()
 {
-#ifdef Y_MAC_UI
-    // QString styleSheet ="color: white; background-color:qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6BAFE4, stop: 1 #3984D2); border-top: 2px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #5EA3DF, stop: 1 #73B8EA); border-left:none;border-right:none;border-bottom:1px solid #3577C2;";
-    QString styleSheet = "color: white; background-color:#91c4f4; border-bottom:1px solid #91c4f4;";
-#else
-    QString styleSheet = "color: white; background-color:#2E2E2E; font-weight:bold;";
-#endif
+    const auto &li = theme.libraryItem;
+    QString styleSheet = QString("color: %1; background-color: %2; font-weight:bold;")
+                                 .arg(li.selectedTextColor.name())
+                                 .arg(li.selectedBackgroundColor.name());
     setStyleSheet(styleSheet);
 
     options->setHidden(false);
 
-    QPixmap iconPixmap = hdpiPixmap(":/images/sidebar/libraryIconSelected.svg", QSize(16, 16));
-    icon->setPixmap(iconPixmap);
+    icon->setPixmap(theme.libraryItem.libraryIconSelected.pixmap(16, 16));
 
     isSelected = true;
 }

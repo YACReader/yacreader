@@ -35,7 +35,7 @@ void CreateLibraryDialog::setupUI()
     connect(cancel, &QAbstractButton::clicked, this, &CreateLibraryDialog::cancelCreate);
     connect(cancel, &QAbstractButton::clicked, this, &CreateLibraryDialog::close);
 
-    find = new QPushButton(QIcon(":/images/find_folder.png"), "");
+    find = new QPushButton("");
     connect(find, &QAbstractButton::clicked, this, &CreateLibraryDialog::findPath);
 
     auto content = new QGridLayout;
@@ -66,9 +66,7 @@ void CreateLibraryDialog::setupUI()
     mainLayout->addLayout(bottomLayout);
 
     auto imgMainLayout = new QHBoxLayout;
-    QLabel *imgLabel = new QLabel(this);
-    QPixmap p(":/images/new.png");
-    imgLabel->setPixmap(p);
+    imgLabel = new QLabel(this);
     imgMainLayout->addWidget(imgLabel);
     imgMainLayout->addLayout(mainLayout);
 
@@ -76,6 +74,14 @@ void CreateLibraryDialog::setupUI()
 
     setModal(true);
     setWindowTitle(tr("Create new library"));
+
+    initTheme(this);
+}
+
+void CreateLibraryDialog::applyTheme(const Theme &theme)
+{
+    imgLabel->setPixmap(theme.dialogIcons.newLibraryIcon);
+    find->setIcon(theme.dialogIcons.findFolderIcon);
 }
 
 void CreateLibraryDialog::open(const YACReaderLibraries &libs)

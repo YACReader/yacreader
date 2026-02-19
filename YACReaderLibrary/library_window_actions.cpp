@@ -12,6 +12,7 @@
 #include "server_config_dialog.h"
 #include "yacreader_folders_view.h"
 #include "yacreader_options_dialog.h"
+#include "theme_manager.h"
 
 #include <QtCore>
 #include <QtWidgets>
@@ -25,76 +26,59 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     auto tr = [](const char *text) { return QObject::tr(text); };
 
     backAction = new QAction(window);
-    QIcon icoBackButton;
-    icoBackButton.addFile(addExtensionToIconPath(":/images/main_toolbar/back"), QSize(), QIcon::Normal);
-    // icoBackButton.addPixmap(QPixmap(":/images/main_toolbar/back_disabled.png"), QIcon::Disabled);
     backAction->setData(BACK_ACTION_YL);
     backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
-    backAction->setIcon(icoBackButton);
     backAction->setDisabled(true);
 
     forwardAction = new QAction(window);
-    QIcon icoFordwardButton;
-    icoFordwardButton.addFile(addExtensionToIconPath(":/images/main_toolbar/forward"), QSize(), QIcon::Normal);
-    // icoFordwardButton.addPixmap(QPixmap(":/images/main_toolbar/forward_disabled.png"), QIcon::Disabled);
     forwardAction->setData(FORWARD_ACTION_YL);
     forwardAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(FORWARD_ACTION_YL));
-    forwardAction->setIcon(icoFordwardButton);
     forwardAction->setDisabled(true);
 
     createLibraryAction = new QAction(window);
     createLibraryAction->setToolTip(tr("Create a new library"));
     createLibraryAction->setData(CREATE_LIBRARY_ACTION_YL);
     createLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CREATE_LIBRARY_ACTION_YL));
-    createLibraryAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/newLibraryIcon")));
 
     openLibraryAction = new QAction(window);
     openLibraryAction->setToolTip(tr("Open an existing library"));
     openLibraryAction->setData(OPEN_LIBRARY_ACTION_YL);
     openLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_LIBRARY_ACTION_YL));
-    openLibraryAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/openLibraryIcon")));
 
     exportComicsInfoAction = new QAction(tr("Export comics info"), window);
     exportComicsInfoAction->setToolTip(tr("Export comics info"));
     exportComicsInfoAction->setData(EXPORT_COMICS_INFO_ACTION_YL);
     exportComicsInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPORT_COMICS_INFO_ACTION_YL));
-    exportComicsInfoAction->setIcon(QIcon(":/images/menus_icons/exportComicsInfoIcon.svg"));
 
     importComicsInfoAction = new QAction(tr("Import comics info"), window);
     importComicsInfoAction->setToolTip(tr("Import comics info"));
     importComicsInfoAction->setData(IMPORT_COMICS_INFO_ACTION_YL);
     importComicsInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_COMICS_INFO_ACTION_YL));
-    importComicsInfoAction->setIcon(QIcon(":/images/menus_icons/importComicsInfoIcon.svg"));
 
     exportLibraryAction = new QAction(tr("Pack covers"), window);
     exportLibraryAction->setToolTip(tr("Pack the covers of the selected library"));
     exportLibraryAction->setData(EXPORT_LIBRARY_ACTION_YL);
     exportLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPORT_LIBRARY_ACTION_YL));
-    exportLibraryAction->setIcon(QIcon(":/images/menus_icons/exportLibraryIcon.svg"));
 
     importLibraryAction = new QAction(tr("Unpack covers"), window);
     importLibraryAction->setToolTip(tr("Unpack a catalog"));
     importLibraryAction->setData(IMPORT_LIBRARY_ACTION_YL);
     importLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_LIBRARY_ACTION_YL));
-    importLibraryAction->setIcon(QIcon(":/images/menus_icons/importLibraryIcon.svg"));
 
     updateLibraryAction = new QAction(tr("Update library"), window);
     updateLibraryAction->setToolTip(tr("Update current library"));
     updateLibraryAction->setData(UPDATE_LIBRARY_ACTION_YL);
     updateLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_LIBRARY_ACTION_YL));
-    updateLibraryAction->setIcon(QIcon(":/images/menus_icons/updateLibraryIcon.svg"));
 
     renameLibraryAction = new QAction(tr("Rename library"), window);
     renameLibraryAction->setToolTip(tr("Rename current library"));
     renameLibraryAction->setData(RENAME_LIBRARY_ACTION_YL);
     renameLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_LIBRARY_ACTION_YL));
-    renameLibraryAction->setIcon(QIcon(":/images/menus_icons/editIcon.svg"));
 
     removeLibraryAction = new QAction(tr("Remove library"), window);
     removeLibraryAction->setToolTip(tr("Remove current library from your collection"));
     removeLibraryAction->setData(REMOVE_LIBRARY_ACTION_YL);
     removeLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_LIBRARY_ACTION_YL));
-    removeLibraryAction->setIcon(QIcon(":/images/menus_icons/removeLibraryIcon.svg"));
 
     rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), window);
     rescanLibraryForXMLInfoAction->setToolTip(tr("Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files."));
@@ -110,7 +94,6 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openComicAction->setToolTip(tr("Open current comic on YACReader"));
     openComicAction->setData(OPEN_COMIC_ACTION_YL);
     openComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_COMIC_ACTION_YL));
-    openComicAction->setIcon(QIcon(":/images/comics_view_toolbar/openInYACReader.svg"));
 
     saveCoversToAction = new QAction(tr("Save selected covers to..."), window);
     saveCoversToAction->setToolTip(tr("Save covers of the selected comics as JPG files"));
@@ -121,25 +104,21 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     setAsReadAction->setToolTip(tr("Set comic as read"));
     setAsReadAction->setData(SET_AS_READ_ACTION_YL);
     setAsReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_READ_ACTION_YL));
-    setAsReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setReadButton.svg"));
 
     setAsNonReadAction = new QAction(tr("Set as unread"), window);
     setAsNonReadAction->setToolTip(tr("Set comic as unread"));
     setAsNonReadAction->setData(SET_AS_NON_READ_ACTION_YL);
     setAsNonReadAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NON_READ_ACTION_YL));
-    setAsNonReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setUnread.svg"));
 
     setMangaAction = new QAction(tr("manga"), window);
     setMangaAction->setToolTip(tr("Set issue as manga"));
     setMangaAction->setData(SET_AS_MANGA_ACTION_YL);
     setMangaAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_MANGA_ACTION_YL));
-    setMangaAction->setIcon(QIcon(":/images/comics_view_toolbar/setManga.svg"));
 
     setNormalAction = new QAction(tr("comic"), window);
     setNormalAction->setToolTip(tr("Set issue as normal"));
     setNormalAction->setData(SET_AS_NORMAL_ACTION_YL);
     setNormalAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_AS_NORMAL_ACTION_YL));
-    setNormalAction->setIcon(QIcon(":/images/comics_view_toolbar/setNormal.svg"));
 
     setWesternMangaAction = new QAction(tr("western manga"), window);
     setWesternMangaAction->setToolTip(tr("Set issue as western manga"));
@@ -163,7 +142,6 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     showHideMarksAction->setData(SHOW_HIDE_MARKS_ACTION_YL);
     showHideMarksAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_HIDE_MARKS_ACTION_YL));
     showHideMarksAction->setCheckable(true);
-    showHideMarksAction->setIcon(QIcon(":/images/comics_view_toolbar/showMarks.svg"));
     showHideMarksAction->setChecked(true);
 
     toogleShowRecentIndicatorAction = new QAction(tr("Show/Hide recent indicator"), window);
@@ -171,7 +149,6 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     toogleShowRecentIndicatorAction->setData(SHOW_HIDE_RECENT_INDICATOR_ACTION_YL);
     toogleShowRecentIndicatorAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_HIDE_RECENT_INDICATOR_ACTION_YL));
     toogleShowRecentIndicatorAction->setCheckable(true);
-    toogleShowRecentIndicatorAction->setIcon(QIcon(":/images/comics_view_toolbar/showRecentIndicator.svg"));
     toogleShowRecentIndicatorAction->setChecked(settings->value(DISPLAY_RECENTLY_INDICATOR, true).toBool());
 
 #ifndef Q_OS_MACOS
@@ -179,79 +156,52 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     toggleFullScreenAction->setToolTip(tr("Fullscreen mode on/off"));
     toggleFullScreenAction->setData(TOGGLE_FULL_SCREEN_ACTION_YL);
     toggleFullScreenAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_FULL_SCREEN_ACTION_YL));
-    QIcon icoFullscreenButton;
-    icoFullscreenButton.addFile(addExtensionToIconPath(":/images/main_toolbar/fullscreen"), QSize(), QIcon::Normal);
-    toggleFullScreenAction->setIcon(icoFullscreenButton);
 #endif
     helpAboutAction = new QAction(window);
     helpAboutAction->setToolTip(tr("Help, About YACReader"));
     helpAboutAction->setData(HELP_ABOUT_ACTION_YL);
     helpAboutAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HELP_ABOUT_ACTION_YL));
-    QIcon icoHelpButton;
-    icoHelpButton.addFile(addExtensionToIconPath(":/images/main_toolbar/help"), QSize(), QIcon::Normal);
-    helpAboutAction->setIcon(icoHelpButton);
 
     addFolderAction = new QAction(tr("Add new folder"), window);
     addFolderAction->setData(ADD_FOLDER_ACTION_YL);
     addFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_FOLDER_ACTION_YL));
     addFolderAction->setToolTip(tr("Add new folder to the current library"));
-    addFolderAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/addNew_sidebar")));
 
     deleteFolderAction = new QAction(tr("Delete folder"), window);
     deleteFolderAction->setData(REMOVE_FOLDER_ACTION_YL);
     deleteFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_FOLDER_ACTION_YL));
     deleteFolderAction->setToolTip(tr("Delete current folder from disk"));
-    deleteFolderAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/delete_sidebar")));
 
     setRootIndexAction = new QAction(window);
     setRootIndexAction->setData(SET_ROOT_INDEX_ACTION_YL);
     setRootIndexAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SET_ROOT_INDEX_ACTION_YL));
     setRootIndexAction->setToolTip(tr("Select root node"));
-    setRootIndexAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/setRoot")));
 
     expandAllNodesAction = new QAction(window);
     expandAllNodesAction->setToolTip(tr("Expand all nodes"));
     expandAllNodesAction->setData(EXPAND_ALL_NODES_ACTION_YL);
     expandAllNodesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXPAND_ALL_NODES_ACTION_YL));
-    expandAllNodesAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/expand")));
 
     colapseAllNodesAction = new QAction(window);
     colapseAllNodesAction->setToolTip(tr("Collapse all nodes"));
     colapseAllNodesAction->setData(COLAPSE_ALL_NODES_ACTION_YL);
     colapseAllNodesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(COLAPSE_ALL_NODES_ACTION_YL));
-    colapseAllNodesAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/colapse")));
 
     optionsAction = new QAction(window);
     optionsAction->setToolTip(tr("Show options dialog"));
     optionsAction->setData(OPTIONS_ACTION_YL);
     optionsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPTIONS_ACTION_YL));
-    QIcon icoSettingsButton;
-    icoSettingsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/settings"), QSize(), QIcon::Normal);
-    optionsAction->setIcon(icoSettingsButton);
 
     serverConfigAction = new QAction(window);
     serverConfigAction->setToolTip(tr("Show comics server options dialog"));
     serverConfigAction->setData(SERVER_CONFIG_ACTION_YL);
     serverConfigAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SERVER_CONFIG_ACTION_YL));
-    QIcon icoServerButton;
-    icoServerButton.addFile(addExtensionToIconPath(":/images/main_toolbar/server"), QSize(), QIcon::Normal);
-    serverConfigAction->setIcon(icoServerButton);
 
     toggleComicsViewAction = new QAction(tr("Change between comics views"), window);
     toggleComicsViewAction->setToolTip(tr("Change between comics views"));
-    QIcon icoViewsButton;
-
-    if (!settings->contains(COMICS_VIEW_STATUS) || settings->value(COMICS_VIEW_STATUS) == Flow)
-        icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/grid"), QSize(), QIcon::Normal);
-    else if (settings->value(COMICS_VIEW_STATUS) == Grid)
-        icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/info"), QSize(), QIcon::Normal);
-    else
-        icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/flow"), QSize(), QIcon::Normal);
 
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
-    toggleComicsViewAction->setIcon(icoViewsButton);
-    // socialAction = new QAction(this);
 
     //----
 
@@ -259,7 +209,6 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderAction->setText(tr("Open folder..."));
     openContainingFolderAction->setData(OPEN_CONTAINING_FOLDER_ACTION_YL);
     openContainingFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_ACTION_YL));
-    openContainingFolderAction->setIcon(QIcon(":/images/menus_icons/open_containing_folder.svg"));
 
     setFolderAsNotCompletedAction = new QAction(window);
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
@@ -322,7 +271,6 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderComicAction->setText(tr("Open containing folder..."));
     openContainingFolderComicAction->setData(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL);
     openContainingFolderComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL));
-    openContainingFolderComicAction->setIcon(QIcon(":/images/menus_icons/open_containing_folder.svg"));
 
     resetComicRatingAction = new QAction(window);
     resetComicRatingAction->setText(tr("Reset comic rating"));
@@ -334,19 +282,16 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     selectAllComicsAction->setText(tr("Select all comics"));
     selectAllComicsAction->setData(SELECT_ALL_COMICS_ACTION_YL);
     selectAllComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SELECT_ALL_COMICS_ACTION_YL));
-    selectAllComicsAction->setIcon(QIcon(":/images/comics_view_toolbar/selectAll.svg"));
 
     editSelectedComicsAction = new QAction(window);
     editSelectedComicsAction->setText(tr("Edit"));
     editSelectedComicsAction->setData(EDIT_SELECTED_COMICS_ACTION_YL);
     editSelectedComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EDIT_SELECTED_COMICS_ACTION_YL));
-    editSelectedComicsAction->setIcon(QIcon(":/images/comics_view_toolbar/editComic.svg"));
 
     asignOrderAction = new QAction(window);
     asignOrderAction->setText(tr("Assign current order to comics"));
     asignOrderAction->setData(ASIGN_ORDER_ACTION_YL);
     asignOrderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ASIGN_ORDER_ACTION_YL));
-    asignOrderAction->setIcon(QIcon(":/images/comics_view_toolbar/asignNumber.svg"));
 
     forceCoverExtractedAction = new QAction(window);
     forceCoverExtractedAction->setText(tr("Update cover"));
@@ -358,7 +303,6 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     deleteComicsAction->setText(tr("Delete selected comics"));
     deleteComicsAction->setData(DELETE_COMICS_ACTION_YL);
     deleteComicsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DELETE_COMICS_ACTION_YL));
-    deleteComicsAction->setIcon(QIcon(":/images/comics_view_toolbar/trash.svg"));
 
     deleteMetadataAction = new QAction(window);
     deleteMetadataAction->setText(tr("Delete metadata from selected comics"));
@@ -369,7 +313,6 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     getInfoAction->setData(GET_INFO_ACTION_YL);
     getInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GET_INFO_ACTION_YL));
     getInfoAction->setText(tr("Download tags from Comic Vine"));
-    getInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/getInfo.svg"));
     //-------------------------------------------------------------------------
 
     focusSearchLineAction = new QAction(tr("Focus search line"), window);
@@ -390,19 +333,17 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     window->addAction(showEditShortcutsAction);
 
     quitAction = new QAction(tr("&Quit"), window);
-    quitAction->setIcon(QIcon(":/images/viewer_toolbar/close.svg"));
+    // quitAction->setIcon(QIcon(":/images/viewer_toolbar/close.svg"));
     quitAction->setData(QUIT_ACTION_YL);
     quitAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(QUIT_ACTION_YL));
     // TODO: is `quitAction->setMenuRole(QAction::QuitRole);` useful on macOS?
     window->addAction(quitAction);
 
     updateFolderAction = new QAction(tr("Update folder"), window);
-    updateFolderAction->setIcon(QIcon(":/images/menus_icons/update_current_folder.svg"));
 
     updateCurrentFolderAction = new QAction(tr("Update current folder"), window);
     updateCurrentFolderAction->setData(UPDATE_CURRENT_FOLDER_ACTION_YL);
     updateCurrentFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_CURRENT_FOLDER_ACTION_YL));
-    updateCurrentFolderAction->setIcon(QIcon(":/images/menus_icons/update_current_folder.svg"));
 
     rescanXMLFromCurrentFolderAction = new QAction(tr("Scan legacy XML metadata"), window);
     rescanXMLFromCurrentFolderAction->setData(SCAN_XML_FROM_CURRENT_FOLDER_ACTION_YL);
@@ -412,25 +353,21 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     addReadingListAction->setData(ADD_READING_LIST_ACTION_YL);
     addReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_READING_LIST_ACTION_YL));
     addReadingListAction->setToolTip(tr("Add a new reading list to the current library"));
-    addReadingListAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/addNew_sidebar")));
 
     deleteReadingListAction = new QAction(tr("Remove reading list"), window);
     deleteReadingListAction->setData(REMOVE_READING_LIST_ACTION_YL);
     deleteReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_READING_LIST_ACTION_YL));
     deleteReadingListAction->setToolTip(tr("Remove current reading list from the library"));
-    deleteReadingListAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/delete_sidebar")));
 
     addLabelAction = new QAction(tr("Add new label"), window);
     addLabelAction->setData(ADD_LABEL_ACTION_YL);
     addLabelAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_LABEL_ACTION_YL));
     addLabelAction->setToolTip(tr("Add a new label to this library"));
-    addLabelAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/addLabelIcon")));
 
     renameListAction = new QAction(tr("Rename selected list"), window);
     renameListAction->setData(RENAME_LIST_ACTION_YL);
     renameListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_LIST_ACTION_YL));
     renameListAction->setToolTip(tr("Rename any selected labels or lists"));
-    renameListAction->setIcon(QIcon(addExtensionToIconPath(":/images/sidebar/renameListIcon")));
 
     //--
     addToMenuAction = new QAction(tr("Add to..."), window);
@@ -439,7 +376,6 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     addToFavoritesAction->setData(ADD_TO_FAVORITES_ACTION_YL);
     addToFavoritesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_TO_FAVORITES_ACTION_YL));
     addToFavoritesAction->setToolTip(tr("Add selected comics to favorites list"));
-    addToFavoritesAction->setIcon(QIcon(":/images/lists/default_1.svg"));
 
     // global actions
     window->addAction(openComicAction); // this fixes opening comics in fullscreen mode using the keyboard shortcut
@@ -609,11 +545,23 @@ void LibraryWindowActions::createConnections(
 
 void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editShortcutsDialog)
 {
+    // Set up icon mapping for theme changes
+    QMap<QString, std::function<QIcon(const Theme &)>> iconMapping;
+    iconMapping["Comics"] = [](const Theme &t) { return t.shortcutsIcons.comicsIcon; };
+    iconMapping["Folders"] = [](const Theme &t) { return t.shortcutsIcons.foldersIcon; };
+    iconMapping["Lists"] = [](const Theme &t) { return t.shortcutsIcons.foldersIcon; }; // TODO change icon
+    iconMapping["General"] = [](const Theme &t) { return t.shortcutsIcons.generalIcon; };
+    iconMapping["Libraries"] = [](const Theme &t) { return t.shortcutsIcons.librariesIcon; };
+    iconMapping["Visualization"] = [](const Theme &t) { return t.shortcutsIcons.visualizationIcon; };
+    editShortcutsDialog->setGroupIconMapping(iconMapping);
 
     QList<QAction *> allActions;
     QList<QAction *> tmpList;
 
-    editShortcutsDialog->addActionsGroup("Comics", QIcon(":/images/shortcuts_group_comics.svg"),
+    // Get current theme for initial icons
+    const auto &theme = ThemeManager::instance().getCurrentTheme();
+
+    editShortcutsDialog->addActionsGroup("Comics", theme.shortcutsIcons.comicsIcon,
                                          tmpList = QList<QAction *>()
                                                  << openComicAction
                                                  << saveCoversToAction
@@ -632,7 +580,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
 
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Folders", QIcon(":/images/shortcuts_group_folders.svg"),
+    editShortcutsDialog->addActionsGroup("Folders", theme.shortcutsIcons.foldersIcon,
                                          tmpList = QList<QAction *>()
                                                  << addFolderAction
                                                  << deleteFolderAction
@@ -652,7 +600,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << deleteCustomFolderCoverAction);
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Lists", QIcon(":/images/shortcuts_group_folders.svg"), // TODO change icon
+    editShortcutsDialog->addActionsGroup("Lists", theme.shortcutsIcons.foldersIcon, // TODO change icon
                                          tmpList = QList<QAction *>()
                                                  << addReadingListAction
                                                  << deleteReadingListAction
@@ -660,7 +608,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << renameListAction);
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("General", QIcon(":/images/shortcuts_group_general.svg"),
+    editShortcutsDialog->addActionsGroup("General", theme.shortcutsIcons.generalIcon,
                                          tmpList = QList<QAction *>()
                                                  << backAction
                                                  << forwardAction
@@ -674,7 +622,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
 
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Libraries", QIcon(":/images/shortcuts_group_libraries.svg"),
+    editShortcutsDialog->addActionsGroup("Libraries", theme.shortcutsIcons.librariesIcon,
                                          tmpList = QList<QAction *>()
                                                  << createLibraryAction
                                                  << openLibraryAction
@@ -690,7 +638,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
 
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Visualization", QIcon(":/images/shortcuts_group_visualization.svg"),
+    editShortcutsDialog->addActionsGroup("Visualization", theme.shortcutsIcons.visualizationIcon,
                                          tmpList = QList<QAction *>()
                                                  << showHideMarksAction
                                                  << toogleShowRecentIndicatorAction
@@ -773,4 +721,68 @@ void LibraryWindowActions::disableAllActions()
     disableComicsActions(true);
     disableLibrariesActions(true);
     disableFoldersActions(true);
+}
+
+void LibraryWindowActions::updateTheme(const Theme &theme)
+{
+    const auto &mainToolbar = theme.mainToolbar;
+    const auto &comicsToolbar = theme.comicsViewToolbar;
+    const auto &readingListIcons = theme.readingListIcons;
+    const auto &menuIcons = theme.menuIcons;
+
+    // Update sidebar action icons
+    const auto &sidebarIcons = theme.sidebarIcons;
+    createLibraryAction->setIcon(sidebarIcons.newLibraryIcon);
+    openLibraryAction->setIcon(sidebarIcons.openLibraryIcon);
+    addFolderAction->setIcon(sidebarIcons.addNewIcon);
+    deleteFolderAction->setIcon(sidebarIcons.deleteIcon);
+    setRootIndexAction->setIcon(sidebarIcons.setRootIcon);
+    expandAllNodesAction->setIcon(sidebarIcons.expandIcon);
+    colapseAllNodesAction->setIcon(sidebarIcons.colapseIcon);
+    addReadingListAction->setIcon(sidebarIcons.addNewIcon);
+    deleteReadingListAction->setIcon(sidebarIcons.deleteIcon);
+    addLabelAction->setIcon(sidebarIcons.addLabelIcon);
+    renameListAction->setIcon(sidebarIcons.renameListIcon);
+
+    // Main toolbar icons
+    backAction->setIcon(mainToolbar.backIcon);
+    forwardAction->setIcon(mainToolbar.forwardIcon);
+    helpAboutAction->setIcon(mainToolbar.helpIcon);
+    optionsAction->setIcon(mainToolbar.settingsIcon);
+    serverConfigAction->setIcon(mainToolbar.serverIcon);
+#ifndef Q_OS_MACOS
+    toggleFullScreenAction->setIcon(mainToolbar.fullscreenIcon);
+#endif
+
+    // Comics view toolbar icons
+    openComicAction->setIcon(comicsToolbar.openInYACReaderIcon);
+    setAsReadAction->setIcon(comicsToolbar.setAsReadIcon);
+    setAsNonReadAction->setIcon(comicsToolbar.setAsUnreadIcon);
+    setMangaAction->setIcon(comicsToolbar.setAsMangaIcon);
+    setNormalAction->setIcon(comicsToolbar.setAsNormalIcon);
+    showHideMarksAction->setIcon(comicsToolbar.showMarksIcon);
+    toogleShowRecentIndicatorAction->setIcon(comicsToolbar.showRecentIndicatorIcon);
+    selectAllComicsAction->setIcon(comicsToolbar.selectAllIcon);
+    editSelectedComicsAction->setIcon(comicsToolbar.editComicIcon);
+    asignOrderAction->setIcon(comicsToolbar.assignNumberIcon);
+    deleteComicsAction->setIcon(comicsToolbar.deleteIcon);
+    getInfoAction->setIcon(comicsToolbar.getInfoIcon);
+
+    // Reading list icons
+    addToFavoritesAction->setIcon(readingListIcons.favoritesIcon);
+
+    // Menu icons (context menus)
+    exportComicsInfoAction->setIcon(menuIcons.exportComicsInfoIcon);
+    importComicsInfoAction->setIcon(menuIcons.importComicsInfoIcon);
+    exportLibraryAction->setIcon(menuIcons.exportLibraryIcon);
+    importLibraryAction->setIcon(menuIcons.importLibraryIcon);
+    updateLibraryAction->setIcon(menuIcons.updateLibraryIcon);
+    renameLibraryAction->setIcon(menuIcons.renameLibraryIcon);
+    removeLibraryAction->setIcon(menuIcons.removeLibraryIcon);
+    openContainingFolderAction->setIcon(menuIcons.openContainingFolderIcon);
+    openContainingFolderComicAction->setIcon(menuIcons.openContainingFolderIcon);
+    updateFolderAction->setIcon(menuIcons.updateCurrentFolderIcon);
+    updateCurrentFolderAction->setIcon(menuIcons.updateCurrentFolderIcon);
+
+    quitAction->setIcon(menuIcons.quitIcon);
 }

@@ -3,7 +3,9 @@
 
 #include <QtWidgets>
 
-class EmptyContainerInfo : public QWidget
+#include "themable.h"
+
+class EmptyContainerInfo : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -17,10 +19,10 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *) override;
+    void applyTheme(const Theme &theme) override;
 
     QLabel *iconLabel;
     QLabel *titleLabel;
-    QString backgroundColor;
 };
 
 #endif // EMPTY_CONTAINER_INFO_H

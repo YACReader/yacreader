@@ -32,7 +32,7 @@ QIcon YACReader::noHighlightedIcon(const QString &path)
     return icon;
 }
 
-void YACReader::colorize(QImage &img, QColor &col)
+void YACReader::colorize(QImage &img, const QColor &col)
 {
     QRgb *data = (QRgb *)img.bits();
     QRgb *end = data + img.width() * img.height();
@@ -51,22 +51,6 @@ QList<qulonglong> YACReader::mimeDataToComicsIds(const QMimeData *data)
     QDataStream in(&rawData, QIODevice::ReadOnly);
     in >> comicIds; // deserialize the list of indentifiers
     return comicIds;
-}
-
-// TODO some SVG assets are missing in macos (WIP)
-// we need two sets of icons, one for the toolbar and one for the context menu because of this bug (QTBUG-96553): https://bugreports.qt.io/browse/QTBUG-96553
-
-QString YACReader::addExtensionToIconPath(const QString &path)
-{
-#ifdef YACREADER_LIBRARY
-#ifdef Q_OS_MACOS // TODO_Y_MAC_UI
-    return path + ".png";
-#else
-    return path + ".svg";
-#endif
-#else
-    return path + ".svg";
-#endif
 }
 
 QString YACReader::addExtensionToIconPathInToolbar(const QString &path)
@@ -93,6 +77,9 @@ QAction *YACReader::actionWithCustomIcon(const QIcon &icon, QAction *action)
     });
     QObject::connect(a, &QAction::toggled, action, &QAction::setChecked);
     QObject::connect(action, &QAction::toggled, a, &QAction::setChecked);
+
+    // asign a to action somehow so we can retrieve it later
+    action->setProperty("customIconAction", QVariant::fromValue<QObject *>(a));
 
     return a;
 }

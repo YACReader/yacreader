@@ -4,18 +4,21 @@
 #include <QDialog>
 #include <QModelIndex>
 
+#include "themable.h"
+
 class QListView;
 class QTableView;
 
 class ActionsGroupsModel;
 class ActionsShortcutsModel;
 
-class EditShortcutsDialog : public QDialog
+class EditShortcutsDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 public:
     explicit EditShortcutsDialog(QWidget *parent = 0);
     void addActionsGroup(const QString &name, const QIcon &ico, QList<QAction *> &group);
+    void setGroupIconMapping(const QMap<QString, std::function<QIcon(const Theme&)>> &mapping);
 signals:
 
 public slots:
@@ -24,9 +27,14 @@ public slots:
     void processConflict(const QString &shortcutInConflict);
 
 protected:
+    void applyTheme(const Theme &theme) override;
+    void updateGroupIcons(const Theme &theme);
+
     QListView *actionsGroupsListView;
     QTableView *actionsTableView;
     ActionsGroupsModel *groupsModel;
+    
+    QMap<QString, std::function<QIcon(const Theme&)>> groupIconMapping;
     ActionsShortcutsModel *actionsModel;
 };
 

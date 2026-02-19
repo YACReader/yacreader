@@ -12,8 +12,6 @@
 	<string>????</string>
 	<key>CFBundleExecutable</key>
 	<string>YACReaderLibrary</string>
-	<key>NSRequiresAquaSystemAppearance</key>
-	<true/>
 	<key>CFBundleIdentifier</key>
 	<string>com.yacreader.YACReaderLibrary</string>
 	<key>NOTE</key>
