@@ -1,6 +1,5 @@
 #include "help_about_dialog.h"
 
-#include "opengl_checker.h"
 #include "global_info_provider.h"
 
 #include <QtCore>
@@ -100,10 +99,8 @@ void HelpAboutDialog::loadSystemInfo()
 {
     auto text = YACReader::getGlobalInfo();
 
-    auto openGLChecker = OpenGLChecker();
     text.append("\nGRAPHIC INFORMATION\n");
     text.append(QString("Screen pixel ratio: %1\n").arg(devicePixelRatioF()));
-    text.append(QString("OpenGL version: %1\n").arg(openGLChecker.textVersionDescription()));
 
     systemInfoText->setText(text);
 }

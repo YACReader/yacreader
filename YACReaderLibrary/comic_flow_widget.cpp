@@ -1,276 +1,138 @@
 #include "comic_flow_widget.h"
 #include <QVBoxLayout>
+
 ComicFlowWidget::ComicFlowWidget(QWidget *parent)
     : QWidget(parent)
 {
-}
+    flow = new YACReaderComicFlow3D(this);
 
-ComicFlowWidgetSW::ComicFlowWidgetSW(QWidget *parent)
-    : ComicFlowWidget(parent)
-{
-    flow = new ComicFlow(parent);
-
-    connect(flow, &PictureFlow::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
-    connect(flow, &YACReaderFlow::selected, this, &ComicFlowWidget::selected);
-
-    auto l = new QVBoxLayout;
-    l->addWidget(flow);
-    setLayout(l);
-
-    // TODO eleminar "padding"
-    QPalette Pal(palette());
-    // set black background
-    Pal.setColor(QPalette::Window, Qt::black);
-    setAutoFillBackground(true);
-    setPalette(Pal);
-
-    // config
-    QTransform m;
-    m.rotate(-90);
-    m.scale(-1, 1);
-    QImage image(":/images/setRead.png");
-    QImage imageTransformed = image.transformed(m, Qt::SmoothTransformation);
-    setMarkImage(imageTransformed);
-}
-
-QSize ComicFlowWidgetSW::minimumSizeHint() const
-{
-    return flow->minimumSizeHint();
-}
-QSize ComicFlowWidgetSW::sizeHint() const
-{
-    return flow->sizeHint();
-}
-
-void ComicFlowWidgetSW::setShowMarks(bool value)
-{
-    flow->setShowMarks(value);
-}
-void ComicFlowWidgetSW::setMarks(QVector<YACReaderComicReadStatus> marks)
-{
-    flow->setMarks(marks);
-}
-void ComicFlowWidgetSW::setMarkImage(QImage &image)
-{
-    flow->setMarkImage(image);
-}
-void ComicFlowWidgetSW::markSlide(int index, YACReaderComicReadStatus status)
-{
-    flow->markSlide(index, status);
-}
-void ComicFlowWidgetSW::unmarkSlide(int index)
-{
-    flow->unmarkSlide(index);
-}
-void ComicFlowWidgetSW::setSlideSize(QSize size)
-{
-    flow->setSlideSize(size);
-}
-void ComicFlowWidgetSW::clear()
-{
-    flow->clear();
-}
-void ComicFlowWidgetSW::setImagePaths(QStringList paths)
-{
-    flow->setImagePaths(paths);
-}
-void ComicFlowWidgetSW::setCenterIndex(int index)
-{
-    flow->setCenterIndex(index);
-}
-void ComicFlowWidgetSW::showSlide(int index)
-{
-    flow->showSlide(index);
-}
-int ComicFlowWidgetSW::centerIndex()
-{
-    return flow->centerIndex();
-}
-void ComicFlowWidgetSW::updateMarks()
-{
-    flow->updateMarks();
-}
-void ComicFlowWidgetSW::setFlowType(FlowType flowType)
-{
-    flow->setFlowType(flowType);
-}
-void ComicFlowWidgetSW::render()
-{
-    flow->render();
-}
-void ComicFlowWidgetSW::keyPressEvent(QKeyEvent *event)
-{
-    flow->keyPressEvent(event);
-}
-void ComicFlowWidgetSW::paintEvent(QPaintEvent *event)
-{
-    ComicFlowWidget::paintEvent(event);
-}
-void ComicFlowWidgetSW::mousePressEvent(QMouseEvent *event)
-{
-    flow->mousePressEvent(event);
-}
-void ComicFlowWidgetSW::resizeEvent(QResizeEvent *event)
-{
-    flow->resizeEvent(event);
-}
-void ComicFlowWidgetSW::mouseDoubleClickEvent(QMouseEvent *event)
-{
-    flow->mouseDoubleClickEvent(event);
-}
-void ComicFlowWidgetSW::updateConfig(QSettings *settings)
-{
-    switch (settings->value(FLOW_TYPE_SW).toInt()) {
-    case CoverFlowLike:
-        flow->setFlowType(CoverFlowLike);
-        return;
-    case Strip:
-        flow->setFlowType(Strip);
-        return;
-    case StripOverlapped:
-        flow->setFlowType(StripOverlapped);
-        return;
-    }
-}
-
-void ComicFlowWidgetSW::add(const QString &path, int index)
-{
-    flow->insertSlide(path, index);
-}
-
-void ComicFlowWidgetSW::remove(int cover)
-{
-    flow->removeSlide(cover);
-}
-
-void ComicFlowWidgetSW::resortCovers(QList<int> newOrder)
-{
-    flow->resortCovers(newOrder);
-}
-
-#ifndef NO_OPENGL
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-/// OpenGL ComicFlow
-//////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////
-
-ComicFlowWidgetGL::ComicFlowWidgetGL(QWidget *parent)
-    : ComicFlowWidget(parent)
-{
-    flow = new YACReaderComicFlowGL(parent);
-
-    connect(flow, &YACReaderFlowGL::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
-    connect(flow, &YACReaderFlowGL::selected, this, &ComicFlowWidget::selected);
+    connect(flow, &YACReaderComicFlow3D::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
+    connect(flow, &YACReaderComicFlow3D::selected, this, &ComicFlowWidget::selected);
 
     auto l = new QVBoxLayout;
     l->addWidget(flow);
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
 
-    // TODO eleminar "padding"
     QPalette Pal(palette());
-    // set black background
     Pal.setColor(QPalette::Window, Qt::black);
     setAutoFillBackground(true);
     setPalette(Pal);
 }
 
-QSize ComicFlowWidgetGL::minimumSizeHint() const
+QSize ComicFlowWidget::minimumSizeHint() const
 {
     return flow->minimumSizeHint();
 }
-QSize ComicFlowWidgetGL::sizeHint() const
+
+QSize ComicFlowWidget::sizeHint() const
 {
     return flow->sizeHint();
 }
 
-void ComicFlowWidgetGL::setShowMarks(bool value)
+void ComicFlowWidget::setShowMarks(bool value)
 {
     flow->setShowMarks(value);
 }
-void ComicFlowWidgetGL::setMarks(QVector<YACReaderComicReadStatus> marks)
+
+void ComicFlowWidget::setMarks(QVector<YACReader::YACReaderComicReadStatus> marks)
 {
     flow->setMarks(marks);
 }
-void ComicFlowWidgetGL::setMarkImage(QImage &image)
+
+void ComicFlowWidget::setMarkImage(QImage &image)
 {
     flow->setMarkImage(image);
 }
-void ComicFlowWidgetGL::markSlide(int index, YACReaderComicReadStatus status)
+
+void ComicFlowWidget::markSlide(int index, YACReader::YACReaderComicReadStatus status)
 {
     flow->markSlide(index, status);
 }
-void ComicFlowWidgetGL::unmarkSlide(int index)
+
+void ComicFlowWidget::unmarkSlide(int index)
 {
     flow->unmarkSlide(index);
 }
-void ComicFlowWidgetGL::setSlideSize(QSize size)
+
+void ComicFlowWidget::setSlideSize(QSize size)
 {
     flow->setSlideSize(size);
 }
-void ComicFlowWidgetGL::clear()
+
+void ComicFlowWidget::clear()
 {
     flow->clear();
 }
-void ComicFlowWidgetGL::setImagePaths(QStringList paths)
+
+void ComicFlowWidget::setImagePaths(QStringList paths)
 {
     flow->setImagePaths(paths);
 }
-void ComicFlowWidgetGL::setCenterIndex(int index)
+
+void ComicFlowWidget::setCenterIndex(int index)
 {
     flow->setCenterIndex(index);
 }
-void ComicFlowWidgetGL::showSlide(int index)
+
+void ComicFlowWidget::showSlide(int index)
 {
     flow->showSlide(index);
 }
-int ComicFlowWidgetGL::centerIndex()
+
+int ComicFlowWidget::centerIndex()
 {
     return flow->centerIndex();
 }
-void ComicFlowWidgetGL::updateMarks()
+
+void ComicFlowWidget::updateMarks()
 {
     flow->updateMarks();
 }
-void ComicFlowWidgetGL::setFlowType(FlowType flowType)
+
+void ComicFlowWidget::setFlowType(YACReader::FlowType flowType)
 {
-    if (flowType == CoverFlowLike)
+    if (flowType == YACReader::CoverFlowLike)
         flow->setPreset(presetYACReaderFlowClassicConfig);
-    else if (flowType == Strip)
+    else if (flowType == YACReader::Strip)
         flow->setPreset(presetYACReaderFlowStripeConfig);
-    else if (flowType == StripOverlapped)
+    else if (flowType == YACReader::StripOverlapped)
         flow->setPreset(presetYACReaderFlowOverlappedStripeConfig);
     else
         flow->setPreset(defaultYACReaderFlowConfig);
 }
-void ComicFlowWidgetGL::render()
+
+void ComicFlowWidget::render()
 {
     flow->render();
 }
-void ComicFlowWidgetGL::keyPressEvent(QKeyEvent *event)
+
+void ComicFlowWidget::keyPressEvent(QKeyEvent *event)
 {
     flow->keyPressEvent(event);
 }
-void ComicFlowWidgetGL::paintEvent(QPaintEvent *event)
+
+void ComicFlowWidget::paintEvent(QPaintEvent *event)
 {
-    // flow->paintEvent(event);
-    ComicFlowWidget::paintEvent(event);
+    QWidget::paintEvent(event);
 }
-void ComicFlowWidgetGL::mousePressEvent(QMouseEvent *event)
+
+void ComicFlowWidget::mousePressEvent(QMouseEvent *event)
 {
     flow->mousePressEvent(event);
 }
-void ComicFlowWidgetGL::resizeEvent(QResizeEvent *event)
+
+void ComicFlowWidget::resizeEvent(QResizeEvent *event)
 {
     flow->resizeGL(event->size().width(), event->size().height());
 }
-void ComicFlowWidgetGL::mouseDoubleClickEvent(QMouseEvent *event)
+
+void ComicFlowWidget::mouseDoubleClickEvent(QMouseEvent *event)
 {
     flow->mouseDoubleClickEvent(event);
 }
 
-void ComicFlowWidgetGL::updateConfig(QSettings *settings)
+void ComicFlowWidget::updateConfig(QSettings *settings)
 {
     Performance performance = medium;
 
@@ -314,7 +176,6 @@ void ComicFlowWidgetGL::updateConfig(QSettings *settings)
     }
 
     // custom config
-
     flow->setCF_RX(settings->value(X_ROTATION).toInt());
     flow->setCF_Y(settings->value(Y_POSITION).toInt());
     flow->setX_Distance(settings->value(COVER_DISTANCE).toInt());
@@ -326,35 +187,19 @@ void ComicFlowWidgetGL::updateConfig(QSettings *settings)
     flow->setFadeOutDist(settings->value(FADE_OUT_DIST).toInt());
     flow->setLightStrenght(settings->value(LIGHT_STRENGTH).toInt());
     flow->setMaxAngle(settings->value(MAX_ANGLE).toInt());
-
-    /*	flow->setVisibility(settings->value("visibilityDistance").toInt());
-        flow->setLightStrenght(settings->value("lightStrength").toInt())*/
-    ;
 }
 
-void ComicFlowWidgetGL::add(const QString &path, int index)
+void ComicFlowWidget::add(const QString &path, int index)
 {
     flow->add(path, index);
 }
 
-void ComicFlowWidgetGL::remove(int cover)
+void ComicFlowWidget::remove(int cover)
 {
     flow->remove(cover);
 }
 
-void ComicFlowWidgetGL::resortCovers(QList<int> newOrder)
+void ComicFlowWidget::resortCovers(QList<int> newOrder)
 {
     flow->resortCovers(newOrder);
 }
-#endif
-// void ComicFlowWidgetGL::setCF_RX(int value){				flow->setCF_RX(value);}
-// void ComicFlowWidgetGL::setCF_RY(int value){				flow->setCF_RY(value);}
-// void ComicFlowWidgetGL::setCF_RZ(int value){				flow->setCF_RZ(value);}
-// void ComicFlowWidgetGL::setZoom(int zoom){					flow->setZoom(zoom);}
-// void ComicFlowWidgetGL::setRotation(int angle){				flow->setRotation(angle);}
-// void ComicFlowWidgetGL::setX_Distance(int distance){		flow->setX_Distance(distance);}
-// void ComicFlowWidgetGL::setCenter_Distance(int distance){	flow->setCenter_Distance(distance);}
-// void ComicFlowWidgetGL::setZ_Distance(int distance){		flow->setZ_Distance(distance);}
-// void ComicFlowWidgetGL::setCF_Y(int value){					flow->setCF_Y(value);}
-// void ComicFlowWidgetGL::setY_Distance(int value){			flow->setY_Distance(value);}
-// void ComicFlowWidgetGL::setPreset(const Preset & p){		flow->setPreset(p);}

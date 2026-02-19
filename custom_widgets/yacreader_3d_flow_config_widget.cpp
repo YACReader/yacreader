@@ -1,15 +1,16 @@
-#include "yacreader_gl_flow_config_widget.h"
+#include "yacreader_3d_flow_config_widget.h"
 
 #include "yacreader_spin_slider_widget.h"
-#include "yacreader_flow_gl.h" //TODO
 
+#include <QSlider>
 #include <QVBoxLayout>
 #include <QGroupBox>
 #include <QRadioButton>
 #include <QLabel>
 #include <QPushButton>
+#include <QCheckBox>
 
-YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget *parent /* = 0 */)
+YACReader3DFlowConfigWidget::YACReader3DFlowConfigWidget(QWidget *parent /* = 0 */)
     : QWidget(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -75,7 +76,7 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget *parent /* = 0 
 
     showAdvancedOptions = new QPushButton(tr("Show advanced settings"));
     showAdvancedOptions->setCheckable(true);
-    connect(showAdvancedOptions, &QAbstractButton::toggled, this, &YACReaderGLFlowConfigWidget::avancedOptionToogled);
+    connect(showAdvancedOptions, &QAbstractButton::toggled, this, &YACReader3DFlowConfigWidget::avancedOptionToogled);
 
     vbox->addWidget(showAdvancedOptions, 0, Qt::AlignRight);
 
@@ -213,7 +214,7 @@ YACReaderGLFlowConfigWidget::YACReaderGLFlowConfigWidget(QWidget *parent /* = 0 
     setLayout(layout);
 }
 
-void YACReaderGLFlowConfigWidget::avancedOptionToogled(bool show)
+void YACReader3DFlowConfigWidget::avancedOptionToogled(bool show)
 {
     if (show)
         optionsGroupBox->show();
@@ -221,7 +222,7 @@ void YACReaderGLFlowConfigWidget::avancedOptionToogled(bool show)
         optionsGroupBox->hide();
 }
 
-void YACReaderGLFlowConfigWidget::setValues(Preset preset)
+void YACReader3DFlowConfigWidget::setValues(Preset preset)
 {
     xRotation->setValue(preset.cfRX);
     yPosition->setValue(preset.cfY * 100);

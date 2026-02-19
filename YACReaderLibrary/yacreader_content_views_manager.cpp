@@ -126,6 +126,7 @@ void YACReaderContentViewsManager::showComicsView()
 {
     comicsViewStack->setCurrentWidget(comicsView);
 
+    // TODO: check if this is still needed in the rhi implementation
     // BUG, ugly workaround for glitch when QOpenGLWidget (flow) is used just after any other widget in the views stack
     // Somehow QOpenGLWidget is messing with the rendering of the side bar (wrong buffer swapping)
     libraryWindow->sideBar->update();

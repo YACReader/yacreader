@@ -21,7 +21,6 @@
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 #include "exit_check.h"
-#include "opengl_checker.h"
 #ifdef Q_OS_MACOS
 #include "trayhandler.h"
 #endif
@@ -76,15 +75,6 @@ void logSystemAndConfig()
         QLOG_INFO() << "server : enabled";
     else
         QLOG_INFO() << "server : disabled";
-
-    if (settings.value(USE_OPEN_GL).toBool())
-        QLOG_INFO() << "OpenGL : enabled"
-                    << " - " << (settings.value(V_SYNC).toBool() ? "VSync on" : "VSync off");
-    else
-        QLOG_INFO() << "OpenGL : disabled";
-
-    OpenGLChecker checker;
-    QLOG_INFO() << "OpenGL version : " << checker.textVersionDescription();
 
     auto libraries = DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "Libraries: ";
@@ -195,28 +185,7 @@ int main(int argc, char **argv)
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption({ "loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "warning" });
-#ifdef Q_OS_WIN
-    parser.addOption({ "opengl", "Set opengl renderer. Valid values: desktop, es, software.", "gl_renderer" });
-#endif
     parser.process(app);
-
-#ifdef Q_OS_WIN
-    if (parser.isSet("opengl")) {
-        QTextStream qout(stdout);
-        if (parser.value("opengl") == "desktop") {
-            app.setAttribute(Qt::AA_UseDesktopOpenGL);
-        } else if (parser.value("opengl") == "es") {
-            app.setAttribute(Qt::AA_UseOpenGLES);
-        } else if (parser.value("opengl") == "software") {
-            qout << "Warning! This will be slow as hell. Only use this setting for"
-                    "testing or as a last resort.";
-            app.setAttribute(Qt::AA_UseSoftwareOpenGL);
-        } else {
-            qout << "Invalid value:" << parser.value("gl_renderer");
-            parser.showHelp();
-        }
-    }
-#endif
 
     if (parser.isSet("loglevel")) {
         if (parser.value("loglevel") == "trace") {

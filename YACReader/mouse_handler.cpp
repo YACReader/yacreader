@@ -3,16 +3,10 @@
 #include <QtWidgets>
 
 #include "configuration.h"
+#include "goto_flow_widget.h"
 #include "magnifying_glass.h"
 #include "render.h"
 #include "viewer.h"
-
-#include "goto_flow.h"
-#ifndef NO_OPENGL
-#include "goto_flow_gl.h"
-#else
-#include <QtWidgets>
-#endif
 
 using namespace YACReader;
 

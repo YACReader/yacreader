@@ -4,6 +4,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## 10 (WIP)
 
+### All GUI Apps
+* Migrate Flow implementation from OpenGL to QRhi. This is a full new implementation with better performance and compatibility with operating systems and hardware.
+
 ## 9.16.4
 
 ### YACReaderLibrary

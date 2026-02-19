@@ -41,6 +41,9 @@ void QsDebugOutput::output( const QString& message )
 {
     WriteConsoleW(GetStdHandle(STD_ERROR_HANDLE), message.utf16(), message.size(), NULL, NULL);
     WriteConsoleW(GetStdHandle(STD_ERROR_HANDLE), L"\n", 1, NULL, NULL);
+
+    fprintf(stdout, "%s\n", qPrintable(message));
+    fflush(stdout);
 }
 
 #endif

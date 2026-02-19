@@ -1,13 +1,8 @@
 #include "yacreader_options_dialog.h"
 
-#include "yacreader_flow_config_widget.h"
-#ifndef NO_OPENGL
-#include "yacreader_gl_flow_config_widget.h"
-#else
-#include "pictureflow.h"
-#endif
+#include "yacreader_3d_flow_config_widget.h"
+#include "yacreader_global_gui.h"
 #include "yacreader_spin_slider_widget.h"
-#include "yacreader_global.h"
 
 #include <QPushButton>
 #include <QCheckBox>
@@ -20,11 +15,7 @@
 YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
     : QDialog(parent)
 {
-
-    sw = new YACReaderFlowConfigWidget(this);
-#ifndef NO_OPENGL
-    gl = new YACReaderGLFlowConfigWidget(this);
-#endif
+    gl = new YACReader3DFlowConfigWidget(this);
     accept = new QPushButton(tr("Save"));
     cancel = new QPushButton(tr("Cancel"));
 
@@ -42,15 +33,7 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
     connect(accept, &QAbstractButton::clicked, this, &YACReaderOptionsDialog::saveOptions);
     connect(cancel, &QAbstractButton::clicked, this, QOverload<>::of(&YACReaderOptionsDialog::restoreOptions));
     connect(cancel, &QAbstractButton::clicked, this, &QWidget::close);
-#ifndef NO_OPENGL
-    useGL = new QCheckBox(tr("Use hardware acceleration (restart needed)"));
-    connect(useGL, &QCheckBox::stateChanged, this, &YACReaderOptionsDialog::saveUseGL);
-#endif
-    // sw CONNECTIONS
-    connect(sw->radio1, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setClassicConfigSW);
-    connect(sw->radio2, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setStripeConfigSW);
-    connect(sw->radio3, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setOverlappedStripeConfigSW);
-#ifndef NO_OPENGL
+
     // gl CONNECTIONS
     connect(gl->radioClassic, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setClassicConfig);
     connect(gl->radioStripe, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setStripeConfig);
@@ -100,11 +83,9 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
     connect(gl->performanceSlider, &QAbstractSlider::valueChanged, this, &YACReaderOptionsDialog::savePerformance);
     connect(gl->performanceSlider, &QAbstractSlider::valueChanged, this, &YACReaderOptionsDialog::optionsChanged);
 
-    connect(gl->vSyncCheck, &QCheckBox::stateChanged, this, &YACReaderOptionsDialog::saveUseVSync);
-#endif
+    connect(gl->vSyncCheck, &QCheckBox::checkStateChanged, this, &YACReaderOptionsDialog::saveUseVSync);
 }
 
-#ifndef NO_OPENGL
 void YACReaderOptionsDialog::savePerformance(int value)
 {
     settings->setValue(PERFORMANCE, value);
@@ -129,7 +110,6 @@ void YACReaderOptionsDialog::saveFlowParameters()
     settings->setValue(LIGHT_STRENGTH, gl->lightStrength->getValue());
     settings->setValue(MAX_ANGLE, gl->maxAngle->getValue());
 }
-#endif
 
 void YACReaderOptionsDialog::saveOptions()
 {
@@ -137,96 +117,68 @@ void YACReaderOptionsDialog::saveOptions()
     close();
 }
 
-#ifndef NO_OPENGL
-void YACReaderOptionsDialog::saveUseGL(int b)
-{
-
-    if (Qt::Checked == b) {
-        sw->setVisible(false);
-        gl->setVisible(true);
-    } else {
-        gl->setVisible(false);
-        sw->setVisible(true);
-    }
-    resize(0, 0);
-
-    settings->setValue(USE_OPEN_GL, b);
-}
-#endif
-
-#ifndef NO_OPENGL
 void YACReaderOptionsDialog::saveXRotation(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(X_ROTATION, value);
 }
 void YACReaderOptionsDialog::saveYPosition(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(Y_POSITION, value);
 }
 void YACReaderOptionsDialog::saveCoverDistance(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(COVER_DISTANCE, value);
 }
 void YACReaderOptionsDialog::saveCentralDistance(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(CENTRAL_DISTANCE, value);
 }
 void YACReaderOptionsDialog::saveZoomLevel(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(ZOOM_LEVEL, value);
 }
 void YACReaderOptionsDialog::saveYCoverOffset(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(Y_COVER_OFFSET, value);
 }
 void YACReaderOptionsDialog::saveZCoverOffset(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(Z_COVER_OFFSET, value);
 }
 void YACReaderOptionsDialog::saveCoverRotation(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(COVER_ROTATION, value);
 }
 void YACReaderOptionsDialog::saveFadeOutDist(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(FADE_OUT_DIST, value);
 }
 void YACReaderOptionsDialog::saveLightStrength(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(LIGHT_STRENGTH, value);
 }
 
 void YACReaderOptionsDialog::saveMaxAngle(int value)
 {
-    settings->setValue(FLOW_TYPE_GL, Custom);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Custom);
     settings->setValue(MAX_ANGLE, value);
 }
-#endif
+
 void YACReaderOptionsDialog::restoreOptions(QSettings *settings)
 {
     this->settings = settings;
 
     // FLOW CONFIG
-#ifndef NO_OPENGL
-    if (settings->contains(USE_OPEN_GL) && settings->value(USE_OPEN_GL).toInt() == Qt::Checked) {
-        sw->setVisible(false);
-        gl->setVisible(true);
-        useGL->setChecked(true);
-    } else {
-        gl->setVisible(false);
-        sw->setVisible(true);
-        useGL->setChecked(false);
-    }
 
     if (!settings->contains(FLOW_TYPE_GL)) {
         setClassicConfig();
@@ -242,67 +194,66 @@ void YACReaderOptionsDialog::restoreOptions(QSettings *settings)
 
     gl->performanceSlider->setValue(settings->value(PERFORMANCE).toInt());
 
-    FlowType flowType;
+    YACReader::FlowType flowType;
     switch (settings->value(FLOW_TYPE_GL).toInt()) {
     case 0:
-        flowType = CoverFlowLike;
+        flowType = YACReader::CoverFlowLike;
         break;
     case 1:
-        flowType = Strip;
+        flowType = YACReader::Strip;
         break;
     case 2:
-        flowType = StripOverlapped;
+        flowType = YACReader::StripOverlapped;
         break;
     case 3:
-        flowType = Modern;
+        flowType = YACReader::Modern;
         break;
     case 4:
-        flowType = Roulette;
+        flowType = YACReader::Roulette;
         break;
     case 5:
-        flowType = Custom;
+        flowType = YACReader::Custom;
         break;
     default:
-        flowType = CoverFlowLike;
+        flowType = YACReader::CoverFlowLike;
     }
 
-    if (flowType == Custom) {
+    if (flowType == YACReader::Custom) {
         loadConfig();
         return;
     }
 
-    if (flowType == CoverFlowLike) {
+    if (flowType == YACReader::CoverFlowLike) {
         setClassicConfig();
         gl->radioClassic->setChecked(true);
         return;
     }
 
-    if (flowType == Strip) {
+    if (flowType == YACReader::Strip) {
         setStripeConfig();
         gl->radioStripe->setChecked(true);
         return;
     }
 
-    if (flowType == StripOverlapped) {
+    if (flowType == YACReader::StripOverlapped) {
         setOverlappedStripeConfig();
         gl->radioOver->setChecked(true);
         return;
     }
 
-    if (flowType == Modern) {
+    if (flowType == YACReader::Modern) {
         setModernConfig();
         gl->radionModern->setChecked(true);
         return;
     }
 
-    if (flowType == Roulette) {
+    if (flowType == YACReader::Roulette) {
         setRouletteConfig();
         gl->radioDown->setChecked(true);
         return;
     }
 
     // END FLOW CONFIG
-#endif
 }
 
 void YACReaderOptionsDialog::restoreOptions()
@@ -310,7 +261,6 @@ void YACReaderOptionsDialog::restoreOptions()
     restoreOptions(settings);
 }
 
-#ifndef NO_OPENGL
 void YACReaderOptionsDialog::loadConfig()
 {
     gl->xRotation->setValue(settings->value(X_ROTATION).toInt());
@@ -325,30 +275,14 @@ void YACReaderOptionsDialog::loadConfig()
     gl->lightStrength->setValue(settings->value(LIGHT_STRENGTH).toInt());
     gl->maxAngle->setValue(settings->value(MAX_ANGLE).toInt());
 }
-#endif
-void YACReaderOptionsDialog::setClassicConfigSW()
-{
-    settings->setValue(FLOW_TYPE_SW, CoverFlowLike);
-}
 
-void YACReaderOptionsDialog::setStripeConfigSW()
-{
-    settings->setValue(FLOW_TYPE_SW, Strip);
-}
-
-void YACReaderOptionsDialog::setOverlappedStripeConfigSW()
-{
-    settings->setValue(FLOW_TYPE_SW, StripOverlapped);
-}
-
-#ifndef NO_OPENGL
 void YACReaderOptionsDialog::setClassicConfig()
 {
     gl->setValues(presetYACReaderFlowClassicConfig);
 
     saveFlowParameters();
 
-    settings->setValue(FLOW_TYPE_GL, CoverFlowLike);
+    settings->setValue(FLOW_TYPE_GL, YACReader::CoverFlowLike);
 }
 
 void YACReaderOptionsDialog::setStripeConfig()
@@ -357,7 +291,7 @@ void YACReaderOptionsDialog::setStripeConfig()
 
     saveFlowParameters();
 
-    settings->setValue(FLOW_TYPE_GL, Strip);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Strip);
 }
 
 void YACReaderOptionsDialog::setOverlappedStripeConfig()
@@ -366,7 +300,7 @@ void YACReaderOptionsDialog::setOverlappedStripeConfig()
 
     saveFlowParameters();
 
-    settings->setValue(FLOW_TYPE_GL, StripOverlapped);
+    settings->setValue(FLOW_TYPE_GL, YACReader::StripOverlapped);
 }
 
 void YACReaderOptionsDialog::setModernConfig()
@@ -375,7 +309,7 @@ void YACReaderOptionsDialog::setModernConfig()
 
     saveFlowParameters();
 
-    settings->setValue(FLOW_TYPE_GL, Modern);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Modern);
 }
 
 void YACReaderOptionsDialog::setRouletteConfig()
@@ -384,6 +318,5 @@ void YACReaderOptionsDialog::setRouletteConfig()
 
     saveFlowParameters();
 
-    settings->setValue(FLOW_TYPE_GL, Roulette);
+    settings->setValue(FLOW_TYPE_GL, YACReader::Roulette);
 }
-#endif
