@@ -1,5 +1,7 @@
 #include "theme_factory.h"
 
+#include <QApplication>
+
 #include "icon_utils.h"
 
 struct ToolbarParams {
@@ -39,6 +41,20 @@ struct GoToFlowWidgetParams {
     QColor iconColor;
 };
 
+struct WhatsNewDialogParams {
+    QColor backgroundColor;
+    QColor headerTextColor;
+    QColor versionTextColor;
+    QColor contentTextColor;
+    QColor linkColor;
+    QColor closeButtonColor;
+    QColor headerDecorationColor;
+};
+
+struct ShortcutsIconsParams {
+    QColor iconColor; // Main icon color (replaces #f0f)
+};
+
 struct ThemeParams {
     QString themeName;
 
@@ -46,6 +62,8 @@ struct ThemeParams {
     ViewerParams viewerParams;
     GoToFlowWidgetParams goToFlowWidgetParams;
     HelpAboutDialogTheme helpAboutDialogParams;
+    WhatsNewDialogParams whatsNewDialogParams;
+    ShortcutsIconsParams shortcutsIconsParams;
 };
 
 void setToolbarIconPair(QIcon &icon,
@@ -157,6 +175,38 @@ Theme makeTheme(const ThemeParams &params)
     theme.helpAboutDialog = params.helpAboutDialogParams;
     // end HelpAboutDialog
 
+    // WhatsNewDialog
+    const auto &wn = params.whatsNewDialogParams;
+    theme.whatsNewDialog.backgroundColor = wn.backgroundColor;
+    theme.whatsNewDialog.headerTextColor = wn.headerTextColor;
+    theme.whatsNewDialog.versionTextColor = wn.versionTextColor;
+    theme.whatsNewDialog.contentTextColor = wn.contentTextColor;
+    theme.whatsNewDialog.linkColor = wn.linkColor;
+    theme.whatsNewDialog.closeButtonIcon = QPixmap(recoloredSvgToThemeFile(":/images/custom_dialog/custom_close_button.svg", wn.closeButtonColor, params.themeName));
+    theme.whatsNewDialog.headerDecoration = QPixmap(recoloredSvgToThemeFile(":/images/whats_new/whatsnew_header.svg", wn.headerDecorationColor, params.themeName));
+    // end WhatsNewDialog
+
+    // ShortcutsIcons
+    const auto &sci = params.shortcutsIconsParams;
+    auto makeShortcutsIcon = [&](const QString &basePath) {
+        const QString path = recoloredSvgToThemeFile(basePath, sci.iconColor, params.themeName);
+        return QIcon(path);
+    };
+
+    theme.shortcutsIcons.comicsIcon = makeShortcutsIcon(":/images/shortcuts/shortcuts_group_comics.svg");
+    theme.shortcutsIcons.generalIcon = makeShortcutsIcon(":/images/shortcuts/shortcuts_group_general.svg");
+    theme.shortcutsIcons.magnifyingGlassIcon = makeShortcutsIcon(":/images/shortcuts/shortcuts_group_mglass.svg");
+    theme.shortcutsIcons.pageIcon = makeShortcutsIcon(":/images/shortcuts/shortcuts_group_page.svg");
+    theme.shortcutsIcons.readingIcon = makeShortcutsIcon(":/images/shortcuts/shortcuts_group_reading.svg");
+    // end ShortcutsIcons
+
+    // FindFolder icon (used in OptionsDialog)
+    {
+        const QString path = recoloredSvgToThemeFile(":/images/find_folder.svg", params.toolbarParams.iconColor, params.themeName);
+        const qreal dpr = qApp->devicePixelRatio();
+        theme.dialogIcons.findFolderIcon = QIcon(renderSvgToPixmap(path, 13, 13, dpr));
+    }
+
     return theme;
 }
 
@@ -220,6 +270,19 @@ ThemeParams classicThemeParams()
     params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
     params.helpAboutDialogParams.linkColor = QColor(0xC19441);
 
+    params.whatsNewDialogParams.backgroundColor = QColor(0xFFFFFF);
+    params.whatsNewDialogParams.headerTextColor = QColor(0x0A0A0A);
+    params.whatsNewDialogParams.versionTextColor = QColor(0x858585);
+    params.whatsNewDialogParams.contentTextColor = QColor(0x0A0A0A);
+    params.whatsNewDialogParams.linkColor = QColor(0xE8B800);
+    params.whatsNewDialogParams.closeButtonColor = QColor(0x444444);
+    params.whatsNewDialogParams.headerDecorationColor = QColor(0xE8B800);
+
+    // ShortcutsIcons
+    ShortcutsIconsParams sci;
+    sci.iconColor = QColor(0x404040); // Dark icons for light background
+    params.shortcutsIconsParams = sci;
+
     return params;
 }
 
@@ -267,6 +330,19 @@ ThemeParams lightThemeParams()
     params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
     params.helpAboutDialogParams.linkColor = QColor(0xC19441);
 
+    params.whatsNewDialogParams.backgroundColor = QColor(0xFFFFFF);
+    params.whatsNewDialogParams.headerTextColor = QColor(0x0A0A0A);
+    params.whatsNewDialogParams.versionTextColor = QColor(0x858585);
+    params.whatsNewDialogParams.contentTextColor = QColor(0x0A0A0A);
+    params.whatsNewDialogParams.linkColor = QColor(0xE8B800);
+    params.whatsNewDialogParams.closeButtonColor = QColor(0x444444);
+    params.whatsNewDialogParams.headerDecorationColor = QColor(0xE8B800);
+
+    // ShortcutsIcons
+    ShortcutsIconsParams sci;
+    sci.iconColor = QColor(0x606060); // Dark icons for light background
+    params.shortcutsIconsParams = sci;
+
     return params;
 }
 
@@ -313,6 +389,19 @@ ThemeParams darkThemeParams()
 
     params.helpAboutDialogParams.headingColor = QColor(0xE0E0E0);
     params.helpAboutDialogParams.linkColor = QColor(0xD4A84B);
+
+    params.whatsNewDialogParams.backgroundColor = QColor(0x2A2A2A);
+    params.whatsNewDialogParams.headerTextColor = QColor(0xE0E0E0);
+    params.whatsNewDialogParams.versionTextColor = QColor(0x858585);
+    params.whatsNewDialogParams.contentTextColor = QColor(0xE0E0E0);
+    params.whatsNewDialogParams.linkColor = QColor(0xE8B800);
+    params.whatsNewDialogParams.closeButtonColor = QColor(0xDDDDDD);
+    params.whatsNewDialogParams.headerDecorationColor = QColor(0xE8B800);
+
+    // ShortcutsIcons
+    ShortcutsIconsParams sci;
+    sci.iconColor = QColor(0xD0D0D0); // Light icons for dark background
+    params.shortcutsIconsParams = sci;
 
     return params;
 }

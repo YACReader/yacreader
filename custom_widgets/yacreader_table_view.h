@@ -4,21 +4,24 @@
 #include <QTableView>
 #include <QStyledItemDelegate>
 
-class YACReaderDeletingProgress;
-class QResizeEvent;
-class QPropertyAnimation;
+#include "themable.h"
 
-class YACReaderTableView : public QTableView
+class QResizeEvent;
+
+class YACReaderTableView : public QTableView, protected Themable
 {
     Q_OBJECT
 public:
     explicit YACReaderTableView(QWidget *parent = 0);
+    QColor starRatingColor() const { return theme.tableView.starRatingColor; }
+    QColor starRatingSelectedColor() const { return theme.tableView.starRatingSelectedColor; }
+
+protected:
+    void applyTheme(const Theme &theme) override;
 
 signals:
     void comicRated(int, QModelIndex);
 public slots:
-    void showDeleteProgress();
-    void hideDeleteProgress();
     void closeRatingEditor();
 protected slots:
 
@@ -26,10 +29,6 @@ protected slots:
     virtual void commitData(QWidget *editor);
 
 private:
-    YACReaderDeletingProgress *deletingProgress;
-    bool showDelete;
-    QPropertyAnimation *showDeletingProgressAnimation;
-
     void resizeEvent(QResizeEvent *event);
     void mouseMoveEvent(QMouseEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -84,6 +83,8 @@ public:
 
     void paint(QPainter *painter, const QRect &rect,
                const QPalette &palette, EditMode mode) const;
+    void paint(QPainter *painter, const QRect &rect,
+               const QPalette &palette, EditMode mode, QColor color) const;
     void paintSelected(QPainter *painter, const QRect &rect,
                        const QPalette &palette, EditMode mode, QColor color) const;
     void paintSelected(QPainter *painter, const QRect &rect,

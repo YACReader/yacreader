@@ -33,7 +33,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     auto path = new QHBoxLayout();
     path->addWidget(pathEdit = new QLineEdit());
-    path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"), ""));
+    path->addWidget(pathFindButton = new QPushButton(""));
     pathBox->setLayout(path);
 
     QGroupBox *displayBox = new QGroupBox(tr("Display"));
@@ -223,6 +223,13 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     setWindowTitle(tr("Options"));
 
     this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+
+    initTheme(this);
+}
+
+void OptionsDialog::applyTheme(const Theme &theme)
+{
+    pathFindButton->setIcon(theme.dialogIcons.findFolderIcon);
 }
 
 void OptionsDialog::findFolder()
@@ -247,7 +254,7 @@ void OptionsDialog::saveOptions()
 
     Configuration::getConfiguration().setShowTimeInInformation(showTimeInInformationLabel->isChecked());
 
-    if (currentColor != ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor) {
+    if (currentColor != theme.viewer.defaultBackgroundColor) {
         settings->setValue(BACKGROUND_COLOR, currentColor);
     } else {
         settings->remove(BACKGROUND_COLOR);
@@ -285,7 +292,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     showTimeInInformationLabel->setChecked(Configuration::getConfiguration().getShowTimeInInformation());
 
-    updateColor(settings->value(BACKGROUND_COLOR, ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor).value<QColor>());
+    updateColor(settings->value(BACKGROUND_COLOR, theme.viewer.defaultBackgroundColor).value<QColor>());
     // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 
     quickNavi->setChecked(settings->value(QUICK_NAVI_MODE).toBool());
@@ -402,5 +409,5 @@ void OptionsDialog::clearBackgroundColor()
 {
     settings->remove(BACKGROUND_COLOR);
 
-    updateColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor);
+    updateColor(theme.viewer.defaultBackgroundColor);
 }

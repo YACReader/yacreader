@@ -2,6 +2,7 @@
 #define __CREATE_LIBRARY_DIALOG_H
 
 #include "yacreader_libraries.h"
+#include "themable.h"
 
 #include <QDialog>
 #include <QLabel>
@@ -10,13 +11,17 @@
 #include <QThread>
 #include <QProgressBar>
 
-class CreateLibraryDialog : public QDialog
+class CreateLibraryDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 public:
     CreateLibraryDialog(QWidget *parent = nullptr);
 
+protected:
+    void applyTheme(const Theme &theme) override;
+
 private:
+    QLabel *imgLabel;
     QLabel *nameLabel;
     QLabel *textLabel;
     QLabel *message;

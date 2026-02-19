@@ -1,6 +1,7 @@
 #include "info_comics_view.h"
 
 #include "yacreader_global.h"
+#include "theme_manager.h"
 
 #include <QtQuick>
 #include <QQuickWidget>
@@ -22,52 +23,8 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     QQmlContext *ctxt = view->rootContext();
 
-    LibraryUITheme theme;
-#ifdef Y_MAC_UI
-    theme = Light;
-#else
-    theme = Dark;
-#endif
-
-    if (theme == Light) {
-        ctxt->setContextProperty("infoBackgroundColor", "#FFFFFF");
-        ctxt->setContextProperty("topShadow", QUrl());
-        ctxt->setContextProperty("infoShadow", "info-shadow-light.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator-light.png");
-
-        ctxt->setContextProperty("infoTextColor", "#404040");
-        ctxt->setContextProperty("infoTitleColor", "#2E2E2E");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#DEDEDE");
-        ctxt->setContextProperty("ratingSelectedColor", "#2B2B2B");
-
-        ctxt->setContextProperty("favUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("showDropShadow", QVariant(false));
-    } else {
-        ctxt->setContextProperty("infoBackgroundColor", "#2E2E2E");
-        ctxt->setContextProperty("topShadow", "info-top-shadow.png");
-        ctxt->setContextProperty("infoShadow", "info-shadow.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator.png");
-
-        ctxt->setContextProperty("infoTextColor", "#B0B0B0");
-        ctxt->setContextProperty("infoTitleColor", "#FFFFFF");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#1C1C1C");
-        ctxt->setContextProperty("ratingSelectedColor", "#FFFFFF");
-
-        ctxt->setContextProperty("favUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("showDropShadow", QVariant(true));
-    }
+    // Apply theme colors
+    initTheme(this);
 
     ctxt->setContextProperty("backgroundImage", QUrl());
     ctxt->setContextProperty("comicsList", new ComicModel());
@@ -263,3 +220,28 @@ void InfoComicsView::selectedItem(int index)
 {
     emit selected(index);
 }
+
+void InfoComicsView::applyTheme(const Theme &theme)
+{
+    QQmlContext *ctxt = view->rootContext();
+    const auto &qv = theme.qmlView;
+
+    // Info panel colors
+    ctxt->setContextProperty("infoBackgroundColor", qv.infoBackgroundColor);
+    ctxt->setContextProperty("topShadow", qv.topShadow.isEmpty() ? QUrl() : QUrl(qv.topShadow));
+    ctxt->setContextProperty("infoShadow", qv.infoShadow);
+    ctxt->setContextProperty("infoIndicator", qv.infoIndicator);
+    ctxt->setContextProperty("infoTextColor", qv.infoTextColor);
+    ctxt->setContextProperty("infoTitleColor", qv.infoTitleColor);
+
+    // Rating and favorite colors
+    ctxt->setContextProperty("ratingUnselectedColor", qv.ratingUnselectedColor);
+    ctxt->setContextProperty("ratingSelectedColor", qv.ratingSelectedColor);
+    ctxt->setContextProperty("favUncheckedColor", qv.favUncheckedColor);
+    ctxt->setContextProperty("favCheckedColor", qv.favCheckedColor);
+    ctxt->setContextProperty("readTickUncheckedColor", qv.readTickUncheckedColor);
+    ctxt->setContextProperty("readTickCheckedColor", qv.readTickCheckedColor);
+
+    ctxt->setContextProperty("showDropShadow", QVariant(qv.showDropShadow));
+}
+

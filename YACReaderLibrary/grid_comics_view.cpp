@@ -5,6 +5,7 @@
 #include <QtWidgets>
 
 #include "comic.h"
+#include "theme_manager.h"
 #include "comic_files_manager.h"
 #include "QsLog.h"
 #include "yacreader_global.h"
@@ -15,7 +16,7 @@
 #include "current_comic_view_helper.h"
 
 GridComicsView::GridComicsView(QWidget *parent)
-    : ComicsView(parent), filterEnabled(false)
+    : ComicsView(parent), filterEnabled(false), smallZoomLabel(nullptr), bigZoomLabel(nullptr)
 {
     settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat, this);
     settings->beginGroup("libraryConfig");
@@ -29,83 +30,13 @@ GridComicsView::GridComicsView(QWidget *parent)
 
     QQmlContext *ctxt = view->rootContext();
 
-    LibraryUITheme theme;
-#ifdef Y_MAC_UI
-    theme = Light;
-#else
-    theme = Dark;
-#endif
-
-    if (theme == Light) {
-        ctxt->setContextProperty("backgroundColor", "#F6F6F6");
-        ctxt->setContextProperty("cellColor", "#FFFFFF");
-        ctxt->setContextProperty("selectedColor", "#FFFFFF");
-        ctxt->setContextProperty("selectedBorderColor", "#007AFF");
-        ctxt->setContextProperty("borderColor", "#DBDBDB");
-        ctxt->setContextProperty("titleColor", "#121212");
-        ctxt->setContextProperty("textColor", "#636363");
-        ctxt->setContextProperty("showDropShadow", QVariant(false));
-        // fonts settings
-        ctxt->setContextProperty("fontSize", 11);
-        ctxt->setContextProperty("fontFamily", QApplication::font().family());
-        ctxt->setContextProperty("fontSpacing", 0.5);
-
-        // info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
-        ctxt->setContextProperty("infoBackgroundColor", "#FFFFFF");
-        ctxt->setContextProperty("topShadow", QUrl());
-        ctxt->setContextProperty("infoShadow", "info-shadow-light.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator-light.png");
-
-        ctxt->setContextProperty("infoTextColor", "#404040");
-        ctxt->setContextProperty("infoTitleColor", "#2E2E2E");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#DEDEDE");
-        ctxt->setContextProperty("ratingSelectedColor", "#2B2B2B");
-
-        ctxt->setContextProperty("favUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("currentComicBackgroundColor", "#88FFFFFF");
-    } else {
-        ctxt->setContextProperty("backgroundColor", "#2A2A2A");
-        ctxt->setContextProperty("cellColor", "#212121");
-        ctxt->setContextProperty("selectedColor", "#121212");
-        ctxt->setContextProperty("selectedBorderColor", "#FFCC00");
-        ctxt->setContextProperty("borderColor", "#121212");
-        ctxt->setContextProperty("titleColor", "#FFFFFF");
-        ctxt->setContextProperty("textColor", "#A8A8A8");
-        ctxt->setContextProperty("showDropShadow", QVariant(true));
-        // fonts settings
-        int fontSize = QApplication::font().pointSize();
-        if (fontSize == -1)
-            fontSize = QApplication::font().pixelSize();
-        ctxt->setContextProperty("fontSize", fontSize);
-        ctxt->setContextProperty("fontFamily", QApplication::font().family());
-        ctxt->setContextProperty("fontSpacing", 0.5);
-
-        // info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
-        ctxt->setContextProperty("infoBackgroundColor", "#2E2E2E");
-        ctxt->setContextProperty("topShadow", "info-top-shadow.png");
-        ctxt->setContextProperty("infoShadow", "info-shadow.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator.png");
-
-        ctxt->setContextProperty("infoTextColor", "#B0B0B0");
-        ctxt->setContextProperty("infoTitleColor", "#FFFFFF");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#1C1C1C");
-        ctxt->setContextProperty("ratingSelectedColor", "#FFFFFF");
-
-        ctxt->setContextProperty("favUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("currentComicBackgroundColor", "#88000000");
-    }
+    // fonts settings (not theme-dependent)
+    int fontSize = QApplication::font().pointSize();
+    if (fontSize == -1)
+        fontSize = QApplication::font().pixelSize();
+    ctxt->setContextProperty("fontSize", fontSize);
+    ctxt->setContextProperty("fontFamily", QApplication::font().family());
+    ctxt->setContextProperty("fontSpacing", 0.5);
 
     ctxt->setContextProperty("backgroundImage", QUrl());
     ctxt->setContextProperty("backgroundBlurOpacity", 0.0);
@@ -144,10 +75,12 @@ GridComicsView::GridComicsView(QWidget *parent)
     QQmlProperty(infoContainer, "width").write(settings->value(COMICS_GRID_INFO_WIDTH, 350));
 
     showInfoAction = new QAction(tr("Show info"), this);
-    showInfoAction->setIcon(QIcon(":/images/comics_view_toolbar/show_comic_info.svg"));
     showInfoAction->setCheckable(true);
     showInfoAction->setChecked(showInfo);
     connect(showInfoAction, &QAction::toggled, this, &GridComicsView::showInfo);
+
+    // Apply theme colors (must be after showInfoAction is created)
+    initTheme(this);
 
     setShowMarks(true); // TODO save this in settings
 
@@ -175,14 +108,16 @@ void GridComicsView::createCoverSizeSliderWidget()
     coverSizeSlider->setOrientation(Qt::Horizontal);
     coverSizeSlider->setRange(YACREADER_MIN_GRID_ZOOM_WIDTH, YACREADER_MAX_GRID_ZOOM_WIDTH);
 
+    const auto &comicsToolbar = theme.comicsViewToolbar;
+
     auto horizontalLayout = new QHBoxLayout();
-    QLabel *smallLabel = new QLabel();
-    smallLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.svg", QSize(18, 18)));
-    horizontalLayout->addWidget(smallLabel);
+    smallZoomLabel = new QLabel();
+    smallZoomLabel->setPixmap(comicsToolbar.smallGridZoomIcon.pixmap(18, 18));
+    horizontalLayout->addWidget(smallZoomLabel);
     horizontalLayout->addWidget(coverSizeSlider, 0, Qt::AlignVCenter);
-    QLabel *bigLabel = new QLabel();
-    bigLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.svg", QSize(18, 18)));
-    horizontalLayout->addWidget(bigLabel);
+    bigZoomLabel = new QLabel();
+    bigZoomLabel->setPixmap(comicsToolbar.bigGridZoomIcon.pixmap(18, 18));
+    horizontalLayout->addWidget(bigZoomLabel);
     horizontalLayout->addSpacing(10);
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
 
@@ -283,13 +218,10 @@ void GridComicsView::updateBackgroundConfig()
         ctxt->setContextProperty("backgroundBlurVisible", QVariant(false));
     }
 
-#ifdef Y_MAC_UI
-    ctxt->setContextProperty("cellColor", useBackgroundImage ? "#99FFFFFF" : "#FFFFFF");
-    ctxt->setContextProperty("selectedColor", "#FFFFFF");
-#else
-    ctxt->setContextProperty("cellColor", useBackgroundImage ? "#99212121" : "#212121");
-    ctxt->setContextProperty("selectedColor", "#121212");
-#endif
+    // Use theme colors for cell and selected colors
+    const auto &qv = theme.qmlView;
+    ctxt->setContextProperty("cellColor", useBackgroundImage ? qv.cellColorWithBackground : qv.cellColor);
+    ctxt->setContextProperty("selectedColor", qv.selectedColor);
 }
 
 void GridComicsView::showInfo()
@@ -550,6 +482,55 @@ void GridComicsView::droppedComicsForResortingAt(const QString &data, int index)
 void GridComicsView::selectedItem(int index)
 {
     emit selected(index);
+}
+
+void GridComicsView::applyTheme(const Theme &theme)
+{
+    QQmlContext *ctxt = view->rootContext();
+    const auto &qv = theme.qmlView;
+
+    // Grid colors
+    ctxt->setContextProperty("backgroundColor", qv.backgroundColor);
+    ctxt->setContextProperty("cellColor", qv.cellColor);
+    ctxt->setContextProperty("selectedColor", qv.selectedColor);
+    ctxt->setContextProperty("selectedBorderColor", qv.selectedBorderColor);
+    ctxt->setContextProperty("borderColor", qv.borderColor);
+    ctxt->setContextProperty("titleColor", qv.titleColor);
+    ctxt->setContextProperty("textColor", qv.textColor);
+    ctxt->setContextProperty("showDropShadow", QVariant(qv.showDropShadow));
+
+    // Info panel colors
+    ctxt->setContextProperty("infoBackgroundColor", qv.infoBackgroundColor);
+    ctxt->setContextProperty("topShadow", qv.topShadow.isEmpty() ? QUrl() : QUrl(qv.topShadow));
+    ctxt->setContextProperty("infoShadow", qv.infoShadow);
+    ctxt->setContextProperty("infoIndicator", qv.infoIndicator);
+    ctxt->setContextProperty("infoTextColor", qv.infoTextColor);
+    ctxt->setContextProperty("infoTitleColor", qv.infoTitleColor);
+
+    // Rating and favorite colors
+    ctxt->setContextProperty("ratingUnselectedColor", qv.ratingUnselectedColor);
+    ctxt->setContextProperty("ratingSelectedColor", qv.ratingSelectedColor);
+    ctxt->setContextProperty("favUncheckedColor", qv.favUncheckedColor);
+    ctxt->setContextProperty("favCheckedColor", qv.favCheckedColor);
+    ctxt->setContextProperty("readTickUncheckedColor", qv.readTickUncheckedColor);
+    ctxt->setContextProperty("readTickCheckedColor", qv.readTickCheckedColor);
+
+    // Current comic banner
+    ctxt->setContextProperty("currentComicBackgroundColor", qv.currentComicBackgroundColor);
+
+    // Update background config to apply theme cell colors
+    updateBackgroundConfig();
+
+    // Update show info action icon
+    showInfoAction->setIcon(theme.comicsViewToolbar.showComicInfoIcon);
+
+    // Update zoom slider icons (if they exist - created in setToolBar)
+    if (smallZoomLabel) {
+        smallZoomLabel->setPixmap(theme.comicsViewToolbar.smallGridZoomIcon.pixmap(18, 18));
+    }
+    if (bigZoomLabel) {
+        bigZoomLabel->setPixmap(theme.comicsViewToolbar.bigGridZoomIcon.pixmap(18, 18));
+    }
 }
 
 void GridComicsView::setShowMarks(bool show)

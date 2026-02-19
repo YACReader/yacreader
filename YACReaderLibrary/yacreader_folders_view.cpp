@@ -1,6 +1,7 @@
 #include "yacreader_folders_view.h"
 
 #include "yacreader_global.h"
+#include "yacreader_treeview.h"
 
 #include "folder_item.h"
 #include "folder_model.h"
@@ -80,13 +81,15 @@ YACReaderFoldersViewItemDeletegate::YACReaderFoldersViewItemDeletegate(QObject *
 
 void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    // Get indicator color from parent tree view
+    QColor indicatorColor(237, 197, 24); // Default fallback
+    if (auto treeView = qobject_cast<YACReaderTreeView *>(parent())) {
+        indicatorColor = treeView->folderIndicatorColor();
+    }
+
     if (!index.data(FolderModel::CompletedRole).toBool()) {
         painter->save();
-#ifdef Y_MAC_UI
-        painter->setBrush(QBrush(QColor(85, 95, 127)));
-#else
-        painter->setBrush(QBrush(QColor(237, 197, 24)));
-#endif
+        painter->setBrush(QBrush(indicatorColor));
         painter->setPen(QPen(QBrush(), 0));
         painter->drawRect(0, option.rect.y(), 2, option.rect.height());
         painter->restore();
@@ -105,11 +108,7 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
         if (now - added < daysInSeconds || now - updated < daysInSeconds) {
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
-#ifdef Y_MAC_UI
-            painter->setBrush(QBrush(QColor(85, 95, 127)));
-#else
-            painter->setBrush(QBrush(QColor(237, 197, 24)));
-#endif
+            painter->setBrush(QBrush(indicatorColor));
             painter->setPen(QPen(QBrush(), 0));
             painter->drawEllipse(option.rect.x() + 13, option.rect.y() + 2, 7, 7);
             painter->restore();

@@ -8,6 +8,7 @@ HEADERS += \
     $$PWD/themable.h \
     $$PWD/yacreader_icon.h \
     $$PWD/shared/help_about_dialog_theme.h \
+    $$PWD/shared/whats_new_dialog_theme.h \
 
 
 SOURCES += \

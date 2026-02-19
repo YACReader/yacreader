@@ -14,8 +14,6 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     mainLayout = new QHBoxLayout;
 
     currentFolder = new QLabel(this);
-    // currentFolder->setAlignment(Qt::AlignCenter);
-    currentFolder->setStyleSheet(" QLabel {color:#404040; font-size:22px; font-weight:bold;}");
 
     QFont f = currentFolder->font();
     f.setStyleStrategy(QFont::PreferAntialias);
@@ -76,6 +74,8 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     setLayout(mainLayout);
 
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+
+    initTheme(this);
 }
 
 QSize YACReaderMainToolBar::sizeHint() const
@@ -95,7 +95,7 @@ void YACReaderMainToolBar::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
 
     QPainter painter(this);
-    painter.fillRect(0, 0, width(), height(), QColor("#F0F0F0"));
+    painter.fillRect(0, 0, width(), height(), theme.mainToolbar.backgroundColor);
 }
 
 void YACReaderMainToolBar::resizeEvent(QResizeEvent *event)
@@ -116,9 +116,9 @@ void YACReaderMainToolBar::resizeEvent(QResizeEvent *event)
 
 void YACReaderMainToolBar::addDivider()
 {
-    QPixmap img(":/images/main_toolbar/divider.svg");
     QLabel *divider = new QLabel();
-    divider->setPixmap(img);
+    divider->setPixmap(theme.mainToolbar.dividerPixmap);
+    dividers.append(divider);
 
     mainLayout->addSpacing(5);
     mainLayout->addWidget(divider, 0, Qt::AlignVCenter);
@@ -148,4 +148,35 @@ void YACReaderMainToolBar::setCurrentFolderName(const QString &name)
     currentFolder->setText(clippedText);
     currentFolder->adjustSize();
     currentFolder->move((width() - currentFolder->width()) / 2, (height() - currentFolder->height()) / 2);
+}
+
+void YACReaderMainToolBar::applyTheme(const Theme &theme)
+{
+    const auto &mt = theme.mainToolbar;
+
+    currentFolder->setStyleSheet(mt.folderNameLabelQSS);
+
+    // Update dividers
+    for (QLabel *divider : dividers) {
+        divider->setPixmap(mt.dividerPixmap);
+    }
+
+    // Update action icons via the button's default action
+    // (buttons get their icons from their default actions when setDefaultAction is called)
+    if (auto action = backButton->defaultAction())
+        action->setIcon(mt.backIcon);
+    if (auto action = forwardButton->defaultAction())
+        action->setIcon(mt.forwardIcon);
+    if (auto action = settingsButton->defaultAction())
+        action->setIcon(mt.settingsIcon);
+    if (auto action = serverButton->defaultAction())
+        action->setIcon(mt.serverIcon);
+    if (auto action = helpButton->defaultAction())
+        action->setIcon(mt.helpIcon);
+    if (auto action = fullscreenButton->defaultAction())
+        action->setIcon(mt.fullscreenIcon);
+
+    // toggleComicsViewButton icon is handled by YACReaderContentViewsManager::applyTheme()
+
+    update(); // Repaint with new background color
 }

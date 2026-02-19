@@ -1,6 +1,7 @@
 #ifndef IMPORT_LIBRARY_DIALOG_H
 #define IMPORT_LIBRARY_DIALOG_H
 #include "yacreader_libraries.h"
+#include "themable.h"
 
 #include <QDialog>
 #include <QLabel>
@@ -9,13 +10,17 @@
 #include <QThread>
 #include <QProgressBar>
 
-class ImportLibraryDialog : public QDialog
+class ImportLibraryDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 public:
     ImportLibraryDialog(QWidget *parent = nullptr);
 
+protected:
+    void applyTheme(const Theme &theme) override;
+
 private:
+    QLabel *imgLabel;
     QLabel *nameLabel;
     QLabel *textLabel;
     QLabel *destLabel;

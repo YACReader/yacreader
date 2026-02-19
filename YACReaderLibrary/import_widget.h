@@ -3,11 +3,16 @@
 
 #include <QtWidgets>
 
-class ImportWidget : public QWidget
+#include "themable.h"
+
+class ImportWidget : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
     explicit ImportWidget(QWidget *parent = 0);
+
+protected:
+    void applyTheme(const Theme &theme) override;
 
 signals:
     void stop();
@@ -41,8 +46,11 @@ private:
     quint64 i;
 
     QToolButton *hideButton;
+    QLabel *topDecorator;
+    QLabel *bottomDecorator;
 
     void resizeEvent(QResizeEvent *event) override;
+    void updateTextColors();
 };
 
 #endif // IMPORT_WIDGET_H

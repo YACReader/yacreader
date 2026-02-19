@@ -4,6 +4,7 @@
 #include <QFileIconProvider>
 
 #include "QsLog.h"
+#include "theme_manager.h"
 
 ListItem::ListItem(const QList<QVariant> &data)
     : itemData(data)
@@ -35,8 +36,18 @@ SpecialListItem::SpecialListItem(const QList<QVariant> &data)
 QIcon SpecialListItem::getIcon() const
 {
     if (itemData.count() > Id) {
-        QString id = itemData.at(Id).toString();
-        return YACReader::noHighlightedIcon(QString(":/images/lists/default_%1.svg").arg(id));
+        int id = itemData.at(Id).toInt();
+        const auto &icons = ThemeManager::instance().getCurrentTheme().readingListIcons;
+        switch (id) {
+        case 0:
+            return icons.readingListIcon;
+        case 1:
+            return icons.favoritesIcon;
+        case 2:
+            return icons.currentlyReadingIcon;
+        default:
+            break;
+        }
     }
 
     QLOG_WARN() << "Icon for SpecialListItem not available";
@@ -75,8 +86,11 @@ LabelItem::LabelItem(const QList<QVariant> &data)
 QIcon LabelItem::getIcon() const
 {
     if (itemData.count() > Color) {
-        QString color = itemData.at(Color).toString();
-        return YACReader::noHighlightedIcon(QString(":/images/lists/label_%1.svg").arg(color).toLower());
+        QString color = itemData.at(Color).toString().toLower();
+        const auto &icons = ThemeManager::instance().getCurrentTheme().readingListIcons;
+        if (icons.labelIcons.contains(color)) {
+            return icons.labelIcons[color];
+        }
     }
 
     QLOG_WARN() << "Icon for label item not available";
@@ -127,20 +141,19 @@ qulonglong LabelItem::getId() const
 //------------------------------------------------------
 
 ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p)
-    : ListItem(data), parent(p), list(YACReader::noHighlightedIcon(":/images/lists/list.svg")), folder(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg"))
+    : ListItem(data), parent(p)
 {
 }
 
 QIcon ReadingListItem::getIcon() const
 {
+    const auto &theme = ThemeManager::instance().getCurrentTheme();
     if (parent->getId() == 0)
-        return list; // top level list
-    else
-#ifdef Y_MAC_UI
+        return theme.readingListIcons.listIcon; // top level list
+    else if (theme.sidebarIcons.useSystemFolderIcons)
         return QFileIconProvider().icon(QFileIconProvider::Folder);
-#else
-        return folder; // sublist
-#endif
+    else
+        return theme.sidebarIcons.folderIcon; // sublist
 }
 
 int ReadingListItem::childCount() const

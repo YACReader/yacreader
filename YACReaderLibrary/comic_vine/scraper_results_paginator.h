@@ -16,6 +16,7 @@ public:
     void update(const QString &json);
     int getCurrentPage();
     void setCustomLabel(const QString &label);
+
 signals:
     void loadNextPage();
     void loadPreviousPage();

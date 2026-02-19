@@ -25,7 +25,7 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
     connect(cancel, &QAbstractButton::clicked, this, &ImportComicsInfoDialog::close);
     // connect(cancel,SIGNAL(clicked()),this,SIGNAL(rejected()));
 
-    find = new QPushButton(QIcon(":/images/find_folder.png"), "");
+    find = new QPushButton("");
     connect(find, &QAbstractButton::clicked, this, &ImportComicsInfoDialog::findPath);
 
     auto libraryLayout = new QHBoxLayout;
@@ -54,15 +54,21 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
     mainLayout->addLayout(bottomLayout);
 
     auto imgMainLayout = new QHBoxLayout;
-    QLabel *imgLabel = new QLabel(this);
-    QPixmap p(":/images/importComicsInfo.png");
-    imgLabel->setPixmap(p);
+    imgLabel = new QLabel(this);
     imgMainLayout->addWidget(imgLabel);
     imgMainLayout->addLayout(mainLayout);
 
     setLayout(imgMainLayout);
 
     setModal(true);
+
+    initTheme(this);
+}
+
+void ImportComicsInfoDialog::applyTheme(const Theme &theme)
+{
+    imgLabel->setPixmap(theme.dialogIcons.importComicsInfoIcon);
+    find->setIcon(theme.dialogIcons.findFolderIcon);
 }
 
 ImportComicsInfoDialog::~ImportComicsInfoDialog()

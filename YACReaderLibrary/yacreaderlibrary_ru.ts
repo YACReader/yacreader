@@ -2780,19 +2780,6 @@ to improve the performance</source>
     </message>
 </context>
 <context>
-    <name>YACReaderDeletingProgress</name>
-    <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="35"/>
-        <source>cancel</source>
-        <translation>отменить</translation>
-    </message>
-    <message>
-        <location filename="../custom_widgets/yacreader_deleting_progress.cpp" line="20"/>
-        <source>Please wait, deleting in progress...</source>
-        <translation>Пожалуйста подождите, удаление в процессе...</translation>
-    </message>
-</context>
-<context>
     <name>YACReaderFieldEdit</name>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>

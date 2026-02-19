@@ -18,8 +18,6 @@ class QKeyEvent;
 class GoToFlowWidget : public QWidget, protected Themable
 {
     Q_OBJECT
-protected:
-    void applyTheme(const Theme &theme) override;
 
 public:
     GoToFlowWidget(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
@@ -42,6 +40,7 @@ signals:
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void applyTheme(const Theme &theme) override;
 
 private:
     QVBoxLayout *mainLayout;

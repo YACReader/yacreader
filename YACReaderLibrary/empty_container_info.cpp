@@ -5,16 +5,10 @@
 EmptyContainerInfo::EmptyContainerInfo(QWidget *parent)
     : QWidget(parent), iconLabel(new QLabel()), titleLabel(new QLabel())
 {
-#ifdef Y_MAC_UI
-    backgroundColor = "#FFFFFF";
-    titleLabel->setStyleSheet("QLabel {color:#888888; font-size:24px;font-family:Arial;font-weight:bold;}");
-#else
-    backgroundColor = "#2A2A2A";
-    titleLabel->setStyleSheet("QLabel {color:#CCCCCC; font-size:24px;font-family:Arial;font-weight:bold;}");
-#endif
-
     iconLabel->setAlignment(Qt::AlignCenter);
     titleLabel->setAlignment(Qt::AlignCenter);
+
+    initTheme(this);
 }
 
 void EmptyContainerInfo::setPixmap(const QPixmap &pixmap)
@@ -45,5 +39,11 @@ QVBoxLayout *EmptyContainerInfo::setUpDefaultLayout(bool addStretch)
 void EmptyContainerInfo::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(0, 0, width(), height(), QColor(backgroundColor));
+    painter.fillRect(0, 0, width(), height(), theme.emptyContainer.backgroundColor);
+}
+
+void EmptyContainerInfo::applyTheme(const Theme &theme)
+{
+    titleLabel->setStyleSheet(theme.emptyContainer.titleLabelQSS);
+    update(); // Trigger repaint for background color
 }

@@ -1,1 +1,13 @@
-<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><defs><style>.cls-1{fill:#404040;}</style></defs><polygon class="cls-1" points="12.94 1.2 7.99 6.15 5.16 3.32 3.75 4.74 6.58 7.56 7.99 8.98 9.41 7.56 14.36 2.61 12.94 1.2"/><polygon class="cls-1" points="12.94 9.2 7.99 14.15 5.16 11.32 3.75 12.74 6.58 15.56 7.99 16.98 9.41 15.56 14.36 10.61 12.94 9.2"/></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 18 18">
+  <!-- Generator: Adobe Illustrator 29.8.4, SVG Export Plug-In . SVG Version: 2.1.1 Build 6)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #f0f;
+      }
+    </style>
+  </defs>
+  <polygon class="st0" points="12.9 1.2 8 6.2 5.2 3.3 3.8 4.7 6.6 7.6 8 9 9.4 7.6 14.4 2.6 12.9 1.2"/>
+  <polygon class="st0" points="12.9 9.2 8 14.1 5.2 11.3 3.8 12.7 6.6 15.6 8 17 9.4 15.6 14.4 10.6 12.9 9.2"/>
+</svg>

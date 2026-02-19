@@ -1,6 +1,27 @@
 #include "icon_utils.h"
 
+#include <QSvgRenderer>
+
 #include "yacreader_global.h"
+
+QPixmap renderSvgToPixmap(const QString &svgPath, int logicalSize, qreal devicePixelRatio)
+{
+    return renderSvgToPixmap(svgPath, logicalSize, logicalSize, devicePixelRatio);
+}
+
+QPixmap renderSvgToPixmap(const QString &svgPath, int logicalWidth, int logicalHeight, qreal devicePixelRatio)
+{
+    const int pixelWidth = qRound(logicalWidth * devicePixelRatio);
+    const int pixelHeight = qRound(logicalHeight * devicePixelRatio);
+    QPixmap pixmap(pixelWidth, pixelHeight);
+    pixmap.fill(Qt::transparent);
+    QPainter painter(&pixmap);
+    QSvgRenderer renderer(svgPath);
+    renderer.render(&painter);
+    painter.end();
+    pixmap.setDevicePixelRatio(devicePixelRatio);
+    return pixmap;
+}
 
 QString readSvg(const QString &resourcePath)
 {

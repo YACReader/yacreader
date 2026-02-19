@@ -30,7 +30,7 @@ void AddLibraryDialog::setupUI()
     cancel = new QPushButton(tr("Cancel"));
     connect(cancel, &QPushButton::clicked, this, &AddLibraryDialog::close);
 
-    find = new QPushButton(QIcon(":/images/find_folder.png"), "");
+    find = new QPushButton("");
     connect(find, &QAbstractButton::clicked, this, &AddLibraryDialog::findPath);
 
     auto content = new QGridLayout;
@@ -54,16 +54,22 @@ void AddLibraryDialog::setupUI()
     mainLayout->addLayout(bottomLayout);
 
     auto imgMainLayout = new QHBoxLayout;
-    QLabel *imgLabel = new QLabel(this);
-    QPixmap p(":/images/openLibrary.png");
-    imgLabel->setPixmap(p);
-    imgMainLayout->addWidget(imgLabel); //,0,Qt::AlignTop);
+    imgLabel = new QLabel(this);
+    imgMainLayout->addWidget(imgLabel);
     imgMainLayout->addLayout(mainLayout);
 
     setLayout(imgMainLayout);
 
     setModal(true);
     setWindowTitle(tr("Add an existing library"));
+
+    initTheme(this);
+}
+
+void AddLibraryDialog::applyTheme(const Theme &theme)
+{
+    imgLabel->setPixmap(theme.dialogIcons.openLibraryIcon);
+    find->setIcon(theme.dialogIcons.findFolderIcon);
 }
 
 void AddLibraryDialog::add()

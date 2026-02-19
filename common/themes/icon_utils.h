@@ -3,6 +3,11 @@
 
 #include <QtGui>
 
+// Render an SVG file to a QPixmap at a specific logical size with HiDPI support.
+// Uses QSvgRenderer to rasterize directly at the target resolution (no upscaling).
+QPixmap renderSvgToPixmap(const QString &svgPath, int logicalSize, qreal devicePixelRatio);
+QPixmap renderSvgToPixmap(const QString &svgPath, int logicalWidth, int logicalHeight, qreal devicePixelRatio);
+
 struct RecolorOptions {
     QString suffix;
     QString fileName;

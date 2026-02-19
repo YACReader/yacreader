@@ -4,6 +4,7 @@
 #include <QtGui>
 
 #include "help_about_dialog_theme.h"
+#include "whats_new_dialog_theme.h"
 
 struct ToolbarThemeTemplates {
     QString toolbarQSS = "QToolBar { border: none; background: %1; }\n"
@@ -126,11 +127,26 @@ struct GoToFlowWidgetTheme {
     QIcon goToIcon;
 };
 
+struct ShortcutsIconsTheme {
+    QIcon comicsIcon;
+    QIcon generalIcon;
+    QIcon magnifyingGlassIcon;
+    QIcon pageIcon;
+    QIcon readingIcon;
+};
+
+struct DialogIconsTheme {
+    QIcon findFolderIcon;
+};
+
 struct Theme {
     ToolbarTheme toolbar;
     ViewerTheme viewer;
     GoToFlowWidgetTheme goToFlowWidget;
     HelpAboutDialogTheme helpAboutDialog;
+    WhatsNewDialogTheme whatsNewDialog;
+    ShortcutsIconsTheme shortcutsIcons;
+    DialogIconsTheme dialogIcons;
 };
 
 #endif // THEME_H

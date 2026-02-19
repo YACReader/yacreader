@@ -39,9 +39,7 @@ void RenameLibraryDialog::setupUI()
     mainLayout->addLayout(bottomLayout);
 
     auto imgMainLayout = new QHBoxLayout;
-    QLabel *imgLabel = new QLabel(this);
-    QPixmap p(":/images/edit.png");
-    imgLabel->setPixmap(p);
+    imgLabel = new QLabel(this);
     imgMainLayout->addWidget(imgLabel);
     imgMainLayout->addLayout(mainLayout);
 
@@ -49,6 +47,13 @@ void RenameLibraryDialog::setupUI()
 
     setModal(true);
     setWindowTitle(tr("Rename current library"));
+
+    initTheme(this);
+}
+
+void RenameLibraryDialog::applyTheme(const Theme &theme)
+{
+    imgLabel->setPixmap(theme.dialogIcons.editIcon);
 }
 
 void RenameLibraryDialog::rename()

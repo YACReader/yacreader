@@ -174,8 +174,6 @@ private:
     void setMglassActionsEnabled(bool enabled);
     void setLoadedComicActionsEnabled(bool enabled);
 
-    void applyTheme(const Theme &theme) override;
-
     //! Manejadores de evento:
     // void resizeEvent(QResizeEvent * event);
     void mouseDoubleClickEvent(QMouseEvent *event) override;
@@ -201,6 +199,7 @@ protected:
     void sendComic();
     void updatePrevNextActions(bool thereIsPrevious, bool thereIsNext);
     void afterLaunchTasks();
+    void applyTheme(const Theme &theme) override;
 
 public:
     MainWindowViewer();

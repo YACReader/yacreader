@@ -125,6 +125,7 @@ HEADERS += \
   yacreader_history_controller.h \
   yacreader_navigation_controller.h \
   empty_label_widget.h \
+  empty_folder_widget.h \
   empty_container_info.h \
   empty_special_list.h \
   empty_reading_list_widget.h \
@@ -210,6 +211,7 @@ SOURCES += \
     yacreader_history_controller.cpp \
     yacreader_navigation_controller.cpp \
     empty_label_widget.cpp \
+    empty_folder_widget.cpp \
     empty_container_info.cpp \
     empty_special_list.cpp \
     empty_reading_list_widget.cpp \

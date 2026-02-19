@@ -1,25 +1,16 @@
 #ifndef NO_SEARCH_RESULTS_WIDGET_H
 #define NO_SEARCH_RESULTS_WIDGET_H
 
-#include <QWidget>
+#include "empty_container_info.h"
 
-class QLabel;
-
-class NoSearchResultsWidget : public QWidget
+class NoSearchResultsWidget : public EmptyContainerInfo
 {
     Q_OBJECT
 public:
     explicit NoSearchResultsWidget(QWidget *parent = nullptr);
 
-signals:
-
-public slots:
-
 protected:
-    QLabel *iconLabel;
-    QLabel *titleLabel;
-    void paintEvent(QPaintEvent *) override;
-    QString backgroundColor;
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // NO_SEARCH_RESULTS_WIDGET_H

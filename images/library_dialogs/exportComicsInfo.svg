@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        filter: url(#drop-shadow-84);
+        stroke: #f0f;
+        stroke-miterlimit: 10;
+        stroke-width: 7px;
+      }
+
+      .cls-2 {
+        fill: #f0f;
+      }
+    </style>
+    <filter id="drop-shadow-84" x="8.53" y="15" width="105.47" height="107.19" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur" stdDeviation="7.24"/>
+      <feFlood flood-color="#000" flood-opacity="1"/>
+      <feComposite in2="blur" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="New_Symbol_10" data-name="New Symbol 10">
+    <path class="cls-1" d="M64.17,18.5L13.49,67.36l48.5,49.77,48.5-51.58V18.5h-46.33Z"/>
+    <circle class="cls-2" cx="85.5" cy="42.5" r="7.5"/>
+  </g>
+</svg>

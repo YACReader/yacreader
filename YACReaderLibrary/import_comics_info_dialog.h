@@ -1,6 +1,8 @@
 #ifndef IMPORT_COMICS_INFO_DIALOG_H
 #define IMPORT_COMICS_INFO_DIALOG_H
 
+#include "themable.h"
+
 #include <QDialog>
 #include <QDialog>
 #include <QLabel>
@@ -19,7 +21,7 @@ private:
     void run() override;
 };
 
-class ImportComicsInfoDialog : public QDialog
+class ImportComicsInfoDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 
@@ -28,7 +30,11 @@ public:
     ~ImportComicsInfoDialog();
     QString dest;
 
+protected:
+    void applyTheme(const Theme &theme) override;
+
 private:
+    QLabel *imgLabel;
     QLabel *nameLabel;
     QLabel *textLabel;
     QLabel *destLabel;

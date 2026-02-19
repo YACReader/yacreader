@@ -1270,9 +1270,8 @@ void YACReaderFlow3D::setTextColor(const QColor &color)
 {
     textColor = color;
 
-    QPalette palette = indexLabel->palette();
-    palette.setColor(QPalette::WindowText, textColor);
-    indexLabel->setPalette(palette);
+    auto styleSheet = QString("QLabel { color: %1; }").arg(textColor.name());
+    indexLabel->setStyleSheet(styleSheet);
 
     update();
 }
@@ -1424,9 +1423,8 @@ void YACReaderFlow3D::updateIndexLabelStyle()
     QFont font("Arial", newFontSize);
     indexLabel->setFont(font);
 
-    QPalette palette = indexLabel->palette();
-    palette.setColor(QPalette::WindowText, textColor);
-    indexLabel->setPalette(palette);
+    auto styleSheet = QString("QLabel { color: %1; }").arg(textColor.name());
+    indexLabel->setStyleSheet(styleSheet);
 
     indexLabel->move(10, 10);
     indexLabel->adjustSize();
@@ -1435,9 +1433,7 @@ void YACReaderFlow3D::updateIndexLabelStyle()
 #if defined(YACREADER_RHI_PERF)
     if (perfLabel) {
         perfLabel->setFont(font);
-        QPalette p = perfLabel->palette();
-        p.setColor(QPalette::WindowText, textColor);
-        perfLabel->setPalette(p);
+        perfLabel->setStyleSheet(styleSheet);
         perfLabel->move(10, 10 + indexLabel->height() + 4);
         perfLabel->adjustSize();
     }

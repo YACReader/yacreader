@@ -16,6 +16,7 @@ class YACReaderFoldersView;
 class YACReaderOptionsDialog;
 class ServerConfigDialog;
 class RecentVisibilityCoordinator;
+struct Theme;
 
 class LibraryWindowActions
 {
@@ -48,7 +49,6 @@ public:
     QAction *optionsAction;
     QAction *serverConfigAction;
     QAction *toggleComicsViewAction;
-    // QAction * socialAction;
 
     // tree actions
     QAction *addFolderAction;
@@ -139,6 +139,7 @@ public:
     void disableFoldersActions(bool disabled);
     void disableAllActions();
     void setUpShortcutsManagement(EditShortcutsDialog *editShortcutsDialog);
+    void updateTheme(const Theme &theme);
 };
 
 #endif // LIBRARY_WINDOW_ACTIONS_H

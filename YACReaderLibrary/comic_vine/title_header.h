@@ -12,6 +12,7 @@ class TitleHeader : public QWidget, protected Themable
     Q_OBJECT
 public:
     TitleHeader(QWidget *parent = nullptr);
+
 public slots:
     void setTitle(const QString &title);
     void setSubTitle(const QString &title);

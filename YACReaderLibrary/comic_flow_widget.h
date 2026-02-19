@@ -7,14 +7,17 @@
 
 #include "yacreader_comic_flow_rhi.h"
 #include "yacreader_global_gui.h"
+#include "themable.h"
 
-class ComicFlowWidget : public QWidget
+class ComicFlowWidget : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
     ComicFlowWidget(QWidget *parent = nullptr);
 
 public slots:
+    void setBackgroundColor(const QColor &color);
+    void setTextColor(const QColor &color);
     void setShowMarks(bool value);
     void setMarks(QVector<YACReader::YACReaderComicReadStatus> marks);
     void setMarkImage(QImage &image);
@@ -39,6 +42,7 @@ signals:
     void selected(unsigned int);
 
 protected:
+    void applyTheme(const Theme &theme) override;
     void keyPressEvent(QKeyEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;

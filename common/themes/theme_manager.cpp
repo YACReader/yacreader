@@ -6,6 +6,8 @@
 #include <QGuiApplication>
 #include <QStyleHints>
 
+// TODO: add API to force color scheme     //styleHints->setColorScheme(Qt::ColorScheme::Dark);
+
 ThemeManager::ThemeManager()
 {
 }
