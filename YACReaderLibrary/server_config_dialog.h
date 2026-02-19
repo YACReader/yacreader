@@ -29,7 +29,7 @@ private:
     QPushButton *close;
     QPushButton *accept;
     QLabel *qrCode;
-    
+
     // Labels for themable styling
     QLabel *titleLabel;
     QLabel *qrMessageLabel;

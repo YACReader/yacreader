@@ -18,7 +18,7 @@ class EditShortcutsDialog : public QDialog, protected Themable
 public:
     explicit EditShortcutsDialog(QWidget *parent = 0);
     void addActionsGroup(const QString &name, const QIcon &ico, QList<QAction *> &group);
-    void setGroupIconMapping(const QMap<QString, std::function<QIcon(const Theme&)>> &mapping);
+    void setGroupIconMapping(const QMap<QString, std::function<QIcon(const Theme &)>> &mapping);
 signals:
 
 public slots:
@@ -33,8 +33,8 @@ protected:
     QListView *actionsGroupsListView;
     QTableView *actionsTableView;
     ActionsGroupsModel *groupsModel;
-    
-    QMap<QString, std::function<QIcon(const Theme&)>> groupIconMapping;
+
+    QMap<QString, std::function<QIcon(const Theme &)>> groupIconMapping;
     ActionsShortcutsModel *actionsModel;
 };
 

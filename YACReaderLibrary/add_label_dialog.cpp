@@ -2,17 +2,17 @@
 
 namespace {
 const char *labelColorNames[] = {
-    QT_TR_NOOP("red"), 
-    QT_TR_NOOP("orange"), 
+    QT_TR_NOOP("red"),
+    QT_TR_NOOP("orange"),
     QT_TR_NOOP("yellow"),
-    QT_TR_NOOP("green"), 
-    QT_TR_NOOP("cyan"), 
+    QT_TR_NOOP("green"),
+    QT_TR_NOOP("cyan"),
     QT_TR_NOOP("blue"),
-    QT_TR_NOOP("violet"), 
-    QT_TR_NOOP("purple"), 
+    QT_TR_NOOP("violet"),
+    QT_TR_NOOP("purple"),
     QT_TR_NOOP("pink"),
-    QT_TR_NOOP("white"), 
-    QT_TR_NOOP("light"), 
+    QT_TR_NOOP("white"),
+    QT_TR_NOOP("light"),
     QT_TR_NOOP("dark")
 };
 }

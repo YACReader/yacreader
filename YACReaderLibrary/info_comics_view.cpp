@@ -244,4 +244,3 @@ void InfoComicsView::applyTheme(const Theme &theme)
 
     ctxt->setContextProperty("showDropShadow", QVariant(qv.showDropShadow));
 }
-
