@@ -12,22 +12,12 @@ DEFINES += YACREADER
 include (../config.pri)
 include (../dependencies/pdf_backend.pri)
 
-CONFIG(force_angle) {
-    contains(QMAKE_TARGET.arch, x86_64) {
-      Release:DESTDIR = ../release64_angle
-      Debug:DESTDIR = ../debug64_angle
-    } else {
-    Release:DESTDIR = ../release_angle
-    Debug:DESTDIR = ../debug_angle
-    }
+contains(QMAKE_TARGET.arch, x86_64) {
+    Release:DESTDIR = ../release64
+    Debug:DESTDIR = ../debug64
 } else {
-    contains(QMAKE_TARGET.arch, x86_64) {
-      Release:DESTDIR = ../release64
-      Debug:DESTDIR = ../debug64
-    } else {
-      Release:DESTDIR = ../release
-      Debug:DESTDIR = ../debug
-    }
+    Release:DESTDIR = ../release
+    Debug:DESTDIR = ../debug
 }
 
 SOURCES += main.cpp
@@ -39,18 +29,8 @@ INCLUDEPATH += ../common \
     INCLUDEPATH += ../common/gl
 }
 
-#there are going to be two builds for windows, OpenGL based and ANGLE based
 win32 {
-    CONFIG(force_angle) {
-        message("using ANGLE")
-        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
-        #linking extra libs are necesary for a successful compilation, a better approach should be
-        #to remove any OpenGL (desktop) dependencies
-        #the OpenGL stuff should be migrated to OpenGL ES
-        DEFINES += FORCE_ANGLE
-    } else {
-        LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
-    }
+    LIBS += -loleaut32 -lole32 -lshell32 -lopengl32 -luser32
 
     msvc {
         QMAKE_CXXFLAGS_RELEASE += /MP /Ob2 /Oi /Ot /GT /GL

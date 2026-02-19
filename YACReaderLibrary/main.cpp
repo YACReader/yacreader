@@ -146,10 +146,6 @@ int main(int argc, char **argv)
 
     QApplication app(argc, argv);
 
-#ifdef FORCE_ANGLE
-    app.setAttribute(Qt::AA_UseOpenGLES);
-#endif
-
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");
     app.setApplicationVersion(VERSION);

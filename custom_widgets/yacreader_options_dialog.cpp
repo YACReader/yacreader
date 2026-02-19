@@ -46,9 +46,6 @@ YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)
     useGL = new QCheckBox(tr("Use hardware acceleration (restart needed)"));
     connect(useGL, &QCheckBox::stateChanged, this, &YACReaderOptionsDialog::saveUseGL);
 #endif
-#ifdef FORCE_ANGLE
-    useGL->setHidden(true);
-#endif
     // sw CONNECTIONS
     connect(sw->radio1, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setClassicConfigSW);
     connect(sw->radio2, &QAbstractButton::toggled, this, &YACReaderOptionsDialog::setStripeConfigSW);
