@@ -5,8 +5,6 @@
 #include <QtSql>
 #include <QSqlDatabase>
 
-#include "folder_model.h"
-
 class ComicsInfoExporter : public QThread
 {
     Q_OBJECT

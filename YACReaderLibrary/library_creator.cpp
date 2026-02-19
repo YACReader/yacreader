@@ -17,6 +17,8 @@
 #include "pdf_comic.h"
 #include "yacreader_global.h"
 
+#include "folder_model.h"
+
 #include "QsLog.h"
 
 #include <algorithm>
