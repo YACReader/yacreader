@@ -181,7 +181,7 @@ These add `QT += core5compat` for Qt6 builds. Needed by third-party QtWebApp (QT
 | `docker/Dockerfile` | Ubuntu x64 Qt6 — installs `libqt6core5compat6-dev` (build) and `libqt6core5compat6` (runtime) |
 | `docker/Dockerfile.aarch64` | Ubuntu ARM64 Qt5-only build |
 
-**Action**: Remove or convert `Dockerfile.aarch64` to Qt6. Keep core5compat packages in main Dockerfile (QtWebApp).
+**Action**: Convert `Dockerfile.aarch64` to Qt6. Keep core5compat packages in main Dockerfile (QtWebApp). Make sure the conversion is good, there must be other images online that use the arm+qt6 combo, we can search online.
 
 ---
 

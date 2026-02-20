@@ -480,9 +480,7 @@ void MainWindowViewer::createToolBars()
 {
 #ifdef Y_MAC_UI
     comicToolBar = new YACReaderMacOSXToolbar(this);
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     comicToolBar->setIconSize(QSize(18, 18));
-#endif
 #else
     comicToolBar = addToolBar(tr("&File"));
 #endif
@@ -1354,7 +1352,7 @@ void MainWindowViewer::toggleFitToWidthSlider()
     if (zoomSliderAction->isVisible()) {
         zoomSliderAction->hide();
     } else {
-#if defined(Y_MAC_UI) && (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+#ifdef Y_MAC_UI
         zoomSliderAction->move((this->width() - zoomSliderAction->width()) / 2, y);
 #else
         zoomSliderAction->move(250, y);

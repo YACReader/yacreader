@@ -45,16 +45,13 @@ macx {
     CONFIG += objective_c
     LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
 
-    lessThan(QT_MAJOR_VERSION, 6): QT += macextras
 }
 
 QT += network widgets core multimedia svg
 
-greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+QT += core5compat
 
-greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
-    QT += gui-private
-}
+greaterThan(QT_MINOR_VERSION, 6): QT += gui-private
 
 #CONFIG += release
 CONFIG -= flat

@@ -17,37 +17,36 @@ RUN \
        desktop-file-utils \
        g++ \
        git \
-       libglu1-mesa-dev \
-       libpoppler-qt5-dev \
-       libpoppler-qt5-1 \
-       libqt5core5a \
-       libqt5gui5 \
-       libqt5multimedia5 \
-       libqt5network5 \
-       libqt5opengl5-dev \
-       libqt5qml5 \
-       libqt5quickcontrols2-5 \
-       libqt5script5 \
-       libqt5sql5-sqlite \
-       libqt5sql5 \
-       libqt5svg5-dev \
+       qt6-tools-dev \
+       qt6-base-dev-tools \
+       qmake6 \
+       qt6-base-dev \
+       qt6-multimedia-dev \
+       qt6-tools-dev-tools \
+       qt6-l10n-tools \
+       qt6-declarative-dev \
+       libqt6svg6-dev \
+       libqt6core5compat6-dev \
+       libqt6gui6t64 \
+       libqt6multimedia6 \
+       libqt6network6t64 \
+       libqt6qml6 \
+       libqt6quickcontrols2-6 \
+       qt6-image-formats-plugins \
+       libqt6sql6 \
+       libqt6sql6-sqlite \
+       libpoppler-qt6-dev \
        libsqlite3-dev \
+       libbz2-dev \
+       libglu1-mesa-dev \
+       liblzma-dev \
        make \
-       7zip \
-       7zip-rar \
-       qtchooser \
-       qtbase5-dev-tools \
-       qt5-qmake \
-       qtbase5-dev \
-       qtmultimedia5-dev \
-       qt5-image-formats-plugins \
-       qtdeclarative5-dev \
-       qtquickcontrols2-5-dev \
-       qtscript5-dev \
-       qttools5-dev-tools \
        sqlite3 \
        unzip \
-       wget && \
+       wget \
+       7zip \
+       7zip-rar \
+       zlib1g-dev && \
     ldconfig
 
 # clone YACReader repo
@@ -62,7 +61,7 @@ RUN cd /src/git/compressed_archive && \
 
 # build yacreaderlibraryserver
 RUN cd /src/git/YACReaderLibraryServer && \
-    qmake PREFIX=/app CONFIG+="7zip server_standalone" YACReaderLibraryServer.pro && \
+    qmake6 PREFIX=/app CONFIG+="7zip server_standalone" YACReaderLibraryServer.pro && \
     make  && \
     make install
 
@@ -72,7 +71,7 @@ RUN echo "Building and installing 7z.so with RAR support..." && \
     make -f makefile.gcc && \
     mkdir -p /app/lib/7zip && \
     cp ./_o/7z.so /app/lib/7zip
-    
+
 FROM ghcr.io/linuxserver/baseimage-ubuntu:arm64v8-noble
 
 # env variables
@@ -82,19 +81,15 @@ LABEL maintainer="luisangelsm"
 
 # Copy the built application from the builder stage
 COPY --from=builder /app /app
-    
+
 # runtime packages
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-       libqt5core5a \
-       libqt5network5 \
-       libqt5script5 \
-       libqt5sql5-sqlite \
-       libqt5sql5 \
-       libqt5svg5 \
-       libsqlite3-0 \
-       libpoppler-qt5-1 \
-       qt5-image-formats-plugins && \
+       libqt6core5compat6 \
+       libpoppler-qt6-3t64 \
+       qt6-image-formats-plugins \
+       libqt6network6t64 \
+       libqt6sql6-sqlite && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 

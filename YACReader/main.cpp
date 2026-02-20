@@ -99,9 +99,7 @@ int main(int argc, char *argv[])
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QImageReader::setAllocationLimit(0);
-#endif
 
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -131,16 +129,10 @@ int main(int argc, char *argv[])
     QCommandLineOption comicId("comicId", "", "comicId");
     QCommandLineOption libraryId("libraryId", "", "libraryId");
     QCommandLineOption readingListId("readingListId", "", "readingListId");
-// hide comicId and libraryId from help
-#if QT_VERSION >= 0x050800
+    // hide comicId and libraryId from help
     comicId.setFlags(QCommandLineOption::HiddenFromHelp);
     libraryId.setFlags(QCommandLineOption::HiddenFromHelp);
     readingListId.setFlags(QCommandLineOption::HiddenFromHelp);
-#else
-    comicId.setHidden(true);
-    libraryId.setHidden(true);
-    readingListId.setHidden(true);
-#endif
 
     // process
     parser.addOption(comicId);

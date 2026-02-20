@@ -38,8 +38,8 @@ defineTest(minQtVersion) {
   return(false)
 }
 
-!minQtVersion(5, 15, 0) {
-  error(YACReader requires Qt 5.15 or newer but $$[QT_VERSION] was detected)
+!minQtVersion(6, 0, 0) {
+  error(YACReader requires Qt 6.0 or newer but $$[QT_VERSION] was detected)
 }
 
 # reduce log pollution

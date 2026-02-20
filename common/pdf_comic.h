@@ -46,10 +46,6 @@ private:
     QFile pdfFile;
 };
 #else
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include <poppler-qt6.h>
-#else
-#include "poppler-qt5.h"
-#endif // QT_VERSION
 #endif // Q_OS_MACOS
 #endif // PDF_COMIC_H

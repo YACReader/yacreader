@@ -169,13 +169,11 @@ bool LibraryWindow::eventFilter(QObject *object, QEvent *event)
             return QMainWindow::eventFilter(object, event);
         }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         auto keyCombination = keySequence[0];
 
         if (keyCombination.keyboardModifiers() != Qt::NoModifier) {
             return QMainWindow::eventFilter(object, event);
         }
-#endif
 
         auto string = keySequence.toString();
 
@@ -774,11 +772,7 @@ void LibraryWindow::createConnections()
 
 // Search filter
 #ifdef Y_MAC_UI
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     connect(libraryToolBar, &YACReaderMacOSXToolbar::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
-#else
-    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
-#endif
     connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, this, [=](QString filter) {
         setSearchFilter(filter);
     });

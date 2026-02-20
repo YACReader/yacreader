@@ -809,12 +809,7 @@ void PDFComic::process()
     }
 #else
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     pdfComic = Poppler::Document::load(_path);
-#else
-    auto _pdfComic = Poppler::Document::load(_path);
-    pdfComic = std::unique_ptr<Poppler::Document>(_pdfComic);
-#endif
 
     if (!pdfComic) {
         moveToThread(QCoreApplication::instance()->thread());
