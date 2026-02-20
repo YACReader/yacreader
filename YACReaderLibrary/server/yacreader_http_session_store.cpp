@@ -20,4 +20,3 @@ YACReaderHttpSession *YACReaderHttpSessionStore::getYACReaderSessionHttpSession(
 
     return sessions.value(httpSessionId, nullptr);
 }
-
