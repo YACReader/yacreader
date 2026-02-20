@@ -25,12 +25,7 @@
 #define DESCRIPTION "Comic reader and organizer"
 
 using stefanfrings::HttpListener;
-using stefanfrings::HttpRequest;
-using stefanfrings::HttpResponse;
-
-using stefanfrings::HttpSessionStore;
 using stefanfrings::StaticFileController;
-using stefanfrings::TemplateCache;
 
 void YACReaderHttpServer::start(quint16 port)
 {
@@ -38,36 +33,7 @@ void YACReaderHttpServer::start(quint16 port)
     QCoreApplication *app = QCoreApplication::instance();
     QString configFileName = YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini";
 
-    // Configure template loader and cache
-    auto templateSettings = new QSettings(configFileName, QSettings::IniFormat, app);
-    templateSettings->beginGroup("templates");
-
-    if (templateSettings->value("cacheSize").isNull())
-        templateSettings->setValue("cacheSize", "160000");
-
-    QString baseTemplatePath = QString("./server/templates");
-    QString templatePath;
-
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    templatePath = QFileInfo(QString(DATADIR) + "/yacreader", baseTemplatePath).absoluteFilePath();
-#else
-    templatePath = QFileInfo(QCoreApplication::applicationDirPath(), baseTemplatePath).absoluteFilePath();
-#endif
-    if (!templateSettings->contains("path"))
-        templateSettings->setValue("path", templatePath);
-
-    Static::templateLoader = new TemplateCache(templateSettings, app);
-
-    // Configure session store
-    auto sessionSettings = new QSettings(configFileName, QSettings::IniFormat, app);
-    sessionSettings->beginGroup("sessions");
-
-    if (sessionSettings->value("expirationTime").isNull())
-        sessionSettings->setValue("expirationTime", 864000000);
-
-    Static::sessionStore = new HttpSessionStore(sessionSettings, app);
-
-    Static::yacreaderSessionStore = new YACReaderHttpSessionStore(Static::sessionStore, app);
+    Static::yacreaderSessionStore = new YACReaderHttpSessionStore(app);
 
     // Configure static file controller
     auto fileSettings = new QSettings(configFileName, QSettings::IniFormat, app);

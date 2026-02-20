@@ -12,7 +12,6 @@ public:
     RequestMapper(QObject *parent = nullptr);
 
     void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
-    void loadSessionV1(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
     void loadSessionV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 
 signals:
@@ -20,7 +19,6 @@ signals:
     void comicUpdated(qulonglong libraryId, qulonglong comicId);
 
 private:
-    void serviceV1(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
     void serviceV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
     void serviceWebUI(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 

@@ -1,10 +1,8 @@
 INCLUDEPATH += $$PWD
 INCLUDEPATH += $$PWD/controllers
-INCLUDEPATH += $$PWD/controllers/v1
 INCLUDEPATH += $$PWD/controllers/v2
 DEPENDPATH += $$PWD
 DEPENDPATH += $$PWD/controllers
-DEPENDPATH += $$PWD/controllers/v1
 DEPENDPATH += $$PWD/controllers/v2
 
 
@@ -18,17 +16,6 @@ HEADERS += \
     $$PWD/yacreader_http_session_store.h \
     $$PWD/yacreader_server_data_helper.h \
     $$PWD/controllers/versioncontroller.h \
-    #v1
-    $$PWD/controllers/v1/comiccontroller.h \
-    $$PWD/controllers/v1/errorcontroller.h \
-    $$PWD/controllers/v1/foldercontroller.h \
-    $$PWD/controllers/v1/folderinfocontroller.h \
-    $$PWD/controllers/v1/librariescontroller.h \
-    $$PWD/controllers/v1/pagecontroller.h \
-    $$PWD/controllers/v1/covercontroller.h \
-    $$PWD/controllers/v1/updatecomiccontroller.h \
-    $$PWD/controllers/v1/comicdownloadinfocontroller.h \
-    $$PWD/controllers/v1/synccontroller.h \
     #v2
     $$PWD/controllers/v2/comiccontroller_v2.h \
     $$PWD/controllers/v2/errorcontroller_v2.h \
@@ -64,17 +51,6 @@ SOURCES += \
     $$PWD/yacreader_http_session_store.cpp \
     $$PWD/yacreader_server_data_helper.cpp \
     $$PWD/controllers/versioncontroller.cpp \
-    #v1
-    $$PWD/controllers/v1/comiccontroller.cpp \
-    $$PWD/controllers/v1/errorcontroller.cpp \
-    $$PWD/controllers/v1/foldercontroller.cpp \
-    $$PWD/controllers/v1/folderinfocontroller.cpp \
-    $$PWD/controllers/v1/librariescontroller.cpp \
-    $$PWD/controllers/v1/pagecontroller.cpp \
-    $$PWD/controllers/v1/covercontroller.cpp \
-    $$PWD/controllers/v1/updatecomiccontroller.cpp \
-    $$PWD/controllers/v1/comicdownloadinfocontroller.cpp \
-    $$PWD/controllers/v1/synccontroller.cpp \
     #v2
     $$PWD/controllers/v2/comiccontroller_v2.cpp \
     $$PWD/controllers/v2/errorcontroller_v2.cpp \
