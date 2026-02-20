@@ -56,22 +56,27 @@ jobs:
     needs: [initialization, code-format-validation]
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y qtchooser qt6-tools-dev qt6-base-dev-tools qmake6 qmake6-bin \
-          qt6-base-dev qt6-multimedia-dev qt6-tools-dev-tools libgl-dev qt6-l10n-tools \
-          libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev libpoppler-qt6-dev
-      
+          sudo apt-get install -y libunarr-dev libgl-dev libgles2-mesa-dev \
+            libfontconfig1-dev libfreetype-dev libxkbcommon-dev
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.9.3'
+          modules: 'qt5compat qtmultimedia qtimageformats qtshadertools'
+          cache: true
+
       - name: Build
         run: |
-          qtchooser -list-versions
           export DEFINES_VAR=DEFINES+=\"BUILD_NUMBER=\\\\\\\"${{ needs.initialization.outputs.build_number }}\\\\\\\"\"
-          qmake6 CONFIG+="unarr" $DEFINES_VAR
-          qmake6 -v
+          qmake CONFIG+="unarr" $DEFINES_VAR
+          qmake -v
           make
-      
+
       - name: Run tests
         run: make check TESTARGS="-maxwarnings 100000"
 
@@ -82,25 +87,30 @@ jobs:
     needs: [initialization, code-format-validation]
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y qtchooser qt6-tools-dev qt6-base-dev-tools qmake6 qmake6-bin \
-          qt6-base-dev qt6-multimedia-dev qt6-tools-dev-tools libgl-dev qt6-l10n-tools \
-          libqt6opengl6-dev libunarr-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev libpoppler-qt6-dev
+          sudo apt-get install -y libunarr-dev libgl-dev libgles2-mesa-dev \
+            libfontconfig1-dev libfreetype-dev libxkbcommon-dev
           mkdir -p ${{ github.workspace }}/compressed_archive
           wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O ${{ github.workspace }}/compressed_archive/7z2301-src.7z
           7z x ${{ github.workspace }}/compressed_archive/7z2301-src.7z -o${{ github.workspace }}/compressed_archive/lib7zip
-      
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.9.3'
+          modules: 'qt5compat qtmultimedia qtimageformats qtshadertools'
+          cache: true
+
       - name: Build
         run: |
-          qtchooser -list-versions
           export DEFINES_VAR=DEFINES+=\"BUILD_NUMBER=\\\\\\\"${{ needs.initialization.outputs.build_number }}\\\\\\\"\"
-          qmake6 CONFIG+="7zip" $DEFINES_VAR
-          qmake6 -v
+          qmake CONFIG+="7zip" $DEFINES_VAR
+          qmake -v
           make
-      
+
       - name: Run tests
         run: make check TESTARGS="-maxwarnings 100000"
 
