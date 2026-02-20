@@ -7,8 +7,6 @@
 #define STATIC_H
 
 #include <QString>
-#include "templatecache.h"
-#include "httpsessionstore.h"
 #include "staticfilecontroller.h"
 
 #include "yacreader_http_session_store.h"
@@ -45,12 +43,6 @@ public:
       @see getConfigFileName()
      */
     static QString getConfigDir();
-
-    /** Cache for template files */
-    static stefanfrings::TemplateLoader *templateLoader;
-
-    /** Storage for session cookies */
-    static stefanfrings::HttpSessionStore *sessionStore;
 
     static YACReaderHttpSessionStore *yacreaderSessionStore;
 

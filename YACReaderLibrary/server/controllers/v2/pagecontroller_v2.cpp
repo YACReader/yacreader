@@ -3,7 +3,6 @@
 #include "../static.h"
 
 #include "comic.h"
-#include "comiccontroller.h"
 #include "yacreader_http_session.h"
 
 #include <QDataStream>
