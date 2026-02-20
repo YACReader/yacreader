@@ -61,7 +61,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libunarr-dev libgl-dev libgles2-mesa-dev \
-            libfontconfig1-dev libfreetype-dev libxkbcommon-dev
+            libfontconfig1-dev libfreetype-dev libxkbcommon-dev libpoppler-qt6-dev
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -92,7 +92,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libunarr-dev libgl-dev libgles2-mesa-dev \
-            libfontconfig1-dev libfreetype-dev libxkbcommon-dev
+            libfontconfig1-dev libfreetype-dev libxkbcommon-dev libpoppler-qt6-dev
           mkdir -p ${{ github.workspace }}/compressed_archive
           wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O ${{ github.workspace }}/compressed_archive/7z2301-src.7z
           7z x ${{ github.workspace }}/compressed_archive/7z2301-src.7z -o${{ github.workspace }}/compressed_archive/lib7zip
