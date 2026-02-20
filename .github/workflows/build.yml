@@ -9,6 +9,7 @@ on:
     branches:
       - master
       - develop
+      - yacreader10
 
 env:
   IS_ORIGINAL_REPO: ${{ github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop') }}
