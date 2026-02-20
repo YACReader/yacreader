@@ -17,8 +17,6 @@
 #include "pdf_comic.h"
 #include "yacreader_global.h"
 
-#include "folder_model.h"
-
 #include "QsLog.h"
 
 #include <algorithm>
@@ -67,11 +65,11 @@ void LibraryCreator::updateLibrary(const QString &source, const QString &target)
     _mode = UPDATER;
 }
 
-void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, const QModelIndex &dest)
+void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, qulonglong folderId)
 {
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = true;
-    folderDestinationModelIndex = dest;
+    _folderDestinationId = folderId;
 
     _currentPathFolders.clear();
 
@@ -224,7 +222,7 @@ void LibraryCreator::run()
 
             if (!canceled) {
                 if (partialUpdate) {
-                    auto folder = DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
+                    auto folder = DBHelper::updateChildrenInfo(_folderDestinationId, _database);
                     DBHelper::propagateFolderUpdatesToParent(folder, _database);
                 } else {
                     DBHelper::updateChildrenInfo(_database);
@@ -250,7 +248,7 @@ void LibraryCreator::run()
     }
 
     if (partialUpdate) {
-        emit updatedCurrentFolder(folderDestinationModelIndex);
+        emit updatedCurrentFolder(_folderDestinationId);
     }
 
     creation = false;

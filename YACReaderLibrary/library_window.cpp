@@ -707,7 +707,9 @@ void LibraryWindow::createConnections()
     connect(libraryCreator, &LibraryCreator::finished, this, &LibraryWindow::showRootWidget);
     connect(libraryCreator, &LibraryCreator::updated, this, &LibraryWindow::reloadCurrentLibrary);
     connect(libraryCreator, &LibraryCreator::created, this, &LibraryWindow::openLastCreated);
-    connect(libraryCreator, &LibraryCreator::updatedCurrentFolder, this, &LibraryWindow::reloadAfterCopyMove);
+    connect(libraryCreator, &LibraryCreator::updatedCurrentFolder, this, [this](qulonglong folderId) {
+        reloadAfterCopyMove(foldersModel->getIndexFromFolderId(folderId));
+    });
     connect(libraryCreator, &LibraryCreator::comicAdded, importWidget, &ImportWidget::newComic);
     // libraryCreator errors
     connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryWindow::manageCreatingError);
@@ -1078,7 +1080,7 @@ void LibraryWindow::updateFolder(const QModelIndex &miFolder)
     QString currentLibrary = selectedLibrary->currentText();
     QString path = QDir::cleanPath(libraries.getPath(currentLibrary));
     _lastAdded = currentLibrary;
-    libraryCreator->updateFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)), miFolder);
+    libraryCreator->updateFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)), miFolder.data(FolderModel::IdRole).toULongLong());
     libraryCreator->start();
 }
 

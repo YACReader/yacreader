@@ -13,8 +13,6 @@
 #include <QMutex>
 #include <QThread>
 #include <QSqlDatabase>
-#include <QModelIndex>
-
 #include "folder.h"
 #include "comic_db.h"
 
@@ -25,7 +23,7 @@ public:
     LibraryCreator(QSettings *settings);
     void createLibrary(const QString &source, const QString &target);
     void updateLibrary(const QString &source, const QString &target);
-    void updateFolder(const QString &source, const QString &target, const QString &folder, const QModelIndex &dest);
+    void updateFolder(const QString &source, const QString &target, const QString &folder, qulonglong folderId);
     void stop(); // used to stop the process and keep the changes
     void cancel(); // cancels this run and changes in the DB are rolled back
 
@@ -56,7 +54,7 @@ private:
     // LibraryCreator está en modo creación si creation == true;
     bool creation;
     bool partialUpdate;
-    QModelIndex folderDestinationModelIndex;
+    qulonglong _folderDestinationId;
     QSettings *settings;
     bool checkModifiedDatesOnUpdate;
     void cleanup(QSqlDatabase &db, const QString &target);
@@ -69,7 +67,7 @@ signals:
     void created();
     void failedCreatingDB(QString);
     void failedOpeningDB(QString);
-    void updatedCurrentFolder(QModelIndex);
+    void updatedCurrentFolder(qulonglong folderId);
 };
 
 #endif
