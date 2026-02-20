@@ -5,7 +5,6 @@ SET src_path=..\..\..
 set ARCH=%1
 set COMPRESSION=%2
 set BUILD_NUMBER=%3
-set QT_VERSION=%4
 
 IF "%ARCH%"=="x64" (
     SET exe_path=%src_path%\release64
@@ -57,17 +56,8 @@ set VERSION=%VERSION:"=%
 echo %VERSION%
 del tmp
 
-if "%ARCH%"=="x86" (
-    type build_installer.iss | findstr /v ArchitecturesInstallIn64BitMode | findstr /v ArchitecturesAllowed > copy_build_installer.iss
-    type copy_build_installer.iss > build_installer.iss
-)
-
 echo "iscc start"
-if "%QT_VERSION%"=="qt6" (
-	iscc /DVERSION=%VERSION% /DPLATFORM=%ARCH% /DCOMPRESSED_ARCHIVE_BACKEND=%COMPRESSION% /DBUILD_NUMBER=%BUILD_NUMBER% build_installer_qt6.iss || exit /b
-) else (
-	iscc /DVERSION=%VERSION% /DPLATFORM=%ARCH% /DCOMPRESSED_ARCHIVE_BACKEND=%COMPRESSION% /DBUILD_NUMBER=%BUILD_NUMBER% build_installer.iss || exit /b
-)
+iscc /DVERSION=%VERSION% /DPLATFORM=%ARCH% /DCOMPRESSED_ARCHIVE_BACKEND=%COMPRESSION% /DBUILD_NUMBER=%BUILD_NUMBER% build_installer_qt6.iss || exit /b
 echo "iscc done!"
 
 cd ..

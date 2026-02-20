@@ -42,7 +42,6 @@ Source: Qt6Gui.dll; DestDir: {app}
 Source: Qt6Multimedia.dll; DestDir: {app}
 Source: Qt6Network.dll; DestDir: {app}
 Source: Qt6OpenGL.dll; DestDir: {app}
-Source: Qt6OpenGLWidgets.dll; DestDir: {app}
 Source: Qt6Qml.dll; DestDir: {app}
 Source: Qt6QmlModels.dll; DestDir: {app}
 Source: Qt6QmlMeta.dll; DestDir: {app}
@@ -61,9 +60,7 @@ Source: Qt6QuickTemplates2.dll; DestDir: {app}
 Source: Qt6QuickWidgets.dll; DestDir: {app}
 Source: Qt6Sql.dll; DestDir: {app}
 Source: Qt6Svg.dll; DestDir: {app}
-Source: Qt6ShaderTools.dll; DestDir: {app}
 
-;Qt Angle
 Source: opengl32sw.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
 Source: D3Dcompiler_47.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
 

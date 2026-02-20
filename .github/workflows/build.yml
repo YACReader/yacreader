@@ -277,7 +277,7 @@ jobs:
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
-          .\create_installer.cmd x64 7z ${{ needs.initialization.outputs.build_number }} qt6
+          .\create_installer.cmd x64 7z ${{ needs.initialization.outputs.build_number }}
       
       - name: Verify installer was created
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
@@ -421,7 +421,7 @@ jobs:
         working-directory: ci/win
         run: |
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
-          .\create_installer.cmd arm64 7z ${{ needs.initialization.outputs.build_number }} qt6
+          .\create_installer.cmd arm64 7z ${{ needs.initialization.outputs.build_number }}
       
       - name: Verify installer was created
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
