@@ -49,38 +49,24 @@ CONFIG(poppler) {
     contains(QMAKE_TARGET.arch, x86_64): {
     error ("We currently don't ship precompiled poppler libraries for 64 bit builds on Windows")
     }
-    INCLUDEPATH += $$PWD/poppler/include/qt5
-    LIBS += -L$$PWD/poppler/lib -lpoppler-qt5
+    INCLUDEPATH += $$PWD/poppler/include/qt6
+    LIBS += -L$$PWD/poppler/lib -lpoppler-qt6
     # Add extra paths for dll dependencies so the executables don't crash when launching
     # from QtCreator
     LIBS += -L$$PWD/poppler/bin
     LIBS += -L$$PWD/poppler/dependencies/bin
   }
   if(unix|mingw):!macx {
-    greaterThan (QT_MAJOR_VERSION, 5) {
-      !contains(QT_CONFIG, no-pkg-config):packagesExist(poppler-qt6) {
-        message("Using system provided installation of poppler-qt6 found by pkg-config.")
-        CONFIG += link_pkgconfig
-        PKGCONFIG += poppler-qt6
-      } else:!macx:exists(/usr/include/poppler/qt6) {
-        message("Using system provided installation of poppler-qt6.")
-        INCLUDEPATH  += /usr/include/poppler/qt6
-        LIBS += -lpoppler-qt6
-      } else {
-        error("Could not find poppler-qt6")
-      }
+    !contains(QT_CONFIG, no-pkg-config):packagesExist(poppler-qt6) {
+      message("Using system provided installation of poppler-qt6 found by pkg-config.")
+      CONFIG += link_pkgconfig
+      PKGCONFIG += poppler-qt6
+    } else:!macx:exists(/usr/include/poppler/qt6) {
+      message("Using system provided installation of poppler-qt6.")
+      INCLUDEPATH  += /usr/include/poppler/qt6
+      LIBS += -lpoppler-qt6
     } else {
-      !contains(QT_CONFIG, no-pkg-config):packagesExist(poppler-qt5) {
-        message("Using system provided installation of poppler-qt5 found by pkg-config.")
-        CONFIG += link_pkgconfig
-        PKGCONFIG += poppler-qt5
-      } else:!macx:exists(/usr/include/poppler/qt5) {
-        message("Using system provided installation of poppler-qt5.")
-        INCLUDEPATH  += /usr/include/poppler/qt5
-        LIBS += -lpoppler-qt5
-      } else {
-        error("Could not find poppler-qt5")
-      }
+      error("Could not find poppler-qt6")
     }
   }
   unix:macx {

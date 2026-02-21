@@ -759,11 +759,7 @@ void Viewer::resizeEvent(QResizeEvent *event)
 
 QPixmap Viewer::pixmap() const
 {
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     return content->pixmap();
-#else
-    return content->pixmap(Qt::ReturnByValue);
-#endif
 }
 
 void Viewer::magnifyingGlassSwitch()

@@ -40,7 +40,7 @@ mkdir -p "$COMPRESSED_ARCHIVE_DIR"
 # Step 2: Install required packages
 echo "Updating package list and installing required packages..."
 sudo apt-get update
-sudo apt-get install -y qtchooser qt6-tools-dev qt6-base-dev-tools qmake6 qmake6-bin qt6-base-dev qt6-multimedia-dev qt6-tools-dev-tools libgl-dev qt6-l10n-tools libqt6opengl6-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev qml6-module-qt5compat-graphicaleffects qt6-5compat-dev  libpoppler-qt6-dev qt6-image-formats-plugins qml6-module-qtquick-controls qml6-module-qtquick-layouts qml6-module-qtqml-workerscript qml6-module-qtquick-templates 7zip-full 7zip-rar git build-essential
+sudo apt-get install -y qtchooser qt6-tools-dev qt6-base-dev-tools qmake6 qmake6-bin qt6-base-dev qt6-multimedia-dev qt6-tools-dev-tools libgl-dev qt6-l10n-tools libqt6opengl6-dev qt6-declarative-dev libqt6svg6-dev libqt6core5compat6-dev qt6-5compat-dev libpoppler-qt6-dev qt6-image-formats-plugins qml6-module-qtquick-controls qml6-module-qtquick-layouts qml6-module-qtqml-workerscript qml6-module-qtquick-templates 7zip-full 7zip-rar git build-essential
 
 # Step 3: Download YACReader source code
 if [ "$1" == "develop" ]; then

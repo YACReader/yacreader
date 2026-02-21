@@ -1,11 +1,6 @@
 #include <QUrl>
 
-#if QT_VERSION >= 0x050000
 #include <QMediaPlayer>
-#else
-#include <Phonon/MediaObject>
-#include <Phonon/MediaSource>
-#endif
 
 #include <QPushButton>
 #include <QPalette>
@@ -160,12 +155,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     connect(speakButton, &QAbstractButton::pressed, this, &YACReaderTranslator::play);
     connect(clearButton, &QAbstractButton::pressed, this, &YACReaderTranslator::clear);
 
-    // multimedia/phonon
-#if QT_VERSION >= 0x050000
     player = new QMediaPlayer;
-#else
-    music = createPlayer(MusicCategory);
-#endif
 }
 
 void YACReaderTranslator::hideResults()
@@ -288,11 +278,7 @@ void YACReaderTranslator::populateCombos()
 void YACReaderTranslator::play()
 {
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     player->setSource(ttsSource);
-#else
-    player->setMedia(ttsSource);
-#endif
 
     player->play();
 }

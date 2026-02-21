@@ -41,18 +41,15 @@ macx {
   LIBS += -framework Foundation -framework ApplicationServices -framework AppKit
   CONFIG += objective_c
   QT += gui-private
-  lessThan(QT_MAJOR_VERSION, 6): QT += macextras
 }
 
 #CONFIG += release
 CONFIG -= flat
 QT += sql network widgets svg quickcontrols2
 
-greaterThan(QT_MAJOR_VERSION, 5): QT += core5compat
+QT += core5compat
 
-greaterThan(QT_MAJOR_VERSION, 5):greaterThan(QT_MINOR_VERSION, 6) {
-    QT += gui-private
-}
+greaterThan(QT_MINOR_VERSION, 6): QT += gui-private
 
 # Input
 HEADERS += \

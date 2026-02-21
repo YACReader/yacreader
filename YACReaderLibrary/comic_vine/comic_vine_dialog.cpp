@@ -146,22 +146,14 @@ void ComicVineDialog::goNext()
         QList<QPair<ComicDB, QString>> matchingInfo = sortVolumeComicsWidget->getMatchingInfo();
         auto volumeInfo = selectVolumeWidget->getSelectedVolumeInfo();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QtConcurrent::run(&ComicVineDialog::getComicsInfo, this, matchingInfo, volumeInfo);
-#else
-        QtConcurrent::run(this, &ComicVineDialog::getComicsInfo, matchingInfo, volumeInfo);
-#endif
 
     } else if (content->currentWidget() == selectComicWidget) {
         showLoading();
         QString comicId = selectComicWidget->getSelectedComicId();
         auto volumeInfo = selectVolumeWidget->getSelectedVolumeInfo();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QtConcurrent::run(&ComicVineDialog::getComicInfo, this, comicId, volumeInfo);
-#else
-        QtConcurrent::run(this, &ComicVineDialog::getComicInfo, comicId, volumeInfo);
-#endif
     }
 }
 
