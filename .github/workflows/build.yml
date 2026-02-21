@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+      - yacreader10
   pull_request:
     branches:
       - master
@@ -741,3 +742,115 @@ jobs:
           files: staging/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Publish yacreader10 pre-release builds
+  publish-yacreader10-builds:
+    name: Publish YACReader10 Pre-release Builds
+    if: github.repository == 'YACReader/yacreader' && github.ref == 'refs/heads/yacreader10'
+    runs-on: ubuntu-24.04
+    needs:
+      - initialization
+      - linux-qt6
+      - linux-qt6-7zip
+      - macos-qt6-universal
+      - windows-x64-qt6
+      - windows-arm64-qt6
+      - docker-amd64
+      - docker-arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: List downloaded artifacts
+        run: |
+          echo "=== All artifacts downloaded ==="
+          ls -lR artifacts/
+          echo ""
+          echo "=== Windows artifacts only ==="
+          ls -l artifacts/windows-*/
+
+      - name: Flatten artifacts (exclude unsigned Windows installers)
+        run: |
+          mkdir -p staging
+          # Copy all files except those from unsigned Windows artifact directories
+          find artifacts -type f ! -path "*/windows-*-unsigned-*/*" -exec cp {} staging/ \;
+          echo ""
+          echo "=== Files copied to staging ==="
+          ls -lh staging/
+          echo ""
+          echo "=== Windows installers in staging ==="
+          ls -lh staging/YACReader*.exe || echo "No Windows installers found"
+
+      - name: Verify Windows installer signatures
+        run: |
+          echo "=== Installing osslsigncode to verify signatures ==="
+          sudo apt-get update
+          sudo apt-get install -y osslsigncode
+
+          echo ""
+          echo "=== Checking signatures on Windows installers ==="
+          for installer in staging/YACReader*.exe; do
+            if [ -f "$installer" ]; then
+              echo "Checking: $(basename $installer)"
+              echo "File size: $(stat -c%s $installer) bytes"
+
+              # Try to extract signature info
+              if osslsigncode verify -in "$installer" 2>&1 | grep -q "Signature verification: ok"; then
+                echo "  ✓ SIGNED - Signature verified successfully"
+                osslsigncode verify -in "$installer" 2>&1 | grep -E "(Signed|Signer|Timestamp)"
+              else
+                echo "  ✗ UNSIGNED or INVALID - No valid signature found (expected for yacreader10 pre-releases)"
+                osslsigncode verify -in "$installer" 2>&1 | head -20
+              fi
+              echo ""
+            fi
+          done
+
+          echo "=== Summary ==="
+          echo "Total installers in staging: $(ls staging/YACReader*.exe 2>/dev/null | wc -l)"
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' ).${{ needs.initialization.outputs.build_number }}"
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Push Docker Images
+        run: |
+          for arch in amd64 arm64; do
+            docker load -i staging/${arch}.tar
+            docker tag yacreader/yacreaderlibraryserver:develop-${arch} yacreader/yacreaderlibraryserver:develop-yacreader10-${arch}
+            docker push yacreader/yacreaderlibraryserver:develop-yacreader10-${arch}
+            rm staging/${arch}.tar
+          done
+
+          docker buildx imagetools create \
+            -t yacreader/yacreaderlibraryserver:develop-yacreader10 \
+            yacreader/yacreaderlibraryserver:develop-yacreader10-amd64 \
+            yacreader/yacreaderlibraryserver:develop-yacreader10-arm64
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          repository: YACReader/yacreader-dev-builds
+          tag_name: ${{ steps.version.outputs.version }}
+          name: ${{ steps.version.outputs.version }}
+          prerelease: true
+          target_commitish: 25313e3d4d03fcbe44d3943db23bc03bbd1a5205
+          files: staging/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
