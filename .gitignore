@@ -76,3 +76,6 @@ c_x86_64.pch
 
 compile_commands.json
 .ccls-cache
+
+# Claude Code
+.claude/
