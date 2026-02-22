@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
     QDir().mkpath(YACReader::getSettingsPath());
 
     Logger &logger = Logger::instance();
-    logger.setLoggingLevel(QsLogging::InfoLevel);
+    logger.setLoggingLevel(QsLogging::TraceLevel);
 
     if (parser.isSet("loglevel")) {
         if (parser.value("loglevel") == "trace") {

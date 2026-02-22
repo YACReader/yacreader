@@ -62,6 +62,7 @@ HEADERS +=  ../common/comic.h \
             goto_dialog.h \
             magnifying_glass.h \
             main_window_viewer.h \
+            continuous_page_widget.h \
             mouse_handler.h \
             viewer.h \
             options_dialog.h \
@@ -98,6 +99,7 @@ SOURCES +=  ../common/comic.cpp \
             goto_dialog.cpp \
             magnifying_glass.cpp \
             main_window_viewer.cpp \
+            continuous_page_widget.cpp \
             mouse_handler.cpp \
             viewer.cpp \
             options_dialog.cpp \

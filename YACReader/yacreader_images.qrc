@@ -55,6 +55,7 @@
     <file>../images/viewer_toolbar/shortcuts.svg</file>
     <file>../images/viewer_toolbar/showBookmarks.svg</file>
     <file>../images/viewer_toolbar/toHeight.svg</file>
+    <file>../images/viewer_toolbar/toContinuousScroll.svg</file>
     <file>../images/viewer_toolbar/toWidth.svg</file>
     <file>../images/viewer_toolbar/translator.svg</file>
     <file>../images/viewer_toolbar/zoom.svg</file>
@@ -82,6 +83,7 @@
     <file>../images/viewer_toolbar/shortcuts_18x18.svg</file>
     <file>../images/viewer_toolbar/showBookmarks_18x18.svg</file>
     <file>../images/viewer_toolbar/toHeight_18x18.svg</file>
+    <file>../images/viewer_toolbar/toContinuousScroll_18x18.svg</file>
     <file>../images/viewer_toolbar/toWidth_18x18.svg</file>
     <file>../images/viewer_toolbar/translator_18x18.svg</file>
     <file>../images/viewer_toolbar/zoom_18x18.svg</file>

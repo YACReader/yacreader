@@ -77,6 +77,7 @@ MainWindowViewer::~MainWindowViewer()
     delete rightRotationAction;
     delete doublePageAction;
     delete doubleMangaPageAction;
+    delete continuousScrollAction;
     delete increasePageZoomAction;
     delete decreasePageZoomAction;
     delete resetZoomAction;
@@ -309,28 +310,38 @@ void MainWindowViewer::createActions()
     fitToPageAction->setCheckable(true);
     connect(fitToPageAction, &QAction::triggered, this, &MainWindowViewer::fitToPageSwitch);
 
+    continuousScrollAction = new QAction(tr("Continuous scroll"), this);
+    continuousScrollAction->setToolTip(tr("Switch to continuous scroll mode"));
+    continuousScrollAction->setIcon(QIcon(":/images/viewer_toolbar/toContinuousScroll.svg"));
+    continuousScrollAction->setCheckable(true);
+    continuousScrollAction->setChecked(Configuration::getConfiguration().getContinuousScroll());
+    connect(continuousScrollAction, &QAction::toggled, viewer, &Viewer::setContinuousScroll);
+
     // fit modes have to be exclusive and checkable
     auto fitModes = new QActionGroup(this);
     fitModes->addAction(adjustHeightAction);
     fitModes->addAction(adjustWidthAction);
     fitModes->addAction(adjustToFullSizeAction);
     fitModes->addAction(fitToPageAction);
+    fitModes->addAction(continuousScrollAction);
 
-    switch (Configuration::getConfiguration().getFitMode()) {
-    case YACReader::FitMode::ToWidth:
-        adjustWidthAction->setChecked(true);
-        break;
-    case YACReader::FitMode::ToHeight:
-        adjustHeightAction->setChecked(true);
-        break;
-    case YACReader::FitMode::FullRes:
-        adjustToFullSizeAction->setChecked(true);
-        break;
-    case YACReader::FitMode::FullPage:
-        fitToPageAction->setChecked(true);
-        break;
-    default:
-        fitToPageAction->setChecked(true);
+    if (Configuration::getConfiguration().getContinuousScroll()) {
+        continuousScrollAction->setChecked(true);
+    } else {
+        switch (Configuration::getConfiguration().getFitMode()) {
+        case YACReader::FitMode::ToWidth:
+            adjustWidthAction->setChecked(true);
+            break;
+        case YACReader::FitMode::ToHeight:
+            adjustHeightAction->setChecked(true);
+            break;
+        case YACReader::FitMode::FullRes:
+            adjustToFullSizeAction->setChecked(true);
+            break;
+        case YACReader::FitMode::FullPage:
+        default:
+            fitToPageAction->setChecked(true);
+        }
     }
 
     resetZoomAction = new QAction(tr("Reset zoom"), this);
@@ -536,11 +547,14 @@ void MainWindowViewer::createToolBars()
     auto fitToPageTBAction = actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/fitToPage")), fitToPageAction);
     comicToolBar->addAction(fitToPageTBAction);
 
+    auto continuousScroollTBAction = actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/toContinuousScroll")), continuousScrollAction);
+
     auto fitModes = new QActionGroup(this);
     fitModes->addAction(adjustToWidthTBAction);
     fitModes->addAction(adjustToHeightTBAction);
     fitModes->addAction(adjustToFullSizeTBAction);
     fitModes->addAction(fitToPageTBAction);
+    fitModes->addAction(continuousScroollTBAction);
 
     zoomSliderAction = new YACReaderSlider(this);
     zoomSliderAction->hide();
@@ -555,6 +569,7 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/rotateR")), rightRotationAction));
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/doublePage")), doublePageAction));
     comicToolBar->addAction(actionWithCustomIcon(QIcon(addExtensionToIconPathInToolbar(":/images/viewer_toolbar/doubleMangaPage")), doubleMangaPageAction));
+    comicToolBar->addAction(continuousScroollTBAction);
 
     comicToolBar->addSeparator();
 
@@ -603,6 +618,7 @@ void MainWindowViewer::createToolBars()
     viewer->addAction(rightRotationAction);
     viewer->addAction(doublePageAction);
     viewer->addAction(doubleMangaPageAction);
+    viewer->addAction(continuousScrollAction);
     YACReader::addSperator(viewer);
 
     viewer->addAction(showMagnifyingGlassAction);
@@ -675,6 +691,7 @@ void MainWindowViewer::createToolBars()
     viewMenu->addSeparator();
     viewMenu->addAction(doublePageAction);
     viewMenu->addAction(doubleMangaPageAction);
+    viewMenu->addAction(continuousScrollAction);
     viewMenu->addSeparator();
     viewMenu->addAction(showMagnifyingGlassAction);
 
@@ -1247,6 +1264,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                  << rightRotationAction
                                                  << doublePageAction
                                                  << doubleMangaPageAction
+                                                 << continuousScrollAction
                                                  << adjustToFullSizeAction
                                                  << fitToPageAction
                                                  << increasePageZoomAction
@@ -1540,6 +1558,7 @@ void MainWindowViewer::setActionsEnabled(bool enabled)
                            showMagnifyingGlassAction,
                            doublePageAction,
                            doubleMangaPageAction,
+                           continuousScrollAction,
                            adjustToFullSizeAction,
                            fitToPageAction,
                            showZoomSliderlAction,
@@ -1613,6 +1632,7 @@ void MainWindowViewer::applyTheme(const Theme &theme)
     setIcon(showDictionaryAction, toolbarTheme.showDictionaryAction, toolbarTheme.showDictionaryAction18x18);
     setIcon(adjustToFullSizeAction, toolbarTheme.adjustToFullSizeAction, toolbarTheme.adjustToFullSizeAction18x18);
     setIcon(fitToPageAction, toolbarTheme.fitToPageAction, toolbarTheme.fitToPageAction18x18);
+    setIcon(continuousScrollAction, toolbarTheme.continuousScrollAction, toolbarTheme.continuousScrollAction18x18);
     setIcon(showFlowAction, toolbarTheme.showFlowAction, toolbarTheme.showFlowAction18x18);
 }
 

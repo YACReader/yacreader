@@ -30,6 +30,7 @@ class GoToDialog;
 class YACReaderTranslator;
 class GoToFlowWidget;
 class Bookmarks;
+class ContinuousPageWidget;
 class PageLabelWidget;
 class NotificationsLabelWidget;
 
@@ -113,11 +114,13 @@ public slots:
     int getCurrentPageNumber();
     void updateZoomRatio(int ratio);
     bool getIsMangaMode();
+    void setContinuousScroll(bool enabled);
 
 private:
     bool information;
     bool doublePage;
     bool doubleMangaPage;
+    bool continuousScroll;
 
     int zoom;
 
@@ -144,6 +147,10 @@ private:
 
     //! Widgets
     QLabel *content;
+    QLabel *messageLabel;
+    ContinuousPageWidget *continuousWidget;
+    int lastCenterPage = -1;
+    bool syncingRenderFromContinuousScroll = false;
 
     YACReaderTranslator *translator;
     int translatorXPos;
@@ -183,12 +190,19 @@ private:
     // Zero when animations are disabled
     int animationDuration() const;
     void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta);
+    void onContinuousScroll(int value);
+    void onContinuousLayoutScrollRequested(int scrollY);
+    void scrollToCurrentContinuousPage();
+    void onNumPagesReady(unsigned int numPages);
+    void onRenderPageChanged(int page);
+    void setActiveWidget(QWidget *w);
 
     //! Mouse handler
     std::unique_ptr<YACReader::MouseHandler> mouseHandler;
 
 protected:
     void applyTheme(const Theme &theme) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 public:
     Viewer(QWidget *parent = nullptr);

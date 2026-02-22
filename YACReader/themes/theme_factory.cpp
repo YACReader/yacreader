@@ -139,6 +139,7 @@ Theme makeTheme(const ThemeParams &params)
     setToolbarIconPairT(theme.toolbar.showDictionaryAction, theme.toolbar.showDictionaryAction18x18, ":/images/viewer_toolbar/translator.svg");
     setToolbarIconPairT(theme.toolbar.adjustToFullSizeAction, theme.toolbar.adjustToFullSizeAction18x18, ":/images/viewer_toolbar/full.svg");
     setToolbarIconPairT(theme.toolbar.fitToPageAction, theme.toolbar.fitToPageAction18x18, ":/images/viewer_toolbar/fitToPage.svg");
+    setToolbarIconPairT(theme.toolbar.continuousScrollAction, theme.toolbar.continuousScrollAction18x18, ":/images/viewer_toolbar/toContinuousScroll.svg");
     setToolbarIconPairT(theme.toolbar.showFlowAction, theme.toolbar.showFlowAction18x18, ":/images/viewer_toolbar/flow.svg");
     // end Toolbar & actions
 
