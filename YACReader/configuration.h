@@ -82,6 +82,8 @@ public:
     void setDoublePage(bool b) { settings->setValue(DOUBLE_PAGE, b); }
     bool getDoubleMangaPage() { return settings->value(DOUBLE_MANGA_PAGE).toBool(); }
     void setDoubleMangaPage(bool b) { settings->setValue(DOUBLE_MANGA_PAGE, b); }
+    bool getContinuousScroll() { return settings->value(CONTINUOUS_SCROLL, false).toBool(); }
+    void setContinuousScroll(bool b) { settings->setValue(CONTINUOUS_SCROLL, b); }
     bool getEnlargeImages() { return settings->value(ENLARGE_IMAGES, true).toBool(); }
     void setEnlargeImages(bool b) { settings->setValue(ENLARGE_IMAGES, b); }
 

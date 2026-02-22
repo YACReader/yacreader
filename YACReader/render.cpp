@@ -546,6 +546,17 @@ QPixmap *Render::getCurrentDoubleMangaPage()
     }
 }
 
+const QImage *Render::bufferedImage(int absolutePageIndex) const
+{
+    int offset = absolutePageIndex - currentIndex;
+    int pos = currentPageBufferedIndex + offset;
+    if (pos < 0 || pos >= buffer.size()) {
+        return nullptr;
+    }
+    const QImage *img = buffer[pos];
+    return (img && !img->isNull()) ? img : nullptr;
+}
+
 bool Render::currentPageIsDoublePage()
 {
     if (currentIndex == 0 && Configuration::getConfiguration().getSettings()->value(COVER_IS_SP, true).toBool()) {
@@ -627,6 +638,8 @@ void Render::setComic(Comic *c)
 
 void Render::prepareAvailablePage(int page)
 {
+    emit pageRendered(page);
+
     if (!doublePage) {
         if (currentIndex == page) {
             emit currentPageReady();

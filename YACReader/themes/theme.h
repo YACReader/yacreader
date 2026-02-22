@@ -102,6 +102,8 @@ struct ToolbarTheme {
     QIcon adjustToFullSizeAction18x18;
     QIcon fitToPageAction;
     QIcon fitToPageAction18x18;
+    QIcon continuousScrollAction;
+    QIcon continuousScrollAction18x18;
     QIcon showFlowAction;
     QIcon showFlowAction18x18;
 };

@@ -142,6 +142,7 @@ public slots:
     bool currentPageIsDoublePage();
     bool nextPageIsDoublePage();
     bool previousPageIsDoublePage();
+    const QImage *bufferedImage(int absolutePageIndex) const;
     void goTo(int index);
     void doublePageSwitch();
     void setManga(bool manga);
@@ -197,6 +198,7 @@ signals:
     void isLast();
     void isCover();
 
+    void pageRendered(int absolutePageIndex);
     void bookmarksUpdated();
 
 private:

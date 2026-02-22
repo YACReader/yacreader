@@ -140,6 +140,7 @@ private:
     QAction *closeAction;
     QAction *doublePageAction;
     QAction *doubleMangaPageAction;
+    QAction *continuousScrollAction;
     QAction *showShorcutsAction;
     QAction *showDictionaryAction;
     QAction *adjustToFullSizeAction;
