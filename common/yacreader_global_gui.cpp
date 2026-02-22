@@ -53,14 +53,9 @@ QList<qulonglong> YACReader::mimeDataToComicsIds(const QMimeData *data)
     return comicIds;
 }
 
-QString YACReader::addExtensionToIconPathInToolbar(const QString &path)
+QAction *YACReader::wrappedToolbarAction(QAction *action)
 {
-    return path + "_18x18.svg";
-}
-
-QAction *YACReader::actionWithCustomIcon(const QIcon &icon, QAction *action)
-{
-    auto a = new QAction(icon, action->text());
+    auto a = new QAction(action->text());
 
     a->setEnabled(action->isEnabled());
     a->setCheckable(action->isCheckable());
@@ -79,7 +74,7 @@ QAction *YACReader::actionWithCustomIcon(const QIcon &icon, QAction *action)
     QObject::connect(action, &QAction::toggled, a, &QAction::setChecked);
 
     // asign a to action somehow so we can retrieve it later
-    action->setProperty("customIconAction", QVariant::fromValue<QObject *>(a));
+    action->setProperty("wrappedToolbarAction", QVariant::fromValue<QObject *>(a));
 
     return a;
 }
