@@ -27,7 +27,7 @@ QRhiWidget (Qt base class)
 
 - **yacreader_flow_rhi.h** - Header with class definitions
 - **yacreader_flow_rhi.cpp** - Implementation
-- **shaders/** - GLSL 450 shaders and compiled .qsb files
+- **shaders/** - GLSL 450 shader source files (compiled to .qsb at build time by `qt_add_shaders`)
 - **README.md** - This file
 
 ## Key Features
@@ -52,7 +52,8 @@ QRhi resources managed:
 
 ### Shader System
 
-Shaders are written in **GLSL 4.50** and compiled to `.qsb` format supporting:
+Shaders are written in **GLSL 4.50** and compiled to `.qsb` format at build time
+via `qt_add_shaders()` in CMake, supporting:
 - OpenGL ES 2.0, 3.0
 - OpenGL 2.1, 3.0+
 - HLSL (Direct3D 11/12)
@@ -134,36 +135,20 @@ All public methods from `YACReaderFlowGL` are preserved:
 
 ### Prerequisites
 
-1. **Qt 6.7 or later**
-2. **qsb tool** (Qt Shader Baker) in PATH
-3. **C++17 compiler**
-
-### Compile Shaders
-
-Before building YACReader, compile the shaders:
-
-```bash
-cd common/rhi/shaders
-# Windows
-compile_shaders.bat
-
-# Unix/macOS
-chmod +x compile_shaders.sh
-./compile_shaders.sh
-```
-
-This generates `flow.vert.qsb` and `flow.frag.qsb` which are embedded via `shaders.qrc`.
+1. **Qt 6.7 or later** (with ShaderTools module)
+2. **CMake 3.25+**
+3. **C++20 compiler**
 
 ### Build YACReader
 
-The `.pro` files automatically include RHI sources for Qt 6.7+:
+Shaders are compiled automatically at build time via `qt_add_shaders()`:
 
 ```bash
-qmake YACReader.pro
-make
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
 ```
 
-For Qt 5 builds, the OpenGL version is used automatically.
+No manual shader compilation step is needed.
 
 ## Graphics API Selection
 
@@ -224,7 +209,7 @@ qDebug() << "Driver:" << rhi->driverInfo();
 ### Common Issues
 
 **Problem**: Shaders fail to load
-**Solution**: Ensure `.qsb` files are compiled and included in resources
+**Solution**: Ensure Qt ShaderTools module is installed and `qt_add_shaders()` ran during build
 
 **Problem**: Black screen on Qt 6.7
 **Solution**: Check if `YACREADER_USE_RHI` is defined in build
@@ -260,7 +245,7 @@ The RHI version is a **drop-in replacement** requiring no application code chang
 1. **Qt Version**: Requires Qt 6.7+ (released April 2024)
 2. **QRhi Stability**: QRhi APIs may change in minor Qt releases
 3. **Mixed Renderers**: Only one graphics API per window
-4. **Shader Compilation**: Must recompile shaders when modifying source
+4. **Shader Compilation**: Shaders are recompiled automatically when source files change
 
 ## Future Improvements
 

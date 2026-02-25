@@ -6,10 +6,6 @@ dependencies/create-dmg
 signapps.sh
 lib7zip
 libp7zip
-YACReader/build
-YACReaderLibrary/build
-YACReaderLibraryServer/build
-build/
 
 # C++ objects and libs
 *.slo
@@ -24,16 +20,7 @@ build/
 *.pch
 *.obj
 
-# Qt-es
-object_script.*.Release
-object_script.*.Debug
-*_plugin_import.cpp
-/.qmake.cache
-/.qmake.stash
-*.pro.user
-*.pro.user.*
-*.qbs.user
-*.qbs.user.*
+# Qt generated files
 *.moc
 moc_*.cpp
 moc_*.h
@@ -41,41 +28,43 @@ qrc_*.cpp
 ui_*.h
 *.qmlc
 *.jsc
-Makefile*
-*build-*
-*.build*
-*.app*
-*.pbxproj
-*.mak
-*.xcworkspace*
-*xcshareddata*
-*.swp
 *.qm
 
 # Qt unit tests
 target_wrapper.*
 
 # QtCreator
+.qtcreator/
 *.autosave
-
-# QtCreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
-
-# QtCreator CMake
 CMakeLists.txt.user*
 *.stash
+*build-*
+*.build*
 
+# CMake
+build*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+CMakeUserPresets.json
+
+# IDE / platform
+*.app*
+*.pbxproj
+*.xcworkspace*
+*xcshareddata*
+*.swp
 *.plist
 *.dmg
-
 YACReaderLibrary/YACReaderLibrary\.xcodeproj/
 .DS_Store
-compressed_archive/libp7zip
-c_x86_64.pch
-
 compile_commands.json
 .ccls-cache
+
+compressed_archive/libp7zip
+c_x86_64.pch
 
 # Claude Code
 .claude/

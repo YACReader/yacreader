@@ -41,10 +41,10 @@ jobs:
     needs: initialization
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Install dependencies
         run: brew install clang-format
-      
+
       - name: Run clang-format
         run: |
           find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
@@ -74,13 +74,14 @@ jobs:
 
       - name: Build
         run: |
-          export DEFINES_VAR=DEFINES+=\"BUILD_NUMBER=\\\\\\\"${{ needs.initialization.outputs.build_number }}\\\\\\\"\"
-          qmake CONFIG+="unarr" $DEFINES_VAR
-          qmake -v
-          make
+          cmake -B build \
+            -DDECOMPRESSION_BACKEND=unarr \
+            -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel 2
 
       - name: Run tests
-        run: make check TESTARGS="-maxwarnings 100000"
+        run: ctest --test-dir build --output-on-failure
 
   # Linux Qt6 with 7zip
   linux-qt6-7zip:
@@ -93,11 +94,8 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y libunarr-dev libgl-dev libgles2-mesa-dev \
+          sudo apt-get install -y libgl-dev libgles2-mesa-dev \
             libfontconfig1-dev libfreetype-dev libxkbcommon-dev libpoppler-qt6-dev
-          mkdir -p ${{ github.workspace }}/compressed_archive
-          wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O ${{ github.workspace }}/compressed_archive/7z2301-src.7z
-          7z x ${{ github.workspace }}/compressed_archive/7z2301-src.7z -o${{ github.workspace }}/compressed_archive/lib7zip
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
@@ -108,13 +106,14 @@ jobs:
 
       - name: Build
         run: |
-          export DEFINES_VAR=DEFINES+=\"BUILD_NUMBER=\\\\\\\"${{ needs.initialization.outputs.build_number }}\\\\\\\"\"
-          qmake CONFIG+="7zip" $DEFINES_VAR
-          qmake -v
-          make
+          cmake -B build \
+            -DDECOMPRESSION_BACKEND=7zip \
+            -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" \
+            -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --parallel 2
 
       - name: Run tests
-        run: make check TESTARGS="-maxwarnings 100000"
+        run: ctest --test-dir build --output-on-failure
 
   # macOS Qt6 Universal build
   macos-qt6-universal:
@@ -135,9 +134,6 @@ jobs:
           python3 -m aqt install-qt mac desktop 6.9.3 -m qt5compat qtmultimedia qtimageformats qtshadertools
           echo "${{ github.workspace }}/6.9.3/macos/bin" >> $GITHUB_PATH
           npm install -g appdmg
-          mkdir -p ${{ github.workspace }}/compressed_archive
-          wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O ${{ github.workspace }}/compressed_archive/7z2301-src.7z
-          7z x ${{ github.workspace }}/compressed_archive/7z2301-src.7z -o${{ github.workspace }}/compressed_archive/lib7zip
 
       - name: Import Code Signing Certificate
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
@@ -155,11 +151,8 @@ jobs:
           SKIP_CODESIGN=$(echo "$SKIP_CODESIGN" | tr '[:upper:]' '[:lower:]')
           ./compileOSX.sh $VERSION ${{ needs.initialization.outputs.build_number }} $SKIP_CODESIGN Qt6 universal
 
-      - name: Build and run tests
-        run: |
-          cd tests
-          qmake
-          make check TESTARGS="-maxwarnings 100000"
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
 
       - name: Notarize
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
@@ -180,13 +173,13 @@ jobs:
     needs: [initialization, code-format-validation]
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           architecture: 'x64'
-      
+
       - name: Install dependencies
         shell: cmd
         run: |
@@ -197,43 +190,23 @@ jobs:
           dir C:\Qt\6.9.3\msvc2022_64\bin
           choco install -y wget
           choco install innosetup
-          mkdir %GITHUB_WORKSPACE%\compressed_archive
-          wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O %GITHUB_WORKSPACE%\compressed_archive\7z2301-src.7z
-          7z x %GITHUB_WORKSPACE%\compressed_archive\7z2301-src.7z -o%GITHUB_WORKSPACE%\compressed_archive\lib7zip
           wget "https://aka.ms/vs/17/release/vc_redist.x64.exe" -O %GITHUB_WORKSPACE%\vc_redist.x64.exe
-      
-      - name: Check MSVC installations
-        shell: pwsh
-        run: |
-          Write-Host "=== Checking for VS 2019 installation ==="
-          if (Test-Path "C:\Program Files (x86)\Microsoft Visual Studio\2019") {
-            Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio\2019" -Recurse -Depth 2
-          } else {
-            Write-Host "VS 2019 path does not exist"
-          }
-          Write-Host "`n=== Checking VS 2022 MSVC Tools ==="
-          if (Test-Path "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC") {
-            Get-ChildItem "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC"
-          }
-          Write-Host "`n=== Testing vcvars with -vcvars_ver=14.29 ==="
-          cmd /c '"C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat" -vcvars_ver=14.29 && set' | Select-String -Pattern "MSVC|VCTools"
-      
+
       - name: Build
         shell: cmd
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
-          set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"${{ needs.initialization.outputs.build_number }}\\\\\\\""
-          qmake CONFIG+="7zip" %DEFINES_VAR%
-          nmake
-      
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DDECOMPRESSION_BACKEND=7zip -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" -DCMAKE_PREFIX_PATH=C:\Qt\6.9.3\msvc2022_64
+          cmake --build build --parallel
+
       - name: Run tests
         shell: cmd
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
-          nmake check TESTARGS="-maxwarnings 100000"
-      
+          ctest --test-dir build --output-on-failure
+
       - name: Upload executables for signing
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v4
@@ -241,10 +214,10 @@ jobs:
         with:
           name: windows-x64-qt6-executables-unsigned-${{ needs.initialization.outputs.build_number }}
           path: |
-            release64/YACReader.exe
-            release64/YACReaderLibrary.exe
-            release64/YACReaderLibraryServer.exe
-      
+            build/bin/YACReader.exe
+            build/bin/YACReaderLibrary.exe
+            build/bin/YACReaderLibraryServer.exe
+
       - name: Sign executables with SignPath
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         uses: signpath/github-action-submit-signing-request@v1
@@ -257,22 +230,22 @@ jobs:
           github-artifact-id: ${{ steps.upload_executables.outputs.artifact-id }}
           wait-for-completion: true
           wait-for-completion-timeout-in-seconds: "7200"
-          output-artifact-directory: release64/signed
-      
+          output-artifact-directory: build/bin/signed
+
       - name: Replace with signed executables
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         shell: pwsh
         run: |
           Write-Host "=== Replacing executables with signed versions ==="
-          Get-ChildItem -Path "release64/signed" -Filter "*.exe" | ForEach-Object {
-            $destPath = "release64/$($_.Name)"
+          Get-ChildItem -Path "build/bin/signed" -Filter "*.exe" | ForEach-Object {
+            $destPath = "build/bin/$($_.Name)"
             Write-Host "Moving signed: $($_.Name) -> $destPath"
             Move-Item -Path $_.FullName -Destination $destPath -Force
             Write-Host "  Moved successfully"
           }
-          Remove-Item -Path "release64/signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "build/bin/signed" -Recurse -Force -ErrorAction SilentlyContinue
           Write-Host "Signed executables are ready for installer creation"
-      
+
       - name: Create installer
         shell: cmd
         working-directory: ci/win
@@ -280,7 +253,7 @@ jobs:
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
           .\create_installer.cmd x64 7z ${{ needs.initialization.outputs.build_number }}
-      
+
       - name: Verify installer was created
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         shell: pwsh
@@ -289,7 +262,7 @@ jobs:
             throw "Installer file was not created"
           }
           Get-ChildItem "ci/win/Output/YACReader*.exe"
-      
+
       - name: Upload unsigned installer
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v4
@@ -297,7 +270,7 @@ jobs:
         with:
           name: windows-x64-qt6-unsigned-${{ needs.initialization.outputs.build_number }}
           path: ci/win/Output/YACReader*.exe
-      
+
       - name: Submit to SignPath
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         uses: signpath/github-action-submit-signing-request@v1
@@ -311,14 +284,14 @@ jobs:
           wait-for-completion: true
           wait-for-completion-timeout-in-seconds: "7200"
           output-artifact-directory: ci/win/Output/signed
-      
+
       - name: Replace with signed installer
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         shell: pwsh
         run: |
           Write-Host "=== Files in signed directory before move ==="
           Get-ChildItem -Path "ci/win/Output/signed" -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name) - $($_.Length) bytes" }
-          
+
           $signedFiles = Get-ChildItem -Path "ci/win/Output/signed" -Filter "*.exe"
           foreach ($signedFile in $signedFiles) {
             $destPath = "ci/win/Output/$($signedFile.Name)"
@@ -326,13 +299,13 @@ jobs:
             Move-Item -Path $signedFile.FullName -Destination $destPath -Force
             Write-Host "  Moved successfully"
           }
-          
+
           Write-Host "=== Files in Output directory after move ==="
           Get-ChildItem -Path "ci/win/Output" -Filter "*.exe" | ForEach-Object { Write-Host "  $($_.Name) - $($_.Length) bytes" }
-          
+
           Remove-Item -Path "ci/win/Output/signed" -Recurse -Force -ErrorAction SilentlyContinue
           Write-Host "Cleaned up signed directory"
-      
+
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
@@ -346,13 +319,13 @@ jobs:
     needs: [initialization, code-format-validation]
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
           architecture: 'x64'
-      
+
       - name: Install dependencies
         shell: cmd
         run: |
@@ -363,26 +336,16 @@ jobs:
           dir C:\Qt\6.9.3\msvc2022_arm64\bin
           choco install -y wget
           choco install innosetup
-          mkdir %GITHUB_WORKSPACE%\compressed_archive
-          wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O %GITHUB_WORKSPACE%\compressed_archive\7z2301-src.7z
-          7z x %GITHUB_WORKSPACE%\compressed_archive\7z2301-src.7z -o%GITHUB_WORKSPACE%\compressed_archive\lib7zip
           wget "https://aka.ms/vs/17/release/vc_redist.arm64.exe" -O %GITHUB_WORKSPACE%\vc_redist.arm64.exe
-      
-      - name: Prepare Build
+
+      - name: Build
         shell: cmd
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64_arm64
           set PATH=C:\Qt\6.9.3\msvc2022_arm64\bin;%PATH%
-          set DEFINES_VAR=DEFINES+="BUILD_NUMBER=\\\\\\\"${{ needs.initialization.outputs.build_number }}\\\\\\\""
-          qmake CONFIG+="7zip" %DEFINES_VAR%
-      
-      - name: Build  
-        shell: cmd
-        run: |
-          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64_arm64
-          set PATH=C:\Qt\6.9.3\msvc2022_arm64\bin;%PATH%
-          nmake
-      
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DDECOMPRESSION_BACKEND=7zip -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" -DCMAKE_PREFIX_PATH=C:\Qt\6.9.3\msvc2022_arm64 -DQT_HOST_PATH=C:\Qt\6.9.3\msvc2022_64 -DCMAKE_SYSTEM_PROCESSOR=ARM64
+          cmake --build build --parallel
+
       - name: Upload executables for signing
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v4
@@ -390,10 +353,10 @@ jobs:
         with:
           name: windows-arm64-qt6-executables-unsigned-${{ needs.initialization.outputs.build_number }}
           path: |
-            release/YACReader.exe
-            release/YACReaderLibrary.exe
-            release/YACReaderLibraryServer.exe
-      
+            build/bin/YACReader.exe
+            build/bin/YACReaderLibrary.exe
+            build/bin/YACReaderLibraryServer.exe
+
       - name: Submit to SignPath
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         uses: signpath/github-action-submit-signing-request@v1
@@ -406,25 +369,25 @@ jobs:
           github-artifact-id: ${{ steps.upload_executables.outputs.artifact-id }}
           wait-for-completion: true
           wait-for-completion-timeout-in-seconds: "7200"
-          output-artifact-directory: 'release/signed'
-      
+          output-artifact-directory: 'build/bin/signed'
+
       - name: Replace executables with signed versions
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         shell: pwsh
         run: |
-          Copy-Item "release/signed/YACReader.exe" "release/YACReader.exe" -Force
-          Copy-Item "release/signed/YACReaderLibrary.exe" "release/YACReaderLibrary.exe" -Force  
-          Copy-Item "release/signed/YACReaderLibraryServer.exe" "release/YACReaderLibraryServer.exe" -Force
-          Remove-Item -Path "release/signed" -Recurse -Force -ErrorAction SilentlyContinue
+          Copy-Item "build/bin/signed/YACReader.exe" "build/bin/YACReader.exe" -Force
+          Copy-Item "build/bin/signed/YACReaderLibrary.exe" "build/bin/YACReaderLibrary.exe" -Force
+          Copy-Item "build/bin/signed/YACReaderLibraryServer.exe" "build/bin/YACReaderLibraryServer.exe" -Force
+          Remove-Item -Path "build/bin/signed" -Recurse -Force -ErrorAction SilentlyContinue
           Write-Host "Signed executables are ready for installer creation"
-      
+
       - name: Create installer
         shell: cmd
         working-directory: ci/win
         run: |
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
           .\create_installer.cmd arm64 7z ${{ needs.initialization.outputs.build_number }}
-      
+
       - name: Verify installer was created
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         shell: pwsh
@@ -433,7 +396,7 @@ jobs:
             throw "Installer file was not created"
           }
           Get-ChildItem "ci/win/Output/YACReader*.exe"
-      
+
       - name: Upload unsigned installer
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         uses: actions/upload-artifact@v4
@@ -441,7 +404,7 @@ jobs:
         with:
           name: windows-arm64-qt6-unsigned-${{ needs.initialization.outputs.build_number }}
           path: ci/win/Output/YACReader*.exe
-      
+
       - name: Submit to SignPath
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         uses: signpath/github-action-submit-signing-request@v1
@@ -455,7 +418,7 @@ jobs:
           wait-for-completion: true
           wait-for-completion-timeout-in-seconds: "7200"
           output-artifact-directory: 'ci/win/Output/signed'
-      
+
       - name: Replace with signed installer and cleanup
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
         shell: pwsh
@@ -469,7 +432,7 @@ jobs:
           }
           Remove-Item -Path "signed" -Recurse -Force -ErrorAction SilentlyContinue
           Write-Host "Cleaned up signed directory"
-      
+
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
@@ -483,16 +446,16 @@ jobs:
     needs: [initialization, code-format-validation]
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Build amd64 Image
         working-directory: docker
         run: |
-          docker build --no-cache --platform linux/amd64 -f Dockerfile -t yacreader/yacreaderlibraryserver:develop-amd64 .
+          docker build --no-cache --platform linux/amd64 -f Dockerfile --build-arg YACR_VERSION=${{ github.head_ref || github.ref_name }} -t yacreader/yacreaderlibraryserver:develop-amd64 .
           docker save yacreader/yacreaderlibraryserver:develop-amd64 -o amd64.tar
-      
+
       - name: Upload Docker Image
         uses: actions/upload-artifact@v4
         with:
@@ -506,13 +469,13 @@ jobs:
     needs: [initialization, code-format-validation]
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Build arm64 Image (native)
         working-directory: docker
         run: |
-          docker build --no-cache -f Dockerfile.aarch64 -t yacreader/yacreaderlibraryserver:develop-arm64 .
+          docker build --no-cache -f Dockerfile.aarch64 --build-arg YACR_VERSION=${{ github.head_ref || github.ref_name }} -t yacreader/yacreaderlibraryserver:develop-arm64 .
           docker save yacreader/yacreaderlibraryserver:develop-arm64 -o arm64.tar
-      
+
       - name: Upload Docker Image
         uses: actions/upload-artifact@v4
         with:
@@ -535,12 +498,12 @@ jobs:
       - docker-arm64
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-      
+
       - name: List downloaded artifacts
         run: |
           echo "=== All artifacts downloaded ==="
@@ -548,7 +511,7 @@ jobs:
           echo ""
           echo "=== Windows artifacts only ==="
           ls -l artifacts/windows-*/
-      
+
       - name: Flatten artifacts (exclude unsigned Windows installers)
         run: |
           mkdir -p staging
@@ -560,20 +523,20 @@ jobs:
           echo ""
           echo "=== Windows installers in staging ==="
           ls -lh staging/YACReader*.exe || echo "No Windows installers found"
-      
+
       - name: Verify Windows installer signatures
         run: |
           echo "=== Installing osslsigncode to verify signatures ==="
           sudo apt-get update
           sudo apt-get install -y osslsigncode
-          
+
           echo ""
           echo "=== Checking signatures on Windows installers ==="
           for installer in staging/YACReader*.exe; do
             if [ -f "$installer" ]; then
               echo "Checking: $(basename $installer)"
               echo "File size: $(stat -c%s $installer) bytes"
-              
+
               # Try to extract signature info
               if osslsigncode verify -in "$installer" 2>&1 | grep -q "Signature verification: ok"; then
                 echo "  ✓ SIGNED - Signature verified successfully"
@@ -585,26 +548,26 @@ jobs:
               echo ""
             fi
           done
-          
+
           echo "=== Summary ==="
           echo "Total installers in staging: $(ls staging/YACReader*.exe 2>/dev/null | wc -l)"
-      
+
       - name: Get version
         id: version
         run: |
           VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' ).${{ needs.initialization.outputs.build_number }}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
-      
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Push Docker Images
         run: |
           for arch in amd64 arm64; do
@@ -612,12 +575,12 @@ jobs:
             docker push yacreader/yacreaderlibraryserver:develop-${arch}
             rm staging/${arch}.tar
           done
-          
+
           docker buildx imagetools create \
             -t yacreader/yacreaderlibraryserver:develop \
             yacreader/yacreaderlibraryserver:develop-amd64 \
             yacreader/yacreaderlibraryserver:develop-arm64
-      
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
@@ -645,12 +608,12 @@ jobs:
       - docker-arm64
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-      
+
       - name: List downloaded artifacts
         run: |
           echo "=== All artifacts downloaded ==="
@@ -658,7 +621,7 @@ jobs:
           echo ""
           echo "=== Windows artifacts only ==="
           ls -l artifacts/windows-*/
-      
+
       - name: Flatten artifacts (exclude unsigned Windows installers)
         run: |
           mkdir -p staging
@@ -670,20 +633,20 @@ jobs:
           echo ""
           echo "=== Windows installers in staging ==="
           ls -lh staging/YACReader*.exe || echo "No Windows installers found"
-      
+
       - name: Verify Windows installer signatures
         run: |
           echo "=== Installing osslsigncode to verify signatures ==="
           sudo apt-get update
           sudo apt-get install -y osslsigncode
-          
+
           echo ""
           echo "=== Checking signatures on Windows installers ==="
           for installer in staging/YACReader*.exe; do
             if [ -f "$installer" ]; then
               echo "Checking: $(basename $installer)"
               echo "File size: $(stat -c%s $installer) bytes"
-              
+
               # Try to extract signature info
               if osslsigncode verify -in "$installer" 2>&1 | grep -q "Signature verification: ok"; then
                 echo "  ✓ SIGNED - Signature verified successfully"
@@ -695,26 +658,26 @@ jobs:
               echo ""
             fi
           done
-          
+
           echo "=== Summary ==="
           echo "Total installers in staging: $(ls staging/YACReader*.exe 2>/dev/null | wc -l)"
-      
+
       - name: Get version
         id: version
         run: |
           VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
-      
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
+
       - name: Push Docker Images
         run: |
           for arch in amd64 arm64; do
@@ -723,17 +686,17 @@ jobs:
             docker push yacreader/yacreaderlibraryserver:latest-${arch}
             rm staging/${arch}.tar
           done
-          
+
           docker buildx imagetools create \
             -t yacreader/yacreaderlibraryserver:latest \
             yacreader/yacreaderlibraryserver:latest-amd64 \
             yacreader/yacreaderlibraryserver:latest-arm64
-          
+
           docker buildx imagetools create \
             -t yacreader/yacreaderlibraryserver:${{ steps.version.outputs.version }} \
             yacreader/yacreaderlibraryserver:latest-amd64 \
             yacreader/yacreaderlibraryserver:latest-arm64
-      
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
