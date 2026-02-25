@@ -15,6 +15,7 @@ RUN \
     apt-get install -y --no-install-recommends \
        build-essential \
        cmake \
+       ninja-build \
        desktop-file-utils \
        gcc \
        g++ \
@@ -61,7 +62,7 @@ RUN git clone https://github.com/YACReader/yacreader.git /src/git && \
 
 # build yacreaderlibraryserver (7zip source is auto-downloaded by CMake FetchContent)
 RUN cd /src/git && \
-    cmake -B build \
+    cmake -B build -G Ninja \
       -DCMAKE_INSTALL_PREFIX=/app \
       -DDECOMPRESSION_BACKEND=7zip \
       -DBUILD_SERVER_STANDALONE=ON \
