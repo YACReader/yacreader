@@ -42,6 +42,7 @@ void ContinuousPageWidget::setViewModel(ContinuousViewModel *viewModel)
     }
 
     updateGeometry();
+    scaledPageCache.invalidateAll();
     update();
 }
 
@@ -49,6 +50,7 @@ void ContinuousPageWidget::reset()
 {
     setMinimumHeight(0);
     setMaximumHeight(QWIDGETSIZE_MAX);
+    scaledPageCache.invalidateAll();
     updateGeometry();
     update();
 }
@@ -86,6 +88,8 @@ void ContinuousPageWidget::onPageAvailable(int absolutePageIndex)
         return;
     }
 
+    scaledPageCache.invalidatePage(absolutePageIndex);
+
     // repaint the region where this page lives
     if (absolutePageIndex < continuousViewModel->numPages()) {
         QSize scaled = continuousViewModel->scaledPageSize(absolutePageIndex);
@@ -106,10 +110,17 @@ void ContinuousPageWidget::paintEvent(QPaintEvent *event)
     }
 
     QPainter painter(this);
+    scaledPageCache.invalidateForWidth(width());
 
     QRect visibleRect = event->rect();
     int firstPage = continuousViewModel->pageAtY(visibleRect.top());
     int lastPage = continuousViewModel->pageAtY(visibleRect.bottom());
+    firstPage = qBound(0, firstPage, continuousViewModel->numPages() - 1);
+    lastPage = qBound(0, lastPage, continuousViewModel->numPages() - 1);
+
+    const int cacheMin = std::max(0, firstPage - 1);
+    const int cacheMax = std::min(continuousViewModel->numPages() - 1, lastPage + 1);
+    scaledPageCache.keepOnlyRange(cacheMin, cacheMax);
 
     int w = width();
     for (int i = firstPage; i <= lastPage && i < continuousViewModel->numPages(); ++i) {
@@ -124,10 +135,9 @@ void ContinuousPageWidget::paintEvent(QPaintEvent *event)
 
         const QImage *img = render->bufferedImage(i);
         if (img && !img->isNull()) {
-            if (img->size() != scaled) {
-                painter.drawImage(pageRect, img->scaled(scaled, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-            } else {
-                painter.drawImage(pageRect, *img);
+            const QImage *drawable = scaledImageForPaint(i, img, scaled, width());
+            if (drawable) {
+                painter.drawImage(pageRect, *drawable);
             }
         } else {
             // placeholder
@@ -144,4 +154,40 @@ void ContinuousPageWidget::resizeEvent(QResizeEvent *event)
     if (continuousViewModel) {
         continuousViewModel->setViewportSize(width(), continuousViewModel->viewportHeight());
     }
+}
+
+const QImage *ContinuousPageWidget::scaledImageForPaint(int pageIndex, const QImage *source, const QSize &targetSize, int effectiveWidth)
+{
+    if (!source || source->isNull() || targetSize.isEmpty()) {
+        return nullptr;
+    }
+
+    if (source->size() == targetSize) {
+        return source;
+    }
+
+    scaledPageCache.invalidateForWidth(effectiveWidth);
+
+    auto it = scaledPageCache.pages.find(pageIndex);
+    const qint64 sourceKey = source->cacheKey();
+
+    if (it != scaledPageCache.pages.end()) {
+        const ScaledPageCacheEntry &entry = it.value();
+        const bool validEntry = entry.sourceCacheKey == sourceKey
+                && entry.sourceSize == source->size()
+                && entry.targetSize == targetSize
+                && !entry.scaledImage.isNull();
+        if (validEntry) {
+            return &it.value().scaledImage;
+        }
+    }
+
+    ScaledPageCacheEntry entry;
+    entry.sourceCacheKey = sourceKey;
+    entry.sourceSize = source->size();
+    entry.targetSize = targetSize;
+    entry.scaledImage = source->scaled(targetSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    scaledPageCache.pages.insert(pageIndex, std::move(entry));
+
+    return &scaledPageCache.pages[pageIndex].scaledImage;
 }
