@@ -1,36 +1,40 @@
 # Building YACReader from source
 
-YACReader and YACReaderLibrary are build using qmake. To build and install the
-program, run:
+YACReader and YACReaderLibrary are built using CMake. To build from the top
+source directory:
 
 ```
-qmake CONFIG+=[Options]
-make
-make install
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
 ```
 
-from the top source dir. For separate builds of YACReader or YACReaderLibrary,
-enter their respective subfolders and run the commands from there.
+To install (Linux):
 
-The headless version of YACReaderLibrary is located in the YACReaderLibraryServer
-folder. To build it, enter the folder and run the commands described above.
+```
+cmake --install build
+```
+
 ## Build dependencies:
 
-- Qt >= 5.15 with the following modules:
-	- declarative
-	- quickcontrols
-	- sql
-	- multimedia
-	- imageformats
-	- opengl
-	- sql-sqlite
-	- network
+- CMake >= 3.25
+- C++20 compiler
+- Qt >= 6.7 with the following modules:
+	- Core, Core5Compat, Gui, Widgets
+	- Quick, QuickControls2, QuickWidgets, Qml
+	- Sql (with SQLite driver)
+	- Multimedia
+	- Network
+	- Svg
+	- OpenGLWidgets
+	- ShaderTools
+	- LinguistTools
+	- Test (for running tests)
 - Backends for pdf rendering (optional) and file
   decompression (see below)
 
 Not all dependencies are needed at build time. For example the qml components in
 YACReaderLibrary (GridView, InfoView) will only show a white page if the
-required qml modules (declarative, quickcontrols) are missing.
+required qml modules (Quick, QuickControls2) are missing.
 
 ## Backends
 
@@ -38,26 +42,26 @@ required qml modules (declarative, quickcontrols) are missing.
 
 YACReader currently supports two decompression backends, 7zip and (lib)unarr. YACReader
 defaults to 7zip for Windows and Mac OS and unarr for Linux and other OS, but you can
-override this using one of the following config options:
+override this using the `DECOMPRESSION_BACKEND` option:
 
-`CONFIG+=7zip`
-
-`CONFIG+=unarr`
+```
+cmake -B build -DDECOMPRESSION_BACKEND=7zip
+cmake -B build -DDECOMPRESSION_BACKEND=unarr
+cmake -B build -DDECOMPRESSION_BACKEND=libarchive
+```
 
 #### 7zip
 
-[7zip](https://www.7-zip.org/) and [p7zip](http://p7zip.sourceforge.net/)
-are the default decompression backend for Windows and Mac OS builds.
+[7zip](https://www.7-zip.org/) is the default decompression backend for Windows and Mac OS builds.
 
-They are recommended for these systems, as they currently have better support for 7z
-files and support the RAR5 format.
+It is recommended for these systems, as it currently has better support for 7z
+files and supports the RAR5 format.
 
-As this backend requires specific versions of 7zip for Windows and p7zip for *NIX and
-is not 100% GPL compatible (unrar License restriction), it is not recommended for
-installations where you can't guarantee the installed version of (p7zip) or the license is an issue.
+The 7zip source code is automatically downloaded during configuration via CMake's
+FetchContent. No manual setup is needed.
 
-To build using this backend, you need to install additional sources to the build environment.
-For more information, please refer to [README_7zip](compressed_archive/README_7zip.txt).
+As this backend is not 100% GPL compatible (unrar license restriction), it is not
+recommended for installations where the license is an issue.
 
 #### unarr
 
@@ -77,12 +81,18 @@ For more information, please consult the [README](compressed_archive/unarr/READM
 Starting with version 9.0.0 YACReader supports the following pdf rendering engines:
 
 - poppler (Linux/Unix default)
-- pdfium (default for Windows and MacOS)
-- pdfkit (MacOS only)
+- pdfium (default for Windows)
+- pdfkit (macOS default, macOS only)
 - no_pdf (disable pdf support)
 
-To override the default for a given platform add CONFIG+=[pdfbackend] as an option
-when running qmake.
+To override the default for a given platform use the `PDF_BACKEND` option:
+
+```
+cmake -B build -DPDF_BACKEND=poppler
+cmake -B build -DPDF_BACKEND=pdfium
+cmake -B build -DPDF_BACKEND=pdfkit
+cmake -B build -DPDF_BACKEND=no_pdf
+```
 
 While the Poppler backend is well tested and has been the standard for YACReader
 for a long time, its performance is a bit lacking. The pdfium engine offers
@@ -92,33 +102,31 @@ prepackaged for Linux.
 
 ### Other build options:
 
-You can adjust the installation prefix as well als the path "make install" uses
-to install the files.
-
-`qmake PREFIX=DIR`
-
-sets the default prefix (for example "/", "/usr", "/usr/local").
-
-`make install INSTALL_ROOT=DIR`
-
-can be used to install to a different location, which is usefull for packaging.
-
-Default values:
+You can adjust the installation prefix:
 
 ```
-PREFIX=/usr
-INSTALL_ROOT=""
+cmake -B build -DCMAKE_INSTALL_PREFIX=/usr/local
 ```
 
-On embedded devices that don't support desktop OpenGL, it is recommended to use
-the no_opengl config option:
+Default value on Linux is `/usr`.
 
-`qmake CONFIG+=no_opengl`
+For packaging, use `DESTDIR` with the install command:
 
-This will remove any dependency on desktop OpenGL and hardlock YACReader's
-coverflow to software rendering. Please note that it does not actually remove
-OpenGL from the build, the Qt toolkit will still make use of it.
+```
+DESTDIR=/path/to/staging cmake --install build
+```
 
+To build only YACReaderLibraryServer (headless server):
+
+```
+cmake -B build -DBUILD_SERVER_STANDALONE=ON
+```
+
+### Running tests
+
+```
+ctest --test-dir build --output-on-failure
+```
 
 # Feedback and contribution
 

@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/shaders">
-        <file>flow.vert.qsb</file>
-        <file>flow.frag.qsb</file>
-    </qresource>
-</RCC>

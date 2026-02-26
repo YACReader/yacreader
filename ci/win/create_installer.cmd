@@ -6,11 +6,7 @@ set ARCH=%1
 set COMPRESSION=%2
 set BUILD_NUMBER=%3
 
-IF "%ARCH%"=="x64" (
-    SET exe_path=%src_path%\release64
-) ELSE (
-    SET exe_path=%src_path%\release
-)
+SET exe_path=%src_path%\build\bin
 
 rmdir /S /Q installer_contents
 
@@ -45,7 +41,13 @@ mkdir openssl
 copy %src_path%\dependencies\openssl\win\%ARCH%\* .\openssl\
 
 xcopy %src_path%\release\server .\server /i /e
-xcopy %src_path%\release\languages .\languages /i /e
+
+rem Collect cmake-generated .qm translation files from the build tree
+rem (release\languages is not tracked in git; cmake generates .qm in build subdirs)
+mkdir languages
+for /r %src_path%\build %%f in (*.qm) do (
+    copy "%%f" .\languages\ >nul
+)
 
 copy %src_path%\vc_redist.%ARCH%.exe .
 
