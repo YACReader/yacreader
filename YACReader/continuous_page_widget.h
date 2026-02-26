@@ -4,10 +4,13 @@
 #include <QWidget>
 #include <QSize>
 #include <QVector>
+#include <QHash>
+#include <QList>
 
 #include "themable.h"
 
 class Render;
+class ContinuousViewModel;
 
 class ContinuousPageWidget : public QWidget, protected Themable
 {
@@ -16,26 +19,12 @@ public:
     explicit ContinuousPageWidget(QWidget *parent = nullptr);
 
     void setRender(Render *r);
-    void setNumPages(int count);
-    void setZoomFactor(int zoom);
-    void probeBufferedPages();
+    void setViewModel(ContinuousViewModel *viewModel);
     void reset();
-
-    int centerPage(int scrollY, int viewportHeight) const;
-    int yPositionForPage(int pageIndex) const;
-    int totalHeight() const;
 
     bool hasHeightForWidth() const override;
     int heightForWidth(int w) const override;
     QSize sizeHint() const override;
-
-    void setAnchorPage(int page);
-    void setViewportState(int scrollY, int viewportHeight);
-
-signals:
-    // emitted after layout recomputation when the preserved viewport anchor
-    // resolves to an absolute scroll position
-    void layoutScrollPositionRequested(int scrollY);
 
 public slots:
     void onPageAvailable(int absolutePageIndex);
@@ -46,41 +35,61 @@ protected:
     void applyTheme(const Theme &theme) override;
 
 private:
-    struct LayoutSnapshot {
-        QVector<int> yPositions;
-        QVector<QSize> scaledSizes;
-        int totalHeight = 0;
+    struct ScaledPageCacheEntry {
+        qint64 sourceCacheKey = 0;
+        QSize sourceSize;
+        QSize targetSize;
+        QImage scaledImage;
     };
 
-    struct ViewportAnchor {
-        int pageIndex = -1;
-        float offsetRatio = 0.0f;
-        bool valid = false;
+    struct ScaledPageCache {
+        int effectiveWidth = -1;
+        QHash<int, ScaledPageCacheEntry> pages;
+
+        void invalidateAll()
+        {
+            effectiveWidth = -1;
+            pages.clear();
+        }
+
+        void invalidateForWidth(int width)
+        {
+            if (effectiveWidth != width) {
+                effectiveWidth = width;
+                pages.clear();
+            }
+        }
+
+        void invalidatePage(int pageIndex)
+        {
+            pages.remove(pageIndex);
+        }
+
+        void keepOnlyRange(int minPageIndex, int maxPageIndex)
+        {
+            if (pages.isEmpty()) {
+                return;
+            }
+
+            QList<int> keysToRemove;
+            keysToRemove.reserve(pages.size());
+            for (auto it = pages.constBegin(); it != pages.constEnd(); ++it) {
+                if (it.key() < minPageIndex || it.key() > maxPageIndex) {
+                    keysToRemove.append(it.key());
+                }
+            }
+
+            for (int key : keysToRemove) {
+                pages.remove(key);
+            }
+        }
     };
 
-    void updateLayout();
-    void updateLayoutWithAnchor();
-    void relayout(bool preserveAnchor);
-    LayoutSnapshot buildLayoutSnapshot(int w) const;
-    int pageAtY(const LayoutSnapshot &snapshot, int y) const;
-    ViewportAnchor anchorFromViewport(const LayoutSnapshot &snapshot, int scrollY, int viewportHeight) const;
-    int resolveAnchorToScrollY(const LayoutSnapshot &snapshot, const ViewportAnchor &anchor, int viewportHeight) const;
-    int pageAtY(int y) const;
-    QSize scaledPageSize(int pageIndex, int forWidth) const;
-    float scaleForPage(int pageIndex, int forWidth) const;
+    const QImage *scaledImageForPaint(int pageIndex, const QImage *source, const QSize &targetSize, int effectiveWidth);
 
     Render *render = nullptr;
-    int numPages = 0;
-    QVector<QSize> pageSizes;
-    QVector<int> yPositions;
-    int currentTotalHeight = 0;
-    LayoutSnapshot layoutSnapshot;
-    QSize defaultPageSize { 800, 1200 };
-    int zoomFactor = 100;
-    int anchorPage = -1;
-    int viewportScrollY = 0;
-    int currentViewportHeight = 0;
-    bool hasViewportState = false;
+    ContinuousViewModel *continuousViewModel = nullptr;
+    ScaledPageCache scaledPageCache;
 };
 
 #endif // CONTINUOUS_PAGE_WIDGET_H

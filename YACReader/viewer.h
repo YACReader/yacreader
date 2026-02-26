@@ -31,6 +31,7 @@ class YACReaderTranslator;
 class GoToFlowWidget;
 class Bookmarks;
 class ContinuousPageWidget;
+class ContinuousViewModel;
 class PageLabelWidget;
 class NotificationsLabelWidget;
 
@@ -149,8 +150,10 @@ private:
     QLabel *content;
     QLabel *messageLabel;
     ContinuousPageWidget *continuousWidget;
+    ContinuousViewModel *continuousViewModel;
     int lastCenterPage = -1;
     bool syncingRenderFromContinuousScroll = false;
+    bool applyingContinuousModelState = false;
 
     YACReaderTranslator *translator;
     int translatorXPos;
@@ -191,7 +194,10 @@ private:
     int animationDuration() const;
     void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta);
     void onContinuousScroll(int value);
-    void onContinuousLayoutScrollRequested(int scrollY);
+    void onContinuousViewModelChanged();
+    void onContinuousPageRendered(int absolutePageIndex);
+    void probeContinuousBufferedPages();
+    void applyContinuousStateToUi();
     void scrollToCurrentContinuousPage();
     void onNumPagesReady(unsigned int numPages);
     void onRenderPageChanged(int page);

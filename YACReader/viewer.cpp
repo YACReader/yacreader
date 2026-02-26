@@ -1,5 +1,6 @@
 #include "viewer.h"
 #include "continuous_page_widget.h"
+#include "continuous_view_model.h"
 #include "configuration.h"
 #include "magnifying_glass.h"
 #include "goto_flow_widget.h"
@@ -65,6 +66,8 @@ Viewer::Viewer(QWidget *parent)
     setAlignment(Qt::AlignCenter);
 
     continuousWidget = new ContinuousPageWidget();
+    continuousViewModel = new ContinuousViewModel(this);
+    continuousWidget->setViewModel(continuousViewModel);
     continuousWidget->installEventFilter(this);
     //---------------------------------------
     mglass = new MagnifyingGlass(
@@ -153,6 +156,7 @@ Viewer::~Viewer()
     if (widget() != continuousWidget) {
         delete continuousWidget;
     }
+    delete continuousViewModel;
     delete hideCursorTimer;
     delete informationLabel;
     delete verticalScroller;
@@ -204,7 +208,8 @@ void Viewer::createConnections()
     connect(render, QOverload<int, const QByteArray &>::of(&Render::imageLoaded), goToFlow, &GoToFlowWidget::setImageReady);
     connect(render, &Render::currentPageReady, this, &Viewer::updatePage);
     connect(render, &Render::pageRendered, continuousWidget, &ContinuousPageWidget::onPageAvailable);
-    connect(continuousWidget, &ContinuousPageWidget::layoutScrollPositionRequested, this, &Viewer::onContinuousLayoutScrollRequested);
+    connect(render, &Render::pageRendered, this, &Viewer::onContinuousPageRendered);
+    connect(continuousViewModel, &ContinuousViewModel::stateChanged, this, &Viewer::onContinuousViewModelChanged);
     connect(render, qOverload<unsigned int>(&Render::numPages), this, &Viewer::onNumPagesReady);
     connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &Viewer::onContinuousScroll);
     connect(render, &Render::processingPage, this, &Viewer::setLoadingMessage);
@@ -342,7 +347,7 @@ void Viewer::goTo(unsigned int page)
 
     if (continuousScroll) {
         lastCenterPage = page;
-        continuousWidget->setAnchorPage(page);
+        continuousViewModel->setAnchorPage(static_cast<int>(page));
         render->goTo(page);
         scrollToCurrentContinuousPage();
         return;
@@ -448,7 +453,7 @@ void Viewer::increaseZoomFactor()
     zoom = std::min(zoom + 10, 500);
 
     if (continuousScroll) {
-        continuousWidget->setZoomFactor(zoom);
+        continuousViewModel->setZoomFactor(zoom);
     } else {
         updateContentSize();
     }
@@ -462,7 +467,7 @@ void Viewer::decreaseZoomFactor()
     zoom = std::max(zoom - 10, 30);
 
     if (continuousScroll) {
-        continuousWidget->setZoomFactor(zoom);
+        continuousViewModel->setZoomFactor(zoom);
     } else {
         updateContentSize();
     }
@@ -831,7 +836,7 @@ void Viewer::resizeEvent(QResizeEvent *event)
     QScrollArea::resizeEvent(event);
 
     if (continuousScroll) {
-        continuousWidget->setViewportState(verticalScrollBar()->value(), viewport()->height());
+        continuousViewModel->setViewportSize(viewport()->width(), viewport()->height());
     }
 
     updateContentSize();
@@ -1019,15 +1024,15 @@ void Viewer::setContinuousScroll(bool enabled)
     Configuration::getConfiguration().setContinuousScroll(continuousScroll);
 
     if (continuousScroll) {
-        continuousWidget->setZoomFactor(zoom);
+        continuousViewModel->setZoomFactor(zoom);
         if (render->hasLoadedComic()) {
-            continuousWidget->setViewportState(verticalScrollBar()->value(), viewport()->height());
-            continuousWidget->setNumPages(render->numPages());
+            continuousViewModel->setViewportSize(viewport()->width(), viewport()->height());
+            continuousViewModel->setNumPages(render->numPages());
             // set the current page as model state before any layout/scroll happens
             lastCenterPage = render->getIndex();
-            continuousWidget->setAnchorPage(lastCenterPage);
+            continuousViewModel->setAnchorPage(lastCenterPage);
             // pick up sizes of pages already in the buffer
-            continuousWidget->probeBufferedPages();
+            probeContinuousBufferedPages();
             // trigger a render cycle so new pages arrive via pageRendered signal
             render->update();
             setActiveWidget(continuousWidget);
@@ -1047,17 +1052,17 @@ void Viewer::setContinuousScroll(bool enabled)
 
 void Viewer::onContinuousScroll(int value)
 {
-    if (!continuousScroll || !render->hasLoadedComic()) {
+    if (!continuousScroll || !render->hasLoadedComic() || applyingContinuousModelState) {
         return;
     }
 
-    continuousWidget->setViewportState(value, viewport()->height());
+    continuousViewModel->setScrollYFromUser(value);
 
-    int center = continuousWidget->centerPage(value, viewport()->height());
+    int center = continuousViewModel->centerPage();
 
     if (center != lastCenterPage && center >= 0) {
         lastCenterPage = center;
-        continuousWidget->setAnchorPage(center);
+        continuousViewModel->setAnchorPage(center);
         syncingRenderFromContinuousScroll = true;
         render->goTo(center);
         syncingRenderFromContinuousScroll = false;
@@ -1065,20 +1070,65 @@ void Viewer::onContinuousScroll(int value)
     }
 }
 
-void Viewer::onContinuousLayoutScrollRequested(int scrollY)
+void Viewer::onContinuousViewModelChanged()
 {
     if (!continuousScroll) {
         return;
     }
 
-    auto *sb = verticalScrollBar();
-    const int target = qBound(sb->minimum(), scrollY, sb->maximum());
+    applyContinuousStateToUi();
+}
 
+void Viewer::onContinuousPageRendered(int absolutePageIndex)
+{
+    if (!continuousScroll || !render->hasLoadedComic()) {
+        return;
+    }
+
+    const QImage *img = render->bufferedImage(absolutePageIndex);
+    if (!img || img->isNull()) {
+        return;
+    }
+
+    continuousViewModel->setPageNaturalSize(absolutePageIndex, img->size());
+}
+
+void Viewer::probeContinuousBufferedPages()
+{
+    if (!render->hasLoadedComic()) {
+        return;
+    }
+
+    const int totalPages = static_cast<int>(render->numPages());
+    for (int i = 0; i < totalPages; ++i) {
+        const QImage *img = render->bufferedImage(i);
+        if (img && !img->isNull()) {
+            continuousViewModel->setPageNaturalSize(i, img->size());
+        }
+    }
+}
+
+void Viewer::applyContinuousStateToUi()
+{
+    if (!continuousScroll) {
+        return;
+    }
+
+    applyingContinuousModelState = true;
+
+    continuousWidget->setFixedHeight(continuousViewModel->totalHeight());
+    continuousWidget->updateGeometry();
+
+    auto *sb = verticalScrollBar();
+    const int target = qBound(sb->minimum(), continuousViewModel->scrollY(), sb->maximum());
     sb->blockSignals(true);
     sb->setValue(target);
     sb->blockSignals(false);
 
-    continuousWidget->setViewportState(target, viewport()->height());
+    applyingContinuousModelState = false;
+
+    continuousWidget->update();
+    viewport()->update();
 }
 
 void Viewer::scrollToCurrentContinuousPage()
@@ -1087,22 +1137,7 @@ void Viewer::scrollToCurrentContinuousPage()
         return;
     }
 
-    auto applyPosition = [this]() {
-        auto *sb = verticalScrollBar();
-        int targetY = continuousWidget->yPositionForPage(lastCenterPage);
-        targetY = qBound(sb->minimum(), targetY, sb->maximum());
-
-        sb->blockSignals(true);
-        sb->setValue(targetY);
-        sb->blockSignals(false);
-
-        continuousWidget->setViewportState(targetY, viewport()->height());
-
-        continuousWidget->update();
-        viewport()->update();
-    };
-
-    applyPosition();
+    continuousViewModel->setCurrentPage(lastCenterPage);
 }
 
 void Viewer::onNumPagesReady(unsigned int numPages)
@@ -1110,8 +1145,9 @@ void Viewer::onNumPagesReady(unsigned int numPages)
     if (continuousScroll && numPages > 0) {
         setActiveWidget(continuousWidget);
 
-        continuousWidget->setViewportState(verticalScrollBar()->value(), viewport()->height());
-        continuousWidget->setNumPages(numPages);
+        continuousViewModel->setViewportSize(viewport()->width(), viewport()->height());
+        continuousViewModel->setNumPages(numPages);
+        probeContinuousBufferedPages();
 
         int page = lastCenterPage;
         if (page < 0) {
@@ -1119,7 +1155,7 @@ void Viewer::onNumPagesReady(unsigned int numPages)
         }
         page = qBound(0, page, static_cast<int>(numPages) - 1);
         lastCenterPage = page;
-        continuousWidget->setAnchorPage(page);
+        continuousViewModel->setAnchorPage(page);
 
         scrollToCurrentContinuousPage();
     }
@@ -1132,7 +1168,7 @@ void Viewer::onRenderPageChanged(int page)
     }
 
     lastCenterPage = page;
-    continuousWidget->setAnchorPage(page);
+    continuousViewModel->setAnchorPage(page);
     scrollToCurrentContinuousPage();
 }
 
@@ -1157,6 +1193,7 @@ void Viewer::resetContent()
 {
     configureContent(tr("Press 'O' to open comic."));
     goToFlow->reset();
+    continuousViewModel->reset();
     continuousWidget->reset();
     lastCenterPage = -1;
     emit reset();
@@ -1316,7 +1353,7 @@ void Viewer::updateZoomRatio(int ratio)
 {
     zoom = ratio;
     if (continuousScroll) {
-        continuousWidget->setZoomFactor(zoom);
+        continuousViewModel->setZoomFactor(zoom);
     } else {
         updateContentSize();
     }
