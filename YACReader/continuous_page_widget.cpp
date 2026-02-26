@@ -173,10 +173,7 @@ const QImage *ContinuousPageWidget::scaledImageForPaint(int pageIndex, const QIm
 
     if (it != scaledPageCache.pages.end()) {
         const ScaledPageCacheEntry &entry = it.value();
-        const bool validEntry = entry.sourceCacheKey == sourceKey
-                && entry.sourceSize == source->size()
-                && entry.targetSize == targetSize
-                && !entry.scaledImage.isNull();
+        const bool validEntry = entry.sourceCacheKey == sourceKey && entry.sourceSize == source->size() && entry.targetSize == targetSize && !entry.scaledImage.isNull();
         if (validEntry) {
             return &it.value().scaledImage;
         }
