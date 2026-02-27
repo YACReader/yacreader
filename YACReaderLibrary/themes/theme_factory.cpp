@@ -149,9 +149,8 @@ struct QmlViewParams {
 
     // Info panel colors
     QColor infoBackgroundColor;
-    QString topShadow; // Image filename
-    QString infoShadow; // Image filename
-    QString infoIndicator; // Image filename
+    QColor infoBorderColor;
+    QColor infoShadowColor;
     QColor infoTextColor;
     QColor infoTitleColor;
 
@@ -494,9 +493,9 @@ Theme makeTheme(const ThemeParams &params)
     theme.qmlView.textColor = qv.textColor;
     theme.qmlView.showDropShadow = qv.showDropShadow;
     theme.qmlView.infoBackgroundColor = qv.infoBackgroundColor;
-    theme.qmlView.topShadow = qv.topShadow;
-    theme.qmlView.infoShadow = qv.infoShadow;
-    theme.qmlView.infoIndicator = qv.infoIndicator;
+    theme.qmlView.topShadow = recoloredSvgToThemeFile(":/qml/info-top-shadow.svg", qv.infoBackgroundColor, qv.infoBorderColor, qv.infoShadowColor, params.themeName);
+    theme.qmlView.infoShadow = recoloredSvgToThemeFile(":/qml/info-shadow.svg", qv.infoBackgroundColor, qv.infoBorderColor, qv.infoShadowColor, params.themeName);
+    theme.qmlView.infoIndicator = recoloredSvgToThemeFile(":/qml/info-indicator.svg", qv.infoBackgroundColor, qv.infoBorderColor, qv.infoShadowColor, params.themeName);
     theme.qmlView.infoTextColor = qv.infoTextColor;
     theme.qmlView.infoTitleColor = qv.infoTitleColor;
     theme.qmlView.ratingUnselectedColor = qv.ratingUnselectedColor;
@@ -991,9 +990,8 @@ ThemeParams classicThemeParams()
     qv.textColor = QColor(0xA8A8A8);
     qv.showDropShadow = true;
     qv.infoBackgroundColor = QColor(0x2E2E2E);
-    qv.topShadow = "info-top-shadow.png";
-    qv.infoShadow = "info-shadow.png";
-    qv.infoIndicator = "info-indicator.png";
+    qv.infoBorderColor = QColor(0x404040);
+    qv.infoShadowColor = Qt::black;
     qv.infoTextColor = QColor(0xB0B0B0);
     qv.infoTitleColor = QColor(0xFFFFFF);
     qv.ratingUnselectedColor = QColor(0x1C1C1C);
@@ -1244,9 +1242,8 @@ ThemeParams lightThemeParams()
     qv.textColor = QColor(0x636363);
     qv.showDropShadow = true;
     qv.infoBackgroundColor = QColor(0xFFFFFF);
-    qv.topShadow = "";
-    qv.infoShadow = "info-shadow-light.png";
-    qv.infoIndicator = "info-indicator-light.png";
+    qv.infoBorderColor = QColor(0x808080);
+    qv.infoShadowColor = QColor(0x444444);
     qv.infoTextColor = QColor(0x404040);
     qv.infoTitleColor = QColor(0x2E2E2E);
     qv.ratingUnselectedColor = QColor(0xDEDEDE);
@@ -1497,9 +1494,8 @@ ThemeParams darkThemeParams()
     qv.textColor = QColor(0xA8A8A8);
     qv.showDropShadow = true;
     qv.infoBackgroundColor = QColor(0x2E2E2E);
-    qv.topShadow = "info-top-shadow.png";
-    qv.infoShadow = "info-shadow.png";
-    qv.infoIndicator = "info-indicator.png";
+    qv.infoBorderColor = QColor(0x404040);
+    qv.infoShadowColor = Qt::black;
     qv.infoTextColor = QColor(0xB0B0B0);
     qv.infoTitleColor = QColor(0xFFFFFF);
     qv.ratingUnselectedColor = QColor(0x1C1C1C);

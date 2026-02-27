@@ -226,9 +226,9 @@ struct QmlViewTheme {
 
     // Info panel colors
     QColor infoBackgroundColor;
-    QString topShadow; // Image filename
-    QString infoShadow; // Image filename
-    QString infoIndicator; // Image filename
+    QString topShadow; // Recolored SVG path
+    QString infoShadow; // Recolored SVG path
+    QString infoIndicator; // Recolored SVG path
     QColor infoTextColor;
     QColor infoTitleColor;
 

@@ -228,9 +228,9 @@ void InfoComicsView::applyTheme(const Theme &theme)
 
     // Info panel colors
     ctxt->setContextProperty("infoBackgroundColor", qv.infoBackgroundColor);
-    ctxt->setContextProperty("topShadow", qv.topShadow.isEmpty() ? QUrl() : QUrl(qv.topShadow));
-    ctxt->setContextProperty("infoShadow", qv.infoShadow);
-    ctxt->setContextProperty("infoIndicator", qv.infoIndicator);
+    ctxt->setContextProperty("topShadow", QUrl::fromLocalFile(qv.topShadow));
+    ctxt->setContextProperty("infoShadow", QUrl::fromLocalFile(qv.infoShadow));
+    ctxt->setContextProperty("infoIndicator", QUrl::fromLocalFile(qv.infoIndicator));
     ctxt->setContextProperty("infoTextColor", qv.infoTextColor);
     ctxt->setContextProperty("infoTitleColor", qv.infoTitleColor);
 
