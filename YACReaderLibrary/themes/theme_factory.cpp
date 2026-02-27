@@ -101,18 +101,12 @@ struct ImportWidgetParams {
 
 struct TreeViewParams {
     TreeViewThemeTemplates t;
-    bool useStyledTemplate; // true for non-macOS themes, false for macOS themes
 
-    // For styled template: %1=text, %2=selection bg, %3=scroll bg, %4=scroll handle, %5=selected text
     QColor textColor;
     QColor selectionBackgroundColor;
     QColor scrollBackgroundColor;
     QColor scrollHandleColor;
     QColor selectedTextColor;
-
-    // For native (macOS) template: %1=selection color
-    QColor nativeSelectionColor;
-
     QColor folderIndicatorColor;
 };
 
@@ -642,18 +636,14 @@ Theme makeTheme(const ThemeParams &params)
 
     // TreeView (must come after SidebarIcons for branch icon paths)
     const auto &tv = params.treeViewParams;
-    if (tv.useStyledTemplate) {
-        theme.treeView.treeViewQSS = tv.t.styledTreeViewQSS
-                                             .arg(tv.textColor.name(),
-                                                  tv.selectionBackgroundColor.name(),
-                                                  tv.scrollBackgroundColor.name(),
-                                                  tv.scrollHandleColor.name(),
-                                                  tv.selectedTextColor.name(),
-                                                  theme.sidebarIcons.branchClosedIconPath,
-                                                  theme.sidebarIcons.branchOpenIconPath);
-    } else {
-        theme.treeView.treeViewQSS = tv.t.nativeTreeViewQSS.arg(tv.nativeSelectionColor.name());
-    }
+    theme.treeView.treeViewQSS = tv.t.styledTreeViewQSS
+                                         .arg(tv.textColor.name(),
+                                              tv.selectionBackgroundColor.name(),
+                                              tv.scrollBackgroundColor.name(),
+                                              tv.scrollHandleColor.name(),
+                                              tv.selectedTextColor.name(),
+                                              theme.sidebarIcons.branchClosedIconPath,
+                                              theme.sidebarIcons.branchOpenIconPath);
     theme.treeView.folderIndicatorColor = tv.folderIndicatorColor;
     // end TreeView
 
@@ -953,7 +943,6 @@ ThemeParams classicThemeParams()
     params.importWidgetParams = iw;
 
     TreeViewParams tv;
-    tv.useStyledTemplate = true;
     tv.textColor = QColor(0xDDDFDF);
     tv.selectionBackgroundColor = QColor(0x2E2E2E);
     tv.scrollBackgroundColor = QColor(0x404040);
@@ -1205,7 +1194,6 @@ ThemeParams lightThemeParams()
     params.importWidgetParams = iw;
 
     TreeViewParams tv;
-    tv.useStyledTemplate = true;
     tv.textColor = Qt::black;
     tv.selectionBackgroundColor = QColor(0xD0D0D0);
     tv.scrollBackgroundColor = QColor(0xE0E0E0);
@@ -1457,7 +1445,6 @@ ThemeParams darkThemeParams()
     params.importWidgetParams = iw;
 
     TreeViewParams tv;
-    tv.useStyledTemplate = true;
     tv.textColor = QColor(0xDDDFDF);
     tv.selectionBackgroundColor = QColor(0x2E2E2E);
     tv.scrollBackgroundColor = QColor(0x404040);

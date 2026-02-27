@@ -197,13 +197,6 @@ struct TreeViewThemeTemplates {
                                 "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url('%6');}"
                                 "QTreeView::branch:open:has-children:!has-siblings,QTreeView::branch:open:has-children:has-siblings  {border-image: none;image: url('%7');}"
                                 "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url('%7');}";
-
-    // Native tree view template (uses system scroll bars) - for macOS
-    QString nativeTreeViewQSS = "QTreeView {background-color:transparent; border: none;}"
-                                "QTreeView::item:selected {background-color:%1; border-top: 1px solid %1; border-left:none;border-right:none;border-bottom:1px solid %1;}"
-                                "QTreeView::branch:selected {background-color:%1; border-top: 1px solid %1; border-left:none;border-right:none;border-bottom:1px solid %1;}"
-                                "QTreeView::branch:open:selected:has-children {image: url(':/images/sidebar/expanded_branch_osx.png');}"
-                                "QTreeView::branch:closed:selected:has-children {image: url(':/images/sidebar/collapsed_branch_osx.png');}";
 };
 
 struct TreeViewTheme {
