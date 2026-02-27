@@ -77,6 +77,7 @@ public slots:
     void processReset();
     void setUpShortcutsManagement();
     void doubleMangaPageSwitch();
+    void deleteCurrentComic();
 
     void toggleFitToWidthSlider();
 
@@ -152,6 +153,7 @@ private:
     QAction *showFlowAction;
 
     QAction *showEditShortcutsAction;
+    QAction *deleteCurrentComicAction;
 
     QList<QAction *> mglassActions;
     QList<QAction *> loadedComicActions;
@@ -186,6 +188,8 @@ private:
     ComicDB currentComicDB;
     QList<ComicDB> siblingComics;
     bool isClient;
+    QString currentComicFilePath;
+    bool skipDeleteConfirmation = false;
     QString startComicPath;
     quint64 libraryId;
     OpenComicSource source;

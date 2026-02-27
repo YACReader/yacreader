@@ -197,3 +197,87 @@ bool YACReaderLocalClient::sendComicInfo(quint64 libraryId, ComicDB &comic, qulo
     QLOG_ERROR() << "Sending Comic Info : unable to connect to the server";
     return false;
 }
+
+bool YACReaderLocalClient::sendDeleteComic(quint64 libraryId, ComicDB &comic)
+{
+    localSocket->connectToServer(YACREADERLIBRARY_GUID);
+    if (localSocket->isOpen()) {
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_4_8);
+        out << (quint32)0;
+        out << (quint8)YACReader::DeleteComic;
+        out << libraryId;
+        out << comic;
+        out.device()->seek(0);
+        out << (quint32)(block.size() - sizeof(quint32));
+
+        int written = 0;
+        int previousWritten = 0;
+        quint16 tries = 0;
+        while (written != block.size() && tries < 200) {
+            written += localSocket->write(block);
+            localSocket->flush();
+            if (written == previousWritten)
+                tries++;
+            previousWritten = written;
+        }
+        if (tries == 200) {
+            localSocket->close();
+            QLOG_ERROR() << "Delete Comic : unable to send request";
+            return false;
+        }
+
+        localSocket->waitForBytesWritten(2000);
+
+        // Read response (bool success)
+        tries = 0;
+        int dataAvailable = 0;
+        QByteArray packageSize;
+        localSocket->waitForReadyRead(1000);
+        while (packageSize.size() < (int)sizeof(quint32) && tries < 20) {
+            packageSize.append(localSocket->read(sizeof(quint32) - packageSize.size()));
+            localSocket->waitForReadyRead(100);
+            if (dataAvailable == packageSize.size())
+                tries++;
+            dataAvailable = packageSize.size();
+        }
+        if (tries == 20) {
+            localSocket->close();
+            QLOG_ERROR() << "Delete Comic : unable to read package size";
+            return false;
+        }
+        QDataStream sizeStream(packageSize);
+        sizeStream.setVersion(QDataStream::Qt_4_8);
+        quint32 totalSize = 0;
+        sizeStream >> totalSize;
+
+        QByteArray data;
+        tries = 0;
+        int dataRead = 0;
+        localSocket->waitForReadyRead(1000);
+        while ((unsigned int)data.length() < totalSize && tries < 20) {
+            data.append(localSocket->readAll());
+            if ((unsigned int)data.length() < totalSize)
+                localSocket->waitForReadyRead(100);
+            if (data.length() == dataRead)
+                tries++;
+            dataRead = data.length();
+        }
+
+        if (tries == 20) {
+            localSocket->close();
+            QLOG_ERROR() << "Delete Comic : unable to read data (" << data.length() << "," << totalSize << ")";
+            return false;
+        }
+
+        QDataStream dataStream(data);
+        bool success = false;
+        dataStream >> success;
+        localSocket->close();
+        return success;
+    } else {
+        QLOG_ERROR() << "Delete Comic : unable to connect to the server";
+        return false;
+    }
+}

@@ -44,6 +44,7 @@ namespace YACReader {
 enum YACReaderIPCMessages {
     RequestComicInfo = 0,
     SendComicInfo,
+    DeleteComic,
 };
 
 enum YACReaderComicReadStatus {

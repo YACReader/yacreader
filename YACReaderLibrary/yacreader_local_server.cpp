@@ -3,9 +3,12 @@
 #include <QLocalServer>
 #include <QLocalSocket>
 #include <QPointer>
+#include <QFile>
 
 #include "yacreader_global.h"
 #include "db_helper.h"
+#include "data_base_management.h"
+#include "yacreader_libraries.h"
 
 #include "comic_db.h"
 
@@ -48,6 +51,7 @@ void YACReaderLocalServer::sendResponse()
     if (worker != 0) {
         clientConnection->moveToThread(worker);
         connect(worker, &YACReaderClientConnectionWorker::comicUpdated, this, &YACReaderLocalServer::comicUpdated);
+        connect(worker, &YACReaderClientConnectionWorker::comicDeleted, this, &YACReaderLocalServer::comicDeleted);
         connect(worker, &QThread::finished, worker, &QObject::deleteLater);
         worker->start();
     }
@@ -197,6 +201,36 @@ void YACReaderClientConnectionWorker::run()
         }
         break;
     }
+    case YACReader::DeleteComic: {
+        dataStream >> libraryId;
+        dataStream >> comic;
+
+        bool success = deleteComic(libraryId, comic);
+
+        QByteArray block;
+        QDataStream out(&block, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_4_8);
+        out << (quint32)0;
+        out << success;
+        out.device()->seek(0);
+        out << (quint32)(block.size() - sizeof(quint32));
+
+        int written = 0;
+        tries = 0;
+        while (written != block.size() && tries < 200) {
+            int ret = clientConnection->write(block);
+            clientConnection->waitForBytesWritten(10);
+            if (ret != -1) {
+                written += ret;
+                clientConnection->flush();
+            } else
+                tries++;
+        }
+        if (tries == 200 && written != block.size()) {
+            QLOG_ERROR() << QString("Local connection (delete comic): unable to send response (%1,%2)").arg(written).arg(block.size());
+        }
+        break;
+    }
     }
 
     clientConnection->waitForDisconnected();
@@ -242,4 +276,46 @@ void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB &co
     DBHelper::setComicAsReading(libraryId, nextcomicinfo);
 
     emit comicUpdated(libraryId, comic);
+}
+
+bool YACReaderClientConnectionWorker::deleteComic(quint64 libraryId, ComicDB &comic)
+{
+    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
+    if (libraryPath.isEmpty()) {
+        QLOG_ERROR() << "Delete Comic : library path not found for id" << libraryId;
+        return false;
+    }
+
+    QString fullPath = libraryPath + comic.path;
+
+    // Try to move to trash first, fall back to permanent delete
+    bool fileDeleted = QFile::moveToTrash(fullPath);
+    if (fileDeleted) {
+        QLOG_INFO() << "Comic recycled:" << fullPath;
+    } else {
+        fileDeleted = QFile::remove(fullPath);
+        if (fileDeleted) {
+            QLOG_INFO() << "Comic permanently deleted:" << fullPath;
+        }
+    }
+
+    if (!fileDeleted) {
+        QLOG_ERROR() << "Delete Comic : unable to delete file" << fullPath;
+        return false;
+    }
+
+    // Remove from database
+    {
+        QMutexLocker locker(&dbMutex);
+        QString connectionName;
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
+            DBHelper::removeFromDB(&comic, db);
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+    }
+
+    emit comicDeleted(libraryId, comic);
+    return true;
 }

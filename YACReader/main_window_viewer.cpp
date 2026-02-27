@@ -35,6 +35,10 @@
 #include <QImage>
 #include <QDate>
 #include <QMenuBar>
+#include <QCheckBox>
+#include <QFile>
+
+#include "QsLog.h"
 
 #ifdef use_unarr
 #include "unarr.h"
@@ -94,6 +98,7 @@ MainWindowViewer::~MainWindowViewer()
     delete adjustToFullSizeAction;
     delete fitToPageAction;
     delete showFlowAction;
+    delete deleteCurrentComicAction;
 }
 void MainWindowViewer::loadConfiguration()
 {
@@ -841,6 +846,7 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, YACR
 
     if (success) {
         isClient = true;
+        currentComicFilePath = path + currentComicDB.path;
         open(path + currentComicDB.path, currentComicDB, siblingComics);
     } else {
         isClient = false;
@@ -869,6 +875,7 @@ void MainWindowViewer::openComic(QString pathFile)
 {
     QFileInfo fi(pathFile);
     currentDirectory = fi.dir().absolutePath();
+    currentComicFilePath = fi.absoluteFilePath();
     getSiblingComics(fi.absolutePath(), fi.fileName());
 
     setWindowTitle("YACReader - " + fi.fileName());
@@ -1158,13 +1165,17 @@ void MainWindowViewer::setUpShortcutsManagement()
     // Get current theme for initial icons
     const auto &theme = ThemeManager::instance().getCurrentTheme();
 
+    deleteCurrentComicAction = addActionWithShortcut(tr("Delete current comic"), DELETE_CURRENT_COMIC_ACTION_Y);
+    connect(deleteCurrentComicAction, &QAction::triggered, this, &MainWindowViewer::deleteCurrentComic);
+
     editShortcutsDialog->addActionsGroup(tr("Comics"), theme.shortcutsIcons.comicsIcon,
                                          tmpList = { openAction,
                                                      openLatestComicAction,
                                                      openFolderAction,
                                                      saveImageAction,
                                                      openComicOnTheLeftAction,
-                                                     openComicOnTheRightAction });
+                                                     openComicOnTheRightAction,
+                                                     deleteCurrentComicAction });
 
     allActions << tmpList;
 
@@ -1322,6 +1333,126 @@ void MainWindowViewer::doubleMangaPageSwitch()
         updatePrevNextActions(index > 0, index + 1 < siblingComics.size());
     } else {
         updatePrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
+    }
+}
+
+void MainWindowViewer::deleteCurrentComic()
+{
+    if (currentComicFilePath.isEmpty()) {
+        return;
+    }
+
+    // Confirmation dialog
+    if (!skipDeleteConfirmation) {
+        QMessageBox msgBox(this);
+        msgBox.setWindowTitle(tr("Delete Comic"));
+        msgBox.setText(tr("Are you sure you want to delete the current comic?"));
+        msgBox.setInformativeText(QFileInfo(currentComicFilePath).fileName());
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Cancel);
+        msgBox.setIcon(QMessageBox::Warning);
+
+        auto *checkBox = new QCheckBox(tr("Don't ask again this session"), &msgBox);
+        msgBox.setCheckBox(checkBox);
+
+        if (msgBox.exec() != QMessageBox::Yes) {
+            return;
+        }
+
+        if (checkBox->isChecked()) {
+            skipDeleteConfirmation = true;
+        }
+    }
+
+    // Determine navigation before deleting
+    bool hasNext = false;
+    bool hasPrevious = false;
+
+    if (isClient && !siblingComics.isEmpty()) {
+        int currentIndex = siblingComics.indexOf(currentComicDB);
+        hasNext = (currentIndex + 1 < siblingComics.count());
+        hasPrevious = (currentIndex - 1 >= 0);
+    } else {
+        hasNext = !nextComicPath.isEmpty();
+        hasPrevious = !previousComicPath.isEmpty();
+    }
+
+    if (isClient) {
+        int currentIndex = siblingComics.indexOf(currentComicDB);
+
+        // Close the comic to release the file handle
+        viewer->closeCurrentComic();
+
+        // Send delete request via IPC
+        YACReaderLocalClient client;
+        bool success = client.sendDeleteComic(libraryId, currentComicDB);
+
+        if (!success) {
+            QMessageBox::warning(this, tr("Delete Comic"), tr("Unable to delete the comic file."));
+            currentComicFilePath.clear();
+            return;
+        }
+
+        // Remove the comic from siblingComics
+        if (currentIndex >= 0 && currentIndex < siblingComics.count()) {
+            siblingComics.removeAt(currentIndex);
+        }
+
+        currentComicFilePath.clear();
+
+        // Navigate to next/previous comic
+        if (hasNext && currentIndex < siblingComics.count()) {
+            currentComicDB = siblingComics.at(currentIndex);
+            currentComicFilePath = currentDirectory + currentComicDB.path;
+            open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
+        } else if (hasPrevious && currentIndex - 1 >= 0) {
+            currentComicDB = siblingComics.at(currentIndex - 1);
+            currentComicFilePath = currentDirectory + currentComicDB.path;
+            open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
+        }
+    } else {
+        // Standalone mode
+        QString pathToDelete = currentComicFilePath;
+        QString savedNextComicPath = nextComicPath;
+        QString savedPreviousComicPath = previousComicPath;
+
+        viewer->closeCurrentComic();
+        currentComicFilePath.clear();
+
+        QFileInfo fileCheck(pathToDelete);
+        bool fileDeleted = false;
+        QString errorDetail;
+
+        if (!fileCheck.exists()) {
+            errorDetail = tr("File not found: %1").arg(pathToDelete);
+        } else if (!fileCheck.isWritable()) {
+            errorDetail = tr("File is not writable: %1").arg(pathToDelete);
+        } else {
+            fileDeleted = QFile::moveToTrash(pathToDelete);
+            if (fileDeleted) {
+                QLOG_INFO() << "Comic recycled:" << pathToDelete;
+            } else {
+                QFile f(pathToDelete);
+                fileDeleted = f.remove();
+                if (fileDeleted) {
+                    QLOG_INFO() << "Comic permanently deleted:" << pathToDelete;
+                } else {
+                    errorDetail = tr("Could not delete: %1\n%2").arg(pathToDelete, f.errorString());
+                    QLOG_ERROR() << "Failed to delete comic:" << pathToDelete << f.errorString();
+                }
+            }
+        }
+
+        if (!fileDeleted) {
+            QMessageBox::warning(this, tr("Delete Comic"), errorDetail);
+            return;
+        }
+
+        if (hasNext && !savedNextComicPath.isEmpty()) {
+            openSiblingComic(savedNextComicPath);
+        } else if (hasPrevious && !savedPreviousComicPath.isEmpty()) {
+            openSiblingComic(savedPreviousComicPath);
+        }
     }
 }
 

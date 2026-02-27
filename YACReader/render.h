@@ -176,6 +176,7 @@ public slots:
     void setBookmark();
     void removeBookmark();
     void save();
+    void releaseComic();
     void reset();
     void reload();
     void updateFilters(int brightness, int contrast, int gamma);

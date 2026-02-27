@@ -301,6 +301,7 @@ public slots:
     void updateViewsOnClientSync();
     void updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId);
     void updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &comic);
+    void reloadAfterComicDeleted(quint64 libraryId, const ComicDB &comic);
     void showComicVineScraper();
     void setRemoveError();
     void checkRemoveError();

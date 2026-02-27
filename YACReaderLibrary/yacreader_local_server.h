@@ -17,6 +17,7 @@ public:
 
 signals:
     void comicUpdated(quint64 libraryId, const ComicDB &comic);
+    void comicDeleted(quint64 libraryId, const ComicDB &comic);
 public slots:
     bool isListening();
     void sendResponse();
@@ -36,6 +37,7 @@ public:
     ~YACReaderClientConnectionWorker() override;
 signals:
     void comicUpdated(quint64 libraryId, const ComicDB &comic);
+    void comicDeleted(quint64 libraryId, const ComicDB &comic);
 
 private:
     static QMutex dbMutex;
@@ -46,6 +48,7 @@ private:
     void getComicInfoFromReadingList(quint64 libraryId, unsigned long long readingListId, ComicDB &comic, QList<ComicDB> &siblings);
     void updateComic(quint64 libraryId, ComicDB &comic);
     void updateComic(quint64 libraryId, ComicDB &comic, qulonglong nextComicId);
+    bool deleteComic(quint64 libraryId, ComicDB &comic);
 
     QLocalSocket *clientConnection;
 };

@@ -21,6 +21,7 @@ public slots:
     bool requestComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings, YACReader::OpenComicSource source);
     bool sendComicInfo(quint64 libraryId, ComicDB &comic);
     bool sendComicInfo(quint64 libraryId, ComicDB &comic, qulonglong nextComicId);
+    bool sendDeleteComic(quint64 libraryId, ComicDB &comic);
 
 private:
     QLocalSocket *localSocket;

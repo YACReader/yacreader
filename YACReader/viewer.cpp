@@ -1199,6 +1199,12 @@ void Viewer::resetContent()
     emit reset();
 }
 
+void Viewer::closeCurrentComic()
+{
+    render->releaseComic();
+    resetContent();
+}
+
 void Viewer::setLoadingMessage()
 {
     if (magnifyingGlassShown) {

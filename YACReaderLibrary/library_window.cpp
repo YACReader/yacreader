@@ -2693,6 +2693,14 @@ void LibraryWindow::updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &c
     }
 }
 
+void LibraryWindow::reloadAfterComicDeleted(quint64 libraryId, const ComicDB &comic)
+{
+    Q_UNUSED(comic);
+    if (libraryId == (quint64)libraries.getId(selectedLibrary->currentText())) {
+        navigationController->reselectCurrentFolder();
+    }
+}
+
 bool LibraryWindow::exitSearchMode()
 {
     if (status != LibraryWindow::Searching)

@@ -702,6 +702,22 @@ void Render::load(const QString &path, const ComicDB &comicDB)
     }
 }
 
+void Render::releaseComic()
+{
+    if (comic != nullptr) {
+        comic->invalidate();
+        comic->disconnect();
+        auto *comicThread = comic->thread();
+        if (comicThread != QThread::currentThread() && comicThread->isRunning()) {
+            comicThread->quit();
+            comicThread->wait();
+        }
+        comic->moveToThread(QThread::currentThread());
+        delete comic;
+        comic = nullptr;
+    }
+}
+
 void Render::createComic(const QString &path)
 {
     previousIndex = currentIndex = 0;

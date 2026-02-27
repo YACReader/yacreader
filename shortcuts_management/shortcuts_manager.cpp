@@ -57,6 +57,7 @@ void ShortcutsManager::initDefaultShorcuts()
     defaultShorcuts.insert(ZOOM_PLUS_ACTION_Y, Qt::Key_Plus);
     defaultShorcuts.insert(ZOOM_MINUS_ACTION_Y, Qt::Key_Minus);
     defaultShorcuts.insert(RESET_ZOOM_ACTION_Y, Qt::CTRL | Qt::Key_0);
+    defaultShorcuts.insert(DELETE_CURRENT_COMIC_ACTION_Y, Qt::CTRL | Qt::Key_Delete);
 
     // main_window_viewer
     defaultShorcuts.insert(TOGGLE_FULL_SCREEN_ACTION_Y, Qt::Key_F);

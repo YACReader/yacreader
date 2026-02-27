@@ -88,6 +88,7 @@ public slots:
     void setMangaWithoutStoringSetting(bool manga);
     void doubleMangaPageSwitch();
     void resetContent();
+    void closeCurrentComic();
     void setLoadingMessage();
     void setPageUnavailableMessage();
     void configureContent(QString msg);
