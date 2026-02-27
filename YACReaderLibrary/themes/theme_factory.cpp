@@ -33,10 +33,8 @@ struct ComicVineParams {
     QColor buttonTextColor;
     QColor buttonBorderColor;
 
-    QString radioUncheckedPath;
     QColor radioUncheckedColor;
 
-    QString radioCheckedPath;
     QColor radioCheckedBackgroundColor;
     QColor radioCheckedIndicatorColor;
 
@@ -335,7 +333,7 @@ Theme makeTheme(const ThemeParams &params)
     theme.comicVine.defaultLabelQSS = t.defaultLabelQSS.arg(cv.labelTextColor.name());
     theme.comicVine.titleLabelQSS = t.titleLabelQSS.arg(cv.labelTextColor.name());
     theme.comicVine.coverLabelQSS = t.coverLabelQSS.arg(cv.labelBackgroundColor.name(), cv.labelTextColor.name());
-    theme.comicVine.radioButtonQSS = t.radioButtonQSS.arg(cv.buttonTextColor.name(), recolor(cv.radioUncheckedPath, cv.radioUncheckedColor), recoloredSvgToThemeFile(cv.radioCheckedPath, cv.radioCheckedBackgroundColor, cv.radioCheckedIndicatorColor, params.themeName));
+    theme.comicVine.radioButtonQSS = t.radioButtonQSS.arg(cv.buttonTextColor.name(), recolor(":/images/comic_vine/radioUnchecked.svg", cv.radioUncheckedColor), recoloredSvgToThemeFile(":/images/comic_vine/radioChecked.svg", cv.radioCheckedBackgroundColor, cv.radioCheckedIndicatorColor, params.themeName));
     theme.comicVine.checkBoxQSS = t.checkBoxQSS.arg(cv.buttonTextColor.name(), cv.buttonBorderColor.name(), cv.buttonBackgroundColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", cv.checkBoxTickColor));
 
     theme.comicVine.scraperLineEditTitleLabelQSS = t.scraperLineEditTitleLabelQSS.arg(cv.contentTextColor.name());
@@ -885,10 +883,8 @@ ThemeParams classicThemeParams()
     cv.buttonTextColor = Qt::white;
     cv.buttonBorderColor = QColor(0x242424);
 
-    cv.radioUncheckedPath = ":/images/comic_vine/radioUnchecked.svg";
     cv.radioUncheckedColor = QColor(0xE5E5E5);
 
-    cv.radioCheckedPath = ":/images/comic_vine/radioChecked.svg";
     cv.radioCheckedBackgroundColor = QColor(0xE5E5E5);
     cv.radioCheckedIndicatorColor = QColor(0x5F5F5F);
 
@@ -1140,10 +1136,8 @@ ThemeParams lightThemeParams()
     cv.buttonTextColor = Qt::black;
     cv.buttonBorderColor = QColor(0xCCCCCC);
 
-    cv.radioUncheckedPath = ":/images/comic_vine/radioUnchecked.svg";
     cv.radioUncheckedColor = QColor(0xE0E0E0);
 
-    cv.radioCheckedPath = ":/images/comic_vine/radioChecked.svg";
     cv.radioCheckedBackgroundColor = QColor(0xE0E0E0);
     cv.radioCheckedIndicatorColor = QColor(0x222222);
 
@@ -1395,10 +1389,8 @@ ThemeParams darkThemeParams()
     cv.buttonTextColor = Qt::white;
     cv.buttonBorderColor = QColor(0x242424);
 
-    cv.radioUncheckedPath = ":/images/comic_vine/radioUnchecked.svg";
     cv.radioUncheckedColor = QColor(0xE5E5E5);
 
-    cv.radioCheckedPath = ":/images/comic_vine/radioChecked.svg";
     cv.radioCheckedBackgroundColor = QColor(0xE5E5E5);
     cv.radioCheckedIndicatorColor = QColor(0x5F5F5F);
 
