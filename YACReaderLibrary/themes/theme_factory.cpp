@@ -213,6 +213,8 @@ struct LibraryItemParams {
 struct ComicsViewToolbarParams {
     ComicsViewToolbarThemeTemplates t;
 
+    QColor backgroundColor;
+    QColor separatorColor;
     QColor checkedBackgroundColor;
     QColor iconColor; // Main icon color (replaces #f0f)
 };
@@ -669,7 +671,10 @@ Theme makeTheme(const ThemeParams &params)
         return icon;
     };
 
-    theme.comicsViewToolbar.toolbarQSS = cvt.t.toolbarQSS.arg(cvt.checkedBackgroundColor.name());
+    theme.comicsViewToolbar.toolbarQSS = cvt.t.toolbarQSS
+            .arg(cvt.backgroundColor.name())
+            .arg(cvt.separatorColor.name())
+            .arg(cvt.checkedBackgroundColor.name());
     theme.comicsViewToolbar.openInYACReaderIcon = makeComicsViewIcon(":/images/comics_view_toolbar/openInYACReader.svg");
     theme.comicsViewToolbar.setAsReadIcon = makeComicsViewIcon(":/images/comics_view_toolbar/setReadButton.svg");
     theme.comicsViewToolbar.setAsUnreadIcon = makeComicsViewIcon(":/images/comics_view_toolbar/setUnread.svg");
@@ -1024,6 +1029,8 @@ ThemeParams classicThemeParams()
     params.libraryItemParams = li;
 
     ComicsViewToolbarParams cvt;
+    cvt.backgroundColor = QColor(0xF0F0F0);
+    cvt.separatorColor = QColor(0xCCCCCC);
     cvt.checkedBackgroundColor = QColor(0xCCCCCC);
     cvt.iconColor = QColor(0x404040);
     params.comicsViewToolbarParams = cvt;
@@ -1275,6 +1282,8 @@ ThemeParams lightThemeParams()
     params.libraryItemParams = li;
 
     ComicsViewToolbarParams cvt;
+    cvt.backgroundColor = QColor(0xF0F0F0);
+    cvt.separatorColor = QColor(0xCCCCCC);
     cvt.checkedBackgroundColor = QColor(0xCCCCCC);
     cvt.iconColor = QColor(0x404040);
     params.comicsViewToolbarParams = cvt;
@@ -1526,6 +1535,8 @@ ThemeParams darkThemeParams()
     params.libraryItemParams = li;
 
     ComicsViewToolbarParams cvt;
+    cvt.backgroundColor = QColor(0x2A2A2A);
+    cvt.separatorColor = QColor(0x444444);
     cvt.checkedBackgroundColor = QColor(0x555555);
     cvt.iconColor = QColor(0xDDDDDD);
     params.comicsViewToolbarParams = cvt;

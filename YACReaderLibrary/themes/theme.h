@@ -255,10 +255,9 @@ struct ContentSplitterThemeTemplates {
 };
 
 struct ComicsViewToolbarThemeTemplates {
-    QString toolbarQSS = R"(
-        QToolBar { border: none; }
-        QToolButton:checked { background-color: %1; }
-    )";
+    QString toolbarQSS = "QToolBar { border: none; background: %1; }\n"
+                         "QToolBar::separator { background: %2; width: 1px; margin: 5px 4px; }\n"
+                         "QToolButton:checked { background-color: %3; }\n";
 };
 
 struct SearchLineEditThemeTemplates {
