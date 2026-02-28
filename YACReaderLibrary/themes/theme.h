@@ -136,20 +136,12 @@ struct EmptyContainerTheme {
     QMap<int, QPixmap> emptyLabelIcons; // Keyed by YACReader::LabelColors enum value
 };
 
-struct SidebarThemeTemplates {
-    // Non-macOS splitter template: %1 = background color, %2 = height
-    QString styledSplitterQSS = "QSplitter::handle { image: none; background-color: %1; }"
-                                "QSplitter::handle:vertical { height: %2px;}";
-
-    // macOS splitter template: %1 = height, %2 = background color
-    QString nativeSplitterQSS = "QSplitter::handle:vertical { height: %1px; background-color: %2;}";
-};
-
 struct SidebarTheme {
     QColor backgroundColor;
     QColor separatorColor;
     QColor sectionSeparatorColor; // Horizontal separators between sidebar sections
-    QString splitterQSS;
+    QString splitterQSS = "QSplitter::handle { image: none; background-color: transparent; }"
+                          "QSplitter::handle:vertical { height: 39px; }";
 
     // When true, section title strings are uppercased after translation
     bool uppercaseLabels;

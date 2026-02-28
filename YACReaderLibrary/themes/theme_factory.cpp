@@ -64,16 +64,9 @@ struct EmptyContainerParams {
 };
 
 struct SidebarParams {
-    SidebarThemeTemplates t;
-    bool useStyledSplitter; // true for non-macOS, false for macOS
-
     QColor backgroundColor;
     QColor separatorColor;
     QColor sectionSeparatorColor; // Horizontal separators between sidebar sections
-
-    // Splitter parameters
-    QColor splitterBackgroundColor;
-    int splitterHeight;
 
     bool uppercaseLabels;
 
@@ -420,15 +413,6 @@ Theme makeTheme(const ThemeParams &params)
     theme.sidebar.backgroundColor = sb.backgroundColor;
     theme.sidebar.separatorColor = sb.separatorColor;
     theme.sidebar.sectionSeparatorColor = sb.sectionSeparatorColor;
-    if (sb.useStyledSplitter) {
-        theme.sidebar.splitterQSS = sb.t.styledSplitterQSS
-                                            .arg(sb.splitterBackgroundColor.name())
-                                            .arg(sb.splitterHeight);
-    } else {
-        theme.sidebar.splitterQSS = sb.t.nativeSplitterQSS
-                                            .arg(sb.splitterHeight)
-                                            .arg(sb.splitterBackgroundColor.name());
-    }
     theme.sidebar.uppercaseLabels = sb.uppercaseLabels;
     theme.sidebar.titleTextColor = sb.titleTextColor;
     theme.sidebar.titleDropShadowColor = sb.titleDropShadowColor;
@@ -921,12 +905,9 @@ ThemeParams classicThemeParams()
     params.emptyContainerParams = ec;
 
     SidebarParams sb;
-    sb.useStyledSplitter = true;
     sb.backgroundColor = QColor(0x454545);
     sb.separatorColor = QColor(0xBDBFBF);
     sb.sectionSeparatorColor = QColor(0x575757);
-    sb.splitterBackgroundColor = QColor(0x454545);
-    sb.splitterHeight = 39;
     sb.uppercaseLabels = true;
     sb.titleTextColor = QColor(0xBDBFBF);
     sb.titleDropShadowColor = Qt::black;
@@ -1174,12 +1155,9 @@ ThemeParams lightThemeParams()
     params.emptyContainerParams = ec;
 
     SidebarParams sb;
-    sb.useStyledSplitter = true;
     sb.backgroundColor = QColor(0xF1F1F1);
     sb.separatorColor = QColor(0x808080);
     sb.sectionSeparatorColor = QColor(0xD0D0D0);
-    sb.splitterBackgroundColor = QColor(0xF1F1F1);
-    sb.splitterHeight = 39;
     sb.uppercaseLabels = true;
     sb.titleTextColor = QColor(0x808080);
     sb.titleDropShadowColor = QColor(0xFFFFFF);
@@ -1427,12 +1405,9 @@ ThemeParams darkThemeParams()
     params.emptyContainerParams = ec;
 
     SidebarParams sb;
-    sb.useStyledSplitter = true;
     sb.backgroundColor = QColor(0x454545);
     sb.separatorColor = QColor(0xBDBFBF);
     sb.sectionSeparatorColor = QColor(0x575757);
-    sb.splitterBackgroundColor = QColor(0x454545);
-    sb.splitterHeight = 39;
     sb.uppercaseLabels = true;
     sb.titleTextColor = QColor(0xBDBFBF);
     sb.titleDropShadowColor = Qt::black;
