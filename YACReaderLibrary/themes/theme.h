@@ -99,8 +99,8 @@ struct ComicFlowColors {
 struct TableViewThemeTemplates {
     QString tableViewQSS = "QTableView {alternate-background-color: %1; background-color: %2; outline: 0px; border: none;}"
                            "QTableCornerButton::section {background-color:%3; border:none; border-bottom:1px solid %4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %5, stop: 1 %4);}"
-                           "QTableView::item {outline: 0px; border-bottom: 1px solid %6; border-top: 1px solid %7; padding-bottom:1px; color:%8;}"
-                           "QTableView::item:selected {outline: 0px; border-bottom: 1px solid %9; border-top: 1px solid %9; padding-bottom:1px; background-color: %9; color: %10; }"
+                           "QTableView::item {outline: 0px; border-bottom: %12px solid %6; border-top: %13px solid %7; padding-bottom:1px; color:%8;}"
+                           "QTableView::item:selected {outline: 0px; border-bottom: %12px solid %9; border-top: %13px solid %9; padding-bottom:1px; background-color: %9; color: %10; }"
                            "QHeaderView::section:horizontal {background-color:%3; border-bottom:1px solid %4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %5, stop: 1 %4); border-left:none; border-top:none; padding:4px; color:%11;}"
                            "QHeaderView::section:vertical {border-bottom: 1px solid %6; border-top: 1px solid %7;}";
 };
@@ -293,7 +293,6 @@ struct SidebarIconsTheme {
     QIcon colapseIcon;
     QIcon addLabelIcon;
     QIcon renameListIcon;
-
 };
 
 struct LibraryItemTheme {

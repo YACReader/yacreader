@@ -125,6 +125,8 @@ struct TableViewParams {
     QColor headerGradientColor;
     QColor itemBorderBottomColor;
     QColor itemBorderTopColor;
+    int itemBorderBottomWidth; // px
+    int itemBorderTopWidth; // px
     QColor itemTextColor;
     QColor selectedColor;
     QColor selectedTextColor;
@@ -477,7 +479,9 @@ Theme makeTheme(const ThemeParams &params)
                                                 tav.itemTextColor.name(),
                                                 tav.selectedColor.name(),
                                                 tav.selectedTextColor.name(),
-                                                tav.headerTextColor.name());
+                                                tav.headerTextColor.name(),
+                                                QString::number(tav.itemBorderBottomWidth),
+                                                QString::number(tav.itemBorderTopWidth));
     theme.tableView.starRatingColor = tav.starRatingColor;
     theme.tableView.starRatingSelectedColor = tav.starRatingSelectedColor;
     // end TableView
@@ -994,6 +998,8 @@ ThemeParams classicThemeParams()
     tav.headerGradientColor = QColor(0xD1D1D1);
     tav.itemBorderBottomColor = QColor(0xDFDFDF);
     tav.itemBorderTopColor = QColor(0xFEFEFE);
+    tav.itemBorderBottomWidth = 1;
+    tav.itemBorderTopWidth = 1;
     tav.itemTextColor = QColor(0x252626);
     tav.selectedColor = QColor(0xD4D4D4);
     tav.selectedTextColor = QColor(0x252626);
@@ -1262,6 +1268,8 @@ ThemeParams lightThemeParams()
     tav.headerGradientColor = QColor(0xD1D1D1);
     tav.itemBorderBottomColor = QColor(0xDFDFDF);
     tav.itemBorderTopColor = QColor(0xFEFEFE);
+    tav.itemBorderBottomWidth = 1;
+    tav.itemBorderTopWidth = 1;
     tav.itemTextColor = QColor(0x252626);
     tav.selectedColor = QColor(0x3875D7);
     tav.selectedTextColor = QColor(0xFFFFFF);
@@ -1530,6 +1538,8 @@ ThemeParams darkThemeParams()
     tav.headerGradientColor = QColor(0x252525);
     tav.itemBorderBottomColor = QColor(0x1F1F1F);
     tav.itemBorderTopColor = QColor(0x353535);
+    tav.itemBorderBottomWidth = 1;
+    tav.itemBorderTopWidth = 1;
     tav.itemTextColor = QColor(0xDDDDDD);
     tav.selectedColor = QColor(0x555555);
     tav.selectedTextColor = QColor(0xFFFFFF);
