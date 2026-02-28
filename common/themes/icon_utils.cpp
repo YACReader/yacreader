@@ -66,6 +66,9 @@ QString recolorSvgXML(QString &svg,
                       const QString &placeHolder,
                       const QColor &color)
 {
+    // TODO: svg colors can work without ;, we need to update all the svg files to inlude ;
+    // Include the trailing ';' so e.g. "#ff0;" never accidentally matches
+    // inside a previously-substituted value like "#ff0000;".
     return svg.replace(placeHolder, color.name(QColor::HexRgb), Qt::CaseInsensitive);
 }
 
