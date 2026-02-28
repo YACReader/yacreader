@@ -186,14 +186,24 @@ struct TreeViewThemeTemplates {
                                 "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
                                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
                                 "QTreeView::branch:has-children:!has-siblings:closed,QTreeView::branch:closed:has-children:has-siblings {border-image: none;image: url('%6');}"
-                                "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url('%6');}"
+                                "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url('%8');}"
                                 "QTreeView::branch:open:has-children:!has-siblings,QTreeView::branch:open:has-children:has-siblings  {border-image: none;image: url('%7');}"
-                                "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url('%7');}";
+                                "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url('%9');}";
 };
 
 struct TreeViewTheme {
     QString treeViewQSS;
     QColor folderIndicatorColor; // For incomplete folders and recently updated folders
+
+    // Branch indicator icon paths (used by QSS url())
+    QString branchClosedIconPath;
+    QString branchOpenIconPath;
+    QString branchClosedIconSelectedPath;
+    QString branchOpenIconSelectedPath;
+
+    // Folder icons (normal and selected states, including finished/read tick variant)
+    QIcon folderIcon;
+    QIcon folderFinishedIcon;
 };
 
 // QML view theme colors (used by GridComicsView, FolderContentView, InfoComicsView)
@@ -266,13 +276,9 @@ struct ContentSplitterTheme {
 
 struct SidebarIconsTheme {
     // When true, use QFileIconProvider for folder icons and overlay folderReadOverlay for finished folders
-    // When false, use the themed folderIcon and folderFinishedIcon SVGs
+    // When false, use the themed folderIcon and folderFinishedIcon from TreeViewTheme
     bool useSystemFolderIcons;
     QPixmap folderReadOverlay; // Tick overlay drawn on system folder icons when useSystemFolderIcons is true
-
-    // Folder icons (for FolderModel, ReadingListItem)
-    QIcon folderIcon;
-    QIcon folderFinishedIcon;
 
     // Library icon (for YACReaderLibraryItemWidget - unselected state)
     QIcon libraryIcon;
@@ -288,9 +294,6 @@ struct SidebarIconsTheme {
     QIcon addLabelIcon;
     QIcon renameListIcon;
 
-    // Branch icons (for TreeView QSS)
-    QString branchClosedIconPath;
-    QString branchOpenIconPath;
 };
 
 struct LibraryItemTheme {

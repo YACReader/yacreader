@@ -81,6 +81,12 @@ YACReaderFoldersViewItemDeletegate::YACReaderFoldersViewItemDeletegate(QObject *
 
 void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    // Promote hover to selected so QIcon::Selected mode activates on mouse-over,
+    // matching the QSS which already uses the same background for hover and selected.
+    QStyleOptionViewItem opt = option;
+    if (opt.state & QStyle::State_MouseOver)
+        opt.state |= QStyle::State_Selected;
+
     // Get indicator color from parent tree view
     QColor indicatorColor(237, 197, 24); // Default fallback
     if (auto treeView = qobject_cast<YACReaderTreeView *>(parent())) {
@@ -91,11 +97,11 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
         painter->save();
         painter->setBrush(QBrush(indicatorColor));
         painter->setPen(QPen(QBrush(), 0));
-        painter->drawRect(0, option.rect.y(), 2, option.rect.height());
+        painter->drawRect(0, opt.rect.y(), 2, opt.rect.height());
         painter->restore();
     }
 
-    QStyledItemDelegate::paint(painter, option, index);
+    QStyledItemDelegate::paint(painter, opt, index);
 
     auto showRecent = index.data(FolderModel::ShowRecentRole).toBool();
 
@@ -110,7 +116,7 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
             painter->setRenderHint(QPainter::Antialiasing);
             painter->setBrush(QBrush(indicatorColor));
             painter->setPen(QPen(QBrush(), 0));
-            painter->drawEllipse(option.rect.x() + 13, option.rect.y() + 2, 7, 7);
+            painter->drawEllipse(opt.rect.x() + 13, opt.rect.y() + 2, 7, 7);
             painter->restore();
         }
     }

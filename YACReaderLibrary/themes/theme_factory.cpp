@@ -101,6 +101,18 @@ struct TreeViewParams {
     QColor scrollHandleColor;
     QColor selectedTextColor;
     QColor folderIndicatorColor;
+
+    // Branch indicator icon colors (independent of sidebarIcons.iconColor)
+    QColor branchIndicatorColor;
+    QColor branchIndicatorSelectedColor;
+
+    // Folder icon colors (own parameters, independent of sidebarIcons)
+    QColor folderIconColor; // Main color for unselected folder (#f0f)
+    QColor folderIconShadowColor; // Shadow color for unselected folder (#0ff)
+    QColor folderIconSelectedColor; // Main color for selected folder (#f0f)
+    QColor folderIconSelectedShadowColor; // Shadow color for selected folder (#0ff)
+    QColor folderReadOverlayColor; // Tick/checkmark color for unselected folder (#ff0 in folder_finished, #f0f in folder_read_overlay.svg)
+    QColor folderReadOverlaySelectedColor; // Tick/checkmark color for selected folder
 };
 
 struct TableViewParams {
@@ -179,11 +191,9 @@ struct SidebarIconsParams {
     // Icon colors - #f0f placeholder gets replaced with these
     QColor iconColor; // Main icon color (replaces #f0f)
     QColor shadowColor; // Shadow color (replaces #0ff)
-    QColor extraColor; // Extra info like ticks (replaces #ff0)
 
     // When true, use QFileIconProvider for folder icons and overlay a tick for finished folders
     bool useSystemFolderIcons;
-    QColor folderReadOverlayColor; // Color for the tick overlay (replaces #f0f in folder_read_overlay.svg)
 };
 
 struct ServerConfigDialogThemeTemplates {
@@ -225,18 +235,27 @@ struct SearchLineEditParams {
 struct ReadingListIconsParams {
     QMap<QString, QColor> labelColors; // Label colors by name (e.g., "red" -> #f67a7b)
     QColor labelShadowColor; // Shadow color for labels (replaces #0ff)
+    QColor labelShadowSelectedColor; // Shadow color for labels when selected/hovered
 
     // Special list icon colors
     QColor readingListMainColor; // default_0 main color (replaces #f0f)
+    QColor readingListMainSelectedColor; // default_0 main color when selected/hovered
     QColor favoritesMainColor; // default_1 main color (replaces #f0f)
+    QColor favoritesMainSelectedColor; // default_1 main color when selected/hovered
     QColor currentlyReadingMainColor; // default_2 main color (replaces #f0f)
+    QColor currentlyReadingMainSelectedColor; // default_2 main color when selected/hovered
     QColor currentlyReadingOuterColor; // default_2 outer circle (replaces #ff0)
+    QColor currentlyReadingOuterSelectedColor; // default_2 outer circle when selected/hovered
     QColor specialListShadowColor; // Shadow color for special lists (replaces #0ff)
+    QColor specialListShadowSelectedColor; // Shadow color for special lists when selected/hovered
 
     // List icon colors
     QColor listMainColor; // main color (replaces #f0f)
+    QColor listMainSelectedColor; // main color when selected/hovered
     QColor listShadowColor; // shadow color (replaces #0ff)
+    QColor listShadowSelectedColor; // shadow color when selected/hovered
     QColor listDetailColor; // detail/checkbox color (replaces #ff0)
+    QColor listDetailSelectedColor; // detail/checkbox color when selected/hovered
 };
 
 struct DialogIconsParams {
@@ -559,15 +578,6 @@ Theme makeTheme(const ThemeParams &params)
         return icon;
     };
 
-    // Helper for icons with extra color (three-color: #f0f main, #0ff shadow, #ff0 extra)
-    auto makeSidebarIconWithExtra = [&](const QString &basePath) {
-        const QString path = recoloredSvgToThemeFile(basePath, si.iconColor, si.shadowColor, si.extraColor, params.themeName);
-        QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
-        return icon;
-    };
-
     // Helper for single-color icons (only #f0f main)
     auto makeSingleColorIcon = [&](const QString &basePath) {
         const QString path = recoloredSvgToThemeFile(basePath, si.iconColor, params.themeName);
@@ -580,13 +590,9 @@ Theme makeTheme(const ThemeParams &params)
     // System folder icons flag and overlay
     theme.sidebarIcons.useSystemFolderIcons = si.useSystemFolderIcons;
     if (si.useSystemFolderIcons) {
-        const QString overlayPath = recoloredSvgToThemeFile(":/images/sidebar/folder_read_overlay.svg", si.folderReadOverlayColor, params.themeName);
+        const QString overlayPath = recoloredSvgToThemeFile(":/images/sidebar/folder_read_overlay.svg", params.treeViewParams.folderReadOverlayColor, params.themeName);
         theme.sidebarIcons.folderReadOverlay = QPixmap(overlayPath);
     }
-
-    // Folder icons
-    theme.sidebarIcons.folderIcon = makeSidebarIcon(":/images/sidebar/folder.svg");
-    theme.sidebarIcons.folderFinishedIcon = makeSidebarIconWithExtra(":/images/sidebar/folder_finished.svg");
 
     // Library icon (unselected state, two-color: #f0f main, #0ff shadow)
     {
@@ -609,9 +615,6 @@ Theme makeTheme(const ThemeParams &params)
     theme.sidebarIcons.addLabelIcon = makeSidebarIcon(":/images/sidebar/addLabelIcon.svg");
     theme.sidebarIcons.renameListIcon = makeSidebarIcon(":/images/sidebar/renameListIcon.svg");
 
-    // Branch icons (paths for QSS)
-    theme.sidebarIcons.branchClosedIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", si.iconColor, params.themeName);
-    theme.sidebarIcons.branchOpenIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", si.iconColor, params.themeName);
     // end SidebarIcons
 
     // LibraryItem
@@ -629,17 +632,42 @@ Theme makeTheme(const ThemeParams &params)
     theme.libraryItem.libraryOptionsIcon = QIcon(libraryOptionsPath);
     // end LibraryItem
 
-    // TreeView (must come after SidebarIcons for branch icon paths)
+    // TreeView
     const auto &tv = params.treeViewParams;
+
+    // Branch indicator icons — own colors, independent of the sidebar icon color
+    theme.treeView.branchClosedIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", tv.branchIndicatorColor, params.themeName);
+    theme.treeView.branchOpenIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", tv.branchIndicatorColor, params.themeName);
+    theme.treeView.branchClosedIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", tv.branchIndicatorSelectedColor, params.themeName, { .suffix = "_selected" });
+    theme.treeView.branchOpenIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", tv.branchIndicatorSelectedColor, params.themeName, { .suffix = "_selected" });
+
     theme.treeView.treeViewQSS = tv.t.styledTreeViewQSS
                                          .arg(tv.textColor.name(),
                                               tv.selectionBackgroundColor.name(),
                                               tv.scrollBackgroundColor.name(),
                                               tv.scrollHandleColor.name(),
                                               tv.selectedTextColor.name(),
-                                              theme.sidebarIcons.branchClosedIconPath,
-                                              theme.sidebarIcons.branchOpenIconPath);
+                                              theme.treeView.branchClosedIconPath,
+                                              theme.treeView.branchOpenIconPath,
+                                              theme.treeView.branchClosedIconSelectedPath,
+                                              theme.treeView.branchOpenIconSelectedPath);
     theme.treeView.folderIndicatorColor = tv.folderIndicatorColor;
+
+    // Folder icon — normal and selected states with independent colors
+    {
+        const QString normalPath = recoloredSvgToThemeFile(":/images/sidebar/folder.svg", tv.folderIconColor, tv.folderIconShadowColor, params.themeName);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/sidebar/folder.svg", tv.folderIconSelectedColor, tv.folderIconSelectedShadowColor, params.themeName, { .suffix = "_selected" });
+        theme.treeView.folderIcon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        theme.treeView.folderIcon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
+    }
+
+    // Folder finished icon — same but with tick (#ff0) recolored independently for each state
+    {
+        const QString normalPath = recoloredSvgToThemeFile(":/images/sidebar/folder_finished.svg", tv.folderIconColor, tv.folderIconShadowColor, tv.folderReadOverlayColor, params.themeName);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/sidebar/folder_finished.svg", tv.folderIconSelectedColor, tv.folderIconSelectedShadowColor, tv.folderReadOverlaySelectedColor, params.themeName, { .suffix = "_selected" });
+        theme.treeView.folderFinishedIcon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        theme.treeView.folderFinishedIcon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
+    }
     // end TreeView
 
     // ContentSplitter
@@ -664,10 +692,10 @@ Theme makeTheme(const ThemeParams &params)
         return icon;
     };
 
-    theme.comicsViewToolbar.toolbarQSS = cvt.t.toolbarQSS
-            .arg(cvt.backgroundColor.name())
-            .arg(cvt.separatorColor.name())
-            .arg(cvt.checkedBackgroundColor.name());
+    theme.comicsViewToolbar.toolbarQSS = cvt.t.toolbarQSS.arg(
+            cvt.backgroundColor.name(),
+            cvt.separatorColor.name(),
+            cvt.checkedBackgroundColor.name());
     theme.comicsViewToolbar.openInYACReaderIcon = makeComicsViewIcon(":/images/comics_view_toolbar/openInYACReader.svg");
     theme.comicsViewToolbar.setAsReadIcon = makeComicsViewIcon(":/images/comics_view_toolbar/setReadButton.svg");
     theme.comicsViewToolbar.setAsUnreadIcon = makeComicsViewIcon(":/images/comics_view_toolbar/setUnread.svg");
@@ -705,10 +733,11 @@ Theme makeTheme(const ThemeParams &params)
 
     // Helper to create label icons from template (uses color name to generate label_<color>.svg files)
     auto makeLabelIcon = [&](const QString &colorName, const QColor &mainColor) {
-        const QString path = recoloredSvgToThemeFile(":/images/lists/label_template.svg", mainColor, rli.labelShadowColor, params.themeName, { .fileName = "label_" + colorName });
+        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/label_template.svg", mainColor, rli.labelShadowColor, params.themeName, { .fileName = "label_" + colorName });
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/label_template.svg", mainColor, rli.labelShadowSelectedColor, params.themeName, { .suffix = "_selected", .fileName = "label_" + colorName });
         QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
         return icon;
     };
 
@@ -717,32 +746,35 @@ Theme makeTheme(const ThemeParams &params)
     }
 
     // Special list icons
-    auto makeSpecialIcon = [&](const QString &basePath, const QColor &mainColor) {
-        const QString path = recoloredSvgToThemeFile(basePath, mainColor, rli.specialListShadowColor, params.themeName);
+    auto makeSpecialIcon = [&](const QString &basePath, const QColor &mainColor, const QColor &mainSelectedColor) {
+        const QString normalPath = recoloredSvgToThemeFile(basePath, mainColor, rli.specialListShadowColor, params.themeName);
+        const QString selectedPath = recoloredSvgToThemeFile(basePath, mainSelectedColor, rli.specialListShadowSelectedColor, params.themeName, { .suffix = "_selected" });
         QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
         return icon;
     };
 
-    theme.readingListIcons.readingListIcon = makeSpecialIcon(":/images/lists/default_0.svg", rli.readingListMainColor);
-    theme.readingListIcons.favoritesIcon = makeSpecialIcon(":/images/lists/default_1.svg", rli.favoritesMainColor);
+    theme.readingListIcons.readingListIcon = makeSpecialIcon(":/images/lists/default_0.svg", rli.readingListMainColor, rli.readingListMainSelectedColor);
+    theme.readingListIcons.favoritesIcon = makeSpecialIcon(":/images/lists/default_1.svg", rli.favoritesMainColor, rli.favoritesMainSelectedColor);
 
     // Currently reading has 3 colors
     {
-        const QString path = recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainColor, rli.specialListShadowColor, rli.currentlyReadingOuterColor, params.themeName);
+        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainColor, rli.specialListShadowColor, rli.currentlyReadingOuterColor, params.themeName);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainSelectedColor, rli.specialListShadowSelectedColor, rli.currentlyReadingOuterSelectedColor, params.themeName, { .suffix = "_selected" });
         QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
         theme.readingListIcons.currentlyReadingIcon = icon;
     }
 
     // List icon (3 colors)
     {
-        const QString path = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.themeName);
+        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.themeName);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainSelectedColor, rli.listShadowSelectedColor, rli.listDetailSelectedColor, params.themeName, { .suffix = "_selected" });
         QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
         theme.readingListIcons.listIcon = icon;
     }
     // end ReadingListIcons
@@ -944,6 +976,14 @@ ThemeParams classicThemeParams()
     tv.scrollHandleColor = QColor(0xDDDDDD);
     tv.selectedTextColor = Qt::white;
     tv.folderIndicatorColor = QColor(237, 197, 24);
+    tv.branchIndicatorColor = QColor(0xE0E0E0);
+    tv.branchIndicatorSelectedColor = QColor(0xFFFFFF);
+    tv.folderIconColor = QColor(0xE0E0E0);
+    tv.folderIconShadowColor = QColor(0xFF000000);
+    tv.folderIconSelectedColor = QColor(0xE0E0E0);
+    tv.folderIconSelectedShadowColor = QColor(0xFF000000);
+    tv.folderReadOverlayColor = QColor(0x464646);
+    tv.folderReadOverlaySelectedColor = QColor(0x464646);
     params.treeViewParams = tv;
 
     TableViewParams tav;
@@ -1006,7 +1046,6 @@ ThemeParams classicThemeParams()
     SidebarIconsParams si;
     si.iconColor = QColor(0xE0E0E0);
     si.shadowColor = QColor(0xFF000000);
-    si.extraColor = QColor(0x464646);
     si.useSystemFolderIcons = false;
     params.sidebarIconsParams = si;
 
@@ -1049,14 +1088,23 @@ ThemeParams classicThemeParams()
         { "dark", QColor(0xb7b7b7) }
     };
     rli.labelShadowColor = Qt::black;
+    rli.labelShadowSelectedColor = Qt::black;
     rli.readingListMainColor = QColor(0xe7e7e7);
+    rli.readingListMainSelectedColor = QColor(0xe7e7e7);
     rli.favoritesMainColor = QColor(0xe15055);
+    rli.favoritesMainSelectedColor = QColor(0xe15055);
     rli.currentlyReadingMainColor = QColor(0xffcc00);
+    rli.currentlyReadingMainSelectedColor = QColor(0xffcc00);
     rli.currentlyReadingOuterColor = Qt::black;
+    rli.currentlyReadingOuterSelectedColor = Qt::black;
     rli.specialListShadowColor = Qt::black;
+    rli.specialListShadowSelectedColor = Qt::black;
     rli.listMainColor = QColor(0xe7e7e7);
+    rli.listMainSelectedColor = QColor(0xe7e7e7);
     rli.listShadowColor = Qt::black;
+    rli.listShadowSelectedColor = Qt::black;
     rli.listDetailColor = QColor(0x464646);
+    rli.listDetailSelectedColor = QColor(0x464646);
     params.readingListIconsParams = rli;
 
     MenuIconsParams mi;
@@ -1196,6 +1244,14 @@ ThemeParams lightThemeParams()
     tv.scrollHandleColor = QColor(0x888888);
     tv.selectedTextColor = QColor(0x1A1A1A);
     tv.folderIndicatorColor = QColor(85, 95, 127);
+    tv.branchIndicatorColor = QColor(0x606060);
+    tv.branchIndicatorSelectedColor = QColor(0x1A1A1A);
+    tv.folderIconColor = QColor(0x606060);
+    tv.folderIconShadowColor = QColor(0xFFFFFF);
+    tv.folderIconSelectedColor = QColor(0x606060);
+    tv.folderIconSelectedShadowColor = QColor(0xFFFFFF);
+    tv.folderReadOverlayColor = QColor(0xFFFFFF);
+    tv.folderReadOverlaySelectedColor = QColor(0xFFFFFF);
     params.treeViewParams = tv;
 
     TableViewParams tav;
@@ -1258,7 +1314,6 @@ ThemeParams lightThemeParams()
     SidebarIconsParams si;
     si.iconColor = QColor(0x606060);
     si.shadowColor = QColor(0xFFFFFF);
-    si.extraColor = QColor(0xFFFFFF);
     si.useSystemFolderIcons = false;
     params.sidebarIconsParams = si;
 
@@ -1301,14 +1356,23 @@ ThemeParams lightThemeParams()
         { "dark", QColor(0xb7b7b7) }
     };
     rli.labelShadowColor = QColor(0xa0a0a0);
+    rli.labelShadowSelectedColor = QColor(0xa0a0a0);
     rli.readingListMainColor = QColor(0x808080);
+    rli.readingListMainSelectedColor = QColor(0x808080);
     rli.favoritesMainColor = QColor(0xe15055);
+    rli.favoritesMainSelectedColor = QColor(0xe15055);
     rli.currentlyReadingMainColor = QColor(0xffcc00);
+    rli.currentlyReadingMainSelectedColor = QColor(0xffcc00);
     rli.currentlyReadingOuterColor = Qt::black;
+    rli.currentlyReadingOuterSelectedColor = Qt::black;
     rli.specialListShadowColor = QColor(0xa0a0a0);
+    rli.specialListShadowSelectedColor = QColor(0xa0a0a0);
     rli.listMainColor = QColor(0x808080);
+    rli.listMainSelectedColor = QColor(0x808080);
     rli.listShadowColor = QColor(0xc0c0c0);
+    rli.listShadowSelectedColor = QColor(0xc0c0c0);
     rli.listDetailColor = QColor(0xFFFFFF);
+    rli.listDetailSelectedColor = QColor(0xFFFFFF);
     params.readingListIconsParams = rli;
 
     MenuIconsParams mi;
@@ -1448,6 +1512,14 @@ ThemeParams darkThemeParams()
     tv.scrollHandleColor = QColor(0xDDDDDD);
     tv.selectedTextColor = Qt::white;
     tv.folderIndicatorColor = QColor(237, 197, 24);
+    tv.branchIndicatorColor = QColor(0xE0E0E0);
+    tv.branchIndicatorSelectedColor = QColor(0xFFFFFF);
+    tv.folderIconColor = QColor(0xE0E0E0);
+    tv.folderIconShadowColor = QColor(0xFF000000);
+    tv.folderIconSelectedColor = QColor(0xE0E0E0);
+    tv.folderIconSelectedShadowColor = QColor(0xFF000000);
+    tv.folderReadOverlayColor = QColor(0x222222);
+    tv.folderReadOverlaySelectedColor = QColor(0x222222);
     params.treeViewParams = tv;
 
     TableViewParams tav;
@@ -1510,7 +1582,6 @@ ThemeParams darkThemeParams()
     SidebarIconsParams si;
     si.iconColor = QColor(0xE0E0E0);
     si.shadowColor = QColor(0xFF000000);
-    si.extraColor = QColor(0x222222);
     si.useSystemFolderIcons = false;
     params.sidebarIconsParams = si;
 
@@ -1553,14 +1624,23 @@ ThemeParams darkThemeParams()
         { "dark", QColor(0xb7b7b7) }
     };
     rli.labelShadowColor = Qt::black;
+    rli.labelShadowSelectedColor = Qt::black;
     rli.readingListMainColor = QColor(0xe7e7e7);
+    rli.readingListMainSelectedColor = QColor(0xe7e7e7);
     rli.favoritesMainColor = QColor(0xe15055);
+    rli.favoritesMainSelectedColor = QColor(0xe15055);
     rli.currentlyReadingMainColor = QColor(0xffcc00);
+    rli.currentlyReadingMainSelectedColor = QColor(0xffcc00);
     rli.currentlyReadingOuterColor = Qt::black;
+    rli.currentlyReadingOuterSelectedColor = Qt::black;
     rli.specialListShadowColor = Qt::black;
+    rli.specialListShadowSelectedColor = Qt::black;
     rli.listMainColor = QColor(0xe7e7e7);
+    rli.listMainSelectedColor = QColor(0xe7e7e7);
     rli.listShadowColor = Qt::black;
+    rli.listShadowSelectedColor = Qt::black;
     rli.listDetailColor = QColor(0x464646);
+    rli.listDetailSelectedColor = QColor(0x464646);
     params.readingListIconsParams = rli;
 
     MenuIconsParams mi;
