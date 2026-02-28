@@ -63,7 +63,7 @@ struct ComicVineThemeTemplates {
     QString scraperTableViewQSS = "QTableView {color:%1; border:0px;alternate-background-color: %2;background-color: %3; outline: 0px;}"
                                   "QTableView::item {outline: 0px; border: 0px; color:%1;}"
                                   "QTableView::item:selected {outline: 0px; background-color: %4;  }"
-                                  "QHeaderView::section:horizontal {background-color:%5; border-bottom:1px solid %6; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %5, stop: 1 %6); border-left:none; border-top:none; padding:4px; color:%7;}"
+                                  "QHeaderView::section:horizontal {background-color:%5; border-bottom:1px solid %6; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %14, stop: 1 %6); border-left:none; border-top:none; padding:4px; color:%7;}"
                                   "QHeaderView::section:vertical {border-bottom: 1px solid %8;border-top: 1px solid %9;}"
                                   "QHeaderView::down-arrow {image: url('%12');width: 8px;height: 7px;padding-right: 10px;}"
                                   "QHeaderView::up-arrow {image: url('%13');width: 8px;height: 7px; padding-right: 10px;}"

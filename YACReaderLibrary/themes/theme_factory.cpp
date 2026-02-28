@@ -18,6 +18,7 @@ struct ComicVineParams {
     QColor tableBorderColor;
     QColor tableSelectedColor;
     QColor tableHeaderBackgroundColor;
+    QColor tableHeaderGradientColor;
     QColor tableHeaderBorderColor;
     QColor tableHeaderTextColor;
     QColor tableScrollHandleColor;
@@ -370,7 +371,8 @@ Theme makeTheme(const ThemeParams &params)
                                                        cv.tableScrollHandleColor.name(),
                                                        cv.tableScrollBackgroundColor.name(),
                                                        recolor(":/images/comic_vine/downArrow.svg", cv.downArrowColor),
-                                                       recolor(":/images/comic_vine/upArrow.svg", cv.upArrowColor));
+                                                       recolor(":/images/comic_vine/upArrow.svg", cv.upArrowColor),
+                                                       cv.tableHeaderGradientColor.name());
 
     theme.comicVine.dialogQSS = t.dialogQSS.arg(cv.dialogBackgroundColor.name());
     theme.comicVine.dialogButtonsQSS = t.dialogButtonsQSS.arg(cv.buttonBorderColor.name(), cv.buttonBackgroundColor.name(), cv.buttonTextColor.name());
@@ -891,6 +893,7 @@ ThemeParams classicThemeParams()
     cv.tableBorderColor = QColor(0x242424);
     cv.tableSelectedColor = QColor(0x555555);
     cv.tableHeaderBackgroundColor = QColor(0x292929);
+    cv.tableHeaderGradientColor = QColor(0x292929);
     cv.tableHeaderBorderColor = QColor(0x1F1F1F);
     cv.tableHeaderTextColor = QColor(0xEBEBEB);
     cv.tableScrollHandleColor = QColor(0xDDDDDD);
@@ -1161,6 +1164,7 @@ ThemeParams lightThemeParams()
     cv.tableBorderColor = QColor(0xCCCCCC);
     cv.tableSelectedColor = QColor(0xDDDDDD);
     cv.tableHeaderBackgroundColor = QColor(0xE0E0E0);
+    cv.tableHeaderGradientColor = QColor(0xE0E0E0);
     cv.tableHeaderBorderColor = QColor(0xC0C0C0);
     cv.tableHeaderTextColor = QColor(0x333333);
     cv.tableScrollHandleColor = QColor(0x888888);
@@ -1431,6 +1435,7 @@ ThemeParams darkThemeParams()
     cv.tableBorderColor = QColor(0x242424);
     cv.tableSelectedColor = QColor(0x555555);
     cv.tableHeaderBackgroundColor = QColor(0x292929);
+    cv.tableHeaderGradientColor = QColor(0x292929);
     cv.tableHeaderBorderColor = QColor(0x1F1F1F);
     cv.tableHeaderTextColor = QColor(0xEBEBEB);
     cv.tableScrollHandleColor = QColor(0xDDDDDD);
