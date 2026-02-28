@@ -120,9 +120,9 @@ struct TableViewParams {
 
     QColor alternateBackgroundColor;
     QColor backgroundColor;
-    QColor cornerButtonBackgroundColor;
-    QColor cornerButtonBorderColor;
-    QColor cornerButtonGradientColor;
+    QColor headerBackgroundColor;
+    QColor headerBorderColor;
+    QColor headerGradientColor;
     QColor itemBorderBottomColor;
     QColor itemBorderTopColor;
     QColor itemTextColor;
@@ -469,9 +469,9 @@ Theme makeTheme(const ThemeParams &params)
     theme.tableView.tableViewQSS = tavt.tableViewQSS
                                            .arg(tav.alternateBackgroundColor.name(),
                                                 tav.backgroundColor.name(),
-                                                tav.cornerButtonBackgroundColor.name(),
-                                                tav.cornerButtonBorderColor.name(),
-                                                tav.cornerButtonGradientColor.name(),
+                                                tav.headerBackgroundColor.name(),
+                                                tav.headerBorderColor.name(),
+                                                tav.headerGradientColor.name(),
                                                 tav.itemBorderBottomColor.name(),
                                                 tav.itemBorderTopColor.name(),
                                                 tav.itemTextColor.name(),
@@ -989,9 +989,9 @@ ThemeParams classicThemeParams()
     TableViewParams tav;
     tav.alternateBackgroundColor = QColor(0xF2F2F2);
     tav.backgroundColor = QColor(0xFAFAFA);
-    tav.cornerButtonBackgroundColor = QColor(0xF5F5F5);
-    tav.cornerButtonBorderColor = QColor(0xB8BDC4);
-    tav.cornerButtonGradientColor = QColor(0xD1D1D1);
+    tav.headerBackgroundColor = QColor(0xF5F5F5);
+    tav.headerBorderColor = QColor(0xB8BDC4);
+    tav.headerGradientColor = QColor(0xD1D1D1);
     tav.itemBorderBottomColor = QColor(0xDFDFDF);
     tav.itemBorderTopColor = QColor(0xFEFEFE);
     tav.itemTextColor = QColor(0x252626);
@@ -1257,9 +1257,9 @@ ThemeParams lightThemeParams()
     TableViewParams tav;
     tav.alternateBackgroundColor = QColor(0xF2F2F2);
     tav.backgroundColor = QColor(0xFAFAFA);
-    tav.cornerButtonBackgroundColor = QColor(0xF5F5F5);
-    tav.cornerButtonBorderColor = QColor(0xB8BDC4);
-    tav.cornerButtonGradientColor = QColor(0xD1D1D1);
+    tav.headerBackgroundColor = QColor(0xF5F5F5);
+    tav.headerBorderColor = QColor(0xB8BDC4);
+    tav.headerGradientColor = QColor(0xD1D1D1);
     tav.itemBorderBottomColor = QColor(0xDFDFDF);
     tav.itemBorderTopColor = QColor(0xFEFEFE);
     tav.itemTextColor = QColor(0x252626);
@@ -1525,9 +1525,9 @@ ThemeParams darkThemeParams()
     TableViewParams tav;
     tav.alternateBackgroundColor = QColor(0x2E2E2E);
     tav.backgroundColor = QColor(0x2A2A2A);
-    tav.cornerButtonBackgroundColor = QColor(0x2A2A2A);
-    tav.cornerButtonBorderColor = QColor(0x1F1F1F);
-    tav.cornerButtonGradientColor = QColor(0x252525);
+    tav.headerBackgroundColor = QColor(0x2A2A2A);
+    tav.headerBorderColor = QColor(0x1F1F1F);
+    tav.headerGradientColor = QColor(0x252525);
     tav.itemBorderBottomColor = QColor(0x1F1F1F);
     tav.itemBorderTopColor = QColor(0x353535);
     tav.itemTextColor = QColor(0xDDDDDD);
