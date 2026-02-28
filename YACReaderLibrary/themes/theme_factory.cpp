@@ -199,7 +199,9 @@ struct LibraryItemParams {
     QColor textColor;
     QColor selectedTextColor;
     QColor selectedBackgroundColor;
-    QColor libraryIconSelectedColor; // Color for the library icon when selected
+    QColor libraryIconColor;
+    QColor libraryIconShadowColor;
+    QColor libraryIconSelectedColor;
     QColor libraryOptionsIconColor; // Color for the options icon (shown only when selected)
 };
 
@@ -209,7 +211,7 @@ struct ComicsViewToolbarParams {
     QColor backgroundColor;
     QColor separatorColor;
     QColor checkedBackgroundColor;
-    QColor iconColor; // Main icon color (replaces #f0f)
+    QColor iconColor;
 };
 
 struct SearchLineEditParams {
@@ -586,8 +588,15 @@ Theme makeTheme(const ThemeParams &params)
     theme.sidebarIcons.folderIcon = makeSidebarIcon(":/images/sidebar/folder.svg");
     theme.sidebarIcons.folderFinishedIcon = makeSidebarIconWithExtra(":/images/sidebar/folder_finished.svg");
 
-    // Library icon (unselected state uses sidebar colors)
-    theme.sidebarIcons.libraryIcon = makeSidebarIcon(":/images/sidebar/libraryIcon.svg");
+    // Library icon (unselected state, two-color: #f0f main, #0ff shadow)
+    {
+        const auto &li = params.libraryItemParams;
+        const QString libraryIconPath = recoloredSvgToThemeFile(":/images/sidebar/libraryIcon.svg", li.libraryIconColor, li.libraryIconShadowColor, params.themeName);
+        QIcon icon;
+        icon.addFile(libraryIconPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(libraryIconPath, QSize(), QIcon::Selected, QIcon::Off);
+        theme.sidebarIcons.libraryIcon = icon;
+    }
 
     // Action icons
     theme.sidebarIcons.newLibraryIcon = makeSidebarIcon(":/images/sidebar/newLibraryIcon.svg");
@@ -1003,6 +1012,8 @@ ThemeParams classicThemeParams()
 
     LibraryItemParams li;
     li.textColor = QColor(0xDDDFDF);
+    li.libraryIconColor = QColor(0xDDDFDF);
+    li.libraryIconShadowColor = QColor(0xFF000000);
     li.selectedTextColor = Qt::white;
     li.selectedBackgroundColor = QColor(0x2E2E2E);
     li.libraryIconSelectedColor = Qt::white;
@@ -1253,6 +1264,8 @@ ThemeParams lightThemeParams()
 
     LibraryItemParams li;
     li.textColor = QColor(0x404040);
+    li.libraryIconColor = QColor(0x404040);
+    li.libraryIconShadowColor = QColor(0xFFFFFF);
     li.selectedTextColor = QColor(0x1A1A1A);
     li.selectedBackgroundColor = QColor(0xD0D0D0);
     li.libraryIconSelectedColor = QColor(0x404040);
@@ -1503,6 +1516,8 @@ ThemeParams darkThemeParams()
 
     LibraryItemParams li;
     li.textColor = QColor(0xDDDFDF);
+    li.libraryIconColor = QColor(0xDDDFDF);
+    li.libraryIconShadowColor = QColor(0xFF000000);
     li.selectedTextColor = Qt::white;
     li.selectedBackgroundColor = QColor(0x2E2E2E);
     li.libraryIconSelectedColor = Qt::white;
