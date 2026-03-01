@@ -25,7 +25,7 @@ Rectangle {
 
     Rectangle {
         id: background
-        color: "#2A2A2A"
+        color: backgroundBlurOverlayColor
         anchors.fill: backgroundImg
     }
 

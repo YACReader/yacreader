@@ -241,6 +241,9 @@ struct QmlViewTheme {
     // Continue reading section (FolderContentView)
     QColor continueReadingBackgroundColor;
     QColor continueReadingColor;
+
+    // Blur overlay background (FlowView always, GridView when background image enabled)
+    QColor backgroundBlurOverlayColor;
 };
 
 struct MainToolbarThemeTemplates {

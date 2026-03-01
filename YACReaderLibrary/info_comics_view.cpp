@@ -243,4 +243,5 @@ void InfoComicsView::applyTheme(const Theme &theme)
     ctxt->setContextProperty("readTickCheckedColor", qv.readTickCheckedColor);
 
     ctxt->setContextProperty("showDropShadow", QVariant(qv.showDropShadow));
+    ctxt->setContextProperty("backgroundBlurOverlayColor", qv.backgroundBlurOverlayColor);
 }

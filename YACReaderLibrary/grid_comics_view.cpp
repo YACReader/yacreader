@@ -220,6 +220,7 @@ void GridComicsView::updateBackgroundConfig()
 
     // Use theme colors for cell and selected colors
     const auto &qv = theme.qmlView;
+    ctxt->setContextProperty("backgroundColor", useBackgroundImage ? qv.backgroundBlurOverlayColor : qv.backgroundColor);
     ctxt->setContextProperty("cellColor", useBackgroundImage ? qv.cellColorWithBackground : qv.cellColor);
     ctxt->setContextProperty("selectedColor", qv.selectedColor);
 }
@@ -491,6 +492,7 @@ void GridComicsView::applyTheme(const Theme &theme)
 
     // Grid colors
     ctxt->setContextProperty("backgroundColor", qv.backgroundColor);
+    ctxt->setContextProperty("backgroundBlurOverlayColor", qv.backgroundBlurOverlayColor);
     ctxt->setContextProperty("cellColor", qv.cellColor);
     ctxt->setContextProperty("selectedColor", qv.selectedColor);
     ctxt->setContextProperty("selectedBorderColor", qv.selectedBorderColor);

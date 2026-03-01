@@ -170,6 +170,9 @@ struct QmlViewParams {
     // Continue reading section (FolderContentView)
     QColor continueReadingBackgroundColor;
     QColor continueReadingColor;
+
+    // Blur overlay background (FlowView always, GridView when background image enabled)
+    QColor backgroundBlurOverlayColor;
 };
 
 struct MainToolbarParams {
@@ -514,6 +517,7 @@ Theme makeTheme(const ThemeParams &params)
     theme.qmlView.currentComicBackgroundColor = qv.currentComicBackgroundColor;
     theme.qmlView.continueReadingBackgroundColor = qv.continueReadingBackgroundColor;
     theme.qmlView.continueReadingColor = qv.continueReadingColor;
+    theme.qmlView.backgroundBlurOverlayColor = qv.backgroundBlurOverlayColor;
     // end QmlView
 
     // MainToolbar
@@ -1036,6 +1040,7 @@ ThemeParams classicThemeParams()
     qv.currentComicBackgroundColor = QColor(0x00, 0x00, 0x00, 0x88);
     qv.continueReadingBackgroundColor = QColor(0x00, 0x00, 0x00, 0x88);
     qv.continueReadingColor = QColor(0xFFFFFF);
+    qv.backgroundBlurOverlayColor = QColor(0x2A2A2A);
     params.qmlViewParams = qv;
 
     MainToolbarParams mt;
@@ -1307,6 +1312,7 @@ ThemeParams lightThemeParams()
     qv.currentComicBackgroundColor = QColor(0xFF, 0xFF, 0xFF, 0x88);
     qv.continueReadingBackgroundColor = QColor(0xE8E8E8);
     qv.continueReadingColor = QColor::fromRgb(0x000000);
+    qv.backgroundBlurOverlayColor = QColor(0x9E9E9E);
     params.qmlViewParams = qv;
 
     MainToolbarParams mt;
@@ -1578,6 +1584,7 @@ ThemeParams darkThemeParams()
     qv.currentComicBackgroundColor = QColor(0x00, 0x00, 0x00, 0x88);
     qv.continueReadingBackgroundColor = QColor(0x00, 0x00, 0x00, 0x88);
     qv.continueReadingColor = QColor(0xFFFFFF);
+    qv.backgroundBlurOverlayColor = QColor(0x2A2A2A);
     params.qmlViewParams = qv;
 
     MainToolbarParams mt;
