@@ -1150,8 +1150,8 @@ ThemeParams lightThemeParams()
     params.defaultContentBackgroundColor = QColor(0xFFFFFF);
 
     ComicFlowColors cf;
-    cf.backgroundColor = Qt::white;
-    cf.textColor = Qt::black;
+    cf.backgroundColor = QColor(0xDCDCDC);
+    cf.textColor = QColor(0x303030);
 
     ComicVineParams cv;
     cv.contentTextColor = Qt::black;
@@ -1224,11 +1224,11 @@ ThemeParams lightThemeParams()
     params.emptyContainerParams = ec;
 
     SidebarParams sb;
-    sb.backgroundColor = QColor(0xF1F1F1);
+    sb.backgroundColor = QColor(0xFBFBFB);
     sb.separatorColor = QColor(0x808080);
-    sb.sectionSeparatorColor = QColor(0xD0D0D0);
+    sb.sectionSeparatorColor = QColor(0xE0E0E0);
     sb.uppercaseLabels = true;
-    sb.titleTextColor = QColor(0x808080);
+    sb.titleTextColor = QColor(0x4A494A);
     sb.titleDropShadowColor = QColor(0xFFFFFF);
     sb.busyIndicatorColor = QColor(0x808080);
     params.sidebarParams = sb;
@@ -1249,19 +1249,19 @@ ThemeParams lightThemeParams()
 
     TreeViewParams tv;
     tv.textColor = Qt::black;
-    tv.selectionBackgroundColor = QColor(0xD0D0D0);
+    tv.selectionBackgroundColor = QColor(0x333133);
     tv.scrollBackgroundColor = QColor(0xE0E0E0);
     tv.scrollHandleColor = QColor(0x888888);
-    tv.selectedTextColor = QColor(0x1A1A1A);
+    tv.selectedTextColor = QColor(0xFFFFFF);
     tv.folderIndicatorColor = QColor(85, 95, 127);
     tv.branchIndicatorColor = QColor(0x606060);
-    tv.branchIndicatorSelectedColor = QColor(0x1A1A1A);
+    tv.branchIndicatorSelectedColor = QColor(0xFFFFFF);
     tv.folderIconColor = QColor(0x606060);
     tv.folderIconShadowColor = QColor(0xFFFFFF);
-    tv.folderIconSelectedColor = QColor(0x606060);
-    tv.folderIconSelectedShadowColor = QColor(0xFFFFFF);
+    tv.folderIconSelectedColor = QColor(0xFFFFFF);
+    tv.folderIconSelectedShadowColor = QColor(0x161616);
     tv.folderReadOverlayColor = QColor(0xFFFFFF);
-    tv.folderReadOverlaySelectedColor = QColor(0xFFFFFF);
+    tv.folderReadOverlaySelectedColor = QColor(0x161616);
     params.treeViewParams = tv;
 
     TableViewParams tav;
@@ -1269,13 +1269,13 @@ ThemeParams lightThemeParams()
     tav.backgroundColor = QColor(0xFAFAFA);
     tav.headerBackgroundColor = QColor(0xF5F5F5);
     tav.headerBorderColor = QColor(0xB8BDC4);
-    tav.headerGradientColor = QColor(0xD1D1D1);
+    tav.headerGradientColor = QColor(0xF5F5F5);
     tav.itemBorderBottomColor = QColor(0xDFDFDF);
     tav.itemBorderTopColor = QColor(0xFEFEFE);
-    tav.itemBorderBottomWidth = 1;
-    tav.itemBorderTopWidth = 1;
+    tav.itemBorderBottomWidth = 0;
+    tav.itemBorderTopWidth = 0;
     tav.itemTextColor = QColor(0x252626);
-    tav.selectedColor = QColor(0x3875D7);
+    tav.selectedColor = QColor(0x595959);
     tav.selectedTextColor = QColor(0xFFFFFF);
     tav.headerTextColor = QColor(0x313232);
     tav.starRatingColor = QColor(0xE9BE0F);
@@ -1311,32 +1311,32 @@ ThemeParams lightThemeParams()
 
     MainToolbarParams mt;
     mt.backgroundColor = QColor(0xF0F0F0);
-    mt.folderNameColor = QColor(0x404040);
+    mt.folderNameColor = QColor(0x333133);
     mt.dividerColor = QColor(0xB8BDC4);
-    mt.iconColor = QColor(0x404040);
+    mt.iconColor = QColor(0x333133);
     mt.iconDisabledColor = QColor(0xB0B0B0);
     params.mainToolbarParams = mt;
 
     ContentSplitterParams cs;
-    cs.handleColor = QColor(0xB8B8B8);
+    cs.handleColor = QColor(0xF0F0F0);
     cs.horizontalHandleHeight = 4;
     cs.verticalHandleWidth = 4;
     params.contentSplitterParams = cs;
 
     SidebarIconsParams si;
-    si.iconColor = QColor(0x606060);
-    si.shadowColor = QColor(0xFFFFFF);
+    si.iconColor = QColor(0x4F4E4F);
+    si.shadowColor = QColor(0xFBFBFB);
     si.useSystemFolderIcons = false;
     params.sidebarIconsParams = si;
 
     LibraryItemParams li;
-    li.textColor = QColor(0x404040);
-    li.libraryIconColor = QColor(0x404040);
+    li.textColor = Qt::black;
+    li.libraryIconColor = QColor(0x606060);
     li.libraryIconShadowColor = QColor(0xFFFFFF);
-    li.selectedTextColor = QColor(0x1A1A1A);
-    li.selectedBackgroundColor = QColor(0xD0D0D0);
-    li.libraryIconSelectedColor = QColor(0x404040);
-    li.libraryOptionsIconColor = QColor(0x404040);
+    li.selectedTextColor = QColor(0xFFFFFF);
+    li.selectedBackgroundColor = QColor(0x333133);
+    li.libraryIconSelectedColor = QColor(0xFFFFFF);
+    li.libraryOptionsIconColor = QColor(0xFFFFFF);
     params.libraryItemParams = li;
 
     ComicsViewToolbarParams cvt;
@@ -1347,9 +1347,9 @@ ThemeParams lightThemeParams()
     params.comicsViewToolbarParams = cvt;
 
     SearchLineEditParams sle;
-    sle.textColor = QColor(0x606060);
-    sle.backgroundColor = QColor(0xE0E0E0);
-    sle.iconColor = QColor(0x808080);
+    sle.textColor = QColor(0xFFFFFF);
+    sle.backgroundColor = QColor(0x333133);
+    sle.iconColor = QColor(0xEFEFEF);
     params.searchLineEditParams = sle;
 
     ReadingListIconsParams rli;
@@ -1367,8 +1367,8 @@ ThemeParams lightThemeParams()
         { "light", QColor(0xcbcbcb) },
         { "dark", QColor(0xb7b7b7) }
     };
-    rli.labelShadowColor = QColor(0xa0a0a0);
-    rli.labelShadowSelectedColor = QColor(0xa0a0a0);
+    rli.labelShadowColor = QColor(0x8F8F8F);
+    rli.labelShadowSelectedColor = QColor(0x161616);
     rli.readingListMainColor = QColor(0x808080);
     rli.readingListMainSelectedColor = QColor(0x808080);
     rli.favoritesMainColor = QColor(0xe15055);
@@ -1377,14 +1377,14 @@ ThemeParams lightThemeParams()
     rli.currentlyReadingMainSelectedColor = QColor(0xffcc00);
     rli.currentlyReadingOuterColor = Qt::black;
     rli.currentlyReadingOuterSelectedColor = Qt::black;
-    rli.specialListShadowColor = QColor(0xa0a0a0);
-    rli.specialListShadowSelectedColor = QColor(0xa0a0a0);
+    rli.specialListShadowColor = QColor(0x8F8F8F);
+    rli.specialListShadowSelectedColor = QColor(0x161616);
     rli.listMainColor = QColor(0x808080);
-    rli.listMainSelectedColor = QColor(0x808080);
-    rli.listShadowColor = QColor(0xc0c0c0);
-    rli.listShadowSelectedColor = QColor(0xc0c0c0);
+    rli.listMainSelectedColor = QColor(0xFFFFFF);
+    rli.listShadowColor = QColor(0x8F8F8F);
+    rli.listShadowSelectedColor = QColor(0x161616);
     rli.listDetailColor = QColor(0xFFFFFF);
-    rli.listDetailSelectedColor = QColor(0xFFFFFF);
+    rli.listDetailSelectedColor = QColor(0x161616);
     params.readingListIconsParams = rli;
 
     MenuIconsParams mi;
