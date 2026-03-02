@@ -74,7 +74,7 @@ void SearchSingleComic::clean()
 
 void SearchSingleComic::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    label->setStyleSheet(comicVineTheme.defaultLabelQSS);
+    label->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
 }

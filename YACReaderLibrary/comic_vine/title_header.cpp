@@ -49,8 +49,8 @@ void TitleHeader::showButtons(bool show)
 
 void TitleHeader::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    mainTitleLabel->setStyleSheet(comicVineTheme.titleLabelQSS);
-    subTitleLabel->setStyleSheet(comicVineTheme.defaultLabelQSS);
+    mainTitleLabel->setStyleSheet(metadataScraperDialogTheme.titleLabelQSS);
+    subTitleLabel->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
 }

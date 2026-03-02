@@ -219,10 +219,10 @@ void GridComicsView::updateBackgroundConfig()
     }
 
     // Use theme colors for cell and selected colors
-    const auto &qv = theme.qmlView;
-    ctxt->setContextProperty("backgroundColor", useBackgroundImage ? qv.backgroundBlurOverlayColor : qv.backgroundColor);
-    ctxt->setContextProperty("cellColor", useBackgroundImage ? qv.cellColorWithBackground : qv.cellColor);
-    ctxt->setContextProperty("selectedColor", qv.selectedColor);
+    const auto &giv = theme.gridAndInfoView;
+    ctxt->setContextProperty("backgroundColor", useBackgroundImage ? giv.backgroundBlurOverlayColor : giv.backgroundColor);
+    ctxt->setContextProperty("cellColor", useBackgroundImage ? giv.cellColorWithBackground : giv.cellColor);
+    ctxt->setContextProperty("selectedColor", giv.selectedColor);
 }
 
 void GridComicsView::showInfo()
@@ -488,34 +488,34 @@ void GridComicsView::selectedItem(int index)
 void GridComicsView::applyTheme(const Theme &theme)
 {
     QQmlContext *ctxt = view->rootContext();
-    const auto &qv = theme.qmlView;
+    const auto &giv = theme.gridAndInfoView;
 
     // Grid colors
-    ctxt->setContextProperty("backgroundColor", qv.backgroundColor);
-    ctxt->setContextProperty("backgroundBlurOverlayColor", qv.backgroundBlurOverlayColor);
-    ctxt->setContextProperty("cellColor", qv.cellColor);
-    ctxt->setContextProperty("selectedColor", qv.selectedColor);
-    ctxt->setContextProperty("selectedBorderColor", qv.selectedBorderColor);
-    ctxt->setContextProperty("borderColor", qv.borderColor);
-    ctxt->setContextProperty("titleColor", qv.titleColor);
-    ctxt->setContextProperty("textColor", qv.textColor);
-    ctxt->setContextProperty("showDropShadow", QVariant(qv.showDropShadow));
+    ctxt->setContextProperty("backgroundColor", giv.backgroundColor);
+    ctxt->setContextProperty("backgroundBlurOverlayColor", giv.backgroundBlurOverlayColor);
+    ctxt->setContextProperty("cellColor", giv.cellColor);
+    ctxt->setContextProperty("selectedColor", giv.selectedColor);
+    ctxt->setContextProperty("selectedBorderColor", giv.selectedBorderColor);
+    ctxt->setContextProperty("borderColor", giv.borderColor);
+    ctxt->setContextProperty("titleColor", giv.titleColor);
+    ctxt->setContextProperty("textColor", giv.textColor);
+    ctxt->setContextProperty("showDropShadow", QVariant(giv.showDropShadow));
 
     // Info panel colors
-    ctxt->setContextProperty("infoBackgroundColor", qv.infoBackgroundColor);
-    ctxt->setContextProperty("infoTextColor", qv.infoTextColor);
-    ctxt->setContextProperty("infoTitleColor", qv.infoTitleColor);
+    ctxt->setContextProperty("infoBackgroundColor", giv.infoBackgroundColor);
+    ctxt->setContextProperty("infoTextColor", giv.infoTextColor);
+    ctxt->setContextProperty("infoTitleColor", giv.infoTitleColor);
 
     // Rating and favorite colors
-    ctxt->setContextProperty("ratingUnselectedColor", qv.ratingUnselectedColor);
-    ctxt->setContextProperty("ratingSelectedColor", qv.ratingSelectedColor);
-    ctxt->setContextProperty("favUncheckedColor", qv.favUncheckedColor);
-    ctxt->setContextProperty("favCheckedColor", qv.favCheckedColor);
-    ctxt->setContextProperty("readTickUncheckedColor", qv.readTickUncheckedColor);
-    ctxt->setContextProperty("readTickCheckedColor", qv.readTickCheckedColor);
+    ctxt->setContextProperty("ratingUnselectedColor", giv.ratingUnselectedColor);
+    ctxt->setContextProperty("ratingSelectedColor", giv.ratingSelectedColor);
+    ctxt->setContextProperty("favUncheckedColor", giv.favUncheckedColor);
+    ctxt->setContextProperty("favCheckedColor", giv.favCheckedColor);
+    ctxt->setContextProperty("readTickUncheckedColor", giv.readTickUncheckedColor);
+    ctxt->setContextProperty("readTickCheckedColor", giv.readTickCheckedColor);
 
     // Current comic banner
-    ctxt->setContextProperty("currentComicBackgroundColor", qv.currentComicBackgroundColor);
+    ctxt->setContextProperty("currentComicBackgroundColor", giv.currentComicBackgroundColor);
 
     // Update background config to apply theme cell colors
     updateBackgroundConfig();

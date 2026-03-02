@@ -144,8 +144,8 @@ void FolderModel::applyTheme(const Theme &theme)
         folderIcon = QFileIconProvider().icon(QFileIconProvider::Folder);
         folderFinishedIcon = drawFinishedFolderIcon(sidebarIcons.folderReadOverlay);
     } else {
-        folderIcon = theme.treeView.folderIcon;
-        folderFinishedIcon = theme.treeView.folderFinishedIcon;
+        folderIcon = theme.navigationTree.folderIcon;
+        folderFinishedIcon = theme.navigationTree.folderFinishedIcon;
     }
 }
 

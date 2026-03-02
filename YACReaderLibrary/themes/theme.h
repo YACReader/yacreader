@@ -9,7 +9,7 @@
 #include "whats_new_dialog_theme.h"
 #include "theme_meta.h"
 
-struct ComicVineThemeTemplates {
+struct MetadataScraperDialogThemeTemplates {
     QString defaultLabelQSS = "QLabel {color:%1; font-size:12px;font-family:Arial;}";
     QString titleLabelQSS = "QLabel {color:%1; font-size:18px;font-family:Arial;}";
     QString coverLabelQSS = "QLabel {background-color: %1; color:%2; font-size:12px; font-family:Arial; }";
@@ -98,7 +98,7 @@ struct ComicFlowColors {
     QColor textColor;
 };
 
-struct TableViewThemeTemplates {
+struct ComicsViewTableThemeTemplates {
     QString tableViewQSS = "QTableView {alternate-background-color: %1; background-color: %2; outline: 0px; border: none;}"
                            "QTableCornerButton::section {background-color:%3; border:none; border-bottom:1px solid %4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %5, stop: 1 %4);}"
                            "QTableView::item {outline: 0px; border-bottom: %12px solid %6; border-top: %13px solid %7; padding-bottom:1px; color:%8;}"
@@ -107,7 +107,7 @@ struct TableViewThemeTemplates {
                            "QHeaderView::section:vertical {border-bottom: 1px solid %6; border-top: 1px solid %7;}";
 };
 
-struct TableViewTheme {
+struct ComicsViewTableTheme {
     QString tableViewQSS;
     QColor starRatingColor;
     QColor starRatingSelectedColor;
@@ -173,10 +173,10 @@ struct ImportWidgetTheme {
     QIcon coversToggleIcon;
 };
 
-struct TreeViewThemeTemplates {
+struct NavigationTreeThemeTemplates {
     // Styled tree view template with custom scroll bars
     // %1 = text color, %2 = selection/hover background, %3 = scroll background, %4 = scroll handle, %5 = selected text color
-    QString styledTreeViewQSS = "QTreeView {background-color:transparent; border: none; color:%1; outline:0; show-decoration-selected: 0;}"
+    QString navigationTreeQSS = "QTreeView {background-color:transparent; border: none; color:%1; outline:0; show-decoration-selected: 0;}"
                                 "QTreeView::item:selected {background-color: %2; color:%5; font:bold;}"
                                 "QTreeView::item:hover {background-color:%2; color:%5; font:bold;}"
                                 "QTreeView::branch:selected {background-color:%2;}"
@@ -193,8 +193,8 @@ struct TreeViewThemeTemplates {
                                 "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url('%9');}";
 };
 
-struct TreeViewTheme {
-    QString treeViewQSS;
+struct NavigationTreeTheme {
+    QString navigationTreeQSS;
     QColor folderIndicatorColor; // For incomplete folders and recently updated folders
 
     // Branch indicator icon paths (used by QSS url())
@@ -208,8 +208,8 @@ struct TreeViewTheme {
     QIcon folderFinishedIcon;
 };
 
-// QML view theme colors (used by GridComicsView, FolderContentView, InfoComicsView)
-struct QmlViewTheme {
+// Grid and info view theme colors (used by GridComicsView, FolderContentView, InfoComicsView)
+struct GridAndInfoViewTheme {
     // Grid colors
     QColor backgroundColor;
     QColor cellColor;
@@ -281,7 +281,7 @@ struct ContentSplitterTheme {
 
 struct SidebarIconsTheme {
     // When true, use QFileIconProvider for folder icons and overlay folderReadOverlay for finished folders
-    // When false, use the themed folderIcon and folderFinishedIcon from TreeViewTheme
+    // When false, use the themed folderIcon and folderFinishedIcon from NavigationTreeTheme
     bool useSystemFolderIcons;
     QPixmap folderReadOverlay; // Tick overlay drawn on system folder icons when useSystemFolderIcons is true
 
@@ -420,7 +420,7 @@ struct MainToolbarTheme {
     QString folderNameLabelQSS;
 };
 
-struct ComicVineTheme {
+struct MetadataScraperDialogTheme {
     QString defaultLabelQSS;
     QString titleLabelQSS;
     QString coverLabelQSS;
@@ -457,10 +457,8 @@ struct Theme {
     ThemeMeta meta;
     QJsonObject sourceJson;
 
-    QColor defaultContentBackgroundColor;
-
     ComicFlowColors comicFlow;
-    ComicVineTheme comicVine;
+    MetadataScraperDialogTheme metadataScraperDialog;
     HelpAboutDialogTheme helpAboutDialog;
     WhatsNewDialogTheme whatsNewDialog;
     EmptyContainerTheme emptyContainer;
@@ -469,9 +467,9 @@ struct Theme {
     LibraryItemTheme libraryItem;
     ImportWidgetTheme importWidget;
     ServerConfigDialogTheme serverConfigDialog;
-    TreeViewTheme treeView;
-    TableViewTheme tableView;
-    QmlViewTheme qmlView;
+    NavigationTreeTheme navigationTree;
+    ComicsViewTableTheme comicsViewTable;
+    GridAndInfoViewTheme gridAndInfoView;
     MainToolbarTheme mainToolbar;
     ContentSplitterTheme contentSplitter;
     ComicsViewToolbarTheme comicsViewToolbar;

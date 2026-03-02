@@ -4,12 +4,11 @@
         "displayName": "Default Dark",
         "variant": "dark"
     },
-    "defaultContentBackgroundColor": "#2a2a2a",
     "comicFlow": {
         "backgroundColor": "#111111",
         "textColor": "#888888"
     },
-    "comicVine": {
+    "metadataScraperDialog": {
         "contentTextColor": "#ffffff",
         "contentBackgroundColor": "#2b2b2b",
         "contentAltBackgroundColor": "#2e2e2e",
@@ -122,7 +121,7 @@
         "horizontalHandleHeight": 4,
         "verticalHandleWidth": 4
     },
-    "treeView": {
+    "navigationTree": {
         "textColor": "#dddfdf",
         "selectionBackgroundColor": "#2e2e2e",
         "scrollBackgroundColor": "#404040",
@@ -138,7 +137,7 @@
         "folderReadOverlayColor": "#222222",
         "folderReadOverlaySelectedColor": "#222222"
     },
-    "tableView": {
+    "comicsViewTable": {
         "alternateBackgroundColor": "#2e2e2e",
         "backgroundColor": "#2a2a2a",
         "headerBackgroundColor": "#2a2a2a",
@@ -155,7 +154,7 @@
         "starRatingColor": "#e9be0f",
         "starRatingSelectedColor": "#ffffff"
     },
-    "qmlView": {
+    "gridAndInfoView": {
         "backgroundColor": "#2a2a2a",
         "cellColor": "#212121",
         "cellColorWithBackground": "#99212121",

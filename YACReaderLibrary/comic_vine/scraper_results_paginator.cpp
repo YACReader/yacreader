@@ -63,16 +63,16 @@ void ScraperResultsPaginator::setCustomLabel(const QString &label)
 
 void ScraperResultsPaginator::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    numElements->setStyleSheet(comicVineTheme.defaultLabelQSS);
-    numPages->setStyleSheet(comicVineTheme.defaultLabelQSS);
+    numElements->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
+    numPages->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
 
-    nextPage->setStyleSheet(comicVineTheme.noBorderToolButtonQSS);
-    nextPage->setIconSize(comicVineTheme.nextPageIcon.size);
-    nextPage->setIcon(comicVineTheme.nextPageIcon.icon);
+    nextPage->setStyleSheet(metadataScraperDialogTheme.noBorderToolButtonQSS);
+    nextPage->setIconSize(metadataScraperDialogTheme.nextPageIcon.size);
+    nextPage->setIcon(metadataScraperDialogTheme.nextPageIcon.icon);
 
-    previousPage->setStyleSheet(comicVineTheme.noBorderToolButtonQSS);
-    previousPage->setIconSize(comicVineTheme.previousPageIcon.size);
-    previousPage->setIcon(comicVineTheme.previousPageIcon.icon);
+    previousPage->setStyleSheet(metadataScraperDialogTheme.noBorderToolButtonQSS);
+    previousPage->setIconSize(metadataScraperDialogTheme.previousPageIcon.size);
+    previousPage->setIcon(metadataScraperDialogTheme.previousPageIcon.icon);
 }

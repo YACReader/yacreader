@@ -649,16 +649,16 @@ void ComicVineDialog::launchSearchComic()
 
 void ComicVineDialog::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    setStyleSheet(comicVineTheme.dialogQSS);
+    setStyleSheet(metadataScraperDialogTheme.dialogQSS);
 
-    skipButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
-    backButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
-    nextButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
-    searchButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
-    closeButton->setStyleSheet(comicVineTheme.dialogButtonsQSS);
+    skipButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
+    backButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
+    nextButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
+    searchButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
+    closeButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
 
-    loadingMessage->setStyleSheet(comicVineTheme.defaultLabelQSS);
-    busyWidget->setColor(comicVineTheme.busyIndicatorColor);
+    loadingMessage->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
+    busyWidget->setColor(metadataScraperDialogTheme.busyIndicatorColor);
 }

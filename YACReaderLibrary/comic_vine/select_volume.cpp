@@ -219,8 +219,8 @@ SelectedVolumeInfo SelectVolume::getSelectedVolumeInfo()
 
 void SelectVolume::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    label->setStyleSheet(comicVineTheme.defaultLabelQSS);
-    cover->setStyleSheet(comicVineTheme.coverLabelQSS);
+    label->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
+    cover->setStyleSheet(metadataScraperDialogTheme.coverLabelQSS);
 }

@@ -224,7 +224,7 @@ void InfoComicsView::selectedItem(int index)
 void InfoComicsView::applyTheme(const Theme &theme)
 {
     QQmlContext *ctxt = view->rootContext();
-    const auto &qv = theme.qmlView;
+    const auto &giv = theme.gridAndInfoView;
 
     // Info panel colors
     // Cache-bust the SVG file URLs so QML's image cache doesn't serve stale
@@ -235,21 +235,21 @@ void InfoComicsView::applyTheme(const Theme &theme)
         url.setQuery(bust);
         return url;
     };
-    ctxt->setContextProperty("infoBackgroundColor", qv.infoBackgroundColor);
-    ctxt->setContextProperty("topShadow", svgUrl(qv.topShadow));
-    ctxt->setContextProperty("infoShadow", svgUrl(qv.infoShadow));
-    ctxt->setContextProperty("infoIndicator", svgUrl(qv.infoIndicator));
-    ctxt->setContextProperty("infoTextColor", qv.infoTextColor);
-    ctxt->setContextProperty("infoTitleColor", qv.infoTitleColor);
+    ctxt->setContextProperty("infoBackgroundColor", giv.infoBackgroundColor);
+    ctxt->setContextProperty("topShadow", svgUrl(giv.topShadow));
+    ctxt->setContextProperty("infoShadow", svgUrl(giv.infoShadow));
+    ctxt->setContextProperty("infoIndicator", svgUrl(giv.infoIndicator));
+    ctxt->setContextProperty("infoTextColor", giv.infoTextColor);
+    ctxt->setContextProperty("infoTitleColor", giv.infoTitleColor);
 
     // Rating and favorite colors
-    ctxt->setContextProperty("ratingUnselectedColor", qv.ratingUnselectedColor);
-    ctxt->setContextProperty("ratingSelectedColor", qv.ratingSelectedColor);
-    ctxt->setContextProperty("favUncheckedColor", qv.favUncheckedColor);
-    ctxt->setContextProperty("favCheckedColor", qv.favCheckedColor);
-    ctxt->setContextProperty("readTickUncheckedColor", qv.readTickUncheckedColor);
-    ctxt->setContextProperty("readTickCheckedColor", qv.readTickCheckedColor);
+    ctxt->setContextProperty("ratingUnselectedColor", giv.ratingUnselectedColor);
+    ctxt->setContextProperty("ratingSelectedColor", giv.ratingSelectedColor);
+    ctxt->setContextProperty("favUncheckedColor", giv.favUncheckedColor);
+    ctxt->setContextProperty("favCheckedColor", giv.favCheckedColor);
+    ctxt->setContextProperty("readTickUncheckedColor", giv.readTickUncheckedColor);
+    ctxt->setContextProperty("readTickCheckedColor", giv.readTickCheckedColor);
 
-    ctxt->setContextProperty("showDropShadow", QVariant(qv.showDropShadow));
-    ctxt->setContextProperty("backgroundBlurOverlayColor", qv.backgroundBlurOverlayColor);
+    ctxt->setContextProperty("showDropShadow", QVariant(giv.showDropShadow));
+    ctxt->setContextProperty("backgroundBlurOverlayColor", giv.backgroundBlurOverlayColor);
 }

@@ -263,36 +263,36 @@ void FolderContentView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction act
 void FolderContentView::applyTheme(const Theme &theme)
 {
     QQmlContext *ctxt = view->rootContext();
-    const auto &qv = theme.qmlView;
+    const auto &giv = theme.gridAndInfoView;
 
     toolbar->setStyleSheet(theme.comicsViewToolbar.toolbarQSS);
 
     // Continue reading section colors
-    ctxt->setContextProperty("continueReadingBackgroundColor", qv.continueReadingBackgroundColor);
-    ctxt->setContextProperty("continueReadingColor", qv.continueReadingColor);
+    ctxt->setContextProperty("continueReadingBackgroundColor", giv.continueReadingBackgroundColor);
+    ctxt->setContextProperty("continueReadingColor", giv.continueReadingColor);
 
     // Grid colors
-    ctxt->setContextProperty("backgroundColor", qv.backgroundColor);
-    ctxt->setContextProperty("cellColor", qv.cellColor);
-    ctxt->setContextProperty("selectedColor", qv.selectedColor);
-    ctxt->setContextProperty("selectedBorderColor", qv.selectedBorderColor);
-    ctxt->setContextProperty("borderColor", qv.borderColor);
-    ctxt->setContextProperty("titleColor", qv.titleColor);
-    ctxt->setContextProperty("textColor", qv.textColor);
-    ctxt->setContextProperty("dropShadow", QVariant(qv.showDropShadow));
+    ctxt->setContextProperty("backgroundColor", giv.backgroundColor);
+    ctxt->setContextProperty("cellColor", giv.cellColor);
+    ctxt->setContextProperty("selectedColor", giv.selectedColor);
+    ctxt->setContextProperty("selectedBorderColor", giv.selectedBorderColor);
+    ctxt->setContextProperty("borderColor", giv.borderColor);
+    ctxt->setContextProperty("titleColor", giv.titleColor);
+    ctxt->setContextProperty("textColor", giv.textColor);
+    ctxt->setContextProperty("dropShadow", QVariant(giv.showDropShadow));
 
     // Info panel colors
-    ctxt->setContextProperty("infoBackgroundColor", qv.infoBackgroundColor);
-    ctxt->setContextProperty("infoTextColor", qv.infoTextColor);
-    ctxt->setContextProperty("infoTitleColor", qv.infoTitleColor);
+    ctxt->setContextProperty("infoBackgroundColor", giv.infoBackgroundColor);
+    ctxt->setContextProperty("infoTextColor", giv.infoTextColor);
+    ctxt->setContextProperty("infoTitleColor", giv.infoTitleColor);
 
     // Rating and favorite colors
-    ctxt->setContextProperty("ratingUnselectedColor", qv.ratingUnselectedColor);
-    ctxt->setContextProperty("ratingSelectedColor", qv.ratingSelectedColor);
-    ctxt->setContextProperty("favUncheckedColor", qv.favUncheckedColor);
-    ctxt->setContextProperty("favCheckedColor", qv.favCheckedColor);
-    ctxt->setContextProperty("readTickUncheckedColor", qv.readTickUncheckedColor);
-    ctxt->setContextProperty("readTickCheckedColor", qv.readTickCheckedColor);
+    ctxt->setContextProperty("ratingUnselectedColor", giv.ratingUnselectedColor);
+    ctxt->setContextProperty("ratingSelectedColor", giv.ratingSelectedColor);
+    ctxt->setContextProperty("favUncheckedColor", giv.favUncheckedColor);
+    ctxt->setContextProperty("favCheckedColor", giv.favCheckedColor);
+    ctxt->setContextProperty("readTickUncheckedColor", giv.readTickUncheckedColor);
+    ctxt->setContextProperty("readTickCheckedColor", giv.readTickCheckedColor);
 
     // Update zoom slider icons
     if (smallZoomLabel) {

@@ -13,8 +13,8 @@ class YACReaderTableView : public QTableView, protected Themable
     Q_OBJECT
 public:
     explicit YACReaderTableView(QWidget *parent = 0);
-    QColor starRatingColor() const { return theme.tableView.starRatingColor; }
-    QColor starRatingSelectedColor() const { return theme.tableView.starRatingSelectedColor; }
+    QColor starRatingColor() const { return theme.comicsViewTable.starRatingColor; }
+    QColor starRatingSelectedColor() const { return theme.comicsViewTable.starRatingSelectedColor; }
 
 protected:
     void applyTheme(const Theme &theme) override;

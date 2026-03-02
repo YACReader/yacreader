@@ -41,8 +41,8 @@ void ScraperScrollLabel::openLink(const QString &link)
 
 void ScraperScrollLabel::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    textLabel->setStyleSheet(comicVineTheme.scraperScrollLabelTextQSS);
-    setStyleSheet(comicVineTheme.scraperScrollLabelScrollAreaQSS);
+    textLabel->setStyleSheet(metadataScraperDialogTheme.scraperScrollLabelTextQSS);
+    setStyleSheet(metadataScraperDialogTheme.scraperScrollLabelScrollAreaQSS);
 }

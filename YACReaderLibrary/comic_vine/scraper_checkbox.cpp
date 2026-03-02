@@ -8,7 +8,7 @@ ScraperCheckBox::ScraperCheckBox(const QString &text, QWidget *parent)
 
 void ScraperCheckBox::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    setStyleSheet(comicVineTheme.checkBoxQSS);
+    setStyleSheet(metadataScraperDialogTheme.checkBoxQSS);
 }

@@ -22,8 +22,8 @@ QWidget *ScrapperToolButton::getSeparator()
 {
     QWidget *w = new QWidget;
     w->setFixedWidth(1);
-    auto comicVineTheme = ThemeManager::instance().getCurrentTheme().comicVine;
-    w->setStyleSheet(comicVineTheme.scraperToolButtonSeparatorQSS);
+    auto metadataScraperDialogTheme = ThemeManager::instance().getCurrentTheme().metadataScraperDialog;
+    w->setStyleSheet(metadataScraperDialogTheme.scraperToolButtonSeparatorQSS);
     return w;
 }
 
@@ -47,9 +47,9 @@ void ScrapperToolButton::paintEvent(QPaintEvent *e)
 
 void ScrapperToolButton::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
-    setStyleSheet(comicVineTheme.scraperToolButtonQSS);
-    fillColor = comicVineTheme.scraperToolButtonFillColor;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
+    setStyleSheet(metadataScraperDialogTheme.scraperToolButtonQSS);
+    fillColor = metadataScraperDialogTheme.scraperToolButtonFillColor;
     update();
 }
 
@@ -267,13 +267,13 @@ QList<QPair<ComicDB, QString>> SortVolumeComics::getMatchingInfo()
 
 void SortVolumeComics::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    label->setStyleSheet(comicVineTheme.defaultLabelQSS);
-    sortLabel->setStyleSheet(comicVineTheme.defaultLabelQSS);
+    label->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
+    sortLabel->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
 
-    moveUpButtonCL->setIconSize(comicVineTheme.rowUpIcon.size);
-    moveUpButtonCL->setIcon(comicVineTheme.rowUpIcon.icon);
-    moveDownButtonCL->setIconSize(comicVineTheme.rowDownIcon.size);
-    moveDownButtonCL->setIcon(comicVineTheme.rowDownIcon.icon);
+    moveUpButtonCL->setIconSize(metadataScraperDialogTheme.rowUpIcon.size);
+    moveUpButtonCL->setIcon(metadataScraperDialogTheme.rowUpIcon.icon);
+    moveDownButtonCL->setIconSize(metadataScraperDialogTheme.rowDownIcon.size);
+    moveDownButtonCL->setIcon(metadataScraperDialogTheme.rowDownIcon.icon);
 }

@@ -153,7 +153,7 @@ QIcon ReadingListItem::getIcon() const
     else if (theme.sidebarIcons.useSystemFolderIcons)
         return QFileIconProvider().icon(QFileIconProvider::Folder);
     else
-        return theme.treeView.folderIcon; // sublist
+        return theme.navigationTree.folderIcon; // sublist
 }
 
 int ReadingListItem::childCount() const

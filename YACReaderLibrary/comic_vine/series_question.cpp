@@ -40,9 +40,9 @@ void SeriesQuestion::setYes(bool y)
 
 void SeriesQuestion::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    questionLabel->setStyleSheet(comicVineTheme.defaultLabelQSS);
-    yes->setStyleSheet(comicVineTheme.radioButtonQSS);
-    no->setStyleSheet(comicVineTheme.radioButtonQSS);
+    questionLabel->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
+    yes->setStyleSheet(metadataScraperDialogTheme.radioButtonQSS);
+    no->setStyleSheet(metadataScraperDialogTheme.radioButtonQSS);
 }

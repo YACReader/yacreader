@@ -5,8 +5,8 @@
 #include "icon_utils.h"
 #include "yacreader_global.h"
 
-struct ComicVineParams {
-    ComicVineThemeTemplates t;
+struct MetadataScraperDialogParams {
+    MetadataScraperDialogThemeTemplates t;
 
     QColor contentTextColor;
     QColor contentBackgroundColor;
@@ -93,8 +93,8 @@ struct ImportWidgetParams {
     QColor iconCheckedColor;
 };
 
-struct TreeViewParams {
-    TreeViewThemeTemplates t;
+struct NavigationTreeParams {
+    NavigationTreeThemeTemplates t;
 
     QColor textColor;
     QColor selectionBackgroundColor;
@@ -116,8 +116,8 @@ struct TreeViewParams {
     QColor folderReadOverlaySelectedColor; // Tick/checkmark color for selected folder
 };
 
-struct TableViewParams {
-    TableViewThemeTemplates t;
+struct ComicsViewTableParams {
+    ComicsViewTableThemeTemplates t;
 
     QColor alternateBackgroundColor;
     QColor backgroundColor;
@@ -137,7 +137,7 @@ struct TableViewParams {
     QColor starRatingSelectedColor;
 };
 
-struct QmlViewParams {
+struct GridAndInfoViewParams {
     // Grid colors
     QColor backgroundColor;
     QColor cellColor;
@@ -301,10 +301,9 @@ struct WhatsNewDialogParams {
 
 struct ThemeParams {
     ThemeMeta meta;
-    QColor defaultContentBackgroundColor;
 
     ComicFlowColors comicFlowColors;
-    ComicVineParams comicVineParams;
+    MetadataScraperDialogParams metadataScraperDialogParams;
     HelpAboutDialogTheme helpAboutDialogParams;
     EmptyContainerParams emptyContainerParams;
     SidebarParams sidebarParams;
@@ -314,9 +313,9 @@ struct ThemeParams {
     ServerConfigDialogParams serverConfigDialogParams;
     MainToolbarParams mainToolbarParams;
     ContentSplitterParams contentSplitterParams;
-    TreeViewParams treeViewParams;
-    TableViewParams tableViewParams;
-    QmlViewParams qmlViewParams;
+    NavigationTreeParams navigationTreeParams;
+    ComicsViewTableParams comicsViewTableParams;
+    GridAndInfoViewParams gridAndInfoViewParams;
     ComicsViewToolbarParams comicsViewToolbarParams;
     SearchLineEditParams searchLineEditParams;
     ReadingListIconsParams readingListIconsParams;
@@ -330,63 +329,61 @@ Theme makeTheme(const ThemeParams &params)
 {
     Theme theme;
 
-    theme.defaultContentBackgroundColor = params.defaultContentBackgroundColor;
-
     // Comic Flow
     const auto &cf = params.comicFlowColors;
     theme.comicFlow.backgroundColor = cf.backgroundColor;
     theme.comicFlow.textColor = cf.textColor;
 
-    // Comic Vine
-    const auto &cv = params.comicVineParams;
-    const auto &t = cv.t;
+    // MetadataScraperDialog
+    const auto &msd = params.metadataScraperDialogParams;
+    const auto &t = msd.t;
 
     auto recolor = [&](const QString &path, const QColor &color) {
         return recoloredSvgToThemeFile(path, color, params.meta.id);
     };
 
-    theme.comicVine.defaultLabelQSS = t.defaultLabelQSS.arg(cv.labelTextColor.name());
-    theme.comicVine.titleLabelQSS = t.titleLabelQSS.arg(cv.labelTextColor.name());
-    theme.comicVine.coverLabelQSS = t.coverLabelQSS.arg(cv.labelBackgroundColor.name(), cv.labelTextColor.name());
-    theme.comicVine.radioButtonQSS = t.radioButtonQSS.arg(cv.buttonTextColor.name(), recolor(":/images/comic_vine/radioUnchecked.svg", cv.radioUncheckedColor), recoloredSvgToThemeFile(":/images/comic_vine/radioChecked.svg", cv.radioCheckedBackgroundColor, cv.radioCheckedIndicatorColor, params.meta.id));
-    theme.comicVine.checkBoxQSS = t.checkBoxQSS.arg(cv.buttonTextColor.name(), cv.buttonBorderColor.name(), cv.buttonBackgroundColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", cv.checkBoxTickColor));
+    theme.metadataScraperDialog.defaultLabelQSS = t.defaultLabelQSS.arg(msd.labelTextColor.name());
+    theme.metadataScraperDialog.titleLabelQSS = t.titleLabelQSS.arg(msd.labelTextColor.name());
+    theme.metadataScraperDialog.coverLabelQSS = t.coverLabelQSS.arg(msd.labelBackgroundColor.name(), msd.labelTextColor.name());
+    theme.metadataScraperDialog.radioButtonQSS = t.radioButtonQSS.arg(msd.buttonTextColor.name(), recolor(":/images/comic_vine/radioUnchecked.svg", msd.radioUncheckedColor), recoloredSvgToThemeFile(":/images/comic_vine/radioChecked.svg", msd.radioCheckedBackgroundColor, msd.radioCheckedIndicatorColor, params.meta.id));
+    theme.metadataScraperDialog.checkBoxQSS = t.checkBoxQSS.arg(msd.buttonTextColor.name(), msd.buttonBorderColor.name(), msd.buttonBackgroundColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", msd.checkBoxTickColor));
 
-    theme.comicVine.scraperLineEditTitleLabelQSS = t.scraperLineEditTitleLabelQSS.arg(cv.contentTextColor.name());
-    theme.comicVine.scraperLineEditQSS = t.scraperLineEditQSS.arg(cv.contentAltBackgroundColor.name(), cv.contentTextColor.name(), "%1");
+    theme.metadataScraperDialog.scraperLineEditTitleLabelQSS = t.scraperLineEditTitleLabelQSS.arg(msd.contentTextColor.name());
+    theme.metadataScraperDialog.scraperLineEditQSS = t.scraperLineEditQSS.arg(msd.contentAltBackgroundColor.name(), msd.contentTextColor.name(), "%1");
 
-    theme.comicVine.scraperToolButtonQSS = t.scraperToolButtonQSS.arg(cv.buttonBackgroundColor.name(), cv.buttonTextColor.name(), cv.toolButtonAccentColor.name());
-    theme.comicVine.scraperToolButtonSeparatorQSS = t.scraperToolButtonSeparatorQSS.arg(cv.toolButtonAccentColor.name());
-    theme.comicVine.scraperToolButtonFillColor = cv.buttonBackgroundColor;
+    theme.metadataScraperDialog.scraperToolButtonQSS = t.scraperToolButtonQSS.arg(msd.buttonBackgroundColor.name(), msd.buttonTextColor.name(), msd.toolButtonAccentColor.name());
+    theme.metadataScraperDialog.scraperToolButtonSeparatorQSS = t.scraperToolButtonSeparatorQSS.arg(msd.toolButtonAccentColor.name());
+    theme.metadataScraperDialog.scraperToolButtonFillColor = msd.buttonBackgroundColor;
 
-    theme.comicVine.scraperScrollLabelTextQSS = t.scraperScrollLabelTextQSS.arg(cv.contentBackgroundColor.name(), cv.contentTextColor.name(), cv.hyperlinkColor.name());
-    theme.comicVine.scraperScrollLabelScrollAreaQSS = t.scraperScrollLabelScrollAreaQSS.arg(cv.contentBackgroundColor.name(), cv.tableScrollHandleColor.name(), cv.tableScrollBackgroundColor.name());
+    theme.metadataScraperDialog.scraperScrollLabelTextQSS = t.scraperScrollLabelTextQSS.arg(msd.contentBackgroundColor.name(), msd.contentTextColor.name(), msd.hyperlinkColor.name());
+    theme.metadataScraperDialog.scraperScrollLabelScrollAreaQSS = t.scraperScrollLabelScrollAreaQSS.arg(msd.contentBackgroundColor.name(), msd.tableScrollHandleColor.name(), msd.tableScrollBackgroundColor.name());
 
-    theme.comicVine.scraperTableViewQSS = t.scraperTableViewQSS
-                                                  .arg(cv.tableHeaderTextColor.name(),
-                                                       cv.tableAltBackgroundColor.name(),
-                                                       cv.tableBackgroundColor.name(),
-                                                       cv.tableSelectedColor.name(),
-                                                       cv.tableHeaderBackgroundColor.name(),
-                                                       cv.tableHeaderBorderColor.name(),
-                                                       cv.tableHeaderTextColor.name(),
-                                                       cv.tableSectionBorderDark.name(),
-                                                       cv.tableSectionBorderLight.name(),
-                                                       cv.tableScrollHandleColor.name(),
-                                                       cv.tableScrollBackgroundColor.name(),
-                                                       recolor(":/images/comic_vine/downArrow.svg", cv.downArrowColor),
-                                                       recolor(":/images/comic_vine/upArrow.svg", cv.upArrowColor),
-                                                       cv.tableHeaderGradientColor.name());
+    theme.metadataScraperDialog.scraperTableViewQSS = t.scraperTableViewQSS
+                                                  .arg(msd.tableHeaderTextColor.name(),
+                                                       msd.tableAltBackgroundColor.name(),
+                                                       msd.tableBackgroundColor.name(),
+                                                       msd.tableSelectedColor.name(),
+                                                       msd.tableHeaderBackgroundColor.name(),
+                                                       msd.tableHeaderBorderColor.name(),
+                                                       msd.tableHeaderTextColor.name(),
+                                                       msd.tableSectionBorderDark.name(),
+                                                       msd.tableSectionBorderLight.name(),
+                                                       msd.tableScrollHandleColor.name(),
+                                                       msd.tableScrollBackgroundColor.name(),
+                                                       recolor(":/images/comic_vine/downArrow.svg", msd.downArrowColor),
+                                                       recolor(":/images/comic_vine/upArrow.svg", msd.upArrowColor),
+                                                       msd.tableHeaderGradientColor.name());
 
-    theme.comicVine.dialogQSS = t.dialogQSS.arg(cv.dialogBackgroundColor.name());
-    theme.comicVine.dialogButtonsQSS = t.dialogButtonsQSS.arg(cv.buttonBorderColor.name(), cv.buttonBackgroundColor.name(), cv.buttonTextColor.name());
+    theme.metadataScraperDialog.dialogQSS = t.dialogQSS.arg(msd.dialogBackgroundColor.name());
+    theme.metadataScraperDialog.dialogButtonsQSS = t.dialogButtonsQSS.arg(msd.buttonBorderColor.name(), msd.buttonBackgroundColor.name(), msd.buttonTextColor.name());
 
-    theme.comicVine.busyIndicatorColor = cv.busyIndicatorColor;
+    theme.metadataScraperDialog.busyIndicatorColor = msd.busyIndicatorColor;
 
-    theme.comicVine.nextPageIcon = { QIcon(recolor(t.nextPageIcon, cv.navIconColor)), t.pageIconSize };
-    theme.comicVine.previousPageIcon = { QIcon(recolor(t.previousPageIcon, cv.navIconColor)), t.pageIconSize };
+    theme.metadataScraperDialog.nextPageIcon = { QIcon(recolor(t.nextPageIcon, msd.navIconColor)), t.pageIconSize };
+    theme.metadataScraperDialog.previousPageIcon = { QIcon(recolor(t.previousPageIcon, msd.navIconColor)), t.pageIconSize };
 
-    theme.comicVine.rowUpIcon = { QIcon(recolor(t.rowUpIcon, cv.rowIconColor)), t.rowIconSize };
-    theme.comicVine.rowDownIcon = { QIcon(recolor(t.rowDownIcon, cv.rowIconColor)), t.rowIconSize };
+    theme.metadataScraperDialog.rowUpIcon = { QIcon(recolor(t.rowUpIcon, msd.rowIconColor)), t.rowIconSize };
+    theme.metadataScraperDialog.rowDownIcon = { QIcon(recolor(t.rowDownIcon, msd.rowIconColor)), t.rowIconSize };
 
     // HelpAboutDialog
     theme.helpAboutDialog = params.helpAboutDialogParams;
@@ -470,55 +467,54 @@ Theme makeTheme(const ThemeParams &params)
     }
     // end ImportWidget
 
-    // TableView
-    const auto &tav = params.tableViewParams;
-    const auto &tavt = tav.t;
-    theme.tableView.tableViewQSS = tavt.tableViewQSS
-                                           .arg(tav.alternateBackgroundColor.name(),
-                                                tav.backgroundColor.name(),
-                                                tav.headerBackgroundColor.name(),
-                                                tav.headerBorderColor.name(),
-                                                tav.headerGradientColor.name(),
-                                                tav.itemBorderBottomColor.name(),
-                                                tav.itemBorderTopColor.name(),
-                                                tav.itemTextColor.name(),
-                                                tav.selectedColor.name(),
-                                                tav.selectedTextColor.name(),
-                                                tav.headerTextColor.name(),
-                                                QString::number(tav.itemBorderBottomWidth),
-                                                QString::number(tav.itemBorderTopWidth));
-    theme.tableView.starRatingColor = tav.starRatingColor;
-    theme.tableView.starRatingSelectedColor = tav.starRatingSelectedColor;
-    // end TableView
+    // ComicsViewTable
+    const auto &cvta = params.comicsViewTableParams;
+    theme.comicsViewTable.tableViewQSS = cvta.t.tableViewQSS
+                                           .arg(cvta.alternateBackgroundColor.name(),
+                                                cvta.backgroundColor.name(),
+                                                cvta.headerBackgroundColor.name(),
+                                                cvta.headerBorderColor.name(),
+                                                cvta.headerGradientColor.name(),
+                                                cvta.itemBorderBottomColor.name(),
+                                                cvta.itemBorderTopColor.name(),
+                                                cvta.itemTextColor.name(),
+                                                cvta.selectedColor.name(),
+                                                cvta.selectedTextColor.name(),
+                                                cvta.headerTextColor.name(),
+                                                QString::number(cvta.itemBorderBottomWidth),
+                                                QString::number(cvta.itemBorderTopWidth));
+    theme.comicsViewTable.starRatingColor = cvta.starRatingColor;
+    theme.comicsViewTable.starRatingSelectedColor = cvta.starRatingSelectedColor;
+    // end ComicsViewTable
 
-    // QmlView
-    const auto &qv = params.qmlViewParams;
-    theme.qmlView.backgroundColor = qv.backgroundColor;
-    theme.qmlView.cellColor = qv.cellColor;
-    theme.qmlView.cellColorWithBackground = qv.cellColorWithBackground;
-    theme.qmlView.selectedColor = qv.selectedColor;
-    theme.qmlView.selectedBorderColor = qv.selectedBorderColor;
-    theme.qmlView.borderColor = qv.borderColor;
-    theme.qmlView.titleColor = qv.titleColor;
-    theme.qmlView.textColor = qv.textColor;
-    theme.qmlView.showDropShadow = qv.showDropShadow;
-    theme.qmlView.infoBackgroundColor = qv.infoBackgroundColor;
-    theme.qmlView.topShadow = recoloredSvgToThemeFile(":/qml/info-top-shadow.svg", qv.infoBackgroundColor, qv.infoBorderColor, qv.infoShadowColor, params.meta.id);
-    theme.qmlView.infoShadow = recoloredSvgToThemeFile(":/qml/info-shadow.svg", qv.infoBackgroundColor, qv.infoBorderColor, qv.infoShadowColor, params.meta.id);
-    theme.qmlView.infoIndicator = recoloredSvgToThemeFile(":/qml/info-indicator.svg", qv.infoBackgroundColor, qv.infoBorderColor, qv.infoShadowColor, params.meta.id);
-    theme.qmlView.infoTextColor = qv.infoTextColor;
-    theme.qmlView.infoTitleColor = qv.infoTitleColor;
-    theme.qmlView.ratingUnselectedColor = qv.ratingUnselectedColor;
-    theme.qmlView.ratingSelectedColor = qv.ratingSelectedColor;
-    theme.qmlView.favUncheckedColor = qv.favUncheckedColor;
-    theme.qmlView.favCheckedColor = qv.favCheckedColor;
-    theme.qmlView.readTickUncheckedColor = qv.readTickUncheckedColor;
-    theme.qmlView.readTickCheckedColor = qv.readTickCheckedColor;
-    theme.qmlView.currentComicBackgroundColor = qv.currentComicBackgroundColor;
-    theme.qmlView.continueReadingBackgroundColor = qv.continueReadingBackgroundColor;
-    theme.qmlView.continueReadingColor = qv.continueReadingColor;
-    theme.qmlView.backgroundBlurOverlayColor = qv.backgroundBlurOverlayColor;
-    // end QmlView
+    // GridAndInfoView
+    const auto &giv = params.gridAndInfoViewParams;
+    theme.gridAndInfoView.backgroundColor = giv.backgroundColor;
+    theme.gridAndInfoView.cellColor = giv.cellColor;
+    theme.gridAndInfoView.cellColorWithBackground = giv.cellColorWithBackground;
+    theme.gridAndInfoView.selectedColor = giv.selectedColor;
+    theme.gridAndInfoView.selectedBorderColor = giv.selectedBorderColor;
+    theme.gridAndInfoView.borderColor = giv.borderColor;
+    theme.gridAndInfoView.titleColor = giv.titleColor;
+    theme.gridAndInfoView.textColor = giv.textColor;
+    theme.gridAndInfoView.showDropShadow = giv.showDropShadow;
+    theme.gridAndInfoView.infoBackgroundColor = giv.infoBackgroundColor;
+    theme.gridAndInfoView.topShadow = recoloredSvgToThemeFile(":/qml/info-top-shadow.svg", giv.infoBackgroundColor, giv.infoBorderColor, giv.infoShadowColor, params.meta.id);
+    theme.gridAndInfoView.infoShadow = recoloredSvgToThemeFile(":/qml/info-shadow.svg", giv.infoBackgroundColor, giv.infoBorderColor, giv.infoShadowColor, params.meta.id);
+    theme.gridAndInfoView.infoIndicator = recoloredSvgToThemeFile(":/qml/info-indicator.svg", giv.infoBackgroundColor, giv.infoBorderColor, giv.infoShadowColor, params.meta.id);
+    theme.gridAndInfoView.infoTextColor = giv.infoTextColor;
+    theme.gridAndInfoView.infoTitleColor = giv.infoTitleColor;
+    theme.gridAndInfoView.ratingUnselectedColor = giv.ratingUnselectedColor;
+    theme.gridAndInfoView.ratingSelectedColor = giv.ratingSelectedColor;
+    theme.gridAndInfoView.favUncheckedColor = giv.favUncheckedColor;
+    theme.gridAndInfoView.favCheckedColor = giv.favCheckedColor;
+    theme.gridAndInfoView.readTickUncheckedColor = giv.readTickUncheckedColor;
+    theme.gridAndInfoView.readTickCheckedColor = giv.readTickCheckedColor;
+    theme.gridAndInfoView.currentComicBackgroundColor = giv.currentComicBackgroundColor;
+    theme.gridAndInfoView.continueReadingBackgroundColor = giv.continueReadingBackgroundColor;
+    theme.gridAndInfoView.continueReadingColor = giv.continueReadingColor;
+    theme.gridAndInfoView.backgroundBlurOverlayColor = giv.backgroundBlurOverlayColor;
+    // end GridAndInfoView
 
     // MainToolbar
     const auto &mt = params.mainToolbarParams;
@@ -600,7 +596,7 @@ Theme makeTheme(const ThemeParams &params)
     // System folder icons flag and overlay
     theme.sidebarIcons.useSystemFolderIcons = si.useSystemFolderIcons;
     if (si.useSystemFolderIcons) {
-        const QString overlayPath = recoloredSvgToThemeFile(":/images/sidebar/folder_read_overlay.svg", params.treeViewParams.folderReadOverlayColor, params.meta.id);
+        const QString overlayPath = recoloredSvgToThemeFile(":/images/sidebar/folder_read_overlay.svg", params.navigationTreeParams.folderReadOverlayColor, params.meta.id);
         theme.sidebarIcons.folderReadOverlay = QPixmap(overlayPath);
     }
 
@@ -642,43 +638,43 @@ Theme makeTheme(const ThemeParams &params)
     theme.libraryItem.libraryOptionsIcon = QIcon(libraryOptionsPath);
     // end LibraryItem
 
-    // TreeView
-    const auto &tv = params.treeViewParams;
+    // NavigationTree
+    const auto &nt = params.navigationTreeParams;
 
     // Branch indicator icons — own colors, independent of the sidebar icon color
-    theme.treeView.branchClosedIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", tv.branchIndicatorColor, params.meta.id);
-    theme.treeView.branchOpenIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", tv.branchIndicatorColor, params.meta.id);
-    theme.treeView.branchClosedIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", tv.branchIndicatorSelectedColor, params.meta.id, { .suffix = "_selected" });
-    theme.treeView.branchOpenIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", tv.branchIndicatorSelectedColor, params.meta.id, { .suffix = "_selected" });
+    theme.navigationTree.branchClosedIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", nt.branchIndicatorColor, params.meta.id);
+    theme.navigationTree.branchOpenIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", nt.branchIndicatorColor, params.meta.id);
+    theme.navigationTree.branchClosedIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", nt.branchIndicatorSelectedColor, params.meta.id, { .suffix = "_selected" });
+    theme.navigationTree.branchOpenIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", nt.branchIndicatorSelectedColor, params.meta.id, { .suffix = "_selected" });
 
-    theme.treeView.treeViewQSS = tv.t.styledTreeViewQSS
-                                         .arg(tv.textColor.name(),
-                                              tv.selectionBackgroundColor.name(),
-                                              tv.scrollBackgroundColor.name(),
-                                              tv.scrollHandleColor.name(),
-                                              tv.selectedTextColor.name(),
-                                              theme.treeView.branchClosedIconPath,
-                                              theme.treeView.branchOpenIconPath,
-                                              theme.treeView.branchClosedIconSelectedPath,
-                                              theme.treeView.branchOpenIconSelectedPath);
-    theme.treeView.folderIndicatorColor = tv.folderIndicatorColor;
+    theme.navigationTree.navigationTreeQSS = nt.t.navigationTreeQSS
+                                         .arg(nt.textColor.name(),
+                                              nt.selectionBackgroundColor.name(),
+                                              nt.scrollBackgroundColor.name(),
+                                              nt.scrollHandleColor.name(),
+                                              nt.selectedTextColor.name(),
+                                              theme.navigationTree.branchClosedIconPath,
+                                              theme.navigationTree.branchOpenIconPath,
+                                              theme.navigationTree.branchClosedIconSelectedPath,
+                                              theme.navigationTree.branchOpenIconSelectedPath);
+    theme.navigationTree.folderIndicatorColor = nt.folderIndicatorColor;
 
     // Folder icon — normal and selected states with independent colors
     {
-        const QString normalPath = recoloredSvgToThemeFile(":/images/sidebar/folder.svg", tv.folderIconColor, tv.folderIconShadowColor, params.meta.id);
-        const QString selectedPath = recoloredSvgToThemeFile(":/images/sidebar/folder.svg", tv.folderIconSelectedColor, tv.folderIconSelectedShadowColor, params.meta.id, { .suffix = "_selected" });
-        theme.treeView.folderIcon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
-        theme.treeView.folderIcon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
+        const QString normalPath = recoloredSvgToThemeFile(":/images/sidebar/folder.svg", nt.folderIconColor, nt.folderIconShadowColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/sidebar/folder.svg", nt.folderIconSelectedColor, nt.folderIconSelectedShadowColor, params.meta.id, { .suffix = "_selected" });
+        theme.navigationTree.folderIcon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        theme.navigationTree.folderIcon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
     }
 
     // Folder finished icon — same but with tick (#ff0) recolored independently for each state
     {
-        const QString normalPath = recoloredSvgToThemeFile(":/images/sidebar/folder_finished.svg", tv.folderIconColor, tv.folderIconShadowColor, tv.folderReadOverlayColor, params.meta.id);
-        const QString selectedPath = recoloredSvgToThemeFile(":/images/sidebar/folder_finished.svg", tv.folderIconSelectedColor, tv.folderIconSelectedShadowColor, tv.folderReadOverlaySelectedColor, params.meta.id, { .suffix = "_selected" });
-        theme.treeView.folderFinishedIcon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
-        theme.treeView.folderFinishedIcon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
+        const QString normalPath = recoloredSvgToThemeFile(":/images/sidebar/folder_finished.svg", nt.folderIconColor, nt.folderIconShadowColor, nt.folderReadOverlayColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/sidebar/folder_finished.svg", nt.folderIconSelectedColor, nt.folderIconSelectedShadowColor, nt.folderReadOverlaySelectedColor, params.meta.id, { .suffix = "_selected" });
+        theme.navigationTree.folderFinishedIcon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        theme.navigationTree.folderFinishedIcon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
     }
-    // end TreeView
+    // end NavigationTree
 
     // ContentSplitter
     const auto &cs = params.contentSplitterParams;
@@ -873,53 +869,47 @@ Theme makeTheme(const QJsonObject &json)
 {
     ThemeParams p;
 
-    if (json.contains("defaultContentBackgroundColor")) {
-        QColor c(json["defaultContentBackgroundColor"].toString());
-        if (c.isValid())
-            p.defaultContentBackgroundColor = c;
-    }
-
     if (json.contains("comicFlow")) {
         const auto o = json["comicFlow"].toObject();
         p.comicFlowColors.backgroundColor = colorFromJson(o, "backgroundColor", p.comicFlowColors.backgroundColor);
         p.comicFlowColors.textColor = colorFromJson(o, "textColor", p.comicFlowColors.textColor);
     }
 
-    if (json.contains("comicVine")) {
-        const auto o = json["comicVine"].toObject();
-        auto &cv = p.comicVineParams;
-        cv.contentTextColor = colorFromJson(o, "contentTextColor", cv.contentTextColor);
-        cv.contentBackgroundColor = colorFromJson(o, "contentBackgroundColor", cv.contentBackgroundColor);
-        cv.contentAltBackgroundColor = colorFromJson(o, "contentAltBackgroundColor", cv.contentAltBackgroundColor);
-        cv.dialogBackgroundColor = colorFromJson(o, "dialogBackgroundColor", cv.dialogBackgroundColor);
-        cv.tableBackgroundColor = colorFromJson(o, "tableBackgroundColor", cv.tableBackgroundColor);
-        cv.tableAltBackgroundColor = colorFromJson(o, "tableAltBackgroundColor", cv.tableAltBackgroundColor);
-        cv.tableBorderColor = colorFromJson(o, "tableBorderColor", cv.tableBorderColor);
-        cv.tableSelectedColor = colorFromJson(o, "tableSelectedColor", cv.tableSelectedColor);
-        cv.tableHeaderBackgroundColor = colorFromJson(o, "tableHeaderBackgroundColor", cv.tableHeaderBackgroundColor);
-        cv.tableHeaderGradientColor = colorFromJson(o, "tableHeaderGradientColor", cv.tableHeaderGradientColor);
-        cv.tableHeaderBorderColor = colorFromJson(o, "tableHeaderBorderColor", cv.tableHeaderBorderColor);
-        cv.tableHeaderTextColor = colorFromJson(o, "tableHeaderTextColor", cv.tableHeaderTextColor);
-        cv.tableScrollHandleColor = colorFromJson(o, "tableScrollHandleColor", cv.tableScrollHandleColor);
-        cv.tableScrollBackgroundColor = colorFromJson(o, "tableScrollBackgroundColor", cv.tableScrollBackgroundColor);
-        cv.tableSectionBorderLight = colorFromJson(o, "tableSectionBorderLight", cv.tableSectionBorderLight);
-        cv.tableSectionBorderDark = colorFromJson(o, "tableSectionBorderDark", cv.tableSectionBorderDark);
-        cv.labelTextColor = colorFromJson(o, "labelTextColor", cv.labelTextColor);
-        cv.labelBackgroundColor = colorFromJson(o, "labelBackgroundColor", cv.labelBackgroundColor);
-        cv.hyperlinkColor = colorFromJson(o, "hyperlinkColor", cv.hyperlinkColor);
-        cv.buttonBackgroundColor = colorFromJson(o, "buttonBackgroundColor", cv.buttonBackgroundColor);
-        cv.buttonTextColor = colorFromJson(o, "buttonTextColor", cv.buttonTextColor);
-        cv.buttonBorderColor = colorFromJson(o, "buttonBorderColor", cv.buttonBorderColor);
-        cv.radioUncheckedColor = colorFromJson(o, "radioUncheckedColor", cv.radioUncheckedColor);
-        cv.radioCheckedBackgroundColor = colorFromJson(o, "radioCheckedBackgroundColor", cv.radioCheckedBackgroundColor);
-        cv.radioCheckedIndicatorColor = colorFromJson(o, "radioCheckedIndicatorColor", cv.radioCheckedIndicatorColor);
-        cv.checkBoxTickColor = colorFromJson(o, "checkBoxTickColor", cv.checkBoxTickColor);
-        cv.toolButtonAccentColor = colorFromJson(o, "toolButtonAccentColor", cv.toolButtonAccentColor);
-        cv.downArrowColor = colorFromJson(o, "downArrowColor", cv.downArrowColor);
-        cv.upArrowColor = colorFromJson(o, "upArrowColor", cv.upArrowColor);
-        cv.busyIndicatorColor = colorFromJson(o, "busyIndicatorColor", cv.busyIndicatorColor);
-        cv.navIconColor = colorFromJson(o, "navIconColor", cv.navIconColor);
-        cv.rowIconColor = colorFromJson(o, "rowIconColor", cv.rowIconColor);
+    if (json.contains("metadataScraperDialog")) {
+        const auto o = json["metadataScraperDialog"].toObject();
+        auto &msd = p.metadataScraperDialogParams;
+        msd.contentTextColor = colorFromJson(o, "contentTextColor", msd.contentTextColor);
+        msd.contentBackgroundColor = colorFromJson(o, "contentBackgroundColor", msd.contentBackgroundColor);
+        msd.contentAltBackgroundColor = colorFromJson(o, "contentAltBackgroundColor", msd.contentAltBackgroundColor);
+        msd.dialogBackgroundColor = colorFromJson(o, "dialogBackgroundColor", msd.dialogBackgroundColor);
+        msd.tableBackgroundColor = colorFromJson(o, "tableBackgroundColor", msd.tableBackgroundColor);
+        msd.tableAltBackgroundColor = colorFromJson(o, "tableAltBackgroundColor", msd.tableAltBackgroundColor);
+        msd.tableBorderColor = colorFromJson(o, "tableBorderColor", msd.tableBorderColor);
+        msd.tableSelectedColor = colorFromJson(o, "tableSelectedColor", msd.tableSelectedColor);
+        msd.tableHeaderBackgroundColor = colorFromJson(o, "tableHeaderBackgroundColor", msd.tableHeaderBackgroundColor);
+        msd.tableHeaderGradientColor = colorFromJson(o, "tableHeaderGradientColor", msd.tableHeaderGradientColor);
+        msd.tableHeaderBorderColor = colorFromJson(o, "tableHeaderBorderColor", msd.tableHeaderBorderColor);
+        msd.tableHeaderTextColor = colorFromJson(o, "tableHeaderTextColor", msd.tableHeaderTextColor);
+        msd.tableScrollHandleColor = colorFromJson(o, "tableScrollHandleColor", msd.tableScrollHandleColor);
+        msd.tableScrollBackgroundColor = colorFromJson(o, "tableScrollBackgroundColor", msd.tableScrollBackgroundColor);
+        msd.tableSectionBorderLight = colorFromJson(o, "tableSectionBorderLight", msd.tableSectionBorderLight);
+        msd.tableSectionBorderDark = colorFromJson(o, "tableSectionBorderDark", msd.tableSectionBorderDark);
+        msd.labelTextColor = colorFromJson(o, "labelTextColor", msd.labelTextColor);
+        msd.labelBackgroundColor = colorFromJson(o, "labelBackgroundColor", msd.labelBackgroundColor);
+        msd.hyperlinkColor = colorFromJson(o, "hyperlinkColor", msd.hyperlinkColor);
+        msd.buttonBackgroundColor = colorFromJson(o, "buttonBackgroundColor", msd.buttonBackgroundColor);
+        msd.buttonTextColor = colorFromJson(o, "buttonTextColor", msd.buttonTextColor);
+        msd.buttonBorderColor = colorFromJson(o, "buttonBorderColor", msd.buttonBorderColor);
+        msd.radioUncheckedColor = colorFromJson(o, "radioUncheckedColor", msd.radioUncheckedColor);
+        msd.radioCheckedBackgroundColor = colorFromJson(o, "radioCheckedBackgroundColor", msd.radioCheckedBackgroundColor);
+        msd.radioCheckedIndicatorColor = colorFromJson(o, "radioCheckedIndicatorColor", msd.radioCheckedIndicatorColor);
+        msd.checkBoxTickColor = colorFromJson(o, "checkBoxTickColor", msd.checkBoxTickColor);
+        msd.toolButtonAccentColor = colorFromJson(o, "toolButtonAccentColor", msd.toolButtonAccentColor);
+        msd.downArrowColor = colorFromJson(o, "downArrowColor", msd.downArrowColor);
+        msd.upArrowColor = colorFromJson(o, "upArrowColor", msd.upArrowColor);
+        msd.busyIndicatorColor = colorFromJson(o, "busyIndicatorColor", msd.busyIndicatorColor);
+        msd.navIconColor = colorFromJson(o, "navIconColor", msd.navIconColor);
+        msd.rowIconColor = colorFromJson(o, "rowIconColor", msd.rowIconColor);
     }
 
     if (json.contains("helpAboutDialog")) {
@@ -1034,73 +1024,73 @@ Theme makeTheme(const QJsonObject &json)
             cs.verticalHandleWidth = o["verticalHandleWidth"].toInt(cs.verticalHandleWidth);
     }
 
-    if (json.contains("treeView")) {
-        const auto o = json["treeView"].toObject();
-        auto &tv = p.treeViewParams;
-        tv.textColor = colorFromJson(o, "textColor", tv.textColor);
-        tv.selectionBackgroundColor = colorFromJson(o, "selectionBackgroundColor", tv.selectionBackgroundColor);
-        tv.scrollBackgroundColor = colorFromJson(o, "scrollBackgroundColor", tv.scrollBackgroundColor);
-        tv.scrollHandleColor = colorFromJson(o, "scrollHandleColor", tv.scrollHandleColor);
-        tv.selectedTextColor = colorFromJson(o, "selectedTextColor", tv.selectedTextColor);
-        tv.folderIndicatorColor = colorFromJson(o, "folderIndicatorColor", tv.folderIndicatorColor);
-        tv.branchIndicatorColor = colorFromJson(o, "branchIndicatorColor", tv.branchIndicatorColor);
-        tv.branchIndicatorSelectedColor = colorFromJson(o, "branchIndicatorSelectedColor", tv.branchIndicatorSelectedColor);
-        tv.folderIconColor = colorFromJson(o, "folderIconColor", tv.folderIconColor);
-        tv.folderIconShadowColor = colorFromJson(o, "folderIconShadowColor", tv.folderIconShadowColor);
-        tv.folderIconSelectedColor = colorFromJson(o, "folderIconSelectedColor", tv.folderIconSelectedColor);
-        tv.folderIconSelectedShadowColor = colorFromJson(o, "folderIconSelectedShadowColor", tv.folderIconSelectedShadowColor);
-        tv.folderReadOverlayColor = colorFromJson(o, "folderReadOverlayColor", tv.folderReadOverlayColor);
-        tv.folderReadOverlaySelectedColor = colorFromJson(o, "folderReadOverlaySelectedColor", tv.folderReadOverlaySelectedColor);
+    if (json.contains("navigationTree")) {
+        const auto o = json["navigationTree"].toObject();
+        auto &nt = p.navigationTreeParams;
+        nt.textColor = colorFromJson(o, "textColor", nt.textColor);
+        nt.selectionBackgroundColor = colorFromJson(o, "selectionBackgroundColor", nt.selectionBackgroundColor);
+        nt.scrollBackgroundColor = colorFromJson(o, "scrollBackgroundColor", nt.scrollBackgroundColor);
+        nt.scrollHandleColor = colorFromJson(o, "scrollHandleColor", nt.scrollHandleColor);
+        nt.selectedTextColor = colorFromJson(o, "selectedTextColor", nt.selectedTextColor);
+        nt.folderIndicatorColor = colorFromJson(o, "folderIndicatorColor", nt.folderIndicatorColor);
+        nt.branchIndicatorColor = colorFromJson(o, "branchIndicatorColor", nt.branchIndicatorColor);
+        nt.branchIndicatorSelectedColor = colorFromJson(o, "branchIndicatorSelectedColor", nt.branchIndicatorSelectedColor);
+        nt.folderIconColor = colorFromJson(o, "folderIconColor", nt.folderIconColor);
+        nt.folderIconShadowColor = colorFromJson(o, "folderIconShadowColor", nt.folderIconShadowColor);
+        nt.folderIconSelectedColor = colorFromJson(o, "folderIconSelectedColor", nt.folderIconSelectedColor);
+        nt.folderIconSelectedShadowColor = colorFromJson(o, "folderIconSelectedShadowColor", nt.folderIconSelectedShadowColor);
+        nt.folderReadOverlayColor = colorFromJson(o, "folderReadOverlayColor", nt.folderReadOverlayColor);
+        nt.folderReadOverlaySelectedColor = colorFromJson(o, "folderReadOverlaySelectedColor", nt.folderReadOverlaySelectedColor);
     }
 
-    if (json.contains("tableView")) {
-        const auto o = json["tableView"].toObject();
-        auto &tbv = p.tableViewParams;
-        tbv.alternateBackgroundColor = colorFromJson(o, "alternateBackgroundColor", tbv.alternateBackgroundColor);
-        tbv.backgroundColor = colorFromJson(o, "backgroundColor", tbv.backgroundColor);
-        tbv.headerBackgroundColor = colorFromJson(o, "headerBackgroundColor", tbv.headerBackgroundColor);
-        tbv.headerBorderColor = colorFromJson(o, "headerBorderColor", tbv.headerBorderColor);
-        tbv.headerGradientColor = colorFromJson(o, "headerGradientColor", tbv.headerGradientColor);
-        tbv.itemBorderBottomColor = colorFromJson(o, "itemBorderBottomColor", tbv.itemBorderBottomColor);
-        tbv.itemBorderTopColor = colorFromJson(o, "itemBorderTopColor", tbv.itemBorderTopColor);
-        tbv.itemBorderBottomWidth = o["itemBorderBottomWidth"].toInt(tbv.itemBorderBottomWidth);
-        tbv.itemBorderTopWidth = o["itemBorderTopWidth"].toInt(tbv.itemBorderTopWidth);
-        tbv.itemTextColor = colorFromJson(o, "itemTextColor", tbv.itemTextColor);
-        tbv.selectedColor = colorFromJson(o, "selectedColor", tbv.selectedColor);
-        tbv.selectedTextColor = colorFromJson(o, "selectedTextColor", tbv.selectedTextColor);
-        tbv.headerTextColor = colorFromJson(o, "headerTextColor", tbv.headerTextColor);
-        tbv.starRatingColor = colorFromJson(o, "starRatingColor", tbv.starRatingColor);
-        tbv.starRatingSelectedColor = colorFromJson(o, "starRatingSelectedColor", tbv.starRatingSelectedColor);
+    if (json.contains("comicsViewTable")) {
+        const auto o = json["comicsViewTable"].toObject();
+        auto &cvta = p.comicsViewTableParams;
+        cvta.alternateBackgroundColor = colorFromJson(o, "alternateBackgroundColor", cvta.alternateBackgroundColor);
+        cvta.backgroundColor = colorFromJson(o, "backgroundColor", cvta.backgroundColor);
+        cvta.headerBackgroundColor = colorFromJson(o, "headerBackgroundColor", cvta.headerBackgroundColor);
+        cvta.headerBorderColor = colorFromJson(o, "headerBorderColor", cvta.headerBorderColor);
+        cvta.headerGradientColor = colorFromJson(o, "headerGradientColor", cvta.headerGradientColor);
+        cvta.itemBorderBottomColor = colorFromJson(o, "itemBorderBottomColor", cvta.itemBorderBottomColor);
+        cvta.itemBorderTopColor = colorFromJson(o, "itemBorderTopColor", cvta.itemBorderTopColor);
+        cvta.itemBorderBottomWidth = o["itemBorderBottomWidth"].toInt(cvta.itemBorderBottomWidth);
+        cvta.itemBorderTopWidth = o["itemBorderTopWidth"].toInt(cvta.itemBorderTopWidth);
+        cvta.itemTextColor = colorFromJson(o, "itemTextColor", cvta.itemTextColor);
+        cvta.selectedColor = colorFromJson(o, "selectedColor", cvta.selectedColor);
+        cvta.selectedTextColor = colorFromJson(o, "selectedTextColor", cvta.selectedTextColor);
+        cvta.headerTextColor = colorFromJson(o, "headerTextColor", cvta.headerTextColor);
+        cvta.starRatingColor = colorFromJson(o, "starRatingColor", cvta.starRatingColor);
+        cvta.starRatingSelectedColor = colorFromJson(o, "starRatingSelectedColor", cvta.starRatingSelectedColor);
     }
 
-    if (json.contains("qmlView")) {
-        const auto o = json["qmlView"].toObject();
-        auto &qv = p.qmlViewParams;
-        qv.backgroundColor = colorFromJson(o, "backgroundColor", qv.backgroundColor);
-        qv.cellColor = colorFromJson(o, "cellColor", qv.cellColor);
-        qv.cellColorWithBackground = colorFromJson(o, "cellColorWithBackground", qv.cellColorWithBackground);
-        qv.selectedColor = colorFromJson(o, "selectedColor", qv.selectedColor);
-        qv.selectedBorderColor = colorFromJson(o, "selectedBorderColor", qv.selectedBorderColor);
-        qv.borderColor = colorFromJson(o, "borderColor", qv.borderColor);
-        qv.titleColor = colorFromJson(o, "titleColor", qv.titleColor);
-        qv.textColor = colorFromJson(o, "textColor", qv.textColor);
+    if (json.contains("gridAndInfoView")) {
+        const auto o = json["gridAndInfoView"].toObject();
+        auto &giv = p.gridAndInfoViewParams;
+        giv.backgroundColor = colorFromJson(o, "backgroundColor", giv.backgroundColor);
+        giv.cellColor = colorFromJson(o, "cellColor", giv.cellColor);
+        giv.cellColorWithBackground = colorFromJson(o, "cellColorWithBackground", giv.cellColorWithBackground);
+        giv.selectedColor = colorFromJson(o, "selectedColor", giv.selectedColor);
+        giv.selectedBorderColor = colorFromJson(o, "selectedBorderColor", giv.selectedBorderColor);
+        giv.borderColor = colorFromJson(o, "borderColor", giv.borderColor);
+        giv.titleColor = colorFromJson(o, "titleColor", giv.titleColor);
+        giv.textColor = colorFromJson(o, "textColor", giv.textColor);
         if (o.contains("showDropShadow"))
-            qv.showDropShadow = o["showDropShadow"].toBool(qv.showDropShadow);
-        qv.infoBackgroundColor = colorFromJson(o, "infoBackgroundColor", qv.infoBackgroundColor);
-        qv.infoBorderColor = colorFromJson(o, "infoBorderColor", qv.infoBorderColor);
-        qv.infoShadowColor = colorFromJson(o, "infoShadowColor", qv.infoShadowColor);
-        qv.infoTextColor = colorFromJson(o, "infoTextColor", qv.infoTextColor);
-        qv.infoTitleColor = colorFromJson(o, "infoTitleColor", qv.infoTitleColor);
-        qv.ratingUnselectedColor = colorFromJson(o, "ratingUnselectedColor", qv.ratingUnselectedColor);
-        qv.ratingSelectedColor = colorFromJson(o, "ratingSelectedColor", qv.ratingSelectedColor);
-        qv.favUncheckedColor = colorFromJson(o, "favUncheckedColor", qv.favUncheckedColor);
-        qv.favCheckedColor = colorFromJson(o, "favCheckedColor", qv.favCheckedColor);
-        qv.readTickUncheckedColor = colorFromJson(o, "readTickUncheckedColor", qv.readTickUncheckedColor);
-        qv.readTickCheckedColor = colorFromJson(o, "readTickCheckedColor", qv.readTickCheckedColor);
-        qv.currentComicBackgroundColor = colorFromJson(o, "currentComicBackgroundColor", qv.currentComicBackgroundColor);
-        qv.continueReadingBackgroundColor = colorFromJson(o, "continueReadingBackgroundColor", qv.continueReadingBackgroundColor);
-        qv.continueReadingColor = colorFromJson(o, "continueReadingColor", qv.continueReadingColor);
-        qv.backgroundBlurOverlayColor = colorFromJson(o, "backgroundBlurOverlayColor", qv.backgroundBlurOverlayColor);
+            giv.showDropShadow = o["showDropShadow"].toBool(giv.showDropShadow);
+        giv.infoBackgroundColor = colorFromJson(o, "infoBackgroundColor", giv.infoBackgroundColor);
+        giv.infoBorderColor = colorFromJson(o, "infoBorderColor", giv.infoBorderColor);
+        giv.infoShadowColor = colorFromJson(o, "infoShadowColor", giv.infoShadowColor);
+        giv.infoTextColor = colorFromJson(o, "infoTextColor", giv.infoTextColor);
+        giv.infoTitleColor = colorFromJson(o, "infoTitleColor", giv.infoTitleColor);
+        giv.ratingUnselectedColor = colorFromJson(o, "ratingUnselectedColor", giv.ratingUnselectedColor);
+        giv.ratingSelectedColor = colorFromJson(o, "ratingSelectedColor", giv.ratingSelectedColor);
+        giv.favUncheckedColor = colorFromJson(o, "favUncheckedColor", giv.favUncheckedColor);
+        giv.favCheckedColor = colorFromJson(o, "favCheckedColor", giv.favCheckedColor);
+        giv.readTickUncheckedColor = colorFromJson(o, "readTickUncheckedColor", giv.readTickUncheckedColor);
+        giv.readTickCheckedColor = colorFromJson(o, "readTickCheckedColor", giv.readTickCheckedColor);
+        giv.currentComicBackgroundColor = colorFromJson(o, "currentComicBackgroundColor", giv.currentComicBackgroundColor);
+        giv.continueReadingBackgroundColor = colorFromJson(o, "continueReadingBackgroundColor", giv.continueReadingBackgroundColor);
+        giv.continueReadingColor = colorFromJson(o, "continueReadingColor", giv.continueReadingColor);
+        giv.backgroundBlurOverlayColor = colorFromJson(o, "backgroundBlurOverlayColor", giv.backgroundBlurOverlayColor);
     }
 
     if (json.contains("comicsViewToolbar")) {
