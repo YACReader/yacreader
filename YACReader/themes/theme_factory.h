@@ -2,8 +2,9 @@
 #define THEME_FACTORY_H
 
 #include "theme.h"
-#include "theme_id.h"
 
-Theme makeTheme(ThemeId themeId);
+#include <QJsonObject>
+
+Theme makeTheme(const QJsonObject &json);
 
 #endif // THEME_FACTORY_H

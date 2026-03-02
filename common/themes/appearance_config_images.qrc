@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/images/appearance_config">
+    <file>../../images/appearance_config/theme-mode-system.svg</file>
+    <file>../../images/appearance_config/theme-mode-light.svg</file>
+    <file>../../images/appearance_config/theme-mode-dark.svg</file>
+  </qresource>
+</RCC>

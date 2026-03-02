@@ -4,6 +4,8 @@
 #include "yacreader_options_dialog.h"
 #include "themable.h"
 
+#include <QPointer>
+
 class QDialog;
 class QLabel;
 class QLineEdit;

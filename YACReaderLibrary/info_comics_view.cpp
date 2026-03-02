@@ -227,10 +227,18 @@ void InfoComicsView::applyTheme(const Theme &theme)
     const auto &qv = theme.qmlView;
 
     // Info panel colors
+    // Cache-bust the SVG file URLs so QML's image cache doesn't serve stale
+    // files when the theme is updated (the same file path is rewritten each time).
+    const QString bust = QString::number(QDateTime::currentMSecsSinceEpoch());
+    auto svgUrl = [&bust](const QString &path) {
+        QUrl url = QUrl::fromLocalFile(path);
+        url.setQuery(bust);
+        return url;
+    };
     ctxt->setContextProperty("infoBackgroundColor", qv.infoBackgroundColor);
-    ctxt->setContextProperty("topShadow", QUrl::fromLocalFile(qv.topShadow));
-    ctxt->setContextProperty("infoShadow", QUrl::fromLocalFile(qv.infoShadow));
-    ctxt->setContextProperty("infoIndicator", QUrl::fromLocalFile(qv.infoIndicator));
+    ctxt->setContextProperty("topShadow", svgUrl(qv.topShadow));
+    ctxt->setContextProperty("infoShadow", svgUrl(qv.infoShadow));
+    ctxt->setContextProperty("infoIndicator", svgUrl(qv.infoIndicator));
     ctxt->setContextProperty("infoTextColor", qv.infoTextColor);
     ctxt->setContextProperty("infoTitleColor", qv.infoTitleColor);
 

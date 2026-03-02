@@ -7,7 +7,10 @@
 #include "main_window_viewer.h"
 #include "configuration.h"
 #include "exit_check.h"
+#include "appearance_configuration.h"
 #include "theme_manager.h"
+#include "theme_repository.h"
+#include "yacreader_global.h"
 
 #include "QsLog.h"
 #include "QsLogDest.h"
@@ -114,7 +117,11 @@ int main(int argc, char *argv[])
     app.setApplicationName("YACReader");
     app.setOrganizationName("YACReader");
 
-    ThemeManager::instance().initialize();
+    auto *appearanceConfig = new AppearanceConfiguration(
+            YACReader::getSettingsPath() + "/YACReader.ini", qApp);
+    auto *themeRepo = new ThemeRepository(
+            ":/themes", YACReader::getSettingsPath() + "/themes/user");
+    ThemeManager::instance().initialize(appearanceConfig, themeRepo);
 
     if (QIcon::hasThemeIcon("YACReader")) {
         app.setWindowIcon(QIcon::fromTheme("YACReader"));

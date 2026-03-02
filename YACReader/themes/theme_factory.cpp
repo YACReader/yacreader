@@ -3,6 +3,7 @@
 #include <QApplication>
 
 #include "icon_utils.h"
+#include "theme_meta.h"
 
 struct ToolbarParams {
     ToolbarThemeTemplates t;
@@ -56,7 +57,7 @@ struct ShortcutsIconsParams {
 };
 
 struct ThemeParams {
-    QString themeName;
+    ThemeMeta meta;
 
     ToolbarParams toolbarParams;
     ViewerParams viewerParams;
@@ -72,7 +73,7 @@ void setToolbarIconPair(QIcon &icon,
                         const QColor &iconColor,
                         const QColor &disabledColor,
                         const QColor &checkedColor,
-                        const QString &themeName)
+                        const QString &themeId)
 {
     QString path18 = basePath;
     if (path18.endsWith(".svg"))
@@ -81,14 +82,14 @@ void setToolbarIconPair(QIcon &icon,
         path18.append("_18x18");
 
     // Normal
-    const QString normalPath = recoloredSvgToThemeFile(basePath, iconColor, themeName);
-    const QString normalPath18 = recoloredSvgToThemeFile(path18, iconColor, themeName);
+    const QString normalPath = recoloredSvgToThemeFile(basePath, iconColor, themeId);
+    const QString normalPath18 = recoloredSvgToThemeFile(path18, iconColor, themeId);
     // Disabled
-    const QString disabledPath = recoloredSvgToThemeFile(basePath, disabledColor, themeName, { .suffix = "_disabled" });
-    const QString disabledPath18 = recoloredSvgToThemeFile(path18, disabledColor, themeName, { .suffix = "_disabled" });
+    const QString disabledPath = recoloredSvgToThemeFile(basePath, disabledColor, themeId, { .suffix = "_disabled" });
+    const QString disabledPath18 = recoloredSvgToThemeFile(path18, disabledColor, themeId, { .suffix = "_disabled" });
     // Checked (On state)
-    const QString checkedPath = recoloredSvgToThemeFile(basePath, checkedColor, themeName, { .suffix = "_checked" });
-    const QString checkedPath18 = recoloredSvgToThemeFile(path18, checkedColor, themeName, { .suffix = "_checked" });
+    const QString checkedPath = recoloredSvgToThemeFile(basePath, checkedColor, themeId, { .suffix = "_checked" });
+    const QString checkedPath18 = recoloredSvgToThemeFile(path18, checkedColor, themeId, { .suffix = "_checked" });
 
     icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
     icon.addFile(disabledPath, QSize(), QIcon::Disabled, QIcon::Off);
@@ -105,11 +106,13 @@ Theme makeTheme(const ThemeParams &params)
 {
     Theme theme;
 
+    theme.meta = params.meta;
+
     // Toolbar & actions
-    theme.toolbar.toolbarQSS = params.toolbarParams.t.toolbarQSS.arg(params.toolbarParams.backgroundColor.name(), params.toolbarParams.separatorColor.name(), params.toolbarParams.checkedButtonColor.name(), recoloredSvgToThemeFile(params.toolbarParams.t.menuArrowPath, params.toolbarParams.menuIndicatorColor, params.themeName));
+    theme.toolbar.toolbarQSS = params.toolbarParams.t.toolbarQSS.arg(params.toolbarParams.backgroundColor.name(), params.toolbarParams.separatorColor.name(), params.toolbarParams.checkedButtonColor.name(), recoloredSvgToThemeFile(params.toolbarParams.t.menuArrowPath, params.toolbarParams.menuIndicatorColor, params.meta.id));
 
     auto setToolbarIconPairT = [&](QIcon &icon, QIcon &icon18, const QString &basePath) {
-        setToolbarIconPair(icon, icon18, basePath, params.toolbarParams.iconColor, params.toolbarParams.iconDisabledColor, params.toolbarParams.iconCheckedColor, params.themeName);
+        setToolbarIconPair(icon, icon18, basePath, params.toolbarParams.iconColor, params.toolbarParams.iconDisabledColor, params.toolbarParams.iconCheckedColor, params.meta.id);
     };
 
     setToolbarIconPairT(theme.toolbar.openAction, theme.toolbar.openAction18x18, ":/images/viewer_toolbar/open.svg");
@@ -166,8 +169,8 @@ Theme makeTheme(const ThemeParams &params)
     theme.goToFlowWidget.buttonQSS = gotoParams.t.buttonQSS;
     theme.goToFlowWidget.labelQSS = gotoParams.t.labelQSS.arg(gotoParams.labelTextColor.name());
 
-    const QString centerIconPath = recoloredSvgToThemeFile(":/images/centerFlow.svg", gotoParams.iconColor, params.themeName);
-    const QString goToIconPath = recoloredSvgToThemeFile(":/images/gotoFlow.svg", gotoParams.iconColor, params.themeName);
+    const QString centerIconPath = recoloredSvgToThemeFile(":/images/centerFlow.svg", gotoParams.iconColor, params.meta.id);
+    const QString goToIconPath = recoloredSvgToThemeFile(":/images/gotoFlow.svg", gotoParams.iconColor, params.meta.id);
     theme.goToFlowWidget.centerIcon = QIcon(centerIconPath);
     theme.goToFlowWidget.goToIcon = QIcon(goToIconPath);
     // end GoToFlowWidget
@@ -183,14 +186,14 @@ Theme makeTheme(const ThemeParams &params)
     theme.whatsNewDialog.versionTextColor = wn.versionTextColor;
     theme.whatsNewDialog.contentTextColor = wn.contentTextColor;
     theme.whatsNewDialog.linkColor = wn.linkColor;
-    theme.whatsNewDialog.closeButtonIcon = QPixmap(recoloredSvgToThemeFile(":/images/custom_dialog/custom_close_button.svg", wn.closeButtonColor, params.themeName));
-    theme.whatsNewDialog.headerDecoration = QPixmap(recoloredSvgToThemeFile(":/images/whats_new/whatsnew_header.svg", wn.headerDecorationColor, params.themeName));
+    theme.whatsNewDialog.closeButtonIcon = QPixmap(recoloredSvgToThemeFile(":/images/custom_dialog/custom_close_button.svg", wn.closeButtonColor, params.meta.id));
+    theme.whatsNewDialog.headerDecoration = QPixmap(recoloredSvgToThemeFile(":/images/whats_new/whatsnew_header.svg", wn.headerDecorationColor, params.meta.id));
     // end WhatsNewDialog
 
     // ShortcutsIcons
     const auto &sci = params.shortcutsIconsParams;
     auto makeShortcutsIcon = [&](const QString &basePath) {
-        const QString path = recoloredSvgToThemeFile(basePath, sci.iconColor, params.themeName);
+        const QString path = recoloredSvgToThemeFile(basePath, sci.iconColor, params.meta.id);
         return QIcon(path);
     };
 
@@ -203,7 +206,7 @@ Theme makeTheme(const ThemeParams &params)
 
     // FindFolder icon (used in OptionsDialog)
     {
-        const QString path = recoloredSvgToThemeFile(":/images/find_folder.svg", params.toolbarParams.iconColor, params.themeName);
+        const QString path = recoloredSvgToThemeFile(":/images/find_folder.svg", params.toolbarParams.iconColor, params.meta.id);
         const qreal dpr = qApp->devicePixelRatio();
         theme.dialogIcons.findFolderIcon = QIcon(renderSvgToPixmap(path, 13, 13, dpr));
     }
@@ -211,204 +214,92 @@ Theme makeTheme(const ThemeParams &params)
     return theme;
 }
 
-ThemeParams classicThemeParams();
-ThemeParams lightThemeParams();
-ThemeParams darkThemeParams();
+// JSON helpers ---------------------------------------------------------------
 
-Theme makeTheme(ThemeId themeId)
+static QColor colorFromJson(const QJsonObject &obj, const QString &key, const QColor &fallback)
 {
-    switch (themeId) {
-    case ThemeId::Classic:
-        return makeTheme(classicThemeParams());
-    case ThemeId::Light:
-        return makeTheme(lightThemeParams());
-    case ThemeId::Dark:
-        return makeTheme(darkThemeParams());
+    if (!obj.contains(key))
+        return fallback;
+    QColor c(obj[key].toString());
+    return c.isValid() ? c : fallback;
+}
+
+Theme makeTheme(const QJsonObject &json)
+{
+    ThemeParams p;
+
+    if (json.contains("toolbar")) {
+        const auto t = json["toolbar"].toObject();
+        auto &tp = p.toolbarParams;
+        tp.iconColor          = colorFromJson(t, "iconColor",          tp.iconColor);
+        tp.iconDisabledColor  = colorFromJson(t, "iconDisabledColor",  tp.iconDisabledColor);
+        tp.iconCheckedColor   = colorFromJson(t, "iconCheckedColor",   tp.iconCheckedColor);
+        tp.backgroundColor    = colorFromJson(t, "backgroundColor",    tp.backgroundColor);
+        tp.separatorColor     = colorFromJson(t, "separatorColor",     tp.separatorColor);
+        tp.checkedButtonColor = colorFromJson(t, "checkedButtonColor", tp.checkedButtonColor);
+        tp.menuIndicatorColor = colorFromJson(t, "menuIndicatorColor", tp.menuIndicatorColor);
     }
-}
 
-ThemeParams classicThemeParams()
-{
-    ThemeParams params;
-    params.themeName = "classic";
+    if (json.contains("viewer")) {
+        const auto v = json["viewer"].toObject();
+        auto &vp = p.viewerParams;
+        vp.defaultBackgroundColor = colorFromJson(v, "defaultBackgroundColor", vp.defaultBackgroundColor);
+        vp.defaultTextColor       = colorFromJson(v, "defaultTextColor",       vp.defaultTextColor);
+        vp.infoBackgroundColor    = colorFromJson(v, "infoBackgroundColor",    vp.infoBackgroundColor);
+        vp.infoTextColor          = colorFromJson(v, "infoTextColor",          vp.infoTextColor);
+    }
 
-    ToolbarParams toolbarParams;
-    toolbarParams.iconColor = QColor(0x404040);
-    toolbarParams.iconDisabledColor = QColor(0x858585);
-    toolbarParams.iconCheckedColor = QColor(0x5A5A5A);
-    toolbarParams.backgroundColor = QColor(0xF3F3F3);
-    toolbarParams.separatorColor = QColor(0xCCCCCC);
-    toolbarParams.checkedButtonColor = QColor(0xCCCCCC);
-    toolbarParams.menuIndicatorColor = QColor(0x404040);
+    if (json.contains("goToFlowWidget")) {
+        const auto g = json["goToFlowWidget"].toObject();
+        auto &gp = p.goToFlowWidgetParams;
+        gp.flowBackgroundColor    = colorFromJson(g, "flowBackgroundColor",    gp.flowBackgroundColor);
+        gp.flowTextColor          = colorFromJson(g, "flowTextColor",          gp.flowTextColor);
+        gp.toolbarBackgroundColor = colorFromJson(g, "toolbarBackgroundColor", gp.toolbarBackgroundColor);
+        gp.sliderBorderColor      = colorFromJson(g, "sliderBorderColor",      gp.sliderBorderColor);
+        gp.sliderGrooveColor      = colorFromJson(g, "sliderGrooveColor",      gp.sliderGrooveColor);
+        gp.sliderHandleColor      = colorFromJson(g, "sliderHandleColor",      gp.sliderHandleColor);
+        gp.editBorderColor        = colorFromJson(g, "editBorderColor",        gp.editBorderColor);
+        gp.editBackgroundColor    = colorFromJson(g, "editBackgroundColor",    gp.editBackgroundColor);
+        gp.editTextColor          = colorFromJson(g, "editTextColor",          gp.editTextColor);
+        gp.labelTextColor         = colorFromJson(g, "labelTextColor",         gp.labelTextColor);
+        gp.iconColor              = colorFromJson(g, "iconColor",              gp.iconColor);
+    }
 
-    params.toolbarParams = toolbarParams;
+    if (json.contains("helpAboutDialog")) {
+        const auto h = json["helpAboutDialog"].toObject();
+        p.helpAboutDialogParams.headingColor = colorFromJson(h, "headingColor", p.helpAboutDialogParams.headingColor);
+        p.helpAboutDialogParams.linkColor    = colorFromJson(h, "linkColor",    p.helpAboutDialogParams.linkColor);
+    }
 
-    ViewerParams viewerParams;
-    viewerParams.defaultBackgroundColor = QColor(0x282828);
-    viewerParams.defaultTextColor = Qt::white;
-    viewerParams.infoBackgroundColor = QColor::fromRgba(0xBB000000);
-    viewerParams.infoTextColor = Qt::white;
-    viewerParams.t = ViewerThemeTemplates();
+    if (json.contains("whatsNewDialog")) {
+        const auto w = json["whatsNewDialog"].toObject();
+        auto &wn = p.whatsNewDialogParams;
+        wn.backgroundColor      = colorFromJson(w, "backgroundColor",      wn.backgroundColor);
+        wn.headerTextColor       = colorFromJson(w, "headerTextColor",      wn.headerTextColor);
+        wn.versionTextColor      = colorFromJson(w, "versionTextColor",     wn.versionTextColor);
+        wn.contentTextColor      = colorFromJson(w, "contentTextColor",     wn.contentTextColor);
+        wn.linkColor             = colorFromJson(w, "linkColor",            wn.linkColor);
+        wn.closeButtonColor      = colorFromJson(w, "closeButtonColor",     wn.closeButtonColor);
+        wn.headerDecorationColor = colorFromJson(w, "headerDecorationColor",wn.headerDecorationColor);
+    }
 
-    params.viewerParams = viewerParams;
+    if (json.contains("shortcutsIcons")) {
+        const auto s = json["shortcutsIcons"].toObject();
+        p.shortcutsIconsParams.iconColor = colorFromJson(s, "iconColor", p.shortcutsIconsParams.iconColor);
+    }
 
-    GoToFlowWidgetParams goToFlowWidgetParams;
-    goToFlowWidgetParams.flowBackgroundColor = QColor(0x282828);
-    goToFlowWidgetParams.flowTextColor = Qt::white;
-    goToFlowWidgetParams.toolbarBackgroundColor = QColor::fromRgba(0x99000000);
-    goToFlowWidgetParams.sliderBorderColor = QColor::fromRgba(0x22FFFFFF);
-    goToFlowWidgetParams.sliderGrooveColor = QColor::fromRgba(0x77000000);
-    goToFlowWidgetParams.sliderHandleColor = QColor::fromRgba(0x55FFFFFF);
-    goToFlowWidgetParams.editBorderColor = QColor::fromRgba(0x77000000);
-    goToFlowWidgetParams.editBackgroundColor = QColor::fromRgba(0x55000000);
-    goToFlowWidgetParams.editTextColor = Qt::white;
-    goToFlowWidgetParams.labelTextColor = Qt::white;
-    goToFlowWidgetParams.iconColor = Qt::white;
-    goToFlowWidgetParams.t = GoToFlowWidgetThemeTemplates();
+    if (json.contains("meta")) {
+        const auto o = json["meta"].toObject();
+        p.meta.id = o["id"].toString(p.meta.id);
+        p.meta.displayName = o["displayName"].toString(p.meta.displayName);
+        const QString variantStr = o["variant"].toString();
+        if (variantStr == "light")
+            p.meta.variant = ThemeVariant::Light;
+        else if (variantStr == "dark")
+            p.meta.variant = ThemeVariant::Dark;
+    }
 
-    params.goToFlowWidgetParams = goToFlowWidgetParams;
-
-    params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
-    params.helpAboutDialogParams.linkColor = QColor(0xC19441);
-
-    params.whatsNewDialogParams.backgroundColor = QColor(0xFFFFFF);
-    params.whatsNewDialogParams.headerTextColor = QColor(0x0A0A0A);
-    params.whatsNewDialogParams.versionTextColor = QColor(0x858585);
-    params.whatsNewDialogParams.contentTextColor = QColor(0x0A0A0A);
-    params.whatsNewDialogParams.linkColor = QColor(0xE8B800);
-    params.whatsNewDialogParams.closeButtonColor = QColor(0x444444);
-    params.whatsNewDialogParams.headerDecorationColor = QColor(0xE8B800);
-
-    // ShortcutsIcons
-    ShortcutsIconsParams sci;
-    sci.iconColor = QColor(0x404040); // Dark icons for light background
-    params.shortcutsIconsParams = sci;
-
-    return params;
-}
-
-ThemeParams lightThemeParams()
-{
-    ThemeParams params;
-    params.themeName = "light";
-
-    ToolbarParams toolbarParams;
-    toolbarParams.iconColor = QColor(0x404040);
-    toolbarParams.iconDisabledColor = QColor(0xB0B0B0);
-    toolbarParams.iconCheckedColor = QColor(0x5A5A5A);
-    toolbarParams.backgroundColor = QColor(0xF3F3F3);
-    toolbarParams.separatorColor = QColor(0xCCCCCC);
-    toolbarParams.checkedButtonColor = QColor(0xCCCCCC);
-    toolbarParams.menuIndicatorColor = QColor(0x404040);
-
-    params.toolbarParams = toolbarParams;
-
-    ViewerParams viewerParams;
-    viewerParams.defaultBackgroundColor = QColor(0xF6F6F6);
-    viewerParams.defaultTextColor = QColor(0x202020);
-    viewerParams.infoBackgroundColor = QColor::fromRgba(0xBBFFFFFF);
-    viewerParams.infoTextColor = QColor(0x404040);
-    viewerParams.t = ViewerThemeTemplates();
-
-    params.viewerParams = viewerParams;
-
-    GoToFlowWidgetParams goToFlowWidgetParams;
-    goToFlowWidgetParams.flowBackgroundColor = QColor(0xF6F6F6);
-    goToFlowWidgetParams.flowTextColor = QColor(0x202020);
-    goToFlowWidgetParams.toolbarBackgroundColor = QColor::fromRgba(0xBBFFFFFF);
-    goToFlowWidgetParams.sliderBorderColor = QColor::fromRgba(0x22000000);
-    goToFlowWidgetParams.sliderGrooveColor = QColor::fromRgba(0x33000000);
-    goToFlowWidgetParams.sliderHandleColor = QColor::fromRgba(0x55000000);
-    goToFlowWidgetParams.editBorderColor = QColor::fromRgba(0x33000000);
-    goToFlowWidgetParams.editBackgroundColor = QColor::fromRgba(0x22000000);
-    goToFlowWidgetParams.editTextColor = QColor(0x202020);
-    goToFlowWidgetParams.labelTextColor = QColor(0x202020);
-    goToFlowWidgetParams.iconColor = QColor(0x404040);
-    goToFlowWidgetParams.t = GoToFlowWidgetThemeTemplates();
-
-    params.goToFlowWidgetParams = goToFlowWidgetParams;
-
-    params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
-    params.helpAboutDialogParams.linkColor = QColor(0xC19441);
-
-    params.whatsNewDialogParams.backgroundColor = QColor(0xFFFFFF);
-    params.whatsNewDialogParams.headerTextColor = QColor(0x0A0A0A);
-    params.whatsNewDialogParams.versionTextColor = QColor(0x858585);
-    params.whatsNewDialogParams.contentTextColor = QColor(0x0A0A0A);
-    params.whatsNewDialogParams.linkColor = QColor(0xE8B800);
-    params.whatsNewDialogParams.closeButtonColor = QColor(0x444444);
-    params.whatsNewDialogParams.headerDecorationColor = QColor(0xE8B800);
-
-    // ShortcutsIcons
-    ShortcutsIconsParams sci;
-    sci.iconColor = QColor(0x606060); // Dark icons for light background
-    params.shortcutsIconsParams = sci;
-
-    return params;
-}
-
-ThemeParams darkThemeParams()
-{
-    ThemeParams params;
-    params.themeName = "dark";
-
-    ToolbarParams toolbarParams;
-    toolbarParams.iconColor = QColor(0xCCCCCC);
-    toolbarParams.iconDisabledColor = QColor(0x444444);
-    toolbarParams.iconCheckedColor = QColor(0xDADADA);
-    toolbarParams.backgroundColor = QColor(0x202020);
-    toolbarParams.separatorColor = QColor(0x444444);
-    toolbarParams.checkedButtonColor = QColor(0x3A3A3A);
-    toolbarParams.menuIndicatorColor = QColor(0xCCCCCC);
-
-    params.toolbarParams = toolbarParams;
-
-    ViewerParams viewerParams;
-    viewerParams.defaultBackgroundColor = QColor(40, 40, 40);
-    viewerParams.defaultTextColor = Qt::white;
-    viewerParams.infoBackgroundColor = QColor::fromRgba(0xBB000000);
-    viewerParams.infoTextColor = QColor(0xB0B0B0);
-    viewerParams.t = ViewerThemeTemplates();
-
-    params.viewerParams = viewerParams;
-
-    GoToFlowWidgetParams goToFlowWidgetParams;
-    goToFlowWidgetParams.flowBackgroundColor = QColor(40, 40, 40);
-    goToFlowWidgetParams.flowTextColor = Qt::white;
-    goToFlowWidgetParams.toolbarBackgroundColor = QColor::fromRgba(0x99000000);
-    goToFlowWidgetParams.sliderBorderColor = QColor::fromRgba(0x22FFFFFF);
-    goToFlowWidgetParams.sliderGrooveColor = QColor::fromRgba(0x77000000);
-    goToFlowWidgetParams.sliderHandleColor = QColor::fromRgba(0x55FFFFFF);
-    goToFlowWidgetParams.editBorderColor = QColor::fromRgba(0x77000000);
-    goToFlowWidgetParams.editBackgroundColor = QColor::fromRgba(0x55000000);
-    goToFlowWidgetParams.editTextColor = Qt::white;
-    goToFlowWidgetParams.labelTextColor = Qt::white;
-    goToFlowWidgetParams.iconColor = QColor(0xCCCCCC);
-    goToFlowWidgetParams.t = GoToFlowWidgetThemeTemplates();
-
-    params.goToFlowWidgetParams = goToFlowWidgetParams;
-
-    params.helpAboutDialogParams.headingColor = QColor(0xE0E0E0);
-    params.helpAboutDialogParams.linkColor = QColor(0xD4A84B);
-
-    params.whatsNewDialogParams.backgroundColor = QColor(0x2A2A2A);
-    params.whatsNewDialogParams.headerTextColor = QColor(0xE0E0E0);
-    params.whatsNewDialogParams.versionTextColor = QColor(0x858585);
-    params.whatsNewDialogParams.contentTextColor = QColor(0xE0E0E0);
-    params.whatsNewDialogParams.linkColor = QColor(0xE8B800);
-    params.whatsNewDialogParams.closeButtonColor = QColor(0xDDDDDD);
-    params.whatsNewDialogParams.headerDecorationColor = QColor(0xE8B800);
-
-    // ShortcutsIcons
-    ShortcutsIconsParams sci;
-    sci.iconColor = QColor(0xD0D0D0); // Light icons for dark background
-    params.shortcutsIconsParams = sci;
-
-    return params;
-}
-
-// TODO
-ThemeParams paramsFromFile(const QString &filePath)
-{
-    return {};
+    Theme theme = makeTheme(p);
+    theme.sourceJson = json;
+    return theme;
 }

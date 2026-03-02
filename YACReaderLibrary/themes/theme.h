@@ -2,10 +2,12 @@
 #define THEME_H
 
 #include <QtGui>
+#include <QJsonObject>
 
 #include "yacreader_icon.h"
 #include "help_about_dialog_theme.h"
 #include "whats_new_dialog_theme.h"
+#include "theme_meta.h"
 
 struct ComicVineThemeTemplates {
     QString defaultLabelQSS = "QLabel {color:%1; font-size:12px;font-family:Arial;}";
@@ -452,6 +454,9 @@ struct ComicVineTheme {
 };
 
 struct Theme {
+    ThemeMeta meta;
+    QJsonObject sourceJson;
+
     QColor defaultContentBackgroundColor;
 
     ComicFlowColors comicFlow;

@@ -12,7 +12,10 @@
 #include <QLabel>
 #include <QColorDialog>
 #include <QCheckBox>
+#include <QMessageBox>
 #include "theme_manager.h"
+#include "theme_factory.h"
+#include "appearance_tab_widget.h"
 
 #include "yacreader_spin_slider_widget.h"
 #include "yacreader_3d_flow_config_widget.h"
@@ -203,9 +206,20 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     pageFlow->setLayout(layoutFlow);
     pageImage->setLayout(layoutImageV);
 
+    // APPEARANCE ----------------------------------------
+
+    auto *pageAppearance = new AppearanceTabWidget(
+            ThemeManager::instance().getAppearanceConfiguration(),
+            []() { return ThemeManager::instance().getCurrentTheme().sourceJson; },
+            [](const QJsonObject &json) { ThemeManager::instance().setTheme(makeTheme(json)); },
+            this);
+
+    // APPEARANCE END ------------------------------------
+
     tabWidget->addTab(pageGeneral, tr("General"));
     tabWidget->addTab(pageFlow, tr("Page Flow"));
     tabWidget->addTab(pageImage, tr("Image adjustment"));
+    tabWidget->addTab(pageAppearance, tr("Appearance"));
 
     layout->addWidget(tabWidget);
 

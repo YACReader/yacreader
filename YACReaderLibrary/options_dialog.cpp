@@ -4,6 +4,11 @@
 #include "api_key_dialog.h"
 
 #include "yacreader_global_gui.h"
+#include "theme_manager.h"
+#include "theme_factory.h"
+#include "appearance_tab_widget.h"
+
+#include <QMessageBox>
 
 FlowType flowType = Strip;
 
@@ -15,11 +20,14 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto comicFlowW = createFlowTab();
     auto gridViewW = createGridTab();
 
+    auto appearanceW = createAppearanceTab();
+
     auto tabWidget = new QTabWidget();
     tabWidget->addTab(generalW, tr("General"));
     tabWidget->addTab(librariesW, tr("Libraries"));
     tabWidget->addTab(comicFlowW, tr("Comic Flow"));
     tabWidget->addTab(gridViewW, tr("Grid view"));
+    tabWidget->addTab(appearanceW, tr("Appearance"));
 
     auto buttons = new QHBoxLayout();
     buttons->addStretch();
@@ -405,4 +413,13 @@ QWidget *OptionsDialog::createGridTab()
     gridViewW->setLayout(gridViewLayout);
 
     return gridViewW;
+}
+
+QWidget *OptionsDialog::createAppearanceTab()
+{
+    return new AppearanceTabWidget(
+            ThemeManager::instance().getAppearanceConfiguration(),
+            []() { return ThemeManager::instance().getCurrentTheme().sourceJson; },
+            [](const QJsonObject &json) { ThemeManager::instance().setTheme(makeTheme(json)); },
+            this);
 }

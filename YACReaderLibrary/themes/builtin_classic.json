@@ -1,0 +1,238 @@
+{
+    "meta": {
+        "id": "builtin/classic",
+        "displayName": "Default Classic",
+        "variant": "dark"
+    },
+    "defaultContentBackgroundColor": "#2a2a2a",
+    "comicFlow": {
+        "backgroundColor": "#000000",
+        "textColor": "#4c4c4c"
+    },
+    "comicVine": {
+        "contentTextColor": "#ffffff",
+        "contentBackgroundColor": "#2b2b2b",
+        "contentAltBackgroundColor": "#2b2b2b",
+        "dialogBackgroundColor": "#404040",
+        "tableBackgroundColor": "#2b2b2b",
+        "tableAltBackgroundColor": "#2e2e2e",
+        "tableBorderColor": "#242424",
+        "tableSelectedColor": "#555555",
+        "tableHeaderBackgroundColor": "#292929",
+        "tableHeaderGradientColor": "#292929",
+        "tableHeaderBorderColor": "#1f1f1f",
+        "tableHeaderTextColor": "#ebebeb",
+        "tableScrollHandleColor": "#dddddd",
+        "tableScrollBackgroundColor": "#404040",
+        "tableSectionBorderLight": "#fefefe",
+        "tableSectionBorderDark": "#dfdfdf",
+        "labelTextColor": "#ffffff",
+        "labelBackgroundColor": "#2b2b2b",
+        "hyperlinkColor": "#ffcc00",
+        "buttonBackgroundColor": "#2e2e2e",
+        "buttonTextColor": "#ffffff",
+        "buttonBorderColor": "#242424",
+        "radioUncheckedColor": "#e5e5e5",
+        "radioCheckedBackgroundColor": "#e5e5e5",
+        "radioCheckedIndicatorColor": "#5f5f5f",
+        "checkBoxTickColor": "#ffffff",
+        "toolButtonAccentColor": "#282828",
+        "downArrowColor": "#9f9f9f",
+        "upArrowColor": "#9f9f9f",
+        "busyIndicatorColor": "#ffffff",
+        "navIconColor": "#ffffff",
+        "rowIconColor": "#e5e5e5"
+    },
+    "helpAboutDialog": {
+        "headingColor": "#302f2d",
+        "linkColor": "#c19441"
+    },
+    "whatsNewDialog": {
+        "backgroundColor": "#2a2a2a",
+        "headerTextColor": "#e0e0e0",
+        "versionTextColor": "#858585",
+        "contentTextColor": "#e0e0e0",
+        "linkColor": "#e8b800",
+        "closeButtonColor": "#dddddd",
+        "headerDecorationColor": "#e8b800"
+    },
+    "emptyContainer": {
+        "backgroundColor": "#2a2a2a",
+        "titleTextColor": "#cccccc",
+        "textColor": "#cccccc",
+        "descriptionTextColor": "#aaaaaa",
+        "searchIconColor": "#4c4c4c"
+    },
+    "sidebar": {
+        "backgroundColor": "#454545",
+        "separatorColor": "#bdbfbf",
+        "sectionSeparatorColor": "#575757",
+        "uppercaseLabels": true,
+        "titleTextColor": "#bdbfbf",
+        "titleDropShadowColor": "#000000",
+        "busyIndicatorColor": "#ffffff"
+    },
+    "sidebarIcons": {
+        "iconColor": "#e0e0e0",
+        "shadowColor": "#000000",
+        "useSystemFolderIcons": false
+    },
+    "libraryItem": {
+        "textColor": "#dddfdf",
+        "libraryIconColor": "#dddfdf",
+        "libraryIconShadowColor": "#000000",
+        "selectedTextColor": "#ffffff",
+        "selectedBackgroundColor": "#2e2e2e",
+        "libraryIconSelectedColor": "#ffffff",
+        "libraryOptionsIconColor": "#ffffff"
+    },
+    "importWidget": {
+        "backgroundColor": "#2a2a2a",
+        "titleTextColor": "#cccccc",
+        "descriptionTextColor": "#aaaaaa",
+        "currentComicTextColor": "#aaaaaa",
+        "coversViewBackgroundColor": "#3a3a3a",
+        "coversLabelColor": "#aaaaaa",
+        "coversDecorationBgColor": "#3a3a3a",
+        "coversDecorationShadowColor": "#1a1a1a",
+        "modeIconColor": "#4a4a4a",
+        "iconColor": "#cccccc",
+        "iconCheckedColor": "#aaaaaa"
+    },
+    "serverConfigDialog": {
+        "backgroundColor": "#2a2a2a",
+        "titleTextColor": "#474747",
+        "qrMessageTextColor": "#a3a3a3",
+        "propagandaTextColor": "#4d4d4d",
+        "labelTextColor": "#575757",
+        "checkBoxTextColor": "#262626",
+        "qrBackgroundColor": "#2a2a2a",
+        "qrForegroundColor": "#ffffff",
+        "decorationColor": "#f7f7f7"
+    },
+    "mainToolbar": {
+        "backgroundColor": "#f0f0f0",
+        "folderNameColor": "#404040",
+        "dividerColor": "#b8bdc4",
+        "iconColor": "#404040",
+        "iconDisabledColor": "#b0b0b0"
+    },
+    "contentSplitter": {
+        "handleColor": "#b8b8b8",
+        "horizontalHandleHeight": 4,
+        "verticalHandleWidth": 4
+    },
+    "treeView": {
+        "textColor": "#dddfdf",
+        "selectionBackgroundColor": "#2e2e2e",
+        "scrollBackgroundColor": "#404040",
+        "scrollHandleColor": "#dddddd",
+        "selectedTextColor": "#ffffff",
+        "folderIndicatorColor": "#edc518",
+        "branchIndicatorColor": "#e0e0e0",
+        "branchIndicatorSelectedColor": "#ffffff",
+        "folderIconColor": "#e0e0e0",
+        "folderIconShadowColor": "#000000",
+        "folderIconSelectedColor": "#e0e0e0",
+        "folderIconSelectedShadowColor": "#000000",
+        "folderReadOverlayColor": "#464646",
+        "folderReadOverlaySelectedColor": "#464646"
+    },
+    "tableView": {
+        "alternateBackgroundColor": "#f2f2f2",
+        "backgroundColor": "#fafafa",
+        "headerBackgroundColor": "#f5f5f5",
+        "headerBorderColor": "#b8bdc4",
+        "headerGradientColor": "#d1d1d1",
+        "itemBorderBottomColor": "#dfdfdf",
+        "itemBorderTopColor": "#fefefe",
+        "itemBorderBottomWidth": 1,
+        "itemBorderTopWidth": 1,
+        "itemTextColor": "#252626",
+        "selectedColor": "#d4d4d4",
+        "selectedTextColor": "#252626",
+        "headerTextColor": "#313232",
+        "starRatingColor": "#e9be0f",
+        "starRatingSelectedColor": "#ffffff"
+    },
+    "qmlView": {
+        "backgroundColor": "#2a2a2a",
+        "cellColor": "#212121",
+        "cellColorWithBackground": "#99212121",
+        "selectedColor": "#121212",
+        "selectedBorderColor": "#ffcc00",
+        "borderColor": "#121212",
+        "titleColor": "#ffffff",
+        "textColor": "#a8a8a8",
+        "showDropShadow": true,
+        "infoBackgroundColor": "#2e2e2e",
+        "infoBorderColor": "#404040",
+        "infoShadowColor": "#000000",
+        "infoTextColor": "#b0b0b0",
+        "infoTitleColor": "#ffffff",
+        "ratingUnselectedColor": "#1c1c1c",
+        "ratingSelectedColor": "#ffffff",
+        "favUncheckedColor": "#1c1c1c",
+        "favCheckedColor": "#e84852",
+        "readTickUncheckedColor": "#1c1c1c",
+        "readTickCheckedColor": "#e84852",
+        "currentComicBackgroundColor": "#88000000",
+        "continueReadingBackgroundColor": "#88000000",
+        "continueReadingColor": "#ffffff",
+        "backgroundBlurOverlayColor": "#2a2a2a"
+    },
+    "comicsViewToolbar": {
+        "backgroundColor": "#f0f0f0",
+        "separatorColor": "#cccccc",
+        "checkedBackgroundColor": "#cccccc",
+        "iconColor": "#404040"
+    },
+    "searchLineEdit": {
+        "textColor": "#ababab",
+        "backgroundColor": "#404040",
+        "iconColor": "#f7f7f7"
+    },
+    "readingListIcons": {
+        "labelColors": {
+            "red": "#f67a7b",
+            "orange": "#f5c240",
+            "yellow": "#f2e446",
+            "green": "#ade738",
+            "cyan": "#a0fddb",
+            "blue": "#82c7ff",
+            "violet": "#8f95ff",
+            "purple": "#d692fc",
+            "pink": "#fd9cda",
+            "white": "#fcfcfc",
+            "light": "#cbcbcb",
+            "dark": "#b7b7b7"
+        },
+        "labelShadowColor": "#000000",
+        "labelShadowSelectedColor": "#000000",
+        "readingListMainColor": "#e7e7e7",
+        "readingListMainSelectedColor": "#e7e7e7",
+        "favoritesMainColor": "#e15055",
+        "favoritesMainSelectedColor": "#e15055",
+        "currentlyReadingMainColor": "#ffcc00",
+        "currentlyReadingMainSelectedColor": "#ffcc00",
+        "currentlyReadingOuterColor": "#000000",
+        "currentlyReadingOuterSelectedColor": "#000000",
+        "specialListShadowColor": "#000000",
+        "specialListShadowSelectedColor": "#000000",
+        "listMainColor": "#e7e7e7",
+        "listMainSelectedColor": "#e7e7e7",
+        "listShadowColor": "#000000",
+        "listShadowSelectedColor": "#000000",
+        "listDetailColor": "#464646",
+        "listDetailSelectedColor": "#464646"
+    },
+    "dialogIcons": {
+        "iconColor": "#f7f7f7"
+    },
+    "menuIcons": {
+        "iconColor": "#f7f7f7"
+    },
+    "shortcutsIcons": {
+        "iconColor": "#f7f7f7"
+    }
+}

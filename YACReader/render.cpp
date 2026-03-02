@@ -1000,7 +1000,7 @@ void Render::fillBuffer()
             pageRenders[currentPageBufferedIndex + i]->start();
         }
 
-        if ((currentIndex - i > 0) &&
+        if ((currentIndex - i >= 0) &&
             buffer[currentPageBufferedIndex - i]->isNull() &&
             i <= numLeftPages &&
             pageRenders[currentPageBufferedIndex - i] == 0 &&

@@ -203,10 +203,14 @@ target_compile_definitions(YACReaderLibrary PRIVATE
 qt_add_resources(yacreaderlibrary_images_rcc "${CMAKE_CURRENT_SOURCE_DIR}/images.qrc")
 qt_add_resources(yacreaderlibrary_files_rcc "${CMAKE_CURRENT_SOURCE_DIR}/files.qrc")
 qt_add_resources(yacreaderlibrary_qml_rcc "${CMAKE_CURRENT_SOURCE_DIR}/qml.qrc")
+qt_add_resources(yacreaderlibrary_themes_rcc "${CMAKE_CURRENT_SOURCE_DIR}/themes/themes.qrc")
+qt_add_resources(yacreaderlibrary_common_images_rcc "${CMAKE_SOURCE_DIR}/common/themes/appearance_config_images.qrc")
 target_sources(YACReaderLibrary PRIVATE
     ${yacreaderlibrary_images_rcc}
     ${yacreaderlibrary_files_rcc}
     ${yacreaderlibrary_qml_rcc}
+    ${yacreaderlibrary_themes_rcc}
+    ${yacreaderlibrary_common_images_rcc}
 )
 if(WIN32 OR (UNIX AND NOT APPLE))
     qt_add_resources(yacreaderlibrary_images_win_rcc "${CMAKE_CURRENT_SOURCE_DIR}/images_win.qrc")
