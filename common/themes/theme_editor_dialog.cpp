@@ -32,6 +32,24 @@ static const int IsBoolRole = Qt::UserRole + 2;
 // Role used to distinguish numeric items.
 static const int IsNumberRole = Qt::UserRole + 3;
 
+// Converts a camelCase JSON key to a human-readable display string.
+// "metadataScraperDialog" → "Metadata scraper dialog"
+// "navigationTreeQSS"     → "Navigation tree qss"
+// Consecutive uppercase letters (acronyms) are kept together as one word.
+static QString displayKey(const QString &key)
+{
+    QString result;
+    for (int i = 0; i < key.size(); ++i) {
+        const bool isUpper = key[i].isUpper();
+        const bool prevIsLower = (i > 0) && key[i - 1].isLower();
+        const bool nextIsLower = (i + 1 < key.size()) && key[i + 1].isLower();
+        if (i > 0 && isUpper && (prevIsLower || nextIsLower))
+            result += ' ';
+        result += result.isEmpty() ? key[i].toUpper() : key[i].toLower();
+    }
+    return result;
+}
+
 static bool isColorString(const QString &s)
 {
     // Accepts #RGB, #RRGGBB, #AARRGGBB
@@ -171,14 +189,14 @@ void ThemeEditorDialog::populate(QTreeWidgetItem *parent, const QJsonObject &obj
             QFont bold = group->font(0);
             bold.setBold(true);
             group->setFont(0, bold);
-            group->setText(0, key);
+            group->setText(0, displayKey(key));
             group->setFlags(group->flags() & ~Qt::ItemIsSelectable);
             populate(group, val.toObject(), childPath);
         } else {
             // Leaf row
             QTreeWidgetItem *item = parent ? new QTreeWidgetItem(parent)
                                            : new QTreeWidgetItem(tree);
-            item->setText(0, key);
+            item->setText(0, displayKey(key));
             item->setData(0, PathRole, childPath);
 
             const QString strVal = val.toString();
