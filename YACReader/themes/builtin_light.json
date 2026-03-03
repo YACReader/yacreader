@@ -1,17 +1,37 @@
 {
+    "goToFlowWidget": {
+        "editBackgroundColor": "#22000000",
+        "editBorderColor": "#33000000",
+        "editTextColor": "#202020",
+        "flowBackgroundColor": "#f6f6f6",
+        "flowTextColor": "#202020",
+        "iconColor": "#404040",
+        "labelTextColor": "#202020",
+        "sliderBorderColor": "#22000000",
+        "sliderGrooveColor": "#33000000",
+        "sliderHandleColor": "#55000000",
+        "toolbarBackgroundColor": "#bbffffff"
+    },
+    "helpAboutDialog": {
+        "headingColor": "#302f2d",
+        "linkColor": "#c19441"
+    },
     "meta": {
-        "id": "builtin/light",
         "displayName": "Default Light",
+        "id": "builtin/light",
         "variant": "light"
     },
+    "shortcutsIcons": {
+        "iconColor": "#606060"
+    },
     "toolbar": {
+        "backgroundColor": "#f3f3f3",
+        "checkedButtonColor": "#cccccc",
+        "iconCheckedColor": "#5a5a5a",
         "iconColor": "#404040",
         "iconDisabledColor": "#b0b0b0",
-        "iconCheckedColor": "#5a5a5a",
-        "backgroundColor": "#f3f3f3",
-        "separatorColor": "#cccccc",
-        "checkedButtonColor": "#cccccc",
-        "menuIndicatorColor": "#404040"
+        "menuIndicatorColor": "#404040",
+        "separatorColor": "#cccccc"
     },
     "viewer": {
         "defaultBackgroundColor": "#f6f6f6",
@@ -19,33 +39,13 @@
         "infoBackgroundColor": "#bbffffff",
         "infoTextColor": "#404040"
     },
-    "goToFlowWidget": {
-        "flowBackgroundColor": "#f6f6f6",
-        "flowTextColor": "#202020",
-        "toolbarBackgroundColor": "#bbffffff",
-        "sliderBorderColor": "#22000000",
-        "sliderGrooveColor": "#33000000",
-        "sliderHandleColor": "#55000000",
-        "editBorderColor": "#33000000",
-        "editBackgroundColor": "#22000000",
-        "editTextColor": "#202020",
-        "labelTextColor": "#202020",
-        "iconColor": "#404040"
-    },
-    "helpAboutDialog": {
-        "headingColor": "#302f2d",
-        "linkColor": "#c19441"
-    },
     "whatsNewDialog": {
         "backgroundColor": "#ffffff",
-        "headerTextColor": "#0a0a0a",
-        "versionTextColor": "#858585",
-        "contentTextColor": "#0a0a0a",
-        "linkColor": "#e8b800",
         "closeButtonColor": "#444444",
-        "headerDecorationColor": "#e8b800"
-    },
-    "shortcutsIcons": {
-        "iconColor": "#606060"
+        "contentTextColor": "#0a0a0a",
+        "headerDecorationColor": "#e8b800",
+        "headerTextColor": "#0a0a0a",
+        "linkColor": "#e8b800",
+        "versionTextColor": "#858585"
     }
 }
