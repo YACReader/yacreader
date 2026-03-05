@@ -60,6 +60,7 @@ Source: Qt6QuickTemplates2.dll; DestDir: {app}
 Source: Qt6QuickWidgets.dll; DestDir: {app}
 Source: Qt6Sql.dll; DestDir: {app}
 Source: Qt6Svg.dll; DestDir: {app}
+Source: Qt6TextToSpeech.dll; DestDir: {app}
 
 Source: opengl32sw.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
 Source: D3Dcompiler_47.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
@@ -74,6 +75,7 @@ Source:qml\*;  DestDir: {app}\qml\; Flags: recursesubdirs
 Source:qmltooling\*;  DestDir: {app}\qmltooling\
 Source:sqldrivers\qsqlite.dll;  DestDir: {app}\sqldrivers\
 Source:styles\*;  DestDir: {app}\styles\
+Source:texttospeech\*;  DestDir: {app}\texttospeech\
 Source:tls\*;  DestDir: {app}\tls\
 Source:translations\*;  DestDir: {app}\translations\
 

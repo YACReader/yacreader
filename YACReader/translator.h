@@ -1,7 +1,6 @@
 #ifndef __TRANSLATOR_H
 #define __TRANSLATOR_H
 
-class QUrl;
 class QMouseEvent;
 class QPoint;
 class QTextEdit;
@@ -9,13 +8,12 @@ class QComboBox;
 class QLabel;
 class QPushButton;
 class YACReaderBusyWidget;
+class QTextToSpeech;
 
 #include <QWidget>
 #include <QThread>
 #include <QUrl>
 #include "viewer.h"
-
-class QMediaPlayer;
 
 class YACReaderTranslator : public QWidget
 {
@@ -28,7 +26,6 @@ public slots:
 
 protected slots:
     void translate();
-    void setSpeak(const QUrl &url);
     void setTranslation(const QString &string);
     void error();
     void clear();
@@ -44,7 +41,9 @@ protected:
     QPoint click;
 
 private:
-    QMediaPlayer *player;
+    QTextToSpeech *tts;
+    QString speakText;
+    QString speakLocale;
 
     QTextEdit *text;
     QComboBox *from;
@@ -53,7 +52,6 @@ private:
     QPushButton *speakButton;
     QLabel *resultText;
     YACReaderBusyWidget *busyIndicator;
-    QUrl ttsSource;
     QPushButton *clearButton;
 };
 
@@ -74,19 +72,4 @@ private:
     void run() override;
 };
 
-class TextToSpeachLoader : public QThread
-{
-    Q_OBJECT
-public:
-    TextToSpeachLoader(QString text, QString language);
-signals:
-    void requestFinished(QUrl);
-    void timeOut();
-    void error();
-
-private:
-    QString text;
-    QString language;
-    void run() override;
-};
 #endif

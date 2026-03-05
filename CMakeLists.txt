@@ -106,6 +106,7 @@ else()
         Sql
         Svg
         Test
+        TextToSpeech
         Widgets
     )
 endif()

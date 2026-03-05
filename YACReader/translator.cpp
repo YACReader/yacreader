@@ -1,6 +1,6 @@
-#include <QUrl>
-
-#include <QMediaPlayer>
+#include <QTextToSpeech>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #include <QPushButton>
 #include <QPalette>
@@ -25,8 +25,6 @@
 #include <QNetworkReply>
 
 #include <QMessageBox>
-
-#define APPID "417CEAD93449502CC3C9B69FED26C54118E62BCC"
 
 YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     : QWidget(parent), drag(false)
@@ -155,7 +153,7 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     connect(speakButton, &QAbstractButton::pressed, this, &YACReaderTranslator::play);
     connect(clearButton, &QAbstractButton::pressed, this, &YACReaderTranslator::clear);
 
-    player = new QMediaPlayer;
+    tts = new QTextToSpeech(this);
 }
 
 void YACReaderTranslator::hideResults()
@@ -179,20 +177,16 @@ void YACReaderTranslator::translate()
     QString from = this->from->itemData(this->from->currentIndex()).toString();
     QString to = this->to->itemData(this->to->currentIndex()).toString();
 
+    speakText = text;
+    speakLocale = from;
+
     TranslationLoader *translationLoader = new TranslationLoader(text, from, to);
     connect(translationLoader, &TranslationLoader::requestFinished, this, &YACReaderTranslator::setTranslation);
     connect(translationLoader, &TranslationLoader::error, this, &YACReaderTranslator::error);
     connect(translationLoader, &TranslationLoader::timeOut, this, &YACReaderTranslator::error);
     connect(translationLoader, &QThread::finished, translationLoader, &QObject::deleteLater);
 
-    TextToSpeachLoader *tts = new TextToSpeachLoader(text, from);
-    connect(tts, &TextToSpeachLoader::requestFinished, this, &YACReaderTranslator::setSpeak);
-    connect(tts, &TextToSpeachLoader::error, this, &YACReaderTranslator::error);
-    connect(tts, &TextToSpeachLoader::timeOut, this, &YACReaderTranslator::error);
-    connect(tts, &QThread::finished, tts, &QObject::deleteLater);
-
     translationLoader->start();
-    tts->start();
 
     resultsTitle->setText(tr("Translation"));
 
@@ -208,19 +202,12 @@ void YACReaderTranslator::error()
     busyIndicator->hide();
 }
 
-void YACReaderTranslator::setSpeak(const QUrl &url)
-{
-    resultsTitle->setHidden(false);
-    speakButton->setHidden(false);
-
-    ttsSource = url;
-}
-
 void YACReaderTranslator::setTranslation(const QString &string)
 {
     resultText->setText(string);
 
     resultsTitle->setHidden(false);
+    speakButton->setHidden(false);
     resultText->setHidden(false);
     busyIndicator->hide();
 }
@@ -236,8 +223,8 @@ void YACReaderTranslator::populateCombos()
         combo->addItem("Arabic", "ar");
         combo->addItem("Bulgarian", "bg");
         combo->addItem("Catalan", "ca");
-        combo->addItem("Chinese Simplified", "zh-CHS");
-        combo->addItem("Chinese Traditional", "zh-CHT");
+        combo->addItem("Chinese Simplified", "zh-CN");
+        combo->addItem("Chinese Traditional", "zh-TW");
         combo->addItem("Czech", "cs");
         combo->addItem("Danish", "da");
         combo->addItem("Dutch", "nl");
@@ -277,10 +264,8 @@ void YACReaderTranslator::populateCombos()
 
 void YACReaderTranslator::play()
 {
-
-    player->setSource(ttsSource);
-
-    player->play();
+    tts->setLocale(QLocale(speakLocale));
+    tts->say(speakText);
 }
 
 void YACReaderTranslator::mousePressEvent(QMouseEvent *event)
@@ -324,53 +309,10 @@ void TranslationLoader::run()
     connect(&tT, &QTimer::timeout, &q, &QEventLoop::quit);
     connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
 
-    QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Translate?appid=%1&from=%2&to=%3&text=%4&contentType=text/plain";
-    url = url.arg(APPID, from, to, text);
+    QString urlStr = QString("https://api.mymemory.translated.net/get?q=%1&langpair=%2|%3")
+                             .arg(QString::fromUtf8(QUrl::toPercentEncoding(text)), from, to);
 
-    QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(url)));
-
-    tT.start(5000); // 5s timeout
-    q.exec();
-
-    if (tT.isActive()) {
-        // download complete
-        if (reply->error() == QNetworkReply::NoError) {
-            QString utf8 = QString::fromUtf8(reply->readAll());
-            utf8 = utf8.remove(0, 1);
-            utf8 = utf8.remove(utf8.count() - 1, 1);
-
-            QString translated(utf8);
-            emit requestFinished(translated);
-        } else
-            emit error();
-    } else {
-        emit timeOut();
-    }
-}
-
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-//---------------------------------------------------------------------------
-
-TextToSpeachLoader::TextToSpeachLoader(QString text, QString language)
-    : QThread(), text(text), language(language)
-{
-}
-
-void TextToSpeachLoader::run()
-{
-    QNetworkAccessManager manager;
-    QEventLoop q;
-    QTimer tT;
-
-    tT.setSingleShot(true);
-    connect(&tT, &QTimer::timeout, &q, &QEventLoop::quit);
-    connect(&manager, &QNetworkAccessManager::finished, &q, &QEventLoop::quit);
-
-    QString url = "http://api.microsofttranslator.com/V2/Ajax.svc/Speak?appid=%1&language=%2&text=%3&contentType=text/plain";
-    url = url.arg(APPID, language, text);
-
-    QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(url)));
+    QNetworkReply *reply = manager.get(QNetworkRequest(QUrl(urlStr)));
 
     tT.start(5000); // 5s timeout
     q.exec();
@@ -378,12 +320,12 @@ void TextToSpeachLoader::run()
     if (tT.isActive()) {
         // download complete
         if (reply->error() == QNetworkReply::NoError) {
-            QString utf8 = QString::fromUtf8(reply->readAll());
-            utf8 = utf8.remove(0, 1);
-            utf8 = utf8.remove(utf8.count() - 1, 1);
-            utf8 = utf8.replace("\\", "");
-
-            emit requestFinished(QUrl(utf8));
+            QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+            QString translated = doc["responseData"]["translatedText"].toString();
+            if (!translated.isEmpty())
+                emit requestFinished(translated);
+            else
+                emit error();
         } else
             emit error();
     } else {
