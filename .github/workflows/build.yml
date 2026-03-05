@@ -191,9 +191,8 @@ jobs:
           mkdir C:\Qt
           python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
           dir C:\Qt\6.9.3\msvc2022_64\bin
-          choco install -y wget
-          choco install innosetup
-          wget "https://aka.ms/vs/17/release/vc_redist.x64.exe" -O %GITHUB_WORKSPACE%\vc_redist.x64.exe
+          curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.x64.exe" -o "%GITHUB_WORKSPACE%\vc_redist.x64.exe"
+          where iscc
 
       - name: Build
         shell: cmd
@@ -337,9 +336,8 @@ jobs:
           python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
           python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_arm64_cross_compiled -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
           dir C:\Qt\6.9.3\msvc2022_arm64\bin
-          choco install -y wget
-          choco install innosetup
-          wget "https://aka.ms/vs/17/release/vc_redist.arm64.exe" -O %GITHUB_WORKSPACE%\vc_redist.arm64.exe
+          curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.arm64.exe" -o "%GITHUB_WORKSPACE%\vc_redist.arm64.exe"
+          where iscc
 
       - name: Build
         shell: cmd
