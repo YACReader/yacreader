@@ -214,6 +214,7 @@ public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
     QPixmap pixmap() const;
+    QImage grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const;
     // Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }
     // returns the current index starting in 1 [1,nPages]

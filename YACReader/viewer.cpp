@@ -16,6 +16,7 @@
 
 #include <QFile>
 #include <QKeyEvent>
+#include <QPainter>
 
 #include <QsLog.h>
 
@@ -848,6 +849,168 @@ void Viewer::resizeEvent(QResizeEvent *event)
 QPixmap Viewer::pixmap() const
 {
     return content->pixmap();
+}
+
+QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const
+{
+    const int glassW = glassSize.width();
+    const int glassH = glassSize.height();
+    const int zoomW = static_cast<int>(glassW * zoomLevel);
+    const int zoomH = static_cast<int>(glassH * zoomLevel);
+    const QColor bgColor = Configuration::getConfiguration().getBackgroundColor(theme.viewer.defaultBackgroundColor);
+
+    if (continuousScroll) {
+        // --- continuous mode ---
+        // map viewer coords to continuousWidget coords
+        const int scrollPos = verticalScrollBar()->sliderPosition();
+        const int cwX = viewerPos.x();
+        const int cwY = viewerPos.y() + scrollPos;
+        const int widgetW = continuousWidget->width();
+
+        // use the page under the cursor to derive source-to-widget scale factors,
+        // so the result image is sized at source resolution (like single-page mode)
+        int centerPageIdx = continuousViewModel->pageAtY(cwY);
+        centerPageIdx = qBound(0, centerPageIdx, continuousViewModel->numPages() - 1);
+        const QImage *centerImg = render->bufferedImage(centerPageIdx);
+        const QSize centerScaledSize = continuousViewModel->scaledPageSize(centerPageIdx);
+
+        float wFactor = 1.0f, hFactor = 1.0f;
+        if (centerImg && !centerImg->isNull() && !centerScaledSize.isEmpty()) {
+            wFactor = static_cast<float>(centerImg->width()) / centerScaledSize.width();
+            hFactor = static_cast<float>(centerImg->height()) / centerScaledSize.height();
+        }
+
+        // result image sized in source-resolution pixels (full quality)
+        const int resultW = static_cast<int>(zoomW * wFactor);
+        const int resultH = static_cast<int>(zoomH * hFactor);
+
+        QImage result(resultW, resultH, QImage::Format_RGB32);
+        result.setDevicePixelRatio(devicePixelRatioF());
+        result.fill(bgColor);
+
+        // zoom region in widget coordinates (centered on cursor)
+        const int regionLeft = cwX - zoomW / 2;
+        const int regionTop = cwY - zoomH / 2;
+        const int regionRight = regionLeft + zoomW;
+        const int regionBottom = regionTop + zoomH;
+
+        // find which pages overlap the zoom region
+        int firstPage = continuousViewModel->pageAtY(regionTop);
+        int lastPage = continuousViewModel->pageAtY(regionBottom);
+        firstPage = qBound(0, firstPage, continuousViewModel->numPages() - 1);
+        lastPage = qBound(0, lastPage, continuousViewModel->numPages() - 1);
+
+        QPainter painter(&result);
+        for (int i = firstPage; i <= lastPage; ++i) {
+            const QImage *srcImg = render->bufferedImage(i);
+            if (!srcImg || srcImg->isNull()) {
+                continue;
+            }
+
+            const QSize scaledSize = continuousViewModel->scaledPageSize(i);
+            const int pageY = continuousViewModel->yPositionForPage(i);
+            int pageX = (widgetW - scaledSize.width()) / 2;
+            if (pageX < 0) {
+                pageX = 0;
+            }
+
+            // intersection of zoom region and page rect (widget coords)
+            const int isectLeft = qMax(regionLeft, pageX);
+            const int isectTop = qMax(regionTop, pageY);
+            const int isectRight = qMin(regionRight, pageX + scaledSize.width());
+            const int isectBottom = qMin(regionBottom, pageY + scaledSize.height());
+
+            if (isectLeft >= isectRight || isectTop >= isectBottom) {
+                continue;
+            }
+
+            // map intersection to source image coordinates (full resolution crop)
+            const float pageScaleX = static_cast<float>(srcImg->width()) / scaledSize.width();
+            const float pageScaleY = static_cast<float>(srcImg->height()) / scaledSize.height();
+
+            const int srcX = static_cast<int>((isectLeft - pageX) * pageScaleX);
+            const int srcY = static_cast<int>((isectTop - pageY) * pageScaleY);
+            const int srcW = static_cast<int>((isectRight - isectLeft) * pageScaleX);
+            const int srcH = static_cast<int>((isectBottom - isectTop) * pageScaleY);
+
+            // destination in result image (source-resolution coordinates)
+            const int dstX = static_cast<int>((isectLeft - regionLeft) * wFactor);
+            const int dstY = static_cast<int>((isectTop - regionTop) * hFactor);
+            const int dstW = static_cast<int>((isectRight - isectLeft) * wFactor);
+            const int dstH = static_cast<int>((isectBottom - isectTop) * hFactor);
+
+            QImage cropped = srcImg->copy(srcX, srcY, srcW, srcH);
+            if (cropped.size() != QSize(dstW, dstH)) {
+                cropped = cropped.scaled(dstW, dstH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+            }
+            painter.drawImage(dstX, dstY, cropped);
+        }
+
+        return result;
+    }
+
+    // --- single-page mode ---
+    const QPixmap image = content->pixmap();
+    if (image.isNull()) {
+        QImage result(zoomW, zoomH, QImage::Format_RGB32);
+        result.setDevicePixelRatio(devicePixelRatioF());
+        result.fill(bgColor);
+        return result;
+    }
+
+    const int iWidth = image.width();
+    const int iHeight = image.height();
+    const float wFactor = static_cast<float>(iWidth) / widget()->width();
+    const float hFactor = static_cast<float>(iHeight) / widget()->height();
+    const int zoomWScaled = static_cast<int>(zoomW * wFactor);
+    const int zoomHScaled = static_cast<int>(zoomH * hFactor);
+
+    const int scrollPos = verticalScrollBar()->sliderPosition();
+    int xp, yp;
+    if (verticalScrollBar()->minimum() == verticalScrollBar()->maximum()) {
+        xp = static_cast<int>(((viewerPos.x() - widget()->pos().x()) * wFactor) - zoomWScaled / 2);
+        yp = static_cast<int>((viewerPos.y() - widget()->pos().y() + scrollPos) * hFactor - zoomHScaled / 2);
+    } else {
+        xp = static_cast<int>(((viewerPos.x() - widget()->pos().x()) * wFactor) - zoomWScaled / 2);
+        yp = static_cast<int>((viewerPos.y() + scrollPos) * hFactor - zoomHScaled / 2);
+    }
+
+    int xOffset = 0, yOffset = 0;
+    int zw = zoomWScaled, zh = zoomHScaled;
+    bool outImage = false;
+    if (xp < 0) {
+        xOffset = -xp;
+        xp = 0;
+        zw -= xOffset;
+        outImage = true;
+    }
+    if (yp < 0) {
+        yOffset = -yp;
+        yp = 0;
+        zh -= yOffset;
+        outImage = true;
+    }
+    if (xp + zoomWScaled >= iWidth) {
+        zw -= xp + zw - iWidth;
+        outImage = true;
+    }
+    if (yp + zoomHScaled >= iHeight) {
+        zh -= yp + zh - iHeight;
+        outImage = true;
+    }
+
+    if (outImage) {
+        QImage img(zoomWScaled, zoomHScaled, QImage::Format_RGB32);
+        img.setDevicePixelRatio(devicePixelRatioF());
+        img.fill(bgColor);
+        if (zw > 0 && zh > 0) {
+            QPainter painter(&img);
+            painter.drawPixmap(xOffset, yOffset, image.copy(xp, yp, zw, zh));
+        }
+        return img;
+    }
+
+    return image.copy(xp, yp, zoomWScaled, zoomHScaled).toImage();
 }
 
 void Viewer::magnifyingGlassSwitch()

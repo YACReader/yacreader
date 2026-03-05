@@ -1,10 +1,5 @@
 #include "magnifying_glass.h"
 #include "viewer.h"
-#include "configuration.h"
-
-#include "theme_manager.h"
-
-#include <QScrollBar>
 
 MagnifyingGlass::MagnifyingGlass(int w, int h, float zoomLevel, QWidget *parent)
     : QLabel(parent), zoomLevel(zoomLevel)
@@ -34,101 +29,9 @@ void MagnifyingGlass::mouseMoveEvent(QMouseEvent *event)
 
 void MagnifyingGlass::updateImage(int x, int y)
 {
-    // image section augmented
-    int zoomWidth = static_cast<int>(width() * zoomLevel);
-    int zoomHeight = static_cast<int>(height() * zoomLevel);
-    auto *const p = qobject_cast<const Viewer *>(parentWidget());
-    int currentPos = p->verticalScrollBar()->sliderPosition();
-    const QPixmap image = p->pixmap();
-    int iWidth = image.width();
-    int iHeight = image.height();
-    float wFactor = static_cast<float>(iWidth) / p->widget()->width();
-    float hFactor = static_cast<float>(iHeight) / p->widget()->height();
-    zoomWidth *= wFactor;
-    zoomHeight *= hFactor;
-    if (p->verticalScrollBar()->minimum() == p->verticalScrollBar()->maximum()) {
-        int xp = static_cast<int>(((x - p->widget()->pos().x()) * wFactor) - zoomWidth / 2);
-        int yp = static_cast<int>((y - p->widget()->pos().y() + currentPos) * hFactor - zoomHeight / 2);
-        int xOffset = 0;
-        int yOffset = 0;
-        int zw = zoomWidth;
-        int zh = zoomHeight;
-        // int wOffset,hOffset=0;
-        bool outImage = false;
-        if (xp < 0) {
-            xOffset = -xp;
-            xp = 0;
-            zw = zw - xOffset;
-            outImage = true;
-        }
-        if (yp < 0) {
-            yOffset = -yp;
-            yp = 0;
-            zh = zh - yOffset;
-            outImage = true;
-        }
-
-        if (xp + zoomWidth >= image.width()) {
-            zw -= xp + zw - image.width();
-            outImage = true;
-        }
-        if (yp + zoomHeight >= image.height()) {
-            zh -= yp + zh - image.height();
-            outImage = true;
-        }
-        if (outImage) {
-            QImage img(zoomWidth, zoomHeight, QImage::Format_RGB32);
-            img.setDevicePixelRatio(devicePixelRatioF());
-            img.fill(Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
-            if (zw > 0 && zh > 0) {
-                QPainter painter(&img);
-                painter.drawPixmap(xOffset, yOffset, image.copy(xp, yp, zw, zh));
-            }
-            setPixmap(QPixmap().fromImage(img));
-        } else
-            setPixmap(image.copy(xp, yp, zoomWidth, zoomHeight));
-    } else {
-        int xp = static_cast<int>(((x - p->widget()->pos().x()) * wFactor) - zoomWidth / 2);
-        int yp = static_cast<int>((y + currentPos) * hFactor - zoomHeight / 2);
-        int xOffset = 0;
-        int yOffset = 0;
-        int zw = zoomWidth;
-        int zh = zoomHeight;
-        // int wOffset,hOffset=0;
-        bool outImage = false;
-        if (xp < 0) {
-            xOffset = -xp;
-            xp = 0;
-            zw = zw - xOffset;
-            outImage = true;
-        }
-        if (yp < 0) {
-            yOffset = -yp;
-            yp = 0;
-            zh = zh - yOffset;
-            outImage = true;
-        }
-
-        if (xp + zoomWidth >= image.width()) {
-            zw -= xp + zw - image.width();
-            outImage = true;
-        }
-        if (yp + zoomHeight >= image.height()) {
-            zh -= yp + zh - image.height();
-            outImage = true;
-        }
-        if (outImage) {
-            QImage img(zoomWidth, zoomHeight, QImage::Format_RGB32);
-            img.setDevicePixelRatio(devicePixelRatioF());
-            img.fill(Configuration::getConfiguration().getBackgroundColor(ThemeManager::instance().getCurrentTheme().viewer.defaultBackgroundColor));
-            if (zw > 0 && zh > 0) {
-                QPainter painter(&img);
-                painter.drawPixmap(xOffset, yOffset, image.copy(xp, yp, zw, zh));
-            }
-            setPixmap(QPixmap().fromImage(img));
-        } else
-            setPixmap(image.copy(xp, yp, zoomWidth, zoomHeight));
-    }
+    auto *const viewer = qobject_cast<const Viewer *>(parentWidget());
+    QImage img = viewer->grabMagnifiedRegion(QPoint(x, y), size(), zoomLevel);
+    setPixmap(QPixmap::fromImage(img));
     move(static_cast<int>(x - float(width()) / 2), static_cast<int>(y - float(height()) / 2));
 }
 
