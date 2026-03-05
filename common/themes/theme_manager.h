@@ -25,6 +25,7 @@ public:
     const Theme &getCurrentTheme() const { return currentTheme; }
 
     AppearanceConfiguration *getAppearanceConfiguration() const { return config; }
+    ThemeRepository *getRepository() const { return repository; }
 
 signals:
     void themeChanged();

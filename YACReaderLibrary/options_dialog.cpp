@@ -419,6 +419,7 @@ QWidget *OptionsDialog::createAppearanceTab()
 {
     return new AppearanceTabWidget(
             ThemeManager::instance().getAppearanceConfiguration(),
+            ThemeManager::instance().getRepository(),
             []() { return ThemeManager::instance().getCurrentTheme().sourceJson; },
             [](const QJsonObject &json) { ThemeManager::instance().setTheme(makeTheme(json)); },
             this);

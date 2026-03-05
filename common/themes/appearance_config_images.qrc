@@ -3,5 +3,6 @@
     <file>../../images/appearance_config/theme-mode-system.svg</file>
     <file>../../images/appearance_config/theme-mode-light.svg</file>
     <file>../../images/appearance_config/theme-mode-dark.svg</file>
+    <file>../../images/appearance_config/theme-mode-custom.svg</file>
   </qresource>
 </RCC>
