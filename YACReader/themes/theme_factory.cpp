@@ -56,6 +56,20 @@ struct ShortcutsIconsParams {
     QColor iconColor; // Main icon color (replaces #f0f)
 };
 
+struct TranslatorParams {
+    TranslatorThemeTemplates t;
+
+    QColor backgroundColor { 0x40, 0x40, 0x40 };
+    QColor inputBackgroundColor { 0x2a, 0x2a, 0x2a };
+    QColor inputDarkerBackgroundColor { 0x27, 0x27, 0x27 };
+    QColor selectionBackgroundColor { 0x20, 0x20, 0x20 };
+    QColor primaryTextColor { Qt::white };
+    QColor secondaryTextColor { 0xe3, 0xe3, 0xe3 };
+    QColor scrollbarHandleColor { 0xdd, 0xdd, 0xdd };
+    QColor borderColor { 0x21, 0x21, 0x21 };
+    QColor iconColor { 0xcc, 0xcc, 0xcc };
+};
+
 struct ThemeParams {
     ThemeMeta meta;
 
@@ -65,6 +79,7 @@ struct ThemeParams {
     HelpAboutDialogTheme helpAboutDialogParams;
     WhatsNewDialogParams whatsNewDialogParams;
     ShortcutsIconsParams shortcutsIconsParams;
+    TranslatorParams translatorParams;
 };
 
 void setToolbarIconPair(QIcon &icon,
@@ -211,6 +226,43 @@ Theme makeTheme(const ThemeParams &params)
         theme.dialogIcons.findFolderIcon = QIcon(renderSvgToPixmap(path, 13, 13, dpr));
     }
 
+    // Translator
+    {
+        const auto &tr = params.translatorParams;
+        theme.translator.backgroundColor = tr.backgroundColor;
+        theme.translator.inputBackgroundColor = tr.inputBackgroundColor;
+        theme.translator.scrollBarQSS = tr.t.scrollBarQSS.arg(
+                tr.backgroundColor.name(),
+                tr.scrollbarHandleColor.name());
+        theme.translator.textEditQSS = tr.t.textEditQSS.arg(
+                tr.inputBackgroundColor.name(),
+                tr.primaryTextColor.name());
+        const QString dropDownArrowPath = recoloredSvgToThemeFile(
+                ":/images/translator/dropDownArrow.svg", tr.iconColor, params.meta.id);
+        theme.translator.comboBoxQSS = tr.t.comboBoxQSS.arg(
+                tr.inputBackgroundColor.name(),
+                tr.primaryTextColor.name(),
+                dropDownArrowPath,
+                tr.inputDarkerBackgroundColor.name(),
+                tr.selectionBackgroundColor.name());
+        theme.translator.clearButtonQSS = tr.t.clearButtonQSS.arg(
+                tr.borderColor.name(),
+                tr.inputBackgroundColor.name(),
+                tr.primaryTextColor.name());
+        theme.translator.titleQSS = tr.t.titleQSS.arg(tr.primaryTextColor.name());
+        theme.translator.resultsTitleQSS = tr.t.resultsTitleQSS.arg(tr.secondaryTextColor.name());
+        theme.translator.resultTextQSS = tr.t.resultTextQSS.arg(tr.primaryTextColor.name());
+        theme.translator.closeIcon = QIcon(recoloredSvgToThemeFile(
+                ":/images/translator/close.svg", tr.iconColor, params.meta.id));
+        theme.translator.speakerIcon = QIcon(recoloredSvgToThemeFile(
+                ":/images/translator/speaker.svg", tr.iconColor, params.meta.id));
+        theme.translator.searchIcon = QIcon(recoloredSvgToThemeFile(
+                ":/images/translator/translatorSearch.svg", tr.iconColor, params.meta.id));
+        theme.translator.fromToPixmap = QPixmap(recoloredSvgToThemeFile(
+                ":/images/translator/fromTo.svg", tr.iconColor, params.meta.id));
+    }
+    // end Translator
+
     return theme;
 }
 
@@ -286,6 +338,20 @@ Theme makeTheme(const QJsonObject &json)
     if (json.contains("shortcutsIcons")) {
         const auto s = json["shortcutsIcons"].toObject();
         p.shortcutsIconsParams.iconColor = colorFromJson(s, "iconColor", p.shortcutsIconsParams.iconColor);
+    }
+
+    if (json.contains("translator")) {
+        const auto t = json["translator"].toObject();
+        auto &tp = p.translatorParams;
+        tp.backgroundColor = colorFromJson(t, "backgroundColor", tp.backgroundColor);
+        tp.inputBackgroundColor = colorFromJson(t, "inputBackgroundColor", tp.inputBackgroundColor);
+        tp.inputDarkerBackgroundColor = colorFromJson(t, "inputDarkerBackgroundColor", tp.inputDarkerBackgroundColor);
+        tp.selectionBackgroundColor = colorFromJson(t, "selectionBackgroundColor", tp.selectionBackgroundColor);
+        tp.primaryTextColor = colorFromJson(t, "primaryTextColor", tp.primaryTextColor);
+        tp.secondaryTextColor = colorFromJson(t, "secondaryTextColor", tp.secondaryTextColor);
+        tp.scrollbarHandleColor = colorFromJson(t, "scrollbarHandleColor", tp.scrollbarHandleColor);
+        tp.borderColor = colorFromJson(t, "borderColor", tp.borderColor);
+        tp.iconColor = colorFromJson(t, "iconColor", tp.iconColor);
     }
 
     if (json.contains("meta")) {

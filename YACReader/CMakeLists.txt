@@ -89,6 +89,7 @@ target_link_libraries(YACReader PRIVATE
     Qt::Network
     Qt::Widgets
     Qt::Multimedia
+    Qt::TextToSpeech
     Qt::Svg
     Qt::Core5Compat
     comic_backend

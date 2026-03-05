@@ -21,6 +21,31 @@ struct ViewerThemeTemplates {
     QString infoLabelQSS = "QLabel { color : %1; font-size:%2px; }";
 };
 
+struct TranslatorThemeTemplates {
+    // %1 = track color, %2 = handle color
+    QString scrollBarQSS = "QScrollBar:vertical { border: none; background: %1; width: 7px; margin: 0 3px 0 0; }"
+                           "QScrollBar::handle:vertical { background: %2; width: 7px; min-height: 20px; }"
+                           "QScrollBar::add-line:vertical { border: none; background: %1; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+                           "QScrollBar::sub-line:vertical { border: none; background: %1; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
+                           "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
+                           "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
+                           "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }";
+    // %1 = background, %2 = text color
+    QString textEditQSS = "QTextEdit{border:none;background:%1;color:%2; font-size:12px; padding:6px;}";
+    // %1 = background, %2 = text color, %3 = arrow icon path, %4 = list background, %5 = selection background
+    QString comboBoxQSS = "QComboBox {border:none;background:%1;color:%2;font-size:12px;font-family:Arial;padding-left:8px;}"
+                          "QComboBox::down-arrow {image: url(%3);}"
+                          "QComboBox::drop-down {border:none; padding-right:10px;}"
+                          "QComboBox QAbstractItemView {border: none; background:%4; color:%2; selection-background-color: %5; outline:none;}"
+                          "QComboBox QAbstractItemView::item {padding-left:8px;}";
+    // %1 = border color, %2 = background, %3 = text color
+    QString clearButtonQSS = "QPushButton {border:1px solid %1; background:%2; color:%3; font-family:Arial; font-size:12px; padding-top:5px; padding-bottom:5px;}";
+    // %1 = text color
+    QString titleQSS = "QLabel {font-size:18px; font-family:Arial; color:%1;}";
+    QString resultsTitleQSS = "QLabel {font-family:Arial;font-size:14px;color:%1;}";
+    QString resultTextQSS = "QLabel {color:%1;font-size:12px;}";
+};
+
 struct GoToFlowWidgetThemeTemplates {
     QString sliderQSS = "QSlider::groove:horizontal {"
                         "  border: 1px solid %1;"
@@ -39,6 +64,22 @@ struct GoToFlowWidgetThemeTemplates {
                         "QPushButton:focus { border: none; outline: none; } "
                         "QPushButton:pressed { padding-top: 1px; padding-left: 1px; padding-bottom: -1px; padding-right: -1px; }";
     QString labelQSS = "QLabel { color: %1; }";
+};
+
+struct TranslatorTheme {
+    QColor backgroundColor;
+    QColor inputBackgroundColor;
+    QString scrollBarQSS;
+    QString textEditQSS;
+    QString comboBoxQSS;
+    QString clearButtonQSS;
+    QString titleQSS;
+    QString resultsTitleQSS;
+    QString resultTextQSS;
+    QIcon closeIcon;
+    QIcon speakerIcon;
+    QIcon searchIcon;
+    QPixmap fromToPixmap;
 };
 
 struct ToolbarTheme {
@@ -147,6 +188,7 @@ struct Theme {
     ThemeMeta meta;
     QJsonObject sourceJson;
 
+    TranslatorTheme translator;
     ToolbarTheme toolbar;
     ViewerTheme viewer;
     GoToFlowWidgetTheme goToFlowWidget;

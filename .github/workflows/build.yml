@@ -66,13 +66,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libunarr-dev libgl-dev libgles2-mesa-dev \
-            libfontconfig1-dev libfreetype-dev libxkbcommon-dev libpoppler-qt6-dev
+            libfontconfig1-dev libfreetype-dev libxkbcommon-dev libpoppler-qt6-dev \
+            libspeechd-dev
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.9.3'
-          modules: 'qt5compat qtmultimedia qtimageformats qtshadertools'
+          modules: 'qt5compat qtmultimedia qtimageformats qtshadertools qtspeech'
           cache: true
 
       - name: Build
@@ -98,13 +99,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libgl-dev libgles2-mesa-dev \
-            libfontconfig1-dev libfreetype-dev libxkbcommon-dev libpoppler-qt6-dev
+            libfontconfig1-dev libfreetype-dev libxkbcommon-dev libpoppler-qt6-dev \
+            libspeechd-dev
 
       - name: Install Qt
         uses: jurplel/install-qt-action@v4
         with:
           version: '6.9.3'
-          modules: 'qt5compat qtmultimedia qtimageformats qtshadertools'
+          modules: 'qt5compat qtmultimedia qtimageformats qtshadertools qtspeech'
           cache: true
 
       - name: Build
@@ -134,7 +136,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip3 install --break-system-packages aqtinstall
-          python3 -m aqt install-qt mac desktop 6.9.3 -m qt5compat qtmultimedia qtimageformats qtshadertools
+          python3 -m aqt install-qt mac desktop 6.9.3 -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
           echo "${{ github.workspace }}/6.9.3/macos/bin" >> $GITHUB_PATH
           npm install -g appdmg
 
@@ -189,7 +191,7 @@ jobs:
           pip install -U pip
           pip install aqtinstall
           mkdir C:\Qt
-          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
+          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
           dir C:\Qt\6.9.3\msvc2022_64\bin
           curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.x64.exe" -o "%GITHUB_WORKSPACE%\vc_redist.x64.exe"
           where iscc
@@ -333,8 +335,8 @@ jobs:
         run: |
           pip install aqtinstall
           mkdir C:\Qt
-          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
-          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_arm64_cross_compiled -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools
+          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_64 -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
+          python -m aqt install-qt windows desktop 6.9.3 win64_msvc2022_arm64_cross_compiled -O c:\Qt -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
           dir C:\Qt\6.9.3\msvc2022_arm64\bin
           curl.exe -L --retry 5 --retry-delay 5 --retry-all-errors "https://aka.ms/vs/17/release/vc_redist.arm64.exe" -o "%GITHUB_WORKSPACE%\vc_redist.arm64.exe"
           where iscc
