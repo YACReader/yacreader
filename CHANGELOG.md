@@ -6,10 +6,12 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReader
 * Add support for continuous scroll mode.
+* Fix the translator.
 
 ### All GUI Apps
 * Migrate Flow implementation from OpenGL to QRhi. This is a full new implementation with better performance and compatibility with operating systems and hardware.
 * Add light/dark themes support that follow the system configuration.
+* Add a theme editor and support for custom themes.
 
 ## 9.16.4
 
