@@ -45,6 +45,9 @@ jobs:
       - name: Install dependencies
         run: brew install clang-format
 
+      - name: Print clang-format version
+        run: clang-format --version
+
       - name: Run clang-format
         run: |
           find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
