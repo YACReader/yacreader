@@ -24,6 +24,17 @@
     "shortcutsIcons": {
         "iconColor": "#404040"
     },
+    "translator": {
+        "backgroundColor": "#404040",
+        "borderColor": "#212121",
+        "iconColor": "#cccccc",
+        "inputBackgroundColor": "#2a2a2a",
+        "inputDarkerBackgroundColor": "#272727",
+        "primaryTextColor": "#ffffff",
+        "scrollbarHandleColor": "#dddddd",
+        "secondaryTextColor": "#e3e3e3",
+        "selectionBackgroundColor": "#202020"
+    },
     "toolbar": {
         "backgroundColor": "#f3f3f3",
         "checkedButtonColor": "#cccccc",

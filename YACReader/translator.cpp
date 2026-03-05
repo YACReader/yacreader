@@ -29,39 +29,25 @@
 YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     : QWidget(parent), drag(false)
 {
-    QString scrollBarStyle = "QScrollBar:vertical { border: none; background: #404040; width: 7px; margin: 0 3px 0 0; }"
-                             "QScrollBar::handle:vertical { background: #DDDDDD; width: 7px; min-height: 20px; }"
-                             "QScrollBar::add-line:vertical { border: none; background: #404040; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-
-                             "QScrollBar::sub-line:vertical {  border: none; background: #404040; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-                             "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-                             "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
-
-                             "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }";
-
     this->setCursor(QCursor(Qt::ArrowCursor));
     this->setAutoFillBackground(true);
     this->setBackgroundRole(QPalette::Window);
-    QPalette p(this->palette());
-    p.setColor(QPalette::Window, QColor(0x404040));
-    this->setPalette(p);
 
     auto layout = new QVBoxLayout(this);
 
     // TITLE BAR
     auto titleBar = new QHBoxLayout();
-    auto close = new QPushButton(QIcon(":/images/close.svg"), "");
-    close->setFlat(true);
-    auto title = new QLabel(tr("YACReader translator"));
-    title->setStyleSheet("QLabel {font-size:18px; font-family:Arial; color:white;}");
-    titleBar->addWidget(title);
+    closeButton = new QPushButton(this);
+    closeButton->setFlat(true);
+    titleLabel = new QLabel(tr("YACReader translator"));
+    titleBar->addWidget(titleLabel);
     titleBar->addStretch();
-    close->resize(14, 14);
-    close->setStyleSheet("QPushButton {margin:0;padding:0;border:none;}");
-    titleBar->addWidget(close);
+    closeButton->resize(14, 14);
+    closeButton->setStyleSheet("QPushButton {margin:0;padding:0;border:none;}");
+    titleBar->addWidget(closeButton);
     titleBar->setContentsMargins(0, 0, 0, 0);
     titleBar->setSpacing(0);
-    connect(close, &QAbstractButton::clicked, parent, &Viewer::animateHideTranslator);
+    connect(closeButton, &QAbstractButton::clicked, parent, &Viewer::animateHideTranslator);
 
     layout->addLayout(titleBar);
 
@@ -71,32 +57,19 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     text->setMaximumHeight(110);
     layout->addSpacing(12);
     layout->addWidget(text);
-    text->setStyleSheet("QTextEdit{border:none;background:#2a2a2a;color:white; font-size:12px; padding:6px;}" + scrollBarStyle);
 
     // COMBOBOXES
     auto combos = new QHBoxLayout();
     from = new QComboBox(this);
     to = new QComboBox(this);
-    QString comboBoxStyle = "QComboBox {border:none;background:#2a2a2a;color:white;font-size:12px;font-family:Arial;padding-left:8px;}"
-                            "QComboBox::down-arrow {image: url(:/images/dropDownArrow.png);}"
-                            "QComboBox::drop-down {border:none; padding-right:10px;}"
-                            "QComboBox QAbstractItemView {border: none; background:#272727; color:white; selection-background-color: #202020; outline:none;}"
-                            "QComboBox QAbstractItemView::item {padding-left:8px;}" +
-            scrollBarStyle;
-    from->setStyleSheet(comboBoxStyle);
-    to->setStyleSheet(comboBoxStyle);
     from->setFixedHeight(22);
     to->setFixedHeight(22);
-    QLabel *arrow = new QLabel(this);
-    QPixmap arrowPixmap(":/images/fromTo.png");
-    arrow->setPixmap(arrowPixmap);
-    auto searchButton = new QPushButton(this);
-    searchButton->setIcon(QIcon(":/images/translatorSearch.png"));
-    searchButton->setStyleSheet("QPushButton {border:none; background:#2a2a2a;}");
+    arrowLabel = new QLabel(this);
+    searchButton = new QPushButton(this);
     searchButton->setFixedSize(22, 22);
     combos->addWidget(from, 1);
     combos->addSpacing(9);
-    combos->addWidget(arrow, 0);
+    combos->addWidget(arrowLabel, 0);
     combos->addSpacing(9);
     combos->addWidget(to, 1);
     combos->addSpacing(9);
@@ -107,10 +80,8 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     // RESULTS
     auto resultsTitleLayout = new QHBoxLayout();
     resultsTitle = new QLabel(tr("Translation"));
-    resultsTitle->setStyleSheet("QLabel {font-family:Arial;font-size:14px;color:#e3e3e3;}");
     speakButton = new QPushButton(this);
     speakButton->setStyleSheet("QPushButton {border:none;}");
-    speakButton->setIcon(QIcon(":/images/speaker.png"));
     resultsTitleLayout->addWidget(resultsTitle, 0, Qt::AlignVCenter);
     resultsTitleLayout->addSpacing(10);
     resultsTitleLayout->addWidget(speakButton, 0, Qt::AlignVCenter);
@@ -122,7 +93,6 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
 
     resultText = new QLabel();
     resultText->setWordWrap(true);
-    resultText->setStyleSheet("QLabel {color:white;font-size:12px;}");
     resultText->setText("");
     layout->addWidget(resultText);
 
@@ -132,7 +102,6 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     clearButton = new QPushButton(tr("clear"));
     layout->addWidget(clearButton, 0, Qt::AlignRight);
     clearButton->setMinimumWidth(95);
-    clearButton->setStyleSheet("QPushButton {border:1px solid #212121; background:#2a2a2a; color:white; font-family:Arial; font-size:12px; padding-top:5px; padding-bottom:5px;}");
 
     resize(400, 479);
 
@@ -147,13 +116,41 @@ YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     busyIndicator->move((this->width() - busyIndicator->width()) / 2, (this->height() - busyIndicator->height()) * 2 / 3);
     busyIndicator->hide();
 
-    show();
-
     connect(searchButton, &QAbstractButton::pressed, this, &YACReaderTranslator::translate);
     connect(speakButton, &QAbstractButton::pressed, this, &YACReaderTranslator::play);
     connect(clearButton, &QAbstractButton::pressed, this, &YACReaderTranslator::clear);
 
     tts = new QTextToSpeech(this);
+
+    initTheme(this);
+
+    show();
+}
+
+void YACReaderTranslator::applyTheme(const Theme &theme)
+{
+    const auto &tr = theme.translator;
+
+    QPalette p(this->palette());
+    p.setColor(QPalette::Window, tr.backgroundColor);
+    this->setPalette(p);
+
+    text->setStyleSheet(tr.textEditQSS + tr.scrollBarQSS);
+    from->setStyleSheet(tr.comboBoxQSS + tr.scrollBarQSS);
+    to->setStyleSheet(tr.comboBoxQSS + tr.scrollBarQSS);
+
+    titleLabel->setStyleSheet(tr.titleQSS);
+    resultsTitle->setStyleSheet(tr.resultsTitleQSS);
+    resultText->setStyleSheet(tr.resultTextQSS);
+    clearButton->setStyleSheet(tr.clearButtonQSS);
+
+    searchButton->setStyleSheet(
+            QString("QPushButton {border:none; background:%1;}").arg(tr.inputBackgroundColor.name()));
+
+    closeButton->setIcon(tr.closeIcon);
+    speakButton->setIcon(tr.speakerIcon);
+    searchButton->setIcon(tr.searchIcon);
+    arrowLabel->setPixmap(tr.fromToPixmap);
 }
 
 void YACReaderTranslator::hideResults()

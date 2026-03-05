@@ -14,8 +14,9 @@ class QTextToSpeech;
 #include <QThread>
 #include <QUrl>
 #include "viewer.h"
+#include "themable.h"
 
-class YACReaderTranslator : public QWidget
+class YACReaderTranslator : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -31,6 +32,7 @@ protected slots:
     void clear();
 
 protected:
+    void applyTheme(const Theme &theme) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -48,8 +50,12 @@ private:
     QTextEdit *text;
     QComboBox *from;
     QComboBox *to;
+    QLabel *titleLabel;
     QLabel *resultsTitle;
+    QLabel *arrowLabel;
     QPushButton *speakButton;
+    QPushButton *closeButton;
+    QPushButton *searchButton;
     QLabel *resultText;
     YACReaderBusyWidget *busyIndicator;
     QPushButton *clearButton;
