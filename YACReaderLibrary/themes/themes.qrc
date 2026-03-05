@@ -1,0 +1,7 @@
+<RCC>
+  <qresource prefix="/themes">
+    <file alias="builtin_classic.json">builtin_classic.json</file>
+    <file alias="builtin_light.json">builtin_light.json</file>
+    <file alias="builtin_dark.json">builtin_dark.json</file>
+  </qresource>
+</RCC>

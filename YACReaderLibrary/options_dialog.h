@@ -61,6 +61,7 @@ private:
     QWidget *createLibrariesTab();
     QWidget *createFlowTab();
     QWidget *createGridTab();
+    QWidget *createAppearanceTab();
 };
 
 #endif

@@ -111,17 +111,27 @@ add_library(common_gui STATIC
     # themes infrastructure (does NOT depend on app-specific theme.h)
     themes/icon_utils.h
     themes/icon_utils.cpp
-    themes/theme_id.h
+    themes/appearance_configuration.h
+    themes/appearance_configuration.cpp
+    themes/theme_variant.h
     themes/themable.h
     themes/yacreader_icon.h
     themes/shared/help_about_dialog_theme.h
     themes/shared/whats_new_dialog_theme.h
+    themes/theme_editor_dialog.h
+    themes/theme_editor_dialog.cpp
+    themes/theme_meta.h
+    themes/theme_repository.h
+    themes/theme_repository.cpp
+    themes/appearance_tab_widget.h
+    themes/appearance_tab_widget.cpp
 )
 target_include_directories(common_gui PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/themes
     ${CMAKE_CURRENT_SOURCE_DIR}/themes/shared
 )
+
 target_link_libraries(common_gui PUBLIC
     Qt::Core
     Qt::Core5Compat

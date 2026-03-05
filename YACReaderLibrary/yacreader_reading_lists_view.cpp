@@ -50,7 +50,13 @@ void YACReaderReadingListsViewItemDeletegate::paint(QPainter *painter, const QSt
         return;
     }
 
-    QStyledItemDelegate::paint(painter, option, index);
+    // Promote hover to selected so QIcon::Selected mode activates on mouse-over,
+    // matching the QSS which already uses the same background for hover and selected.
+    QStyleOptionViewItem opt = option;
+    if (opt.state & QStyle::State_MouseOver)
+        opt.state |= QStyle::State_Selected;
+
+    QStyledItemDelegate::paint(painter, opt, index);
 }
 
 QSize YACReaderReadingListsViewItemDeletegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const

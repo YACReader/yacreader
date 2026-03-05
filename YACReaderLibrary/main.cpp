@@ -21,7 +21,9 @@
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 #include "exit_check.h"
+#include "appearance_configuration.h"
 #include "theme_manager.h"
+#include "theme_repository.h"
 #ifdef Q_OS_MACOS
 #include "trayhandler.h"
 #endif
@@ -140,7 +142,11 @@ int main(int argc, char **argv)
     app.setApplicationVersion(VERSION);
 
     // Theme initialization
-    ThemeManager::instance().initialize();
+    auto *appearanceConfig = new AppearanceConfiguration(
+            YACReader::getSettingsPath() + "/YACReaderLibrary.ini", qApp);
+    auto *themeRepo = new ThemeRepository(
+            ":/themes", YACReader::getSettingsPath() + "/themes/user");
+    ThemeManager::instance().initialize(appearanceConfig, themeRepo);
 
     // Set window icon according to Freedesktop icon specification
     // This is mostly relevant for Linux and other Unix systems

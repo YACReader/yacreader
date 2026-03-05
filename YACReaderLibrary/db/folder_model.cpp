@@ -144,8 +144,8 @@ void FolderModel::applyTheme(const Theme &theme)
         folderIcon = QFileIconProvider().icon(QFileIconProvider::Folder);
         folderFinishedIcon = drawFinishedFolderIcon(sidebarIcons.folderReadOverlay);
     } else {
-        folderIcon = sidebarIcons.folderIcon;
-        folderFinishedIcon = sidebarIcons.folderFinishedIcon;
+        folderIcon = theme.navigationTree.folderIcon;
+        folderFinishedIcon = theme.navigationTree.folderFinishedIcon;
     }
 }
 
@@ -434,7 +434,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags FolderModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return {};
+        return { };
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
 }

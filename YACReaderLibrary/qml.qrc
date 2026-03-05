@@ -11,13 +11,9 @@
         <file>qml/reading.svg</file>
         <file>qml/star.svg</file>
         <file>qml/page.svg</file>
-        <file>qml/info-indicator.png</file>
-        <file>qml/info-shadow.png</file>
-        <file>qml/info-indicator-light.png</file>
-        <file>qml/info-shadow-light.png</file>
-        <file>qml/info-indicator-light@2x.png</file>
-        <file>qml/info-shadow-light@2x.png</file>
-        <file>qml/info-top-shadow.png</file>
+        <file>qml/info-indicator.svg</file>
+        <file>qml/info-shadow.svg</file>
+        <file>qml/info-top-shadow.svg</file>
         <file>qml/ComicInfoView.qml</file>
         <file>qml/info-favorites.svg</file>
         <file>qml/info-rating.svg</file>

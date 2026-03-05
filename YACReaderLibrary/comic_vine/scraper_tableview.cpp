@@ -32,7 +32,7 @@ ScraperTableView::ScraperTableView(QWidget *parent)
 
 void ScraperTableView::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    setStyleSheet(comicVineTheme.scraperTableViewQSS);
+    setStyleSheet(metadataScraperDialogTheme.scraperTableViewQSS);
 }

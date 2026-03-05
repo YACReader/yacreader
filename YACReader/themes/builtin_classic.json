@@ -1,0 +1,51 @@
+{
+    "goToFlowWidget": {
+        "editBackgroundColor": "#55000000",
+        "editBorderColor": "#77000000",
+        "editTextColor": "#ffffff",
+        "flowBackgroundColor": "#282828",
+        "flowTextColor": "#ffffff",
+        "iconColor": "#ffffff",
+        "labelTextColor": "#ffffff",
+        "sliderBorderColor": "#22ffffff",
+        "sliderGrooveColor": "#77000000",
+        "sliderHandleColor": "#55ffffff",
+        "toolbarBackgroundColor": "#99000000"
+    },
+    "helpAboutDialog": {
+        "headingColor": "#302f2d",
+        "linkColor": "#c19441"
+    },
+    "meta": {
+        "displayName": "Default Classic",
+        "id": "builtin/classic",
+        "variant": "dark"
+    },
+    "shortcutsIcons": {
+        "iconColor": "#404040"
+    },
+    "toolbar": {
+        "backgroundColor": "#f3f3f3",
+        "checkedButtonColor": "#cccccc",
+        "iconCheckedColor": "#5a5a5a",
+        "iconColor": "#404040",
+        "iconDisabledColor": "#858585",
+        "menuIndicatorColor": "#404040",
+        "separatorColor": "#cccccc"
+    },
+    "viewer": {
+        "defaultBackgroundColor": "#282828",
+        "defaultTextColor": "#ffffff",
+        "infoBackgroundColor": "#bb000000",
+        "infoTextColor": "#ffffff"
+    },
+    "whatsNewDialog": {
+        "backgroundColor": "#ffffff",
+        "closeButtonColor": "#444444",
+        "contentTextColor": "#0a0a0a",
+        "headerDecorationColor": "#e8b800",
+        "headerTextColor": "#0a0a0a",
+        "linkColor": "#e8b800",
+        "versionTextColor": "#858585"
+    }
+}

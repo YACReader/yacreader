@@ -5,8 +5,8 @@
 #include "icon_utils.h"
 #include "yacreader_global.h"
 
-struct ComicVineParams {
-    ComicVineThemeTemplates t;
+struct MetadataScraperDialogParams {
+    MetadataScraperDialogThemeTemplates t;
 
     QColor contentTextColor;
     QColor contentBackgroundColor;
@@ -18,6 +18,7 @@ struct ComicVineParams {
     QColor tableBorderColor;
     QColor tableSelectedColor;
     QColor tableHeaderBackgroundColor;
+    QColor tableHeaderGradientColor;
     QColor tableHeaderBorderColor;
     QColor tableHeaderTextColor;
     QColor tableScrollHandleColor;
@@ -33,10 +34,8 @@ struct ComicVineParams {
     QColor buttonTextColor;
     QColor buttonBorderColor;
 
-    QString radioUncheckedPath;
     QColor radioUncheckedColor;
 
-    QString radioCheckedPath;
     QColor radioCheckedBackgroundColor;
     QColor radioCheckedIndicatorColor;
 
@@ -66,16 +65,9 @@ struct EmptyContainerParams {
 };
 
 struct SidebarParams {
-    SidebarThemeTemplates t;
-    bool useStyledSplitter; // true for non-macOS, false for macOS
-
     QColor backgroundColor;
     QColor separatorColor;
     QColor sectionSeparatorColor; // Horizontal separators between sidebar sections
-
-    // Splitter parameters
-    QColor splitterBackgroundColor;
-    int splitterHeight;
 
     bool uppercaseLabels;
 
@@ -101,33 +93,41 @@ struct ImportWidgetParams {
     QColor iconCheckedColor;
 };
 
-struct TreeViewParams {
-    TreeViewThemeTemplates t;
-    bool useStyledTemplate; // true for non-macOS themes, false for macOS themes
+struct NavigationTreeParams {
+    NavigationTreeThemeTemplates t;
 
-    // For styled template: %1=text, %2=selection bg, %3=scroll bg, %4=scroll handle, %5=selected text
     QColor textColor;
     QColor selectionBackgroundColor;
     QColor scrollBackgroundColor;
     QColor scrollHandleColor;
     QColor selectedTextColor;
-
-    // For native (macOS) template: %1=selection color
-    QColor nativeSelectionColor;
-
     QColor folderIndicatorColor;
+
+    // Branch indicator icon colors (independent of sidebarIcons.iconColor)
+    QColor branchIndicatorColor;
+    QColor branchIndicatorSelectedColor;
+
+    // Folder icon colors (own parameters, independent of sidebarIcons)
+    QColor folderIconColor; // Main color for unselected folder (#f0f)
+    QColor folderIconShadowColor; // Shadow color for unselected folder (#0ff)
+    QColor folderIconSelectedColor; // Main color for selected folder (#f0f)
+    QColor folderIconSelectedShadowColor; // Shadow color for selected folder (#0ff)
+    QColor folderReadOverlayColor; // Tick/checkmark color for unselected folder (#ff0 in folder_finished, #f0f in folder_read_overlay.svg)
+    QColor folderReadOverlaySelectedColor; // Tick/checkmark color for selected folder
 };
 
-struct TableViewParams {
-    TableViewThemeTemplates t;
+struct ComicsViewTableParams {
+    ComicsViewTableThemeTemplates t;
 
     QColor alternateBackgroundColor;
     QColor backgroundColor;
-    QColor cornerButtonBackgroundColor;
-    QColor cornerButtonBorderColor;
-    QColor cornerButtonGradientColor;
+    QColor headerBackgroundColor;
+    QColor headerBorderColor;
+    QColor headerGradientColor;
     QColor itemBorderBottomColor;
     QColor itemBorderTopColor;
+    int itemBorderBottomWidth; // px
+    int itemBorderTopWidth; // px
     QColor itemTextColor;
     QColor selectedColor;
     QColor selectedTextColor;
@@ -137,7 +137,7 @@ struct TableViewParams {
     QColor starRatingSelectedColor;
 };
 
-struct QmlViewParams {
+struct GridAndInfoViewParams {
     // Grid colors
     QColor backgroundColor;
     QColor cellColor;
@@ -151,9 +151,8 @@ struct QmlViewParams {
 
     // Info panel colors
     QColor infoBackgroundColor;
-    QString topShadow; // Image filename
-    QString infoShadow; // Image filename
-    QString infoIndicator; // Image filename
+    QColor infoBorderColor;
+    QColor infoShadowColor;
     QColor infoTextColor;
     QColor infoTitleColor;
 
@@ -171,6 +170,9 @@ struct QmlViewParams {
     // Continue reading section (FolderContentView)
     QColor continueReadingBackgroundColor;
     QColor continueReadingColor;
+
+    // Blur overlay background (FlowView always, GridView when background image enabled)
+    QColor backgroundBlurOverlayColor;
 };
 
 struct MainToolbarParams {
@@ -195,11 +197,9 @@ struct SidebarIconsParams {
     // Icon colors - #f0f placeholder gets replaced with these
     QColor iconColor; // Main icon color (replaces #f0f)
     QColor shadowColor; // Shadow color (replaces #0ff)
-    QColor extraColor; // Extra info like ticks (replaces #ff0)
 
     // When true, use QFileIconProvider for folder icons and overlay a tick for finished folders
     bool useSystemFolderIcons;
-    QColor folderReadOverlayColor; // Color for the tick overlay (replaces #f0f in folder_read_overlay.svg)
 };
 
 struct ServerConfigDialogThemeTemplates {
@@ -215,15 +215,19 @@ struct LibraryItemParams {
     QColor textColor;
     QColor selectedTextColor;
     QColor selectedBackgroundColor;
-    QColor libraryIconSelectedColor; // Color for the library icon when selected
+    QColor libraryIconColor;
+    QColor libraryIconShadowColor;
+    QColor libraryIconSelectedColor;
     QColor libraryOptionsIconColor; // Color for the options icon (shown only when selected)
 };
 
 struct ComicsViewToolbarParams {
     ComicsViewToolbarThemeTemplates t;
 
+    QColor backgroundColor;
+    QColor separatorColor;
     QColor checkedBackgroundColor;
-    QColor iconColor; // Main icon color (replaces #f0f)
+    QColor iconColor;
 };
 
 struct SearchLineEditParams {
@@ -237,18 +241,27 @@ struct SearchLineEditParams {
 struct ReadingListIconsParams {
     QMap<QString, QColor> labelColors; // Label colors by name (e.g., "red" -> #f67a7b)
     QColor labelShadowColor; // Shadow color for labels (replaces #0ff)
+    QColor labelShadowSelectedColor; // Shadow color for labels when selected/hovered
 
     // Special list icon colors
     QColor readingListMainColor; // default_0 main color (replaces #f0f)
+    QColor readingListMainSelectedColor; // default_0 main color when selected/hovered
     QColor favoritesMainColor; // default_1 main color (replaces #f0f)
+    QColor favoritesMainSelectedColor; // default_1 main color when selected/hovered
     QColor currentlyReadingMainColor; // default_2 main color (replaces #f0f)
+    QColor currentlyReadingMainSelectedColor; // default_2 main color when selected/hovered
     QColor currentlyReadingOuterColor; // default_2 outer circle (replaces #ff0)
+    QColor currentlyReadingOuterSelectedColor; // default_2 outer circle when selected/hovered
     QColor specialListShadowColor; // Shadow color for special lists (replaces #0ff)
+    QColor specialListShadowSelectedColor; // Shadow color for special lists when selected/hovered
 
     // List icon colors
     QColor listMainColor; // main color (replaces #f0f)
+    QColor listMainSelectedColor; // main color when selected/hovered
     QColor listShadowColor; // shadow color (replaces #0ff)
+    QColor listShadowSelectedColor; // shadow color when selected/hovered
     QColor listDetailColor; // detail/checkbox color (replaces #ff0)
+    QColor listDetailSelectedColor; // detail/checkbox color when selected/hovered
 };
 
 struct DialogIconsParams {
@@ -287,11 +300,10 @@ struct WhatsNewDialogParams {
 };
 
 struct ThemeParams {
-    QString themeName;
-    QColor defaultContentBackgroundColor;
+    ThemeMeta meta;
 
     ComicFlowColors comicFlowColors;
-    ComicVineParams comicVineParams;
+    MetadataScraperDialogParams metadataScraperDialogParams;
     HelpAboutDialogTheme helpAboutDialogParams;
     EmptyContainerParams emptyContainerParams;
     SidebarParams sidebarParams;
@@ -301,9 +313,9 @@ struct ThemeParams {
     ServerConfigDialogParams serverConfigDialogParams;
     MainToolbarParams mainToolbarParams;
     ContentSplitterParams contentSplitterParams;
-    TreeViewParams treeViewParams;
-    TableViewParams tableViewParams;
-    QmlViewParams qmlViewParams;
+    NavigationTreeParams navigationTreeParams;
+    ComicsViewTableParams comicsViewTableParams;
+    GridAndInfoViewParams gridAndInfoViewParams;
     ComicsViewToolbarParams comicsViewToolbarParams;
     SearchLineEditParams searchLineEditParams;
     ReadingListIconsParams readingListIconsParams;
@@ -317,62 +329,61 @@ Theme makeTheme(const ThemeParams &params)
 {
     Theme theme;
 
-    theme.defaultContentBackgroundColor = params.defaultContentBackgroundColor;
-
     // Comic Flow
     const auto &cf = params.comicFlowColors;
     theme.comicFlow.backgroundColor = cf.backgroundColor;
     theme.comicFlow.textColor = cf.textColor;
 
-    // Comic Vine
-    const auto &cv = params.comicVineParams;
-    const auto &t = cv.t;
+    // MetadataScraperDialog
+    const auto &msd = params.metadataScraperDialogParams;
+    const auto &t = msd.t;
 
     auto recolor = [&](const QString &path, const QColor &color) {
-        return recoloredSvgToThemeFile(path, color, params.themeName);
+        return recoloredSvgToThemeFile(path, color, params.meta.id);
     };
 
-    theme.comicVine.defaultLabelQSS = t.defaultLabelQSS.arg(cv.labelTextColor.name());
-    theme.comicVine.titleLabelQSS = t.titleLabelQSS.arg(cv.labelTextColor.name());
-    theme.comicVine.coverLabelQSS = t.coverLabelQSS.arg(cv.labelBackgroundColor.name(), cv.labelTextColor.name());
-    theme.comicVine.radioButtonQSS = t.radioButtonQSS.arg(cv.buttonTextColor.name(), recolor(cv.radioUncheckedPath, cv.radioUncheckedColor), recoloredSvgToThemeFile(cv.radioCheckedPath, cv.radioCheckedBackgroundColor, cv.radioCheckedIndicatorColor, params.themeName));
-    theme.comicVine.checkBoxQSS = t.checkBoxQSS.arg(cv.buttonTextColor.name(), cv.buttonBorderColor.name(), cv.buttonBackgroundColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", cv.checkBoxTickColor));
+    theme.metadataScraperDialog.defaultLabelQSS = t.defaultLabelQSS.arg(msd.labelTextColor.name());
+    theme.metadataScraperDialog.titleLabelQSS = t.titleLabelQSS.arg(msd.labelTextColor.name());
+    theme.metadataScraperDialog.coverLabelQSS = t.coverLabelQSS.arg(msd.labelBackgroundColor.name(), msd.labelTextColor.name());
+    theme.metadataScraperDialog.radioButtonQSS = t.radioButtonQSS.arg(msd.buttonTextColor.name(), recolor(":/images/comic_vine/radioUnchecked.svg", msd.radioUncheckedColor), recoloredSvgToThemeFile(":/images/comic_vine/radioChecked.svg", msd.radioCheckedBackgroundColor, msd.radioCheckedIndicatorColor, params.meta.id));
+    theme.metadataScraperDialog.checkBoxQSS = t.checkBoxQSS.arg(msd.buttonTextColor.name(), msd.buttonBorderColor.name(), msd.buttonBackgroundColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", msd.checkBoxTickColor));
 
-    theme.comicVine.scraperLineEditTitleLabelQSS = t.scraperLineEditTitleLabelQSS.arg(cv.contentTextColor.name());
-    theme.comicVine.scraperLineEditQSS = t.scraperLineEditQSS.arg(cv.contentAltBackgroundColor.name(), cv.contentTextColor.name(), "%1");
+    theme.metadataScraperDialog.scraperLineEditTitleLabelQSS = t.scraperLineEditTitleLabelQSS.arg(msd.contentTextColor.name());
+    theme.metadataScraperDialog.scraperLineEditQSS = t.scraperLineEditQSS.arg(msd.contentAltBackgroundColor.name(), msd.contentTextColor.name(), "%1");
 
-    theme.comicVine.scraperToolButtonQSS = t.scraperToolButtonQSS.arg(cv.buttonBackgroundColor.name(), cv.buttonTextColor.name(), cv.toolButtonAccentColor.name());
-    theme.comicVine.scraperToolButtonSeparatorQSS = t.scraperToolButtonSeparatorQSS.arg(cv.toolButtonAccentColor.name());
-    theme.comicVine.scraperToolButtonFillColor = cv.buttonBackgroundColor;
+    theme.metadataScraperDialog.scraperToolButtonQSS = t.scraperToolButtonQSS.arg(msd.buttonBackgroundColor.name(), msd.buttonTextColor.name(), msd.toolButtonAccentColor.name());
+    theme.metadataScraperDialog.scraperToolButtonSeparatorQSS = t.scraperToolButtonSeparatorQSS.arg(msd.toolButtonAccentColor.name());
+    theme.metadataScraperDialog.scraperToolButtonFillColor = msd.buttonBackgroundColor;
 
-    theme.comicVine.scraperScrollLabelTextQSS = t.scraperScrollLabelTextQSS.arg(cv.contentBackgroundColor.name(), cv.contentTextColor.name(), cv.hyperlinkColor.name());
-    theme.comicVine.scraperScrollLabelScrollAreaQSS = t.scraperScrollLabelScrollAreaQSS.arg(cv.contentBackgroundColor.name(), cv.tableScrollHandleColor.name(), cv.tableScrollBackgroundColor.name());
+    theme.metadataScraperDialog.scraperScrollLabelTextQSS = t.scraperScrollLabelTextQSS.arg(msd.contentBackgroundColor.name(), msd.contentTextColor.name(), msd.hyperlinkColor.name());
+    theme.metadataScraperDialog.scraperScrollLabelScrollAreaQSS = t.scraperScrollLabelScrollAreaQSS.arg(msd.contentBackgroundColor.name(), msd.tableScrollHandleColor.name(), msd.tableScrollBackgroundColor.name());
 
-    theme.comicVine.scraperTableViewQSS = t.scraperTableViewQSS
-                                                  .arg(cv.tableHeaderTextColor.name(),
-                                                       cv.tableAltBackgroundColor.name(),
-                                                       cv.tableBackgroundColor.name(),
-                                                       cv.tableSelectedColor.name(),
-                                                       cv.tableHeaderBackgroundColor.name(),
-                                                       cv.tableHeaderBorderColor.name(),
-                                                       cv.tableHeaderTextColor.name(),
-                                                       cv.tableSectionBorderDark.name(),
-                                                       cv.tableSectionBorderLight.name(),
-                                                       cv.tableScrollHandleColor.name(),
-                                                       cv.tableScrollBackgroundColor.name(),
-                                                       recolor(":/images/comic_vine/downArrow.svg", cv.downArrowColor),
-                                                       recolor(":/images/comic_vine/upArrow.svg", cv.upArrowColor));
+    theme.metadataScraperDialog.scraperTableViewQSS = t.scraperTableViewQSS
+                                                              .arg(msd.tableHeaderTextColor.name(),
+                                                                   msd.tableAltBackgroundColor.name(),
+                                                                   msd.tableBackgroundColor.name(),
+                                                                   msd.tableSelectedColor.name(),
+                                                                   msd.tableHeaderBackgroundColor.name(),
+                                                                   msd.tableHeaderBorderColor.name(),
+                                                                   msd.tableHeaderTextColor.name(),
+                                                                   msd.tableSectionBorderDark.name(),
+                                                                   msd.tableSectionBorderLight.name(),
+                                                                   msd.tableScrollHandleColor.name(),
+                                                                   msd.tableScrollBackgroundColor.name(),
+                                                                   recolor(":/images/comic_vine/downArrow.svg", msd.downArrowColor),
+                                                                   recolor(":/images/comic_vine/upArrow.svg", msd.upArrowColor),
+                                                                   msd.tableHeaderGradientColor.name());
 
-    theme.comicVine.dialogQSS = t.dialogQSS.arg(cv.dialogBackgroundColor.name());
-    theme.comicVine.dialogButtonsQSS = t.dialogButtonsQSS.arg(cv.buttonBorderColor.name(), cv.buttonBackgroundColor.name(), cv.buttonTextColor.name());
+    theme.metadataScraperDialog.dialogQSS = t.dialogQSS.arg(msd.dialogBackgroundColor.name());
+    theme.metadataScraperDialog.dialogButtonsQSS = t.dialogButtonsQSS.arg(msd.buttonBorderColor.name(), msd.buttonBackgroundColor.name(), msd.buttonTextColor.name());
 
-    theme.comicVine.busyIndicatorColor = cv.busyIndicatorColor;
+    theme.metadataScraperDialog.busyIndicatorColor = msd.busyIndicatorColor;
 
-    theme.comicVine.nextPageIcon = { QIcon(recolor(t.nextPageIcon, cv.navIconColor)), t.pageIconSize };
-    theme.comicVine.previousPageIcon = { QIcon(recolor(t.previousPageIcon, cv.navIconColor)), t.pageIconSize };
+    theme.metadataScraperDialog.nextPageIcon = { QIcon(recolor(t.nextPageIcon, msd.navIconColor)), t.pageIconSize };
+    theme.metadataScraperDialog.previousPageIcon = { QIcon(recolor(t.previousPageIcon, msd.navIconColor)), t.pageIconSize };
 
-    theme.comicVine.rowUpIcon = { QIcon(recolor(t.rowUpIcon, cv.rowIconColor)), t.rowIconSize };
-    theme.comicVine.rowDownIcon = { QIcon(recolor(t.rowDownIcon, cv.rowIconColor)), t.rowIconSize };
+    theme.metadataScraperDialog.rowUpIcon = { QIcon(recolor(t.rowUpIcon, msd.rowIconColor)), t.rowIconSize };
+    theme.metadataScraperDialog.rowDownIcon = { QIcon(recolor(t.rowDownIcon, msd.rowIconColor)), t.rowIconSize };
 
     // HelpAboutDialog
     theme.helpAboutDialog = params.helpAboutDialogParams;
@@ -385,8 +396,8 @@ Theme makeTheme(const ThemeParams &params)
     theme.whatsNewDialog.versionTextColor = wn.versionTextColor;
     theme.whatsNewDialog.contentTextColor = wn.contentTextColor;
     theme.whatsNewDialog.linkColor = wn.linkColor;
-    theme.whatsNewDialog.closeButtonIcon = QPixmap(recoloredSvgToThemeFile(":/images/custom_dialog/custom_close_button.svg", wn.closeButtonColor, params.themeName));
-    theme.whatsNewDialog.headerDecoration = QPixmap(recoloredSvgToThemeFile(":/images/whats_new/whatsnew_header.svg", wn.headerDecorationColor, params.themeName));
+    theme.whatsNewDialog.closeButtonIcon = QPixmap(recoloredSvgToThemeFile(":/images/custom_dialog/custom_close_button.svg", wn.closeButtonColor, params.meta.id));
+    theme.whatsNewDialog.headerDecoration = QPixmap(recoloredSvgToThemeFile(":/images/whats_new/whatsnew_header.svg", wn.headerDecorationColor, params.meta.id));
     // end WhatsNewDialog
 
     // EmptyContainer
@@ -397,16 +408,16 @@ Theme makeTheme(const ThemeParams &params)
     theme.emptyContainer.titleLabelQSS = ect.titleLabelQSS.arg(ec.titleTextColor.name());
     theme.emptyContainer.textColor = ec.textColor;
     theme.emptyContainer.descriptionTextColor = ec.descriptionTextColor;
-    theme.emptyContainer.noLibrariesIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/noLibrariesIcon.svg", ec.searchIconColor, params.themeName), 165, 160, qApp->devicePixelRatio());
+    theme.emptyContainer.noLibrariesIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/noLibrariesIcon.svg", ec.searchIconColor, params.meta.id), 165, 160, qApp->devicePixelRatio());
     {
         const qreal dpr = qApp->devicePixelRatio();
-        theme.emptyContainer.searchingIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/search_result.svg", ec.searchIconColor, params.themeName, { .suffix = "_searching" }), 97, dpr);
-        theme.emptyContainer.noSearchResultsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/search_result.svg", ec.searchIconColor, params.themeName, { .suffix = "_no_results" }), 239, dpr);
+        theme.emptyContainer.searchingIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/search_result.svg", ec.searchIconColor, params.meta.id, { .suffix = "_searching" }), 97, dpr);
+        theme.emptyContainer.noSearchResultsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/search_result.svg", ec.searchIconColor, params.meta.id, { .suffix = "_no_results" }), 239, dpr);
 
-        theme.emptyContainer.emptyFolderIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_folder.svg", ec.searchIconColor, params.themeName), 319, 243, dpr);
-        theme.emptyContainer.emptyFavoritesIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_favorites.svg", QColor(0xe84853), params.themeName), 238, 223, dpr);
-        theme.emptyContainer.emptyCurrentReadingsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_current_readings.svg", ec.searchIconColor, params.themeName), 167, 214, dpr);
-        theme.emptyContainer.emptyReadingListIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.searchIconColor, params.themeName), 248, 187, dpr);
+        theme.emptyContainer.emptyFolderIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_folder.svg", ec.searchIconColor, params.meta.id), 319, 243, dpr);
+        theme.emptyContainer.emptyFavoritesIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_favorites.svg", QColor(0xe84853), params.meta.id), 238, 223, dpr);
+        theme.emptyContainer.emptyCurrentReadingsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_current_readings.svg", ec.searchIconColor, params.meta.id), 167, 214, dpr);
+        theme.emptyContainer.emptyReadingListIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.searchIconColor, params.meta.id), 248, 187, dpr);
 
         // Generate empty label icons for each label color
         const auto &rli = params.readingListIconsParams;
@@ -416,7 +427,7 @@ Theme makeTheme(const ThemeParams &params)
             auto it = rli.labelColors.find(colorName);
             if (it != rli.labelColors.end()) {
                 theme.emptyContainer.emptyLabelIcons[c] = renderSvgToPixmap(
-                        recoloredSvgToThemeFile(":/images/empty_container/empty_label.svg", it.value(), params.themeName, { .suffix = "_" + colorName }), 243, 243, dpr);
+                        recoloredSvgToThemeFile(":/images/empty_container/empty_label.svg", it.value(), params.meta.id, { .suffix = "_" + colorName }), 243, 243, dpr);
             }
         }
     }
@@ -427,15 +438,6 @@ Theme makeTheme(const ThemeParams &params)
     theme.sidebar.backgroundColor = sb.backgroundColor;
     theme.sidebar.separatorColor = sb.separatorColor;
     theme.sidebar.sectionSeparatorColor = sb.sectionSeparatorColor;
-    if (sb.useStyledSplitter) {
-        theme.sidebar.splitterQSS = sb.t.styledSplitterQSS
-                                            .arg(sb.splitterBackgroundColor.name())
-                                            .arg(sb.splitterHeight);
-    } else {
-        theme.sidebar.splitterQSS = sb.t.nativeSplitterQSS
-                                            .arg(sb.splitterHeight)
-                                            .arg(sb.splitterBackgroundColor.name());
-    }
     theme.sidebar.uppercaseLabels = sb.uppercaseLabels;
     theme.sidebar.titleTextColor = sb.titleTextColor;
     theme.sidebar.titleDropShadowColor = sb.titleDropShadowColor;
@@ -451,66 +453,68 @@ Theme makeTheme(const ThemeParams &params)
     theme.importWidget.currentComicTextColor = iw.currentComicTextColor;
     theme.importWidget.coversViewBackgroundColor = iw.coversViewBackgroundColor;
     theme.importWidget.coversLabelColor = iw.coversLabelColor;
-    theme.importWidget.topCoversDecoration = QPixmap(recoloredSvgToThemeFile(":/images/import/importTopCoversDecoration.svg", iw.coversDecorationBgColor, iw.coversDecorationShadowColor, params.themeName));
-    theme.importWidget.bottomCoversDecoration = QPixmap(recoloredSvgToThemeFile(":/images/import/importBottomCoversDecoration.svg", iw.coversDecorationBgColor, iw.coversDecorationShadowColor, params.themeName));
-    theme.importWidget.importingIcon = QPixmap(recoloredSvgToThemeFile(":/images/import/importingIcon.svg", iw.modeIconColor, params.themeName));
-    theme.importWidget.updatingIcon = QPixmap(recoloredSvgToThemeFile(":/images/import/updatingIcon.svg", iw.modeIconColor, params.themeName));
+    theme.importWidget.topCoversDecoration = QPixmap(recoloredSvgToThemeFile(":/images/import/importTopCoversDecoration.svg", iw.coversDecorationBgColor, iw.coversDecorationShadowColor, params.meta.id));
+    theme.importWidget.bottomCoversDecoration = QPixmap(recoloredSvgToThemeFile(":/images/import/importBottomCoversDecoration.svg", iw.coversDecorationBgColor, iw.coversDecorationShadowColor, params.meta.id));
+    theme.importWidget.importingIcon = QPixmap(recoloredSvgToThemeFile(":/images/import/importingIcon.svg", iw.modeIconColor, params.meta.id));
+    theme.importWidget.updatingIcon = QPixmap(recoloredSvgToThemeFile(":/images/import/updatingIcon.svg", iw.modeIconColor, params.meta.id));
     {
         QIcon coversToggle;
-        const QString normalPath = recoloredSvgToThemeFile(":/images/import/coversToggle.svg", iw.iconColor, params.themeName);
-        const QString checkedPath = recoloredSvgToThemeFile(":/images/import/coversToggle.svg", iw.iconCheckedColor, params.themeName, { .suffix = "_checked" });
+        const QString normalPath = recoloredSvgToThemeFile(":/images/import/coversToggle.svg", iw.iconColor, params.meta.id);
+        const QString checkedPath = recoloredSvgToThemeFile(":/images/import/coversToggle.svg", iw.iconCheckedColor, params.meta.id, { .suffix = "_checked" });
         coversToggle.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
         coversToggle.addFile(checkedPath, QSize(), QIcon::Normal, QIcon::On);
         theme.importWidget.coversToggleIcon = coversToggle;
     }
     // end ImportWidget
 
-    // TableView
-    const auto &tav = params.tableViewParams;
-    const auto &tavt = tav.t;
-    theme.tableView.tableViewQSS = tavt.tableViewQSS
-                                           .arg(tav.alternateBackgroundColor.name(),
-                                                tav.backgroundColor.name(),
-                                                tav.cornerButtonBackgroundColor.name(),
-                                                tav.cornerButtonBorderColor.name(),
-                                                tav.cornerButtonGradientColor.name(),
-                                                tav.itemBorderBottomColor.name(),
-                                                tav.itemBorderTopColor.name(),
-                                                tav.itemTextColor.name(),
-                                                tav.selectedColor.name(),
-                                                tav.selectedTextColor.name(),
-                                                tav.headerTextColor.name());
-    theme.tableView.starRatingColor = tav.starRatingColor;
-    theme.tableView.starRatingSelectedColor = tav.starRatingSelectedColor;
-    // end TableView
+    // ComicsViewTable
+    const auto &cvta = params.comicsViewTableParams;
+    theme.comicsViewTable.tableViewQSS = cvta.t.tableViewQSS
+                                                 .arg(cvta.alternateBackgroundColor.name(),
+                                                      cvta.backgroundColor.name(),
+                                                      cvta.headerBackgroundColor.name(),
+                                                      cvta.headerBorderColor.name(),
+                                                      cvta.headerGradientColor.name(),
+                                                      cvta.itemBorderBottomColor.name(),
+                                                      cvta.itemBorderTopColor.name(),
+                                                      cvta.itemTextColor.name(),
+                                                      cvta.selectedColor.name(),
+                                                      cvta.selectedTextColor.name(),
+                                                      cvta.headerTextColor.name(),
+                                                      QString::number(cvta.itemBorderBottomWidth),
+                                                      QString::number(cvta.itemBorderTopWidth));
+    theme.comicsViewTable.starRatingColor = cvta.starRatingColor;
+    theme.comicsViewTable.starRatingSelectedColor = cvta.starRatingSelectedColor;
+    // end ComicsViewTable
 
-    // QmlView
-    const auto &qv = params.qmlViewParams;
-    theme.qmlView.backgroundColor = qv.backgroundColor;
-    theme.qmlView.cellColor = qv.cellColor;
-    theme.qmlView.cellColorWithBackground = qv.cellColorWithBackground;
-    theme.qmlView.selectedColor = qv.selectedColor;
-    theme.qmlView.selectedBorderColor = qv.selectedBorderColor;
-    theme.qmlView.borderColor = qv.borderColor;
-    theme.qmlView.titleColor = qv.titleColor;
-    theme.qmlView.textColor = qv.textColor;
-    theme.qmlView.showDropShadow = qv.showDropShadow;
-    theme.qmlView.infoBackgroundColor = qv.infoBackgroundColor;
-    theme.qmlView.topShadow = qv.topShadow;
-    theme.qmlView.infoShadow = qv.infoShadow;
-    theme.qmlView.infoIndicator = qv.infoIndicator;
-    theme.qmlView.infoTextColor = qv.infoTextColor;
-    theme.qmlView.infoTitleColor = qv.infoTitleColor;
-    theme.qmlView.ratingUnselectedColor = qv.ratingUnselectedColor;
-    theme.qmlView.ratingSelectedColor = qv.ratingSelectedColor;
-    theme.qmlView.favUncheckedColor = qv.favUncheckedColor;
-    theme.qmlView.favCheckedColor = qv.favCheckedColor;
-    theme.qmlView.readTickUncheckedColor = qv.readTickUncheckedColor;
-    theme.qmlView.readTickCheckedColor = qv.readTickCheckedColor;
-    theme.qmlView.currentComicBackgroundColor = qv.currentComicBackgroundColor;
-    theme.qmlView.continueReadingBackgroundColor = qv.continueReadingBackgroundColor;
-    theme.qmlView.continueReadingColor = qv.continueReadingColor;
-    // end QmlView
+    // GridAndInfoView
+    const auto &giv = params.gridAndInfoViewParams;
+    theme.gridAndInfoView.backgroundColor = giv.backgroundColor;
+    theme.gridAndInfoView.cellColor = giv.cellColor;
+    theme.gridAndInfoView.cellColorWithBackground = giv.cellColorWithBackground;
+    theme.gridAndInfoView.selectedColor = giv.selectedColor;
+    theme.gridAndInfoView.selectedBorderColor = giv.selectedBorderColor;
+    theme.gridAndInfoView.borderColor = giv.borderColor;
+    theme.gridAndInfoView.titleColor = giv.titleColor;
+    theme.gridAndInfoView.textColor = giv.textColor;
+    theme.gridAndInfoView.showDropShadow = giv.showDropShadow;
+    theme.gridAndInfoView.infoBackgroundColor = giv.infoBackgroundColor;
+    theme.gridAndInfoView.topShadow = recoloredSvgToThemeFile(":/qml/info-top-shadow.svg", giv.infoBackgroundColor, giv.infoBorderColor, giv.infoShadowColor, params.meta.id);
+    theme.gridAndInfoView.infoShadow = recoloredSvgToThemeFile(":/qml/info-shadow.svg", giv.infoBackgroundColor, giv.infoBorderColor, giv.infoShadowColor, params.meta.id);
+    theme.gridAndInfoView.infoIndicator = recoloredSvgToThemeFile(":/qml/info-indicator.svg", giv.infoBackgroundColor, giv.infoBorderColor, giv.infoShadowColor, params.meta.id);
+    theme.gridAndInfoView.infoTextColor = giv.infoTextColor;
+    theme.gridAndInfoView.infoTitleColor = giv.infoTitleColor;
+    theme.gridAndInfoView.ratingUnselectedColor = giv.ratingUnselectedColor;
+    theme.gridAndInfoView.ratingSelectedColor = giv.ratingSelectedColor;
+    theme.gridAndInfoView.favUncheckedColor = giv.favUncheckedColor;
+    theme.gridAndInfoView.favCheckedColor = giv.favCheckedColor;
+    theme.gridAndInfoView.readTickUncheckedColor = giv.readTickUncheckedColor;
+    theme.gridAndInfoView.readTickCheckedColor = giv.readTickCheckedColor;
+    theme.gridAndInfoView.currentComicBackgroundColor = giv.currentComicBackgroundColor;
+    theme.gridAndInfoView.continueReadingBackgroundColor = giv.continueReadingBackgroundColor;
+    theme.gridAndInfoView.continueReadingColor = giv.continueReadingColor;
+    theme.gridAndInfoView.backgroundBlurOverlayColor = giv.backgroundBlurOverlayColor;
+    // end GridAndInfoView
 
     // MainToolbar
     const auto &mt = params.mainToolbarParams;
@@ -549,8 +553,8 @@ Theme makeTheme(const ThemeParams &params)
     // Build icons with Normal and Disabled states
     auto makeToolbarIcon = [&](const QString &basePath) {
         QIcon icon;
-        const QString normalPath = recoloredSvgToThemeFile(basePath, mt.iconColor, params.themeName);
-        const QString disabledPath = recoloredSvgToThemeFile(basePath, mt.iconDisabledColor, params.themeName, { .suffix = "_disabled" });
+        const QString normalPath = recoloredSvgToThemeFile(basePath, mt.iconColor, params.meta.id);
+        const QString disabledPath = recoloredSvgToThemeFile(basePath, mt.iconDisabledColor, params.meta.id, { .suffix = "_disabled" });
         icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(disabledPath, QSize(), QIcon::Disabled, QIcon::Off);
         return icon;
@@ -573,16 +577,7 @@ Theme makeTheme(const ThemeParams &params)
     // Helper to create icons with shadow (two-color: #f0f main, #0ff shadow)
     // Adds both Normal and Selected modes to prevent Qt from applying a selection tint
     auto makeSidebarIcon = [&](const QString &basePath) {
-        const QString path = recoloredSvgToThemeFile(basePath, si.iconColor, si.shadowColor, params.themeName);
-        QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
-        return icon;
-    };
-
-    // Helper for icons with extra color (three-color: #f0f main, #0ff shadow, #ff0 extra)
-    auto makeSidebarIconWithExtra = [&](const QString &basePath) {
-        const QString path = recoloredSvgToThemeFile(basePath, si.iconColor, si.shadowColor, si.extraColor, params.themeName);
+        const QString path = recoloredSvgToThemeFile(basePath, si.iconColor, si.shadowColor, params.meta.id);
         QIcon icon;
         icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
@@ -591,7 +586,7 @@ Theme makeTheme(const ThemeParams &params)
 
     // Helper for single-color icons (only #f0f main)
     auto makeSingleColorIcon = [&](const QString &basePath) {
-        const QString path = recoloredSvgToThemeFile(basePath, si.iconColor, params.themeName);
+        const QString path = recoloredSvgToThemeFile(basePath, si.iconColor, params.meta.id);
         QIcon icon;
         icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
@@ -601,16 +596,19 @@ Theme makeTheme(const ThemeParams &params)
     // System folder icons flag and overlay
     theme.sidebarIcons.useSystemFolderIcons = si.useSystemFolderIcons;
     if (si.useSystemFolderIcons) {
-        const QString overlayPath = recoloredSvgToThemeFile(":/images/sidebar/folder_read_overlay.svg", si.folderReadOverlayColor, params.themeName);
+        const QString overlayPath = recoloredSvgToThemeFile(":/images/sidebar/folder_read_overlay.svg", params.navigationTreeParams.folderReadOverlayColor, params.meta.id);
         theme.sidebarIcons.folderReadOverlay = QPixmap(overlayPath);
     }
 
-    // Folder icons
-    theme.sidebarIcons.folderIcon = makeSidebarIcon(":/images/sidebar/folder.svg");
-    theme.sidebarIcons.folderFinishedIcon = makeSidebarIconWithExtra(":/images/sidebar/folder_finished.svg");
-
-    // Library icon (unselected state uses sidebar colors)
-    theme.sidebarIcons.libraryIcon = makeSidebarIcon(":/images/sidebar/libraryIcon.svg");
+    // Library icon (unselected state, two-color: #f0f main, #0ff shadow)
+    {
+        const auto &li = params.libraryItemParams;
+        const QString libraryIconPath = recoloredSvgToThemeFile(":/images/sidebar/libraryIcon.svg", li.libraryIconColor, li.libraryIconShadowColor, params.meta.id);
+        QIcon icon;
+        icon.addFile(libraryIconPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(libraryIconPath, QSize(), QIcon::Selected, QIcon::Off);
+        theme.sidebarIcons.libraryIcon = icon;
+    }
 
     // Action icons
     theme.sidebarIcons.newLibraryIcon = makeSidebarIcon(":/images/sidebar/newLibraryIcon.svg");
@@ -623,9 +621,6 @@ Theme makeTheme(const ThemeParams &params)
     theme.sidebarIcons.addLabelIcon = makeSidebarIcon(":/images/sidebar/addLabelIcon.svg");
     theme.sidebarIcons.renameListIcon = makeSidebarIcon(":/images/sidebar/renameListIcon.svg");
 
-    // Branch icons (paths for QSS)
-    theme.sidebarIcons.branchClosedIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", si.iconColor, params.themeName);
-    theme.sidebarIcons.branchOpenIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", si.iconColor, params.themeName);
     // end SidebarIcons
 
     // LibraryItem
@@ -635,30 +630,51 @@ Theme makeTheme(const ThemeParams &params)
     theme.libraryItem.selectedBackgroundColor = li.selectedBackgroundColor;
 
     // Library icon when selected (uses its own color to contrast with selected background)
-    const QString libraryIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/libraryIconSelected.svg", li.libraryIconSelectedColor, params.themeName);
+    const QString libraryIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/libraryIconSelected.svg", li.libraryIconSelectedColor, params.meta.id);
     theme.libraryItem.libraryIconSelected = QIcon(libraryIconSelectedPath);
 
     // Library options icon (shown only when selected, uses its own color)
-    const QString libraryOptionsPath = recoloredSvgToThemeFile(":/images/sidebar/libraryOptions.svg", li.libraryOptionsIconColor, params.themeName);
+    const QString libraryOptionsPath = recoloredSvgToThemeFile(":/images/sidebar/libraryOptions.svg", li.libraryOptionsIconColor, params.meta.id);
     theme.libraryItem.libraryOptionsIcon = QIcon(libraryOptionsPath);
     // end LibraryItem
 
-    // TreeView (must come after SidebarIcons for branch icon paths)
-    const auto &tv = params.treeViewParams;
-    if (tv.useStyledTemplate) {
-        theme.treeView.treeViewQSS = tv.t.styledTreeViewQSS
-                                             .arg(tv.textColor.name(),
-                                                  tv.selectionBackgroundColor.name(),
-                                                  tv.scrollBackgroundColor.name(),
-                                                  tv.scrollHandleColor.name(),
-                                                  tv.selectedTextColor.name(),
-                                                  theme.sidebarIcons.branchClosedIconPath,
-                                                  theme.sidebarIcons.branchOpenIconPath);
-    } else {
-        theme.treeView.treeViewQSS = tv.t.nativeTreeViewQSS.arg(tv.nativeSelectionColor.name());
+    // NavigationTree
+    const auto &nt = params.navigationTreeParams;
+
+    // Branch indicator icons — own colors, independent of the sidebar icon color
+    theme.navigationTree.branchClosedIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", nt.branchIndicatorColor, params.meta.id);
+    theme.navigationTree.branchOpenIconPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", nt.branchIndicatorColor, params.meta.id);
+    theme.navigationTree.branchClosedIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/branch-closed.svg", nt.branchIndicatorSelectedColor, params.meta.id, { .suffix = "_selected" });
+    theme.navigationTree.branchOpenIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", nt.branchIndicatorSelectedColor, params.meta.id, { .suffix = "_selected" });
+
+    theme.navigationTree.navigationTreeQSS = nt.t.navigationTreeQSS
+                                                     .arg(nt.textColor.name(),
+                                                          nt.selectionBackgroundColor.name(),
+                                                          nt.scrollBackgroundColor.name(),
+                                                          nt.scrollHandleColor.name(),
+                                                          nt.selectedTextColor.name(),
+                                                          theme.navigationTree.branchClosedIconPath,
+                                                          theme.navigationTree.branchOpenIconPath,
+                                                          theme.navigationTree.branchClosedIconSelectedPath,
+                                                          theme.navigationTree.branchOpenIconSelectedPath);
+    theme.navigationTree.folderIndicatorColor = nt.folderIndicatorColor;
+
+    // Folder icon — normal and selected states with independent colors
+    {
+        const QString normalPath = recoloredSvgToThemeFile(":/images/sidebar/folder.svg", nt.folderIconColor, nt.folderIconShadowColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/sidebar/folder.svg", nt.folderIconSelectedColor, nt.folderIconSelectedShadowColor, params.meta.id, { .suffix = "_selected" });
+        theme.navigationTree.folderIcon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        theme.navigationTree.folderIcon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
     }
-    theme.treeView.folderIndicatorColor = tv.folderIndicatorColor;
-    // end TreeView
+
+    // Folder finished icon — same but with tick (#ff0) recolored independently for each state
+    {
+        const QString normalPath = recoloredSvgToThemeFile(":/images/sidebar/folder_finished.svg", nt.folderIconColor, nt.folderIconShadowColor, nt.folderReadOverlayColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/sidebar/folder_finished.svg", nt.folderIconSelectedColor, nt.folderIconSelectedShadowColor, nt.folderReadOverlaySelectedColor, params.meta.id, { .suffix = "_selected" });
+        theme.navigationTree.folderFinishedIcon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        theme.navigationTree.folderFinishedIcon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
+    }
+    // end NavigationTree
 
     // ContentSplitter
     const auto &cs = params.contentSplitterParams;
@@ -675,14 +691,17 @@ Theme makeTheme(const ThemeParams &params)
 
     // Helper to create single-color icons for comics view toolbar
     auto makeComicsViewIcon = [&](const QString &basePath) {
-        const QString path = recoloredSvgToThemeFile(basePath, cvt.iconColor, params.themeName);
+        const QString path = recoloredSvgToThemeFile(basePath, cvt.iconColor, params.meta.id);
         QIcon icon;
         icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
         return icon;
     };
 
-    theme.comicsViewToolbar.toolbarQSS = cvt.t.toolbarQSS.arg(cvt.checkedBackgroundColor.name());
+    theme.comicsViewToolbar.toolbarQSS = cvt.t.toolbarQSS.arg(
+            cvt.backgroundColor.name(),
+            cvt.separatorColor.name(),
+            cvt.checkedBackgroundColor.name());
     theme.comicsViewToolbar.openInYACReaderIcon = makeComicsViewIcon(":/images/comics_view_toolbar/openInYACReader.svg");
     theme.comicsViewToolbar.setAsReadIcon = makeComicsViewIcon(":/images/comics_view_toolbar/setReadButton.svg");
     theme.comicsViewToolbar.setAsUnreadIcon = makeComicsViewIcon(":/images/comics_view_toolbar/setUnread.svg");
@@ -711,8 +730,8 @@ Theme makeTheme(const ThemeParams &params)
     theme.searchLineEdit.clearButtonQSS = sle.t.clearButtonQSS;
 
     const qreal dpr = qApp->devicePixelRatio();
-    theme.searchLineEdit.searchIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/iconSearchNew.svg", sle.iconColor, params.themeName), 15, dpr);
-    theme.searchLineEdit.clearIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/clearSearchNew.svg", sle.iconColor, params.themeName), 12, dpr);
+    theme.searchLineEdit.searchIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/iconSearchNew.svg", sle.iconColor, params.meta.id), 15, dpr);
+    theme.searchLineEdit.clearIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/clearSearchNew.svg", sle.iconColor, params.meta.id), 12, dpr);
     // end SearchLineEdit
 
     // ReadingListIcons
@@ -720,10 +739,11 @@ Theme makeTheme(const ThemeParams &params)
 
     // Helper to create label icons from template (uses color name to generate label_<color>.svg files)
     auto makeLabelIcon = [&](const QString &colorName, const QColor &mainColor) {
-        const QString path = recoloredSvgToThemeFile(":/images/lists/label_template.svg", mainColor, rli.labelShadowColor, params.themeName, { .fileName = "label_" + colorName });
+        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/label_template.svg", mainColor, rli.labelShadowColor, params.meta.id, { .fileName = "label_" + colorName });
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/label_template.svg", mainColor, rli.labelShadowSelectedColor, params.meta.id, { .suffix = "_selected", .fileName = "label_" + colorName });
         QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
         return icon;
     };
 
@@ -732,32 +752,35 @@ Theme makeTheme(const ThemeParams &params)
     }
 
     // Special list icons
-    auto makeSpecialIcon = [&](const QString &basePath, const QColor &mainColor) {
-        const QString path = recoloredSvgToThemeFile(basePath, mainColor, rli.specialListShadowColor, params.themeName);
+    auto makeSpecialIcon = [&](const QString &basePath, const QColor &mainColor, const QColor &mainSelectedColor) {
+        const QString normalPath = recoloredSvgToThemeFile(basePath, mainColor, rli.specialListShadowColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(basePath, mainSelectedColor, rli.specialListShadowSelectedColor, params.meta.id, { .suffix = "_selected" });
         QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
         return icon;
     };
 
-    theme.readingListIcons.readingListIcon = makeSpecialIcon(":/images/lists/default_0.svg", rli.readingListMainColor);
-    theme.readingListIcons.favoritesIcon = makeSpecialIcon(":/images/lists/default_1.svg", rli.favoritesMainColor);
+    theme.readingListIcons.readingListIcon = makeSpecialIcon(":/images/lists/default_0.svg", rli.readingListMainColor, rli.readingListMainSelectedColor);
+    theme.readingListIcons.favoritesIcon = makeSpecialIcon(":/images/lists/default_1.svg", rli.favoritesMainColor, rli.favoritesMainSelectedColor);
 
     // Currently reading has 3 colors
     {
-        const QString path = recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainColor, rli.specialListShadowColor, rli.currentlyReadingOuterColor, params.themeName);
+        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainColor, rli.specialListShadowColor, rli.currentlyReadingOuterColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainSelectedColor, rli.specialListShadowSelectedColor, rli.currentlyReadingOuterSelectedColor, params.meta.id, { .suffix = "_selected" });
         QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
         theme.readingListIcons.currentlyReadingIcon = icon;
     }
 
     // List icon (3 colors)
     {
-        const QString path = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.themeName);
+        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainSelectedColor, rli.listShadowSelectedColor, rli.listDetailSelectedColor, params.meta.id, { .suffix = "_selected" });
         QIcon icon;
-        icon.addFile(path, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(path, QSize(), QIcon::Selected, QIcon::Off);
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
         theme.readingListIcons.listIcon = icon;
     }
     // end ReadingListIcons
@@ -765,7 +788,7 @@ Theme makeTheme(const ThemeParams &params)
     // MenuIcons
     const auto &mi = params.menuIconsParams;
     auto makeMenuIcon = [&](const QString &basePath) {
-        const QString path = recoloredSvgToThemeFile(basePath, mi.iconColor, params.themeName);
+        const QString path = recoloredSvgToThemeFile(basePath, mi.iconColor, params.meta.id);
         return QIcon(path);
     };
 
@@ -784,7 +807,7 @@ Theme makeTheme(const ThemeParams &params)
     // DialogIcons
     const auto &di = params.dialogIconsParams;
     auto makeDialogIcon = [&](const QString &basePath) {
-        const QString path = recoloredSvgToThemeFile(basePath, di.iconColor, params.themeName);
+        const QString path = recoloredSvgToThemeFile(basePath, di.iconColor, params.meta.id);
         return QPixmap(path);
     };
     theme.dialogIcons.newLibraryIcon = makeDialogIcon(":/images/library_dialogs/new.svg");
@@ -795,7 +818,7 @@ Theme makeTheme(const ThemeParams &params)
     theme.dialogIcons.exportLibraryIcon = makeDialogIcon(":/images/library_dialogs/exportLibrary.svg");
     theme.dialogIcons.importLibraryIcon = makeDialogIcon(":/images/library_dialogs/importLibrary.svg");
     {
-        const QString path = recoloredSvgToThemeFile(":/images/find_folder.svg", di.iconColor, params.themeName);
+        const QString path = recoloredSvgToThemeFile(":/images/find_folder.svg", di.iconColor, params.meta.id);
         const qreal dpr = qApp->devicePixelRatio();
         theme.dialogIcons.findFolderIcon = QIcon(renderSvgToPixmap(path, 13, 13, dpr));
     }
@@ -804,7 +827,7 @@ Theme makeTheme(const ThemeParams &params)
     // ShortcutsIcons
     const auto &sci = params.shortcutsIconsParams;
     auto makeShortcutsIcon = [&](const QString &basePath) {
-        const QString path = recoloredSvgToThemeFile(basePath, sci.iconColor, params.themeName);
+        const QString path = recoloredSvgToThemeFile(basePath, sci.iconColor, params.meta.id);
         return QIcon(path);
     };
 
@@ -825,791 +848,326 @@ Theme makeTheme(const ThemeParams &params)
     theme.serverConfigDialog.checkBoxQSS = scd.t.checkBoxQSS.arg(scd.checkBoxTextColor.name());
     theme.serverConfigDialog.qrBackgroundColor = scd.qrBackgroundColor;
     theme.serverConfigDialog.qrForegroundColor = scd.qrForegroundColor;
-    theme.serverConfigDialog.backgroundDecoration = QPixmap(recoloredSvgToThemeFile(":/images/serverConfigBackground.svg", scd.decorationColor, params.themeName));
+    theme.serverConfigDialog.backgroundDecoration = QPixmap(recoloredSvgToThemeFile(":/images/serverConfigBackground.svg", scd.decorationColor, params.meta.id));
+
+    theme.meta = params.meta;
 
     return theme;
 }
 
-ThemeParams classicThemeParams();
-ThemeParams lightThemeParams();
-ThemeParams darkThemeParams();
+// JSON helpers ---------------------------------------------------------------
 
-Theme makeTheme(ThemeId themeId)
+static QColor colorFromJson(const QJsonObject &obj, const QString &key, const QColor &fallback)
 {
+    if (!obj.contains(key))
+        return fallback;
+    QColor c(obj[key].toString());
+    return c.isValid() ? c : fallback;
+}
 
-    switch (themeId) {
-    case ThemeId::Classic:
-        return makeTheme(classicThemeParams());
-    case ThemeId::Light:
-        return makeTheme(lightThemeParams());
-    case ThemeId::Dark:
-        return makeTheme(darkThemeParams());
+Theme makeTheme(const QJsonObject &json)
+{
+    ThemeParams p;
+
+    if (json.contains("comicFlow")) {
+        const auto o = json["comicFlow"].toObject();
+        p.comicFlowColors.backgroundColor = colorFromJson(o, "backgroundColor", p.comicFlowColors.backgroundColor);
+        p.comicFlowColors.textColor = colorFromJson(o, "textColor", p.comicFlowColors.textColor);
     }
 
-    return makeTheme(classicThemeParams());
-}
-
-ThemeParams classicThemeParams()
-{
-    ThemeParams params;
-    params.themeName = "classic";
-    params.defaultContentBackgroundColor = QColor(0x2A2A2A);
-
-    ComicFlowColors cf;
-    cf.backgroundColor = Qt::black;
-    cf.textColor = QColor(0x4C4C4C);
-
-    ComicVineParams cv;
-    cv.contentTextColor = Qt::white;
-    cv.contentBackgroundColor = QColor(0x2B2B2B);
-    cv.contentAltBackgroundColor = QColor(0x2B2B2B);
-    cv.dialogBackgroundColor = QColor(0x404040);
-
-    cv.tableBackgroundColor = QColor(0x2B2B2B);
-    cv.tableAltBackgroundColor = QColor(0x2E2E2E);
-    cv.tableBorderColor = QColor(0x242424);
-    cv.tableSelectedColor = QColor(0x555555);
-    cv.tableHeaderBackgroundColor = QColor(0x292929);
-    cv.tableHeaderBorderColor = QColor(0x1F1F1F);
-    cv.tableHeaderTextColor = QColor(0xEBEBEB);
-    cv.tableScrollHandleColor = QColor(0xDDDDDD);
-    cv.tableScrollBackgroundColor = QColor(0x404040);
-    cv.tableSectionBorderLight = QColor(0xFEFEFE);
-    cv.tableSectionBorderDark = QColor(0xDFDFDF);
-
-    cv.labelTextColor = Qt::white;
-    cv.labelBackgroundColor = QColor(0x2B2B2B);
-    cv.hyperlinkColor = QColor(0xFFCC00);
-
-    cv.buttonBackgroundColor = QColor(0x2E2E2E);
-    cv.buttonTextColor = Qt::white;
-    cv.buttonBorderColor = QColor(0x242424);
-
-    cv.radioUncheckedPath = ":/images/comic_vine/radioUnchecked.svg";
-    cv.radioUncheckedColor = QColor(0xE5E5E5);
-
-    cv.radioCheckedPath = ":/images/comic_vine/radioChecked.svg";
-    cv.radioCheckedBackgroundColor = QColor(0xE5E5E5);
-    cv.radioCheckedIndicatorColor = QColor(0x5F5F5F);
-
-    cv.checkBoxTickColor = Qt::white;
-
-    cv.toolButtonAccentColor = QColor(0x282828);
-
-    cv.downArrowColor = QColor(0x9F9F9F);
-    cv.upArrowColor = QColor(0x9F9F9F);
-
-    cv.busyIndicatorColor = Qt::white;
-    cv.navIconColor = Qt::white;
-    cv.rowIconColor = QColor(0xE5E5E5);
-
-    cv.t = ComicVineThemeTemplates();
-
-    params.comicFlowColors = cf;
-    params.comicVineParams = cv;
-
-    params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
-    params.helpAboutDialogParams.linkColor = QColor(0xC19441);
-
-    WhatsNewDialogParams wnp;
-    wnp.backgroundColor = QColor(0x2A2A2A);
-    wnp.headerTextColor = QColor(0xE0E0E0);
-    wnp.versionTextColor = QColor(0x858585);
-    wnp.contentTextColor = QColor(0xE0E0E0);
-    wnp.linkColor = QColor(0xE8B800);
-    wnp.closeButtonColor = QColor(0xDDDDDD);
-    wnp.headerDecorationColor = QColor(0xE8B800);
-    params.whatsNewDialogParams = wnp;
-
-    EmptyContainerParams ec;
-    ec.backgroundColor = QColor(0x2A2A2A);
-    ec.titleTextColor = QColor(0xCCCCCC);
-    ec.textColor = QColor(0xCCCCCC);
-    ec.descriptionTextColor = QColor(0xAAAAAA);
-    ec.searchIconColor = QColor(0x4C4C4C);
-    ec.t = EmptyContainerThemeTemplates();
-    params.emptyContainerParams = ec;
-
-    SidebarParams sb;
-    sb.useStyledSplitter = true;
-    sb.backgroundColor = QColor(0x454545);
-    sb.separatorColor = QColor(0xBDBFBF);
-    sb.sectionSeparatorColor = QColor(0x575757);
-    sb.splitterBackgroundColor = QColor(0x454545);
-    sb.splitterHeight = 39;
-    sb.uppercaseLabels = true;
-    sb.titleTextColor = QColor(0xBDBFBF);
-    sb.titleDropShadowColor = Qt::black;
-    sb.busyIndicatorColor = Qt::white;
-    params.sidebarParams = sb;
-
-    ImportWidgetParams iw;
-    iw.backgroundColor = QColor(0x2A2A2A);
-    iw.titleTextColor = QColor(0xCCCCCC);
-    iw.descriptionTextColor = QColor(0xAAAAAA);
-    iw.currentComicTextColor = QColor(0xAAAAAA);
-    iw.coversViewBackgroundColor = QColor(0x3A3A3A);
-    iw.coversLabelColor = QColor(0xAAAAAA);
-    iw.coversDecorationBgColor = QColor(0x3A3A3A);
-    iw.coversDecorationShadowColor = QColor(0x1A1A1A);
-    iw.modeIconColor = QColor(0x4A4A4A);
-    iw.iconColor = QColor(0xCCCCCC);
-    iw.iconCheckedColor = QColor(0xAAAAAA);
-    params.importWidgetParams = iw;
-
-    TreeViewParams tv;
-    tv.useStyledTemplate = true;
-    tv.textColor = QColor(0xDDDFDF);
-    tv.selectionBackgroundColor = QColor(0x2E2E2E);
-    tv.scrollBackgroundColor = QColor(0x404040);
-    tv.scrollHandleColor = QColor(0xDDDDDD);
-    tv.selectedTextColor = Qt::white;
-    tv.folderIndicatorColor = QColor(237, 197, 24);
-    params.treeViewParams = tv;
-
-    TableViewParams tav;
-    tav.alternateBackgroundColor = QColor(0xF2F2F2);
-    tav.backgroundColor = QColor(0xFAFAFA);
-    tav.cornerButtonBackgroundColor = QColor(0xF5F5F5);
-    tav.cornerButtonBorderColor = QColor(0xB8BDC4);
-    tav.cornerButtonGradientColor = QColor(0xD1D1D1);
-    tav.itemBorderBottomColor = QColor(0xDFDFDF);
-    tav.itemBorderTopColor = QColor(0xFEFEFE);
-    tav.itemTextColor = QColor(0x252626);
-    tav.selectedColor = QColor(0xD4D4D4);
-    tav.selectedTextColor = QColor(0x252626);
-    tav.headerTextColor = QColor(0x313232);
-    tav.starRatingColor = QColor(0xE9BE0F);
-    tav.starRatingSelectedColor = QColor(0xFFFFFF);
-    tav.t = TableViewThemeTemplates();
-    params.tableViewParams = tav;
-
-    QmlViewParams qv;
-    qv.backgroundColor = QColor(0x2A2A2A);
-    qv.cellColor = QColor(0x212121);
-    qv.cellColorWithBackground = QColor(0x21, 0x21, 0x21, 0x99);
-    qv.selectedColor = QColor(0x121212);
-    qv.selectedBorderColor = QColor(0xFFCC00);
-    qv.borderColor = QColor(0x121212);
-    qv.titleColor = QColor(0xFFFFFF);
-    qv.textColor = QColor(0xA8A8A8);
-    qv.showDropShadow = true;
-    qv.infoBackgroundColor = QColor(0x2E2E2E);
-    qv.topShadow = "info-top-shadow.png";
-    qv.infoShadow = "info-shadow.png";
-    qv.infoIndicator = "info-indicator.png";
-    qv.infoTextColor = QColor(0xB0B0B0);
-    qv.infoTitleColor = QColor(0xFFFFFF);
-    qv.ratingUnselectedColor = QColor(0x1C1C1C);
-    qv.ratingSelectedColor = QColor(0xFFFFFF);
-    qv.favUncheckedColor = QColor(0x1C1C1C);
-    qv.favCheckedColor = QColor(0xE84852);
-    qv.readTickUncheckedColor = QColor(0x1C1C1C);
-    qv.readTickCheckedColor = QColor(0xE84852);
-    qv.currentComicBackgroundColor = QColor(0x00, 0x00, 0x00, 0x88);
-    qv.continueReadingBackgroundColor = QColor(0x00, 0x00, 0x00, 0x88);
-    qv.continueReadingColor = QColor(0xFFFFFF);
-    params.qmlViewParams = qv;
-
-    MainToolbarParams mt;
-    mt.backgroundColor = QColor(0xF0F0F0);
-    mt.folderNameColor = QColor(0x404040);
-    mt.dividerColor = QColor(0xB8BDC4);
-    mt.iconColor = QColor(0x404040);
-    mt.iconDisabledColor = QColor(0xB0B0B0);
-    params.mainToolbarParams = mt;
-
-    ContentSplitterParams cs;
-    cs.handleColor = QColor(0xB8B8B8);
-    cs.horizontalHandleHeight = 4;
-    cs.verticalHandleWidth = 4;
-    params.contentSplitterParams = cs;
-
-    SidebarIconsParams si;
-    si.iconColor = QColor(0xE0E0E0);
-    si.shadowColor = QColor(0xFF000000);
-    si.extraColor = QColor(0x464646);
-    si.useSystemFolderIcons = false;
-    params.sidebarIconsParams = si;
-
-    LibraryItemParams li;
-    li.textColor = QColor(0xDDDFDF);
-    li.selectedTextColor = Qt::white;
-    li.selectedBackgroundColor = QColor(0x2E2E2E);
-    li.libraryIconSelectedColor = Qt::white;
-    li.libraryOptionsIconColor = Qt::white;
-    params.libraryItemParams = li;
-
-    ComicsViewToolbarParams cvt;
-    cvt.checkedBackgroundColor = QColor(0xCCCCCC);
-    cvt.iconColor = QColor(0x404040);
-    params.comicsViewToolbarParams = cvt;
-
-    SearchLineEditParams sle;
-    sle.textColor = QColor(0xABABAB);
-    sle.backgroundColor = QColor(0x404040);
-    sle.iconColor = QColor(0xF7F7F7);
-    params.searchLineEditParams = sle;
-
-    ReadingListIconsParams rli;
-    rli.labelColors = {
-        { "red", QColor(0xf67a7b) },
-        { "orange", QColor(0xf5c240) },
-        { "yellow", QColor(0xf2e446) },
-        { "green", QColor(0xade738) },
-        { "cyan", QColor(0xa0fddb) },
-        { "blue", QColor(0x82c7ff) },
-        { "violet", QColor(0x8f95ff) },
-        { "purple", QColor(0xd692fc) },
-        { "pink", QColor(0xfd9cda) },
-        { "white", QColor(0xfcfcfc) },
-        { "light", QColor(0xcbcbcb) },
-        { "dark", QColor(0xb7b7b7) }
-    };
-    rli.labelShadowColor = Qt::black;
-    rli.readingListMainColor = QColor(0xe7e7e7);
-    rli.favoritesMainColor = QColor(0xe15055);
-    rli.currentlyReadingMainColor = QColor(0xffcc00);
-    rli.currentlyReadingOuterColor = Qt::black;
-    rli.specialListShadowColor = Qt::black;
-    rli.listMainColor = QColor(0xe7e7e7);
-    rli.listShadowColor = Qt::black;
-    rli.listDetailColor = QColor(0x464646);
-    params.readingListIconsParams = rli;
-
-    MenuIconsParams mi;
-    mi.iconColor = QColor(0xF7F7F7);
-    params.menuIconsParams = mi;
-
-    DialogIconsParams dip;
-    dip.iconColor = mi.iconColor;
-    params.dialogIconsParams = dip;
-
-    ShortcutsIconsParams sci;
-    sci.iconColor = QColor(0xF7F7F7);
-    params.shortcutsIconsParams = sci;
-
-    ServerConfigDialogParams scd;
-    scd.backgroundColor = QColor(0x2A2A2A);
-    scd.titleTextColor = QColor(0x474747);
-    scd.qrMessageTextColor = QColor(0xA3A3A3);
-    scd.propagandaTextColor = QColor(0x4D4D4D);
-    scd.labelTextColor = QColor(0x575757);
-    scd.checkBoxTextColor = QColor(0x262626);
-    scd.qrBackgroundColor = QColor(0x2A2A2A);
-    scd.qrForegroundColor = Qt::white;
-    scd.decorationColor = QColor(0xF7F7F7);
-    params.serverConfigDialogParams = scd;
-
-    return params;
-}
-
-ThemeParams lightThemeParams()
-{
-    ThemeParams params;
-    params.themeName = "light";
-    params.defaultContentBackgroundColor = QColor(0xFFFFFF);
-
-    ComicFlowColors cf;
-    cf.backgroundColor = Qt::white;
-    cf.textColor = Qt::black;
-
-    ComicVineParams cv;
-    cv.contentTextColor = Qt::black;
-    cv.contentBackgroundColor = QColor(0xECECEC);
-    cv.contentAltBackgroundColor = QColor(0xE0E0E0);
-    cv.dialogBackgroundColor = QColor(0xFBFBFB);
-
-    cv.tableBackgroundColor = QColor(0xF4F4F4);
-    cv.tableAltBackgroundColor = QColor(0xFAFAFA);
-    cv.tableBorderColor = QColor(0xCCCCCC);
-    cv.tableSelectedColor = QColor(0xDDDDDD);
-    cv.tableHeaderBackgroundColor = QColor(0xE0E0E0);
-    cv.tableHeaderBorderColor = QColor(0xC0C0C0);
-    cv.tableHeaderTextColor = QColor(0x333333);
-    cv.tableScrollHandleColor = QColor(0x888888);
-    cv.tableScrollBackgroundColor = QColor(0xD0D0D0);
-    cv.tableSectionBorderLight = QColor(0xFFFFFF);
-    cv.tableSectionBorderDark = QColor(0xCCCCCC);
-
-    cv.labelTextColor = Qt::black;
-    cv.labelBackgroundColor = QColor(0xECECEC);
-    cv.hyperlinkColor = QColor(0xFFCC00);
-
-    cv.buttonBackgroundColor = QColor(0xE0E0E0);
-    cv.buttonTextColor = Qt::black;
-    cv.buttonBorderColor = QColor(0xCCCCCC);
-
-    cv.radioUncheckedPath = ":/images/comic_vine/radioUnchecked.svg";
-    cv.radioUncheckedColor = QColor(0xE0E0E0);
-
-    cv.radioCheckedPath = ":/images/comic_vine/radioChecked.svg";
-    cv.radioCheckedBackgroundColor = QColor(0xE0E0E0);
-    cv.radioCheckedIndicatorColor = QColor(0x222222);
-
-    cv.checkBoxTickColor = Qt::black;
-
-    cv.toolButtonAccentColor = QColor(0xA0A0A0);
-
-    cv.downArrowColor = QColor(0x222222);
-    cv.upArrowColor = QColor(0x222222);
-
-    cv.busyIndicatorColor = Qt::black;
-    cv.navIconColor = QColor(0x222222);
-    cv.rowIconColor = QColor(0x222222);
-
-    cv.t = ComicVineThemeTemplates();
-
-    params.comicFlowColors = cf;
-    params.comicVineParams = cv;
-
-    params.helpAboutDialogParams.headingColor = QColor(0x302f2d);
-    params.helpAboutDialogParams.linkColor = QColor(0xC19441);
-
-    WhatsNewDialogParams wnp;
-    wnp.backgroundColor = QColor(0xFFFFFF);
-    wnp.headerTextColor = QColor(0x0A0A0A);
-    wnp.versionTextColor = QColor(0x858585);
-    wnp.contentTextColor = QColor(0x0A0A0A);
-    wnp.linkColor = QColor(0xE8B800);
-    wnp.closeButtonColor = QColor(0x444444);
-    wnp.headerDecorationColor = QColor(0xE8B800);
-    params.whatsNewDialogParams = wnp;
-
-    EmptyContainerParams ec;
-    ec.backgroundColor = QColor(0xFFFFFF);
-    ec.titleTextColor = QColor(0x888888);
-    ec.textColor = QColor(0x495252);
-    ec.descriptionTextColor = QColor(0x565959);
-    ec.searchIconColor = QColor(0xCCCCCC);
-    ec.t = EmptyContainerThemeTemplates();
-    params.emptyContainerParams = ec;
-
-    SidebarParams sb;
-    sb.useStyledSplitter = true;
-    sb.backgroundColor = QColor(0xF1F1F1);
-    sb.separatorColor = QColor(0x808080);
-    sb.sectionSeparatorColor = QColor(0xD0D0D0);
-    sb.splitterBackgroundColor = QColor(0xF1F1F1);
-    sb.splitterHeight = 39;
-    sb.uppercaseLabels = true;
-    sb.titleTextColor = QColor(0x808080);
-    sb.titleDropShadowColor = QColor(0xFFFFFF);
-    sb.busyIndicatorColor = QColor(0x808080);
-    params.sidebarParams = sb;
-
-    ImportWidgetParams iw;
-    iw.backgroundColor = QColor(0xFAFAFA);
-    iw.titleTextColor = QColor(0x495252);
-    iw.descriptionTextColor = QColor(0x565959);
-    iw.currentComicTextColor = QColor(0x565959);
-    iw.coversViewBackgroundColor = QColor(0xE6E6E6);
-    iw.coversLabelColor = QColor(0x565959);
-    iw.coversDecorationBgColor = QColor(0xE6E6E6);
-    iw.coversDecorationShadowColor = QColor(0xA1A1A1);
-    iw.modeIconColor = QColor(0xE6E6E6);
-    iw.iconColor = QColor(0x495252);
-    iw.iconCheckedColor = QColor(0x565959);
-    params.importWidgetParams = iw;
-
-    TreeViewParams tv;
-    tv.useStyledTemplate = true;
-    tv.textColor = Qt::black;
-    tv.selectionBackgroundColor = QColor(0xD0D0D0);
-    tv.scrollBackgroundColor = QColor(0xE0E0E0);
-    tv.scrollHandleColor = QColor(0x888888);
-    tv.selectedTextColor = QColor(0x1A1A1A);
-    tv.folderIndicatorColor = QColor(85, 95, 127);
-    params.treeViewParams = tv;
-
-    TableViewParams tav;
-    tav.alternateBackgroundColor = QColor(0xF2F2F2);
-    tav.backgroundColor = QColor(0xFAFAFA);
-    tav.cornerButtonBackgroundColor = QColor(0xF5F5F5);
-    tav.cornerButtonBorderColor = QColor(0xB8BDC4);
-    tav.cornerButtonGradientColor = QColor(0xD1D1D1);
-    tav.itemBorderBottomColor = QColor(0xDFDFDF);
-    tav.itemBorderTopColor = QColor(0xFEFEFE);
-    tav.itemTextColor = QColor(0x252626);
-    tav.selectedColor = QColor(0x3875D7);
-    tav.selectedTextColor = QColor(0xFFFFFF);
-    tav.headerTextColor = QColor(0x313232);
-    tav.starRatingColor = QColor(0xE9BE0F);
-    tav.starRatingSelectedColor = QColor(0xFFFFFF);
-    tav.t = TableViewThemeTemplates();
-    params.tableViewParams = tav;
-
-    QmlViewParams qv;
-    qv.backgroundColor = QColor(0xF6F6F6);
-    qv.cellColor = QColor(0xFFFFFF);
-    qv.cellColorWithBackground = QColor(0xFF, 0xFF, 0xFF, 0x99);
-    qv.selectedColor = QColor(0xFFFFFF);
-    qv.selectedBorderColor = QColor(0xFFCC00);
-    qv.borderColor = QColor(0xDBDBDB);
-    qv.titleColor = QColor(0x121212);
-    qv.textColor = QColor(0x636363);
-    qv.showDropShadow = true;
-    qv.infoBackgroundColor = QColor(0xFFFFFF);
-    qv.topShadow = "";
-    qv.infoShadow = "info-shadow-light.png";
-    qv.infoIndicator = "info-indicator-light.png";
-    qv.infoTextColor = QColor(0x404040);
-    qv.infoTitleColor = QColor(0x2E2E2E);
-    qv.ratingUnselectedColor = QColor(0xDEDEDE);
-    qv.ratingSelectedColor = QColor(0x2B2B2B);
-    qv.favUncheckedColor = QColor(0xDEDEDE);
-    qv.favCheckedColor = QColor(0xE84852);
-    qv.readTickUncheckedColor = QColor(0xDEDEDE);
-    qv.readTickCheckedColor = QColor(0xE84852);
-    qv.currentComicBackgroundColor = QColor(0xFF, 0xFF, 0xFF, 0x88);
-    qv.continueReadingBackgroundColor = QColor(0xE8E8E8);
-    qv.continueReadingColor = QColor::fromRgb(0x000000);
-    params.qmlViewParams = qv;
-
-    MainToolbarParams mt;
-    mt.backgroundColor = QColor(0xF0F0F0);
-    mt.folderNameColor = QColor(0x404040);
-    mt.dividerColor = QColor(0xB8BDC4);
-    mt.iconColor = QColor(0x404040);
-    mt.iconDisabledColor = QColor(0xB0B0B0);
-    params.mainToolbarParams = mt;
-
-    ContentSplitterParams cs;
-    cs.handleColor = QColor(0xB8B8B8);
-    cs.horizontalHandleHeight = 4;
-    cs.verticalHandleWidth = 4;
-    params.contentSplitterParams = cs;
-
-    SidebarIconsParams si;
-    si.iconColor = QColor(0x606060);
-    si.shadowColor = QColor(0xFFFFFF);
-    si.extraColor = QColor(0xFFFFFF);
-    si.useSystemFolderIcons = false;
-    params.sidebarIconsParams = si;
-
-    LibraryItemParams li;
-    li.textColor = QColor(0x404040);
-    li.selectedTextColor = QColor(0x1A1A1A);
-    li.selectedBackgroundColor = QColor(0xD0D0D0);
-    li.libraryIconSelectedColor = QColor(0x404040);
-    li.libraryOptionsIconColor = QColor(0x404040);
-    params.libraryItemParams = li;
-
-    ComicsViewToolbarParams cvt;
-    cvt.checkedBackgroundColor = QColor(0xCCCCCC);
-    cvt.iconColor = QColor(0x404040);
-    params.comicsViewToolbarParams = cvt;
-
-    SearchLineEditParams sle;
-    sle.textColor = QColor(0x606060);
-    sle.backgroundColor = QColor(0xE0E0E0);
-    sle.iconColor = QColor(0x808080);
-    params.searchLineEditParams = sle;
-
-    ReadingListIconsParams rli;
-    rli.labelColors = {
-        { "red", QColor(0xf67a7b) },
-        { "orange", QColor(0xf5c240) },
-        { "yellow", QColor(0xf2e446) },
-        { "green", QColor(0xade738) },
-        { "cyan", QColor(0xa0fddb) },
-        { "blue", QColor(0x82c7ff) },
-        { "violet", QColor(0x8f95ff) },
-        { "purple", QColor(0xd692fc) },
-        { "pink", QColor(0xfd9cda) },
-        { "white", QColor(0xfcfcfc) },
-        { "light", QColor(0xcbcbcb) },
-        { "dark", QColor(0xb7b7b7) }
-    };
-    rli.labelShadowColor = QColor(0xa0a0a0);
-    rli.readingListMainColor = QColor(0x808080);
-    rli.favoritesMainColor = QColor(0xe15055);
-    rli.currentlyReadingMainColor = QColor(0xffcc00);
-    rli.currentlyReadingOuterColor = Qt::black;
-    rli.specialListShadowColor = QColor(0xa0a0a0);
-    rli.listMainColor = QColor(0x808080);
-    rli.listShadowColor = QColor(0xc0c0c0);
-    rli.listDetailColor = QColor(0xFFFFFF);
-    params.readingListIconsParams = rli;
-
-    MenuIconsParams mi;
-    mi.iconColor = QColor(0x606060);
-    params.menuIconsParams = mi;
-
-    DialogIconsParams dip;
-    dip.iconColor = mi.iconColor;
-    params.dialogIconsParams = dip;
-
-    ShortcutsIconsParams sci;
-    sci.iconColor = QColor(0x606060);
-    params.shortcutsIconsParams = sci;
-
-    ServerConfigDialogParams scd;
-    scd.backgroundColor = QColor(0xFFFFFF);
-    scd.titleTextColor = QColor(0x474747);
-    scd.qrMessageTextColor = QColor(0xA3A3A3);
-    scd.propagandaTextColor = QColor(0x4D4D4D);
-    scd.labelTextColor = QColor(0x575757);
-    scd.checkBoxTextColor = QColor(0x262626);
-    scd.qrBackgroundColor = Qt::white;
-    scd.qrForegroundColor = QColor(0x606060);
-    scd.decorationColor = QColor(0x606060);
-    params.serverConfigDialogParams = scd;
-
-    return params;
-}
-
-ThemeParams darkThemeParams()
-{
-    ThemeParams params;
-    params.themeName = "dark";
-    params.defaultContentBackgroundColor = QColor(0x2A2A2A);
-
-    ComicFlowColors cf;
-    cf.backgroundColor = QColor(0x111111);
-    cf.textColor = QColor(0x888888);
-
-    ComicVineParams cv;
-    cv.contentTextColor = Qt::white;
-    cv.contentBackgroundColor = QColor(0x2B2B2B);
-    cv.contentAltBackgroundColor = QColor(0x2E2E2E);
-    cv.dialogBackgroundColor = QColor(0x404040);
-
-    cv.tableBackgroundColor = QColor(0x2B2B2B);
-    cv.tableAltBackgroundColor = QColor(0x2E2E2E);
-    cv.tableBorderColor = QColor(0x242424);
-    cv.tableSelectedColor = QColor(0x555555);
-    cv.tableHeaderBackgroundColor = QColor(0x292929);
-    cv.tableHeaderBorderColor = QColor(0x1F1F1F);
-    cv.tableHeaderTextColor = QColor(0xEBEBEB);
-    cv.tableScrollHandleColor = QColor(0xDDDDDD);
-    cv.tableScrollBackgroundColor = QColor(0x404040);
-    cv.tableSectionBorderLight = QColor(0xFEFEFE);
-    cv.tableSectionBorderDark = QColor(0xDFDFDF);
-
-    cv.labelTextColor = Qt::white;
-    cv.labelBackgroundColor = QColor(0x2B2B2B);
-    cv.hyperlinkColor = QColor(0xFFCC00);
-
-    cv.buttonBackgroundColor = QColor(0x2E2E2E);
-    cv.buttonTextColor = Qt::white;
-    cv.buttonBorderColor = QColor(0x242424);
-
-    cv.radioUncheckedPath = ":/images/comic_vine/radioUnchecked.svg";
-    cv.radioUncheckedColor = QColor(0xE5E5E5);
-
-    cv.radioCheckedPath = ":/images/comic_vine/radioChecked.svg";
-    cv.radioCheckedBackgroundColor = QColor(0xE5E5E5);
-    cv.radioCheckedIndicatorColor = QColor(0x5F5F5F);
-
-    cv.checkBoxTickColor = Qt::white;
-
-    cv.toolButtonAccentColor = QColor(0x282828);
-
-    cv.downArrowColor = QColor(0x9F9F9F);
-    cv.upArrowColor = QColor(0x9F9F9F);
-
-    cv.busyIndicatorColor = Qt::white;
-    cv.navIconColor = Qt::white;
-    cv.rowIconColor = QColor(0xE5E5E5);
-
-    cv.t = ComicVineThemeTemplates();
-
-    params.comicFlowColors = cf;
-    params.comicVineParams = cv;
-
-    params.helpAboutDialogParams.headingColor = QColor(0xE0E0E0);
-    params.helpAboutDialogParams.linkColor = QColor(0xD4A84B);
-
-    WhatsNewDialogParams wnp;
-    wnp.backgroundColor = QColor(0x2A2A2A);
-    wnp.headerTextColor = QColor(0xE0E0E0);
-    wnp.versionTextColor = QColor(0x858585);
-    wnp.contentTextColor = QColor(0xE0E0E0);
-    wnp.linkColor = QColor(0xE8B800);
-    wnp.closeButtonColor = QColor(0xDDDDDD);
-    wnp.headerDecorationColor = QColor(0xE8B800);
-    params.whatsNewDialogParams = wnp;
-
-    EmptyContainerParams ec;
-    ec.backgroundColor = QColor(0x2A2A2A);
-    ec.titleTextColor = QColor(0xCCCCCC);
-    ec.textColor = QColor(0xCCCCCC);
-    ec.descriptionTextColor = QColor(0xAAAAAA);
-    ec.searchIconColor = QColor(0x4C4C4C);
-    ec.t = EmptyContainerThemeTemplates();
-    params.emptyContainerParams = ec;
-
-    SidebarParams sb;
-    sb.useStyledSplitter = true;
-    sb.backgroundColor = QColor(0x454545);
-    sb.separatorColor = QColor(0xBDBFBF);
-    sb.sectionSeparatorColor = QColor(0x575757);
-    sb.splitterBackgroundColor = QColor(0x454545);
-    sb.splitterHeight = 39;
-    sb.uppercaseLabels = true;
-    sb.titleTextColor = QColor(0xBDBFBF);
-    sb.titleDropShadowColor = Qt::black;
-    sb.busyIndicatorColor = Qt::white;
-    params.sidebarParams = sb;
-
-    ImportWidgetParams iw;
-    iw.backgroundColor = QColor(0x2A2A2A);
-    iw.titleTextColor = QColor(0xCCCCCC);
-    iw.descriptionTextColor = QColor(0xAAAAAA);
-    iw.currentComicTextColor = QColor(0xAAAAAA);
-    iw.coversViewBackgroundColor = QColor(0x3A3A3A);
-    iw.coversLabelColor = QColor(0xAAAAAA);
-    iw.coversDecorationBgColor = QColor(0x3A3A3A);
-    iw.coversDecorationShadowColor = QColor(0x1A1A1A);
-    iw.modeIconColor = QColor(0x4A4A4A);
-    iw.iconColor = QColor(0xCCCCCC);
-    iw.iconCheckedColor = QColor(0xAAAAAA);
-    params.importWidgetParams = iw;
-
-    TreeViewParams tv;
-    tv.useStyledTemplate = true;
-    tv.textColor = QColor(0xDDDFDF);
-    tv.selectionBackgroundColor = QColor(0x2E2E2E);
-    tv.scrollBackgroundColor = QColor(0x404040);
-    tv.scrollHandleColor = QColor(0xDDDDDD);
-    tv.selectedTextColor = Qt::white;
-    tv.folderIndicatorColor = QColor(237, 197, 24);
-    params.treeViewParams = tv;
-
-    TableViewParams tav;
-    tav.alternateBackgroundColor = QColor(0x2E2E2E);
-    tav.backgroundColor = QColor(0x2A2A2A);
-    tav.cornerButtonBackgroundColor = QColor(0x2A2A2A);
-    tav.cornerButtonBorderColor = QColor(0x1F1F1F);
-    tav.cornerButtonGradientColor = QColor(0x252525);
-    tav.itemBorderBottomColor = QColor(0x1F1F1F);
-    tav.itemBorderTopColor = QColor(0x353535);
-    tav.itemTextColor = QColor(0xDDDDDD);
-    tav.selectedColor = QColor(0x555555);
-    tav.selectedTextColor = QColor(0xFFFFFF);
-    tav.headerTextColor = QColor(0xDDDDDD);
-    tav.starRatingColor = QColor(0xE9BE0F);
-    tav.starRatingSelectedColor = QColor(0xFFFFFF);
-    tav.t = TableViewThemeTemplates();
-    params.tableViewParams = tav;
-
-    QmlViewParams qv;
-    qv.backgroundColor = QColor(0x2A2A2A);
-    qv.cellColor = QColor(0x212121);
-    qv.cellColorWithBackground = QColor(0x21, 0x21, 0x21, 0x99);
-    qv.selectedColor = QColor(0x121212);
-    qv.selectedBorderColor = QColor(0xFFCC00);
-    qv.borderColor = QColor(0x121212);
-    qv.titleColor = QColor(0xFFFFFF);
-    qv.textColor = QColor(0xA8A8A8);
-    qv.showDropShadow = true;
-    qv.infoBackgroundColor = QColor(0x2E2E2E);
-    qv.topShadow = "info-top-shadow.png";
-    qv.infoShadow = "info-shadow.png";
-    qv.infoIndicator = "info-indicator.png";
-    qv.infoTextColor = QColor(0xB0B0B0);
-    qv.infoTitleColor = QColor(0xFFFFFF);
-    qv.ratingUnselectedColor = QColor(0x1C1C1C);
-    qv.ratingSelectedColor = QColor(0xFFFFFF);
-    qv.favUncheckedColor = QColor(0x1C1C1C);
-    qv.favCheckedColor = QColor(0xE84852);
-    qv.readTickUncheckedColor = QColor(0x1C1C1C);
-    qv.readTickCheckedColor = QColor(0xE84852);
-    qv.currentComicBackgroundColor = QColor(0x00, 0x00, 0x00, 0x88);
-    qv.continueReadingBackgroundColor = QColor(0x00, 0x00, 0x00, 0x88);
-    qv.continueReadingColor = QColor(0xFFFFFF);
-    params.qmlViewParams = qv;
-
-    MainToolbarParams mt;
-    mt.backgroundColor = QColor(0x2A2A2A);
-    mt.folderNameColor = QColor(0xDDDDDD);
-    mt.dividerColor = QColor(0x555555);
-    mt.iconColor = QColor(0xDDDDDD);
-    mt.iconDisabledColor = QColor(0x666666);
-    params.mainToolbarParams = mt;
-
-    ContentSplitterParams cs;
-    cs.handleColor = QColor(0x1F1F1F);
-    cs.horizontalHandleHeight = 4;
-    cs.verticalHandleWidth = 4;
-    params.contentSplitterParams = cs;
-
-    SidebarIconsParams si;
-    si.iconColor = QColor(0xE0E0E0);
-    si.shadowColor = QColor(0xFF000000);
-    si.extraColor = QColor(0x222222);
-    si.useSystemFolderIcons = false;
-    params.sidebarIconsParams = si;
-
-    LibraryItemParams li;
-    li.textColor = QColor(0xDDDFDF);
-    li.selectedTextColor = Qt::white;
-    li.selectedBackgroundColor = QColor(0x2E2E2E);
-    li.libraryIconSelectedColor = Qt::white;
-    li.libraryOptionsIconColor = Qt::white;
-    params.libraryItemParams = li;
-
-    ComicsViewToolbarParams cvt;
-    cvt.checkedBackgroundColor = QColor(0x555555);
-    cvt.iconColor = QColor(0xDDDDDD);
-    params.comicsViewToolbarParams = cvt;
-
-    SearchLineEditParams sle;
-    sle.textColor = QColor(0xABABAB);
-    sle.backgroundColor = QColor(0x404040);
-    sle.iconColor = QColor(0xF7F7F7);
-    params.searchLineEditParams = sle;
-
-    ReadingListIconsParams rli;
-    rli.labelColors = {
-        { "red", QColor(0xf67a7b) },
-        { "orange", QColor(0xf5c240) },
-        { "yellow", QColor(0xf2e446) },
-        { "green", QColor(0xade738) },
-        { "cyan", QColor(0xa0fddb) },
-        { "blue", QColor(0x82c7ff) },
-        { "violet", QColor(0x8f95ff) },
-        { "purple", QColor(0xd692fc) },
-        { "pink", QColor(0xfd9cda) },
-        { "white", QColor(0xfcfcfc) },
-        { "light", QColor(0xcbcbcb) },
-        { "dark", QColor(0xb7b7b7) }
-    };
-    rli.labelShadowColor = Qt::black;
-    rli.readingListMainColor = QColor(0xe7e7e7);
-    rli.favoritesMainColor = QColor(0xe15055);
-    rli.currentlyReadingMainColor = QColor(0xffcc00);
-    rli.currentlyReadingOuterColor = Qt::black;
-    rli.specialListShadowColor = Qt::black;
-    rli.listMainColor = QColor(0xe7e7e7);
-    rli.listShadowColor = Qt::black;
-    rli.listDetailColor = QColor(0x464646);
-    params.readingListIconsParams = rli;
-
-    MenuIconsParams mi;
-    mi.iconColor = QColor(0xF7F7F7);
-    params.menuIconsParams = mi;
-
-    DialogIconsParams dip;
-    dip.iconColor = mi.iconColor;
-    params.dialogIconsParams = dip;
-
-    ShortcutsIconsParams sci;
-    sci.iconColor = QColor(0xF7F7F7);
-    params.shortcutsIconsParams = sci;
-
-    ServerConfigDialogParams scd;
-    scd.backgroundColor = QColor(0x2A2A2A);
-    scd.titleTextColor = QColor(0xD0D0D0);
-    scd.qrMessageTextColor = QColor(0xA3A3A3);
-    scd.propagandaTextColor = QColor(0xB0B0B0);
-    scd.labelTextColor = QColor(0xC0C0C0);
-    scd.checkBoxTextColor = QColor(0xDDDDDD);
-    scd.qrBackgroundColor = QColor(0x2A2A2A);
-    scd.qrForegroundColor = Qt::white;
-    scd.decorationColor = QColor(0xF7F7F7);
-    params.serverConfigDialogParams = scd;
-
-    return params;
+    if (json.contains("metadataScraperDialog")) {
+        const auto o = json["metadataScraperDialog"].toObject();
+        auto &msd = p.metadataScraperDialogParams;
+        msd.contentTextColor = colorFromJson(o, "contentTextColor", msd.contentTextColor);
+        msd.contentBackgroundColor = colorFromJson(o, "contentBackgroundColor", msd.contentBackgroundColor);
+        msd.contentAltBackgroundColor = colorFromJson(o, "contentAltBackgroundColor", msd.contentAltBackgroundColor);
+        msd.dialogBackgroundColor = colorFromJson(o, "dialogBackgroundColor", msd.dialogBackgroundColor);
+        msd.tableBackgroundColor = colorFromJson(o, "tableBackgroundColor", msd.tableBackgroundColor);
+        msd.tableAltBackgroundColor = colorFromJson(o, "tableAltBackgroundColor", msd.tableAltBackgroundColor);
+        msd.tableBorderColor = colorFromJson(o, "tableBorderColor", msd.tableBorderColor);
+        msd.tableSelectedColor = colorFromJson(o, "tableSelectedColor", msd.tableSelectedColor);
+        msd.tableHeaderBackgroundColor = colorFromJson(o, "tableHeaderBackgroundColor", msd.tableHeaderBackgroundColor);
+        msd.tableHeaderGradientColor = colorFromJson(o, "tableHeaderGradientColor", msd.tableHeaderGradientColor);
+        msd.tableHeaderBorderColor = colorFromJson(o, "tableHeaderBorderColor", msd.tableHeaderBorderColor);
+        msd.tableHeaderTextColor = colorFromJson(o, "tableHeaderTextColor", msd.tableHeaderTextColor);
+        msd.tableScrollHandleColor = colorFromJson(o, "tableScrollHandleColor", msd.tableScrollHandleColor);
+        msd.tableScrollBackgroundColor = colorFromJson(o, "tableScrollBackgroundColor", msd.tableScrollBackgroundColor);
+        msd.tableSectionBorderLight = colorFromJson(o, "tableSectionBorderLight", msd.tableSectionBorderLight);
+        msd.tableSectionBorderDark = colorFromJson(o, "tableSectionBorderDark", msd.tableSectionBorderDark);
+        msd.labelTextColor = colorFromJson(o, "labelTextColor", msd.labelTextColor);
+        msd.labelBackgroundColor = colorFromJson(o, "labelBackgroundColor", msd.labelBackgroundColor);
+        msd.hyperlinkColor = colorFromJson(o, "hyperlinkColor", msd.hyperlinkColor);
+        msd.buttonBackgroundColor = colorFromJson(o, "buttonBackgroundColor", msd.buttonBackgroundColor);
+        msd.buttonTextColor = colorFromJson(o, "buttonTextColor", msd.buttonTextColor);
+        msd.buttonBorderColor = colorFromJson(o, "buttonBorderColor", msd.buttonBorderColor);
+        msd.radioUncheckedColor = colorFromJson(o, "radioUncheckedColor", msd.radioUncheckedColor);
+        msd.radioCheckedBackgroundColor = colorFromJson(o, "radioCheckedBackgroundColor", msd.radioCheckedBackgroundColor);
+        msd.radioCheckedIndicatorColor = colorFromJson(o, "radioCheckedIndicatorColor", msd.radioCheckedIndicatorColor);
+        msd.checkBoxTickColor = colorFromJson(o, "checkBoxTickColor", msd.checkBoxTickColor);
+        msd.toolButtonAccentColor = colorFromJson(o, "toolButtonAccentColor", msd.toolButtonAccentColor);
+        msd.downArrowColor = colorFromJson(o, "downArrowColor", msd.downArrowColor);
+        msd.upArrowColor = colorFromJson(o, "upArrowColor", msd.upArrowColor);
+        msd.busyIndicatorColor = colorFromJson(o, "busyIndicatorColor", msd.busyIndicatorColor);
+        msd.navIconColor = colorFromJson(o, "navIconColor", msd.navIconColor);
+        msd.rowIconColor = colorFromJson(o, "rowIconColor", msd.rowIconColor);
+    }
+
+    if (json.contains("helpAboutDialog")) {
+        const auto o = json["helpAboutDialog"].toObject();
+        p.helpAboutDialogParams.headingColor = colorFromJson(o, "headingColor", p.helpAboutDialogParams.headingColor);
+        p.helpAboutDialogParams.linkColor = colorFromJson(o, "linkColor", p.helpAboutDialogParams.linkColor);
+    }
+
+    if (json.contains("whatsNewDialog")) {
+        const auto o = json["whatsNewDialog"].toObject();
+        auto &wn = p.whatsNewDialogParams;
+        wn.backgroundColor = colorFromJson(o, "backgroundColor", wn.backgroundColor);
+        wn.headerTextColor = colorFromJson(o, "headerTextColor", wn.headerTextColor);
+        wn.versionTextColor = colorFromJson(o, "versionTextColor", wn.versionTextColor);
+        wn.contentTextColor = colorFromJson(o, "contentTextColor", wn.contentTextColor);
+        wn.linkColor = colorFromJson(o, "linkColor", wn.linkColor);
+        wn.closeButtonColor = colorFromJson(o, "closeButtonColor", wn.closeButtonColor);
+        wn.headerDecorationColor = colorFromJson(o, "headerDecorationColor", wn.headerDecorationColor);
+    }
+
+    if (json.contains("emptyContainer")) {
+        const auto o = json["emptyContainer"].toObject();
+        auto &ec = p.emptyContainerParams;
+        ec.backgroundColor = colorFromJson(o, "backgroundColor", ec.backgroundColor);
+        ec.titleTextColor = colorFromJson(o, "titleTextColor", ec.titleTextColor);
+        ec.textColor = colorFromJson(o, "textColor", ec.textColor);
+        ec.descriptionTextColor = colorFromJson(o, "descriptionTextColor", ec.descriptionTextColor);
+        ec.searchIconColor = colorFromJson(o, "searchIconColor", ec.searchIconColor);
+    }
+
+    if (json.contains("sidebar")) {
+        const auto o = json["sidebar"].toObject();
+        auto &sb = p.sidebarParams;
+        sb.backgroundColor = colorFromJson(o, "backgroundColor", sb.backgroundColor);
+        sb.separatorColor = colorFromJson(o, "separatorColor", sb.separatorColor);
+        sb.sectionSeparatorColor = colorFromJson(o, "sectionSeparatorColor", sb.sectionSeparatorColor);
+        if (o.contains("uppercaseLabels"))
+            sb.uppercaseLabels = o["uppercaseLabels"].toBool(sb.uppercaseLabels);
+        sb.titleTextColor = colorFromJson(o, "titleTextColor", sb.titleTextColor);
+        sb.titleDropShadowColor = colorFromJson(o, "titleDropShadowColor", sb.titleDropShadowColor);
+        sb.busyIndicatorColor = colorFromJson(o, "busyIndicatorColor", sb.busyIndicatorColor);
+    }
+
+    if (json.contains("sidebarIcons")) {
+        const auto o = json["sidebarIcons"].toObject();
+        auto &si = p.sidebarIconsParams;
+        si.iconColor = colorFromJson(o, "iconColor", si.iconColor);
+        si.shadowColor = colorFromJson(o, "shadowColor", si.shadowColor);
+        if (o.contains("useSystemFolderIcons"))
+            si.useSystemFolderIcons = o["useSystemFolderIcons"].toBool(si.useSystemFolderIcons);
+    }
+
+    if (json.contains("libraryItem")) {
+        const auto o = json["libraryItem"].toObject();
+        auto &li = p.libraryItemParams;
+        li.textColor = colorFromJson(o, "textColor", li.textColor);
+        li.libraryIconColor = colorFromJson(o, "libraryIconColor", li.libraryIconColor);
+        li.libraryIconShadowColor = colorFromJson(o, "libraryIconShadowColor", li.libraryIconShadowColor);
+        li.selectedTextColor = colorFromJson(o, "selectedTextColor", li.selectedTextColor);
+        li.selectedBackgroundColor = colorFromJson(o, "selectedBackgroundColor", li.selectedBackgroundColor);
+        li.libraryIconSelectedColor = colorFromJson(o, "libraryIconSelectedColor", li.libraryIconSelectedColor);
+        li.libraryOptionsIconColor = colorFromJson(o, "libraryOptionsIconColor", li.libraryOptionsIconColor);
+    }
+
+    if (json.contains("importWidget")) {
+        const auto o = json["importWidget"].toObject();
+        auto &iw = p.importWidgetParams;
+        iw.backgroundColor = colorFromJson(o, "backgroundColor", iw.backgroundColor);
+        iw.titleTextColor = colorFromJson(o, "titleTextColor", iw.titleTextColor);
+        iw.descriptionTextColor = colorFromJson(o, "descriptionTextColor", iw.descriptionTextColor);
+        iw.currentComicTextColor = colorFromJson(o, "currentComicTextColor", iw.currentComicTextColor);
+        iw.coversViewBackgroundColor = colorFromJson(o, "coversViewBackgroundColor", iw.coversViewBackgroundColor);
+        iw.coversLabelColor = colorFromJson(o, "coversLabelColor", iw.coversLabelColor);
+        iw.coversDecorationBgColor = colorFromJson(o, "coversDecorationBgColor", iw.coversDecorationBgColor);
+        iw.coversDecorationShadowColor = colorFromJson(o, "coversDecorationShadowColor", iw.coversDecorationShadowColor);
+        iw.modeIconColor = colorFromJson(o, "modeIconColor", iw.modeIconColor);
+        iw.iconColor = colorFromJson(o, "iconColor", iw.iconColor);
+        iw.iconCheckedColor = colorFromJson(o, "iconCheckedColor", iw.iconCheckedColor);
+    }
+
+    if (json.contains("serverConfigDialog")) {
+        const auto o = json["serverConfigDialog"].toObject();
+        auto &scd2 = p.serverConfigDialogParams;
+        scd2.backgroundColor = colorFromJson(o, "backgroundColor", scd2.backgroundColor);
+        scd2.titleTextColor = colorFromJson(o, "titleTextColor", scd2.titleTextColor);
+        scd2.qrMessageTextColor = colorFromJson(o, "qrMessageTextColor", scd2.qrMessageTextColor);
+        scd2.propagandaTextColor = colorFromJson(o, "propagandaTextColor", scd2.propagandaTextColor);
+        scd2.labelTextColor = colorFromJson(o, "labelTextColor", scd2.labelTextColor);
+        scd2.checkBoxTextColor = colorFromJson(o, "checkBoxTextColor", scd2.checkBoxTextColor);
+        scd2.qrBackgroundColor = colorFromJson(o, "qrBackgroundColor", scd2.qrBackgroundColor);
+        scd2.qrForegroundColor = colorFromJson(o, "qrForegroundColor", scd2.qrForegroundColor);
+        scd2.decorationColor = colorFromJson(o, "decorationColor", scd2.decorationColor);
+    }
+
+    if (json.contains("mainToolbar")) {
+        const auto o = json["mainToolbar"].toObject();
+        auto &mt = p.mainToolbarParams;
+        mt.backgroundColor = colorFromJson(o, "backgroundColor", mt.backgroundColor);
+        mt.folderNameColor = colorFromJson(o, "folderNameColor", mt.folderNameColor);
+        mt.dividerColor = colorFromJson(o, "dividerColor", mt.dividerColor);
+        mt.iconColor = colorFromJson(o, "iconColor", mt.iconColor);
+        mt.iconDisabledColor = colorFromJson(o, "iconDisabledColor", mt.iconDisabledColor);
+    }
+
+    if (json.contains("contentSplitter")) {
+        const auto o = json["contentSplitter"].toObject();
+        auto &cs = p.contentSplitterParams;
+        cs.handleColor = colorFromJson(o, "handleColor", cs.handleColor);
+        if (o.contains("horizontalHandleHeight"))
+            cs.horizontalHandleHeight = o["horizontalHandleHeight"].toInt(cs.horizontalHandleHeight);
+        if (o.contains("verticalHandleWidth"))
+            cs.verticalHandleWidth = o["verticalHandleWidth"].toInt(cs.verticalHandleWidth);
+    }
+
+    if (json.contains("navigationTree")) {
+        const auto o = json["navigationTree"].toObject();
+        auto &nt = p.navigationTreeParams;
+        nt.textColor = colorFromJson(o, "textColor", nt.textColor);
+        nt.selectionBackgroundColor = colorFromJson(o, "selectionBackgroundColor", nt.selectionBackgroundColor);
+        nt.scrollBackgroundColor = colorFromJson(o, "scrollBackgroundColor", nt.scrollBackgroundColor);
+        nt.scrollHandleColor = colorFromJson(o, "scrollHandleColor", nt.scrollHandleColor);
+        nt.selectedTextColor = colorFromJson(o, "selectedTextColor", nt.selectedTextColor);
+        nt.folderIndicatorColor = colorFromJson(o, "folderIndicatorColor", nt.folderIndicatorColor);
+        nt.branchIndicatorColor = colorFromJson(o, "branchIndicatorColor", nt.branchIndicatorColor);
+        nt.branchIndicatorSelectedColor = colorFromJson(o, "branchIndicatorSelectedColor", nt.branchIndicatorSelectedColor);
+        nt.folderIconColor = colorFromJson(o, "folderIconColor", nt.folderIconColor);
+        nt.folderIconShadowColor = colorFromJson(o, "folderIconShadowColor", nt.folderIconShadowColor);
+        nt.folderIconSelectedColor = colorFromJson(o, "folderIconSelectedColor", nt.folderIconSelectedColor);
+        nt.folderIconSelectedShadowColor = colorFromJson(o, "folderIconSelectedShadowColor", nt.folderIconSelectedShadowColor);
+        nt.folderReadOverlayColor = colorFromJson(o, "folderReadOverlayColor", nt.folderReadOverlayColor);
+        nt.folderReadOverlaySelectedColor = colorFromJson(o, "folderReadOverlaySelectedColor", nt.folderReadOverlaySelectedColor);
+    }
+
+    if (json.contains("comicsViewTable")) {
+        const auto o = json["comicsViewTable"].toObject();
+        auto &cvta = p.comicsViewTableParams;
+        cvta.alternateBackgroundColor = colorFromJson(o, "alternateBackgroundColor", cvta.alternateBackgroundColor);
+        cvta.backgroundColor = colorFromJson(o, "backgroundColor", cvta.backgroundColor);
+        cvta.headerBackgroundColor = colorFromJson(o, "headerBackgroundColor", cvta.headerBackgroundColor);
+        cvta.headerBorderColor = colorFromJson(o, "headerBorderColor", cvta.headerBorderColor);
+        cvta.headerGradientColor = colorFromJson(o, "headerGradientColor", cvta.headerGradientColor);
+        cvta.itemBorderBottomColor = colorFromJson(o, "itemBorderBottomColor", cvta.itemBorderBottomColor);
+        cvta.itemBorderTopColor = colorFromJson(o, "itemBorderTopColor", cvta.itemBorderTopColor);
+        cvta.itemBorderBottomWidth = o["itemBorderBottomWidth"].toInt(cvta.itemBorderBottomWidth);
+        cvta.itemBorderTopWidth = o["itemBorderTopWidth"].toInt(cvta.itemBorderTopWidth);
+        cvta.itemTextColor = colorFromJson(o, "itemTextColor", cvta.itemTextColor);
+        cvta.selectedColor = colorFromJson(o, "selectedColor", cvta.selectedColor);
+        cvta.selectedTextColor = colorFromJson(o, "selectedTextColor", cvta.selectedTextColor);
+        cvta.headerTextColor = colorFromJson(o, "headerTextColor", cvta.headerTextColor);
+        cvta.starRatingColor = colorFromJson(o, "starRatingColor", cvta.starRatingColor);
+        cvta.starRatingSelectedColor = colorFromJson(o, "starRatingSelectedColor", cvta.starRatingSelectedColor);
+    }
+
+    if (json.contains("gridAndInfoView")) {
+        const auto o = json["gridAndInfoView"].toObject();
+        auto &giv = p.gridAndInfoViewParams;
+        giv.backgroundColor = colorFromJson(o, "backgroundColor", giv.backgroundColor);
+        giv.cellColor = colorFromJson(o, "cellColor", giv.cellColor);
+        giv.cellColorWithBackground = colorFromJson(o, "cellColorWithBackground", giv.cellColorWithBackground);
+        giv.selectedColor = colorFromJson(o, "selectedColor", giv.selectedColor);
+        giv.selectedBorderColor = colorFromJson(o, "selectedBorderColor", giv.selectedBorderColor);
+        giv.borderColor = colorFromJson(o, "borderColor", giv.borderColor);
+        giv.titleColor = colorFromJson(o, "titleColor", giv.titleColor);
+        giv.textColor = colorFromJson(o, "textColor", giv.textColor);
+        if (o.contains("showDropShadow"))
+            giv.showDropShadow = o["showDropShadow"].toBool(giv.showDropShadow);
+        giv.infoBackgroundColor = colorFromJson(o, "infoBackgroundColor", giv.infoBackgroundColor);
+        giv.infoBorderColor = colorFromJson(o, "infoBorderColor", giv.infoBorderColor);
+        giv.infoShadowColor = colorFromJson(o, "infoShadowColor", giv.infoShadowColor);
+        giv.infoTextColor = colorFromJson(o, "infoTextColor", giv.infoTextColor);
+        giv.infoTitleColor = colorFromJson(o, "infoTitleColor", giv.infoTitleColor);
+        giv.ratingUnselectedColor = colorFromJson(o, "ratingUnselectedColor", giv.ratingUnselectedColor);
+        giv.ratingSelectedColor = colorFromJson(o, "ratingSelectedColor", giv.ratingSelectedColor);
+        giv.favUncheckedColor = colorFromJson(o, "favUncheckedColor", giv.favUncheckedColor);
+        giv.favCheckedColor = colorFromJson(o, "favCheckedColor", giv.favCheckedColor);
+        giv.readTickUncheckedColor = colorFromJson(o, "readTickUncheckedColor", giv.readTickUncheckedColor);
+        giv.readTickCheckedColor = colorFromJson(o, "readTickCheckedColor", giv.readTickCheckedColor);
+        giv.currentComicBackgroundColor = colorFromJson(o, "currentComicBackgroundColor", giv.currentComicBackgroundColor);
+        giv.continueReadingBackgroundColor = colorFromJson(o, "continueReadingBackgroundColor", giv.continueReadingBackgroundColor);
+        giv.continueReadingColor = colorFromJson(o, "continueReadingColor", giv.continueReadingColor);
+        giv.backgroundBlurOverlayColor = colorFromJson(o, "backgroundBlurOverlayColor", giv.backgroundBlurOverlayColor);
+    }
+
+    if (json.contains("comicsViewToolbar")) {
+        const auto o = json["comicsViewToolbar"].toObject();
+        auto &cvt = p.comicsViewToolbarParams;
+        cvt.backgroundColor = colorFromJson(o, "backgroundColor", cvt.backgroundColor);
+        cvt.separatorColor = colorFromJson(o, "separatorColor", cvt.separatorColor);
+        cvt.checkedBackgroundColor = colorFromJson(o, "checkedBackgroundColor", cvt.checkedBackgroundColor);
+        cvt.iconColor = colorFromJson(o, "iconColor", cvt.iconColor);
+    }
+
+    if (json.contains("searchLineEdit")) {
+        const auto o = json["searchLineEdit"].toObject();
+        auto &sle = p.searchLineEditParams;
+        sle.textColor = colorFromJson(o, "textColor", sle.textColor);
+        sle.backgroundColor = colorFromJson(o, "backgroundColor", sle.backgroundColor);
+        sle.iconColor = colorFromJson(o, "iconColor", sle.iconColor);
+    }
+
+    if (json.contains("readingListIcons")) {
+        const auto o = json["readingListIcons"].toObject();
+        auto &rli = p.readingListIconsParams;
+        if (o.contains("labelColors")) {
+            const auto lc = o["labelColors"].toObject();
+            for (auto it = lc.constBegin(); it != lc.constEnd(); ++it) {
+                QColor c(it.value().toString());
+                if (c.isValid())
+                    rli.labelColors[it.key()] = c;
+            }
+        }
+        rli.labelShadowColor = colorFromJson(o, "labelShadowColor", rli.labelShadowColor);
+        rli.labelShadowSelectedColor = colorFromJson(o, "labelShadowSelectedColor", rli.labelShadowSelectedColor);
+        rli.readingListMainColor = colorFromJson(o, "readingListMainColor", rli.readingListMainColor);
+        rli.readingListMainSelectedColor = colorFromJson(o, "readingListMainSelectedColor", rli.readingListMainSelectedColor);
+        rli.favoritesMainColor = colorFromJson(o, "favoritesMainColor", rli.favoritesMainColor);
+        rli.favoritesMainSelectedColor = colorFromJson(o, "favoritesMainSelectedColor", rli.favoritesMainSelectedColor);
+        rli.currentlyReadingMainColor = colorFromJson(o, "currentlyReadingMainColor", rli.currentlyReadingMainColor);
+        rli.currentlyReadingMainSelectedColor = colorFromJson(o, "currentlyReadingMainSelectedColor", rli.currentlyReadingMainSelectedColor);
+        rli.currentlyReadingOuterColor = colorFromJson(o, "currentlyReadingOuterColor", rli.currentlyReadingOuterColor);
+        rli.currentlyReadingOuterSelectedColor = colorFromJson(o, "currentlyReadingOuterSelectedColor", rli.currentlyReadingOuterSelectedColor);
+        rli.specialListShadowColor = colorFromJson(o, "specialListShadowColor", rli.specialListShadowColor);
+        rli.specialListShadowSelectedColor = colorFromJson(o, "specialListShadowSelectedColor", rli.specialListShadowSelectedColor);
+        rli.listMainColor = colorFromJson(o, "listMainColor", rli.listMainColor);
+        rli.listMainSelectedColor = colorFromJson(o, "listMainSelectedColor", rli.listMainSelectedColor);
+        rli.listShadowColor = colorFromJson(o, "listShadowColor", rli.listShadowColor);
+        rli.listShadowSelectedColor = colorFromJson(o, "listShadowSelectedColor", rli.listShadowSelectedColor);
+        rli.listDetailColor = colorFromJson(o, "listDetailColor", rli.listDetailColor);
+        rli.listDetailSelectedColor = colorFromJson(o, "listDetailSelectedColor", rli.listDetailSelectedColor);
+    }
+
+    if (json.contains("dialogIcons")) {
+        const auto o = json["dialogIcons"].toObject();
+        p.dialogIconsParams.iconColor = colorFromJson(o, "iconColor", p.dialogIconsParams.iconColor);
+    }
+
+    if (json.contains("menuIcons")) {
+        const auto o = json["menuIcons"].toObject();
+        p.menuIconsParams.iconColor = colorFromJson(o, "iconColor", p.menuIconsParams.iconColor);
+    }
+
+    if (json.contains("shortcutsIcons")) {
+        const auto o = json["shortcutsIcons"].toObject();
+        p.shortcutsIconsParams.iconColor = colorFromJson(o, "iconColor", p.shortcutsIconsParams.iconColor);
+    }
+
+    if (json.contains("meta")) {
+        const auto o = json["meta"].toObject();
+        p.meta.id = o["id"].toString(p.meta.id);
+        p.meta.displayName = o["displayName"].toString(p.meta.displayName);
+        const QString variantStr = o["variant"].toString();
+        if (variantStr == "light")
+            p.meta.variant = ThemeVariant::Light;
+        else if (variantStr == "dark")
+            p.meta.variant = ThemeVariant::Dark;
+    }
+
+    Theme theme = makeTheme(p);
+    theme.sourceJson = json;
+    return theme;
 }

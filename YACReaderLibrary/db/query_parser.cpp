@@ -316,9 +316,9 @@ QueryParser::TreeNode QueryParser::expression()
             }
             auto right = token(true);
 
-            return TreeNode("expression", { TreeNode(toLower(left), {}), TreeNode(right, {}) }, expOperator);
+            return TreeNode("expression", { TreeNode(toLower(left), { }), TreeNode(right, { }) }, expOperator);
         } else {
-            return TreeNode("expression", { TreeNode("all", {}), TreeNode(left, {}) });
+            return TreeNode("expression", { TreeNode("all", { }), TreeNode(left, { }) });
         }
     }
 
@@ -328,12 +328,12 @@ QueryParser::TreeNode QueryParser::expression()
 QueryParser::TreeNode QueryParser::baseToken()
 {
     if (tokenType() == Token::Type::quotedWord) {
-        return TreeNode("expression", { TreeNode("all", {}), TreeNode(token(true), {}) });
+        return TreeNode("expression", { TreeNode("all", { }), TreeNode(token(true), { }) });
     }
 
     if (tokenType() == Token::Type::word) {
-        return TreeNode("expression", { TreeNode("all", {}), TreeNode(token(true), {}) });
+        return TreeNode("expression", { TreeNode("all", { }), TreeNode(token(true), { }) });
     }
 
-    return TreeNode("expression", { TreeNode("all", {}), TreeNode(token(true), {}) });
+    return TreeNode("expression", { TreeNode("all", { }), TreeNode(token(true), { }) });
 }

@@ -2,12 +2,14 @@
 #define THEME_H
 
 #include <QtGui>
+#include <QJsonObject>
 
 #include "yacreader_icon.h"
 #include "help_about_dialog_theme.h"
 #include "whats_new_dialog_theme.h"
+#include "theme_meta.h"
 
-struct ComicVineThemeTemplates {
+struct MetadataScraperDialogThemeTemplates {
     QString defaultLabelQSS = "QLabel {color:%1; font-size:12px;font-family:Arial;}";
     QString titleLabelQSS = "QLabel {color:%1; font-size:18px;font-family:Arial;}";
     QString coverLabelQSS = "QLabel {background-color: %1; color:%2; font-size:12px; font-family:Arial; }";
@@ -63,7 +65,7 @@ struct ComicVineThemeTemplates {
     QString scraperTableViewQSS = "QTableView {color:%1; border:0px;alternate-background-color: %2;background-color: %3; outline: 0px;}"
                                   "QTableView::item {outline: 0px; border: 0px; color:%1;}"
                                   "QTableView::item:selected {outline: 0px; background-color: %4;  }"
-                                  "QHeaderView::section:horizontal {background-color:%5; border-bottom:1px solid %6; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %5, stop: 1 %6); border-left:none; border-top:none; padding:4px; color:%7;}"
+                                  "QHeaderView::section:horizontal {background-color:%5; border-bottom:1px solid %6; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %14, stop: 1 %6); border-left:none; border-top:none; padding:4px; color:%7;}"
                                   "QHeaderView::section:vertical {border-bottom: 1px solid %8;border-top: 1px solid %9;}"
                                   "QHeaderView::down-arrow {image: url('%12');width: 8px;height: 7px;padding-right: 10px;}"
                                   "QHeaderView::up-arrow {image: url('%13');width: 8px;height: 7px; padding-right: 10px;}"
@@ -96,16 +98,16 @@ struct ComicFlowColors {
     QColor textColor;
 };
 
-struct TableViewThemeTemplates {
+struct ComicsViewTableThemeTemplates {
     QString tableViewQSS = "QTableView {alternate-background-color: %1; background-color: %2; outline: 0px; border: none;}"
                            "QTableCornerButton::section {background-color:%3; border:none; border-bottom:1px solid %4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %5, stop: 1 %4);}"
-                           "QTableView::item {outline: 0px; border-bottom: 1px solid %6; border-top: 1px solid %7; padding-bottom:1px; color:%8;}"
-                           "QTableView::item:selected {outline: 0px; border-bottom: 1px solid %9; border-top: 1px solid %9; padding-bottom:1px; background-color: %9; color: %10; }"
+                           "QTableView::item {outline: 0px; border-bottom: %12px solid %6; border-top: %13px solid %7; padding-bottom:1px; color:%8;}"
+                           "QTableView::item:selected {outline: 0px; border-bottom: %12px solid %9; border-top: %13px solid %9; padding-bottom:1px; background-color: %9; color: %10; }"
                            "QHeaderView::section:horizontal {background-color:%3; border-bottom:1px solid %4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 %5, stop: 1 %4); border-left:none; border-top:none; padding:4px; color:%11;}"
                            "QHeaderView::section:vertical {border-bottom: 1px solid %6; border-top: 1px solid %7;}";
 };
 
-struct TableViewTheme {
+struct ComicsViewTableTheme {
     QString tableViewQSS;
     QColor starRatingColor;
     QColor starRatingSelectedColor;
@@ -136,20 +138,12 @@ struct EmptyContainerTheme {
     QMap<int, QPixmap> emptyLabelIcons; // Keyed by YACReader::LabelColors enum value
 };
 
-struct SidebarThemeTemplates {
-    // Non-macOS splitter template: %1 = background color, %2 = height
-    QString styledSplitterQSS = "QSplitter::handle { image: none; background-color: %1; }"
-                                "QSplitter::handle:vertical { height: %2px;}";
-
-    // macOS splitter template: %1 = height, %2 = background color
-    QString nativeSplitterQSS = "QSplitter::handle:vertical { height: %1px; background-color: %2;}";
-};
-
 struct SidebarTheme {
     QColor backgroundColor;
     QColor separatorColor;
     QColor sectionSeparatorColor; // Horizontal separators between sidebar sections
-    QString splitterQSS;
+    QString splitterQSS = "QSplitter::handle { image: none; background-color: transparent; }"
+                          "QSplitter::handle:vertical { height: 39px; }";
 
     // When true, section title strings are uppercased after translation
     bool uppercaseLabels;
@@ -179,10 +173,10 @@ struct ImportWidgetTheme {
     QIcon coversToggleIcon;
 };
 
-struct TreeViewThemeTemplates {
+struct NavigationTreeThemeTemplates {
     // Styled tree view template with custom scroll bars
     // %1 = text color, %2 = selection/hover background, %3 = scroll background, %4 = scroll handle, %5 = selected text color
-    QString styledTreeViewQSS = "QTreeView {background-color:transparent; border: none; color:%1; outline:0; show-decoration-selected: 0;}"
+    QString navigationTreeQSS = "QTreeView {background-color:transparent; border: none; color:%1; outline:0; show-decoration-selected: 0;}"
                                 "QTreeView::item:selected {background-color: %2; color:%5; font:bold;}"
                                 "QTreeView::item:hover {background-color:%2; color:%5; font:bold;}"
                                 "QTreeView::branch:selected {background-color:%2;}"
@@ -194,25 +188,28 @@ struct TreeViewThemeTemplates {
                                 "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
                                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
                                 "QTreeView::branch:has-children:!has-siblings:closed,QTreeView::branch:closed:has-children:has-siblings {border-image: none;image: url('%6');}"
-                                "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url('%6');}"
+                                "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url('%8');}"
                                 "QTreeView::branch:open:has-children:!has-siblings,QTreeView::branch:open:has-children:has-siblings  {border-image: none;image: url('%7');}"
-                                "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url('%7');}";
-
-    // Native tree view template (uses system scroll bars) - for macOS
-    QString nativeTreeViewQSS = "QTreeView {background-color:transparent; border: none;}"
-                                "QTreeView::item:selected {background-color:%1; border-top: 1px solid %1; border-left:none;border-right:none;border-bottom:1px solid %1;}"
-                                "QTreeView::branch:selected {background-color:%1; border-top: 1px solid %1; border-left:none;border-right:none;border-bottom:1px solid %1;}"
-                                "QTreeView::branch:open:selected:has-children {image: url(':/images/sidebar/expanded_branch_osx.png');}"
-                                "QTreeView::branch:closed:selected:has-children {image: url(':/images/sidebar/collapsed_branch_osx.png');}";
+                                "QTreeView::branch:open:has-children:selected:!has-siblings,QTreeView::branch:open:has-children:selected:has-siblings {border-image: none;image: url('%9');}";
 };
 
-struct TreeViewTheme {
-    QString treeViewQSS;
+struct NavigationTreeTheme {
+    QString navigationTreeQSS;
     QColor folderIndicatorColor; // For incomplete folders and recently updated folders
+
+    // Branch indicator icon paths (used by QSS url())
+    QString branchClosedIconPath;
+    QString branchOpenIconPath;
+    QString branchClosedIconSelectedPath;
+    QString branchOpenIconSelectedPath;
+
+    // Folder icons (normal and selected states, including finished/read tick variant)
+    QIcon folderIcon;
+    QIcon folderFinishedIcon;
 };
 
-// QML view theme colors (used by GridComicsView, FolderContentView, InfoComicsView)
-struct QmlViewTheme {
+// Grid and info view theme colors (used by GridComicsView, FolderContentView, InfoComicsView)
+struct GridAndInfoViewTheme {
     // Grid colors
     QColor backgroundColor;
     QColor cellColor;
@@ -226,9 +223,9 @@ struct QmlViewTheme {
 
     // Info panel colors
     QColor infoBackgroundColor;
-    QString topShadow; // Image filename
-    QString infoShadow; // Image filename
-    QString infoIndicator; // Image filename
+    QString topShadow; // Recolored SVG path
+    QString infoShadow; // Recolored SVG path
+    QString infoIndicator; // Recolored SVG path
     QColor infoTextColor;
     QColor infoTitleColor;
 
@@ -246,6 +243,9 @@ struct QmlViewTheme {
     // Continue reading section (FolderContentView)
     QColor continueReadingBackgroundColor;
     QColor continueReadingColor;
+
+    // Blur overlay background (FlowView always, GridView when background image enabled)
+    QColor backgroundBlurOverlayColor;
 };
 
 struct MainToolbarThemeTemplates {
@@ -262,10 +262,9 @@ struct ContentSplitterThemeTemplates {
 };
 
 struct ComicsViewToolbarThemeTemplates {
-    QString toolbarQSS = R"(
-        QToolBar { border: none; }
-        QToolButton:checked { background-color: %1; }
-    )";
+    QString toolbarQSS = "QToolBar { border: none; background: %1; }\n"
+                         "QToolBar::separator { background: %2; width: 1px; margin: 5px 4px; }\n"
+                         "QToolButton:checked { background-color: %3; }\n";
 };
 
 struct SearchLineEditThemeTemplates {
@@ -282,13 +281,9 @@ struct ContentSplitterTheme {
 
 struct SidebarIconsTheme {
     // When true, use QFileIconProvider for folder icons and overlay folderReadOverlay for finished folders
-    // When false, use the themed folderIcon and folderFinishedIcon SVGs
+    // When false, use the themed folderIcon and folderFinishedIcon from NavigationTreeTheme
     bool useSystemFolderIcons;
     QPixmap folderReadOverlay; // Tick overlay drawn on system folder icons when useSystemFolderIcons is true
-
-    // Folder icons (for FolderModel, ReadingListItem)
-    QIcon folderIcon;
-    QIcon folderFinishedIcon;
 
     // Library icon (for YACReaderLibraryItemWidget - unselected state)
     QIcon libraryIcon;
@@ -303,10 +298,6 @@ struct SidebarIconsTheme {
     QIcon colapseIcon;
     QIcon addLabelIcon;
     QIcon renameListIcon;
-
-    // Branch icons (for TreeView QSS)
-    QString branchClosedIconPath;
-    QString branchOpenIconPath;
 };
 
 struct LibraryItemTheme {
@@ -429,7 +420,7 @@ struct MainToolbarTheme {
     QString folderNameLabelQSS;
 };
 
-struct ComicVineTheme {
+struct MetadataScraperDialogTheme {
     QString defaultLabelQSS;
     QString titleLabelQSS;
     QString coverLabelQSS;
@@ -463,10 +454,11 @@ struct ComicVineTheme {
 };
 
 struct Theme {
-    QColor defaultContentBackgroundColor;
+    ThemeMeta meta;
+    QJsonObject sourceJson;
 
     ComicFlowColors comicFlow;
-    ComicVineTheme comicVine;
+    MetadataScraperDialogTheme metadataScraperDialog;
     HelpAboutDialogTheme helpAboutDialog;
     WhatsNewDialogTheme whatsNewDialog;
     EmptyContainerTheme emptyContainer;
@@ -475,9 +467,9 @@ struct Theme {
     LibraryItemTheme libraryItem;
     ImportWidgetTheme importWidget;
     ServerConfigDialogTheme serverConfigDialog;
-    TreeViewTheme treeView;
-    TableViewTheme tableView;
-    QmlViewTheme qmlView;
+    NavigationTreeTheme navigationTree;
+    ComicsViewTableTheme comicsViewTable;
+    GridAndInfoViewTheme gridAndInfoView;
     MainToolbarTheme mainToolbar;
     ContentSplitterTheme contentSplitter;
     ComicsViewToolbarTheme comicsViewToolbar;

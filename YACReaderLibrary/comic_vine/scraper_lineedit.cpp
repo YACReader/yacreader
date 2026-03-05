@@ -20,8 +20,8 @@ void ScraperLineEdit::resizeEvent(QResizeEvent *)
 
 void ScraperLineEdit::applyTheme(const Theme &theme)
 {
-    auto comicVineTheme = theme.comicVine;
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
 
-    titleLabel->setStyleSheet(comicVineTheme.scraperLineEditTitleLabelQSS);
-    setStyleSheet(comicVineTheme.scraperLineEditQSS.arg(titleLabel->sizeHint().width() + 6));
+    titleLabel->setStyleSheet(metadataScraperDialogTheme.scraperLineEditTitleLabelQSS);
+    setStyleSheet(metadataScraperDialogTheme.scraperLineEditQSS.arg(titleLabel->sizeHint().width() + 6));
 }

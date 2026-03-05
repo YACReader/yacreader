@@ -56,7 +56,7 @@ YACReaderTableView::YACReaderTableView(QWidget *parent)
 
 void YACReaderTableView::applyTheme(const Theme &theme)
 {
-    setStyleSheet(theme.tableView.tableViewQSS);
+    setStyleSheet(theme.comicsViewTable.tableViewQSS);
 }
 
 void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)

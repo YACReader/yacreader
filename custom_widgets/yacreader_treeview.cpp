@@ -21,7 +21,7 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent)
 
 void YACReaderTreeView::applyTheme(const Theme &theme)
 {
-    setStyleSheet(theme.treeView.treeViewQSS);
+    setStyleSheet(theme.navigationTree.navigationTreeQSS);
 }
 
 void YACReaderTreeView::mousePressEvent(QMouseEvent *event)

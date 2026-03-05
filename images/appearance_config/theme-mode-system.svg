@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 93 58">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #d7d7d9;
+      }
+
+      .cls-3 {
+        fill: #404040;
+      }
+
+      .cls-4 {
+        fill: #292929;
+      }
+
+      .cls-5 {
+        fill: #f7f7f7;
+      }
+    </style>
+  </defs>
+  <rect class="cls-5" width="93" height="58" rx="5" ry="5"/>
+  <rect class="cls-2" x="4" y="4" width="19" height="50" rx="3.12" ry="3.12"/>
+  <rect class="cls-2" x="26" y="4" width="63" height="16" rx="3.12" ry="3.12"/>
+  <g>
+    <rect class="cls-2" x="26" y="21" width="11" height="16" rx="3.13" ry="3.13"/>
+    <rect class="cls-2" x="39" y="21" width="11" height="16" rx="3.13" ry="3.13"/>
+    <rect class="cls-2" x="52" y="21" width="11" height="16" rx="3.13" ry="3.13"/>
+    <rect class="cls-2" x="65" y="21" width="11" height="16" rx="3.13" ry="3.13"/>
+    <rect class="cls-2" x="78" y="21" width="11" height="16" rx="3.13" ry="3.13"/>
+    <rect class="cls-2" x="26" y="38" width="11" height="16" rx="3.13" ry="3.13"/>
+    <rect class="cls-2" x="39" y="38" width="11" height="16" rx="3.13" ry="3.13"/>
+    <rect class="cls-2" x="52" y="38" width="11" height="16" rx="3.13" ry="3.13"/>
+    <rect class="cls-2" x="65" y="38" width="11" height="16" rx="3.13" ry="3.13"/>
+    <rect class="cls-2" x="78" y="38" width="11" height="16" rx="3.13" ry="3.13"/>
+  </g>
+  <polyline class="cls-1" points="93 0 93 58 0 58"/>
+  <path class="cls-4" d="M91.16,1.15L1.84,56.85c.86.71,1.95,1.15,3.16,1.15h83c2.76,0,5-2.24,5-5V5c0-1.56-.73-2.93-1.84-3.85Z"/>
+  <path class="cls-3" d="M85.88,20c1.73,0,3.12-1.4,3.12-3.12V7.12c0-1.52-1.08-2.78-2.51-3.06l-25.56,15.94h24.94Z"/>
+  <path class="cls-3" d="M6.51,53.94c.2.04.4.06.61.06h12.75c1.73,0,3.12-1.4,3.12-3.12v-7.22l-16.49,10.28Z"/>
+  <path class="cls-3" d="M33.67,37h.2c1.3,0,2.41-.8,2.88-1.93l-3.09,1.93Z"/>
+  <path class="cls-3" d="M39,33.68v.2c0,1.73,1.4,3.12,3.12,3.12h4.75c1.73,0,3.12-1.4,3.12-3.12v-7.06l-11,6.86Z"/>
+  <path class="cls-3" d="M52,33.88c0,1.73,1.4,3.12,3.12,3.12h4.75c1.73,0,3.12-1.4,3.12-3.12v-9.75c0-1.73-1.4-3.12-3.12-3.12h-.55l-7.33,4.57v8.31Z"/>
+  <rect class="cls-3" x="65" y="21" width="11" height="16" rx="3.13" ry="3.13"/>
+  <rect class="cls-3" x="78" y="21" width="11" height="16" rx="3.13" ry="3.13"/>
+  <path class="cls-3" d="M26,50.88c0,1.73,1.4,3.12,3.12,3.12h4.75c1.73,0,3.12-1.4,3.12-3.12v-9.75c0-1.73-1.4-3.12-3.12-3.12h-1.81l-6.07,3.78v9.09Z"/>
+  <rect class="cls-3" x="39" y="38" width="11" height="16" rx="3.13" ry="3.13"/>
+  <rect class="cls-3" x="52" y="38" width="11" height="16" rx="3.13" ry="3.13"/>
+  <rect class="cls-3" x="65" y="38" width="11" height="16" rx="3.13" ry="3.13"/>
+  <rect class="cls-3" x="78" y="38" width="11" height="16" rx="3.13" ry="3.13"/>
+</svg>

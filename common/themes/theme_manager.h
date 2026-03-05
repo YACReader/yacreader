@@ -1,10 +1,12 @@
 #ifndef THEME_MANAGER_H
 #define THEME_MANAGER_H
 
+#include "appearance_configuration.h"
 #include "theme.h"
-#include "theme_id.h"
 
 #include <QtCore>
+
+class ThemeRepository;
 
 class ThemeManager : public QObject
 {
@@ -17,21 +19,28 @@ public:
     ThemeManager(ThemeManager &&) = delete;
     ThemeManager &operator=(ThemeManager &&) = delete;
 
-    void initialize();
+    void initialize(AppearanceConfiguration *config, ThemeRepository *repository);
 
-    void setTheme(ThemeId themeId);
-
+    void setTheme(const Theme &theme);
     const Theme &getCurrentTheme() const { return currentTheme; }
+
+    AppearanceConfiguration *getAppearanceConfiguration() const { return config; }
+    ThemeRepository *getRepository() const { return repository; }
 
 signals:
     void themeChanged();
 
 private:
     explicit ThemeManager();
-    ThemeId themeId = ThemeId::Classic;
+
+    AppearanceConfiguration *config = nullptr;
+    ThemeRepository *repository = nullptr;
     Theme currentTheme;
 
-    void updateCurrentTheme();
+    Theme themeFromId(const QString &id, ThemeVariant fallbackVariant);
+
+private slots:
+    void resolveTheme();
 };
 
 #endif // THEME_MANAGER_H

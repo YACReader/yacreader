@@ -10,12 +10,12 @@ ComicsViewTransition::ComicsViewTransition(QWidget *parent)
 
 void ComicsViewTransition::applyTheme(const Theme &theme)
 {
-    setStyleSheet(QString("QWidget {background:%1}").arg(theme.defaultContentBackgroundColor.name()));
+    setStyleSheet(QString("QWidget {background:%1}").arg(theme.gridAndInfoView.backgroundColor.name()));
     update();
 }
 
 void ComicsViewTransition::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
-    painter.fillRect(0, 0, width(), height(), theme.defaultContentBackgroundColor);
+    painter.fillRect(0, 0, width(), height(), theme.gridAndInfoView.backgroundColor);
 }

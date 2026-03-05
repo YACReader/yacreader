@@ -28,7 +28,7 @@ QString readSvg(const QString &resourcePath)
     QFile in(resourcePath);
     if (!in.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "Failed to open SVG resource:" << resourcePath;
-        return {};
+        return { };
     }
 
     QString svg = QString::fromUtf8(in.readAll());
@@ -53,7 +53,7 @@ QString writeSvg(const QString &svg, const QString &resourcePath, const QString 
     QFile out(outPath);
     if (!out.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
         qWarning() << "Failed to write SVG:" << outPath;
-        return {};
+        return { };
     }
 
     out.write(svg.toUtf8());
@@ -66,6 +66,9 @@ QString recolorSvgXML(QString &svg,
                       const QString &placeHolder,
                       const QColor &color)
 {
+    // TODO: svg colors can work without ;, we need to update all the svg files to inlude ;
+    // Include the trailing ';' so e.g. "#ff0;" never accidentally matches
+    // inside a previously-substituted value like "#ff0000;".
     return svg.replace(placeHolder, color.name(QColor::HexRgb), Qt::CaseInsensitive);
 }
 

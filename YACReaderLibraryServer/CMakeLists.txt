@@ -19,8 +19,6 @@ target_compile_definitions(YACReaderLibraryServer PRIVATE
     YACREADER_LIBRARY
 )
 
-# Resources
-qt_add_resources(yacreaderlibraryserver_images_rcc "${CMAKE_CURRENT_SOURCE_DIR}/images.qrc")
 target_sources(YACReaderLibraryServer PRIVATE ${yacreaderlibraryserver_images_rcc})
 
 # Translations

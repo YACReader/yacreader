@@ -25,7 +25,7 @@ Rectangle {
 
     Rectangle {
         id: background
-        color: "#2A2A2A"
+        color: backgroundBlurOverlayColor
         anchors.fill: backgroundImg
     }
 
@@ -48,7 +48,7 @@ Rectangle {
         source: backgroundImg
         blurEnabled: true
         blur: 1.0
-        blurMax: 64
+        blurMax: Math.max(2, mainFlowContainer.backgroundBlurRadius)
         opacity: backgroundBlurOpacity
         visible: backgroundBlurVisible
     }

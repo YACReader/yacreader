@@ -56,9 +56,13 @@ target_compile_definitions(YACReader PRIVATE YACREADER)
 # Resources
 qt_add_resources(yacreader_images_rcc "${CMAKE_CURRENT_SOURCE_DIR}/yacreader_images.qrc")
 qt_add_resources(yacreader_files_rcc "${CMAKE_CURRENT_SOURCE_DIR}/yacreader_files.qrc")
+qt_add_resources(yacreader_themes_rcc "${CMAKE_CURRENT_SOURCE_DIR}/themes/themes.qrc")
+qt_add_resources(yacreader_common_images_rcc "${CMAKE_SOURCE_DIR}/common/themes/appearance_config_images.qrc")
 target_sources(YACReader PRIVATE
     ${yacreader_images_rcc}
     ${yacreader_files_rcc}
+    ${yacreader_themes_rcc}
+    ${yacreader_common_images_rcc}
 )
 
 # Translations

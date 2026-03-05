@@ -2,9 +2,11 @@
 #define THEME_H
 
 #include <QtGui>
+#include <QJsonObject>
 
 #include "help_about_dialog_theme.h"
 #include "whats_new_dialog_theme.h"
+#include "theme_meta.h"
 
 struct ToolbarThemeTemplates {
     QString toolbarQSS = "QToolBar { border: none; background: %1; }\n"
@@ -142,6 +144,9 @@ struct DialogIconsTheme {
 };
 
 struct Theme {
+    ThemeMeta meta;
+    QJsonObject sourceJson;
+
     ToolbarTheme toolbar;
     ViewerTheme viewer;
     GoToFlowWidgetTheme goToFlowWidget;

@@ -43,7 +43,7 @@ SplitView {
             source: backgroundImg
             blurEnabled: true
             blur: 1.0
-            blurMax: 64
+            blurMax: Math.max(2, backgroundBlurRadius)
             opacity: backgroundBlurOpacity
             visible: backgroundBlurVisible
         }
