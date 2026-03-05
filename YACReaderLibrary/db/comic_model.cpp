@@ -378,7 +378,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return {};
+        return { };
     if (index.column() == ComicModel::Rating)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;

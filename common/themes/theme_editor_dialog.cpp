@@ -133,7 +133,7 @@ ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &params, QWidget *parent)
     tree->setUniformRowHeights(true);
     tree->setAlternatingRowColors(true);
 
-    populate(nullptr, params, {});
+    populate(nullptr, params, { });
     tree->expandAll();
 
     connect(expandBtn, &QPushButton::clicked, tree, &QTreeWidget::expandAll);
@@ -425,7 +425,7 @@ void ThemeEditorDialog::loadFromFile()
     params = doc.object();
     syncMetaFromParams();
     tree->clear();
-    populate(nullptr, params, {});
+    populate(nullptr, params, { });
     tree->expandAll();
     emit themeJsonChanged(params);
 }

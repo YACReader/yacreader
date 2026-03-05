@@ -28,7 +28,7 @@ QString readSvg(const QString &resourcePath)
     QFile in(resourcePath);
     if (!in.open(QIODevice::ReadOnly | QIODevice::Text)) {
         qWarning() << "Failed to open SVG resource:" << resourcePath;
-        return {};
+        return { };
     }
 
     QString svg = QString::fromUtf8(in.readAll());
@@ -53,7 +53,7 @@ QString writeSvg(const QString &svg, const QString &resourcePath, const QString 
     QFile out(outPath);
     if (!out.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
         qWarning() << "Failed to write SVG:" << outPath;
-        return {};
+        return { };
     }
 
     out.write(svg.toUtf8());

@@ -359,20 +359,20 @@ Theme makeTheme(const ThemeParams &params)
     theme.metadataScraperDialog.scraperScrollLabelScrollAreaQSS = t.scraperScrollLabelScrollAreaQSS.arg(msd.contentBackgroundColor.name(), msd.tableScrollHandleColor.name(), msd.tableScrollBackgroundColor.name());
 
     theme.metadataScraperDialog.scraperTableViewQSS = t.scraperTableViewQSS
-                                                  .arg(msd.tableHeaderTextColor.name(),
-                                                       msd.tableAltBackgroundColor.name(),
-                                                       msd.tableBackgroundColor.name(),
-                                                       msd.tableSelectedColor.name(),
-                                                       msd.tableHeaderBackgroundColor.name(),
-                                                       msd.tableHeaderBorderColor.name(),
-                                                       msd.tableHeaderTextColor.name(),
-                                                       msd.tableSectionBorderDark.name(),
-                                                       msd.tableSectionBorderLight.name(),
-                                                       msd.tableScrollHandleColor.name(),
-                                                       msd.tableScrollBackgroundColor.name(),
-                                                       recolor(":/images/comic_vine/downArrow.svg", msd.downArrowColor),
-                                                       recolor(":/images/comic_vine/upArrow.svg", msd.upArrowColor),
-                                                       msd.tableHeaderGradientColor.name());
+                                                              .arg(msd.tableHeaderTextColor.name(),
+                                                                   msd.tableAltBackgroundColor.name(),
+                                                                   msd.tableBackgroundColor.name(),
+                                                                   msd.tableSelectedColor.name(),
+                                                                   msd.tableHeaderBackgroundColor.name(),
+                                                                   msd.tableHeaderBorderColor.name(),
+                                                                   msd.tableHeaderTextColor.name(),
+                                                                   msd.tableSectionBorderDark.name(),
+                                                                   msd.tableSectionBorderLight.name(),
+                                                                   msd.tableScrollHandleColor.name(),
+                                                                   msd.tableScrollBackgroundColor.name(),
+                                                                   recolor(":/images/comic_vine/downArrow.svg", msd.downArrowColor),
+                                                                   recolor(":/images/comic_vine/upArrow.svg", msd.upArrowColor),
+                                                                   msd.tableHeaderGradientColor.name());
 
     theme.metadataScraperDialog.dialogQSS = t.dialogQSS.arg(msd.dialogBackgroundColor.name());
     theme.metadataScraperDialog.dialogButtonsQSS = t.dialogButtonsQSS.arg(msd.buttonBorderColor.name(), msd.buttonBackgroundColor.name(), msd.buttonTextColor.name());
@@ -470,19 +470,19 @@ Theme makeTheme(const ThemeParams &params)
     // ComicsViewTable
     const auto &cvta = params.comicsViewTableParams;
     theme.comicsViewTable.tableViewQSS = cvta.t.tableViewQSS
-                                           .arg(cvta.alternateBackgroundColor.name(),
-                                                cvta.backgroundColor.name(),
-                                                cvta.headerBackgroundColor.name(),
-                                                cvta.headerBorderColor.name(),
-                                                cvta.headerGradientColor.name(),
-                                                cvta.itemBorderBottomColor.name(),
-                                                cvta.itemBorderTopColor.name(),
-                                                cvta.itemTextColor.name(),
-                                                cvta.selectedColor.name(),
-                                                cvta.selectedTextColor.name(),
-                                                cvta.headerTextColor.name(),
-                                                QString::number(cvta.itemBorderBottomWidth),
-                                                QString::number(cvta.itemBorderTopWidth));
+                                                 .arg(cvta.alternateBackgroundColor.name(),
+                                                      cvta.backgroundColor.name(),
+                                                      cvta.headerBackgroundColor.name(),
+                                                      cvta.headerBorderColor.name(),
+                                                      cvta.headerGradientColor.name(),
+                                                      cvta.itemBorderBottomColor.name(),
+                                                      cvta.itemBorderTopColor.name(),
+                                                      cvta.itemTextColor.name(),
+                                                      cvta.selectedColor.name(),
+                                                      cvta.selectedTextColor.name(),
+                                                      cvta.headerTextColor.name(),
+                                                      QString::number(cvta.itemBorderBottomWidth),
+                                                      QString::number(cvta.itemBorderTopWidth));
     theme.comicsViewTable.starRatingColor = cvta.starRatingColor;
     theme.comicsViewTable.starRatingSelectedColor = cvta.starRatingSelectedColor;
     // end ComicsViewTable
@@ -648,15 +648,15 @@ Theme makeTheme(const ThemeParams &params)
     theme.navigationTree.branchOpenIconSelectedPath = recoloredSvgToThemeFile(":/images/sidebar/branch-open.svg", nt.branchIndicatorSelectedColor, params.meta.id, { .suffix = "_selected" });
 
     theme.navigationTree.navigationTreeQSS = nt.t.navigationTreeQSS
-                                         .arg(nt.textColor.name(),
-                                              nt.selectionBackgroundColor.name(),
-                                              nt.scrollBackgroundColor.name(),
-                                              nt.scrollHandleColor.name(),
-                                              nt.selectedTextColor.name(),
-                                              theme.navigationTree.branchClosedIconPath,
-                                              theme.navigationTree.branchOpenIconPath,
-                                              theme.navigationTree.branchClosedIconSelectedPath,
-                                              theme.navigationTree.branchOpenIconSelectedPath);
+                                                     .arg(nt.textColor.name(),
+                                                          nt.selectionBackgroundColor.name(),
+                                                          nt.scrollBackgroundColor.name(),
+                                                          nt.scrollHandleColor.name(),
+                                                          nt.selectedTextColor.name(),
+                                                          theme.navigationTree.branchClosedIconPath,
+                                                          theme.navigationTree.branchOpenIconPath,
+                                                          theme.navigationTree.branchClosedIconSelectedPath,
+                                                          theme.navigationTree.branchOpenIconSelectedPath);
     theme.navigationTree.folderIndicatorColor = nt.folderIndicatorColor;
 
     // Folder icon — normal and selected states with independent colors

@@ -34,7 +34,7 @@ QModelIndex ActionsShortcutsModel::index(int row, int column, const QModelIndex 
 Qt::ItemFlags ActionsShortcutsModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return {};
+        return { };
     if (index.column() == KEYS)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;

@@ -59,7 +59,7 @@ Theme ThemeManager::themeFromId(const QString &id, ThemeVariant fallbackVariant)
             return makeTheme(json);
     }
 
-    return {};
+    return { };
 }
 
 void ThemeManager::resolveTheme()

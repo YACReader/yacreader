@@ -231,11 +231,11 @@ Theme makeTheme(const QJsonObject &json)
     if (json.contains("toolbar")) {
         const auto t = json["toolbar"].toObject();
         auto &tp = p.toolbarParams;
-        tp.iconColor          = colorFromJson(t, "iconColor",          tp.iconColor);
-        tp.iconDisabledColor  = colorFromJson(t, "iconDisabledColor",  tp.iconDisabledColor);
-        tp.iconCheckedColor   = colorFromJson(t, "iconCheckedColor",   tp.iconCheckedColor);
-        tp.backgroundColor    = colorFromJson(t, "backgroundColor",    tp.backgroundColor);
-        tp.separatorColor     = colorFromJson(t, "separatorColor",     tp.separatorColor);
+        tp.iconColor = colorFromJson(t, "iconColor", tp.iconColor);
+        tp.iconDisabledColor = colorFromJson(t, "iconDisabledColor", tp.iconDisabledColor);
+        tp.iconCheckedColor = colorFromJson(t, "iconCheckedColor", tp.iconCheckedColor);
+        tp.backgroundColor = colorFromJson(t, "backgroundColor", tp.backgroundColor);
+        tp.separatorColor = colorFromJson(t, "separatorColor", tp.separatorColor);
         tp.checkedButtonColor = colorFromJson(t, "checkedButtonColor", tp.checkedButtonColor);
         tp.menuIndicatorColor = colorFromJson(t, "menuIndicatorColor", tp.menuIndicatorColor);
     }
@@ -244,43 +244,43 @@ Theme makeTheme(const QJsonObject &json)
         const auto v = json["viewer"].toObject();
         auto &vp = p.viewerParams;
         vp.defaultBackgroundColor = colorFromJson(v, "defaultBackgroundColor", vp.defaultBackgroundColor);
-        vp.defaultTextColor       = colorFromJson(v, "defaultTextColor",       vp.defaultTextColor);
-        vp.infoBackgroundColor    = colorFromJson(v, "infoBackgroundColor",    vp.infoBackgroundColor);
-        vp.infoTextColor          = colorFromJson(v, "infoTextColor",          vp.infoTextColor);
+        vp.defaultTextColor = colorFromJson(v, "defaultTextColor", vp.defaultTextColor);
+        vp.infoBackgroundColor = colorFromJson(v, "infoBackgroundColor", vp.infoBackgroundColor);
+        vp.infoTextColor = colorFromJson(v, "infoTextColor", vp.infoTextColor);
     }
 
     if (json.contains("goToFlowWidget")) {
         const auto g = json["goToFlowWidget"].toObject();
         auto &gp = p.goToFlowWidgetParams;
-        gp.flowBackgroundColor    = colorFromJson(g, "flowBackgroundColor",    gp.flowBackgroundColor);
-        gp.flowTextColor          = colorFromJson(g, "flowTextColor",          gp.flowTextColor);
+        gp.flowBackgroundColor = colorFromJson(g, "flowBackgroundColor", gp.flowBackgroundColor);
+        gp.flowTextColor = colorFromJson(g, "flowTextColor", gp.flowTextColor);
         gp.toolbarBackgroundColor = colorFromJson(g, "toolbarBackgroundColor", gp.toolbarBackgroundColor);
-        gp.sliderBorderColor      = colorFromJson(g, "sliderBorderColor",      gp.sliderBorderColor);
-        gp.sliderGrooveColor      = colorFromJson(g, "sliderGrooveColor",      gp.sliderGrooveColor);
-        gp.sliderHandleColor      = colorFromJson(g, "sliderHandleColor",      gp.sliderHandleColor);
-        gp.editBorderColor        = colorFromJson(g, "editBorderColor",        gp.editBorderColor);
-        gp.editBackgroundColor    = colorFromJson(g, "editBackgroundColor",    gp.editBackgroundColor);
-        gp.editTextColor          = colorFromJson(g, "editTextColor",          gp.editTextColor);
-        gp.labelTextColor         = colorFromJson(g, "labelTextColor",         gp.labelTextColor);
-        gp.iconColor              = colorFromJson(g, "iconColor",              gp.iconColor);
+        gp.sliderBorderColor = colorFromJson(g, "sliderBorderColor", gp.sliderBorderColor);
+        gp.sliderGrooveColor = colorFromJson(g, "sliderGrooveColor", gp.sliderGrooveColor);
+        gp.sliderHandleColor = colorFromJson(g, "sliderHandleColor", gp.sliderHandleColor);
+        gp.editBorderColor = colorFromJson(g, "editBorderColor", gp.editBorderColor);
+        gp.editBackgroundColor = colorFromJson(g, "editBackgroundColor", gp.editBackgroundColor);
+        gp.editTextColor = colorFromJson(g, "editTextColor", gp.editTextColor);
+        gp.labelTextColor = colorFromJson(g, "labelTextColor", gp.labelTextColor);
+        gp.iconColor = colorFromJson(g, "iconColor", gp.iconColor);
     }
 
     if (json.contains("helpAboutDialog")) {
         const auto h = json["helpAboutDialog"].toObject();
         p.helpAboutDialogParams.headingColor = colorFromJson(h, "headingColor", p.helpAboutDialogParams.headingColor);
-        p.helpAboutDialogParams.linkColor    = colorFromJson(h, "linkColor",    p.helpAboutDialogParams.linkColor);
+        p.helpAboutDialogParams.linkColor = colorFromJson(h, "linkColor", p.helpAboutDialogParams.linkColor);
     }
 
     if (json.contains("whatsNewDialog")) {
         const auto w = json["whatsNewDialog"].toObject();
         auto &wn = p.whatsNewDialogParams;
-        wn.backgroundColor      = colorFromJson(w, "backgroundColor",      wn.backgroundColor);
-        wn.headerTextColor       = colorFromJson(w, "headerTextColor",      wn.headerTextColor);
-        wn.versionTextColor      = colorFromJson(w, "versionTextColor",     wn.versionTextColor);
-        wn.contentTextColor      = colorFromJson(w, "contentTextColor",     wn.contentTextColor);
-        wn.linkColor             = colorFromJson(w, "linkColor",            wn.linkColor);
-        wn.closeButtonColor      = colorFromJson(w, "closeButtonColor",     wn.closeButtonColor);
-        wn.headerDecorationColor = colorFromJson(w, "headerDecorationColor",wn.headerDecorationColor);
+        wn.backgroundColor = colorFromJson(w, "backgroundColor", wn.backgroundColor);
+        wn.headerTextColor = colorFromJson(w, "headerTextColor", wn.headerTextColor);
+        wn.versionTextColor = colorFromJson(w, "versionTextColor", wn.versionTextColor);
+        wn.contentTextColor = colorFromJson(w, "contentTextColor", wn.contentTextColor);
+        wn.linkColor = colorFromJson(w, "linkColor", wn.linkColor);
+        wn.closeButtonColor = colorFromJson(w, "closeButtonColor", wn.closeButtonColor);
+        wn.headerDecorationColor = colorFromJson(w, "headerDecorationColor", wn.headerDecorationColor);
     }
 
     if (json.contains("shortcutsIcons")) {

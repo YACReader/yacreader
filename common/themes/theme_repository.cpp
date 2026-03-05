@@ -50,7 +50,7 @@ QJsonObject ThemeRepository::loadThemeJson(const QString &themeId) const
         if (u.id == themeId)
             return readJsonFile(u.filePath);
 
-    return {};
+    return { };
 }
 
 QString ThemeRepository::saveUserTheme(QJsonObject themeJson)
@@ -104,7 +104,7 @@ QString ThemeRepository::importThemeFromFile(const QString &filePath)
 {
     QJsonObject json = readJsonFile(filePath);
     if (json.isEmpty())
-        return {};
+        return { };
 
     // Force a new user id regardless of what the file contains
     auto metaObj = json["meta"].toObject();
@@ -189,13 +189,13 @@ QJsonObject ThemeRepository::readJsonFile(const QString &path)
 {
     QFile file(path);
     if (!file.open(QIODevice::ReadOnly))
-        return {};
+        return { };
 
     const QByteArray data = file.readAll();
     QJsonParseError error;
     const QJsonDocument doc = QJsonDocument::fromJson(data, &error);
     if (error.error != QJsonParseError::NoError)
-        return {};
+        return { };
 
     return doc.object();
 }
