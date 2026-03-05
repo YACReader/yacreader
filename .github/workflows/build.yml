@@ -13,8 +13,8 @@ on:
       - yacreader10
 
 env:
-  IS_ORIGINAL_REPO: ${{ github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop') }}
-  IS_FORK: ${{ github.repository != 'YACReader/yacreader' || (github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop') }}
+  IS_ORIGINAL_REPO: ${{ github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10') }}
+  IS_FORK: ${{ github.repository != 'YACReader/yacreader' || (github.ref != 'refs/heads/master' && github.ref != 'refs/heads/develop' && github.ref != 'refs/heads/yacreader10') }}
 
 jobs:
   # Build number generation
@@ -141,7 +141,7 @@ jobs:
           npm install -g appdmg
 
       - name: Import Code Signing Certificate
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         uses: apple-actions/import-codesign-certs@v2
         with:
           p12-file-base64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
@@ -160,7 +160,7 @@ jobs:
         run: ctest --test-dir build --output-on-failure
 
       - name: Notarize
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         run: |
           xcrun notarytool submit *.dmg --apple-id "${{ secrets.MACOS_APPLE_ID }}" --team-id "${{ secrets.MACOS_TEAM_ID }}" --password "${{ secrets.MACOS_APP_PASSWORD }}" --wait
           xcrun stapler staple *.dmg
@@ -212,7 +212,7 @@ jobs:
           ctest --test-dir build --output-on-failure
 
       - name: Upload executables for signing
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         uses: actions/upload-artifact@v4
         id: upload_executables
         with:
@@ -223,7 +223,7 @@ jobs:
             build/bin/YACReaderLibraryServer.exe
 
       - name: Sign executables with SignPath
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         uses: signpath/github-action-submit-signing-request@v1
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
@@ -237,7 +237,7 @@ jobs:
           output-artifact-directory: build/bin/signed
 
       - name: Replace with signed executables
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         shell: pwsh
         run: |
           Write-Host "=== Replacing executables with signed versions ==="
@@ -259,7 +259,7 @@ jobs:
           .\create_installer.cmd x64 7z ${{ needs.initialization.outputs.build_number }}
 
       - name: Verify installer was created
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         shell: pwsh
         run: |
           if (-not (Test-Path "ci/win/Output/YACReader*.exe")) {
@@ -268,7 +268,7 @@ jobs:
           Get-ChildItem "ci/win/Output/YACReader*.exe"
 
       - name: Upload unsigned installer
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         uses: actions/upload-artifact@v4
         id: upload_unsigned
         with:
@@ -276,7 +276,7 @@ jobs:
           path: ci/win/Output/YACReader*.exe
 
       - name: Submit to SignPath
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         uses: signpath/github-action-submit-signing-request@v1
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
@@ -290,7 +290,7 @@ jobs:
           output-artifact-directory: ci/win/Output/signed
 
       - name: Replace with signed installer
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         shell: pwsh
         run: |
           Write-Host "=== Files in signed directory before move ==="
@@ -350,7 +350,7 @@ jobs:
           cmake --build build --parallel
 
       - name: Upload executables for signing
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         uses: actions/upload-artifact@v4
         id: upload_executables
         with:
@@ -361,7 +361,7 @@ jobs:
             build/bin/YACReaderLibraryServer.exe
 
       - name: Submit to SignPath
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         uses: signpath/github-action-submit-signing-request@v1
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
@@ -375,7 +375,7 @@ jobs:
           output-artifact-directory: 'build/bin/signed'
 
       - name: Replace executables with signed versions
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         shell: pwsh
         run: |
           Copy-Item "build/bin/signed/YACReader.exe" "build/bin/YACReader.exe" -Force
@@ -392,7 +392,7 @@ jobs:
           .\create_installer.cmd arm64 7z ${{ needs.initialization.outputs.build_number }}
 
       - name: Verify installer was created
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         shell: pwsh
         run: |
           if (-not (Test-Path "ci/win/Output/YACReader*.exe")) {
@@ -401,7 +401,7 @@ jobs:
           Get-ChildItem "ci/win/Output/YACReader*.exe"
 
       - name: Upload unsigned installer
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         uses: actions/upload-artifact@v4
         id: upload_unsigned
         with:
@@ -409,7 +409,7 @@ jobs:
           path: ci/win/Output/YACReader*.exe
 
       - name: Submit to SignPath
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         uses: signpath/github-action-submit-signing-request@v1
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
@@ -423,7 +423,7 @@ jobs:
           output-artifact-directory: 'ci/win/Output/signed'
 
       - name: Replace with signed installer and cleanup
-        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
         shell: pwsh
         working-directory: ci/win/Output
         run: |
@@ -769,7 +769,7 @@ jobs:
                 echo "  ✓ SIGNED - Signature verified successfully"
                 osslsigncode verify -in "$installer" 2>&1 | grep -E "(Signed|Signer|Timestamp)"
               else
-                echo "  ✗ UNSIGNED or INVALID - No valid signature found (expected for yacreader10 pre-releases)"
+                echo "  ✗ UNSIGNED or INVALID - No valid signature found"
                 osslsigncode verify -in "$installer" 2>&1 | head -20
               fi
               echo ""
