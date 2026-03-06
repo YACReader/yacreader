@@ -1,6 +1,7 @@
 #include "viewer.h"
 #include "continuous_page_widget.h"
 #include "continuous_view_model.h"
+#include "resize_image.h"
 #include "configuration.h"
 #include "magnifying_glass.h"
 #include "goto_flow_widget.h"
@@ -357,6 +358,15 @@ void Viewer::goTo(unsigned int page)
     render->goTo(page);
 }
 
+void Viewer::onImageOptionsChanged()
+{
+    if (continuousScroll) {
+        continuousWidget->invalidateScaledImageCache();
+    } else {
+        updatePage();
+    }
+}
+
 void Viewer::updatePage()
 {
     if (continuousScroll) {
@@ -433,16 +443,17 @@ void Viewer::updateContentSize()
         if (zoom != 100) {
             pagefit.scale(floor(pagefit.width() * zoom / 100.0f), 0, Qt::KeepAspectRatioByExpanding);
         }
-        // apply scaling
+        // apply size to the container
         content->resize(pagefit);
 
-        // TODO: updtateContentSize should only scale the pixmap once
-        if (devicePixelRatioF() > 1) // only in HDPI displays
-        {
-            QPixmap page = currentPage->scaled(content->width() * devicePixelRatioF(), content->height() * devicePixelRatioF(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-            page.setDevicePixelRatio(devicePixelRatioF());
-            content->setPixmap(page);
-        }
+        // scale the pixmap to physical pixels for crisp rendering on all displays
+        auto dpr = devicePixelRatioF();
+        QPixmap page = scalePixmap(*currentPage,
+                                   qRound(content->width() * dpr),
+                                   qRound(content->height() * dpr),
+                                   Configuration::getConfiguration().getScalingMethod());
+        page.setDevicePixelRatio(dpr);
+        content->setPixmap(page);
 
         emit backgroundChanges();
     }

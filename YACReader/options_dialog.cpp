@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QColorDialog>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QMessageBox>
 #include "theme_manager.h"
 #include "theme_factory.h"
@@ -198,6 +199,23 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     doublePageBoxLayout->addWidget(coverSPCheckBox);
     doublePageBox->setLayout(doublePageBoxLayout);
     layoutImageV->addWidget(doublePageBox);
+
+    auto scalingBox = new QGroupBox(tr("Scaling"));
+    auto scalingLayout = new QHBoxLayout();
+    scalingLayout->addWidget(new QLabel(tr("Scaling method")));
+    scalingMethodCombo = new QComboBox();
+    scalingMethodCombo->addItem(tr("Nearest (fast, low quality)"));
+    scalingMethodCombo->addItem(tr("Bilinear"));
+    scalingMethodCombo->addItem(tr("Lanczos (better quality)"));
+    connect(scalingMethodCombo, &QComboBox::currentIndexChanged, this, [this](int index) {
+        Configuration::getConfiguration().setScalingMethod(static_cast<ScaleMethod>(index));
+        emit changedImageOptions();
+    });
+    scalingLayout->addWidget(scalingMethodCombo);
+    scalingLayout->addStretch();
+    scalingBox->setLayout(scalingLayout);
+    layoutImageV->addWidget(scalingBox);
+
     layoutImageV->addStretch();
 
     // IMAGE ADJUSTMENTS END -----------------------------
@@ -294,6 +312,9 @@ void OptionsDialog::saveOptions()
     }
     Configuration::getConfiguration().setMouseMode(mouseMode);
 
+    Configuration::getConfiguration().setScalingMethod(static_cast<ScaleMethod>(scalingMethodCombo->currentIndex()));
+    emit changedImageOptions();
+
     YACReaderOptionsDialog::saveOptions();
 }
 
@@ -329,6 +350,11 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     auto defaultDisableScrollAnimationsValue = false;
 #endif
     disableScrollAnimations->setChecked(settings->value(DISABLE_SCROLL_ANIMATION, defaultDisableScrollAnimationsValue).toBool());
+
+    {
+        QSignalBlocker blocker(scalingMethodCombo);
+        scalingMethodCombo->setCurrentIndex(static_cast<int>(Configuration::getConfiguration().getScalingMethod()));
+    }
 
     auto mouseMode = Configuration::getConfiguration().getMouseMode();
 

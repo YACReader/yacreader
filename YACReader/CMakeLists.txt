@@ -98,6 +98,7 @@ target_link_libraries(YACReader PRIVATE
     custom_widgets_reader
     shortcuts_reader
     cbx_backend
+    image_processing
     QsLog
 )
 

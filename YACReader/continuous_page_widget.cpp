@@ -1,6 +1,8 @@
 #include "continuous_page_widget.h"
 #include "continuous_view_model.h"
 #include "render.h"
+#include "resize_image.h"
+#include "configuration.h"
 
 #include <QPainter>
 #include <QPaintEvent>
@@ -75,6 +77,12 @@ QSize ContinuousPageWidget::sizeHint() const
         return QSize(800, 0);
     }
     return QSize(width(), continuousViewModel->totalHeight());
+}
+
+void ContinuousPageWidget::invalidateScaledImageCache()
+{
+    scaledPageCache.invalidateAll();
+    update();
 }
 
 void ContinuousPageWidget::onPageAvailable(int absolutePageIndex)
@@ -183,7 +191,8 @@ const QImage *ContinuousPageWidget::scaledImageForPaint(int pageIndex, const QIm
     entry.sourceCacheKey = sourceKey;
     entry.sourceSize = source->size();
     entry.targetSize = targetSize;
-    entry.scaledImage = source->scaled(targetSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    entry.scaledImage = scaleImage(*source, targetSize.width(), targetSize.height(),
+                                   Configuration::getConfiguration().getScalingMethod());
     scaledPageCache.pages.insert(pageIndex, std::move(entry));
 
     return &scaledPageCache.pages[pageIndex].scaledImage;

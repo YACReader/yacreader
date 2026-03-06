@@ -148,7 +148,7 @@ void MainWindowViewer::setupUI()
     connect(optionsDialog, &QDialog::accepted, viewer, &Viewer::updateOptions);
     connect(optionsDialog, &YACReaderOptionsDialog::optionsChanged, this, &MainWindowViewer::reloadOptions);
     connect(optionsDialog, &OptionsDialog::changedFilters, viewer, &Viewer::updateFilters);
-    connect(optionsDialog, &OptionsDialog::changedImageOptions, viewer, &Viewer::updatePage);
+    connect(optionsDialog, &OptionsDialog::changedImageOptions, viewer, &Viewer::onImageOptionsChanged);
 
     optionsDialog->restoreOptions(settings);
     // shortcutsDialog = new ShortcutsDialog(this);

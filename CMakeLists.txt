@@ -132,6 +132,7 @@ add_subdirectory(common)
 if(NOT BUILD_SERVER_STANDALONE)
     add_subdirectory(shortcuts_management)
     add_subdirectory(custom_widgets)
+    add_subdirectory(image_processing)
 endif()
 
 add_subdirectory(YACReaderLibrary/server)
