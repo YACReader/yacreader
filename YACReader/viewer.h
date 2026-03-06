@@ -58,6 +58,7 @@ public slots:
     void goToLastPage();
     void goTo(unsigned int page);
     void updatePage();
+    void onImageOptionsChanged();
     void updateContentSize();
     void updateVerticalScrollBar();
     void updateOptions();

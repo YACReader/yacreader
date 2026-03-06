@@ -358,6 +358,15 @@ void Viewer::goTo(unsigned int page)
     render->goTo(page);
 }
 
+void Viewer::onImageOptionsChanged()
+{
+    if (continuousScroll) {
+        continuousWidget->invalidateScaledImageCache();
+    } else {
+        updatePage();
+    }
+}
+
 void Viewer::updatePage()
 {
     if (continuousScroll) {

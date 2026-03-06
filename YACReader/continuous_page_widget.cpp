@@ -2,6 +2,7 @@
 #include "continuous_view_model.h"
 #include "render.h"
 #include "resize_image.h"
+#include "configuration.h"
 
 #include <QPainter>
 #include <QPaintEvent>
@@ -76,6 +77,12 @@ QSize ContinuousPageWidget::sizeHint() const
         return QSize(800, 0);
     }
     return QSize(width(), continuousViewModel->totalHeight());
+}
+
+void ContinuousPageWidget::invalidateScaledImageCache()
+{
+    scaledPageCache.invalidateAll();
+    update();
 }
 
 void ContinuousPageWidget::onPageAvailable(int absolutePageIndex)

@@ -28,6 +28,7 @@ public:
 
 public slots:
     void onPageAvailable(int absolutePageIndex);
+    void invalidateScaledImageCache();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
