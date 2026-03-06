@@ -106,7 +106,9 @@
     "meta": {
         "displayName": "Default Light",
         "id": "builtin/light",
-        "variant": "light"
+        "targetApp": "YACReaderLibrary",
+        "variant": "light",
+        "version": "10.0.0"
     },
     "metadataScraperDialog": {
         "busyIndicatorColor": "#000000",

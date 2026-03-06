@@ -17,7 +17,7 @@ struct ThemeListEntry {
 class ThemeRepository
 {
 public:
-    explicit ThemeRepository(const QString &qrcPrefix, const QString &userThemesDir);
+    explicit ThemeRepository(const QString &qrcPrefix, const QString &userThemesDir, const QString &targetApp);
 
     QList<ThemeListEntry> availableThemes() const;
     bool contains(const QString &themeId) const;
@@ -25,13 +25,14 @@ public:
 
     QString saveUserTheme(QJsonObject themeJson);
     bool deleteUserTheme(const QString &themeId);
-    QString importThemeFromFile(const QString &filePath);
+    QString importThemeFromFile(const QString &filePath, QString *errorMessage = nullptr);
 
     void refresh();
 
 private:
     QString qrcPrefix;
     QString userThemesDir;
+    QString targetApp;
 
     struct BuiltinEntry {
         QString id;

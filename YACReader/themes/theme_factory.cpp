@@ -363,6 +363,8 @@ Theme makeTheme(const QJsonObject &json)
             p.meta.variant = ThemeVariant::Light;
         else if (variantStr == "dark")
             p.meta.variant = ThemeVariant::Dark;
+        p.meta.targetApp = o["targetApp"].toString(p.meta.targetApp);
+        p.meta.version = o["version"].toString(p.meta.version);
     }
 
     Theme theme = makeTheme(p);

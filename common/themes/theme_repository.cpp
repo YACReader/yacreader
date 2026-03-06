@@ -6,8 +6,8 @@
 #include <QJsonObject>
 #include <QUuid>
 
-ThemeRepository::ThemeRepository(const QString &qrcPrefix, const QString &userThemesDir)
-    : qrcPrefix(qrcPrefix), userThemesDir(userThemesDir)
+ThemeRepository::ThemeRepository(const QString &qrcPrefix, const QString &userThemesDir, const QString &targetApp)
+    : qrcPrefix(qrcPrefix), userThemesDir(userThemesDir), targetApp(targetApp)
 {
     scanBuiltins();
     scanUserThemes();
@@ -64,8 +64,13 @@ QString ThemeRepository::saveUserTheme(QJsonObject themeJson)
         const QString uuid = QUuid::createUuid().toString(QUuid::WithoutBraces);
         id = "user/" + uuid;
         metaObj["id"] = id;
-        themeJson["meta"] = metaObj;
     }
+
+    // Always stamp targetApp so saved themes are always identifiable
+    if (metaObj["targetApp"].toString().isEmpty())
+        metaObj["targetApp"] = targetApp;
+
+    themeJson["meta"] = metaObj;
 
     // Extract uuid from "user/<uuid>"
     const QString uuid = id.mid(5); // skip "user/"
@@ -100,11 +105,23 @@ bool ThemeRepository::deleteUserTheme(const QString &themeId)
     return false;
 }
 
-QString ThemeRepository::importThemeFromFile(const QString &filePath)
+QString ThemeRepository::importThemeFromFile(const QString &filePath, QString *errorMessage)
 {
     QJsonObject json = readJsonFile(filePath);
-    if (json.isEmpty())
+    if (json.isEmpty()) {
+        if (errorMessage)
+            *errorMessage = QObject::tr("The file could not be read or is not valid JSON.");
         return { };
+    }
+
+    // Check that the theme targets the correct application
+    const auto metaIn = json["meta"].toObject();
+    const QString themeTargetApp = metaIn["targetApp"].toString();
+    if (!themeTargetApp.isEmpty() && themeTargetApp != targetApp) {
+        if (errorMessage)
+            *errorMessage = QObject::tr("This theme is for %1, not %2.").arg(themeTargetApp, targetApp);
+        return { };
+    }
 
     // Force a new user id regardless of what the file contains
     auto metaObj = json["meta"].toObject();
@@ -181,7 +198,9 @@ ThemeMeta ThemeRepository::extractMeta(const QJsonObject &json)
     return ThemeMeta {
         meta["id"].toString(),
         meta["displayName"].toString(),
-        (meta["variant"].toString() == "light") ? ThemeVariant::Light : ThemeVariant::Dark
+        (meta["variant"].toString() == "light") ? ThemeVariant::Light : ThemeVariant::Dark,
+        meta["targetApp"].toString(),
+        meta["version"].toString()
     };
 }
 

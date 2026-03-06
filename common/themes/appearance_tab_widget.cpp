@@ -264,10 +264,13 @@ void AppearanceTabWidget::importTheme()
     if (path.isEmpty() || !repository)
         return;
 
-    const QString id = repository->importThemeFromFile(path);
+    QString errorMessage;
+    const QString id = repository->importThemeFromFile(path, &errorMessage);
     if (id.isEmpty()) {
-        QMessageBox::warning(this, tr("Import failed"),
-                             tr("Could not import theme from:\n%1").arg(path));
+        const QString detail = errorMessage.isEmpty()
+                ? tr("Could not import theme from:\n%1").arg(path)
+                : tr("Could not import theme from:\n%1\n\n%2").arg(path, errorMessage);
+        QMessageBox::warning(this, tr("Import failed"), detail);
         return;
     }
 

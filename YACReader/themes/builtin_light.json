@@ -19,7 +19,9 @@
     "meta": {
         "displayName": "Default Light",
         "id": "builtin/light",
-        "variant": "light"
+        "targetApp": "YACReader",
+        "variant": "light",
+        "version": "10.0.0"
     },
     "shortcutsIcons": {
         "iconColor": "#606060"

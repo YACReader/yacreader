@@ -19,7 +19,9 @@
     "meta": {
         "displayName": "Default Classic",
         "id": "builtin/classic",
-        "variant": "dark"
+        "targetApp": "YACReader",
+        "variant": "dark",
+        "version": "10.0.0"
     },
     "shortcutsIcons": {
         "iconColor": "#404040"
