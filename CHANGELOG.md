@@ -7,6 +7,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReader
 * Add support for continuous scroll mode.
 * Fix the translator.
+* Add Lanczos interpolation for image scaling. You can control the method used via the settings under `Image adjustments`.
 
 ### All GUI Apps
 * Migrate Flow implementation from OpenGL to QRhi. This is a full new implementation with better performance and compatibility with operating systems and hardware.
@@ -131,7 +132,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReaderLibraryServer
 * Add `rescan-xml-info` command.
-* Improved API to provide better integration with the clients (Android 1.4.0 and iOS 3.29.0). 
+* Improved API to provide better integration with the clients (Android 1.4.0 and iOS 3.29.0).
 
 ### All Apps
 * New universal builds for macos.
