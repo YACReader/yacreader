@@ -21,8 +21,11 @@ public:
 
     QJsonObject currentParams() const { return params; }
 
+    void updateSavedId(const QString &id);
+
 signals:
     void themeJsonChanged(const QJsonObject &params);
+    void saveToLibraryRequested(const QJsonObject &json);
 
 private:
     void populate(QTreeWidgetItem *parent, const QJsonObject &obj, const QStringList &path);

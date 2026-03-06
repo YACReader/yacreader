@@ -189,6 +189,22 @@ AppearanceTabWidget::AppearanceTabWidget(
             themeEditor->setAttribute(Qt::WA_DeleteOnClose);
             connect(themeEditor, &ThemeEditorDialog::themeJsonChanged, this,
                     [this](const QJsonObject &json) { this->applyTheme(json); });
+            connect(themeEditor, &ThemeEditorDialog::saveToLibraryRequested, this,
+                    [this](const QJsonObject &json) {
+                        if (!this->repository)
+                            return;
+                        const QString id = this->repository->saveUserTheme(json);
+                        this->repopulateCombos();
+                        const bool isLight = (json["meta"].toObject()["variant"].toString() == "light");
+                        if (isLight)
+                            selectInCombo(this->lightCombo, id);
+                        else
+                            selectInCombo(this->darkCombo, id);
+                        if (this->config && this->config->selection().mode == ThemeMode::ForcedTheme)
+                            selectInCombo(this->customCombo, id);
+                        if (this->themeEditor)
+                            this->themeEditor->updateSavedId(id);
+                    });
         }
         themeEditor->show();
         themeEditor->raise();

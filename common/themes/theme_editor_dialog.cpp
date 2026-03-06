@@ -150,14 +150,19 @@ ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &params, QWidget *parent)
     });
 
     // --- bottom buttons ---
-    auto *saveBtn = new QPushButton(tr("Save to file..."), this);
+    auto *saveLibBtn = new QPushButton(tr("Save and apply"), this);
+    auto *exportBtn = new QPushButton(tr("Export to file..."), this);
     auto *loadBtn = new QPushButton(tr("Load from file..."), this);
     auto *closeBtn = new QPushButton(tr("Close"), this);
-    connect(saveBtn, &QPushButton::clicked, this, &ThemeEditorDialog::saveToFile);
+    connect(saveLibBtn, &QPushButton::clicked, this, [this]() {
+        emit saveToLibraryRequested(this->params);
+    });
+    connect(exportBtn, &QPushButton::clicked, this, &ThemeEditorDialog::saveToFile);
     connect(loadBtn, &QPushButton::clicked, this, &ThemeEditorDialog::loadFromFile);
     connect(closeBtn, &QPushButton::clicked, this, &QDialog::close);
     auto *buttons = new QHBoxLayout();
-    buttons->addWidget(saveBtn);
+    buttons->addWidget(saveLibBtn);
+    buttons->addWidget(exportBtn);
     buttons->addWidget(loadBtn);
     buttons->addStretch();
     buttons->addWidget(closeBtn);
@@ -371,6 +376,14 @@ void ThemeEditorDialog::syncMetaFromParams()
     nameEdit->setText(meta["displayName"].toString());
     const QString variant = meta["variant"].toString("dark");
     variantCombo->setCurrentIndex(variant == "light" ? 0 : 1);
+}
+
+void ThemeEditorDialog::updateSavedId(const QString &id)
+{
+    auto meta = params["meta"].toObject();
+    meta["id"] = id;
+    params["meta"] = meta;
+    idLabel->setText(id);
 }
 
 void ThemeEditorDialog::saveToFile()
