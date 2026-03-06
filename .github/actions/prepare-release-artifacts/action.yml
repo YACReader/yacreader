@@ -1,5 +1,5 @@
 name: Prepare Release Artifacts
-description: Download, flatten, and verify release artifacts for publishing
+description: Download and flatten release artifacts for publishing
 
 runs:
   using: composite
@@ -31,31 +31,3 @@ runs:
         echo "=== Windows installers in staging ==="
         ls -lh staging/YACReader*.exe || echo "No Windows installers found"
 
-    - name: Verify Windows installer signatures
-      shell: bash
-      run: |
-        echo "=== Installing osslsigncode to verify signatures ==="
-        sudo apt-get update
-        sudo apt-get install -y osslsigncode
-
-        echo ""
-        echo "=== Checking signatures on Windows installers ==="
-        for installer in staging/YACReader*.exe; do
-          if [ -f "$installer" ]; then
-            echo "Checking: $(basename $installer)"
-            echo "File size: $(stat -c%s $installer) bytes"
-
-            # Try to extract signature info
-            if osslsigncode verify -in "$installer" 2>&1 | grep -q "Signature verification: ok"; then
-              echo "  ✓ SIGNED - Signature verified successfully"
-              osslsigncode verify -in "$installer" 2>&1 | grep -E "(Signed|Signer|Timestamp)"
-            else
-              echo "  ✗ UNSIGNED or INVALID - No valid signature found"
-              osslsigncode verify -in "$installer" 2>&1 | head -20
-            fi
-            echo ""
-          fi
-        done
-
-        echo "=== Summary ==="
-        echo "Total installers in staging: $(ls staging/YACReader*.exe 2>/dev/null | wc -l)"
