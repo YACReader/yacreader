@@ -6,6 +6,7 @@
 
 #include <QPointer>
 
+class QComboBox;
 class QDialog;
 class QLabel;
 class QLineEdit;
@@ -61,6 +62,8 @@ private:
     YACReaderSpinSliderWidget *gammaS;
 
     QColor currentColor;
+
+    QComboBox *scalingMethodCombo;
 
     QRadioButton *normalMouseModeRadioButton;
     QRadioButton *leftRightNavigationMouseModeRadioButton;

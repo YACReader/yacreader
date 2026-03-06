@@ -10,6 +10,7 @@
 #include <QDate>
 
 #include "yacreader_global_gui.h"
+#include "resize_image.h"
 
 #define CONF_FILE_PATH "."
 #define SLIDE_ASPECT_RATIO 1.585
@@ -117,6 +118,9 @@ public:
 
     MouseMode getMouseMode() { return static_cast<MouseMode>(settings->value(MOUSE_MODE, MouseMode::Normal).toInt()); }
     void setMouseMode(MouseMode mouseMode) { settings->setValue(MOUSE_MODE, static_cast<int>(mouseMode)); }
+
+    ScaleMethod getScalingMethod() { return static_cast<ScaleMethod>(settings->value(SCALING_METHOD, static_cast<int>(ScaleMethod::Lanczos)).toInt()); }
+    void setScalingMethod(ScaleMethod method) { settings->setValue(SCALING_METHOD, static_cast<int>(method)); }
 };
 
 }
