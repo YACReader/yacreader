@@ -514,8 +514,10 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(adjustToFullSizeAction);
     auto fitToPageTBAction = wrappedToolbarAction(fitToPageAction);
     comicToolBar->addAction(fitToPageTBAction);
-
     auto continuousScroollTBAction = wrappedToolbarAction(continuousScrollAction);
+    comicToolBar->addAction(continuousScroollTBAction);
+
+    comicToolBar->addSeparator();
 
     auto fitModes = new QActionGroup(this);
     fitModes->addAction(adjustToWidthTBAction);
@@ -537,7 +539,6 @@ void MainWindowViewer::createToolBars()
     comicToolBar->addAction(wrappedToolbarAction(rightRotationAction));
     comicToolBar->addAction(wrappedToolbarAction(doublePageAction));
     comicToolBar->addAction(wrappedToolbarAction(doubleMangaPageAction));
-    comicToolBar->addAction(continuousScroollTBAction);
 
     comicToolBar->addSeparator();
 
@@ -578,15 +579,17 @@ void MainWindowViewer::createToolBars()
     viewer->addAction(goToPageOnTheLeftAction);
     viewer->addAction(goToPageOnTheRightAction);
     viewer->addAction(goToPageAction);
+    YACReader::addSperator(viewer);
     viewer->addAction(adjustHeightAction);
     viewer->addAction(adjustWidthAction);
     viewer->addAction(adjustToFullSizeAction);
     viewer->addAction(fitToPageAction);
+    viewer->addAction(continuousScrollAction);
+    YACReader::addSperator(viewer);
     viewer->addAction(leftRotationAction);
     viewer->addAction(rightRotationAction);
     viewer->addAction(doublePageAction);
     viewer->addAction(doubleMangaPageAction);
-    viewer->addAction(continuousScrollAction);
     YACReader::addSperator(viewer);
 
     viewer->addAction(showMagnifyingGlassAction);
