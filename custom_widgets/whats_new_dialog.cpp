@@ -42,6 +42,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                    "<span style=\"font-weight:600\">YACReader</span><br/>"
                    "   &#8226; Add support for continuous scroll mode<br/>"
                    "   &#8226; Fix the translator<br/>"
+                   "   &#8226; Add Lanczos interpolation for image scaling. You can control the method used via the settings under <i>Image adjustments</i><br/>"
                    "<br/>"
                    "<span style=\"font-weight:600\">All GUI Apps</span><br/>"
                    "   &#8226; Migrate Flow implementation from OpenGL to QRhi. This is a full new implementation with better performance and compatibility with operating systems and hardware<br/>"
