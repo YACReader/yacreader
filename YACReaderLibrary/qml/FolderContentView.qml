@@ -178,7 +178,7 @@ Rectangle {
                 wrapMode: Text.WordWrap
                 text: name
                 elide: Text.ElideRight
-                color: titleColor
+                color: itemTitleColor
                 font.letterSpacing: fontSpacing
                 font.pointSize: fontSize
                 font.family: fontFamily
@@ -221,7 +221,7 @@ Rectangle {
                     Text {
                         id: continueReadingText
                         text: qsTr("Continue Reading...")
-                        color: continueReadingColor
+                        color: continueReadingTextColor
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.topMargin: 15
@@ -297,7 +297,7 @@ Rectangle {
                                     wrapMode: Text.WordWrap
                                     text: readable_title
                                     elide: Text.ElideRight
-                                    color: titleColor
+                                    color: itemTitleColor
                                     font.letterSpacing: fontSpacing
                                     font.pointSize: fontSize
                                     font.family: fontFamily

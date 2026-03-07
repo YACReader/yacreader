@@ -269,22 +269,22 @@ void FolderContentView::applyTheme(const Theme &theme)
 
     // Continue reading section colors
     ctxt->setContextProperty("continueReadingBackgroundColor", giv.continueReadingBackgroundColor);
-    ctxt->setContextProperty("continueReadingColor", giv.continueReadingColor);
+    ctxt->setContextProperty("continueReadingTextColor", giv.continueReadingTextColor);
 
     // Grid colors
     ctxt->setContextProperty("backgroundColor", giv.backgroundColor);
     ctxt->setContextProperty("cellColor", giv.cellColor);
-    ctxt->setContextProperty("selectedColor", giv.selectedColor);
-    ctxt->setContextProperty("selectedBorderColor", giv.selectedBorderColor);
+    ctxt->setContextProperty("cellSelectedColor", giv.cellSelectedColor);
+    ctxt->setContextProperty("cellSelectedBorderColor", giv.cellSelectedBorderColor);
     ctxt->setContextProperty("borderColor", giv.borderColor);
-    ctxt->setContextProperty("titleColor", giv.titleColor);
-    ctxt->setContextProperty("textColor", giv.textColor);
+    ctxt->setContextProperty("itemTitleColor", giv.itemTitleColor);
+    ctxt->setContextProperty("itemDetailsColor", giv.itemDetailsColor);
     ctxt->setContextProperty("dropShadow", QVariant(giv.showDropShadow));
 
     // Info panel colors
     ctxt->setContextProperty("infoBackgroundColor", giv.infoBackgroundColor);
+    ctxt->setContextProperty("infoMetadataTextColor", giv.infoMetadataTextColor);
     ctxt->setContextProperty("infoTextColor", giv.infoTextColor);
-    ctxt->setContextProperty("infoTitleColor", giv.infoTitleColor);
 
     // Rating and favorite colors
     ctxt->setContextProperty("ratingUnselectedColor", giv.ratingUnselectedColor);

@@ -239,8 +239,8 @@ void InfoComicsView::applyTheme(const Theme &theme)
     ctxt->setContextProperty("topShadow", svgUrl(giv.topShadow));
     ctxt->setContextProperty("infoShadow", svgUrl(giv.infoShadow));
     ctxt->setContextProperty("infoIndicator", svgUrl(giv.infoIndicator));
+    ctxt->setContextProperty("infoMetadataTextColor", giv.infoMetadataTextColor);
     ctxt->setContextProperty("infoTextColor", giv.infoTextColor);
-    ctxt->setContextProperty("infoTitleColor", giv.infoTitleColor);
 
     // Rating and favorite colors
     ctxt->setContextProperty("ratingUnselectedColor", giv.ratingUnselectedColor);

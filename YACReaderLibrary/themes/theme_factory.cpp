@@ -143,19 +143,19 @@ struct GridAndInfoViewParams {
     QColor backgroundColor;
     QColor cellColor;
     QColor cellColorWithBackground;
-    QColor selectedColor;
-    QColor selectedBorderColor;
+    QColor cellSelectedColor;
+    QColor cellSelectedBorderColor;
     QColor borderColor;
-    QColor titleColor;
-    QColor textColor;
+    QColor itemTitleColor;
+    QColor itemDetailsColor;
     bool showDropShadow;
 
     // Info panel colors
     QColor infoBackgroundColor;
     QColor infoBorderColor;
     QColor infoShadowColor;
+    QColor infoMetadataTextColor;
     QColor infoTextColor;
-    QColor infoTitleColor;
 
     // Rating and favorite colors
     QColor ratingUnselectedColor;
@@ -170,7 +170,7 @@ struct GridAndInfoViewParams {
 
     // Continue reading section (FolderContentView)
     QColor continueReadingBackgroundColor;
-    QColor continueReadingColor;
+    QColor continueReadingTextColor;
 
     // Blur overlay background (FlowView always, GridView when background image enabled)
     QColor backgroundBlurOverlayColor;
@@ -520,18 +520,18 @@ Theme makeTheme(const ThemeParams &params)
     theme.gridAndInfoView.backgroundColor = giv.backgroundColor;
     theme.gridAndInfoView.cellColor = giv.cellColor;
     theme.gridAndInfoView.cellColorWithBackground = giv.cellColorWithBackground;
-    theme.gridAndInfoView.selectedColor = giv.selectedColor;
-    theme.gridAndInfoView.selectedBorderColor = giv.selectedBorderColor;
+    theme.gridAndInfoView.cellSelectedColor = giv.cellSelectedColor;
+    theme.gridAndInfoView.cellSelectedBorderColor = giv.cellSelectedBorderColor;
     theme.gridAndInfoView.borderColor = giv.borderColor;
-    theme.gridAndInfoView.titleColor = giv.titleColor;
-    theme.gridAndInfoView.textColor = giv.textColor;
+    theme.gridAndInfoView.itemTitleColor = giv.itemTitleColor;
+    theme.gridAndInfoView.itemDetailsColor = giv.itemDetailsColor;
     theme.gridAndInfoView.showDropShadow = giv.showDropShadow;
     theme.gridAndInfoView.infoBackgroundColor = giv.infoBackgroundColor;
     theme.gridAndInfoView.topShadow = recoloredSvgToThemeFile(":/qml/info-top-shadow.svg", giv.infoBackgroundColor, giv.infoBorderColor, giv.infoShadowColor, params.meta.id);
     theme.gridAndInfoView.infoShadow = recoloredSvgToThemeFile(":/qml/info-shadow.svg", giv.infoBackgroundColor, giv.infoBorderColor, giv.infoShadowColor, params.meta.id);
     theme.gridAndInfoView.infoIndicator = recoloredSvgToThemeFile(":/qml/info-indicator.svg", giv.infoBackgroundColor, giv.infoBorderColor, giv.infoShadowColor, params.meta.id);
+    theme.gridAndInfoView.infoMetadataTextColor = giv.infoMetadataTextColor;
     theme.gridAndInfoView.infoTextColor = giv.infoTextColor;
-    theme.gridAndInfoView.infoTitleColor = giv.infoTitleColor;
     theme.gridAndInfoView.ratingUnselectedColor = giv.ratingUnselectedColor;
     theme.gridAndInfoView.ratingSelectedColor = giv.ratingSelectedColor;
     theme.gridAndInfoView.favUncheckedColor = giv.favUncheckedColor;
@@ -540,7 +540,7 @@ Theme makeTheme(const ThemeParams &params)
     theme.gridAndInfoView.readTickCheckedColor = giv.readTickCheckedColor;
     theme.gridAndInfoView.currentComicBackgroundColor = giv.currentComicBackgroundColor;
     theme.gridAndInfoView.continueReadingBackgroundColor = giv.continueReadingBackgroundColor;
-    theme.gridAndInfoView.continueReadingColor = giv.continueReadingColor;
+    theme.gridAndInfoView.continueReadingTextColor = giv.continueReadingTextColor;
     theme.gridAndInfoView.backgroundBlurOverlayColor = giv.backgroundBlurOverlayColor;
     theme.gridAndInfoView.newItemColor = giv.newItemColor;
     theme.gridAndInfoView.buttonColor = giv.buttonColor;
@@ -1114,18 +1114,18 @@ Theme makeTheme(const QJsonObject &json)
         giv.backgroundColor = colorFromJson(o, "backgroundColor", giv.backgroundColor);
         giv.cellColor = colorFromJson(o, "cellColor", giv.cellColor);
         giv.cellColorWithBackground = colorFromJson(o, "cellColorWithBackground", giv.cellColorWithBackground);
-        giv.selectedColor = colorFromJson(o, "selectedColor", giv.selectedColor);
-        giv.selectedBorderColor = colorFromJson(o, "selectedBorderColor", giv.selectedBorderColor);
+        giv.cellSelectedColor = colorFromJson(o, "cellSelectedColor", giv.cellSelectedColor);
+        giv.cellSelectedBorderColor = colorFromJson(o, "cellSelectedBorderColor", giv.cellSelectedBorderColor);
         giv.borderColor = colorFromJson(o, "borderColor", giv.borderColor);
-        giv.titleColor = colorFromJson(o, "titleColor", giv.titleColor);
-        giv.textColor = colorFromJson(o, "textColor", giv.textColor);
+        giv.itemTitleColor = colorFromJson(o, "itemTitleColor", giv.itemTitleColor);
+        giv.itemDetailsColor = colorFromJson(o, "itemDetailsColor", giv.itemDetailsColor);
         if (o.contains("showDropShadow"))
             giv.showDropShadow = o["showDropShadow"].toBool(giv.showDropShadow);
         giv.infoBackgroundColor = colorFromJson(o, "infoBackgroundColor", giv.infoBackgroundColor);
         giv.infoBorderColor = colorFromJson(o, "infoBorderColor", giv.infoBorderColor);
         giv.infoShadowColor = colorFromJson(o, "infoShadowColor", giv.infoShadowColor);
+        giv.infoMetadataTextColor = colorFromJson(o, "infoMetadataTextColor", giv.infoMetadataTextColor);
         giv.infoTextColor = colorFromJson(o, "infoTextColor", giv.infoTextColor);
-        giv.infoTitleColor = colorFromJson(o, "infoTitleColor", giv.infoTitleColor);
         giv.ratingUnselectedColor = colorFromJson(o, "ratingUnselectedColor", giv.ratingUnselectedColor);
         giv.ratingSelectedColor = colorFromJson(o, "ratingSelectedColor", giv.ratingSelectedColor);
         giv.favUncheckedColor = colorFromJson(o, "favUncheckedColor", giv.favUncheckedColor);
@@ -1134,7 +1134,7 @@ Theme makeTheme(const QJsonObject &json)
         giv.readTickCheckedColor = colorFromJson(o, "readTickCheckedColor", giv.readTickCheckedColor);
         giv.currentComicBackgroundColor = colorFromJson(o, "currentComicBackgroundColor", giv.currentComicBackgroundColor);
         giv.continueReadingBackgroundColor = colorFromJson(o, "continueReadingBackgroundColor", giv.continueReadingBackgroundColor);
-        giv.continueReadingColor = colorFromJson(o, "continueReadingColor", giv.continueReadingColor);
+        giv.continueReadingTextColor = colorFromJson(o, "continueReadingTextColor", giv.continueReadingTextColor);
         giv.backgroundBlurOverlayColor = colorFromJson(o, "backgroundBlurOverlayColor", giv.backgroundBlurOverlayColor);
         giv.newItemColor = colorFromJson(o, "newItemColor", giv.newItemColor);
         giv.buttonColor = colorFromJson(o, "buttonColor", giv.buttonColor);

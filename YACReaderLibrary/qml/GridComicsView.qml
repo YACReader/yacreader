@@ -108,8 +108,8 @@ SplitView {
                     width: itemWidth
                     height: itemHeight
 
-                    color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedColor:cellColor;
-                    //border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedBorderColor:borderColor;
+                    color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?cellSelectedColor:cellColor;
+                    //border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?cellSelectedBorderColor:borderColor;
                     //border.width: ?1:0;
                     anchors.horizontalCenter: parent.horizontalCenter
 
@@ -143,7 +143,7 @@ SplitView {
                             rightMargin  : commonBorder ? -commonBorderWidth : -rBorderwidth
                         }
 
-                        border.color: selectedBorderColor
+                        border.color: cellSelectedBorderColor
                         border.width: 3
 
                         opacity: (dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index) ? 1 : 0
@@ -330,7 +330,7 @@ SplitView {
                     wrapMode: Text.WordWrap
                     text: title
                     elide: Text.ElideRight
-                    color: titleColor
+                    color: itemTitleColor
                     clip: true
                     font.letterSpacing: fontSpacing
                     font.pointSize: fontSize
@@ -341,7 +341,7 @@ SplitView {
                 Text {
                     anchors {bottom: realCell.bottom; left: realCell.left; margins: 4}
                     text: number?"<b>#</b>"+number:""
-                    color: textColor
+                    color: itemDetailsColor
                     font.letterSpacing: fontSpacing
                     font.pointSize: fontSize
                     font.family: fontFamily
@@ -352,7 +352,7 @@ SplitView {
                     id: pageImage
                     anchors {bottom: realCell.bottom; right: realCell.right; bottomMargin: 6; rightMargin: 4; leftMargin: 4}
                     source: "page.svg"
-                    color: textColor
+                    color: itemDetailsColor
                     width: 8
                     height: 10
                 }
@@ -362,7 +362,7 @@ SplitView {
                     id: pages
                     anchors {bottom: realCell.bottom; right: pageImage.left; margins: 4}
                     text: has_been_opened?current_page+"/"+num_pages:num_pages
-                    color: textColor
+                    color: itemDetailsColor
                     font.letterSpacing: fontSpacing
                     font.pointSize: fontSize
                     font.family: fontFamily
@@ -373,7 +373,7 @@ SplitView {
                     id: ratingImage
                     anchors {bottom: realCell.bottom; right: pageImage.left; bottomMargin: 6.5; rightMargin: Math.floor(pages.width)+12}
                     source: "star.svg"
-                    color: textColor
+                    color: itemDetailsColor
                     width: 11
                     height: 11
 
@@ -423,7 +423,7 @@ SplitView {
                     id: comicRating
                     anchors {bottom: realCell.bottom; right: ratingImage.left; margins: 4}
                     text: rating>0?rating:"-"
-                    color: textColor
+                    color: itemDetailsColor
                 }
             }
         }
@@ -511,7 +511,7 @@ SplitView {
 
                                 id: currentComicInfoTitleView
 
-                                color: infoTitleColor
+                                color: infoTextColor
                                 font.family: "Arial"
                                 font.bold: true
                                 font.pixelSize: 21
@@ -531,7 +531,7 @@ SplitView {
                                                                     family: "Arial",
                                                                     pixelSize: 14
                                                                 });
-                                property string infoFlowTextColor: infoTextColor
+                                property string infoFlowTextColor: infoMetadataTextColor
 
                                 Text {
                                     id: currentComicInfoVolume
@@ -643,7 +643,7 @@ SplitView {
                                     width: synopsisScroller.width
 
                                     id: currentComicInfoSinopsis
-                                    color: infoTitleColor
+                                    color: infoTextColor
                                     font.family: "Arial"
                                     font.pixelSize: 14
                                     wrapMode: Text.WordWrap

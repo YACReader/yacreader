@@ -215,11 +215,11 @@ struct GridAndInfoViewTheme {
     QColor backgroundColor;
     QColor cellColor;
     QColor cellColorWithBackground;
-    QColor selectedColor;
-    QColor selectedBorderColor;
+    QColor cellSelectedColor;
+    QColor cellSelectedBorderColor;
     QColor borderColor;
-    QColor titleColor;
-    QColor textColor;
+    QColor itemTitleColor;
+    QColor itemDetailsColor;
     bool showDropShadow;
 
     // Info panel colors
@@ -227,8 +227,8 @@ struct GridAndInfoViewTheme {
     QString topShadow; // Recolored SVG path
     QString infoShadow; // Recolored SVG path
     QString infoIndicator; // Recolored SVG path
+    QColor infoMetadataTextColor;
     QColor infoTextColor;
-    QColor infoTitleColor;
 
     // Rating and favorite colors
     QColor ratingUnselectedColor;
@@ -243,7 +243,7 @@ struct GridAndInfoViewTheme {
 
     // Continue reading section (FolderContentView)
     QColor continueReadingBackgroundColor;
-    QColor continueReadingColor;
+    QColor continueReadingTextColor;
 
     // Blur overlay background (FlowView always, GridView when background image enabled)
     QColor backgroundBlurOverlayColor;
