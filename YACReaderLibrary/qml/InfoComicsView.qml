@@ -94,7 +94,7 @@ Rectangle {
                     implicitWidth: 12
                     implicitHeight: 26
                     Rectangle {
-                        color: "#424246"
+                        color: infoScrollbarColor
                         anchors.fill: parent
                         anchors.topMargin: 6
                         anchors.leftMargin: 5

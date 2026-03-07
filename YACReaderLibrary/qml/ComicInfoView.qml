@@ -260,7 +260,7 @@ Rectangle {
                 Text {
                     id: showInComicVine
                     font: mainContainer.infoFont
-                    color: "#ffcc00"
+                    color: themeLinkColor
                     text: "Show in Comic Vine"
                     visible: comicInfo ? comicInfo.comicVineID ?? false : false
                     MouseArea {
@@ -284,12 +284,7 @@ Rectangle {
                 font.pixelSize: 15
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignJustify
-                text: '<html><head><style>
-                        a {
-                            color: #FFCB00;
-                            text-decoration:none;
-                        }
-                    </style></head><body>' + (comicInfo ? comicInfo.synopsis ?? "" : "") + '</body></html>'
+                text: '<html><head><style>a { color: ' + themeLinkColorStr + '; text-decoration: none; }</style></head><body>' + (comicInfo ? comicInfo.synopsis ?? "" : "") + '</body></html>'
                 visible: comicInfo ? comicInfo.synopsis ?? false : false
                 textFormat: Text.RichText
             }

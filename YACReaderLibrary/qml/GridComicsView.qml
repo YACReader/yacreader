@@ -295,7 +295,7 @@ SplitView {
                     height: 10
                     radius: 5
                     anchors { left: coverElement.left; top: coverElement.top; topMargin: 5; leftMargin: 5; }
-                    color: "#FFFFCC00"
+                    color: newItemColor
                     visible: (((new Date() / 1000) - added_date) < recent_range) && show_recent
                 }
 
@@ -306,7 +306,7 @@ SplitView {
                     anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
                     color: "transparent"
                     border {
-                        color: "#20FFFFFF"
+                        color: comicCoverBorderColor
                         width: 1
                     }
                 }
@@ -481,7 +481,7 @@ SplitView {
                             layer.enabled: showDropShadow
                             layer.effect: MultiEffect {
                                 shadowEnabled: true
-                                shadowColor: "#FF000000"
+                                shadowColor: currentComicCoverShadowColor
                                 shadowBlur: 1.0
                                 blurMax: 8
                                 shadowHorizontalOffset: 0
@@ -608,7 +608,7 @@ SplitView {
                                 Text {
                                     id: currentComicInfoShowInComicVine
                                     font: currentComicDetailsFlowView.infoFont
-                                    color: "#ffcc00"
+                                    color: themeLinkColor
                                     text: "Show in Comic Vine"
                                     visible: currentComicInfo.comicVineID ? true : false
                                     MouseArea {
@@ -648,12 +648,7 @@ SplitView {
                                     font.pixelSize: 14
                                     wrapMode: Text.WordWrap
 
-                                    text: '<html><head><style>
-                                a {
-                                    color: #FFCB00;
-                                    text-decoration:none;
-                                }
-                                </style></head><body>' + currentComicInfo.synopsis ?? "" + '</body></html>'
+                                    text: '<html><head><style>a { color: ' + themeLinkColorStr + '; text-decoration: none; }</style></head><body>' + (currentComicInfo.synopsis ?? "") + '</body></html>'
                                     visible: currentComicInfo.synopsis ?? false
                                                                           textFormat: Text.RichText
                                 }
@@ -673,9 +668,9 @@ SplitView {
                                 implicitWidth: 100
                                 implicitHeight: 30
                                 border.width: readButton.activeFocus ? 2 : 1
-                                border.color: "#FFCC00"
+                                border.color: buttonColor
                                 radius: height / 2
-                                color: "#FFCC00"
+                                color: buttonColor
                             }
 
                             contentItem: Text {
@@ -685,14 +680,14 @@ SplitView {
                                 font.family: "Arial"
                                 font.pointSize: 12
                                 font.bold: true
-                                color: "white"
+                                color: buttonTextColor
                                 text: readButton.text
                             }
 
                             layer.enabled: showDropShadow && !readButton.pressed
                             layer.effect: MultiEffect {
                                 shadowEnabled: true
-                                shadowColor: "#AA000000"
+                                shadowColor: buttonShadowColor
                                 shadowBlur: 1.0
                                 blurMax: 8
                                 shadowHorizontalOffset: 0
@@ -782,13 +777,13 @@ SplitView {
                         implicitWidth: 12
                         implicitHeight: 26
                         Rectangle {
-                            color: "#88424242"
+                            color: scrollbarColor
                             anchors.fill: parent
                             anchors.topMargin: 6
                             anchors.leftMargin: 3
                             anchors.rightMargin: 2
                             anchors.bottomMargin: 6
-                            border.color: "#AA313131"
+                            border.color: scrollbarBorderColor
                             border.width: 1
                             radius: 3.5
                         }
@@ -911,7 +906,7 @@ SplitView {
                     implicitWidth: 12
                     implicitHeight: 26
                     Rectangle {
-                        color: "#424246"
+                        color: infoScrollbarColor
                         anchors.fill: parent
                         anchors.topMargin: 6
                         anchors.leftMargin: 5

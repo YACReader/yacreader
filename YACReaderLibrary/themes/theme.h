@@ -247,6 +247,33 @@ struct GridAndInfoViewTheme {
 
     // Blur overlay background (FlowView always, GridView when background image enabled)
     QColor backgroundBlurOverlayColor;
+
+    // New item indicator dot (cover grid and folder grid)
+    QColor newItemColor;
+
+    // Button colors
+    QColor buttonColor;
+    QColor buttonTextColor;
+    QColor linkColor;
+
+    // Scrollbar colors — content grid (on backgroundColor)
+    QColor scrollbarColor;
+    QColor scrollbarBorderColor;
+
+    // Scrollbar color — info panel (on infoBackgroundColor)
+    QColor infoScrollbarColor;
+
+    // Cover overlay / border effects
+    QColor comicCoverBorderColor;
+    QColor folderCoverBorderColor;
+    QColor placeholderFolder1Color;
+    QColor placeholderFolder1BorderColor;
+    QColor placeholderFolder2Color;
+    QColor placeholderFolder2BorderColor;
+
+    // Drop shadow effects
+    QColor currentComicCoverShadowColor;
+    QColor buttonShadowColor;
 };
 
 struct MainToolbarThemeTemplates {

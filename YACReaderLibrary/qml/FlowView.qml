@@ -171,7 +171,7 @@ Rectangle {
                     anchors.centerIn: coverElement
                     color: "transparent"
                     border {
-                        color: "#30FFFFFF"
+                        color: comicCoverBorderColor
                         width: 1
                     }
                 }

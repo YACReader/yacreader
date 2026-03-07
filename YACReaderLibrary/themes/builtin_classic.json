@@ -65,7 +65,22 @@
         "selectedColor": "#121212",
         "showDropShadow": true,
         "textColor": "#a8a8a8",
-        "titleColor": "#ffffff"
+        "titleColor": "#ffffff",
+        "newItemColor": "#ffffcc00",
+        "buttonColor": "#ffcc00",
+        "buttonTextColor": "#ffffff",
+        "linkColor": "#ffcc00",
+        "scrollbarColor": "#88424242",
+        "scrollbarBorderColor": "#aa313131",
+        "infoScrollbarColor": "#ff424246",
+        "comicCoverBorderColor": "#30ffffff",
+        "folderCoverBorderColor": "#20ffffff",
+        "placeholderFolder1Color": "#20000000",
+        "placeholderFolder1BorderColor": "#20ffffff",
+        "placeholderFolder2Color": "#88000000",
+        "placeholderFolder2BorderColor": "#20ffffff",
+        "currentComicCoverShadowColor": "#ff000000",
+        "buttonShadowColor": "#aa000000"
     },
     "helpAboutDialog": {
         "headingColor": "#302f2d",

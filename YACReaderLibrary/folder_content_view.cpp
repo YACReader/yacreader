@@ -294,6 +294,17 @@ void FolderContentView::applyTheme(const Theme &theme)
     ctxt->setContextProperty("readTickUncheckedColor", giv.readTickUncheckedColor);
     ctxt->setContextProperty("readTickCheckedColor", giv.readTickCheckedColor);
 
+    // New item indicator, cover borders, placeholder pages, scrollbar
+    ctxt->setContextProperty("newItemColor", giv.newItemColor);
+    ctxt->setContextProperty("scrollbarColor", giv.scrollbarColor);
+    ctxt->setContextProperty("scrollbarBorderColor", giv.scrollbarBorderColor);
+    ctxt->setContextProperty("comicCoverBorderColor", giv.comicCoverBorderColor);
+    ctxt->setContextProperty("folderCoverBorderColor", giv.folderCoverBorderColor);
+    ctxt->setContextProperty("placeholderFolder1Color", giv.placeholderFolder1Color);
+    ctxt->setContextProperty("placeholderFolder1BorderColor", giv.placeholderFolder1BorderColor);
+    ctxt->setContextProperty("placeholderFolder2Color", giv.placeholderFolder2Color);
+    ctxt->setContextProperty("placeholderFolder2BorderColor", giv.placeholderFolder2BorderColor);
+
     // Update zoom slider icons
     if (smallZoomLabel) {
         smallZoomLabel->setPixmap(theme.comicsViewToolbar.smallGridZoomIcon.pixmap(18, 18));

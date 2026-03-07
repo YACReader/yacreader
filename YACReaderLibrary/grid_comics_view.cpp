@@ -517,6 +517,19 @@ void GridComicsView::applyTheme(const Theme &theme)
     // Current comic banner
     ctxt->setContextProperty("currentComicBackgroundColor", giv.currentComicBackgroundColor);
 
+    // New item indicator, button colors, links, scrollbars, cover borders, shadows
+    ctxt->setContextProperty("newItemColor", giv.newItemColor);
+    ctxt->setContextProperty("buttonColor", giv.buttonColor);
+    ctxt->setContextProperty("buttonTextColor", giv.buttonTextColor);
+    ctxt->setContextProperty("themeLinkColor", giv.linkColor);
+    ctxt->setContextProperty("themeLinkColorStr", giv.linkColor.name());
+    ctxt->setContextProperty("scrollbarColor", giv.scrollbarColor);
+    ctxt->setContextProperty("scrollbarBorderColor", giv.scrollbarBorderColor);
+    ctxt->setContextProperty("infoScrollbarColor", giv.infoScrollbarColor);
+    ctxt->setContextProperty("comicCoverBorderColor", giv.comicCoverBorderColor);
+    ctxt->setContextProperty("currentComicCoverShadowColor", giv.currentComicCoverShadowColor);
+    ctxt->setContextProperty("buttonShadowColor", giv.buttonShadowColor);
+
     // Update background config to apply theme cell colors
     updateBackgroundConfig();
 

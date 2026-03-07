@@ -252,4 +252,10 @@ void InfoComicsView::applyTheme(const Theme &theme)
 
     ctxt->setContextProperty("showDropShadow", QVariant(giv.showDropShadow));
     ctxt->setContextProperty("backgroundBlurOverlayColor", giv.backgroundBlurOverlayColor);
+
+    // Info panel scrollbar, comic cover border, links
+    ctxt->setContextProperty("infoScrollbarColor", giv.infoScrollbarColor);
+    ctxt->setContextProperty("comicCoverBorderColor", giv.comicCoverBorderColor);
+    ctxt->setContextProperty("themeLinkColor", giv.linkColor);
+    ctxt->setContextProperty("themeLinkColorStr", giv.linkColor.name());
 }

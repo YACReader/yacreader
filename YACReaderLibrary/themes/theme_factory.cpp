@@ -174,6 +174,33 @@ struct GridAndInfoViewParams {
 
     // Blur overlay background (FlowView always, GridView when background image enabled)
     QColor backgroundBlurOverlayColor;
+
+    // New item indicator dot
+    QColor newItemColor;
+
+    // Button colors
+    QColor buttonColor;
+    QColor buttonTextColor;
+    QColor linkColor;
+
+    // Scrollbar colors — content grid
+    QColor scrollbarColor;
+    QColor scrollbarBorderColor;
+
+    // Scrollbar color — info panel
+    QColor infoScrollbarColor;
+
+    // Cover overlay / border effects
+    QColor comicCoverBorderColor;
+    QColor folderCoverBorderColor;
+    QColor placeholderFolder1Color;
+    QColor placeholderFolder1BorderColor;
+    QColor placeholderFolder2Color;
+    QColor placeholderFolder2BorderColor;
+
+    // Drop shadow effects
+    QColor currentComicCoverShadowColor;
+    QColor buttonShadowColor;
 };
 
 struct MainToolbarParams {
@@ -515,6 +542,21 @@ Theme makeTheme(const ThemeParams &params)
     theme.gridAndInfoView.continueReadingBackgroundColor = giv.continueReadingBackgroundColor;
     theme.gridAndInfoView.continueReadingColor = giv.continueReadingColor;
     theme.gridAndInfoView.backgroundBlurOverlayColor = giv.backgroundBlurOverlayColor;
+    theme.gridAndInfoView.newItemColor = giv.newItemColor;
+    theme.gridAndInfoView.buttonColor = giv.buttonColor;
+    theme.gridAndInfoView.buttonTextColor = giv.buttonTextColor;
+    theme.gridAndInfoView.linkColor = giv.linkColor;
+    theme.gridAndInfoView.scrollbarColor = giv.scrollbarColor;
+    theme.gridAndInfoView.scrollbarBorderColor = giv.scrollbarBorderColor;
+    theme.gridAndInfoView.infoScrollbarColor = giv.infoScrollbarColor;
+    theme.gridAndInfoView.comicCoverBorderColor = giv.comicCoverBorderColor;
+    theme.gridAndInfoView.folderCoverBorderColor = giv.folderCoverBorderColor;
+    theme.gridAndInfoView.placeholderFolder1Color = giv.placeholderFolder1Color;
+    theme.gridAndInfoView.placeholderFolder1BorderColor = giv.placeholderFolder1BorderColor;
+    theme.gridAndInfoView.placeholderFolder2Color = giv.placeholderFolder2Color;
+    theme.gridAndInfoView.placeholderFolder2BorderColor = giv.placeholderFolder2BorderColor;
+    theme.gridAndInfoView.currentComicCoverShadowColor = giv.currentComicCoverShadowColor;
+    theme.gridAndInfoView.buttonShadowColor = giv.buttonShadowColor;
     // end GridAndInfoView
 
     // MainToolbar
@@ -1094,6 +1136,21 @@ Theme makeTheme(const QJsonObject &json)
         giv.continueReadingBackgroundColor = colorFromJson(o, "continueReadingBackgroundColor", giv.continueReadingBackgroundColor);
         giv.continueReadingColor = colorFromJson(o, "continueReadingColor", giv.continueReadingColor);
         giv.backgroundBlurOverlayColor = colorFromJson(o, "backgroundBlurOverlayColor", giv.backgroundBlurOverlayColor);
+        giv.newItemColor = colorFromJson(o, "newItemColor", giv.newItemColor);
+        giv.buttonColor = colorFromJson(o, "buttonColor", giv.buttonColor);
+        giv.buttonTextColor = colorFromJson(o, "buttonTextColor", giv.buttonTextColor);
+        giv.linkColor = colorFromJson(o, "linkColor", giv.linkColor);
+        giv.scrollbarColor = colorFromJson(o, "scrollbarColor", giv.scrollbarColor);
+        giv.scrollbarBorderColor = colorFromJson(o, "scrollbarBorderColor", giv.scrollbarBorderColor);
+        giv.infoScrollbarColor = colorFromJson(o, "infoScrollbarColor", giv.infoScrollbarColor);
+        giv.comicCoverBorderColor = colorFromJson(o, "comicCoverBorderColor", giv.comicCoverBorderColor);
+        giv.folderCoverBorderColor = colorFromJson(o, "folderCoverBorderColor", giv.folderCoverBorderColor);
+        giv.placeholderFolder1Color = colorFromJson(o, "placeholderFolder1Color", giv.placeholderFolder1Color);
+        giv.placeholderFolder1BorderColor = colorFromJson(o, "placeholderFolder1BorderColor", giv.placeholderFolder1BorderColor);
+        giv.placeholderFolder2Color = colorFromJson(o, "placeholderFolder2Color", giv.placeholderFolder2Color);
+        giv.placeholderFolder2BorderColor = colorFromJson(o, "placeholderFolder2BorderColor", giv.placeholderFolder2BorderColor);
+        giv.currentComicCoverShadowColor = colorFromJson(o, "currentComicCoverShadowColor", giv.currentComicCoverShadowColor);
+        giv.buttonShadowColor = colorFromJson(o, "buttonShadowColor", giv.buttonShadowColor);
     }
 
     if (json.contains("comicsViewToolbar")) {

@@ -84,9 +84,9 @@ Rectangle {
                 height: coverElement.height
                 radius: 10
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
-                color: "#20000000"
+                color: placeholderFolder1Color
                 border {
-                    color: "#20FFFFFF"
+                    color: placeholderFolder1BorderColor
                     width: 1
                 }
             }
@@ -97,9 +97,9 @@ Rectangle {
                 height: coverElement.height
                 radius: 10
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
-                color: "#88000000"
+                color: placeholderFolder2Color
                 border {
-                    color: "#20FFFFFF"
+                    color: placeholderFolder2BorderColor
                     width: 1
                 }
             }
@@ -152,7 +152,7 @@ Rectangle {
                 height: 10
                 radius: 5
                 anchors { left: coverElement.left; top: coverElement.top; topMargin: 10; leftMargin: 10; }
-                color: "#FFFFCC00"
+                color: newItemColor
                 visible: (((new Date() / 1000) - added) < recent_range || ((new Date() / 1000) - updated) < recent_range) && show_recent
             }
 
@@ -164,7 +164,7 @@ Rectangle {
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
                 color: "transparent"
                 border {
-                    color: "#20FFFFFF"
+                    color: folderCoverBorderColor
                     width: 1
                 }
             }
@@ -310,7 +310,7 @@ Rectangle {
                                     anchors.centerIn: coverElement
                                     color: "transparent"
                                     border {
-                                        color: "#30FFFFFF"
+                                        color: comicCoverBorderColor
                                         width: 1
                                     }
                                 }
@@ -433,13 +433,13 @@ Rectangle {
                     implicitWidth: 12
                     implicitHeight: 26
                     Rectangle {
-                        color: "#88424242"
+                        color: scrollbarColor
                         anchors.fill: parent
                         anchors.topMargin: 6
                         anchors.leftMargin: 3
                         anchors.rightMargin: 2
                         anchors.bottomMargin: 6
-                        border.color: "#AA313131"
+                        border.color: scrollbarBorderColor
                         border.width: 1
                         radius: 3.5
                     }
