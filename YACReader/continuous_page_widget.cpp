@@ -118,7 +118,9 @@ void ContinuousPageWidget::paintEvent(QPaintEvent *event)
     }
 
     QPainter painter(this);
-    scaledPageCache.invalidateForWidth(width());
+    const qreal dpr = devicePixelRatioF();
+    const int effectivePixelWidth = std::max(1, qRound(width() * dpr));
+    scaledPageCache.invalidateForWidth(effectivePixelWidth);
 
     QRect visibleRect = event->rect();
     int firstPage = continuousViewModel->pageAtY(visibleRect.top());
@@ -143,7 +145,7 @@ void ContinuousPageWidget::paintEvent(QPaintEvent *event)
 
         const QImage *img = render->bufferedImage(i);
         if (img && !img->isNull()) {
-            const QImage *drawable = scaledImageForPaint(i, img, scaled, width());
+            const QImage *drawable = scaledImageForPaint(i, img, scaled, effectivePixelWidth, dpr);
             if (drawable) {
                 painter.drawImage(pageRect, *drawable);
             }
@@ -164,15 +166,15 @@ void ContinuousPageWidget::resizeEvent(QResizeEvent *event)
     }
 }
 
-const QImage *ContinuousPageWidget::scaledImageForPaint(int pageIndex, const QImage *source, const QSize &targetSize, int effectiveWidth)
+const QImage *ContinuousPageWidget::scaledImageForPaint(int pageIndex, const QImage *source, const QSize &targetSize, int effectiveWidth, qreal devicePixelRatio)
 {
     if (!source || source->isNull() || targetSize.isEmpty()) {
         return nullptr;
     }
 
-    if (source->size() == targetSize) {
-        return source;
-    }
+    const qreal dpr = std::max<qreal>(1.0, devicePixelRatio);
+    const QSize targetPixelSize(std::max(1, qRound(targetSize.width() * dpr)),
+                                std::max(1, qRound(targetSize.height() * dpr)));
 
     scaledPageCache.invalidateForWidth(effectiveWidth);
 
@@ -181,7 +183,7 @@ const QImage *ContinuousPageWidget::scaledImageForPaint(int pageIndex, const QIm
 
     if (it != scaledPageCache.pages.end()) {
         const ScaledPageCacheEntry &entry = it.value();
-        const bool validEntry = entry.sourceCacheKey == sourceKey && entry.sourceSize == source->size() && entry.targetSize == targetSize && !entry.scaledImage.isNull();
+        const bool validEntry = entry.sourceCacheKey == sourceKey && entry.sourceSize == source->size() && entry.targetSize == targetSize && entry.targetPixelSize == targetPixelSize && qFuzzyCompare(entry.targetDevicePixelRatio, dpr) && !entry.scaledImage.isNull();
         if (validEntry) {
             return &it.value().scaledImage;
         }
@@ -191,8 +193,11 @@ const QImage *ContinuousPageWidget::scaledImageForPaint(int pageIndex, const QIm
     entry.sourceCacheKey = sourceKey;
     entry.sourceSize = source->size();
     entry.targetSize = targetSize;
-    entry.scaledImage = scaleImage(*source, targetSize.width(), targetSize.height(),
+    entry.targetPixelSize = targetPixelSize;
+    entry.targetDevicePixelRatio = dpr;
+    entry.scaledImage = scaleImage(*source, targetPixelSize.width(), targetPixelSize.height(),
                                    Configuration::getConfiguration().getScalingMethod());
+    entry.scaledImage.setDevicePixelRatio(dpr);
     scaledPageCache.pages.insert(pageIndex, std::move(entry));
 
     return &scaledPageCache.pages[pageIndex].scaledImage;

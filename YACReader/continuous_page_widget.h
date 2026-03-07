@@ -40,6 +40,8 @@ private:
         qint64 sourceCacheKey = 0;
         QSize sourceSize;
         QSize targetSize;
+        QSize targetPixelSize;
+        qreal targetDevicePixelRatio = 1.0;
         QImage scaledImage;
     };
 
@@ -86,7 +88,7 @@ private:
         }
     };
 
-    const QImage *scaledImageForPaint(int pageIndex, const QImage *source, const QSize &targetSize, int effectiveWidth);
+    const QImage *scaledImageForPaint(int pageIndex, const QImage *source, const QSize &targetSize, int effectiveWidth, qreal devicePixelRatio);
 
     Render *render = nullptr;
     ContinuousViewModel *continuousViewModel = nullptr;

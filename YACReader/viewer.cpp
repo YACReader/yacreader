@@ -896,7 +896,6 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
         const int resultH = static_cast<int>(zoomH * hFactor);
 
         QImage result(resultW, resultH, QImage::Format_RGB32);
-        result.setDevicePixelRatio(devicePixelRatioF());
         result.fill(bgColor);
 
         // zoom region in widget coordinates (centered on cursor)
