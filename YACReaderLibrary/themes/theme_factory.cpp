@@ -101,7 +101,8 @@ struct NavigationTreeParams {
     QColor scrollBackgroundColor;
     QColor scrollHandleColor;
     QColor selectedTextColor;
-    QColor folderIndicatorColor;
+    QColor folderNotCompletedColor;
+    QColor newItemColor;
 
     // Branch indicator icon colors (independent of sidebarIcons.iconColor)
     QColor branchIndicatorColor;
@@ -657,7 +658,8 @@ Theme makeTheme(const ThemeParams &params)
                                                           theme.navigationTree.branchOpenIconPath,
                                                           theme.navigationTree.branchClosedIconSelectedPath,
                                                           theme.navigationTree.branchOpenIconSelectedPath);
-    theme.navigationTree.folderIndicatorColor = nt.folderIndicatorColor;
+    theme.navigationTree.folderNotCompletedColor = nt.folderNotCompletedColor;
+    theme.navigationTree.newItemColor = nt.newItemColor;
 
     // Folder icon — normal and selected states with independent colors
     {
@@ -1032,7 +1034,8 @@ Theme makeTheme(const QJsonObject &json)
         nt.scrollBackgroundColor = colorFromJson(o, "scrollBackgroundColor", nt.scrollBackgroundColor);
         nt.scrollHandleColor = colorFromJson(o, "scrollHandleColor", nt.scrollHandleColor);
         nt.selectedTextColor = colorFromJson(o, "selectedTextColor", nt.selectedTextColor);
-        nt.folderIndicatorColor = colorFromJson(o, "folderIndicatorColor", nt.folderIndicatorColor);
+        nt.folderNotCompletedColor = colorFromJson(o, "folderNotCompletedColor", nt.folderNotCompletedColor);
+        nt.newItemColor = colorFromJson(o, "newItemColor", nt.newItemColor);
         nt.branchIndicatorColor = colorFromJson(o, "branchIndicatorColor", nt.branchIndicatorColor);
         nt.branchIndicatorSelectedColor = colorFromJson(o, "branchIndicatorSelectedColor", nt.branchIndicatorSelectedColor);
         nt.folderIconColor = colorFromJson(o, "folderIconColor", nt.folderIconColor);

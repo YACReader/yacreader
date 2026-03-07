@@ -10,7 +10,6 @@ class YACReaderTreeView : public QTreeView, protected Themable
     Q_OBJECT
 public:
     explicit YACReaderTreeView(QWidget *parent = 0);
-    QColor folderIndicatorColor() const { return theme.navigationTree.folderIndicatorColor; }
 
 private:
     void mousePressEvent(QMouseEvent *event) override;

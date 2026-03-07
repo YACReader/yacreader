@@ -2,6 +2,7 @@
 #define YACREADER_FOLDERS_VIEW_H
 
 #include "yacreader_treeview.h"
+#include "theme.h"
 
 #include <QtWidgets>
 
@@ -10,6 +11,7 @@ class YACReaderFoldersView : public YACReaderTreeView
     Q_OBJECT
 public:
     explicit YACReaderFoldersView(QWidget *parent = nullptr);
+    const NavigationTreeTheme &navigationTreeTheme() const { return theme.navigationTree; }
 
 signals:
     // Drops

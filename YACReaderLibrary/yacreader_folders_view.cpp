@@ -87,15 +87,18 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
     if (opt.state & QStyle::State_MouseOver)
         opt.state |= QStyle::State_Selected;
 
-    // Get indicator color from parent tree view
-    QColor indicatorColor(237, 197, 24); // Default fallback
-    if (auto treeView = qobject_cast<YACReaderTreeView *>(parent())) {
-        indicatorColor = treeView->folderIndicatorColor();
+    // Get indicator colors from the theme via the owning view
+    QColor notCompletedColor(237, 197, 24); // Default fallback
+    QColor newItemDotColor(237, 197, 24); // Default fallback
+    if (auto foldersView = qobject_cast<YACReaderFoldersView *>(parent())) {
+        const auto &nt = foldersView->navigationTreeTheme();
+        notCompletedColor = nt.folderNotCompletedColor;
+        newItemDotColor = nt.newItemColor;
     }
 
     if (!index.data(FolderModel::CompletedRole).toBool()) {
         painter->save();
-        painter->setBrush(QBrush(indicatorColor));
+        painter->setBrush(QBrush(notCompletedColor));
         painter->setPen(QPen(QBrush(), 0));
         painter->drawRect(0, opt.rect.y(), 2, opt.rect.height());
         painter->restore();
@@ -114,7 +117,7 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
         if (now - added < daysInSeconds || now - updated < daysInSeconds) {
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
-            painter->setBrush(QBrush(indicatorColor));
+            painter->setBrush(QBrush(newItemDotColor));
             painter->setPen(QPen(QBrush(), 0));
             painter->drawEllipse(opt.rect.x() + 13, opt.rect.y() + 2, 7, 7);
             painter->restore();

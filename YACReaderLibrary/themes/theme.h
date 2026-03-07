@@ -195,7 +195,8 @@ struct NavigationTreeThemeTemplates {
 
 struct NavigationTreeTheme {
     QString navigationTreeQSS;
-    QColor folderIndicatorColor; // For incomplete folders and recently updated folders
+    QColor folderNotCompletedColor; // Left-edge bar for folders not yet fully read
+    QColor newItemColor; // Dot for recently added/updated folders
 
     // Branch indicator icon paths (used by QSS url())
     QString branchClosedIconPath;
