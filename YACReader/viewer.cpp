@@ -1505,6 +1505,10 @@ bool Viewer::eventFilter(QObject *obj, QEvent *event)
                                 mouseEvent->buttons(),
                                 mouseEvent->modifiers());
         mouseHandler->mouseMoveEvent(&mappedEvent);
+        // Consume this event so we don't process the same drag movement again
+        // via Viewer::mouseMoveEvent() after bubbling.
+        event->accept();
+        return true;
     }
     return QScrollArea::eventFilter(obj, event);
 }
