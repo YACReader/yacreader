@@ -9,7 +9,7 @@ import QtQuick.Controls.Basic
 Rectangle {
     id: main
 
-    color: infoBackgroundColor
+    color: "transparent"
 
     //width: parent.width
     //height: parent.height
