@@ -40,7 +40,7 @@ jobs:
     runs-on: macos-latest
     needs: initialization
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install dependencies
         run: brew install clang-format
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [initialization, code-format-validation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install dependencies
         run: |
@@ -93,7 +93,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs: [initialization, code-format-validation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install dependencies
         run: |
@@ -126,10 +126,10 @@ jobs:
     runs-on: macos-15
     needs: [initialization, code-format-validation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '18'
 
@@ -166,7 +166,7 @@ jobs:
           xcrun stapler staple *.dmg
 
       - name: Upload DMG
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: macos-qt6-universal-${{ needs.initialization.outputs.build_number }}-dmg
           path: "*.dmg"
@@ -177,10 +177,10 @@ jobs:
     runs-on: windows-2022
     needs: [initialization, code-format-validation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
           architecture: 'x64'
@@ -213,7 +213,7 @@ jobs:
 
       - name: Upload executables for signing
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         id: upload_executables
         with:
           name: windows-x64-qt6-executables-unsigned-${{ needs.initialization.outputs.build_number }}
@@ -269,7 +269,7 @@ jobs:
 
       - name: Upload unsigned installer
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         id: upload_unsigned
         with:
           name: windows-x64-qt6-unsigned-${{ needs.initialization.outputs.build_number }}
@@ -311,7 +311,7 @@ jobs:
           Write-Host "Cleaned up signed directory"
 
       - name: Upload installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: windows-x64-qt6-${{ needs.initialization.outputs.build_number }}
           path: ci/win/Output/YACReader*.exe
@@ -322,10 +322,10 @@ jobs:
     runs-on: windows-2022
     needs: [initialization, code-format-validation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.10'
           architecture: 'x64'
@@ -351,7 +351,7 @@ jobs:
 
       - name: Upload executables for signing
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         id: upload_executables
         with:
           name: windows-arm64-qt6-executables-unsigned-${{ needs.initialization.outputs.build_number }}
@@ -402,7 +402,7 @@ jobs:
 
       - name: Upload unsigned installer
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/yacreader10')
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         id: upload_unsigned
         with:
           name: windows-arm64-qt6-unsigned-${{ needs.initialization.outputs.build_number }}
@@ -437,7 +437,7 @@ jobs:
           Write-Host "Cleaned up signed directory"
 
       - name: Upload installer
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: windows-arm64-qt6-${{ needs.initialization.outputs.build_number }}
           path: ci/win/Output/YACReader*.exe
@@ -448,7 +448,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [initialization, code-format-validation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -460,7 +460,7 @@ jobs:
           docker save yacreader/yacreaderlibraryserver:develop-amd64 -o amd64.tar
 
       - name: Upload Docker Image
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: docker-amd64
           path: docker/amd64.tar
@@ -471,7 +471,7 @@ jobs:
     runs-on: ubuntu-24.04-arm
     needs: [initialization, code-format-validation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Build arm64 Image (native)
         working-directory: docker
@@ -480,7 +480,7 @@ jobs:
           docker save yacreader/yacreaderlibraryserver:develop-arm64 -o arm64.tar
 
       - name: Upload Docker Image
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: docker-arm64
           path: docker/arm64.tar
@@ -500,7 +500,7 @@ jobs:
       - docker-amd64
       - docker-arm64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Prepare release artifacts
         uses: ./.github/actions/prepare-release-artifacts
@@ -567,7 +567,7 @@ jobs:
       - docker-amd64
       - docker-arm64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Prepare release artifacts
         uses: ./.github/actions/prepare-release-artifacts
@@ -638,7 +638,7 @@ jobs:
       - docker-amd64
       - docker-arm64
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Prepare release artifacts
         uses: ./.github/actions/prepare-release-artifacts
