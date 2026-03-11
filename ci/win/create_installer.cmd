@@ -46,7 +46,8 @@ rem Collect cmake-generated .qm translation files from the build tree
 rem (release\languages is not tracked in git; cmake generates .qm in build subdirs)
 mkdir languages
 for /r %src_path%\build %%f in (*.qm) do (
-    copy "%%f" .\languages\ >nul
+    echo %%~nf | findstr /I /R "_source$" >nul
+    if errorlevel 1 copy "%%f" .\languages\ >nul
 )
 
 copy %src_path%\vc_redist.%ARCH%.exe .

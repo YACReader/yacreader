@@ -223,6 +223,10 @@ endif()
 
 # Translations
 qt_add_translations(YACReaderLibrary
+    SOURCE_TARGETS
+        YACReaderLibrary
+    # Keep full C++ extraction via SOURCE_TARGETS and add qml.qrc as extra input
+    # so qsTr() strings in QML are collected too.
     TS_FILES
         yacreaderlibrary_es.ts
         yacreaderlibrary_ru.ts
@@ -235,7 +239,10 @@ qt_add_translations(YACReaderLibrary
         yacreaderlibrary_zh_TW.ts
         yacreaderlibrary_zh_HK.ts
         yacreaderlibrary_it.ts
+        yacreaderlibrary_source.ts
         yacreaderlibrary_en.ts
+    SOURCES
+        ${CMAKE_CURRENT_SOURCE_DIR}/qml.qrc
 )
 
 target_link_libraries(YACReaderLibrary PRIVATE

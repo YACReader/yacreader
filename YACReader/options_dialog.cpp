@@ -17,6 +17,7 @@
 #include "theme_manager.h"
 #include "theme_factory.h"
 #include "appearance_tab_widget.h"
+#include "app_language_utils.h"
 
 #include "yacreader_spin_slider_widget.h"
 #include "yacreader_3d_flow_config_widget.h"
@@ -39,6 +40,19 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     path->addWidget(pathEdit = new QLineEdit());
     path->addWidget(pathFindButton = new QPushButton(""));
     pathBox->setLayout(path);
+
+    auto *languageBox = new QGroupBox(tr("Language"));
+    auto *languageLayout = new QHBoxLayout();
+    languageLayout->addWidget(new QLabel(tr("Application language")));
+    languageCombo = new QComboBox(this);
+    languageCombo->addItem(tr("System default"), QString());
+    const auto availableLanguages = YACReader::UiLanguage::availableLanguages("yacreader");
+    for (const auto &language : availableLanguages) {
+        languageCombo->addItem(
+                QString("%1 (%2)").arg(language.displayName, language.code), language.code);
+    }
+    languageLayout->addWidget(languageCombo);
+    languageBox->setLayout(languageLayout);
 
     QGroupBox *displayBox = new QGroupBox(tr("Display"));
     auto displayLayout = new QHBoxLayout();
@@ -105,6 +119,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     mouseModeBox->setLayout(mouseModeLayout);
 
     layoutGeneral->addWidget(pathBox);
+    layoutGeneral->addWidget(languageBox);
     layoutGeneral->addWidget(displayBox);
     layoutGeneral->addWidget(slideSizeBox);
     // layoutGeneral->addWidget(fitBox);
@@ -178,7 +193,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto scaleLayout = new QVBoxLayout();
     scaleCheckbox = new QCheckBox(tr("Enlarge images to fit width/height"));
     connect(scaleCheckbox, &QCheckBox::clicked, scaleCheckbox,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 Configuration::getConfiguration().setEnlargeImages(checked);
                 emit changedImageOptions();
             });
@@ -191,7 +206,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto doublePageBoxLayout = new QVBoxLayout();
     coverSPCheckBox = new QCheckBox(tr("Show covers as single page"));
     connect(coverSPCheckBox, &QCheckBox::clicked, coverSPCheckBox,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(COVER_IS_SP, checked);
                 emit changedImageOptions();
             });
@@ -315,6 +330,12 @@ void OptionsDialog::saveOptions()
     Configuration::getConfiguration().setScalingMethod(static_cast<ScaleMethod>(scalingMethodCombo->currentIndex()));
     emit changedImageOptions();
 
+    const auto selectedLanguage = languageCombo->currentData().toString().trimmed();
+    if (selectedLanguage.isEmpty())
+        settings->remove(UI_LANGUAGE);
+    else
+        settings->setValue(UI_LANGUAGE, selectedLanguage);
+
     YACReaderOptionsDialog::saveOptions();
 }
 
@@ -325,6 +346,12 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     slideSize->setSliderPosition(settings->value(GO_TO_FLOW_SIZE).toSize().height());
 
     pathEdit->setText(settings->value(PATH).toString());
+
+    const auto selectedLanguage = settings->value(UI_LANGUAGE).toString().trimmed();
+    int languageIndex = languageCombo->findData(selectedLanguage);
+    if (languageIndex < 0)
+        languageIndex = 0;
+    languageCombo->setCurrentIndex(languageIndex);
 
     showTimeInInformationLabel->setChecked(Configuration::getConfiguration().getShowTimeInInformation());
 
