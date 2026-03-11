@@ -34,6 +34,7 @@ private:
     QCheckBox *displayContinueReadingBannerCheck;
     QCheckBox *trayIconCheckbox;
     QCheckBox *startToTrayCheckbox;
+    QComboBox *languageCombo;
     QCheckBox *comicInfoXMLCheckbox;
     QSlider *recentIntervalSlider;
     QLabel *numDaysLabel;

@@ -29,6 +29,7 @@ private:
     // QLabel * pathLabel;
     QLineEdit *pathEdit;
     QPushButton *pathFindButton;
+    QComboBox *languageCombo;
 
     QCheckBox *showTimeInInformationLabel;
 

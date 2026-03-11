@@ -23,7 +23,7 @@ LibraryWindowActions::LibraryWindowActions()
 
 void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *settings)
 {
-    auto tr = [](const char *text) { return QObject::tr(text); };
+    auto tr = [](const char *text) { return QCoreApplication::translate("LibraryWindowActions", text); };
 
     backAction = new QAction(window);
     backAction->setData(BACK_ACTION_YL);

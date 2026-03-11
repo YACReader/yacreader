@@ -17,6 +17,40 @@ Build options:
 - `BUILD_SERVER_STANDALONE=ON`: builds only `YACReaderLibraryServer` (headless), requires only Qt 6.4+
 - `BUILD_TESTS=ON` (default): enables the test suite
 
+## Translations
+
+Use CMake translation targets (Qt LinguistTools integration), not ad-hoc `lupdate` calls.
+
+Update `.ts` files from source code (C++ + QML):
+
+```bash
+cmake --build build --target update_translations
+```
+
+On multi-config generators (Visual Studio / Ninja Multi-Config), include config:
+
+```bash
+cmake --build build --config Release --target update_translations
+```
+
+Build `.qm` files:
+
+```bash
+cmake --build build --target release_translations
+```
+
+Multi-config variant:
+
+```bash
+cmake --build build --config Release --target release_translations
+```
+
+Important:
+- Do not run `lupdate` only on `qml.qrc` (or only on a subset of files), because that can mark unrelated translations as obsolete.
+- In `YACReaderLibrary`, `qt_add_translations(...)` is configured to scan full target sources and include QML from `qml.qrc`.
+- `update_translations` updates both locale TS files and `*_source.ts` template files for all apps.
+- `*_source.ts` files are translator base templates and must not be treated as shipped locales.
+
 ## Tests
 
 ```bash

@@ -7,6 +7,7 @@
 #include <QMimeData>
 
 #define PATH "PATH"
+#define UI_LANGUAGE "UI_LANGUAGE"
 #define MAG_GLASS_SIZE "MAG_GLASS_SIZE"
 #define MAG_GLASS_ZOOM "MAG_GLASS_ZOOM"
 #define ZOOM_LEVEL "ZOOM_LEVEL"

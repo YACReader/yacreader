@@ -101,7 +101,7 @@ Source: README.md; DestDir: {app}; Flags: isreadme
 Source: COPYING.txt; DestDir: {app}
 
 ;Languages
-Source: languages\*; DestDir: {app}\languages\; Flags: recursesubdirs
+Source: languages\*; DestDir: {app}\languages\; Flags: recursesubdirs; Excludes: "*_source.qm"
 ;Server
 Source: server\*; DestDir: {app}\server\; Flags: recursesubdirs
 

@@ -48,6 +48,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                    "   &#8226; Migrate Flow implementation from OpenGL to QRhi. This is a full new implementation with better performance and compatibility with operating systems and hardware<br/>"
                    "   &#8226; Add light/dark themes support that follow the system configuration<br/>"
                    "   &#8226; Add a theme editor and support for custom themes<br/>"
+                   "   &#8226; Add an application language setting with a system default option in YACReader and YACReaderLibrary<br/>"
                    "<br/>"
                    "I hope you enjoy the new update. Please, if you like YACReader consider to become a patron in <a href=\"https://www.patreon.com/yacreader\" style=\"color:%1;\">Patreon</a> "
                    "or donate some money using <a href=\"https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader\" style=\"color:%1;\">Pay-Pal</a> and help keeping the project alive. "

@@ -1,7 +1,6 @@
 #include "library_window.h"
 
 #include <QApplication>
-#include <QTranslator>
 #include <QSettings>
 #include <QLocale>
 #include <QDir>
@@ -24,6 +23,7 @@
 #include "appearance_configuration.h"
 #include "theme_manager.h"
 #include "theme_repository.h"
+#include "app_language_utils.h"
 #ifdef Q_OS_MACOS
 #include "trayhandler.h"
 #endif
@@ -171,13 +171,11 @@ int main(int argc, char **argv)
     logger.addDestination(std::move(debugDestination));
     logger.addDestination(std::move(fileDestination));
 
-    QTranslator translator;
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    translator.load(QLocale(), "yacreaderlibrary", "_", QString(DATADIR) + "/yacreader/languages");
-#else
-    translator.load(QLocale(), "yacreaderlibrary", "_", "languages");
-#endif
-    app.installTranslator(&translator);
+    QSettings uiSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
+    uiSettings.beginGroup("libraryConfig");
+    QString selectedLanguage = uiSettings.value(UI_LANGUAGE).toString();
+    uiSettings.endGroup();
+    YACReader::UiLanguage::applyLanguage("yacreaderlibrary", selectedLanguage);
 
     /*QTranslator viewerTranslator;
     #if defined Q_OS_UNIX && !defined Q_OS_MACOS

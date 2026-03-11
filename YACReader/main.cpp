@@ -1,6 +1,5 @@
 #include <QApplication>
 #include <QDir>
-#include <QTranslator>
 #include <QCommandLineParser>
 #include <QImageReader>
 
@@ -10,6 +9,7 @@
 #include "appearance_configuration.h"
 #include "theme_manager.h"
 #include "theme_repository.h"
+#include "app_language_utils.h"
 #include "yacreader_global.h"
 
 #include "QsLog.h"
@@ -175,13 +175,8 @@ int main(int argc, char *argv[])
     logger.addDestination(std::move(debugDestination));
     logger.addDestination(std::move(fileDestination));
 
-    QTranslator translator;
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    translator.load(QLocale(), "yacreader", "_", QString(DATADIR) + "/yacreader/languages");
-#else
-    translator.load(QLocale(), "yacreader", "_", "languages");
-#endif
-    app.installTranslator(&translator);
+    QSettings uiSettings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
+    YACReader::UiLanguage::applyLanguage("yacreader", uiSettings.value(UI_LANGUAGE).toString());
     auto mwv = new MainWindowViewer();
 
     // some arguments need to be parsed after MainWindowViewer creation

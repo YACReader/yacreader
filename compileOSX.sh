@@ -70,9 +70,9 @@ cp -R release/server YACReaderLibraryServer.app/Contents/MacOS/
 mkdir -p YACReader.app/Contents/MacOS/languages
 mkdir -p YACReaderLibrary.app/Contents/MacOS/languages
 mkdir -p YACReaderLibraryServer.app/Contents/MacOS/languages
-find build -name "*.qm" -exec cp {} YACReader.app/Contents/MacOS/languages/ \;
-find build -name "*.qm" -exec cp {} YACReaderLibrary.app/Contents/MacOS/languages/ \;
-find build -name "*.qm" -exec cp {} YACReaderLibraryServer.app/Contents/MacOS/languages/ \;
+find build -name "*.qm" ! -name "*_source.qm" -exec cp {} YACReader.app/Contents/MacOS/languages/ \;
+find build -name "*.qm" ! -name "*_source.qm" -exec cp {} YACReaderLibrary.app/Contents/MacOS/languages/ \;
+find build -name "*.qm" ! -name "*_source.qm" -exec cp {} YACReaderLibraryServer.app/Contents/MacOS/languages/ \;
 
 /usr/libexec/PlistBuddy -c "Add :CFBundleVersion string ${BUILD_NUMBER}" YACReader.app/Contents/Info.plist
 /usr/libexec/PlistBuddy -c "Add :CFBundleShortVersionString string ${VERSION}" YACReader.app/Contents/Info.plist

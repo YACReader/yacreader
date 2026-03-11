@@ -7,6 +7,7 @@
 #include "theme_manager.h"
 #include "theme_factory.h"
 #include "appearance_tab_widget.h"
+#include "app_language_utils.h"
 
 #include <QMessageBox>
 
@@ -31,6 +32,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     auto buttons = new QHBoxLayout();
     buttons->addStretch();
+    buttons->addWidget(new QLabel(tr("Restart is needed")));
     buttons->addWidget(accept);
     buttons->addWidget(cancel);
 
@@ -53,6 +55,12 @@ void OptionsDialog::editApiKey()
 void OptionsDialog::restoreOptions(QSettings *settings)
 {
     YACReaderOptionsDialog::restoreOptions(settings);
+
+    const auto selectedLanguage = settings->value(UI_LANGUAGE).toString().trimmed();
+    int languageIndex = languageCombo->findData(selectedLanguage);
+    if (languageIndex < 0)
+        languageIndex = 0;
+    languageCombo->setCurrentIndex(languageIndex);
 
     trayIconCheckbox->setChecked(settings->value(CLOSE_TO_TRAY, false).toBool());
     startToTrayCheckbox->setChecked(settings->value(START_TO_TRAY, false).toBool());
@@ -92,6 +100,12 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
 void OptionsDialog::saveOptions()
 {
+    const auto selectedLanguage = languageCombo->currentData().toString().trimmed();
+    if (selectedLanguage.isEmpty())
+        settings->remove(UI_LANGUAGE);
+    else
+        settings->setValue(UI_LANGUAGE, selectedLanguage);
+
     settings->setValue(THIRD_PARTY_READER_COMMAND, thirdPartyReaderEdit->text());
     YACReaderOptionsDialog::saveOptions();
 }
@@ -152,6 +166,19 @@ void OptionsDialog::resetToDefaults()
 
 QWidget *OptionsDialog::createGeneralTab()
 {
+    auto *languageBox = new QGroupBox(tr("Language"));
+    auto *languageLayout = new QHBoxLayout();
+    languageLayout->addWidget(new QLabel(tr("Application language")));
+    languageCombo = new QComboBox(this);
+    languageCombo->addItem(tr("System default"), QString());
+    const auto availableLanguages = YACReader::UiLanguage::availableLanguages("yacreaderlibrary");
+    for (const auto &language : availableLanguages) {
+        languageCombo->addItem(
+                QString("%1 (%2)").arg(language.displayName, language.code), language.code);
+    }
+    languageLayout->addWidget(languageCombo);
+    languageBox->setLayout(languageLayout);
+
     // Tray icon settings
     QGroupBox *trayIconBox = new QGroupBox(tr("Tray icon settings (experimental)"));
     QVBoxLayout *trayLayout = new QVBoxLayout();
@@ -218,6 +245,7 @@ QWidget *OptionsDialog::createGeneralTab()
     connect(clearButton, &QPushButton::clicked, thirdPartyReaderEdit, &QLineEdit::clear);
 
     auto generalLayout = new QVBoxLayout();
+    generalLayout->addWidget(languageBox);
     generalLayout->addWidget(trayIconBox);
     generalLayout->addWidget(shortcutsBox);
     generalLayout->addWidget(apiKeyBox);
