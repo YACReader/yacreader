@@ -64,8 +64,8 @@
     <name>ApiKeyDialog</name>
     <message>
         <location filename="../YACReaderLibrary/comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>Comic Vine&apos;a bağlanmadan önce kendi API anahtarınıza ihtiyacınız var. Lütfen &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;buradan&lt;/a&gt; ücretsiz bir tane edinin</translation>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href="http://www.comicvine.com/api/"&gt;here&lt;/a&gt;</source>
+        <translation>Comic Vine'a bağlanmadan önce kendi API anahtarınıza ihtiyacınız var. Lütfen &lt;a href="http://www.comicvine.com/api/"&gt;buradan&lt;/a&gt; ücretsiz bir tane edinin</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/comic_vine/api_key_dialog.cpp" line="25"/>
@@ -228,7 +228,7 @@
     <message>
         <location filename="../YACReaderLibrary/classic_comics_view.cpp" line="85"/>
         <source>Hide comic flow</source>
-        <translation>Çizgi roman akışını gizle</translation>
+        <translation>Comic Flow'u gizle</translation>
     </message>
 </context>
 <context>
@@ -441,15 +441,15 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="122"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>&quot;%1&quot; kısayolu bir başka işleve zaten atanmış</translation>
+        <source>The shortcut "%1" is already assigned to other function</source>
+        <translation>"%1" kısayolu bir başka işleve zaten atanmış</translation>
     </message>
 </context>
 <context>
     <name>EmptyFolderWidget</name>
     <message>
         <location filename="../YACReaderLibrary/empty_folder_widget.cpp" line="8"/>
-        <source>This folder doesn&apos;t contain comics yet</source>
+        <source>This folder doesn't contain comics yet</source>
         <translation>Bu klasör henüz çizgi roman içermiyor</translation>
     </message>
 </context>
@@ -457,7 +457,7 @@
     <name>EmptyLabelWidget</name>
     <message>
         <location filename="../YACReaderLibrary/empty_label_widget.cpp" line="7"/>
-        <source>This label doesn&apos;t contain comics yet</source>
+        <source>This label doesn't contain comics yet</source>
         <translation>Bu etiket henüz çizgi roman içermiyor</translation>
     </message>
 </context>
@@ -871,8 +871,8 @@
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="919"/>
-        <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>Kütüphane &apos;%1&apos;ulaşılabilir değil.  Kaldırmak ister misin?</translation>
+        <source>Library '%1' is no longer available. Do you want to remove it?</source>
+        <translation>Kütüphane '%1'ulaşılabilir değil.  Kaldırmak ister misin?</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="938"/>
@@ -881,8 +881,8 @@
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="938"/>
-        <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>Kütüphane &apos;%1 YACRKütüphanenin eski bir sürümünde oluşturulmuş, Kütüphaneyi yeniden oluşturmak ister misin?</translation>
+        <source>Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
+        <translation>Kütüphane '%1 YACRKütüphanenin eski bir sürümünde oluşturulmuş, Kütüphaneyi yeniden oluşturmak ister misin?</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="969"/>
@@ -923,7 +923,7 @@
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="1184"/>
-        <source>There was an error accessing the folder&apos;s path</source>
+        <source>There was an error accessing the folder's path</source>
         <translation>Klasörün yoluna erişilirken hata oluştu</translation>
     </message>
     <message>
@@ -1075,7 +1075,7 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="1807"/>
-        <source>The selected folder doesn&apos;t contain any library.</source>
+        <source>The selected folder doesn't contain any library.</source>
         <translation>Seçilen dosya kütüphanede yok.</translation>
     </message>
     <message>
@@ -1096,7 +1096,7 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="1862"/>
         <source>Remove and delete metadata</source>
-        <translation>Metadata&apos;yı kaldır ve sil</translation>
+        <translation>Metadata'yı kaldır ve sil</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="1932"/>
@@ -1180,8 +1180,8 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="2649"/>
-        <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>Bu başka bir kütüphanenin adı &apos;%1&apos;.</translation>
+        <source>There is another library with the name '%1'.</source>
+        <translation>Bu başka bir kütüphanenin adı '%1'.</translation>
     </message>
 </context>
 <context>
@@ -1286,7 +1286,7 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     <message>
         <location filename="../YACReaderLibrary/library_window_actions.cpp" line="94"/>
         <source>Open current comic on YACReader</source>
-        <translation>YACReader&apos;ı geçerli çizgi roman okuyucsu seç</translation>
+        <translation>YACReader'ı geçerli çizgi roman okuyucsu seç</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window_actions.cpp" line="98"/>
@@ -1821,7 +1821,7 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     </message>
     <message>
         <source>Show go to flow</source>
-        <translation type="vanished">Akışı göster</translation>
+        <translation type="vanished">"Comic Flow'a git"i göster</translation>
     </message>
     <message>
         <source>Previous Comic</source>
@@ -2040,12 +2040,12 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     <name>NoLibrariesWidget</name>
     <message>
         <location filename="../YACReaderLibrary/no_libraries_widget.cpp" line="20"/>
-        <source>You don&apos;t have any libraries yet</source>
+        <source>You don't have any libraries yet</source>
         <translation>Henüz bir kütüphaneye sahip değilsin</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/no_libraries_widget.cpp" line="22"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don't forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Yeni bir kütüphane oluşturabilmeniçin kütüphane&lt;/p&gt;&lt;p&gt;No olvides que puedes usar YACReader como una aplicación independiente para leer los cómics en tu ordenador.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -2116,8 +2116,8 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     </message>
     <message>
         <location filename="options_dialog.cpp" line="65"/>
-        <source>&quot;Go to flow&quot; size</source>
-        <translation>Akış görünümüne git</translation>
+        <source>"Go to flow" size</source>
+        <translation>"Comic Flow'a git" boyutu</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="86"/>
@@ -2143,7 +2143,7 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="29"/>
         <source>Comic Flow</source>
-        <translation>Çizgi Roman Akışı</translation>
+        <translation>Comic Flow</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="30"/>
@@ -2213,12 +2213,12 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="215"/>
         <source>Import metadata from ComicInfo.xml when adding new comics</source>
-        <translation>Yeni çizgi roman eklerken meta verileri ComicInfo.xml&apos;den içe aktarın</translation>
+        <translation>Yeni çizgi roman eklerken meta verileri ComicInfo.xml'den içe aktarın</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="225"/>
-        <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
-        <translation>X gün öncesinden bu yana eklenen veya güncellenen &apos;en son&apos; öğeleri göz önünde bulundurun</translation>
+        <source>Consider 'recent' items added or updated since X days ago</source>
+        <translation>X gün öncesinden bu yana eklenen veya güncellenen 'en son' öğeleri göz önünde bulundurun</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="237"/>
@@ -2304,7 +2304,7 @@ YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütü
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="329"/>
         <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
+Don't schedule updates while you may be using the app actively.
 During automatic updates the app will block some of the actions until the update is finished.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
         <translation>UYARI! Kütüphane güncellemeleri sırasında veritabanına yazma işlemi devre dışı bırakılır!
@@ -2360,7 +2360,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="407"/>
         <source>Display current comic banner</source>
-        <translation>Mevcut çizgi roman banner&apos;ını görüntüle</translation>
+        <translation>Mevcut çizgi roman banner'ını görüntüle</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="413"/>
@@ -2721,8 +2721,8 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     </message>
     <message>
         <location filename="../YACReaderLibrary/properties_dialog.cpp" line="468"/>
-        <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation>Comic Vine bağlantısı: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; görüntüle &lt;/a&gt;</translation>
+        <source>Comic Vine link: &lt;a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; view &lt;/a&gt;</source>
+        <translation>Comic Vine bağlantısı: &lt;a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; görüntüle &lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/properties_dialog.cpp" line="488"/>
@@ -2765,7 +2765,7 @@ YACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary.
 This appplication supports persistent settings, to set them up edit this file %1
 To learn about the available settings please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</source>
         <translation>
-YACReaderLibraryServer, YACReaderLibrary&apos;nin başsız (gui yok) sürümüdür.
+YACReaderLibraryServer, YACReaderLibrary'nin başsız (gui yok) sürümüdür.
 
 Bu uygulama kalıcı ayarları destekler, bunları ayarlamak için bu dosyayı düzenleyin %1
 Mevcut ayarlar hakkında bilgi edinmek için lütfen https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md adresindeki belgelere bakın.</translation>
@@ -3064,8 +3064,8 @@ Mevcut ayarlar hakkında bilgi edinmek için lütfen https://raw.githubuserconte
     </message>
     <message>
         <location filename="../YACReaderLibrary/server_config_dialog.cpp" line="42"/>
-        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</source>
-        <translation>YACReader, iOS ve Android cihazlarda kullanılabilir.&lt;br/&gt;Bunu &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; veya &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt; için keşfedin.</translation>
+        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; or &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt;.</source>
+        <translation>YACReader, iOS ve Android cihazlarda kullanılabilir.&lt;br/&gt;Bunu &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; veya &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt; için keşfedin.</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/server_config_dialog.cpp" line="48"/>
@@ -3102,7 +3102,7 @@ Mevcut ayarlar hakkında bilgi edinmek için lütfen https://raw.githubuserconte
     <name>SortVolumeComics</name>
     <message>
         <location filename="../YACReaderLibrary/comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please, sort the list of comics on the left until it matches the comics' information.</source>
         <translation>Lütfen, çizgi romanların bilgileriyle eşleşene kadar soldaki çizgi roman listesini sıralayın.</translation>
     </message>
     <message>
@@ -3354,8 +3354,8 @@ Mevcut ayarlar hakkında bilgi edinmek için lütfen https://raw.githubuserconte
     <message>
         <location filename="viewer.cpp" line="60"/>
         <location filename="viewer.cpp" line="1367"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>&apos;O&apos;ya basarak aç.</translation>
+        <source>Press 'O' to open comic.</source>
+        <translation>'O'ya basarak aç.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1602"/>
@@ -3822,7 +3822,7 @@ Mevcut ayarlar hakkında bilgi edinmek için lütfen https://raw.githubuserconte
     <message>
         <location filename="main_window_viewer.cpp" line="438"/>
         <source>Show go to flow</source>
-        <translation>Akışı göster</translation>
+        <translation>"Comic Flow'a git"i göster</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="443"/>
@@ -4070,7 +4070,7 @@ Mevcut ayarlar hakkında bilgi edinmek için lütfen https://raw.githubuserconte
     <message>
         <location filename="../YACReaderLibrary/trayicon_controller.cpp" line="80"/>
         <source>YACReaderLibrary will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray icon.</source>
-        <translation>YACReaderLibrary sistem tepsisinde çalışmaya devam edecektir. Programı sonlandırmak için sistem tepsisi simgesinin bağlam menüsünden &lt;b&gt;Çık&lt;/b&gt;&apos;ı seçin.</translation>
+        <translation>YACReaderLibrary sistem tepsisinde çalışmaya devam edecektir. Programı sonlandırmak için sistem tepsisi simgesinin bağlam menüsünden &lt;b&gt;Çık&lt;/b&gt;'ı seçin.</translation>
     </message>
 </context>
 <context>

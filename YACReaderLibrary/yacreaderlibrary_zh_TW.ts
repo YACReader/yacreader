@@ -113,8 +113,8 @@
     <name>ApiKeyDialog</name>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>你需要擁有自己的API密鑰才能夠連接Comic Vine. 你可以通過這個鏈接獲得一個免費的&lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;API&lt;/a&gt;密鑰</translation>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href="http://www.comicvine.com/api/"&gt;here&lt;/a&gt;</source>
+        <translation>你需要擁有自己的API密鑰才能夠連接Comic Vine. 你可以通過這個鏈接獲得一個免費的&lt;a href="http://www.comicvine.com/api/"&gt;API&lt;/a&gt;密鑰</translation>
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="25"/>
@@ -277,7 +277,7 @@
     <message>
         <location filename="classic_comics_view.cpp" line="85"/>
         <source>Hide comic flow</source>
-        <translation>隱藏漫畫流</translation>
+        <translation>隱藏 Comic Flow</translation>
     </message>
 </context>
 <context>
@@ -573,8 +573,8 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="122"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>快捷鍵 &quot;%1&quot; 已被映射至其他功能</translation>
+        <source>The shortcut "%1" is already assigned to other function</source>
+        <translation>快捷鍵 "%1" 已被映射至其他功能</translation>
     </message>
 </context>
 <context>
@@ -593,7 +593,7 @@
     </message>
     <message>
         <location filename="empty_folder_widget.cpp" line="8"/>
-        <source>This folder doesn&apos;t contain comics yet</source>
+        <source>This folder doesn't contain comics yet</source>
         <translation>該資料夾還沒有漫畫</translation>
     </message>
 </context>
@@ -601,7 +601,7 @@
     <name>EmptyLabelWidget</name>
     <message>
         <location filename="empty_label_widget.cpp" line="7"/>
-        <source>This label doesn&apos;t contain comics yet</source>
+        <source>This label doesn't contain comics yet</source>
         <translation>此標籤尚未包含漫畫</translation>
     </message>
 </context>
@@ -610,7 +610,7 @@
     <message>
         <location filename="empty_reading_list_widget.cpp" line="8"/>
         <source>This reading list does not contain any comics yet</source>
-        <oldsource>This reading list doesn&apos;t contain any comics yet</oldsource>
+        <oldsource>This reading list doesn't contain any comics yet</oldsource>
         <translation>此閱讀列表尚未包含任何漫畫</translation>
     </message>
 </context>
@@ -1067,7 +1067,7 @@
     <message>
         <location filename="library_window.cpp" line="919"/>
         <source>Library not available</source>
-        <oldsource>Library &apos;</oldsource>
+        <oldsource>Library '</oldsource>
         <translation>庫不可用</translation>
     </message>
     <message>
@@ -1282,8 +1282,8 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="919"/>
-        <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>庫 &apos;%1&apos; 不再可用。 你想刪除它嗎?</translation>
+        <source>Library '%1' is no longer available. Do you want to remove it?</source>
+        <translation>庫 '%1' 不再可用。 你想刪除它嗎?</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="938"/>
@@ -1292,8 +1292,8 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="938"/>
-        <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>庫 &apos;%1&apos; 是通過舊版本的YACReaderLibrary創建的。 必須再次創建。 你想現在創建嗎?</translation>
+        <source>Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
+        <translation>庫 '%1' 是通過舊版本的YACReaderLibrary創建的。 必須再次創建。 你想現在創建嗎?</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="969"/>
@@ -1329,7 +1329,7 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="1184"/>
-        <source>There was an error accessing the folder&apos;s path</source>
+        <source>There was an error accessing the folder's path</source>
         <translation>訪問檔夾的路徑時出錯</translation>
     </message>
     <message>
@@ -1439,7 +1439,7 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
     </message>
     <message>
         <location filename="library_window.cpp" line="1807"/>
-        <source>The selected folder doesn&apos;t contain any library.</source>
+        <source>The selected folder doesn't contain any library.</source>
         <translation>所選檔夾不包含任何庫。</translation>
     </message>
     <message>
@@ -1581,8 +1581,8 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
     </message>
     <message>
         <location filename="library_window.cpp" line="2649"/>
-        <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>已存在另一個名為&apos;%1&apos;的庫。</translation>
+        <source>There is another library with the name '%1'.</source>
+        <translation>已存在另一個名為'%1'的庫。</translation>
     </message>
 </context>
 <context>
@@ -2066,12 +2066,12 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
     <name>NoLibrariesWidget</name>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>You don&apos;t have any libraries yet</source>
+        <source>You don't have any libraries yet</source>
         <translation>你還沒有庫</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="22"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don't forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation>&lt;p&gt;您可以在任何檔夾中創建庫，YACReaderLibrary將導入此檔夾中的所有漫畫和文件夾。如果已有庫，則可以打開它們。&lt;/p&gt;&lt;p&gt;您可以把YACReader當成獨立應用來閱讀電腦上的漫畫。&lt;/p&gt;</translation>
     </message>
     <message>
@@ -2151,7 +2151,7 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
     </message>
     <message>
         <location filename="options_dialog.cpp" line="225"/>
-        <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
+        <source>Consider 'recent' items added or updated since X days ago</source>
         <translation>考慮自 X 天前新增或更新的「最近」項目</translation>
     </message>
     <message>
@@ -2238,11 +2238,11 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
     <message>
         <location filename="options_dialog.cpp" line="329"/>
         <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
+Don't schedule updates while you may be using the app actively.
 During automatic updates the app will block some of the actions until the update is finished.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
+Don't schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
         <translation>警告！在庫更新期間，將停用對資料庫的寫入！
 當您可能正在積極使用應用程式時，請勿安排更新。
@@ -2307,7 +2307,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="options_dialog.cpp" line="29"/>
         <source>Comic Flow</source>
-        <translation>漫畫流</translation>
+        <translation>Comic Flow</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="28"/>
@@ -2355,8 +2355,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="65"/>
-        <source>&quot;Go to flow&quot; size</source>
-        <translation>頁面流尺寸</translation>
+        <source>"Go to flow" size</source>
+        <translation>「前往 Comic Flow」大小</translation>
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="83"/>
@@ -2766,8 +2766,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="468"/>
-        <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation>Comic Vine 連接: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; 查看 &lt;/a&gt;</translation>
+        <source>Comic Vine link: &lt;a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; view &lt;/a&gt;</source>
+        <translation>Comic Vine 連接: &lt;a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; 查看 &lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="488"/>
@@ -3108,12 +3108,12 @@ YACReaderLibraryServer 是 YACReaderLibrary 的無頭（無 GUI）版本。
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="42"/>
-        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</source>
-        <translation>YACReader 適用於 iOS 和 Android 裝置。 &lt;br/&gt;發現它適用於 &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; 或 &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;。</translation>
+        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; or &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt;.</source>
+        <translation>YACReader 適用於 iOS 和 Android 裝置。 &lt;br/&gt;發現它適用於 &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; 或 &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt;。</translation>
     </message>
     <message>
-        <source>YACReader is available for iOS devices. &lt;a href=&apos;http://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt; Discover it! &lt;/a&gt;</source>
-        <translation type="vanished">YACReader適用於iOS設備. &lt;a href=&apos;http://ios.yacreader.com&apos;style =&apos;color：rgb（193,148,65）&apos;&gt;下載&lt;/a&gt;</translation>
+        <source>YACReader is available for iOS devices. &lt;a href='http://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt; Discover it! &lt;/a&gt;</source>
+        <translation type="vanished">YACReader適用於iOS設備. &lt;a href='http://ios.yacreader.com'style ='color：rgb（193,148,65）'&gt;下載&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="48"/>
@@ -3145,7 +3145,7 @@ to improve the performance</source>
     <name>SortVolumeComics</name>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please, sort the list of comics on the left until it matches the comics' information.</source>
         <translation>請在左側對漫畫列表進行排序，直到它與漫畫的資訊相符。</translation>
     </message>
     <message>
@@ -3397,8 +3397,8 @@ to improve the performance</source>
     <message>
         <location filename="../YACReader/viewer.cpp" line="60"/>
         <location filename="../YACReader/viewer.cpp" line="1367"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>按下 &apos;O&apos; 以打開漫畫.</translation>
+        <source>Press 'O' to open comic.</source>
+        <translation>按下 'O' 以打開漫畫.</translation>
     </message>
     <message>
         <location filename="../YACReader/viewer.cpp" line="262"/>
@@ -3865,7 +3865,7 @@ to improve the performance</source>
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="438"/>
         <source>Show go to flow</source>
-        <translation>顯示頁面流</translation>
+        <translation>顯示「前往 Comic Flow」</translation>
     </message>
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="443"/>
@@ -4005,7 +4005,7 @@ to improve the performance</source>
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="1225"/>
         <source>Toggle between fit to width and fit to height</source>
-        <translation>切換顯示為&quot;適應寬度&quot;或&quot;適應高度&quot;</translation>
+        <translation>切換顯示為"適應寬度"或"適應高度"</translation>
     </message>
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="1247"/>

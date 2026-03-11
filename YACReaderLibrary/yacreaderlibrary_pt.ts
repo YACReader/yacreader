@@ -69,8 +69,8 @@
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>Antes de se conectar ao Comic Vine, você precisa de sua própria chave de API. Por favor, ganhe um &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;aqui&lt;/a&gt; grátis</translation>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href="http://www.comicvine.com/api/"&gt;here&lt;/a&gt;</source>
+        <translation>Antes de se conectar ao Comic Vine, você precisa de sua própria chave de API. Por favor, ganhe um &lt;a href="http://www.comicvine.com/api/"&gt;aqui&lt;/a&gt; grátis</translation>
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="25"/>
@@ -228,7 +228,7 @@
     <message>
         <location filename="classic_comics_view.cpp" line="85"/>
         <source>Hide comic flow</source>
-        <translation>Ocultar fluxo de quadrinhos</translation>
+        <translation>Ocultar Comic Flow</translation>
     </message>
 </context>
 <context>
@@ -524,15 +524,15 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="122"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>O atalho &quot;%1&quot; já está atribuído a outra função</translation>
+        <source>The shortcut "%1" is already assigned to other function</source>
+        <translation>O atalho "%1" já está atribuído a outra função</translation>
     </message>
 </context>
 <context>
     <name>EmptyFolderWidget</name>
     <message>
         <location filename="empty_folder_widget.cpp" line="8"/>
-        <source>This folder doesn&apos;t contain comics yet</source>
+        <source>This folder doesn't contain comics yet</source>
         <translation>Esta pasta ainda não contém quadrinhos</translation>
     </message>
 </context>
@@ -540,7 +540,7 @@
     <name>EmptyLabelWidget</name>
     <message>
         <location filename="empty_label_widget.cpp" line="7"/>
-        <source>This label doesn&apos;t contain comics yet</source>
+        <source>This label doesn't contain comics yet</source>
         <translation>Este rótulo ainda não contém quadrinhos</translation>
     </message>
 </context>
@@ -1062,8 +1062,8 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="919"/>
-        <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>A biblioteca &apos;%1&apos; não está mais disponível. Você quer removê-lo?</translation>
+        <source>Library '%1' is no longer available. Do you want to remove it?</source>
+        <translation>A biblioteca '%1' não está mais disponível. Você quer removê-lo?</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="938"/>
@@ -1072,8 +1072,8 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="938"/>
-        <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>A biblioteca &apos;%1&apos; foi criada com uma versão mais antiga do YACReaderLibrary. Deve ser criado novamente. Deseja criar a biblioteca agora?</translation>
+        <source>Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
+        <translation>A biblioteca '%1' foi criada com uma versão mais antiga do YACReaderLibrary. Deve ser criado novamente. Deseja criar a biblioteca agora?</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="969"/>
@@ -1109,7 +1109,7 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="1184"/>
-        <source>There was an error accessing the folder&apos;s path</source>
+        <source>There was an error accessing the folder's path</source>
         <translation>Ocorreu um erro ao acessar o caminho da pasta</translation>
     </message>
     <message>
@@ -1228,7 +1228,7 @@ YACReaderLibrary não impedirá você de criar mais bibliotecas, mas você deve 
     </message>
     <message>
         <location filename="library_window.cpp" line="1807"/>
-        <source>The selected folder doesn&apos;t contain any library.</source>
+        <source>The selected folder doesn't contain any library.</source>
         <translation>A pasta selecionada não contém nenhuma biblioteca.</translation>
     </message>
     <message>
@@ -1323,8 +1323,8 @@ YACReaderLibrary não impedirá você de criar mais bibliotecas, mas você deve 
     </message>
     <message>
         <location filename="library_window.cpp" line="2649"/>
-        <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>Existe outra biblioteca com o nome &apos;%1&apos;.</translation>
+        <source>There is another library with the name '%1'.</source>
+        <translation>Existe outra biblioteca com o nome '%1'.</translation>
     </message>
 </context>
 <context>
@@ -1777,12 +1777,12 @@ YACReaderLibrary não impedirá você de criar mais bibliotecas, mas você deve 
     <name>NoLibrariesWidget</name>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>You don&apos;t have any libraries yet</source>
+        <source>You don't have any libraries yet</source>
         <translation>Você ainda não tem nenhuma biblioteca</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="22"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don't forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Você pode criar uma biblioteca em qualquer pasta, YACReaderLibrary importará todos os quadrinhos e pastas desta pasta. Se você já criou alguma biblioteca, poderá abri-la.&lt;/p&gt;&lt;p&gt;Não se esqueça de que você pode usar o YACReader como um aplicativo independente para ler quadrinhos em seu computador.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -1862,8 +1862,8 @@ YACReaderLibrary não impedirá você de criar mais bibliotecas, mas você deve 
     </message>
     <message>
         <location filename="options_dialog.cpp" line="225"/>
-        <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
-        <translation>Considere itens &apos;recentes&apos; adicionados ou atualizados há X dias</translation>
+        <source>Consider 'recent' items added or updated since X days ago</source>
+        <translation>Considere itens 'recentes' adicionados ou atualizados há X dias</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="237"/>
@@ -1949,11 +1949,11 @@ YACReaderLibrary não impedirá você de criar mais bibliotecas, mas você deve 
     <message>
         <location filename="options_dialog.cpp" line="329"/>
         <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
+Don't schedule updates while you may be using the app actively.
 During automatic updates the app will block some of the actions until the update is finished.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
+Don't schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
         <translation>AVISO! Durante as atualizações da biblioteca, as gravações no banco de dados são desativadas!
 Não agende atualizações enquanto estiver usando o aplicativo ativamente.
@@ -2018,7 +2018,7 @@ Para interromper uma atualização automática, toque no indicador de carregamen
     <message>
         <location filename="options_dialog.cpp" line="29"/>
         <source>Comic Flow</source>
-        <translation>Fluxo de quadrinhos</translation>
+        <translation>Comic Flow</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="28"/>
@@ -2066,8 +2066,8 @@ Para interromper uma atualização automática, toque no indicador de carregamen
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="65"/>
-        <source>&quot;Go to flow&quot; size</source>
-        <translation>Tamanho do &quot;Ir para cheia&quot;</translation>
+        <source>"Go to flow" size</source>
+        <translation>Tamanho de "Ir para Comic Flow"</translation>
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="83"/>
@@ -2462,8 +2462,8 @@ Para interromper uma atualização automática, toque no indicador de carregamen
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="468"/>
-        <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation>Link do Comic Vine: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; visualizar &lt;/a&gt;</translation>
+        <source>Comic Vine link: &lt;a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; view &lt;/a&gt;</source>
+        <translation>Link do Comic Vine: &lt;a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; visualizar &lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="488"/>
@@ -2772,8 +2772,8 @@ Para saber mais sobre as configurações disponíveis, verifique a documentaçã
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="42"/>
-        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</source>
-        <translation>O YACReader está disponível para dispositivos iOS e Android.&lt;br/&gt;Descubra-o para &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; ou &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</translation>
+        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; or &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt;.</source>
+        <translation>O YACReader está disponível para dispositivos iOS e Android.&lt;br/&gt;Descubra-o para &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; ou &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="48"/>
@@ -2795,7 +2795,7 @@ Para saber mais sobre as configurações disponíveis, verifique a documentaçã
     <name>SortVolumeComics</name>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please, sort the list of comics on the left until it matches the comics' information.</source>
         <translation>Por favor, classifique a lista de quadrinhos à esquerda até que corresponda às informações dos quadrinhos.</translation>
     </message>
     <message>
@@ -3047,8 +3047,8 @@ Para saber mais sobre as configurações disponíveis, verifique a documentaçã
     <message>
         <location filename="../YACReader/viewer.cpp" line="60"/>
         <location filename="../YACReader/viewer.cpp" line="1367"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Pressione &apos;O&apos; para abrir um quadrinho.</translation>
+        <source>Press 'O' to open comic.</source>
+        <translation>Pressione 'O' para abrir um quadrinho.</translation>
     </message>
     <message>
         <location filename="../YACReader/viewer.cpp" line="262"/>
@@ -3515,7 +3515,7 @@ Para saber mais sobre as configurações disponíveis, verifique a documentaçã
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="438"/>
         <source>Show go to flow</source>
-        <translation>Mostrar ir para o fluxo</translation>
+        <translation>Mostrar "Ir para Comic Flow"</translation>
     </message>
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="443"/>

@@ -64,8 +64,8 @@
     <name>ApiKeyDialog</name>
     <message>
         <location filename="../YACReaderLibrary/comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>Для подключения к Comic Vine вам потребуется ваш личный API ключ. Приобретите его бесплатно вот &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;здесь&lt;/a&gt;</translation>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href="http://www.comicvine.com/api/"&gt;here&lt;/a&gt;</source>
+        <translation>Для подключения к Comic Vine вам потребуется ваш личный API ключ. Приобретите его бесплатно вот &lt;a href="http://www.comicvine.com/api/"&gt;здесь&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/comic_vine/api_key_dialog.cpp" line="25"/>
@@ -228,7 +228,7 @@
     <message>
         <location filename="../YACReaderLibrary/classic_comics_view.cpp" line="85"/>
         <source>Hide comic flow</source>
-        <translation>Показать/скрыть поток комиксов</translation>
+        <translation>Скрыть Comic Flow</translation>
     </message>
 </context>
 <context>
@@ -441,15 +441,15 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="122"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>Сочетание клавиш &quot;%1&quot; уже назначено для другой функции</translation>
+        <source>The shortcut "%1" is already assigned to other function</source>
+        <translation>Сочетание клавиш "%1" уже назначено для другой функции</translation>
     </message>
 </context>
 <context>
     <name>EmptyFolderWidget</name>
     <message>
         <location filename="../YACReaderLibrary/empty_folder_widget.cpp" line="8"/>
-        <source>This folder doesn&apos;t contain comics yet</source>
+        <source>This folder doesn't contain comics yet</source>
         <translation>В этой папке еще нет комиксов</translation>
     </message>
 </context>
@@ -457,7 +457,7 @@
     <name>EmptyLabelWidget</name>
     <message>
         <location filename="../YACReaderLibrary/empty_label_widget.cpp" line="7"/>
-        <source>This label doesn&apos;t contain comics yet</source>
+        <source>This label doesn't contain comics yet</source>
         <translation>Этот ярлык пока ничего не содержит</translation>
     </message>
 </context>
@@ -870,8 +870,8 @@
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="919"/>
-        <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>Библиотека &apos;%1&apos; больше не доступна. Вы хотите удалить ее?</translation>
+        <source>Library '%1' is no longer available. Do you want to remove it?</source>
+        <translation>Библиотека '%1' больше не доступна. Вы хотите удалить ее?</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="938"/>
@@ -880,8 +880,8 @@
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="938"/>
-        <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>Библиотека &apos;%1&apos; была создана старой версией YACReaderLibrary. Она должна быть вновь создана. Вы хотите создать библиотеку сейчас?</translation>
+        <source>Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
+        <translation>Библиотека '%1' была создана старой версией YACReaderLibrary. Она должна быть вновь создана. Вы хотите создать библиотеку сейчас?</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="969"/>
@@ -922,7 +922,7 @@
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="1184"/>
-        <source>There was an error accessing the folder&apos;s path</source>
+        <source>There was an error accessing the folder's path</source>
         <translation>Ошибка доступа к пути папки</translation>
     </message>
     <message>
@@ -1074,7 +1074,7 @@ YACReaderLibrary не помешает вам создать больше биб
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="1807"/>
-        <source>The selected folder doesn&apos;t contain any library.</source>
+        <source>The selected folder doesn't contain any library.</source>
         <translation>Выбранная папка не содержит ни одной библиотеки.</translation>
     </message>
     <message>
@@ -1179,8 +1179,8 @@ YACReaderLibrary не помешает вам создать больше биб
     </message>
     <message>
         <location filename="../YACReaderLibrary/library_window.cpp" line="2649"/>
-        <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>Уже существует другая папка с именем &apos;%1&apos;.</translation>
+        <source>There is another library with the name '%1'.</source>
+        <translation>Уже существует другая папка с именем '%1'.</translation>
     </message>
 </context>
 <context>
@@ -1633,12 +1633,12 @@ YACReaderLibrary не помешает вам создать больше биб
     <name>NoLibrariesWidget</name>
     <message>
         <location filename="../YACReaderLibrary/no_libraries_widget.cpp" line="20"/>
-        <source>You don&apos;t have any libraries yet</source>
+        <source>You don't have any libraries yet</source>
         <translation>У вас нет ни одной библиотеки</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/no_libraries_widget.cpp" line="22"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don't forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Вы можете создать библиотеку в любой папке, YACReaderLibrary будет импортировать все комиксы и папки из этой папки. Если вы уже ранее создавали библиотеки, их можно будет открыть.&lt; / p &gt; &lt;p&gt;Не забывайте, что Вы можете использовать YACReader в качестве отдельного приложения для чтения комиксов на вашем компьютере.&lt;/п&gt;</translation>
     </message>
     <message>
@@ -1677,7 +1677,7 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="29"/>
         <source>Comic Flow</source>
-        <translation>Поток комиксов</translation>
+        <translation>Comic Flow</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="30"/>
@@ -1751,8 +1751,8 @@ YACReaderLibrary не помешает вам создать больше биб
     </message>
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="225"/>
-        <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
-        <translation>Учитывайте «недавние» элементы, добавленные или обновленные X&#xa0;дней назад.</translation>
+        <source>Consider 'recent' items added or updated since X days ago</source>
+        <translation>Учитывайте «недавние» элементы, добавленные или обновленные X дней назад.</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="237"/>
@@ -1838,7 +1838,7 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="../YACReaderLibrary/options_dialog.cpp" line="329"/>
         <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
+Don't schedule updates while you may be using the app actively.
 During automatic updates the app will block some of the actions until the update is finished.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
         <translation>ПРЕДУПРЕЖДЕНИЕ! Во время обновления библиотеки запись в базу данных отключена!
@@ -1918,8 +1918,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="65"/>
-        <source>&quot;Go to flow&quot; size</source>
-        <translation>Размер потока страниц</translation>
+        <source>"Go to flow" size</source>
+        <translation>Размер "Перейти к Comic Flow"</translation>
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="83"/>
@@ -2314,8 +2314,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="../YACReaderLibrary/properties_dialog.cpp" line="468"/>
-        <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation>&lt;a style=&apos;color: ##666666; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; Открыть страницу этого комикса на сайте Comic Vine &lt;/a&gt;</translation>
+        <source>Comic Vine link: &lt;a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; view &lt;/a&gt;</source>
+        <translation>&lt;a style='color: ##666666; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; Открыть страницу этого комикса на сайте Comic Vine &lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/properties_dialog.cpp" line="488"/>
@@ -2623,8 +2623,8 @@ YACReaderLibraryServer — это безголовая (без графичес�
     </message>
     <message>
         <location filename="../YACReaderLibrary/server_config_dialog.cpp" line="42"/>
-        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</source>
-        <translation>YACReader доступен для устройств iOS и Android.&lt;br/&gt;Найдите его для &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; или &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</translation>
+        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; or &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt;.</source>
+        <translation>YACReader доступен для устройств iOS и Android.&lt;br/&gt;Найдите его для &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; или &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/server_config_dialog.cpp" line="48"/>
@@ -2646,7 +2646,7 @@ YACReaderLibraryServer — это безголовая (без графичес�
     <name>SortVolumeComics</name>
     <message>
         <location filename="../YACReaderLibrary/comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please, sort the list of comics on the left until it matches the comics' information.</source>
         <translation>Пожалуйста, отсортируйте список комиксов слева, пока он не будет соответствовать информации комикса.</translation>
     </message>
     <message>
@@ -2898,8 +2898,8 @@ YACReaderLibraryServer — это безголовая (без графичес�
     <message>
         <location filename="../YACReader/viewer.cpp" line="60"/>
         <location filename="../YACReader/viewer.cpp" line="1367"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Нажмите &quot;O&quot; чтобы открыть комикс.</translation>
+        <source>Press 'O' to open comic.</source>
+        <translation>Нажмите "O" чтобы открыть комикс.</translation>
     </message>
     <message>
         <location filename="../YACReader/viewer.cpp" line="262"/>
@@ -3366,7 +3366,7 @@ YACReaderLibraryServer — это безголовая (без графичес�
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="438"/>
         <source>Show go to flow</source>
-        <translation>Показать поток страниц</translation>
+        <translation>Показать "Перейти к Comic Flow"</translation>
     </message>
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="443"/>

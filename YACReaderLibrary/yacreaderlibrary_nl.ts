@@ -69,8 +69,8 @@
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>Voordat je verbinding kunt maken met Comic Vine, heb je een eigen API-sleutel nodig. Vraag er &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;hier&lt;/a&gt; één gratis aan</translation>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href="http://www.comicvine.com/api/"&gt;here&lt;/a&gt;</source>
+        <translation>Voordat je verbinding kunt maken met Comic Vine, heb je een eigen API-sleutel nodig. Vraag er &lt;a href="http://www.comicvine.com/api/"&gt;hier&lt;/a&gt; één gratis aan</translation>
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="25"/>
@@ -228,7 +228,7 @@
     <message>
         <location filename="classic_comics_view.cpp" line="85"/>
         <source>Hide comic flow</source>
-        <translation>Sluit de Omslagbrowser</translation>
+        <translation>Comic Flow verbergen</translation>
     </message>
 </context>
 <context>
@@ -339,7 +339,7 @@
     <message>
         <location filename="db/comic_model.cpp" line="399"/>
         <source>Pages</source>
-        <translation>Pagina&apos;s</translation>
+        <translation>Pagina's</translation>
     </message>
     <message>
         <location filename="db/comic_model.cpp" line="395"/>
@@ -524,15 +524,15 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="122"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>De sneltoets &quot;%1&quot; is al aan een andere functie toegewezen</translation>
+        <source>The shortcut "%1" is already assigned to other function</source>
+        <translation>De sneltoets "%1" is al aan een andere functie toegewezen</translation>
     </message>
 </context>
 <context>
     <name>EmptyFolderWidget</name>
     <message>
         <location filename="empty_folder_widget.cpp" line="8"/>
-        <source>This folder doesn&apos;t contain comics yet</source>
+        <source>This folder doesn't contain comics yet</source>
         <translation>Deze map bevat nog geen strips</translation>
     </message>
 </context>
@@ -540,7 +540,7 @@
     <name>EmptyLabelWidget</name>
     <message>
         <location filename="empty_label_widget.cpp" line="7"/>
-        <source>This label doesn&apos;t contain comics yet</source>
+        <source>This label doesn't contain comics yet</source>
         <translation>Dit label bevat nog geen strips</translation>
     </message>
 </context>
@@ -656,7 +656,7 @@
     <message>
         <location filename="../common/comic.cpp" line="454"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>CRC-fout op pagina (%1): sommige pagina&apos;s worden niet correct weergegeven</translation>
+        <translation>CRC-fout op pagina (%1): sommige pagina's worden niet correct weergegeven</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="461"/>
@@ -698,7 +698,7 @@
         <location filename="../YACReader/goto_dialog.cpp" line="39"/>
         <location filename="../YACReader/goto_dialog.cpp" line="71"/>
         <source>Total pages : </source>
-        <translation>Totaal aantal pagina&apos;s : </translation>
+        <translation>Totaal aantal pagina's : </translation>
     </message>
     <message>
         <location filename="../YACReader/goto_dialog.cpp" line="53"/>
@@ -867,7 +867,7 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="1807"/>
-        <source>The selected folder doesn&apos;t contain any library.</source>
+        <source>The selected folder doesn't contain any library.</source>
         <translation>De geselecteerde map bevat geen bibliotheek.</translation>
     </message>
     <message>
@@ -938,8 +938,8 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="919"/>
-        <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>Bibliotheek &apos; %1&apos; is niet langer beschikbaar. Wilt u het verwijderen?</translation>
+        <source>Library '%1' is no longer available. Do you want to remove it?</source>
+        <translation>Bibliotheek ' %1' is niet langer beschikbaar. Wilt u het verwijderen?</translation>
     </message>
     <message>
         <source>Update library</source>
@@ -966,8 +966,8 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="938"/>
-        <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>Bibliotheek &apos; %1&apos; is gemaakt met een oudere versie van YACReaderLibrary. Zij moet opnieuw worden aangemaakt. Wilt u de bibliotheek nu aanmaken?</translation>
+        <source>Library '%1' has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
+        <translation>Bibliotheek ' %1' is gemaakt met een oudere versie van YACReaderLibrary. Zij moet opnieuw worden aangemaakt. Wilt u de bibliotheek nu aanmaken?</translation>
     </message>
     <message>
         <source>Pack covers</source>
@@ -1037,8 +1037,8 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="2649"/>
-        <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>Er is al een bibliotheek met de naam &apos; %1 &apos;.</translation>
+        <source>There is another library with the name '%1'.</source>
+        <translation>Er is al een bibliotheek met de naam ' %1 '.</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="898"/>
@@ -1232,7 +1232,7 @@
     </message>
     <message>
         <location filename="library_window.cpp" line="1184"/>
-        <source>There was an error accessing the folder&apos;s path</source>
+        <source>There was an error accessing the folder's path</source>
         <translation>Er is een fout opgetreden bij het verkrijgen van toegang tot het pad van de map</translation>
     </message>
     <message>
@@ -1850,12 +1850,12 @@ YACReaderLibrary zal u er niet van weerhouden om meer bibliotheken te creëren, 
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>You don&apos;t have any libraries yet</source>
+        <source>You don't have any libraries yet</source>
         <translation>Je hebt geen nog libraries</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="22"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don't forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation>&lt;P&gt;u kunt een bibliotheek maken in een willekeurige map, YACReaderLibrary importeert alle strips en mappen uit deze map. Alle bibliotheek aangemaakt in het verleden kan je openen. &lt; /p&gt; &lt;p&gt;vergeet niet dat u YACReader kan gebruiken als stand-alone applicatie voor het lezen van de strips op de computer. &lt; /p&gt;</translation>
     </message>
     <message>
@@ -1942,8 +1942,8 @@ YACReaderLibrary zal u er niet van weerhouden om meer bibliotheken te creëren, 
     </message>
     <message>
         <location filename="options_dialog.cpp" line="225"/>
-        <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
-        <translation>Overweeg &apos;recente&apos; items die sinds X dagen geleden zijn toegevoegd of bijgewerkt</translation>
+        <source>Consider 'recent' items added or updated since X days ago</source>
+        <translation>Overweeg 'recente' items die sinds X dagen geleden zijn toegevoegd of bijgewerkt</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="237"/>
@@ -2029,11 +2029,11 @@ YACReaderLibrary zal u er niet van weerhouden om meer bibliotheken te creëren, 
     <message>
         <location filename="options_dialog.cpp" line="329"/>
         <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
+Don't schedule updates while you may be using the app actively.
 During automatic updates the app will block some of the actions until the update is finished.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
+Don't schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
         <translation>WAARSCHUWING! Tijdens bibliotheekupdates is schrijven naar de database uitgeschakeld!
 Plan geen updates terwijl u de app mogelijk actief gebruikt.
@@ -2098,7 +2098,7 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
     <message>
         <location filename="options_dialog.cpp" line="29"/>
         <source>Comic Flow</source>
-        <translation>Komische stroom</translation>
+        <translation>Comic Flow</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="28"/>
@@ -2134,8 +2134,8 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="65"/>
-        <source>&quot;Go to flow&quot; size</source>
-        <translation>&quot;Naar Omslagbrowser&quot; afmetingen</translation>
+        <source>"Go to flow" size</source>
+        <translation>Grootte van "Ga naar Comic Flow"</translation>
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="83"/>
@@ -2175,17 +2175,17 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="111"/>
         <source>Only Back/Forward buttons can turn pages</source>
-        <translation>Alleen de knoppen Terug/Vooruit kunnen pagina&apos;s omslaan</translation>
+        <translation>Alleen de knoppen Terug/Vooruit kunnen pagina's omslaan</translation>
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="112"/>
         <source>Use the Left/Right buttons to turn pages.</source>
-        <translation>Gebruik de knoppen Links/Rechts om pagina&apos;s om te slaan.</translation>
+        <translation>Gebruik de knoppen Links/Rechts om pagina's om te slaan.</translation>
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="113"/>
         <source>Click left or right half of the screen to turn pages.</source>
-        <translation>Klik op de linker- of rechterhelft van het scherm om pagina&apos;s om te slaan.</translation>
+        <translation>Klik op de linker- of rechterhelft van het scherm om pagina's om te slaan.</translation>
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="139"/>
@@ -2235,7 +2235,7 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="205"/>
         <source>Double Page options</source>
-        <translation>Opties voor dubbele pagina&apos;s</translation>
+        <translation>Opties voor dubbele pagina's</translation>
     </message>
     <message>
         <location filename="../YACReader/options_dialog.cpp" line="207"/>
@@ -2560,8 +2560,8 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="468"/>
-        <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation>Comic Vine-link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; bekijken &lt;/a&gt;</translation>
+        <source>Comic Vine link: &lt;a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; view &lt;/a&gt;</source>
+        <translation>Comic Vine-link: &lt;a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href="http://www.comicvine.com/comic/4000-%1/"&gt; bekijken &lt;/a&gt;</translation>
     </message>
 </context>
 <context>
@@ -2850,8 +2850,8 @@ Voor meer informatie over de beschikbare instellingen kunt u de documentatie raa
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="42"/>
-        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</source>
-        <translation>YACReader is beschikbaar voor iOS- en Android-apparaten.&lt;br/&gt;Ontdek het voor &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; of &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</translation>
+        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; or &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt;.</source>
+        <translation>YACReader is beschikbaar voor iOS- en Android-apparaten.&lt;br/&gt;Ontdek het voor &lt;a href='https://ios.yacreader.com' style='color:rgb(193, 148, 65)'&gt;iOS&lt;/a&gt; of &lt;a href='https://android.yacreader.com' style='color:rgb(193, 148, 65)'&gt;Android&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="48"/>
@@ -2863,7 +2863,7 @@ Voor meer informatie over de beschikbare instellingen kunt u de documentatie raa
     <name>SortVolumeComics</name>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please, sort the list of comics on the left until it matches the comics' information.</source>
         <translation>Sorteer de lijst met strips aan de linkerkant totdat deze overeenkomt met de informatie over de strips.</translation>
     </message>
     <message>
@@ -3115,8 +3115,8 @@ Voor meer informatie over de beschikbare instellingen kunt u de documentatie raa
     <message>
         <location filename="../YACReader/viewer.cpp" line="60"/>
         <location filename="../YACReader/viewer.cpp" line="1367"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Druk &apos;O&apos; om een strip te openen.</translation>
+        <source>Press 'O' to open comic.</source>
+        <translation>Druk 'O' om een strip te openen.</translation>
     </message>
     <message>
         <location filename="../YACReader/viewer.cpp" line="262"/>
@@ -3583,7 +3583,7 @@ Voor meer informatie over de beschikbare instellingen kunt u de documentatie raa
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="438"/>
         <source>Show go to flow</source>
-        <translation>Toon ga naar de Omslagbrowser</translation>
+        <translation>"Ga naar Comic Flow" tonen</translation>
     </message>
     <message>
         <location filename="../YACReader/main_window_viewer.cpp" line="443"/>
