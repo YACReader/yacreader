@@ -39,11 +39,17 @@ void QsDebugOutput::output( const QString& message )
 #include <Windows.h>
 void QsDebugOutput::output( const QString& message )
 {
-    WriteConsoleW(GetStdHandle(STD_ERROR_HANDLE), message.utf16(), message.size(), NULL, NULL);
-    WriteConsoleW(GetStdHandle(STD_ERROR_HANDLE), L"\n", 1, NULL, NULL);
-
-    fprintf(stdout, "%s\n", qPrintable(message));
-    fflush(stdout);
+    HANDLE stdErr = GetStdHandle(STD_ERROR_HANDLE);
+    DWORD mode;
+    if (GetConsoleMode(stdErr, &mode)) {
+        // Real console attached — use Unicode-aware WriteConsoleW
+        WriteConsoleW(stdErr, message.utf16(), message.size(), NULL, NULL);
+        WriteConsoleW(stdErr, L"\n", 1, NULL, NULL);
+    } else {
+        // Pipe (Qt Creator, redirect, etc.) — use stdio
+        fprintf(stdout, "%s\n", qPrintable(message));
+        fflush(stdout);
+    }
 }
 
 #endif
