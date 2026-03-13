@@ -1,5 +1,6 @@
 #include "comic.h"
 
+#include <QImageReader>
 #include <QPixmap>
 #include <QRegularExpression>
 #include <QString>

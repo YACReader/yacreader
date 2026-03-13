@@ -1,6 +1,5 @@
 #include "yacreader_table_view.h"
 
-#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
 #include <QHeaderView>
@@ -10,7 +9,6 @@
 #include <QMimeData>
 #include <QApplication>
 #include <QBuffer>
-#include <qmath.h>
 
 #include "QsLog.h"
 

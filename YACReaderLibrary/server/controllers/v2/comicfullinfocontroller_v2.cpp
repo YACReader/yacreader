@@ -8,8 +8,6 @@
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
-#include <ctime>
-
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
 using namespace std;

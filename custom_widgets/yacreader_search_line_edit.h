@@ -4,7 +4,6 @@
 #include <QLineEdit>
 #include <QCompleter>
 
-#include "yacreader_global.h"
 #include "themable.h"
 
 class QToolButton;

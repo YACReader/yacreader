@@ -1,5 +1,7 @@
 #include "yacreader_http_session_store.h"
 
+#include <QMutexLocker>
+
 #include "yacreader_http_session.h"
 
 YACReaderHttpSessionStore::YACReaderHttpSessionStore(QObject *parent)

@@ -1,7 +1,15 @@
 #ifndef IMPORT_WIDGET_H
 #define IMPORT_WIDGET_H
 
-#include <QtWidgets>
+#include <QElapsedTimer>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QLabel>
+#include <QPixmap>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QString>
+#include <QWidget>
 
 #include "themable.h"
 

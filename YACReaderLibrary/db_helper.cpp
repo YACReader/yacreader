@@ -9,11 +9,11 @@
 #include <QCoreApplication>
 #include <QTextStream>
 #include <QSqlDatabase>
+#include <QSqlError>
 #include <QSqlRecord>
 #include <QSqlQuery>
 
 #include <algorithm>
-#include <limits>
 
 #include "reading_list.h"
 #include "library_item.h"

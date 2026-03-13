@@ -2,7 +2,6 @@
 #define __COMIC_H
 #include <QtCore>
 #include <QImage>
-#include <QtGui>
 #include <QByteArray>
 #include <QMap>
 

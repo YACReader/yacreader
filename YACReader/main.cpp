@@ -4,7 +4,6 @@
 #include <QImageReader>
 
 #include "main_window_viewer.h"
-#include "configuration.h"
 #include "exit_check.h"
 #include "appearance_configuration.h"
 #include "theme_manager.h"
@@ -16,10 +15,10 @@
 #include "QsLogDest.h"
 
 using namespace QsLogging;
+using namespace YACReader;
 
 #if defined(WIN32) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
 #include <crtdbg.h>
 #define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #define new DEBUG_NEW

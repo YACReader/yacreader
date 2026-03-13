@@ -2,7 +2,7 @@
 #include <QtGui>
 #include <QtDebug>
 #include <QStringBuilder>
-#include <limits>
+#include <QSqlRecord>
 
 #include "comic_item.h"
 #include "comic_model.h"
@@ -11,6 +11,7 @@
 #include "comic_db.h"
 #include "db_helper.h"
 #include "reading_list_model.h"
+#include "yacreader_global_gui.h"
 
 #ifdef use_unarr
 #include <unarr.h>

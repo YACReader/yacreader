@@ -4,8 +4,10 @@
 #include "comics_view.h"
 #include "themable.h"
 
+#include <QLabel>
 #include <QModelIndex>
 #include <QModelIndexList>
+#include <QMutex>
 
 class QSplitter;
 class QStackedWidget;

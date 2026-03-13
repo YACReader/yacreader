@@ -1,10 +1,12 @@
 #include "data_base_management.h"
 
 #include <QtCore>
+#include <QImageReader>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
 #include "initial_comic_info_extractor.h"
-#include "check_new_version.h"
 #include "db_helper.h"
-#include "yacreader_libraries.h"
 
 #include "QsLog.h"
 

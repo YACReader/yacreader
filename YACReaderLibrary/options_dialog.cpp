@@ -2,14 +2,21 @@
 
 #include "yacreader_3d_flow_config_widget.h"
 #include "api_key_dialog.h"
+#include "appearance_tab_widget.h"
+#include "theme_factory.h"
+#include "theme_manager.h"
 
 #include "yacreader_global_gui.h"
-#include "theme_manager.h"
-#include "theme_factory.h"
-#include "appearance_tab_widget.h"
 #include "app_language_utils.h"
 
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLayout>
 #include <QMessageBox>
+#include <QSettings>
+#include <QTabWidget>
+#include <QVBoxLayout>
 
 FlowType flowType = Strip;
 

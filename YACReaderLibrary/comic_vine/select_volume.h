@@ -1,8 +1,6 @@
 #ifndef SELECT_VOLUME_H
 #define SELECT_VOLUME_H
 
-#include <QtWidgets>
-
 #include "scraper_results_paginator.h"
 #include "selected_volume_info.h"
 #include "volume_search_query.h"

@@ -8,8 +8,6 @@
 #if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
 
 #include <QRhiWidget>
-#include <QtWidgets>
-#include <QtGui>
 #include <rhi/qrhi.h>
 
 #include "flow_types.h"

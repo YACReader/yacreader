@@ -1,7 +1,8 @@
 #ifndef YACREADERCONTENTVIEWSMANAGER_H
 #define YACREADERCONTENTVIEWSMANAGER_H
 
-#include <QtWidgets>
+#include <QSettings>
+#include <QStackedWidget>
 
 #include "yacreader_global_gui.h"
 #include "themable.h"

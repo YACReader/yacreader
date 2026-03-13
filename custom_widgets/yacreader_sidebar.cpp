@@ -6,7 +6,6 @@
 #include "yacreader_folders_view.h"
 #include "yacreader_reading_lists_view.h"
 #include "yacreader_library_list_widget.h"
-#include "yacreader_search_line_edit.h"
 #include "yacreader_titled_toolbar.h"
 
 #include "yacreader_global.h"

@@ -1,6 +1,6 @@
 #include "yacreader_treeview.h"
 
-#include "yacreader_global.h"
+#include <QHeaderView>
 
 YACReaderTreeView::YACReaderTreeView(QWidget *parent)
     : QTreeView(parent), clicking(false)

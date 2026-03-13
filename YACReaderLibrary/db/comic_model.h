@@ -8,7 +8,7 @@
 #include <QSqlDatabase>
 #include <QUrl>
 
-#include "yacreader_global_gui.h"
+#include "yacreader_global.h"
 
 class ComicDB;
 

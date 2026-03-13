@@ -1,7 +1,8 @@
 #include "comicdownloadinfocontroller_v2.h"
 
+#include <QUrl>
+
 #include "db_helper.h"
-#include "yacreader_libraries.h"
 
 #include "comic_db.h"
 

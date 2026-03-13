@@ -12,9 +12,6 @@
 #include "open_callbacks.h"
 #include "extract_callbacks.h"
 
-#include "7z_includes.h"
-#include "lib7zip/CPP/Common/MyInitGuid.h"
-
 #include "QsLog.h"
 
 #define _MY_WINAPI WINAPI

@@ -1,6 +1,6 @@
 #include "empty_container_info.h"
 
-#include "yacreader_global.h"
+#include <QPainter>
 
 EmptyContainerInfo::EmptyContainerInfo(QWidget *parent)
     : QWidget(parent), iconLabel(new QLabel()), titleLabel(new QLabel())

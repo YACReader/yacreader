@@ -1,6 +1,6 @@
 #include "mouse_handler.h"
 
-#include <QtWidgets>
+#include <QScrollBar>
 
 #include "configuration.h"
 #include "goto_flow_widget.h"

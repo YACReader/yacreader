@@ -1,12 +1,10 @@
 #include "main_window_viewer.h"
+#include "bookmarks_dialog.h"
 #include "configuration.h"
 #include "viewer.h"
-#include "goto_dialog.h"
-#include "custom_widgets.h"
 #include "options_dialog.h"
 #include "check_new_version.h"
 #include "comic.h"
-#include "bookmarks_dialog.h"
 #include "width_slider.h"
 #include "qnaturalsorting.h"
 #include "help_about_dialog.h"
@@ -22,12 +20,14 @@
 
 #include "whats_new_controller.h"
 
-#include <ctime>
 #include <algorithm>
 #include <utility>
 
+#include <QActionGroup>
 #include <QApplication>
 #include <QCoreApplication>
+#include <QDesktopServices>
+#include <QWindow>
 #include <QToolButton>
 #include <QMenu>
 #include <QFileDialog>
@@ -35,6 +35,7 @@
 #include <QImage>
 #include <QDate>
 #include <QMenuBar>
+#include <QStandardPaths>
 
 #ifdef use_unarr
 #include "unarr.h"

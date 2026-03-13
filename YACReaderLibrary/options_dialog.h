@@ -1,11 +1,17 @@
 #ifndef __OPTIONS_DIALOG_H
 #define __OPTIONS_DIALOG_H
 
-#include <QtWidgets>
-
-#include "yacreader_options_dialog.h"
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSlider>
+#include <QTimeEdit>
+#include <QWidget>
 
 #include "yacreader_global.h"
+#include "yacreader_options_dialog.h"
 
 using namespace YACReader;
 

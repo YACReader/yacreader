@@ -5,7 +5,7 @@
 
 #include "QsLog.h"
 
-#include <QtQuick>
+#include <QQmlContext>
 #include <QQuickWidget>
 
 ComicsView::ComicsView(QWidget *parent)

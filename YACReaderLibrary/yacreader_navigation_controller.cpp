@@ -3,8 +3,6 @@
 #include <QModelIndex>
 
 #include "library_window.h"
-#include "yacreader_folders_view.h"
-#include "yacreader_reading_lists_view.h"
 #include "folder_item.h"
 #include "yacreader_history_controller.h"
 #include "comic_model.h"
@@ -12,11 +10,12 @@
 #include "reading_list_model.h"
 #include "comics_view.h"
 #include "folder_content_view.h"
-#include "yacreader_search_line_edit.h"
 #include "yacreader_global.h"
 #include "empty_label_widget.h"
 #include "empty_special_list.h"
 #include "yacreader_content_views_manager.h"
+#include "yacreader_folders_view.h"
+#include "yacreader_reading_lists_view.h"
 
 #include "QsLog.h"
 

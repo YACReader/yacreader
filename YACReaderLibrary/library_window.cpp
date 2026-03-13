@@ -3,11 +3,23 @@
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
+#include <QApplication>
+#include <QDesktopServices>
 #include <QHBoxLayout>
+#include <QInputDialog>
+#include <QWindow>
+#include <QMenu>
+#include <QMessageBox>
+#include <QProgressDialog>
 #include <QSplitter>
+#include <QSqlError>
+#include <QStackedWidget>
 #include <QLabel>
+#include <QToolBar>
+#include <QToolButton>
 #include <QDir>
 #include <QHeaderView>
+#include <QMenuBar>
 #include <QProcess>
 #include <QtCore>
 #include <QFileDialog>
@@ -18,6 +30,11 @@
 
 #include <algorithm>
 #include <future>
+
+#ifdef Q_OS_WIN
+#include <qt_windows.h>
+#include <shellapi.h>
+#endif
 
 #include "folder_item.h"
 #include "data_base_management.h"
@@ -51,6 +68,7 @@
 #include "comics_remover.h"
 #include "yacreader_library_list_widget.h"
 #include "yacreader_folders_view.h"
+#include "yacreader_reading_lists_view.h"
 
 #include "comic_vine_dialog.h"
 #include "api_key_dialog.h"
@@ -63,7 +81,6 @@
 #include "comic_files_manager.h"
 
 #include "reading_list_model.h"
-#include "yacreader_reading_lists_view.h"
 #include "add_label_dialog.h"
 
 #include "yacreader_history_controller.h"
@@ -84,17 +101,10 @@
 
 #include "cover_utils.h"
 
-#include "theme_manager.h"
-
 #include "QsLog.h"
 
 #include "yacreader_http_server.h"
 extern YACReaderHttpServer *httpServer;
-
-#ifdef Q_OS_WIN
-#include <windows.h>
-#include <shellapi.h>
-#endif
 
 #include <KDSignalThrottler.h>
 

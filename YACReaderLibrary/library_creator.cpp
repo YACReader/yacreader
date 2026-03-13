@@ -2,6 +2,7 @@
 
 #include <QMutex>
 #include <QDebug>
+#include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QCoreApplication>

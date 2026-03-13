@@ -1,7 +1,10 @@
 #ifndef FOLDERCONTENTVIEW_H
 #define FOLDERCONTENTVIEW_H
 
-#include <QtWidgets>
+#include <QLabel>
+#include <QSlider>
+#include <QToolBar>
+#include <QWidget>
 
 #include "comic_model.h"
 #include "themable.h"

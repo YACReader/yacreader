@@ -1,5 +1,7 @@
 #include "xml_info_library_scanner.h"
 
+#include <QSqlRecord>
+
 #include "comic_db.h"
 #include "data_base_management.h"
 #include "db_helper.h"

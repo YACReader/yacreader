@@ -1,15 +1,19 @@
 #include "grid_comics_view.h"
 
-#include <QtQuick>
+#include <QApplication>
+#include <QDrag>
+#include <QHBoxLayout>
+#include <QQmlContext>
+#include <QQmlProperty>
+#include <QQuickItem>
 #include <QQuickWidget>
-#include <QtWidgets>
+#include <QToolBar>
+#include <QVBoxLayout>
 
+#include "yacreader_global_gui.h"
 #include "comic.h"
-#include "theme_manager.h"
 #include "comic_files_manager.h"
 #include "QsLog.h"
-#include "yacreader_global.h"
-#include "yacreader_tool_bar_stretch.h"
 #include "comic_db.h"
 #include "yacreader_comics_selection_helper.h"
 #include "yacreader_comic_info_helper.h"

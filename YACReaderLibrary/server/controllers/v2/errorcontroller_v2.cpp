@@ -1,8 +1,5 @@
 #include "errorcontroller_v2.h"
 
-#include "template.h"
-#include "../static.h"
-
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
 

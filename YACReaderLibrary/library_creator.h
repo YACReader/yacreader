@@ -9,7 +9,6 @@
 #include <QRegExp>
 #include <QProcess>
 #include <QtCore>
-#include <QtGui>
 #include <QMutex>
 #include <QThread>
 #include <QSqlDatabase>

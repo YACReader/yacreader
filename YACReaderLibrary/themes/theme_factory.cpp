@@ -1,6 +1,9 @@
 #include "theme_factory.h"
 
 #include <QApplication>
+#include <QLinearGradient>
+#include <QPainter>
+#include <QPen>
 
 #include "icon_utils.h"
 #include "yacreader_global.h"

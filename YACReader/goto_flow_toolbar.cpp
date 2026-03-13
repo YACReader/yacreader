@@ -1,6 +1,13 @@
 #include "goto_flow_toolbar.h"
 
-#include <QtWidgets>
+#include <QAbstractButton>
+#include <QPainter>
+#include <QHBoxLayout>
+#include <QIntValidator>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSlider>
 
 #include "configuration.h"
 

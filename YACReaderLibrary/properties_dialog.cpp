@@ -10,6 +10,7 @@
 #include "db_helper.h"
 #include "yacreader_cover_label.h"
 
+#include <QComboBox>
 #include <QHBoxLayout>
 #include <QApplication>
 #include <QSizePolicy>

@@ -1,8 +1,6 @@
 #ifndef SEARCH_SINGLE_COMIC_H
 #define SEARCH_SINGLE_COMIC_H
 
-#include <QtWidgets>
-
 #include "scraper_checkbox.h"
 #include "themable.h"
 

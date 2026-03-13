@@ -8,7 +8,6 @@
 
 #include "library_window_actions.h"
 #include "yacreader_global.h"
-#include "yacreader_global_gui.h"
 #include "yacreader_libraries.h"
 #include "libraries_update_coordinator.h"
 

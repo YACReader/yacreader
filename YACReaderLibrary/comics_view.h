@@ -1,7 +1,9 @@
 #ifndef COMICS_VIEW_H
 #define COMICS_VIEW_H
 
-#include <QtWidgets>
+#include <QAbstractItemView>
+#include <QSettings>
+#include <QWidget>
 
 #include "comic_model.h"
 

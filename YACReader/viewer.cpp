@@ -12,14 +12,13 @@
 #include "page_label_widget.h"
 #include "notifications_label_widget.h"
 #include "comic_db.h"
-#include "shortcuts_manager.h"
-#include "theme_manager.h"
 
 #include <QFile>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include <QPainter>
-
-#include <QsLog.h>
+#include <QPropertyAnimation>
+#include <QScrollBar>
 
 Viewer::Viewer(QWidget *parent)
     : QScrollArea(parent),

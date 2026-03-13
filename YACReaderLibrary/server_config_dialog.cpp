@@ -11,7 +11,6 @@
 
 #include "ip_config_helper.h"
 #include "qrcodegen.hpp"
-#include "theme_manager.h"
 
 extern YACReaderHttpServer *httpServer;
 

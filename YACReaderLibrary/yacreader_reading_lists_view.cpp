@@ -1,6 +1,5 @@
 #include "yacreader_reading_lists_view.h"
 
-#include "reading_list_item.h"
 #include "reading_list_model.h"
 
 YACReaderReadingListsView::YACReaderReadingListsView(QWidget *parent)

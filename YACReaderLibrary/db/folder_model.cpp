@@ -7,10 +7,10 @@
 #include "qnaturalsorting.h"
 
 #include "yacreader_global.h"
-#include "yacreader_global_gui.h"
 
-#include <QtGui>
 #include <QFileIconProvider>
+#include <QPainter>
+#include <QSqlRecord>
 
 #include <algorithm>
 

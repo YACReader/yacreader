@@ -3,6 +3,9 @@
 
 #include "yacreader_flow_rhi.h"
 
+#include <QMutex>
+#include <QWaitCondition>
+
 class ImageLoaderByteArray3D;
 
 class YACReaderPageFlow3D : public YACReaderFlow3D

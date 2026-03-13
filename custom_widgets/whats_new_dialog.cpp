@@ -1,7 +1,14 @@
 #include "whats_new_dialog.h"
-#include "yacreader_global.h"
 
-#include <QtWidgets>
+#include <QFrame>
+#include <QGridLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QScrollArea>
+#include <QScrollBar>
+#include <QVBoxLayout>
+
+#include "yacreader_global.h"
 
 YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     : RoundedCornersDialog(parent)

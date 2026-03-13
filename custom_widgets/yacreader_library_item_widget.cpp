@@ -1,9 +1,8 @@
 #include "yacreader_library_item_widget.h"
 
-#include "yacreader_global.h"
-#include "yacreader_global_gui.h"
-
 #include <QHBoxLayout>
+
+#include "yacreader_global.h"
 #include <QLabel>
 #include <QToolButton>
 #include <QMouseEvent>

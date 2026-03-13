@@ -1,15 +1,14 @@
 #include "info_comics_view.h"
 
-#include "yacreader_global.h"
-#include "theme_manager.h"
-
-#include <QtQuick>
+#include <QQmlProperty>
+#include <QQuickItem>
 #include <QQuickWidget>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 #include "comic.h"
 #include "comic_files_manager.h"
 #include "comic_model.h"
-#include "comic_db.h"
 #include "yacreader_comic_info_helper.h"
 #include "yacreader_comics_selection_helper.h"
 

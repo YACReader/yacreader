@@ -1,6 +1,6 @@
 #include "rounded_corners_dialog.h"
 
-#include <QtWidgets>
+#include <QPainter>
 
 YACReader::RoundedCornersDialog::RoundedCornersDialog(QWidget *parent)
     : QDialog(parent)

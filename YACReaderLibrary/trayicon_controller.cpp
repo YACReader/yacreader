@@ -4,7 +4,7 @@
 
 #include "library_window.h"
 
-#include <QtWidgets>
+#include <QApplication>
 #include <QMessageBox>
 
 #ifdef Q_OS_MACOS

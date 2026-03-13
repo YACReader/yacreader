@@ -1,11 +1,9 @@
 #include "query_parser.h"
 
+#include <QDateTime>
 #include <QVariant>
-#include <type_traits>
 #include <numeric>
 #include <stdexcept>
-
-#include <QsLog.h>
 
 const std::map<QueryParser::FieldType, std::vector<std::string>> QueryParser::fieldNames {
     { FieldType::numeric, { "numpages", "count", "arccount", "alternateCount", "rating" } },

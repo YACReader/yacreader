@@ -1,8 +1,9 @@
 #ifndef YACREADERHTTPSESSIONSTORE_H
 #define YACREADERHTTPSESSIONSTORE_H
 
+#include <QMap>
+#include <QMutex>
 #include <QObject>
-#include <QtCore>
 
 class YACReaderHttpSession;
 

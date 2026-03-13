@@ -1,7 +1,6 @@
 #ifndef THEME_H
 #define THEME_H
 
-#include <QtGui>
 #include <QJsonObject>
 
 #include "yacreader_icon.h"

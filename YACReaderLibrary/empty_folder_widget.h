@@ -1,7 +1,6 @@
 #ifndef EMPTY_FOLDER_WIDGET_H
 #define EMPTY_FOLDER_WIDGET_H
 
-#include <QtWidgets>
 #include "empty_container_info.h"
 
 class EmptyFolderWidget : public EmptyContainerInfo

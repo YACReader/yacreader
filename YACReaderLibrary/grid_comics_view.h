@@ -4,6 +4,7 @@
 #include "comics_view.h"
 #include "themable.h"
 
+#include <QLabel>
 #include <QModelIndex>
 
 #include "comic_db.h"

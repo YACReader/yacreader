@@ -4,17 +4,12 @@
 #include "yacreader_libraries.h"
 #include "yacreader_http_session.h"
 
-#include "template.h"
 #include "../static.h"
 
 #include "comic_db.h"
 #include "comic.h"
 
-#include "qnaturalsorting.h"
-
 #include "QsLog.h"
-
-#include <typeinfo>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

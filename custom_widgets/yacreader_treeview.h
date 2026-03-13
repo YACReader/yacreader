@@ -1,7 +1,14 @@
 #ifndef YACREADER_TREEVIEW_H
 #define YACREADER_TREEVIEW_H
 
-#include <QtWidgets>
+#include <QDragEnterEvent>
+#include <QDragLeaveEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QMouseEvent>
+#include <QPoint>
+#include <QTimer>
+#include <QTreeView>
 
 #include "themable.h"
 

@@ -4,7 +4,6 @@
 #include <QtCore>
 #include <QSqlQuery>
 
-#include "yacreader_global.h"
 #include "concurrent_queue.h"
 
 class ComicItem;

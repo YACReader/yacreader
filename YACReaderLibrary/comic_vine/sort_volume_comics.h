@@ -1,7 +1,6 @@
 #ifndef SORT_VOLUME_COMICS_H
 #define SORT_VOLUME_COMICS_H
 
-#include <QtWidgets>
 #include <QModelIndex>
 #include <QPushButton>
 #include <QPainter>

@@ -1,5 +1,8 @@
 #include "add_label_dialog.h"
 
+#include <QLabel>
+#include <QVBoxLayout>
+
 namespace {
 const char *labelColorNames[] = {
     QT_TR_NOOP("red"),

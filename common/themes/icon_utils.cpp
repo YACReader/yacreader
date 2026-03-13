@@ -1,5 +1,6 @@
 #include "icon_utils.h"
 
+#include <QPainter>
 #include <QSvgRenderer>
 
 #include "yacreader_global.h"

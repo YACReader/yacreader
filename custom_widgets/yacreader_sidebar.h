@@ -1,7 +1,13 @@
 #ifndef YACREADER_SIDEBAR_H
 #define YACREADER_SIDEBAR_H
 
-#include <QtWidgets>
+#include <QCloseEvent>
+#include <QColor>
+#include <QList>
+#include <QPaintEvent>
+#include <QSettings>
+#include <QSplitter>
+#include <QWidget>
 
 #include "themable.h"
 

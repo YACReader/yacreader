@@ -2,7 +2,6 @@
 #define __CHECKUPDATE_H
 
 #include "http_worker.h"
-#include "yacreader_global.h"
 
 #include <QByteArray>
 #include <QThread>

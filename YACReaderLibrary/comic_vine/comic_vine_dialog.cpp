@@ -1,5 +1,7 @@
 #include "comic_vine_dialog.h"
+#include <QApplication>
 #include <QHBoxLayout>
+#include <QScreen>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
@@ -7,7 +9,6 @@
 #include <QStackedWidget>
 #include <QTableView>
 #include <QVBoxLayout>
-#include <QtWidgets>
 #include <QtConcurrent/QtConcurrentRun>
 #include "data_base_management.h"
 #include <QSqlDatabase>

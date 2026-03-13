@@ -1,7 +1,9 @@
 #ifndef ICON_UTILS_H
 #define ICON_UTILS_H
 
-#include <QtGui>
+#include <QColor>
+#include <QPixmap>
+#include <QString>
 
 // Render an SVG file to a QPixmap at a specific logical size with HiDPI support.
 // Uses QSvgRenderer to rasterize directly at the target resolution (no upscaling).

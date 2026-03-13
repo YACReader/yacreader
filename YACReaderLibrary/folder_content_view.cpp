@@ -2,18 +2,20 @@
 
 #include "folder_model.h"
 #include "grid_comics_view.h"
-#include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_tool_bar_stretch.h"
 #include "comic.h"
 #include "comic_files_manager.h"
-#include "theme_manager.h"
 
 #include "QsLog.h"
 
+#include <QApplication>
+#include <QHBoxLayout>
 #include <QQmlContext>
 #include <QQuickItem>
 #include <QQuickWidget>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 using namespace YACReader;
 

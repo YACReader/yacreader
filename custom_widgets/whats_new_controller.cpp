@@ -3,8 +3,6 @@
 #include "whats_new_dialog.h"
 #include "yacreader_global.h"
 
-#include <QtCore>
-
 YACReader::WhatsNewController::WhatsNewController() { }
 
 void YACReader::WhatsNewController::showWhatsNewIfNeeded(QWidget *fromParent)

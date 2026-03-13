@@ -1,5 +1,7 @@
 #include "comic_query_result_processor.h"
 
+#include <QSqlRecord>
+
 #include "comic_item.h"
 #include "comic_model.h"
 #include "data_base_management.h"

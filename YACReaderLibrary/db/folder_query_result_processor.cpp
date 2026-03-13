@@ -5,8 +5,9 @@
 #include "data_base_management.h"
 #include "search_query.h"
 
-#include <QSqlQuery>
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlRecord>
 
 // Copy/pasted from "folder_model.cpp"
 #define ROOT 1

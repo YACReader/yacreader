@@ -19,8 +19,6 @@
 
 #include "console_ui_library_creator.h"
 
-#include <iostream>
-
 #include "QsLog.h"
 #include "QsLogDest.h"
 #include "qrcodegen.hpp"

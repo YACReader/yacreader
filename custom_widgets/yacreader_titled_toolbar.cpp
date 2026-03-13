@@ -1,6 +1,5 @@
 #include "yacreader_titled_toolbar.h"
 
-#include "yacreader_global.h"
 #include "yacreader_busy_widget.h"
 
 #include <QAction>

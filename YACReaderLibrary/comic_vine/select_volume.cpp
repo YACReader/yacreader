@@ -21,7 +21,6 @@
 #include "comic_vine_client.h"
 #include "scraper_scroll_label.h"
 
-#include "response_parser.h"
 #include "scraper_results_paginator.h"
 
 #include "selected_volume_info.h"

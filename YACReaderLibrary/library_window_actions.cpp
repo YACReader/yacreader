@@ -15,7 +15,6 @@
 #include "theme_manager.h"
 
 #include <QtCore>
-#include <QtWidgets>
 
 LibraryWindowActions::LibraryWindowActions()
 {

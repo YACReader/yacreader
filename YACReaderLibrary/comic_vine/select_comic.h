@@ -1,8 +1,6 @@
 #ifndef SELECT_COMIC_H
 #define SELECT_COMIC_H
 
-#include <QtWidgets>
-
 #include "scraper_results_paginator.h"
 #include "themable.h"
 

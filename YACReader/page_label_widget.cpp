@@ -1,6 +1,11 @@
 #include "page_label_widget.h"
 
-#include <QtWidgets>
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPainter>
+#include <QPropertyAnimation>
+#include <QScreen>
 
 PageLabelWidget::PageLabelWidget(QWidget *parent)
     : QWidget(parent)

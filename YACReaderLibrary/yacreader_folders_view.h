@@ -1,10 +1,12 @@
 #ifndef YACREADER_FOLDERS_VIEW_H
 #define YACREADER_FOLDERS_VIEW_H
 
+#include <QPainter>
+#include <QStyledItemDelegate>
+#include <QStyleOptionViewItem>
+
 #include "yacreader_treeview.h"
 #include "theme.h"
-
-#include <QtWidgets>
 
 class YACReaderFoldersView : public YACReaderTreeView
 {

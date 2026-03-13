@@ -2,7 +2,6 @@
 #define __DATA_BASE_MANAGEMENT_H
 
 #include <QtCore>
-#include <QtSql>
 #include <QSqlDatabase>
 
 class ComicsInfoExporter : public QThread

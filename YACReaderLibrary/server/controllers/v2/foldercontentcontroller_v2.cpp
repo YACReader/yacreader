@@ -14,7 +14,6 @@
 #include "QsLog.h"
 
 #include <chrono>
-#include <ctime>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

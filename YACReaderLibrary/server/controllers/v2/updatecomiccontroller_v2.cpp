@@ -1,13 +1,10 @@
 #include "updatecomiccontroller_v2.h"
 
-#include "db_helper.h"
-#include "yacreader_libraries.h"
+#include <QUrl>
 
-#include "template.h"
-#include "../static.h"
+#include "db_helper.h"
 
 #include "comic_db.h"
-#include "comic.h"
 
 #include "QsLog.h"
 

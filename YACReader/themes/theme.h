@@ -1,7 +1,7 @@
 #ifndef THEME_H
 #define THEME_H
 
-#include <QtGui>
+#include <QIcon>
 #include <QJsonObject>
 
 #include "help_about_dialog_theme.h"

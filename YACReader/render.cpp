@@ -7,8 +7,6 @@
 #include <QApplication>
 #include <QImage>
 
-#include <typeinfo>
-
 #include "comic_db.h"
 #include "yacreader_global_gui.h"
 #include "configuration.h"

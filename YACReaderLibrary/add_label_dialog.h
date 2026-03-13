@@ -1,7 +1,10 @@
 #ifndef ADD_LABEL_DIALOG_H
 #define ADD_LABEL_DIALOG_H
 
-#include <QtWidgets>
+#include <QDialog>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QPushButton>
 
 #include "yacreader_global.h"
 #include "themable.h"

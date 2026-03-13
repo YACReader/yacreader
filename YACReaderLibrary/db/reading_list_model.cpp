@@ -8,7 +8,9 @@
 
 #include "QsLog.h"
 
-#include <typeinfo>
+#include <QSqlRecord>
+
+#include "yacreader_global_gui.h"
 
 ReadingListModel::ReadingListModel(QObject *parent)
     : QAbstractItemModel(parent), rootItem(0)

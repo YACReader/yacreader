@@ -1,9 +1,7 @@
 #include "yacreader_folders_view.h"
 
-#include "yacreader_global.h"
 #include "yacreader_treeview.h"
 
-#include "folder_item.h"
 #include "folder_model.h"
 
 #include "comic.h"

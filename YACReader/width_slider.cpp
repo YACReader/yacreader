@@ -1,8 +1,10 @@
 #include "width_slider.h"
 
-#include <QtWidgets>
-
-#include "configuration.h"
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPainter>
+#include <QPushButton>
+#include <QSlider>
 
 YACReaderSliderAction::YACReaderSliderAction(QWidget *parent)
     : QWidgetAction(parent)

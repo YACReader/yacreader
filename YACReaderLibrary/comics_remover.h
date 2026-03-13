@@ -4,7 +4,6 @@
 #include <QThread>
 
 #include <QModelIndex>
-#include <comic_db.h>
 
 class ComicsRemover : public QObject
 {

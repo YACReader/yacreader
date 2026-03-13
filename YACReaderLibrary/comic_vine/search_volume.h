@@ -1,7 +1,9 @@
 #ifndef SEARCH_VOLUME_H
 #define SEARCH_VOLUME_H
 
-#include <QtWidgets>
+#include <QLabel>
+#include <QWidget>
+
 #include "scraper_checkbox.h"
 #include "themable.h"
 

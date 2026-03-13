@@ -1,7 +1,12 @@
 #ifndef EMPTY_CONTAINER_INFO_H
 #define EMPTY_CONTAINER_INFO_H
 
-#include <QtWidgets>
+#include <QLabel>
+#include <QPaintEvent>
+#include <QPixmap>
+#include <QString>
+#include <QVBoxLayout>
+#include <QWidget>
 
 #include "themable.h"
 

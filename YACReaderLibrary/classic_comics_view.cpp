@@ -2,7 +2,15 @@
 
 #include "yacreader_global.h"
 
-#include "QStackedWidget"
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QMenu>
+#include <QSettings>
+#include <QSplitter>
+#include <QStackedWidget>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 #include "comic_flow_widget.h"
 #include "shortcuts_manager.h"
