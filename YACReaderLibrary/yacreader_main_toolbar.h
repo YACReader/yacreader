@@ -1,9 +1,9 @@
 #ifndef YACREADER_MAIN_TOOLBAR_H
 #define YACREADER_MAIN_TOOLBAR_H
 
-#include <QWidget>
-
 #include "themable.h"
+
+#include <QWidget>
 
 class QToolButton;
 class QLabel;

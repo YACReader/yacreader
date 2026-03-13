@@ -5,6 +5,7 @@
 
 #include "yacreader_main_toolbar.h"
 #include "yacreader_search_line_edit.h"
+
 #include <QMainWindow>
 
 class YACReaderMacOSXSearchLineEdit : public YACReaderSearchLineEdit

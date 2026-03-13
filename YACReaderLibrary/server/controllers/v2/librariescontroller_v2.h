@@ -2,8 +2,8 @@
 #define LIBRARIESCONTROLLER_V2_H
 
 #include "httprequest.h"
-#include "httpresponse.h"
 #include "httprequesthandler.h"
+#include "httpresponse.h"
 
 /**
   This controller displays a HTML form and dumps the submitted input.

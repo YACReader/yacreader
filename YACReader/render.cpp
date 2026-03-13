@@ -1,15 +1,17 @@
 #include "render.h"
-#include <cmath>
-#include <QList>
-#include <algorithm>
-#include <QByteArray>
-#include <QPixmap>
-#include <QApplication>
-#include <QImage>
 
 #include "comic_db.h"
-#include "yacreader_global_gui.h"
 #include "configuration.h"
+#include "yacreader_global_gui.h"
+
+#include <QApplication>
+#include <QByteArray>
+#include <QImage>
+#include <QList>
+#include <QPixmap>
+
+#include <algorithm>
+#include <cmath>
 
 template<class T>
 inline const T &kClamp(const T &x, const T &low, const T &high)

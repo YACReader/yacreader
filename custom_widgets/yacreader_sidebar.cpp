@@ -1,15 +1,14 @@
 #include "yacreader_sidebar.h"
 
-#include <QPainter>
-#include <QLayout>
-
 #include "yacreader_folders_view.h"
-#include "yacreader_reading_lists_view.h"
-#include "yacreader_library_list_widget.h"
-#include "yacreader_titled_toolbar.h"
-
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
+#include "yacreader_library_list_widget.h"
+#include "yacreader_reading_lists_view.h"
+#include "yacreader_titled_toolbar.h"
+
+#include <QLayout>
+#include <QPainter>
 
 YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     : QWidget(parent)

@@ -4,14 +4,14 @@
 #include "actions_shortcuts_model.h"
 #include "edit_shortcut_item_delegate.h"
 
-#include <QVBoxLayout>
-#include <QSplitter>
-#include <QListView>
-#include <QTableView>
-#include <QPushButton>
 #include <QHeaderView>
 #include <QLabel>
+#include <QListView>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QSplitter>
+#include <QTableView>
+#include <QVBoxLayout>
 
 EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
     : QDialog(parent)

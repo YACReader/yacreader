@@ -1,9 +1,9 @@
 #include "yacreader_global.h"
 
-#include <QModelIndex>
-#include <QLibrary>
-#include <QFileInfo>
 #include <QCoreApplication>
+#include <QFileInfo>
+#include <QLibrary>
+#include <QModelIndex>
 
 using namespace YACReader;
 

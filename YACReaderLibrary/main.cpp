@@ -1,29 +1,29 @@
 #include "library_window.h"
 
 #include <QApplication>
-#include <QSettings>
-#include <QLocale>
 #include <QDir>
-#include <QSysInfo>
 #include <QFileInfo>
+#include <QLocale>
+#include <QSettings>
+#include <QSysInfo>
 #if !defined use_unarr && !defined use_libarchive
 #include <QLibrary>
 #endif
-#include <QCommandLineParser>
-#include <QImageReader>
-
-#include "yacreader_global.h"
-#include "yacreader_http_server.h"
-#include "yacreader_local_server.h"
+#include "app_language_utils.h"
+#include "appearance_configuration.h"
 #include "comic_db.h"
 #include "data_base_management.h"
 #include "db_helper.h"
-#include "yacreader_libraries.h"
 #include "exit_check.h"
-#include "appearance_configuration.h"
 #include "theme_manager.h"
 #include "theme_repository.h"
-#include "app_language_utils.h"
+#include "yacreader_global.h"
+#include "yacreader_http_server.h"
+#include "yacreader_libraries.h"
+#include "yacreader_local_server.h"
+
+#include <QCommandLineParser>
+#include <QImageReader>
 #ifdef Q_OS_MACOS
 #include "trayhandler.h"
 #endif

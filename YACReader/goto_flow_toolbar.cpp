@@ -1,15 +1,15 @@
 #include "goto_flow_toolbar.h"
 
+#include "configuration.h"
+
 #include <QAbstractButton>
-#include <QPainter>
 #include <QHBoxLayout>
 #include <QIntValidator>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPainter>
 #include <QPushButton>
 #include <QSlider>
-
-#include "configuration.h"
 
 GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     : QStackedWidget(parent)

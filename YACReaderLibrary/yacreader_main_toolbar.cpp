@@ -1,12 +1,12 @@
 #include "yacreader_main_toolbar.h"
 
-#include <QPainter>
-#include <QHBoxLayout>
-#include <QToolButton>
-#include <QLabel>
-#include <QResizeEvent>
-#include <QPaintEvent>
 #include <QAction>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPaintEvent>
+#include <QPainter>
+#include <QResizeEvent>
+#include <QToolButton>
 
 YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     : QWidget(parent)

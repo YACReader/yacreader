@@ -1,6 +1,9 @@
 #include "classic_comics_view.h"
 
+#include "comic_flow_widget.h"
+#include "shortcuts_manager.h"
 #include "yacreader_global.h"
+#include "yacreader_table_view.h"
 
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -11,10 +14,6 @@
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QVBoxLayout>
-
-#include "comic_flow_widget.h"
-#include "shortcuts_manager.h"
-#include "yacreader_table_view.h"
 
 ClassicComicsView::ClassicComicsView(QWidget *parent)
     : ComicsView(parent), searching(false)

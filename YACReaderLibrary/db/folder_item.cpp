@@ -1,7 +1,8 @@
-#include <QStringList>
-
 #include "folder_item.h"
+
 #include "qnaturalsorting.h"
+
+#include <QStringList>
 
 FolderItem::FolderItem(const QList<QVariant> &data, FolderItem *parent)
 {

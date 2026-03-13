@@ -1,16 +1,15 @@
 #ifndef FOLDERCONTENTVIEW_H
 #define FOLDERCONTENTVIEW_H
 
+#include "comic_db.h"
+#include "comic_model.h"
+#include "folder.h"
+#include "themable.h"
+
 #include <QLabel>
 #include <QSlider>
 #include <QToolBar>
 #include <QWidget>
-
-#include "comic_model.h"
-#include "themable.h"
-
-#include "folder.h"
-#include "comic_db.h"
 
 class FolderModel;
 class ComicModel;

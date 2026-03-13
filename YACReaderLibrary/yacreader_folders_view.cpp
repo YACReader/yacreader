@@ -1,13 +1,10 @@
 #include "yacreader_folders_view.h"
 
-#include "yacreader_treeview.h"
-
-#include "folder_model.h"
-
+#include "QsLog.h"
 #include "comic.h"
 #include "comic_files_manager.h"
-
-#include "QsLog.h"
+#include "folder_model.h"
+#include "yacreader_treeview.h"
 
 YACReaderFoldersView::YACReaderFoldersView(QWidget *parent)
     : YACReaderTreeView(parent)

@@ -1,15 +1,12 @@
 #include "comiccontrollerinreadinglist_v2.h"
 
-#include "db_helper.h"
-#include "yacreader_libraries.h"
-#include "yacreader_http_session.h"
-
 #include "../static.h"
-
-#include "comic_db.h"
-#include "comic.h"
-
 #include "QsLog.h"
+#include "comic.h"
+#include "comic_db.h"
+#include "db_helper.h"
+#include "yacreader_http_session.h"
+#include "yacreader_libraries.h"
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

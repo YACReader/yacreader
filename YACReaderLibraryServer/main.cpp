@@ -1,28 +1,24 @@
-#include <QCoreApplication>
-#include <QSysInfo>
-#include <QDir>
-#include <QCommandLineParser>
-#include <QImageReader>
-
-#include "comic_db.h"
-#include "data_base_management.h"
-#include "db_helper.h"
-#include "yacreader_http_server.h"
-#include "yacreader_global.h"
-#include "yacreader_libraries.h"
-#include "yacreader_local_server.h"
-#include "global_info_provider.h"
-
-#include "libraries_update_coordinator.h"
-
-#include "libraries_updater.h"
-
-#include "console_ui_library_creator.h"
-
 #include "QsLog.h"
 #include "QsLogDest.h"
-#include "qrcodegen.hpp"
+#include "comic_db.h"
+#include "console_ui_library_creator.h"
+#include "data_base_management.h"
+#include "db_helper.h"
+#include "global_info_provider.h"
 #include "ip_config_helper.h"
+#include "libraries_update_coordinator.h"
+#include "libraries_updater.h"
+#include "qrcodegen.hpp"
+#include "yacreader_global.h"
+#include "yacreader_http_server.h"
+#include "yacreader_libraries.h"
+#include "yacreader_local_server.h"
+
+#include <QCommandLineParser>
+#include <QCoreApplication>
+#include <QDir>
+#include <QImageReader>
+#include <QSysInfo>
 
 using namespace QsLogging;
 

@@ -1,11 +1,11 @@
 #ifndef YACREADERCONTENTVIEWSMANAGER_H
 #define YACREADERCONTENTVIEWSMANAGER_H
 
+#include "themable.h"
+#include "yacreader_global_gui.h"
+
 #include <QSettings>
 #include <QStackedWidget>
-
-#include "yacreader_global_gui.h"
-#include "themable.h"
 
 class LibraryWindow;
 

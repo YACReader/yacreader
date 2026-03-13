@@ -1,19 +1,17 @@
 #include "yacreader_table_view.h"
 
-#include "yacreader_global_gui.h"
-
-#include <QHeaderView>
-#include <QResizeEvent>
-#include <QPainter>
-#include <QDrag>
-#include <QMimeData>
-#include <QApplication>
-#include <QBuffer>
-
 #include "QsLog.h"
-
 #include "comic_item.h"
 #include "comic_model.h"
+#include "yacreader_global_gui.h"
+
+#include <QApplication>
+#include <QBuffer>
+#include <QDrag>
+#include <QHeaderView>
+#include <QMimeData>
+#include <QPainter>
+#include <QResizeEvent>
 
 YACReaderTableView::YACReaderTableView(QWidget *parent)
     : QTableView(parent), editing(false), myeditor(0)

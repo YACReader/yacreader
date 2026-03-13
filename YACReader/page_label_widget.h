@@ -1,9 +1,9 @@
 #ifndef PAGE_LABEL_WIDGET_H
 #define PAGE_LABEL_WIDGET_H
 
-#include <QWidget>
-
 #include "themable.h"
+
+#include <QWidget>
 
 class QLabel;
 class QPropertyAnimation;

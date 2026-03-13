@@ -1,10 +1,10 @@
 #ifndef YACREADER_TABLE_VIEW_H
 #define YACREADER_TABLE_VIEW_H
 
-#include <QTableView>
-#include <QStyledItemDelegate>
-
 #include "themable.h"
+
+#include <QStyledItemDelegate>
+#include <QTableView>
 
 class QResizeEvent;
 

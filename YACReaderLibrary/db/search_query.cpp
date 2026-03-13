@@ -1,9 +1,10 @@
 
 #include "search_query.h"
+
 #include "query_parser.h"
 
-#include <QtCore>
 #include <QSqlQuery>
+#include <QtCore>
 
 QSqlQuery foldersSearchQuery(QSqlDatabase &db, const QString &filter)
 {

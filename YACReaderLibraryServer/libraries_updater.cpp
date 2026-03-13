@@ -1,8 +1,8 @@
 #include "libraries_updater.h"
 
+#include "data_base_management.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
-#include "data_base_management.h"
 
 LibrariesUpdater::LibrariesUpdater()
 {

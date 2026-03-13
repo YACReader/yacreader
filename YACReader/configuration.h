@@ -1,16 +1,16 @@
 #ifndef __CONFIGURATION_H
 #define __CONFIGURATION_H
 
-#include <QByteArray>
-#include <QString>
-#include <QSize>
-#include <QObject>
-#include <QColor>
-#include <QSettings>
-#include <QDate>
-
-#include "yacreader_global_gui.h"
 #include "resize_image.h"
+#include "yacreader_global_gui.h"
+
+#include <QByteArray>
+#include <QColor>
+#include <QDate>
+#include <QObject>
+#include <QSettings>
+#include <QSize>
+#include <QString>
 
 #define CONF_FILE_PATH "."
 #define SLIDE_ASPECT_RATIO 1.585

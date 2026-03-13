@@ -1,4 +1,5 @@
 #include "comic_flow_widget.h"
+
 #include <QVBoxLayout>
 
 ComicFlowWidget::ComicFlowWidget(QWidget *parent)

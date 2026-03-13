@@ -1,9 +1,9 @@
 #include "add_library_dialog.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QFileDialog>
 #include <QGridLayout>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 AddLibraryDialog::AddLibraryDialog(QWidget *parent)
     : QDialog(parent)

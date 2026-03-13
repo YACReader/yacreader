@@ -1,13 +1,13 @@
 #ifndef SORT_VOLUME_COMICS_H
 #define SORT_VOLUME_COMICS_H
 
-#include <QModelIndex>
-#include <QPushButton>
-#include <QPainter>
-
 #include "comic_db.h"
 #include "scraper_results_paginator.h"
 #include "themable.h"
+
+#include <QModelIndex>
+#include <QPainter>
+#include <QPushButton>
 
 class ScraperTableView;
 class LocalComicListModel;

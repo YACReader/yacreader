@@ -1,17 +1,18 @@
 
-#include <QtGui>
-#include <QtDebug>
-#include <QStringBuilder>
-#include <QSqlRecord>
-
-#include "comic_item.h"
 #include "comic_model.h"
-#include "data_base_management.h"
-#include "qnaturalsorting.h"
+
 #include "comic_db.h"
+#include "comic_item.h"
+#include "data_base_management.h"
 #include "db_helper.h"
+#include "qnaturalsorting.h"
 #include "reading_list_model.h"
 #include "yacreader_global_gui.h"
+
+#include <QSqlRecord>
+#include <QStringBuilder>
+#include <QtDebug>
+#include <QtGui>
 
 #ifdef use_unarr
 #include <unarr.h>

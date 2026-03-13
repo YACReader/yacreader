@@ -1,13 +1,14 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include <QImage>
-#include <QPixmap>
-#include <QPainter>
-#include <QThread>
-#include <QByteArray>
-#include <QVector>
 #include "comic.h"
+
+#include <QByteArray>
+#include <QImage>
+#include <QPainter>
+#include <QPixmap>
+#include <QThread>
+#include <QVector>
 //-----------------------------------------------------------------------------
 // FILTERS
 //-----------------------------------------------------------------------------

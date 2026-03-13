@@ -1,6 +1,8 @@
 #ifndef IMPORT_WIDGET_H
 #define IMPORT_WIDGET_H
 
+#include "themable.h"
+
 #include <QElapsedTimer>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -9,9 +11,8 @@
 #include <QPropertyAnimation>
 #include <QPushButton>
 #include <QString>
+#include <QToolButton>
 #include <QWidget>
-
-#include "themable.h"
 
 class ImportWidget : public QWidget, protected Themable
 {

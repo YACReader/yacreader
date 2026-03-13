@@ -50,11 +50,20 @@ BreakTemplateDeclarations: Yes
 # clang-format does not handle that.
 AllowShortFunctionsOnASingleLine: Inline
 
-# The coding style specifies some include order categories, but also tells to
-# separate categories with an empty line. It does not specify the order within
-# the categories. Since the SortInclude feature of clang-format does not
-# re-order includes separated by empty lines, the feature is not used.
-SortIncludes: false
+# Sort includes and regroup them into consistent blocks:
+#   0. self include (the .h matching the .cpp, automatic)
+#   1. project includes  ""
+#   2. Qt includes       <Q...>
+#   3. system includes   <...>
+SortIncludes: CaseSensitive
+IncludeBlocks: Regroup
+IncludeCategories:
+    - Regex: "^\""
+      Priority: 1
+    - Regex: "^<Q"
+      Priority: 2
+    - Regex: "^<"
+      Priority: 3
 
 # macros for which the opening brace stays attached.
 ForEachMacros:   [ foreach, BOOST_FOREACH, forever, Q_FOREVER, QBENCHMARK, QBENCHMARK_ONCE ]

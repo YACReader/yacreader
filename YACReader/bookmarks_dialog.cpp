@@ -1,13 +1,13 @@
 #include "bookmarks_dialog.h"
 
-#include <QGridLayout>
-#include <QLabel>
+#include "bookmarks.h"
+
 #include <QApplication>
 #include <QFrame>
+#include <QGridLayout>
 #include <QImage>
+#include <QLabel>
 #include <QScreen>
-
-#include "bookmarks.h"
 
 BookmarksDialog::BookmarksDialog(QWidget *parent)
     : QDialog(parent)

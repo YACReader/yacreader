@@ -1,13 +1,12 @@
 #ifndef __COMIC_FLOW_WIDGET_H
 #define __COMIC_FLOW_WIDGET_H
 
-#include <QWidget>
-
-#include "yacreader_global.h"
-
-#include "yacreader_comic_flow_rhi.h"
-#include "yacreader_global_gui.h"
 #include "themable.h"
+#include "yacreader_comic_flow_rhi.h"
+#include "yacreader_global.h"
+#include "yacreader_global_gui.h"
+
+#include <QWidget>
 
 class ComicFlowWidget : public QWidget, protected Themable
 {

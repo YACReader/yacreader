@@ -1,12 +1,12 @@
 #ifndef __COMIC_H
 #define __COMIC_H
-#include <QtCore>
-#include <QImage>
-#include <QByteArray>
-#include <QMap>
-
-#include "extract_delegate.h"
 #include "bookmarks.h"
+#include "extract_delegate.h"
+
+#include <QByteArray>
+#include <QImage>
+#include <QMap>
+#include <QtCore>
 #ifndef NO_PDF
 #include "pdf_comic.h"
 #endif // NO_PDF

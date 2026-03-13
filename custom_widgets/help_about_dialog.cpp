@@ -1,17 +1,16 @@
 #include "help_about_dialog.h"
 
 #include "global_info_provider.h"
+#include "yacreader_global.h"
 
-#include <QtCore>
-#include <QVBoxLayout>
-#include <QTabWidget>
-#include <QTextBrowser>
 #include <QApplication>
 #include <QFile>
-#include <QTextStream>
 #include <QScreen>
-
-#include "yacreader_global.h"
+#include <QTabWidget>
+#include <QTextBrowser>
+#include <QTextStream>
+#include <QVBoxLayout>
+#include <QtCore>
 
 HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     : QDialog(parent)

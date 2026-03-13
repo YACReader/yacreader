@@ -1,6 +1,8 @@
 #ifndef YACREADER_TREEVIEW_H
 #define YACREADER_TREEVIEW_H
 
+#include "themable.h"
+
 #include <QDragEnterEvent>
 #include <QDragLeaveEvent>
 #include <QDragMoveEvent>
@@ -9,8 +11,6 @@
 #include <QPoint>
 #include <QTimer>
 #include <QTreeView>
-
-#include "themable.h"
 
 class YACReaderTreeView : public QTreeView, protected Themable
 {

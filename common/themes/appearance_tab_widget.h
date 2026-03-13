@@ -6,6 +6,7 @@
 #include <QJsonObject>
 #include <QPointer>
 #include <QWidget>
+
 #include <functional>
 #include <optional>
 

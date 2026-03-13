@@ -1,9 +1,9 @@
 #ifndef SCRAPER_SCROLL_LABEL_H
 #define SCRAPER_SCROLL_LABEL_H
 
-#include <QScrollArea>
-
 #include "themable.h"
+
+#include <QScrollArea>
 
 class QLabel;
 

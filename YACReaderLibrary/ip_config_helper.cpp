@@ -1,6 +1,8 @@
-#include <QNetworkInterface>
 #include "ip_config_helper.h"
+
 #include "qnaturalsorting.h"
+
+#include <QNetworkInterface>
 
 // 192.168 (most comon local subnet for ips are always put first)
 // IPs are sorted using natoral sorting

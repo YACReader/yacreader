@@ -3,17 +3,17 @@
   @author Stefan Frings
 */
 
-#include "static.h"
 #include "yacreader_http_server.h"
+
+#include "static.h"
 // #include "dualfilelogger.h"
 #include "httplistener.h"
 #include "requestmapper.h"
 #include "staticfilecontroller.h"
-
 #include "yacreader_global.h"
 
-#include <QDir>
 #include <QCoreApplication>
+#include <QDir>
 
 /** Name of this application */
 #define APPNAME "YACReaderLibrary"

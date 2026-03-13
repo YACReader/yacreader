@@ -1,4 +1,5 @@
 #include "scraper_results_paginator.h"
+
 #include "response_parser.h"
 
 #include <QHBoxLayout>

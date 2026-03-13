@@ -1,10 +1,10 @@
 #ifndef EDIT_SHORTCUTS_DIALOG_H
 #define EDIT_SHORTCUTS_DIALOG_H
 
+#include "themable.h"
+
 #include <QDialog>
 #include <QModelIndex>
-
-#include "themable.h"
 
 class QListView;
 class QTableView;

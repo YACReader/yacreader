@@ -1,19 +1,19 @@
 #ifndef TREEMODEL_H
 #define TREEMODEL_H
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QModelIndex>
-#include <QVariant>
-#include <QSqlQuery>
-#include <QSqlDatabase>
-#include <QUrl>
-#include <QIcon>
-
 #include "folder.h"
 #include "folder_query_result_processor.h"
-#include "yacreader_global.h"
 #include "themable.h"
+#include "yacreader_global.h"
+
+#include <QAbstractItemModel>
+#include <QIcon>
+#include <QModelIndex>
+#include <QSortFilterProxyModel>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QUrl>
+#include <QVariant>
 
 class FolderItem;
 

@@ -1,31 +1,29 @@
 #include "db_helper.h"
 
-#include <QMap>
-#include <QString>
-#include <QList>
-#include <QDateTime>
-#include <QFile>
-#include <QFileInfo>
-#include <QCoreApplication>
-#include <QTextStream>
-#include <QSqlDatabase>
-#include <QSqlError>
-#include <QSqlRecord>
-#include <QSqlQuery>
-
-#include <algorithm>
-
-#include "reading_list.h"
-#include "library_item.h"
+#include "QsLog.h"
 #include "comic_db.h"
 #include "data_base_management.h"
 #include "folder.h"
-#include "yacreader_libraries.h"
-#include "yacreader_global.h"
-
+#include "library_item.h"
 #include "qnaturalsorting.h"
+#include "reading_list.h"
+#include "yacreader_global.h"
+#include "yacreader_libraries.h"
 
-#include "QsLog.h"
+#include <QCoreApplication>
+#include <QDateTime>
+#include <QFile>
+#include <QFileInfo>
+#include <QList>
+#include <QMap>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QString>
+#include <QTextStream>
+
+#include <algorithm>
 
 using namespace YACReader;
 

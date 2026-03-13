@@ -1,27 +1,28 @@
 #include "theme_editor_dialog.h"
 
-#include <cmath>
+#include <QApplication>
+#include <QColorDialog>
 #include <QComboBox>
+#include <QFile>
+#include <QFileDialog>
 #include <QFormLayout>
 #include <QGroupBox>
-#include <QLabel>
-#include <QTreeWidget>
-#include <QTreeWidgetItem>
-#include <QColorDialog>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QPushButton>
 #include <QHeaderView>
-#include <QPixmap>
+#include <QInputDialog>
 #include <QJsonArray>
 #include <QJsonDocument>
-#include <QApplication>
-#include <QFileDialog>
-#include <QFile>
-#include <QInputDialog>
+#include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QPixmap>
+#include <QPushButton>
+#include <QTreeWidget>
+#include <QTreeWidgetItem>
 #include <QUuid>
+#include <QVBoxLayout>
+
+#include <cmath>
 
 // Role used to store the JSON path (QStringList) on each leaf item.
 static const int PathRole = Qt::UserRole;

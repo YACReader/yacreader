@@ -1,7 +1,7 @@
 #include "continuous_view_model.h"
 
-#include <QtMath>
 #include <QWidget>
+#include <QtMath>
 
 #include <algorithm>
 #include <limits>

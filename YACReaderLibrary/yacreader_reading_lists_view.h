@@ -1,11 +1,11 @@
 #ifndef YACREADER_READING_LISTS_VIEW_H
 #define YACREADER_READING_LISTS_VIEW_H
 
-#include <QPainter>
-#include <QStyledItemDelegate>
-#include <QStyleOptionViewItem>
-
 #include "yacreader_treeview.h"
+
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include <QStyledItemDelegate>
 
 class YACReaderReadingListsView : public YACReaderTreeView
 {

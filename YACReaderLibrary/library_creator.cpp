@@ -1,24 +1,22 @@
 #include "library_creator.h"
 
-#include <QMutex>
+#include "QsLog.h"
+#include "comic.h"
+#include "data_base_management.h"
+#include "db_helper.h"
+#include "initial_comic_info_extractor.h"
+#include "pdf_comic.h"
+#include "qnaturalsorting.h"
+#include "xml_info_parser.h"
+#include "yacreader_global.h"
+
+#include <QCoreApplication>
 #include <QDebug>
+#include <QLibrary>
+#include <QMutex>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include <QCoreApplication>
-#include <QLibrary>
-
-#include "data_base_management.h"
-#include "qnaturalsorting.h"
-#include "db_helper.h"
-
-#include "initial_comic_info_extractor.h"
-#include "xml_info_parser.h"
-#include "comic.h"
-#include "pdf_comic.h"
-#include "yacreader_global.h"
-
-#include "QsLog.h"
 
 #include <algorithm>
 

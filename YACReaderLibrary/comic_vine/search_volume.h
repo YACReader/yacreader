@@ -1,11 +1,11 @@
 #ifndef SEARCH_VOLUME_H
 #define SEARCH_VOLUME_H
 
-#include <QLabel>
-#include <QWidget>
-
 #include "scraper_checkbox.h"
 #include "themable.h"
+
+#include <QLabel>
+#include <QWidget>
 
 class ScraperLineEdit;
 class ScraperCheckBox;

@@ -1,8 +1,8 @@
 #include "rename_library_dialog.h"
 
+#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QFileDialog>
 
 RenameLibraryDialog::RenameLibraryDialog(QWidget *parent)
     : QDialog(parent)

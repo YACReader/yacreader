@@ -1,10 +1,10 @@
 #include "reading_list_item.h"
-#include "qnaturalsorting.h"
-
-#include <QFileIconProvider>
 
 #include "QsLog.h"
+#include "qnaturalsorting.h"
 #include "theme_manager.h"
+
+#include <QFileIconProvider>
 
 ListItem::ListItem(const QList<QVariant> &data)
     : itemData(data)

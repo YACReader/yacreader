@@ -2,8 +2,8 @@
 #define STATUSPAGE_CONTROLLER
 
 #include "httprequest.h"
-#include "httpresponse.h"
 #include "httprequesthandler.h"
+#include "httpresponse.h"
 
 class StatusPageController : public stefanfrings::HttpRequestHandler
 {

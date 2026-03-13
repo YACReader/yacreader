@@ -1,18 +1,17 @@
 #include "info_comics_view.h"
 
-#include <QQmlProperty>
-#include <QQuickItem>
-#include <QQuickWidget>
-#include <QToolBar>
-#include <QVBoxLayout>
-
+#include "QsLog.h"
 #include "comic.h"
 #include "comic_files_manager.h"
 #include "comic_model.h"
 #include "yacreader_comic_info_helper.h"
 #include "yacreader_comics_selection_helper.h"
 
-#include "QsLog.h"
+#include <QQmlProperty>
+#include <QQuickItem>
+#include <QQuickWidget>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 InfoComicsView::InfoComicsView(QWidget *parent)
     : ComicsView(parent), flow(nullptr), list(nullptr)

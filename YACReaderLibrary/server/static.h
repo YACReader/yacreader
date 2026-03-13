@@ -6,10 +6,10 @@
 #ifndef STATIC_H
 #define STATIC_H
 
-#include <QString>
 #include "staticfilecontroller.h"
-
 #include "yacreader_http_session_store.h"
+
+#include <QString>
 
 /**
   This class contains some static resources that are used by the application.

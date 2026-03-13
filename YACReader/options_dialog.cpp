@@ -1,26 +1,27 @@
 #include "options_dialog.h"
+
+#include "app_language_utils.h"
+#include "appearance_tab_widget.h"
 #include "configuration.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include "theme_factory.h"
+#include "theme_manager.h"
+#include "yacreader_3d_flow_config_widget.h"
+#include "yacreader_spin_slider_widget.h"
+
+#include <QCheckBox>
+#include <QColorDialog>
+#include <QComboBox>
 #include <QFileDialog>
 #include <QGroupBox>
-#include <QRadioButton>
-#include <QTabWidget>
-#include <QSlider>
-#include <QLineEdit>
-#include <QPushButton>
+#include <QHBoxLayout>
 #include <QLabel>
-#include <QColorDialog>
-#include <QCheckBox>
-#include <QComboBox>
+#include <QLineEdit>
 #include <QMessageBox>
-#include "theme_manager.h"
-#include "theme_factory.h"
-#include "appearance_tab_widget.h"
-#include "app_language_utils.h"
-
-#include "yacreader_spin_slider_widget.h"
-#include "yacreader_3d_flow_config_widget.h"
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSlider>
+#include <QTabWidget>
+#include <QVBoxLayout>
 
 OptionsDialog::OptionsDialog(QWidget *parent)
     : YACReaderOptionsDialog(parent)

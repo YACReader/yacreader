@@ -1,14 +1,13 @@
 #include "http_worker.h"
 
+#include <QEventLoop>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QStringList>
+#include <QTimer>
 #include <QUrl>
 #include <QtGlobal>
-#include <QStringList>
-
-#include <QNetworkAccessManager>
-#include <QEventLoop>
-#include <QTimer>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 
 #define PREVIOUS_VERSION "6.0.0"
 

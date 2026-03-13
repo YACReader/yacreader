@@ -1,11 +1,12 @@
 #include "yacreader_macosx_toolbar.h"
+
 #include "QtWidgets/qmainwindow.h"
 
 #include <QtWidgets>
 
 #import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
 #import <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
 
 NSImage *QIconToNSImage(const QIcon &icon, const QSize &size, const QColor &color = QColor())
 {

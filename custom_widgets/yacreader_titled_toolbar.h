@@ -1,13 +1,13 @@
 #ifndef YACREADER_TITLED_TOOLBAR_H
 #define YACREADER_TITLED_TOOLBAR_H
 
-#include <QWidget>
+#include "themable.h"
+
 #include <QLabel>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPoint>
-
-#include "themable.h"
+#include <QWidget>
 
 class QIcon;
 class BusyIndicator;

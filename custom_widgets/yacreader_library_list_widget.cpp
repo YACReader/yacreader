@@ -1,10 +1,11 @@
 #include "yacreader_library_list_widget.h"
 
-#include "yacreader_library_item_widget.h"
-#include <QVBoxLayout>
-#include <QMouseEvent>
-#include <QMenu>
 #include "qnaturalsorting.h"
+#include "yacreader_library_item_widget.h"
+
+#include <QMenu>
+#include <QMouseEvent>
+#include <QVBoxLayout>
 
 YACReaderLibraryListWidget::YACReaderLibraryListWidget(QWidget *parent)
     : QWidget(parent), currentLibraryIndex(-1)

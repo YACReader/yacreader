@@ -1,11 +1,10 @@
 #include "folderinfocontroller_v2.h"
 
-#include <QUrl>
-
-#include "db_helper.h" //get libraries
-
-#include "folder.h"
 #include "comic_db.h"
+#include "db_helper.h" //get libraries
+#include "folder.h"
+
+#include <QUrl>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

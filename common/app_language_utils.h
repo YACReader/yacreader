@@ -9,6 +9,7 @@
 #include <QRegularExpression>
 #include <QSet>
 #include <QTranslator>
+
 #include <algorithm>
 
 namespace YACReader::UiLanguage {

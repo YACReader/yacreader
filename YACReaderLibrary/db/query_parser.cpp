@@ -2,6 +2,7 @@
 
 #include <QDateTime>
 #include <QVariant>
+
 #include <numeric>
 #include <stdexcept>
 

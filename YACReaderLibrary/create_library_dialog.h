@@ -1,15 +1,15 @@
 #ifndef __CREATE_LIBRARY_DIALOG_H
 #define __CREATE_LIBRARY_DIALOG_H
 
-#include "yacreader_libraries.h"
 #include "themable.h"
+#include "yacreader_libraries.h"
 
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QThread>
-#include <QProgressBar>
 
 class CreateLibraryDialog : public QDialog, protected Themable
 {

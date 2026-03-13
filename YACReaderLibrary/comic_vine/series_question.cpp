@@ -1,8 +1,8 @@
 #include "series_question.h"
 
+#include <QLabel>
 #include <QRadioButton>
 #include <QVBoxLayout>
-#include <QLabel>
 
 SeriesQuestion::SeriesQuestion(QWidget *parent)
     : QWidget(parent)

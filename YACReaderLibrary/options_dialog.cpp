@@ -1,13 +1,12 @@
 #include "options_dialog.h"
 
-#include "yacreader_3d_flow_config_widget.h"
 #include "api_key_dialog.h"
+#include "app_language_utils.h"
 #include "appearance_tab_widget.h"
 #include "theme_factory.h"
 #include "theme_manager.h"
-
+#include "yacreader_3d_flow_config_widget.h"
 #include "yacreader_global_gui.h"
-#include "app_language_utils.h"
 
 #include <QGroupBox>
 #include <QHBoxLayout>

@@ -1,20 +1,20 @@
 #include "comic.h"
 
+#include "QsLog.h"
+#include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
+#include "comic_db.h"
+#include "compressed_archive.h"
+#include "qnaturalsorting.h"
+
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfoList>
 #include <QImageReader>
 #include <QPixmap>
 #include <QRegularExpression>
 #include <QString>
+
 #include <algorithm>
-#include <QDir>
-#include <QFileInfoList>
-#include <QCoreApplication>
-
-#include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
-#include "qnaturalsorting.h"
-#include "compressed_archive.h"
-#include "comic_db.h"
-
-#include "QsLog.h"
 
 enum YACReaderPageSortingMode {
     YACReaderNumericalSorting,

@@ -1,18 +1,17 @@
 #include "library_window_actions.h"
 
 #include "edit_shortcuts_dialog.h"
-#include "library_window.h"
-#include "shortcuts_manager.h"
-#include "yacreader_history_controller.h"
-#include "recent_visibility_coordinator.h"
-
-#include "help_about_dialog.h"
 #include "export_library_dialog.h"
-#include "yacreader_content_views_manager.h"
+#include "help_about_dialog.h"
+#include "library_window.h"
+#include "recent_visibility_coordinator.h"
 #include "server_config_dialog.h"
-#include "yacreader_folders_view.h"
-#include "yacreader_options_dialog.h"
+#include "shortcuts_manager.h"
 #include "theme_manager.h"
+#include "yacreader_content_views_manager.h"
+#include "yacreader_folders_view.h"
+#include "yacreader_history_controller.h"
+#include "yacreader_options_dialog.h"
 
 #include <QtCore>
 

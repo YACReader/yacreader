@@ -1,9 +1,9 @@
 #ifndef DROP_LABEL_H
 #define DROP_LABEL_H
 
-#include <QLabel>
 #include <QDragEnterEvent>
 #include <QDropEvent>
+#include <QLabel>
 #include <QMimeData>
 
 namespace YACReader {

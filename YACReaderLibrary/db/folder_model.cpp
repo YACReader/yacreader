@@ -1,11 +1,10 @@
 #include "folder_model.h"
 
-#include "folder_item.h"
 #include "data_base_management.h"
-#include "folder.h"
 #include "db_helper.h"
+#include "folder.h"
+#include "folder_item.h"
 #include "qnaturalsorting.h"
-
 #include "yacreader_global.h"
 
 #include <QFileIconProvider>

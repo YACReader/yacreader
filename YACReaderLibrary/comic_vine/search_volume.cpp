@@ -1,7 +1,7 @@
 #include "search_volume.h"
 
-#include "scraper_lineedit.h"
 #include "scraper_checkbox.h"
+#include "scraper_lineedit.h"
 
 #include <QLabel>
 #include <QVBoxLayout>

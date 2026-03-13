@@ -1,9 +1,9 @@
 #ifndef NO_LIBRARIES_WIDGET_H
 #define NO_LIBRARIES_WIDGET_H
 
-#include <QWidget>
-
 #include "themable.h"
+
+#include <QWidget>
 
 class QLabel;
 

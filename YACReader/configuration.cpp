@@ -1,11 +1,10 @@
 #include "configuration.h"
 
-#include <QFile>
-#include <QFile>
-#include <QTextStream>
 #include <QCoreApplication>
-#include <QStringList>
+#include <QFile>
 #include <QMessageBox>
+#include <QStringList>
+#include <QTextStream>
 
 Configuration::Configuration()
 {

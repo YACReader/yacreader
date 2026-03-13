@@ -1,11 +1,11 @@
 #include "yacreader_library_item_widget.h"
 
-#include <QHBoxLayout>
-
 #include "yacreader_global.h"
+
+#include <QHBoxLayout>
 #include <QLabel>
-#include <QToolButton>
 #include <QMouseEvent>
+#include <QToolButton>
 
 using namespace YACReader;
 

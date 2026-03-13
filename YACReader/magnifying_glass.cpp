@@ -1,4 +1,5 @@
 #include "magnifying_glass.h"
+
 #include "viewer.h"
 
 MagnifyingGlass::MagnifyingGlass(int w, int h, float zoomLevel, QWidget *parent)

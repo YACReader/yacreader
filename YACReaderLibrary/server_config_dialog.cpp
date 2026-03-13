@@ -1,16 +1,16 @@
-#include <QGridLayout>
-#include <QSettings>
-#include <QPalette>
-#include <QBitmap>
-#include <QPainter>
-#include <QPixmap>
-
 #include "server_config_dialog.h"
-#include "yacreader_http_server.h"
-#include "yacreader_global_gui.h"
 
 #include "ip_config_helper.h"
 #include "qrcodegen.hpp"
+#include "yacreader_global_gui.h"
+#include "yacreader_http_server.h"
+
+#include <QBitmap>
+#include <QGridLayout>
+#include <QPainter>
+#include <QPalette>
+#include <QPixmap>
+#include <QSettings>
 
 extern YACReaderHttpServer *httpServer;
 

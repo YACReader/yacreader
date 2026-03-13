@@ -2,9 +2,9 @@
 
 #include "scraper_lineedit.h"
 
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
-#include <QHBoxLayout>
 
 SearchSingleComic::SearchSingleComic(QWidget *parent)
     : QWidget(parent)

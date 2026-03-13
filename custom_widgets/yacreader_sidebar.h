@@ -1,6 +1,8 @@
 #ifndef YACREADER_SIDEBAR_H
 #define YACREADER_SIDEBAR_H
 
+#include "themable.h"
+
 #include <QCloseEvent>
 #include <QColor>
 #include <QList>
@@ -8,8 +10,6 @@
 #include <QSettings>
 #include <QSplitter>
 #include <QWidget>
-
-#include "themable.h"
 
 class YACReaderFoldersView;
 class YACReaderLibraryListWidget;

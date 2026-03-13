@@ -1,14 +1,14 @@
 #ifndef IMPORT_LIBRARY_DIALOG_H
 #define IMPORT_LIBRARY_DIALOG_H
-#include "yacreader_libraries.h"
 #include "themable.h"
+#include "yacreader_libraries.h"
 
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QThread>
-#include <QProgressBar>
 
 class ImportLibraryDialog : public QDialog, protected Themable
 {

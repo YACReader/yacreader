@@ -5,105 +5,85 @@
 
 #include <QApplication>
 #include <QDesktopServices>
+#include <QDir>
+#include <QFileDialog>
+#include <QFileIconProvider>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QInputDialog>
-#include <QWindow>
+#include <QLabel>
 #include <QMenu>
+#include <QMenuBar>
 #include <QMessageBox>
+#include <QProcess>
 #include <QProgressDialog>
+#include <QSettings>
 #include <QSplitter>
 #include <QSqlError>
 #include <QStackedWidget>
-#include <QLabel>
 #include <QToolBar>
 #include <QToolButton>
-#include <QDir>
-#include <QHeaderView>
-#include <QMenuBar>
-#include <QProcess>
+#include <QWindow>
 #include <QtCore>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QFileIconProvider>
-#include <QSettings>
-#include <QHeaderView>
 
 #include <algorithm>
 #include <future>
 
 #ifdef Q_OS_WIN
 #include <qt_windows.h>
+
 #include <shellapi.h>
 #endif
 
-#include "folder_item.h"
-#include "data_base_management.h"
-#include "no_libraries_widget.h"
-#include "import_widget.h"
-
-#include "yacreader_search_line_edit.h"
-#include "comic_db.h"
-#include "library_creator.h"
-#include "package_manager.h"
-#include "xml_info_library_scanner.h"
-#include "create_library_dialog.h"
-#include "rename_library_dialog.h"
-#include "properties_dialog.h"
-#include "export_library_dialog.h"
-#include "import_library_dialog.h"
-#include "export_comics_info_dialog.h"
-#include "import_comics_info_dialog.h"
-#include "add_library_dialog.h"
-#include "options_dialog.h"
-#include "help_about_dialog.h"
-#include "server_config_dialog.h"
-#include "comic_model.h"
-#include "yacreader_tool_bar_stretch.h"
-
-#include "yacreader_titled_toolbar.h"
-#include "yacreader_main_toolbar.h"
-
-#include "yacreader_sidebar.h"
-
-#include "comics_remover.h"
-#include "yacreader_library_list_widget.h"
-#include "yacreader_folders_view.h"
-#include "yacreader_reading_lists_view.h"
-
-#include "comic_vine_dialog.h"
-#include "api_key_dialog.h"
-
-#include "comics_view.h"
-
-#include "edit_shortcuts_dialog.h"
-#include "shortcuts_manager.h"
-
-#include "comic_files_manager.h"
-
-#include "reading_list_model.h"
-#include "add_label_dialog.h"
-
-#include "yacreader_history_controller.h"
-#include "db_helper.h"
-
-#include "reading_list_item.h"
-
-#include "yacreader_content_views_manager.h"
-#include "folder_content_view.h"
-
-#include "trayicon_controller.h"
-
-#include "whats_new_controller.h"
-
-#include "library_comic_opener.h"
-
-#include "recent_visibility_coordinator.h"
-
-#include "cover_utils.h"
-
 #include "QsLog.h"
-
+#include "add_label_dialog.h"
+#include "add_library_dialog.h"
+#include "api_key_dialog.h"
+#include "comic_db.h"
+#include "comic_files_manager.h"
+#include "comic_model.h"
+#include "comic_vine_dialog.h"
+#include "comics_remover.h"
+#include "comics_view.h"
+#include "cover_utils.h"
+#include "create_library_dialog.h"
+#include "data_base_management.h"
+#include "db_helper.h"
+#include "edit_shortcuts_dialog.h"
+#include "export_comics_info_dialog.h"
+#include "export_library_dialog.h"
+#include "folder_content_view.h"
+#include "folder_item.h"
+#include "help_about_dialog.h"
+#include "import_comics_info_dialog.h"
+#include "import_library_dialog.h"
+#include "import_widget.h"
+#include "library_comic_opener.h"
+#include "library_creator.h"
+#include "no_libraries_widget.h"
+#include "options_dialog.h"
+#include "package_manager.h"
+#include "properties_dialog.h"
+#include "reading_list_item.h"
+#include "reading_list_model.h"
+#include "recent_visibility_coordinator.h"
+#include "rename_library_dialog.h"
+#include "server_config_dialog.h"
+#include "shortcuts_manager.h"
+#include "trayicon_controller.h"
+#include "whats_new_controller.h"
+#include "xml_info_library_scanner.h"
+#include "yacreader_content_views_manager.h"
+#include "yacreader_folders_view.h"
+#include "yacreader_history_controller.h"
 #include "yacreader_http_server.h"
+#include "yacreader_library_list_widget.h"
+#include "yacreader_main_toolbar.h"
+#include "yacreader_reading_lists_view.h"
+#include "yacreader_search_line_edit.h"
+#include "yacreader_sidebar.h"
+#include "yacreader_titled_toolbar.h"
+#include "yacreader_tool_bar_stretch.h"
 extern YACReaderHttpServer *httpServer;
 
 #include <KDSignalThrottler.h>

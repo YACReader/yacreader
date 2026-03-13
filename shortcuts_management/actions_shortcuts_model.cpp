@@ -1,4 +1,5 @@
 #include "actions_shortcuts_model.h"
+
 #include "shortcuts_manager.h"
 
 #include <QAction>

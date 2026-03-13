@@ -1,14 +1,14 @@
 #ifndef __SERVER_CONFIG_DIALOG_H
 #define __SERVER_CONFIG_DIALOG_H
 
+#include "themable.h"
+
+#include <QCheckBox>
+#include <QComboBox>
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QComboBox>
-#include <QCheckBox>
-
-#include "themable.h"
 
 class ServerConfigDialog : public QDialog, protected Themable
 {

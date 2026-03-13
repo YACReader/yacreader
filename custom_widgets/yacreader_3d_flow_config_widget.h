@@ -2,6 +2,7 @@
 #define YACREADER_3D_FLOW_CONFIG_WIDGET_H
 
 #include "flow_types.h" //TODO
+
 #include <QWidget>
 
 class QRadioButton;

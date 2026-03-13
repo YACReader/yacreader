@@ -1,10 +1,10 @@
 #ifndef READING_LIST_ITEM_H
 #define READING_LIST_ITEM_H
 
+#include "reading_list_model.h"
+
 #include <QIcon>
 #include <QVariant>
-
-#include "reading_list_model.h"
 // TODO add propper constructors, using QList<QVariant> is not safe
 
 class ListItem

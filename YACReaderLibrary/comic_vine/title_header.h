@@ -1,9 +1,9 @@
 #ifndef TITLE_HEADER_H
 #define TITLE_HEADER_H
 
-#include <QWidget>
-
 #include "themable.h"
+
+#include <QWidget>
 
 class QLabel;
 

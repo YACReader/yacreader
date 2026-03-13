@@ -1,11 +1,12 @@
 #include "create_library_dialog.h"
+
 #include "yacreader_global.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QFileDialog>
-#include <QSizePolicy>
+#include <QHBoxLayout>
 #include <QMessageBox>
+#include <QSizePolicy>
+#include <QVBoxLayout>
 
 using namespace YACReader;
 

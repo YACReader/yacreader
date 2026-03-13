@@ -1,4 +1,5 @@
 #include "yacreader_cover_label.h"
+
 #include "yacreader_global_gui.h"
 
 YACReader::CoverLabel::CoverLabel(QWidget *parent)

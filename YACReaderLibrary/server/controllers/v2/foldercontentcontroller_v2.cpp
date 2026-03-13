@@ -1,17 +1,14 @@
 #include "foldercontentcontroller_v2.h"
 
-#include <QUrl>
-
-#include "db_helper.h"
+#include "QsLog.h"
 #include "comic_db.h"
+#include "db_helper.h"
 #include "folder.h"
-
+#include "qnaturalsorting.h"
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
-#include "qnaturalsorting.h"
-
-#include "QsLog.h"
+#include <QUrl>
 
 #include <chrono>
 

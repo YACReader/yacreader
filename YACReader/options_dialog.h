@@ -1,8 +1,8 @@
 #ifndef __OPTIONS_DIALOG_H
 #define __OPTIONS_DIALOG_H
 
-#include "yacreader_options_dialog.h"
 #include "themable.h"
+#include "yacreader_options_dialog.h"
 
 #include <QPointer>
 

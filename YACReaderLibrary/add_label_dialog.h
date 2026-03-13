@@ -1,13 +1,13 @@
 #ifndef ADD_LABEL_DIALOG_H
 #define ADD_LABEL_DIALOG_H
 
+#include "themable.h"
+#include "yacreader_global.h"
+
 #include <QDialog>
 #include <QLineEdit>
 #include <QListWidget>
 #include <QPushButton>
-
-#include "yacreader_global.h"
-#include "themable.h"
 
 class AddLabelDialog : public QDialog, protected Themable
 {

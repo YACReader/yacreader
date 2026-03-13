@@ -1,13 +1,12 @@
 #ifndef GRID_COMICS_VIEW_H
 #define GRID_COMICS_VIEW_H
 
+#include "comic_db.h"
 #include "comics_view.h"
 #include "themable.h"
 
 #include <QLabel>
 #include <QModelIndex>
-
-#include "comic_db.h"
 
 class QAbstractListModel;
 class QItemSelectionModel;

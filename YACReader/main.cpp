@@ -1,18 +1,17 @@
-#include <QApplication>
-#include <QDir>
-#include <QCommandLineParser>
-#include <QImageReader>
-
-#include "main_window_viewer.h"
-#include "exit_check.h"
-#include "appearance_configuration.h"
-#include "theme_manager.h"
-#include "theme_repository.h"
-#include "app_language_utils.h"
-#include "yacreader_global.h"
-
 #include "QsLog.h"
 #include "QsLogDest.h"
+#include "app_language_utils.h"
+#include "appearance_configuration.h"
+#include "exit_check.h"
+#include "main_window_viewer.h"
+#include "theme_manager.h"
+#include "theme_repository.h"
+#include "yacreader_global.h"
+
+#include <QApplication>
+#include <QCommandLineParser>
+#include <QDir>
+#include <QImageReader>
 
 using namespace QsLogging;
 using namespace YACReader;

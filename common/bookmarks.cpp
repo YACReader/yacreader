@@ -1,12 +1,12 @@
 #include "bookmarks.h"
-#include <QFile>
-#include <QDataStream>
-#include <QCoreApplication>
-#include <QFileInfo>
-
-#include <QList>
 
 #include "yacreader_global.h"
+
+#include <QCoreApplication>
+#include <QDataStream>
+#include <QFile>
+#include <QFileInfo>
+#include <QList>
 
 Bookmarks::Bookmarks()
     : lastPageIndex(0)

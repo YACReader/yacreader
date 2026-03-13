@@ -1,14 +1,14 @@
 #ifndef TABLEMODEL_H
 #define TABLEMODEL_H
 
+#include "yacreader_global.h"
+
 #include <QAbstractItemModel>
 #include <QModelIndex>
-#include <QVariant>
-#include <QSqlQuery>
 #include <QSqlDatabase>
+#include <QSqlQuery>
 #include <QUrl>
-
-#include "yacreader_global.h"
+#include <QVariant>
 
 class ComicDB;
 

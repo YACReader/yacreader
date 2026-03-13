@@ -1,12 +1,12 @@
 #include "theme_factory.h"
 
+#include "icon_utils.h"
+#include "yacreader_global.h"
+
 #include <QApplication>
 #include <QLinearGradient>
 #include <QPainter>
 #include <QPen>
-
-#include "icon_utils.h"
-#include "yacreader_global.h"
 
 struct MetadataScraperDialogParams {
     MetadataScraperDialogThemeTemplates t;

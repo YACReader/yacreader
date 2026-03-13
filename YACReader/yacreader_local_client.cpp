@@ -1,10 +1,10 @@
 #include "yacreader_local_client.h"
+
+#include "QsLog.h"
 #include "comic_db.h"
 #include "yacreader_global.h"
 
 #include <QLocalSocket>
-
-#include "QsLog.h"
 
 using namespace YACReader;
 

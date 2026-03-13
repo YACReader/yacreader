@@ -1,9 +1,9 @@
 #include "yacreader_global_gui.h"
 
-#include <QtCore>
 #include <QAction>
-#include <QImageReader>
 #include <QFileDialog>
+#include <QImageReader>
+#include <QtCore>
 
 using namespace YACReader;
 

@@ -4,12 +4,12 @@
 #include "yacreader_global_gui.h"
 #include "yacreader_spin_slider_widget.h"
 
-#include <QPushButton>
 #include <QCheckBox>
-#include <QRadioButton>
-#include <QSlider>
-#include <QSettings>
 #include <QGroupBox>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSettings>
+#include <QSlider>
 #include <QVBoxLayout>
 
 YACReaderOptionsDialog::YACReaderOptionsDialog(QWidget *parent)

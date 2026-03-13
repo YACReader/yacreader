@@ -1,41 +1,39 @@
 #include "main_window_viewer.h"
+
 #include "bookmarks_dialog.h"
-#include "configuration.h"
-#include "viewer.h"
-#include "options_dialog.h"
 #include "check_new_version.h"
 #include "comic.h"
-#include "width_slider.h"
-#include "qnaturalsorting.h"
-#include "help_about_dialog.h"
-#include "yacreader_tool_bar_stretch.h"
-
 #include "comic_db.h"
-#include "yacreader_local_client.h"
-
-#include "yacreader_global.h"
+#include "configuration.h"
 #include "edit_shortcuts_dialog.h"
+#include "help_about_dialog.h"
+#include "options_dialog.h"
+#include "qnaturalsorting.h"
 #include "shortcuts_manager.h"
 #include "theme_manager.h"
-
+#include "viewer.h"
 #include "whats_new_controller.h"
-
-#include <algorithm>
-#include <utility>
+#include "width_slider.h"
+#include "yacreader_global.h"
+#include "yacreader_local_client.h"
+#include "yacreader_tool_bar_stretch.h"
 
 #include <QActionGroup>
 #include <QApplication>
 #include <QCoreApplication>
-#include <QDesktopServices>
-#include <QWindow>
-#include <QToolButton>
-#include <QMenu>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QImage>
 #include <QDate>
+#include <QDesktopServices>
+#include <QFileDialog>
+#include <QImage>
+#include <QMenu>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QStandardPaths>
+#include <QToolButton>
+#include <QWindow>
+
+#include <algorithm>
+#include <utility>
 
 #ifdef use_unarr
 #include "unarr.h"

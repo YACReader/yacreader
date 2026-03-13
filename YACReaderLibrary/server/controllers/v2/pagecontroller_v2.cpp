@@ -1,13 +1,11 @@
 #include "pagecontroller_v2.h"
 
 #include "../static.h"
-
 #include "comic.h"
 #include "yacreader_http_session.h"
 
 #include <QDataStream>
 #include <QPointer>
-
 #include <QsLog.h>
 
 using stefanfrings::HttpRequest;

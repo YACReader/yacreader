@@ -1,10 +1,10 @@
 #ifndef COMIC_QUERY_RESULT_PROCESSOR_H
 #define COMIC_QUERY_RESULT_PROCESSOR_H
 
-#include <QtCore>
-#include <QSqlQuery>
-
 #include "concurrent_queue.h"
+
+#include <QSqlQuery>
+#include <QtCore>
 
 class ComicItem;
 

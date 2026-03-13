@@ -1,8 +1,7 @@
 #include "trayicon_controller.h"
 
-#include "yacreader_global_gui.h"
-
 #include "library_window.h"
+#include "yacreader_global_gui.h"
 
 #include <QApplication>
 #include <QMessageBox>

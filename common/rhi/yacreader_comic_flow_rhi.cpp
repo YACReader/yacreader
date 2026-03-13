@@ -1,4 +1,5 @@
 #include "yacreader_comic_flow_rhi.h"
+
 #include <QImage>
 
 // YACReaderComicFlow3D implementation

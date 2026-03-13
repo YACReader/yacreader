@@ -1,29 +1,28 @@
 #include "properties_dialog.h"
 
-#include "yacreader_global_gui.h"
-
 #include "cover_utils.h"
 #include "data_base_management.h"
+#include "db_helper.h"
 #include "initial_comic_info_extractor.h"
+#include "yacreader_cover_label.h"
 #include "yacreader_field_edit.h"
 #include "yacreader_field_plain_text_edit.h"
-#include "db_helper.h"
-#include "yacreader_cover_label.h"
+#include "yacreader_global_gui.h"
 
-#include <QComboBox>
-#include <QHBoxLayout>
 #include <QApplication>
-#include <QSizePolicy>
-#include <QFormLayout>
 #include <QCheckBox>
-#include <QTabWidget>
-#include <QIntValidator>
-#include <QFileInfo>
-#include <QLabel>
+#include <QComboBox>
 #include <QDialogButtonBox>
-#include <QToolButton>
-#include <QPushButton>
+#include <QFileInfo>
+#include <QFormLayout>
+#include <QHBoxLayout>
+#include <QIntValidator>
+#include <QLabel>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QSizePolicy>
+#include <QTabWidget>
+#include <QToolButton>
 
 using namespace YACReader;
 

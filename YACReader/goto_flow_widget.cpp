@@ -1,13 +1,13 @@
 #include "goto_flow_widget.h"
 
+#include "configuration.h"
+#include "goto_flow_toolbar.h"
+
+#include <QApplication>
+#include <QCoreApplication>
 #include <QHBoxLayout>
 #include <QKeyEvent>
-#include <QCoreApplication>
-#include <QApplication>
 #include <QSettings>
-
-#include "goto_flow_toolbar.h"
-#include "configuration.h"
 
 GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
     : QWidget(parent)

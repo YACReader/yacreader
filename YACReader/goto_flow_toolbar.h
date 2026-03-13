@@ -1,10 +1,10 @@
 #ifndef GOTO_FLOW_TOOLBAR_H
 #define GOTO_FLOW_TOOLBAR_H
 
-#include <QWidget>
-#include <QStackedWidget>
-
 #include "themable.h"
+
+#include <QStackedWidget>
+#include <QWidget>
 
 class QLineEdit;
 class QIntValidator;

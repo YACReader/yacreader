@@ -1,24 +1,23 @@
 #include "import_widget.h"
 
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QGraphicsPixmapItem>
-#include <QScrollBar>
 #include <QGraphicsItemAnimation>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QScrollBar>
 #include <QTimeLine>
+#include <QVBoxLayout>
 // TODO: is QGLWidget needed here???
 // #include <QGLWidget>
-#include <QTimer>
 #include <QElapsedTimer>
-#include <QToolButton>
-#include <QResizeEvent>
-
-#include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
+#include <QResizeEvent>
+#include <QTimer>
+#include <QToolButton>
 
 class YACReaderActivityIndicatorWidget : public QWidget
 {

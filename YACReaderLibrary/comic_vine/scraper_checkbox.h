@@ -1,9 +1,9 @@
 #ifndef SCRAPER_CHECKBOX_H
 #define SCRAPER_CHECKBOX_H
 
-#include <QCheckBox>
-
 #include "themable.h"
+
+#include <QCheckBox>
 
 class ScraperCheckBox : public QCheckBox, protected Themable
 {

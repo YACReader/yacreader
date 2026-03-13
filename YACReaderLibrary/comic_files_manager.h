@@ -1,10 +1,10 @@
 #ifndef COMIC_FILES_MANAGER_H
 #define COMIC_FILES_MANAGER_H
 
-#include <QObject>
 #include <QList>
-#include <QPair>
 #include <QModelIndex>
+#include <QObject>
+#include <QPair>
 
 // this class is intended to work in background, just use moveToThread and process to start working
 class ComicFilesManager : public QObject

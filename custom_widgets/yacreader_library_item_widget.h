@@ -1,10 +1,10 @@
 #ifndef YACREADER_LIBRARY_ITEM_WIDGET_H
 #define YACREADER_LIBRARY_ITEM_WIDGET_H
 
-#include <QWidget>
-#include <QPixmap>
-
 #include "themable.h"
+
+#include <QPixmap>
+#include <QWidget>
 
 class QLabel;
 class QToolButton;

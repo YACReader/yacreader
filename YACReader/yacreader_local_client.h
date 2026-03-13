@@ -1,8 +1,8 @@
 #ifndef YACREADER_LOCAL_CLIENT_H
 #define YACREADER_LOCAL_CLIENT_H
 
-#include "yacreader_global.h"
 #include "comic_db.h"
+#include "yacreader_global.h"
 
 #include <QObject>
 

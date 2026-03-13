@@ -1,16 +1,15 @@
 #include "xml_info_library_scanner.h"
 
-#include <QSqlRecord>
-
+#include "QsLog.h"
 #include "comic_db.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "folder_item.h"
 #include "initial_comic_info_extractor.h"
 #include "xml_info_parser.h"
 #include "yacreader_global.h"
-#include "folder_item.h"
 
-#include "QsLog.h"
+#include <QSqlRecord>
 
 using namespace YACReader;
 

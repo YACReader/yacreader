@@ -1,17 +1,18 @@
 #include "viewer.h"
+
+#include "bookmarks_dialog.h"
+#include "comic_db.h"
+#include "configuration.h"
 #include "continuous_page_widget.h"
 #include "continuous_view_model.h"
-#include "resize_image.h"
-#include "configuration.h"
-#include "magnifying_glass.h"
-#include "goto_flow_widget.h"
-#include "bookmarks_dialog.h"
-#include "render.h"
 #include "goto_dialog.h"
-#include "translator.h"
-#include "page_label_widget.h"
+#include "goto_flow_widget.h"
+#include "magnifying_glass.h"
 #include "notifications_label_widget.h"
-#include "comic_db.h"
+#include "page_label_widget.h"
+#include "render.h"
+#include "resize_image.h"
+#include "translator.h"
 
 #include <QFile>
 #include <QKeyEvent>

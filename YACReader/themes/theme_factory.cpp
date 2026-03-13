@@ -1,9 +1,9 @@
 #include "theme_factory.h"
 
-#include <QApplication>
-
 #include "icon_utils.h"
 #include "theme_meta.h"
+
+#include <QApplication>
 
 struct ToolbarParams {
     ToolbarThemeTemplates t;

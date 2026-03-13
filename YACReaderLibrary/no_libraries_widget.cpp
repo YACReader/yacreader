@@ -1,9 +1,9 @@
 #include "no_libraries_widget.h"
 
-#include <QLabel>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
+#include <QVBoxLayout>
 
 NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
     : QWidget(parent)

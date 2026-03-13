@@ -1,8 +1,8 @@
 #include "folder_query_result_processor.h"
 
+#include "data_base_management.h"
 #include "folder_item.h"
 #include "folder_model.h"
-#include "data_base_management.h"
 #include "search_query.h"
 
 #include <QSqlDatabase>

@@ -1,16 +1,13 @@
 #include "reading_list_model.h"
 
-#include "reading_list_item.h"
-
-#include "data_base_management.h"
-#include "qnaturalsorting.h"
-#include "db_helper.h"
-
 #include "QsLog.h"
+#include "data_base_management.h"
+#include "db_helper.h"
+#include "qnaturalsorting.h"
+#include "reading_list_item.h"
+#include "yacreader_global_gui.h"
 
 #include <QSqlRecord>
-
-#include "yacreader_global_gui.h"
 
 ReadingListModel::ReadingListModel(QObject *parent)
     : QAbstractItemModel(parent), rootItem(0)

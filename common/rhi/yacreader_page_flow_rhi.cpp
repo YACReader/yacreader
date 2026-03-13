@@ -1,4 +1,5 @@
 #include "yacreader_page_flow_rhi.h"
+
 #include <QImage>
 
 // YACReaderPageFlow3D implementation

@@ -1,7 +1,7 @@
 #include "scraper_scroll_label.h"
 
-#include <QLabel>
 #include <QDesktopServices>
+#include <QLabel>
 #include <QUrl>
 
 ScraperScrollLabel::ScraperScrollLabel(QWidget *parent)

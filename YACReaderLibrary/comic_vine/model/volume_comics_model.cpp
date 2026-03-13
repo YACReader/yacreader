@@ -1,4 +1,5 @@
 #include "volume_comics_model.h"
+
 #include "qnaturalsorting.h"
 
 #include <QJsonDocument>

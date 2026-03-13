@@ -1,9 +1,9 @@
 #ifndef SERIES_QUESTION_H
 #define SERIES_QUESTION_H
 
-#include <QWidget>
-
 #include "themable.h"
+
+#include <QWidget>
 
 class QRadioButton;
 class QLabel;

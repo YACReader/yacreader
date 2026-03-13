@@ -2,10 +2,10 @@
 #define __GOTODIALOG_H
 
 #include <QDialog>
+#include <QIntValidator>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QIntValidator>
 
 class GoToDialog : public QDialog
 {

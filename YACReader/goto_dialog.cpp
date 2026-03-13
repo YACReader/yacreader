@@ -1,8 +1,8 @@
 #include "goto_dialog.h"
 
 #include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QIntValidator>
+#include <QVBoxLayout>
 
 GoToDialog::GoToDialog(QWidget *parent)
     : QDialog(parent)

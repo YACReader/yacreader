@@ -1,19 +1,20 @@
 #ifndef __LIBRARY_CREATOR_H
 #define __LIBRARY_CREATOR_H
 
-#include <QObject>
-#include <QString>
+#include "comic_db.h"
+#include "folder.h"
+
+#include <QByteArray>
 #include <QDir>
 #include <QFile>
-#include <QByteArray>
-#include <QRegExp>
-#include <QProcess>
-#include <QtCore>
 #include <QMutex>
-#include <QThread>
+#include <QObject>
+#include <QProcess>
+#include <QRegExp>
 #include <QSqlDatabase>
-#include "folder.h"
-#include "comic_db.h"
+#include <QString>
+#include <QThread>
+#include <QtCore>
 
 class LibraryCreator : public QThread
 {

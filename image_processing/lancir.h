@@ -46,8 +46,8 @@
 #ifndef AVIR_CLANCIR_INCLUDED
 #define AVIR_CLANCIR_INCLUDED
 
-#include <cstring>
 #include <cmath>
+#include <cstring>
 
 #if __cplusplus >= 201103L
 

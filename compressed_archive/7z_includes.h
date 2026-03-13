@@ -1,6 +1,9 @@
 #ifndef _7Z_INCLUDES_H
 #define _7Z_INCLUDES_H
 
+// clang-format off
+// Umbrella header for 7zip. Include order is load-bearing:
+// MyInitGuid.h must precede all interface headers that use DEFINE_GUID.
 extern "C" {
 #include "lib7zip/C/Alloc.h"
 #include "lib7zip/C/7zTypes.h"
@@ -29,5 +32,7 @@ extern "C" {
 
 #include "lib7zip/CPP/7zip/Common/StreamObjects.h"
 #include "lib7zip/CPP/7zip/Common/StreamUtils.h"
+
+// clang-format on
 
 #endif // _7Z_INCLUDES_H

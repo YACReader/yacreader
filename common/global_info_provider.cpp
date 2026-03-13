@@ -1,8 +1,8 @@
 #include "global_info_provider.h"
 
-#include <QtCore>
 #include <QImageReader>
 #include <QPaintDevice>
+#include <QtCore>
 
 #ifdef YACREADER_LIBRARY
 #include <QSqlDatabase>

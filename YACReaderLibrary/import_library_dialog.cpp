@@ -1,10 +1,10 @@
 #include "import_library_dialog.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QCloseEvent>
 #include <QFileDialog>
 #include <QGridLayout>
-#include <QCloseEvent>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 ImportLibraryDialog::ImportLibraryDialog(QWidget *parent)
     : QDialog(parent), progressCount(0)

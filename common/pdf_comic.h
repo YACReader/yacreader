@@ -1,10 +1,10 @@
 #if !defined PDF_COMIC_H && !defined NO_PDF
 #define PDF_COMIC_H
 
-#include <QObject>
-#include <QImage>
 #include <QFile>
+#include <QImage>
 #include <QMutex>
+#include <QObject>
 #include <QtGlobal>
 
 #if defined Q_OS_MACOS && defined USE_PDFKIT

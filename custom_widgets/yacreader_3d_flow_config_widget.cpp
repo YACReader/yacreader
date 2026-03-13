@@ -2,13 +2,13 @@
 
 #include "yacreader_spin_slider_widget.h"
 
-#include <QSlider>
-#include <QVBoxLayout>
+#include <QCheckBox>
 #include <QGroupBox>
-#include <QRadioButton>
 #include <QLabel>
 #include <QPushButton>
-#include <QCheckBox>
+#include <QRadioButton>
+#include <QSlider>
+#include <QVBoxLayout>
 
 YACReader3DFlowConfigWidget::YACReader3DFlowConfigWidget(QWidget *parent /* = 0 */)
     : QWidget(parent)

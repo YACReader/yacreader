@@ -1,4 +1,5 @@
 #include "scroll_management.h"
+
 #include <QApplication>
 
 ScrollManagement::ScrollManagement()

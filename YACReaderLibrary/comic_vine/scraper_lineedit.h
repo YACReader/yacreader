@@ -1,9 +1,9 @@
 #ifndef SCRAPPER_LINEEDIT_H
 #define SCRAPPER_LINEEDIT_H
 
-#include <QLineEdit>
-
 #include "themable.h"
+
+#include <QLineEdit>
 
 class QLabel;
 

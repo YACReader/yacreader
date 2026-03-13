@@ -1,8 +1,9 @@
 #ifndef COMPRESSED_ARCHIVE_H
 #define COMPRESSED_ARCHIVE_H
 
-#include <QObject>
 #include "extract_delegate.h"
+
+#include <QObject>
 extern "C" {
 #include <unarr.h>
 }

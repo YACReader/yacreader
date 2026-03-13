@@ -1,12 +1,11 @@
 #include "comicfullinfocontroller_v2.h"
 
-#include <QUrl>
-
-#include "db_helper.h"
 #include "comic_db.h"
-
+#include "db_helper.h"
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
+
+#include <QUrl>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

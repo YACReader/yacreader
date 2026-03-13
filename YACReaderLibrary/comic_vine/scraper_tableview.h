@@ -1,9 +1,9 @@
 #ifndef SCRAPPER_TABLEVIEW_H
 #define SCRAPPER_TABLEVIEW_H
 
-#include <QTableView>
-
 #include "themable.h"
+
+#include <QTableView>
 
 class ScraperTableView : public QTableView, protected Themable
 {

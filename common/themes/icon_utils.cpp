@@ -1,9 +1,9 @@
 #include "icon_utils.h"
 
+#include "yacreader_global.h"
+
 #include <QPainter>
 #include <QSvgRenderer>
-
-#include "yacreader_global.h"
 
 QPixmap renderSvgToPixmap(const QString &svgPath, int logicalSize, qreal devicePixelRatio)
 {

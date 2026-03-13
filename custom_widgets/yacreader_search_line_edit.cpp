@@ -1,8 +1,8 @@
 #include "yacreader_search_line_edit.h"
 
-#include <QToolButton>
-#include <QStyle>
 #include <QLabel>
+#include <QStyle>
+#include <QToolButton>
 
 YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
     : QLineEdit(parent), paddingLeft(0), paddingRight(0)

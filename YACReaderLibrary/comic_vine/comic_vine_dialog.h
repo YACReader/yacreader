@@ -1,11 +1,11 @@
 #ifndef COMIC_VINE_DIALOG_H
 #define COMIC_VINE_DIALOG_H
 
-#include <QDialog>
-
 #include "comic_db.h"
-#include "volume_search_query.h"
 #include "themable.h"
+#include "volume_search_query.h"
+
+#include <QDialog>
 
 class QPushButton;
 class QStackedWidget;

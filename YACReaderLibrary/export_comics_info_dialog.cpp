@@ -1,12 +1,12 @@
 #include "export_comics_info_dialog.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QFileDialog>
-#include <QDir>
-#include <QMessageBox>
-
 #include "data_base_management.h"
+
+#include <QDir>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QMessageBox>
+#include <QVBoxLayout>
 
 ExportComicsInfoDialog::ExportComicsInfoDialog(QWidget *parent)
     : QDialog(parent)

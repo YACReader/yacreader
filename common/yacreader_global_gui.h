@@ -3,8 +3,8 @@
 
 #include "yacreader_global.h"
 
-#include <QWidget>
 #include <QMimeData>
+#include <QWidget>
 
 #define PATH "PATH"
 #define UI_LANGUAGE "UI_LANGUAGE"

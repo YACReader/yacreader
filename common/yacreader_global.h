@@ -1,11 +1,11 @@
 #ifndef __YACREADER_GLOBAL_H
 #define __YACREADER_GLOBAL_H
 
-#include <QStandardPaths>
-#include <QDataStream>
-#include <QMetaType>
 #include <QAbstractItemModel>
+#include <QDataStream>
 #include <QDir>
+#include <QMetaType>
+#include <QStandardPaths>
 
 class QLibrary;
 

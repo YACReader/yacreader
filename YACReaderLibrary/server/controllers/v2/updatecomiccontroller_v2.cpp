@@ -1,12 +1,10 @@
 #include "updatecomiccontroller_v2.h"
 
-#include <QUrl>
-
+#include "QsLog.h"
+#include "comic_db.h"
 #include "db_helper.h"
 
-#include "comic_db.h"
-
-#include "QsLog.h"
+#include <QUrl>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

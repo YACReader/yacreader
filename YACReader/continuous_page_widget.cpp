@@ -1,11 +1,12 @@
 #include "continuous_page_widget.h"
+
+#include "configuration.h"
 #include "continuous_view_model.h"
 #include "render.h"
 #include "resize_image.h"
-#include "configuration.h"
 
-#include <QPainter>
 #include <QPaintEvent>
+#include <QPainter>
 
 ContinuousPageWidget::ContinuousPageWidget(QWidget *parent)
     : QWidget(parent)

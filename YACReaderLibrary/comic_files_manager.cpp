@@ -1,11 +1,11 @@
 #include "comic_files_manager.h"
-#include <QFile>
-#include <QFileInfo>
-#include <QDir>
-
-#include <QsLog.h>
 
 #include "comic.h"
+
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QsLog.h>
 
 ComicFilesManager::ComicFilesManager(QObject *parent)
     : QObject(parent), canceled(false)

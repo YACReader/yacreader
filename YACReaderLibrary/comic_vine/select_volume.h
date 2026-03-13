@@ -3,8 +3,8 @@
 
 #include "scraper_results_paginator.h"
 #include "selected_volume_info.h"
-#include "volume_search_query.h"
 #include "themable.h"
+#include "volume_search_query.h"
 
 class QLabel;
 class VolumesModel;

@@ -1,9 +1,10 @@
 #include "export_library_dialog.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QFileDialog>
-#include <QMessageBox>
+
 #include <QDir>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QMessageBox>
+#include <QVBoxLayout>
 
 ExportLibraryDialog::ExportLibraryDialog(QWidget *parent)
     : QDialog(parent), progressCount(0)

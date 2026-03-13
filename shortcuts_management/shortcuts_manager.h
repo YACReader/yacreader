@@ -1,10 +1,10 @@
 #ifndef SHORTCUTS_MANAGER_H
 #define SHORTCUTS_MANAGER_H
 
-#include <QObject>
 #include <QKeySequence>
-#include <QString>
 #include <QMap>
+#include <QObject>
+#include <QString>
 
 class QAction;
 

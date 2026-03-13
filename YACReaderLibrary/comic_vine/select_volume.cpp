@@ -1,5 +1,14 @@
 #include "select_volume.h"
 
+#include "comic_vine_client.h"
+#include "scraper_lineedit.h"
+#include "scraper_results_paginator.h"
+#include "scraper_scroll_label.h"
+#include "scraper_tableview.h"
+#include "selected_volume_info.h"
+#include "volumes_model.h"
+
+#include <QAction>
 #include <QDesktopServices>
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -12,18 +21,6 @@
 #include <QSortFilterProxyModel>
 #include <QToolButton>
 #include <QVBoxLayout>
-#include <QAction>
-
-#include "scraper_tableview.h"
-#include "scraper_lineedit.h"
-
-#include "volumes_model.h"
-#include "comic_vine_client.h"
-#include "scraper_scroll_label.h"
-
-#include "scraper_results_paginator.h"
-
-#include "selected_volume_info.h"
 
 SelectVolume::SelectVolume(QWidget *parent)
     : QWidget(parent), model(0)

@@ -1,11 +1,11 @@
 #ifndef SYNCCONTROLLER_V2_H
 #define SYNCCONTROLLER_V2_H
 
-#include <QObject>
-
 #include "httprequest.h"
-#include "httpresponse.h"
 #include "httprequesthandler.h"
+#include "httpresponse.h"
+
+#include <QObject>
 
 class SyncControllerV2 : public stefanfrings::HttpRequestHandler
 {

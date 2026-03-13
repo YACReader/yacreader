@@ -1,18 +1,16 @@
-#include <QtCore>
-
 #include "compressed_archive.h"
-#include "extract_delegate.h"
-#include "yacreader_global.h"
-
-#include <QLibrary>
-#include <QFileInfo>
-#include <QDebug>
-#include <QCoreApplication>
-
-#include "open_callbacks.h"
-#include "extract_callbacks.h"
 
 #include "QsLog.h"
+#include "extract_callbacks.h"
+#include "extract_delegate.h"
+#include "open_callbacks.h"
+#include "yacreader_global.h"
+
+#include <QCoreApplication>
+#include <QDebug>
+#include <QFileInfo>
+#include <QLibrary>
+#include <QtCore>
 
 #define _MY_WINAPI WINAPI
 

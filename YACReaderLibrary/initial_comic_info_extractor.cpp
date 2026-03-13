@@ -1,11 +1,12 @@
 #include "initial_comic_info_extractor.h"
 
-#include <QsLog.h>
-#include "pdf_comic.h"
 #include "comic.h"
 #include "compressed_archive.h"
-#include "qnaturalsorting.h"
 #include "cover_utils.h"
+#include "pdf_comic.h"
+#include "qnaturalsorting.h"
+
+#include <QsLog.h>
 
 using namespace YACReader;
 

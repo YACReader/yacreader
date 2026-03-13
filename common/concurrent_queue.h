@@ -1,11 +1,12 @@
 #ifndef CONCURRENT_QUEUE_H
 #define CONCURRENT_QUEUE_H
 
-#include <thread>
-#include <mutex>
-#include <functional>
-#include <condition_variable>
 #include <queue>
+
+#include <condition_variable>
+#include <functional>
+#include <mutex>
+#include <thread>
 #include <vector>
 
 namespace YACReader {

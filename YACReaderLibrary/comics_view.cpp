@@ -1,9 +1,9 @@
 #include "comics_view.h"
-#include "comic.h"
-#include "comic_files_manager.h"
-#include "comic_db.h"
 
 #include "QsLog.h"
+#include "comic.h"
+#include "comic_db.h"
+#include "comic_files_manager.h"
 
 #include <QQmlContext>
 #include <QQuickWidget>

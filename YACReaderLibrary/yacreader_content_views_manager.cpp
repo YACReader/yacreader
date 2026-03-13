@@ -1,22 +1,19 @@
 #include "yacreader_content_views_manager.h"
 
-#include "library_window.h"
-
 #include "classic_comics_view.h"
-#include "grid_comics_view.h"
-#include "folder_content_view.h"
-
-#include "yacreader_sidebar.h"
-
-#include "info_comics_view.h"
 #include "comics_view_transition.h"
-#include "empty_label_widget.h"
-#include "empty_special_list.h"
-#include "empty_reading_list_widget.h"
 #include "empty_folder_widget.h"
+#include "empty_label_widget.h"
+#include "empty_reading_list_widget.h"
+#include "empty_special_list.h"
+#include "folder_content_view.h"
+#include "grid_comics_view.h"
+#include "info_comics_view.h"
+#include "library_window.h"
 #include "no_search_results_widget.h"
-#include "yacreader_options_dialog.h"
 #include "options_dialog.h"
+#include "yacreader_options_dialog.h"
+#include "yacreader_sidebar.h"
 
 //--
 #include "yacreader_search_line_edit.h"

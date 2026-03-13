@@ -1,24 +1,23 @@
 #ifndef __VIEWER_H
 #define __VIEWER_H
 
-#include <QMainWindow>
-
-#include <QScrollArea>
-#include <QAction>
-#include <QTimer>
-#include <QLabel>
-#include <QPixmap>
-#include <QResizeEvent>
-#include <QWheelEvent>
-#include <QMouseEvent>
-#include <QCloseEvent>
-#include <QPropertyAnimation>
-#include <QParallelAnimationGroup>
-#include <QSettings>
-
-#include "scroll_management.h"
 #include "mouse_handler.h"
+#include "scroll_management.h"
 #include "themable.h"
+
+#include <QAction>
+#include <QCloseEvent>
+#include <QLabel>
+#include <QMainWindow>
+#include <QMouseEvent>
+#include <QParallelAnimationGroup>
+#include <QPixmap>
+#include <QPropertyAnimation>
+#include <QResizeEvent>
+#include <QScrollArea>
+#include <QSettings>
+#include <QTimer>
+#include <QWheelEvent>
 
 class ComicDB;
 class Comic;

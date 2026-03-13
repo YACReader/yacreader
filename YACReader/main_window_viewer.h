@@ -1,16 +1,16 @@
 #ifndef __MAIN_WINDOW_VIEWER_H
 #define __MAIN_WINDOW_VIEWER_H
+#include "themable.h"
+#include "yacreader_global.h"
+
+#include <QAction>
+#include <QCloseEvent>
 #include <QMainWindow>
+#include <QMouseEvent>
 #include <QScrollArea>
+#include <QSettings>
 #include <QToolBar>
 #include <QToolButton>
-#include <QAction>
-#include <QMouseEvent>
-#include <QCloseEvent>
-#include <QSettings>
-
-#include "yacreader_global.h"
-#include "themable.h"
 
 #ifdef Y_MAC_UI
 #include "yacreader_macosx_toolbar.h"

@@ -1,10 +1,10 @@
 #ifndef LIBRARY_WINDOW_ACTIONS_H
 #define LIBRARY_WINDOW_ACTIONS_H
 
+#include "qaction.h"
+
 #include <QAction>
 #include <QSettings>
-
-#include "qaction.h"
 
 class LibraryWindow;
 class YACReaderHistoryController;

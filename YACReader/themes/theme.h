@@ -1,12 +1,12 @@
 #ifndef THEME_H
 #define THEME_H
 
+#include "help_about_dialog_theme.h"
+#include "theme_meta.h"
+#include "whats_new_dialog_theme.h"
+
 #include <QIcon>
 #include <QJsonObject>
-
-#include "help_about_dialog_theme.h"
-#include "whats_new_dialog_theme.h"
-#include "theme_meta.h"
 
 struct ToolbarThemeTemplates {
     QString toolbarQSS = "QToolBar { border: none; background: %1; }\n"

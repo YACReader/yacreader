@@ -1,9 +1,9 @@
 #ifndef HELP_ABOUT_DIALOG_H
 #define HELP_ABOUT_DIALOG_H
 
-#include <QDialog>
-
 #include "themable.h"
+
+#include <QDialog>
 
 class QTabWidget;
 class QTextBrowser;

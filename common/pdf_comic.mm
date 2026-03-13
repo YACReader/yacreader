@@ -2,12 +2,12 @@
 
 #undef __OBJC_BOOL_IS_BOOL
 
-#import <AppKit/AppKit.h>
-#import <Foundation/Foundation.h>
-#import <ApplicationServices/ApplicationServices.h>
-
 #include "QsLog.h"
 #include "QsLogDest.h"
+
+#import <AppKit/AppKit.h>
+#import <ApplicationServices/ApplicationServices.h>
+#import <Foundation/Foundation.h>
 
 MacOSXPDFComic::MacOSXPDFComic()
 {

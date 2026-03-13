@@ -1,13 +1,12 @@
 #include "folder_content_view.h"
 
+#include "QsLog.h"
+#include "comic.h"
+#include "comic_files_manager.h"
 #include "folder_model.h"
 #include "grid_comics_view.h"
 #include "yacreader_global_gui.h"
 #include "yacreader_tool_bar_stretch.h"
-#include "comic.h"
-#include "comic_files_manager.h"
-
-#include "QsLog.h"
 
 #include <QApplication>
 #include <QHBoxLayout>

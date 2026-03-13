@@ -1,10 +1,10 @@
 #include "console_ui_library_creator.h"
 
-#include <iostream>
-
 #include "library_creator.h"
-#include "yacreader_libraries.h"
 #include "xml_info_library_scanner.h"
+#include "yacreader_libraries.h"
+
+#include <iostream>
 
 using namespace YACReader;
 

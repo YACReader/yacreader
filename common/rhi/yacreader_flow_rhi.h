@@ -7,12 +7,13 @@
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 7, 0)
 
-#include <QRhiWidget>
-#include <rhi/qrhi.h>
-
 #include "flow_types.h"
-#include "yacreader_global.h"
 #include "scroll_management.h"
+#include "yacreader_global.h"
+
+#include <QRhiWidget>
+
+#include <rhi/qrhi.h>
 
 // the image/texture info struct
 struct YACReader3DImageRHI {

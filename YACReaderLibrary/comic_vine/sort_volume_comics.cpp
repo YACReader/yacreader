@@ -1,15 +1,15 @@
 #include "sort_volume_comics.h"
 
-#include <QLabel>
+#include "local_comic_list_model.h"
+#include "scraper_tableview.h"
+#include "theme_manager.h"
+#include "volume_comics_model.h"
+
+#include <QAction>
 #include <QBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QScrollBar>
-#include <QAction>
-
-#include "scraper_tableview.h"
-#include "local_comic_list_model.h"
-#include "volume_comics_model.h"
-#include "theme_manager.h"
 
 ScrapperToolButton::ScrapperToolButton(ScrapperToolButton::Appearance appearance, QWidget *parent)
     : QPushButton(parent), appearance(appearance)

@@ -1,9 +1,9 @@
 #include "yacreader_busy_widget.h"
 
 #include <QDebug>
+#include <QGradient>
 #include <QPainter>
 #include <QPixmapCache>
-#include <QGradient>
 
 YACReaderBusyWidget::YACReaderBusyWidget(QWidget *parent)
     : QWidget(parent)

@@ -2,16 +2,15 @@
 
 #include "yacreader_global.h"
 
+#include <QEventLoop>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QRegExp>
+#include <QStringList>
+#include <QTimer>
 #include <QUrl>
 #include <QtGlobal>
-#include <QStringList>
-
-#include <QNetworkAccessManager>
-#include <QEventLoop>
-#include <QTimer>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-#include <QRegExp>
 
 #define PREVIOUS_VERSION_TESTING "6.0.0"
 

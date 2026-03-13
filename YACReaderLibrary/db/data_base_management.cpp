@@ -1,14 +1,14 @@
 #include "data_base_management.h"
 
-#include <QtCore>
+#include "QsLog.h"
+#include "db_helper.h"
+#include "initial_comic_info_extractor.h"
+
 #include <QImageReader>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
-#include "initial_comic_info_extractor.h"
-#include "db_helper.h"
-
-#include "QsLog.h"
+#include <QtCore>
 
 using namespace YACReader;
 

@@ -1,12 +1,12 @@
 #ifndef __GOTO_FLOW_WIDGET_H
 #define __GOTO_FLOW_WIDGET_H
 
-#include <QWidget>
-#include <QSettings>
-#include "yacreader_global_gui.h"
-
-#include "yacreader_page_flow_rhi.h"
 #include "themable.h"
+#include "yacreader_global_gui.h"
+#include "yacreader_page_flow_rhi.h"
+
+#include <QSettings>
+#include <QWidget>
 
 using namespace YACReader;
 

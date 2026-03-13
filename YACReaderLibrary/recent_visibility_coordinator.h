@@ -2,9 +2,9 @@
 #ifndef RECENT_VISIBILITY_COORDINATOR_H
 #define RECENT_VISIBILITY_COORDINATOR_H
 
-#include "folder_model.h"
 #include "comic_model.h"
 #include "folder_content_view.h"
+#include "folder_model.h"
 
 class RecentVisibilityCoordinator : public QObject
 {

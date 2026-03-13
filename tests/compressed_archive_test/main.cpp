@@ -1,9 +1,9 @@
 
-#include <QtCore/QCoreApplication>
+#include "compressed_archive.h"
+
 #include <QDir>
 #include <QElapsedTimer>
-
-#include "compressed_archive.h"
+#include <QtCore/QCoreApplication>
 
 #include <iostream>
 

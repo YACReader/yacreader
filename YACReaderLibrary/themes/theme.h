@@ -1,12 +1,12 @@
 #ifndef THEME_H
 #define THEME_H
 
-#include <QJsonObject>
-
-#include "yacreader_icon.h"
 #include "help_about_dialog_theme.h"
-#include "whats_new_dialog_theme.h"
 #include "theme_meta.h"
+#include "whats_new_dialog_theme.h"
+#include "yacreader_icon.h"
+
+#include <QJsonObject>
 
 struct MetadataScraperDialogThemeTemplates {
     QString defaultLabelQSS = "QLabel {color:%1; font-size:12px;font-family:Arial;}";

@@ -1,8 +1,8 @@
 #include "yacreader_dark_menu.h"
 
+#include <QHBoxLayout>
 #include <QLabel>
 #include <QPixmap>
-#include <QHBoxLayout>
 
 YACReaderDarkMenu::YACReaderDarkMenu(QWidget *parent)
     : QMenu(parent)

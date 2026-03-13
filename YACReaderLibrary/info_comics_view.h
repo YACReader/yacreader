@@ -2,8 +2,9 @@
 #define INFOCOMICSVIEW_H
 
 #include "comics_view.h"
-#include <QQmlContext>
 #include "themable.h"
+
+#include <QQmlContext>
 
 class QQuickView;
 

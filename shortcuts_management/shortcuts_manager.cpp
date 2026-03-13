@@ -1,8 +1,9 @@
 #include "shortcuts_manager.h"
 
-#include <QSettings>
-#include <QAction>
 #include "yacreader_global.h"
+
+#include <QAction>
+#include <QSettings>
 
 ShortcutsManager::ShortcutsManager()
 {

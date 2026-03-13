@@ -6,11 +6,11 @@
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QString>
 #include <QThread>
 #include <QTimer>
-#include <QProgressBar>
 
 class ExportLibraryDialog : public QDialog, protected Themable
 {

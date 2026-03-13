@@ -2,8 +2,8 @@
 #define VERSIONCONTROLLER_H
 
 #include "httprequest.h"
-#include "httpresponse.h"
 #include "httprequesthandler.h"
+#include "httpresponse.h"
 
 #include <QThread>
 

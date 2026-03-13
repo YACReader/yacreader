@@ -1,12 +1,12 @@
 #include "comic_query_result_processor.h"
 
-#include <QSqlRecord>
-
 #include "comic_item.h"
 #include "comic_model.h"
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
 #include "search_query.h"
+
+#include <QSqlRecord>
 
 YACReader::ComicQueryResultProcessor::ComicQueryResultProcessor()
     : querySearchQueue(1)

@@ -1,30 +1,28 @@
-#include <QTextToSpeech>
-#include <QJsonDocument>
-#include <QJsonObject>
-
-#include <QPushButton>
-#include <QPalette>
-#include <QMouseEvent>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include "translator.h"
-#include "viewer.h"
 
+#include "viewer.h"
 #include "yacreader_busy_widget.h"
 
-#include <QFile>
-#include <QPoint>
-#include <QWidget>
-#include <QLabel>
-#include <QTextEdit>
 #include <QComboBox>
-#include <QThread>
 #include <QEventLoop>
-#include <QTimer>
-#include <QNetworkRequest>
-#include <QNetworkReply>
-
+#include <QFile>
+#include <QHBoxLayout>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QLabel>
 #include <QMessageBox>
+#include <QMouseEvent>
+#include <QNetworkReply>
+#include <QNetworkRequest>
+#include <QPalette>
+#include <QPoint>
+#include <QPushButton>
+#include <QTextEdit>
+#include <QTextToSpeech>
+#include <QThread>
+#include <QTimer>
+#include <QVBoxLayout>
+#include <QWidget>
 
 YACReaderTranslator::YACReaderTranslator(Viewer *parent)
     : QWidget(parent), drag(false)

@@ -1,25 +1,22 @@
 #ifndef __LIBRARYWINDOW_H
 #define __LIBRARYWINDOW_H
 
+#include "comic_db.h"
+#include "comic_model.h"
+#include "comic_query_result_processor.h"
+#include "folder.h"
+#include "folder_query_result_processor.h"
+#include "libraries_update_coordinator.h"
+#include "library_window_actions.h"
+#include "themable.h"
+#include "yacreader_global.h"
+#include "yacreader_libraries.h"
+#include "yacreader_navigation_controller.h"
+
+#include <QFileInfo>
 #include <QMainWindow>
 #include <QMap>
 #include <QModelIndex>
-#include <QFileInfo>
-
-#include "library_window_actions.h"
-#include "yacreader_global.h"
-#include "yacreader_libraries.h"
-#include "libraries_update_coordinator.h"
-
-#include "yacreader_navigation_controller.h"
-#include "comic_query_result_processor.h"
-#include "folder_query_result_processor.h"
-
-#include "themable.h"
-
-#include "comic_model.h"
-#include "comic_db.h"
-#include "folder.h"
 
 #include <future>
 #include <memory>

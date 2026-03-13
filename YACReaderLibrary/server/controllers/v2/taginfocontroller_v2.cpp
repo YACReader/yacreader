@@ -1,10 +1,9 @@
 #include "taginfocontroller_v2.h"
 
-#include <QUrl>
-
+#include "comic_db.h"
 #include "db_helper.h"
 
-#include "comic_db.h"
+#include <QUrl>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

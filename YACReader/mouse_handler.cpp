@@ -1,12 +1,12 @@
 #include "mouse_handler.h"
 
-#include <QScrollBar>
-
 #include "configuration.h"
 #include "goto_flow_widget.h"
 #include "magnifying_glass.h"
 #include "render.h"
 #include "viewer.h"
+
+#include <QScrollBar>
 
 using namespace YACReader;
 

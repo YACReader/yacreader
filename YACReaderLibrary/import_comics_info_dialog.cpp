@@ -1,11 +1,11 @@
 #include "import_comics_info_dialog.h"
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QFileDialog>
-#include <QProgressBar>
-
 #include "data_base_management.h"
+
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QProgressBar>
+#include <QVBoxLayout>
 
 ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
     : QDialog(parent)

@@ -1,7 +1,7 @@
 #include "title_header.h"
 
-#include <QLabel>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QVBoxLayout>
 
 TitleHeader::TitleHeader(QWidget *parent)

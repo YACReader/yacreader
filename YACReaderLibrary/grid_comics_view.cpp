@@ -1,5 +1,14 @@
 #include "grid_comics_view.h"
 
+#include "QsLog.h"
+#include "comic.h"
+#include "comic_db.h"
+#include "comic_files_manager.h"
+#include "current_comic_view_helper.h"
+#include "yacreader_comic_info_helper.h"
+#include "yacreader_comics_selection_helper.h"
+#include "yacreader_global_gui.h"
+
 #include <QApplication>
 #include <QDrag>
 #include <QHBoxLayout>
@@ -9,15 +18,6 @@
 #include <QQuickWidget>
 #include <QToolBar>
 #include <QVBoxLayout>
-
-#include "yacreader_global_gui.h"
-#include "comic.h"
-#include "comic_files_manager.h"
-#include "QsLog.h"
-#include "comic_db.h"
-#include "yacreader_comics_selection_helper.h"
-#include "yacreader_comic_info_helper.h"
-#include "current_comic_view_helper.h"
 
 GridComicsView::GridComicsView(QWidget *parent)
     : ComicsView(parent), filterEnabled(false), smallZoomLabel(nullptr), bigZoomLabel(nullptr)

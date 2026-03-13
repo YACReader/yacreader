@@ -1,10 +1,10 @@
 #ifndef YACREADER_SEARCH_LINE_EDIT_H
 #define YACREADER_SEARCH_LINE_EDIT_H
 
-#include <QLineEdit>
-#include <QCompleter>
-
 #include "themable.h"
+
+#include <QCompleter>
+#include <QLineEdit>
 
 class QToolButton;
 class QLabel;

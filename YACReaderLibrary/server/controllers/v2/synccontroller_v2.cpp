@@ -1,12 +1,12 @@
 #include "synccontroller_v2.h"
 
 #include "QsLog.h"
-#include <QUrl>
-
 #include "comic_db.h"
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
+
+#include <QUrl>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

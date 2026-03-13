@@ -4,11 +4,10 @@
 #include "themable.h"
 
 #include <QDialog>
-#include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPushButton>
 #include <QProgressBar>
+#include <QPushButton>
 #include <QThread>
 
 class Importer : public QThread

@@ -1,13 +1,13 @@
 #ifndef CONTINUOUS_PAGE_WIDGET_H
 #define CONTINUOUS_PAGE_WIDGET_H
 
-#include <QWidget>
-#include <QSize>
-#include <QVector>
+#include "themable.h"
+
 #include <QHash>
 #include <QList>
-
-#include "themable.h"
+#include <QSize>
+#include <QVector>
+#include <QWidget>
 
 class Render;
 class ContinuousViewModel;

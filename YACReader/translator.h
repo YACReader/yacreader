@@ -10,11 +10,12 @@ class QPushButton;
 class YACReaderBusyWidget;
 class QTextToSpeech;
 
-#include <QWidget>
+#include "themable.h"
+#include "viewer.h"
+
 #include <QThread>
 #include <QUrl>
-#include "viewer.h"
-#include "themable.h"
+#include <QWidget>
 
 class YACReaderTranslator : public QWidget, protected Themable
 {

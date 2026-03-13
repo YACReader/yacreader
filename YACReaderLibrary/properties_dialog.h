@@ -2,7 +2,6 @@
 #define __PROPERTIES_DIALOG_H
 
 #include <QDialog>
-
 #include <QIntValidator>
 
 class QGridLayout;

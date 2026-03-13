@@ -2,6 +2,7 @@
 #define REQUESTMAPPER_H
 
 #include "httprequesthandler.h"
+
 #include <QMutex>
 
 class RequestMapper : public stefanfrings::HttpRequestHandler
