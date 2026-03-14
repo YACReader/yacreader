@@ -12,6 +12,40 @@ QString YACReader::getSettingsPath()
     return QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
 }
 
+QString YACReader::getCommonSettingsPath()
+{
+    const auto organizationName = QCoreApplication::organizationName().trimmed();
+    const auto basePath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+
+    if (organizationName.isEmpty())
+        return basePath;
+
+    return QDir(basePath).filePath(organizationName);
+}
+
+QString YACReader::getCommonSettingsFilePath()
+{
+    return QDir(getCommonSettingsPath()).filePath("YACReaderCommon.ini");
+}
+
+QString YACReader::getPluginsPath()
+{
+    return QDir(getCommonSettingsPath()).filePath("plugins");
+}
+
+QString YACReader::getImageFormatsPluginsPath()
+{
+    return QDir(getPluginsPath()).filePath("imageformats");
+}
+
+void YACReader::initializeSharedPluginPaths()
+{
+    QDir().mkpath(getImageFormatsPluginsPath());
+
+    const QString pluginsPath = QDir(getPluginsPath()).absolutePath();
+    QCoreApplication::addLibraryPath(pluginsPath);
+}
+
 QString YACReader::colorToName(LabelColors colors)
 {
     switch (colors) {

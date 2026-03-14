@@ -103,6 +103,11 @@ QDataStream &operator<<(QDataStream &stream, const OpenComicSource &source);
 QDataStream &operator>>(QDataStream &stream, OpenComicSource &source);
 
 QString getSettingsPath();
+QString getCommonSettingsPath();
+QString getCommonSettingsFilePath();
+QString getPluginsPath();
+QString getImageFormatsPluginsPath();
+void initializeSharedPluginPaths();
 QString colorToName(LabelColors colors);
 QString labelColorToRGBString(LabelColors color);
 QLibrary *load7zLibrary();

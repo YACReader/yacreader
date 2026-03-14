@@ -114,6 +114,7 @@ int main(int argc, char *argv[])
 
     app.setApplicationName("YACReader");
     app.setOrganizationName("YACReader");
+    YACReader::initializeSharedPluginPaths();
 
     auto *appearanceConfig = new AppearanceConfiguration(
             YACReader::getSettingsPath() + "/YACReader.ini", qApp);

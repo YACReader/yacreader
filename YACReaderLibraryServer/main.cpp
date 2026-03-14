@@ -48,6 +48,7 @@ int main(int argc, char **argv)
 
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");
+    YACReader::initializeSharedPluginPaths();
 
     QString buildNumber = ".0";
 
