@@ -1,5 +1,7 @@
 #include "global_info_provider.h"
 
+#include "yacreader_global.h"
+
 #include <QImageReader>
 #include <QPaintDevice>
 #include <QtCore>
@@ -24,6 +26,7 @@ QString YACReader::getGlobalInfo()
     text.append("\nAPP INFORMATION\n");
     QString supportedImageFormats = QImageReader::supportedImageFormats().join(", ");
     text.append(QString("Image formats supported: %1\n").arg(supportedImageFormats));
+    text.append(QString("User image plugin folder: %1\n").arg(YACReader::getImageFormatsPluginsPath()));
     // append if sqlite driver is available
 #ifdef YACREADER_LIBRARY
     text.append(QString("SQLite driver available: %1\n").arg(QSqlDatabase::isDriverAvailable("QSQLITE") ? "yes" : "no"));

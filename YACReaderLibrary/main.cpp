@@ -140,6 +140,7 @@ int main(int argc, char **argv)
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");
     app.setApplicationVersion(VERSION);
+    YACReader::initializeSharedPluginPaths();
 
     // Theme initialization
     auto *appearanceConfig = new AppearanceConfiguration(

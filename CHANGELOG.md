@@ -15,6 +15,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add a theme editor and support for custom themes.
 * Add an application language setting with a system default option in YACReader and YACReaderLibrary.
 
+### All apps
+* Add support for user-installed Qt image format plugins via the shared `plugins/imageformats` folder in the YACReader settings directory.
+
 ## 9.16.4
 
 ### YACReaderLibrary
