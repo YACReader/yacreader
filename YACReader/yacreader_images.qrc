@@ -1,7 +1,7 @@
 <RCC>
   <qresource>
     <file>../images/icon-new.svg</file>
-    <file>../images/goto.png</file>
+    <file>../images/goto.svg</file>
     <file>../images/find_folder.svg</file>
     <file>../images/flow1.png</file>
     <file>../images/flow2.png</file>

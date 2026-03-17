@@ -182,6 +182,7 @@ struct ShortcutsIconsTheme {
 
 struct DialogIconsTheme {
     QIcon findFolderIcon;
+    QPixmap goToDialogIcon;
 };
 
 struct Theme {

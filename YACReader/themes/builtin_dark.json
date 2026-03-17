@@ -1,4 +1,7 @@
 {
+    "dialogIcons": {
+        "iconColor": "#cccccc"
+    },
     "goToFlowWidget": {
         "editBackgroundColor": "#55000000",
         "editBorderColor": "#77000000",

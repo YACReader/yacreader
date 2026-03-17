@@ -8,6 +8,7 @@ GoToDialog::GoToDialog(QWidget *parent)
     : QDialog(parent)
 {
     setupUI();
+    initTheme(this);
 }
 
 void GoToDialog::setupUI()
@@ -42,9 +43,7 @@ void GoToDialog::setupUI()
     mainLayout->addLayout(bottomLayout);
 
     auto imgMainLayout = new QHBoxLayout;
-    auto imgLabel = new QLabel();
-    QPixmap p(":/images/goto.png");
-    imgLabel->setPixmap(p);
+    imgLabel = new QLabel();
     imgMainLayout->addWidget(imgLabel);
     imgMainLayout->addLayout(mainLayout);
 
@@ -77,4 +76,9 @@ void GoToDialog::open()
     pageNumber->clear();
     pageNumber->setFocus();
     QDialog::open();
+}
+
+void GoToDialog::applyTheme(const Theme &theme)
+{
+    imgLabel->setPixmap(theme.dialogIcons.goToDialogIcon);
 }

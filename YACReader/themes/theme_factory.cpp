@@ -56,6 +56,10 @@ struct ShortcutsIconsParams {
     QColor iconColor; // Main icon color (replaces #f0f)
 };
 
+struct DialogIconsParams {
+    QColor iconColor; // Main icon color (replaces #f0f)
+};
+
 struct TranslatorParams {
     TranslatorThemeTemplates t;
 
@@ -79,6 +83,7 @@ struct ThemeParams {
     HelpAboutDialogTheme helpAboutDialogParams;
     WhatsNewDialogParams whatsNewDialogParams;
     ShortcutsIconsParams shortcutsIconsParams;
+    DialogIconsParams dialogIconsParams;
     TranslatorParams translatorParams;
 };
 
@@ -338,6 +343,11 @@ Theme makeTheme(const QJsonObject &json)
     if (json.contains("shortcutsIcons")) {
         const auto s = json["shortcutsIcons"].toObject();
         p.shortcutsIconsParams.iconColor = colorFromJson(s, "iconColor", p.shortcutsIconsParams.iconColor);
+    }
+
+    if (json.contains("dialogIcons")) {
+        const auto o = json["dialogIcons"].toObject();
+        p.dialogIconsParams.iconColor = colorFromJson(o, "iconColor", p.dialogIconsParams.iconColor);
     }
 
     if (json.contains("translator")) {
