@@ -330,10 +330,18 @@ struct WhatsNewDialogParams {
     QColor headerDecorationColor;
 };
 
+struct ComicFlowParams {
+    QColor backgroundColor;
+    QColor textColor;
+    QColor readMainColor; // Main ribbon color for read state (#f0f in readRibbon.svg)
+    QColor readTickColor; // Tick color for read state (#0ff in readRibbon.svg)
+    QColor readingColor; // Main ribbon color for reading state (#f0f in readingRibbon.svg)
+};
+
 struct ThemeParams {
     ThemeMeta meta;
 
-    ComicFlowColors comicFlowColors;
+    ComicFlowParams comicFlowParams;
     MetadataScraperDialogParams metadataScraperDialogParams;
     HelpAboutDialogTheme helpAboutDialogParams;
     EmptyContainerParams emptyContainerParams;
@@ -361,9 +369,21 @@ Theme makeTheme(const ThemeParams &params)
     Theme theme;
 
     // Comic Flow
-    const auto &cf = params.comicFlowColors;
+    const auto &cf = params.comicFlowParams;
     theme.comicFlow.backgroundColor = cf.backgroundColor;
     theme.comicFlow.textColor = cf.textColor;
+
+    {
+        const qreal dpr = qApp->devicePixelRatio();
+        // readRibbon: #f0f (main) + #0ff (tick)
+        theme.comicFlow.readPixmap = renderSvgToPixmap(
+                recoloredSvgToThemeFile(":/images/readRibbon.svg", cf.readMainColor, cf.readTickColor, params.meta.id),
+                100, 136, dpr);
+        // readingRibbon: #f0f (main)
+        theme.comicFlow.readingPixmap = renderSvgToPixmap(
+                recoloredSvgToThemeFile(":/images/readingRibbon.svg", cf.readingColor, params.meta.id),
+                100, 136, dpr);
+    }
 
     // MetadataScraperDialog
     const auto &msd = params.metadataScraperDialogParams;
@@ -918,8 +938,11 @@ Theme makeTheme(const QJsonObject &json)
 
     if (json.contains("comicFlow")) {
         const auto o = json["comicFlow"].toObject();
-        p.comicFlowColors.backgroundColor = colorFromJson(o, "backgroundColor", p.comicFlowColors.backgroundColor);
-        p.comicFlowColors.textColor = colorFromJson(o, "textColor", p.comicFlowColors.textColor);
+        p.comicFlowParams.backgroundColor = colorFromJson(o, "backgroundColor", p.comicFlowParams.backgroundColor);
+        p.comicFlowParams.textColor = colorFromJson(o, "textColor", p.comicFlowParams.textColor);
+        p.comicFlowParams.readMainColor = colorFromJson(o, "readMainColor", p.comicFlowParams.readMainColor);
+        p.comicFlowParams.readTickColor = colorFromJson(o, "readTickColor", p.comicFlowParams.readTickColor);
+        p.comicFlowParams.readingColor = colorFromJson(o, "readingColor", p.comicFlowParams.readingColor);
     }
 
     if (json.contains("metadataScraperDialog")) {
