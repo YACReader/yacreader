@@ -25,6 +25,7 @@ private:
     QLabel *iconLabel;
     QLabel *text;
     QLabel *textDescription;
+    QLabel *lineLabel;
 };
 
 #endif // NO_LIBRARIES_WIDGET_H

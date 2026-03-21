@@ -23,6 +23,8 @@ class YACReaderActivityIndicatorWidget : public QWidget
 {
 public:
     YACReaderActivityIndicatorWidget(QWidget *parent = 0);
+    void setPixmaps(const QPixmap &normalLine, const QPixmap &glowLine);
+
 public slots:
 
 private:
@@ -31,15 +33,10 @@ private:
 };
 
 YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), normal(nullptr), glow(nullptr)
 {
-    QPixmap line(":/images/noLibrariesLine.png");
-    QPixmap glowLine(":/images/glowLine.png");
     normal = new QLabel(this);
     glow = new QLabel(this);
-
-    normal->setPixmap(line);
-    glow->setPixmap(glowLine);
 
     auto layout = new QHBoxLayout();
 
@@ -49,11 +46,6 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
 
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(0);
-
-    // setFixedHeight(3);
-    // resize(579,3);
-    glow->setGeometry(4, 4, glowLine.width(), glowLine.height());
-    // normal->setGeometry(0,1,579,1);
 
     auto effect = new QGraphicsOpacityEffect();
     // effect->setOpacity(1.0);
@@ -80,6 +72,13 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
     animation->start();
 }
 
+void YACReaderActivityIndicatorWidget::setPixmaps(const QPixmap &normalLine, const QPixmap &glowLine)
+{
+    normal->setPixmap(normalLine);
+    glow->setPixmap(glowLine);
+    glow->setGeometry(4, 4, glowLine.width(), glowLine.height());
+}
+
 ImportWidget::ImportWidget(QWidget *parent)
     : QWidget(parent)
 {
@@ -88,7 +87,7 @@ ImportWidget::ImportWidget(QWidget *parent)
 
     iconLabel = new QLabel();
 
-    auto activityIndicator = new YACReaderActivityIndicatorWidget();
+    activityIndicator = new YACReaderActivityIndicatorWidget();
 
     text = new QLabel();
     textDescription = new QLabel();
@@ -398,6 +397,9 @@ void ImportWidget::applyTheme(const Theme &theme)
     topDecorator->setFixedHeight(importTheme.topCoversDecoration.height());
     bottomDecorator->setPixmap(importTheme.bottomCoversDecoration);
     bottomDecorator->setFixedHeight(importTheme.bottomCoversDecoration.height());
+
+    const auto &noLibrariesWidget = theme.noLibrariesWidget;
+    activityIndicator->setPixmaps(noLibrariesWidget.noLibrariesLinePixmap, importTheme.glowLinePixmap);
 
     // Apply text colors
     updateTextColors();

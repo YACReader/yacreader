@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 579 1">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient);
+        stroke: url(#linear-gradient-2);
+        stroke-miterlimit: 10;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="0" y1=".5" x2="579" y2=".5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0f" stop-opacity="0"/>
+      <stop offset="0" stop-color="#f0f" stop-opacity=".04"/>
+      <stop offset=".02" stop-color="#f0f" stop-opacity=".22"/>
+      <stop offset=".05" stop-color="#f0f" stop-opacity=".39"/>
+      <stop offset=".07" stop-color="#f0f" stop-opacity=".53"/>
+      <stop offset=".1" stop-color="#f0f" stop-opacity=".66"/>
+      <stop offset=".13" stop-color="#f0f" stop-opacity=".77"/>
+      <stop offset=".16" stop-color="#f0f" stop-opacity=".85"/>
+      <stop offset=".2" stop-color="#f0f" stop-opacity=".92"/>
+      <stop offset=".25" stop-color="#f0f" stop-opacity=".97"/>
+      <stop offset=".31" stop-color="#f0f" stop-opacity=".99"/>
+      <stop offset=".5" stop-color="#f0f"/>
+      <stop offset=".69" stop-color="#f0f" stop-opacity=".99"/>
+      <stop offset=".75" stop-color="#f0f" stop-opacity=".97"/>
+      <stop offset=".8" stop-color="#f0f" stop-opacity=".92"/>
+      <stop offset=".84" stop-color="#f0f" stop-opacity=".85"/>
+      <stop offset=".87" stop-color="#f0f" stop-opacity=".77"/>
+      <stop offset=".9" stop-color="#f0f" stop-opacity=".66"/>
+      <stop offset=".93" stop-color="#f0f" stop-opacity=".53"/>
+      <stop offset=".95" stop-color="#f0f" stop-opacity=".39"/>
+      <stop offset=".98" stop-color="#f0f" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#f0f" stop-opacity=".04"/>
+      <stop offset="1" stop-color="#f0f" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="0" y1=".5" x2="579" y2=".5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0f" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#f0f"/>
+      <stop offset="1" stop-color="#f0f" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <line class="cls-1" y1=".5" x2="579" y2=".5"/>
+</svg>

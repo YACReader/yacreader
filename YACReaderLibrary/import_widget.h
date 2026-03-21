@@ -14,6 +14,8 @@
 #include <QToolButton>
 #include <QWidget>
 
+class YACReaderActivityIndicatorWidget;
+
 class ImportWidget : public QWidget, protected Themable
 {
     Q_OBJECT
@@ -57,6 +59,7 @@ private:
     QToolButton *hideButton;
     QLabel *topDecorator;
     QLabel *bottomDecorator;
+    YACReaderActivityIndicatorWidget *activityIndicator;
 
     void resizeEvent(QResizeEvent *event) override;
     void updateTextColors();

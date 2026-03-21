@@ -42,7 +42,7 @@
         <file>../images/flow3.png</file>
         <file>../images/flow4.png</file>
         <file>../images/flow5.png</file>
-        <file>../images/glowLine.png</file>
+        <file>../images/glowLine.svg</file>
         <file>../images/metadata_dialog/loadCustomCover.svg</file>
         <file>../images/import/coversToggle.svg</file>
         <file>../images/icon-new.svg</file>
@@ -74,7 +74,7 @@
         <file>../images/library_dialogs/new.svg</file>
         <file>../images/metadata_dialog/nextCoverPage.svg</file>
         <file>../images/noLibrariesIcon.svg</file>
-        <file>../images/noLibrariesLine.png</file>
+        <file>../images/noLibrariesLine.svg</file>
         <file>../images/notCover.png</file>
         <file>../images/library_dialogs/openLibrary.svg</file>
         <file>../images/metadata_dialog/previousCoverPage.svg</file>
@@ -111,13 +111,11 @@
         <file>../images/import/updatingIcon.svg</file>
         <file>../images/custom_dialog/custom_close_button.svg</file>
         <file>../images/whats_new/whatsnew_header.svg</file>
-
         <file>../images/lists/default_0.svg</file>
         <file>../images/lists/default_1.svg</file>
         <file>../images/lists/default_2.svg</file>
         <file>../images/lists/label_template.svg</file>
         <file>../images/lists/list.svg</file>
-
         <file>../images/clearSearchNew.svg</file>
         <file>../images/iconSearchNew.svg</file>
     </qresource>

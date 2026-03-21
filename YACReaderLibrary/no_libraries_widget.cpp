@@ -13,9 +13,7 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
 
     iconLabel = new QLabel();
 
-    QPixmap line(":/images/noLibrariesLine.png");
-    QLabel *lineLabel = new QLabel();
-    lineLabel->setPixmap(line);
+    lineLabel = new QLabel();
 
     text = new QLabel(tr("You don't have any libraries yet"));
     text->setStyleSheet("QLabel {font-size:25px;font-weight:bold;}");
@@ -75,19 +73,20 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
 
 void NoLibrariesWidget::applyTheme(const Theme &theme)
 {
-    auto emptyTheme = theme.emptyContainer;
+    auto nlwTheme = theme.noLibrariesWidget;
 
     QPalette p(palette());
-    p.setColor(QPalette::Window, emptyTheme.backgroundColor);
+    p.setColor(QPalette::Window, nlwTheme.backgroundColor);
     setPalette(p);
 
     QPalette textPalette = text->palette();
-    textPalette.setColor(QPalette::WindowText, emptyTheme.textColor);
+    textPalette.setColor(QPalette::WindowText, nlwTheme.textColor);
     text->setPalette(textPalette);
 
     QPalette descPalette = textDescription->palette();
-    descPalette.setColor(QPalette::WindowText, emptyTheme.descriptionTextColor);
+    descPalette.setColor(QPalette::WindowText, nlwTheme.descriptionTextColor);
     textDescription->setPalette(descPalette);
 
-    iconLabel->setPixmap(emptyTheme.noLibrariesIcon);
+    iconLabel->setPixmap(nlwTheme.noLibrariesIcon);
+    lineLabel->setPixmap(nlwTheme.noLibrariesLinePixmap);
 }
