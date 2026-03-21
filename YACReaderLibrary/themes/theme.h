@@ -92,9 +92,11 @@ struct MetadataScraperDialogThemeTemplates {
     QSize rowIconSize = QSize(8, 7);
 };
 
-struct ComicFlowColors {
+struct ComicFlowTheme {
     QColor backgroundColor;
     QColor textColor;
+    QPixmap readPixmap;
+    QPixmap readingPixmap;
 };
 
 struct ComicsViewTableThemeTemplates {
@@ -484,7 +486,7 @@ struct Theme {
     ThemeMeta meta;
     QJsonObject sourceJson;
 
-    ComicFlowColors comicFlow;
+    ComicFlowTheme comicFlow;
     MetadataScraperDialogTheme metadataScraperDialog;
     HelpAboutDialogTheme helpAboutDialog;
     WhatsNewDialogTheme whatsNewDialog;

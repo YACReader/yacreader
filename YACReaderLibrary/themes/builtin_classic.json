@@ -1,6 +1,9 @@
 {
     "comicFlow": {
         "backgroundColor": "#000000",
+        "readMainColor": "#db4725",
+        "readTickColor": "#8a2c17",
+        "readingColor": "#e6b90f",
         "textColor": "#4c4c4c"
     },
     "comicsViewTable": {

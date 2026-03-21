@@ -24,6 +24,7 @@ void ComicFlowWidget::applyTheme(const Theme &theme)
 {
     setBackgroundColor(theme.comicFlow.backgroundColor);
     setTextColor(theme.comicFlow.textColor);
+    flow->setRibbonImages(theme.comicFlow.readPixmap.toImage(), theme.comicFlow.readingPixmap.toImage());
 }
 
 void ComicFlowWidget::setBackgroundColor(const QColor &color)

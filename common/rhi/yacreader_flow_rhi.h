@@ -179,6 +179,10 @@ protected:
     QColor backgroundColor;
     QColor textColor;
 
+    QImage readRibbonImage;
+    QImage readingRibbonImage;
+    bool ribbonTexturesDirty = false;
+
     /*** System info ***/
     float viewRotate;
 
@@ -202,6 +206,8 @@ protected:
 
     // Helper methods
     QRhiTexture *createTextureFromImage(QRhiCommandBuffer *cb, const QImage &image);
+    void removeCachedShaderBindings(QRhiTexture *texture);
+    void syncRibbonTextures(QRhiResourceUpdateBatch *batch);
     void updateUniformBuffer(QRhiCommandBuffer *cb, const UniformData &data);
     void prepareMarkInstanceData(const YACReader3DImageRHI &image, QVector<float> &data);
     void ensureUniformBufferCapacity(int requiredSlots);
@@ -259,6 +265,9 @@ public slots:
     // Theme color setters
     void setBackgroundColor(const QColor &color);
     void setTextColor(const QColor &color);
+
+    // Ribbon image setters (for themed SVG rasterized images)
+    void setRibbonImages(const QImage &readImage, const QImage &readingImage);
 
     virtual void updateImageData() = 0;
 

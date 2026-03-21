@@ -138,28 +138,8 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
         qDebug() << "YACReaderFlow3D: Created defaultTexture" << defaultImage.size();
     }
 
-#ifdef YACREADER_LIBRARY
-    // Initialize mark textures
-    if (!scene.markTexture) {
-        QImage markImage = QImage(":/images/readRibbon.png").convertToFormat(QImage::Format_RGBA8888);
-        if (!markImage.isNull()) {
-            scene.markTexture.reset(m_rhi->newTexture(QRhiTexture::RGBA8, markImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
-            scene.markTexture->create();
-            getResourceBatch()->uploadTexture(scene.markTexture.get(), markImage);
-            getResourceBatch()->generateMips(scene.markTexture.get());
-        }
-    }
-
-    if (!scene.readingTexture) {
-        QImage readingImage = QImage(":/images/readingRibbon.png").convertToFormat(QImage::Format_RGBA8888);
-        if (!readingImage.isNull()) {
-            scene.readingTexture.reset(m_rhi->newTexture(QRhiTexture::RGBA8, readingImage.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
-            scene.readingTexture->create();
-            getResourceBatch()->uploadTexture(scene.readingTexture.get(), readingImage);
-            getResourceBatch()->generateMips(scene.readingTexture.get());
-        }
-    }
-#endif
+    if (ribbonTexturesDirty || (!readRibbonImage.isNull() && !scene.markTexture) || (!readingRibbonImage.isNull() && !scene.readingTexture))
+        syncRibbonTextures(getResourceBatch());
 
     // Create vertex buffer (quad geometry)
     if (!scene.vertexBuffer) {
@@ -373,8 +353,34 @@ void YACReaderFlow3D::ensurePipeline()
 
 void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
 {
-    if (!m_rhi || numObjects == 0)
+    if (!m_rhi)
         return;
+
+    QRhiResourceUpdateBatch *batch = scene.resourceUpdates;
+    scene.resourceUpdates = nullptr;
+
+    auto ensureBatch = [this, &batch]() {
+        if (!batch)
+            batch = m_rhi->nextResourceUpdateBatch();
+        return batch;
+    };
+    auto deferBatch = [this, &batch]() {
+        if (batch)
+            scene.resourceUpdates = batch;
+    };
+
+#ifdef YACREADER_LIBRARY
+    if (ribbonTexturesDirty || (!readRibbonImage.isNull() && !scene.markTexture) || (!readingRibbonImage.isNull() && !scene.readingTexture))
+        syncRibbonTextures(ensureBatch());
+#endif
+
+    // Even without draw calls, pending uploads still have to reach the GPU.
+    // Otherwise recreated ribbon textures would exist but never receive pixels.
+    if (numObjects == 0) {
+        if (batch)
+            cb->resourceUpdate(batch);
+        return;
+    }
 
     const QSize outputSize = renderTarget()->pixelSize();
     const QColor clearColor = backgroundColor;
@@ -552,6 +558,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     ensureUniformBufferCapacity(draws.size());
 
     if (!scene.uniformBuffer) {
+        deferBatch();
         qWarning() << "YACReaderFlow3D: No uniform buffer available for rendering";
         return;
     }
@@ -560,6 +567,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     ensurePipeline();
 
     if (!scene.pipeline) {
+        deferBatch();
         qWarning() << "YACReaderFlow3D: No pipeline available for rendering";
         return;
     }
@@ -569,6 +577,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     if (!scene.instanceBuffer || scene.instanceBuffer->size() < requiredInstanceSize) {
         scene.instanceBuffer.reset(m_rhi->newBuffer(QRhiBuffer::Dynamic, QRhiBuffer::VertexBuffer, requiredInstanceSize));
         if (!scene.instanceBuffer->create()) {
+            deferBatch();
             qWarning() << "YACReaderFlow3D: Failed to create instance buffer of size" << requiredInstanceSize;
             return;
         }
@@ -576,7 +585,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
 
     // === PHASE 1: PREPARE (BEFORE PASS) ===
     // Update ALL uniform and instance data for ALL draws in one batch
-    QRhiResourceUpdateBatch *batch = m_rhi->nextResourceUpdateBatch();
+    batch = ensureBatch();
 
     // Process pending texture uploads
     if (!pendingTextureUploads.isEmpty()) {
@@ -603,6 +612,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
 
     // === PHASE 2: RENDER (DURING PASS) ===
     cb->beginPass(renderTarget(), clearColor, { 1.0f, 0 }, batch);
+    batch = nullptr;
 
     cb->setGraphicsPipeline(scene.pipeline.get());
     cb->setViewport(QRhiViewport(0, 0, outputSize.width(), outputSize.height()));
@@ -760,6 +770,65 @@ void YACReaderFlow3D::executeDrawWithOffset(QRhiCommandBuffer *cb, QRhiTexture *
 
     // Draw two triangles (6 vertices) forming a quad
     cb->draw(6);
+}
+
+void YACReaderFlow3D::removeCachedShaderBindings(QRhiTexture *texture)
+{
+    if (!texture)
+        return;
+
+    auto it = scene.shaderBindingsCache.find(texture);
+    if (it != scene.shaderBindingsCache.end()) {
+        delete it.value();
+        scene.shaderBindingsCache.erase(it);
+    }
+}
+
+void YACReaderFlow3D::syncRibbonTextures(QRhiResourceUpdateBatch *batch)
+{
+#ifndef YACREADER_LIBRARY
+    Q_UNUSED(batch);
+    ribbonTexturesDirty = false;
+#else
+    if (!m_rhi || !batch)
+        return;
+
+    bool allTexturesReady = true;
+
+    auto syncTexture = [this, batch, &allTexturesReady](std::unique_ptr<QRhiTexture> &texture, const QImage &image, const char *name) {
+        if (image.isNull()) {
+            if (texture) {
+                removeCachedShaderBindings(texture.get());
+                texture.reset();
+            }
+            return;
+        }
+
+        if (texture && !ribbonTexturesDirty)
+            return;
+
+        if (texture) {
+            removeCachedShaderBindings(texture.get());
+            texture.reset();
+        }
+
+        std::unique_ptr<QRhiTexture> newTexture(m_rhi->newTexture(QRhiTexture::RGBA8, image.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
+        if (!newTexture->create()) {
+            qWarning() << "YACReaderFlow3D: Failed to create" << name << "ribbon texture";
+            allTexturesReady = false;
+            return;
+        }
+
+        batch->uploadTexture(newTexture.get(), image);
+        batch->generateMips(newTexture.get());
+        texture = std::move(newTexture);
+    };
+
+    syncTexture(scene.markTexture, readRibbonImage, "read");
+    syncTexture(scene.readingTexture, readingRibbonImage, "reading");
+
+    ribbonTexturesDirty = !allTexturesReady;
+#endif
 }
 
 void YACReaderFlow3D::releaseResources()
@@ -1274,6 +1343,19 @@ void YACReaderFlow3D::setTextColor(const QColor &color)
 
     auto styleSheet = QString("QLabel { color: %1; }").arg(textColor.name());
     indexLabel->setStyleSheet(styleSheet);
+
+    update();
+}
+
+void YACReaderFlow3D::setRibbonImages(const QImage &readImage, const QImage &readingImage)
+{
+    readRibbonImage = readImage.convertToFormat(QImage::Format_RGBA8888);
+    readingRibbonImage = readingImage.convertToFormat(QImage::Format_RGBA8888);
+#ifdef YACREADER_LIBRARY
+    ribbonTexturesDirty = true;
+#else
+    ribbonTexturesDirty = false;
+#endif
 
     update();
 }
