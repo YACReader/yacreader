@@ -60,11 +60,15 @@ struct EmptyContainerParams {
     QColor backgroundColor;
     QColor titleTextColor;
 
-    // For NoLibrariesWidget
+    QColor iconColor;
+};
+
+struct NoLibrariesWidgetParams {
+    QColor backgroundColor;
     QColor textColor;
     QColor descriptionTextColor;
-
-    QColor searchIconColor; // Color for search-related icons (replaces #f0f in search_result.svg)
+    QColor iconColor;
+    QColor noLibrariesLineColor;
 };
 
 struct SidebarParams {
@@ -94,6 +98,7 @@ struct ImportWidgetParams {
     QColor modeIconColor;
     QColor iconColor;
     QColor iconCheckedColor;
+    QColor glowLineColor;
 };
 
 struct NavigationTreeParams {
@@ -345,6 +350,7 @@ struct ThemeParams {
     MetadataScraperDialogParams metadataScraperDialogParams;
     HelpAboutDialogTheme helpAboutDialogParams;
     EmptyContainerParams emptyContainerParams;
+    NoLibrariesWidgetParams noLibrariesWidgetParams;
     SidebarParams sidebarParams;
     SidebarIconsParams sidebarIconsParams;
     LibraryItemParams libraryItemParams;
@@ -457,21 +463,19 @@ Theme makeTheme(const ThemeParams &params)
 
     theme.emptyContainer.backgroundColor = ec.backgroundColor;
     theme.emptyContainer.titleLabelQSS = ect.titleLabelQSS.arg(ec.titleTextColor.name());
-    theme.emptyContainer.textColor = ec.textColor;
-    theme.emptyContainer.descriptionTextColor = ec.descriptionTextColor;
-    theme.emptyContainer.noLibrariesIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/noLibrariesIcon.svg", ec.searchIconColor, params.meta.id), 165, 160, qApp->devicePixelRatio());
     {
         const qreal dpr = qApp->devicePixelRatio();
-        theme.emptyContainer.searchingIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/search_result.svg", ec.searchIconColor, params.meta.id, { .suffix = "_searching" }), 97, dpr);
-        theme.emptyContainer.noSearchResultsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/search_result.svg", ec.searchIconColor, params.meta.id, { .suffix = "_no_results" }), 239, dpr);
+        const auto &rli = params.readingListIconsParams;
 
-        theme.emptyContainer.emptyFolderIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_folder.svg", ec.searchIconColor, params.meta.id), 319, 243, dpr);
-        theme.emptyContainer.emptyFavoritesIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_favorites.svg", QColor(0xe84853), params.meta.id), 238, 223, dpr);
-        theme.emptyContainer.emptyCurrentReadingsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_current_readings.svg", ec.searchIconColor, params.meta.id), 167, 214, dpr);
-        theme.emptyContainer.emptyReadingListIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.searchIconColor, params.meta.id), 248, 187, dpr);
+        theme.emptyContainer.searchingIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/search_result.svg", ec.iconColor, params.meta.id, { .suffix = "_searching" }), 97, dpr);
+        theme.emptyContainer.noSearchResultsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/search_result.svg", ec.iconColor, params.meta.id, { .suffix = "_no_results" }), 239, dpr);
+
+        theme.emptyContainer.emptyFolderIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_folder.svg", ec.iconColor, params.meta.id), 319, 243, dpr);
+        theme.emptyContainer.emptyFavoritesIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_favorites.svg", rli.favoritesMainColor, params.meta.id), 238, 223, dpr);
+        theme.emptyContainer.emptyCurrentReadingsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_current_readings.svg", ec.iconColor, params.meta.id), 167, 214, dpr);
+        theme.emptyContainer.emptyReadingListIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.iconColor, params.meta.id), 248, 187, dpr);
 
         // Generate empty label icons for each label color
-        const auto &rli = params.readingListIconsParams;
         for (int c = YACReader::YRed; c <= YACReader::YDark; ++c) {
             auto labelColor = static_cast<YACReader::LabelColors>(c);
             auto colorName = YACReader::colorToName(labelColor);
@@ -483,6 +487,21 @@ Theme makeTheme(const ThemeParams &params)
         }
     }
     // end EmptyContainer
+
+    // NoLibrariesWidget
+    const auto &nlw = params.noLibrariesWidgetParams;
+    const qreal dprNLW = qApp->devicePixelRatio();
+
+    theme.noLibrariesWidget.backgroundColor = nlw.backgroundColor;
+    theme.noLibrariesWidget.textColor = nlw.textColor;
+    theme.noLibrariesWidget.descriptionTextColor = nlw.descriptionTextColor;
+    theme.noLibrariesWidget.noLibrariesIcon = renderSvgToPixmap(
+            recoloredSvgToThemeFile(":/images/noLibrariesIcon.svg", nlw.iconColor, params.meta.id),
+            165, 160, dprNLW);
+    theme.noLibrariesWidget.noLibrariesLinePixmap = renderSvgToPixmap(
+            recoloredSvgToThemeFile(":/images/noLibrariesLine.svg", nlw.noLibrariesLineColor, params.meta.id),
+            579, 1, dprNLW);
+    // end NoLibrariesWidget
 
     // Sidebar
     const auto &sb = params.sidebarParams;
@@ -508,6 +527,8 @@ Theme makeTheme(const ThemeParams &params)
     theme.importWidget.bottomCoversDecoration = QPixmap(recoloredSvgToThemeFile(":/images/import/importBottomCoversDecoration.svg", iw.coversDecorationBgColor, iw.coversDecorationShadowColor, params.meta.id));
     theme.importWidget.importingIcon = QPixmap(recoloredSvgToThemeFile(":/images/import/importingIcon.svg", iw.modeIconColor, params.meta.id));
     theme.importWidget.updatingIcon = QPixmap(recoloredSvgToThemeFile(":/images/import/updatingIcon.svg", iw.modeIconColor, params.meta.id));
+    // glowLine: 579x5 glow line animation
+    theme.importWidget.glowLinePixmap = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/glowLine.svg", iw.glowLineColor, params.meta.id), 579, 5, qApp->devicePixelRatio());
     {
         QIcon coversToggle;
         const QString normalPath = recoloredSvgToThemeFile(":/images/import/coversToggle.svg", iw.iconColor, params.meta.id);
@@ -1005,9 +1026,17 @@ Theme makeTheme(const QJsonObject &json)
         auto &ec = p.emptyContainerParams;
         ec.backgroundColor = colorFromJson(o, "backgroundColor", ec.backgroundColor);
         ec.titleTextColor = colorFromJson(o, "titleTextColor", ec.titleTextColor);
-        ec.textColor = colorFromJson(o, "textColor", ec.textColor);
-        ec.descriptionTextColor = colorFromJson(o, "descriptionTextColor", ec.descriptionTextColor);
-        ec.searchIconColor = colorFromJson(o, "searchIconColor", ec.searchIconColor);
+        ec.iconColor = colorFromJson(o, "iconColor", ec.iconColor);
+    }
+
+    if (json.contains("noLibrariesWidget")) {
+        const auto o = json["noLibrariesWidget"].toObject();
+        auto &nlw = p.noLibrariesWidgetParams;
+        nlw.backgroundColor = colorFromJson(o, "backgroundColor", nlw.backgroundColor);
+        nlw.textColor = colorFromJson(o, "textColor", nlw.textColor);
+        nlw.descriptionTextColor = colorFromJson(o, "descriptionTextColor", nlw.descriptionTextColor);
+        nlw.iconColor = colorFromJson(o, "iconColor", nlw.iconColor);
+        nlw.noLibrariesLineColor = colorFromJson(o, "noLibrariesLineColor", nlw.noLibrariesLineColor);
     }
 
     if (json.contains("sidebar")) {
@@ -1058,6 +1087,7 @@ Theme makeTheme(const QJsonObject &json)
         iw.modeIconColor = colorFromJson(o, "modeIconColor", iw.modeIconColor);
         iw.iconColor = colorFromJson(o, "iconColor", iw.iconColor);
         iw.iconCheckedColor = colorFromJson(o, "iconCheckedColor", iw.iconCheckedColor);
+        iw.glowLineColor = colorFromJson(o, "glowLineColor", iw.glowLineColor);
     }
 
     if (json.contains("serverConfigDialog")) {

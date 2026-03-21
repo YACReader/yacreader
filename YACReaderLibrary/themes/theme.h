@@ -122,11 +122,6 @@ struct EmptyContainerTheme {
     QColor backgroundColor;
     QString titleLabelQSS;
 
-    // For NoLibrariesWidget
-    QColor textColor;
-    QColor descriptionTextColor;
-    QPixmap noLibrariesIcon;
-
     // Search-related icons (themed from search_result.svg)
     QPixmap searchingIcon; // For ClassicComicsView searching state
     QPixmap noSearchResultsIcon; // For NoSearchResultsWidget empty state
@@ -137,6 +132,14 @@ struct EmptyContainerTheme {
     QPixmap emptyCurrentReadingsIcon;
     QPixmap emptyReadingListIcon;
     QMap<int, QPixmap> emptyLabelIcons; // Keyed by YACReader::LabelColors enum value
+};
+
+struct NoLibrariesWidgetTheme {
+    QColor backgroundColor; // Background of the widget
+    QColor textColor; // Main title text color
+    QColor descriptionTextColor; // Description text color
+    QPixmap noLibrariesIcon; // Icon displayed in the widget
+    QPixmap noLibrariesLinePixmap; // Themed horizontal line separator
 };
 
 struct SidebarTheme {
@@ -172,6 +175,7 @@ struct ImportWidgetTheme {
     QPixmap importingIcon;
     QPixmap updatingIcon;
     QIcon coversToggleIcon;
+    QPixmap glowLinePixmap; // Themed glow line animation
 };
 
 struct NavigationTreeThemeTemplates {
@@ -491,6 +495,7 @@ struct Theme {
     HelpAboutDialogTheme helpAboutDialog;
     WhatsNewDialogTheme whatsNewDialog;
     EmptyContainerTheme emptyContainer;
+    NoLibrariesWidgetTheme noLibrariesWidget;
     SidebarTheme sidebar;
     SidebarIconsTheme sidebarIcons;
     LibraryItemTheme libraryItem;

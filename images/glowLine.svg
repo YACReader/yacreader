@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 589 3.5">
+  <defs>
+    <style>
+      .cls-1 {
+        stroke: url(#linear-gradient);
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        fill: none;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2 {
+        stroke: url(#linear-gradient-3);
+      }
+
+      .cls-2, .cls-3 {
+        stroke-width: 2px;
+      }
+
+      .cls-3 {
+        stroke: url(#linear-gradient-2);
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="9.67" y1=".42" x2="588.67" y2=".42" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0f" stop-opacity=".1"/>
+      <stop offset=".03" stop-color="#f0f" stop-opacity=".2"/>
+      <stop offset=".1" stop-color="#f0f" stop-opacity=".41"/>
+      <stop offset=".17" stop-color="#f0f" stop-opacity=".59"/>
+      <stop offset=".24" stop-color="#f0f" stop-opacity=".74"/>
+      <stop offset=".3" stop-color="#f0f" stop-opacity=".85"/>
+      <stop offset=".37" stop-color="#f0f" stop-opacity=".93"/>
+      <stop offset=".44" stop-color="#f0f" stop-opacity=".98"/>
+      <stop offset=".5" stop-color="#f0f"/>
+      <stop offset=".56" stop-color="#f0f" stop-opacity=".98"/>
+      <stop offset=".63" stop-color="#f0f" stop-opacity=".93"/>
+      <stop offset=".7" stop-color="#f0f" stop-opacity=".85"/>
+      <stop offset=".76" stop-color="#f0f" stop-opacity=".74"/>
+      <stop offset=".83" stop-color="#f0f" stop-opacity=".59"/>
+      <stop offset=".9" stop-color="#f0f" stop-opacity=".41"/>
+      <stop offset=".97" stop-color="#f0f" stop-opacity=".2"/>
+      <stop offset="1" stop-color="#f0f" stop-opacity=".1"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="9.67" y1="1.92" x2="588.67" y2="1.92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0f" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#f0f"/>
+      <stop offset="1" stop-color="#f0f" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="9.67" y1="2.92" x2="588.67" y2="2.92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f0f" stop-opacity="0"/>
+      <stop offset=".08" stop-color="#f0f" stop-opacity=".01"/>
+      <stop offset=".15" stop-color="#f0f" stop-opacity=".05"/>
+      <stop offset=".21" stop-color="#f0f" stop-opacity=".12"/>
+      <stop offset=".26" stop-color="#f0f" stop-opacity=".21"/>
+      <stop offset=".32" stop-color="#f0f" stop-opacity=".33"/>
+      <stop offset=".37" stop-color="#f0f" stop-opacity=".48"/>
+      <stop offset=".42" stop-color="#f0f" stop-opacity=".66"/>
+      <stop offset=".47" stop-color="#f0f" stop-opacity=".86"/>
+      <stop offset=".5" stop-color="#f0f"/>
+      <stop offset=".53" stop-color="#f0f" stop-opacity=".86"/>
+      <stop offset=".58" stop-color="#f0f" stop-opacity=".66"/>
+      <stop offset=".63" stop-color="#f0f" stop-opacity=".48"/>
+      <stop offset=".68" stop-color="#f0f" stop-opacity=".33"/>
+      <stop offset=".74" stop-color="#f0f" stop-opacity=".21"/>
+      <stop offset=".79" stop-color="#f0f" stop-opacity=".12"/>
+      <stop offset=".85" stop-color="#f0f" stop-opacity=".05"/>
+      <stop offset=".92" stop-color="#f0f" stop-opacity=".01"/>
+      <stop offset="1" stop-color="#f0f" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <line class="cls-1" x1="9.67" y1=".42" x2="588.67" y2=".42"/>
+  <line class="cls-3" x1="9.67" y1="1.92" x2="588.67" y2="1.92"/>
+  <line class="cls-2" x1="9.67" y1="2.92" x2="588.67" y2="2.92"/>
+</svg>

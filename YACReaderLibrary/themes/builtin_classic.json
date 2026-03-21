@@ -39,9 +39,7 @@
     },
     "emptyContainer": {
         "backgroundColor": "#2a2a2a",
-        "descriptionTextColor": "#aaaaaa",
-        "searchIconColor": "#4c4c4c",
-        "textColor": "#cccccc",
+        "iconColor": "#4c4c4c",
         "titleTextColor": "#cccccc"
     },
     "gridAndInfoView": {
@@ -97,6 +95,7 @@
         "coversViewBackgroundColor": "#3a3a3a",
         "currentComicTextColor": "#aaaaaa",
         "descriptionTextColor": "#aaaaaa",
+        "glowLineColor": "#ffe100",
         "iconCheckedColor": "#aaaaaa",
         "iconColor": "#cccccc",
         "modeIconColor": "#4a4a4a",
@@ -178,6 +177,13 @@
         "selectedTextColor": "#ffffff",
         "selectionBackgroundColor": "#2e2e2e",
         "textColor": "#dddfdf"
+    },
+    "noLibrariesWidget": {
+        "backgroundColor": "#2a2a2a",
+        "descriptionTextColor": "#aaaaaa",
+        "iconColor": "#4c4c4c",
+        "noLibrariesLineColor": "#a8a8a8",
+        "textColor": "#cccccc"
     },
     "readingListIcons": {
         "currentlyReadingMainColor": "#ffcc00",
