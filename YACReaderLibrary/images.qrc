@@ -103,10 +103,6 @@
         <file>../images/sidebar/renameListIcon.svg</file>
         <file>../images/sidebar/branch-closed.svg</file>
         <file>../images/sidebar/branch-open.svg</file>
-        <file>../images/sidebar/collapsed_branch_osx.png</file>
-        <file>../images/sidebar/collapsed_branch_selected.png</file>
-        <file>../images/sidebar/expanded_branch_osx.png</file>
-        <file>../images/sidebar/expanded_branch_selected.png</file>
         <file>../images/sidebar/folder.svg</file>
         <file>../images/sidebar/folder_finished.svg</file>
         <file>../images/sidebar/folder_read_overlay.svg</file>
