@@ -1,11 +1,36 @@
 #include "theme_repository.h"
 #include "theme_json_utils.h"
 
+#include <algorithm>
 #include <QDir>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QUuid>
+
+namespace {
+QString builtinNameFromFileName(QString fileName)
+{
+    if (fileName.endsWith(".json"))
+        fileName.chop(5);
+
+    if (fileName.startsWith("builtin_"))
+        fileName.remove(0, 8);
+
+    return fileName;
+}
+
+int builtinSortRank(const QString &name)
+{
+    if (name == QStringLiteral("classic"))
+        return 0;
+    if (name == QStringLiteral("light"))
+        return 1;
+    if (name == QStringLiteral("dark"))
+        return 2;
+    return 3;
+}
+}
 
 ThemeRepository::ThemeRepository(const QString &qrcPrefix, const QString &userThemesDir, const QString &targetApp)
     : qrcPrefix(qrcPrefix), userThemesDir(userThemesDir), targetApp(targetApp)
@@ -43,9 +68,19 @@ bool ThemeRepository::contains(const QString &themeId) const
 
 QJsonObject ThemeRepository::loadThemeJson(const QString &themeId) const
 {
-    for (const auto &b : builtins)
-        if (b.id == themeId)
-            return readJsonFile(b.resourcePath);
+    for (const auto &b : builtins) {
+        if (b.id != themeId)
+            continue;
+
+        QJsonObject json = readJsonFile(b.resourcePath);
+        if (json.isEmpty())
+            return { };
+
+        auto meta = json["meta"].toObject();
+        meta["id"] = b.id;
+        json["meta"] = meta;
+        return json;
+    }
 
     for (const auto &u : userThemes)
         if (u.id == themeId)
@@ -145,10 +180,24 @@ void ThemeRepository::scanBuiltins()
 {
     builtins.clear();
 
-    static const QStringList builtinNames = { "classic", "light", "dark" };
+    QDir dir(qrcPrefix);
+    QStringList builtinFiles = dir.entryList({ QStringLiteral("builtin_*.json") }, QDir::Files, QDir::Name);
+    std::sort(builtinFiles.begin(), builtinFiles.end(), [](const QString &lhs, const QString &rhs) {
+        const QString lhsName = builtinNameFromFileName(lhs);
+        const QString rhsName = builtinNameFromFileName(rhs);
+        const int lhsRank = builtinSortRank(lhsName);
+        const int rhsRank = builtinSortRank(rhsName);
+        if (lhsRank != rhsRank)
+            return lhsRank < rhsRank;
+        return lhsName < rhsName;
+    });
 
-    for (const auto &name : builtinNames) {
-        const QString resourcePath = qrcPrefix + "/builtin_" + name + ".json";
+    for (const auto &fileName : builtinFiles) {
+        const QString name = builtinNameFromFileName(fileName);
+        if (name.isEmpty())
+            continue;
+
+        const QString resourcePath = dir.absoluteFilePath(fileName);
         const QJsonObject json = readJsonFile(resourcePath);
         if (json.isEmpty())
             continue;
