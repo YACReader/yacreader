@@ -3994,7 +3994,7 @@ Per conoscere le impostazioni disponibili, consultare la documentazione su https
     <message>
         <location filename="../YACReaderLibrary/trayicon_controller.cpp" line="52"/>
         <source>&amp;Restore</source>
-        <translation>&amp;Rnegozio</translation>
+        <translation>&amp;Ripristina</translation>
     </message>
     <message>
         <location filename="../YACReaderLibrary/trayicon_controller.cpp" line="79"/>

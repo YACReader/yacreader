@@ -4014,7 +4014,7 @@ Migliora le prestazioni!</translation>
     <message>
         <location filename="trayicon_controller.cpp" line="52"/>
         <source>&amp;Restore</source>
-        <translation>&amp;Rnegozio</translation>
+        <translation>&amp;Ripristina</translation>
     </message>
     <message>
         <location filename="trayicon_controller.cpp" line="79"/>
