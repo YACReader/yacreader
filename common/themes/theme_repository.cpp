@@ -1,12 +1,14 @@
 #include "theme_repository.h"
+
 #include "theme_json_utils.h"
 
-#include <algorithm>
 #include <QDir>
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QUuid>
+
+#include <algorithm>
 
 namespace {
 QString builtinNameFromFileName(QString fileName)

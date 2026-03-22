@@ -1,4 +1,5 @@
 #include "theme_editor_dialog.h"
+
 #include "theme_json_utils.h"
 
 #include <QApplication>
