@@ -1,0 +1,67 @@
+{
+    "dialogIcons":  {
+                        "iconColor":  "#EBDBB2"
+                    },
+    "goToFlowWidget":  {
+                           "editBackgroundColor":  "#AA3C3836",
+                           "editBorderColor":  "#88504945",
+                           "editTextColor":  "#D5C4A1",
+                           "flowBackgroundColor":  "#282828",
+                           "flowTextColor":  "#928374",
+                           "iconColor":  "#EBDBB2",
+                           "labelTextColor":  "#EBDBB2",
+                           "sliderBorderColor":  "#33EBDBB2",
+                           "sliderGrooveColor":  "#771D2021",
+                           "sliderHandleColor":  "#66EBDBB2",
+                           "toolbarBackgroundColor":  "#991D2021"
+                       },
+    "helpAboutDialog":  {
+                            "headingColor":  "#EBDBB2",
+                            "linkColor":  "#8EC07C"
+                        },
+    "meta":  {
+                 "displayName":  "Retro Dark",
+                 "id":  "builtin/dark3",
+                 "targetApp":  "YACReader",
+                 "variant":  "dark",
+                 "version":  "10.1.0"
+             },
+    "shortcutsIcons":  {
+                           "iconColor":  "#EBDBB2"
+                       },
+    "translator":  {
+                       "backgroundColor":  "#504945",
+                       "borderColor":  "#282828",
+                       "iconColor":  "#EBDBB2",
+                       "inputBackgroundColor":  "#32302F",
+                       "inputDarkerBackgroundColor":  "#3C3836",
+                       "primaryTextColor":  "#EBDBB2",
+                       "scrollbarHandleColor":  "#D5C4A1",
+                       "secondaryTextColor":  "#928374",
+                       "selectionBackgroundColor":  "#504945"
+                   },
+    "toolbar":  {
+                    "backgroundColor":  "#1D2021",
+                    "checkedButtonColor":  "#504945",
+                    "iconCheckedColor":  "#EBDBB2",
+                    "iconColor":  "#EBDBB2",
+                    "iconDisabledColor":  "#5B5248",
+                    "menuIndicatorColor":  "#EBDBB2",
+                    "separatorColor":  "#504945"
+                },
+    "viewer":  {
+                   "defaultBackgroundColor":  "#282828",
+                   "defaultTextColor":  "#928374",
+                   "infoBackgroundColor":  "#BB1D2021",
+                   "infoTextColor":  "#EBDBB2"
+               },
+    "whatsNewDialog":  {
+                           "backgroundColor":  "#32302F",
+                           "closeButtonColor":  "#EBDBB2",
+                           "contentTextColor":  "#D5C4A1",
+                           "headerDecorationColor":  "#8EC07C",
+                           "headerTextColor":  "#EBDBB2",
+                           "linkColor":  "#8EC07C",
+                           "versionTextColor":  "#928374"
+                       }
+}

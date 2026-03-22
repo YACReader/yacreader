@@ -13,6 +13,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Migrate Flow implementation from OpenGL to QRhi. This is a full new implementation with better performance and compatibility with operating systems and hardware.
 * Add light/dark themes support that follow the system configuration.
 * Add a theme editor and support for custom themes.
+* The apps include 12 built in themes to pick from. 
 * Add an application language setting with a system default option in YACReader and YACReaderLibrary.
 
 ### All apps
