@@ -4000,7 +4000,7 @@ to improve the performance</source>
     <message>
         <location filename="trayicon_controller.cpp" line="80"/>
         <source>YACReaderLibrary will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray icon.</source>
-        <translation>YACReaderLibrary продолжит работать в системном трее. Чтобы завершить работу программы, выберите &lt;b&gt;Quit&lt;/b&gt; в контекстном меню значка на панели задач.</translation>
+        <translation>YACReaderLibrary продолжит работать в системном трее. Чтобы завершить работу программы, выберите &lt;b&gt;Выход&lt;/b&gt; в контекстном меню значка на панели задач.</translation>
     </message>
 </context>
 <context>

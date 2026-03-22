@@ -266,7 +266,7 @@
     <message>
         <location filename="../YACReader/bookmarks_dialog.cpp" line="85"/>
         <source>Click on any image to go to the bookmark</source>
-        <translation>Click su qualsiasi immagine per andare al bookmark</translation>
+        <translation>Clicca su qualsiasi immagine per andare al segnalibro</translation>
     </message>
     <message>
         <location filename="../YACReader/bookmarks_dialog.cpp" line="107"/>

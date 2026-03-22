@@ -2919,7 +2919,7 @@ Voor meer informatie over de beschikbare instellingen kunt u de documentatie raa
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="77"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>Houd ingedrukt om de geselecteerde waarde in de gebruikersinterface te laten knipperen (magenta / geschakeld / 0↔10). Releases herstellen het origineel.</translation>
+        <translation>Houd ingedrukt om de geselecteerde waarde in de gebruikersinterface te laten knipperen (magenta / geschakeld / 0↔10). Loslaten herstelt het origineel.</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="82"/>
@@ -3828,7 +3828,7 @@ Voor meer informatie over de beschikbare instellingen kunt u de documentatie raa
     <message>
         <location filename="../YACReaderLibrary/trayicon_controller.cpp" line="80"/>
         <source>YACReaderLibrary will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray icon.</source>
-        <translation>YACReaderLibrary blijft actief in het systeemvak. Om het programma te beëindigen, kiest u &lt;b&gt;Quit&lt;/b&gt; in het contextmenu van het systeemvakpictogram.</translation>
+        <translation>YACReaderLibrary blijft actief in het systeemvak. Om het programma te beëindigen, kiest u &lt;b&gt;Afsluiten&lt;/b&gt; in het contextmenu van het systeemvakpictogram.</translation>
     </message>
 </context>
 <context>

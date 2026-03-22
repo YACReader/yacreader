@@ -3943,7 +3943,7 @@ Pour en savoir plus sur les paramètres disponibles, veuillez consulter la docum
     <message>
         <location filename="trayicon_controller.cpp" line="80"/>
         <source>YACReaderLibrary will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray icon.</source>
-        <translation>YACReaderLibrary continuera à fonctionner dans la barre d'état système. Pour terminer le programme, choisissez &lt;b&gt;Quit&lt;/b&gt; dans le menu contextuel de l'icône de la barre d'état système.</translation>
+        <translation>YACReaderLibrary continuera à fonctionner dans la barre d'état système. Pour terminer le programme, choisissez &lt;b&gt;Quitter&lt;/b&gt; dans le menu contextuel de l'icône de la barre d'état système.</translation>
     </message>
 </context>
 <context>

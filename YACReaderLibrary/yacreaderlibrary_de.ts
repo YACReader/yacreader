@@ -3189,7 +3189,7 @@ um die Leistung zu verbessern</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="77"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>Halten Sie gedrückt, um den ausgewählten Wert in der Benutzeroberfläche zu blinken (Magenta / umgeschaltet / 0↔10). Releases stellen das Original wieder her.</translation>
+        <translation>Halten Sie gedrückt, um den ausgewählten Wert in der Benutzeroberfläche zu blinken (Magenta / umgeschaltet / 0↔10). Loslassen stellt das Original wieder her.</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="82"/>

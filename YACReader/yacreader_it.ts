@@ -215,7 +215,7 @@
     <message>
         <location filename="bookmarks_dialog.cpp" line="85"/>
         <source>Click on any image to go to the bookmark</source>
-        <translation>Click su qualsiasi immagine per andare al bookmark</translation>
+        <translation>Clicca su qualsiasi immagine per andare al segnalibro</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="25"/>
@@ -4025,7 +4025,7 @@ Per conoscere le impostazioni disponibili, consultare la documentazione su https
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="28"/>
         <source>Click to overwrite</source>
-        <translation>Click per sovrascrivere</translation>
+        <translation>Clicca per sovrascrivere</translation>
     </message>
 </context>
 <context>
@@ -4041,7 +4041,7 @@ Per conoscere le impostazioni disponibili, consultare la documentazione su https
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="44"/>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="50"/>
         <source>Click to overwrite</source>
-        <translation>Click per sovrascrivere</translation>
+        <translation>Clicca per sovrascrivere</translation>
     </message>
 </context>
 <context>
