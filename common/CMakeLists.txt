@@ -120,6 +120,8 @@ add_library(common_gui STATIC
     themes/shared/whats_new_dialog_theme.h
     themes/theme_editor_dialog.h
     themes/theme_editor_dialog.cpp
+    themes/theme_json_utils.h
+    themes/theme_json_utils.cpp
     themes/theme_meta.h
     themes/theme_repository.h
     themes/theme_repository.cpp

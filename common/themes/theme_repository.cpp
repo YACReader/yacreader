@@ -1,4 +1,5 @@
 #include "theme_repository.h"
+#include "theme_json_utils.h"
 
 #include <QDir>
 #include <QFile>
@@ -78,7 +79,7 @@ QString ThemeRepository::saveUserTheme(QJsonObject themeJson)
 
     QFile file(filePath);
     if (file.open(QIODevice::WriteOnly)) {
-        file.write(QJsonDocument(themeJson).toJson(QJsonDocument::Indented));
+        file.write(serializeNormalizedThemeJson(themeJson));
         file.close();
     }
 
