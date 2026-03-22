@@ -5,19 +5,19 @@
     "goToFlowWidget": {
         "editBackgroundColor": "#55000000",
         "editBorderColor": "#77000000",
-        "editTextColor": "#ffffff",
+        "editTextColor": "#FFFFFF",
         "flowBackgroundColor": "#282828",
-        "flowTextColor": "#ffffff",
-        "iconColor": "#ffffff",
-        "labelTextColor": "#ffffff",
-        "sliderBorderColor": "#22ffffff",
+        "flowTextColor": "#FFFFFF",
+        "iconColor": "#FFFFFF",
+        "labelTextColor": "#FFFFFF",
+        "sliderBorderColor": "#22FFFFFF",
         "sliderGrooveColor": "#77000000",
-        "sliderHandleColor": "#55ffffff",
+        "sliderHandleColor": "#55FFFFFF",
         "toolbarBackgroundColor": "#99000000"
     },
     "helpAboutDialog": {
-        "headingColor": "#302f2d",
-        "linkColor": "#c19441"
+        "headingColor": "#302F2D",
+        "linkColor": "#C19441"
     },
     "meta": {
         "displayName": "Default Classic",
@@ -32,36 +32,36 @@
     "translator": {
         "backgroundColor": "#404040",
         "borderColor": "#212121",
-        "iconColor": "#cccccc",
-        "inputBackgroundColor": "#2a2a2a",
+        "iconColor": "#CCCCCC",
+        "inputBackgroundColor": "#2A2A2A",
         "inputDarkerBackgroundColor": "#272727",
-        "primaryTextColor": "#ffffff",
-        "scrollbarHandleColor": "#dddddd",
-        "secondaryTextColor": "#e3e3e3",
+        "primaryTextColor": "#FFFFFF",
+        "scrollbarHandleColor": "#DDDDDD",
+        "secondaryTextColor": "#E3E3E3",
         "selectionBackgroundColor": "#202020"
     },
     "toolbar": {
-        "backgroundColor": "#f3f3f3",
-        "checkedButtonColor": "#cccccc",
-        "iconCheckedColor": "#5a5a5a",
+        "backgroundColor": "#F3F3F3",
+        "checkedButtonColor": "#CCCCCC",
+        "iconCheckedColor": "#5A5A5A",
         "iconColor": "#404040",
         "iconDisabledColor": "#858585",
         "menuIndicatorColor": "#404040",
-        "separatorColor": "#cccccc"
+        "separatorColor": "#CCCCCC"
     },
     "viewer": {
         "defaultBackgroundColor": "#282828",
-        "defaultTextColor": "#ffffff",
-        "infoBackgroundColor": "#bb000000",
-        "infoTextColor": "#ffffff"
+        "defaultTextColor": "#FFFFFF",
+        "infoBackgroundColor": "#BB000000",
+        "infoTextColor": "#FFFFFF"
     },
     "whatsNewDialog": {
-        "backgroundColor": "#ffffff",
+        "backgroundColor": "#FFFFFF",
         "closeButtonColor": "#444444",
-        "contentTextColor": "#0a0a0a",
-        "headerDecorationColor": "#e8b800",
-        "headerTextColor": "#0a0a0a",
-        "linkColor": "#e8b800",
+        "contentTextColor": "#0A0A0A",
+        "headerDecorationColor": "#E8B800",
+        "headerTextColor": "#0A0A0A",
+        "linkColor": "#E8B800",
         "versionTextColor": "#858585"
     }
 }

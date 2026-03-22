@@ -1,4 +1,5 @@
 #include "theme_editor_dialog.h"
+#include "theme_json_utils.h"
 
 #include <QApplication>
 #include <QColorDialog>
@@ -51,17 +52,8 @@ static QString displayKey(const QString &key)
     return result;
 }
 
-static bool isColorString(const QString &s)
-{
-    // Accepts #RGB, #RRGGBB, #AARRGGBB
-    if (!s.startsWith('#'))
-        return false;
-    const int len = s.length();
-    return len == 4 || len == 7 || len == 9;
-}
-
 ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &params, QWidget *parent)
-    : QDialog(parent), params(params)
+    : QDialog(parent), params(normalizeThemeJson(params))
 {
     setWindowTitle(tr("Theme Editor"));
     resize(520, 700);
@@ -206,7 +198,7 @@ void ThemeEditorDialog::populate(QTreeWidgetItem *parent, const QJsonObject &obj
             item->setData(0, PathRole, childPath);
 
             const QString strVal = val.toString();
-            if (val.isString() && isColorString(strVal)) {
+            if (val.isString() && isThemeHexColorString(strVal)) {
                 const QColor color(strVal);
                 item->setIcon(1, colorIcon(color));
                 item->setText(1, strVal);
@@ -256,11 +248,12 @@ void ThemeEditorDialog::applyColorToItem(QTreeWidgetItem *item, const QColor &co
     const QString hexStr = color.alpha() < 255
             ? color.name(QColor::HexArgb)
             : color.name(QColor::HexRgb);
-    item->setText(1, hexStr);
+    const QString normalizedHexStr = hexStr.toUpper();
+    item->setText(1, normalizedHexStr);
     item->setIcon(1, colorIcon(color));
 
     const QStringList path = item->data(0, PathRole).toStringList();
-    setJsonPath(params, path, hexStr);
+    setJsonPath(params, path, normalizedHexStr);
 }
 
 void ThemeEditorDialog::toggleBoolItem(QTreeWidgetItem *item)
@@ -409,7 +402,7 @@ void ThemeEditorDialog::saveToFile()
         QMessageBox::warning(this, tr("Save failed"), tr("Could not open file for writing:\n%1").arg(path));
         return;
     }
-    file.write(QJsonDocument(params).toJson(QJsonDocument::Indented));
+    file.write(serializeNormalizedThemeJson(params));
 }
 
 void ThemeEditorDialog::loadFromFile()
@@ -436,7 +429,7 @@ void ThemeEditorDialog::loadFromFile()
         return;
     }
 
-    params = doc.object();
+    params = normalizeThemeJson(doc.object());
     syncMetaFromParams();
     tree->clear();
     populate(nullptr, params, { });
