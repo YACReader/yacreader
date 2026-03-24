@@ -3214,7 +3214,7 @@ Um mehr über die verfügbaren Einstellungen zu erfahren, lesen Sie bitte die Do
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="153"/>
         <source>Save and apply</source>
-        <translation>Speichern und bewerben</translation>
+        <translation>Speichern und anwenden</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="154"/>
