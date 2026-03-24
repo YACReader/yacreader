@@ -86,6 +86,7 @@ public slots:
     void save();
     void doublePageSwitch();
     void setMangaWithoutStoringSetting(bool manga);
+    void setContinuousScrollWithoutStoringSetting(bool enabled);
     void doubleMangaPageSwitch();
     void resetContent();
     void setLoadingMessage();
@@ -202,6 +203,8 @@ private:
     void onNumPagesReady(unsigned int numPages);
     void onRenderPageChanged(int page);
     void setActiveWidget(QWidget *w);
+    void setContinuousScrollImpl(bool enabled, bool persistSettings);
+    void setMangaModeImpl(bool manga, bool persistSettings);
 
     //! Mouse handler
     std::unique_ptr<YACReader::MouseHandler> mouseHandler;

@@ -111,10 +111,10 @@ Viewer::Viewer(QWidget *parent)
         doublePageSwitch();
 
     if (Configuration::getConfiguration().getDoubleMangaPage())
-        doubleMangaPageSwitch();
+        setMangaModeImpl(true, false);
 
     if (Configuration::getConfiguration().getContinuousScroll())
-        setContinuousScroll(true);
+        setContinuousScrollImpl(true, false);
 
     createConnections();
 
@@ -1188,39 +1188,47 @@ void Viewer::doublePageSwitch()
     Configuration::getConfiguration().setDoublePage(doublePage);
 }
 
-void Viewer::setContinuousScroll(bool enabled)
+void Viewer::setContinuousScrollImpl(bool enabled, bool persistSettings)
 {
     if (continuousScroll == enabled) {
         return;
     }
+
     continuousScroll = enabled;
-    Configuration::getConfiguration().setContinuousScroll(continuousScroll);
+    if (persistSettings) {
+        Configuration::getConfiguration().setContinuousScroll(continuousScroll);
+    }
 
     if (continuousScroll) {
         continuousViewModel->setZoomFactor(zoom);
         if (render->hasLoadedComic()) {
             continuousViewModel->setViewportSize(viewport()->width(), viewport()->height());
             continuousViewModel->setNumPages(render->numPages());
-            // set the current page as model state before any layout/scroll happens
             lastCenterPage = render->getIndex();
             continuousViewModel->setAnchorPage(lastCenterPage);
-            // pick up sizes of pages already in the buffer
             probeContinuousBufferedPages();
-            // trigger a render cycle so new pages arrive via pageRendered signal
             render->update();
             setActiveWidget(continuousWidget);
             scrollToCurrentContinuousPage();
             continuousWidget->update();
             viewport()->update();
         }
-        // if no comic is loaded, messageLabel stays as the active widget
     } else {
         lastCenterPage = -1;
         if (render->hasLoadedComic()) {
             updatePage();
         }
-        // if no comic is loaded, messageLabel stays as the active widget
     }
+}
+
+void Viewer::setContinuousScrollWithoutStoringSetting(bool enabled)
+{
+    setContinuousScrollImpl(enabled, false);
+}
+
+void Viewer::setContinuousScroll(bool enabled)
+{
+    setContinuousScrollImpl(enabled, true);
 }
 
 void Viewer::onContinuousScroll(int value)
@@ -1345,21 +1353,32 @@ void Viewer::onRenderPageChanged(int page)
     scrollToCurrentContinuousPage();
 }
 
-void Viewer::setMangaWithoutStoringSetting(bool manga)
+void Viewer::setMangaModeImpl(bool manga, bool persistSettings)
 {
+    if (doubleMangaPage == manga) {
+        return;
+    }
+
     doubleMangaPage = manga;
+
+    if (persistSettings) {
+        Configuration &config = Configuration::getConfiguration();
+        config.setDoubleMangaPage(doubleMangaPage);
+        goToFlow->updateConfig(config.getSettings());
+    }
+
     render->setManga(manga);
     goToFlow->setFlowRightToLeft(doubleMangaPage);
 }
 
+void Viewer::setMangaWithoutStoringSetting(bool manga)
+{
+    setMangaModeImpl(manga, false);
+}
+
 void Viewer::doubleMangaPageSwitch()
 {
-    doubleMangaPage = !doubleMangaPage;
-    render->doubleMangaPageSwitch();
-    Configuration &config = Configuration::getConfiguration();
-    config.setDoubleMangaPage(doubleMangaPage);
-    goToFlow->setFlowRightToLeft(doubleMangaPage);
-    goToFlow->updateConfig(config.getSettings());
+    setMangaModeImpl(!doubleMangaPage, true);
 }
 
 void Viewer::resetContent()
