@@ -174,6 +174,9 @@ private:
     void setActionsEnabled(bool enabled);
     void setMglassActionsEnabled(bool enabled);
     void setLoadedComicActionsEnabled(bool enabled);
+    void syncModeActions(bool manga, bool continuousScroll);
+    void applySavedReaderMode();
+    void applyLibraryReaderMode(YACReader::FileType type);
 
     //! Manejadores de evento:
     // void resizeEvent(QResizeEvent * event);

@@ -55,6 +55,68 @@ void MainWindowViewer::afterLaunchTasks()
     whatsNewController.showWhatsNewIfNeeded(this);
 }
 
+void MainWindowViewer::applySavedReaderMode()
+{
+    Configuration &config = Configuration::getConfiguration();
+    const bool manga = config.getDoubleMangaPage();
+    const bool continuousScroll = config.getContinuousScroll();
+    viewer->setMangaWithoutStoringSetting(manga);
+    viewer->setContinuousScrollWithoutStoringSetting(continuousScroll);
+    syncModeActions(manga, continuousScroll);
+}
+
+void MainWindowViewer::applyLibraryReaderMode(YACReader::FileType type)
+{
+    Configuration &config = Configuration::getConfiguration();
+    bool manga = false;
+    bool continuousScroll = config.getContinuousScroll();
+
+    switch (type) {
+    case YACReader::FileType::Manga:
+        manga = true;
+        break;
+    case YACReader::FileType::WebComic:
+        continuousScroll = true;
+        break;
+    case YACReader::FileType::Comic:
+    case YACReader::FileType::WesternManga:
+    case YACReader::FileType::Yonkoma:
+    default:
+        break;
+    }
+
+    viewer->setMangaWithoutStoringSetting(manga);
+    viewer->setContinuousScrollWithoutStoringSetting(continuousScroll);
+    syncModeActions(manga, continuousScroll);
+}
+
+void MainWindowViewer::syncModeActions(bool manga, bool continuousScroll)
+{
+    doubleMangaPageAction->setChecked(manga);
+
+    if (continuousScroll) {
+        continuousScrollAction->setChecked(true);
+    } else {
+        switch (Configuration::getConfiguration().getFitMode()) {
+        case YACReader::FitMode::ToWidth:
+            adjustWidthAction->setChecked(true);
+            break;
+        case YACReader::FitMode::ToHeight:
+            adjustHeightAction->setChecked(true);
+            break;
+        case YACReader::FitMode::FullRes:
+            adjustToFullSizeAction->setChecked(true);
+            break;
+        case YACReader::FitMode::FullPage:
+        default:
+            fitToPageAction->setChecked(true);
+            break;
+        }
+    }
+
+    doubleMangaPageSwitch();
+}
+
 MainWindowViewer::~MainWindowViewer()
 {
     delete settings;
@@ -810,12 +872,7 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     else
         setWindowTitle("YACReader - " + fi.fileName());
 
-    auto type = comic.info.type.value<YACReader::FileType>();
-    // TODO: support comic.info.type by adjusting the scrolling and double page mode behaviour depending on the actual type, for now type is mapped to manga mode
-    auto isManga = type == YACReader::FileType::Manga;
-
-    viewer->setMangaWithoutStoringSetting(isManga);
-    doubleMangaPageAction->setChecked(isManga);
+    applyLibraryReaderMode(comic.info.type.value<YACReader::FileType>());
 
     viewer->open(path, comic);
     enableActions();
@@ -855,7 +912,6 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, YACR
 
 void MainWindowViewer::openComicFromPath(QString pathFile)
 {
-    doubleMangaPageAction->setChecked(Configuration::getConfiguration().getDoubleMangaPage());
     openComic(pathFile);
     isClient = false; // this method is used for direct openings
     updatePrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
@@ -876,6 +932,7 @@ void MainWindowViewer::openComic(QString pathFile)
     setWindowTitle("YACReader - " + fi.fileName());
 
     enableActions();
+    applySavedReaderMode();
 
     viewer->open(pathFile);
     Configuration::getConfiguration().updateOpenRecentList(fi.absoluteFilePath());
@@ -901,6 +958,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
     setWindowTitle("YACReader - " + fi.fileName());
 
     enableActions();
+    applySavedReaderMode();
 
     viewer->open(pathDir);
     Configuration::getConfiguration().updateOpenRecentList(fi.absoluteFilePath());
@@ -916,6 +974,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
     setWindowTitle("YACReader - " + fi.fileName());
 
     enableActions();
+    applySavedReaderMode();
 
     QDir d(pathDir);
     d.setFilter(QDir::Files | QDir::NoDotAndDotDot);
