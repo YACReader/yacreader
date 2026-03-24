@@ -108,6 +108,8 @@ ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &params, QWidget *parent)
         auto meta = this->params["meta"].toObject();
         meta["displayName"] = text;
         this->params["meta"] = meta;
+    });
+    connect(nameEdit, &QLineEdit::editingFinished, this, [this]() {
         emit themeJsonChanged(this->params);
     });
     connect(variantCombo, &QComboBox::currentIndexChanged, this, [this](int index) {
