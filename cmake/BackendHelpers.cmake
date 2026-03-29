@@ -15,7 +15,7 @@ endfunction()
 function(yacreader_add_imported_library target_name)
     set(options)
     set(oneValueArgs TYPE LOCATION IMPORTED_IMPLIB INCLUDE_DIR)
-    set(multiValueArgs LINK_LIBRARIES)
+    set(multiValueArgs LINK_LIBRARIES COMPILE_DEFINITIONS)
     cmake_parse_arguments(YR "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(NOT YR_TYPE)
@@ -40,5 +40,9 @@ function(yacreader_add_imported_library target_name)
 
     if(YR_LINK_LIBRARIES)
         set_property(TARGET "${target_name}" PROPERTY INTERFACE_LINK_LIBRARIES "${YR_LINK_LIBRARIES}")
+    endif()
+
+    if(YR_COMPILE_DEFINITIONS)
+        set_property(TARGET "${target_name}" PROPERTY INTERFACE_COMPILE_DEFINITIONS "${YR_COMPILE_DEFINITIONS}")
     endif()
 endfunction()
