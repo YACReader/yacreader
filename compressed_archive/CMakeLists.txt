@@ -1,6 +1,8 @@
 # Comic archive decompression backend (cbx_backend)
 # Switched on DECOMPRESSION_BACKEND: unarr | 7zip | libarchive
 
+include(BackendHelpers)
+
 add_library(cbx_backend STATIC)
 
 if(DECOMPRESSION_BACKEND STREQUAL "unarr")
@@ -14,44 +16,77 @@ if(DECOMPRESSION_BACKEND STREQUAL "unarr")
     target_include_directories(cbx_backend PUBLIC unarr)
     target_compile_definitions(cbx_backend PUBLIC use_unarr)
 
-    # Try CMake config first, then pkg-config, then system path
-    find_package(unarr QUIET)
-    if(unarr_FOUND)
+    # Try CMake config first, then pkg-config, then bundled/system libraries.
+    set(_unarr_target "")
+
+    find_package(unarr QUIET CONFIG)
+    if(TARGET unarr::unarr)
         message(STATUS "  Found unarr via CMake config")
-        target_link_libraries(cbx_backend PRIVATE unarr::unarr)
-    else()
-        pkg_check_modules(UNARR QUIET IMPORTED_TARGET libunarr)
-        if(UNARR_FOUND)
-            message(STATUS "  Found unarr via pkg-config")
-            target_link_libraries(cbx_backend PRIVATE PkgConfig::UNARR)
-        elseif(APPLE AND EXISTS "${CMAKE_SOURCE_DIR}/dependencies/unarr/macx/libunarr.a")
-            message(STATUS "  Found prebuilt unarr in dependencies (macOS)")
-            target_include_directories(cbx_backend PRIVATE
-                "${CMAKE_SOURCE_DIR}/dependencies/unarr/macx")
-            target_link_directories(cbx_backend PRIVATE
-                "${CMAKE_SOURCE_DIR}/dependencies/unarr/macx")
-            target_link_libraries(cbx_backend PRIVATE unarr z bz2)
-        elseif(WIN32 AND EXISTS "${CMAKE_SOURCE_DIR}/dependencies/unarr/win/unarr.h")
-            message(STATUS "  Found prebuilt unarr in dependencies (Windows)")
-            target_include_directories(cbx_backend PRIVATE
-                "${CMAKE_SOURCE_DIR}/dependencies/unarr/win")
-            if(CMAKE_SYSTEM_PROCESSOR STREQUAL "ARM64")
-                target_link_directories(cbx_backend PRIVATE
-                    "${CMAKE_SOURCE_DIR}/dependencies/unarr/win/arm64")
-            else()
-                target_link_directories(cbx_backend PRIVATE
-                    "${CMAKE_SOURCE_DIR}/dependencies/unarr/win/x64")
-            endif()
-            target_link_libraries(cbx_backend PRIVATE unarr)
-            target_compile_definitions(cbx_backend PRIVATE UNARR_IS_SHARED_LIBRARY)
-        elseif(EXISTS "/usr/include/unarr.h")
-            message(STATUS "  Found system unarr at /usr/include")
-            target_link_libraries(cbx_backend PRIVATE unarr)
-        else()
-            message(FATAL_ERROR
-                "Could not find unarr. Install libunarr or use a different DECOMPRESSION_BACKEND.")
+        set(_unarr_target unarr::unarr)
+    endif()
+
+    if(NOT _unarr_target AND APPLE)
+        set(_unarr_include_dir "${CMAKE_SOURCE_DIR}/dependencies/unarr/macx")
+        set(_unarr_library "${CMAKE_SOURCE_DIR}/dependencies/unarr/macx/libunarr.a")
+        if(EXISTS "${_unarr_include_dir}/unarr.h" AND EXISTS "${_unarr_library}")
+            message(STATUS "  Using bundled unarr (macOS)")
+            yacreader_add_imported_library(YACReader::unarr
+                TYPE STATIC
+                LOCATION "${_unarr_library}"
+                INCLUDE_DIR "${_unarr_include_dir}"
+                LINK_LIBRARIES "z;bz2")
+            set(_unarr_target YACReader::unarr)
         endif()
     endif()
+
+    if(NOT _unarr_target AND WIN32)
+        yacreader_get_windows_arch_subdir(_unarr_arch)
+        set(_unarr_include_dir "${CMAKE_SOURCE_DIR}/dependencies/unarr/win")
+        set(_unarr_implib "${CMAKE_SOURCE_DIR}/dependencies/unarr/win/${_unarr_arch}/unarr.lib")
+        set(_unarr_dll "${CMAKE_SOURCE_DIR}/dependencies/unarr/win/${_unarr_arch}/unarr.dll")
+        if(EXISTS "${_unarr_include_dir}/unarr.h" AND EXISTS "${_unarr_implib}" AND EXISTS "${_unarr_dll}")
+            message(STATUS "  Using bundled unarr (${_unarr_arch}, Windows)")
+            yacreader_add_imported_library(YACReader::unarr
+                TYPE SHARED
+                LOCATION "${_unarr_dll}"
+                IMPORTED_IMPLIB "${_unarr_implib}"
+                INCLUDE_DIR "${_unarr_include_dir}")
+            set(_unarr_target YACReader::unarr)
+            target_compile_definitions(cbx_backend PRIVATE UNARR_IS_SHARED_LIBRARY)
+        endif()
+    endif()
+
+    if(NOT _unarr_target)
+        find_package(PkgConfig QUIET)
+    endif()
+
+    if(NOT _unarr_target AND PkgConfig_FOUND)
+        pkg_check_modules(UNARR QUIET IMPORTED_TARGET libunarr)
+        if(TARGET PkgConfig::UNARR)
+            message(STATUS "  Found unarr via pkg-config")
+            set(_unarr_target PkgConfig::UNARR)
+        endif()
+    endif()
+
+    if(NOT _unarr_target)
+        find_path(UNARR_INCLUDE_DIR NAMES unarr.h)
+        find_library(UNARR_LIBRARY NAMES unarr libunarr)
+        if(UNARR_INCLUDE_DIR AND UNARR_LIBRARY)
+            message(STATUS "  Found unarr via CMake search")
+            yacreader_add_imported_library(YACReader::unarr
+                TYPE UNKNOWN
+                LOCATION "${UNARR_LIBRARY}"
+                INCLUDE_DIR "${UNARR_INCLUDE_DIR}")
+            set(_unarr_target YACReader::unarr)
+        endif()
+    endif()
+
+    if(NOT _unarr_target)
+        message(FATAL_ERROR
+            "Could not find unarr. Install libunarr or use a different DECOMPRESSION_BACKEND.")
+    endif()
+
+    target_link_libraries(cbx_backend PRIVATE ${_unarr_target})
 
 elseif(DECOMPRESSION_BACKEND STREQUAL "7zip")
     message(STATUS "Decompression backend: 7zip (in-tree)")
@@ -135,18 +170,9 @@ elseif(DECOMPRESSION_BACKEND STREQUAL "libarchive")
     target_include_directories(cbx_backend PUBLIC libarchive)
     target_compile_definitions(cbx_backend PUBLIC use_libarchive)
 
-    # Try pkg-config first, then system path
-    pkg_check_modules(LIBARCHIVE QUIET IMPORTED_TARGET libarchive)
-    if(LIBARCHIVE_FOUND)
-        message(STATUS "  Found libarchive via pkg-config")
-        target_link_libraries(cbx_backend PRIVATE PkgConfig::LIBARCHIVE)
-    elseif(EXISTS "/usr/include/archive.h")
-        message(STATUS "  Found system libarchive at /usr/include")
-        target_link_libraries(cbx_backend PRIVATE archive)
-    else()
-        message(FATAL_ERROR
-            "Could not find libarchive. Install it or use a different DECOMPRESSION_BACKEND.")
-    endif()
+    find_package(LibArchive REQUIRED)
+    message(STATUS "  Found libarchive ${LibArchive_VERSION}")
+    target_link_libraries(cbx_backend PRIVATE LibArchive::LibArchive)
 
 else()
     message(FATAL_ERROR

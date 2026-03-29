@@ -80,6 +80,7 @@ jobs:
         run: |
           cmake -B build \
             -DDECOMPRESSION_BACKEND=unarr \
+            -DPDF_BACKEND=poppler \
             -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" \
             -DCMAKE_BUILD_TYPE=Release
           cmake --build build --parallel 2
@@ -113,6 +114,7 @@ jobs:
         run: |
           cmake -B build \
             -DDECOMPRESSION_BACKEND=7zip \
+            -DPDF_BACKEND=poppler \
             -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" \
             -DCMAKE_BUILD_TYPE=Release
           cmake --build build --parallel 2
@@ -201,7 +203,7 @@ jobs:
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
-          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DDECOMPRESSION_BACKEND=7zip -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" -DCMAKE_PREFIX_PATH=C:\Qt\6.9.3\msvc2022_64
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DDECOMPRESSION_BACKEND=7zip -DPDF_BACKEND=pdfium -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" -DCMAKE_PREFIX_PATH=C:\Qt\6.9.3\msvc2022_64
           cmake --build build --parallel
 
       - name: Run tests
@@ -346,7 +348,7 @@ jobs:
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" amd64_arm64
           set PATH=C:\Qt\6.9.3\msvc2022_arm64\bin;%PATH%
-          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DDECOMPRESSION_BACKEND=7zip -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" -DCMAKE_PREFIX_PATH=C:\Qt\6.9.3\msvc2022_arm64 -DQT_HOST_PATH=C:\Qt\6.9.3\msvc2022_64 -DCMAKE_SYSTEM_PROCESSOR=ARM64
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DDECOMPRESSION_BACKEND=7zip -DPDF_BACKEND=pdfium -DBUILD_NUMBER="${{ needs.initialization.outputs.build_number }}" -DCMAKE_PREFIX_PATH=C:\Qt\6.9.3\msvc2022_arm64 -DQT_HOST_PATH=C:\Qt\6.9.3\msvc2022_64 -DCMAKE_SYSTEM_PROCESSOR=ARM64
           cmake --build build --parallel
 
       - name: Upload executables for signing
