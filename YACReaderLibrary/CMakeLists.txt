@@ -303,11 +303,21 @@ if(UNIX AND NOT APPLE)
         "LIBDIR=\"${CMAKE_INSTALL_FULL_LIBDIR}\""
         "DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\""
         "BINDIR=\"${CMAKE_INSTALL_FULL_BINDIR}\"")
+
     install(TARGETS YACReaderLibrary RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(FILES
+        "${PROJECT_SOURCE_DIR}/YACReaderLibrary.1"
+        DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+    install(FILES
+        "${PROJECT_SOURCE_DIR}/YACReaderLibrary.desktop"
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+    install(FILES
+        "${PROJECT_SOURCE_DIR}/YACReaderLibrary.svg"
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
 
     # Server web files (for bundled server mode)
     if(NOT BUILD_SERVER_STANDALONE)
-        install(DIRECTORY ${CMAKE_SOURCE_DIR}/release/server
+        install(DIRECTORY "${PROJECT_SOURCE_DIR}/release/server"
             DESTINATION ${CMAKE_INSTALL_DATADIR}/yacreader)
     endif()
 endif()

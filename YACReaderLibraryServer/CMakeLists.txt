@@ -85,11 +85,11 @@ if(UNIX AND NOT APPLE)
 
     # Standalone server: install server web files alongside the binary
     if(BUILD_SERVER_STANDALONE)
-        install(DIRECTORY ${CMAKE_SOURCE_DIR}/release/server
+        install(DIRECTORY "${PROJECT_SOURCE_DIR}/release/server"
             DESTINATION ${CMAKE_INSTALL_DATADIR}/yacreader)
     endif()
 
     # systemd service
-    install(FILES yacreaderlibraryserver.service
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/yacreaderlibraryserver.service"
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/user)
 endif()

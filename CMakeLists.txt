@@ -187,29 +187,6 @@ if(BUILD_TESTS AND NOT BUILD_SERVER_STANDALONE)
     add_subdirectory(tests)
 endif()
 
-# --- Linux top-level install rules ---
-if(UNIX AND NOT APPLE)
-    # Man pages
-    if(EXISTS "${CMAKE_SOURCE_DIR}/YACReader.1")
-        install(FILES YACReader.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-    endif()
-    if(EXISTS "${CMAKE_SOURCE_DIR}/YACReaderLibrary.1")
-        install(FILES YACReaderLibrary.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
-    endif()
-
-    # Desktop files
-    if(EXISTS "${CMAKE_SOURCE_DIR}/YACReader.desktop")
-        install(FILES YACReader.desktop YACReaderLibrary.desktop
-            DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-    endif()
-
-    # Icons
-    if(EXISTS "${CMAKE_SOURCE_DIR}/YACReader.svg")
-        install(FILES YACReader.svg YACReaderLibrary.svg
-            DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
-    endif()
-endif()
-
 # Summary
 message(STATUS "")
 message(STATUS "YACReader ${PROJECT_VERSION} build configuration:")
