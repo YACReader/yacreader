@@ -94,6 +94,7 @@ else()
         Core
         Core5Compat
         Gui
+        GuiPrivate
         LinguistTools
         Multimedia
         Network
