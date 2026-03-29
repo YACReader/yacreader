@@ -129,5 +129,15 @@ endif()
 if(UNIX AND NOT APPLE)
     target_compile_definitions(YACReader PRIVATE
         "DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\"")
+
     install(TARGETS YACReader RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+    install(FILES
+        "${PROJECT_SOURCE_DIR}/YACReader.1"
+        DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+    install(FILES
+        "${PROJECT_SOURCE_DIR}/YACReader.desktop"
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+    install(FILES
+        "${PROJECT_SOURCE_DIR}/YACReader.svg"
+        DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
 endif()
