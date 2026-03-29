@@ -33,6 +33,7 @@ echo "Configuring and building with CMake"
 cmake -B build \
     -G Ninja \
     -DDECOMPRESSION_BACKEND=7zip \
+    -DPDF_BACKEND=pdfkit \
     -DBUILD_NUMBER="${BUILD_NUMBER}" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_OSX_ARCHITECTURES="${ARCHS}" \
