@@ -407,7 +407,7 @@ void StarEditor::leaveEvent(QEvent *event)
 void StarEditor::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        int star = starAtPosition(event->x());
+        int star = starAtPosition(event->position().x());
 
         if (star != myStarRating.starCount() && star != -1) {
             myStarRating.setStarCount(star);

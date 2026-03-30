@@ -4,9 +4,9 @@
 
 ComicDB currentComicFromModel(ComicModel *model, bool &found)
 {
-    auto comics = model->getAllComics();
+    const auto comics = model->getAllComics();
 
-    foreach (auto comic, comics) {
+    for (const auto &comic : comics) {
         if (comic.info.read == false) {
             found = true;
             return comic;

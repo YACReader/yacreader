@@ -984,7 +984,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 
     std::sort(list.begin(), list.end(), naturalSortLessThanCI);
     int i = 0;
-    foreach (QString path, list) {
+    for (const QString &path : std::as_const(list)) {
         if (path.endsWith(atFileName))
             break;
         i++;
@@ -1554,7 +1554,7 @@ void MainWindowViewer::getSiblingComics(QString path, QString currentComic)
                         txtS << path << '\n';
                         txtS << currentComic << '\n';
                         txtS << "Comic list count : " + list.count() << '\n';
-                        foreach(QString s, list){
+                        for (const QString &s : std::as_const(list)) {
                                 txtS << s << '\n';
                         }
                         f.close();

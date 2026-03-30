@@ -65,6 +65,7 @@ RUN cd /src/git && \
     cmake -B build -G Ninja \
       -DCMAKE_INSTALL_PREFIX=/app \
       -DDECOMPRESSION_BACKEND=7zip \
+      -DPDF_BACKEND=poppler \
       -DBUILD_SERVER_STANDALONE=ON \
       -DCMAKE_BUILD_TYPE=Release && \
     cmake --build build --parallel && \

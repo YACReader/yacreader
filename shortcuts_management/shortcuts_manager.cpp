@@ -5,6 +5,8 @@
 #include <QAction>
 #include <QSettings>
 
+#include <utility>
+
 ShortcutsManager::ShortcutsManager()
 {
     initDefaultShorcuts();
@@ -127,7 +129,7 @@ bool ShortcutsManager::checkConflicts(const QKeySequence &shortcut, const QActio
     if (shortcut.isEmpty())
         return false;
 
-    foreach (QAction *action, actions) {
+    for (QAction *action : std::as_const(actions)) {
         if (action != dest) // if the same shortcut is setted there is no conflict
             if (action->shortcut() == shortcut)
                 return true;

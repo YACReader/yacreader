@@ -1,20 +1,31 @@
-# Compiler options for YACReader
-# Mirrors config.pri: C++20, NOMINMAX, MSVC conformance flags
+# Compiler policy for YACReader-owned targets.
+# Keep this target internal so third-party code does not inherit our rules.
+add_library(yacreader_build_options INTERFACE)
 
-add_compile_definitions(NOMINMAX)
+target_compile_definitions(yacreader_build_options INTERFACE
+    QT_DISABLE_DEPRECATED_UP_TO=0x060400
+)
 
 if(MSVC)
-    # /Zc:__cplusplus: report correct __cplusplus value
-    # /permissive-: strict standard conformance
-    add_compile_options(/Zc:__cplusplus /permissive-)
+    target_compile_definitions(yacreader_build_options INTERFACE
+        # Prevent windows.h from defining min/max macros that conflict with
+        # std::min, std::max, std::numeric_limits<T>::max(), etc.
+        NOMINMAX
+    )
 
-    # Release optimizations (mirrors qmake QMAKE_CXXFLAGS_RELEASE)
-    string(APPEND CMAKE_CXX_FLAGS_RELEASE " /DNDEBUG")
-elseif(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    string(APPEND CMAKE_CXX_FLAGS_RELEASE " -DNDEBUG")
+    target_compile_options(yacreader_build_options INTERFACE
+        # /Zc:__cplusplus: report correct __cplusplus value
+        # /permissive-: strict standard conformance
+        $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/Zc:__cplusplus>
+        $<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->
+    )
 endif()
 
-# Qt deprecation warnings
-add_compile_definitions(
-    QT_DEPRECATED_WARNINGS
-)
+function(yacreader_apply_build_options)
+    foreach(target_name IN LISTS ARGN)
+        if(NOT TARGET "${target_name}")
+            message(FATAL_ERROR "yacreader_apply_build_options(): unknown target '${target_name}'")
+        endif()
+        target_link_libraries("${target_name}" PRIVATE yacreader_build_options)
+    endforeach()
+endfunction()

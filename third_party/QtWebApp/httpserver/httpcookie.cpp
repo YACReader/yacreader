@@ -4,6 +4,7 @@
 */
 
 #include "httpcookie.h"
+#include <utility>
 
 using namespace stefanfrings;
 
@@ -37,7 +38,7 @@ HttpCookie::HttpCookie(const QByteArray source)
     secure=false;
     httpOnly=false;
     QList<QByteArray> list=splitCSV(source);
-    foreach(QByteArray part, list)
+    for (const QByteArray &part : std::as_const(list))
     {
 
         // Split the part into name and value

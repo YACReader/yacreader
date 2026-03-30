@@ -24,7 +24,7 @@ void YACReaderReadingListsView::dragEnterEvent(QDragEnterEvent *event)
 void YACReaderReadingListsView::dragMoveEvent(QDragMoveEvent *event)
 {
     YACReaderTreeView::dragMoveEvent(event);
-    QModelIndex destinationIndex = indexAt(event->pos());
+    QModelIndex destinationIndex = indexAt(event->position().toPoint());
     if (model()->canDropMimeData(event->mimeData(), event->proposedAction(), destinationIndex.row(), destinationIndex.column(), destinationIndex.parent()))
         event->acceptProposedAction();
 }

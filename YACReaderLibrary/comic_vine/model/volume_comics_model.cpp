@@ -47,7 +47,7 @@ void VolumeComicsModel::load(const QString &json)
 
 /*void VolumeComicsModel::load(const QStringList &jsonList)
 {
-    foreach (QString json, jsonList) {
+    for (const auto &json : jsonList) {
         load(json);
     }
 }*/

@@ -1582,7 +1582,7 @@ void LibraryWindow::setupAddToSubmenu(QMenu &menu)
     const QList<LabelItem *> labels = listsModel->getLabels();
     if (labels.count() > 0)
         menu.addSeparator();
-    foreach (LabelItem *label, labels) {
+    for (auto *label : labels) {
         auto action = new QAction(this);
         action->setIcon(label->getIcon());
         action->setText(label->name());
@@ -1621,8 +1621,8 @@ void LibraryWindow::saveSelectedCoversTo()
     QFileDialog saveDialog;
     QString folderPath = saveDialog.getExistingDirectory(this, tr("Save covers"), QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
     if (!folderPath.isEmpty()) {
-        QModelIndexList comics = getSelectedComics();
-        foreach (QModelIndex comic, comics) {
+        const auto comics = getSelectedComics();
+        for (const auto &comic : comics) {
             QString origin = comic.data(ComicModel::CoverPathRole).toString().remove("file:///").remove("file:");
             QString destination = QDir(folderPath).filePath(comic.data(ComicModel::FileNameRole).toString() + ".jpg");
 
@@ -1803,7 +1803,8 @@ void LibraryWindow::openLibrary(QString path, QString name)
 void LibraryWindow::loadLibraries()
 {
     libraries.load();
-    foreach (QString name, libraries.getNames())
+    const auto libraryNames = libraries.getNames();
+    for (const auto &name : libraryNames)
         selectedLibrary->addItem(name, libraries.getPath(name));
 }
 
@@ -1848,9 +1849,12 @@ void LibraryWindow::deleteCurrentLibrary()
 void LibraryWindow::removeLibrary()
 {
     QString currentLibrary = selectedLibrary->currentText();
-    QMessageBox *messageBox = new QMessageBox(tr("Are you sure?"), tr("Do you want remove ") + currentLibrary + tr(" library?"), QMessageBox::Question, QMessageBox::Yes, QMessageBox::YesToAll, QMessageBox::No);
+    QMessageBox *messageBox = new QMessageBox(QMessageBox::Question,
+                                              tr("Are you sure?"),
+                                              tr("Do you want remove ") + currentLibrary + tr(" library?"),
+                                              QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No,
+                                              this);
     messageBox->button(QMessageBox::YesToAll)->setText(tr("Remove and delete metadata"));
-    messageBox->setParent(this);
     messageBox->setWindowModality(Qt::WindowModal);
     int ret = messageBox->exec();
     if (ret == QMessageBox::Yes) {
@@ -2141,7 +2145,7 @@ void LibraryWindow::showComicVineScraper()
     if (s.contains(COMIC_VINE_API_KEY)) {
         QModelIndexList indexList = getSelectedComics();
 
-        QList<ComicDB> comics = comicsModel->getComics(indexList);
+        const auto comics = comicsModel->getComics(indexList);
         ComicDB c = comics[0];
         _comicIdEdited = c.id; // static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
@@ -2507,7 +2511,7 @@ void LibraryWindow::deleteComicsFromDisk()
 
         QList<QString> paths;
         QString libraryPath = currentPath();
-        foreach (ComicDB comic, comics) {
+        for (const auto &comic : comics) {
             paths.append(libraryPath + comic.path);
             QLOG_TRACE() << comic.path;
             QLOG_TRACE() << comic.id;

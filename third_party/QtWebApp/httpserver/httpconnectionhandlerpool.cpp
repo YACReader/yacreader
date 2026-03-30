@@ -5,6 +5,7 @@
     #include <QSslConfiguration>
 #endif
 #include <QDir>
+#include <utility>
 #include "httpconnectionhandlerpool.h"
 
 using namespace stefanfrings;
@@ -25,7 +26,7 @@ HttpConnectionHandlerPool::HttpConnectionHandlerPool(const QSettings *settings, 
 HttpConnectionHandlerPool::~HttpConnectionHandlerPool()
 {
     // delete all connection handlers and wait until their threads are closed
-    foreach(HttpConnectionHandler* handler, pool)
+    for (HttpConnectionHandler *handler : std::as_const(pool))
     {
        delete handler;
     }
@@ -39,7 +40,7 @@ HttpConnectionHandler* HttpConnectionHandlerPool::getConnectionHandler()
     HttpConnectionHandler* freeHandler=0;
     mutex.lock();
     // find a free handler in pool
-    foreach(HttpConnectionHandler* handler, pool)
+    for (HttpConnectionHandler *handler : std::as_const(pool))
     {
         if (!handler->isBusy())
         {
@@ -69,7 +70,7 @@ void HttpConnectionHandlerPool::cleanup()
     int maxIdleHandlers=settings->value("minThreads",1).toInt();
     int idleCounter=0;
     mutex.lock();
-    foreach(HttpConnectionHandler* handler, pool)
+    for (HttpConnectionHandler *handler : std::as_const(pool))
     {
         if (!handler->isBusy())
         {

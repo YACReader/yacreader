@@ -21,9 +21,10 @@ void TestRegistry::registerTest(QObject* test) {
 
 int TestRegistry::runTests(int argc, char* argv[]) {
 	int result = 0;
-	foreach(QObject* test, tests_) {
-		result |= QTest::qExec(test, argc, argv);
-	}
+    const auto &tests = tests_;
+    for (auto *test : tests) {
+        result |= QTest::qExec(test, argc, argv);
+    }
 	return result;
 }
 
