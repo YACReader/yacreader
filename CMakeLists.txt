@@ -147,7 +147,9 @@ qt_standard_project_setup()
 include(PdfBackend)
 
 # Output directory
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+if(WIN32 OR APPLE)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+endif()
 
 # Build number define
 if(BUILD_NUMBER)
