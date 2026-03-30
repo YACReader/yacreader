@@ -63,6 +63,7 @@ private:
     YACReaderSpinSliderWidget *gammaS;
 
     QColor currentColor;
+    bool backgroundColorFollowsTheme = true;
 
     QComboBox *scalingMethodCombo;
 

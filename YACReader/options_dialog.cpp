@@ -279,6 +279,10 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 void OptionsDialog::applyTheme(const Theme &theme)
 {
     pathFindButton->setIcon(theme.dialogIcons.findFolderIcon);
+
+    if (backgroundColorFollowsTheme) {
+        updateColor(theme.viewer.defaultBackgroundColor);
+    }
 }
 
 void OptionsDialog::findFolder()
@@ -292,6 +296,11 @@ void OptionsDialog::findFolder()
 void OptionsDialog::showColorDialog()
 {
     auto color = QColorDialog::getColor(currentColor, this);
+    if (!color.isValid()) {
+        return;
+    }
+
+    backgroundColorFollowsTheme = false;
     updateColor(color);
 }
 
@@ -303,7 +312,7 @@ void OptionsDialog::saveOptions()
 
     Configuration::getConfiguration().setShowTimeInInformation(showTimeInInformationLabel->isChecked());
 
-    if (currentColor != theme.viewer.defaultBackgroundColor) {
+    if (!backgroundColorFollowsTheme) {
         settings->setValue(BACKGROUND_COLOR, currentColor);
     } else {
         settings->remove(BACKGROUND_COLOR);
@@ -356,7 +365,10 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     showTimeInInformationLabel->setChecked(Configuration::getConfiguration().getShowTimeInInformation());
 
-    updateColor(settings->value(BACKGROUND_COLOR, theme.viewer.defaultBackgroundColor).value<QColor>());
+    backgroundColorFollowsTheme = !settings->contains(BACKGROUND_COLOR);
+    updateColor(backgroundColorFollowsTheme
+                        ? theme.viewer.defaultBackgroundColor
+                        : settings->value(BACKGROUND_COLOR).value<QColor>());
     // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 
     quickNavi->setChecked(settings->value(QUICK_NAVI_MODE).toBool());
@@ -476,6 +488,7 @@ void OptionsDialog::setFilters(int brightness, int contrast, int gamma)
 
 void OptionsDialog::clearBackgroundColor()
 {
+    backgroundColorFollowsTheme = true;
     settings->remove(BACKGROUND_COLOR);
 
     updateColor(theme.viewer.defaultBackgroundColor);
