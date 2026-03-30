@@ -73,9 +73,9 @@ if(UNIX AND NOT APPLE)
         "DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\"")
 endif()
 target_link_libraries(server PUBLIC
-    Qt::Core
-    Qt::Network
-    Qt::Sql
+    Qt6::Core
+    Qt6::Network
+    Qt6::Sql
     QtWebApp_httpserver
     QtWebApp_templateengine
     QsLog

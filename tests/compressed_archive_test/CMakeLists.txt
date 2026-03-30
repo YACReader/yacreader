@@ -4,7 +4,7 @@ qt_add_executable(compressed_archive_test
     main.cpp
 )
 target_link_libraries(compressed_archive_test PRIVATE
-    Qt::Core
+    Qt6::Core
     cbx_backend
 )
 if(WIN32)

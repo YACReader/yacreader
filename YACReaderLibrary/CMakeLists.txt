@@ -32,10 +32,10 @@ target_include_directories(library_common PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/db
 )
 target_link_libraries(library_common PUBLIC
-    Qt::Core
-    Qt::Core5Compat
-    Qt::Network
-    Qt::Sql
+    Qt6::Core
+    Qt6::Core5Compat
+    Qt6::Network
+    Qt6::Sql
     common_all
     comic_backend
     cbx_backend
@@ -63,14 +63,14 @@ target_include_directories(db_helper PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/db
 )
 target_link_libraries(db_helper PUBLIC
-    Qt::Core
-    Qt::Sql
+    Qt6::Core
+    Qt6::Sql
     common_all
     QsLog
 )
 
 # When BUILD_SERVER_STANDALONE=ON, only library_common and db_helper are built.
-# The full YACReaderLibrary GUI app requires Qt::Widgets and other full-build components.
+# The full YACReaderLibrary GUI app requires Qt6::Widgets and other full-build components.
 if(NOT BUILD_SERVER_STANDALONE)
 
 # --- YACReaderLibrary executable ---
@@ -476,18 +476,18 @@ qt_add_translations(YACReaderLibrary
 )
 
 target_link_libraries(YACReaderLibrary PRIVATE
-    Qt::Core
-    Qt::Gui
-    Qt::GuiPrivate
-    Qt::Network
-    Qt::Widgets
-    Qt::Sql
-    Qt::Svg
-    Qt::Quick
-    Qt::Qml
-    Qt::QuickWidgets
-    Qt::QuickControls2
-    Qt::Core5Compat
+    Qt6::Core
+    Qt6::Gui
+    Qt6::GuiPrivate
+    Qt6::Network
+    Qt6::Widgets
+    Qt6::Sql
+    Qt6::Svg
+    Qt6::Quick
+    Qt6::Qml
+    Qt6::QuickWidgets
+    Qt6::QuickControls2
+    Qt6::Core5Compat
     library_common
     db_helper
     comic_backend

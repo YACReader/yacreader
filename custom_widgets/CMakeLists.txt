@@ -44,9 +44,9 @@ target_include_directories(custom_widgets_reader PRIVATE
 )
 target_compile_definitions(custom_widgets_reader PRIVATE YACREADER)
 target_link_libraries(custom_widgets_reader PUBLIC
-    Qt::Core
-    Qt::Widgets
-    Qt::Network
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::Network
     common_gui
     rhi_flow_reader
     QsLog
@@ -91,9 +91,9 @@ target_include_directories(custom_widgets_library PRIVATE
 )
 target_compile_definitions(custom_widgets_library PRIVATE YACREADER_LIBRARY)
 target_link_libraries(custom_widgets_library PUBLIC
-    Qt::Core
-    Qt::Widgets
-    Qt::Network
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::Network
     common_gui
     rhi_flow_library
     QsLog
