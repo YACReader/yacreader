@@ -1,0 +1,6 @@
+#ifndef YACREADER_VERSION_H
+#define YACREADER_VERSION_H
+
+#define VERSION "@PROJECT_VERSION@"
+
+#endif

@@ -16,12 +16,10 @@ void YACReaderFoldersView::dragEnterEvent(QDragEnterEvent *event)
 {
     YACReaderTreeView::dragEnterEvent(event);
 
-    QList<QUrl> urlList;
-
     if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction) {
-        urlList = event->mimeData()->urls();
+        const auto urlList = event->mimeData()->urls();
         QString currentPath;
-        foreach (QUrl url, urlList) {
+        for (const auto &url : urlList) {
             // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir()) {
@@ -53,7 +51,7 @@ void YACReaderFoldersView::dropEvent(QDropEvent *event)
 
     if (validAction) {
         QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(event->mimeData()->urls());
-        QModelIndex destinationIndex = indexAt(event->pos());
+        QModelIndex destinationIndex = indexAt(event->position().toPoint());
 
         if (event->dropAction() == Qt::CopyAction) {
             QLOG_DEBUG() << "copy - tree :" << droppedFiles;

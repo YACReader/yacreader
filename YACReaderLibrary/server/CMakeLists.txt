@@ -67,15 +67,16 @@ target_include_directories(server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers/v2
 )
+yacreader_apply_build_options(server)
 target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.1")
 if(UNIX AND NOT APPLE)
     target_compile_definitions(server PRIVATE
         "DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\"")
 endif()
 target_link_libraries(server PUBLIC
-    Qt::Core
-    Qt::Network
-    Qt::Sql
+    Qt6::Core
+    Qt6::Network
+    Qt6::Sql
     QtWebApp_httpserver
     QtWebApp_templateengine
     QsLog

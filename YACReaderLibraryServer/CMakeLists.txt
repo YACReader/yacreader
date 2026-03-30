@@ -7,19 +7,21 @@ qt_add_executable(YACReaderLibraryServer
     libraries_updater.h
     libraries_updater.cpp
 )
+yacreader_apply_build_options(YACReaderLibraryServer)
 
 target_include_directories(YACReaderLibraryServer PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/YACReaderLibrary
-    ${CMAKE_SOURCE_DIR}/YACReaderLibrary/db
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary/db
 )
 
 target_compile_definitions(YACReaderLibraryServer PRIVATE
     SERVER_RELEASE
     YACREADER_LIBRARY
 )
-
-target_sources(YACReaderLibraryServer PRIVATE ${yacreaderlibraryserver_images_rcc})
+if(BUILD_NUMBER)
+    target_compile_definitions(YACReaderLibraryServer PRIVATE "BUILD_NUMBER=\"${BUILD_NUMBER}\"")
+endif()
 
 # Translations
 qt_add_translations(YACReaderLibraryServer
@@ -38,10 +40,10 @@ qt_add_translations(YACReaderLibraryServer
 )
 
 target_link_libraries(YACReaderLibraryServer PRIVATE
-    Qt::Core
-    Qt::Network
-    Qt::Sql
-    Qt::Core5Compat
+    Qt6::Core
+    Qt6::Network
+    Qt6::Sql
+    Qt6::Core5Compat
     library_common
     db_helper
     comic_backend
@@ -83,11 +85,11 @@ if(UNIX AND NOT APPLE)
 
     # Standalone server: install server web files alongside the binary
     if(BUILD_SERVER_STANDALONE)
-        install(DIRECTORY ${CMAKE_SOURCE_DIR}/release/server
+        install(DIRECTORY "${PROJECT_SOURCE_DIR}/release/server"
             DESTINATION ${CMAKE_INSTALL_DATADIR}/yacreader)
     endif()
 
     # systemd service
-    install(FILES yacreaderlibraryserver.service
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/yacreaderlibraryserver.service"
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/user)
 endif()

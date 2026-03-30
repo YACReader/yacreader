@@ -711,7 +711,7 @@ void ReadingListModel::reorderingChildren(QList<ReadingListItem *> children)
 {
     QList<qulonglong> childrenIds;
     int i = 0;
-    foreach (ReadingListItem *item, children) {
+    for (auto *item : children) {
         item->setOrdering(i++);
         childrenIds << item->getId();
     }

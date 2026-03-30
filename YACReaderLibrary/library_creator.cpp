@@ -100,7 +100,7 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
 
         _currentPathFolders.append(rootFolder(db));
 
-        foreach (QString folderName, folders) {
+        for (const auto &folderName : folders) {
             if (folderName.isEmpty()) {
                 break;
             }
@@ -472,7 +472,7 @@ void LibraryCreator::update(QDir dirS)
     listS.append(listSFolders);
     listS.append(listSFiles);
     // QLOG_DEBUG() << "---------------------------------------------------------";
-    // foreach(QFileInfo info,listS)
+    // for (const QFileInfo &info : listS)
     //	QLOG_DEBUG() << info.fileName();
 
     // QLOG_TRACE() << "END Getting info from dir" << dirS.absolutePath();
@@ -488,7 +488,7 @@ void LibraryCreator::update(QDir dirS)
     listD.append(folders);
     listD.append(comics);
     // QLOG_DEBUG() << "---------------------------------------------------------";
-    // foreach(LibraryItem * info,listD)
+    // for (auto *info : listD)
     //	QLOG_DEBUG() << info->name;
     // QLOG_DEBUG() << "---------------------------------------------------------";
     int lenghtS = listS.size();

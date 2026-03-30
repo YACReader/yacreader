@@ -74,17 +74,20 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     if (!data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
         return false;
 
-    QList<qulonglong> comicIds = YACReader::mimeDataToComicsIds(data);
+    const QList<qulonglong> comicIds = YACReader::mimeDataToComicsIds(data);
     QList<int> currentIndexes;
     int i;
-    foreach (qulonglong id, comicIds) {
-        i = 0;
-        foreach (ComicItem *item, _data) {
-            if (item->data(Id) == id) {
-                currentIndexes << i;
-                break;
+    {
+        const auto &currentData = _data;
+        for (const auto id : comicIds) {
+            i = 0;
+            for (auto *item : currentData) {
+                if (item->data(Id) == id) {
+                    currentIndexes << i;
+                    break;
+                }
+                i++;
             }
-            i++;
         }
     }
 
@@ -102,26 +105,30 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     QList<int> newSorting;
 
-    i = 0;
-    foreach (ComicItem *item, _data) {
-        if (!currentIndexes.contains(i)) {
+    const auto &currentIndexList = currentIndexes;
+    {
+        const auto &currentData = _data;
+        i = 0;
+        for (auto *item : currentData) {
+            if (!currentIndexes.contains(i)) {
 
-            if (item == destinationItem) {
-                foreach (int index, currentIndexes) {
-                    resortedData << _data.at(index);
-                    newSorting << index;
+                if (item == destinationItem) {
+                    for (const auto index : currentIndexList) {
+                        resortedData << _data.at(index);
+                        newSorting << index;
+                    }
                 }
+
+                resortedData << item;
+                newSorting << i;
             }
 
-            resortedData << item;
-            newSorting << i;
+            i++;
         }
-
-        i++;
     }
 
     if (destinationItem == 0) {
-        foreach (int index, currentIndexes) {
+        for (const auto index : currentIndexList) {
             resortedData << _data.at(index);
             newSorting << index;
         }
@@ -134,9 +141,10 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     if (tempRow < 0)
         tempRow = _data.count();
 
-    foreach (qulonglong id, comicIds) {
+    for (const auto id : comicIds) {
         int i = 0;
-        foreach (ComicItem *item, _data) {
+        const auto dataSnapshot = _data;
+        for (auto *item : dataSnapshot) {
             if (item->data(Id) == id) {
                 beginMoveRows(parent, i, i, parent, tempRow);
 
@@ -162,7 +170,8 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     // TODO fix selection
     QList<qulonglong> allComicIds;
-    foreach (ComicItem *item, _data) {
+    const auto &allData = _data;
+    for (auto *item : allData) {
         allComicIds << item->data(Id).toULongLong();
     }
     QString connectionName = "";
@@ -211,7 +220,7 @@ QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
     // custom model data
     // application/yacreader-comics-ids + list of ids in a QByteArray
     QList<qulonglong> ids;
-    foreach (QModelIndex index, indexes) {
+    for (const auto &index : indexes) {
         QLOG_DEBUG() << "dragging : " << index.data(IdRole).toULongLong();
         ids << index.data(IdRole).toULongLong();
     }
@@ -605,7 +614,8 @@ QList<ComicItem *> ComicModel::createReadingListData(unsigned long long parentRe
 
         enableResorting = ids.length() == 1; // only resorting if no sublists exist
 
-        foreach (qulonglong id, ids) {
+        const auto &readingListIds = ids;
+        for (const auto id : readingListIds) {
             QSqlQuery selectQuery(db);
             selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
                                 "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
@@ -996,10 +1006,11 @@ QList<ComicDB> ComicModel::getComics(QList<QModelIndex> list)
 QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read)
 {
     QString connectionName = "";
+    const auto &comicIndexes = list;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
-        foreach (QModelIndex mi, list) {
+        for (const auto &mi : comicIndexes) {
             if (read == YACReader::Read) {
                 _data.value(mi.row())->setData(ComicModel::ReadColumn, QVariant(true));
                 bool found;
@@ -1033,10 +1044,11 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
 void ComicModel::setComicsType(QList<QModelIndex> list, FileType type)
 {
     QString connectionName = "";
+    const auto &comicIndexes = list;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
-        foreach (QModelIndex mi, list) {
+        for (const auto &mi : comicIndexes) {
             bool found;
             ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db, found);
             c.info.type = QVariant::fromValue(type);
@@ -1047,7 +1059,7 @@ void ComicModel::setComicsType(QList<QModelIndex> list, FileType type)
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    foreach (QModelIndex mi, list) {
+    for (const auto &mi : comicIndexes) {
         _data.value(mi.row())->setData(ComicModel::Type, QVariant::fromValue(type));
     }
 
@@ -1058,12 +1070,13 @@ qint64 ComicModel::asignNumbers(QList<QModelIndex> list, int startingNumber)
 {
     qint64 idFirst;
     QString connectionName = "";
+    const auto &comicIndexes = list;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
         idFirst = _data.value(list[0].row())->data(ComicModel::Id).toULongLong();
         int i = 0;
-        foreach (QModelIndex mi, list) {
+        for (const auto &mi : comicIndexes) {
             bool found;
             ComicDB c = DBHelper::loadComic(_data.value(mi.row())->data(ComicModel::Id).toULongLong(), db, found);
             c.info.number = startingNumber + i;
@@ -1097,7 +1110,7 @@ QList<QModelIndex> ComicModel::getIndexesFromIds(const QList<qulonglong> &comicI
 {
     QList<QModelIndex> comicsIndexes;
 
-    foreach (qulonglong id, comicIds)
+    for (const auto id : comicIds)
         comicsIndexes << getIndexFromId(id);
 
     return comicsIndexes;
@@ -1180,7 +1193,8 @@ void ComicModel::reload(const ComicDB &comic)
 {
     int row = 0;
     bool found = false;
-    foreach (ComicItem *item, _data) {
+    const auto &currentData = _data;
+    for (auto *item : currentData) {
         if (item->data(ComicModel::Id).toULongLong() == comic.id) {
             found = true;
             item->setData(ComicModel::ReadColumn, comic.info.read);
