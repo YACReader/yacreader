@@ -32,7 +32,7 @@ endif()
 include(GNUInstallDirs)
 list(PREPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 
-# Compiler options (MSVC flags, NOMINMAX, etc.)
+# Compiler options (MSVC flags)
 include(cmake/CompilerOptions.cmake)
 
 # --- Build options ---
