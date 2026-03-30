@@ -54,15 +54,163 @@ target_include_directories(YACReader PRIVATE
 target_compile_definitions(YACReader PRIVATE YACREADER)
 
 # Resources
-qt_add_resources(yacreader_images_rcc "${CMAKE_CURRENT_SOURCE_DIR}/yacreader_images.qrc")
-qt_add_resources(yacreader_files_rcc "${CMAKE_CURRENT_SOURCE_DIR}/yacreader_files.qrc")
-qt_add_resources(yacreader_themes_rcc "${CMAKE_CURRENT_SOURCE_DIR}/themes/themes.qrc")
-qt_add_resources(yacreader_common_images_rcc "${PROJECT_SOURCE_DIR}/common/themes/appearance_config_images.qrc")
-target_sources(YACReader PRIVATE
-    ${yacreader_images_rcc}
-    ${yacreader_files_rcc}
-    ${yacreader_themes_rcc}
-    ${yacreader_common_images_rcc}
+set(yacreader_image_files
+    ${PROJECT_SOURCE_DIR}/images/icon-new.svg
+    ${PROJECT_SOURCE_DIR}/images/goto.svg
+    ${PROJECT_SOURCE_DIR}/images/find_folder.svg
+    ${PROJECT_SOURCE_DIR}/images/flow1.png
+    ${PROJECT_SOURCE_DIR}/images/flow2.png
+    ${PROJECT_SOURCE_DIR}/images/flow3.png
+    ${PROJECT_SOURCE_DIR}/images/flow4.png
+    ${PROJECT_SOURCE_DIR}/images/flow5.png
+    ${PROJECT_SOURCE_DIR}/images/notCover.png
+    ${PROJECT_SOURCE_DIR}/images/close.svg
+    ${PROJECT_SOURCE_DIR}/images/centerFlow.svg
+    ${PROJECT_SOURCE_DIR}/images/gotoFlow.svg
+    ${PROJECT_SOURCE_DIR}/images/defaultCover.png
+    ${PROJECT_SOURCE_DIR}/images/translator/close.svg
+    ${PROJECT_SOURCE_DIR}/images/translator/dropDownArrow.svg
+    ${PROJECT_SOURCE_DIR}/images/translator/fromTo.svg
+    ${PROJECT_SOURCE_DIR}/images/translator/speaker.svg
+    ${PROJECT_SOURCE_DIR}/images/translator/translatorSearch.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/clear_shortcut.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/accept_shortcut.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_comics.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_folders.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_general.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_libraries.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_mglass.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_page.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_reading.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_visualization.svg
+    ${PROJECT_SOURCE_DIR}/images/custom_dialog/custom_close_button.svg
+    ${PROJECT_SOURCE_DIR}/images/whats_new/whatsnew_header.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/bookmark.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/close.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/doublePage.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/doubleMangaPage.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/fitToPage.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/flow.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/full.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/goto.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/help.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/info.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/magnifyingGlass.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/next.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/open.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/openFolder.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/openNext.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/openPrevious.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/options.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/previous.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateL.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateR.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/save.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/shortcuts.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/showBookmarks.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toHeight.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toContinuousScroll.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toWidth.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/translator.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/zoom.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/bookmark_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/close_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/doublePage_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/doubleMangaPage_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/fitToPage_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/flow_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/full_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/goto_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/help_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/info_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/magnifyingGlass_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/next_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/open_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/openFolder_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/openNext_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/openPrevious_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/options_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/previous_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateL_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateR_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/save_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/shortcuts_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/showBookmarks_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toHeight_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toContinuousScroll_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toWidth_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/translator_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/zoom_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/menuArrow.svg
+)
+set(yacreader_file_files
+    ${PROJECT_SOURCE_DIR}/files/about.html
+    ${PROJECT_SOURCE_DIR}/files/helpYACReader.html
+    ${PROJECT_SOURCE_DIR}/files/shortcuts.html
+)
+set(yacreader_file_files_es
+    ${PROJECT_SOURCE_DIR}/files/about_es_ES.html
+    ${PROJECT_SOURCE_DIR}/files/helpYACReader_es_ES.html
+)
+set_source_files_properties(
+    ${PROJECT_SOURCE_DIR}/files/about_es_ES.html
+    PROPERTIES QT_RESOURCE_ALIAS "about.html"
+)
+set_source_files_properties(
+    ${PROJECT_SOURCE_DIR}/files/helpYACReader_es_ES.html
+    PROPERTIES QT_RESOURCE_ALIAS "helpYACReader.html"
+)
+set(yacreader_theme_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_classic.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light1.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light2.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light3.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light4.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light5.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark1.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark2.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark3.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark4.json
+)
+set(yacreader_common_theme_image_files
+    ${PROJECT_SOURCE_DIR}/images/appearance_config/theme-mode-system.svg
+    ${PROJECT_SOURCE_DIR}/images/appearance_config/theme-mode-light.svg
+    ${PROJECT_SOURCE_DIR}/images/appearance_config/theme-mode-dark.svg
+    ${PROJECT_SOURCE_DIR}/images/appearance_config/theme-mode-custom.svg
+)
+
+qt_add_resources(YACReader "yacreader_images"
+    PREFIX "/"
+    BASE "${PROJECT_SOURCE_DIR}"
+    FILES
+        ${yacreader_image_files}
+)
+qt_add_resources(YACReader "yacreader_files"
+    PREFIX "/files"
+    BASE "${PROJECT_SOURCE_DIR}/files"
+    FILES
+        ${yacreader_file_files}
+)
+qt_add_resources(YACReader "yacreader_files_es"
+    PREFIX "/files"
+    LANG "es_ES"
+    BASE "${PROJECT_SOURCE_DIR}/files"
+    FILES
+        ${yacreader_file_files_es}
+)
+qt_add_resources(YACReader "yacreader_themes"
+    PREFIX "/themes"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/themes"
+    FILES
+        ${yacreader_theme_files}
+)
+qt_add_resources(YACReader "yacreader_common_theme_images"
+    PREFIX "/"
+    BASE "${PROJECT_SOURCE_DIR}"
+    FILES
+        ${yacreader_common_theme_image_files}
 )
 
 # Translations
