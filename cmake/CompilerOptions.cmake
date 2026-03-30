@@ -9,3 +9,5 @@ if(MSVC)
     # /permissive-: strict standard conformance
     add_compile_options(/Zc:__cplusplus /permissive-)
 endif()
+
+add_compile_definitions(QT_DISABLE_DEPRECATED_UP_TO=0x060400)
