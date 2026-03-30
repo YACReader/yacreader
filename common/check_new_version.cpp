@@ -11,8 +11,6 @@
 #include <QVersionNumber>
 #include <QtGlobal>
 
-#define PREVIOUS_VERSION_TESTING "6.0.0"
-
 HttpVersionChecker::HttpVersionChecker()
     : HttpWorker("https://raw.githubusercontent.com/YACReader/yacreader/master/VERSION", DEFAULT_USER_AGENT)
 {
@@ -26,12 +24,17 @@ void HttpVersionChecker::checkNewVersion(const QByteArray &data)
 
 bool HttpVersionChecker::checkNewVersion(QString sourceContent)
 {
-#ifdef QT_DEBUG
-    const auto currentVersion = QVersionNumber::fromString(PREVIOUS_VERSION_TESTING);
-#else
+
     const auto currentVersion = QVersionNumber::fromString(QString::fromLatin1(VERSION));
-#endif
-    const auto latestVersion = QVersionNumber::fromString(sourceContent.trimmed());
+    const auto trimmedSourceContent = sourceContent.trimmed();
+    qsizetype suffixIndex = 0;
+    const auto latestVersion = QVersionNumber::fromString(trimmedSourceContent, &suffixIndex);
+
+    if (trimmedSourceContent.isEmpty() ||
+        suffixIndex != trimmedSourceContent.size() ||
+        latestVersion.segments().size() != 3) {
+        return false;
+    }
 
     if (!currentVersion.isNull() && !latestVersion.isNull() && QVersionNumber::compare(latestVersion, currentVersion) > 0) {
         emit newVersionDetected();
