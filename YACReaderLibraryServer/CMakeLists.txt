@@ -10,8 +10,8 @@ qt_add_executable(YACReaderLibraryServer
 
 target_include_directories(YACReaderLibraryServer PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}/YACReaderLibrary
-    ${CMAKE_SOURCE_DIR}/YACReaderLibrary/db
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary/db
 )
 
 target_compile_definitions(YACReaderLibraryServer PRIVATE

@@ -42,8 +42,8 @@ qt_add_executable(YACReader WIN32
     themes/theme.h
     themes/theme_factory.h
     themes/theme_factory.cpp
-    ${CMAKE_SOURCE_DIR}/common/themes/theme_manager.h
-    ${CMAKE_SOURCE_DIR}/common/themes/theme_manager.cpp
+    ${PROJECT_SOURCE_DIR}/common/themes/theme_manager.h
+    ${PROJECT_SOURCE_DIR}/common/themes/theme_manager.cpp
 )
 
 target_include_directories(YACReader PRIVATE
@@ -57,7 +57,7 @@ target_compile_definitions(YACReader PRIVATE YACREADER)
 qt_add_resources(yacreader_images_rcc "${CMAKE_CURRENT_SOURCE_DIR}/yacreader_images.qrc")
 qt_add_resources(yacreader_files_rcc "${CMAKE_CURRENT_SOURCE_DIR}/yacreader_files.qrc")
 qt_add_resources(yacreader_themes_rcc "${CMAKE_CURRENT_SOURCE_DIR}/themes/themes.qrc")
-qt_add_resources(yacreader_common_images_rcc "${CMAKE_SOURCE_DIR}/common/themes/appearance_config_images.qrc")
+qt_add_resources(yacreader_common_images_rcc "${PROJECT_SOURCE_DIR}/common/themes/appearance_config_images.qrc")
 target_sources(YACReader PRIVATE
     ${yacreader_images_rcc}
     ${yacreader_files_rcc}

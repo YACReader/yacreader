@@ -6,9 +6,11 @@ set(unarr_TARGET "")
 set(unarr_INCLUDE_DIRS "")
 set(unarr_LIBRARIES "")
 
+get_filename_component(_unarr_bundled_root "${CMAKE_CURRENT_LIST_DIR}/../dependencies/unarr" ABSOLUTE)
+
 if(NOT TARGET unarr::unarr AND APPLE)
-    set(_unarr_include_dir "${CMAKE_SOURCE_DIR}/dependencies/unarr/macx")
-    set(_unarr_library "${CMAKE_SOURCE_DIR}/dependencies/unarr/macx/libunarr.a")
+    set(_unarr_include_dir "${_unarr_bundled_root}/macx")
+    set(_unarr_library "${_unarr_bundled_root}/macx/libunarr.a")
     if(EXISTS "${_unarr_include_dir}/unarr.h" AND EXISTS "${_unarr_library}")
         yacreader_add_imported_library(unarr::unarr
             TYPE STATIC
@@ -22,9 +24,9 @@ endif()
 
 if(NOT TARGET unarr::unarr AND WIN32)
     yacreader_get_windows_arch_subdir(_unarr_arch)
-    set(_unarr_include_dir "${CMAKE_SOURCE_DIR}/dependencies/unarr/win")
-    set(_unarr_implib "${CMAKE_SOURCE_DIR}/dependencies/unarr/win/${_unarr_arch}/unarr.lib")
-    set(_unarr_dll "${CMAKE_SOURCE_DIR}/dependencies/unarr/win/${_unarr_arch}/unarr.dll")
+    set(_unarr_include_dir "${_unarr_bundled_root}/win")
+    set(_unarr_implib "${_unarr_bundled_root}/win/${_unarr_arch}/unarr.lib")
+    set(_unarr_dll "${_unarr_bundled_root}/win/${_unarr_arch}/unarr.dll")
     if(EXISTS "${_unarr_include_dir}/unarr.h" AND EXISTS "${_unarr_implib}" AND EXISTS "${_unarr_dll}")
         yacreader_add_imported_library(unarr::unarr
             TYPE SHARED

@@ -30,7 +30,7 @@ endif()
 
 # Install paths
 include(GNUInstallDirs)
-list(PREPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Compiler options (MSVC flags)
 include(cmake/CompilerOptions.cmake)

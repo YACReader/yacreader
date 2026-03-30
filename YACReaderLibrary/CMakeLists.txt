@@ -176,8 +176,8 @@ qt_add_executable(YACReaderLibrary WIN32
     themes/theme.h
     themes/theme_factory.h
     themes/theme_factory.cpp
-    ${CMAKE_SOURCE_DIR}/common/themes/theme_manager.h
-    ${CMAKE_SOURCE_DIR}/common/themes/theme_manager.cpp
+    ${PROJECT_SOURCE_DIR}/common/themes/theme_manager.h
+    ${PROJECT_SOURCE_DIR}/common/themes/theme_manager.cpp
 )
 
 # macOS-specific sources
@@ -204,7 +204,7 @@ qt_add_resources(yacreaderlibrary_images_rcc "${CMAKE_CURRENT_SOURCE_DIR}/images
 qt_add_resources(yacreaderlibrary_files_rcc "${CMAKE_CURRENT_SOURCE_DIR}/files.qrc")
 qt_add_resources(yacreaderlibrary_qml_rcc "${CMAKE_CURRENT_SOURCE_DIR}/qml.qrc")
 qt_add_resources(yacreaderlibrary_themes_rcc "${CMAKE_CURRENT_SOURCE_DIR}/themes/themes.qrc")
-qt_add_resources(yacreaderlibrary_common_images_rcc "${CMAKE_SOURCE_DIR}/common/themes/appearance_config_images.qrc")
+qt_add_resources(yacreaderlibrary_common_images_rcc "${PROJECT_SOURCE_DIR}/common/themes/appearance_config_images.qrc")
 target_sources(YACReaderLibrary PRIVATE
     ${yacreaderlibrary_images_rcc}
     ${yacreaderlibrary_files_rcc}
