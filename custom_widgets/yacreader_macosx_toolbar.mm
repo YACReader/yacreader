@@ -198,7 +198,7 @@ void bindActionToNSToolbarItem(QAction *action, NSToolbarItem *toolbarItem, cons
  NSMutableArray *array = [[NSMutableArray alloc] init];
 
  QList<QMacToolBarItem *> items = mytoolbar->items();
- foreach (const QMacToolBarItem * item, items) {
+ for (const auto *item : items) {
      [array addObject : item->nativeToolBarItem().itemIdentifier];
  }
  return array;

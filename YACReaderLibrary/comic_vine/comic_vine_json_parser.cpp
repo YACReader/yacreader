@@ -142,8 +142,8 @@ QMultiMap<QString, QString> getAuthors(const QVariant &json_authors)
 
         QString authorName = resultsValue.value("name").toString();
 
-        QStringList roles = resultsValue.value("role").toString().split(",");
-        foreach (QString role, roles) {
+        const QStringList roles = resultsValue.value("role").toString().split(",");
+        for (const auto &role : roles) {
             if (role.trimmed() == "writer")
                 authors.insert("writer", authorName);
             else if (role.trimmed() == "inker")

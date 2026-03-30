@@ -442,23 +442,23 @@ void ComicVineDialog::queryTimeOut()
 
 void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo)
 {
-    QPair<ComicDB, QString> p;
     QList<ComicDB> comics;
-    foreach (p, matchingInfo) {
+    const auto &matches = matchingInfo;
+    for (auto match : matches) {
         auto comicVineClient = new ComicVineClient;
         // connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
         // connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
         // connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
         bool error;
         bool timeout;
-        QByteArray result = comicVineClient->getComicDetail(p.second, error, timeout); // TODO check timeOut or Connection error
+        QByteArray result = comicVineClient->getComicDetail(match.second, error, timeout); // TODO check timeOut or Connection error
         if (error || timeout)
             continue; // TODO
-        ComicDB comic = YACReader::parseCVJSONComicInfo(p.first, result, volumeInfo); // TODO check result error
-        comic.info.comicVineID = p.second;
+        ComicDB comic = YACReader::parseCVJSONComicInfo(match.first, result, volumeInfo); // TODO check result error
+        comic.info.comicVineID = match.second;
         comics.push_back(comic);
 
-        setLoadingMessage(tr("Retrieving tags for : %1").arg(p.first.getFileName()));
+        setLoadingMessage(tr("Retrieving tags for : %1").arg(match.first.getFileName()));
     }
 
     DBHelper::updateComicsInfo(comics, databasePath);

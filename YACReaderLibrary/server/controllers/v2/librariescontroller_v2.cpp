@@ -16,7 +16,7 @@ void LibrariesControllerV2::service(HttpRequest & /* request */, HttpResponse &r
 
     QJsonArray librariesJson;
 
-    foreach (YACReaderLibrary library, libraries) {
+    for (const auto &library : libraries) {
         QJsonObject libraryJson;
 
         libraryJson["name"] = library.getName();

@@ -236,7 +236,7 @@ bool FolderContentView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction acti
 {
     if (action == Qt::CopyAction) {
         QString currentPath;
-        foreach (QUrl url, urls) {
+        for (const auto &url : urls) {
             // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())

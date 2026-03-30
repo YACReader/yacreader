@@ -63,7 +63,7 @@ public:
 
     bool hasMessage(const QString &messageContent, QsLogging::Level level) const
     {
-        Q_FOREACH (const Message &m, mMessages) {
+        for (const auto &m : mMessages) {
             if (m.level == level && m.text.contains(messageContent))
                 return true;
         }

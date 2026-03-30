@@ -12,6 +12,8 @@
 #include <QLibrary>
 #include <QtCore>
 
+#include <utility>
+
 #define _MY_WINAPI WINAPI
 
 typedef quint32(_MY_WINAPI *CreateObjectFunc)(const GUID *clsID, const GUID *interfaceID, void **outObject);
@@ -235,7 +237,7 @@ QVector<quint32> CompressedArchive::translateIndexes(const QVector<quint32> &ind
 {
     QVector<quint32> translatedIndexes;
 
-    foreach (quint32 i, indexes) {
+    for (const quint32 i : std::as_const(indexes)) {
         if (i < (quint32)offsets.length())
             translatedIndexes.append(offsets.at(i));
     }

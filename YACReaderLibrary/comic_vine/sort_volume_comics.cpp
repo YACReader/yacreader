@@ -247,13 +247,13 @@ void SortVolumeComics::showRemovedComicsSelector()
 
 QList<QPair<ComicDB, QString>> SortVolumeComics::getMatchingInfo()
 {
-    QList<ComicDB> comicList = localComicsModel->getData();
+    const auto comicList = localComicsModel->getData();
     QList<QPair<ComicDB, QString>> l;
 
     int index = 0;
 
     QString id;
-    foreach (ComicDB c, comicList) {
+    for (const auto &c : comicList) {
         id = volumeComicsModel->getComicId(index);
         if (!c.getFileName().isEmpty() && !id.isEmpty()) // there is a valid comic, and valid comic ID
         {

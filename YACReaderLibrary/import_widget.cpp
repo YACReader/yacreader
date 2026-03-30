@@ -215,7 +215,7 @@ void ImportWidget::newComic(const QString &path, const QString &coverPath)
 
         previousWidth += 10 + p.width();
 
-        foreach (QGraphicsItem *itemToRemove, coversScene->items()) {
+        for (auto *itemToRemove : coversScene->items()) {
             auto last = dynamic_cast<QGraphicsPixmapItem *>(itemToRemove);
 
             if ((last->pos().x() + last->pixmap().width()) < coversView->horizontalScrollBar()->value()) // TODO check this
@@ -263,7 +263,7 @@ void ImportWidget::addCoverTest()
         } else
             j++;
 
-        foreach (QGraphicsItem *itemToMove, coversScene->items()) {
+        for (auto *itemToMove : coversScene->items()) {
 
             auto timer = new QTimeLine(/*350*/ 1000);
             timer->setFrameRange(0, 60);
