@@ -38,11 +38,15 @@ endif()
 # --- custom_widgets_reader (YACReader-specific) ---
 add_library(custom_widgets_reader STATIC ${WIDGETS_COMMON_SOURCES})
 target_include_directories(custom_widgets_reader PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+yacreader_apply_build_options(custom_widgets_reader)
 # App-specific theme.h needed because themable.h → theme_manager.h → theme.h
 target_include_directories(custom_widgets_reader PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReader/themes
 )
 target_compile_definitions(custom_widgets_reader PRIVATE YACREADER)
+if(BUILD_NUMBER)
+    target_compile_definitions(custom_widgets_reader PRIVATE "BUILD_NUMBER=\"${BUILD_NUMBER}\"")
+endif()
 target_link_libraries(custom_widgets_reader PUBLIC
     Qt6::Core
     Qt6::Widgets
@@ -83,6 +87,7 @@ add_library(custom_widgets_library STATIC
     ${LIBRARY_EXTRA_WIDGETS}
 )
 target_include_directories(custom_widgets_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+yacreader_apply_build_options(custom_widgets_library)
 # App-specific theme.h + YACReaderLibrary headers needed by macosx_toolbar
 target_include_directories(custom_widgets_library PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary/themes
@@ -90,6 +95,9 @@ target_include_directories(custom_widgets_library PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary/db
 )
 target_compile_definitions(custom_widgets_library PRIVATE YACREADER_LIBRARY)
+if(BUILD_NUMBER)
+    target_compile_definitions(custom_widgets_library PRIVATE "BUILD_NUMBER=\"${BUILD_NUMBER}\"")
+endif()
 target_link_libraries(custom_widgets_library PUBLIC
     Qt6::Core
     Qt6::Widgets

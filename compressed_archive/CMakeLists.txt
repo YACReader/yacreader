@@ -2,6 +2,7 @@
 # Switched on DECOMPRESSION_BACKEND: unarr | 7zip | libarchive
 
 add_library(cbx_backend STATIC)
+yacreader_apply_build_options(cbx_backend)
 
 if(DECOMPRESSION_BACKEND STREQUAL "unarr")
     message(STATUS "Decompression backend: unarr")
@@ -88,14 +89,14 @@ elseif(DECOMPRESSION_BACKEND STREQUAL "7zip")
 
     if(APPLE)
         target_compile_definitions(cbx_backend PRIVATE
-            _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE NDEBUG _REENTRANT
+            _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE _REENTRANT
             ENV_UNIX _7ZIP_LARGE_PAGES ENV_MACOSX _TCHAR_DEFINED
             UNICODE _UNICODE UNIX_USE_WIN_FILE)
         target_link_libraries(cbx_backend PRIVATE
             "-framework IOKit" "-framework CoreFoundation")
     elseif(UNIX)
         target_compile_definitions(cbx_backend PRIVATE
-            _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE NDEBUG _REENTRANT
+            _FILE_OFFSET_BITS=64 _LARGEFILE_SOURCE _REENTRANT
             ENV_UNIX _7ZIP_LARGE_PAGES UNICODE _UNICODE UNIX_USE_WIN_FILE)
     endif()
 

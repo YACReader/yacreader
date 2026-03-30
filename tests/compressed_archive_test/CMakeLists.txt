@@ -3,6 +3,7 @@
 qt_add_executable(compressed_archive_test
     main.cpp
 )
+yacreader_apply_build_options(compressed_archive_test)
 target_link_libraries(compressed_archive_test PRIVATE
     Qt6::Core
     cbx_backend
