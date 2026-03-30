@@ -3,6 +3,7 @@
 qt_add_executable(concurrent_queue_test
     concurrent_queue_test.cpp
 )
+yacreader_apply_build_options(concurrent_queue_test)
 target_link_libraries(concurrent_queue_test PRIVATE
     Qt6::Core
     Qt6::Test

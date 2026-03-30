@@ -17,6 +17,7 @@ set(SHORTCUTS_SOURCES
 # --- shortcuts_reader (YACREADER define) ---
 add_library(shortcuts_reader STATIC ${SHORTCUTS_SOURCES})
 target_include_directories(shortcuts_reader PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+yacreader_apply_build_options(shortcuts_reader)
 # App-specific theme.h needed because themable.h → theme_manager.h → theme.h
 target_include_directories(shortcuts_reader PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReader/themes
@@ -27,6 +28,7 @@ target_link_libraries(shortcuts_reader PUBLIC Qt6::Core Qt6::Widgets yr_global c
 # --- shortcuts_library (YACREADER_LIBRARY define) ---
 add_library(shortcuts_library STATIC ${SHORTCUTS_SOURCES})
 target_include_directories(shortcuts_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+yacreader_apply_build_options(shortcuts_library)
 target_include_directories(shortcuts_library PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary/themes
 )

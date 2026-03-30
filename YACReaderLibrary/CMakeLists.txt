@@ -31,6 +31,7 @@ target_include_directories(library_common PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/db
 )
+yacreader_apply_build_options(library_common)
 target_link_libraries(library_common PUBLIC
     Qt6::Core
     Qt6::Core5Compat
@@ -62,6 +63,7 @@ target_include_directories(db_helper PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/db
 )
+yacreader_apply_build_options(db_helper)
 target_link_libraries(db_helper PUBLIC
     Qt6::Core
     Qt6::Sql
@@ -179,6 +181,7 @@ qt_add_executable(YACReaderLibrary WIN32
     ${PROJECT_SOURCE_DIR}/common/themes/theme_manager.h
     ${PROJECT_SOURCE_DIR}/common/themes/theme_manager.cpp
 )
+yacreader_apply_build_options(YACReaderLibrary)
 
 # macOS-specific sources
 if(APPLE)

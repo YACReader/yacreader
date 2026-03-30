@@ -54,6 +54,7 @@ target_include_directories(comic_vine PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/model
 )
+yacreader_apply_build_options(comic_vine)
 # App-specific theme.h needed for themable.h → theme_manager.h → theme.h chain
 target_include_directories(comic_vine PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary/themes

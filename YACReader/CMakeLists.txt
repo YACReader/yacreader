@@ -45,6 +45,7 @@ qt_add_executable(YACReader WIN32
     ${PROJECT_SOURCE_DIR}/common/themes/theme_manager.h
     ${PROJECT_SOURCE_DIR}/common/themes/theme_manager.cpp
 )
+yacreader_apply_build_options(YACReader)
 
 target_include_directories(YACReader PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}

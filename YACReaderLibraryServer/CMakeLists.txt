@@ -7,6 +7,7 @@ qt_add_executable(YACReaderLibraryServer
     libraries_updater.h
     libraries_updater.cpp
 )
+yacreader_apply_build_options(YACReaderLibraryServer)
 
 target_include_directories(YACReaderLibraryServer PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -18,6 +19,9 @@ target_compile_definitions(YACReaderLibraryServer PRIVATE
     SERVER_RELEASE
     YACREADER_LIBRARY
 )
+if(BUILD_NUMBER)
+    target_compile_definitions(YACReaderLibraryServer PRIVATE "BUILD_NUMBER=\"${BUILD_NUMBER}\"")
+endif()
 
 # Translations
 qt_add_translations(YACReaderLibraryServer

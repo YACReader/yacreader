@@ -157,11 +157,6 @@ if(WIN32 OR APPLE)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 endif()
 
-# Build number define
-if(BUILD_NUMBER)
-    add_compile_definitions("BUILD_NUMBER=\"${BUILD_NUMBER}\"")
-endif()
-
 # --- Subdirectories (dependency order) ---
 add_subdirectory(third_party)
 add_subdirectory(compressed_archive)
