@@ -52,12 +52,8 @@ for /r %src_path%\build %%f in (*.qm) do (
 
 copy %src_path%\vc_redist.%ARCH%.exe .
 
-type %src_path%\common\yacreader_global.h | findstr /R /C:"#define VERSION " > tmp
-set /p VERSION= < tmp
-set VERSION=%VERSION:#define VERSION "=%
-set VERSION=%VERSION:"=%
+set /p VERSION=<%src_path%\VERSION
 echo %VERSION%
-del tmp
 
 echo "iscc start"
 iscc /DVERSION=%VERSION% /DPLATFORM=%ARCH% /DCOMPRESSED_ARCHIVE_BACKEND=%COMPRESSION% /DBUILD_NUMBER=%BUILD_NUMBER% build_installer_qt6.iss || exit /b

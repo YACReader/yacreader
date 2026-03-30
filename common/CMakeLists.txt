@@ -1,12 +1,23 @@
 # Common libraries for YACReader
 # Fine-grained STATIC targets per concern
 
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/version.h
+    @ONLY
+)
+
 # --- yr_global (no GUI, used by all 3 apps) ---
 add_library(yr_global STATIC
+    ${CMAKE_CURRENT_BINARY_DIR}/version.h
+    version.h.in
     yacreader_global.h
     yacreader_global.cpp
 )
-target_include_directories(yr_global PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(yr_global PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
 target_link_libraries(yr_global PUBLIC Qt::Core)
 if(UNIX AND NOT APPLE)
     target_compile_definitions(yr_global PRIVATE
@@ -171,6 +182,7 @@ target_link_libraries(rhi_flow_reader PUBLIC
     Qt::Gui
     Qt::GuiPrivate
     Qt::Widgets
+    yr_global
 )
 qt_add_shaders(rhi_flow_reader "flow_shaders_reader"
     BASE rhi/shaders
@@ -194,6 +206,7 @@ target_link_libraries(rhi_flow_library PUBLIC
     Qt::Gui
     Qt::GuiPrivate
     Qt::Widgets
+    yr_global
 )
 qt_add_shaders(rhi_flow_library "flow_shaders_library"
     BASE rhi/shaders
