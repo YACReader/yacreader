@@ -4,6 +4,7 @@
 */
 
 #include "httpresponse.h"
+#include <utility>
 
 using namespace stefanfrings;
 
@@ -54,14 +55,14 @@ void HttpResponse::writeHeaders()
     buffer.append(' ');
     buffer.append(statusText);
     buffer.append("\r\n");
-    foreach(QByteArray name, headers.keys())
+    for (const QByteArray &name : headers.keys())
     {
         buffer.append(name);
         buffer.append(": ");
         buffer.append(headers.value(name));
         buffer.append("\r\n");
     }
-    foreach(HttpCookie cookie,cookies.values())
+    for (const HttpCookie &cookie : cookies.values())
     {
         buffer.append("Set-Cookie: ");
         buffer.append(cookie.toByteArray());

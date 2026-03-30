@@ -6,6 +6,7 @@
 #include "httprequest.h"
 #include <QList>
 #include <QDir>
+#include <utility>
 #include "httpcookie.h"
 
 using namespace stefanfrings;
@@ -239,7 +240,7 @@ void HttpRequest::decodeRequestParams()
     }
     // Split the parameters into pairs of value and name
     QList<QByteArray> list=rawParameters.split('&');
-    foreach (QByteArray part, list)
+    for (const QByteArray &part : std::as_const(list))
     {
         int equalsChar=part.indexOf('=');
         if (equalsChar>=0)
@@ -261,10 +262,10 @@ void HttpRequest::extractCookies()
     #ifdef SUPERVERBOSE
         qDebug("HttpRequest: extract cookies");
     #endif
-    foreach(QByteArray cookieStr, headers.values("cookie"))
+    for (const QByteArray &cookieStr : headers.values("cookie"))
     {
         QList<QByteArray> list=HttpCookie::splitCSV(cookieStr);
-        foreach(QByteArray part, list)
+        for (const QByteArray &part : std::as_const(list))
         {
             #ifdef SUPERVERBOSE
                 qDebug("HttpRequest: found cookie %s",part.data());
@@ -532,7 +533,7 @@ void HttpRequest::parseMultiPartFile()
 
 HttpRequest::~HttpRequest()
 {
-    foreach(QByteArray key, uploadedFiles.keys())
+    for (const QByteArray &key : uploadedFiles.keys())
     {
         QTemporaryFile* file=uploadedFiles.value(key);
         if (file->isOpen())

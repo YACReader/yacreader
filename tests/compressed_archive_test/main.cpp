@@ -6,6 +6,7 @@
 #include <QtCore/QCoreApplication>
 
 #include <iostream>
+#include <utility>
 
 using namespace std;
 
@@ -36,7 +37,7 @@ int main(int argc, char *argv[])
     timer.start();
 
     quint32 totalFiles = 0;
-    foreach (QString format, supportedFormats) {
+    for (const QString &format : std::as_const(supportedFormats)) {
         QDir rootDir(s);
         if (!rootDir.cd(format)) {
             cout << "Folder for format '" << format.toStdString() << "' not found" << endl;
@@ -49,7 +50,7 @@ int main(int argc, char *argv[])
         quint32 errors = 0;
         quint64 init = timer.elapsed();
 
-        foreach (QFileInfo fileInfo, files) {
+        for (const QFileInfo &fileInfo : std::as_const(files)) {
             totalFiles++;
             totalFormat++;
             CompressedArchive archive(fileInfo.filePath());

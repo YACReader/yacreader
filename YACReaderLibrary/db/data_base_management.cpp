@@ -753,8 +753,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
         }
 
         destDB.commit();
-        QString hash;
-        foreach (hash, hashes) {
+        for (const auto &hash : hashes) {
             QSqlQuery getComic(destDB);
             getComic.prepare("SELECT c.path,ci.coverPage FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) where ci.hash = :hash");
             getComic.bindValue(":hash", hash);
@@ -860,7 +859,7 @@ bool DataBaseManagement::addColumns(const QString &tableName, const QStringList 
     QString sql = "ALTER TABLE %1 ADD COLUMN %2";
     bool returnValue = true;
 
-    foreach (QString columnDef, columnDefs) {
+    for (const auto &columnDef : columnDefs) {
         QSqlQuery alterTable(db);
         alterTable.prepare(sql.arg(tableName).arg(columnDef));
         // alterTableComicInfo.bindValue(":column_def",columnDef);
@@ -925,10 +924,10 @@ int DataBaseManagement::compareVersions(const QString &v1, const QString v2)
     QList<int> v1il;
     QList<int> v2il;
 
-    foreach (QString s, v1l)
+    for (const auto &s : v1l)
         v1il.append(s.toInt());
 
-    foreach (QString s, v2l)
+    for (const auto &s : v2l)
         v2il.append(s.toInt());
 
     for (int i = 0; i < qMin(v1il.length(), v2il.length()); i++) {

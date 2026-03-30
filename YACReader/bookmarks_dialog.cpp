@@ -9,6 +9,8 @@
 #include <QLabel>
 #include <QScreen>
 
+#include <utility>
+
 BookmarksDialog::BookmarksDialog(QWidget *parent)
     : QDialog(parent)
 {
@@ -28,7 +30,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 
     QString labelsStyle = "QLabel {color:white;}";
 
-    foreach (QLabel *label, pages) {
+    for (QLabel *const label : std::as_const(pages)) {
         label->setStyleSheet(labelsStyle);
     }
 

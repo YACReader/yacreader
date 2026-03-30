@@ -2,6 +2,8 @@
 
 #include <QImage>
 
+#include <utility>
+
 // YACReaderComicFlow3D implementation
 YACReaderComicFlow3D::YACReaderComicFlow3D(QWidget *parent, struct Preset p)
     : YACReaderFlow3D(parent, p)
@@ -126,7 +128,7 @@ void YACReaderComicFlow3D::resortCovers(QList<int> newOrder)
     QVector<YACReader3DImageRHI> imagesNew;
 
     int index = 0;
-    foreach (int i, newOrder) {
+    for (const int i : std::as_const(newOrder)) {
         if (i < 0 || i >= images.size()) {
             continue;
         }

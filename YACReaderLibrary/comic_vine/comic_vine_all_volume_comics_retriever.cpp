@@ -54,7 +54,7 @@ QString ComicVineAllVolumeComicsRetriever::consolidateJSON()
     QJsonObject consolidatedJSON;
     QJsonArray comicsInfo;
 
-    foreach (QByteArray json, jsonResponses) {
+    for (const auto &json : jsonResponses) {
         QJsonDocument doc = QJsonDocument::fromJson(json);
 
         if (doc.isNull() || !doc.isObject() || doc.isEmpty()) {
@@ -72,8 +72,8 @@ QString ComicVineAllVolumeComicsRetriever::consolidateJSON()
                 continue;
             }
 
-            QJsonArray resultsArray = results.toArray();
-            foreach (const QJsonValue &v, resultsArray)
+            const auto resultsArray = results.toArray();
+            for (const auto &v : resultsArray)
                 comicsInfo.append(v);
         }
     }

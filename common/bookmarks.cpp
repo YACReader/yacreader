@@ -8,6 +8,8 @@
 #include <QFileInfo>
 #include <QList>
 
+#include <utility>
+
 Bookmarks::Bookmarks()
     : lastPageIndex(0)
 {
@@ -93,7 +95,7 @@ void Bookmarks::clear()
 bool Bookmarks::load(const QList<int> &bookmarkIndexes, int lastPage)
 {
     lastPageIndex = lastPage;
-    foreach (int b, bookmarkIndexes)
+    for (const int b : std::as_const(bookmarkIndexes))
         if (b != -1) {
             latestBookmarks.push_back(b);
             bookmarks.insert(b, QImage());

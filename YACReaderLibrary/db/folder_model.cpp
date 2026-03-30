@@ -196,7 +196,7 @@ void FolderModel::reload()
         takeUpdatedChildrenInfo(rootItem, QModelIndex(), newModelData.rootItem);
 
         // copy items from newModelData to this model that are not in this model
-        foreach (auto key, newModelData.items.keys()) {
+        for (const auto key : newModelData.items.keys()) {
             if (!items.contains(key)) {
                 items[key] = (newModelData.items[key]);
             }
@@ -221,7 +221,7 @@ void FolderModel::reload()
             items = newModelData.items;
 
             // copy items from newModelData to this model that are not in this model
-            foreach (auto key, newModelData.items.keys()) {
+            for (const auto key : newModelData.items.keys()) {
                 if (!items.contains(key)) {
                     items[key] = (newModelData.items[key]);
                 }
@@ -605,7 +605,7 @@ void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool 
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
-        foreach (QModelIndex mi, list) {
+        for (const auto &mi : list) {
             auto item = static_cast<FolderItem *>(mi.internalPointer());
             item->setData(FolderModel::Completed, status);
 
@@ -629,7 +629,7 @@ void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool s
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
-        foreach (QModelIndex mi, list) {
+        for (const auto &mi : list) {
             auto item = static_cast<FolderItem *>(mi.internalPointer());
             item->setData(FolderModel::Finished, status);
 
@@ -653,7 +653,7 @@ void FolderModel::updateFolderType(const QModelIndexList &list, YACReader::FileT
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
-        foreach (QModelIndex mi, list) {
+        for (const auto &mi : list) {
             auto item = static_cast<FolderItem *>(mi.internalPointer());
 
             std::function<void(FolderItem *, YACReader::FileType)> setType;

@@ -66,9 +66,10 @@ void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
     QTreeView::dragMoveEvent(event);
 
     // fix for drop auto expand
-    QModelIndex underMouse = indexAt(event->pos());
+    auto point = event->position().toPoint();
+    QModelIndex underMouse = indexAt(point);
     if (underMouse.isValid()) {
-        expandPos = event->pos();
+        expandPos = point;
         connect(&expandTimer, &QTimer::timeout, this, &YACReaderTreeView::expandCurrent);
         expandTimer.setSingleShot(true);
         expandTimer.start(500);

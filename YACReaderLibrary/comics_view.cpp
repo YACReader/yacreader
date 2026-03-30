@@ -81,12 +81,10 @@ void ComicsView::dragEnterEvent(QDragEnterEvent *event)
         event->acceptProposedAction();
     else {
         QLOG_TRACE() << "dragEnterEvent";
-        QList<QUrl> urlList;
-
         if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction) {
-            urlList = event->mimeData()->urls();
+            const auto urlList = event->mimeData()->urls();
             QString currentPath;
-            foreach (QUrl url, urlList) {
+            for (const auto &url : urlList) {
                 // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
                 currentPath = url.toLocalFile();
                 if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir()) {
