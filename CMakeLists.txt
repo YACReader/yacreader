@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.25)
+cmake_minimum_required(VERSION 3.25...4.3.1)
 
 project(YACReader
     VERSION 10.0.0
