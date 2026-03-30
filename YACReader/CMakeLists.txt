@@ -232,15 +232,15 @@ qt_add_translations(YACReader
 )
 
 target_link_libraries(YACReader PRIVATE
-    Qt::Core
-    Qt::Gui
-    Qt::GuiPrivate
-    Qt::Network
-    Qt::Widgets
-    Qt::Multimedia
-    Qt::TextToSpeech
-    Qt::Svg
-    Qt::Core5Compat
+    Qt6::Core
+    Qt6::Gui
+    Qt6::GuiPrivate
+    Qt6::Network
+    Qt6::Widgets
+    Qt6::Multimedia
+    Qt6::TextToSpeech
+    Qt6::Svg
+    Qt6::Core5Compat
     comic_backend
     common_gui
     rhi_flow_reader

@@ -21,7 +21,7 @@ add_library(QsLog STATIC
 )
 target_include_directories(QsLog PUBLIC QsLog)
 target_compile_definitions(QsLog PUBLIC QS_LOG_SEPARATE_THREAD)
-target_link_libraries(QsLog PUBLIC Qt::Core)
+target_link_libraries(QsLog PUBLIC Qt6::Core)
 
 # --- QrCode (QR code generation, no Qt dependency) ---
 add_library(QrCode STATIC
@@ -56,7 +56,7 @@ add_library(QtWebApp_httpserver STATIC
     QtWebApp/httpserver/staticfilecontroller.h
 )
 target_include_directories(QtWebApp_httpserver PUBLIC QtWebApp/httpserver)
-target_link_libraries(QtWebApp_httpserver PUBLIC Qt::Network)
+target_link_libraries(QtWebApp_httpserver PUBLIC Qt6::Network)
 
 # --- QtWebApp template engine ---
 add_library(QtWebApp_templateengine STATIC
@@ -69,7 +69,7 @@ add_library(QtWebApp_templateengine STATIC
     QtWebApp/templateengine/templatecache.h
 )
 target_include_directories(QtWebApp_templateengine PUBLIC QtWebApp/templateengine)
-target_link_libraries(QtWebApp_templateengine PUBLIC Qt::Core5Compat)
+target_link_libraries(QtWebApp_templateengine PUBLIC Qt6::Core5Compat)
 
 # --- KDSignalThrottler (from KDToolBox) ---
 add_library(KDSignalThrottler STATIC
@@ -77,4 +77,4 @@ add_library(KDSignalThrottler STATIC
     KDToolBox/KDSignalThrottler.h
 )
 target_include_directories(KDSignalThrottler PUBLIC KDToolBox)
-target_link_libraries(KDSignalThrottler PUBLIC Qt::Core)
+target_link_libraries(KDSignalThrottler PUBLIC Qt6::Core)

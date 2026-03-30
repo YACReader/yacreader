@@ -18,7 +18,7 @@ target_include_directories(yr_global PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
 )
-target_link_libraries(yr_global PUBLIC Qt::Core)
+target_link_libraries(yr_global PUBLIC Qt6::Core)
 if(UNIX AND NOT APPLE)
     target_compile_definitions(yr_global PRIVATE
         "LIBDIR=\"${CMAKE_INSTALL_FULL_LIBDIR}\"")
@@ -30,7 +30,7 @@ add_library(naturalsort STATIC
     qnaturalsorting.cpp
 )
 target_include_directories(naturalsort PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(naturalsort PUBLIC Qt::Core)
+target_link_libraries(naturalsort PUBLIC Qt6::Core)
 
 # --- concurrent_queue ---
 add_library(concurrent_queue STATIC
@@ -38,7 +38,7 @@ add_library(concurrent_queue STATIC
     concurrent_queue.cpp
 )
 target_include_directories(concurrent_queue PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(concurrent_queue PUBLIC Qt::Core)
+target_link_libraries(concurrent_queue PUBLIC Qt6::Core)
 
 # --- worker (header-only thread helpers) ---
 add_library(worker INTERFACE)
@@ -67,10 +67,10 @@ add_library(common_all STATIC
 )
 target_include_directories(common_all PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(common_all PUBLIC
-    Qt::Core
-    Qt::Gui
-    Qt::Sql
-    Qt::Network
+    Qt6::Core
+    Qt6::Gui
+    Qt6::Sql
+    Qt6::Network
     yr_global
     naturalsort
     pdf_backend_iface
@@ -92,8 +92,8 @@ endif()
 
 target_include_directories(comic_backend PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(comic_backend PUBLIC
-    Qt::Core
-    Qt::Gui
+    Qt6::Core
+    Qt6::Gui
     common_all
     pdf_backend_iface
     cbx_backend
@@ -101,7 +101,7 @@ target_link_libraries(comic_backend PUBLIC
 )
 
 # GUI-only targets: not needed for server-standalone builds (Qt 6.4+) which
-# lack Qt::Widgets, Qt::ShaderTools, Qt::GuiPrivate, etc.
+# lack Qt6::Widgets, Qt6::ShaderTools, Qt6::GuiPrivate, etc.
 if(NOT BUILD_SERVER_STANDALONE)
 
 # --- common_gui (GUI-only code: widgets, version check, themes infrastructure) ---
@@ -146,11 +146,11 @@ target_include_directories(common_gui PUBLIC
 )
 
 target_link_libraries(common_gui PUBLIC
-    Qt::Core
-    Qt::Core5Compat
-    Qt::Widgets
-    Qt::Network
-    Qt::Svg
+    Qt6::Core
+    Qt6::Core5Compat
+    Qt6::Widgets
+    Qt6::Network
+    Qt6::Svg
     common_all
     yr_global
     QsLog
@@ -178,10 +178,10 @@ target_include_directories(rhi_flow_reader PUBLIC
 )
 target_compile_definitions(rhi_flow_reader PRIVATE YACREADER)
 target_link_libraries(rhi_flow_reader PUBLIC
-    Qt::Core
-    Qt::Gui
-    Qt::GuiPrivate
-    Qt::Widgets
+    Qt6::Core
+    Qt6::Gui
+    Qt6::GuiPrivate
+    Qt6::Widgets
     yr_global
 )
 qt_add_shaders(rhi_flow_reader "flow_shaders_reader"
@@ -202,10 +202,10 @@ target_include_directories(rhi_flow_library PUBLIC
 )
 target_compile_definitions(rhi_flow_library PRIVATE YACREADER_LIBRARY)
 target_link_libraries(rhi_flow_library PUBLIC
-    Qt::Core
-    Qt::Gui
-    Qt::GuiPrivate
-    Qt::Widgets
+    Qt6::Core
+    Qt6::Gui
+    Qt6::GuiPrivate
+    Qt6::Widgets
     yr_global
 )
 qt_add_shaders(rhi_flow_library "flow_shaders_library"

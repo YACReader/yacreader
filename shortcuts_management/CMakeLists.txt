@@ -22,7 +22,7 @@ target_include_directories(shortcuts_reader PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReader/themes
 )
 target_compile_definitions(shortcuts_reader PRIVATE YACREADER)
-target_link_libraries(shortcuts_reader PUBLIC Qt::Core Qt::Widgets yr_global common_gui)
+target_link_libraries(shortcuts_reader PUBLIC Qt6::Core Qt6::Widgets yr_global common_gui)
 
 # --- shortcuts_library (YACREADER_LIBRARY define) ---
 add_library(shortcuts_library STATIC ${SHORTCUTS_SOURCES})
@@ -31,4 +31,4 @@ target_include_directories(shortcuts_library PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary/themes
 )
 target_compile_definitions(shortcuts_library PRIVATE YACREADER_LIBRARY)
-target_link_libraries(shortcuts_library PUBLIC Qt::Core Qt::Widgets yr_global common_gui)
+target_link_libraries(shortcuts_library PUBLIC Qt6::Core Qt6::Widgets yr_global common_gui)

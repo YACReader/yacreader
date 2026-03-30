@@ -36,10 +36,10 @@ qt_add_translations(YACReaderLibraryServer
 )
 
 target_link_libraries(YACReaderLibraryServer PRIVATE
-    Qt::Core
-    Qt::Network
-    Qt::Sql
-    Qt::Core5Compat
+    Qt6::Core
+    Qt6::Network
+    Qt6::Sql
+    Qt6::Core5Compat
     library_common
     db_helper
     comic_backend

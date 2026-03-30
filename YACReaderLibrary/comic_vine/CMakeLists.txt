@@ -60,9 +60,9 @@ target_include_directories(comic_vine PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary/db
 )
 target_link_libraries(comic_vine PUBLIC
-    Qt::Core
-    Qt::Widgets
-    Qt::Network
+    Qt6::Core
+    Qt6::Widgets
+    Qt6::Network
     common_all
     common_gui
     custom_widgets_library

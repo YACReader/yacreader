@@ -125,4 +125,4 @@ else()
 endif()
 
 # Qt, yr_global, and QsLog are needed by all backends
-target_link_libraries(cbx_backend PRIVATE Qt::Core yr_global QsLog)
+target_link_libraries(cbx_backend PRIVATE Qt6::Core yr_global QsLog)
