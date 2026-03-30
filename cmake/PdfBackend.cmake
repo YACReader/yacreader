@@ -67,11 +67,3 @@ elseif(PDF_BACKEND STREQUAL "pdfkit")
 else()
     message(FATAL_ERROR "Unknown PDF_BACKEND: '${PDF_BACKEND}'. Use: pdfium, poppler, pdfkit, or no_pdf")
 endif()
-
-# Set QT_DISABLE_DEPRECATED_BEFORE based on backend
-# poppler requires older deprecated API
-if(PDF_BACKEND STREQUAL "poppler")
-    target_compile_definitions(pdf_backend_iface INTERFACE QT_DISABLE_DEPRECATED_BEFORE=0x050900)
-else()
-    target_compile_definitions(pdf_backend_iface INTERFACE QT_DISABLE_DEPRECATED_BEFORE=0x050F00)
-endif()
