@@ -46,8 +46,8 @@ cmake --build build --config Release --target release_translations
 ```
 
 Important:
-- Do not run `lupdate` only on `qml.qrc` (or only on a subset of files), because that can mark unrelated translations as obsolete.
-- In `YACReaderLibrary`, `qt_add_translations(...)` is configured to scan full target sources and include QML from `qml.qrc`.
+- Do not run `lupdate` only on a hand-picked subset of QML files, because that can mark unrelated translations as obsolete.
+- In `YACReaderLibrary`, `qt_add_translations(...)` is configured to scan full target sources and include the QML files directly.
 - `update_translations` updates both locale TS files and `*_source.ts` template files for all apps.
 - `*_source.ts` files are translator base templates and must not be treated as shipped locales.
 
