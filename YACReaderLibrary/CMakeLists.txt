@@ -200,32 +200,262 @@ target_compile_definitions(YACReaderLibrary PRIVATE
 )
 
 # Resources
-qt_add_resources(yacreaderlibrary_images_rcc "${CMAKE_CURRENT_SOURCE_DIR}/images.qrc")
-qt_add_resources(yacreaderlibrary_files_rcc "${CMAKE_CURRENT_SOURCE_DIR}/files.qrc")
-qt_add_resources(yacreaderlibrary_qml_rcc "${CMAKE_CURRENT_SOURCE_DIR}/qml.qrc")
-qt_add_resources(yacreaderlibrary_themes_rcc "${CMAKE_CURRENT_SOURCE_DIR}/themes/themes.qrc")
-qt_add_resources(yacreaderlibrary_common_images_rcc "${PROJECT_SOURCE_DIR}/common/themes/appearance_config_images.qrc")
-target_sources(YACReaderLibrary PRIVATE
-    ${yacreaderlibrary_images_rcc}
-    ${yacreaderlibrary_files_rcc}
-    ${yacreaderlibrary_qml_rcc}
-    ${yacreaderlibrary_themes_rcc}
-    ${yacreaderlibrary_common_images_rcc}
+set(yacreaderlibrary_image_files
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/accept_shortcut.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/clear_shortcut.svg
+    ${PROJECT_SOURCE_DIR}/images/comic_vine/downArrow.svg
+    ${PROJECT_SOURCE_DIR}/images/comic_vine/nextPage.svg
+    ${PROJECT_SOURCE_DIR}/images/comic_vine/previousPage.svg
+    ${PROJECT_SOURCE_DIR}/images/comic_vine/radioChecked.svg
+    ${PROJECT_SOURCE_DIR}/images/comic_vine/radioUnchecked.svg
+    ${PROJECT_SOURCE_DIR}/images/comic_vine/rowDown.svg
+    ${PROJECT_SOURCE_DIR}/images/comic_vine/rowUp.svg
+    ${PROJECT_SOURCE_DIR}/images/comic_vine/upArrow.svg
+    ${PROJECT_SOURCE_DIR}/images/comic_vine/checkBoxTick.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/asignNumber.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/big_size_grid_zoom.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/editComic.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/getInfo.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/hideComicFlow.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/openInYACReader.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/selectAll.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/setReadButton.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/setUnread.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/showMarks.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/small_size_grid_zoom.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/trash.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/show_comic_info.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/setManga.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/setNormal.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/showRecentIndicator.svg
+    ${PROJECT_SOURCE_DIR}/images/defaultCover.png
+    ${PROJECT_SOURCE_DIR}/images/library_dialogs/edit.svg
+    ${PROJECT_SOURCE_DIR}/images/empty_container/empty_current_readings.svg
+    ${PROJECT_SOURCE_DIR}/images/empty_container/empty_favorites.svg
+    ${PROJECT_SOURCE_DIR}/images/empty_container/empty_folder.svg
+    ${PROJECT_SOURCE_DIR}/images/empty_container/empty_label.svg
+    ${PROJECT_SOURCE_DIR}/images/empty_container/empty_reading_list.svg
+    ${PROJECT_SOURCE_DIR}/images/library_dialogs/exportComicsInfo.svg
+    ${PROJECT_SOURCE_DIR}/images/library_dialogs/exportLibrary.svg
+    ${PROJECT_SOURCE_DIR}/images/find_folder.svg
+    ${PROJECT_SOURCE_DIR}/images/flow1.png
+    ${PROJECT_SOURCE_DIR}/images/flow2.png
+    ${PROJECT_SOURCE_DIR}/images/flow3.png
+    ${PROJECT_SOURCE_DIR}/images/flow4.png
+    ${PROJECT_SOURCE_DIR}/images/flow5.png
+    ${PROJECT_SOURCE_DIR}/images/glowLine.svg
+    ${PROJECT_SOURCE_DIR}/images/metadata_dialog/loadCustomCover.svg
+    ${PROJECT_SOURCE_DIR}/images/import/coversToggle.svg
+    ${PROJECT_SOURCE_DIR}/images/icon-new.svg
+    ${PROJECT_SOURCE_DIR}/images/iconLibrary.png
+    ${PROJECT_SOURCE_DIR}/images/import/importBottomCoversDecoration.svg
+    ${PROJECT_SOURCE_DIR}/images/library_dialogs/importComicsInfo.svg
+    ${PROJECT_SOURCE_DIR}/images/import/importingIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/library_dialogs/importLibrary.svg
+    ${PROJECT_SOURCE_DIR}/images/import/importTopCoversDecoration.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/back.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/forward.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/settings.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/server.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/help.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/fullscreen.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/flow.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/grid.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/info.svg
+    ${PROJECT_SOURCE_DIR}/images/main_toolbar/divider.svg
+    ${PROJECT_SOURCE_DIR}/images/menus_icons/editIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/menus_icons/exportComicsInfoIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/menus_icons/exportLibraryIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/menus_icons/importComicsInfoIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/menus_icons/importLibraryIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/menus_icons/removeLibraryIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/menus_icons/updateLibraryIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/menus_icons/open_containing_folder.svg
+    ${PROJECT_SOURCE_DIR}/images/menus_icons/update_current_folder.svg
+    ${PROJECT_SOURCE_DIR}/images/library_dialogs/new.svg
+    ${PROJECT_SOURCE_DIR}/images/metadata_dialog/nextCoverPage.svg
+    ${PROJECT_SOURCE_DIR}/images/noLibrariesIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/noLibrariesLine.svg
+    ${PROJECT_SOURCE_DIR}/images/notCover.png
+    ${PROJECT_SOURCE_DIR}/images/library_dialogs/openLibrary.svg
+    ${PROJECT_SOURCE_DIR}/images/metadata_dialog/previousCoverPage.svg
+    ${PROJECT_SOURCE_DIR}/images/readingRibbon.svg
+    ${PROJECT_SOURCE_DIR}/images/readRibbon.svg
+    ${PROJECT_SOURCE_DIR}/images/metadata_dialog/resetCover.svg
+    ${PROJECT_SOURCE_DIR}/images/search_result.svg
+    ${PROJECT_SOURCE_DIR}/images/serverConfigBackground.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_comics.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_folders.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_general.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_libraries.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_mglass.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_page.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_reading.svg
+    ${PROJECT_SOURCE_DIR}/images/shortcuts/shortcuts_group_visualization.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/libraryIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/setRoot.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/expand.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/colapse.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/newLibraryIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/openLibraryIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/addNew_sidebar.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/delete_sidebar.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/addLabelIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/renameListIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/branch-closed.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/branch-open.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/folder.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/folder_finished.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/folder_read_overlay.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/libraryIconSelected.svg
+    ${PROJECT_SOURCE_DIR}/images/sidebar/libraryOptions.svg
+    ${PROJECT_SOURCE_DIR}/images/import/updatingIcon.svg
+    ${PROJECT_SOURCE_DIR}/images/custom_dialog/custom_close_button.svg
+    ${PROJECT_SOURCE_DIR}/images/whats_new/whatsnew_header.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/default_0.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/default_1.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/default_2.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/label_template.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/list.svg
+    ${PROJECT_SOURCE_DIR}/images/clearSearchNew.svg
+    ${PROJECT_SOURCE_DIR}/images/iconSearchNew.svg
+)
+set(yacreaderlibrary_file_files
+    ${PROJECT_SOURCE_DIR}/files/about.html
+    ${PROJECT_SOURCE_DIR}/files/helpYACReaderLibrary.html
+)
+set(yacreaderlibrary_file_files_es
+    ${PROJECT_SOURCE_DIR}/files/about_es_ES.html
+    ${PROJECT_SOURCE_DIR}/files/helpYACReaderLibrary_es_ES.html
+)
+set_source_files_properties(
+    ${PROJECT_SOURCE_DIR}/files/about_es_ES.html
+    PROPERTIES QT_RESOURCE_ALIAS "about.html"
+)
+set_source_files_properties(
+    ${PROJECT_SOURCE_DIR}/files/helpYACReaderLibrary_es_ES.html
+    PROPERTIES QT_RESOURCE_ALIAS "helpYACReaderLibrary.html"
+)
+set(yacreaderlibrary_qml_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderContentView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FlowView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoTick.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoFavorites.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoRating.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoComicsView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/tick.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/reading.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/star.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/page.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/info-indicator.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/info-shadow.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/info-top-shadow.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/info-favorites.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/info-rating.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/info-tag.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/info-tick.svg
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/prerendered_cover_shadow.png
+)
+set(yacreaderlibrary_qml_translation_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderContentView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FlowView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoTick.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoFavorites.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoRating.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoComicsView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicInfoView.qml
+)
+set(yacreaderlibrary_theme_files
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_classic.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light1.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light2.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light3.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light4.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_light5.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark1.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark2.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark3.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/themes/builtin_dark4.json
+)
+set(yacreaderlibrary_common_theme_image_files
+    ${PROJECT_SOURCE_DIR}/images/appearance_config/theme-mode-system.svg
+    ${PROJECT_SOURCE_DIR}/images/appearance_config/theme-mode-light.svg
+    ${PROJECT_SOURCE_DIR}/images/appearance_config/theme-mode-dark.svg
+    ${PROJECT_SOURCE_DIR}/images/appearance_config/theme-mode-custom.svg
+)
+
+qt_add_resources(YACReaderLibrary "yacreaderlibrary_images"
+    PREFIX "/"
+    BASE "${PROJECT_SOURCE_DIR}"
+    FILES
+        ${yacreaderlibrary_image_files}
+)
+qt_add_resources(YACReaderLibrary "yacreaderlibrary_files"
+    PREFIX "/files"
+    BASE "${PROJECT_SOURCE_DIR}/files"
+    FILES
+        ${yacreaderlibrary_file_files}
+)
+qt_add_resources(YACReaderLibrary "yacreaderlibrary_files_es"
+    PREFIX "/files"
+    LANG "es_ES"
+    BASE "${PROJECT_SOURCE_DIR}/files"
+    FILES
+        ${yacreaderlibrary_file_files_es}
+)
+qt_add_resources(YACReaderLibrary "yacreaderlibrary_qml"
+    PREFIX "/"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}"
+    FILES
+        ${yacreaderlibrary_qml_files}
+)
+qt_add_resources(YACReaderLibrary "yacreaderlibrary_themes"
+    PREFIX "/themes"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/themes"
+    FILES
+        ${yacreaderlibrary_theme_files}
+)
+qt_add_resources(YACReaderLibrary "yacreaderlibrary_common_theme_images"
+    PREFIX "/"
+    BASE "${PROJECT_SOURCE_DIR}"
+    FILES
+        ${yacreaderlibrary_common_theme_image_files}
 )
 if(WIN32 OR (UNIX AND NOT APPLE))
-    qt_add_resources(yacreaderlibrary_images_win_rcc "${CMAKE_CURRENT_SOURCE_DIR}/images_win.qrc")
-    target_sources(YACReaderLibrary PRIVATE ${yacreaderlibrary_images_win_rcc})
+    set(yacreaderlibrary_windows_resource_files
+        ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/close.svg
+        ${CMAKE_CURRENT_SOURCE_DIR}/icon.ico
+    )
+    set_source_files_properties(
+        ${CMAKE_CURRENT_SOURCE_DIR}/icon.ico
+        PROPERTIES QT_RESOURCE_ALIAS "icon.ico"
+    )
+    qt_add_resources(YACReaderLibrary "yacreaderlibrary_windows_resources"
+        PREFIX "/"
+        BASE "${PROJECT_SOURCE_DIR}"
+        FILES
+            ${yacreaderlibrary_windows_resource_files}
+    )
 endif()
 if(APPLE)
-    qt_add_resources(yacreaderlibrary_images_osx_rcc "${CMAKE_CURRENT_SOURCE_DIR}/images_osx.qrc")
-    target_sources(YACReaderLibrary PRIVATE ${yacreaderlibrary_images_osx_rcc})
+    qt_add_resources(YACReaderLibrary "yacreaderlibrary_macos_resources"
+        PREFIX "/"
+        BASE "${CMAKE_CURRENT_SOURCE_DIR}"
+        FILES
+            ${CMAKE_CURRENT_SOURCE_DIR}/macostrayicon.svg
+    )
 endif()
 
 # Translations
 qt_add_translations(YACReaderLibrary
     SOURCE_TARGETS
         YACReaderLibrary
-    # Keep full C++ extraction via SOURCE_TARGETS and add qml.qrc as extra input
+    # Keep full C++ extraction via SOURCE_TARGETS and add the QML files directly
     # so qsTr() strings in QML are collected too.
     TS_FILES
         yacreaderlibrary_es.ts
@@ -242,7 +472,7 @@ qt_add_translations(YACReaderLibrary
         yacreaderlibrary_source.ts
         yacreaderlibrary_en.ts
     SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/qml.qrc
+        ${yacreaderlibrary_qml_translation_files}
 )
 
 target_link_libraries(YACReaderLibrary PRIVATE
