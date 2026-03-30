@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.25...4.3.1)
 
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" YACREADER_VERSION)
+string(STRIP "${YACREADER_VERSION}" YACREADER_VERSION)
+if(NOT YACREADER_VERSION MATCHES "^[0-9]+\\.[0-9]+\\.[0-9]+$")
+    message(FATAL_ERROR "VERSION must contain a semantic version like x.y.z")
+endif()
+
 project(YACReader
-    VERSION 10.0.0
+    VERSION ${YACREADER_VERSION}
     LANGUAGES C CXX
 )
 

@@ -153,7 +153,7 @@ jobs:
         env:
           MACOSX_DEPLOYMENT_TARGET: "11"
         run: |
-          VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
+          VERSION="$(tr -d '\r\n' < VERSION)"
           SKIP_CODESIGN="${{ env.IS_FORK }}"
           SKIP_CODESIGN=$(echo "$SKIP_CODESIGN" | tr '[:upper:]' '[:lower:]')
           ./compileOSX.sh $VERSION ${{ needs.initialization.outputs.build_number }} $SKIP_CODESIGN Qt6 universal
@@ -510,7 +510,7 @@ jobs:
       - name: Get version
         id: version
         run: |
-          VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' ).${{ needs.initialization.outputs.build_number }}"
+          VERSION="$(tr -d '\r\n' < VERSION).${{ needs.initialization.outputs.build_number }}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
 
@@ -577,7 +577,7 @@ jobs:
       - name: Get version
         id: version
         run: |
-          VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' )"
+          VERSION="$(tr -d '\r\n' < VERSION)"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
 
@@ -648,7 +648,7 @@ jobs:
       - name: Get version
         id: version
         run: |
-          VERSION="$(cat common/yacreader_global.h | grep '#define VERSION "' | tr -d '#define VERSION' | tr -d '"' ).${{ needs.initialization.outputs.build_number }}"
+          VERSION="$(tr -d '\r\n' < VERSION).${{ needs.initialization.outputs.build_number }}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "Version: $VERSION"
 

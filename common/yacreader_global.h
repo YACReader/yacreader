@@ -9,7 +9,10 @@
 
 class QLibrary;
 
-#define VERSION "10.0.0"
+// Compatibility for already released apps that still parse this file for update checks.
+// TODO: remove after old releases have migrated away from scraping this header.
+// #define VERSION "10.0.0"
+#include "version.h"
 
 // Used to check if the database needs to be updated, the version is stored in the database.
 // This value is only incremented when the database structure changes.

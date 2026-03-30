@@ -1,7 +1,7 @@
 #! /bin/bash
 set -e
 
-VERSION=${1:-"9.9.1"}
+VERSION=${1:-$(tr -d '\r\n' < VERSION)}
 
 BUILD_NUMBER=${2:-"0"}
 
