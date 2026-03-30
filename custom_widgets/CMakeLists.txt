@@ -40,7 +40,7 @@ add_library(custom_widgets_reader STATIC ${WIDGETS_COMMON_SOURCES})
 target_include_directories(custom_widgets_reader PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # App-specific theme.h needed because themable.h → theme_manager.h → theme.h
 target_include_directories(custom_widgets_reader PRIVATE
-    ${CMAKE_SOURCE_DIR}/YACReader/themes
+    ${PROJECT_SOURCE_DIR}/YACReader/themes
 )
 target_compile_definitions(custom_widgets_reader PRIVATE YACREADER)
 target_link_libraries(custom_widgets_reader PUBLIC
@@ -85,9 +85,9 @@ add_library(custom_widgets_library STATIC
 target_include_directories(custom_widgets_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 # App-specific theme.h + YACReaderLibrary headers needed by macosx_toolbar
 target_include_directories(custom_widgets_library PRIVATE
-    ${CMAKE_SOURCE_DIR}/YACReaderLibrary/themes
-    ${CMAKE_SOURCE_DIR}/YACReaderLibrary
-    ${CMAKE_SOURCE_DIR}/YACReaderLibrary/db
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary/themes
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary/db
 )
 target_compile_definitions(custom_widgets_library PRIVATE YACREADER_LIBRARY)
 target_link_libraries(custom_widgets_library PUBLIC

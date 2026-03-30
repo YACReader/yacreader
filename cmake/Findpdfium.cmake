@@ -6,11 +6,13 @@ set(pdfium_TARGET "")
 set(pdfium_INCLUDE_DIRS "")
 set(pdfium_LIBRARIES "")
 
+get_filename_component(_pdfium_bundled_root "${CMAKE_CURRENT_LIST_DIR}/../dependencies/pdfium" ABSOLUTE)
+
 if(NOT TARGET pdfium::pdfium AND WIN32)
     yacreader_get_windows_arch_subdir(_pdfium_arch)
-    set(_pdfium_include_dir "${CMAKE_SOURCE_DIR}/dependencies/pdfium/win/public")
-    set(_pdfium_implib "${CMAKE_SOURCE_DIR}/dependencies/pdfium/win/${_pdfium_arch}/pdfium.lib")
-    set(_pdfium_dll "${CMAKE_SOURCE_DIR}/dependencies/pdfium/win/${_pdfium_arch}/pdfium.dll")
+    set(_pdfium_include_dir "${_pdfium_bundled_root}/win/public")
+    set(_pdfium_implib "${_pdfium_bundled_root}/win/${_pdfium_arch}/pdfium.lib")
+    set(_pdfium_dll "${_pdfium_bundled_root}/win/${_pdfium_arch}/pdfium.dll")
     if(EXISTS "${_pdfium_include_dir}/fpdfview.h" AND EXISTS "${_pdfium_implib}" AND EXISTS "${_pdfium_dll}")
         yacreader_add_imported_library(pdfium::pdfium
             TYPE SHARED
@@ -23,8 +25,8 @@ if(NOT TARGET pdfium::pdfium AND WIN32)
 endif()
 
 if(NOT TARGET pdfium::pdfium AND APPLE)
-    set(_pdfium_include_dir "${CMAKE_SOURCE_DIR}/dependencies/pdfium/macx/include")
-    set(_pdfium_library "${CMAKE_SOURCE_DIR}/dependencies/pdfium/macx/bin/libpdfium.a")
+    set(_pdfium_include_dir "${_pdfium_bundled_root}/macx/include")
+    set(_pdfium_library "${_pdfium_bundled_root}/macx/bin/libpdfium.a")
     if(EXISTS "${_pdfium_include_dir}/fpdfview.h" AND EXISTS "${_pdfium_library}")
         yacreader_add_imported_library(pdfium::pdfium
             TYPE STATIC
