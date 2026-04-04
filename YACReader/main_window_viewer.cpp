@@ -30,7 +30,6 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 #include <QToolButton>
-#include <QWindow>
 
 #include <algorithm>
 #include <utility>
@@ -190,7 +189,7 @@ void MainWindowViewer::setupUI()
     }
 
     int heightDesktopResolution = screen != nullptr ? screen->size().height() : 600;
-    int widthDesktopResolution = screen != nullptr ? screen->size().height() : 1024;
+    int widthDesktopResolution = screen != nullptr ? screen->size().width() : 1024;
     int height, width;
     height = static_cast<int>(heightDesktopResolution * 0.84);
     width = static_cast<int>(height * 0.70);
@@ -198,6 +197,19 @@ void MainWindowViewer::setupUI()
     if (!restoreGeometry(conf.getGeometry())) {
         move(QPoint((widthDesktopResolution - width) / 2, ((heightDesktopResolution - height) - 40) / 2));
         resize(QSize(width, height));
+    } else {
+        // Guard against the window landing off-screen when a monitor is unplugged
+        // between sessions. Qt 6 tries to remap the geometry to the primary screen
+        // when the saved screen is gone, but the result can still be off-screen.
+        const QRect restored = geometry();
+        const auto availableScreens = QApplication::screens();
+        const bool onScreen = std::any_of(
+                availableScreens.cbegin(), availableScreens.cend(),
+                [&restored](QScreen *s) { return s->availableGeometry().intersects(restored); });
+        if (!onScreen) {
+            const QRect avail = QApplication::primaryScreen()->availableGeometry();
+            move(avail.center() - QPoint(width / 2, height / 2));
+        }
     }
 
     had = new HelpAboutDialog(this); // TODO load data
@@ -229,14 +241,8 @@ void MainWindowViewer::setupUI()
 
     viewer->setFocusPolicy(Qt::StrongFocus);
 
-    previousWindowFlags = windowFlags();
-    previousPos = pos();
-    previousSize = size();
-
     if (fullscreen)
         toFullScreen();
-    if (conf.getMaximized())
-        showMaximized();
 
     setAcceptDrops(true);
 
@@ -1049,58 +1055,6 @@ void MainWindowViewer::toggleFullScreen()
     Configuration::getConfiguration().setFullScreen(fullscreen = !fullscreen);
 }
 
-#ifdef Q_OS_WIN // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
-
-void MainWindowViewer::toFullScreen()
-{
-    fromMaximized = this->isMaximized();
-
-    hideToolBars();
-    viewer->hide();
-    viewer->fullscreen = true; // TODO, change by the right use of windowState();
-
-    previousWindowFlags = windowFlags();
-    previousPos = pos();
-    previousSize = size();
-
-    showNormal();
-    setWindowFlags(previousWindowFlags | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-
-    QRect r = windowHandle()->screen()->geometry();
-
-    r.setHeight(r.height() + 1);
-
-    setGeometry(r);
-    show();
-
-    viewer->show();
-    if (viewer->magnifyingGlassIsVisible())
-        viewer->showMagnifyingGlass();
-}
-
-void MainWindowViewer::toNormal()
-{
-    // show all
-    viewer->hide();
-    viewer->fullscreen = false; // TODO, change by the right use of windowState();
-    // viewer->hideMagnifyingGlass();
-
-    setWindowFlags(previousWindowFlags);
-    move(previousPos);
-    resize(previousSize);
-    show();
-
-    if (fromMaximized)
-        showMaximized();
-
-    if (Configuration::getConfiguration().getShowToolbars())
-        showToolBars();
-    viewer->show();
-    if (viewer->magnifyingGlassIsVisible())
-        viewer->showMagnifyingGlass();
-}
-
-#else
 void MainWindowViewer::toFullScreen()
 {
     fromMaximized = this->isMaximized();
@@ -1131,7 +1085,6 @@ void MainWindowViewer::toNormal()
     if (viewer->magnifyingGlassIsVisible())
         viewer->showMagnifyingGlass();
 }
-#endif
 
 void MainWindowViewer::toggleToolBars()
 {
@@ -1441,9 +1394,10 @@ void MainWindowViewer::closeEvent(QCloseEvent *event)
 
     viewer->save();
     Configuration &conf = Configuration::getConfiguration();
-    if (!fullscreen && !isMaximized())
-        conf.setGeometry(saveGeometry());
-    conf.setMaximized(isMaximized());
+    // saveGeometry() encodes the current screen, the maximized/fullscreen state, and
+    // the normal (pre-maximize) geometry in one blob, so restoreGeometry() puts the
+    // window back on the right monitor in the right state regardless of how it was closed.
+    conf.setGeometry(saveGeometry());
 
     event->accept();
 }

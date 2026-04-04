@@ -91,10 +91,6 @@ private:
     bool toolbars;
     bool fromMaximized;
 
-    // QTBUG-41883
-    QSize _size;
-    QPoint _pos;
-
     QString currentDirectory;
     QString currentDirectoryImgDest;
     //! Widgets
@@ -192,11 +188,6 @@ private:
     QString startComicPath;
     quint64 libraryId;
     OpenComicSource source;
-
-    // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
-    Qt::WindowFlags previousWindowFlags;
-    QPoint previousPos;
-    QSize previousSize;
 
 protected:
     void closeEvent(QCloseEvent *event) override;

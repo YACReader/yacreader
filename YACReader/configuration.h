@@ -77,8 +77,6 @@ public:
 
     QByteArray getGeometry() const { return settings->value(Y_WINDOW_GEOMETRY).toByteArray(); }
     void setGeometry(const QByteArray &g) { settings->setValue(Y_WINDOW_GEOMETRY, g); }
-    bool getMaximized() { return settings->value(MAXIMIZED).toBool(); }
-    void setMaximized(bool b) { settings->setValue(MAXIMIZED, b); }
     bool getDoublePage() { return settings->value(DOUBLE_PAGE).toBool(); }
     void setDoublePage(bool b) { settings->setValue(DOUBLE_PAGE, b); }
     bool getDoubleMangaPage() { return settings->value(DOUBLE_MANGA_PAGE).toBool(); }
