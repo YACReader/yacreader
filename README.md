@@ -47,9 +47,12 @@ See [INSTALL.md](./INSTALL.md)
 If you need help or have any suggestion, please, send me an e-mail.
 
 ## Contributing
-If you are interested in contributing to the project the first step should be to contact me so we can plan together the best approach, you can send an e-mail or just open an issue in this repo. For small bug fixes it is usually ok to open a PR directly.
+If you are interested in contributing to the project *the first step should be to contact me* so we can plan together the best approach, you can send an e-mail, joing the [Discord](https://discord.com/invite/dA5xABa85j) server or just open an issue in this repo. For tiny bug fixes it is usually ok to open a PR directly.
 
 Contributions are not restricted to coding; you can help the project by bringing new UI/UX ideas, designing new assets, writing manuals or tutorials, translating the apps, etc. If you are interested in DevOps, YACReader uses Azure Pipelines for CI/CD, any improvements in that area are welcome. Testing pre-releases is also really appreciated.
+
+### AI Usage
+If you can't do it yourself please don't open PRs based on ideas developed using AI. If you are a software engineer it's ok to use AI as long as you know what you are doing, understanding and reviewing agent generated code before opening a PR is a must. Code that just works won't be enough to ensure I'll accept your contribution.
 
 #### Dev Setup
 YACReader is developed in *C++/Qt* and built with *CMake*. You need a *C++20* compiler and *Qt 6.7+*. In *Windows* I use *Visual Studio 2022* and in *macOS* I use Xcode, but I do all the coding using *QtCreator*.
