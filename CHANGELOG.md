@@ -15,6 +15,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add a theme editor and support for custom themes.
 * The apps include 12 built in themes to pick from. 
 * Add an application language setting with a system default option in YACReader and YACReaderLibrary.
+* Fix fullscreen mode in Windows, interaction with the OS is now possible while the apps are in fullscreen.
+* Improve support for multi-screen setups.
 
 ### All apps
 * Add support for user-installed Qt image format plugins via the shared `plugins/imageformats` folder in the YACReader settings directory.

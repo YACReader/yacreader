@@ -23,7 +23,6 @@
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QToolButton>
-#include <QWindow>
 #include <QtCore>
 
 #include <algorithm>
@@ -215,11 +214,25 @@ void LibraryWindow::setupUI()
     setMinimumSize(800, 480);
 
     // restore
-    if (settings->contains(MAIN_WINDOW_GEOMETRY))
+    if (settings->contains(MAIN_WINDOW_GEOMETRY)) {
         restoreGeometry(settings->value(MAIN_WINDOW_GEOMETRY).toByteArray());
-    else
+        restoreState(settings->value(MAIN_WINDOW_STATE).toByteArray());
+        // Guard against the window landing off-screen when a monitor is unplugged
+        // between sessions. Qt 6 tries to remap the geometry to the primary screen
+        // when the saved screen is gone, but the result can still be off-screen.
+        const QRect restored = geometry();
+        const auto availableScreens = QApplication::screens();
+        const bool onScreen = std::any_of(
+                availableScreens.cbegin(), availableScreens.cend(),
+                [&restored](QScreen *s) { return s->availableGeometry().intersects(restored); });
+        if (!onScreen) {
+            const QRect avail = QApplication::primaryScreen()->availableGeometry();
+            setGeometry(QRect(avail.center() - QPoint(width() / 2, height() / 2), size()));
+        }
+    } else {
         // if(settings->value(USE_OPEN_GL).toBool() == false)
         showMaximized();
+    }
 
     trayIconController = new TrayIconController(settings, this);
 
@@ -1988,49 +2001,6 @@ void LibraryWindow::toggleFullScreen()
     fullscreen = !fullscreen;
 }
 
-#ifdef Q_OS_WIN // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
-void LibraryWindow::toFullScreen()
-{
-    fromMaximized = this->isMaximized();
-
-    sideBar->hide();
-    libraryToolBar->hide();
-
-    previousWindowFlags = windowFlags();
-    previousPos = pos();
-    previousSize = size();
-
-    showNormal();
-    setWindowFlags(previousWindowFlags | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-
-    QRect r = windowHandle()->screen()->geometry();
-
-    r.setHeight(r.height() + 1);
-
-    setGeometry(r);
-    show();
-
-    contentViewsManager->toFullscreen();
-}
-
-void LibraryWindow::toNormal()
-{
-    sideBar->show();
-    libraryToolBar->show();
-
-    setWindowFlags(previousWindowFlags);
-    move(previousPos);
-    resize(previousSize);
-    show();
-
-    if (fromMaximized)
-        showMaximized();
-
-    contentViewsManager->toNormal();
-}
-
-#else
-
 void LibraryWindow::toFullScreen()
 {
     fromMaximized = this->isMaximized();
@@ -2064,8 +2034,6 @@ void LibraryWindow::toNormal()
     libraryToolBar->show();
 #endif
 }
-
-#endif
 
 void LibraryWindow::setSearchFilter(QString filter)
 {
@@ -2399,6 +2367,7 @@ void LibraryWindow::prepareToCloseApp()
     librariesUpdateCoordinator->stop();
 
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
+    settings->setValue(MAIN_WINDOW_STATE, saveState());
 
     contentViewsManager->comicsView->close();
     sideBar->close();
