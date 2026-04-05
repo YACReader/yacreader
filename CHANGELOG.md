@@ -9,6 +9,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix the translator.
 * Add Lanczos interpolation for image scaling. You can control the method used via the settings under `Image adjustments`.
 
+### YACReaderLibrary
+* Navigating between comics in the metadata editor no longer copies fields from the previous comic into ones that have no value set. To edit shared metadata across multiple comics at once, select them all and use the bulk edit dialog.
+
 ### All GUI Apps
 * Migrate Flow implementation from OpenGL to QRhi. This is a full new implementation with better performance and compatibility with operating systems and hardware.
 * Add light/dark themes support that follow the system configuration.
