@@ -50,6 +50,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                    "   &#8226; Add support for continuous scroll mode<br/>"
                    "   &#8226; Fix the translator<br/>"
                    "   &#8226; Add Lanczos interpolation for image scaling. You can control the method used via the settings under <i>Image adjustments</i><br/>"
+                   "   &#8226; Fix hdpi trackpad scrolling when scroll animations are enabled<br/>"
                    "<br/>"
                    "<span style=\"font-weight:600\">YACReaderLibrary</span><br/>"
                    "   &#8226; Navigating between comics in the metadata editor no longer copies fields from the previous comic into ones that have no value set. To edit shared metadata across multiple comics at once, select them all and use the bulk edit dialog<br/>"

@@ -8,6 +8,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add support for continuous scroll mode.
 * Fix the translator.
 * Add Lanczos interpolation for image scaling. You can control the method used via the settings under `Image adjustments`.
+* Fix hdpi trackpad scrolling when scroll animations are enabled.
 
 ### YACReaderLibrary
 * Navigating between comics in the metadata editor no longer copies fields from the previous comic into ones that have no value set. To edit shared metadata across multiple comics at once, select them all and use the bulk edit dialog.
