@@ -797,6 +797,10 @@ void Viewer::wheelEventTrackpad(QWheelEvent *event)
 {
     auto delta = event->pixelDelta();
 
+    // Treat pixel-based scrolling as direct manipulation, not as an animation target.
+    horizontalScroller->stop();
+    verticalScroller->stop();
+
     // Apply delta to horizontal scrollbar
     if (delta.x() != 0) {
         int newHorizontalValue = horizontalScrollBar()->value() - delta.x();
