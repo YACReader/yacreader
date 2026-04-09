@@ -12,7 +12,9 @@
 #include "library_window.h"
 #include "no_search_results_widget.h"
 #include "options_dialog.h"
+#include "reading_list_model.h"
 #include "yacreader_options_dialog.h"
+#include "yacreader_reading_lists_view.h"
 #include "yacreader_sidebar.h"
 
 //--
@@ -72,27 +74,24 @@ QWidget *YACReaderContentViewsManager::containerWidget()
 
 void YACReaderContentViewsManager::updateCurrentContentView()
 {
-    libraryWindow->comicsModel->reload();
+    if (libraryWindow->status == LibraryWindow::Searching) {
+        auto currentWidget = comicsViewStack->currentWidget();
 
-    if (comicsViewStack->currentWidget() == folderContentView && libraryWindow->comicsModel->rowCount() > 0) {
-        comicsView->reloadContent();
-        showComicsView();
+        libraryWindow->comicsModel->reload();
+
+        if (currentWidget == comicsView) {
+            comicsView->reloadContent();
+        }
         return;
     }
 
-    if (comicsViewStack->currentWidget() == comicsView && libraryWindow->comicsModel->rowCount() == 0) {
-        showFolderContentView();
-        folderContentView->reloadContent();
+    if (!libraryWindow->listsView->selectionModel()->selectedRows().isEmpty()) {
+        auto currentListIndex = libraryWindow->listsModelProxy->mapToSource(libraryWindow->listsView->currentIndex());
+        libraryWindow->navigationController->loadListInfo(currentListIndex);
         return;
     }
 
-    if (comicsViewStack->currentWidget() == comicsView) {
-        comicsView->reloadContent();
-    }
-
-    if (comicsViewStack->currentWidget() == folderContentView) {
-        folderContentView->reloadContent();
-    }
+    libraryWindow->navigationController->loadFolderInfo(libraryWindow->getCurrentFolderIndex());
 }
 
 void YACReaderContentViewsManager::updateCurrentComicView()
