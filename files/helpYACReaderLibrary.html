@@ -1,94 +1,71 @@
-﻿<html>
+<html>
 <head>
   <style type="text/css">
-  h1, h2{
+  h1, h2 {
     color: #302f2d;
-	font-weight: normal;
+    font-weight: normal;
   }
-  
-  h1{
-	font-size: 20px;
+  h1 {
+    font-size: 20px;
   }
-  
-  h2{
-	font-size: 14px;
+  h2 {
+    font-size: 14px;
   }
-  
   a {
     color: #C19441;
-}
+  }
+  li {
+    margin-bottom: 6px;
+  }
   </style>
 </head>
 <body>
-	<h1>Quick start guide</h1>
-	<p> This guide is outdated, get more help on <a href="http://www.yacreader.com">http://www.yacreader.com</a> </p>
-	<h2>Features</h2>
-	<p>
-	YACReader Library is a comic library browser with the following features:
-		<ul>
-			<li>Three different effects for cover viewing (Cover Flow like, Strip and Overlapped Strip)</li>
-			<li>Create, add existing, update, delete or rename various comic collections</li>
-			<li>Export and import covers of your libraries.</li>
-			<li>Fast navigation between comics ussing tree and list views</li>
-			<li>Open your comics on YACReader directly from your collection</li>
-			<li>Fullscreen mode</li>
-			<li>Search folders in your collections</li>
-		</ul>
-	</p>
-	<h2>Functions and shortcuts</h2>
-	<p>
-		<ul>
-			<li>Create a new library: Set a name to your library, select your comics folder and start the creation process</li>
-			<li>Open an existing library: This funcions allows you to select a folder with a comic library previously created</li>
-			<li>Export</li>
-			<li>Import</li>
-			<li>Update current library: Update the selected library, adding covers to the library if new comics were added, or deleting them if comics were removed</li>
-			<li>Rename current library: This funcions allows you to rename the selected library.			
-			<li>Remove current library from your collection: delete the selected library from YACReaderLibrary, although library will not be removed from file system</li>
-			<li>Delete current library from your disk: delete the selected library from YACReaderLibrary and erase it from disk (only covers, comics will never be deleted from disk)</li>
-			<li>Open current comic on YACReader (Enter):Open for reading the centred comic in the cover flow.</li>
-			<li>Comic properties: shows a full quality cover, comic file name, number of pages and size comic</li>
-			<li>Switching to fullscreen mode: you can view your covers bigger in fullscreen mode using 'F' key</li>
-			<li>Browsing your collection:
-				<ul>
-					<li>Select a library: you can select a library from the combo box clicking on it.</li>
-					<li>Browse a library: there are three views.
-						<ul>
-							<li>On the left, there is a treeview with the folders existing in your library,
-					you can select any folder, it is possible to expand or collapse it by double clicking on a folder. Also, you can expand or collapse all folders using '+' and '-' buttons. Root folder
-					can be selected clicking on "Select root node" button. </li>
-							<li>On the top right, there is the covers view. This view shows the comics on the selected folder. You can browse them using left and right cursors (pressing CTRL allows you to fast fordward/backward), or clicking on the right/left of the central cover.</li>
-							<li>On the bottom right, there is the list view. This view shows the comics on the selected folder as a list. You can select any comic clicking on it.</li>
-						</ul>
-					</li>
-					<li>Search: you can search an especific folder using the text field on the left-bottom corner. If you type "<b>sp</b>", the search will match with "<b>Sp</b>iderman - vol 7" and "The dark ages - <b>Sp</b>awn". In any case, the search will be case insensitive.
-				</ul>
-			</li>
-			<li>Configuration dialog:
-			<ul>
-			<li>"How to show covers" : since version 0.2.0, you can choose between three diferent styles: 
-				<ul>
-					<li> Cover Flow : the classic style</li>
-					<li> Strip : a strip of covers flowing horizontaly </li>
-					<li> Overlapped Strip : a strip of covers with overlap effect </li>
-				<ul>
-			</li>
-			</ul>
-			</li>
+  <h1>Quick start guide</h1>
+  <p>YACReaderLibrary is the collection manager in the YACReader suite. It keeps track of the comics stored on disk, lets you browse them in different views, and opens the selected comic in YACReader or in a third-party reader if you configure one.</p>
+  <p>This guide focuses on the main workflows. For keyboard shortcuts, open the <b>Shortcuts</b> dialog from the menu or the settings dialog and customize the bindings there.</p>
 
-		</ul>
-	</p>
-	<h2>Usage and considerations</h2>
-	<p></p>You can create a collection in any folder (write privilieges are needed). Creation process involves looking for image files in any 
-	rar,zip,cbr,cbz and tar files. If images are found, the first one (alfabetically) is taken as the comic cover and added
-	to the collection.</p>
-	
-	<p>The hidden folder .yacreaderlibrary is created in the root path of your comics folder. This folder stores
-	the library with cover's tumbnails, so please, don't mess with it.</p>
-	
-	<p><s>.yacreaderlibrary folder can be copied in order to share your comic library with your friends. To do that, you
-	can copy .yacreaderlibrary to any folder, and then "Open an existing library" from this folder (Note:
-	if you update that library, all covers will be removed). Is intended that this task could be done automatically from YACReaderLibrary in a later version.</s></p>
+  <h2>Create or open a library</h2>
+  <ul>
+    <li>Create a new library by choosing the top-level folder that contains your comics.</li>
+    <li>You can also open an existing library, pack covers, or unpack a previously exported covers package.</li>
+    <li>YACReaderLibrary creates and maintains a hidden <b>.yacreaderlibrary</b> folder inside the library root. It stores the database and generated covers, so it should not be edited by hand.</li>
+    <li>If you use ComicInfo.xml metadata from other tools, review the related option in the settings dialog before importing new content.</li>
+  </ul>
 
+  <h2>Browse your collection</h2>
+  <ul>
+    <li>Use the folders section in the sidebar to move through the library tree.</li>
+    <li>Use the lists section for smart lists such as Favorites, Reading, and Recent, and for your own labels and reading lists.</li>
+    <li>The content area can show comics in different views, and it also shows folder content when a folder has subfolders but no direct comics.</li>
+    <li>The root and folder content views can include Continue Reading banners, depending on your settings.</li>
+    <li>Open a comic to continue reading it in YACReader, or configure a third-party reader command in settings.</li>
+  </ul>
+
+  <h2>Keep libraries up to date</h2>
+  <ul>
+    <li>Use <b>Update current folder</b> after changing files in the selected folder on disk.</li>
+    <li>Use <b>Update library</b> when you want to rescan the whole collection.</li>
+    <li>You can drag and drop files or folders into the current folder, the folder content view, or the folders tree to copy content into the library.</li>
+    <li>Automatic updates can be configured in the <b>Libraries</b> tab of the settings dialog.</li>
+  </ul>
+
+  <h2>Organize and enrich your comics</h2>
+  <ul>
+    <li>Edit metadata for one or multiple comics, including custom covers.</li>
+    <li>Mark comics and folders as read or unread, rate comics, and assign their type.</li>
+    <li>Use labels, favorites, and reading lists to build your own browsing views without moving files on disk.</li>
+    <li>Comic Vine integration can help fill metadata if you configure your API key in settings.</li>
+  </ul>
+
+  <h2>Search, views, and settings</h2>
+  <ul>
+    <li>Use the search box to filter content and jump quickly to folders or comics.</li>
+    <li>Switch between the available comics views depending on whether you prefer a grid, detailed information, or a flow view.</li>
+    <li>The settings dialog includes language selection, appearance and themes, shortcuts, automatic updates, grid background options, Continue Reading visibility, and third-party reader configuration.</li>
+    <li>Like the reader app, YACReaderLibrary supports system light/dark mode, built-in themes, and custom themes.</li>
+  </ul>
+
+  <p>If you only want to read a single comic without managing a collection, open it directly in YACReader.</p>
+  <p>More information about the project is available at <a href="https://www.yacreader.com">https://www.yacreader.com</a>.</p>
 </body>
 </html>
