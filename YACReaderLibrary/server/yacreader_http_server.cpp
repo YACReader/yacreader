@@ -69,7 +69,7 @@ void YACReaderHttpServer::start(quint16 port)
     if (listenerSettings->value("cleanupInterval").isNull())
         listenerSettings->setValue("cleanupInterval", 10000);
 
-    if (listenerSettings->value("minThreads").isNull())
+    if (listenerSettings->value("maxThreads").isNull())
         listenerSettings->setValue("maxThreads", 1000);
 
     if (listenerSettings->value("minThreads").isNull())
