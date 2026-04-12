@@ -418,14 +418,6 @@ Rectangle {
                          }
             }
 
-            onOriginYChanged: {
-                console.log(" origin changed ", grid.originY)
-            }
-
-            onContentYChanged: {
-                console.log(" content y changed ", grid.contentY)
-            }
-
             ScrollBar.vertical: ScrollBar {
                 visible: grid.contentHeight > grid.height
 
