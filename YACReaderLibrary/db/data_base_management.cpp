@@ -129,36 +129,57 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 
 QSqlDatabase DataBaseManagement::loadDatabase(QString libraryDataPath)
 {
-    if (!QFile::exists(libraryDataPath + "/library.ydb")) {
+    const QString dbPath = QDir::cleanPath(libraryDataPath + "/library.ydb");
+    if (!QFile::exists(dbPath)) {
         return QSqlDatabase();
     }
 
-    QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", libraryDataPath + threadId);
-    db.setDatabaseName(libraryDataPath + "/library.ydb");
+    QString threadId = QString::number((quintptr)QThread::currentThreadId(), 16);
+    QString connectionName = dbPath + threadId;
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+    db.setConnectOptions("QSQLITE_BUSY_TIMEOUT=2000");
+    db.setDatabaseName(dbPath);
     if (!db.open()) {
+        const QString error = db.lastError().text();
+        db = QSqlDatabase();
+        QSqlDatabase::removeDatabase(connectionName);
+        QLOG_ERROR() << "loadDatabase: failed to open" << dbPath << error;
         return QSqlDatabase();
     }
-    QSqlQuery pragma("PRAGMA foreign_keys = ON", db);
+    QSqlQuery pragmaFK(db);
+    if (!pragmaFK.exec("PRAGMA foreign_keys = ON")) {
+        QLOG_ERROR() << "loadDatabase: failed to enable foreign keys for" << dbPath << pragmaFK.lastError().text();
+    }
 
     return db;
 }
 
 QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
 {
-    if (!QFile::exists(filePath)) {
+    const QString dbPath = QDir::cleanPath(filePath);
+    if (!QFile::exists(dbPath)) {
         return QSqlDatabase();
     }
 
-    QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", filePath + threadId);
-    db.setDatabaseName(filePath);
+    QString threadId = QString::number((quintptr)QThread::currentThreadId(), 16);
+    QString connectionName = dbPath + threadId;
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+    db.setConnectOptions("QSQLITE_BUSY_TIMEOUT=2000");
+    db.setDatabaseName(dbPath);
     if (!db.open()) {
         // se devuelve una base de datos vacía e inválida
 
+        const QString error = db.lastError().text();
+        db = QSqlDatabase();
+        QSqlDatabase::removeDatabase(connectionName);
+        QLOG_ERROR() << "loadDatabaseFromFile: failed to open" << dbPath << error;
         return QSqlDatabase();
     }
-    QSqlQuery pragma("PRAGMA foreign_keys = ON", db);
+    QSqlQuery pragmaFK(db);
+    if (!pragmaFK.exec("PRAGMA foreign_keys = ON")) {
+        QLOG_ERROR() << "loadDatabaseFromFile: failed to enable foreign keys for" << dbPath << pragmaFK.lastError().text();
+    }
 
     return db;
 }
