@@ -1097,6 +1097,11 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
+            if (!db.isValid()) {
+                QLOG_ERROR() << "updateFromRemoteClient: could not open database for library" << libraryPath;
+                continue;
+            }
+
             db.transaction();
 
             QSqlQuery updateComicInfo(db);
@@ -1204,6 +1209,11 @@ void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
+
+            if (!db.isValid()) {
+                QLOG_ERROR() << "updateFromRemoteClientWithHash: could not open database for library" << libraryPath;
+                continue;
+            }
 
             db.transaction();
 
