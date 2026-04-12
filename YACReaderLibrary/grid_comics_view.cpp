@@ -69,7 +69,16 @@ GridComicsView::GridComicsView(QWidget *parent)
     ctxt->setContextProperty("currentComicInfo", comicInfo);
     ctxt->setContextProperty("showCurrentComic", QVariant(false));
 
+    showInfoAction = new QAction(tr("Show info"), this);
+    showInfoAction->setCheckable(true);
+    showInfoAction->setChecked(showInfo);
+    connect(showInfoAction, &QAction::toggled, this, &GridComicsView::showInfo);
+
     updateCoversSizeInContext(YACREADER_MIN_COVER_WIDTH, ctxt);
+
+    // Seed theme globals before loading QML so the first binding pass does not
+    // resolve them as undefined and spam startup warnings.
+    initTheme(this);
 
     view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
 
@@ -77,14 +86,6 @@ GridComicsView::GridComicsView(QWidget *parent)
     auto infoContainer = rootObject->findChild<QObject *>("infoContainer");
 
     QQmlProperty(infoContainer, "width").write(settings->value(COMICS_GRID_INFO_WIDTH, 350));
-
-    showInfoAction = new QAction(tr("Show info"), this);
-    showInfoAction->setCheckable(true);
-    showInfoAction->setChecked(showInfo);
-    connect(showInfoAction, &QAction::toggled, this, &GridComicsView::showInfo);
-
-    // Apply theme colors (must be after showInfoAction is created)
-    initTheme(this);
 
     setShowMarks(true); // TODO save this in settings
 
