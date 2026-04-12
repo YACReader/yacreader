@@ -768,7 +768,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
             }
         }
         sourceDBconnection = sourceDB.connectionName();
-        destDBconnection = sourceDB.connectionName();
+        destDBconnection = destDB.connectionName();
     }
 
     QSqlDatabase::removeDatabase(sourceDBconnection);
