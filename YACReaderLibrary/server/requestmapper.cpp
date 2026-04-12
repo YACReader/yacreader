@@ -55,7 +55,7 @@ void RequestMapper::loadSessionV2(HttpRequest &request, HttpResponse & /* respon
 
     if (yRecoveredSession == nullptr) // session is already alive check if it is needed to update comics
     {
-        auto ySession = new YACReaderHttpSession(this);
+        auto ySession = new YACReaderHttpSession();
 
         Static::yacreaderSessionStore->addYACReaderHttpSession(token, ySession);
     }
