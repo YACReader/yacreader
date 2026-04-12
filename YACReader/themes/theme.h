@@ -27,8 +27,7 @@ struct TranslatorThemeTemplates {
                            "QScrollBar::handle:vertical { background: %2; width: 7px; min-height: 20px; }"
                            "QScrollBar::add-line:vertical { border: none; background: %1; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
                            "QScrollBar::sub-line:vertical { border: none; background: %1; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-                           "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-                           "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
+                           "QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: transparent; image: none;}"
                            "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }";
     // %1 = background, %2 = text color
     QString textEditQSS = "QTextEdit{border:none;background:%1;color:%2; font-size:12px; padding:6px;}";
