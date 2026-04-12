@@ -57,8 +57,7 @@ struct MetadataScraperDialogThemeTemplates {
                                               "QScrollBar::sub-line:vertical {  border: none; background: %3; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
                                               "QScrollBar::add-line:horizontal { border: none; background: %3; width: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 0 3px 0;}"
                                               "QScrollBar::sub-line:horizontal {  border: none; background: %3; width: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 0 3px 0;}"
-                                              "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-                                              "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
+                                              "QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: transparent; image: none;}"
                                               "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical, QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {background: none; }";
 
     QString scraperTableViewQSS = "QTableView {color:%1; border:0px;alternate-background-color: %2;background-color: %3; outline: 0px;}"
@@ -76,8 +75,7 @@ struct MetadataScraperDialogThemeTemplates {
                                   "QScrollBar::sub-line:vertical {  border: none; background: %11; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
                                   "QScrollBar::add-line:horizontal { border: none; background: %11; width: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 0 3px 0;}"
                                   "QScrollBar::sub-line:horizontal {  border: none; background: %11; width: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 0 3px 0;}"
-                                  "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-                                  "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
+                                  "QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: transparent; image: none;}"
                                   "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical, QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {background: none; }";
 
     QString dialogQSS = "QDialog {background-color: %1; }";
@@ -189,8 +187,7 @@ struct NavigationTreeThemeTemplates {
                                 "QScrollBar::handle:vertical { background: %4; width: 7px; min-height: 20px; }"
                                 "QScrollBar::add-line:vertical { border: none; background: %3; height: 10px; subcontrol-position: bottom; subcontrol-origin: margin; margin: 0 3px 0 0;}"
                                 "QScrollBar::sub-line:vertical {  border: none; background: %3; height: 10px; subcontrol-position: top; subcontrol-origin: margin; margin: 0 3px 0 0;}"
-                                "QScrollBar::up-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-up.png') center top no-repeat;}"
-                                "QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: url(':/images/folders_view/line-down.png') center top no-repeat;}"
+                                "QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {border:none;width: 9px;height: 6px;background: transparent; image: none;}"
                                 "QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {background: none; }"
                                 "QTreeView::branch:has-children:!has-siblings:closed,QTreeView::branch:closed:has-children:has-siblings {border-image: none;image: url('%6');}"
                                 "QTreeView::branch:has-children:selected:!has-siblings:closed,QTreeView::branch:closed:selected:has-children:has-siblings {border-image: none;image: url('%8');}"
