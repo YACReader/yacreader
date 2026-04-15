@@ -63,6 +63,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
                    "   &#8226; Add an application language setting with a system default option in YACReader and YACReaderLibrary<br/>"
                    "   &#8226; Fix fullscreen mode in Windows, interaction with the OS is now possible while the apps are in fullscreen<br/>"
                    "   &#8226; Improve support for multi-screen setups<br/>"
+                   "   &#8226; Fix PDFs with crop information on macOS<br/>"
                    "<br/>"
                    "<span style=\"font-weight:600\">All apps</span><br/>"
                    "   &#8226; Add support for user-installed Qt image format plugins via the shared <i>plugins/imageformats</i> folder in the YACReader settings directory<br/>"
