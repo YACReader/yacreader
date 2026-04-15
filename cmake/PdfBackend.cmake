@@ -63,6 +63,7 @@ elseif(PDF_BACKEND STREQUAL "pdfkit")
         message(FATAL_ERROR "pdfkit backend is macOS only")
     endif()
     target_compile_definitions(pdf_backend_iface INTERFACE USE_PDFKIT)
+    target_link_libraries(pdf_backend_iface INTERFACE "-framework PDFKit")
 
 else()
     message(FATAL_ERROR "Unknown PDF_BACKEND: '${PDF_BACKEND}'. Use: pdfium, poppler, pdfkit, or no_pdf")
