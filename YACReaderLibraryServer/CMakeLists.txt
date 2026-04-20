@@ -55,6 +55,16 @@ target_link_libraries(YACReaderLibraryServer PRIVATE
     QrCode
 )
 
+# Copy server web files to build output for development (Linux uses DATADIR at runtime)
+if(WIN32 OR APPLE)
+    add_custom_command(TARGET YACReaderLibraryServer POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${PROJECT_SOURCE_DIR}/release/server/docroot/images/webui"
+            "$<TARGET_FILE_DIR:YACReaderLibraryServer>/server/docroot/images/webui"
+        COMMENT "Copying webui images to build output"
+    )
+endif()
+
 # Platform-specific
 if(WIN32)
     target_link_libraries(YACReaderLibraryServer PRIVATE oleaut32 ole32 shell32 user32)
