@@ -73,8 +73,7 @@ void RequestMapper::service(HttpRequest &request, HttpResponse &response)
     } else if (path.startsWith("/webui")) {
         serviceWebUI(request, response);
     } else {
-        response.setStatus(404, "not found");
-        response.write("404 not found", true);
+        Static::staticFileController->service(request, response);
     }
 }
 
