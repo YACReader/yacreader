@@ -100,6 +100,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     mouseModeBox->setLayout(mouseModeLayout);
 
+    auto zoomModeBox = new QGroupBox(tr("Zoom mode"));
+    auto zoomModeLayout = new QVBoxLayout();
+    pinchToZoomEnabled = new QCheckBox(tr("Enable pinch-to-zoom trackpad gesture"));
+    zoomModeLayout->addWidget(pinchToZoomEnabled);
+    zoomModeBox->setLayout(zoomModeLayout);
+
     layoutGeneral->addWidget(pathBox);
     layoutGeneral->addWidget(displayBox);
     layoutGeneral->addWidget(slideSizeBox);
@@ -107,6 +113,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     layoutGeneral->addWidget(colorBox);
     layoutGeneral->addWidget(scrollBox);
     layoutGeneral->addWidget(mouseModeBox);
+    layoutGeneral->addWidget(zoomModeBox);
     layoutGeneral->addWidget(shortcutsBox);
     layoutGeneral->addStretch();
 
@@ -281,6 +288,8 @@ void OptionsDialog::saveOptions()
     }
     Configuration::getConfiguration().setMouseMode(mouseMode);
 
+    Configuration::getConfiguration().setPinchToZoomEnabled(pinchToZoomEnabled->isChecked());
+
     YACReaderOptionsDialog::saveOptions();
 }
 
@@ -344,6 +353,8 @@ void OptionsDialog::restoreOptions(QSettings *settings)
         hotAreasMouseModeRadioButton->setChecked(true);
         break;
     }
+
+    pinchToZoomEnabled->setChecked(Configuration::getConfiguration().getPinchToZoomEnabled());
 }
 
 void OptionsDialog::updateColor(const QColor &color)

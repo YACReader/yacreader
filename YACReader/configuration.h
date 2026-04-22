@@ -115,6 +115,9 @@ public:
 
     MouseMode getMouseMode() { return static_cast<MouseMode>(settings->value(MOUSE_MODE, MouseMode::Normal).toInt()); }
     void setMouseMode(MouseMode mouseMode) { settings->setValue(MOUSE_MODE, static_cast<int>(mouseMode)); }
+
+    bool getPinchToZoomEnabled() { return settings->value(PINCH_TO_ZOOM_ENABLED, true).toBool(); }
+    void setPinchToZoomEnabled(bool b) { settings->setValue(PINCH_TO_ZOOM_ENABLED, b); }
 };
 
 }
