@@ -59,6 +59,8 @@ private:
     QRadioButton *leftRightNavigationMouseModeRadioButton;
     QRadioButton *hotAreasMouseModeRadioButton;
 
+    QCheckBox *pinchToZoomEnabled;
+
 public slots:
     void saveOptions() override;
     void restoreOptions(QSettings *settings) override;

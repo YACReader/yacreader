@@ -15,6 +15,7 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include <QSettings>
+#include <QGestureEvent>
 
 #include "scroll_management.h"
 #include "mouse_handler.h"
@@ -166,6 +167,15 @@ private:
     void wheelEventMouse(QWheelEvent *event);
     void wheelEventTrackpad(QWheelEvent *event);
     void mouseMoveEvent(QMouseEvent *event) override;
+    bool event(QEvent *event) override;
+    bool gestureEvent(QGestureEvent *event);
+    void positionPinchZoomHud();
+
+    int pinchStartZoom;
+    QPoint pinchAnchorViewport;
+    double pinchAnchorNormX;
+    double pinchAnchorNormY;
+    QLabel *pinchZoomHud;
 
     int verticalScrollStep() const;
     int horizontalScrollStep() const;
