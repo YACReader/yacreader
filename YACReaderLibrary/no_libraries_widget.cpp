@@ -1,31 +1,23 @@
 #include "no_libraries_widget.h"
 
-#include <QLabel>
-#include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
+#include <QVBoxLayout>
 
 NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
     : QWidget(parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    QPalette p(palette());
-    p.setColor(QPalette::Window, QColor(250, 250, 250));
     setAutoFillBackground(true);
-    setPalette(p);
 
-    QPixmap icon(":/images/noLibrariesIcon.png");
-    QLabel *iconLabel = new QLabel();
-    iconLabel->setPixmap(icon);
+    iconLabel = new QLabel();
 
-    QPixmap line(":/images/noLibrariesLine.png");
-    QLabel *lineLabel = new QLabel();
-    lineLabel->setPixmap(line);
+    lineLabel = new QLabel();
 
-    QLabel *text = new QLabel("<font color=\"#495252\">" + tr("You don't have any libraries yet") + "</font>");
+    text = new QLabel(tr("You don't have any libraries yet"));
     text->setStyleSheet("QLabel {font-size:25px;font-weight:bold;}");
-    QLabel *textDescription = new QLabel("<font color=\"#565959\">" + tr("<p>You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.</p><p>Don't forget that you can use YACReader as a stand alone application for reading the comics on your computer.</p>") + "</font>");
+    textDescription = new QLabel(tr("<p>You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.</p><p>Don't forget that you can use YACReader as a stand alone application for reading the comics on your computer.</p>"));
     textDescription->setWordWrap(true);
     textDescription->setMaximumWidth(330);
 
@@ -75,4 +67,26 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
 
     connect(createButton, &QAbstractButton::clicked, this, &NoLibrariesWidget::createNewLibrary);
     connect(addButton, &QAbstractButton::clicked, this, &NoLibrariesWidget::addExistingLibrary);
+
+    initTheme(this);
+}
+
+void NoLibrariesWidget::applyTheme(const Theme &theme)
+{
+    auto nlwTheme = theme.noLibrariesWidget;
+
+    QPalette p(palette());
+    p.setColor(QPalette::Window, nlwTheme.backgroundColor);
+    setPalette(p);
+
+    QPalette textPalette = text->palette();
+    textPalette.setColor(QPalette::WindowText, nlwTheme.textColor);
+    text->setPalette(textPalette);
+
+    QPalette descPalette = textDescription->palette();
+    descPalette.setColor(QPalette::WindowText, nlwTheme.descriptionTextColor);
+    textDescription->setPalette(descPalette);
+
+    iconLabel->setPixmap(nlwTheme.noLibrariesIcon);
+    lineLabel->setPixmap(nlwTheme.noLibrariesLinePixmap);
 }

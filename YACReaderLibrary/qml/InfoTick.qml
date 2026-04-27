@@ -1,6 +1,6 @@
-import QtQuick 2.15
+import QtQuick
 
-import QtGraphicalEffects 1.0
+import QtQuick.Controls.impl
 
 Item {
 
@@ -15,14 +15,9 @@ Item {
         }
     }
 
-    Image {
+    ColorImage {
         id: read_compact
-        source: "info-tick.png"
-    }
-
-    ColorOverlay {
-        anchors.fill: read_compact
-        source: read_compact
+        source: "info-tick.svg"
         color: read ? readTickCheckedColor : readTickUncheckedColor
     }
 }

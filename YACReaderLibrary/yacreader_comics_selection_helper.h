@@ -1,8 +1,10 @@
 #ifndef YACREADERCOMICSSELECTIONHELPER_H
 #define YACREADERCOMICSSELECTIONHELPER_H
 
+#include <QItemSelectionModel>
+#include <QModelIndex>
+#include <QModelIndexList>
 #include <QObject>
-#include <QtWidgets>
 
 class ComicModel;
 

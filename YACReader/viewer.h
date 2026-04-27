@@ -1,23 +1,23 @@
 #ifndef __VIEWER_H
 #define __VIEWER_H
 
-#include <QMainWindow>
-
-#include <QScrollArea>
-#include <QAction>
-#include <QTimer>
-#include <QLabel>
-#include <QPixmap>
-#include <QResizeEvent>
-#include <QWheelEvent>
-#include <QMouseEvent>
-#include <QCloseEvent>
-#include <QPropertyAnimation>
-#include <QParallelAnimationGroup>
-#include <QSettings>
-
-#include "scroll_management.h"
 #include "mouse_handler.h"
+#include "scroll_management.h"
+#include "themable.h"
+
+#include <QAction>
+#include <QCloseEvent>
+#include <QLabel>
+#include <QMainWindow>
+#include <QMouseEvent>
+#include <QParallelAnimationGroup>
+#include <QPixmap>
+#include <QPropertyAnimation>
+#include <QResizeEvent>
+#include <QScrollArea>
+#include <QSettings>
+#include <QTimer>
+#include <QWheelEvent>
 
 class ComicDB;
 class Comic;
@@ -29,10 +29,12 @@ class GoToDialog;
 class YACReaderTranslator;
 class GoToFlowWidget;
 class Bookmarks;
+class ContinuousPageWidget;
+class ContinuousViewModel;
 class PageLabelWidget;
 class NotificationsLabelWidget;
 
-class Viewer : public QScrollArea, public ScrollManagement
+class Viewer : public QScrollArea, public ScrollManagement, protected Themable
 {
     Q_OBJECT
 public:
@@ -55,6 +57,7 @@ public slots:
     void goToLastPage();
     void goTo(unsigned int page);
     void updatePage();
+    void onImageOptionsChanged();
     void updateContentSize();
     void updateVerticalScrollBar();
     void updateOptions();
@@ -83,6 +86,7 @@ public slots:
     void save();
     void doublePageSwitch();
     void setMangaWithoutStoringSetting(bool manga);
+    void setContinuousScrollWithoutStoringSetting(bool enabled);
     void doubleMangaPageSwitch();
     void resetContent();
     void setLoadingMessage();
@@ -112,11 +116,13 @@ public slots:
     int getCurrentPageNumber();
     void updateZoomRatio(int ratio);
     bool getIsMangaMode();
+    void setContinuousScroll(bool enabled);
 
 private:
     bool information;
     bool doublePage;
     bool doubleMangaPage;
+    bool continuousScroll;
 
     int zoom;
 
@@ -143,6 +149,12 @@ private:
 
     //! Widgets
     QLabel *content;
+    QLabel *messageLabel;
+    ContinuousPageWidget *continuousWidget;
+    ContinuousViewModel *continuousViewModel;
+    int lastCenterPage = -1;
+    bool syncingRenderFromContinuousScroll = false;
+    bool applyingContinuousModelState = false;
 
     YACReaderTranslator *translator;
     int translatorXPos;
@@ -182,14 +194,30 @@ private:
     // Zero when animations are disabled
     int animationDuration() const;
     void animateScroll(QPropertyAnimation &scroller, const QScrollBar &scrollBar, int delta);
+    void onContinuousScroll(int value);
+    void onContinuousViewModelChanged();
+    void onContinuousPageRendered(int absolutePageIndex);
+    void probeContinuousBufferedPages();
+    void applyContinuousStateToUi();
+    void scrollToCurrentContinuousPage();
+    void onNumPagesReady(unsigned int numPages);
+    void onRenderPageChanged(int page);
+    void setActiveWidget(QWidget *w);
+    void setContinuousScrollImpl(bool enabled, bool persistSettings);
+    void setMangaModeImpl(bool manga, bool persistSettings);
 
     //! Mouse handler
     std::unique_ptr<YACReader::MouseHandler> mouseHandler;
+
+protected:
+    void applyTheme(const Theme &theme) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
     QPixmap pixmap() const;
+    QImage grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const;
     // Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }
     // returns the current index starting in 1 [1,nPages]

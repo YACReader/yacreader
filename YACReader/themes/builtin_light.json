@@ -1,0 +1,67 @@
+{
+    "dialogIcons": {
+        "iconColor": "#404040"
+    },
+    "goToFlowWidget": {
+        "editBackgroundColor": "#22000000",
+        "editBorderColor": "#33000000",
+        "editTextColor": "#202020",
+        "flowBackgroundColor": "#F6F6F6",
+        "flowTextColor": "#202020",
+        "iconColor": "#404040",
+        "labelTextColor": "#202020",
+        "sliderBorderColor": "#22000000",
+        "sliderGrooveColor": "#33000000",
+        "sliderHandleColor": "#55000000",
+        "toolbarBackgroundColor": "#BBFFFFFF"
+    },
+    "helpAboutDialog": {
+        "headingColor": "#302F2D",
+        "linkColor": "#C19441"
+    },
+    "meta": {
+        "displayName": "Default Light",
+        "id": "builtin/light",
+        "targetApp": "YACReader",
+        "variant": "light",
+        "version": "10.0.0"
+    },
+    "shortcutsIcons": {
+        "iconColor": "#606060"
+    },
+    "translator": {
+        "backgroundColor": "#E8E8E8",
+        "borderColor": "#CCCCCC",
+        "iconColor": "#404040",
+        "inputBackgroundColor": "#F5F5F5",
+        "inputDarkerBackgroundColor": "#EBEBEB",
+        "primaryTextColor": "#1A1A1A",
+        "scrollbarHandleColor": "#909090",
+        "secondaryTextColor": "#2A2A2A",
+        "selectionBackgroundColor": "#DCDCDC"
+    },
+    "toolbar": {
+        "backgroundColor": "#F3F3F3",
+        "checkedButtonColor": "#CCCCCC",
+        "iconCheckedColor": "#5A5A5A",
+        "iconColor": "#404040",
+        "iconDisabledColor": "#B0B0B0",
+        "menuIndicatorColor": "#404040",
+        "separatorColor": "#CCCCCC"
+    },
+    "viewer": {
+        "defaultBackgroundColor": "#F6F6F6",
+        "defaultTextColor": "#202020",
+        "infoBackgroundColor": "#BBFFFFFF",
+        "infoTextColor": "#404040"
+    },
+    "whatsNewDialog": {
+        "backgroundColor": "#FFFFFF",
+        "closeButtonColor": "#444444",
+        "contentTextColor": "#0A0A0A",
+        "headerDecorationColor": "#E8B800",
+        "headerTextColor": "#0A0A0A",
+        "linkColor": "#E8B800",
+        "versionTextColor": "#858585"
+    }
+}

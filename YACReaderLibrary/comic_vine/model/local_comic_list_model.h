@@ -1,9 +1,9 @@
 #ifndef LOCAL_COMIC_LIST_MODEL_H
 #define LOCAL_COMIC_LIST_MODEL_H
 
-#include <QAbstractItemModel>
-
 #include "comic_db.h"
+
+#include <QAbstractItemModel>
 
 class LocalComicListModel : public QAbstractItemModel
 {

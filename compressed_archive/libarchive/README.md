@@ -7,9 +7,9 @@ This backend is currently only supported on the Linux platform.
 
 ## Using
 
-Enabling this backend is achieved by adding the `libarchive` qmake configuration value:
+Enable this backend by setting the `DECOMPRESSION_BACKEND` CMake option:
 
-    qmake CONFIG+=libarchive
+    cmake -B build -DDECOMPRESSION_BACKEND=libarchive
 
 Upon success, the application can be built as normal.
 

@@ -1,6 +1,7 @@
 #ifndef ROUNDEDCORNERSDIALOG_H
 #define ROUNDEDCORNERSDIALOG_H
 
+#include <QColor>
 #include <QDialog>
 
 namespace YACReader {
@@ -12,6 +13,10 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *) override;
+    void setBackgroundColor(const QColor &color);
+
+private:
+    QColor m_backgroundColor { 255, 255, 255 };
 };
 }
 

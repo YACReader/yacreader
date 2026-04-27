@@ -1,17 +1,17 @@
 #include "render.h"
-#include <cmath>
-#include <QList>
-#include <algorithm>
-#include <QByteArray>
-#include <QPixmap>
-#include <QApplication>
-#include <QImage>
-
-#include <typeinfo>
 
 #include "comic_db.h"
-#include "yacreader_global_gui.h"
 #include "configuration.h"
+#include "yacreader_global_gui.h"
+
+#include <QApplication>
+#include <QByteArray>
+#include <QImage>
+#include <QList>
+#include <QPixmap>
+
+#include <algorithm>
+#include <cmath>
 
 template<class T>
 inline const T &kClamp(const T &x, const T &low, const T &high)
@@ -546,6 +546,17 @@ QPixmap *Render::getCurrentDoubleMangaPage()
     }
 }
 
+const QImage *Render::bufferedImage(int absolutePageIndex) const
+{
+    int offset = absolutePageIndex - currentIndex;
+    int pos = currentPageBufferedIndex + offset;
+    if (pos < 0 || pos >= buffer.size()) {
+        return nullptr;
+    }
+    const QImage *img = buffer[pos];
+    return (img && !img->isNull()) ? img : nullptr;
+}
+
 bool Render::currentPageIsDoublePage()
 {
     if (currentIndex == 0 && Configuration::getConfiguration().getSettings()->value(COVER_IS_SP, true).toBool()) {
@@ -627,6 +638,8 @@ void Render::setComic(Comic *c)
 
 void Render::prepareAvailablePage(int page)
 {
+    emit pageRendered(page);
+
     if (!doublePage) {
         if (currentIndex == page) {
             emit currentPageReady();
@@ -987,7 +1000,7 @@ void Render::fillBuffer()
             pageRenders[currentPageBufferedIndex + i]->start();
         }
 
-        if ((currentIndex - i > 0) &&
+        if ((currentIndex - i >= 0) &&
             buffer[currentPageBufferedIndex - i]->isNull() &&
             i <= numLeftPages &&
             pageRenders[currentPageBufferedIndex - i] == 0 &&

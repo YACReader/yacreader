@@ -1,0 +1,67 @@
+{
+    "dialogIcons":  {
+                        "iconColor":  "#4A5685"
+                    },
+    "goToFlowWidget":  {
+                           "editBackgroundColor":  "#CCEEF1F8",
+                           "editBorderColor":  "#66C4C8DA",
+                           "editTextColor":  "#2F334D",
+                           "flowBackgroundColor":  "#D5D6DB",
+                           "flowTextColor":  "#4A5685",
+                           "iconColor":  "#2F334D",
+                           "labelTextColor":  "#2F334D",
+                           "sliderBorderColor":  "#33C4C8DA",
+                           "sliderGrooveColor":  "#66C4C8DA",
+                           "sliderHandleColor":  "#882F334D",
+                           "toolbarBackgroundColor":  "#CCEEF1F8"
+                       },
+    "helpAboutDialog":  {
+                            "headingColor":  "#2F334D",
+                            "linkColor":  "#2E7DE9"
+                        },
+    "meta":  {
+                 "displayName":  "Late Day",
+                 "id":  "builtin/light2",
+                 "targetApp":  "YACReader",
+                 "variant":  "light",
+                 "version":  "10.1.0"
+             },
+    "shortcutsIcons":  {
+                           "iconColor":  "#4A5685"
+                       },
+    "translator":  {
+                       "backgroundColor":  "#F5F6FA",
+                       "borderColor":  "#C4C8DA",
+                       "iconColor":  "#4A5685",
+                       "inputBackgroundColor":  "#EEF1F8",
+                       "inputDarkerBackgroundColor":  "#D7D8DD",
+                       "primaryTextColor":  "#2F334D",
+                       "scrollbarHandleColor":  "#8990B3",
+                       "secondaryTextColor":  "#8990B3",
+                       "selectionBackgroundColor":  "#D7D8DD"
+                   },
+    "toolbar":  {
+                    "backgroundColor":  "#EEF1F8",
+                    "checkedButtonColor":  "#C4C8DA",
+                    "iconCheckedColor":  "#2F334D",
+                    "iconColor":  "#2F334D",
+                    "iconDisabledColor":  "#A1A6C5",
+                    "menuIndicatorColor":  "#2F334D",
+                    "separatorColor":  "#C4C8DA"
+                },
+    "viewer":  {
+                   "defaultBackgroundColor":  "#D5D6DB",
+                   "defaultTextColor":  "#4A5685",
+                   "infoBackgroundColor":  "#CCEEF1F8",
+                   "infoTextColor":  "#2F334D"
+               },
+    "whatsNewDialog":  {
+                           "backgroundColor":  "#FFFFFF",
+                           "closeButtonColor":  "#2F334D",
+                           "contentTextColor":  "#1F2335",
+                           "headerDecorationColor":  "#2E7DE9",
+                           "headerTextColor":  "#1F2335",
+                           "linkColor":  "#2E7DE9",
+                           "versionTextColor":  "#8990B3"
+                       }
+}

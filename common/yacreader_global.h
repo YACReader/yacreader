@@ -1,15 +1,18 @@
 #ifndef __YACREADER_GLOBAL_H
 #define __YACREADER_GLOBAL_H
 
-#include <QStandardPaths>
-#include <QDataStream>
-#include <QMetaType>
 #include <QAbstractItemModel>
+#include <QDataStream>
 #include <QDir>
+#include <QMetaType>
+#include <QStandardPaths>
 
 class QLibrary;
 
-#define VERSION "9.16.4"
+// Compatibility for already released apps that still parse this file for update checks.
+// TODO: remove after old releases have migrated away from scraping this header.
+// #define VERSION "10.0.0"
+#include "version.h"
 
 // Used to check if the database needs to be updated, the version is stored in the database.
 // This value is only incremented when the database structure changes.
@@ -103,6 +106,11 @@ QDataStream &operator<<(QDataStream &stream, const OpenComicSource &source);
 QDataStream &operator>>(QDataStream &stream, OpenComicSource &source);
 
 QString getSettingsPath();
+QString getCommonSettingsPath();
+QString getCommonSettingsFilePath();
+QString getPluginsPath();
+QString getImageFormatsPluginsPath();
+void initializeSharedPluginPaths();
 QString colorToName(LabelColors colors);
 QString labelColorToRGBString(LabelColors color);
 QLibrary *load7zLibrary();

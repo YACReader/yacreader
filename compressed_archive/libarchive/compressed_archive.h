@@ -3,8 +3,8 @@
 
 #include "extract_delegate.h"
 
-#include <QObject>
 #include <QDebug>
+#include <QObject>
 
 extern "C" {
 #include <archive.h>

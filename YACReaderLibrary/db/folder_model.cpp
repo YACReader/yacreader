@@ -1,57 +1,55 @@
 #include "folder_model.h"
 
-#include "folder_item.h"
 #include "data_base_management.h"
-#include "folder.h"
 #include "db_helper.h"
+#include "folder.h"
+#include "folder_item.h"
 #include "qnaturalsorting.h"
-
 #include "yacreader_global.h"
-#include "yacreader_global_gui.h"
 
-#include <QtGui>
+#include <QFileIconProvider>
+#include <QPainter>
+#include <QSqlRecord>
 
 #include <algorithm>
 
 using namespace YACReader;
 
-#ifdef Y_MAC_UI
-#include <QFileIconProvider>
-QIcon finishedFolderIcon;
-void drawMacOSXFinishedFolderIcon()
+QIcon drawFinishedFolderIcon(const QPixmap &overlay)
 {
+    QIcon finishedIcon;
     QIcon ico = QFileIconProvider().icon(QFileIconProvider::Folder);
     QPixmap pixNormalOff = ico.pixmap(16, 16, QIcon::Normal, QIcon::Off);
     QPixmap pixNormalOn = ico.pixmap(16, 16, QIcon::Normal, QIcon::On);
     QPixmap pixSelectedOff = ico.pixmap(16, 16, QIcon::Selected, QIcon::Off);
     QPixmap pixSelectedOn = ico.pixmap(16, 16, QIcon::Selected, QIcon::On);
-    QPixmap tick(":/images/folder_finished_macosx.png");
 
     {
         QPainter p(&pixNormalOff);
-        p.drawPixmap(4, 7, tick);
+        p.drawPixmap(4, 7, overlay);
     }
-    finishedFolderIcon.addPixmap(pixNormalOff, QIcon::Normal, QIcon::Off);
+    finishedIcon.addPixmap(pixNormalOff, QIcon::Normal, QIcon::Off);
 
     {
         QPainter p(&pixNormalOn);
-        p.drawPixmap(4, 7, tick);
+        p.drawPixmap(4, 7, overlay);
     }
-    finishedFolderIcon.addPixmap(pixNormalOn, QIcon::Normal, QIcon::On);
+    finishedIcon.addPixmap(pixNormalOn, QIcon::Normal, QIcon::On);
 
     {
         QPainter p(&pixSelectedOff);
-        p.drawPixmap(4, 7, tick);
+        p.drawPixmap(4, 7, overlay);
     }
-    finishedFolderIcon.addPixmap(pixSelectedOff, QIcon::Selected, QIcon::Off);
+    finishedIcon.addPixmap(pixSelectedOff, QIcon::Selected, QIcon::Off);
 
     {
         QPainter p(&pixSelectedOn);
-        p.drawPixmap(4, 7, tick);
+        p.drawPixmap(4, 7, overlay);
     }
-    finishedFolderIcon.addPixmap(pixSelectedOn, QIcon::Selected, QIcon::On);
+    finishedIcon.addPixmap(pixSelectedOn, QIcon::Selected, QIcon::On);
+
+    return finishedIcon;
 }
-#endif
 
 #define ROOT 1
 
@@ -132,8 +130,22 @@ FolderItem *createRoot(QSqlDatabase &db)
 }
 
 FolderModel::FolderModel(QObject *parent)
-    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), folderIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder.svg")), folderFinishedIcon(YACReader::noHighlightedIcon(":/images/sidebar/folder_finished.svg")), showRecent(false), recentDays(1)
+    : QAbstractItemModel(parent), isSubfolder(false), rootItem(nullptr), showRecent(false), recentDays(1)
 {
+    initTheme(this);
+}
+
+void FolderModel::applyTheme(const Theme &theme)
+{
+    const auto &sidebarIcons = theme.sidebarIcons;
+
+    if (sidebarIcons.useSystemFolderIcons) {
+        folderIcon = QFileIconProvider().icon(QFileIconProvider::Folder);
+        folderFinishedIcon = drawFinishedFolderIcon(sidebarIcons.folderReadOverlay);
+    } else {
+        folderIcon = theme.navigationTree.folderIcon;
+        folderFinishedIcon = theme.navigationTree.folderFinishedIcon;
+    }
 }
 
 FolderModel::~FolderModel()
@@ -184,7 +196,7 @@ void FolderModel::reload()
         takeUpdatedChildrenInfo(rootItem, QModelIndex(), newModelData.rootItem);
 
         // copy items from newModelData to this model that are not in this model
-        foreach (auto key, newModelData.items.keys()) {
+        for (const auto key : newModelData.items.keys()) {
             if (!items.contains(key)) {
                 items[key] = (newModelData.items[key]);
             }
@@ -209,7 +221,7 @@ void FolderModel::reload()
             items = newModelData.items;
 
             // copy items from newModelData to this model that are not in this model
-            foreach (auto key, newModelData.items.keys()) {
+            for (const auto key : newModelData.items.keys()) {
                 if (!items.contains(key)) {
                     items[key] = (newModelData.items[key]);
                 }
@@ -368,22 +380,10 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
     }
 
     if (role == Qt::DecorationRole) {
-#ifdef Y_MAC_UI
-        if (item->data(FolderModel::Finished).toBool()) {
-            if (finishedFolderIcon.isNull()) {
-                drawMacOSXFinishedFolderIcon();
-            }
-
-            return QVariant(finishedFolderIcon);
-        } else {
-            return QVariant(QFileIconProvider().icon(QFileIconProvider::Folder));
-        }
-#else
         if (item->data(FolderModel::Finished).toBool())
             return QVariant(folderFinishedIcon);
         else
             return QVariant(folderIcon);
-#endif
     }
 
     if (role == FolderModel::FolderNameRole) {
@@ -433,7 +433,7 @@ QVariant FolderModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags FolderModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return {};
+        return { };
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
 }
@@ -605,7 +605,7 @@ void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool 
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
-        foreach (QModelIndex mi, list) {
+        for (const auto &mi : list) {
             auto item = static_cast<FolderItem *>(mi.internalPointer());
             item->setData(FolderModel::Completed, status);
 
@@ -629,7 +629,7 @@ void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool s
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
-        foreach (QModelIndex mi, list) {
+        for (const auto &mi : list) {
             auto item = static_cast<FolderItem *>(mi.internalPointer());
             item->setData(FolderModel::Finished, status);
 
@@ -653,7 +653,7 @@ void FolderModel::updateFolderType(const QModelIndexList &list, YACReader::FileT
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
-        foreach (QModelIndex mi, list) {
+        for (const auto &mi : list) {
             auto item = static_cast<FolderItem *>(mi.internalPointer());
 
             std::function<void(FolderItem *, YACReader::FileType)> setType;

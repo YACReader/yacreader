@@ -2,8 +2,8 @@
 #define READINGLISTINFOCONTROLLER_V2_H
 
 #include "httprequest.h"
-#include "httpresponse.h"
 #include "httprequesthandler.h"
+#include "httpresponse.h"
 
 class ReadingListInfoControllerV2 : public stefanfrings::HttpRequestHandler
 {

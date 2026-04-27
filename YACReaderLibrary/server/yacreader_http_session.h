@@ -1,9 +1,9 @@
 #ifndef YACREADERHTTPSESSION_H
 #define YACREADERHTTPSESSION_H
 
-#include <QObject>
-
 #include "comic.h"
+
+#include <QObject>
 
 class YACReaderHttpSession : public QObject
 {

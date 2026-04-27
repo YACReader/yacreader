@@ -1,14 +1,13 @@
 #include "reading_list_model.h"
 
-#include "reading_list_item.h"
-
-#include "data_base_management.h"
-#include "qnaturalsorting.h"
-#include "db_helper.h"
-
 #include "QsLog.h"
+#include "data_base_management.h"
+#include "db_helper.h"
+#include "qnaturalsorting.h"
+#include "reading_list_item.h"
+#include "yacreader_global_gui.h"
 
-#include <typeinfo>
+#include <QSqlRecord>
 
 ReadingListModel::ReadingListModel(QObject *parent)
     : QAbstractItemModel(parent), rootItem(0)
@@ -101,11 +100,11 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return {};
+        return { };
 
     auto item = static_cast<ListItem *>(index.internalPointer());
     if (typeid(*item) == typeid(ReadingListSeparatorItem))
-        return {};
+        return { };
 
     if (typeid(*item) == typeid(ReadingListItem) && static_cast<ReadingListItem *>(item)->parent->getId() != 0)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled; // only sublists are dragable
@@ -712,7 +711,7 @@ void ReadingListModel::reorderingChildren(QList<ReadingListItem *> children)
 {
     QList<qulonglong> childrenIds;
     int i = 0;
-    foreach (ReadingListItem *item, children) {
+    for (auto *item : children) {
         item->setOrdering(i++);
         childrenIds << item->getId();
     }

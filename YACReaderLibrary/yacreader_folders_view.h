@@ -1,15 +1,19 @@
 #ifndef YACREADER_FOLDERS_VIEW_H
 #define YACREADER_FOLDERS_VIEW_H
 
+#include "theme.h"
 #include "yacreader_treeview.h"
 
-#include <QtWidgets>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include <QStyledItemDelegate>
 
 class YACReaderFoldersView : public YACReaderTreeView
 {
     Q_OBJECT
 public:
     explicit YACReaderFoldersView(QWidget *parent = nullptr);
+    const NavigationTreeTheme &navigationTreeTheme() const { return theme.navigationTree; }
 
 signals:
     // Drops

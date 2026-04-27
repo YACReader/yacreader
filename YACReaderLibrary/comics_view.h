@@ -1,9 +1,11 @@
 #ifndef COMICS_VIEW_H
 #define COMICS_VIEW_H
 
-#include <QtWidgets>
-
 #include "comic_model.h"
+
+#include <QAbstractItemView>
+#include <QSettings>
+#include <QWidget>
 
 class YACReaderTableView;
 class QSplitter;

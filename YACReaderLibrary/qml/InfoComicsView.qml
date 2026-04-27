@@ -1,13 +1,15 @@
-import QtQuick 2.15
+import QtQuick
 
-import QtQuick.Controls 2.15
+import QtQuick.Controls
 
 import com.yacreader.ComicModel 1.0
+
+import QtQuick.Controls.Basic
 
 Rectangle {
     id: main
 
-    color: infoBackgroundColor
+    color: "transparent"
 
     //width: parent.width
     //height: parent.height
@@ -92,7 +94,7 @@ Rectangle {
                     implicitWidth: 12
                     implicitHeight: 26
                     Rectangle {
-                        color: "#424246"
+                        color: infoScrollbarColor
                         anchors.fill: parent
                         anchors.topMargin: 6
                         anchors.leftMargin: 5

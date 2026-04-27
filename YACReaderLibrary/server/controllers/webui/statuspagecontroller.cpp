@@ -1,8 +1,8 @@
 #include "statuspagecontroller.h"
 
+#include "db_helper.h"
 #include "template.h"
 #include "yacreader_global.h"
-#include "db_helper.h"
 #include "yacreader_libraries.h"
 
 #include <QSysInfo>

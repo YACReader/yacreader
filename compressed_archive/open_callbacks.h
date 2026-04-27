@@ -2,6 +2,7 @@
 #define OPEN_CALLBACKS_H
 
 #include "7z_includes.h"
+
 #include <QDebug>
 //////////////////////////////////////////////////////////////
 // Archive Open callback class

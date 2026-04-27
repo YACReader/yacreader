@@ -6,6 +6,8 @@
 #include "qnaturalsorting.h"
 #include "search_query.h"
 
+#include <QSqlRecord>
+
 YACReader::ComicQueryResultProcessor::ComicQueryResultProcessor()
     : querySearchQueue(1)
 {

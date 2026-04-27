@@ -1,6 +1,13 @@
 #include "notifications_label_widget.h"
 
-#include <QtWidgets>
+#include <QAbstractAnimation>
+#include <QEasingCurve>
+#include <QGraphicsOpacityEffect>
+#include <QLabel>
+#include <QPainter>
+#include <QPainterPath>
+#include <QPropertyAnimation>
+#include <QVBoxLayout>
 
 NotificationsLabelWidget::NotificationsLabelWidget(QWidget *parent)
     : QWidget(parent)

@@ -1,13 +1,15 @@
 #include "bookmarks_dialog.h"
 
-#include <QGridLayout>
-#include <QLabel>
+#include "bookmarks.h"
+
 #include <QApplication>
 #include <QFrame>
+#include <QGridLayout>
 #include <QImage>
+#include <QLabel>
 #include <QScreen>
 
-#include "bookmarks.h"
+#include <utility>
 
 BookmarksDialog::BookmarksDialog(QWidget *parent)
     : QDialog(parent)
@@ -28,7 +30,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
 
     QString labelsStyle = "QLabel {color:white;}";
 
-    foreach (QLabel *label, pages) {
+    for (QLabel *const label : std::as_const(pages)) {
         label->setStyleSheet(labelsStyle);
     }
 

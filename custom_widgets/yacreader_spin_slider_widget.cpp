@@ -2,8 +2,8 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QSpinBox>
 #include <QSlider>
+#include <QSpinBox>
 
 YACReaderSpinSliderWidget::YACReaderSpinSliderWidget(QWidget *parent, bool strechableSlider)
     : QWidget(parent), tracking(true)

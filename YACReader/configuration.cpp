@@ -1,11 +1,10 @@
 #include "configuration.h"
 
-#include <QFile>
-#include <QFile>
-#include <QTextStream>
 #include <QCoreApplication>
-#include <QStringList>
+#include <QFile>
 #include <QMessageBox>
+#include <QStringList>
+#include <QTextStream>
 
 Configuration::Configuration()
 {
@@ -33,12 +32,8 @@ void Configuration::load(QSettings *settings)
         settings->setValue(FLOW_TYPE, 0);
     if (!settings->contains(FULLSCREEN))
         settings->setValue(FULLSCREEN, false);
-    if (!settings->contains(MAXIMIZED))
-        settings->setValue(MAXIMIZED, false);
     if (!settings->contains(DOUBLE_PAGE))
         settings->setValue(DOUBLE_PAGE, false);
-    if (!settings->contains(BACKGROUND_COLOR))
-        settings->setValue(BACKGROUND_COLOR, QColor(40, 40, 40));
     if (!settings->contains(SHOW_TOOLBARS))
         settings->setValue(SHOW_TOOLBARS, true);
     if (!settings->contains(QUICK_NAVI_MODE))

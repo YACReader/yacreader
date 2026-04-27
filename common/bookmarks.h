@@ -1,12 +1,11 @@
 #ifndef BOOKMARKS_H
 #define BOOKMARKS_H
 
-#include <QObject>
-#include <QMap>
-#include <QImage>
-#include <QString>
-#include <QMap>
 #include <QDateTime>
+#include <QImage>
+#include <QMap>
+#include <QObject>
+#include <QString>
 class BookmarksList
 {
 public:

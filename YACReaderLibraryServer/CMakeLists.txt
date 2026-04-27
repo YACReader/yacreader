@@ -1,0 +1,105 @@
+# YACReaderLibraryServer - Headless REST server
+
+qt_add_executable(YACReaderLibraryServer
+    main.cpp
+    console_ui_library_creator.h
+    console_ui_library_creator.cpp
+    libraries_updater.h
+    libraries_updater.cpp
+)
+yacreader_apply_build_options(YACReaderLibraryServer)
+
+target_include_directories(YACReaderLibraryServer PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary/db
+)
+
+target_compile_definitions(YACReaderLibraryServer PRIVATE
+    SERVER_RELEASE
+    YACREADER_LIBRARY
+)
+if(BUILD_NUMBER)
+    target_compile_definitions(YACReaderLibraryServer PRIVATE "BUILD_NUMBER=\"${BUILD_NUMBER}\"")
+endif()
+
+# Translations
+qt_add_translations(YACReaderLibraryServer
+    TS_FILES
+        yacreaderlibraryserver_es.ts
+        yacreaderlibraryserver_ru.ts
+        yacreaderlibraryserver_pt.ts
+        yacreaderlibraryserver_fr.ts
+        yacreaderlibraryserver_nl.ts
+        yacreaderlibraryserver_tr.ts
+        yacreaderlibraryserver_de.ts
+        yacreaderlibraryserver_zh_CN.ts
+        yacreaderlibraryserver_zh_TW.ts
+        yacreaderlibraryserver_zh_HK.ts
+        yacreaderlibraryserver_source.ts
+)
+
+target_link_libraries(YACReaderLibraryServer PRIVATE
+    Qt6::Core
+    Qt6::Network
+    Qt6::Sql
+    Qt6::Core5Compat
+    library_common
+    db_helper
+    comic_backend
+    common_all
+    naturalsort
+    cbx_backend
+    server
+    QsLog
+    QrCode
+)
+
+# Copy server web files to build output for development (Linux uses DATADIR at runtime)
+if(WIN32 OR APPLE)
+    add_custom_command(TARGET YACReaderLibraryServer POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${PROJECT_SOURCE_DIR}/release/server/docroot/images/webui"
+            "$<TARGET_FILE_DIR:YACReaderLibraryServer>/server/docroot/images/webui"
+        COMMENT "Copying webui images to build output"
+    )
+endif()
+
+# Platform-specific
+if(WIN32)
+    target_link_libraries(YACReaderLibraryServer PRIVATE oleaut32 ole32 shell32 user32)
+endif()
+
+if(APPLE)
+    set_target_properties(YACReaderLibraryServer PROPERTIES
+        MACOSX_BUNDLE TRUE
+        MACOSX_BUNDLE_GUI_IDENTIFIER "com.yacreader.YACReaderLibraryServer"
+        MACOSX_BUNDLE_BUNDLE_NAME "YACReaderLibraryServer"
+    )
+    target_link_libraries(YACReaderLibraryServer PRIVATE
+        "-framework Foundation"
+        "-framework ApplicationServices"
+        "-framework AppKit"
+    )
+endif()
+
+# Linux install rules
+if(UNIX AND NOT APPLE)
+    target_compile_definitions(YACReaderLibraryServer PRIVATE
+        "LIBDIR=\"${CMAKE_INSTALL_FULL_LIBDIR}\""
+        "DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\""
+        "BINDIR=\"${CMAKE_INSTALL_FULL_BINDIR}\""
+    )
+
+    install(TARGETS YACReaderLibraryServer RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+    # Standalone server: install server web files alongside the binary
+    if(BUILD_SERVER_STANDALONE)
+        install(DIRECTORY "${PROJECT_SOURCE_DIR}/release/server"
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/yacreader)
+    endif()
+
+    # systemd service
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/yacreaderlibraryserver.service"
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/systemd/user)
+endif()

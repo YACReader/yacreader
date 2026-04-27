@@ -2,6 +2,30 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10 (WIP)
+
+### YACReader
+* Add support for continuous scroll mode.
+* Fix the translator.
+* Add Lanczos interpolation for image scaling. You can control the method used via the settings under `Image adjustments`.
+* Fix hdpi trackpad scrolling when scroll animations are enabled.
+
+### YACReaderLibrary
+* Navigating between comics in the metadata editor no longer copies fields from the previous comic into ones that have no value set. To edit shared metadata across multiple comics at once, select them all and use the bulk edit dialog.
+
+### All GUI Apps
+* Migrate Flow implementation from OpenGL to QRhi. This is a full new implementation with better performance and compatibility with operating systems and hardware.
+* Add light/dark themes support that follow the system configuration.
+* Add a theme editor and support for custom themes.
+* The apps include 12 built in themes to pick from. 
+* Add an application language setting with a system default option in YACReader and YACReaderLibrary.
+* Fix fullscreen mode in Windows, interaction with the OS is now possible while the apps are in fullscreen.
+* Improve support for multi-screen setups.
+* Fix PDFs with crop information on macOS.
+
+### All apps
+* Add support for user-installed Qt image format plugins via the shared `plugins/imageformats` folder in the YACReader settings directory.
+
 ## 9.16.4
 
 ### YACReaderLibrary
@@ -120,7 +144,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReaderLibraryServer
 * Add `rescan-xml-info` command.
-* Improved API to provide better integration with the clients (Android 1.4.0 and iOS 3.29.0). 
+* Improved API to provide better integration with the clients (Android 1.4.0 and iOS 3.29.0).
 
 ### All Apps
 * New universal builds for macos.

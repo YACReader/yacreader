@@ -3,17 +3,17 @@
   @author Stefan Frings
 */
 
-#include "static.h"
 #include "yacreader_http_server.h"
+
+#include "static.h"
 // #include "dualfilelogger.h"
 #include "httplistener.h"
 #include "requestmapper.h"
 #include "staticfilecontroller.h"
-
 #include "yacreader_global.h"
 
-#include <QDir>
 #include <QCoreApplication>
+#include <QDir>
 
 /** Name of this application */
 #define APPNAME "YACReaderLibrary"
@@ -25,12 +25,7 @@
 #define DESCRIPTION "Comic reader and organizer"
 
 using stefanfrings::HttpListener;
-using stefanfrings::HttpRequest;
-using stefanfrings::HttpResponse;
-
-using stefanfrings::HttpSessionStore;
 using stefanfrings::StaticFileController;
-using stefanfrings::TemplateCache;
 
 void YACReaderHttpServer::start(quint16 port)
 {
@@ -38,36 +33,7 @@ void YACReaderHttpServer::start(quint16 port)
     QCoreApplication *app = QCoreApplication::instance();
     QString configFileName = YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini";
 
-    // Configure template loader and cache
-    auto templateSettings = new QSettings(configFileName, QSettings::IniFormat, app);
-    templateSettings->beginGroup("templates");
-
-    if (templateSettings->value("cacheSize").isNull())
-        templateSettings->setValue("cacheSize", "160000");
-
-    QString baseTemplatePath = QString("./server/templates");
-    QString templatePath;
-
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    templatePath = QFileInfo(QString(DATADIR) + "/yacreader", baseTemplatePath).absoluteFilePath();
-#else
-    templatePath = QFileInfo(QCoreApplication::applicationDirPath(), baseTemplatePath).absoluteFilePath();
-#endif
-    if (!templateSettings->contains("path"))
-        templateSettings->setValue("path", templatePath);
-
-    Static::templateLoader = new TemplateCache(templateSettings, app);
-
-    // Configure session store
-    auto sessionSettings = new QSettings(configFileName, QSettings::IniFormat, app);
-    sessionSettings->beginGroup("sessions");
-
-    if (sessionSettings->value("expirationTime").isNull())
-        sessionSettings->setValue("expirationTime", 864000000);
-
-    Static::sessionStore = new HttpSessionStore(sessionSettings, app);
-
-    Static::yacreaderSessionStore = new YACReaderHttpSessionStore(Static::sessionStore, app);
+    Static::yacreaderSessionStore = new YACReaderHttpSessionStore(app);
 
     // Configure static file controller
     auto fileSettings = new QSettings(configFileName, QSettings::IniFormat, app);
@@ -103,7 +69,7 @@ void YACReaderHttpServer::start(quint16 port)
     if (listenerSettings->value("cleanupInterval").isNull())
         listenerSettings->setValue("cleanupInterval", 10000);
 
-    if (listenerSettings->value("minThreads").isNull())
+    if (listenerSettings->value("maxThreads").isNull())
         listenerSettings->setValue("maxThreads", 1000);
 
     if (listenerSettings->value("minThreads").isNull())

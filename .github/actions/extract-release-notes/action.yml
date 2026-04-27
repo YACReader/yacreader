@@ -1,0 +1,31 @@
+name: Extract Release Notes
+description: Extract release notes from CHANGELOG.md for a given version
+
+inputs:
+  version:
+    description: Version to extract notes for
+    required: true
+
+outputs:
+  notes:
+    description: Extracted release notes
+    value: ${{ steps.extract.outputs.notes }}
+
+runs:
+  using: composite
+  steps:
+    - id: extract
+      shell: bash
+      run: |
+        VERSION="${{ inputs.version }}"
+        MAJOR="${VERSION%%.*}"
+        # Try exact version match first, fall back to major version match
+        NOTES=$(awk "/^## ${VERSION}( |$)/{found=1; next} /^## /{if(found) exit} found{print}" CHANGELOG.md)
+        if [ -z "$NOTES" ]; then
+          NOTES=$(awk "/^## ${MAJOR}( |$)/{found=1; next} /^## /{if(found) exit} found{print}" CHANGELOG.md)
+        fi
+        {
+          echo "notes<<EOF"
+          echo "$NOTES"
+          echo "EOF"
+        } >> $GITHUB_OUTPUT

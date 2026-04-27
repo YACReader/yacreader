@@ -461,8 +461,8 @@ void ConcurrentQueueTest::singleUserThread_data()
 
     using ms = chrono::milliseconds;
 
-    QTest::newRow("-") << 0 << JobDataSet {};
-    QTest::newRow("0") << 7 << JobDataSet {};
+    QTest::newRow("-") << 0 << JobDataSet { };
+    QTest::newRow("0") << 7 << JobDataSet { };
     QTest::newRow("A") << 1 << JobDataSet { { 5, ms(0) } };
     QTest::newRow("B") << 5 << JobDataSet { { 12, ms(1) } };
     QTest::newRow("C") << 1 << JobDataSet { { 1, ms(0) }, { 5, ms(2) }, { 3, ms(1) } };
@@ -559,9 +559,9 @@ void ConcurrentQueueTest::cancelPending1UserThread_data()
     const auto ms = [](int count) -> Clock::duration { return chrono::milliseconds(count); };
     const auto us = [](int count) -> Clock::duration { return chrono::microseconds(count); };
 
-    QTest::newRow("-") << 0 << JobDataSet {} << ms(0);
-    QTest::newRow("01") << 2 << JobDataSet {} << ms(0);
-    QTest::newRow("02") << 3 << JobDataSet {} << ms(1);
+    QTest::newRow("-") << 0 << JobDataSet { } << ms(0);
+    QTest::newRow("01") << 2 << JobDataSet { } << ms(0);
+    QTest::newRow("02") << 3 << JobDataSet { } << ms(1);
     QTest::newRow("A") << 1 << JobDataSet { { 5, ms(3) } } << ms(1);
     QTest::newRow("B") << 5 << JobDataSet { { 12, ms(1) } } << ms(1);
 

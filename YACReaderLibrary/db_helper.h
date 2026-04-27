@@ -2,9 +2,10 @@
 #define DB_HELPER_H
 
 class QString;
-#include <QMap>
-#include <QList>
 #include "yacreader_global.h"
+
+#include <QList>
+#include <QMap>
 
 class ComicDB;
 class Folder;

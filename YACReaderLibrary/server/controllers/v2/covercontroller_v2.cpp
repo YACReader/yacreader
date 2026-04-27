@@ -1,8 +1,10 @@
 #include "covercontroller_v2.h"
+
 #include "db_helper.h" //get libraries
-#include <QImage>
-#include "yacreader_libraries.h"
 #include "yacreader_global.h"
+#include "yacreader_libraries.h"
+
+#include <QImage>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

@@ -1,13 +1,29 @@
 #ifndef IMPORT_WIDGET_H
 #define IMPORT_WIDGET_H
 
-#include <QtWidgets>
+#include "themable.h"
 
-class ImportWidget : public QWidget
+#include <QElapsedTimer>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QLabel>
+#include <QPixmap>
+#include <QPropertyAnimation>
+#include <QPushButton>
+#include <QString>
+#include <QToolButton>
+#include <QWidget>
+
+class YACReaderActivityIndicatorWidget;
+
+class ImportWidget : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
     explicit ImportWidget(QWidget *parent = 0);
+
+protected:
+    void applyTheme(const Theme &theme) override;
 
 signals:
     void stop();
@@ -41,8 +57,12 @@ private:
     quint64 i;
 
     QToolButton *hideButton;
+    QLabel *topDecorator;
+    QLabel *bottomDecorator;
+    YACReaderActivityIndicatorWidget *activityIndicator;
 
     void resizeEvent(QResizeEvent *event) override;
+    void updateTextColors();
 };
 
 #endif // IMPORT_WIDGET_H

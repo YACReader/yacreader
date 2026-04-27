@@ -6,9 +6,9 @@
 class ExtractDelegate;
 
 class QLibrary;
-#include <QString>
 #include <QList>
 #include <QMap>
+#include <QString>
 
 struct SevenZipInterface;
 

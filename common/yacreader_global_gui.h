@@ -3,10 +3,11 @@
 
 #include "yacreader_global.h"
 
-#include <QWidget>
 #include <QMimeData>
+#include <QWidget>
 
 #define PATH "PATH"
+#define UI_LANGUAGE "UI_LANGUAGE"
 #define MAG_GLASS_SIZE "MAG_GLASS_SIZE"
 #define MAG_GLASS_ZOOM "MAG_GLASS_ZOOM"
 #define ZOOM_LEVEL "ZOOM_LEVEL"
@@ -17,14 +18,14 @@
 #define FLOW_TYPE "FLOW_TYPE"
 #define FULLSCREEN "FULLSCREEN"
 #define Y_WINDOW_GEOMETRY "GEOMETRY"
-#define MAXIMIZED "MAXIMIZED"
 #define CLOSE_TO_TRAY "CLOSE_TO_TRAY"
 #define CLOSE_TO_TRAY_NOTIFIED "CLOSE_TO_TRAY_NOTIFIED"
 #define START_TO_TRAY "START_TO_TRAY"
 #define DOUBLE_PAGE "DOUBLE_PAGE"
 #define DOUBLE_MANGA_PAGE "DOUBLE_MANGA_PAGE"
+#define CONTINUOUS_SCROLL "CONTINUOUS_SCROLL"
 #define COVER_IS_SP "COVER_IS_SP"
-#define BACKGROUND_COLOR "BACKGROUND_COLOR"
+#define BACKGROUND_COLOR "BACKGROUND_COLOR_10"
 #define SHOW_TOOLBARS "SHOW_TOOLBARS"
 #define BRIGHTNESS "BRIGHTNESS"
 #define CONTRAST "CONTRAST"
@@ -38,6 +39,7 @@
 #define USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE "USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE"
 #define DISABLE_SCROLL_ANIMATION "DISABLE_SCROLL_ANIMATION"
 #define MOUSE_MODE "MOUSE_MODE"
+#define SCALING_METHOD "SCALING_METHOD"
 
 #define FLOW_TYPE_GL "FLOW_TYPE_GL"
 #define Y_POSITION "Y_POSITION"
@@ -108,11 +110,9 @@ enum LibraryUITheme {
 void addSperator(QWidget *w);
 QAction *createSeparator();
 QIcon noHighlightedIcon(const QString &path);
-void colorize(QImage &img, QColor &col);
+void colorize(QImage &img, const QColor &col);
 QList<qulonglong> mimeDataToComicsIds(const QMimeData *data);
-QString addExtensionToIconPath(const QString &path);
-QString addExtensionToIconPathInToolbar(const QString &path);
-QAction *actionWithCustomIcon(const QIcon &icon, QAction *action);
+QAction *wrappedToolbarAction(QAction *action);
 QPixmap hdpiPixmap(const QString &file, QSize size);
 QString imageFileLoader(QWidget *parent);
 QString imagePathFromMimeData(const QMimeData *mimeData);

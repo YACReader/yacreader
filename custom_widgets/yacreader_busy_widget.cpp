@@ -1,18 +1,23 @@
 #include "yacreader_busy_widget.h"
 
 #include <QDebug>
+#include <QGradient>
 #include <QPainter>
 #include <QPixmapCache>
-#include <QGradient>
 
 YACReaderBusyWidget::YACReaderBusyWidget(QWidget *parent)
     : QWidget(parent)
 {
     setFixedSize(70, 70);
-    BusyIndicator *busy = new BusyIndicator(this);
-    busy->setIndicatorStyle(BusyIndicator::StyleArc);
-    busy->setColor(Qt::white);
-    busy->move(20, 20);
+    busyIndicator = new BusyIndicator(this);
+    busyIndicator->setIndicatorStyle(BusyIndicator::StyleArc);
+    busyIndicator->setColor(Qt::white);
+    busyIndicator->move(20, 20);
+}
+
+void YACReaderBusyWidget::setColor(QColor color)
+{
+    busyIndicator->setColor(color);
 }
 
 BusyIndicator::BusyIndicator(QWidget *parent, int size)
@@ -48,6 +53,7 @@ void BusyIndicator::setIndicatorStyle(IndicatorStyle style)
 void BusyIndicator::setColor(QColor color)
 {
     fillColor = color;
+    update();
 }
 
 BusyIndicator::IndicatorStyle BusyIndicator::indicatorStyle() const

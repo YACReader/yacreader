@@ -1,7 +1,6 @@
 #ifndef __TRANSLATOR_H
 #define __TRANSLATOR_H
 
-class QUrl;
 class QMouseEvent;
 class QPoint;
 class QTextEdit;
@@ -9,15 +8,16 @@ class QComboBox;
 class QLabel;
 class QPushButton;
 class YACReaderBusyWidget;
+class QTextToSpeech;
 
-#include <QWidget>
-#include <QThread>
-#include <QUrl>
+#include "themable.h"
 #include "viewer.h"
 
-class QMediaPlayer;
+#include <QThread>
+#include <QUrl>
+#include <QWidget>
 
-class YACReaderTranslator : public QWidget
+class YACReaderTranslator : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -28,12 +28,12 @@ public slots:
 
 protected slots:
     void translate();
-    void setSpeak(const QUrl &url);
     void setTranslation(const QString &string);
     void error();
     void clear();
 
 protected:
+    void applyTheme(const Theme &theme) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -44,16 +44,21 @@ protected:
     QPoint click;
 
 private:
-    QMediaPlayer *player;
+    QTextToSpeech *tts;
+    QString speakText;
+    QString speakLocale;
 
     QTextEdit *text;
     QComboBox *from;
     QComboBox *to;
+    QLabel *titleLabel;
     QLabel *resultsTitle;
+    QLabel *arrowLabel;
     QPushButton *speakButton;
+    QPushButton *closeButton;
+    QPushButton *searchButton;
     QLabel *resultText;
     YACReaderBusyWidget *busyIndicator;
-    QUrl ttsSource;
     QPushButton *clearButton;
 };
 
@@ -74,19 +79,4 @@ private:
     void run() override;
 };
 
-class TextToSpeachLoader : public QThread
-{
-    Q_OBJECT
-public:
-    TextToSpeachLoader(QString text, QString language);
-signals:
-    void requestFinished(QUrl);
-    void timeOut();
-    void error();
-
-private:
-    QString text;
-    QString language;
-    void run() override;
-};
 #endif

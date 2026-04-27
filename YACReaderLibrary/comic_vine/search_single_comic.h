@@ -1,13 +1,13 @@
 #ifndef SEARCH_SINGLE_COMIC_H
 #define SEARCH_SINGLE_COMIC_H
 
-#include <QtWidgets>
-
 #include "scraper_checkbox.h"
+#include "themable.h"
 
 class ScraperLineEdit;
+class QLabel;
 
-class SearchSingleComic : public QWidget
+class SearchSingleComic : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -24,5 +24,9 @@ private:
     // ScraperLineEdit *numberEdit;
     ScraperLineEdit *volumeEdit;
     ScraperCheckBox *exactMatchCheckBox;
+    QLabel *label;
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 #endif // SEARCH_SINGLE_COMIC_H

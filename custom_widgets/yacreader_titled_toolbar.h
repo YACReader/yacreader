@@ -1,11 +1,13 @@
 #ifndef YACREADER_TITLED_TOOLBAR_H
 #define YACREADER_TITLED_TOOLBAR_H
 
-#include <QWidget>
+#include "themable.h"
+
 #include <QLabel>
 #include <QPaintEvent>
 #include <QPainter>
 #include <QPoint>
+#include <QWidget>
 
 class QIcon;
 class BusyIndicator;
@@ -27,7 +29,7 @@ private:
     void drawTextEffect(QPainter *painter, QPoint offset);
 };
 
-class YACReaderTitledToolBar : public QWidget
+class YACReaderTitledToolBar : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -42,10 +44,15 @@ public slots:
     void addSepartor();
     void showBusyIndicator();
     void hideBusyIndicator();
+    void setTitle(const QString &title);
+
+protected:
+    void applyTheme(const Theme &theme) override;
 
 private:
     DropShadowLabel *nameLabel;
     BusyIndicator *busyIndicator;
+    QList<QWidget *> separators;
 };
 
 #endif // YACREADER_TITLED_TOOLBAR_H

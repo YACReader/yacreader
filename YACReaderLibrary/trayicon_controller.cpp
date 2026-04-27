@@ -1,10 +1,9 @@
 #include "trayicon_controller.h"
 
+#include "library_window.h"
 #include "yacreader_global_gui.h"
 
-#include "library_window.h"
-
-#include <QtWidgets>
+#include <QApplication>
 #include <QMessageBox>
 
 #ifdef Q_OS_MACOS

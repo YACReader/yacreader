@@ -1,20 +1,25 @@
 #ifndef PAGE_LABEL_WIDGET_H
 #define PAGE_LABEL_WIDGET_H
 
+#include "themable.h"
+
 #include <QWidget>
 
 class QLabel;
 class QPropertyAnimation;
 
-class PageLabelWidget : public QWidget
+class PageLabelWidget : public QWidget, protected Themable
 {
     Q_OBJECT
 private:
     QLabel *textLabel;
     QPropertyAnimation *animation;
+    QColor infoBackgroundColor;
+    int fontSizePx = 0;
 
 protected:
     void paintEvent(QPaintEvent *) override;
+    void applyTheme(const Theme &theme) override;
 
 public:
     PageLabelWidget(QWidget *parent);

@@ -1,13 +1,13 @@
 #include "api_key_dialog.h"
 
-#include <QVBoxLayout>
+#include "yacreader_global_gui.h"
+
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSettings>
-
-#include "yacreader_global_gui.h"
+#include <QVBoxLayout>
 
 ApiKeyDialog::ApiKeyDialog(QWidget *parent)
     : QDialog(parent)

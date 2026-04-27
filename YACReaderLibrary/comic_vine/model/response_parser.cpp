@@ -1,4 +1,5 @@
 #include "response_parser.h"
+
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonParseError>

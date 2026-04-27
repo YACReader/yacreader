@@ -1,7 +1,11 @@
 #ifndef INITIALCOMICINFOEXTRACTOR_H
 #define INITIALCOMICINFOEXTRACTOR_H
 
-#include <QtGui>
+#include <QImage>
+#include <QObject>
+#include <QPixmap>
+#include <QProcess>
+#include <QString>
 
 namespace YACReader {
 class InitialComicInfoExtractor : public QObject

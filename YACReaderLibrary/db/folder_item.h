@@ -42,8 +42,8 @@
 #define TREEITEM_H
 
 #include <QList>
-#include <QVariant>
 #include <QModelIndex>
+#include <QVariant>
 
 class FolderItem
 {

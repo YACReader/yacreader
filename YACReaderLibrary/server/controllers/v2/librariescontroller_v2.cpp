@@ -1,4 +1,5 @@
 #include "librariescontroller_v2.h"
+
 #include "db_helper.h" //get libraries
 #include "yacreader_libraries.h"
 
@@ -15,7 +16,7 @@ void LibrariesControllerV2::service(HttpRequest & /* request */, HttpResponse &r
 
     QJsonArray librariesJson;
 
-    foreach (YACReaderLibrary library, libraries) {
+    for (const auto &library : libraries) {
         QJsonObject libraryJson;
 
         libraryJson["name"] = library.getName();

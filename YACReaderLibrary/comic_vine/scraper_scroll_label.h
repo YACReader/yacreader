@@ -1,17 +1,17 @@
 #ifndef SCRAPER_SCROLL_LABEL_H
 #define SCRAPER_SCROLL_LABEL_H
 
+#include "themable.h"
+
 #include <QScrollArea>
 
 class QLabel;
 
-class ScraperScrollLabel : public QScrollArea
+class ScraperScrollLabel : public QScrollArea, protected Themable
 {
     Q_OBJECT
 public:
     explicit ScraperScrollLabel(QWidget *parent = nullptr);
-
-signals:
 
 public slots:
     void setText(const QString &text);
@@ -21,6 +21,9 @@ public slots:
 
 private:
     QLabel *textLabel;
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SCRAPER_SCROLL_LABEL_H

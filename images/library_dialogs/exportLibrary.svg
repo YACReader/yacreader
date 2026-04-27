@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+        stroke: #f0f;
+        stroke-linecap: round;
+        stroke-miterlimit: 10;
+        stroke-width: 12px;
+      }
+
+      .cls-2 {
+        fill: #f0f;
+      }
+    </style>
+  </defs>
+  <g id="New_Symbol_10" data-name="New Symbol 10">
+    <path class="cls-2" d="M57.11,25.26l-22.11-14.74v9.48h-7.36c-9.83,3-20.28,12.54-17.2,17.28,2.46-4.91,13.51-7.28,17.2-7.28h7.36v10l22.11-14.74Z"/>
+    <path class="cls-1" d="M36,59v40.41c0,6.92,5.66,12.59,12.59,12.59h45.83c6.92,0,12.59-5.66,12.59-12.59v-61.83c0-6.92-5.66-12.59-12.59-12.59h-15.41"/>
+  </g>
+</svg>

@@ -1,13 +1,24 @@
 #ifndef YACREADER_TREEVIEW_H
 #define YACREADER_TREEVIEW_H
 
-#include <QtWidgets>
+#include "themable.h"
 
-class YACReaderTreeView : public QTreeView
+#include <QDragEnterEvent>
+#include <QDragLeaveEvent>
+#include <QDragMoveEvent>
+#include <QDropEvent>
+#include <QMouseEvent>
+#include <QPoint>
+#include <QTimer>
+#include <QTreeView>
+
+class YACReaderTreeView : public QTreeView, protected Themable
 {
     Q_OBJECT
 public:
     explicit YACReaderTreeView(QWidget *parent = 0);
+
+private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
 signals:
@@ -24,6 +35,7 @@ protected:
     void dropEvent(QDropEvent *event) override;
 
     void currentChanged(const QModelIndex &current, const QModelIndex &previous) override;
+    void applyTheme(const Theme &theme) override;
 
     // fix for drop auto expand
     QTimer expandTimer;

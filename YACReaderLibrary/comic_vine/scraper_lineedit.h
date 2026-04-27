@@ -1,11 +1,13 @@
 #ifndef SCRAPPER_LINEEDIT_H
 #define SCRAPPER_LINEEDIT_H
 
+#include "themable.h"
+
 #include <QLineEdit>
 
 class QLabel;
 
-class ScraperLineEdit : public QLineEdit
+class ScraperLineEdit : public QLineEdit, protected Themable
 {
     Q_OBJECT
 public:
@@ -13,6 +15,7 @@ public:
 
 protected:
     void resizeEvent(QResizeEvent *) override;
+    void applyTheme(const Theme &theme) override;
 
 private:
     QLabel *titleLabel;

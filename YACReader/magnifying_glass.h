@@ -2,7 +2,6 @@
 #define __MAGNIFYING_GLASS
 
 #include <QLabel>
-#include <QtGui>
 #include <QMouseEvent>
 #include <QWidget>
 

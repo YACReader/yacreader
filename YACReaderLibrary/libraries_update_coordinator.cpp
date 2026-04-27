@@ -2,8 +2,8 @@
 #include "libraries_update_coordinator.h"
 
 #include "library_creator.h"
-#include "yacreader_libraries.h"
 #include "yacreader_global.h"
+#include "yacreader_libraries.h"
 
 using namespace YACReader;
 

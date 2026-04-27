@@ -1,7 +1,10 @@
 #include "libraries_updater.h"
 
-#include "yacreader_libraries.h"
 #include "data_base_management.h"
+#include "yacreader_global.h"
+#include "yacreader_libraries.h"
+
+#include <utility>
 
 LibrariesUpdater::LibrariesUpdater()
 {
@@ -13,7 +16,7 @@ void LibrariesUpdater::updateIfNeeded()
 
     libraries.load();
 
-    foreach (QString name, libraries.getNames()) {
+    for (const QString &name : libraries.getNames()) {
         QString libraryPath = libraries.getPath(name);
         QString libraryDataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
         QString databasePath = YACReader::LibraryPaths::libraryDatabasePath(libraryPath);

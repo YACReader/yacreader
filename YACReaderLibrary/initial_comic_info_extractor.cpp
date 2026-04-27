@@ -1,11 +1,12 @@
 #include "initial_comic_info_extractor.h"
 
-#include <QsLog.h>
-#include "pdf_comic.h"
 #include "comic.h"
 #include "compressed_archive.h"
-#include "qnaturalsorting.h"
 #include "cover_utils.h"
+#include "pdf_comic.h"
+#include "qnaturalsorting.h"
+
+#include <QsLog.h>
 
 using namespace YACReader;
 
@@ -41,12 +42,7 @@ void InitialComicInfoExtractor::extract()
             return;
         }
 #else
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         auto pdfComic = Poppler::Document::load(_fileSource);
-#else
-        auto _pdfComic = Poppler::Document::load(_fileSource);
-        auto pdfComic = std::unique_ptr<Poppler::Document>(_pdfComic);
-#endif
 #endif
         if (!pdfComic) {
             QLOG_WARN() << "Extracting cover: unable to open PDF file " << _fileSource;

@@ -1,12 +1,14 @@
 #include "data_base_management.h"
 
-#include <QtCore>
-#include "initial_comic_info_extractor.h"
-#include "check_new_version.h"
-#include "db_helper.h"
-#include "yacreader_libraries.h"
-
 #include "QsLog.h"
+#include "db_helper.h"
+#include "initial_comic_info_extractor.h"
+
+#include <QImageReader>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QtCore>
 
 using namespace YACReader;
 
@@ -127,36 +129,57 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 
 QSqlDatabase DataBaseManagement::loadDatabase(QString libraryDataPath)
 {
-    if (!QFile::exists(libraryDataPath + "/library.ydb")) {
+    const QString dbPath = QDir::cleanPath(libraryDataPath + "/library.ydb");
+    if (!QFile::exists(dbPath)) {
         return QSqlDatabase();
     }
 
-    QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", libraryDataPath + threadId);
-    db.setDatabaseName(libraryDataPath + "/library.ydb");
+    QString threadId = QString::number((quintptr)QThread::currentThreadId(), 16);
+    QString connectionName = dbPath + threadId;
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+    db.setConnectOptions("QSQLITE_BUSY_TIMEOUT=2000");
+    db.setDatabaseName(dbPath);
     if (!db.open()) {
+        const QString error = db.lastError().text();
+        db = QSqlDatabase();
+        QSqlDatabase::removeDatabase(connectionName);
+        QLOG_ERROR() << "loadDatabase: failed to open" << dbPath << error;
         return QSqlDatabase();
     }
-    QSqlQuery pragma("PRAGMA foreign_keys = ON", db);
+    QSqlQuery pragmaFK(db);
+    if (!pragmaFK.exec("PRAGMA foreign_keys = ON")) {
+        QLOG_ERROR() << "loadDatabase: failed to enable foreign keys for" << dbPath << pragmaFK.lastError().text();
+    }
 
     return db;
 }
 
 QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
 {
-    if (!QFile::exists(filePath)) {
+    const QString dbPath = QDir::cleanPath(filePath);
+    if (!QFile::exists(dbPath)) {
         return QSqlDatabase();
     }
 
-    QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", filePath + threadId);
-    db.setDatabaseName(filePath);
+    QString threadId = QString::number((quintptr)QThread::currentThreadId(), 16);
+    QString connectionName = dbPath + threadId;
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+    db.setConnectOptions("QSQLITE_BUSY_TIMEOUT=2000");
+    db.setDatabaseName(dbPath);
     if (!db.open()) {
         // se devuelve una base de datos vacía e inválida
 
+        const QString error = db.lastError().text();
+        db = QSqlDatabase();
+        QSqlDatabase::removeDatabase(connectionName);
+        QLOG_ERROR() << "loadDatabaseFromFile: failed to open" << dbPath << error;
         return QSqlDatabase();
     }
-    QSqlQuery pragma("PRAGMA foreign_keys = ON", db);
+    QSqlQuery pragmaFK(db);
+    if (!pragmaFK.exec("PRAGMA foreign_keys = ON")) {
+        QLOG_ERROR() << "loadDatabaseFromFile: failed to enable foreign keys for" << dbPath << pragmaFK.lastError().text();
+    }
 
     return db;
 }
@@ -751,8 +774,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
         }
 
         destDB.commit();
-        QString hash;
-        foreach (hash, hashes) {
+        for (const auto &hash : hashes) {
             QSqlQuery getComic(destDB);
             getComic.prepare("SELECT c.path,ci.coverPage FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) where ci.hash = :hash");
             getComic.bindValue(":hash", hash);
@@ -767,7 +789,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
             }
         }
         sourceDBconnection = sourceDB.connectionName();
-        destDBconnection = sourceDB.connectionName();
+        destDBconnection = destDB.connectionName();
     }
 
     QSqlDatabase::removeDatabase(sourceDBconnection);
@@ -858,7 +880,7 @@ bool DataBaseManagement::addColumns(const QString &tableName, const QStringList 
     QString sql = "ALTER TABLE %1 ADD COLUMN %2";
     bool returnValue = true;
 
-    foreach (QString columnDef, columnDefs) {
+    for (const auto &columnDef : columnDefs) {
         QSqlQuery alterTable(db);
         alterTable.prepare(sql.arg(tableName).arg(columnDef));
         // alterTableComicInfo.bindValue(":column_def",columnDef);
@@ -923,10 +945,10 @@ int DataBaseManagement::compareVersions(const QString &v1, const QString v2)
     QList<int> v1il;
     QList<int> v2il;
 
-    foreach (QString s, v1l)
+    for (const auto &s : v1l)
         v1il.append(s.toInt());
 
-    foreach (QString s, v2l)
+    for (const auto &s : v2l)
         v2il.append(s.toInt());
 
     for (int i = 0; i < qMin(v1il.length(), v2il.length()); i++) {

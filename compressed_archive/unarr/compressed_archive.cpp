@@ -1,9 +1,10 @@
 #include "compressed_archive.h"
 
-#include <QFileInfo>
-#include <QDebug>
-
 #include "extract_delegate.h"
+
+#include <QDebug>
+#include <QFileInfo>
+
 #include <unarr.h>
 
 CompressedArchive::CompressedArchive(const QString &filePath, QObject *parent)

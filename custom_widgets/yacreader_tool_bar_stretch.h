@@ -1,8 +1,8 @@
 #ifndef YACREADER_TOOL_BAR_STRETCH_H
 #define YACREADER_TOOL_BAR_STRETCH_H
 
-#include <QWidget>
 #include <QHBoxLayout>
+#include <QWidget>
 
 class YACReaderToolBarStretch : public QWidget
 {

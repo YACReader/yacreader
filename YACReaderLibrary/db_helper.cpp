@@ -1,31 +1,29 @@
 #include "db_helper.h"
 
-#include <QMap>
-#include <QString>
-#include <QList>
-#include <QDateTime>
-#include <QFile>
-#include <QFileInfo>
-#include <QCoreApplication>
-#include <QTextStream>
-#include <QSqlDatabase>
-#include <QSqlRecord>
-#include <QSqlQuery>
-
-#include <algorithm>
-#include <limits>
-
-#include "reading_list.h"
-#include "library_item.h"
+#include "QsLog.h"
 #include "comic_db.h"
 #include "data_base_management.h"
 #include "folder.h"
-#include "yacreader_libraries.h"
-#include "yacreader_global.h"
-
+#include "library_item.h"
 #include "qnaturalsorting.h"
+#include "reading_list.h"
+#include "yacreader_global.h"
+#include "yacreader_libraries.h"
 
-#include "QsLog.h"
+#include <QCoreApplication>
+#include <QDateTime>
+#include <QFile>
+#include <QFileInfo>
+#include <QList>
+#include <QMap>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QString>
+#include <QTextStream>
+
+#include <algorithm>
 
 using namespace YACReader;
 
@@ -438,7 +436,8 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
         while (subfolders.next())
             ids << subfolders.value(0).toULongLong();
 
-        foreach (qulonglong id, ids) {
+        const auto &subfolderIds = ids;
+        for (const auto id : subfolderIds) {
             QSqlQuery selectQuery(db);
 
             QString params;
@@ -548,7 +547,7 @@ void DBHelper::deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlD
 
     QSqlQuery query(db);
     query.prepare("DELETE FROM comic_default_reading_list WHERE comic_id = :comic_id AND default_reading_list_id = 1");
-    foreach (ComicDB comic, comicsList) {
+    for (const auto &comic : comicsList) {
         query.bindValue(":comic_id", comic.id);
         query.exec();
     }
@@ -580,7 +579,7 @@ void DBHelper::deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglon
 
     QSqlQuery query(db);
     query.prepare("DELETE FROM comic_label WHERE comic_id = :comic_id AND label_id = :label_id");
-    foreach (ComicDB comic, comicsList) {
+    for (const auto &comic : comicsList) {
         query.bindValue(":comic_id", comic.id);
         query.bindValue(":label_id", labelId);
         query.exec();
@@ -600,7 +599,7 @@ void DBHelper::deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qul
 
     QSqlQuery query(db);
     query.prepare("DELETE FROM comic_reading_list WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
-    foreach (ComicDB comic, comicsList) {
+    for (const auto &comic : comicsList) {
         query.bindValue(":comic_id", comic.id);
         query.bindValue(":reading_list_id", readingListId);
         query.exec();
@@ -1088,7 +1087,8 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
 {
     QMap<qulonglong, QList<ComicDB>> moreRecentComics;
 
-    foreach (qulonglong libraryId, comics.keys()) {
+    const auto libraryIds = comics.keys();
+    for (const auto libraryId : libraryIds) {
         QList<ComicDB> libraryMoreRecentComics;
 
         QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
@@ -1096,6 +1096,11 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
+
+            if (!db.isValid()) {
+                QLOG_ERROR() << "updateFromRemoteClient: could not open database for library" << libraryPath;
+                continue;
+            }
 
             db.transaction();
 
@@ -1110,7 +1115,8 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
                                     "lastTimeImageFiltersSet = :lastTimeImageFiltersSet "
                                     " WHERE id = :id ");
 
-            foreach (ComicInfo comicInfo, comics[libraryId]) {
+            const auto &comicInfos = comics.constFind(libraryId).value();
+            for (const auto &comicInfo : comicInfos) {
                 bool found;
                 // TODO: sanitize this -> comicInfo.id contains comic id
                 ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
@@ -1195,15 +1201,19 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
 
 void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
 {
-    YACReaderLibraries libraries = DBHelper::getLibraries();
+    const YACReaderLibraries libraries = DBHelper::getLibraries();
+    const QStringList names = libraries.getNames();
 
-    QStringList names = libraries.getNames();
-
-    foreach (QString name, names) {
+    for (const auto &name : names) {
         QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
+
+            if (!db.isValid()) {
+                QLOG_ERROR() << "updateFromRemoteClientWithHash: could not open database for library" << libraryPath;
+                continue;
+            }
 
             db.transaction();
 
@@ -1216,7 +1226,7 @@ void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
                                     "rating = :rating"
                                     " WHERE id = :id ");
 
-            foreach (ComicInfo comicInfo, comics) {
+            for (const auto &comicInfo : comics) {
                 ComicInfo info = loadComicInfo(comicInfo.hash, db);
 
                 if (!info.existOnDb) {
@@ -1287,7 +1297,8 @@ void DBHelper::reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db)
                            "WHERE id = :id");
     db.transaction();
     int order = 0;
-    foreach (qulonglong id, ids) {
+    const auto &readingListIds = ids;
+    for (const auto id : readingListIds) {
         updateOrdering.bindValue(":ordering", order++);
         updateOrdering.bindValue(":id", id);
         updateOrdering.exec();
@@ -1304,7 +1315,8 @@ void DBHelper::reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlD
                            "WHERE comic_id = :comic_id AND default_reading_list_id = 1");
     db.transaction();
     int order = 0;
-    foreach (qulonglong id, comicIds) {
+    const auto &favoriteComicIds = comicIds;
+    for (const auto id : favoriteComicIds) {
         updateOrdering.bindValue(":ordering", order++);
         updateOrdering.bindValue(":comic_id", id);
         updateOrdering.exec();
@@ -1321,7 +1333,8 @@ void DBHelper::reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong>
                            "WHERE comic_id = :comic_id AND label_id = :label_id");
     db.transaction();
     int order = 0;
-    foreach (qulonglong id, comicIds) {
+    const auto &labelComicIds = comicIds;
+    for (const auto id : labelComicIds) {
         updateOrdering.bindValue(":ordering", order++);
         updateOrdering.bindValue(":comic_id", id);
         updateOrdering.bindValue(":label_id", labelId);
@@ -1339,7 +1352,8 @@ void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList
                            "WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
     db.transaction();
     int order = 0;
-    foreach (qulonglong id, comicIds) {
+    const auto &readingListComicIds = comicIds;
+    for (const auto id : readingListComicIds) {
         updateOrdering.bindValue(":ordering", order++);
         updateOrdering.bindValue(":comic_id", id);
         updateOrdering.bindValue(":reading_list_id", readingListId);
@@ -1357,7 +1371,8 @@ void DBHelper::updateComicsInfo(QList<ComicDB> &comics, const QString &databaseP
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         db.open();
         db.transaction();
-        foreach (ComicDB comic, comics) {
+        const auto &comicsRef = comics;
+        for (auto comic : comicsRef) {
             DBHelper::update(&(comic.info), db);
         }
         db.commit();
@@ -1489,7 +1504,7 @@ void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDat
     query.prepare("INSERT INTO comic_default_reading_list (default_reading_list_id, comic_id, ordering) "
                   "VALUES (1, :comic_id, :ordering)");
 
-    foreach (ComicDB comic, comicsList) {
+    for (const auto &comic : comicsList) {
         query.bindValue(":comic_id", comic.id);
         query.bindValue(":ordering", numComics++);
         query.exec();
@@ -1513,7 +1528,7 @@ void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong 
     query.prepare("INSERT INTO comic_label (label_id, comic_id, ordering) "
                   "VALUES (:label_id, :comic_id, :ordering)");
 
-    foreach (ComicDB comic, comicsList) {
+    for (const auto &comic : comicsList) {
         query.bindValue(":label_id", labelId);
         query.bindValue(":comic_id", comic.id);
         query.bindValue(":ordering", numComics++);
@@ -1538,7 +1553,7 @@ void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulon
     query.prepare("INSERT INTO comic_reading_list (reading_list_id, comic_id, ordering) "
                   "VALUES (:reading_list_id, :comic_id, :ordering)");
 
-    foreach (ComicDB comic, comicsList) {
+    for (const auto &comic : comicsList) {
         query.bindValue(":reading_list_id", readingListId);
         query.bindValue(":comic_id", comic.id);
         query.bindValue(":ordering", numComics++);

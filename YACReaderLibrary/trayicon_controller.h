@@ -1,7 +1,9 @@
 #ifndef TRAYICON_CONTROLLER_H
 #define TRAYICON_CONTROLLER_H
 
-#include <QtWidgets>
+#include <QCloseEvent>
+#include <QMenu>
+#include <QSettings>
 #include <QSystemTrayIcon>
 
 class LibraryWindow;

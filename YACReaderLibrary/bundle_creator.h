@@ -1,7 +1,7 @@
 #ifndef __BUNDLE_CREATOR_H
 #define __BUNDLE_CREATOR_H
 
-#include <QtCore>
+#include <QObject>
 
 class BundleCreator : public QObject
 {

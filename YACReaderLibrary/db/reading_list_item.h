@@ -1,11 +1,10 @@
 #ifndef READING_LIST_ITEM_H
 #define READING_LIST_ITEM_H
 
+#include "reading_list_model.h"
+
 #include <QIcon>
 #include <QVariant>
-
-#include "yacreader_global_gui.h"
-#include "reading_list_model.h"
 // TODO add propper constructors, using QList<QVariant> is not safe
 
 class ListItem
@@ -81,9 +80,6 @@ public:
 
 private:
     QList<ReadingListItem *> childItems;
-
-    QIcon list;
-    QIcon folder;
 
     enum DataIndexes {
         Name,

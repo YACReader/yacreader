@@ -1,92 +1,71 @@
-﻿<html>
+<html>
 <head>
   <style type="text/css">
-  h1, h2{
+  h1, h2 {
     color: #302f2d;
-	font-weight: normal;
+    font-weight: normal;
   }
-  
-  h1{
-	font-size: 20px;
+  h1 {
+    font-size: 20px;
   }
-  
-  h2{
-	font-size: 14px;
+  h2 {
+    font-size: 14px;
   }
-  
   a {
     color: #C19441;
-}
+  }
+  li {
+    margin-bottom: 6px;
+  }
   </style>
 </head>
 <body>
-	<h1>Guía de comienzo rápido</h1>
-	<p> Esta guía está desactualizada, obtén más ayuda en <a href="http://www.yacreader.com">http://www.yacreader.com</a> </p>
-	<h2>Características</h2>
-	<p>
-	YACReader Library es un navegador de bibliotecas de cómics con las siguiente caraterísticas:
-		<ul>
-			<li>Tres modos diferentes de ver las portadas de tus cómics (Cover Flow, Strip and Overlapped Strip)</li>
-			<li>Crea, añade, actauliza, renombra y borra varias colecciones de comics</li>
-			<li>Exporta e importa tus biblitecas (solo las portadas).</li>
-			<li>Navegación rápida entre tus cómics utilizando árboles y listas</li>
-			<li>Permite abrir directamente tus cómics en YACReader</li>
-			<li>Modo a pantalla completa</li>
-			<li>Permite realizar búsquedas de directorios en tus bibliotecas</li>
-		</ul>
-	</p>
-	<h2>Funciones y atajos</h2>
-	<p>
-		<ul>
-			<li>Crear una nueva biblioteca: Set a name to your library, select your comics folder and start the creation process</li>
-			<li>Abrir una biblioteca existente: This funcions allows you to select a folder with a comic library previously created</li>
-			<li>Empaquetar</li>
-			<li>Desempaquetar</li>
-			<li>Actualizar la biblioteca actual: Update the selected library, adding covers to the library if new comics were added, or deleting them if comics were removed</li>
-			<li>Renombrar la biblioteca actual: This funcions allows you to rename the selected library.			
-			<li>Eliminar la biblioteca actual de tu colección: delete the selected library from YACReaderLibrary, although library will not be removed from file system</li>
-			<li>Eliminar la biblioteca actual de tu disco: delete the selected library from YACReaderLibrary and erase it from disk (only covers, comics will never be deleted from disk)</li>
-			<li>Abrir el cómic actual en YACReader (Enter):Open for reading the centred comic in the cover flow.</li>
-			<li>Mostrar las propiedades del cómic: shows a full quality cover, comic file name, number of pages and size comic</li>
-			<li>Cambiar a modo a pantalla completa: you can view your covers bigger in fullscreen mode using 'F' key</li>
-			<li>Navegar por tu colección:
-				<ul>
-					<li>Selecciona una biblioteca: puedes seleccionar una biblioteca haciendo click en el campo desplegable de la parte superior izquierda.</li>
-					<li>Navega en una biblitoca: existen tres vistas.
-						<ul>
-							<li>A la izquierda hay un árbol que contiene todos las carpetas de tu biblioteca, puedes seleccionar cualquier carpeta, además es posible expandir o contraer mediante doble click cualquier
-carpeta que contenga otras en su interior. Además, también es posible expandir o contraer el árbol completo usando los botones '+' y '-'. La carpeta raíz puede ser seleccionada pulsando en el botón "Seleccionar nodo raíz".</li>
-							<li>En la parte superior derecha está la vista de las portadas the covers view. Esta vista muestra los cómics que hay en la carpeta seleccionada actualmente. Puedes navegar por los cómics usando los cursores izquierda y derecha (pulsando CTRL podrás además avanzar y retroceder rápido), también se puede navegar pulsando en las partes izquierda y derecha de la vista o simplemente usando la rueda del ratón.</li>
-							<li>En la parte inferior derecha hay una lista de cómics que se corresponde con los mostrados en la vista superior. Se puede seleccionar cualquier cómic pulsando en él</li>
-						</ul>
-					</li>
-					<li>Búsqueda: puedes buscar una carpeta en concreto usando el campo de texto situado en la parte inferior izquierda. Por ejemplo, si escribes "<b>sp</b>", la búsqueda coincidirá con "<b>Sp</b>iderman - vol 7" y "The dark ages - <b>Sp</b>awn". La busqueda siempre será insensible a las mayúsculas.
-				</ul>
-			</li>
-			<li>Diálogo de configuración:
-			<ul>
-			<li>"How to show covers" : a partir de la versión 0.2.0, se pueden elegir tres estilos para mostrar las carátulas.
-				<ul>
-					<li> Cover Flow : el estilo clásico</li>
-					<li> Strip : una tira de imágenes deslizándose horizontalmente </li>
-					<li> Overlapped Strip : una tira de imagenes parcialmente solapadas a izquierda y derecha de la imagen central </li>
-				<ul>
-			</li>
-			</ul>
-			</li>
+  <h1>Guía de comienzo rápido</h1>
+  <p>YACReaderLibrary es el gestor de colecciones de la suite YACReader. Lleva el control de los cómics almacenados en disco, permite navegar por ellos en distintas vistas y abre el cómic seleccionado en YACReader o en un lector de terceros si lo configuras.</p>
+  <p>Esta guía se centra en los flujos principales. Para los atajos de teclado, abre el diálogo de <b>Atajos</b> desde el menú o desde el diálogo de opciones y personalízalos allí.</p>
 
-		</ul>
-	</p>
-	<h2>Uso y consideraciones</h2>
-	<p></p>Se puede crear una colección en cualquier directorio (con permisos de escritura). El proceso de creación implica buscar imágenes en cualquier archivo
-	rar,zip,cbr,cbz o tar. Si se encuentran imágenes, la primera (alfabéticamente) es elegida como la portada del cómic y será añadida a tu biblioteca.</p>
-	
-	<p>La carpeta .yacreaderlibrary es creada en la carpeta raíz de cómics elegida. Esta carpeta alamecena copias de las carátulas de los cómics de la biblioteca, así que por favor, no enredes con ella ;).</p>
-	
-	<p>La función de exportar las carátulas de una biblioteca es ideal para compartir la información de las bibliotecas con otras personas</p>
-	<p><s>.yacreaderlibrary folder can be copied in order to share your comic library with your friends. To do that, you
-	can copy .yacreaderlibrary to any folder, and then "Open an existing library" from this folder (Note:
-	if you update that library, all covers will be removed). Is intended that this task could be done automatically from YACReaderLibrary in a later version.</s></p>
+  <h2>Crear o abrir una biblioteca</h2>
+  <ul>
+    <li>Crea una nueva biblioteca eligiendo la carpeta principal que contiene tus cómics.</li>
+    <li>También puedes abrir una biblioteca existente, empaquetar carátulas o desempaquetar un paquete de carátulas exportado previamente.</li>
+    <li>YACReaderLibrary crea y mantiene una carpeta oculta llamada <b>.yacreaderlibrary</b> dentro de la raíz de la biblioteca. Ahí guarda la base de datos y las carátulas generadas, así que no conviene editarla a mano.</li>
+    <li>Si utilizas metadatos ComicInfo.xml generados por otras herramientas, revisa esa opción en el diálogo de ajustes antes de importar contenido nuevo.</li>
+  </ul>
 
+  <h2>Navegar por tu colección</h2>
+  <ul>
+    <li>Usa la sección de carpetas de la barra lateral para moverte por el árbol de la biblioteca.</li>
+    <li>Usa la sección de listas para listas inteligentes como Favoritos, En lectura y Recientes, además de tus propias etiquetas y listas de lectura.</li>
+    <li>El área de contenido puede mostrar los cómics en distintas vistas, y también muestra el contenido de carpetas cuando una carpeta tiene subcarpetas pero no cómics directos.</li>
+    <li>Las vistas de raíz y de contenido de carpeta pueden incluir banners de <b>Continuar leyendo</b>, según tu configuración.</li>
+    <li>Abre un cómic para seguir leyéndolo en YACReader, o configura un lector de terceros en los ajustes.</li>
+  </ul>
+
+  <h2>Mantener la biblioteca actualizada</h2>
+  <ul>
+    <li>Usa <b>Actualizar carpeta actual</b> después de cambiar archivos en disco dentro de la carpeta seleccionada.</li>
+    <li>Usa <b>Actualizar biblioteca</b> cuando quieras reescanear toda la colección.</li>
+    <li>Puedes arrastrar y soltar archivos o carpetas sobre la carpeta actual, la vista de contenido de carpeta o el árbol de carpetas para copiar contenido dentro de la biblioteca.</li>
+    <li>Las actualizaciones automáticas se pueden configurar en la pestaña <b>Bibliotecas</b> del diálogo de opciones.</li>
+  </ul>
+
+  <h2>Organizar y enriquecer tus cómics</h2>
+  <ul>
+    <li>Edita metadatos de uno o varios cómics, incluidas las carátulas personalizadas.</li>
+    <li>Marca cómics y carpetas como leídos o no leídos, puntúa cómics y asigna su tipo.</li>
+    <li>Usa etiquetas, favoritos y listas de lectura para construir tus propias vistas sin mover archivos en disco.</li>
+    <li>La integración con Comic Vine puede ayudarte a completar metadatos si configuras tu clave API en los ajustes.</li>
+  </ul>
+
+  <h2>Búsqueda, vistas y ajustes</h2>
+  <ul>
+    <li>Usa la caja de búsqueda para filtrar contenido y saltar rápidamente a carpetas o cómics.</li>
+    <li>Cambia entre las vistas de cómics disponibles según prefieras cuadrícula, información detallada o vista de flujo.</li>
+    <li>El diálogo de opciones incluye selección de idioma, apariencia y temas, atajos, actualizaciones automáticas, opciones del fondo de la cuadrícula, visibilidad de Continuar leyendo y configuración de lector de terceros.</li>
+    <li>Igual que la aplicación de lectura, YACReaderLibrary admite modo claro/oscuro del sistema, temas integrados y temas personalizados.</li>
+  </ul>
+
+  <p>Si solo quieres leer un cómic suelto sin gestionar una colección, ábrelo directamente en YACReader.</p>
+  <p>Más información sobre el proyecto en <a href="https://www.yacreader.com">https://www.yacreader.com</a>.</p>
 </body>
 </html>

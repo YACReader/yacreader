@@ -1,27 +1,29 @@
 #include "library_window.h"
 
 #include <QApplication>
-#include <QTranslator>
-#include <QSettings>
-#include <QLocale>
 #include <QDir>
-#include <QSysInfo>
 #include <QFileInfo>
+#include <QLocale>
+#include <QSettings>
+#include <QSysInfo>
 #if !defined use_unarr && !defined use_libarchive
 #include <QLibrary>
 #endif
-#include <QCommandLineParser>
-#include <QImageReader>
-
-#include "yacreader_global.h"
-#include "yacreader_http_server.h"
-#include "yacreader_local_server.h"
+#include "app_language_utils.h"
+#include "appearance_configuration.h"
 #include "comic_db.h"
 #include "data_base_management.h"
 #include "db_helper.h"
-#include "yacreader_libraries.h"
 #include "exit_check.h"
-#include "opengl_checker.h"
+#include "theme_manager.h"
+#include "theme_repository.h"
+#include "yacreader_global.h"
+#include "yacreader_http_server.h"
+#include "yacreader_libraries.h"
+#include "yacreader_local_server.h"
+
+#include <QCommandLineParser>
+#include <QImageReader>
 #ifdef Q_OS_MACOS
 #include "trayhandler.h"
 #endif
@@ -77,15 +79,6 @@ void logSystemAndConfig()
     else
         QLOG_INFO() << "server : disabled";
 
-    if (settings.value(USE_OPEN_GL).toBool())
-        QLOG_INFO() << "OpenGL : enabled"
-                    << " - " << (settings.value(V_SYNC).toBool() ? "VSync on" : "VSync off");
-    else
-        QLOG_INFO() << "OpenGL : disabled";
-
-    OpenGLChecker checker;
-    QLOG_INFO() << "OpenGL version : " << checker.textVersionDescription();
-
     auto libraries = DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "Libraries: ";
     for (auto library : libraries) {
@@ -132,27 +125,23 @@ int main(int argc, char **argv)
 {
     qInstallMessageHandler(messageHandler);
 
-    static const char ENV_VAR_QT_DEVICE_PIXEL_RATIO[] = "QT_DEVICE_PIXEL_RATIO";
-    if (!qEnvironmentVariableIsSet(ENV_VAR_QT_DEVICE_PIXEL_RATIO) && !qEnvironmentVariableIsSet("QT_AUTO_SCREEN_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCREEN_SCALE_FACTORS")) {
-        QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    }
-
-    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QImageReader::setAllocationLimit(0);
-#endif
 
     QApplication app(argc, argv);
-
-#ifdef FORCE_ANGLE
-    app.setAttribute(Qt::AA_UseOpenGLES);
-#endif
 
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");
     app.setApplicationVersion(VERSION);
+    YACReader::initializeSharedPluginPaths();
+
+    // Theme initialization
+    auto *appearanceConfig = new AppearanceConfiguration(
+            YACReader::getSettingsPath() + "/YACReaderLibrary.ini", qApp);
+    auto *themeRepo = new ThemeRepository(
+            ":/themes", YACReader::getSettingsPath() + "/themes/user", "YACReaderLibrary");
+    ThemeManager::instance().initialize(appearanceConfig, themeRepo);
 
     // Set window icon according to Freedesktop icon specification
     // This is mostly relevant for Linux and other Unix systems
@@ -177,13 +166,11 @@ int main(int argc, char **argv)
     logger.addDestination(std::move(debugDestination));
     logger.addDestination(std::move(fileDestination));
 
-    QTranslator translator;
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    translator.load(QLocale(), "yacreaderlibrary", "_", QString(DATADIR) + "/yacreader/languages");
-#else
-    translator.load(QLocale(), "yacreaderlibrary", "_", "languages");
-#endif
-    app.installTranslator(&translator);
+    QSettings uiSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
+    uiSettings.beginGroup("libraryConfig");
+    QString selectedLanguage = uiSettings.value(UI_LANGUAGE).toString();
+    uiSettings.endGroup();
+    YACReader::UiLanguage::applyLanguage("yacreaderlibrary", selectedLanguage);
 
     /*QTranslator viewerTranslator;
     #if defined Q_OS_UNIX && !defined Q_OS_MACOS
@@ -199,28 +186,7 @@ int main(int argc, char **argv)
     parser.addHelpOption();
     parser.addVersionOption();
     parser.addOption({ "loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "warning" });
-#ifdef Q_OS_WIN
-    parser.addOption({ "opengl", "Set opengl renderer. Valid values: desktop, es, software.", "gl_renderer" });
-#endif
     parser.process(app);
-
-#ifdef Q_OS_WIN
-    if (parser.isSet("opengl")) {
-        QTextStream qout(stdout);
-        if (parser.value("opengl") == "desktop") {
-            app.setAttribute(Qt::AA_UseDesktopOpenGL);
-        } else if (parser.value("opengl") == "es") {
-            app.setAttribute(Qt::AA_UseOpenGLES);
-        } else if (parser.value("opengl") == "software") {
-            qout << "Warning! This will be slow as hell. Only use this setting for"
-                    "testing or as a last resort.";
-            app.setAttribute(Qt::AA_UseSoftwareOpenGL);
-        } else {
-            qout << "Invalid value:" << parser.value("gl_renderer");
-            parser.showHelp();
-        }
-    }
-#endif
 
     if (parser.isSet("loglevel")) {
         if (parser.value("loglevel") == "trace") {
