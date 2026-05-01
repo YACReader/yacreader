@@ -52,6 +52,27 @@ jobs:
           git diff ${{ github.sha }}
           if [ "$(git diff ${{ github.sha }})" != "" ]; then exit 1; fi
 
+  # Source tarball
+  source-tarball:
+    name: Source Tarball
+    runs-on: ubuntu-24.04
+    needs: [initialization, code-format-validation]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Create tarball
+        run: |
+          VERSION="$(tr -d '\r\n' < VERSION)"
+          ./mktarball.sh "$VERSION"
+          mkdir tarball
+          cp yacreader-*-src.tar.xz* tarball/
+
+      - name: Upload tarball
+        uses: actions/upload-artifact@v6
+        with:
+          name: src-${{ needs.initialization.outputs.build_number }}-tarball
+          path: tarball/*
+
   # Linux Qt6 build
   linux-qt6:
     name: Linux (Qt6)
@@ -492,6 +513,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs:
       - initialization
+      - source-tarball
       - linux-qt6
       - linux-qt6-7zip
       - macos-qt6-universal
@@ -559,6 +581,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs:
       - initialization
+      - source-tarball
       - linux-qt6
       - linux-qt6-7zip
       - macos-qt6-universal
