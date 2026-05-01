@@ -2,7 +2,7 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## 10 (WIP)
+## 10
 
 ### YACReader
 * Add support for continuous scroll mode.

@@ -44,7 +44,7 @@ YACReader::WhatsNewDialog::WhatsNewDialog(QWidget *parent)
     versionLabel->setAlignment(Qt::AlignCenter);
 
     textLabel = new QLabel();
-    htmlTemplate = "YACReader 10 is finally here!! This is all the exciting new features and improvements: <br/>"
+    htmlTemplate = "YACReader 10 is finally here! Here are the exciting new features and improvements: <br/>"
                    "<br/>"
                    "<span style=\"font-weight:600\">YACReader</span><br/>"
                    "   &#8226; Add support for continuous scroll mode<br/>"
