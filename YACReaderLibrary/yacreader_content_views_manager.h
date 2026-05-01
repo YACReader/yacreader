@@ -1,9 +1,11 @@
 #ifndef YACREADERCONTENTVIEWSMANAGER_H
 #define YACREADERCONTENTVIEWSMANAGER_H
 
-#include <QtWidgets>
-
+#include "themable.h"
 #include "yacreader_global_gui.h"
+
+#include <QSettings>
+#include <QStackedWidget>
 
 class LibraryWindow;
 
@@ -16,11 +18,12 @@ class FolderContentView;
 class EmptyLabelWidget;
 class EmptySpecialListWidget;
 class EmptyReadingListWidget;
+class EmptyFolderWidget;
 class NoSearchResultsWidget;
 
 using namespace YACReader;
 
-class YACReaderContentViewsManager : public QObject
+class YACReaderContentViewsManager : public QObject, protected Themable
 {
     Q_OBJECT
 public:
@@ -36,6 +39,7 @@ public:
     EmptyLabelWidget *emptyLabelWidget;
     EmptySpecialListWidget *emptySpecialList;
     EmptyReadingListWidget *emptyReadingList;
+    EmptyFolderWidget *emptyFolderWidget;
 
     NoSearchResultsWidget *noSearchResultsWidget;
 
@@ -56,6 +60,8 @@ protected:
     GridComicsView *gridComicsView;
     InfoComicsView *infoComicsView;
 
+    void applyTheme(const Theme &theme) override;
+
 signals:
 
 public slots:
@@ -67,6 +73,7 @@ public slots:
     void showEmptyLabelView();
     void showEmptySpecialList();
     void showEmptyReadingListWidget();
+    void showEmptyFolderWidget();
     void showNoSearchResultsView();
 
 protected slots:

@@ -1,13 +1,14 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include <QImage>
-#include <QPixmap>
-#include <QPainter>
-#include <QThread>
-#include <QByteArray>
-#include <QVector>
 #include "comic.h"
+
+#include <QByteArray>
+#include <QImage>
+#include <QPainter>
+#include <QPixmap>
+#include <QThread>
+#include <QVector>
 //-----------------------------------------------------------------------------
 // FILTERS
 //-----------------------------------------------------------------------------
@@ -142,6 +143,7 @@ public slots:
     bool currentPageIsDoublePage();
     bool nextPageIsDoublePage();
     bool previousPageIsDoublePage();
+    const QImage *bufferedImage(int absolutePageIndex) const;
     void goTo(int index);
     void doublePageSwitch();
     void setManga(bool manga);
@@ -197,6 +199,7 @@ signals:
     void isLast();
     void isCover();
 
+    void pageRendered(int absolutePageIndex);
     void bookmarksUpdated();
 
 private:

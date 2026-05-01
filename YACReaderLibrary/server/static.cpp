@@ -4,21 +4,15 @@
 */
 
 #include "static.h"
+
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QString>
 
-using stefanfrings::HttpResponse;
-using stefanfrings::HttpSessionStore;
 using stefanfrings::StaticFileController;
-using stefanfrings::TemplateLoader;
 
 QString Static::configDir = nullptr;
-
-TemplateLoader *Static::templateLoader = nullptr;
-
-HttpSessionStore *Static::sessionStore = nullptr;
 
 StaticFileController *Static::staticFileController = 0;
 
@@ -51,7 +45,7 @@ QString Static::getConfigDir()
     searchList.append(QDir::rootPath() + "etc/opt");
     searchList.append(QDir::rootPath() + "etc");
 
-    foreach (QString dir, searchList) {
+    for (const auto &dir : searchList) {
         QFile file(dir + "/" + configFileName);
         if (file.exists()) {
             // found
@@ -62,7 +56,7 @@ QString Static::getConfigDir()
     }
 
     // not found
-    foreach (QString dir, searchList) {
+    for (const auto &dir : searchList) {
         qWarning("%s/%s not found", qPrintable(dir), qPrintable(configFileName));
     }
     qWarning("Cannot find config file %s", qPrintable(configFileName)); // TODO establecer los valores por defecto

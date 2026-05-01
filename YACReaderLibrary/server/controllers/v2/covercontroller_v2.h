@@ -2,8 +2,8 @@
 #define COVERCONTROLLER_V2_H
 
 #include "httprequest.h"
-#include "httpresponse.h"
 #include "httprequesthandler.h"
+#include "httpresponse.h"
 
 class CoverControllerV2 : public stefanfrings::HttpRequestHandler
 {

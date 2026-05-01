@@ -1,22 +1,27 @@
 #ifndef __CREATE_LIBRARY_DIALOG_H
 #define __CREATE_LIBRARY_DIALOG_H
 
+#include "themable.h"
 #include "yacreader_libraries.h"
 
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QProgressBar>
 #include <QPushButton>
 #include <QThread>
-#include <QProgressBar>
 
-class CreateLibraryDialog : public QDialog
+class CreateLibraryDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 public:
     CreateLibraryDialog(QWidget *parent = nullptr);
 
+protected:
+    void applyTheme(const Theme &theme) override;
+
 private:
+    QLabel *imgLabel;
     QLabel *nameLabel;
     QLabel *textLabel;
     QLabel *message;

@@ -1,9 +1,9 @@
 #include "comics_remover.h"
 
-#include <QFile>
-#include <QDir>
-
 #include "QsLog.h"
+
+#include <QDir>
+#include <QFile>
 
 ComicsRemover::ComicsRemover(QModelIndexList &il, QList<QString> &ps, qulonglong parentId, QObject *parent)
     : QObject(parent), indexList(il), paths(ps), parentId(parentId)

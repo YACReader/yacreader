@@ -42,7 +42,6 @@ Source: Qt6Gui.dll; DestDir: {app}
 Source: Qt6Multimedia.dll; DestDir: {app}
 Source: Qt6Network.dll; DestDir: {app}
 Source: Qt6OpenGL.dll; DestDir: {app}
-Source: Qt6OpenGLWidgets.dll; DestDir: {app}
 Source: Qt6Qml.dll; DestDir: {app}
 Source: Qt6QmlModels.dll; DestDir: {app}
 Source: Qt6QmlMeta.dll; DestDir: {app}
@@ -61,9 +60,8 @@ Source: Qt6QuickTemplates2.dll; DestDir: {app}
 Source: Qt6QuickWidgets.dll; DestDir: {app}
 Source: Qt6Sql.dll; DestDir: {app}
 Source: Qt6Svg.dll; DestDir: {app}
-Source: Qt6ShaderTools.dll; DestDir: {app}
+Source: Qt6TextToSpeech.dll; DestDir: {app}
 
-;Qt Angle
 Source: opengl32sw.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
 Source: D3Dcompiler_47.dll; DestDir: {app}; Flags: skipifsourcedoesntexist
 
@@ -77,6 +75,7 @@ Source:qml\*;  DestDir: {app}\qml\; Flags: recursesubdirs
 Source:qmltooling\*;  DestDir: {app}\qmltooling\
 Source:sqldrivers\qsqlite.dll;  DestDir: {app}\sqldrivers\
 Source:styles\*;  DestDir: {app}\styles\
+Source:texttospeech\*;  DestDir: {app}\texttospeech\
 Source:tls\*;  DestDir: {app}\tls\
 Source:translations\*;  DestDir: {app}\translations\
 
@@ -102,7 +101,7 @@ Source: README.md; DestDir: {app}; Flags: isreadme
 Source: COPYING.txt; DestDir: {app}
 
 ;Languages
-Source: languages\*; DestDir: {app}\languages\; Flags: recursesubdirs
+Source: languages\*; DestDir: {app}\languages\; Flags: recursesubdirs; Excludes: "*_source.qm"
 ;Server
 Source: server\*; DestDir: {app}\server\; Flags: recursesubdirs
 
@@ -119,9 +118,13 @@ LaunchYACReader=Start YACreader after finishing installation
 Filename: {tmp}\vc_redist.{#PLATFORM}.exe; \
 Parameters: "/install /quiet /norestart"; \
 StatusMsg: "Installing VC++ Redistributables..."
+Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall add rule name=""YACReaderLibrary"" dir=in action=allow program=""{app}\YACReaderLibrary.exe"" enable=yes profile=private,domain"; Flags: runhidden waituntilterminated
 
 Filename: {app}\{cm:AppLibrary}.exe; Description: {cm:LaunchYACReaderLibrary,{cm:AppLibrary}}; Flags: nowait postinstall skipifsilent
 Filename: {app}\{cm:App}.exe; Description: {cm:LaunchYACReader,{cm:App}}; Flags: nowait postinstall skipifsilent
+
+[UninstallRun]
+Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall delete rule name=""YACReaderLibrary"""; Flags: runhidden waituntilterminated
 
 [Icons]
 Name: {group}\YACReader; Filename: {app}\YACReader.exe; WorkingDir: {app}; IconIndex: 0

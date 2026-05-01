@@ -1,12 +1,9 @@
 #include "readinglistinfocontroller_v2.h"
 
+#include "comic_db.h"
 #include "db_helper.h"
 
-#include "folder.h"
-#include "comic_db.h"
-
-#include "template.h"
-#include "../static.h"
+#include <QUrl>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

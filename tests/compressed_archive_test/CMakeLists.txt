@@ -1,0 +1,14 @@
+# Compressed archive test
+
+qt_add_executable(compressed_archive_test
+    main.cpp
+)
+yacreader_apply_build_options(compressed_archive_test)
+target_link_libraries(compressed_archive_test PRIVATE
+    Qt6::Core
+    cbx_backend
+)
+if(WIN32)
+    target_link_libraries(compressed_archive_test PRIVATE oleaut32 ole32)
+endif()
+add_test(NAME compressed_archive_test COMMAND compressed_archive_test)

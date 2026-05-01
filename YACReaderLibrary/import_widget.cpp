@@ -1,29 +1,30 @@
 #include "import_widget.h"
 
-#include <QLabel>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QPushButton>
-#include <QGraphicsView>
-#include <QGraphicsScene>
-#include <QGraphicsPixmapItem>
-#include <QScrollBar>
 #include <QGraphicsItemAnimation>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QScrollBar>
 #include <QTimeLine>
+#include <QVBoxLayout>
 // TODO: is QGLWidget needed here???
 // #include <QGLWidget>
-#include <QTimer>
 #include <QElapsedTimer>
-#include <QToolButton>
-#include <QResizeEvent>
-
-#include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
+#include <QPropertyAnimation>
+#include <QResizeEvent>
+#include <QTimer>
+#include <QToolButton>
 
 class YACReaderActivityIndicatorWidget : public QWidget
 {
 public:
     YACReaderActivityIndicatorWidget(QWidget *parent = 0);
+    void setPixmaps(const QPixmap &normalLine, const QPixmap &glowLine);
+
 public slots:
 
 private:
@@ -32,15 +33,10 @@ private:
 };
 
 YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), normal(nullptr), glow(nullptr)
 {
-    QPixmap line(":/images/noLibrariesLine.png");
-    QPixmap glowLine(":/images/glowLine.png");
     normal = new QLabel(this);
     glow = new QLabel(this);
-
-    normal->setPixmap(line);
-    glow->setPixmap(glowLine);
 
     auto layout = new QHBoxLayout();
 
@@ -50,11 +46,6 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
 
     layout->setContentsMargins(4, 4, 4, 4);
     layout->setSpacing(0);
-
-    // setFixedHeight(3);
-    // resize(579,3);
-    glow->setGeometry(4, 4, glowLine.width(), glowLine.height());
-    // normal->setGeometry(0,1,579,1);
 
     auto effect = new QGraphicsOpacityEffect();
     // effect->setOpacity(1.0);
@@ -81,32 +72,28 @@ YACReaderActivityIndicatorWidget::YACReaderActivityIndicatorWidget(QWidget *pare
     animation->start();
 }
 
+void YACReaderActivityIndicatorWidget::setPixmaps(const QPixmap &normalLine, const QPixmap &glowLine)
+{
+    normal->setPixmap(normalLine);
+    glow->setPixmap(glowLine);
+    glow->setGeometry(4, 4, glowLine.width(), glowLine.height());
+}
+
 ImportWidget::ImportWidget(QWidget *parent)
     : QWidget(parent)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    QPalette p(palette());
-    p.setColor(QPalette::Window, QColor(250, 250, 250));
     setAutoFillBackground(true);
-    setPalette(p);
 
-    QPixmap icon(":/images/importingIcon.png");
     iconLabel = new QLabel();
-    iconLabel->setPixmap(icon);
 
-    /*QPixmap line(":/images/noLibrariesLine.png");
-        QLabel * lineLabel = new QLabel();
-        lineLabel->setPixmap(line);*/
+    activityIndicator = new YACReaderActivityIndicatorWidget();
 
-    auto activityIndicator = new YACReaderActivityIndicatorWidget();
-
-    text = new QLabel(); //"<font color=\"#495252\">"+tr("Importing comics")+"</font>");
-    text->setStyleSheet("QLabel {font-size:25px;font-weight:bold;}");
-    textDescription = new QLabel(); //"<font color=\"#565959\">"+tr("Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.")+"</font>");
+    text = new QLabel();
+    textDescription = new QLabel();
     textDescription->setWordWrap(true);
     textDescription->setMaximumWidth(330);
-    currentComicLabel = new QLabel("<font color=\"#565959\">...</font>");
+    currentComicLabel = new QLabel("...");
 
     coversViewContainer = new QWidget(this);
     auto coversViewLayout = new QVBoxLayout;
@@ -115,11 +102,9 @@ ImportWidget::ImportWidget(QWidget *parent)
     coversViewContainer->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Maximum);
 
     coversView = new QGraphicsView();
-    // coversView->setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
     coversView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     coversView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     coversView->setMaximumHeight(300);
-    coversView->setStyleSheet("QGraphicsView {background-color: #E6E6E6;border:none;}");
 
     coversScene = new QGraphicsScene();
     coversView->setAlignment(Qt::AlignLeft);
@@ -130,16 +115,10 @@ ImportWidget::ImportWidget(QWidget *parent)
 
     scrollAnimation = new QPropertyAnimation(coversView->horizontalScrollBar(), "value");
 
-    QLabel *topDecorator = new QLabel();
-    QLabel *bottomDecorator = new QLabel();
-    QPixmap top(":/images/importTopCoversDecoration.png");
-    QPixmap bottom(":/images/importBottomCoversDecoration.png");
-    topDecorator->setPixmap(top);
-    bottomDecorator->setPixmap(bottom);
+    topDecorator = new QLabel();
+    bottomDecorator = new QLabel();
     topDecorator->setScaledContents(true);
     bottomDecorator->setScaledContents(true);
-    topDecorator->setFixedHeight(top.height());
-    bottomDecorator->setFixedHeight(bottom.height());
 
     coversViewLayout->addWidget(topDecorator, 0);
     coversViewLayout->addWidget(coversView, 1);
@@ -187,12 +166,13 @@ ImportWidget::ImportWidget(QWidget *parent)
     layout->addLayout(buttonLayout, 0);
     layout->addSpacing(10);
     layout->addStretch();
-    coversLabel = new QLabel("<font color=\"#565959\">" + tr("Some of the comics being added...") + "</font>");
+    coversLabel = new QLabel(tr("Some of the comics being added..."));
 
     hideButton = new QToolButton(this);
     hideButton->setFixedSize(25, 18);
-    hideButton->setStyleSheet("QToolButton {background: url(\":/images/shownCovers.png\"); border:none;}"
-                              "  QToolButton:checked {background:url(\":/images/hiddenCovers.png\"); border:none;}");
+    hideButton->setStyleSheet("QToolButton { border: none; padding: 0px; }"
+                              "QToolButton:pressed { border: none; padding: 0px; }"
+                              "QToolButton:checked { border: none; padding: 0px; }");
     hideButton->setCheckable(true);
 
     connect(hideButton, &QAbstractButton::toggled, this, &ImportWidget::showCovers);
@@ -210,6 +190,8 @@ ImportWidget::ImportWidget(QWidget *parent)
     updatingCovers = false;
     elapsedTimer = new QElapsedTimer();
     elapsedTimer->start();
+
+    initTheme(this);
 }
 
 void ImportWidget::newComic(const QString &path, const QString &coverPath)
@@ -217,7 +199,7 @@ void ImportWidget::newComic(const QString &path, const QString &coverPath)
     if (!this->isVisible())
         return;
 
-    currentComicLabel->setText("<font color=\"#565959\">" + path + "</font>");
+    currentComicLabel->setText(path);
 
     if (((elapsedTimer->elapsed() >= 1100) || ((previousWidth < coversView->width()) && (elapsedTimer->elapsed() >= 500))) && scrollAnimation->state() != QAbstractAnimation::Running) // todo elapsed time
     {
@@ -233,7 +215,7 @@ void ImportWidget::newComic(const QString &path, const QString &coverPath)
 
         previousWidth += 10 + p.width();
 
-        foreach (QGraphicsItem *itemToRemove, coversScene->items()) {
+        for (auto *itemToRemove : coversScene->items()) {
             auto last = dynamic_cast<QGraphicsPixmapItem *>(itemToRemove);
 
             if ((last->pos().x() + last->pixmap().width()) < coversView->horizontalScrollBar()->value()) // TODO check this
@@ -281,7 +263,7 @@ void ImportWidget::addCoverTest()
         } else
             j++;
 
-        foreach (QGraphicsItem *itemToMove, coversScene->items()) {
+        for (auto *itemToMove : coversScene->items()) {
 
             auto timer = new QTimeLine(/*350*/ 1000);
             timer->setFrameRange(0, 60);
@@ -323,16 +305,16 @@ void ImportWidget::clear()
 
     updatingCovers = false;
 
-    currentComicLabel->setText("<font color=\"#565959\">...</font>");
+    currentComicLabel->setText("...");
 
     this->i = 0;
 }
 
 void ImportWidget::setImportLook()
 {
-    iconLabel->setPixmap(QPixmap(":/images/importingIcon.png"));
-    text->setText("<font color=\"#495252\">" + tr("Importing comics") + "</font>");
-    textDescription->setText("<font color=\"#565959\">" + tr("<p>YACReaderLibrary is now creating a new library.</p><p>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</p>") + "</font>");
+    iconLabel->setPixmap(theme.importWidget.importingIcon);
+    text->setText(tr("Importing comics"));
+    textDescription->setText(tr("<p>YACReaderLibrary is now creating a new library.</p><p>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</p>"));
 
     stopButton->setVisible(true);
     coversLabel->setVisible(true);
@@ -342,9 +324,9 @@ void ImportWidget::setImportLook()
 
 void ImportWidget::setUpdateLook()
 {
-    iconLabel->setPixmap(QPixmap(":/images/updatingIcon.png"));
-    text->setText("<font color=\"#495252\">" + tr("Updating the library") + "</font>");
-    textDescription->setText("<font color=\"#565959\">" + tr("<p>The current library is being updated. For faster updates, please, update your libraries frequently.</p><p>You can stop the process and continue updating this library later.</p>") + "</font>");
+    iconLabel->setPixmap(theme.importWidget.updatingIcon);
+    text->setText(tr("Updating the library"));
+    textDescription->setText(tr("<p>The current library is being updated. For faster updates, please, update your libraries frequently.</p><p>You can stop the process and continue updating this library later.</p>"));
 
     stopButton->setVisible(true);
     coversLabel->setVisible(true);
@@ -354,9 +336,9 @@ void ImportWidget::setUpdateLook()
 
 void ImportWidget::setUpgradeLook()
 {
-    iconLabel->setPixmap(QPixmap(":/images/updatingIcon.png"));
-    text->setText("<font color=\"#495252\">" + tr("Upgrading the library") + "</font>");
-    textDescription->setText("<font color=\"#565959\">" + tr("<p>The current library is being upgraded, please wait.</p>") + "</font>");
+    iconLabel->setPixmap(theme.importWidget.updatingIcon);
+    text->setText(tr("Upgrading the library"));
+    textDescription->setText(tr("<p>The current library is being upgraded, please wait.</p>"));
 
     stopButton->setVisible(false);
     coversLabel->setVisible(false);
@@ -366,9 +348,9 @@ void ImportWidget::setUpgradeLook()
 
 void ImportWidget::setXMLScanLook()
 {
-    iconLabel->setPixmap(QPixmap(":/images/updatingIcon.png"));
-    text->setText("<font color=\"#495252\">" + tr("Scanning the library") + "</font>");
-    textDescription->setText("<font color=\"#565959\">" + tr("<p>Current library is being scanned for legacy XML metadata information.</p><p>This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.</p>") + "</font>");
+    iconLabel->setPixmap(theme.importWidget.updatingIcon);
+    text->setText(tr("Scanning the library"));
+    textDescription->setText(tr("<p>Current library is being scanned for legacy XML metadata information.</p><p>This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.</p>"));
 
     stopButton->setVisible(true);
     coversLabel->setVisible(false);
@@ -391,4 +373,57 @@ void ImportWidget::resizeEvent(QResizeEvent *event)
     hideButton->move(event->size().width() - hideButton->width() - (currentComicLabel->height() / 2), event->size().height() - hideButton->height() - (currentComicLabel->height() / 2));
 
     QWidget::resizeEvent(event);
+}
+
+void ImportWidget::applyTheme(const Theme &theme)
+{
+    const auto &importTheme = theme.importWidget;
+
+    // Covers toggle button
+    hideButton->setIcon(importTheme.coversToggleIcon);
+    hideButton->setIconSize(hideButton->size());
+
+    // Background
+    QPalette p(palette());
+    p.setColor(QPalette::Window, importTheme.backgroundColor);
+    setPalette(p);
+
+    // Covers view background
+    coversView->setStyleSheet(QString("QGraphicsView {background-color: %1; border:none;}")
+                                      .arg(importTheme.coversViewBackgroundColor.name()));
+
+    // Covers decorations
+    topDecorator->setPixmap(importTheme.topCoversDecoration);
+    topDecorator->setFixedHeight(importTheme.topCoversDecoration.height());
+    bottomDecorator->setPixmap(importTheme.bottomCoversDecoration);
+    bottomDecorator->setFixedHeight(importTheme.bottomCoversDecoration.height());
+
+    const auto &noLibrariesWidget = theme.noLibrariesWidget;
+    activityIndicator->setPixmaps(noLibrariesWidget.noLibrariesLinePixmap, importTheme.glowLinePixmap);
+
+    // Apply text colors
+    updateTextColors();
+}
+
+void ImportWidget::updateTextColors()
+{
+    const auto &importTheme = theme.importWidget;
+
+    // Title text
+    text->setStyleSheet(importTheme.titleLabelQSS);
+
+    // Description text
+    QPalette descPalette = textDescription->palette();
+    descPalette.setColor(QPalette::WindowText, importTheme.descriptionTextColor);
+    textDescription->setPalette(descPalette);
+
+    // Current comic label
+    QPalette comicPalette = currentComicLabel->palette();
+    comicPalette.setColor(QPalette::WindowText, importTheme.currentComicTextColor);
+    currentComicLabel->setPalette(comicPalette);
+
+    // Covers label
+    QPalette coversLabelPalette = coversLabel->palette();
+    coversLabelPalette.setColor(QPalette::WindowText, importTheme.coversLabelColor);
+    coversLabel->setPalette(coversLabelPalette);
 }

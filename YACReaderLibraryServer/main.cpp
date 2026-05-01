@@ -1,30 +1,24 @@
-#include <QCoreApplication>
-#include <QSysInfo>
-#include <QDir>
-#include <QCommandLineParser>
-#include <QImageReader>
-
-#include "comic_db.h"
-#include "data_base_management.h"
-#include "db_helper.h"
-#include "yacreader_http_server.h"
-#include "yacreader_global.h"
-#include "yacreader_libraries.h"
-#include "yacreader_local_server.h"
-#include "global_info_provider.h"
-
-#include "libraries_update_coordinator.h"
-
-#include "libraries_updater.h"
-
-#include "console_ui_library_creator.h"
-
-#include <iostream>
-
 #include "QsLog.h"
 #include "QsLogDest.h"
-#include "qrcodegen.hpp"
+#include "comic_db.h"
+#include "console_ui_library_creator.h"
+#include "data_base_management.h"
+#include "db_helper.h"
+#include "global_info_provider.h"
 #include "ip_config_helper.h"
+#include "libraries_update_coordinator.h"
+#include "libraries_updater.h"
+#include "qrcodegen.hpp"
+#include "yacreader_global.h"
+#include "yacreader_http_server.h"
+#include "yacreader_libraries.h"
+#include "yacreader_local_server.h"
+
+#include <QCommandLineParser>
+#include <QCoreApplication>
+#include <QDir>
+#include <QImageReader>
+#include <QSysInfo>
 
 using namespace QsLogging;
 
@@ -50,12 +44,11 @@ int main(int argc, char **argv)
 
     QCoreApplication app(argc, argv);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QImageReader::setAllocationLimit(0);
-#endif
 
     app.setApplicationName("YACReaderLibrary");
     app.setOrganizationName("YACReader");
+    YACReader::initializeSharedPluginPaths();
 
     QString buildNumber = ".0";
 
@@ -487,9 +480,9 @@ void printServerInfo(YACReaderHttpServer *httpServer)
         for (int x = -border - 1; x < code.getSize() + border + 1; x++) {
             QRCodeString.append((code.getModule(x, y) && code.getModule(x, y + 1))
                                         ? " "
-                                        : code.getModule(x, y + 1) ? u8"\u2580"
-                                        : code.getModule(x, y)     ? u8"\u2584"
-                                                                   : u8"\u2588");
+                                        : code.getModule(x, y + 1) ? "\u2580"
+                                        : code.getModule(x, y)     ? "\u2584"
+                                                                   : "\u2588");
         }
         QLOG_INFO() << QRCodeString;
     }

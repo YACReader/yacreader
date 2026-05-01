@@ -3,15 +3,11 @@
 #include "whats_new_dialog.h"
 #include "yacreader_global.h"
 
-#include <QtCore>
-
 YACReader::WhatsNewController::WhatsNewController() { }
 
 void YACReader::WhatsNewController::showWhatsNewIfNeeded(QWidget *fromParent)
 {
-    QSettings commonSettings(QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) +
-                                     "/YACReader/YACReaderCommon.ini",
-                             QSettings::IniFormat);
+    QSettings commonSettings(YACReader::getCommonSettingsFilePath(), QSettings::IniFormat);
 
     if (commonSettings.value("LAST_VERSION_INSTALLED").toString() != VERSION) {
         showWhatsNew(fromParent);

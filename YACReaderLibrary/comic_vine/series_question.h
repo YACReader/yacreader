@@ -1,11 +1,14 @@
 #ifndef SERIES_QUESTION_H
 #define SERIES_QUESTION_H
 
+#include "themable.h"
+
 #include <QWidget>
 
 class QRadioButton;
+class QLabel;
 
-class SeriesQuestion : public QWidget
+class SeriesQuestion : public QWidget, protected Themable
 {
     Q_OBJECT
 
@@ -15,8 +18,12 @@ public:
     void setYes(bool yes = true);
 
 private:
+    QLabel *questionLabel;
     QRadioButton *yes;
     QRadioButton *no;
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // SERIES_QUESTION_H

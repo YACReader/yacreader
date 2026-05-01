@@ -1,9 +1,8 @@
 #ifndef YACREADER_HISTORY_CONTROLLER_H
 #define YACREADER_HISTORY_CONTROLLER_H
 
-#include <QObject>
-
 #include <QModelIndex>
+#include <QObject>
 
 class YACReaderHistoryController;
 

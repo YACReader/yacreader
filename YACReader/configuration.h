@@ -1,15 +1,16 @@
 #ifndef __CONFIGURATION_H
 #define __CONFIGURATION_H
 
-#include <QByteArray>
-#include <QString>
-#include <QSize>
-#include <QObject>
-#include <QColor>
-#include <QSettings>
-#include <QDate>
-
+#include "resize_image.h"
 #include "yacreader_global_gui.h"
+
+#include <QByteArray>
+#include <QColor>
+#include <QDate>
+#include <QObject>
+#include <QSettings>
+#include <QSize>
+#include <QString>
 
 #define CONF_FILE_PATH "."
 #define SLIDE_ASPECT_RATIO 1.585
@@ -76,17 +77,17 @@ public:
 
     QByteArray getGeometry() const { return settings->value(Y_WINDOW_GEOMETRY).toByteArray(); }
     void setGeometry(const QByteArray &g) { settings->setValue(Y_WINDOW_GEOMETRY, g); }
-    bool getMaximized() { return settings->value(MAXIMIZED).toBool(); }
-    void setMaximized(bool b) { settings->setValue(MAXIMIZED, b); }
     bool getDoublePage() { return settings->value(DOUBLE_PAGE).toBool(); }
     void setDoublePage(bool b) { settings->setValue(DOUBLE_PAGE, b); }
     bool getDoubleMangaPage() { return settings->value(DOUBLE_MANGA_PAGE).toBool(); }
     void setDoubleMangaPage(bool b) { settings->setValue(DOUBLE_MANGA_PAGE, b); }
+    bool getContinuousScroll() { return settings->value(CONTINUOUS_SCROLL, false).toBool(); }
+    void setContinuousScroll(bool b) { settings->setValue(CONTINUOUS_SCROLL, b); }
     bool getEnlargeImages() { return settings->value(ENLARGE_IMAGES, true).toBool(); }
     void setEnlargeImages(bool b) { settings->setValue(ENLARGE_IMAGES, b); }
 
-    QColor getBackgroundColor() { return settings->value(BACKGROUND_COLOR).value<QColor>(); }
-    void setBackgroundColor(const QColor &color) { settings->value(BACKGROUND_COLOR, color); }
+    QColor getBackgroundColor(const QColor &color) { return settings->value(BACKGROUND_COLOR, color).value<QColor>(); }
+    void setBackgroundColor(const QColor &color) { settings->setValue(BACKGROUND_COLOR, color); }
     bool getShowToolbars() { return settings->value(SHOW_TOOLBARS).toBool(); }
     void setShowToolbars(bool b) { settings->setValue(SHOW_TOOLBARS, b); }
     bool getShowInformation() { return settings->value(SHOW_INFO, false).toBool(); }
@@ -115,6 +116,9 @@ public:
 
     MouseMode getMouseMode() { return static_cast<MouseMode>(settings->value(MOUSE_MODE, MouseMode::Normal).toInt()); }
     void setMouseMode(MouseMode mouseMode) { settings->setValue(MOUSE_MODE, static_cast<int>(mouseMode)); }
+
+    ScaleMethod getScalingMethod() { return static_cast<ScaleMethod>(settings->value(SCALING_METHOD, static_cast<int>(ScaleMethod::Lanczos)).toInt()); }
+    void setScalingMethod(ScaleMethod method) { settings->setValue(SCALING_METHOD, static_cast<int>(method)); }
 };
 
 }

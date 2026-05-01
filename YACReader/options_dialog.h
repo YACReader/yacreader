@@ -1,8 +1,12 @@
 #ifndef __OPTIONS_DIALOG_H
 #define __OPTIONS_DIALOG_H
 
+#include "themable.h"
 #include "yacreader_options_dialog.h"
 
+#include <QPointer>
+
+class QComboBox;
 class QDialog;
 class QLabel;
 class QLineEdit;
@@ -12,16 +16,20 @@ class QPushButton;
 class QRadioButton;
 class YACReaderSpinSliderWidget;
 
-class OptionsDialog : public YACReaderOptionsDialog
+class OptionsDialog : public YACReaderOptionsDialog, protected Themable
 {
     Q_OBJECT
 public:
     OptionsDialog(QWidget *parent = nullptr);
 
+protected:
+    void applyTheme(const Theme &theme) override;
+
 private:
     // QLabel * pathLabel;
     QLineEdit *pathEdit;
     QPushButton *pathFindButton;
+    QComboBox *languageCombo;
 
     QCheckBox *showTimeInInformationLabel;
 
@@ -42,6 +50,7 @@ private:
 
     QLabel *backgroundColor;
     QPushButton *selectBackgroundColorButton;
+    QPushButton *clearBackgroundColorButton;
 
     QCheckBox *doNotTurnPageOnScroll;
     QCheckBox *useSingleScrollStepToTurnPage;
@@ -54,6 +63,9 @@ private:
     YACReaderSpinSliderWidget *gammaS;
 
     QColor currentColor;
+    bool backgroundColorFollowsTheme = true;
+
+    QComboBox *scalingMethodCombo;
 
     QRadioButton *normalMouseModeRadioButton;
     QRadioButton *leftRightNavigationMouseModeRadioButton;
@@ -72,6 +84,7 @@ public slots:
     void resetImageConfig();
     void show();
     void setFilters(int brightness, int contrast, int gamma);
+    void clearBackgroundColor();
 
 signals:
     void changedOptions();

@@ -3,7 +3,9 @@
 
 #include "yacreader_treeview.h"
 
-#include <QtWidgets>
+#include <QPainter>
+#include <QStyleOptionViewItem>
+#include <QStyledItemDelegate>
 
 class YACReaderReadingListsView : public YACReaderTreeView
 {

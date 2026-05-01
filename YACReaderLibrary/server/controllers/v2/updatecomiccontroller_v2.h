@@ -2,8 +2,8 @@
 #define UPDATECOMICCONTROLLER_V2_H
 
 #include "httprequest.h"
-#include "httpresponse.h"
 #include "httprequesthandler.h"
+#include "httpresponse.h"
 
 class UpdateComicControllerV2 : public stefanfrings::HttpRequestHandler
 {

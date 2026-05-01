@@ -1,18 +1,17 @@
 #include "info_comics_view.h"
 
-#include "yacreader_global.h"
-
-#include <QtQuick>
-#include <QQuickWidget>
-
+#include "QsLog.h"
 #include "comic.h"
 #include "comic_files_manager.h"
 #include "comic_model.h"
-#include "comic_db.h"
 #include "yacreader_comic_info_helper.h"
 #include "yacreader_comics_selection_helper.h"
 
-#include "QsLog.h"
+#include <QQmlProperty>
+#include <QQuickItem>
+#include <QQuickWidget>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 InfoComicsView::InfoComicsView(QWidget *parent)
     : ComicsView(parent), flow(nullptr), list(nullptr)
@@ -22,52 +21,8 @@ InfoComicsView::InfoComicsView(QWidget *parent)
 
     QQmlContext *ctxt = view->rootContext();
 
-    LibraryUITheme theme;
-#ifdef Y_MAC_UI
-    theme = Light;
-#else
-    theme = Dark;
-#endif
-
-    if (theme == Light) {
-        ctxt->setContextProperty("infoBackgroundColor", "#FFFFFF");
-        ctxt->setContextProperty("topShadow", QUrl());
-        ctxt->setContextProperty("infoShadow", "info-shadow-light.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator-light.png");
-
-        ctxt->setContextProperty("infoTextColor", "#404040");
-        ctxt->setContextProperty("infoTitleColor", "#2E2E2E");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#DEDEDE");
-        ctxt->setContextProperty("ratingSelectedColor", "#2B2B2B");
-
-        ctxt->setContextProperty("favUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("showDropShadow", QVariant(false));
-    } else {
-        ctxt->setContextProperty("infoBackgroundColor", "#2E2E2E");
-        ctxt->setContextProperty("topShadow", "info-top-shadow.png");
-        ctxt->setContextProperty("infoShadow", "info-shadow.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator.png");
-
-        ctxt->setContextProperty("infoTextColor", "#B0B0B0");
-        ctxt->setContextProperty("infoTitleColor", "#FFFFFF");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#1C1C1C");
-        ctxt->setContextProperty("ratingSelectedColor", "#FFFFFF");
-
-        ctxt->setContextProperty("favUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("showDropShadow", QVariant(true));
-    }
+    // Apply theme colors
+    initTheme(this);
 
     ctxt->setContextProperty("backgroundImage", QUrl());
     ctxt->setContextProperty("comicsList", new ComicModel());
@@ -234,7 +189,7 @@ bool InfoComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
 {
     if (action == Qt::CopyAction) {
         QString currentPath;
-        foreach (QUrl url, urls) {
+        for (const auto &url : urls) {
             // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
@@ -262,4 +217,43 @@ void InfoComicsView::requestedContextMenu(const QPoint &point)
 void InfoComicsView::selectedItem(int index)
 {
     emit selected(index);
+}
+
+void InfoComicsView::applyTheme(const Theme &theme)
+{
+    QQmlContext *ctxt = view->rootContext();
+    const auto &giv = theme.gridAndInfoView;
+
+    // Info panel colors
+    // Cache-bust the SVG file URLs so QML's image cache doesn't serve stale
+    // files when the theme is updated (the same file path is rewritten each time).
+    const QString bust = QString::number(QDateTime::currentMSecsSinceEpoch());
+    auto svgUrl = [&bust](const QString &path) {
+        QUrl url = QUrl::fromLocalFile(path);
+        url.setQuery(bust);
+        return url;
+    };
+    ctxt->setContextProperty("infoBackgroundColor", giv.infoBackgroundColor);
+    ctxt->setContextProperty("topShadow", svgUrl(giv.topShadow));
+    ctxt->setContextProperty("infoShadow", svgUrl(giv.infoShadow));
+    ctxt->setContextProperty("infoIndicator", svgUrl(giv.infoIndicator));
+    ctxt->setContextProperty("infoMetadataTextColor", giv.infoMetadataTextColor);
+    ctxt->setContextProperty("infoTextColor", giv.infoTextColor);
+
+    // Rating and favorite colors
+    ctxt->setContextProperty("ratingUnselectedColor", giv.ratingUnselectedColor);
+    ctxt->setContextProperty("ratingSelectedColor", giv.ratingSelectedColor);
+    ctxt->setContextProperty("favUncheckedColor", giv.favUncheckedColor);
+    ctxt->setContextProperty("favCheckedColor", giv.favCheckedColor);
+    ctxt->setContextProperty("readTickUncheckedColor", giv.readTickUncheckedColor);
+    ctxt->setContextProperty("readTickCheckedColor", giv.readTickCheckedColor);
+
+    ctxt->setContextProperty("showDropShadow", QVariant(giv.showDropShadow));
+    ctxt->setContextProperty("backgroundBlurOverlayColor", giv.backgroundBlurOverlayColor);
+
+    // Info panel scrollbar, comic cover border, links
+    ctxt->setContextProperty("infoScrollbarColor", giv.infoScrollbarColor);
+    ctxt->setContextProperty("comicCoverBorderColor", giv.comicCoverBorderColor);
+    ctxt->setContextProperty("themeLinkColor", giv.linkColor);
+    ctxt->setContextProperty("themeLinkColorStr", giv.linkColor.name());
 }

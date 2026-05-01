@@ -1,33 +1,34 @@
 #include "comic_vine_dialog.h"
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QMessageBox>
-#include <QPushButton>
-#include <QRadioButton>
-#include <QStackedWidget>
-#include <QTableView>
-#include <QVBoxLayout>
-#include <QtWidgets>
-#include <QtConcurrent/QtConcurrentRun>
-#include "data_base_management.h"
-#include <QSqlDatabase>
 
-#include "yacreader_busy_widget.h"
+#include "QsLog.h"
 #include "comic_vine_client.h"
 #include "comic_vine_json_parser.h"
+#include "data_base_management.h"
+#include "db_helper.h"
+#include "response_parser.h"
 #include "scraper_lineedit.h"
-#include "title_header.h"
-#include "series_question.h"
 #include "search_single_comic.h"
 #include "search_volume.h"
 #include "select_comic.h"
 #include "select_volume.h"
 #include "selected_volume_info.h"
+#include "series_question.h"
 #include "sort_volume_comics.h"
-#include "db_helper.h"
-#include "response_parser.h"
+#include "title_header.h"
+#include "yacreader_busy_widget.h"
 
-#include "QsLog.h"
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QScreen>
+#include <QSqlDatabase>
+#include <QStackedWidget>
+#include <QTableView>
+#include <QVBoxLayout>
+#include <QtConcurrent/QtConcurrentRun>
 
 ComicVineDialog::ComicVineDialog(QWidget *parent)
     : QDialog(parent)
@@ -38,6 +39,8 @@ ComicVineDialog::ComicVineDialog(QWidget *parent)
     doLayout();
     doStackedWidgets();
     doConnections();
+
+    initTheme(this);
 }
 
 void ComicVineDialog::closeEvent(QCloseEvent *event)
@@ -49,12 +52,6 @@ void ComicVineDialog::closeEvent(QCloseEvent *event)
 
 void ComicVineDialog::doLayout()
 {
-    setStyleSheet(""
-                  "QDialog {background-color: #404040; }"
-                  "");
-
-    QString dialogButtonsStyleSheet = "QPushButton {border: 1px solid #242424; background: #2e2e2e; color:white; padding: 5px 26px 5px 26px; font-size:12px;font-family:Arial; font-weight:bold;}";
-
     skipButton = new QPushButton(tr("skip"));
     backButton = new QPushButton(tr("back"));
     nextButton = new QPushButton(tr("next"));
@@ -65,12 +62,6 @@ void ComicVineDialog::doLayout()
 
     closeButton->setDefault(false);
     closeButton->setAutoDefault(false);
-
-    skipButton->setStyleSheet(dialogButtonsStyleSheet);
-    backButton->setStyleSheet(dialogButtonsStyleSheet);
-    nextButton->setStyleSheet(dialogButtonsStyleSheet);
-    searchButton->setStyleSheet(dialogButtonsStyleSheet);
-    closeButton->setStyleSheet(dialogButtonsStyleSheet);
 
     content = new QStackedWidget(this);
 
@@ -156,22 +147,14 @@ void ComicVineDialog::goNext()
         QList<QPair<ComicDB, QString>> matchingInfo = sortVolumeComicsWidget->getMatchingInfo();
         auto volumeInfo = selectVolumeWidget->getSelectedVolumeInfo();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QtConcurrent::run(&ComicVineDialog::getComicsInfo, this, matchingInfo, volumeInfo);
-#else
-        QtConcurrent::run(this, &ComicVineDialog::getComicsInfo, matchingInfo, volumeInfo);
-#endif
 
     } else if (content->currentWidget() == selectComicWidget) {
         showLoading();
         QString comicId = selectComicWidget->getSelectedComicId();
         auto volumeInfo = selectVolumeWidget->getSelectedVolumeInfo();
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         QtConcurrent::run(&ComicVineDialog::getComicInfo, this, comicId, volumeInfo);
-#else
-        QtConcurrent::run(this, &ComicVineDialog::getComicInfo, comicId, volumeInfo);
-#endif
     }
 }
 
@@ -274,13 +257,11 @@ void ComicVineDialog::doLoading()
     QWidget *w = new QWidget;
     auto l = new QVBoxLayout;
 
-    auto bw = new YACReaderBusyWidget;
+    busyWidget = new YACReaderBusyWidget;
     loadingMessage = new QLabel;
 
-    loadingMessage->setStyleSheet("QLabel {color:white; font-size:12px;font-family:Arial;}");
-
     l->addStretch();
-    l->addWidget(bw, 0, Qt::AlignHCenter);
+    l->addWidget(busyWidget, 0, Qt::AlignHCenter);
     l->addStretch();
     l->addWidget(loadingMessage);
 
@@ -461,23 +442,23 @@ void ComicVineDialog::queryTimeOut()
 
 void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo)
 {
-    QPair<ComicDB, QString> p;
     QList<ComicDB> comics;
-    foreach (p, matchingInfo) {
+    const auto &matches = matchingInfo;
+    for (auto match : matches) {
         auto comicVineClient = new ComicVineClient;
         // connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
         // connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
         // connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
         bool error;
         bool timeout;
-        QByteArray result = comicVineClient->getComicDetail(p.second, error, timeout); // TODO check timeOut or Connection error
+        QByteArray result = comicVineClient->getComicDetail(match.second, error, timeout); // TODO check timeOut or Connection error
         if (error || timeout)
             continue; // TODO
-        ComicDB comic = YACReader::parseCVJSONComicInfo(p.first, result, volumeInfo); // TODO check result error
-        comic.info.comicVineID = p.second;
+        ComicDB comic = YACReader::parseCVJSONComicInfo(match.first, result, volumeInfo); // TODO check result error
+        comic.info.comicVineID = match.second;
         comics.push_back(comic);
 
-        setLoadingMessage(tr("Retrieving tags for : %1").arg(p.first.getFileName()));
+        setLoadingMessage(tr("Retrieving tags for : %1").arg(match.first.getFileName()));
     }
 
     DBHelper::updateComicsInfo(comics, databasePath);
@@ -665,4 +646,20 @@ void ComicVineDialog::launchSearchComic()
 
     // if(comicInfo.isEmpty() && comicNumber == -1)
     searchVolume({ volumeInfo, 1, exactMatch });
+}
+
+void ComicVineDialog::applyTheme(const Theme &theme)
+{
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
+
+    setStyleSheet(metadataScraperDialogTheme.dialogQSS);
+
+    skipButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
+    backButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
+    nextButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
+    searchButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
+    closeButton->setStyleSheet(metadataScraperDialogTheme.dialogButtonsQSS);
+
+    loadingMessage->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
+    busyWidget->setColor(metadataScraperDialogTheme.busyIndicatorColor);
 }

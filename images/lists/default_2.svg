@@ -1,19 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16">
+  <!-- Generator: Adobe Illustrator 29.8.4, SVG Export Plug-In . SVG Version: 2.1.1 Build 6)  -->
   <defs>
     <style>
-      .cls-1 {
-        opacity: .24;
+      .st0 {
+        fill: #0ff;
       }
 
-      .cls-2 {
-        fill: #fc0;
+      .st1 {
+        opacity: .2;
+      }
+
+      .st2 {
+        fill: #f0f;
+      }
+
+      .st3 {
+        fill: #ff0;
       }
     </style>
   </defs>
-  <g class="cls-1">
-    <circle cx="7.5" cy="7.5" r="6.79"/>
+  <g class="st1">
+    <circle class="st3" cx="7.5" cy="7.5" r="6.8"/>
   </g>
-  <circle cx="7.5" cy="8.5" r="3.29"/>
-  <circle class="cls-2" cx="7.5" cy="7.5" r="3.29"/>
+  <circle class="st0" cx="7.5" cy="8.5" r="3.3"/>
+  <circle class="st2" cx="7.5" cy="7.5" r="3.3"/>
 </svg>

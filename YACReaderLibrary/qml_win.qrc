@@ -1,6 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>qml/page.png</file>
-        <file>qml/star.png</file>
-    </qresource>
-</RCC>

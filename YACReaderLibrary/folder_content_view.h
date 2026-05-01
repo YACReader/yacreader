@@ -1,12 +1,15 @@
 #ifndef FOLDERCONTENTVIEW_H
 #define FOLDERCONTENTVIEW_H
 
-#include <QtWidgets>
-
-#include "comic_model.h"
-
-#include "folder.h"
 #include "comic_db.h"
+#include "comic_model.h"
+#include "folder.h"
+#include "themable.h"
+
+#include <QLabel>
+#include <QSlider>
+#include <QToolBar>
+#include <QWidget>
 
 class FolderModel;
 class ComicModel;
@@ -15,7 +18,7 @@ class YACReaderToolBarStretch;
 class QQuickWidget;
 class QQmlContext;
 
-class FolderContentView : public QWidget
+class FolderContentView : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -28,6 +31,7 @@ public:
     void setRecentRange(int days);
 
     FolderModel *currentFolderModel() { return folderModel; }
+
 public slots:
     void updateSettings();
 
@@ -62,6 +66,8 @@ protected:
     std::unique_ptr<ComicModel> comicModel;
     FolderModel *folderModel;
 
+    void applyTheme(const Theme &theme) override;
+
 private:
     QSettings *settings;
     QToolBar *toolbar;
@@ -72,6 +78,10 @@ private:
     QAction *coverSizeSliderAction;
     QAction *showInfoAction;
     QAction *showInfoSeparatorAction;
+
+    // Zoom slider labels (for theming)
+    QLabel *smallZoomLabel;
+    QLabel *bigZoomLabel;
 };
 
 #endif // FOLDERCONTENTVIEW_H

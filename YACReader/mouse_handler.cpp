@@ -1,18 +1,12 @@
 #include "mouse_handler.h"
 
-#include <QtWidgets>
-
 #include "configuration.h"
+#include "goto_flow_widget.h"
 #include "magnifying_glass.h"
 #include "render.h"
 #include "viewer.h"
 
-#include "goto_flow.h"
-#ifndef NO_OPENGL
-#include "goto_flow_gl.h"
-#else
-#include <QtWidgets>
-#endif
+#include <QScrollBar>
 
 using namespace YACReader;
 
@@ -25,11 +19,7 @@ void YACReader::MouseHandler::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
         viewer->drag = true;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         auto position = event->position();
-#else
-        auto position = QPointF(event->x(), event->y());
-#endif
         dragOrigin = dragLatestPosition = position;
         viewer->setCursor(Qt::ClosedHandCursor);
         event->accept();
@@ -59,11 +49,7 @@ void YACReader::MouseHandler::mouseReleaseEvent(QMouseEvent *event)
         event->accept();
     }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     auto position = event->position();
-#else
-    auto position = QPointF(event->x(), event->y());
-#endif
     auto dragDistance = QLineF(position, dragOrigin).length();
 
     auto mouseMode = Configuration::getConfiguration().getMouseMode();
@@ -110,11 +96,7 @@ void YACReader::MouseHandler::mouseMoveEvent(QMouseEvent *event)
     viewer->showCursor();
     viewer->hideCursorTimer->start(2500);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     auto position = event->position();
-#else
-    auto position = QPointF(event->x(), event->y());
-#endif
 
     if (viewer->magnifyingGlassShown)
         viewer->mglass->move(static_cast<int>(position.x() - float(viewer->mglass->width()) / 2), static_cast<int>(position.y() - float(viewer->mglass->height()) / 2));

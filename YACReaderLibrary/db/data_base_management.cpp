@@ -1,12 +1,14 @@
 #include "data_base_management.h"
 
-#include <QtCore>
-#include "initial_comic_info_extractor.h"
-#include "check_new_version.h"
-#include "db_helper.h"
-#include "yacreader_libraries.h"
-
 #include "QsLog.h"
+#include "db_helper.h"
+#include "initial_comic_info_extractor.h"
+
+#include <QImageReader>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
+#include <QtCore>
 
 using namespace YACReader;
 
@@ -127,36 +129,57 @@ QSqlDatabase DataBaseManagement::createDatabase(QString dest)
 
 QSqlDatabase DataBaseManagement::loadDatabase(QString libraryDataPath)
 {
-    if (!QFile::exists(libraryDataPath + "/library.ydb")) {
+    const QString dbPath = QDir::cleanPath(libraryDataPath + "/library.ydb");
+    if (!QFile::exists(dbPath)) {
         return QSqlDatabase();
     }
 
-    QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", libraryDataPath + threadId);
-    db.setDatabaseName(libraryDataPath + "/library.ydb");
+    QString threadId = QString::number((quintptr)QThread::currentThreadId(), 16);
+    QString connectionName = dbPath + threadId;
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+    db.setConnectOptions("QSQLITE_BUSY_TIMEOUT=2000");
+    db.setDatabaseName(dbPath);
     if (!db.open()) {
+        const QString error = db.lastError().text();
+        db = QSqlDatabase();
+        QSqlDatabase::removeDatabase(connectionName);
+        QLOG_ERROR() << "loadDatabase: failed to open" << dbPath << error;
         return QSqlDatabase();
     }
-    QSqlQuery pragma("PRAGMA foreign_keys = ON", db);
+    QSqlQuery pragmaFK(db);
+    if (!pragmaFK.exec("PRAGMA foreign_keys = ON")) {
+        QLOG_ERROR() << "loadDatabase: failed to enable foreign keys for" << dbPath << pragmaFK.lastError().text();
+    }
 
     return db;
 }
 
 QSqlDatabase DataBaseManagement::loadDatabaseFromFile(QString filePath)
 {
-    if (!QFile::exists(filePath)) {
+    const QString dbPath = QDir::cleanPath(filePath);
+    if (!QFile::exists(dbPath)) {
         return QSqlDatabase();
     }
 
-    QString threadId = QString::number((long long)QThread::currentThreadId(), 16);
-    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", filePath + threadId);
-    db.setDatabaseName(filePath);
+    QString threadId = QString::number((quintptr)QThread::currentThreadId(), 16);
+    QString connectionName = dbPath + threadId;
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+    db.setConnectOptions("QSQLITE_BUSY_TIMEOUT=2000");
+    db.setDatabaseName(dbPath);
     if (!db.open()) {
         // se devuelve una base de datos vacía e inválida
 
+        const QString error = db.lastError().text();
+        db = QSqlDatabase();
+        QSqlDatabase::removeDatabase(connectionName);
+        QLOG_ERROR() << "loadDatabaseFromFile: failed to open" << dbPath << error;
         return QSqlDatabase();
     }
-    QSqlQuery pragma("PRAGMA foreign_keys = ON", db);
+    QSqlQuery pragmaFK(db);
+    if (!pragmaFK.exec("PRAGMA foreign_keys = ON")) {
+        QLOG_ERROR() << "loadDatabaseFromFile: failed to enable foreign keys for" << dbPath << pragmaFK.lastError().text();
+    }
 
     return db;
 }
@@ -297,6 +320,87 @@ bool DataBaseManagement::createComicInfoTable(QSqlDatabase &database, QString ta
                                                          "lastTimeCoverSet INTEGER DEFAULT 0,"
                                                          "usesExternalCover BOOLEAN DEFAULT 0,"
                                                          "lastTimeMetadataSet INTEGER DEFAULT 0"
+                                                         ")");
+
+    return queryComicInfo.exec();
+}
+
+bool DataBaseManagement::createComicInfoTable9_14(QSqlDatabase &database, QString tableName)
+{
+    QSqlQuery queryComicInfo(database);
+    queryComicInfo.prepare("CREATE TABLE " + tableName + " ("
+                                                         "id INTEGER PRIMARY KEY,"
+                                                         "title TEXT,"
+
+                                                         "coverPage INTEGER DEFAULT 1,"
+                                                         "numPages INTEGER,"
+
+                                                         "number TEXT," // changed to text from INTEGER (9.13)
+                                                         "isBis BOOLEAN,"
+                                                         "count INTEGER,"
+
+                                                         "volume TEXT,"
+                                                         "storyArc TEXT,"
+                                                         "arcNumber TEXT," // changed to text from INTEGER (9.13)
+                                                         "arcCount INTEGER,"
+
+                                                         "genere TEXT,"
+
+                                                         "writer TEXT,"
+                                                         "penciller TEXT,"
+                                                         "inker TEXT,"
+                                                         "colorist TEXT,"
+                                                         "letterer TEXT,"
+                                                         "coverArtist TEXT,"
+
+                                                         "date TEXT," // publication date dd/mm/yyyy --> se mostrará en 3 campos diferentes
+                                                         "publisher TEXT,"
+                                                         "format TEXT,"
+                                                         "color BOOLEAN,"
+                                                         "ageRating TEXT,"
+
+                                                         "synopsis TEXT,"
+                                                         "characters TEXT,"
+                                                         "notes TEXT,"
+
+                                                         "hash TEXT UNIQUE NOT NULL,"
+                                                         "edited BOOLEAN DEFAULT 0,"
+                                                         "read BOOLEAN DEFAULT 0,"
+                                                         // new 7.0 fields
+
+                                                         "hasBeenOpened BOOLEAN DEFAULT 0,"
+                                                         "rating REAL DEFAULT 0," // changed to REAL from INTEGER (9.13)
+                                                         "currentPage INTEGER DEFAULT 1, "
+                                                         "bookmark1 INTEGER DEFAULT -1, "
+                                                         "bookmark2 INTEGER DEFAULT -1, "
+                                                         "bookmark3 INTEGER DEFAULT -1, "
+                                                         "brightness INTEGER DEFAULT -1, "
+                                                         "contrast INTEGER DEFAULT -1, "
+                                                         "gamma INTEGER DEFAULT -1, "
+                                                         // new 7.1 fields
+                                                         "comicVineID TEXT,"
+                                                         // new 9.5 fields
+                                                         "lastTimeOpened INTEGER,"
+                                                         "coverSizeRatio REAL,"
+                                                         "originalCoverSize STRING," // h/w
+                                                         // new 9.8 fields
+                                                         "manga BOOLEAN DEFAULT 0," // deprecated 9.13
+                                                         // new 9.13 fields
+                                                         "added INTEGER,"
+                                                         "type INTEGER DEFAULT 0," // 0 = comic, 1 = manga, 2 = manga left to right, 3 = webcomic, 4 = 4koma
+                                                         "editor TEXT,"
+                                                         "imprint TEXT,"
+                                                         "teams TEXT,"
+                                                         "locations TEXT,"
+                                                         "series TEXT,"
+                                                         "alternateSeries TEXT,"
+                                                         "alternateNumber TEXT,"
+                                                         "alternateCount INTEGER,"
+                                                         "languageISO TEXT,"
+                                                         "seriesGroup TEXT,"
+                                                         "mainCharacterOrTeam TEXT,"
+                                                         "review TEXT,"
+                                                         "tags TEXT"
                                                          ")");
 
     return queryComicInfo.exec();
@@ -670,8 +774,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
         }
 
         destDB.commit();
-        QString hash;
-        foreach (hash, hashes) {
+        for (const auto &hash : hashes) {
             QSqlQuery getComic(destDB);
             getComic.prepare("SELECT c.path,ci.coverPage FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) where ci.hash = :hash");
             getComic.bindValue(":hash", hash);
@@ -686,7 +789,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
             }
         }
         sourceDBconnection = sourceDB.connectionName();
-        destDBconnection = sourceDB.connectionName();
+        destDBconnection = destDB.connectionName();
     }
 
     QSqlDatabase::removeDatabase(sourceDBconnection);
@@ -777,7 +880,7 @@ bool DataBaseManagement::addColumns(const QString &tableName, const QStringList 
     QString sql = "ALTER TABLE %1 ADD COLUMN %2";
     bool returnValue = true;
 
-    foreach (QString columnDef, columnDefs) {
+    for (const auto &columnDef : columnDefs) {
         QSqlQuery alterTable(db);
         alterTable.prepare(sql.arg(tableName).arg(columnDef));
         // alterTableComicInfo.bindValue(":column_def",columnDef);
@@ -842,10 +945,10 @@ int DataBaseManagement::compareVersions(const QString &v1, const QString v2)
     QList<int> v1il;
     QList<int> v2il;
 
-    foreach (QString s, v1l)
+    for (const auto &s : v1l)
         v1il.append(s.toInt());
 
-    foreach (QString s, v2l)
+    for (const auto &s : v2l)
         v2il.append(s.toInt());
 
     for (int i = 0; i < qMin(v1il.length(), v2il.length()); i++) {
@@ -901,6 +1004,9 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
     {
         QSqlDatabase db = loadDatabaseFromFile(libraryDatabasePath);
         if (db.isValid() && db.isOpen()) {
+
+            QSqlQuery pragmaFKOFF("PRAGMA foreign_keys = OFF", db);
+
             if (!db.transaction()) {
                 QLOG_ERROR() << "Failed to start transaction for database update";
                 returnValue = false;
@@ -1066,25 +1172,26 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
                     {
                         bool pre9_14_successfulMigration = true;
 
-                        QSqlQuery pragmaFKOFF(db);
-                        pragmaFKOFF.prepare("PRAGMA foreign_keys=OFF");
                         pre9_14_successfulMigration = pre9_14_successfulMigration && pragmaFKOFF.exec();
 
-                        pre9_14_successfulMigration = pre9_14_successfulMigration && createComicInfoTable(db, "comic_info_migration");
+                        pre9_14_successfulMigration = pre9_14_successfulMigration && createComicInfoTable9_14(db, "comic_info_migration");
 
                         QSqlQuery copyComicInfoToComicInfoMigration(db);
                         copyComicInfoToComicInfoMigration.prepare("INSERT INTO comic_info_migration SELECT * FROM comic_info");
+
                         pre9_14_successfulMigration = pre9_14_successfulMigration && copyComicInfoToComicInfoMigration.exec();
 
                         QSqlQuery dropComicInfo(db);
                         dropComicInfo.prepare("DROP TABLE comic_info");
                         pre9_14_successfulMigration = pre9_14_successfulMigration && dropComicInfo.exec();
 
+                        QLOG_ERROR() << "Migration failed1:" << dropComicInfo.lastError().text();
+
                         QSqlQuery renameComicInfoMigrationToComicInfo(db);
                         renameComicInfoMigrationToComicInfo.prepare("ALTER TABLE comic_info_migration RENAME TO comic_info");
                         pre9_14_successfulMigration = pre9_14_successfulMigration && renameComicInfoMigrationToComicInfo.exec();
 
-                        QSqlQuery pragmaFKON1("PRAGMA foreign_keys=ON", db);
+                        QLOG_ERROR() << "Migration failed2:" << renameComicInfoMigrationToComicInfo.lastError().text();
 
                         returnValue = returnValue && pre9_14_successfulMigration;
                     }
@@ -1125,7 +1232,10 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
             } else {
                 db.rollback();
             }
+
+            QSqlQuery pragmaFKON("PRAGMA foreign_keys = ON", db);
         }
+
         connectionName = db.connectionName();
     }
 

@@ -10,6 +10,7 @@
 #include <QDir>
 #include <QSet>
 #include <QTextStream>
+#include <utility>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     #include <QRegularExpression>
 #else
@@ -81,7 +82,7 @@ Template TemplateLoader::getTemplate(QString templateName, QString locales)
     #endif
 
     // Search for exact match
-    foreach (QString loc,locs)
+    for (QString loc : std::as_const(locs))
     {
         #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             loc.replace(QRegularExpression(";.*"),"");
@@ -102,7 +103,7 @@ Template TemplateLoader::getTemplate(QString templateName, QString locales)
     }
 
     // Search for correct language but any country
-    foreach (QString loc,locs)
+    for (QString loc : std::as_const(locs))
     {
         #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
             loc.replace(QRegularExpression("[;_-].*"),"");

@@ -1,23 +1,27 @@
 #include "options_dialog.h"
+
+#include "app_language_utils.h"
+#include "appearance_tab_widget.h"
 #include "configuration.h"
-#include <QVBoxLayout>
-#include <QHBoxLayout>
+#include "theme_factory.h"
+#include "theme_manager.h"
+#include "yacreader_3d_flow_config_widget.h"
+#include "yacreader_spin_slider_widget.h"
+
+#include <QCheckBox>
+#include <QColorDialog>
+#include <QComboBox>
 #include <QFileDialog>
 #include <QGroupBox>
-#include <QRadioButton>
-#include <QTabWidget>
-#include <QSlider>
-#include <QLineEdit>
-#include <QPushButton>
+#include <QHBoxLayout>
 #include <QLabel>
-#include <QColorDialog>
-#include <QCheckBox>
-
-#include "yacreader_spin_slider_widget.h"
-#include "yacreader_flow_config_widget.h"
-#ifndef NO_OPENGL
-#include "yacreader_gl_flow_config_widget.h"
-#endif
+#include <QLineEdit>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSlider>
+#include <QTabWidget>
+#include <QVBoxLayout>
 
 OptionsDialog::OptionsDialog(QWidget *parent)
     : YACReaderOptionsDialog(parent)
@@ -35,8 +39,21 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     auto path = new QHBoxLayout();
     path->addWidget(pathEdit = new QLineEdit());
-    path->addWidget(pathFindButton = new QPushButton(QIcon(":/images/find_folder.png"), ""));
+    path->addWidget(pathFindButton = new QPushButton(""));
     pathBox->setLayout(path);
+
+    auto *languageBox = new QGroupBox(tr("Language"));
+    auto *languageLayout = new QHBoxLayout();
+    languageLayout->addWidget(new QLabel(tr("Application language")));
+    languageCombo = new QComboBox(this);
+    languageCombo->addItem(tr("System default"), QString());
+    const auto availableLanguages = YACReader::UiLanguage::availableLanguages("yacreader");
+    for (const auto &language : availableLanguages) {
+        languageCombo->addItem(
+                QString("%1 (%2)").arg(language.displayName, language.code), language.code);
+    }
+    languageLayout->addWidget(languageCombo);
+    languageBox->setLayout(languageLayout);
 
     QGroupBox *displayBox = new QGroupBox(tr("Display"));
     auto displayLayout = new QHBoxLayout();
@@ -68,10 +85,12 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     // backgroundColor->setMinimumWidth(100);
     colorSelection->addWidget(backgroundColor);
     colorSelection->addWidget(selectBackgroundColorButton = new QPushButton(tr("Choose")));
+    colorSelection->addWidget(clearBackgroundColorButton = new QPushButton(tr("Clear")));
     colorSelection->setStretchFactor(backgroundColor, 1);
     colorSelection->setStretchFactor(selectBackgroundColorButton, 0);
     // colorSelection->addStretch();
     connect(selectBackgroundColorButton, &QAbstractButton::clicked, this, &OptionsDialog::showColorDialog);
+    connect(clearBackgroundColorButton, &QAbstractButton::clicked, this, &OptionsDialog::clearBackgroundColor);
     colorBox->setLayout(colorSelection);
 
     auto scrollBox = new QGroupBox(tr("Scroll behaviour"));
@@ -101,6 +120,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     mouseModeBox->setLayout(mouseModeLayout);
 
     layoutGeneral->addWidget(pathBox);
+    layoutGeneral->addWidget(languageBox);
     layoutGeneral->addWidget(displayBox);
     layoutGeneral->addWidget(slideSizeBox);
     // layoutGeneral->addWidget(fitBox);
@@ -120,19 +140,13 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
     disableShowOnMouseOver = new QCheckBox(tr("Disable mouse over activation"));
 
-    layoutFlow->addWidget(sw);
-#ifndef NO_OPENGL
     layoutFlow->addWidget(gl);
-    layoutFlow->addWidget(useGL);
-#endif
+
     layoutFlow->addWidget(quickNavi);
     layoutFlow->addWidget(disableShowOnMouseOver);
     layoutFlow->addStretch();
 
-    // disable vSyncCheck
-#ifndef NO_OPENGL
     gl->vSyncCheck->hide();
-#endif
 
     // PAGE FLOW END -------------------------------------
 
@@ -180,7 +194,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto scaleLayout = new QVBoxLayout();
     scaleCheckbox = new QCheckBox(tr("Enlarge images to fit width/height"));
     connect(scaleCheckbox, &QCheckBox::clicked, scaleCheckbox,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 Configuration::getConfiguration().setEnlargeImages(checked);
                 emit changedImageOptions();
             });
@@ -193,7 +207,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto doublePageBoxLayout = new QVBoxLayout();
     coverSPCheckBox = new QCheckBox(tr("Show covers as single page"));
     connect(coverSPCheckBox, &QCheckBox::clicked, coverSPCheckBox,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(COVER_IS_SP, checked);
                 emit changedImageOptions();
             });
@@ -201,6 +215,23 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     doublePageBoxLayout->addWidget(coverSPCheckBox);
     doublePageBox->setLayout(doublePageBoxLayout);
     layoutImageV->addWidget(doublePageBox);
+
+    auto scalingBox = new QGroupBox(tr("Scaling"));
+    auto scalingLayout = new QHBoxLayout();
+    scalingLayout->addWidget(new QLabel(tr("Scaling method")));
+    scalingMethodCombo = new QComboBox();
+    scalingMethodCombo->addItem(tr("Nearest (fast, low quality)"));
+    scalingMethodCombo->addItem(tr("Bilinear"));
+    scalingMethodCombo->addItem(tr("Lanczos (better quality)"));
+    connect(scalingMethodCombo, &QComboBox::currentIndexChanged, this, [this](int index) {
+        Configuration::getConfiguration().setScalingMethod(static_cast<ScaleMethod>(index));
+        emit changedImageOptions();
+    });
+    scalingLayout->addWidget(scalingMethodCombo);
+    scalingLayout->addStretch();
+    scalingBox->setLayout(scalingLayout);
+    layoutImageV->addWidget(scalingBox);
+
     layoutImageV->addStretch();
 
     // IMAGE ADJUSTMENTS END -----------------------------
@@ -209,9 +240,21 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     pageFlow->setLayout(layoutFlow);
     pageImage->setLayout(layoutImageV);
 
+    // APPEARANCE ----------------------------------------
+
+    auto *pageAppearance = new AppearanceTabWidget(
+            ThemeManager::instance().getAppearanceConfiguration(),
+            ThemeManager::instance().getRepository(),
+            []() { return ThemeManager::instance().getCurrentTheme().sourceJson; },
+            [](const QJsonObject &json) { ThemeManager::instance().setTheme(makeTheme(json)); },
+            this);
+
+    // APPEARANCE END ------------------------------------
+
     tabWidget->addTab(pageGeneral, tr("General"));
     tabWidget->addTab(pageFlow, tr("Page Flow"));
     tabWidget->addTab(pageImage, tr("Image adjustment"));
+    tabWidget->addTab(pageAppearance, tr("Appearance"));
 
     layout->addWidget(tabWidget);
 
@@ -229,6 +272,17 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     setWindowTitle(tr("Options"));
 
     this->layout()->setSizeConstraint(QLayout::SetFixedSize);
+
+    initTheme(this);
+}
+
+void OptionsDialog::applyTheme(const Theme &theme)
+{
+    pathFindButton->setIcon(theme.dialogIcons.findFolderIcon);
+
+    if (backgroundColorFollowsTheme) {
+        updateColor(theme.viewer.defaultBackgroundColor);
+    }
 }
 
 void OptionsDialog::findFolder()
@@ -242,6 +296,11 @@ void OptionsDialog::findFolder()
 void OptionsDialog::showColorDialog()
 {
     auto color = QColorDialog::getColor(currentColor, this);
+    if (!color.isValid()) {
+        return;
+    }
+
+    backgroundColorFollowsTheme = false;
     updateColor(color);
 }
 
@@ -249,18 +308,15 @@ void OptionsDialog::saveOptions()
 {
     settings->setValue(GO_TO_FLOW_SIZE, QSize(static_cast<int>(slideSize->sliderPosition() / SLIDE_ASPECT_RATIO), slideSize->sliderPosition()));
 
-    if (sw->radio1->isChecked())
-        settings->setValue(FLOW_TYPE_SW, 0);
-    if (sw->radio2->isChecked())
-        settings->setValue(FLOW_TYPE_SW, 1);
-    if (sw->radio3->isChecked())
-        settings->setValue(FLOW_TYPE_SW, 2);
-
     settings->setValue(PATH, pathEdit->text());
 
     Configuration::getConfiguration().setShowTimeInInformation(showTimeInInformationLabel->isChecked());
 
-    settings->setValue(BACKGROUND_COLOR, currentColor);
+    if (!backgroundColorFollowsTheme) {
+        settings->setValue(BACKGROUND_COLOR, currentColor);
+    } else {
+        settings->remove(BACKGROUND_COLOR);
+    }
     // settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
     settings->setValue(QUICK_NAVI_MODE, quickNavi->isChecked());
     settings->setValue(DISABLE_MOUSE_OVER_GOTO_FLOW, disableShowOnMouseOver->isChecked());
@@ -281,6 +337,15 @@ void OptionsDialog::saveOptions()
     }
     Configuration::getConfiguration().setMouseMode(mouseMode);
 
+    Configuration::getConfiguration().setScalingMethod(static_cast<ScaleMethod>(scalingMethodCombo->currentIndex()));
+    emit changedImageOptions();
+
+    const auto selectedLanguage = languageCombo->currentData().toString().trimmed();
+    if (selectedLanguage.isEmpty())
+        settings->remove(UI_LANGUAGE);
+    else
+        settings->setValue(UI_LANGUAGE, selectedLanguage);
+
     YACReaderOptionsDialog::saveOptions();
 }
 
@@ -289,26 +354,21 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     YACReaderOptionsDialog::restoreOptions(settings);
 
     slideSize->setSliderPosition(settings->value(GO_TO_FLOW_SIZE).toSize().height());
-    switch (settings->value(FLOW_TYPE_SW).toInt()) {
-    case 0:
-        sw->radio1->setChecked(true);
-        break;
-    case 1:
-        sw->radio2->setChecked(true);
-        break;
-    case 2:
-        sw->radio3->setChecked(true);
-        break;
-    default:
-        sw->radio1->setChecked(true);
-        break;
-    }
 
     pathEdit->setText(settings->value(PATH).toString());
 
+    const auto selectedLanguage = settings->value(UI_LANGUAGE).toString().trimmed();
+    int languageIndex = languageCombo->findData(selectedLanguage);
+    if (languageIndex < 0)
+        languageIndex = 0;
+    languageCombo->setCurrentIndex(languageIndex);
+
     showTimeInInformationLabel->setChecked(Configuration::getConfiguration().getShowTimeInInformation());
 
-    updateColor(settings->value(BACKGROUND_COLOR).value<QColor>());
+    backgroundColorFollowsTheme = !settings->contains(BACKGROUND_COLOR);
+    updateColor(backgroundColorFollowsTheme
+                        ? theme.viewer.defaultBackgroundColor
+                        : settings->value(BACKGROUND_COLOR).value<QColor>());
     // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 
     quickNavi->setChecked(settings->value(QUICK_NAVI_MODE).toBool());
@@ -330,6 +390,11 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     auto defaultDisableScrollAnimationsValue = false;
 #endif
     disableScrollAnimations->setChecked(settings->value(DISABLE_SCROLL_ANIMATION, defaultDisableScrollAnimationsValue).toBool());
+
+    {
+        QSignalBlocker blocker(scalingMethodCombo);
+        scalingMethodCombo->setCurrentIndex(static_cast<int>(Configuration::getConfiguration().getScalingMethod()));
+    }
 
     auto mouseMode = Configuration::getConfiguration().getMouseMode();
 
@@ -353,8 +418,6 @@ void OptionsDialog::updateColor(const QColor &color)
     backgroundColor->setPalette(pal);
     backgroundColor->setAutoFillBackground(true);
     currentColor = color;
-
-    settings->setValue(BACKGROUND_COLOR, color);
 
     emit changedOptions();
 }
@@ -421,4 +484,12 @@ void OptionsDialog::setFilters(int brightness, int contrast, int gamma)
         gammaS->setValue(gamma);
     else
         gammaS->setValue(100);
+}
+
+void OptionsDialog::clearBackgroundColor()
+{
+    backgroundColorFollowsTheme = true;
+    settings->remove(BACKGROUND_COLOR);
+
+    updateColor(theme.viewer.defaultBackgroundColor);
 }

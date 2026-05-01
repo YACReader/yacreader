@@ -1,4 +1,5 @@
 #include "actions_shortcuts_model.h"
+
 #include "shortcuts_manager.h"
 
 #include <QAction>
@@ -34,7 +35,7 @@ QModelIndex ActionsShortcutsModel::index(int row, int column, const QModelIndex 
 Qt::ItemFlags ActionsShortcutsModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return {};
+        return { };
     if (index.column() == KEYS)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;

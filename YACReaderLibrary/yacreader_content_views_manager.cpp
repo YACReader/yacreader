@@ -1,22 +1,24 @@
 #include "yacreader_content_views_manager.h"
 
-#include "library_window.h"
-
 #include "classic_comics_view.h"
+#include "comics_view_transition.h"
+#include "empty_folder_widget.h"
+#include "empty_label_widget.h"
+#include "empty_reading_list_widget.h"
+#include "empty_special_list.h"
+#include "folder_content_view.h"
 #include "grid_comics_view.h"
 #include "info_comics_view.h"
-#include "comics_view_transition.h"
-#include "folder_content_view.h"
-#include "empty_label_widget.h"
-#include "empty_special_list.h"
-#include "empty_reading_list_widget.h"
+#include "library_window.h"
 #include "no_search_results_widget.h"
-
+#include "options_dialog.h"
+#include "reading_list_model.h"
+#include "yacreader_options_dialog.h"
+#include "yacreader_reading_lists_view.h"
 #include "yacreader_sidebar.h"
 
 //--
 #include "yacreader_search_line_edit.h"
-#include "options_dialog.h"
 
 YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, LibraryWindow *parent)
     : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr)
@@ -50,6 +52,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
     comicsViewStack->addWidget(emptySpecialList = new EmptySpecialListWidget());
     comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());
+    comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
     comicsViewStack->addWidget(noSearchResultsWidget = new NoSearchResultsWidget());
 
     comicsViewStack->addWidget(comicsView);
@@ -60,6 +63,8 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     connect(folderContentView, &FolderContentView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
     connect(folderContentView, &FolderContentView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
     connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, folderContentView, &FolderContentView::updateSettings);
+
+    initTheme(this);
 }
 
 QWidget *YACReaderContentViewsManager::containerWidget()
@@ -69,27 +74,24 @@ QWidget *YACReaderContentViewsManager::containerWidget()
 
 void YACReaderContentViewsManager::updateCurrentContentView()
 {
-    libraryWindow->comicsModel->reload();
+    if (libraryWindow->status == LibraryWindow::Searching) {
+        auto currentWidget = comicsViewStack->currentWidget();
 
-    if (comicsViewStack->currentWidget() == folderContentView && libraryWindow->comicsModel->rowCount() > 0) {
-        comicsView->reloadContent();
-        showComicsView();
+        libraryWindow->comicsModel->reload();
+
+        if (currentWidget == comicsView) {
+            comicsView->reloadContent();
+        }
         return;
     }
 
-    if (comicsViewStack->currentWidget() == comicsView && libraryWindow->comicsModel->rowCount() == 0) {
-        showFolderContentView();
-        folderContentView->reloadContent();
+    if (!libraryWindow->listsView->selectionModel()->selectedRows().isEmpty()) {
+        auto currentListIndex = libraryWindow->listsModelProxy->mapToSource(libraryWindow->listsView->currentIndex());
+        libraryWindow->navigationController->loadListInfo(currentListIndex);
         return;
     }
 
-    if (comicsViewStack->currentWidget() == comicsView) {
-        comicsView->reloadContent();
-    }
-
-    if (comicsViewStack->currentWidget() == folderContentView) {
-        folderContentView->reloadContent();
-    }
+    libraryWindow->navigationController->loadFolderInfo(libraryWindow->getCurrentFolderIndex());
 }
 
 void YACReaderContentViewsManager::updateCurrentComicView()
@@ -126,6 +128,7 @@ void YACReaderContentViewsManager::showComicsView()
 {
     comicsViewStack->setCurrentWidget(comicsView);
 
+    // TODO: check if this is still needed in the rhi implementation
     // BUG, ugly workaround for glitch when QOpenGLWidget (flow) is used just after any other widget in the views stack
     // Somehow QOpenGLWidget is messing with the rendering of the side bar (wrong buffer swapping)
     libraryWindow->sideBar->update();
@@ -149,6 +152,11 @@ void YACReaderContentViewsManager::showEmptySpecialList()
 void YACReaderContentViewsManager::showEmptyReadingListWidget()
 {
     comicsViewStack->setCurrentWidget(emptyReadingList);
+}
+
+void YACReaderContentViewsManager::showEmptyFolderWidget()
+{
+    comicsViewStack->setCurrentWidget(emptyFolderWidget);
 }
 
 void YACReaderContentViewsManager::showNoSearchResultsView()
@@ -234,10 +242,11 @@ void YACReaderContentViewsManager::showComicsViewTransition()
 
 void YACReaderContentViewsManager::_toggleComicsView()
 {
+    const auto &mainToolbar = theme.mainToolbar;
+
     switch (comicsViewStatus) {
     case Flow: {
-        QIcon icoViewsButton;
-        icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/info"), QSize(), QIcon::Normal);
+        QIcon icoViewsButton = mainToolbar.infoIcon;
         libraryWindow->actions.toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
@@ -254,8 +263,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
     }
 
     case Grid: {
-        QIcon icoViewsButton;
-        icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/flow"), QSize(), QIcon::Normal);
+        QIcon icoViewsButton = mainToolbar.flowIcon;
         libraryWindow->actions.toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
@@ -270,8 +278,7 @@ void YACReaderContentViewsManager::_toggleComicsView()
     }
 
     case Info: {
-        QIcon icoViewsButton;
-        icoViewsButton.addFile(addExtensionToIconPath(":/images/main_toolbar/grid"), QSize(), QIcon::Normal);
+        QIcon icoViewsButton = mainToolbar.gridIcon;
         libraryWindow->actions.toggleComicsViewAction->setIcon(icoViewsButton);
 #ifdef Y_MAC_UI
         libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
@@ -290,4 +297,29 @@ void YACReaderContentViewsManager::_toggleComicsView()
 
     if (comicsViewStack->currentWidget() == comicsViewTransition)
         showComicsView();
+}
+
+void YACReaderContentViewsManager::applyTheme(const Theme &theme)
+{
+    const auto &mainToolbar = theme.mainToolbar;
+
+    // Update the toggle button icon based on current view status
+    // The icon shows what the NEXT view will be when clicked
+    QIcon icon;
+    switch (comicsViewStatus) {
+    case Flow:
+        icon = mainToolbar.gridIcon;
+        break;
+    case Grid:
+        icon = mainToolbar.infoIcon;
+        break;
+    case Info:
+        icon = mainToolbar.flowIcon;
+        break;
+    }
+
+    libraryWindow->actions.toggleComicsViewAction->setIcon(icon);
+#ifdef Y_MAC_UI
+    libraryWindow->libraryToolBar->updateViewSelectorIcon(icon);
+#endif
 }

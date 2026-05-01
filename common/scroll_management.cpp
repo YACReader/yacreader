@@ -1,5 +1,5 @@
 #include "scroll_management.h"
-#include <QtCore>
+
 #include <QApplication>
 
 ScrollManagement::ScrollManagement()

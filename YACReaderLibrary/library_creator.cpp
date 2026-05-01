@@ -1,23 +1,22 @@
 #include "library_creator.h"
 
-#include <QMutex>
-#include <QDebug>
-#include <QSqlQuery>
-#include <QSqlRecord>
-#include <QCoreApplication>
-#include <QLibrary>
-
-#include "data_base_management.h"
-#include "qnaturalsorting.h"
-#include "db_helper.h"
-
-#include "initial_comic_info_extractor.h"
-#include "xml_info_parser.h"
+#include "QsLog.h"
 #include "comic.h"
+#include "data_base_management.h"
+#include "db_helper.h"
+#include "initial_comic_info_extractor.h"
 #include "pdf_comic.h"
+#include "qnaturalsorting.h"
+#include "xml_info_parser.h"
 #include "yacreader_global.h"
 
-#include "QsLog.h"
+#include <QCoreApplication>
+#include <QDebug>
+#include <QLibrary>
+#include <QMutex>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QSqlRecord>
 
 #include <algorithm>
 
@@ -65,11 +64,11 @@ void LibraryCreator::updateLibrary(const QString &source, const QString &target)
     _mode = UPDATER;
 }
 
-void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, const QModelIndex &dest)
+void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, qulonglong folderId)
 {
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = true;
-    folderDestinationModelIndex = dest;
+    _folderDestinationId = folderId;
 
     _currentPathFolders.clear();
 
@@ -101,7 +100,7 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
 
         _currentPathFolders.append(rootFolder(db));
 
-        foreach (QString folderName, folders) {
+        for (const auto &folderName : folders) {
             if (folderName.isEmpty()) {
                 break;
             }
@@ -222,7 +221,7 @@ void LibraryCreator::run()
 
             if (!canceled) {
                 if (partialUpdate) {
-                    auto folder = DBHelper::updateChildrenInfo(folderDestinationModelIndex.data(FolderModel::IdRole).toULongLong(), _database);
+                    auto folder = DBHelper::updateChildrenInfo(_folderDestinationId, _database);
                     DBHelper::propagateFolderUpdatesToParent(folder, _database);
                 } else {
                     DBHelper::updateChildrenInfo(_database);
@@ -248,7 +247,7 @@ void LibraryCreator::run()
     }
 
     if (partialUpdate) {
-        emit updatedCurrentFolder(folderDestinationModelIndex);
+        emit updatedCurrentFolder(_folderDestinationId);
     }
 
     creation = false;
@@ -473,7 +472,7 @@ void LibraryCreator::update(QDir dirS)
     listS.append(listSFolders);
     listS.append(listSFiles);
     // QLOG_DEBUG() << "---------------------------------------------------------";
-    // foreach(QFileInfo info,listS)
+    // for (const QFileInfo &info : listS)
     //	QLOG_DEBUG() << info.fileName();
 
     // QLOG_TRACE() << "END Getting info from dir" << dirS.absolutePath();
@@ -489,7 +488,7 @@ void LibraryCreator::update(QDir dirS)
     listD.append(folders);
     listD.append(comics);
     // QLOG_DEBUG() << "---------------------------------------------------------";
-    // foreach(LibraryItem * info,listD)
+    // for (auto *info : listD)
     //	QLOG_DEBUG() << info->name;
     // QLOG_DEBUG() << "---------------------------------------------------------";
     int lenghtS = listS.size();

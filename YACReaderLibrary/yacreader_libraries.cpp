@@ -1,4 +1,5 @@
 #include "yacreader_libraries.h"
+
 #include "qnaturalsorting.h"
 #include "yacreader_global.h"
 
@@ -37,54 +38,54 @@ YACReaderLibraries::YACReaderLibraries(const YACReaderLibraries &source)
 {
 }
 
-QList<QString> YACReaderLibraries::getNames()
+QList<QString> YACReaderLibraries::getNames() const
 {
     QList<QString> names;
     std::transform(libraries.cbegin(), libraries.cend(), std::back_inserter(names), [](const YACReaderLibrary &library) { return library.getName(); });
     return names;
 }
 
-QString YACReaderLibraries::getPath(const QString &name)
+QString YACReaderLibraries::getPath(const QString &name) const
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [name](const YACReaderLibrary &library) { return library.getName() == name; });
     return library != libraries.cend() ? library->getPath() : "";
 }
 
-QString YACReaderLibraries::getPath(int id)
+QString YACReaderLibraries::getPath(int id) const
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [id](const YACReaderLibrary &library) { return library.getLegacyId() == id; });
     return library != libraries.cend() ? library->getPath() : "";
 }
 
-QString YACReaderLibraries::getPath(const QUuid &id)
+QString YACReaderLibraries::getPath(const QUuid &id) const
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [id](const YACReaderLibrary &library) { return library.getId() == id; });
     return library != libraries.cend() ? library->getPath() : "";
 }
 
-QString YACReaderLibraries::getDBPath(int id)
+QString YACReaderLibraries::getDBPath(int id) const
 {
     return LibraryPaths::libraryDataPath(getPath(id));
 }
 
-QString YACReaderLibraries::getName(int id)
+QString YACReaderLibraries::getName(int id) const
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [id](const YACReaderLibrary &library) { return library.getLegacyId() == id; });
     return library != libraries.cend() ? library->getName() : "";
 }
 
-bool YACReaderLibraries::isEmpty()
+bool YACReaderLibraries::isEmpty() const
 {
     return libraries.isEmpty();
 }
 
-bool YACReaderLibraries::contains(const QString &name)
+bool YACReaderLibraries::contains(const QString &name) const
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [name](const YACReaderLibrary &library) { return library.getName() == name; });
     return library != libraries.cend();
 }
 
-bool YACReaderLibraries::contains(int id)
+bool YACReaderLibraries::contains(int id) const
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [id](const YACReaderLibrary &library) { return library.getLegacyId() == id; });
     return library != libraries.cend();
@@ -103,19 +104,19 @@ void YACReaderLibraries::rename(const QString &oldName, const QString &newName)
     libraries.append(YACReaderLibrary(newName, library->getPath(), library->getLegacyId(), library->getId()));
 }
 
-int YACReaderLibraries::getId(const QString &name)
+int YACReaderLibraries::getId(const QString &name) const
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [name](const YACReaderLibrary &library) { return library.getName() == name; });
     return library != libraries.cend() ? library->getLegacyId() : -1;
 }
 
-QUuid YACReaderLibraries::getUuid(const QString &name)
+QUuid YACReaderLibraries::getUuid(const QString &name) const
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [name](const YACReaderLibrary &library) { return library.getName() == name; });
     return library != libraries.cend() ? library->getId() : QUuid();
 }
 
-int YACReaderLibraries::getIdFromUuid(const QUuid &uuid)
+int YACReaderLibraries::getIdFromUuid(const QUuid &uuid) const
 {
     auto library = std::find_if(libraries.cbegin(), libraries.cend(), [uuid](const YACReaderLibrary &library) { return library.getId() == uuid; });
     return library != libraries.cend() ? library->getLegacyId() : -1;
@@ -148,8 +149,9 @@ QUuid YACReaderLibraries::getLibraryIdFromLegacyId(int legacyId) const
 void YACReaderLibraries::addLibrary(const QString &name, const QString &path)
 {
     int legacyId = 0;
-    foreach (YACReaderLibrary l, libraries)
-        legacyId = qMax(legacyId, l.getLegacyId());
+    const auto &existingLibraries = libraries;
+    for (const auto &library : existingLibraries)
+        legacyId = qMax(legacyId, library.getLegacyId());
     legacyId++;
 
     auto id = readFromLibraryFolder(path);

@@ -36,8 +36,8 @@ public:
     }
 
 private:
-    Type _type {};
-    std::string _lexeme {};
+    Type _type { };
+    std::string _lexeme { };
 };
 
 class QueryLexer

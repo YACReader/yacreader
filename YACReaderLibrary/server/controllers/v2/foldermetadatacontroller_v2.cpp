@@ -2,7 +2,6 @@
 
 #include "db_helper.h"
 #include "folder.h"
-
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 

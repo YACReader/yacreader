@@ -1,9 +1,9 @@
 #ifndef FOLDER_QUERY_RESULT_PROCESSOR_H
 #define FOLDER_QUERY_RESULT_PROCESSOR_H
 
-#include <QObject>
-
 #include "concurrent_queue.h"
+
+#include <QObject>
 
 class FolderItem;
 class FolderModel;

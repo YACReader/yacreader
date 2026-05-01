@@ -2,11 +2,12 @@
 #define __COMICDB_H
 
 #include "library_item.h"
-#include <QVariant>
-#include <QList>
-#include <QPixmap>
+
 #include <QImage>
+#include <QList>
 #include <QMetaType>
+#include <QPixmap>
+#include <QVariant>
 
 class ComicInfo : public QObject
 {

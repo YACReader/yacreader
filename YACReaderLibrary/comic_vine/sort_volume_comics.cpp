@@ -1,31 +1,68 @@
 #include "sort_volume_comics.h"
 
-#include <QLabel>
+#include "local_comic_list_model.h"
+#include "scraper_tableview.h"
+#include "theme_manager.h"
+#include "volume_comics_model.h"
+
+#include <QAction>
 #include <QBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QScrollBar>
-#include <QAction>
 
-#include "scraper_tableview.h"
-#include "local_comic_list_model.h"
-#include "volume_comics_model.h"
+ScrapperToolButton::ScrapperToolButton(ScrapperToolButton::Appearance appearance, QWidget *parent)
+    : QPushButton(parent), appearance(appearance)
+{
+    setFixedSize(18, 17);
+    initTheme(this);
+}
+
+QWidget *ScrapperToolButton::getSeparator()
+{
+    QWidget *w = new QWidget;
+    w->setFixedWidth(1);
+    auto metadataScraperDialogTheme = ThemeManager::instance().getCurrentTheme().metadataScraperDialog;
+    w->setStyleSheet(metadataScraperDialogTheme.scraperToolButtonSeparatorQSS);
+    return w;
+}
+
+void ScrapperToolButton::paintEvent(QPaintEvent *e)
+{
+    QPainter p(this);
+
+    switch (appearance) {
+    case LEFT:
+        p.fillRect(16, 0, 2, 18, fillColor);
+        break;
+    case RIGHT:
+        p.fillRect(0, 0, 2, 18, fillColor);
+        break;
+    default:
+        break;
+    }
+
+    QPushButton::paintEvent(e);
+}
+
+void ScrapperToolButton::applyTheme(const Theme &theme)
+{
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
+    setStyleSheet(metadataScraperDialogTheme.scraperToolButtonQSS);
+    fillColor = metadataScraperDialogTheme.scraperToolButtonFillColor;
+    update();
+}
 
 SortVolumeComics::SortVolumeComics(QWidget *parent)
     : QWidget(parent)
 {
-    QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
+    label = new QLabel(tr("Please, sort the list of comics on the left until it matches the comics' information."));
 
-    QLabel *label = new QLabel(tr("Please, sort the list of comics on the left until it matches the comics' information."));
-    label->setStyleSheet(labelStylesheet);
-
-    QLabel *sortLabel = new QLabel(tr("sort comics to match comic information"));
-    sortLabel->setStyleSheet(labelStylesheet);
+    sortLabel = new QLabel(tr("sort comics to match comic information"));
 
     moveUpButtonCL = new ScrapperToolButton(ScrapperToolButton::LEFT);
-    moveUpButtonCL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
     moveUpButtonCL->setAutoRepeat(true);
     moveDownButtonCL = new ScrapperToolButton(ScrapperToolButton::RIGHT);
-    moveDownButtonCL->setIcon(QIcon(":/images/comic_vine/rowDown.png"));
     moveDownButtonCL->setAutoRepeat(true);
     // moveUpButtonIL = new ScrapperToolButton(ScrapperToolButton::LEFT);
     // moveUpButtonIL->setIcon(QIcon(":/images/comic_vine/rowUp.png"));
@@ -98,6 +135,8 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     connect(removeItemFromList, &QAction::triggered, this, &SortVolumeComics::removeSelectedComics);
     connect(restoreAllItems, &QAction::triggered, this, &SortVolumeComics::restoreAllComics);
     // connect(restoreItems,SIGNAL(triggered()),this,SLOT(showRemovedComicsSelector()));
+
+    initTheme(this);
 }
 
 void SortVolumeComics::setData(QList<ComicDB> &comics, const QString &json, const QString &vID)
@@ -208,13 +247,13 @@ void SortVolumeComics::showRemovedComicsSelector()
 
 QList<QPair<ComicDB, QString>> SortVolumeComics::getMatchingInfo()
 {
-    QList<ComicDB> comicList = localComicsModel->getData();
+    const auto comicList = localComicsModel->getData();
     QList<QPair<ComicDB, QString>> l;
 
     int index = 0;
 
     QString id;
-    foreach (ComicDB c, comicList) {
+    for (const auto &c : comicList) {
         id = volumeComicsModel->getComicId(index);
         if (!c.getFileName().isEmpty() && !id.isEmpty()) // there is a valid comic, and valid comic ID
         {
@@ -224,4 +263,17 @@ QList<QPair<ComicDB, QString>> SortVolumeComics::getMatchingInfo()
     }
 
     return l;
+}
+
+void SortVolumeComics::applyTheme(const Theme &theme)
+{
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
+
+    label->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
+    sortLabel->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
+
+    moveUpButtonCL->setIconSize(metadataScraperDialogTheme.rowUpIcon.size);
+    moveUpButtonCL->setIcon(metadataScraperDialogTheme.rowUpIcon.icon);
+    moveDownButtonCL->setIconSize(metadataScraperDialogTheme.rowDownIcon.size);
+    moveDownButtonCL->setIcon(metadataScraperDialogTheme.rowDownIcon.icon);
 }

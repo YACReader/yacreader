@@ -1,16 +1,16 @@
 #include "yacreader_social_dialog.h"
 
-#include <QVBoxLayout>
+#include "comic_db.h"
+
+#include <QGraphicsDropShadowEffect>
 #include <QHBoxLayout>
-#include <QProgressBar>
-#include <QPushButton>
 #include <QLabel>
 #include <QPainter>
-#include <QToolButton>
 #include <QPlainTextEdit>
-#include <QGraphicsDropShadowEffect>
-
-#include "comic_db.h"
+#include <QProgressBar>
+#include <QPushButton>
+#include <QToolButton>
+#include <QVBoxLayout>
 
 YACReaderSocialDialog::YACReaderSocialDialog(QWidget *parent)
     : QWidget(parent)

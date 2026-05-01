@@ -1,14 +1,16 @@
 #ifndef __MAIN_WINDOW_VIEWER_H
 #define __MAIN_WINDOW_VIEWER_H
-#include <QMainWindow>
-#include <QScrollArea>
-#include <QToolBar>
-#include <QAction>
-#include <QMouseEvent>
-#include <QCloseEvent>
-#include <QSettings>
-
+#include "themable.h"
 #include "yacreader_global.h"
+
+#include <QAction>
+#include <QCloseEvent>
+#include <QMainWindow>
+#include <QMouseEvent>
+#include <QScrollArea>
+#include <QSettings>
+#include <QToolBar>
+#include <QToolButton>
 
 #ifdef Y_MAC_UI
 #include "yacreader_macosx_toolbar.h"
@@ -28,7 +30,7 @@ class EditShortcutsDialog;
 
 namespace YACReader {
 
-class MainWindowViewer : public QMainWindow
+class MainWindowViewer : public QMainWindow, protected Themable
 {
     Q_OBJECT
 
@@ -89,10 +91,6 @@ private:
     bool toolbars;
     bool fromMaximized;
 
-    // QTBUG-41883
-    QSize _size;
-    QPoint _pos;
-
     QString currentDirectory;
     QString currentDirectoryImgDest;
     //! Widgets
@@ -138,6 +136,7 @@ private:
     QAction *closeAction;
     QAction *doublePageAction;
     QAction *doubleMangaPageAction;
+    QAction *continuousScrollAction;
     QAction *showShorcutsAction;
     QAction *showDictionaryAction;
     QAction *adjustToFullSizeAction;
@@ -152,6 +151,8 @@ private:
 
     QList<QAction *> mglassActions;
     QList<QAction *> loadedComicActions;
+
+    QToolButton *openToolButton;
 
     YACReaderSlider *zoomSliderAction;
 
@@ -169,6 +170,9 @@ private:
     void setActionsEnabled(bool enabled);
     void setMglassActionsEnabled(bool enabled);
     void setLoadedComicActionsEnabled(bool enabled);
+    void syncModeActions(bool manga, bool continuousScroll);
+    void applySavedReaderMode();
+    void applyLibraryReaderMode(YACReader::FileType type);
 
     //! Manejadores de evento:
     // void resizeEvent(QResizeEvent * event);
@@ -185,16 +189,12 @@ private:
     quint64 libraryId;
     OpenComicSource source;
 
-    // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
-    Qt::WindowFlags previousWindowFlags;
-    QPoint previousPos;
-    QSize previousSize;
-
 protected:
     void closeEvent(QCloseEvent *event) override;
     void sendComic();
     void updatePrevNextActions(bool thereIsPrevious, bool thereIsNext);
     void afterLaunchTasks();
+    void applyTheme(const Theme &theme) override;
 
 public:
     MainWindowViewer();

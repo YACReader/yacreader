@@ -1,21 +1,23 @@
-#include <QApplication>
-#include <QDir>
-#include <QTranslator>
-#include <QCommandLineParser>
-#include <QImageReader>
-
-#include "main_window_viewer.h"
-#include "configuration.h"
-#include "exit_check.h"
-
 #include "QsLog.h"
 #include "QsLogDest.h"
+#include "app_language_utils.h"
+#include "appearance_configuration.h"
+#include "exit_check.h"
+#include "main_window_viewer.h"
+#include "theme_manager.h"
+#include "theme_repository.h"
+#include "yacreader_global.h"
+
+#include <QApplication>
+#include <QCommandLineParser>
+#include <QDir>
+#include <QImageReader>
 
 using namespace QsLogging;
+using namespace YACReader;
 
 #if defined(WIN32) && defined(_DEBUG)
 #define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
 #include <crtdbg.h>
 #define DEBUG_NEW new (_NORMAL_BLOCK, __FILE__, __LINE__)
 #define new DEBUG_NEW
@@ -90,17 +92,9 @@ int main(int argc, char *argv[])
 {
     qInstallMessageHandler(messageHandler);
 
-    static const char ENV_VAR_QT_DEVICE_PIXEL_RATIO[] = "QT_DEVICE_PIXEL_RATIO";
-    if (!qEnvironmentVariableIsSet(ENV_VAR_QT_DEVICE_PIXEL_RATIO) && !qEnvironmentVariableIsSet("QT_AUTO_SCREEN_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCALE_FACTOR") && !qEnvironmentVariableIsSet("QT_SCREEN_SCALE_FACTORS")) {
-        QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    }
-
-    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     QImageReader::setAllocationLimit(0);
-#endif
 
 #if defined(_MSC_VER) && defined(_DEBUG)
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -112,12 +106,15 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 #endif
 
-#ifdef FORCE_ANGLE
-    app.setAttribute(Qt::AA_UseOpenGLES);
-#endif
-
     app.setApplicationName("YACReader");
     app.setOrganizationName("YACReader");
+    YACReader::initializeSharedPluginPaths();
+
+    auto *appearanceConfig = new AppearanceConfiguration(
+            YACReader::getSettingsPath() + "/YACReader.ini", qApp);
+    auto *themeRepo = new ThemeRepository(
+            ":/themes", YACReader::getSettingsPath() + "/themes/user", "YACReader");
+    ThemeManager::instance().initialize(appearanceConfig, themeRepo);
 
     if (QIcon::hasThemeIcon("YACReader")) {
         app.setWindowIcon(QIcon::fromTheme("YACReader"));
@@ -132,16 +129,10 @@ int main(int argc, char *argv[])
     QCommandLineOption comicId("comicId", "", "comicId");
     QCommandLineOption libraryId("libraryId", "", "libraryId");
     QCommandLineOption readingListId("readingListId", "", "readingListId");
-// hide comicId and libraryId from help
-#if QT_VERSION >= 0x050800
+    // hide comicId and libraryId from help
     comicId.setFlags(QCommandLineOption::HiddenFromHelp);
     libraryId.setFlags(QCommandLineOption::HiddenFromHelp);
     readingListId.setFlags(QCommandLineOption::HiddenFromHelp);
-#else
-    comicId.setHidden(true);
-    libraryId.setHidden(true);
-    readingListId.setHidden(true);
-#endif
 
     // process
     parser.addOption(comicId);
@@ -153,7 +144,7 @@ int main(int argc, char *argv[])
     QDir().mkpath(YACReader::getSettingsPath());
 
     Logger &logger = Logger::instance();
-    logger.setLoggingLevel(QsLogging::InfoLevel);
+    logger.setLoggingLevel(QsLogging::TraceLevel);
 
     if (parser.isSet("loglevel")) {
         if (parser.value("loglevel") == "trace") {
@@ -177,13 +168,8 @@ int main(int argc, char *argv[])
     logger.addDestination(std::move(debugDestination));
     logger.addDestination(std::move(fileDestination));
 
-    QTranslator translator;
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    translator.load(QLocale(), "yacreader", "_", QString(DATADIR) + "/yacreader/languages");
-#else
-    translator.load(QLocale(), "yacreader", "_", "languages");
-#endif
-    app.installTranslator(&translator);
+    QSettings uiSettings(YACReader::getSettingsPath() + "/YACReader.ini", QSettings::IniFormat);
+    YACReader::UiLanguage::applyLanguage("yacreader", uiSettings.value(UI_LANGUAGE).toString());
     auto mwv = new MainWindowViewer();
 
     // some arguments need to be parsed after MainWindowViewer creation

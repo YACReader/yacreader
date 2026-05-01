@@ -1,14 +1,16 @@
-import QtQuick 2.15
+import QtQuick
 
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.12
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import QtGraphicalEffects 1.0
+import QtQuick.Effects
 
 import com.yacreader.ComicModel 1.0
 
 import com.yacreader.ComicInfo 1.0
 import com.yacreader.ComicDB 1.0
+
+import QtQuick.Controls.Basic
 
 Rectangle {
     id: main
@@ -82,9 +84,9 @@ Rectangle {
                 height: coverElement.height
                 radius: 10
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
-                color: "#20000000"
+                color: placeholderFolder1Color
                 border {
-                    color: "#20FFFFFF"
+                    color: placeholderFolder1BorderColor
                     width: 1
                 }
             }
@@ -95,9 +97,9 @@ Rectangle {
                 height: coverElement.height
                 radius: 10
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
-                color: "#88000000"
+                color: placeholderFolder2Color
                 border {
-                    color: "#20FFFFFF"
+                    color: placeholderFolder2BorderColor
                     width: 1
                 }
             }
@@ -117,17 +119,30 @@ Rectangle {
                     mipmap: true
                     asynchronous : true
                     cache: true
+                    visible: false
+                }
 
+                Item {
+                    id: coverMask
+                    anchors.fill: parent
                     layer.enabled: true
-                    layer.effect: OpacityMask {
+                    layer.smooth: true
+                    visible: false
+
+                    Rectangle {
                         anchors.fill: parent
-                        cached: true
-                        maskSource: Rectangle {
-                            width: coverElement.width
-                            height: coverElement.height
-                            radius: 10
-                        }
+                        radius: 10
+                        color: "black"
                     }
+                }
+
+                MultiEffect {
+                    source: coverImage
+                    anchors.fill: coverImage
+                    maskEnabled: true
+                    maskSource: coverMask
+                    maskThresholdMin: 0.5
+                    maskSpreadAtMin: 1.0
                 }
             }
 
@@ -137,7 +152,7 @@ Rectangle {
                 height: 10
                 radius: 5
                 anchors { left: coverElement.left; top: coverElement.top; topMargin: 10; leftMargin: 10; }
-                color: "#FFFFCC00"
+                color: newItemColor
                 visible: (((new Date() / 1000) - added) < recent_range || ((new Date() / 1000) - updated) < recent_range) && show_recent
             }
 
@@ -149,7 +164,7 @@ Rectangle {
                 anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
                 color: "transparent"
                 border {
-                    color: "#20FFFFFF"
+                    color: folderCoverBorderColor
                     width: 1
                 }
             }
@@ -163,7 +178,7 @@ Rectangle {
                 wrapMode: Text.WordWrap
                 text: name
                 elide: Text.ElideRight
-                color: titleColor
+                color: itemTitleColor
                 font.letterSpacing: fontSpacing
                 font.pointSize: fontSize
                 font.family: fontFamily
@@ -206,7 +221,7 @@ Rectangle {
                     Text {
                         id: continueReadingText
                         text: qsTr("Continue Reading...")
-                        color: continueReadingColor
+                        color: continueReadingTextColor
                         anchors.left: parent.left
                         anchors.top: parent.top
                         anchors.topMargin: 15
@@ -282,7 +297,7 @@ Rectangle {
                                     wrapMode: Text.WordWrap
                                     text: readable_title
                                     elide: Text.ElideRight
-                                    color: titleColor
+                                    color: itemTitleColor
                                     font.letterSpacing: fontSpacing
                                     font.pointSize: fontSize
                                     font.family: fontFamily
@@ -295,7 +310,7 @@ Rectangle {
                                     anchors.centerIn: coverElement
                                     color: "transparent"
                                     border {
-                                        color: "#30FFFFFF"
+                                        color: comicCoverBorderColor
                                         width: 1
                                     }
                                 }
@@ -410,13 +425,13 @@ Rectangle {
                     implicitWidth: 12
                     implicitHeight: 26
                     Rectangle {
-                        color: "#88424242"
+                        color: scrollbarColor
                         anchors.fill: parent
                         anchors.topMargin: 6
                         anchors.leftMargin: 3
                         anchors.rightMargin: 2
                         anchors.bottomMargin: 6
-                        border.color: "#AA313131"
+                        border.color: scrollbarBorderColor
                         border.width: 1
                         radius: 3.5
                     }

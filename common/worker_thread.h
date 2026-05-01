@@ -4,11 +4,11 @@
 #include "release_acquire_atomic.h"
 
 #include <cassert>
-#include <utility>
+#include <condition_variable>
 #include <functional>
 #include <mutex>
-#include <condition_variable>
 #include <thread>
+#include <utility>
 
 //! Usage:
 //!  1. call performTask();

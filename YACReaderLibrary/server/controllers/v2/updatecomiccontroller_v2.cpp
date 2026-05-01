@@ -1,15 +1,10 @@
 #include "updatecomiccontroller_v2.h"
 
-#include "db_helper.h"
-#include "yacreader_libraries.h"
-
-#include "template.h"
-#include "../static.h"
-
-#include "comic_db.h"
-#include "comic.h"
-
 #include "QsLog.h"
+#include "comic_db.h"
+#include "db_helper.h"
+
+#include <QUrl>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;

@@ -1,5 +1,6 @@
-#include "comic.h"
 #include "pdf_comic.h"
+
+#include "comic.h"
 
 #if defined USE_PDFIUM && !defined NO_PDF
 

@@ -1,23 +1,25 @@
 #include "folder_content_view.h"
 
-#include "folder_model.h"
-#include "grid_comics_view.h"
-#include "yacreader_global.h"
-#include "yacreader_global_gui.h"
-#include "yacreader_tool_bar_stretch.h"
+#include "QsLog.h"
 #include "comic.h"
 #include "comic_files_manager.h"
+#include "folder_model.h"
+#include "grid_comics_view.h"
+#include "yacreader_global_gui.h"
+#include "yacreader_tool_bar_stretch.h"
 
-#include "QsLog.h"
-
+#include <QApplication>
+#include <QHBoxLayout>
 #include <QQmlContext>
 #include <QQuickItem>
 #include <QQuickWidget>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 using namespace YACReader;
 
 FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWidget *parent)
-    : QWidget { parent }, parent(QModelIndex()), comicModel(new ComicModel()), folderModel(new FolderModel())
+    : QWidget { parent }, parent(QModelIndex()), comicModel(new ComicModel()), folderModel(new FolderModel()), smallZoomLabel(nullptr), bigZoomLabel(nullptr)
 {
     qmlRegisterType<FolderModel>("com.yacreader.FolderModel", 1, 0, "FolderModel");
 
@@ -25,11 +27,6 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
     settings->beginGroup("libraryConfig");
 
     view = new QQuickWidget();
-
-    // QQuickWidget requires rendering into OpenGL framebuffer objects
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    view->quickWindow()->setGraphicsApi(QSGRendererInterface::OpenGL);
-#endif
 
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
@@ -46,14 +43,16 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
     coverSizeSlider->setOrientation(Qt::Horizontal);
     coverSizeSlider->setRange(YACREADER_MIN_GRID_ZOOM_WIDTH, YACREADER_MAX_GRID_ZOOM_WIDTH);
 
+    const auto &comicsToolbar = theme.comicsViewToolbar;
+
     auto horizontalLayout = new QHBoxLayout();
-    QLabel *smallLabel = new QLabel();
-    smallLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/small_size_grid_zoom.svg", QSize(18, 18)));
-    horizontalLayout->addWidget(smallLabel);
+    smallZoomLabel = new QLabel();
+    smallZoomLabel->setPixmap(comicsToolbar.smallGridZoomIcon.pixmap(18, 18));
+    horizontalLayout->addWidget(smallZoomLabel);
     horizontalLayout->addWidget(coverSizeSlider, 0, Qt::AlignVCenter);
-    QLabel *bigLabel = new QLabel();
-    bigLabel->setPixmap(hdpiPixmap(":/images/comics_view_toolbar/big_size_grid_zoom.svg", QSize(18, 18)));
-    horizontalLayout->addWidget(bigLabel);
+    bigZoomLabel = new QLabel();
+    bigZoomLabel->setPixmap(comicsToolbar.bigGridZoomIcon.pixmap(18, 18));
+    horizontalLayout->addWidget(bigZoomLabel);
     horizontalLayout->addSpacing(10);
     horizontalLayout->setContentsMargins(0, 0, 0, 0);
 
@@ -62,10 +61,6 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
     connect(coverSizeSlider, &QAbstractSlider::valueChanged, this, &FolderContentView::setCoversSize);
 
     toolbar = new QToolBar();
-    toolbar->setStyleSheet(R"(
-        QToolBar { border: none; }
-        QToolButton:checked { background-color: #cccccc; }
-    )");
     toolbar->setIconSize(QSize(18, 18));
     toolbar->addWidget(new YACReaderToolBarStretch);
     toolbar->addAction(toogleRecentVisibilityAction);
@@ -82,84 +77,16 @@ FolderContentView::FolderContentView(QAction *toogleRecentVisibilityAction, QWid
 
     QQmlContext *ctxt = view->rootContext();
 
-    LibraryUITheme theme;
-#ifdef Y_MAC_UI
-    theme = Light;
-#else
-    theme = Dark;
-#endif
+    // fonts settings (not theme-dependent)
+    int fontSize = QApplication::font().pointSize();
+    if (fontSize == -1)
+        fontSize = QApplication::font().pixelSize();
+    ctxt->setContextProperty("fontSize", fontSize);
+    ctxt->setContextProperty("fontFamily", QApplication::font().family());
+    ctxt->setContextProperty("fontSpacing", 0.5);
 
-    if (theme == Light) {
-        ctxt->setContextProperty("continueReadingBackgroundColor", "#E8E8E8");
-        ctxt->setContextProperty("continueReadingColor", "#000000");
-
-        ctxt->setContextProperty("backgroundColor", "#F6F6F6");
-        ctxt->setContextProperty("cellColor", "#FFFFFF");
-        ctxt->setContextProperty("selectedColor", "#FFFFFF");
-        ctxt->setContextProperty("selectedBorderColor", "#007AFF");
-        ctxt->setContextProperty("borderColor", "#DBDBDB");
-        ctxt->setContextProperty("titleColor", "#121212");
-        ctxt->setContextProperty("textColor", "#636363");
-        // fonts settings
-        ctxt->setContextProperty("fontSize", 11);
-        ctxt->setContextProperty("fontFamily", QApplication::font().family());
-        ctxt->setContextProperty("fontSpacing", 0.5);
-
-        // info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
-        ctxt->setContextProperty("infoBackgroundColor", "#FFFFFF");
-        ctxt->setContextProperty("topShadow", QUrl());
-        ctxt->setContextProperty("infoShadow", "info-shadow-light.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator-light.png");
-
-        ctxt->setContextProperty("infoTextColor", "#404040");
-        ctxt->setContextProperty("infoTitleColor", "#2E2E2E");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#DEDEDE");
-        ctxt->setContextProperty("ratingSelectedColor", "#2B2B2B");
-
-        ctxt->setContextProperty("favUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#DEDEDE");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-    } else {
-        ctxt->setContextProperty("continueReadingBackgroundColor", "#88000000");
-        ctxt->setContextProperty("continueReadingColor", "#FFFFFF");
-
-        ctxt->setContextProperty("backgroundColor", "#2A2A2A");
-        ctxt->setContextProperty("cellColor", "#212121");
-        ctxt->setContextProperty("selectedColor", "#121212");
-        ctxt->setContextProperty("selectedBorderColor", "#121212");
-        ctxt->setContextProperty("borderColor", "#121212");
-        ctxt->setContextProperty("titleColor", "#FFFFFF");
-        ctxt->setContextProperty("textColor", "#A8A8A8");
-        ctxt->setContextProperty("dropShadow", QVariant(false));
-        // fonts settings
-        int fontSize = QApplication::font().pointSize();
-        if (fontSize == -1)
-            fontSize = QApplication::font().pixelSize();
-        ctxt->setContextProperty("fontSize", fontSize);
-        ctxt->setContextProperty("fontFamily", QApplication::font().family());
-        ctxt->setContextProperty("fontSpacing", 0.5);
-
-        // info - copy/pasted from info_comics_view TODO create helpers for setting the UI config
-        ctxt->setContextProperty("infoBackgroundColor", "#2E2E2E");
-        ctxt->setContextProperty("topShadow", "info-top-shadow.png");
-        ctxt->setContextProperty("infoShadow", "info-shadow.png");
-        ctxt->setContextProperty("infoIndicator", "info-indicator.png");
-
-        ctxt->setContextProperty("infoTextColor", "#B0B0B0");
-        ctxt->setContextProperty("infoTitleColor", "#FFFFFF");
-
-        ctxt->setContextProperty("ratingUnselectedColor", "#1C1C1C");
-        ctxt->setContextProperty("ratingSelectedColor", "#FFFFFF");
-
-        ctxt->setContextProperty("favUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("favCheckedColor", "#E84852");
-
-        ctxt->setContextProperty("readTickUncheckedColor", "#1C1C1C");
-        ctxt->setContextProperty("readTickCheckedColor", "#E84852");
-    }
+    // Apply theme colors
+    initTheme(this);
 
     updateCoversSizeInContext(YACREADER_MIN_COVER_WIDTH, ctxt);
 
@@ -309,7 +236,7 @@ bool FolderContentView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction acti
 {
     if (action == Qt::CopyAction) {
         QString currentPath;
-        foreach (QUrl url, urls) {
+        for (const auto &url : urls) {
             // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
@@ -331,5 +258,59 @@ void FolderContentView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction act
     if (validAction) {
         QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(urls);
         emit copyComicsToCurrentFolder(droppedFiles);
+    }
+}
+
+void FolderContentView::applyTheme(const Theme &theme)
+{
+    QQmlContext *ctxt = view->rootContext();
+    const auto &giv = theme.gridAndInfoView;
+
+    toolbar->setStyleSheet(theme.comicsViewToolbar.toolbarQSS);
+
+    // Continue reading section colors
+    ctxt->setContextProperty("continueReadingBackgroundColor", giv.continueReadingBackgroundColor);
+    ctxt->setContextProperty("continueReadingTextColor", giv.continueReadingTextColor);
+
+    // Grid colors
+    ctxt->setContextProperty("backgroundColor", giv.backgroundColor);
+    ctxt->setContextProperty("cellColor", giv.cellColor);
+    ctxt->setContextProperty("cellSelectedColor", giv.cellSelectedColor);
+    ctxt->setContextProperty("cellSelectedBorderColor", giv.cellSelectedBorderColor);
+    ctxt->setContextProperty("borderColor", giv.borderColor);
+    ctxt->setContextProperty("itemTitleColor", giv.itemTitleColor);
+    ctxt->setContextProperty("itemDetailsColor", giv.itemDetailsColor);
+    ctxt->setContextProperty("dropShadow", QVariant(giv.showDropShadow));
+
+    // Info panel colors
+    ctxt->setContextProperty("infoBackgroundColor", giv.infoBackgroundColor);
+    ctxt->setContextProperty("infoMetadataTextColor", giv.infoMetadataTextColor);
+    ctxt->setContextProperty("infoTextColor", giv.infoTextColor);
+
+    // Rating and favorite colors
+    ctxt->setContextProperty("ratingUnselectedColor", giv.ratingUnselectedColor);
+    ctxt->setContextProperty("ratingSelectedColor", giv.ratingSelectedColor);
+    ctxt->setContextProperty("favUncheckedColor", giv.favUncheckedColor);
+    ctxt->setContextProperty("favCheckedColor", giv.favCheckedColor);
+    ctxt->setContextProperty("readTickUncheckedColor", giv.readTickUncheckedColor);
+    ctxt->setContextProperty("readTickCheckedColor", giv.readTickCheckedColor);
+
+    // New item indicator, cover borders, placeholder pages, scrollbar
+    ctxt->setContextProperty("newItemColor", giv.newItemColor);
+    ctxt->setContextProperty("scrollbarColor", giv.scrollbarColor);
+    ctxt->setContextProperty("scrollbarBorderColor", giv.scrollbarBorderColor);
+    ctxt->setContextProperty("comicCoverBorderColor", giv.comicCoverBorderColor);
+    ctxt->setContextProperty("folderCoverBorderColor", giv.folderCoverBorderColor);
+    ctxt->setContextProperty("placeholderFolder1Color", giv.placeholderFolder1Color);
+    ctxt->setContextProperty("placeholderFolder1BorderColor", giv.placeholderFolder1BorderColor);
+    ctxt->setContextProperty("placeholderFolder2Color", giv.placeholderFolder2Color);
+    ctxt->setContextProperty("placeholderFolder2BorderColor", giv.placeholderFolder2BorderColor);
+
+    // Update zoom slider icons
+    if (smallZoomLabel) {
+        smallZoomLabel->setPixmap(theme.comicsViewToolbar.smallGridZoomIcon.pixmap(18, 18));
+    }
+    if (bigZoomLabel) {
+        bigZoomLabel->setPixmap(theme.comicsViewToolbar.bigGridZoomIcon.pixmap(18, 18));
     }
 }

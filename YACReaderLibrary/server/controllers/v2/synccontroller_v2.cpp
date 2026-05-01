@@ -1,12 +1,12 @@
 #include "synccontroller_v2.h"
 
 #include "QsLog.h"
-#include <QUrl>
-
 #include "comic_db.h"
 #include "db_helper.h"
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
+
+#include <QUrl>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
@@ -24,7 +24,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
     QLOG_TRACE() << "POST DATA: " << postData;
 
     if (postData.length() > 0) {
-        QList<QString> data = postData.split("\n");
+        const auto data = postData.split("\n");
 
         qulonglong libraryId;
         qulonglong comicId;
@@ -35,17 +35,17 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         QMap<qulonglong, QList<ComicInfo>> comics;
         QList<ComicInfo> comicsWithNoLibrary;
 
-        auto libraries = DBHelper::getLibraries();
+        const auto libraries = DBHelper::getLibraries();
 
         bool clientSendsHasBeenOpened = false;
         bool clientSendsImageFilters = false;
 
-        foreach (QString comicInfo, data) {
+        for (const auto &comicInfo : data) {
             if (comicInfo.isEmpty()) {
                 continue;
             }
 
-            QList<QString> comicInfoProgress = comicInfo.split("\t");
+            const auto comicInfoProgress = comicInfo.split("\t");
 
             if (comicInfoProgress.isEmpty()) {
                 continue;
@@ -166,11 +166,13 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
         if (!comics.isEmpty()) {
             auto moreRecentComicsFound = DBHelper::updateFromRemoteClient(comics, clientSendsHasBeenOpened, clientSendsImageFilters);
+            const auto libraryIds = moreRecentComicsFound.keys();
 
-            foreach (qulonglong libraryId, moreRecentComicsFound.keys()) {
+            for (const auto libraryId : libraryIds) {
                 auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
+                const auto &libraryComics = moreRecentComicsFound[libraryId];
 
-                foreach (ComicDB comic, moreRecentComicsFound[libraryId]) {
+                for (const auto &comic : libraryComics) {
                     items.append(YACReaderServerDataHelper::fullComicToJSON(libraryId, libraryUuid, comic));
                 }
             }

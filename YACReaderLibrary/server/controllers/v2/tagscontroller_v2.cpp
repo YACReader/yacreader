@@ -1,10 +1,8 @@
 #include "tagscontroller_v2.h"
 
 #include "db_helper.h"
-#include "yacreader_libraries.h"
-
 #include "reading_list.h"
-
+#include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
 using stefanfrings::HttpRequest;

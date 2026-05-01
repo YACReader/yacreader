@@ -1,67 +1,35 @@
 #include "yacreader_table_view.h"
 
-#include "yacreader_global.h"
-#include "yacreader_global_gui.h"
-
-#include <QHeaderView>
-#include <QResizeEvent>
-#include <QPropertyAnimation>
-#include <QPainter>
-#include <QDrag>
-#include <QMimeData>
-#include <QApplication>
-#include <QBuffer>
-#include <qmath.h>
-
 #include "QsLog.h"
-
 #include "comic_item.h"
 #include "comic_model.h"
+#include "yacreader_global_gui.h"
+
+#include <QApplication>
+#include <QBuffer>
+#include <QDrag>
+#include <QHeaderView>
+#include <QMimeData>
+#include <QPainter>
+#include <QResizeEvent>
 
 YACReaderTableView::YACReaderTableView(QWidget *parent)
-    : QTableView(parent), showDelete(false), editing(false), myeditor(0)
+    : QTableView(parent), editing(false), myeditor(0)
 {
     setAlternatingRowColors(true);
     verticalHeader()->setAlternatingRowColors(true);
-    setStyleSheet("QTableView {alternate-background-color: #F2F2F2;background-color: #FAFAFA; outline: 0px;}" // border: 1px solid #999999; border-right:none; border-bottom:none;}"
-                  "QTableCornerButton::section {background-color:#F5F5F5; border:none; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4);}"
-                  "QTableView::item {outline: 0px; border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE; padding-bottom:1px; color:#252626;}"
-                  "QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:1px solid #B8B8B8;border-right:none;}"
-#ifdef Y_MAC_UI
-                  "QTableView {border-top:1px solid #B8B8B8;border-bottom:none;border-left:none;border-right:none;}"
-                  "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #3875D7;border-top: 1px solid #3875D7; padding-bottom:1px; background-color: #3875D7; color: #FFFFFF; }"
 
-#else
-                  "QTableView::item:selected {outline: 0px; border-bottom: 1px solid #D4D4D4;border-top: 1px solid #D4D4D4; padding-bottom:1px; background-color: #D4D4D4;  }"
-#endif
-                  "QHeaderView::section:horizontal {background-color:#F5F5F5; border-bottom:1px solid #B8BDC4; border-right:1px solid qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #D1D1D1, stop: 1 #B8BDC4); border-left:none; border-top:none; padding:4px; color:#313232;}"
-                  "QHeaderView::section:vertical {border-bottom: 1px solid #DFDFDF;border-top: 1px solid #FEFEFE;}"
-                  //"QTableView::item:hover {border-bottom: 1px solid #A3A3A3;border-top: 1px solid #A3A3A3; padding-bottom:1px; background-color: #A3A3A3; color: #FFFFFF; }"
-                  "");
-    // comicView->setItemDelegate(new YACReaderComicViewDelegate());
     setContextMenuPolicy(Qt::ActionsContextMenu);
 
     setShowGrid(false);
-#if QT_VERSION >= 0x050000
     verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-#else
-    verticalHeader()->setResizeMode(QHeaderView::Fixed);
-#endif
 
     // comicView->horizontalHeader()->setResizeMode(QHeaderView::ResizeToContents);
     horizontalHeader()->setStretchLastSection(true);
-#if QT_VERSION >= 0x050000
     horizontalHeader()->setSectionsClickable(false);
-#else
-    horizontalHeader()->setClickable(false);
-#endif
     // comicView->verticalHeader()->setResizeMode(QHeaderView::ResizeToContents);
     verticalHeader()->setDefaultSectionSize(24);
-#if QT_VERSION >= 0x050000
     verticalHeader()->setSectionsClickable(false); // TODO comportamiento anómalo
-#else
-    verticalHeader()->setClickable(false); // TODO comportamiento anómalo
-#endif
 
     setCornerButtonEnabled(false);
 
@@ -72,16 +40,19 @@ YACReaderTableView::YACReaderTableView(QWidget *parent)
     setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     setMouseTracking(true);
-    /*deletingProgress = new YACReaderDeletingProgress(this);
-
-        showDeletingProgressAnimation = new QPropertyAnimation(deletingProgress,"pos");
-        showDeletingProgressAnimation->setDuration(150);*/
 
     // drag: if the default drag is enabled there is no way for setting a custom image
     // TODO report bug/suggestion
     // setDragEnabled(true);
     // setDragDropMode(QAbstractItemView::DragDrop);
     setAcceptDrops(true);
+
+    initTheme(this);
+}
+
+void YACReaderTableView::applyTheme(const Theme &theme)
+{
+    setStyleSheet(theme.comicsViewTable.tableViewQSS);
 }
 
 void YACReaderTableView::mouseMoveEvent(QMouseEvent *event)
@@ -204,36 +175,8 @@ void YACReaderTableView::commitData(QWidget *editor)
         emit comicRated(((StarEditor *)editor)->starRating().starCount(), currentIndexEditing);
 }
 
-void YACReaderTableView::showDeleteProgress()
-{
-    /*showDelete = true;
-
-        showDeletingProgressAnimation->setStartValue(deletingProgress->pos());
-        showDeletingProgressAnimation->setEndValue(QPoint((width()-deletingProgress->width())/2 ,1));
-        showDeletingProgressAnimation->start();*/
-}
-
-void YACReaderTableView::hideDeleteProgress()
-{
-    /*showDelete = false;
-
-        if(showDeletingProgressAnimation->state()==QPropertyAnimation::Running)
-                showDeletingProgressAnimation->stop();
-
-        showDeletingProgressAnimation->setStartValue(deletingProgress->pos());
-        showDeletingProgressAnimation->setEndValue(QPoint((width()-deletingProgress->width())/2 ,-deletingProgress->height()));
-        showDeletingProgressAnimation->start();*/
-}
-
 void YACReaderTableView::resizeEvent(QResizeEvent *event)
 {
-    /*event->size();
-
-        if(showDelete)
-                deletingProgress->move((event->size().width()-deletingProgress->width())/2 ,1);
-        else
-                deletingProgress->move((event->size().width()-deletingProgress->width())/2 ,-deletingProgress->height());*/
-
     QTableView::resizeEvent(event);
 }
 
@@ -247,15 +190,23 @@ void YACReaderRatingDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     StarRating starRating(rating);
 
+    // Get colors from parent table view
+    QColor ratingColor(0xE9BE0F);
+    QColor ratingSelectedColor(Qt::white);
+    if (auto tableView = qobject_cast<YACReaderTableView *>(parent())) {
+        ratingColor = tableView->starRatingColor();
+        ratingSelectedColor = tableView->starRatingSelectedColor();
+    }
+
     QStyledItemDelegate::paint(painter, option, index);
 
     if (!(option.state & QStyle::State_Editing)) {
         if (option.state & QStyle::State_Selected)
             starRating.paintSelected(painter, option.rect, option.palette,
-                                     StarRating::ReadOnly);
+                                     StarRating::ReadOnly, ratingSelectedColor);
         else
             starRating.paint(painter, option.rect, option.palette,
-                             StarRating::ReadOnly);
+                             StarRating::ReadOnly, ratingColor);
     }
 }
 
@@ -345,18 +296,20 @@ QSize StarRating::sizeHint() const
 void StarRating::paint(QPainter *painter, const QRect &rect,
                        const QPalette &palette, EditMode mode) const
 {
+    paint(painter, rect, palette, mode, QColor("#e9be0f"));
+}
+
+void StarRating::paint(QPainter *painter, const QRect &rect,
+                       const QPalette &palette, EditMode mode, QColor color) const
+{
     Q_UNUSED(palette)
     painter->save();
 
     painter->setRenderHint(QPainter::Antialiasing, true);
     painter->setPen(Qt::NoPen);
 
-    // if (mode == Editable) {
-    //     painter->setBrush(palette.highlight());
-    // } else {
-    QBrush brush(QColor("#e9be0f"));
+    QBrush brush(color);
     painter->setBrush(brush);
-    //}
 
     int yOffset = (rect.height() - PaintingScaleFactor) / 2;
     painter->translate(rect.x(), rect.y() + yOffset);
@@ -366,7 +319,7 @@ void StarRating::paint(QPainter *painter, const QRect &rect,
         if (i < myStarCount) {
             painter->drawPolygon(starPolygon, Qt::WindingFill);
         } else if (mode == Editable) {
-            painter->drawEllipse(QPointF(0.5, 0.5), 0.08, 0.08); //(diamondPolygon, Qt::WindingFill);
+            painter->drawEllipse(QPointF(0.5, 0.5), 0.08, 0.08);
         }
         painter->translate(1.0, 0.0);
     }
@@ -454,7 +407,7 @@ void StarEditor::leaveEvent(QEvent *event)
 void StarEditor::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton) {
-        int star = starAtPosition(event->x());
+        int star = starAtPosition(event->position().x());
 
         if (star != myStarRating.starCount() && star != -1) {
             myStarRating.setStarCount(star);

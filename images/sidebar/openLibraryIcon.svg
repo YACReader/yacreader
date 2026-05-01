@@ -1,1 +1,37 @@
-<?xml version="1.0" encoding="UTF-8"?><svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><defs><style>.cls-1{fill:#bfbfbf;}.cls-2{stroke:#bfbfbf;}.cls-2,.cls-3{fill:none;stroke-miterlimit:10;stroke-width:2px;}.cls-3{stroke:#000;}</style></defs><g><path class="cls-3" d="M4,6v-2c0-.55,.45-1,1-1H13.5c.27,0,.5,.45,.5,1V14c0,.55-.23,1-.5,1H5c-.55,0-1-.45-1-1v-2"/><rect x="1" y="7" width="5" height="4"/><polyline points="6 6.17 8.83 9 6 11.83"/></g><g><path class="cls-2" d="M4,5V3c0-.55,.45-1,1-1H13.5c.27,0,.5,.45,.5,1V13c0,.55-.23,1-.5,1H5c-.55,0-1-.45-1-1v-2"/><rect class="cls-1" x="1" y="6" width="5" height="4"/><polyline class="cls-1" points="6 5.17 8.83 8 6 10.83"/></g></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 16 16">
+  <!-- Generator: Adobe Illustrator 29.8.4, SVG Export Plug-In . SVG Version: 2.1.1 Build 6)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #0ff;
+      }
+
+      .st1 {
+        stroke: #f0f;
+      }
+
+      .st1, .st2 {
+        fill: none;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+
+      .st3 {
+        fill: #f0f;
+      }
+
+      .st2 {
+        stroke: #0ff;
+      }
+    </style>
+  </defs>
+  <path class="st2" d="M4,6v-2c0-.5.4-1,1-1h8.5c.3,0,.5.5.5,1v10c0,.6-.2,1-.5,1H5c-.6,0-1-.4-1-1v-2"/>
+  <rect class="st0" x="1" y="7" width="5" height="4"/>
+  <polyline class="st0" points="6 6.2 8.8 9 6 11.8"/>
+  <g>
+    <path class="st1" d="M4,5v-2c0-.5.4-1,1-1h8.5c.3,0,.5.5.5,1v10c0,.6-.2,1-.5,1H5c-.6,0-1-.4-1-1v-2"/>
+    <rect class="st3" x="1" y="6" width="5" height="4"/>
+    <polyline class="st3" points="6 5.2 8.8 8 6 10.8"/>
+  </g>
+</svg>

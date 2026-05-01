@@ -1,18 +1,19 @@
 #ifndef TREEMODEL_H
 #define TREEMODEL_H
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QModelIndex>
-#include <QVariant>
-#include <QSqlQuery>
-#include <QSqlDatabase>
-#include <QUrl>
-#include <QIcon>
-
 #include "folder.h"
 #include "folder_query_result_processor.h"
+#include "themable.h"
 #include "yacreader_global.h"
+
+#include <QAbstractItemModel>
+#include <QIcon>
+#include <QModelIndex>
+#include <QSortFilterProxyModel>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QUrl>
+#include <QVariant>
 
 class FolderItem;
 
@@ -35,7 +36,7 @@ protected:
     bool filterEnabled;
 };
 
-class FolderModel : public QAbstractItemModel
+class FolderModel : public QAbstractItemModel, protected Themable
 {
     Q_OBJECT
 
@@ -146,6 +147,9 @@ private:
 
     bool showRecent;
     qlonglong recentDays;
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif

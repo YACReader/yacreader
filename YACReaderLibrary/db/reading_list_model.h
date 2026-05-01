@@ -1,14 +1,14 @@
 #ifndef READING_LIST_MODEL_H
 #define READING_LIST_MODEL_H
 
-#include <QAbstractItemModel>
-#include <QSortFilterProxyModel>
-#include <QModelIndex>
-#include <QVariant>
-#include <QSqlQuery>
-#include <QSqlDatabase>
-
 #include "yacreader_global.h"
+
+#include <QAbstractItemModel>
+#include <QModelIndex>
+#include <QSortFilterProxyModel>
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QVariant>
 
 class LabelItem;
 class SpecialListItem;

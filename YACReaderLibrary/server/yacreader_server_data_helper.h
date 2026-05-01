@@ -1,10 +1,11 @@
 #ifndef YACREADERSERVERDATAHELPER_H
 #define YACREADERSERVERDATAHELPER_H
 
-#include <QtCore>
-#include "folder.h"
 #include "comic_db.h"
+#include "folder.h"
 #include "reading_list.h"
+
+#include <QtCore>
 
 class YACReaderServerDataHelper
 {

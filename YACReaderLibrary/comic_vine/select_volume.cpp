@@ -1,5 +1,14 @@
 #include "select_volume.h"
 
+#include "comic_vine_client.h"
+#include "scraper_lineedit.h"
+#include "scraper_results_paginator.h"
+#include "scraper_scroll_label.h"
+#include "scraper_tableview.h"
+#include "selected_volume_info.h"
+#include "volumes_model.h"
+
+#include <QAction>
 #include <QDesktopServices>
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -12,19 +21,6 @@
 #include <QSortFilterProxyModel>
 #include <QToolButton>
 #include <QVBoxLayout>
-#include <QAction>
-
-#include "scraper_tableview.h"
-#include "scraper_lineedit.h"
-
-#include "volumes_model.h"
-#include "comic_vine_client.h"
-#include "scraper_scroll_label.h"
-
-#include "response_parser.h"
-#include "scraper_results_paginator.h"
-
-#include "selected_volume_info.h"
 
 SelectVolume::SelectVolume(QWidget *parent)
     : QWidget(parent), model(0)
@@ -32,10 +28,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     proxyModel = new QSortFilterProxyModel;
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
-    QString labelStylesheet = "QLabel {color:white; font-size:12px;font-family:Arial;}";
-
-    QLabel *label = new QLabel(tr("Please, select the right series for your comic."));
-    label->setStyleSheet(labelStylesheet);
+    label = new QLabel(tr("Please, select the right series for your comic."));
 
     auto l = new QVBoxLayout;
     QWidget *leftWidget = new QWidget;
@@ -48,7 +41,6 @@ SelectVolume::SelectVolume(QWidget *parent)
     cover->setScaledContents(true);
     cover->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     cover->setMinimumSize(168, 168 * 5.0 / 3);
-    cover->setStyleSheet("QLabel {background-color: #2B2B2B; color:white; font-size:12px; font-family:Arial; }");
     detailLabel = new ScraperScrollLabel();
 
     tableVolumes = new ScraperTableView();
@@ -94,6 +86,8 @@ SelectVolume::SelectVolume(QWidget *parent)
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
     setContentsMargins(0, 0, 0, 0);
+
+    initTheme(this);
 }
 
 void SelectVolume::load(const QString &json, const VolumeSearchQuery &searchQuery)
@@ -217,4 +211,12 @@ SelectedVolumeInfo SelectVolume::getSelectedVolumeInfo()
     auto publisher = model->getPublisher(proxyModel->mapToSource(tableVolumes->currentIndex()));
 
     return { volumeId, numIssues, publisher, selectedVolumeDescription };
+}
+
+void SelectVolume::applyTheme(const Theme &theme)
+{
+    auto metadataScraperDialogTheme = theme.metadataScraperDialog;
+
+    label->setStyleSheet(metadataScraperDialogTheme.defaultLabelQSS);
+    cover->setStyleSheet(metadataScraperDialogTheme.coverLabelQSS);
 }

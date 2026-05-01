@@ -1,14 +1,19 @@
 #include "classic_comics_view.h"
 
-#include "yacreader_global.h"
-
-#include "QStackedWidget"
-
 #include "comic_flow_widget.h"
-#include "QsLog.h"
 #include "shortcuts_manager.h"
+#include "yacreader_global.h"
 #include "yacreader_table_view.h"
-#include "yacreader_tool_bar_stretch.h"
+
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QMenu>
+#include <QSettings>
+#include <QSplitter>
+#include <QStackedWidget>
+#include <QToolBar>
+#include <QVBoxLayout>
 
 ClassicComicsView::ClassicComicsView(QWidget *parent)
     : ComicsView(parent), searching(false)
@@ -19,15 +24,7 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     settings->beginGroup("libraryConfig");
     // FLOW-----------------------------------------------------------------------
     //---------------------------------------------------------------------------
-// FORCE_ANGLE is not used here, because ComicFlowWidgetGL will use OpenGL ES in the future
-#ifndef NO_OPENGL
-    if ((settings->value(USE_OPEN_GL).toBool() == true))
-        comicFlow = new ComicFlowWidgetGL(0);
-    else
-        comicFlow = new ComicFlowWidgetSW(0);
-#else
-    comicFlow = new ComicFlowWidgetSW(0);
-#endif
+    comicFlow = new ComicFlowWidget(0);
     comicFlow->updateConfig(settings);
     comicFlow->setFocusPolicy(Qt::StrongFocus);
     comicFlow->setShowMarks(true);
@@ -95,11 +92,23 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     hideFlowViewAction->setText(tr("Hide comic flow"));
     hideFlowViewAction->setData(HIDE_COMIC_VIEW_ACTION_YL);
     hideFlowViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(HIDE_COMIC_VIEW_ACTION_YL));
-    hideFlowViewAction->setIcon(QIcon(":/images/comics_view_toolbar/hideComicFlow.svg"));
     hideFlowViewAction->setCheckable(true);
     hideFlowViewAction->setChecked(false);
 
     connect(hideFlowViewAction, &QAction::toggled, this, &ClassicComicsView::hideComicFlow);
+
+    initTheme(this);
+}
+
+void ClassicComicsView::applyTheme(const Theme &theme)
+{
+    // Update searching icon background to match comic flow
+    searchingIcon->setStyleSheet(QString("QWidget {border: none; background-color: %1;}").arg(theme.comicFlow.backgroundColor.name()));
+    searchingIconLabel->setPixmap(theme.emptyContainer.searchingIcon);
+
+    sVertical->setStyleSheet(theme.contentSplitter.verticalSplitterQSS);
+
+    hideFlowViewAction->setIcon(theme.comicsViewToolbar.hideComicFlowIcon);
 }
 
 void ClassicComicsView::hideComicFlow(bool hide)
@@ -414,14 +423,9 @@ void ClassicComicsView::setupSearchingIcon()
 
     auto h = new QHBoxLayout;
 
-    QPixmap p(":/images/searching_icon.png");
-    QLabel *l = new QLabel(searchingIcon);
-    l->setPixmap(p);
-    l->setFixedSize(p.size());
-    h->addWidget(l, 0, Qt::AlignCenter);
+    searchingIconLabel = new QLabel(searchingIcon);
+    h->addWidget(searchingIconLabel, 0, Qt::AlignCenter);
     searchingIcon->setLayout(h);
-
-    searchingIcon->setStyleSheet(QString("QWidget {border : none; background-color: #000000;}"));
 
     hideSearchingIcon();
 }

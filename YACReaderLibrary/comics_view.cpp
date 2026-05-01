@@ -1,11 +1,11 @@
 #include "comics_view.h"
-#include "comic.h"
-#include "comic_files_manager.h"
-#include "comic_db.h"
 
 #include "QsLog.h"
+#include "comic.h"
+#include "comic_db.h"
+#include "comic_files_manager.h"
 
-#include <QtQuick>
+#include <QQmlContext>
 #include <QQuickWidget>
 
 ComicsView::ComicsView(QWidget *parent)
@@ -16,11 +16,6 @@ ComicsView::ComicsView(QWidget *parent)
     qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
 
     view = new QQuickWidget();
-
-    // QQuickWidget requires rendering into OpenGL framebuffer objects
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-    view->quickWindow()->setGraphicsApi(QSGRendererInterface::OpenGL);
-#endif
 
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
@@ -86,12 +81,10 @@ void ComicsView::dragEnterEvent(QDragEnterEvent *event)
         event->acceptProposedAction();
     else {
         QLOG_TRACE() << "dragEnterEvent";
-        QList<QUrl> urlList;
-
         if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction) {
-            urlList = event->mimeData()->urls();
+            const auto urlList = event->mimeData()->urls();
             QString currentPath;
-            foreach (QUrl url, urlList) {
+            for (const auto &url : urlList) {
                 // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
                 currentPath = url.toLocalFile();
                 if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir()) {

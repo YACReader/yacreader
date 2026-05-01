@@ -1,24 +1,22 @@
 #include "yacreader_navigation_controller.h"
 
-#include <QModelIndex>
-
-#include "library_window.h"
-#include "yacreader_folders_view.h"
-#include "yacreader_reading_lists_view.h"
-#include "folder_item.h"
-#include "yacreader_history_controller.h"
+#include "QsLog.h"
 #include "comic_model.h"
-#include "folder_model.h"
-#include "reading_list_model.h"
 #include "comics_view.h"
-#include "folder_content_view.h"
-#include "yacreader_search_line_edit.h"
-#include "yacreader_global.h"
 #include "empty_label_widget.h"
 #include "empty_special_list.h"
+#include "folder_content_view.h"
+#include "folder_item.h"
+#include "folder_model.h"
+#include "library_window.h"
+#include "reading_list_model.h"
 #include "yacreader_content_views_manager.h"
+#include "yacreader_folders_view.h"
+#include "yacreader_global.h"
+#include "yacreader_history_controller.h"
+#include "yacreader_reading_lists_view.h"
 
-#include "QsLog.h"
+#include <QModelIndex>
 
 YACReaderNavigationController::YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager)
     : QObject(parent), libraryWindow(parent), contentViewsManager(contentViewsManager)
@@ -64,10 +62,14 @@ void YACReaderNavigationController::loadFolderInfo(const QModelIndex &modelIndex
         contentViewsManager->comicsView->setModel(libraryWindow->comicsModel);
         contentViewsManager->showComicsView();
         libraryWindow->disableComicsActions(false);
-    } else {
-        // showEmptyFolder
+    } else if (libraryWindow->foldersModel->rowCount(modelIndex) > 0 || !modelIndex.isValid()) {
+        // folder has subfolders (or is root), show folder content view
         loadEmptyFolderInfo(modelIndex);
         contentViewsManager->showFolderContentView();
+        libraryWindow->disableComicsActions(true);
+    } else {
+        // folder has no comics and no subfolders
+        contentViewsManager->showEmptyFolderWidget();
         libraryWindow->disableComicsActions(true);
     }
 
@@ -122,16 +124,13 @@ void YACReaderNavigationController::loadSpecialListInfo(const QModelIndex &model
         // setup empty special list widget
         switch (type) {
         case ReadingListModel::TypeSpecialList::Favorites:
-            contentViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_favorites.png"));
-            contentViewsManager->emptySpecialList->setText(tr("No favorites"));
+            contentViewsManager->emptySpecialList->showFavorites();
             break;
         case ReadingListModel::TypeSpecialList::Reading:
-            contentViewsManager->emptySpecialList->setPixmap(QPixmap(":/images/empty_current_readings.png"));
-            contentViewsManager->emptySpecialList->setText(tr("You are not reading anything yet, come on!!"));
+            contentViewsManager->emptySpecialList->showReading();
             break;
         case ReadingListModel::TypeSpecialList::Recent:
-            contentViewsManager->emptySpecialList->setPixmap(QPixmap());
-            contentViewsManager->emptySpecialList->setText(tr("There are no recent comics!"));
+            contentViewsManager->emptySpecialList->showRecent();
             break;
         }
 

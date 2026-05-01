@@ -1,9 +1,16 @@
 #ifndef EMPTY_CONTAINER_INFO_H
 #define EMPTY_CONTAINER_INFO_H
 
-#include <QtWidgets>
+#include "themable.h"
 
-class EmptyContainerInfo : public QWidget
+#include <QLabel>
+#include <QPaintEvent>
+#include <QPixmap>
+#include <QString>
+#include <QVBoxLayout>
+#include <QWidget>
+
+class EmptyContainerInfo : public QWidget, protected Themable
 {
     Q_OBJECT
 public:
@@ -17,10 +24,10 @@ public slots:
 
 protected:
     void paintEvent(QPaintEvent *) override;
+    void applyTheme(const Theme &theme) override;
 
     QLabel *iconLabel;
     QLabel *titleLabel;
-    QString backgroundColor;
 };
 
 #endif // EMPTY_CONTAINER_INFO_H

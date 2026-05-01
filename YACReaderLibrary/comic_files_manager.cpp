@@ -1,11 +1,11 @@
 #include "comic_files_manager.h"
-#include <QFile>
-#include <QFileInfo>
-#include <QDir>
-
-#include <QsLog.h>
 
 #include "comic.h"
+
+#include <QDir>
+#include <QFile>
+#include <QFileInfo>
+#include <QsLog.h>
 
 ComicFilesManager::ComicFilesManager(QObject *parent)
     : QObject(parent), canceled(false)
@@ -33,7 +33,7 @@ QList<QPair<QString, QString>> ComicFilesManager::getDroppedFiles(const QList<QU
     QList<QPair<QString, QString>> dropedFiles;
 
     QString currentPath;
-    foreach (QUrl url, urls) {
+    for (const auto &url : urls) {
         currentPath = url.toLocalFile();
         if (currentPath.endsWith('/'))
             currentPath = currentPath.remove(currentPath.length() - 1, 1); // QTBUG-35896 QUrl.toLocalFile inconsistency.
@@ -44,7 +44,8 @@ QList<QPair<QString, QString>> ComicFilesManager::getDroppedFiles(const QList<QU
             QFileInfo info(currentPath);
             if (info.isDir()) {
                 QLOG_DEBUG() << "origin path prior to absoluteFilePath : " << info.absolutePath();
-                foreach (QString comicPath, Comic::findValidComicFilesInFolder(info.absoluteFilePath())) {
+                const auto comicPaths = Comic::findValidComicFilesInFolder(info.absoluteFilePath());
+                for (const auto &comicPath : comicPaths) {
                     QFileInfo comicInfo(comicPath);
                     QString path = comicInfo.absolutePath();
                     QLOG_DEBUG() << "comic path : " << comicPath;
@@ -63,8 +64,8 @@ void ComicFilesManager::process()
 {
     int i = 0;
     bool successProcesingFiles = false;
-    QPair<QString, QString> source;
-    foreach (source, comics) {
+    const auto &comicSources = comics;
+    for (const auto &source : comicSources) {
 
         if (canceled) {
             if (successProcesingFiles)

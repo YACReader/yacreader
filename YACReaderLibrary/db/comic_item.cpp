@@ -1,7 +1,7 @@
 
-#include <QStringList>
-
 #include "comic_item.h"
+
+#include <QStringList>
 
 //! [0]
 ComicItem::ComicItem(const QList<QVariant> &data)

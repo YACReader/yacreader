@@ -1,17 +1,23 @@
 #include "options_dialog.h"
 
-#ifndef NO_OPENGL
-#include "yacreader_flow_gl.h"
-#include "yacreader_gl_flow_config_widget.h"
-#endif
-#include "yacreader_flow_config_widget.h"
 #include "api_key_dialog.h"
-
+#include "app_language_utils.h"
+#include "appearance_tab_widget.h"
+#include "theme_factory.h"
+#include "theme_manager.h"
+#include "yacreader_3d_flow_config_widget.h"
 #include "yacreader_global_gui.h"
 
-#ifndef NO_OPENGL
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QLayout>
+#include <QMessageBox>
+#include <QSettings>
+#include <QTabWidget>
+#include <QVBoxLayout>
+
 FlowType flowType = Strip;
-#endif
 
 OptionsDialog::OptionsDialog(QWidget *parent)
     : YACReaderOptionsDialog(parent)
@@ -21,16 +27,18 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     auto comicFlowW = createFlowTab();
     auto gridViewW = createGridTab();
 
+    auto appearanceW = createAppearanceTab();
+
     auto tabWidget = new QTabWidget();
     tabWidget->addTab(generalW, tr("General"));
     tabWidget->addTab(librariesW, tr("Libraries"));
     tabWidget->addTab(comicFlowW, tr("Comic Flow"));
-#ifndef NO_OPENGL
     tabWidget->addTab(gridViewW, tr("Grid view"));
-#endif
+    tabWidget->addTab(appearanceW, tr("Appearance"));
 
     auto buttons = new QHBoxLayout();
     buttons->addStretch();
+    buttons->addWidget(new QLabel(tr("Restart is needed")));
     buttons->addWidget(accept);
     buttons->addWidget(cancel);
 
@@ -53,6 +61,12 @@ void OptionsDialog::editApiKey()
 void OptionsDialog::restoreOptions(QSettings *settings)
 {
     YACReaderOptionsDialog::restoreOptions(settings);
+
+    const auto selectedLanguage = settings->value(UI_LANGUAGE).toString().trimmed();
+    int languageIndex = languageCombo->findData(selectedLanguage);
+    if (languageIndex < 0)
+        languageIndex = 0;
+    languageCombo->setCurrentIndex(languageIndex);
 
     trayIconCheckbox->setChecked(settings->value(CLOSE_TO_TRAY, false).toBool());
     startToTrayCheckbox->setChecked(settings->value(START_TO_TRAY, false).toBool());
@@ -92,6 +106,12 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
 void OptionsDialog::saveOptions()
 {
+    const auto selectedLanguage = languageCombo->currentData().toString().trimmed();
+    if (selectedLanguage.isEmpty())
+        settings->remove(UI_LANGUAGE);
+    else
+        settings->setValue(UI_LANGUAGE, selectedLanguage);
+
     settings->setValue(THIRD_PARTY_READER_COMMAND, thirdPartyReaderEdit->text());
     YACReaderOptionsDialog::saveOptions();
 }
@@ -152,6 +172,19 @@ void OptionsDialog::resetToDefaults()
 
 QWidget *OptionsDialog::createGeneralTab()
 {
+    auto *languageBox = new QGroupBox(tr("Language"));
+    auto *languageLayout = new QHBoxLayout();
+    languageLayout->addWidget(new QLabel(tr("Application language")));
+    languageCombo = new QComboBox(this);
+    languageCombo->addItem(tr("System default"), QString());
+    const auto availableLanguages = YACReader::UiLanguage::availableLanguages("yacreaderlibrary");
+    for (const auto &language : availableLanguages) {
+        languageCombo->addItem(
+                QString("%1 (%2)").arg(language.displayName, language.code), language.code);
+    }
+    languageLayout->addWidget(languageCombo);
+    languageBox->setLayout(languageLayout);
+
     // Tray icon settings
     QGroupBox *trayIconBox = new QGroupBox(tr("Tray icon settings (experimental)"));
     QVBoxLayout *trayLayout = new QVBoxLayout();
@@ -218,6 +251,7 @@ QWidget *OptionsDialog::createGeneralTab()
     connect(clearButton, &QPushButton::clicked, thirdPartyReaderEdit, &QLineEdit::clear);
 
     auto generalLayout = new QVBoxLayout();
+    generalLayout->addWidget(languageBox);
     generalLayout->addWidget(trayIconBox);
     generalLayout->addWidget(shortcutsBox);
     generalLayout->addWidget(apiKeyBox);
@@ -333,20 +367,10 @@ QWidget *OptionsDialog::createFlowTab()
 {
     auto switchFlowType = new QHBoxLayout();
     switchFlowType->addStretch();
-#ifndef NO_OPENGL
-    switchFlowType->addWidget(useGL);
-#endif
 
     auto flowLayout = new QVBoxLayout;
-    flowLayout->addWidget(sw);
-#ifndef NO_OPENGL
     flowLayout->addWidget(gl);
-#endif
     flowLayout->addLayout(switchFlowType);
-
-#ifndef NO_OPENGL
-    sw->hide();
-#endif
 
     auto comicFlowW = new QWidget;
     comicFlowW->setLayout(flowLayout);
@@ -423,4 +447,14 @@ QWidget *OptionsDialog::createGridTab()
     gridViewW->setLayout(gridViewLayout);
 
     return gridViewW;
+}
+
+QWidget *OptionsDialog::createAppearanceTab()
+{
+    return new AppearanceTabWidget(
+            ThemeManager::instance().getAppearanceConfiguration(),
+            ThemeManager::instance().getRepository(),
+            []() { return ThemeManager::instance().getCurrentTheme().sourceJson; },
+            [](const QJsonObject &json) { ThemeManager::instance().setTheme(makeTheme(json)); },
+            this);
 }

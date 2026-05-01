@@ -1,11 +1,17 @@
 #ifndef __OPTIONS_DIALOG_H
 #define __OPTIONS_DIALOG_H
 
-#include <QtWidgets>
-
+#include "yacreader_global.h"
 #include "yacreader_options_dialog.h"
 
-#include "yacreader_global.h"
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QSlider>
+#include <QTimeEdit>
+#include <QWidget>
 
 using namespace YACReader;
 
@@ -34,6 +40,7 @@ private:
     QCheckBox *displayContinueReadingBannerCheck;
     QCheckBox *trayIconCheckbox;
     QCheckBox *startToTrayCheckbox;
+    QComboBox *languageCombo;
     QCheckBox *comicInfoXMLCheckbox;
     QSlider *recentIntervalSlider;
     QLabel *numDaysLabel;
@@ -61,6 +68,7 @@ private:
     QWidget *createLibrariesTab();
     QWidget *createFlowTab();
     QWidget *createGridTab();
+    QWidget *createAppearanceTab();
 };
 
 #endif

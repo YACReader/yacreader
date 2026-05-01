@@ -13,6 +13,7 @@ public:
     QString getName() const;
     QIcon getIcon() const;
     QList<QAction *> getActions() const;
+    void setIcon(const QIcon &icon);
 
 protected:
     QString name;
@@ -34,6 +35,7 @@ public:
 
     void addActionsGroup(const ActionsGroup &group);
     QList<QAction *> getActions(const QModelIndex &mi);
+    void updateGroupIcon(int row, const QIcon &icon);
 signals:
 
 public slots:

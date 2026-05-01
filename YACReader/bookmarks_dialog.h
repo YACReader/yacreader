@@ -1,15 +1,15 @@
 #ifndef __BOOKMARKS_DIALOG_H
 #define __BOOKMARKS_DIALOG_H
 
-#include <QWidget>
+#include "bookmarks.h"
+
 #include <QDialog>
-#include <QLabel>
-#include <QPushButton>
 #include <QEvent>
 #include <QKeyEvent>
+#include <QLabel>
 #include <QPropertyAnimation>
-
-#include "bookmarks.h"
+#include <QPushButton>
+#include <QWidget>
 
 class BookmarksDialog : public QDialog
 {

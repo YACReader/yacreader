@@ -3,8 +3,8 @@
 
 #include "data_base_management.h"
 #include "db_helper.h"
-#include "yacreader_libraries.h"
 #include "search_query.h"
+#include "yacreader_libraries.h"
 
 #include <QJsonDocument>
 #include <QSqlDatabase>

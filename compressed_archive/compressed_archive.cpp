@@ -1,21 +1,18 @@
-#include <QtCore>
-
 #include "compressed_archive.h"
-#include "extract_delegate.h"
-#include "yacreader_global.h"
-
-#include <QLibrary>
-#include <QFileInfo>
-#include <QDebug>
-#include <QCoreApplication>
-
-#include "open_callbacks.h"
-#include "extract_callbacks.h"
-
-#include "7z_includes.h"
-#include "lib7zip/CPP/Common/MyInitGuid.h"
 
 #include "QsLog.h"
+#include "extract_callbacks.h"
+#include "extract_delegate.h"
+#include "open_callbacks.h"
+#include "yacreader_global.h"
+
+#include <QCoreApplication>
+#include <QDebug>
+#include <QFileInfo>
+#include <QLibrary>
+#include <QtCore>
+
+#include <utility>
 
 #define _MY_WINAPI WINAPI
 
@@ -240,7 +237,7 @@ QVector<quint32> CompressedArchive::translateIndexes(const QVector<quint32> &ind
 {
     QVector<quint32> translatedIndexes;
 
-    foreach (quint32 i, indexes) {
+    for (const quint32 i : std::as_const(indexes)) {
         if (i < (quint32)offsets.length())
             translatedIndexes.append(offsets.at(i));
     }

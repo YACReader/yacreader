@@ -1,9 +1,9 @@
 #ifndef YACREADER_LOCAL_SERVER_H
 #define YACREADER_LOCAL_SERVER_H
 
+#include <QMutex>
 #include <QObject>
 #include <QThread>
-#include <QMutex>
 
 class QLocalServer;
 class QLocalSocket;

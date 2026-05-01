@@ -3,7 +3,6 @@
 #include "comic_db.h"
 
 #include <QtCore>
-#include <QtWidgets>
 
 bool YACReader::openComic(const ComicDB &comic,
                           unsigned long long libraryId,

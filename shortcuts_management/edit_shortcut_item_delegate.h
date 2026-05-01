@@ -2,9 +2,9 @@
 #define EDIT_SHORTCUT_ITEM_DELEGATE_H
 
 #include <QItemDelegate>
-#include <QLineEdit>
 #include <QKeyEvent>
 #include <QKeySequence>
+#include <QLineEdit>
 #include <QToolButton>
 
 class KeySequenceLineEdit : public QLineEdit

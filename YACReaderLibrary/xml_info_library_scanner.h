@@ -1,8 +1,8 @@
 #ifndef XMLINFOLIBRARYSCANNER_H
 #define XMLINFOLIBRARYSCANNER_H
 
-#include <QtCore>
 #include <QSqlQuery>
+#include <QtCore>
 
 namespace YACReader {
 

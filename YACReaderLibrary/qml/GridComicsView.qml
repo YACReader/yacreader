@@ -1,14 +1,17 @@
-import QtQuick 2.15
+import QtQuick
 
-import QtQuick.Controls 2.15
-import QtQuick.Layouts 1.12
+import QtQuick.Controls
+import QtQuick.Layouts
 
-import QtGraphicalEffects 1.0
+import QtQuick.Effects
 
 import com.yacreader.ComicModel 1.0
 
 import com.yacreader.ComicInfo 1.0
 import com.yacreader.ComicDB 1.0
+
+import QtQuick.Controls.Basic
+import QtQuick.Controls.impl
 
 SplitView {
     orientation: Qt.Horizontal
@@ -31,14 +34,16 @@ SplitView {
             mipmap: true
             asynchronous : true
             cache: false //TODO clear cache only when it is needed
-            opacity: 0
+            layer.enabled: true
             visible: false
         }
 
-        FastBlur {
+        MultiEffect {
             anchors.fill: backgroundImg
             source: backgroundImg
-            radius: backgroundBlurRadius
+            blurEnabled: true
+            blur: 1.0
+            blurMax: Math.max(2, backgroundBlurRadius)
             opacity: backgroundBlurOpacity
             visible: backgroundBlurVisible
         }
@@ -103,8 +108,8 @@ SplitView {
                     width: itemWidth
                     height: itemHeight
 
-                    color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedColor:cellColor;
-                    //border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?selectedBorderColor:borderColor;
+                    color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?cellSelectedColor:cellColor;
+                    //border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?cellSelectedBorderColor:borderColor;
                     //border.width: ?1:0;
                     anchors.horizontalCenter: parent.horizontalCenter
 
@@ -138,7 +143,7 @@ SplitView {
                             rightMargin  : commonBorder ? -commonBorderWidth : -rBorderwidth
                         }
 
-                        border.color: selectedBorderColor
+                        border.color: cellSelectedBorderColor
                         border.width: 3
 
                         opacity: (dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index) ? 1 : 0
@@ -290,7 +295,7 @@ SplitView {
                     height: 10
                     radius: 5
                     anchors { left: coverElement.left; top: coverElement.top; topMargin: 5; leftMargin: 5; }
-                    color: "#FFFFCC00"
+                    color: newItemColor
                     visible: (((new Date() / 1000) - added_date) < recent_range) && show_recent
                 }
 
@@ -301,7 +306,7 @@ SplitView {
                     anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
                     color: "transparent"
                     border {
-                        color: "#20FFFFFF"
+                        color: comicCoverBorderColor
                         width: 1
                     }
                 }
@@ -311,7 +316,7 @@ SplitView {
                     id: mark
                     width: 23
                     height: 23
-                    source: read_column&&show_marks?"tick.png":has_been_opened&&show_marks?"reading.png":""
+                    source: read_column&&show_marks?"tick.svg":has_been_opened&&show_marks?"reading.svg":""
                     anchors {right: coverElement.right; top: coverElement.top; topMargin: 9; rightMargin: 9}
                     asynchronous : true
                 }
@@ -325,7 +330,7 @@ SplitView {
                     wrapMode: Text.WordWrap
                     text: title
                     elide: Text.ElideRight
-                    color: titleColor
+                    color: itemTitleColor
                     clip: true
                     font.letterSpacing: fontSpacing
                     font.pointSize: fontSize
@@ -336,17 +341,18 @@ SplitView {
                 Text {
                     anchors {bottom: realCell.bottom; left: realCell.left; margins: 4}
                     text: number?"<b>#</b>"+number:""
-                    color: textColor
+                    color: itemDetailsColor
                     font.letterSpacing: fontSpacing
                     font.pointSize: fontSize
                     font.family: fontFamily
                 }
 
                 //page icon
-                Image {
+                ColorImage {
                     id: pageImage
-                    anchors {bottom: realCell.bottom; right: realCell.right; bottomMargin: 5; rightMargin: 4; leftMargin: 4}
-                    source: "page.png"
+                    anchors {bottom: realCell.bottom; right: realCell.right; bottomMargin: 6; rightMargin: 4; leftMargin: 4}
+                    source: "page.svg"
+                    color: itemDetailsColor
                     width: 8
                     height: 10
                 }
@@ -356,18 +362,19 @@ SplitView {
                     id: pages
                     anchors {bottom: realCell.bottom; right: pageImage.left; margins: 4}
                     text: has_been_opened?current_page+"/"+num_pages:num_pages
-                    color: textColor
+                    color: itemDetailsColor
                     font.letterSpacing: fontSpacing
                     font.pointSize: fontSize
                     font.family: fontFamily
                 }
 
                 //rating icon
-                Image {
+                ColorImage {
                     id: ratingImage
-                    anchors {bottom: realCell.bottom; right: pageImage.left; bottomMargin: 5; rightMargin: Math.floor(pages.width)+12}
-                    source: "star.png"
-                    width: 13
+                    anchors {bottom: realCell.bottom; right: pageImage.left; bottomMargin: 6.5; rightMargin: Math.floor(pages.width)+12}
+                    source: "star.svg"
+                    color: itemDetailsColor
+                    width: 11
                     height: 11
 
                     MouseArea  {
@@ -377,30 +384,38 @@ SplitView {
                             comicsSelectionHelper.clear();
                             comicsSelectionHelper.selectIndex(index);
                             grid.currentIndex = index;
-                            ratingConextMenu.popup();
-                        }
-                    }
+                            ratingLoader.active = true;
+                            ratingLoader.item.popup();
+                           }
+                       }
 
-                    Menu {
-                        background: Rectangle {
-                            implicitWidth: 42
-                            implicitHeight: 100
-                            //border.color: "#222"
-                            //color: "#444"
-                        }
+                       Loader {
+                           id: ratingLoader
+                           active: false
+                           sourceComponent: ratingConextMenuComponent
+                       }
 
-                        id: ratingConextMenu
+                       Component {
+                           id: ratingConextMenuComponent
+                           Menu {
+                               background: Rectangle {
+                                   implicitWidth: 42
+                                   implicitHeight: 100
+                               }
 
-                        Action { text: "1"; enabled: true; onTriggered: comicRatingHelper.rate(index,1) }
-                        Action { text: "2"; enabled: true; onTriggered: comicRatingHelper.rate(index,2) }
-                        Action { text: "3"; enabled: true; onTriggered: comicRatingHelper.rate(index,3) }
-                        Action { text: "4"; enabled: true; onTriggered: comicRatingHelper.rate(index,4) }
-                        Action { text: "5"; enabled: true; onTriggered: comicRatingHelper.rate(index,5) }
+                               id: ratingConextMenu
 
-                        delegate: MenuItem {
-                            implicitHeight: 30
-                        }
-                    }
+                               Action { text: "1"; enabled: true; onTriggered: comicRatingHelper.rate(index,1) }
+                               Action { text: "2"; enabled: true; onTriggered: comicRatingHelper.rate(index,2) }
+                               Action { text: "3"; enabled: true; onTriggered: comicRatingHelper.rate(index,3) }
+                               Action { text: "4"; enabled: true; onTriggered: comicRatingHelper.rate(index,4) }
+                               Action { text: "5"; enabled: true; onTriggered: comicRatingHelper.rate(index,5) }
+
+                               delegate: MenuItem {
+                                   implicitHeight: 30
+                               }
+                           }
+                       }
                 }
 
                 //comic rating
@@ -408,7 +423,7 @@ SplitView {
                     id: comicRating
                     anchors {bottom: realCell.bottom; right: ratingImage.left; margins: 4}
                     text: rating>0?rating:"-"
-                    color: textColor
+                    color: itemDetailsColor
                 }
             }
         }
@@ -462,17 +477,16 @@ SplitView {
                             mipmap: true
                             asynchronous : true
                             cache: false //TODO clear cache only when it is needed
-                        }
 
-                        DropShadow {
-                            anchors.fill: currentCoverElement
-                            horizontalOffset: 0
-                            verticalOffset: 0
-                            radius: 8.0
-                            samples: 17
-                            color: "#FF000000"
-                            source: currentCoverElement
-                            visible: showDropShadow;
+                            layer.enabled: showDropShadow
+                            layer.effect: MultiEffect {
+                                shadowEnabled: true
+                                shadowColor: currentComicCoverShadowColor
+                                shadowBlur: 1.0
+                                blurMax: 8
+                                shadowHorizontalOffset: 0
+                                shadowVerticalOffset: 0
+                            }
                         }
 
                         ColumnLayout
@@ -497,13 +511,14 @@ SplitView {
 
                                 id: currentComicInfoTitleView
 
-                                color: infoTitleColor
+                                color: infoTextColor
                                 font.family: "Arial"
                                 font.bold: true
                                 font.pixelSize: 21
                                 wrapMode: Text.WordWrap
 
-                                text: currentComic ? currentComic.getTitleIncludingNumber() : ""                            }
+                                text: currentComic?.getTitleIncludingNumber() ?? ""
+                            }
 
                             Flow {
                                 spacing: 0
@@ -516,7 +531,7 @@ SplitView {
                                                                     family: "Arial",
                                                                     pixelSize: 14
                                                                 });
-                                property string infoFlowTextColor: infoTextColor
+                                property string infoFlowTextColor: infoMetadataTextColor
 
                                 Text {
                                     id: currentComicInfoVolume
@@ -593,7 +608,7 @@ SplitView {
                                 Text {
                                     id: currentComicInfoShowInComicVine
                                     font: currentComicDetailsFlowView.infoFont
-                                    color: "#ffcc00"
+                                    color: themeLinkColor
                                     text: "Show in Comic Vine"
                                     visible: currentComicInfo.comicVineID ? true : false
                                     MouseArea {
@@ -615,6 +630,7 @@ SplitView {
 
                                 ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
 
+                                contentWidth: -1
                                 contentItem: currentComicInfoSinopsis
 
                                 id: synopsisScroller
@@ -627,17 +643,12 @@ SplitView {
                                     width: synopsisScroller.width
 
                                     id: currentComicInfoSinopsis
-                                    color: infoTitleColor
+                                    color: infoTextColor
                                     font.family: "Arial"
                                     font.pixelSize: 14
                                     wrapMode: Text.WordWrap
 
-                                    text: '<html><head><style>
-                                a {
-                                    color: #FFCB00;
-                                    text-decoration:none;
-                                }
-                                </style></head><body>' + currentComicInfo.synopsis ?? "" + '</body></html>'
+                                    text: '<html><head><style>a { color: ' + themeLinkColorStr + '; text-decoration: none; }</style></head><body>' + (currentComicInfo.synopsis ?? "") + '</body></html>'
                                     visible: currentComicInfo.synopsis ?? false
                                                                           textFormat: Text.RichText
                                 }
@@ -645,6 +656,7 @@ SplitView {
                         }
 
                         Button {
+                            containmentMask: null
                             text: "Read"
                             id: readButton
                             x: currentCoverElement.anchors.rightMargin + currentCoverElement.paintedWidth + currentCoverElement.anchors.rightMargin
@@ -656,9 +668,9 @@ SplitView {
                                 implicitWidth: 100
                                 implicitHeight: 30
                                 border.width: readButton.activeFocus ? 2 : 1
-                                border.color: "#FFCC00"
+                                border.color: buttonColor
                                 radius: height / 2
-                                color: "#FFCC00"
+                                color: buttonColor
                             }
 
                             contentItem: Text {
@@ -668,21 +680,19 @@ SplitView {
                                 font.family: "Arial"
                                 font.pointSize: 12
                                 font.bold: true
-                                color: "white"
+                                color: buttonTextColor
                                 text: readButton.text
                             }
-                        }
 
-
-                        DropShadow {
-                            anchors.fill: readButton
-                            horizontalOffset: 0
-                            verticalOffset: 0
-                            radius: 8.0
-                            samples: 17
-                            color: "#AA000000"
-                            source: readButton
-                            visible: showDropShadow && !readButton.pressed
+                            layer.enabled: showDropShadow && !readButton.pressed
+                            layer.effect: MultiEffect {
+                                shadowEnabled: true
+                                shadowColor: buttonShadowColor
+                                shadowBlur: 1.0
+                                blurMax: 8
+                                shadowHorizontalOffset: 0
+                                shadowVerticalOffset: 0
+                            }
                         }
                     }
                 }
@@ -767,13 +777,13 @@ SplitView {
                         implicitWidth: 12
                         implicitHeight: 26
                         Rectangle {
-                            color: "#88424242"
+                            color: scrollbarColor
                             anchors.fill: parent
                             anchors.topMargin: 6
                             anchors.leftMargin: 3
                             anchors.rightMargin: 2
                             anchors.bottomMargin: 6
-                            border.color: "#AA313131"
+                            border.color: scrollbarBorderColor
                             border.width: 1
                             radius: 3.5
                         }
@@ -896,7 +906,7 @@ SplitView {
                     implicitWidth: 12
                     implicitHeight: 26
                     Rectangle {
-                        color: "#424246"
+                        color: infoScrollbarColor
                         anchors.fill: parent
                         anchors.topMargin: 6
                         anchors.leftMargin: 5

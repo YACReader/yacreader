@@ -1,21 +1,17 @@
 #include "edit_shortcuts_dialog.h"
 
-#include "yacreader_global.h"
-
 #include "actions_groups_model.h"
 #include "actions_shortcuts_model.h"
 #include "edit_shortcut_item_delegate.h"
 
-#include <QVBoxLayout>
-#include <QSplitter>
-#include <QListView>
-#include <QTableView>
-#include <QPushButton>
 #include <QHeaderView>
 #include <QLabel>
+#include <QListView>
 #include <QMessageBox>
-
-#include "QsLog.h"
+#include <QPushButton>
+#include <QSplitter>
+#include <QTableView>
+#include <QVBoxLayout>
 
 EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
     : QDialog(parent)
@@ -71,6 +67,32 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
     setWindowTitle(tr("Shortcuts settings"));
 
     setModal(true);
+
+    initTheme(this);
+}
+
+void EditShortcutsDialog::applyTheme(const Theme &theme)
+{
+    updateGroupIcons(theme);
+}
+
+void EditShortcutsDialog::updateGroupIcons(const Theme &theme)
+{
+    // Update icons for all groups based on the mapping
+    for (int i = 0; i < groupsModel->rowCount(); ++i) {
+        QModelIndex idx = groupsModel->index(i, 0);
+        QString groupName = groupsModel->data(idx, Qt::DisplayRole).toString();
+
+        if (groupIconMapping.contains(groupName)) {
+            QIcon newIcon = groupIconMapping[groupName](theme);
+            groupsModel->updateGroupIcon(i, newIcon);
+        }
+    }
+}
+
+void EditShortcutsDialog::setGroupIconMapping(const QMap<QString, std::function<QIcon(const Theme &)>> &mapping)
+{
+    groupIconMapping = mapping;
 }
 
 void EditShortcutsDialog::addActionsGroup(const QString &name, const QIcon &ico, QList<QAction *> &group)

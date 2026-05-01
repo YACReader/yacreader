@@ -3,10 +3,7 @@
 
 #include <QDialog>
 
-class YACReaderFlowConfigWidget;
-#ifndef NO_OPENGL
-class YACReaderGLFlowConfigWidget;
-#endif
+class YACReader3DFlowConfigWidget;
 class QCheckBox;
 class QPushButton;
 class QSettings;
@@ -16,11 +13,7 @@ class YACReaderOptionsDialog : public QDialog
 {
     Q_OBJECT
 protected:
-    YACReaderFlowConfigWidget *sw;
-#ifndef NO_OPENGL
-    YACReaderGLFlowConfigWidget *gl;
-    QCheckBox *useGL;
-#endif
+    YACReader3DFlowConfigWidget *gl;
 
     QPushButton *accept;
     QPushButton *cancel;
@@ -37,10 +30,8 @@ public slots:
     virtual void restoreOptions();
     virtual void saveOptions();
 protected slots:
-#ifndef NO_OPENGL
     virtual void savePerformance(int value);
     virtual void saveUseVSync(int b);
-    virtual void saveUseGL(int b);
     virtual void saveXRotation(int value);
     virtual void saveYPosition(int value);
     virtual void saveCoverDistance(int value);
@@ -59,10 +50,6 @@ protected slots:
     virtual void setModernConfig();
     virtual void setRouletteConfig();
     virtual void saveFlowParameters();
-#endif
-    virtual void setClassicConfigSW();
-    virtual void setStripeConfigSW();
-    virtual void setOverlappedStripeConfigSW();
 
 signals:
     void optionsChanged();

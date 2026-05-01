@@ -1,4 +1,5 @@
 #include "package_manager.h"
+
 #include <QCoreApplication>
 
 PackageManager::PackageManager()

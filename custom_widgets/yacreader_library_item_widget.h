@@ -1,6 +1,9 @@
 #ifndef YACREADER_LIBRARY_ITEM_WIDGET_H
 #define YACREADER_LIBRARY_ITEM_WIDGET_H
 
+#include "themable.h"
+
+#include <QPixmap>
 #include <QWidget>
 
 class QLabel;
@@ -8,7 +11,7 @@ class QToolButton;
 class QMouseEvent;
 class QEvent;
 
-class YACReaderLibraryItemWidget : public QWidget
+class YACReaderLibraryItemWidget : public QWidget, protected Themable
 {
     Q_OBJECT
 
@@ -32,12 +35,16 @@ public slots:
 private:
     QLabel *icon;
     QLabel *nameLabel;
+    QLabel *optionsIconLabel;
 
     QToolButton *options;
     QToolButton *up;
     QToolButton *down;
 
     bool isSelected;
+
+protected:
+    void applyTheme(const Theme &theme) override;
 };
 
 #endif // YACREADER_LIBRARY_ITEM_WIDGET_H

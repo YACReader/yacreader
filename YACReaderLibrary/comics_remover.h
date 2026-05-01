@@ -1,10 +1,8 @@
 #ifndef COMICS_REMOVER_H
 #define COMICS_REMOVER_H
 
-#include <QThread>
-
 #include <QModelIndex>
-#include <comic_db.h>
+#include <QThread>
 
 class ComicsRemover : public QObject
 {

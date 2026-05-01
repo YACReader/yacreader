@@ -3,98 +3,87 @@
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
-#include <QHBoxLayout>
-#include <QSplitter>
-#include <QLabel>
+#include <QApplication>
+#include <QDesktopServices>
 #include <QDir>
-#include <QHeaderView>
-#include <QProcess>
-#include <QtCore>
 #include <QFileDialog>
-#include <QHBoxLayout>
 #include <QFileIconProvider>
-#include <QSettings>
+#include <QHBoxLayout>
 #include <QHeaderView>
+#include <QInputDialog>
+#include <QLabel>
+#include <QMenu>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QProcess>
+#include <QProgressDialog>
+#include <QSettings>
+#include <QSplitter>
+#include <QSqlError>
+#include <QStackedWidget>
+#include <QToolBar>
+#include <QToolButton>
+#include <QtCore>
 
 #include <algorithm>
 #include <future>
 
-#include "folder_item.h"
-#include "data_base_management.h"
-#include "no_libraries_widget.h"
-#include "import_widget.h"
-
-#include "yacreader_search_line_edit.h"
-#include "comic_db.h"
-#include "library_creator.h"
-#include "package_manager.h"
-#include "xml_info_library_scanner.h"
-#include "create_library_dialog.h"
-#include "rename_library_dialog.h"
-#include "properties_dialog.h"
-#include "export_library_dialog.h"
-#include "import_library_dialog.h"
-#include "export_comics_info_dialog.h"
-#include "import_comics_info_dialog.h"
-#include "add_library_dialog.h"
-#include "options_dialog.h"
-#include "help_about_dialog.h"
-#include "server_config_dialog.h"
-#include "comic_model.h"
-#include "yacreader_tool_bar_stretch.h"
-
-#include "yacreader_titled_toolbar.h"
-#include "yacreader_main_toolbar.h"
-
-#include "yacreader_sidebar.h"
-
-#include "comics_remover.h"
-#include "yacreader_library_list_widget.h"
-#include "yacreader_folders_view.h"
-
-#include "comic_vine_dialog.h"
-#include "api_key_dialog.h"
-// #include "yacreader_social_dialog.h"
-
-#include "comics_view.h"
-
-#include "edit_shortcuts_dialog.h"
-#include "shortcuts_manager.h"
-
-#include "comic_files_manager.h"
-
-#include "reading_list_model.h"
-#include "yacreader_reading_lists_view.h"
-#include "add_label_dialog.h"
-
-#include "yacreader_history_controller.h"
-#include "db_helper.h"
-
-#include "reading_list_item.h"
-#include "opengl_checker.h"
-
-#include "yacreader_content_views_manager.h"
-#include "folder_content_view.h"
-
-#include "trayicon_controller.h"
-
-#include "whats_new_controller.h"
-
-#include "library_comic_opener.h"
-
-#include "recent_visibility_coordinator.h"
-
-#include "cover_utils.h"
-
-#include "QsLog.h"
-
-#include "yacreader_http_server.h"
-extern YACReaderHttpServer *httpServer;
-
 #ifdef Q_OS_WIN
-#include <windows.h>
+#include <qt_windows.h>
+
 #include <shellapi.h>
 #endif
+
+#include "QsLog.h"
+#include "add_label_dialog.h"
+#include "add_library_dialog.h"
+#include "api_key_dialog.h"
+#include "comic_db.h"
+#include "comic_files_manager.h"
+#include "comic_model.h"
+#include "comic_vine_dialog.h"
+#include "comics_remover.h"
+#include "comics_view.h"
+#include "cover_utils.h"
+#include "create_library_dialog.h"
+#include "data_base_management.h"
+#include "db_helper.h"
+#include "edit_shortcuts_dialog.h"
+#include "export_comics_info_dialog.h"
+#include "export_library_dialog.h"
+#include "folder_content_view.h"
+#include "folder_item.h"
+#include "help_about_dialog.h"
+#include "import_comics_info_dialog.h"
+#include "import_library_dialog.h"
+#include "import_widget.h"
+#include "library_comic_opener.h"
+#include "library_creator.h"
+#include "no_libraries_widget.h"
+#include "options_dialog.h"
+#include "package_manager.h"
+#include "properties_dialog.h"
+#include "reading_list_item.h"
+#include "reading_list_model.h"
+#include "recent_visibility_coordinator.h"
+#include "rename_library_dialog.h"
+#include "server_config_dialog.h"
+#include "shortcuts_manager.h"
+#include "trayicon_controller.h"
+#include "whats_new_controller.h"
+#include "xml_info_library_scanner.h"
+#include "yacreader_content_views_manager.h"
+#include "yacreader_folders_view.h"
+#include "yacreader_history_controller.h"
+#include "yacreader_http_server.h"
+#include "yacreader_library_list_widget.h"
+#include "yacreader_main_toolbar.h"
+#include "yacreader_reading_lists_view.h"
+#include "yacreader_search_line_edit.h"
+#include "yacreader_sidebar.h"
+#include "yacreader_titled_toolbar.h"
+#include "yacreader_tool_bar_stretch.h"
+extern YACReaderHttpServer *httpServer;
 
 #include <KDSignalThrottler.h>
 
@@ -169,13 +158,11 @@ bool LibraryWindow::eventFilter(QObject *object, QEvent *event)
             return QMainWindow::eventFilter(object, event);
         }
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
         auto keyCombination = keySequence[0];
 
         if (keyCombination.keyboardModifiers() != Qt::NoModifier) {
             return QMainWindow::eventFilter(object, event);
         }
-#endif
 
         auto string = keySequence.toString();
 
@@ -198,26 +185,8 @@ void LibraryWindow::createSettings()
     settings->beginGroup("libraryConfig");
 }
 
-void LibraryWindow::setupOpenglSetting()
-{
-#ifndef NO_OPENGL
-    // FLOW-----------------------------------------------------------------------
-    //---------------------------------------------------------------------------
-
-    OpenGLChecker openGLChecker;
-    bool openGLAvailable = openGLChecker.hasCompatibleOpenGLVersion();
-
-    if (openGLAvailable && !settings->contains(USE_OPEN_GL))
-        settings->setValue(USE_OPEN_GL, 2);
-    else if (!openGLAvailable)
-        settings->setValue(USE_OPEN_GL, 0);
-#endif
-}
-
 void LibraryWindow::setupUI()
 {
-    setupOpenglSetting();
-
     setUnifiedTitleAndToolBarOnMac(true);
 
     libraryCreator = new LibraryCreator(settings);
@@ -245,32 +214,49 @@ void LibraryWindow::setupUI()
     setMinimumSize(800, 480);
 
     // restore
-    if (settings->contains(MAIN_WINDOW_GEOMETRY))
+    if (settings->contains(MAIN_WINDOW_GEOMETRY)) {
         restoreGeometry(settings->value(MAIN_WINDOW_GEOMETRY).toByteArray());
-    else
+        restoreState(settings->value(MAIN_WINDOW_STATE).toByteArray());
+        // Guard against the window landing off-screen when a monitor is unplugged
+        // between sessions. Qt 6 tries to remap the geometry to the primary screen
+        // when the saved screen is gone, but the result can still be off-screen.
+        const QRect restored = geometry();
+        const auto availableScreens = QApplication::screens();
+        const bool onScreen = std::any_of(
+                availableScreens.cbegin(), availableScreens.cend(),
+                [&restored](QScreen *s) { return s->availableGeometry().intersects(restored); });
+        if (!onScreen) {
+            const QRect avail = QApplication::primaryScreen()->availableGeometry();
+            setGeometry(QRect(avail.center() - QPoint(width() / 2, height() / 2), size()));
+        }
+    } else {
         // if(settings->value(USE_OPEN_GL).toBool() == false)
         showMaximized();
+    }
 
     trayIconController = new TrayIconController(settings, this);
+
+    initTheme(this);
+}
+
+void LibraryWindow::applyTheme(const Theme &theme)
+{
+    editInfoToolBar->setStyleSheet(theme.comicsViewToolbar.toolbarQSS);
+    mainSplitter->setStyleSheet(theme.contentSplitter.horizontalSplitterQSS);
+
+    // Update main toolbar and comics view toolbar icons
+    actions.updateTheme(theme);
 }
 
 void LibraryWindow::doLayout()
 {
     // LAYOUT ELEMENTS------------------------------------------------------------
-    auto sHorizontal = new QSplitter(Qt::Horizontal); // spliter principal
-#ifdef Y_MAC_UI
-    sHorizontal->setStyleSheet("QSplitter::handle{image:none;background-color:#B8B8B8;} QSplitter::handle:vertical {height:1px;}");
-#else
-    sHorizontal->setStyleSheet("QSplitter::handle:vertical {height:4px;}");
-#endif
+    mainSplitter = new QSplitter(Qt::Horizontal); // spliter principal
+    auto sHorizontal = mainSplitter; // Keep local alias for existing code
 
     // TOOLBARS-------------------------------------------------------------------
     //---------------------------------------------------------------------------
     editInfoToolBar = new QToolBar();
-    editInfoToolBar->setStyleSheet(R"(
-        QToolBar { border: none; }
-        QToolButton:checked { background-color: #cccccc; }
-    )");
 
 #ifdef Y_MAC_UI
     libraryToolBar = new YACReaderMacOSXToolbar(this);
@@ -722,7 +708,9 @@ void LibraryWindow::createConnections()
     connect(libraryCreator, &LibraryCreator::finished, this, &LibraryWindow::showRootWidget);
     connect(libraryCreator, &LibraryCreator::updated, this, &LibraryWindow::reloadCurrentLibrary);
     connect(libraryCreator, &LibraryCreator::created, this, &LibraryWindow::openLastCreated);
-    connect(libraryCreator, &LibraryCreator::updatedCurrentFolder, this, &LibraryWindow::reloadAfterCopyMove);
+    connect(libraryCreator, &LibraryCreator::updatedCurrentFolder, this, [this](qulonglong folderId) {
+        reloadAfterCopyMove(foldersModel->getIndexFromFolderId(folderId));
+    });
     connect(libraryCreator, &LibraryCreator::comicAdded, importWidget, &ImportWidget::newComic);
     // libraryCreator errors
     connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryWindow::manageCreatingError);
@@ -787,11 +775,7 @@ void LibraryWindow::createConnections()
 
 // Search filter
 #ifdef Y_MAC_UI
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     connect(libraryToolBar, &YACReaderMacOSXToolbar::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
-#else
-    connect(searchEdit, &YACReaderMacOSXSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
-#endif
     connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, this, [=](QString filter) {
         setSearchFilter(filter);
     });
@@ -1093,7 +1077,7 @@ void LibraryWindow::updateFolder(const QModelIndex &miFolder)
     QString currentLibrary = selectedLibrary->currentText();
     QString path = QDir::cleanPath(libraries.getPath(currentLibrary));
     _lastAdded = currentLibrary;
-    libraryCreator->updateFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)), miFolder);
+    libraryCreator->updateFolder(path, LibraryPaths::libraryDataPath(path), QDir::cleanPath(currentPath() + foldersModel->getFolderPath(miFolder)), miFolder.data(FolderModel::IdRole).toULongLong());
     libraryCreator->start();
 }
 
@@ -1421,12 +1405,14 @@ void LibraryWindow::showGridFoldersContextMenu(QPoint point, Folder folder)
 {
     QMenu menu;
 
+    const auto &menuIcons = theme.menuIcons;
+
     auto openContainingFolderAction = new QAction();
     openContainingFolderAction->setText(tr("Open folder..."));
-    openContainingFolderAction->setIcon(QIcon(":/images/menus_icons/open_containing_folder.svg"));
+    openContainingFolderAction->setIcon(menuIcons.openContainingFolderIcon);
 
     auto updateFolderAction = new QAction(tr("Update folder"), this);
-    updateFolderAction->setIcon(QIcon(":/images/menus_icons/update_current_folder.svg"));
+    updateFolderAction->setIcon(menuIcons.updateCurrentFolderIcon);
 
     auto rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), this);
 
@@ -1582,7 +1568,7 @@ void LibraryWindow::showContinueReadingContextMenu(QPoint point, ComicDB comic)
 
     auto setAsUnReadAction = new QAction();
     setAsUnReadAction->setText(tr("Set as unread"));
-    setAsUnReadAction->setIcon(QIcon(":/images/comics_view_toolbar/setUnread.svg"));
+    setAsUnReadAction->setIcon(theme.comicsViewToolbar.setAsUnreadIcon);
 
     menu.addAction(setAsUnReadAction);
 
@@ -1609,7 +1595,7 @@ void LibraryWindow::setupAddToSubmenu(QMenu &menu)
     const QList<LabelItem *> labels = listsModel->getLabels();
     if (labels.count() > 0)
         menu.addSeparator();
-    foreach (LabelItem *label, labels) {
+    for (auto *label : labels) {
         auto action = new QAction(this);
         action->setIcon(label->getIcon());
         action->setText(label->name());
@@ -1648,8 +1634,8 @@ void LibraryWindow::saveSelectedCoversTo()
     QFileDialog saveDialog;
     QString folderPath = saveDialog.getExistingDirectory(this, tr("Save covers"), QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
     if (!folderPath.isEmpty()) {
-        QModelIndexList comics = getSelectedComics();
-        foreach (QModelIndex comic, comics) {
+        const auto comics = getSelectedComics();
+        for (const auto &comic : comics) {
             QString origin = comic.data(ComicModel::CoverPathRole).toString().remove("file:///").remove("file:");
             QString destination = QDir(folderPath).filePath(comic.data(ComicModel::FileNameRole).toString() + ".jpg");
 
@@ -1830,7 +1816,8 @@ void LibraryWindow::openLibrary(QString path, QString name)
 void LibraryWindow::loadLibraries()
 {
     libraries.load();
-    foreach (QString name, libraries.getNames())
+    const auto libraryNames = libraries.getNames();
+    for (const auto &name : libraryNames)
         selectedLibrary->addItem(name, libraries.getPath(name));
 }
 
@@ -1875,9 +1862,12 @@ void LibraryWindow::deleteCurrentLibrary()
 void LibraryWindow::removeLibrary()
 {
     QString currentLibrary = selectedLibrary->currentText();
-    QMessageBox *messageBox = new QMessageBox(tr("Are you sure?"), tr("Do you want remove ") + currentLibrary + tr(" library?"), QMessageBox::Question, QMessageBox::Yes, QMessageBox::YesToAll, QMessageBox::No);
+    QMessageBox *messageBox = new QMessageBox(QMessageBox::Question,
+                                              tr("Are you sure?"),
+                                              tr("Do you want remove ") + currentLibrary + tr(" library?"),
+                                              QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No,
+                                              this);
     messageBox->button(QMessageBox::YesToAll)->setText(tr("Remove and delete metadata"));
-    messageBox->setParent(this);
     messageBox->setWindowModality(Qt::WindowModal);
     int ret = messageBox->exec();
     if (ret == QMessageBox::Yes) {
@@ -2011,49 +2001,6 @@ void LibraryWindow::toggleFullScreen()
     fullscreen = !fullscreen;
 }
 
-#ifdef Q_OS_WIN // fullscreen mode in Windows for preventing this bug: QTBUG-41309 https://bugreports.qt.io/browse/QTBUG-41309
-void LibraryWindow::toFullScreen()
-{
-    fromMaximized = this->isMaximized();
-
-    sideBar->hide();
-    libraryToolBar->hide();
-
-    previousWindowFlags = windowFlags();
-    previousPos = pos();
-    previousSize = size();
-
-    showNormal();
-    setWindowFlags(previousWindowFlags | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
-
-    QRect r = windowHandle()->screen()->geometry();
-
-    r.setHeight(r.height() + 1);
-
-    setGeometry(r);
-    show();
-
-    contentViewsManager->toFullscreen();
-}
-
-void LibraryWindow::toNormal()
-{
-    sideBar->show();
-    libraryToolBar->show();
-
-    setWindowFlags(previousWindowFlags);
-    move(previousPos);
-    resize(previousSize);
-    show();
-
-    if (fromMaximized)
-        showMaximized();
-
-    contentViewsManager->toNormal();
-}
-
-#else
-
 void LibraryWindow::toFullScreen()
 {
     fromMaximized = this->isMaximized();
@@ -2087,8 +2034,6 @@ void LibraryWindow::toNormal()
     libraryToolBar->show();
 #endif
 }
-
-#endif
 
 void LibraryWindow::setSearchFilter(QString filter)
 {
@@ -2168,7 +2113,7 @@ void LibraryWindow::showComicVineScraper()
     if (s.contains(COMIC_VINE_API_KEY)) {
         QModelIndexList indexList = getSelectedComics();
 
-        QList<ComicDB> comics = comicsModel->getComics(indexList);
+        const auto comics = comicsModel->getComics(indexList);
         ComicDB c = comics[0];
         _comicIdEdited = c.id; // static_cast<TableItem*>(indexList[0].internalPointer())->data(4).toULongLong();
 
@@ -2422,6 +2367,7 @@ void LibraryWindow::prepareToCloseApp()
     librariesUpdateCoordinator->stop();
 
     settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
+    settings->setValue(MAIN_WINDOW_STATE, saveState());
 
     contentViewsManager->comicsView->close();
     sideBar->close();
@@ -2534,7 +2480,7 @@ void LibraryWindow::deleteComicsFromDisk()
 
         QList<QString> paths;
         QString libraryPath = currentPath();
-        foreach (ComicDB comic, comics) {
+        for (const auto &comic : comics) {
             paths.append(libraryPath + comic.path);
             QLOG_TRACE() << comic.path;
             QLOG_TRACE() << comic.id;
@@ -2660,19 +2606,6 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
 
     menu.exec(foldersView->mapToGlobal(point));
 }
-
-/*
-void LibraryWindow::showSocial()
-{
-        socialDialog->move(this->mapToGlobal(QPoint(width()-socialDialog->width()-10, centralWidget()->pos().y()+10)));
-
-        QModelIndexList indexList = getSelectedComics();
-
-        ComicDB comic = dmCV->getComic(indexList.at(0));
-
-        socialDialog->setComic(comic,currentPath());
-        socialDialog->setHidden(false);
-}*/
 
 void LibraryWindow::libraryAlreadyExists(const QString &name)
 {

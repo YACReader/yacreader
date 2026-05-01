@@ -1,11 +1,15 @@
 #ifndef ADD_LABEL_DIALOG_H
 #define ADD_LABEL_DIALOG_H
 
-#include <QtWidgets>
-
+#include "themable.h"
 #include "yacreader_global.h"
 
-class AddLabelDialog : public QDialog
+#include <QDialog>
+#include <QLineEdit>
+#include <QListWidget>
+#include <QPushButton>
+
+class AddLabelDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 public:
@@ -21,6 +25,8 @@ protected slots:
     void validateName(const QString &name);
 
 protected:
+    void applyTheme(const Theme &theme) override;
+
     QLineEdit *edit;
     QListWidget *list;
 

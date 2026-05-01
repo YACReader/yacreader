@@ -1,14 +1,10 @@
 #include "yacreader_folders_view.h"
 
-#include "yacreader_global.h"
-
-#include "folder_item.h"
-#include "folder_model.h"
-
+#include "QsLog.h"
 #include "comic.h"
 #include "comic_files_manager.h"
-
-#include "QsLog.h"
+#include "folder_model.h"
+#include "yacreader_treeview.h"
 
 YACReaderFoldersView::YACReaderFoldersView(QWidget *parent)
     : YACReaderTreeView(parent)
@@ -20,12 +16,10 @@ void YACReaderFoldersView::dragEnterEvent(QDragEnterEvent *event)
 {
     YACReaderTreeView::dragEnterEvent(event);
 
-    QList<QUrl> urlList;
-
     if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction) {
-        urlList = event->mimeData()->urls();
+        const auto urlList = event->mimeData()->urls();
         QString currentPath;
-        foreach (QUrl url, urlList) {
+        for (const auto &url : urlList) {
             // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
             currentPath = url.toLocalFile();
             if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir()) {
@@ -57,7 +51,7 @@ void YACReaderFoldersView::dropEvent(QDropEvent *event)
 
     if (validAction) {
         QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(event->mimeData()->urls());
-        QModelIndex destinationIndex = indexAt(event->pos());
+        QModelIndex destinationIndex = indexAt(event->position().toPoint());
 
         if (event->dropAction() == Qt::CopyAction) {
             QLOG_DEBUG() << "copy - tree :" << droppedFiles;
@@ -80,19 +74,30 @@ YACReaderFoldersViewItemDeletegate::YACReaderFoldersViewItemDeletegate(QObject *
 
 void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    // Promote hover to selected so QIcon::Selected mode activates on mouse-over,
+    // matching the QSS which already uses the same background for hover and selected.
+    QStyleOptionViewItem opt = option;
+    if (opt.state & QStyle::State_MouseOver)
+        opt.state |= QStyle::State_Selected;
+
+    // Get indicator colors from the theme via the owning view
+    QColor notCompletedColor(237, 197, 24); // Default fallback
+    QColor newItemDotColor(237, 197, 24); // Default fallback
+    if (auto foldersView = qobject_cast<YACReaderFoldersView *>(parent())) {
+        const auto &nt = foldersView->navigationTreeTheme();
+        notCompletedColor = nt.folderNotCompletedColor;
+        newItemDotColor = nt.newItemColor;
+    }
+
     if (!index.data(FolderModel::CompletedRole).toBool()) {
         painter->save();
-#ifdef Y_MAC_UI
-        painter->setBrush(QBrush(QColor(85, 95, 127)));
-#else
-        painter->setBrush(QBrush(QColor(237, 197, 24)));
-#endif
+        painter->setBrush(QBrush(notCompletedColor));
         painter->setPen(QPen(QBrush(), 0));
-        painter->drawRect(0, option.rect.y(), 2, option.rect.height());
+        painter->drawRect(0, opt.rect.y(), 2, opt.rect.height());
         painter->restore();
     }
 
-    QStyledItemDelegate::paint(painter, option, index);
+    QStyledItemDelegate::paint(painter, opt, index);
 
     auto showRecent = index.data(FolderModel::ShowRecentRole).toBool();
 
@@ -105,13 +110,9 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
         if (now - added < daysInSeconds || now - updated < daysInSeconds) {
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
-#ifdef Y_MAC_UI
-            painter->setBrush(QBrush(QColor(85, 95, 127)));
-#else
-            painter->setBrush(QBrush(QColor(237, 197, 24)));
-#endif
+            painter->setBrush(QBrush(newItemDotColor));
             painter->setPen(QPen(QBrush(), 0));
-            painter->drawEllipse(option.rect.x() + 13, option.rect.y() + 2, 7, 7);
+            painter->drawEllipse(opt.rect.x() + 13, opt.rect.y() + 2, 7, 7);
             painter->restore();
         }
     }

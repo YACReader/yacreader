@@ -1,22 +1,16 @@
 #include "help_about_dialog.h"
 
-#include "opengl_checker.h"
 #include "global_info_provider.h"
+#include "yacreader_global.h"
 
-#include <QtCore>
-#include <QVBoxLayout>
-#include <QTabWidget>
-#include <QTextBrowser>
 #include <QApplication>
 #include <QFile>
-#include <QTextStream>
 #include <QScreen>
-
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-#include <QTextCodec>
-#endif
-
-#include "yacreader_global.h"
+#include <QTabWidget>
+#include <QTextBrowser>
+#include <QTextStream>
+#include <QVBoxLayout>
+#include <QtCore>
 
 HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     : QDialog(parent)
@@ -51,6 +45,8 @@ HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     resize(500, heightDesktopResolution * 0.83);
 
     loadSystemInfo();
+
+    initTheme(this);
 }
 
 HelpAboutDialog::HelpAboutDialog(const QString &pathAbout, const QString &pathHelp, QWidget *parent)
@@ -68,14 +64,14 @@ void HelpAboutDialog::loadAboutInformation(const QString &path)
     buildNumber = BUILD_NUMBER;
 #endif
 
-    aboutText->setHtml(fileToString(path).arg(VERSION, buildNumber));
-    aboutText->moveCursor(QTextCursor::Start);
+    aboutHtmlContent = fileToString(path).arg(VERSION, buildNumber);
+    applyHtmlTheme();
 }
 
 void HelpAboutDialog::loadHelp(const QString &path)
 {
-    helpText->setHtml(fileToString(path));
-    helpText->moveCursor(QTextCursor::Start);
+    helpHtmlContent = fileToString(path);
+    applyHtmlTheme();
 }
 
 QString HelpAboutDialog::fileToString(const QString &path)
@@ -84,11 +80,7 @@ QString HelpAboutDialog::fileToString(const QString &path)
     f.open(QIODevice::ReadOnly);
     QTextStream txtS(&f);
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     txtS.setEncoding(QStringConverter::Utf8);
-#else
-    txtS.setCodec(QTextCodec::codecForName("UTF-8"));
-#endif
 
     QString content = txtS.readAll();
     f.close();
@@ -100,10 +92,39 @@ void HelpAboutDialog::loadSystemInfo()
 {
     auto text = YACReader::getGlobalInfo();
 
-    auto openGLChecker = OpenGLChecker();
     text.append("\nGRAPHIC INFORMATION\n");
     text.append(QString("Screen pixel ratio: %1\n").arg(devicePixelRatioF()));
-    text.append(QString("OpenGL version: %1\n").arg(openGLChecker.textVersionDescription()));
 
     systemInfoText->setText(text);
+}
+
+void HelpAboutDialog::applyTheme(const Theme &theme)
+{
+    Q_UNUSED(theme)
+    applyHtmlTheme();
+}
+
+void HelpAboutDialog::applyHtmlTheme()
+{
+    auto helpTheme = theme.helpAboutDialog;
+
+    // Original colors in the HTML CSS
+    const QString originalHeadingColor = "#302f2d";
+    const QString originalLinkColor = "#C19441";
+
+    if (!aboutHtmlContent.isEmpty()) {
+        QString themedAbout = aboutHtmlContent;
+        themedAbout.replace(originalHeadingColor, helpTheme.headingColor.name(), Qt::CaseInsensitive);
+        themedAbout.replace(originalLinkColor, helpTheme.linkColor.name(), Qt::CaseInsensitive);
+        aboutText->setHtml(themedAbout);
+        aboutText->moveCursor(QTextCursor::Start);
+    }
+
+    if (!helpHtmlContent.isEmpty()) {
+        QString themedHelp = helpHtmlContent;
+        themedHelp.replace(originalHeadingColor, helpTheme.headingColor.name(), Qt::CaseInsensitive);
+        themedHelp.replace(originalLinkColor, helpTheme.linkColor.name(), Qt::CaseInsensitive);
+        helpText->setHtml(themedHelp);
+        helpText->moveCursor(QTextCursor::Start);
+    }
 }

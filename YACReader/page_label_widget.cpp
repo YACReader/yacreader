@@ -1,6 +1,11 @@
 #include "page_label_widget.h"
 
-#include <QtWidgets>
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPainter>
+#include <QPropertyAnimation>
+#include <QScreen>
 
 PageLabelWidget::PageLabelWidget(QWidget *parent)
     : QWidget(parent)
@@ -25,13 +30,13 @@ PageLabelWidget::PageLabelWidget(QWidget *parent)
 
     int contentMargin = 0;
     if (verticalRes <= 1024) {
-        textLabel->setStyleSheet("QLabel { color : white; font-size:12px; }");
+        fontSizePx = 12;
         contentMargin = 12;
     } else if (verticalRes <= 1200) {
-        textLabel->setStyleSheet("QLabel { color : white; font-size:16px; }");
+        fontSizePx = 16;
         contentMargin = 16;
     } else {
-        textLabel->setStyleSheet("QLabel { color : white; font-size:20px; }");
+        fontSizePx = 20;
         contentMargin = 20;
     }
 
@@ -47,6 +52,8 @@ PageLabelWidget::PageLabelWidget(QWidget *parent)
 
     if (parent != nullptr)
         move(QPoint((parent->geometry().size().width() - this->width()), -this->height()));
+
+    initTheme(this);
 }
 
 void PageLabelWidget::show()
@@ -90,7 +97,7 @@ void PageLabelWidget::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    painter.fillRect(0, 0, width(), height(), QColor(0xBB000000));
+    painter.fillRect(rect(), infoBackgroundColor);
 }
 
 void PageLabelWidget::updatePosition()
@@ -105,4 +112,15 @@ void PageLabelWidget::updatePosition()
         move(QPoint((parent->geometry().size().width() - this->width()), 0));
     else
         move(QPoint((parent->geometry().size().width() - this->width()), -this->height()));
+}
+
+void PageLabelWidget::applyTheme(const Theme &theme)
+{
+    const auto viewerTheme = theme.viewer;
+
+    infoBackgroundColor = viewerTheme.infoBackgroundColor;
+
+    textLabel->setStyleSheet(viewerTheme.infoLabelQSS.arg(fontSizePx));
+
+    update();
 }

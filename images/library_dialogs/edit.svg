@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 128 128">
+  <defs>
+    <style>
+      .cls-1 {
+        filter: url(#drop-shadow-6);
+      }
+
+      .cls-2 {
+        fill: #f0f;
+      }
+    </style>
+    <filter id="drop-shadow-6" x="9.14" y="9.14" width="109.73" height="109.73" filterUnits="userSpaceOnUse">
+      <feOffset dx="0" dy="0"/>
+      <feGaussianBlur result="blur" stdDeviation="1.2"/>
+      <feFlood flood-color="#000" flood-opacity="1"/>
+      <feComposite in2="blur" operator="in"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g class="cls-1">
+    <rect class="cls-2" x="19.27" y="51" width="80.97" height="34.49" transform="translate(-30.76 62.24) rotate(-45)"/>
+    <rect class="cls-2" x="89.06" y="11.38" width="20.63" height="34.48" transform="translate(8.87 78.65) rotate(-45)"/>
+    <polyline class="cls-2" points="39.62 112.77 9.14 118.86 15.23 88.38"/>
+  </g>
+</svg>

@@ -1,19 +1,21 @@
 #include "comic.h"
 
+#include "QsLog.h"
+#include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
+#include "comic_db.h"
+#include "compressed_archive.h"
+#include "qnaturalsorting.h"
+
+#include <QCoreApplication>
+#include <QDir>
+#include <QFileInfoList>
+#include <QImageReader>
 #include <QPixmap>
 #include <QRegularExpression>
 #include <QString>
+
 #include <algorithm>
-#include <QDir>
-#include <QFileInfoList>
-#include <QCoreApplication>
-
-#include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
-#include "qnaturalsorting.h"
-#include "compressed_archive.h"
-#include "comic_db.h"
-
-#include "QsLog.h"
+#include <utility>
 
 enum YACReaderPageSortingMode {
     YACReaderNumericalSorting,
@@ -303,7 +305,7 @@ QList<QString> Comic::findValidComicFiles(const QList<QUrl> &list)
     QLOG_DEBUG() << "-findValidComicFiles-";
     QList<QString> validComicFiles;
     QString currentPath;
-    foreach (QUrl url, list) {
+    for (const QUrl &url : std::as_const(list)) {
         currentPath = url.toLocalFile();
         if (Comic::fileIsComic(currentPath)) {
             validComicFiles << currentPath;
@@ -329,7 +331,7 @@ QList<QString> Comic::findValidComicFilesInFolder(const QString &path)
     QFileInfoList folderContent = folder.entryInfoList();
 
     QString currentPath;
-    foreach (QFileInfo info, folderContent) {
+    for (const QFileInfo &info : std::as_const(folderContent)) {
         currentPath = info.absoluteFilePath();
         if (info.isDir()) {
             validComicFiles << findValidComicFilesInFolder(currentPath); // find comics recursively
@@ -414,10 +416,10 @@ QList<QString> FileComic::filter(const QList<QString> &src)
     QList<QString> filtered;
     bool fileAccepted = false;
 
-    foreach (QString fileName, src) {
+    for (const QString &fileName : std::as_const(src)) {
         fileAccepted = false;
         if (!fileName.contains("__MACOSX")) {
-            foreach (QString extension, extensions) {
+            for (const QString &extension : std::as_const(extensions)) {
                 if (fileName.endsWith(extension, Qt::CaseInsensitive)) {
                     fileAccepted = true;
                     break;
@@ -472,7 +474,7 @@ bool FileComic::isCancelled()
 QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
 {
     QVector<quint32> sortedIndexes;
-    foreach (QString name, _fileNames) {
+    for (const QString &name : std::as_const(_fileNames)) {
         sortedIndexes.append(_order.indexOf(name));
     }
     QList<QVector<quint32>> sections;
@@ -482,7 +484,7 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
     QVector<quint32> section;
     int idx = 0;
     unsigned int realIdx;
-    foreach (quint32 i, sortedIndexes) {
+    for (const quint32 i : std::as_const(sortedIndexes)) {
 
         if (_firstPage == idx) {
             sectionIndex = sectionCount;
@@ -498,7 +500,7 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
                 if (section.indexOf(realIdx) != 0) {
                     QVector<quint32> section1;
                     QVector<quint32> section2;
-                    foreach (quint32 si, section) {
+                    for (const quint32 si : std::as_const(section)) {
                         if (si < realIdx) {
                             section1.append(si);
                         } else {
@@ -531,7 +533,7 @@ QList<QVector<quint32>> FileComic::getSections(int &sectionIndex)
         if (section.indexOf(realIdx) != 0) {
             QVector<quint32> section1;
             QVector<quint32> section2;
-            foreach (quint32 si, section) {
+            for (const quint32 si : std::as_const(section)) {
                 if (si < realIdx) {
                     section1.append(si);
                 } else {
@@ -625,7 +627,7 @@ void FileComic::process()
     }
     // archive.getAllData(QVector<quint32>(),this);
     /*
-        foreach(QString name,_fileNames)
+        for (const auto &name : _fileNames)
         {
                 index = _order.indexOf(name);
                 sortedIndex = _fileNames.indexOf(name);
@@ -809,12 +811,7 @@ void PDFComic::process()
     }
 #else
 
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     pdfComic = Poppler::Document::load(_path);
-#else
-    auto _pdfComic = Poppler::Document::load(_path);
-    pdfComic = std::unique_ptr<Poppler::Document>(_pdfComic);
-#endif
 
     if (!pdfComic) {
         moveToThread(QCoreApplication::instance()->thread());
@@ -1021,7 +1018,7 @@ void get_double_pages(const QList<QString> &pageNames, QList<QString> &singlePag
 
     QString mostCommonPrefix = get_most_common_prefix(pageNames);
 
-    foreach (const QString &pageName, pageNames) {
+    for (const QString &pageName : std::as_const(pageNames)) {
         if (is_double_page(pageName.split('/').last(), mostCommonPrefix, maxExpectedDoublePagesNumberLenght)) {
             doublePageNames.append(pageName);
         } else {
