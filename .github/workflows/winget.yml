@@ -11,5 +11,4 @@ jobs:
         with:
           identifier: YACReader.YACReader
           version: ${{ github.event.release.tag_name }}
-          installers-regex: '(x64-7z-qt6|x86-7z)\.exe$'
           token: ${{ secrets.WINGET_TOKEN }}
