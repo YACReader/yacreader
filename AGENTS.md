@@ -12,7 +12,7 @@ cmake --build build --parallel
 ```
 
 Build options:
-- `DECOMPRESSION_BACKEND`: `unarr` | `7zip` | `libarchive` (default: 7zip on Windows/macOS, unarr on Linux)
+- `DECOMPRESSION_BACKEND`: `unarr` | `7zip` | `libarchive` (default: 7zip on Windows/macOS/Linux)
 - `PDF_BACKEND`: `pdfium` | `poppler` | `pdfkit` | `no_pdf` (default: pdfium on Windows, pdfkit on macOS, poppler on Linux)
 - `BUILD_SERVER_STANDALONE=ON`: builds only `YACReaderLibraryServer` (headless), requires only Qt 6.4+
 - `BUILD_TESTS=ON` (default): enables the test suite

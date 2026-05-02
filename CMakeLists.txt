@@ -53,9 +53,9 @@ set(BUILD_NUMBER "" CACHE STRING "CI build number")
 set(YACREADER_DECOMPRESSION_BACKENDS unarr 7zip libarchive)
 set(YACREADER_PDF_BACKENDS pdfium poppler pdfkit no_pdf)
 
-# --- Platform defaults (mirrors config.pri) ---
+# --- Platform defaults ---
 if(UNIX AND NOT APPLE)
-    set(_default_decompression_backend "unarr")
+    set(_default_decompression_backend "7zip")
     set(_default_pdf_backend "poppler")
 elseif(APPLE)
     set(_default_decompression_backend "7zip")
