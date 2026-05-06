@@ -411,6 +411,12 @@ qt_add_resources(YACReaderLibrary "yacreaderlibrary_files_es"
     FILES
         ${yacreaderlibrary_file_files_es}
 )
+qt_add_resources(YACReaderLibrary "yacreaderlibrary_changelog"
+    PREFIX "/files"
+    BASE "${PROJECT_SOURCE_DIR}"
+    FILES
+        ${PROJECT_SOURCE_DIR}/CHANGELOG.md
+)
 qt_add_resources(YACReaderLibrary "yacreaderlibrary_qml"
     PREFIX "/"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}"

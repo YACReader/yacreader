@@ -8,6 +8,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve save current page. It includes the comic file name in the default image name and the page number. Now it uses the original image in the comic for image based variants.
 * Fix magnifying glass not using the source material.
 * Improve last page detection in continuous scroll mode.
+* Improve What's new dialog to show the full changelog.
 
 ## 10.0.0
 

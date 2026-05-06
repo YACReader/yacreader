@@ -9,10 +9,10 @@ void YACReader::WhatsNewController::showWhatsNewIfNeeded(QWidget *fromParent)
 {
     QSettings commonSettings(YACReader::getCommonSettingsFilePath(), QSettings::IniFormat);
 
-    if (commonSettings.value("LAST_VERSION_INSTALLED").toString() != VERSION) {
-        showWhatsNew(fromParent);
-        commonSettings.setValue("LAST_VERSION_INSTALLED", VERSION);
-    }
+    // if (commonSettings.value("LAST_VERSION_INSTALLED").toString() != VERSION) {
+    showWhatsNew(fromParent);
+    commonSettings.setValue("LAST_VERSION_INSTALLED", VERSION);
+    //}
 }
 
 void YACReader::WhatsNewController::showWhatsNew(QWidget *fromParent)
