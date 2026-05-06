@@ -969,16 +969,16 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
     }
 
     // --- single-page mode ---
-    const QPixmap image = content->pixmap();
-    if (image.isNull()) {
+    const QPixmap sourceImage = currentPage != nullptr ? *currentPage : QPixmap();
+    if (sourceImage.isNull()) {
         QImage result(zoomW, zoomH, QImage::Format_RGB32);
         result.setDevicePixelRatio(devicePixelRatioF());
         result.fill(bgColor);
         return result;
     }
 
-    const int iWidth = image.width();
-    const int iHeight = image.height();
+    const int iWidth = sourceImage.width();
+    const int iHeight = sourceImage.height();
     const float wFactor = static_cast<float>(iWidth) / widget()->width();
     const float hFactor = static_cast<float>(iHeight) / widget()->height();
     const int zoomWScaled = static_cast<int>(zoomW * wFactor);
@@ -1024,12 +1024,12 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
         img.fill(bgColor);
         if (zw > 0 && zh > 0) {
             QPainter painter(&img);
-            painter.drawPixmap(xOffset, yOffset, image.copy(xp, yp, zw, zh));
+            painter.drawPixmap(xOffset, yOffset, sourceImage.copy(xp, yp, zw, zh));
         }
         return img;
     }
 
-    return image.copy(xp, yp, zoomWScaled, zoomHScaled).toImage();
+    return sourceImage.copy(xp, yp, zoomWScaled, zoomHScaled).toImage();
 }
 
 void Viewer::magnifyingGlassSwitch()
