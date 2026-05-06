@@ -128,6 +128,22 @@ int ContinuousViewModel::centerPage() const
     return pageAtY(centerY);
 }
 
+int ContinuousViewModel::readingProgressPage() const
+{
+    if (numPagesValue <= 0) {
+        return 0;
+    }
+
+    const int lastPage = numPagesValue - 1;
+    const int lastPageMidY = yPositionForPage(lastPage) + scaledPageSize(lastPage).height() / 2;
+    const int viewportBottomY = scrollYValue + std::max(0, viewportHeightValue - 1);
+    if (viewportBottomY >= lastPageMidY) {
+        return lastPage;
+    }
+
+    return centerPage();
+}
+
 int ContinuousViewModel::yPositionForPage(int pageIndex) const
 {
     if (pageIndex < 0 || pageIndex >= layoutSnapshot.yPositions.size()) {

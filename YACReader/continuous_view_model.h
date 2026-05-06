@@ -28,6 +28,7 @@ public:
     int zoomFactor() const;
 
     int centerPage() const;
+    int readingProgressPage() const;
     int yPositionForPage(int pageIndex) const;
     int pageAtY(int y) const;
     QSize scaledPageSize(int pageIndex) const;

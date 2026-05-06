@@ -1248,13 +1248,13 @@ void Viewer::onContinuousScroll(int value)
 
     continuousViewModel->setScrollYFromUser(value);
 
-    int center = continuousViewModel->centerPage();
+    int currentPage = continuousViewModel->readingProgressPage();
 
-    if (center != lastCenterPage && center >= 0) {
-        lastCenterPage = center;
-        continuousViewModel->setAnchorPage(center);
+    if (currentPage != lastCenterPage && currentPage >= 0) {
+        lastCenterPage = currentPage;
+        continuousViewModel->setAnchorPage(currentPage);
         syncingRenderFromContinuousScroll = true;
-        render->goTo(center);
+        render->goTo(currentPage);
         syncingRenderFromContinuousScroll = false;
         emit pageAvailable(true);
     }
