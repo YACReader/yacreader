@@ -36,8 +36,10 @@ QString YACReader::getGlobalInfo()
     text.append("Compression backend: unarr (no RAR5 support)\n");
 #elif defined use_libarchive
     text.append("Compression backend: libarchive\n");
-#else
+#elif defined use_7zip
     text.append("Compression backend: 7zip\n");
+#else
+    text.append("Compression backend: unknown\n");
 #endif
 
 // print pdf backend used, poppler, pdfkit, pdfium

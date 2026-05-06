@@ -77,6 +77,7 @@ target_link_libraries(common_all PUBLIC
     Qt6::Network
     yr_global
     naturalsort
+    decompression_backend_iface
     pdf_backend_iface
 )
 

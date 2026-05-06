@@ -1,6 +1,8 @@
 # Comic archive decompression backend (cbx_backend)
 # Switched on DECOMPRESSION_BACKEND: unarr | 7zip | libarchive
 
+add_library(decompression_backend_iface INTERFACE)
+
 add_library(cbx_backend STATIC)
 yacreader_apply_build_options(cbx_backend)
 
@@ -13,7 +15,7 @@ if(DECOMPRESSION_BACKEND STREQUAL "unarr")
         unarr/extract_delegate.h
     )
     target_include_directories(cbx_backend PUBLIC unarr)
-    target_compile_definitions(cbx_backend PUBLIC use_unarr)
+    target_compile_definitions(decompression_backend_iface INTERFACE use_unarr)
 
     find_package(unarr QUIET CONFIG)
     if(TARGET unarr::unarr)
@@ -31,10 +33,11 @@ if(DECOMPRESSION_BACKEND STREQUAL "unarr")
         message(STATUS "  Found unarr via ${unarr_PROVIDER}")
     endif()
 
-    target_link_libraries(cbx_backend PRIVATE unarr::unarr)
+    target_link_libraries(cbx_backend PUBLIC unarr::unarr)
 
 elseif(DECOMPRESSION_BACKEND STREQUAL "7zip")
     message(STATUS "Decompression backend: 7zip (in-tree)")
+    target_compile_definitions(decompression_backend_iface INTERFACE use_7zip)
 
     # Auto-download 7zip source if not present
     if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/lib7zip/CPP")
@@ -113,11 +116,11 @@ elseif(DECOMPRESSION_BACKEND STREQUAL "libarchive")
         libarchive/extract_delegate.h
     )
     target_include_directories(cbx_backend PUBLIC libarchive)
-    target_compile_definitions(cbx_backend PUBLIC use_libarchive)
+    target_compile_definitions(decompression_backend_iface INTERFACE use_libarchive)
 
     find_package(LibArchive REQUIRED)
     message(STATUS "  Found libarchive ${LibArchive_VERSION}")
-    target_link_libraries(cbx_backend PRIVATE LibArchive::LibArchive)
+    target_link_libraries(cbx_backend PUBLIC LibArchive::LibArchive)
 
 else()
     message(FATAL_ERROR
@@ -126,4 +129,7 @@ else()
 endif()
 
 # Qt, yr_global, and QsLog are needed by all backends
-target_link_libraries(cbx_backend PRIVATE Qt6::Core yr_global QsLog)
+target_link_libraries(cbx_backend
+    PUBLIC decompression_backend_iface
+    PRIVATE Qt6::Core yr_global QsLog
+)
