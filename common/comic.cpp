@@ -273,7 +273,7 @@ void Comic::invalidate()
     emit invalidated();
 }
 //-----------------------------------------------------------------------------
-QByteArray Comic::getRawPage(int page)
+QByteArray Comic::getRawPage(int page) const
 {
     if (page < 0 || page >= _pages.size()) {
         return QByteArray();

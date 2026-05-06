@@ -69,7 +69,7 @@ public:
     bool loaded();
     // QPixmap * operator[](unsigned int index);
     QVector<QByteArray> *getRawData() { return &_pages; }
-    QByteArray getRawPage(int page);
+    QByteArray getRawPage(int page) const;
     bool pageIsLoaded(int page);
 
     // check if the comic has failed loading

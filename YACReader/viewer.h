@@ -6,6 +6,7 @@
 #include "themable.h"
 
 #include <QAction>
+#include <QByteArray>
 #include <QCloseEvent>
 #include <QLabel>
 #include <QMainWindow>
@@ -217,6 +218,7 @@ public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
     QPixmap pixmap() const;
+    QByteArray currentRawPage() const;
     QImage grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const;
     // Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }

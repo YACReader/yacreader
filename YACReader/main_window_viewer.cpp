@@ -20,11 +20,14 @@
 
 #include <QActionGroup>
 #include <QApplication>
+#include <QBuffer>
 #include <QCoreApplication>
 #include <QDate>
 #include <QDesktopServices>
+#include <QFile>
 #include <QFileDialog>
 #include <QImage>
+#include <QImageReader>
 #include <QMenu>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -872,6 +875,7 @@ void MainWindowViewer::open()
 void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblings)
 {
     QFileInfo fi(path);
+    currentComicPath = fi.absoluteFilePath();
 
     if (!comic.info.title.isNull() && !comic.info.title.toString().isEmpty())
         setWindowTitle("YACReader - " + comic.info.title.toString());
@@ -933,6 +937,7 @@ void MainWindowViewer::openComic(QString pathFile)
 {
     QFileInfo fi(pathFile);
     currentDirectory = fi.dir().absolutePath();
+    currentComicPath = fi.absoluteFilePath();
     getSiblingComics(fi.absolutePath(), fi.fileName());
 
     setWindowTitle("YACReader - " + fi.fileName());
@@ -959,6 +964,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir)
 {
     currentDirectory = pathDir; // TODO ??
     QFileInfo fi(pathDir);
+    currentComicPath = fi.absoluteFilePath();
     getSiblingComics(fi.absolutePath(), fi.fileName());
 
     setWindowTitle("YACReader - " + fi.fileName());
@@ -975,6 +981,7 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 {
     currentDirectory = pathDir; // TODO ??
     QFileInfo fi(pathDir);
+    currentComicPath = fi.absoluteFilePath();
     getSiblingComics(fi.absolutePath(), fi.fileName());
 
     setWindowTitle("YACReader - " + fi.fileName());
@@ -1006,13 +1013,34 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 void MainWindowViewer::saveImage()
 {
     QFileDialog saveDialog;
-    QString pathFile = saveDialog.getSaveFileName(this, tr("Save current page"), currentDirectoryImgDest + "/" + tr("page_%1.jpg").arg(viewer->getIndex()), tr("Image files (*.jpg)"));
+    QFileInfo comicInfo(currentComicPath);
+    QString baseName = comicInfo.isDir() ? comicInfo.fileName() : comicInfo.completeBaseName();
+    if (baseName.isEmpty())
+        baseName = "page";
+
+    const QByteArray rawPage = viewer->currentRawPage();
+    QBuffer rawPageBuffer;
+    rawPageBuffer.setData(rawPage);
+    rawPageBuffer.open(QIODevice::ReadOnly);
+    QString extension = QString::fromLatin1(QImageReader::imageFormat(&rawPageBuffer)).toLower();
+    if (extension == "jpeg")
+        extension = "jpg";
+    if (extension.isEmpty())
+        extension = "jpg";
+
+    QString pathFile = saveDialog.getSaveFileName(this, tr("Save current page"), currentDirectoryImgDest + "/" + QString("%1-%2.%3").arg(baseName).arg(viewer->getIndex()).arg(extension), tr("Image files (*.%1)").arg(extension));
     if (!pathFile.isEmpty()) {
         QFileInfo fi(pathFile);
         currentDirectoryImgDest = fi.absolutePath();
-        const QPixmap p = viewer->pixmap();
-        if (!p.isNull()) {
-            p.save(pathFile);
+        if (!rawPage.isEmpty()) {
+            QFile file(pathFile);
+            if (file.open(QIODevice::WriteOnly))
+                file.write(rawPage);
+        } else {
+            const QPixmap p = viewer->pixmap();
+            if (!p.isNull()) {
+                p.save(pathFile);
+            }
         }
     }
 }

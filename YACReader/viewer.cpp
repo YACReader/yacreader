@@ -866,6 +866,11 @@ QPixmap Viewer::pixmap() const
     return content->pixmap();
 }
 
+QByteArray Viewer::currentRawPage() const
+{
+    return render->getCurrentRawPage();
+}
+
 QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const
 {
     const int glassW = glassSize.width();
