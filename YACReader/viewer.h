@@ -9,6 +9,7 @@
 #include <QByteArray>
 #include <QCloseEvent>
 #include <QLabel>
+#include <QList>
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QParallelAnimationGroup>
@@ -218,7 +219,8 @@ public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
     QPixmap pixmap() const;
-    QByteArray currentRawPage() const;
+    QByteArray rawPage(int page) const;
+    QList<int> currentVisiblePages();
     QImage grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const;
     // Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }

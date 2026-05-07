@@ -24,6 +24,7 @@
 #include <QCoreApplication>
 #include <QDate>
 #include <QDesktopServices>
+#include <QDir>
 #include <QFile>
 #include <QFileDialog>
 #include <QImage>
@@ -41,8 +42,65 @@
 #include "unarr.h"
 #endif
 
+namespace {
+
+QString comicBaseName(const QString &path)
+{
+    QFileInfo comicInfo(path);
+    QString baseName = comicInfo.isDir() ? comicInfo.fileName() : comicInfo.completeBaseName();
+    if (baseName.isEmpty())
+        baseName = "page";
+
+    return baseName;
+}
+
+QString pageSuffix(const QList<int> &pages)
+{
+    QStringList pageNumbers;
+    for (const int page : pages)
+        pageNumbers << QString::number(page + 1);
+
+    return pageNumbers.join("-");
+}
+
+QString imageExtension(const QByteArray &rawPage)
+{
+    QBuffer rawPageBuffer;
+    rawPageBuffer.setData(rawPage);
+    rawPageBuffer.open(QIODevice::ReadOnly);
+    QString extension = QString::fromLatin1(QImageReader::imageFormat(&rawPageBuffer)).toLower();
+    if (extension == "jpeg")
+        extension = "jpg";
+    if (extension.isEmpty())
+        extension = "jpg";
+
+    return extension;
+}
+
+QString defaultPageExportDirectory()
+{
+    const auto locations = { QStandardPaths::PicturesLocation,
+                             QStandardPaths::DocumentsLocation,
+                             QStandardPaths::HomeLocation };
+
+    for (const auto location : locations) {
+        const QString path = QStandardPaths::writableLocation(location);
+        if (!path.isEmpty())
+            return path;
+    }
+
+    return QDir::currentPath();
+}
+
+struct PageExtraction {
+    QByteArray rawPage;
+    QString outputPath;
+};
+
+}
+
 MainWindowViewer::MainWindowViewer()
-    : QMainWindow(), fullscreen(false), toolbars(true), currentDirectory("."), currentDirectoryImgDest("."), openToolButton(nullptr), isClient(false)
+    : QMainWindow(), fullscreen(false), toolbars(true), currentDirectory("."), currentDirectoryImgDest(defaultPageExportDirectory()), openToolButton(nullptr), isClient(false)
 {
     loadConfiguration();
     setupUI();
@@ -130,6 +188,7 @@ MainWindowViewer::~MainWindowViewer()
     delete openFolderAction;
     delete openLatestComicAction;
     delete saveImageAction;
+    delete extractPagesAction;
     delete openComicOnTheLeftAction;
     delete openComicOnTheRightAction;
     delete goToPageOnTheLeftAction;
@@ -311,6 +370,12 @@ void MainWindowViewer::createActions()
     saveImageAction->setData(SAVE_IMAGE_ACTION_Y);
     saveImageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SAVE_IMAGE_ACTION_Y));
     connect(saveImageAction, &QAction::triggered, this, &MainWindowViewer::saveImage);
+
+    extractPagesAction = new QAction(tr("Extract page(s)"), this);
+    extractPagesAction->setToolTip(tr("Extract page(s) from the original source"));
+    extractPagesAction->setData(EXTRACT_PAGES_ACTION_Y);
+    extractPagesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(EXTRACT_PAGES_ACTION_Y));
+    connect(extractPagesAction, &QAction::triggered, this, &MainWindowViewer::extractPages);
 
     openComicOnTheLeftAction = new QAction(tr("Previous Comic"), this);
     openComicOnTheLeftAction->setToolTip(tr("Open previous comic"));
@@ -565,6 +630,7 @@ void MainWindowViewer::createToolBars()
 #endif
 
     comicToolBar->addAction(wrappedToolbarAction(saveImageAction));
+    comicToolBar->addAction(wrappedToolbarAction(extractPagesAction));
     comicToolBar->addAction(wrappedToolbarAction(openComicOnTheLeftAction));
     comicToolBar->addAction(wrappedToolbarAction(openComicOnTheRightAction));
 
@@ -642,6 +708,7 @@ void MainWindowViewer::createToolBars()
     viewer->addAction(openAction);
     viewer->addAction(openFolderAction);
     viewer->addAction(saveImageAction);
+    viewer->addAction(extractPagesAction);
     viewer->addAction(openComicOnTheLeftAction);
     viewer->addAction(openComicOnTheRightAction);
     YACReader::addSperator(viewer);
@@ -703,6 +770,7 @@ void MainWindowViewer::createToolBars()
     fileMenu->addAction(openFolderAction);
     fileMenu->addSeparator();
     fileMenu->addAction(saveImageAction);
+    fileMenu->addAction(extractPagesAction);
     fileMenu->addSeparator();
 
     auto recentmenu = new QMenu(tr("Open recent"));
@@ -1012,37 +1080,72 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 
 void MainWindowViewer::saveImage()
 {
-    QFileDialog saveDialog;
-    QFileInfo comicInfo(currentComicPath);
-    QString baseName = comicInfo.isDir() ? comicInfo.fileName() : comicInfo.completeBaseName();
-    if (baseName.isEmpty())
-        baseName = "page";
+    const QString outputDir = QFileDialog::getExistingDirectory(this, tr("Save current page"), currentDirectoryImgDest);
+    if (outputDir.isEmpty())
+        return;
 
-    const QByteArray rawPage = viewer->currentRawPage();
-    QBuffer rawPageBuffer;
-    rawPageBuffer.setData(rawPage);
-    rawPageBuffer.open(QIODevice::ReadOnly);
-    QString extension = QString::fromLatin1(QImageReader::imageFormat(&rawPageBuffer)).toLower();
-    if (extension == "jpeg")
-        extension = "jpg";
-    if (extension.isEmpty())
-        extension = "jpg";
+    currentDirectoryImgDest = outputDir;
 
-    QString pathFile = saveDialog.getSaveFileName(this, tr("Save current page"), currentDirectoryImgDest + "/" + QString("%1-%2.%3").arg(baseName).arg(viewer->getIndex()).arg(extension), tr("Image files (*.%1)").arg(extension));
-    if (!pathFile.isEmpty()) {
-        QFileInfo fi(pathFile);
-        currentDirectoryImgDest = fi.absolutePath();
-        if (!rawPage.isEmpty()) {
-            QFile file(pathFile);
-            if (file.open(QIODevice::WriteOnly))
-                file.write(rawPage);
-        } else {
-            const QPixmap p = viewer->pixmap();
-            if (!p.isNull()) {
-                p.save(pathFile);
-            }
-        }
+    const QString baseName = comicBaseName(currentComicPath);
+    const QList<int> pages = viewer->currentVisiblePages();
+    const QString pathFile = QDir(outputDir).filePath(QString("%1-%2.jpg").arg(baseName).arg(pageSuffix(pages)));
+
+    if (QFileInfo::exists(pathFile)) {
+        const auto answer = QMessageBox::question(this, tr("Overwrite file?"), tr("The file already exists. Do you want to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        if (answer != QMessageBox::Yes)
+            return;
     }
+
+    const QPixmap p = viewer->pixmap();
+    if (!p.isNull()) {
+        p.save(pathFile);
+    }
+}
+
+void MainWindowViewer::extractPages()
+{
+    const QString outputDir = QFileDialog::getExistingDirectory(this, tr("Extract page(s)"), currentDirectoryImgDest);
+    if (outputDir.isEmpty())
+        return;
+
+    currentDirectoryImgDest = outputDir;
+
+    const QString baseName = comicBaseName(currentComicPath);
+    const QList<int> pages = viewer->currentVisiblePages();
+    QList<PageExtraction> pageExtractions;
+    QStringList existingPaths;
+
+    for (const int page : pages) {
+        const QByteArray rawPage = viewer->rawPage(page);
+        if (rawPage.isEmpty())
+            continue;
+
+        const QString path = QDir(outputDir).filePath(QString("%1-%2.%3").arg(baseName).arg(page + 1).arg(imageExtension(rawPage)));
+        pageExtractions.append({ rawPage, path });
+        if (QFileInfo::exists(path))
+            existingPaths << path;
+    }
+
+    if (pageExtractions.isEmpty()) {
+        QMessageBox::warning(this, tr("Extract page(s)"), tr("The current page could not be extracted."));
+        return;
+    }
+
+    if (!existingPaths.isEmpty()) {
+        const auto answer = QMessageBox::question(this, tr("Overwrite files?"), tr("Some files already exist. Do you want to overwrite them?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+        if (answer != QMessageBox::Yes)
+            return;
+    }
+
+    QStringList failedPaths;
+    for (const auto &pageExtraction : pageExtractions) {
+        QFile file(pageExtraction.outputPath);
+        if (!file.open(QIODevice::WriteOnly) || file.write(pageExtraction.rawPage) != pageExtraction.rawPage.size())
+            failedPaths << pageExtraction.outputPath;
+    }
+
+    if (!failedPaths.isEmpty())
+        QMessageBox::warning(this, tr("Extract page(s)"), tr("Some pages could not be extracted."));
 }
 
 void MainWindowViewer::enableActions()
@@ -1205,6 +1308,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                      openLatestComicAction,
                                                      openFolderAction,
                                                      saveImageAction,
+                                                     extractPagesAction,
                                                      openComicOnTheLeftAction,
                                                      openComicOnTheRightAction });
 
@@ -1559,6 +1663,7 @@ void MainWindowViewer::setActionsEnabled(bool enabled)
 {
     // TODO enable goTo and showInfo (or update) when numPages emited
     const auto actions = { saveImageAction,
+                           extractPagesAction,
                            goToPageOnTheLeftAction,
                            goToPageOnTheRightAction,
                            adjustHeightAction,
@@ -1620,6 +1725,7 @@ void MainWindowViewer::applyTheme(const Theme &theme)
     setIcon(openFolderAction, toolbarTheme.openFolderAction, toolbarTheme.openFolderAction18x18);
     setIcon(openLatestComicAction, toolbarTheme.openLatestComicAction, toolbarTheme.openLatestComicAction18x18);
     setIcon(saveImageAction, toolbarTheme.saveImageAction, toolbarTheme.saveImageAction18x18);
+    setIcon(extractPagesAction, toolbarTheme.extractPagesAction, toolbarTheme.extractPagesAction18x18);
     setIcon(openComicOnTheLeftAction, toolbarTheme.openComicOnTheLeftAction, toolbarTheme.openComicOnTheLeftAction18x18);
     setIcon(openComicOnTheRightAction, toolbarTheme.openComicOnTheRightAction, toolbarTheme.openComicOnTheRightAction18x18);
     setIcon(goToPageOnTheLeftAction, toolbarTheme.goToPageOnTheLeftAction, toolbarTheme.goToPageOnTheLeftAction18x18);

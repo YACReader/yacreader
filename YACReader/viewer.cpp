@@ -866,9 +866,21 @@ QPixmap Viewer::pixmap() const
     return content->pixmap();
 }
 
-QByteArray Viewer::currentRawPage() const
+QByteArray Viewer::rawPage(int page) const
 {
-    return render->getCurrentRawPage();
+    return render->getRawPage(page);
+}
+
+QList<int> Viewer::currentVisiblePages()
+{
+    QList<int> pages;
+    const int currentPage = render->getIndex();
+    pages << currentPage;
+
+    if (doublePage && render->currentPageIsDoublePage() && currentPage + 1 < static_cast<int>(render->numPages()))
+        pages << currentPage + 1;
+
+    return pages;
 }
 
 QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const

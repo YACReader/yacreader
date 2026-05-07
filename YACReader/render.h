@@ -169,7 +169,7 @@ public slots:
     void rotateLeft();
     unsigned int getIndex();
     unsigned int numPages();
-    QByteArray getCurrentRawPage() const;
+    QByteArray getRawPage(int page) const;
     bool hasLoadedComic();
     void updateBuffer();
     void fillBuffer();

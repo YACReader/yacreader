@@ -43,6 +43,7 @@ public slots:
     void openLatestComic();
     void openComicFromRecentAction(QAction *action);
     void saveImage();
+    void extractPages();
     void toggleToolBars();
     void hideToolBars();
     void showToolBars();
@@ -119,6 +120,7 @@ private:
     QList<QAction *> recentFilesActionList;
     QAction *clearRecentFilesAction;
     QAction *saveImageAction;
+    QAction *extractPagesAction;
     QAction *openComicOnTheLeftAction;
     QAction *openComicOnTheRightAction;
     QAction *goToPageOnTheRightAction;

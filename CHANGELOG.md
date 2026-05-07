@@ -5,7 +5,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ## 10.1.0 (WIP)
 
 ### YACReader
-* Improve save current page. It includes the comic file name in the default image name and the page number. Now it uses the original image in the comic for image based variants.
+* Improve save current page. It includes the comic file name in the default image name and the page number.
+* Add a extract page action. It extracts the original visible pages when image based variants are used. File name and page number is used as the output. 
 * Fix magnifying glass not using the source material.
 * Improve last page detection in continuous scroll mode.
 * Improve What's new dialog to show the full changelog.

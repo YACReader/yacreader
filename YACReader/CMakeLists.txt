@@ -107,6 +107,7 @@ set(yacreader_image_files
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateL.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateR.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/save.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/extract.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/shortcuts.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/showBookmarks.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toHeight.svg
@@ -135,6 +136,7 @@ set(yacreader_image_files
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateL_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateR_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/save_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/extract_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/shortcuts_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/showBookmarks_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toHeight_18x18.svg
