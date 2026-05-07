@@ -464,8 +464,14 @@ endif()
 qt_add_translations(YACReaderLibrary
     SOURCE_TARGETS
         YACReaderLibrary
-    # Keep full C++ extraction via SOURCE_TARGETS and add the QML files directly
-    # so qsTr() strings in QML are collected too.
+        db_helper
+        comic_backend
+        common_gui
+        custom_widgets_library
+        shortcuts_library
+        comic_vine
+    # Keep extraction scoped to targets used by this app and add the QML files
+    # directly so qsTr() strings in QML are collected too.
     TS_FILES
         yacreaderlibrary_es.ts
         yacreaderlibrary_ru.ts

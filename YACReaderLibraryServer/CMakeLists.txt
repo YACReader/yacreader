@@ -25,6 +25,9 @@ endif()
 
 # Translations
 qt_add_translations(YACReaderLibraryServer
+    SOURCE_TARGETS
+        YACReaderLibraryServer
+        comic_backend
     TS_FILES
         yacreaderlibraryserver_es.ts
         yacreaderlibraryserver_ru.ts

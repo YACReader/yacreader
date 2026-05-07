@@ -224,6 +224,12 @@ qt_add_resources(YACReader "yacreader_common_theme_images"
 
 # Translations
 qt_add_translations(YACReader
+    SOURCE_TARGETS
+        YACReader
+        comic_backend
+        common_gui
+        custom_widgets_reader
+        shortcuts_reader
     TS_FILES
         yacreader_es.ts
         yacreader_fr.ts
