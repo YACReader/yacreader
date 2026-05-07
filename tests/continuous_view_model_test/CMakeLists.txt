@@ -12,6 +12,5 @@ target_include_directories(continuous_view_model_test PRIVATE
 target_link_libraries(continuous_view_model_test PRIVATE
     Qt6::Core
     Qt6::Test
-    Qt6::Widgets
 )
 add_test(NAME continuous_view_model_test COMMAND continuous_view_model_test)

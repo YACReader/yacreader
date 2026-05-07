@@ -68,7 +68,7 @@ Viewer::Viewer(QWidget *parent)
     setAlignment(Qt::AlignCenter);
 
     continuousWidget = new ContinuousPageWidget();
-    continuousViewModel = new ContinuousViewModel(this);
+    continuousViewModel = new ContinuousViewModel(QWIDGETSIZE_MAX, this);
     continuousWidget->setViewModel(continuousViewModel);
     continuousWidget->installEventFilter(this);
     //---------------------------------------

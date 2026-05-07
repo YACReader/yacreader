@@ -9,7 +9,7 @@ class ContinuousViewModel : public QObject
 {
     Q_OBJECT
 public:
-    explicit ContinuousViewModel(QObject *parent = nullptr);
+    explicit ContinuousViewModel(int maximumLayoutHeight, QObject *parent = nullptr);
 
     void reset();
 
@@ -73,6 +73,7 @@ private:
     int viewportHeightValue = 0;
     int scrollYValue = 0;
     int anchorPage = -1;
+    int maximumLayoutHeightValue = 0;
 
     LayoutSnapshot layoutSnapshot;
 };

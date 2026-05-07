@@ -4,6 +4,8 @@
 #include <QSize>
 #include <QTest>
 
+#include <limits>
+
 class ContinuousViewModelTest : public QObject
 {
     Q_OBJECT
@@ -16,7 +18,7 @@ private slots:
 
 void ContinuousViewModelTest::usesCenterPageForNormalProgress()
 {
-    ContinuousViewModel model;
+    ContinuousViewModel model(std::numeric_limits<int>::max());
     model.setNumPages(4);
     model.setViewportSize(100, 250);
     model.setPageNaturalSize(0, QSize(100, 100));
@@ -36,7 +38,7 @@ void ContinuousViewModelTest::usesCenterPageForNormalProgress()
 
 void ContinuousViewModelTest::doesNotReportLastPageWhenLessThanHalfIsVisible()
 {
-    ContinuousViewModel model;
+    ContinuousViewModel model(std::numeric_limits<int>::max());
     model.setNumPages(4);
     model.setViewportSize(100, 250);
     model.setPageNaturalSize(0, QSize(100, 100));
@@ -51,7 +53,7 @@ void ContinuousViewModelTest::doesNotReportLastPageWhenLessThanHalfIsVisible()
 
 void ContinuousViewModelTest::reportsLastPageWhenAtLeastHalfIsVisible()
 {
-    ContinuousViewModel model;
+    ContinuousViewModel model(std::numeric_limits<int>::max());
     model.setNumPages(4);
     model.setViewportSize(100, 250);
     model.setPageNaturalSize(0, QSize(100, 100));
@@ -64,6 +66,6 @@ void ContinuousViewModelTest::reportsLastPageWhenAtLeastHalfIsVisible()
     QCOMPARE(model.readingProgressPage(), 3);
 }
 
-QTEST_MAIN(ContinuousViewModelTest)
+QTEST_GUILESS_MAIN(ContinuousViewModelTest)
 
 #include "main.moc"
