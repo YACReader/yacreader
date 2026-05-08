@@ -484,6 +484,7 @@ qt_add_translations(YACReaderLibrary
         yacreaderlibrary_zh_TW.ts
         yacreaderlibrary_zh_HK.ts
         yacreaderlibrary_it.ts
+        yacreaderlibrary_ko.ts
         yacreaderlibrary_source.ts
         yacreaderlibrary_en.ts
     SOURCES
