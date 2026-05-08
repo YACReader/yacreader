@@ -2869,12 +2869,12 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation type="릴리스 노트를 사용할 수 없습니다."></translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation type="이전 버전"></translation>
     </message>
 </context>
 <context>
