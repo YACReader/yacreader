@@ -39,6 +39,7 @@ qt_add_translations(YACReaderLibraryServer
         yacreaderlibraryserver_zh_CN.ts
         yacreaderlibraryserver_zh_TW.ts
         yacreaderlibraryserver_zh_HK.ts
+        yacreaderlibraryserver_ko.ts
         yacreaderlibraryserver_source.ts
 )
 
