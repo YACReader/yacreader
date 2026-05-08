@@ -932,12 +932,12 @@
         <location filename="main_window_viewer.cpp" line="1130"/>
         <location filename="main_window_viewer.cpp" line="1148"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="페이지 추출"></translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="375"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation type="페이지 추출"></translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="380"/>
@@ -1226,32 +1226,32 @@
     <message>
         <location filename="main_window_viewer.cpp" line="1094"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation type="파일을 덮어쓰기 하시겠습니까?"></translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1094"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation type="파일이 이미 있습니다. 덮어쓰시겠습니까?"></translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1130"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation type="현재 페이지를 추출할 수 없습니다."></translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1135"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation type="파일을 덮어쓰기 하시겠습니까?"></translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1135"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation type="일부 파일이 이미 있습니다. 덮어쓰시겠습니까?"></translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1148"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation type="일부 페이지를 추출할 수 없습니다."></translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1293"/>
@@ -1419,12 +1419,12 @@
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation type="릴리스 노트를 사용할 수 없습니다."></translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation type="이전 버전"></translation>
     </message>
 </context>
 <context>
