@@ -20,6 +20,7 @@ public:
     bool isRunning();
 
     QString getPort();
+    QString errorString() const;
 
 signals:
     void clientSync();

@@ -219,6 +219,15 @@ int start(QCoreApplication &app, QCommandLineParser &parser, const QStringList &
         httpServer->start();
     }
 
+    if (!httpServer->isRunning()) {
+        QLOG_ERROR() << "Unable to start HTTP server:" << httpServer->errorString();
+        delete httpServer;
+#ifdef Q_OS_WIN
+        logger.shutDownLoggerThread();
+#endif
+        return 1;
+    }
+
     printServerInfo(httpServer);
 
     // Update libraries to new versions

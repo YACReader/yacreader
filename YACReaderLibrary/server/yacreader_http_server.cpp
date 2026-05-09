@@ -150,3 +150,12 @@ QString YACReaderHttpServer::getPort()
 
     return QString("%1").arg(listener->serverPort());
 }
+
+QString YACReaderHttpServer::errorString() const
+{
+    if (listener == nullptr) {
+        return QString();
+    }
+
+    return listener->errorString();
+}
