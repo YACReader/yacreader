@@ -469,6 +469,11 @@ void logSystemAndConfig()
 void printServerInfo(YACReaderHttpServer *httpServer)
 {
     auto addresses = getIpAddresses();
+    if (addresses.isEmpty()) {
+        QLOG_WARN() << "Running, but no global network interfaces were detected";
+        return;
+    }
+
     QLOG_INFO() << "Running on" << addresses.first() + ":" + httpServer->getPort().toLocal8Bit() << "\n";
 
     qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(
