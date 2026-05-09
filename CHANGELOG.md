@@ -11,6 +11,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve last page detection in continuous scroll mode.
 * Improve What's new dialog to show the full changelog.
 
+### YACReaderLibraryServer
+* Don't crash at startup if the server can't bind to any address.
+
 ## 10.0.0
 
 ### YACReader
