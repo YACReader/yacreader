@@ -127,8 +127,8 @@ int main(int argc, char **argv)
     } else // error
     {
         parser.process(app);
-        parser.showHelp();
-        return 0;
+        parser.showHelp(1);
+        return 1;
     }
 }
 
@@ -158,7 +158,7 @@ int start(QCoreApplication &app, QCommandLineParser &parser, const QStringList &
         } else if (parser.value("loglevel") == "error") {
             logger.setLoggingLevel(QsLogging::ErrorLevel);
         } else {
-            parser.showHelp();
+            parser.showHelp(1);
         }
     }
 
@@ -209,8 +209,8 @@ int start(QCoreApplication &app, QCommandLineParser &parser, const QStringList &
         qint32 port = parser.value("port").toInt(&valid);
         if (!valid || port < 1 || port > 65535) {
             qout << "Error: " << parser.value("port") << " is not a valid port" << Qt::endl;
-            parser.showHelp();
-            return 0;
+            parser.showHelp(1);
+            return 1;
         } else {
             httpServer->start(port);
         }
@@ -278,8 +278,8 @@ int createLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
 
     const QStringList args = parser.positionalArguments();
     if (args.length() != 3) {
-        parser.showHelp();
-        return 0;
+        parser.showHelp(1);
+        return 1;
     }
 
     ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
@@ -300,8 +300,8 @@ int updateLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
 
     const QStringList args = parser.positionalArguments();
     if (args.length() != 2) {
-        parser.showHelp();
-        return 0;
+        parser.showHelp(1);
+        return 1;
     }
 
     ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
@@ -323,8 +323,8 @@ int addLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *set
 
     const QStringList args = parser.positionalArguments();
     if (args.length() != 3) {
-        parser.showHelp();
-        return 0;
+        parser.showHelp(1);
+        return 1;
     }
 
     ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
@@ -345,8 +345,8 @@ int removeLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
 
     const QStringList args = parser.positionalArguments();
     if (args.length() != 2) {
-        parser.showHelp();
-        return 0;
+        parser.showHelp(1);
+        return 1;
     }
 
     ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
@@ -383,16 +383,16 @@ int setPort(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout
 
     const QStringList args = parser.positionalArguments();
     if (args.length() != 2) {
-        parser.showHelp();
-        return 0;
+        parser.showHelp(1);
+        return 1;
     }
 
     bool valid;
     qint32 port = args.at(1).toInt(&valid);
     if (!valid || port < 1 || port > 65535) {
         qout << "Invalid server port";
-        parser.showHelp();
-        return 0;
+        parser.showHelp(1);
+        return 1;
     }
 
     QSettings *settings = new QSettings(YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini", QSettings::IniFormat);
@@ -413,8 +413,8 @@ int rescanXmlInfo(QCoreApplication &app, QCommandLineParser &parser, QSettings *
 
     const QStringList args = parser.positionalArguments();
     if (args.length() != 2) {
-        parser.showHelp();
-        return 0;
+        parser.showHelp(1);
+        return 1;
     }
 
     ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
