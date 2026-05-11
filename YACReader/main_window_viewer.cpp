@@ -15,6 +15,7 @@
 #include "whats_new_controller.h"
 #include "width_slider.h"
 #include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 #include "yacreader_local_client.h"
 #include "yacreader_tool_bar_stretch.h"
 
@@ -92,6 +93,15 @@ QString defaultPageExportDirectory()
     return QDir::currentPath();
 }
 
+QString pageExportDirectory(QSettings *settings, QString key)
+{
+    const QString directory = settings->value(key, defaultPageExportDirectory()).toString();
+    if (QFileInfo(directory).isDir())
+        return directory;
+
+    return defaultPageExportDirectory();
+}
+
 struct PageExtraction {
     QByteArray rawPage;
     QString outputPath;
@@ -100,7 +110,7 @@ struct PageExtraction {
 }
 
 MainWindowViewer::MainWindowViewer()
-    : QMainWindow(), fullscreen(false), toolbars(true), currentDirectory("."), currentDirectoryImgDest(defaultPageExportDirectory()), openToolButton(nullptr), isClient(false)
+    : QMainWindow(), fullscreen(false), toolbars(true), currentDirectory("."), openToolButton(nullptr), isClient(false)
 {
     loadConfiguration();
     setupUI();
@@ -1080,11 +1090,11 @@ void MainWindowViewer::openFolderFromPath(QString pathDir, QString atFileName)
 
 void MainWindowViewer::saveImage()
 {
-    const QString outputDir = QFileDialog::getExistingDirectory(this, tr("Save current page"), currentDirectoryImgDest);
+    const QString outputDir = QFileDialog::getExistingDirectory(this, tr("Save current page"), pageExportDirectory(settings, SAVE_RENDERED_PAGE_DIRECTORY));
     if (outputDir.isEmpty())
         return;
 
-    currentDirectoryImgDest = outputDir;
+    settings->setValue(SAVE_RENDERED_PAGE_DIRECTORY, outputDir);
 
     const QString baseName = comicBaseName(currentComicPath);
     const QList<int> pages = viewer->currentVisiblePages();
@@ -1104,11 +1114,11 @@ void MainWindowViewer::saveImage()
 
 void MainWindowViewer::extractPages()
 {
-    const QString outputDir = QFileDialog::getExistingDirectory(this, tr("Extract page(s)"), currentDirectoryImgDest);
+    const QString outputDir = QFileDialog::getExistingDirectory(this, tr("Extract page(s)"), pageExportDirectory(settings, EXTRACT_PAGE_DIRECTORY));
     if (outputDir.isEmpty())
         return;
 
-    currentDirectoryImgDest = outputDir;
+    settings->setValue(EXTRACT_PAGE_DIRECTORY, outputDir);
 
     const QString baseName = comicBaseName(currentComicPath);
     const QList<int> pages = viewer->currentVisiblePages();

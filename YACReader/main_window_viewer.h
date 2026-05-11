@@ -93,7 +93,6 @@ private:
     bool fromMaximized;
 
     QString currentDirectory;
-    QString currentDirectoryImgDest;
     QString currentComicPath;
     //! Widgets
     Viewer *viewer;
