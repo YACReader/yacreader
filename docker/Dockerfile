@@ -132,7 +132,7 @@ ENV LC_ALL="en_US.UTF-8" \
     PATH="/app/bin:${PATH}"
 
 # copy files
-COPY docker/root.tar.gz /
+COPY root.tar.gz /
 # Extract the contents of root.tar.gz into the / directory
 RUN tar -xvpzf /root.tar.gz -C /
 
