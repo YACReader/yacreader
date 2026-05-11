@@ -1,4 +1,4 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:arm64v8-noble AS builder
+FROM ghcr.io/linuxserver/baseimage-ubuntu:resolute AS builder
 
 # repository URL and version, which can be a tag, branch, or commit SHA
 ARG YACR_REPOSITORY="https://github.com/YACReader/yacreader.git"
@@ -31,9 +31,9 @@ RUN \
        qt6-declarative-dev \
        libqt6svg6-dev \
        libqt6core5compat6-dev \
-       libqt6gui6t64 \
+       libqt6gui6 \
        libqt6multimedia6 \
-       libqt6network6t64 \
+       libqt6network6 \
        libqt6qml6 \
        libqt6quickcontrols2-6 \
        qt6-image-formats-plugins \
@@ -76,7 +76,7 @@ RUN echo "Building and installing 7z.so with RAR support..." && \
     mkdir -p /app/lib/7zip && \
     cp ./_o/7z.so /app/lib/7zip
 
-FROM ghcr.io/linuxserver/baseimage-ubuntu:arm64v8-noble
+FROM ghcr.io/linuxserver/baseimage-ubuntu:resolute
 
 # env variables
 ENV APPNAME="YACReaderLibraryServer"
@@ -92,8 +92,9 @@ RUN apt-get update && \
        libqt6core5compat6 \
        libpoppler-qt6-3t64 \
        qt6-image-formats-plugins \
-       libqt6network6t64 \
-       libqt6sql6-sqlite && \
+       libqt6network6 \
+       libqt6sql6-sqlite \
+       kimageformat6-plugins && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
