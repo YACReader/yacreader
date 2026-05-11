@@ -500,7 +500,7 @@ jobs:
       - name: Build arm64 Image (native)
         working-directory: docker
         run: |
-          docker build --no-cache -f Dockerfile.aarch64 \
+          docker build --no-cache --platform linux/arm64 -f Dockerfile \
             --build-arg YACR_REPOSITORY=${{ github.event.pull_request.head.repo.clone_url || format('https://github.com/{0}.git', github.repository) }} \
             --build-arg YACR_VERSION=${{ github.event.pull_request.head.sha || github.sha }} \
             -t yacreader/yacreaderlibraryserver:develop-arm64 .
