@@ -1,6 +1,7 @@
 FROM ghcr.io/linuxserver/baseimage-ubuntu:arm64v8-noble AS builder
 
-# version, it can be a TAG or a branch
+# repository URL and version, which can be a tag, branch, or commit SHA
+ARG YACR_REPOSITORY="https://github.com/YACReader/yacreader.git"
 ARG YACR_VERSION="develop"
 
 # env variables
@@ -53,9 +54,9 @@ RUN \
     ldconfig
 
 # clone YACReader repo
-RUN git clone https://github.com/YACReader/yacreader.git /src/git && \
+RUN git clone "$YACR_REPOSITORY" /src/git && \
     cd /src/git && \
-    git checkout $YACR_VERSION
+    git checkout "$YACR_VERSION"
 
 # build yacreaderlibraryserver (7zip source is auto-downloaded by CMake FetchContent)
 RUN cd /src/git && \

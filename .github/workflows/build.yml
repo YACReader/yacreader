@@ -477,7 +477,10 @@ jobs:
       - name: Build amd64 Image
         working-directory: docker
         run: |
-          docker build --no-cache --platform linux/amd64 -f Dockerfile --build-arg YACR_VERSION=${{ github.head_ref || github.ref_name }} -t yacreader/yacreaderlibraryserver:develop-amd64 .
+          docker build --no-cache --platform linux/amd64 -f Dockerfile \
+            --build-arg YACR_REPOSITORY=${{ github.event.pull_request.head.repo.clone_url || format('https://github.com/{0}.git', github.repository) }} \
+            --build-arg YACR_VERSION=${{ github.event.pull_request.head.sha || github.sha }} \
+            -t yacreader/yacreaderlibraryserver:develop-amd64 .
           docker save yacreader/yacreaderlibraryserver:develop-amd64 -o amd64.tar
 
       - name: Upload Docker Image
@@ -497,7 +500,10 @@ jobs:
       - name: Build arm64 Image (native)
         working-directory: docker
         run: |
-          docker build --no-cache -f Dockerfile.aarch64 --build-arg YACR_VERSION=${{ github.head_ref || github.ref_name }} -t yacreader/yacreaderlibraryserver:develop-arm64 .
+          docker build --no-cache -f Dockerfile.aarch64 \
+            --build-arg YACR_REPOSITORY=${{ github.event.pull_request.head.repo.clone_url || format('https://github.com/{0}.git', github.repository) }} \
+            --build-arg YACR_VERSION=${{ github.event.pull_request.head.sha || github.sha }} \
+            -t yacreader/yacreaderlibraryserver:develop-arm64 .
           docker save yacreader/yacreaderlibraryserver:develop-arm64 -o arm64.tar
 
       - name: Upload Docker Image
