@@ -1,4 +1,34 @@
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble AS builder
+FROM ghcr.io/linuxserver/baseimage-ubuntu:resolute AS base
+
+# ============================================================================
+# Stage: sevenzip-builder
+# ============================================================================
+FROM base AS sevenzip-builder
+
+# get 7zip source
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+       7zip \
+       build-essential \
+       make \
+       wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN cd /tmp && \
+    wget "https://github.com/YACReader/yacreader-7z-deps/blob/main/7z2301-src.7z?raw=true" -O 7z2301-src.7z && \
+    7z x 7z2301-src.7z -o/tmp/lib7zip
+
+# install 7z.so with RAR support
+RUN cd "/tmp/lib7zip/CPP/7zip/Bundles/Format7zF" && \
+    make -f makefile.gcc && \
+    mkdir -p /app/lib/7zip && \
+    cp ./_o/7z.so /app/lib/7zip
+
+# ============================================================================
+# Stage: yacreader-builder
+# ============================================================================
+FROM base AS yacreader-builder
 
 # repository URL and version, which can be a tag, branch, or commit SHA
 ARG YACR_REPOSITORY="https://github.com/YACReader/yacreader.git"
@@ -28,8 +58,6 @@ RUN \
        qt6-tools-dev-tools \
        libgl-dev \
        qt6-l10n-tools \
-       libqt6opengl6-dev \
-       libunarr-dev \
        qt6-declarative-dev \
        libqt6svg6-dev \
        libqt6core5compat6-dev \
@@ -55,7 +83,6 @@ RUN \
        zlib1g-dev && \
     ldconfig
 
-
 # clone YACReader repo
 RUN git clone "$YACR_REPOSITORY" /src/git && \
     cd /src/git && \
@@ -72,15 +99,13 @@ RUN cd /src/git && \
     cmake --build build --parallel && \
     cmake --install build
 
-# install 7z.so with RAR support
-RUN echo "Building and installing 7z.so with RAR support..." && \
-    cd "/src/git/compressed_archive/lib7zip/CPP/7zip/Bundles/Format7zF" && \
-    make -f makefile.gcc && \
-    mkdir -p /app/lib/7zip && \
-    cp ./_o/7z.so /app/lib/7zip
+# Use pre-built 7z.so from sevenzip-builder (provides RAR support)
+COPY --from=sevenzip-builder /app/lib/7zip /app/lib/7zip
 
-# Stage 2: Runtime stage
-FROM ghcr.io/linuxserver/baseimage-ubuntu:noble
+# ============================================================================
+# Stage: runtime
+# ============================================================================
+FROM base AS runtime
 
 # env variables
 ENV APPNAME="YACReaderLibraryServer"
@@ -88,7 +113,7 @@ ENV HOME="/config"
 LABEL maintainer="luisangelsm"
 
 # Copy the built application from the builder stage
-COPY --from=builder /app /app
+COPY --from=yacreader-builder /app /app
 
 # runtime packages
 RUN apt-get update && \
@@ -96,8 +121,9 @@ RUN apt-get update && \
        libqt6core5compat6 \
        libpoppler-qt6-3t64 \
        qt6-image-formats-plugins \
-       libqt6network6t64 \
-       libqt6sql6-sqlite && \
+       libqt6network6 \
+       libqt6sql6-sqlite \
+       kimageformat6-plugins && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
