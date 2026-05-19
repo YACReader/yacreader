@@ -92,9 +92,9 @@ Source: "vc_redist.{#PLATFORM}.exe"; DestDir: {tmp}; Flags: deleteafterinstall
 Source: utils\7z.dll; DestDir: {app}\utils\
 
 ;Bin
-Source: YACReader.exe; DestDir: {app}; Permissions: everyone-full;
-Source: YACReaderLibrary.exe; DestDir: {app}; Permissions: everyone-full; Tasks:
-Source: YACReaderLibraryServer.exe; DestDir: {app}; Permissions: everyone-full; Tasks:
+Source: YACReader.exe; DestDir: {app};
+Source: YACReaderLibrary.exe; DestDir: {app}; Tasks:
+Source: YACReaderLibraryServer.exe; DestDir: {app}; Tasks:
 
 ;License
 Source: README.md; DestDir: {app}; Flags: isreadme
@@ -106,7 +106,7 @@ Source: languages\*; DestDir: {app}\languages\; Flags: recursesubdirs; Excludes:
 Source: server\*; DestDir: {app}\server\; Flags: recursesubdirs
 
 [Dirs]
-Name: {app}; Permissions: everyone-full
+Name: {app};
 
 [CustomMessages]
 App=YACReader
