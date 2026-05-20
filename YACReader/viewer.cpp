@@ -863,6 +863,9 @@ void Viewer::resizeEvent(QResizeEvent *event)
 
 QPixmap Viewer::pixmap() const
 {
+    if (currentPage != nullptr && !currentPage->isNull())
+        return *currentPage;
+
     return content->pixmap();
 }
 
