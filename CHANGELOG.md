@@ -16,6 +16,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReaderLibraryServer
 * Don't crash at startup if the server can't bind to any address.
 
+### All GUI Apps
+* Better system theme detection.
+
 ## 10.0.0
 
 ### YACReader

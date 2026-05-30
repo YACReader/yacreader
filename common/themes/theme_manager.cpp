@@ -6,7 +6,10 @@
 #include "theme_repository.h"
 
 #include <QGuiApplication>
+#include <QPalette>
 #include <QStyleHints>
+
+ThemeVariant themeVariantFromColorScheme(Qt::ColorScheme colorScheme);
 
 ThemeManager::ThemeManager()
 {
@@ -68,14 +71,15 @@ void ThemeManager::resolveTheme()
         return;
 
     const auto &sel = config->selection();
+    const ThemeVariant systemVariant = themeVariantFromColorScheme(qGuiApp->styleHints()->colorScheme());
 
     QString id;
     ThemeVariant fallbackVariant;
     switch (sel.mode) {
     case ThemeMode::FollowSystem: {
-        const bool isDark = (qGuiApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark);
+        const bool isDark = (systemVariant == ThemeVariant::Dark);
         id = isDark ? sel.darkThemeId : sel.lightThemeId;
-        fallbackVariant = isDark ? ThemeVariant::Dark : ThemeVariant::Light;
+        fallbackVariant = systemVariant;
         break;
     }
     case ThemeMode::Light:
@@ -88,9 +92,7 @@ void ThemeManager::resolveTheme()
         break;
     case ThemeMode::ForcedTheme:
         id = sel.fixedThemeId;
-        fallbackVariant = (qGuiApp->styleHints()->colorScheme() == Qt::ColorScheme::Dark)
-                ? ThemeVariant::Dark
-                : ThemeVariant::Light;
+        fallbackVariant = systemVariant;
         break;
     }
 
@@ -120,4 +122,30 @@ void ThemeManager::resolveTheme()
 #endif
 
     setTheme(theme);
+}
+
+bool paletteRolePairLooksDark(const QPalette &palette, QPalette::ColorRole backgroundRole, QPalette::ColorRole foregroundRole)
+{
+    const QColor background = palette.color(QPalette::Active, backgroundRole);
+    const QColor foreground = palette.color(QPalette::Active, foregroundRole);
+
+    return background.lightness() < foreground.lightness();
+}
+
+bool paletteLooksDark()
+{
+    const QPalette palette = qGuiApp->palette();
+
+    return paletteRolePairLooksDark(palette, QPalette::Window, QPalette::WindowText) || paletteRolePairLooksDark(palette, QPalette::Base, QPalette::Text);
+}
+
+ThemeVariant themeVariantFromColorScheme(Qt::ColorScheme colorScheme)
+{
+    if (colorScheme == Qt::ColorScheme::Dark)
+        return ThemeVariant::Dark;
+
+    if (colorScheme == Qt::ColorScheme::Unknown && paletteLooksDark())
+        return ThemeVariant::Dark;
+
+    return ThemeVariant::Light;
 }
