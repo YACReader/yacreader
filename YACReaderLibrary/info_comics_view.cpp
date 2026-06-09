@@ -100,13 +100,16 @@ void InfoComicsView::setModel(ComicModel *model)
         list->disconnect();
     }
 
-    auto rootObject = dynamic_cast<QQuickItem *>(view->rootObject());
-    flow = rootObject->findChild<QQuickItem *>("flow", Qt::FindChildrenRecursively);
-    list = rootObject->findChild<QQuickItem *>("list", Qt::FindChildrenRecursively);
+    if (auto *rootObject = view->rootObject()) {
+        flow = rootObject->findChild<QQuickItem *>("flow", Qt::FindChildrenRecursively);
+        list = rootObject->findChild<QQuickItem *>("list", Qt::FindChildrenRecursively);
+    }
 
-    // QML signals only work with old style signal slot syntax
-    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int))); // clazy:exclude=old-style-connect
-    connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int))); // clazy:exclude=old-style-connect
+    if (flow) {
+        // QML signals only work with old style signal slot syntax
+        connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(updateInfoForIndex(int))); // clazy:exclude=old-style-connect
+        connect(flow, SIGNAL(currentCoverChanged(int)), this, SLOT(setCurrentIndex(int))); // clazy:exclude=old-style-connect
+    }
 }
 
 void InfoComicsView::setCurrentIndex(const QModelIndex &index)

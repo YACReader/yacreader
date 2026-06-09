@@ -116,7 +116,8 @@ void FolderContentView::setModel(const QModelIndex &parent, FolderModel *model)
     }
     folderModel = model;
 
-    auto grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
+    auto *root = view->rootObject();
+    auto grid = root ? root->findChild<QQuickItem *>(QStringLiteral("grid")) : nullptr;
 
     if (grid != nullptr) {
         grid->setProperty("currentIndex", 0);
@@ -130,7 +131,8 @@ void FolderContentView::setContinueReadingModel(ComicModel *model)
     ctxt->setContextProperty("comicsList", model);
     this->comicModel.reset(model);
 
-    auto list = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("list"));
+    auto *root = view->rootObject();
+    auto list = root ? root->findChild<QQuickItem *>(QStringLiteral("list")) : nullptr;
 
     if (list != nullptr) {
         list->setProperty("currentIndex", 0);
@@ -209,7 +211,8 @@ void FolderContentView::setCoversSize(int width)
 {
     QQmlContext *ctxt = view->rootContext();
 
-    auto grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
+    auto *root = view->rootObject();
+    auto grid = root ? root->findChild<QQuickItem *>(QStringLiteral("grid")) : nullptr;
 
     if (grid != 0) {
         QVariant cellCustomWidth = (width * YACREADER_MIN_CELL_CUSTOM_WIDTH) / YACREADER_MIN_GRID_ZOOM_WIDTH;

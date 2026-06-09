@@ -82,10 +82,10 @@ GridComicsView::GridComicsView(QWidget *parent)
 
     view->setSource(QUrl("qrc:/qml/GridComicsView.qml"));
 
-    auto rootObject = dynamic_cast<QObject *>(view->rootObject());
-    auto infoContainer = rootObject->findChild<QObject *>("infoContainer");
-
-    QQmlProperty(infoContainer, "width").write(settings->value(COMICS_GRID_INFO_WIDTH, 350));
+    if (auto *rootObject = view->rootObject()) {
+        auto infoContainer = rootObject->findChild<QObject *>("infoContainer");
+        QQmlProperty(infoContainer, "width").write(settings->value(COMICS_GRID_INFO_WIDTH, 350));
+    }
 
     setShowMarks(true); // TODO save this in settings
 
@@ -175,7 +175,8 @@ void GridComicsView::setModel(ComicModel *model)
     ctxt->setContextProperty("dropManager", this);
     ctxt->setContextProperty("comicInfoHelper", comicInfoHelper);
 
-    auto grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
+    auto *root = view->rootObject();
+    auto grid = root ? root->findChild<QQuickItem *>(QStringLiteral("grid")) : nullptr;
 
     if (grid != nullptr) {
         grid->setProperty("currentIndex", 0);
@@ -339,7 +340,8 @@ void GridComicsView::setCoversSize(int width)
 {
     QQmlContext *ctxt = view->rootContext();
 
-    auto grid = view->rootObject()->findChild<QQuickItem *>(QStringLiteral("grid"));
+    auto *root = view->rootObject();
+    auto grid = root ? root->findChild<QQuickItem *>(QStringLiteral("grid")) : nullptr;
 
     if (grid != 0) {
         QVariant cellCustomWidth = (width * YACREADER_MIN_CELL_CUSTOM_WIDTH) / YACREADER_MIN_GRID_ZOOM_WIDTH;
@@ -397,7 +399,9 @@ void GridComicsView::setCurrentComicIfNeeded()
 
 void GridComicsView::resetScroll()
 {
-    auto rootObject = dynamic_cast<QObject *>(view->rootObject());
+    auto *rootObject = view->rootObject();
+    if (!rootObject)
+        return;
     auto scrollView = rootObject->findChild<QObject *>("topScrollView", Qt::FindChildrenRecursively);
 
     QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
@@ -563,10 +567,11 @@ void GridComicsView::closeEvent(QCloseEvent *event)
     toolbar->removeAction(showInfoSeparatorAction);
     toolbar->removeAction(coverSizeSliderAction);
 
-    auto rootObject = dynamic_cast<QObject *>(view->rootObject());
-    auto infoContainer = rootObject->findChild<QObject *>("infoContainer", Qt::FindChildrenRecursively);
-
-    int infoWidth = QQmlProperty(infoContainer, "width").read().toInt();
+    int infoWidth = 0;
+    if (auto *rootObject = view->rootObject()) {
+        auto infoContainer = rootObject->findChild<QObject *>("infoContainer", Qt::FindChildrenRecursively);
+        infoWidth = QQmlProperty(infoContainer, "width").read().toInt();
+    }
 
     /*QObject *object = view->rootObject();
     QMetaObject::invokeMethod(object, "exit");
