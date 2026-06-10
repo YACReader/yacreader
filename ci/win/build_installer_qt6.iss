@@ -118,7 +118,7 @@ LaunchYACReader=Start YACreader after finishing installation
 Filename: {tmp}\vc_redist.{#PLATFORM}.exe; \
 Parameters: "/install /quiet /norestart"; \
 StatusMsg: "Installing VC++ Redistributables..."
-Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall add rule name=""YACReaderLibrary"" dir=in action=allow program=""{app}\YACReaderLibrary.exe"" enable=yes profile=private,domain"; Flags: runhidden waituntilterminated
+Filename: "{sys}\netsh.exe"; Parameters: "advfirewall firewall add rule name=""YACReaderLibrary"" dir=in action=allow program=""{app}\YACReaderLibrary.exe"" enable=yes profile=any"; Flags: runhidden waituntilterminated
 
 Filename: {app}\{cm:AppLibrary}.exe; Description: {cm:LaunchYACReaderLibrary,{cm:AppLibrary}}; Flags: nowait postinstall skipifsilent
 Filename: {app}\{cm:App}.exe; Description: {cm:LaunchYACReader,{cm:App}}; Flags: nowait postinstall skipifsilent
