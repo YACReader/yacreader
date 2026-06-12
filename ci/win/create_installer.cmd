@@ -23,9 +23,12 @@ copy %exe_path%\YACReader.exe .
 copy %exe_path%\YACReaderLibrary.exe .
 copy %exe_path%\YACReaderLibraryServer.exe .
 
-windeployqt --release -qml YACReader.exe
-windeployqt --release -qml --qmldir %src_path%\YACReaderLibrary\qml YACReaderLibrary.exe
-windeployqt YACReaderLibraryServer.exe
+rem WINDEPLOYQT_EXTRA_ARGS lets cross builds point the host windeployqt at the
+rem target Qt (e.g. --qtpaths C:\Qt\<ver>\msvc2022_arm64\bin\qtpaths.bat),
+rem otherwise it deploys DLLs for the host architecture.
+windeployqt %WINDEPLOYQT_EXTRA_ARGS% --release -qml YACReader.exe || exit /b
+windeployqt %WINDEPLOYQT_EXTRA_ARGS% --release -qml --qmldir %src_path%\YACReaderLibrary\qml YACReaderLibrary.exe || exit /b
+windeployqt %WINDEPLOYQT_EXTRA_ARGS% YACReaderLibraryServer.exe || exit /b
 
 mkdir utils
 

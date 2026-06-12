@@ -409,8 +409,41 @@ jobs:
         shell: cmd
         working-directory: ci/win
         run: |
+          rem The ARM64 cross package's own tools cannot run on the x64 runner, so use
+          rem the host x64 windeployqt but point it at the ARM64 Qt via qtpaths,
+          rem otherwise it deploys x64 Qt DLLs and the app dies with 0xc000007b on ARM.
+          if not exist C:\Qt\6.9.3\msvc2022_arm64\bin\qtpaths.bat (
+            echo qtpaths.bat not found in the ARM64 Qt package & exit /b 1
+          )
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
+          set WINDEPLOYQT_EXTRA_ARGS=--qtpaths C:\Qt\6.9.3\msvc2022_arm64\bin\qtpaths.bat
           .\create_installer.cmd arm64 7z ${{ needs.initialization.outputs.build_number }}
+
+      - name: Verify deployed binaries are ARM64
+        shell: pwsh
+        working-directory: ci/win
+        run: |
+          $bad = @()
+          Get-ChildItem -Path installer_contents -Recurse -Include *.dll, *.exe |
+            Where-Object { $_.Name -notlike 'vc_redist*' } |
+            ForEach-Object {
+              $fs = [System.IO.File]::OpenRead($_.FullName)
+              try {
+                $br = New-Object System.IO.BinaryReader($fs)
+                $null = $fs.Seek(0x3C, 'Begin')
+                $peOffset = $br.ReadInt32()
+                $null = $fs.Seek($peOffset + 4, 'Begin')
+                $machine = $br.ReadUInt16()
+              } finally { $fs.Close() }
+              if ($machine -ne 0xAA64) {
+                $bad += ('{0} (machine: 0x{1:X4})' -f $_.FullName, $machine)
+              }
+            }
+          if ($bad.Count -gt 0) {
+            $bad | ForEach-Object { Write-Host "Not ARM64: $_" }
+            throw "$($bad.Count) non-ARM64 binaries found in installer contents"
+          }
+          Write-Host "All deployed DLLs/EXEs are ARM64"
 
       - name: Verify installer was created
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
