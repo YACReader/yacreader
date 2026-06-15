@@ -238,6 +238,7 @@ public slots:
     void updateLibrary();
     // void deleteLibrary();
     void openContainingFolder();
+    void organizeFiles();
     void setFolderAsNotCompleted();
     void setFolderAsCompleted();
     void setFolderAsRead();

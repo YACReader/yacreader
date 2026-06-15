@@ -6,8 +6,10 @@
 #include <QApplication>
 #include <QDesktopServices>
 #include <QDir>
+#include <QFile>
 #include <QFileDialog>
 #include <QFileIconProvider>
+#include <QFileInfo>
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QInputDialog>
@@ -61,6 +63,7 @@
 #include "library_creator.h"
 #include "no_libraries_widget.h"
 #include "options_dialog.h"
+#include "organize_files_dialog.h"
 #include "package_manager.h"
 #include "properties_dialog.h"
 #include "reading_list_item.h"
@@ -2224,6 +2227,149 @@ void LibraryWindow::openContainingFolder()
     QDesktopServices::openUrl(QUrl("file:///" + path, QUrl::TolerantMode));
 }
 
+static void collectComicsRecursively(qulonglong libraryId, qulonglong folderId, QList<ComicDB> &out)
+{
+    const auto comics = DBHelper::getFolderComicsFromLibrary(libraryId, folderId);
+    for (auto *item : comics) {
+        if (auto *comic = static_cast<ComicDB *>(item))
+            out.append(*comic);
+    }
+    qDeleteAll(comics);
+
+    const auto subfolders = DBHelper::getFolderSubfoldersFromLibrary(libraryId, folderId);
+    for (auto *item : subfolders) {
+        collectComicsRecursively(libraryId, item->id, out);
+    }
+    qDeleteAll(subfolders);
+}
+
+// Removes empty directories under basePath (but never basePath itself).
+static void removeEmptyDirs(const QString &basePath)
+{
+    QDir base(basePath);
+    const auto entries = base.entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+    for (const QString &entry : entries) {
+        const QString childPath = base.absoluteFilePath(entry);
+        removeEmptyDirs(childPath);
+        QDir().rmdir(childPath); // only succeeds if empty
+    }
+}
+
+void LibraryWindow::organizeFiles()
+{
+    const QModelIndex sourceIndex = getCurrentFolderIndex();
+    if (!sourceIndex.isValid())
+        return;
+
+    const auto libraryId = libraries.getId(selectedLibrary->currentText());
+    const auto folder = foldersModel->getFolder(sourceIndex);
+    const QString libraryRoot = QDir::cleanPath(currentPath());
+    const QString folderAbsolutePath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(sourceIndex));
+
+    OrganizeFilesDialog dialog(this);
+    if (dialog.exec() != QDialog::Accepted)
+        return;
+
+    const QString pattern = dialog.formatPattern();
+    if (pattern.trimmed().isEmpty())
+        return;
+
+    QList<ComicDB> comics;
+    collectComicsRecursively(libraryId, folder.id, comics);
+
+    if (comics.isEmpty()) {
+        QMessageBox::information(this, tr("Organize files"), tr("This folder does not contain any comics to organize."));
+        return;
+    }
+
+    // Compute the moves. The destination is rooted at the selected folder.
+    struct Move {
+        QString source;
+        QString destination;
+    };
+    QList<Move> moves;
+    const QDir destinationRoot(folderAbsolutePath);
+
+    for (const ComicDB &comic : comics) {
+        const QString source = QDir::cleanPath(libraryRoot + comic.path);
+        const QFileInfo sourceInfo(source);
+        if (!sourceInfo.exists())
+            continue;
+
+        const QString extension = sourceInfo.suffix().isEmpty() ? QString() : QStringLiteral(".") + sourceInfo.suffix();
+
+        const QString relative = OrganizeFilesDialog::buildRelativePath(pattern,
+                                                                        comic.info.publisher.toString(),
+                                                                        comic.info.series.toString(),
+                                                                        comic.info.number.toString(),
+                                                                        comic.info.title.toString(),
+                                                                        comic.info.volume.toString(),
+                                                                        comic.info.year.toString(),
+                                                                        extension);
+
+        QString destination = QDir::cleanPath(destinationRoot.absoluteFilePath(relative));
+        if (destination == QDir::cleanPath(source))
+            continue; // already in place
+
+        // Avoid clobbering an existing destination by appending a counter.
+        if (QFileInfo::exists(destination)) {
+            const QFileInfo destInfo(destination);
+            const QString dir = destInfo.absolutePath();
+            const QString base = destInfo.completeBaseName();
+            const QString suffix = destInfo.suffix().isEmpty() ? QString() : QStringLiteral(".") + destInfo.suffix();
+            int counter = 1;
+            QString candidate;
+            do {
+                candidate = QDir::cleanPath(dir + QStringLiteral("/") + base + QStringLiteral(" (") + QString::number(counter++) + QStringLiteral(")") + suffix);
+            } while (QFileInfo::exists(candidate));
+            destination = candidate;
+        }
+
+        moves.append({ source, destination });
+    }
+
+    if (moves.isEmpty()) {
+        QMessageBox::information(this, tr("Organize files"), tr("All files are already organized according to this format."));
+        return;
+    }
+
+    const auto answer = QMessageBox::question(this, tr("Organize files"),
+                                              tr("%1 file(s) will be moved inside \"%2\" according to the chosen format. Continue?")
+                                                      .arg(moves.size())
+                                                      .arg(folder.name),
+                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
+    if (answer != QMessageBox::Yes)
+        return;
+
+    int moved = 0;
+    QStringList failures;
+    for (const Move &move : moves) {
+        const QString targetDir = QFileInfo(move.destination).absolutePath();
+        if (!QDir().mkpath(targetDir)) {
+            failures << move.source;
+            continue;
+        }
+        if (QFile::rename(move.source, move.destination))
+            moved++;
+        else
+            failures << move.source;
+    }
+
+    // Clean up directories that became empty after moving files out of them.
+    removeEmptyDirs(folderAbsolutePath);
+
+    if (!failures.isEmpty()) {
+        QMessageBox::warning(this, tr("Organize files"),
+                             tr("%1 of %2 file(s) were moved. %3 file(s) could not be moved.")
+                                     .arg(moved)
+                                     .arg(moves.size())
+                                     .arg(failures.size()));
+    }
+
+    // Rescan the folder so the database reflects the new on-disk layout.
+    updateFolder(sourceIndex);
+}
+
 void LibraryWindow::setFolderAsNotCompleted()
 {
     // foldersModel->updateFolderCompletedStatus(foldersView->selectionModel()->selectedRows(),false);
@@ -2577,6 +2723,7 @@ void LibraryWindow::showFoldersContextMenu(const QPoint &point)
     QMenu menu;
 
     menu.addAction(actions.openContainingFolderAction);
+    menu.addAction(actions.organizeFilesAction);
     menu.addAction(actions.updateFolderAction);
     menu.addSeparator(); //-------------------------------
     menu.addAction(actions.rescanXMLFromCurrentFolderAction);
