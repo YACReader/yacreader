@@ -70,7 +70,7 @@ void RequestMapper::service(HttpRequest &request, HttpResponse &response)
 
     if (path.startsWith("/v2")) {
         serviceV2(request, response);
-    } else if (path.startsWith("/webui")) {
+    } else if (path == "/" || path.startsWith("/webui")) {
         serviceWebUI(request, response);
     } else {
         Static::staticFileController->service(request, response);

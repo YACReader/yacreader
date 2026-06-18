@@ -15,6 +15,11 @@ StatusPageController::StatusPageController() { }
 
 void StatusPageController::service(HttpRequest &request, HttpResponse &response)
 {
+    if (request.getPath() == "/") {
+        response.redirect("/webui");
+        return;
+    }
+
     response.setHeader("Content-Type", "text/html; charset=utf-8");
     response.setHeader("Connection", "close");
 
