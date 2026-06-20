@@ -21,6 +21,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### All GUI Apps
 * Better system theme detection.
+* New button in the help dialog for showing the changelog.
 
 ## 10.0.0
 

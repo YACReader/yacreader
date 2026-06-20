@@ -1,10 +1,12 @@
 #include "help_about_dialog.h"
 
 #include "global_info_provider.h"
+#include "whats_new_controller.h"
 #include "yacreader_global.h"
 
 #include <QApplication>
 #include <QFile>
+#include <QPushButton>
 #include <QScreen>
 #include <QTabWidget>
 #include <QTextBrowser>
@@ -29,6 +31,14 @@ HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     // helpText->setFont(QFont("Comic Sans MS", 10));
     // helpText->setDisabled(true);
     // tabWidget->addTab(,"About Qt");
+
+    changelogButton = new QPushButton(tr("Changelog"));
+    changelogButton->setFlat(true);
+    changelogButton->setCursor(Qt::PointingHandCursor);
+    connect(changelogButton, &QPushButton::clicked, this, [this]() {
+        YACReader::WhatsNewController().showWhatsNew(this);
+    });
+    tabWidget->setCornerWidget(changelogButton, Qt::TopRightCorner);
 
     layout->addWidget(tabWidget);
     layout->setContentsMargins(1, 3, 1, 1);
@@ -100,7 +110,13 @@ void HelpAboutDialog::loadSystemInfo()
 
 void HelpAboutDialog::applyTheme(const Theme &theme)
 {
-    Q_UNUSED(theme)
+    if (changelogButton != nullptr) {
+        changelogButton->setStyleSheet(QString("QPushButton { border:none; background:transparent; color:%1;"
+                                               " font-family:Arial; padding:2px 8px; }"
+                                               "QPushButton:hover { text-decoration:underline; }")
+                                               .arg(theme.helpAboutDialog.linkColor.name()));
+    }
+
     applyHtmlTheme();
 }
 
