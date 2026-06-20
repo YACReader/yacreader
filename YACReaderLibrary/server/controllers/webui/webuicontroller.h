@@ -19,6 +19,12 @@ public:
 
 private:
     void renderStatusPage(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
+    void renderLibraryBrowser(stefanfrings::HttpRequest &request,
+                              stefanfrings::HttpResponse &response,
+                              int libraryId,
+                              const QString &libraryName,
+                              const QString &initialView,
+                              qulonglong initialItemId);
     void renderSettingsPage(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response, const QString &errorMessage = QString());
     bool saveSettings(stefanfrings::HttpRequest &request, QString &errorMessage, int &errorStatus);
 };

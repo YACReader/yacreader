@@ -7,6 +7,7 @@
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QRegularExpression>
 #include <QSettings>
 #include <QSysInfo>
 #include <QTime>
@@ -90,6 +91,44 @@ void WebUIController::service(HttpRequest &request, HttpResponse &response)
         return;
     }
 
+    const QRegularExpression libraryBrowserPath(
+            QStringLiteral(R"(^/webui/library/([0-9]+)(?:/(folder|comic)/([0-9]+))?/?$)"));
+    const QRegularExpressionMatch libraryBrowserMatch = libraryBrowserPath.match(QString::fromUtf8(path));
+    if (libraryBrowserMatch.hasMatch()) {
+        if (method != "GET") {
+            methodNotAllowed(response, "GET");
+            return;
+        }
+
+        bool libraryIdIsValid = false;
+        const int libraryId = libraryBrowserMatch.captured(1).toInt(&libraryIdIsValid);
+        const YACReaderLibraries libraries = DBHelper::getLibraries();
+        if (!libraryIdIsValid || !libraries.contains(libraryId)) {
+            response.setStatus(404, "Not Found");
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.write("404 library not found", true);
+            return;
+        }
+
+        const QString initialView = libraryBrowserMatch.captured(2).isEmpty() ? QStringLiteral("folder") : libraryBrowserMatch.captured(2);
+        bool itemIdIsValid = false;
+        qulonglong initialItemId = libraryBrowserMatch.captured(3).toULongLong(&itemIdIsValid);
+        if (libraryBrowserMatch.captured(3).isEmpty()) {
+            initialItemId = 1;
+            itemIdIsValid = true;
+        }
+
+        if (!itemIdIsValid) {
+            response.setStatus(404, "Not Found");
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.write("404 item not found", true);
+            return;
+        }
+
+        renderLibraryBrowser(request, response, libraryId, libraries.getName(libraryId), initialView, initialItemId);
+        return;
+    }
+
     if (path == "/webui/settings" || path == "/webui/settings/") {
         if (method == "GET") {
             renderSettingsPage(request, response);
@@ -141,13 +180,24 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
 <body>
   <div class="app-shell">
     <aside class="sidebar">
-      <a class="brand" href="/webui">
-        <img class="brand-logo" src="/images/webui/YACLibraryServer.svg" alt="">
-        <span class="brand-copy">
-          <span class="brand-name">YACReader</span>
-          <span class="brand-product">Library Server</span>
-        </span>
-      </a>
+      <div class="sidebar-header">
+        <a class="brand" href="/webui">
+          <img class="brand-logo" src="/images/webui/YACLibraryServer.svg" alt="">
+          <span class="brand-copy">
+            <span class="brand-name">YACReader</span>
+            <span class="brand-product">Library Server</span>
+          </span>
+        </a>
+        <button class="theme-toggle" data-theme-toggle type="button" aria-label="Use dark theme">
+          <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>
+          </svg>
+          <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/>
+          </svg>
+        </button>
+      </div>
 
       <nav class="navigation" aria-label="Server">
         <a class="navigation-item active" href="/webui" aria-current="page">
@@ -180,15 +230,6 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
           <div class="eyebrow">Overview</div>
           <h1 class="page-title">Server status</h1>
         </div>
-        <button class="theme-toggle" data-theme-toggle type="button" aria-label="Use dark theme">
-          <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>
-          </svg>
-          <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/>
-          </svg>
-        </button>
       </header>
 
       <div class="content">
@@ -226,7 +267,7 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
           </div>
         </section>
 
-        <section class="section" aria-labelledby="libraries-heading">
+        <section class="section" id="libraries" aria-labelledby="libraries-heading">
           <div class="section-header">
             <div class="section-title" id="libraries-heading">Libraries</div>
             <span class="count">{library.count}</span>
@@ -234,13 +275,16 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
           <p class="library-description">Libraries currently available to connected YACReader clients.</p>
           <div class="library-grid">
             {loop Library}
-            <article class="library-card">
+            <a class="library-card" href="/webui/library/{Library.Id}" aria-label="Browse {Library.Name}">
               <div class="library-initial" aria-hidden="true">{Library.Initial}</div>
               <div class="library-copy">
                 <div class="library-name" title="{Library.Name}">{Library.Name}</div>
                 <div class="library-path" title="{Library.Path}">{Library.Path}</div>
               </div>
-            </article>
+              <svg class="library-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6"/>
+              </svg>
+            </a>
             {else Library}
             <div class="empty-state">No libraries are configured yet.</div>
             {end Library}
@@ -270,12 +314,132 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
         const QString libraryName = libraryNames.at(i);
         const QString libraryInitial = libraryName.trimmed().isEmpty() ? QString(QChar(0x2014)) : libraryName.trimmed().left(1).toUpper();
 
+        statusPage.setVariable(QString("Library%1.Id").arg(i), QString::number(libraries.getId(libraryName)));
         statusPage.setVariable(QString("Library%1.Initial").arg(i), libraryInitial.toHtmlEscaped());
         statusPage.setVariable(QString("Library%1.Name").arg(i), libraryName.toHtmlEscaped());
         statusPage.setVariable(QString("Library%1.Path").arg(i), libraries.getPath(libraryName).toHtmlEscaped());
     }
 
     response.write(statusPage.toUtf8(), true);
+}
+
+void WebUIController::renderLibraryBrowser(HttpRequest &request,
+                                           HttpResponse &response,
+                                           int libraryId,
+                                           const QString &libraryName,
+                                           const QString &initialView,
+                                           qulonglong initialItemId)
+{
+    setPageHeaders(response);
+
+    Template browserPage(
+            QStringLiteral(R"HTML(<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>{library.name} · YACReaderLibrary</title>
+  <link rel="stylesheet" href="/css/webui.css">
+  <script src="/js/webui.js"></script>
+</head>
+<body data-browser-library-id="{library.id}" data-browser-library-name="{library.name}" data-browser-initial-view="{browser.view}" data-browser-initial-item-id="{browser.item.id}">
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <a class="brand" href="/webui">
+          <img class="brand-logo" src="/images/webui/YACLibraryServer.svg" alt="">
+          <span class="brand-copy">
+            <span class="brand-name">YACReader</span>
+            <span class="brand-product">Library Server</span>
+          </span>
+        </a>
+        <button class="theme-toggle" data-theme-toggle type="button" aria-label="Use dark theme">
+          <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>
+          </svg>
+          <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="navigation" aria-label="Server">
+        <a class="navigation-item" href="/webui">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+            <circle cx="9" cy="9" r="6.4" stroke="currentColor" stroke-width="1.6"/>
+            <circle cx="9" cy="9" r="2.6" fill="currentColor"/>
+          </svg>
+          Status
+        </a>
+        <a class="navigation-item active" href="/webui#libraries" aria-current="page">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H10l2 2h5.5A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"/>
+          </svg>
+          Library
+        </a>
+        <a class="navigation-item" href="/webui/settings">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
+            <rect x="2.4" y="4.1" width="13.2" height="1.6" rx=".8"/>
+            <circle cx="12" cy="4.9" r="2.4"/>
+            <rect x="2.4" y="11.4" width="13.2" height="1.6" rx=".8"/>
+            <circle cx="6" cy="12.2" r="2.4"/>
+          </svg>
+          Settings
+        </a>
+      </nav>
+
+      <div class="server-summary">
+        <span class="online-dot" aria-hidden="true"></span>
+        <span>Server {server.version} · :{os.port}</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar browser-topbar">
+        <button class="browser-back" data-browser-back type="button" aria-label="Go to containing folder" hidden>
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m15 18-6-6 6-6"/>
+          </svg>
+        </button>
+        <div class="browser-heading">
+          <nav class="breadcrumbs" data-browser-breadcrumbs aria-label="Breadcrumb">
+            <a href="/webui#libraries">Libraries</a>
+            <span aria-hidden="true">/</span>
+            <span>{library.name}</span>
+          </nav>
+          <h1 class="page-title" data-browser-title>{library.name}</h1>
+        </div>
+      </header>
+
+      <div class="content browser-content" data-browser-root aria-live="polite">
+        <div class="browser-loading">
+          <div class="browser-loading-header"></div>
+          <div class="browser-loading-grid">
+            <div class="browser-loading-card"></div>
+            <div class="browser-loading-card"></div>
+            <div class="browser-loading-card"></div>
+            <div class="browser-loading-card"></div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
+)HTML"),
+            "LibraryBrowserPage");
+
+    browserPage.enableWarnings();
+    browserPage.setVariable("library.id", QString::number(libraryId));
+    browserPage.setVariable("library.name", libraryName.toHtmlEscaped());
+    browserPage.setVariable("browser.view", initialView.toHtmlEscaped());
+    browserPage.setVariable("browser.item.id", QString::number(initialItemId));
+    browserPage.setVariable("os.port", requestPort(request));
+    browserPage.setVariable("server.version", SERVER_VERSION_NUMBER);
+
+    response.write(browserPage.toUtf8(), true);
 }
 
 void WebUIController::renderSettingsPage(HttpRequest &request, HttpResponse &response, const QString &errorMessage)
@@ -315,13 +479,24 @@ void WebUIController::renderSettingsPage(HttpRequest &request, HttpResponse &res
 <body>
   <div class="app-shell">
     <aside class="sidebar">
-      <a class="brand" href="/webui">
-        <img class="brand-logo" src="/images/webui/YACLibraryServer.svg" alt="">
-        <span class="brand-copy">
-          <span class="brand-name">YACReader</span>
-          <span class="brand-product">Library Server</span>
-        </span>
-      </a>
+      <div class="sidebar-header">
+        <a class="brand" href="/webui">
+          <img class="brand-logo" src="/images/webui/YACLibraryServer.svg" alt="">
+          <span class="brand-copy">
+            <span class="brand-name">YACReader</span>
+            <span class="brand-product">Library Server</span>
+          </span>
+        </a>
+        <button class="theme-toggle" data-theme-toggle type="button" aria-label="Use dark theme">
+          <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>
+          </svg>
+          <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/>
+          </svg>
+        </button>
+      </div>
 
       <nav class="navigation" aria-label="Server">
         <a class="navigation-item" href="/webui">
@@ -354,15 +529,6 @@ void WebUIController::renderSettingsPage(HttpRequest &request, HttpResponse &res
           <div class="eyebrow">Configuration</div>
           <h1 class="page-title">Settings</h1>
         </div>
-        <button class="theme-toggle" data-theme-toggle type="button" aria-label="Use dark theme">
-          <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/>
-          </svg>
-          <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="4"/>
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/>
-          </svg>
-        </button>
       </header>
 
       <div class="content settings-content">
