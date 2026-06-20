@@ -59,8 +59,8 @@ add_library(server STATIC
     controllers/v2/foldermetadatacontroller_v2.cpp
     controllers/v2/searchcontroller_v2.h
     controllers/v2/searchcontroller_v2.cpp
-    controllers/webui/statuspagecontroller.h
-    controllers/webui/statuspagecontroller.cpp
+    controllers/webui/webuicontroller.h
+    controllers/webui/webuicontroller.cpp
 )
 target_include_directories(server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}

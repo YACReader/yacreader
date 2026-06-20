@@ -50,8 +50,11 @@ void YACReaderHttpServer::start(quint16 port)
     docroot = QFileInfo(QCoreApplication::applicationDirPath(), basedocroot).absoluteFilePath();
 #endif
 
-    if (!fileSettings->contains("path"))
-        fileSettings->setValue("path", docroot);
+    // The WebUI is shipped with the application, so its document root must
+    // follow the currently running binary. Persisting the generated path made
+    // it point to stale build and installation directories after an upgrade.
+    // TODO: do we really want to keep using this setting at all?
+    fileSettings->setValue("path", docroot);
 
     Static::staticFileController = new StaticFileController(fileSettings, app);
 

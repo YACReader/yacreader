@@ -23,7 +23,7 @@
 #include "controllers/v2/tagscontroller_v2.h"
 #include "controllers/v2/updatecomiccontroller_v2.h"
 #include "controllers/versioncontroller.h"
-#include "controllers/webui/statuspagecontroller.h"
+#include "controllers/webui/webuicontroller.h"
 #include "db_helper.h"
 #include "static.h"
 #include "staticfilecontroller.h"
@@ -79,7 +79,7 @@ void RequestMapper::service(HttpRequest &request, HttpResponse &response)
 
 void RequestMapper::serviceWebUI(HttpRequest &request, HttpResponse &response)
 {
-    StatusPageController().service(request, response);
+    WebUIController().service(request, response);
 }
 
 void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)

@@ -63,9 +63,9 @@ target_link_libraries(YACReaderLibraryServer PRIVATE
 if(WIN32 OR APPLE)
     add_custom_command(TARGET YACReaderLibraryServer POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${PROJECT_SOURCE_DIR}/release/server/docroot/images/webui"
-            "$<TARGET_FILE_DIR:YACReaderLibraryServer>/server/docroot/images/webui"
-        COMMENT "Copying webui images to build output"
+            "${PROJECT_SOURCE_DIR}/release/server/docroot"
+            "$<TARGET_FILE_DIR:YACReaderLibraryServer>/server/docroot"
+        COMMENT "Copying webui files to build output"
     )
 endif()
 
