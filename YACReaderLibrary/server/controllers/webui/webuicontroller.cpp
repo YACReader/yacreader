@@ -267,24 +267,54 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
           </div>
         </section>
 
-        <section class="section" id="libraries" aria-labelledby="libraries-heading">
+        <section class="section" id="libraries" aria-labelledby="libraries-heading" data-update-libraries>
           <div class="section-header">
-            <div class="section-title" id="libraries-heading">Libraries</div>
-            <span class="count">{library.count}</span>
+            <div class="section-header-main">
+              <div class="section-title" id="libraries-heading">Libraries</div>
+              <span class="count">{library.count}</span>
+            </div>
+            <button class="ghost-button update-all" type="button" data-update-all aria-label="Update all libraries">
+              <span class="update-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"/>
+                  <polyline points="1 20 1 14 7 14"/>
+                  <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+              </span>
+              <span class="update-spinner" aria-hidden="true"></span>
+              <span>Update all</span>
+            </button>
           </div>
-          <p class="library-description">Libraries currently available to connected YACReader clients.</p>
+          <p class="library-description">Click a library to browse it · updating rescans its contents from disk.</p>
           <div class="library-grid">
             {loop Library}
-            <a class="library-card" href="/webui/library/{Library.Id}" aria-label="Browse {Library.Name}">
+            <div class="library-card" data-library-card>
               <div class="library-initial" aria-hidden="true">{Library.Initial}</div>
               <div class="library-copy">
-                <div class="library-name" title="{Library.Name}">{Library.Name}</div>
+                <a class="library-card-link" href="/webui/library/{Library.Id}" title="{Library.Name}">{Library.Name}</a>
                 <div class="library-path" title="{Library.Path}">{Library.Path}</div>
               </div>
-              <svg class="library-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="m9 18 6-6-6-6"/>
-              </svg>
-            </a>
+              <div class="library-menu" data-menu>
+                <button class="icon-button library-menu-toggle" type="button" data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-label="Actions for {Library.Name}">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <circle cx="5" cy="12" r="1.7"/>
+                    <circle cx="12" cy="12" r="1.7"/>
+                    <circle cx="19" cy="12" r="1.7"/>
+                  </svg>
+                </button>
+                <div class="library-menu-popover" data-menu-popover role="menu" hidden>
+                  <button class="menu-item" type="button" role="menuitem" data-update-library="{Library.Id}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="23 4 23 10 17 10"/>
+                      <polyline points="1 20 1 14 7 14"/>
+                      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                    <span>Update library</span>
+                  </button>
+                </div>
+              </div>
+              <div class="library-progress" aria-hidden="true"></div>
+            </div>
             {else Library}
             <div class="empty-state">No libraries are configured yet.</div>
             {end Library}

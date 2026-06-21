@@ -80,33 +80,79 @@ void LibrariesUpdateCoordinator::checkUpdatePolicy()
 
 void LibrariesUpdateCoordinator::updateLibraries()
 {
-    if (canStartUpdateProvider()) {
-        startUpdate();
+    requestLibrariesUpdate();
+}
+
+void LibrariesUpdateCoordinator::updateSingleLibrary(int id)
+{
+    requestSingleLibraryUpdate(id);
+}
+
+LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::requestLibrariesUpdate()
+{
+    if (isRunning()) {
+        return UpdateRequestResult::AlreadyRunning;
     }
+
+    if (!canStartUpdateProvider()) {
+        return UpdateRequestResult::NotAllowed;
+    }
+
+    return startUpdate({ });
+}
+
+LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::requestSingleLibraryUpdate(int id)
+{
+    if (isRunning()) {
+        return UpdateRequestResult::AlreadyRunning;
+    }
+
+    const QString path = libraries.getPath(id);
+    if (path.isEmpty()) {
+        return UpdateRequestResult::LibraryNotFound;
+    }
+
+    if (!canStartUpdateProvider()) {
+        return UpdateRequestResult::NotAllowed;
+    }
+
+    return startUpdate({ path });
 }
 
 bool LibrariesUpdateCoordinator::isRunning() const
 {
+    QMutexLocker locker(&futureMutex);
     return updateFuture.valid() && updateFuture.wait_for(std::chrono::seconds(0)) != std::future_status::ready;
 }
 
-void LibrariesUpdateCoordinator::startUpdate()
+LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::startUpdate(const QStringList &paths)
 {
+    QMutexLocker locker(&futureMutex);
+
     if (updateFuture.valid() && updateFuture.wait_for(std::chrono::seconds(0)) != std::future_status::ready) {
-        return;
+        return UpdateRequestResult::AlreadyRunning;
     }
 
     canceled = false;
 
-    updateFuture = std::async(std::launch::async, [this] {
+    QStringList targets = paths;
+    if (targets.isEmpty()) {
+        for (const auto &library : libraries.getLibraries()) {
+            targets.append(library.getPath());
+        }
+    }
+
+    updateFuture = std::async(std::launch::async, [this, targets] {
         emit updateStarted();
-        for (auto library : libraries.getLibraries()) {
+        for (const auto &path : targets) {
             if (!canceled) {
-                updateLibrary(library.getPath());
+                updateLibrary(path);
             }
         }
         emit updateEnded();
     });
+
+    return UpdateRequestResult::Started;
 }
 
 void LibrariesUpdateCoordinator::updateLibrary(const QString &path)

@@ -69,6 +69,7 @@
 #include "rename_library_dialog.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
+#include "static.h"
 #include "trayicon_controller.h"
 #include "whats_new_controller.h"
 #include "xml_info_library_scanner.h"
@@ -404,6 +405,9 @@ void LibraryWindow::setupCoordinators()
                 propertiesDialog->isVisible() == false;
     };
     librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries, canStartUpdateProvider, this);
+
+    // Allow HTTP requests (e.g. the WebUI "Update now" button) to trigger updates.
+    Static::librariesUpdateCoordinator = librariesUpdateCoordinator;
 
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, sideBar->librariesTitle, &YACReaderTitledToolBar::showBusyIndicator);
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, sideBar->librariesTitle, &YACReaderTitledToolBar::hideBusyIndicator);

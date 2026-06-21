@@ -9,6 +9,7 @@
 #include "libraries_update_coordinator.h"
 #include "libraries_updater.h"
 #include "qrcodegen.hpp"
+#include "static.h"
 #include "yacreader_global.h"
 #include "yacreader_http_server.h"
 #include "yacreader_libraries.h"
@@ -240,6 +241,8 @@ int start(QCoreApplication &app, QCommandLineParser &parser, const QStringList &
     auto librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries, []() {
         return true;
     });
+
+    Static::librariesUpdateCoordinator = librariesUpdateCoordinator;
 
     app.connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, &app, []() {
         QLOG_INFO() << "Starting libraries update";

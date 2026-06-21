@@ -813,6 +813,189 @@
     }
   }
 
+  function initLibraryMenus() {
+    var menus = Array.prototype.slice.call(document.querySelectorAll("[data-menu]"));
+    if (!menus.length) {
+      return;
+    }
+
+    function closeAll(except) {
+      menus.forEach(function (menu) {
+        if (menu === except) {
+          return;
+        }
+        var toggle = menu.querySelector("[data-menu-toggle]");
+        var popover = menu.querySelector("[data-menu-popover]");
+        if (popover) {
+          popover.hidden = true;
+        }
+        if (toggle) {
+          toggle.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+
+    menus.forEach(function (menu) {
+      var toggle = menu.querySelector("[data-menu-toggle]");
+      var popover = menu.querySelector("[data-menu-popover]");
+      if (!toggle || !popover) {
+        return;
+      }
+
+      toggle.addEventListener("click", function (event) {
+        event.stopPropagation();
+        var willOpen = popover.hidden;
+        closeAll(menu);
+        popover.hidden = !willOpen;
+        toggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+      });
+    });
+
+    document.addEventListener("click", function () {
+      closeAll(null);
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeAll(null);
+      }
+    });
+
+    return { closeAll: closeAll };
+  }
+
+  function initUpdateLibraries(menus) {
+    var container = document.querySelector("[data-update-libraries]");
+    if (!container) {
+      return;
+    }
+
+    var allButton = container.querySelector("[data-update-all]");
+    var cards = Array.prototype.slice.call(container.querySelectorAll("[data-library-card]"));
+    var triggers = Array.prototype.slice.call(container.querySelectorAll("[data-update-all], [data-update-library]"));
+    if (!triggers.length) {
+      return;
+    }
+
+    var polling = false;
+    var active = null; // null | "all" | the card being updated
+
+    function setTriggersDisabled(disabled) {
+      triggers.forEach(function (trigger) {
+        trigger.disabled = disabled;
+      });
+    }
+
+    function showIndicators(target) {
+      // "all": spin the header button only (per-card bars in lock-step add no
+      // information). A single card: run the ping-pong bar on that card alone.
+      if (allButton) {
+        allButton.classList.toggle("is-busy", target === "all");
+      }
+      cards.forEach(function (card) {
+        card.classList.toggle("is-updating", card === target);
+      });
+      active = target || null;
+    }
+
+    function clearIndicators() {
+      if (allButton) {
+        allButton.classList.remove("is-busy");
+      }
+      cards.forEach(function (card) {
+        card.classList.remove("is-updating");
+      });
+      active = null;
+    }
+
+    function schedulePoll(delay) {
+      if (polling) {
+        return;
+      }
+      polling = true;
+      window.setTimeout(poll, delay);
+    }
+
+    // The server tracks a single global "running" flag and updates libraries
+    // sequentially, so it can't say which library is in progress. We show the
+    // indicator for whatever started the run (or fall back to "all" if a run was
+    // already going) and disable every trigger until it finishes.
+    function applyRunning(running) {
+      if (running) {
+        setTriggersDisabled(true);
+        if (!active) {
+          showIndicators("all");
+        }
+        schedulePoll(2000);
+      } else {
+        clearIndicators();
+        setTriggersDisabled(false);
+      }
+    }
+
+    function checkStatus() {
+      return fetch("/v2/libraries/update/status", { headers: { "Accept": "application/json" } })
+        .then(function (response) {
+          return response.ok ? response.json() : { running: false };
+        })
+        .then(function (data) {
+          applyRunning(!!(data && data.running));
+        });
+    }
+
+    function poll() {
+      polling = false;
+      checkStatus().catch(function () {
+        polling = false;
+        clearIndicators();
+        setTriggersDisabled(false);
+      });
+    }
+
+    function trigger(target, url) {
+      if (menus) {
+        menus.closeAll(null);
+      }
+      setTriggersDisabled(true);
+      showIndicators(target);
+
+      fetch(url, { method: "POST", headers: { "Accept": "application/json" } })
+        .then(function (response) {
+          if (response.status === 202) {
+            schedulePoll(1200);
+          } else if (response.status === 409) {
+            clearIndicators();
+            return checkStatus();
+          } else {
+            throw new Error("Unexpected status " + response.status);
+          }
+        })
+        .catch(function () {
+          clearIndicators();
+          setTriggersDisabled(false);
+        });
+    }
+
+    triggers.forEach(function (button) {
+      button.addEventListener("click", function (event) {
+        event.stopPropagation();
+        if (button.disabled) {
+          return;
+        }
+        var libraryId = button.getAttribute("data-update-library");
+        if (libraryId) {
+          var card = button.closest("[data-library-card]");
+          trigger(card, "/v2/library/" + encodeURIComponent(libraryId) + "/update");
+        } else {
+          trigger("all", "/v2/libraries/update");
+        }
+      });
+    });
+
+    // Reflect an update that may already be running (started elsewhere or before reload).
+    checkStatus().catch(function () {});
+  }
+
   applyTheme(preferredTheme());
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -844,5 +1027,7 @@
     });
 
     initLibraryBrowser();
+    var libraryMenus = initLibraryMenus();
+    initUpdateLibraries(libraryMenus);
   });
 }());

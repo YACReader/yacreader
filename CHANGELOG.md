@@ -19,6 +19,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * New `/webui` design.
 * Settings regarding metadata and auto-libraries updates can be controled from `/webui/settings`.
 * Add a new web content browser to `/webui`.
+* Add update libraries functionality to `/webui`.
 
 ### All GUI Apps
 * Better system theme detection.

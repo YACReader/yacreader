@@ -119,7 +119,9 @@ code {
 .theme-toggle:focus-visible,
 .primary-button:focus-visible,
 .secondary-button:focus-visible,
-.library-card:focus-visible,
+.ghost-button:focus-visible,
+.icon-button:focus-visible,
+.library-card-link:focus-visible,
 .browser-card:focus-visible,
 select:focus-visible,
 input[type="time"]:focus-visible {
@@ -364,6 +366,13 @@ input[type="time"]:focus-visible {
 .section-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.section-header-main {
+  display: flex;
+  align-items: center;
   gap: 11px;
 }
 
@@ -437,6 +446,7 @@ input[type="time"]:focus-visible {
 }
 
 .library-card {
+  position: relative;
   display: flex;
   min-width: 0;
   align-items: center;
@@ -450,6 +460,32 @@ input[type="time"]:focus-visible {
   transform: translateY(-2px);
 }
 
+/* Lift a card above its neighbours while its actions menu is open so the
+   popover is not painted underneath the card in the next row. */
+.library-card:has(.library-menu-popover:not([hidden])) {
+  z-index: 3;
+}
+
+/* The card name is the browse link; its ::after stretches across the whole
+   card so clicking anywhere navigates, while the refresh button sits above it. */
+.library-card-link {
+  display: block;
+  overflow: hidden;
+  color: inherit;
+  font-size: 15px;
+  font-weight: 650;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.library-card-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
 .library-arrow {
   flex: none;
   color: var(--text-muted);
@@ -459,6 +495,113 @@ input[type="time"]:focus-visible {
 .library-card:hover .library-arrow {
   color: var(--accent-strong);
   transform: translateX(2px);
+}
+
+.library-menu {
+  position: relative;
+  z-index: 2;
+  flex: none;
+}
+
+/* The card already has a border, so the trigger stays borderless to avoid a
+   double-border look; it just gets a soft hover. The compound selector keeps
+   this ahead of the generic `.icon-button` rule defined later in the file. */
+.library-menu-toggle.icon-button {
+  border: 0;
+  background: transparent;
+}
+
+.library-menu-toggle.icon-button:hover {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.library-menu-toggle.icon-button[disabled]:hover {
+  background: transparent;
+}
+
+.library-menu-popover {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 5;
+  min-width: 178px;
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.menu-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.menu-item:hover {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+.menu-item[disabled] {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.menu-item[disabled]:hover {
+  background: transparent;
+  color: var(--text);
+}
+
+/* Indeterminate "ping-pong" bar near the bottom while the card updates.
+   Inset from the edges and rounded so it stays clear of the card's corners. */
+.library-progress {
+  position: absolute;
+  right: 14px;
+  bottom: 8px;
+  left: 14px;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 999px;
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.library-card.is-updating .library-progress {
+  opacity: 1;
+}
+
+.library-progress::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  border-radius: 999px;
+  background: var(--accent);
+  animation: pingpong 1.15s ease-in-out infinite alternate;
+}
+
+@keyframes pingpong {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(150%);
+  }
 }
 
 .library-initial {
@@ -1459,6 +1602,94 @@ input[type="time"]:disabled {
   border-color: var(--accent-hover);
   background: var(--accent-hover);
   transform: translateY(-1px);
+}
+
+.primary-button[disabled] {
+  cursor: default;
+  opacity: 0.7;
+  transform: none;
+}
+
+/* Compact "Update all" button in the Libraries section header. */
+.ghost-button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 650;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+.ghost-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+/* Icon-only refresh button on each library card. */
+.icon-button {
+  display: inline-grid;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  place-items: center;
+  transition: border-color 150ms ease, background 150ms ease, color 150ms ease;
+}
+
+.icon-button:hover {
+  border-color: var(--accent);
+  color: var(--accent-strong);
+}
+
+.ghost-button[disabled],
+.icon-button[disabled] {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.ghost-button[disabled]:hover,
+.icon-button[disabled]:hover {
+  border-color: var(--border);
+  color: var(--text-muted);
+}
+
+.update-icon {
+  display: inline-flex;
+}
+
+.update-spinner {
+  display: none;
+  width: 15px;
+  height: 15px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 700ms linear infinite;
+}
+
+/* While a button is the active updater, swap its icon for a spinner. */
+.is-busy .update-icon {
+  display: none;
+}
+
+.is-busy .update-spinner {
+  display: inline-block;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
