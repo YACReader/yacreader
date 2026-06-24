@@ -1663,7 +1663,7 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
             return naturalSortLessThanCI(c1.name, c2.name);
         } else {
             if (c1.info.number.isNull() == false && c2.info.number.isNull() == false) {
-                return c1.info.number.toInt() < c2.info.number.toInt();
+                return naturalSortLessThanCI(c1.info.number.toString(), c2.info.number.toString());
             } else {
                 return c2.info.number.isNull();
             }
