@@ -484,7 +484,7 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
                     comic.info.hash = selectQuery.value(7).toString();
                     comic.info.read = selectQuery.value(8).toBool();
                     comic.info.coverSizeRatio = selectQuery.value(9).toFloat();
-                    comic.info.number = selectQuery.value(9).toInt();
+                    comic.info.number = selectQuery.value(10);
                 }
 
                 list.append(comic);
