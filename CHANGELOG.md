@@ -13,6 +13,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve last page detection in continuous scroll mode.
 * Improve What's new dialog to show the full changelog.
 
+### YACReaderLibrary
+* Fix comics order when opening a comic from YACReaderLibrary.
+
 ### YACReaderLibraryServer
 * Don't crash at startup if the server can't bind to any address.
 * Redirect `/` to `/webui`.
@@ -20,6 +23,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Settings regarding metadata and auto-libraries updates can be controled from `/webui/settings`.
 * Add a new web content browser to `/webui`.
 * Add update libraries functionality to `/webui`.
+* Fix `number` in various HTTP APIs.
+
 
 ### All GUI Apps
 * Better system theme detection.
