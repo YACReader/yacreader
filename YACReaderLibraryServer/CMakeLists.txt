@@ -71,6 +71,9 @@ endif()
 
 # Platform-specific
 if(WIN32)
+    if(MSVC)
+        target_link_options(YACReaderLibraryServer PRIVATE "/MANIFESTINPUT:${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest")
+    endif()
     target_link_libraries(YACReaderLibraryServer PRIVATE oleaut32 ole32 shell32 user32)
 endif()
 

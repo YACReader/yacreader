@@ -270,6 +270,9 @@ target_link_libraries(YACReader PRIVATE
 # Platform-specific
 if(WIN32)
     target_sources(YACReader PRIVATE icon.rc)
+    if(MSVC)
+        target_link_options(YACReader PRIVATE "/MANIFESTINPUT:${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest")
+    endif()
     target_link_libraries(YACReader PRIVATE oleaut32 ole32 shell32 user32)
 endif()
 

@@ -25,10 +25,12 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add update libraries functionality to `/webui`.
 * Fix `number` in various HTTP APIs.
 
-
 ### All GUI Apps
 * Better system theme detection.
 * New button in the help dialog for showing the changelog.
+
+### All apps
+* Add support for long paths on Windows. This is experimental and only includes library creation and opening files (including the server), other functionality may or may not work with long paths, but the critical aspect of this is the folders structure of the library so overall is big win. NOTE: You need to enable long paths support on Windows itself for this to work, `HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem` -> `LongPathsEnabled` -> `1`.
 
 ## 10.0.0
 
