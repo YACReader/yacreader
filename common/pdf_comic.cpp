@@ -1,6 +1,7 @@
 #include "pdf_comic.h"
 
 #include "comic.h"
+#include "pdf_render_size.h"
 
 #if defined USE_PDFIUM && !defined NO_PDF
 
@@ -106,18 +107,13 @@ QImage PdfiumComic::getPage(const int page)
         return QImage();
     }
 
-    // TODO: make target DPI configurable
-    // TODO: max render size too
-    QSize pagesize((FPDF_GetPageWidth(pdfpage) / 72) * 150,
-                   (FPDF_GetPageHeight(pdfpage) / 72) * 150);
-    auto maxSize = 4096;
-    if (pagesize.width() > maxSize || pagesize.height() > maxSize) {
-        pagesize.scale(maxSize, maxSize, Qt::KeepAspectRatio);
+    const QSize pagesize = YACReaderPdfRender::renderSizeFromPagePoints(QSizeF(FPDF_GetPageWidth(pdfpage),
+                                                                               FPDF_GetPageHeight(pdfpage)));
+    if (!pagesize.isValid()) {
+        FPDF_ClosePage(pdfpage);
+        return QImage();
     }
-    auto minSize = 2560;
-    if (pagesize.width() < minSize || pagesize.height() < minSize) {
-        pagesize.scale(minSize, minSize, Qt::KeepAspectRatio);
-    }
+
     image = QImage(pagesize, QImage::Format_ARGB32); // QImage::Format_RGBX8888);
     if (image.isNull()) {
         // TODO report OOM error

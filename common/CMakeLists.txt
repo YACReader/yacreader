@@ -86,6 +86,7 @@ add_library(comic_backend STATIC
     comic.h
     comic.cpp
     pdf_comic.h
+    pdf_render_size.h
 )
 yacreader_apply_build_options(comic_backend)
 
