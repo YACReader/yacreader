@@ -47,7 +47,7 @@ void HttpRequest::readRequest(QTcpSocket* socket)
         if (list.count()!=3 || !list.at(2).contains("HTTP"))
         {
             qWarning("HttpRequest: received broken HTTP request, invalid first line");
-            status=abort;
+            status=abort_broken;
         }
         else
         {
@@ -132,12 +132,12 @@ void HttpRequest::readHeader(QTcpSocket* socket)
         else if (boundary.isEmpty() && expectedBodySize+currentSize>maxSize)
         {
             qWarning("HttpRequest: expected body is too large");
-            status=abort;
+            status=abort_size;
         }
         else if (!boundary.isEmpty() && expectedBodySize>maxMultiPartSize)
         {
             qWarning("HttpRequest: expected multipart body is too large");
-            status=abort;
+            status=abort_size;
         }
         else {
             #ifdef SUPERVERBOSE
@@ -192,7 +192,7 @@ void HttpRequest::readBody(QTcpSocket* socket)
         if (fileSize>=maxMultiPartSize)
         {
             qWarning("HttpRequest: received too many multipart bytes");
-            status=abort;
+            status=abort_size;
         }
         else if (fileSize>=expectedBodySize)
         {
@@ -307,7 +307,7 @@ void HttpRequest::readFromSocket(QTcpSocket* socket)
     if ((boundary.isEmpty() && currentSize>maxSize) || (!boundary.isEmpty() && currentSize>maxMultiPartSize))
     {
         qWarning("HttpRequest: received too many bytes");
-        status=abort;
+        status=abort_size;
     }
     if (status==complete)
     {
@@ -325,7 +325,7 @@ HttpRequest::RequestStatus HttpRequest::getStatus() const
 }
 
 
-QByteArray HttpRequest::getMethod() const
+const QByteArray& HttpRequest::getMethod() const
 {
     return method;
 }
@@ -343,7 +343,7 @@ const QByteArray& HttpRequest::getRawPath() const
 }
 
 
-QByteArray HttpRequest::getVersion() const
+const QByteArray& HttpRequest::getVersion() const
 {
     return version;
 }
@@ -359,7 +359,7 @@ QList<QByteArray> HttpRequest::getHeaders(const QByteArray& name) const
     return headers.values(name.toLower());
 }
 
-QMultiMap<QByteArray,QByteArray> HttpRequest::getHeaderMap() const
+const QMultiMap<QByteArray,QByteArray>& HttpRequest::getHeaderMap() const
 {
     return headers;
 }
@@ -374,12 +374,12 @@ QList<QByteArray> HttpRequest::getParameters(const QByteArray& name) const
     return parameters.values(name);
 }
 
-QMultiMap<QByteArray,QByteArray> HttpRequest::getParameterMap() const
+const QMultiMap<QByteArray,QByteArray>& HttpRequest::getParameterMap() const
 {
     return parameters;
 }
 
-QByteArray HttpRequest::getBody() const
+const QByteArray &HttpRequest::getBody() const
 {
     return bodyData;
 }
@@ -563,7 +563,7 @@ QByteArray HttpRequest::getCookie(const QByteArray& name) const
 }
 
 /** Get the map of cookies */
-QMap<QByteArray,QByteArray>& HttpRequest::getCookieMap()
+const QMap<QByteArray,QByteArray>& HttpRequest::getCookieMap() const
 {
     return cookies;
 }
@@ -573,8 +573,7 @@ QMap<QByteArray,QByteArray>& HttpRequest::getCookieMap()
   Note that multiple clients may have the same IP address, if they
   share an internet connection (which is very common).
  */
-QHostAddress HttpRequest::getPeerAddress() const
+const QHostAddress& HttpRequest::getPeerAddress() const
 {
     return peerAddress;
 }
-

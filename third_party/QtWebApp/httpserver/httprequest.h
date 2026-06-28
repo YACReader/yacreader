@@ -41,7 +41,7 @@ class DECLSPEC HttpRequest {
 public:
 
     /** Values for getStatus() */
-    enum RequestStatus {waitForRequest, waitForHeader, waitForBody, complete, abort};
+    enum RequestStatus {waitForRequest, waitForHeader, waitForBody, complete, abort_size, abort_broken};
 
     /**
       Constructor.
@@ -69,7 +69,7 @@ public:
     RequestStatus getStatus() const;
 
     /** Get the method of the HTTP request  (e.g. "GET") */
-    QByteArray getMethod() const;
+    const QByteArray& getMethod() const;
 
     /** Get the decoded path of the HTPP request (e.g. "/index.html") */
     QByteArray getPath() const;
@@ -78,7 +78,7 @@ public:
     const QByteArray& getRawPath() const;
 
     /** Get the version of the HTPP request (e.g. "HTTP/1.1") */
-    QByteArray getVersion() const;
+    const QByteArray& getVersion() const;
 
     /**
       Get the value of a HTTP request header.
@@ -98,7 +98,7 @@ public:
      * Get all HTTP request headers. Note that the header names
      * are returned in lower-case.
      */
-    QMultiMap<QByteArray,QByteArray> getHeaderMap() const;
+    const QMultiMap<QByteArray,QByteArray>& getHeaderMap() const;
 
     /**
       Get the value of a HTTP request parameter.
@@ -115,10 +115,10 @@ public:
     QList<QByteArray> getParameters(const QByteArray& name) const;
 
     /** Get all HTTP request parameters. */
-    QMultiMap<QByteArray,QByteArray> getParameterMap() const;
+    const QMultiMap<QByteArray,QByteArray>& getParameterMap() const;
 
     /** Get the HTTP request body.  */
-    QByteArray getBody() const;
+    const QByteArray& getBody() const;
 
     /**
       Decode an URL parameter.
@@ -145,14 +145,14 @@ public:
     QByteArray getCookie(const QByteArray& name) const;
 
     /** Get all cookies. */
-    QMap<QByteArray,QByteArray>& getCookieMap();
+    const QMap<QByteArray,QByteArray>& getCookieMap() const;
 
     /**
       Get the address of the connected client.
       Note that multiple clients may have the same IP address, if they
       share an internet connection (which is very common).
      */
-    QHostAddress getPeerAddress() const;
+    const QHostAddress& getPeerAddress() const;
 
 private:
 

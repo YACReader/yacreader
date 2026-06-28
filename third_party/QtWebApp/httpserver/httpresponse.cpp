@@ -112,12 +112,13 @@ void HttpResponse::write(QByteArray data, bool lastPart)
            headers.insert("Content-Length",QByteArray::number(data.size()));
         }
 
-        // else if we will not close the connection at the end, them we must use the chunked mode.
+        // else if we will not close the connection at the end and there is no Content-Length header,
+        // then we must use the chunked mode.
         else
         {
             QByteArray connectionValue=headers.value("Connection",headers.value("connection"));
             bool connectionClose=QString::compare(connectionValue,"close",Qt::CaseInsensitive)==0;
-            if (!connectionClose)
+            if (!connectionClose && !headers.contains("Content-Length"))
             {
                 headers.insert("Transfer-Encoding","chunked");
                 chunkedMode=true;

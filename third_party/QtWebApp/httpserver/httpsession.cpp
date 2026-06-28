@@ -92,16 +92,11 @@ HttpSession::~HttpSession()
 }
 
 
-QByteArray HttpSession::getId() const
+const QByteArray& HttpSession::getId() const
 {
-    if (dataPtr)
-    {
-        return dataPtr->id;
-    }
-    else
-    {
-        return QByteArray();
-    }
+    static const QByteArray nullId;
+
+    return (dataPtr) ? dataPtr->id : nullId;
 }
 
 bool HttpSession::isNull() const {

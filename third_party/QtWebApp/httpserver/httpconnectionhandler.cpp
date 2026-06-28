@@ -131,7 +131,10 @@ void HttpConnectionHandler::readTimeout()
     //Commented out because QWebView cannot handle this.
     //socket->write("HTTP/1.1 408 request timeout\r\nConnection: close\r\n\r\n408 request timeout\r\n");
 
-    while(socket->bytesToWrite()) socket->waitForBytesWritten();
+    if(socket->bytesToWrite())
+    {
+        socket->waitForBytesWritten(1000);
+    }
     socket->disconnectFromHost();
     delete currentRequest;
     currentRequest=nullptr;
@@ -162,7 +165,10 @@ void HttpConnectionHandler::read()
         }
 
         // Collect data for the request object
-        while (socket->bytesAvailable() && currentRequest->getStatus()!=HttpRequest::complete && currentRequest->getStatus()!=HttpRequest::abort)
+        while (socket->bytesAvailable() &&
+               currentRequest->getStatus()!=HttpRequest::complete &&
+               currentRequest->getStatus()!=HttpRequest::abort_size &&
+               currentRequest->getStatus()!=HttpRequest::abort_broken)
         {
             currentRequest->readFromSocket(socket);
             if (currentRequest->getStatus()==HttpRequest::waitForBody)
@@ -175,10 +181,27 @@ void HttpConnectionHandler::read()
         }
 
         // If the request is aborted, return error message and close the connection
-        if (currentRequest->getStatus()==HttpRequest::abort)
+        if (currentRequest->getStatus()==HttpRequest::abort_size)
         {
             socket->write("HTTP/1.1 413 entity too large\r\nConnection: close\r\n\r\n413 Entity too large\r\n");
-            while(socket->bytesToWrite()) socket->waitForBytesWritten();
+            if(socket->bytesToWrite())
+            {
+                socket->waitForBytesWritten(1000);
+            }
+            socket->disconnectFromHost();
+            delete currentRequest;
+            currentRequest=nullptr;
+            return;
+        }
+
+        // another reson to abort the request
+        else if (currentRequest->getStatus()==HttpRequest::abort_broken)
+        {
+            socket->write("HTTP/1.1 400 bad request\r\nConnection: close\r\n\r\n400 Bad request\r\n");
+            if(socket->bytesToWrite())
+            {
+                socket->waitForBytesWritten(1000);
+            }
             socket->disconnectFromHost();
             delete currentRequest;
             currentRequest=nullptr;
@@ -186,7 +209,7 @@ void HttpConnectionHandler::read()
         }
 
         // If the request is complete, let the request mapper dispatch it
-        if (currentRequest->getStatus()==HttpRequest::complete)
+        else if (currentRequest->getStatus()==HttpRequest::complete)
         {
             readTimer.stop();
             qDebug("HttpConnectionHandler (%p): received request",static_cast<void*>(this));
@@ -258,7 +281,10 @@ void HttpConnectionHandler::read()
             // Close the connection or prepare for the next request on the same connection.
             if (closeConnection)
             {
-                while(socket->bytesToWrite()) socket->waitForBytesWritten();
+                if(socket->bytesToWrite())
+                {
+                    socket->waitForBytesWritten(1000);
+                }
                 socket->disconnectFromHost();
             }
             else

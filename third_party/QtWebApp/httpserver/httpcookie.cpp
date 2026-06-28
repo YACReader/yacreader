@@ -188,22 +188,22 @@ void HttpCookie::setSameSite(const QByteArray sameSite)
     this->sameSite=sameSite;
 }
 
-QByteArray HttpCookie::getName() const
+const QByteArray& HttpCookie::getName() const
 {
     return name;
 }
 
-QByteArray HttpCookie::getValue() const
+const QByteArray& HttpCookie::getValue() const
 {
     return value;
 }
 
-QByteArray HttpCookie::getComment() const
+const QByteArray& HttpCookie::getComment() const
 {
     return comment;
 }
 
-QByteArray HttpCookie::getDomain() const
+const QByteArray& HttpCookie::getDomain() const
 {
     return domain;
 }
@@ -213,7 +213,7 @@ int HttpCookie::getMaxAge() const
     return maxAge;
 }
 
-QByteArray HttpCookie::getPath() const
+const QByteArray& HttpCookie::getPath() const
 {
     return path;
 }
@@ -228,7 +228,7 @@ bool HttpCookie::getHttpOnly() const
     return httpOnly;
 }
 
-QByteArray HttpCookie::getSameSite() const
+const QByteArray& HttpCookie::getSameSite() const
 {
     return sameSite;
 }
