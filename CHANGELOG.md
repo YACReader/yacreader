@@ -31,6 +31,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### All apps
 * Add support for long paths on Windows. This is experimental and only includes library creation and opening files (including the server), other functionality may or may not work with long paths, but the critical aspect of this is the folders structure of the library so overall is big win. NOTE: You need to enable long paths support on Windows itself for this to work, `HKLM:\SYSTEM\CurrentControlSet\Control\FileSystem` -> `LongPathsEnabled` -> `1`.
+* Better PDF rendering that accounts for tall images used in web comics.
 
 ## 10.0.0
 
