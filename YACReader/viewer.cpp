@@ -3,6 +3,7 @@
 #include "bookmarks_dialog.h"
 #include "comic_db.h"
 #include "configuration.h"
+#include "continuous_page_provider.h"
 #include "continuous_page_widget.h"
 #include "continuous_view_model.h"
 #include "goto_dialog.h"
@@ -68,8 +69,10 @@ Viewer::Viewer(QWidget *parent)
     setAlignment(Qt::AlignCenter);
 
     continuousWidget = new ContinuousPageWidget();
+    continuousPageProvider = new ContinuousPageProvider(this);
     continuousViewModel = new ContinuousViewModel(QWIDGETSIZE_MAX, this);
     continuousWidget->setViewModel(continuousViewModel);
+    continuousWidget->setProvider(continuousPageProvider);
     continuousWidget->installEventFilter(this);
     //---------------------------------------
     mglass = new MagnifyingGlass(
@@ -103,6 +106,7 @@ Viewer::Viewer(QWidget *parent)
 
     render = new Render();
     continuousWidget->setRender(render);
+    continuousPageProvider->setRender(render);
 
     hideCursorTimer = new QTimer();
     hideCursorTimer->setSingleShot(true);
@@ -209,8 +213,11 @@ void Viewer::createConnections()
     connect(render, qOverload<unsigned int>(&Render::numPages), this, &Viewer::comicLoaded);
     connect(render, QOverload<int, const QByteArray &>::of(&Render::imageLoaded), goToFlow, &GoToFlowWidget::setImageReady);
     connect(render, &Render::currentPageReady, this, &Viewer::updatePage);
-    connect(render, &Render::pageRendered, continuousWidget, &ContinuousPageWidget::onPageAvailable);
-    connect(render, &Render::pageRendered, this, &Viewer::onContinuousPageRendered);
+    // Continuous mode is driven by the off-thread page provider, not by Render's
+    // (blocking) page buffer. The provider emits pageReady when a full-resolution
+    // page has been decoded on a background thread.
+    connect(continuousPageProvider, &ContinuousPageProvider::pageReady, continuousWidget, &ContinuousPageWidget::onPageAvailable);
+    connect(continuousPageProvider, &ContinuousPageProvider::pageReady, this, &Viewer::onContinuousPageRendered);
     connect(continuousViewModel, &ContinuousViewModel::stateChanged, this, &Viewer::onContinuousViewModelChanged);
     connect(render, qOverload<unsigned int>(&Render::numPages), this, &Viewer::onNumPagesReady);
     connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &Viewer::onContinuousScroll);
@@ -236,6 +243,11 @@ void Viewer::prepareForOpening()
 
     // render->update();
 
+    // Drop the previous comic's decoded/scaled pages so we never flash stale
+    // content while the new comic loads.
+    continuousPageProvider->reset();
+    continuousWidget->invalidateScaledImageCache();
+
     verticalScrollBar()->setSliderPosition(verticalScrollBar()->minimum());
 
     if (Configuration::getConfiguration().getShowInformation() && !information) {
@@ -248,12 +260,20 @@ void Viewer::prepareForOpening()
 void Viewer::open(QString pathFile, int atPage)
 {
     prepareForOpening();
+    // No per-comic filter levels here: match Render, whose filters keep their
+    // settings-driven defaults (level -1) on this load path.
+    continuousPageProvider->setFilters(-1, -1, -1);
     render->load(pathFile, atPage);
 }
 
 void Viewer::open(QString pathFile, const ComicDB &comic)
 {
     prepareForOpening();
+    // Mirror exactly the filter levels Render::load(comicDB) derives, so the
+    // decoded pages match single-page mode.
+    continuousPageProvider->setFilters(comic.info.brightness == -1 ? 0 : comic.info.brightness,
+                                       comic.info.contrast == -1 ? 100 : comic.info.contrast,
+                                       comic.info.gamma == -1 ? 100 : comic.info.gamma);
     render->load(pathFile, comic);
 }
 
@@ -466,6 +486,7 @@ void Viewer::increaseZoomFactor()
 
     if (continuousScroll) {
         continuousViewModel->setZoomFactor(zoom);
+        continuousWidget->invalidateScaledImageCache();
     } else {
         updateContentSize();
     }
@@ -480,6 +501,7 @@ void Viewer::decreaseZoomFactor()
 
     if (continuousScroll) {
         continuousViewModel->setZoomFactor(zoom);
+        continuousWidget->invalidateScaledImageCache();
     } else {
         updateContentSize();
     }
@@ -877,6 +899,18 @@ QByteArray Viewer::rawPage(int page) const
 QList<int> Viewer::currentVisiblePages()
 {
     QList<int> pages;
+
+    if (continuousScroll && continuousViewModel->numPages() > 0) {
+        int firstPage = continuousViewModel->pageAtY(continuousViewModel->scrollY());
+        int lastPage = continuousViewModel->pageAtY(continuousViewModel->scrollY() + viewport()->height() - 1);
+        firstPage = qBound(0, firstPage, continuousViewModel->numPages() - 1);
+        lastPage = qBound(0, lastPage, continuousViewModel->numPages() - 1);
+        for (int page = firstPage; page <= lastPage; ++page) {
+            pages << page;
+        }
+        return pages;
+    }
+
     const int currentPage = render->getIndex();
     pages << currentPage;
 
@@ -906,7 +940,7 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
         // so the result image is sized at source resolution (like single-page mode)
         int centerPageIdx = continuousViewModel->pageAtY(cwY);
         centerPageIdx = qBound(0, centerPageIdx, continuousViewModel->numPages() - 1);
-        const QImage *centerImg = render->bufferedImage(centerPageIdx);
+        const QImage *centerImg = continuousPageProvider->image(centerPageIdx);
         const QSize centerScaledSize = continuousViewModel->scaledPageSize(centerPageIdx);
 
         float wFactor = 1.0f, hFactor = 1.0f;
@@ -936,7 +970,7 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
 
         QPainter painter(&result);
         for (int i = firstPage; i <= lastPage; ++i) {
-            const QImage *srcImg = render->bufferedImage(i);
+            const QImage *srcImg = continuousPageProvider->image(i);
             if (!srcImg || srcImg->isNull()) {
                 continue;
             }
@@ -1093,11 +1127,18 @@ void Viewer::informationSwitch()
 void Viewer::updateInformation()
 {
     if (render->hasLoadedComic()) {
+        QString pagesInformation;
+        if (continuousScroll && continuousViewModel->numPages() > 0) {
+            pagesInformation = QString::number(continuousViewModel->readingProgressPage() + 1) + "/" + QString::number(continuousViewModel->numPages());
+        } else {
+            pagesInformation = render->getCurrentPagesInformation();
+        }
+
         auto displayTime = Configuration::getConfiguration().getShowTimeInInformation();
         if (displayTime) {
-            informationLabel->setText(render->getCurrentPagesInformation() + " - " + QTime::currentTime().toString("HH:mm"));
+            informationLabel->setText(pagesInformation + " - " + QTime::currentTime().toString("HH:mm"));
         } else {
-            informationLabel->setText(render->getCurrentPagesInformation());
+            informationLabel->setText(pagesInformation);
         }
 
         informationLabel->adjustSize();
@@ -1180,10 +1221,22 @@ void Viewer::moveCursoToGoToFlow()
 void Viewer::rotateLeft()
 {
     render->rotateLeft();
+    // Mirror Render's rotation (which it never resets) so the provider decodes
+    // at the same angle; continuousRotation stays in lockstep with Render.
+    continuousRotation = (continuousRotation == 0) ? 270 : continuousRotation - 90;
+    continuousPageProvider->setRotation(continuousRotation);
+    if (continuousScroll) {
+        continuousWidget->invalidateScaledImageCache();
+    }
 }
 void Viewer::rotateRight()
 {
     render->rotateRight();
+    continuousRotation = (continuousRotation + 90) % 360;
+    continuousPageProvider->setRotation(continuousRotation);
+    if (continuousScroll) {
+        continuousWidget->invalidateScaledImageCache();
+    }
 }
 
 // TODO
@@ -1201,8 +1254,12 @@ void Viewer::setBookmark(bool set)
 
 void Viewer::save()
 {
-    if (render->hasLoadedComic())
+    if (render->hasLoadedComic()) {
+        // Render's current page lags the scroll position in continuous mode;
+        // bring it in line before persisting reading progress.
+        syncRenderToContinuousPage();
         render->save();
+    }
 }
 
 void Viewer::doublePageSwitch()
@@ -1228,16 +1285,25 @@ void Viewer::setContinuousScrollImpl(bool enabled, bool persistSettings)
         if (render->hasLoadedComic()) {
             continuousViewModel->setViewportSize(viewport()->width(), viewport()->height());
             continuousViewModel->setNumPages(render->numPages());
+            continuousPageProvider->setNumPages(render->numPages());
+            continuousPageProvider->setRotation(continuousRotation);
             lastCenterPage = render->getIndex();
             continuousViewModel->setAnchorPage(lastCenterPage);
-            probeContinuousBufferedPages();
-            render->update();
+            continuousPageProvider->requestRange(lastCenterPage - 2, lastCenterPage + 4);
             setActiveWidget(continuousWidget);
             scrollToCurrentContinuousPage();
             continuousWidget->update();
             viewport()->update();
         }
     } else {
+        // Leaving continuous mode: bring Render to the reading position so
+        // single-page mode shows the page the user was on.
+        if (render->hasLoadedComic() && lastCenterPage >= 0) {
+            const int page = qBound(0, lastCenterPage, static_cast<int>(render->numPages()) - 1);
+            if (static_cast<int>(render->getIndex()) != page) {
+                render->goTo(page);
+            }
+        }
         lastCenterPage = -1;
         if (render->hasLoadedComic()) {
             updatePage();
@@ -1268,9 +1334,11 @@ void Viewer::onContinuousScroll(int value)
     if (currentPage != lastCenterPage && currentPage >= 0) {
         lastCenterPage = currentPage;
         continuousViewModel->setAnchorPage(currentPage);
-        syncingRenderFromContinuousScroll = true;
-        render->goTo(currentPage);
-        syncingRenderFromContinuousScroll = false;
+        // No render->goTo() here: that drives Render's blocking page buffer and
+        // would stall scrolling. The page provider decodes off-thread, driven by
+        // the widget's paint. Render's current page is synced lazily (save / mode
+        // switch) instead.
+        updateInformation();
         emit pageAvailable(true);
     }
 }
@@ -1290,7 +1358,7 @@ void Viewer::onContinuousPageRendered(int absolutePageIndex)
         return;
     }
 
-    const QImage *img = render->bufferedImage(absolutePageIndex);
+    const QImage *img = continuousPageProvider->image(absolutePageIndex);
     if (!img || img->isNull()) {
         return;
     }
@@ -1306,7 +1374,7 @@ void Viewer::probeContinuousBufferedPages()
 
     const int totalPages = static_cast<int>(render->numPages());
     for (int i = 0; i < totalPages; ++i) {
-        const QImage *img = render->bufferedImage(i);
+        const QImage *img = continuousPageProvider->image(i);
         if (img && !img->isNull()) {
             continuousViewModel->setPageNaturalSize(i, img->size());
         }
@@ -1345,6 +1413,22 @@ void Viewer::scrollToCurrentContinuousPage()
     continuousViewModel->setCurrentPage(lastCenterPage);
 }
 
+void Viewer::syncRenderToContinuousPage()
+{
+    if (!continuousScroll || !render->hasLoadedComic() || lastCenterPage < 0) {
+        return;
+    }
+
+    const int page = qBound(0, lastCenterPage, static_cast<int>(render->numPages()) - 1);
+    if (static_cast<int>(render->getIndex()) == page) {
+        return;
+    }
+
+    syncingRenderFromContinuousScroll = true;
+    render->goTo(page);
+    syncingRenderFromContinuousScroll = false;
+}
+
 void Viewer::onNumPagesReady(unsigned int numPages)
 {
     if (continuousScroll && numPages > 0) {
@@ -1352,7 +1436,7 @@ void Viewer::onNumPagesReady(unsigned int numPages)
 
         continuousViewModel->setViewportSize(viewport()->width(), viewport()->height());
         continuousViewModel->setNumPages(numPages);
-        probeContinuousBufferedPages();
+        continuousPageProvider->setNumPages(numPages);
 
         int page = lastCenterPage;
         if (page < 0) {
@@ -1361,6 +1445,10 @@ void Viewer::onNumPagesReady(unsigned int numPages)
         page = qBound(0, page, static_cast<int>(numPages) - 1);
         lastCenterPage = page;
         continuousViewModel->setAnchorPage(page);
+
+        // Kick off decoding around the starting page so the first screens are
+        // ready as soon as their raw bytes load.
+        continuousPageProvider->requestRange(page - 2, page + 4);
 
         scrollToCurrentContinuousPage();
     }
@@ -1410,6 +1498,7 @@ void Viewer::resetContent()
     configureContent(tr("Press 'O' to open comic."));
     goToFlow->reset();
     continuousViewModel->reset();
+    continuousPageProvider->reset();
     continuousWidget->reset();
     lastCenterPage = -1;
     emit reset();
@@ -1574,6 +1663,7 @@ void Viewer::updateZoomRatio(int ratio)
     zoom = ratio;
     if (continuousScroll) {
         continuousViewModel->setZoomFactor(zoom);
+        continuousWidget->invalidateScaledImageCache();
     } else {
         updateContentSize();
     }
@@ -1597,11 +1687,21 @@ void Viewer::updateConfig(QSettings *settings)
 void Viewer::updateImageOptions()
 {
     render->reload();
+    // Settings-driven image options may have changed; force the provider to
+    // re-decode with the current settings.
+    continuousPageProvider->invalidate();
+    if (continuousScroll) {
+        continuousWidget->invalidateScaledImageCache();
+    }
 }
 
 void Viewer::updateFilters(int brightness, int contrast, int gamma)
 {
     render->updateFilters(brightness, contrast, gamma);
+    continuousPageProvider->setFilters(brightness, contrast, gamma);
+    if (continuousScroll) {
+        continuousWidget->invalidateScaledImageCache();
+    }
 }
 
 void Viewer::setBookmarks()
@@ -1669,11 +1769,17 @@ void Viewer::showIsLastMessage()
 
 unsigned int Viewer::getIndex()
 {
+    if (continuousScroll && continuousViewModel->numPages() > 0) {
+        return continuousViewModel->readingProgressPage() + 1;
+    }
     return render->getIndex() + 1;
 }
 
 int Viewer::getCurrentPageNumber()
 {
+    if (continuousScroll && continuousViewModel->numPages() > 0) {
+        return continuousViewModel->readingProgressPage();
+    }
     return render->getIndex();
 }
 
@@ -1681,7 +1787,9 @@ void Viewer::updateComic(ComicDB &comic)
 {
     if (render->hasLoadedComic()) {
         // set currentPage
-        if (!doublePage || (doublePage && render->currentPageIsDoublePage() == false)) {
+        if (continuousScroll && continuousViewModel->numPages() > 0) {
+            comic.info.currentPage = getCurrentPageNumber() + 1;
+        } else if (!doublePage || (doublePage && render->currentPageIsDoublePage() == false)) {
             comic.info.currentPage = render->getIndex() + 1;
         } else {
             if (doublePage && render->currentPageIsDoublePage() && (render->getIndex() + 2 >= render->numPages())) {
