@@ -112,7 +112,6 @@ void ContinuousPageProvider::setRender(Render *r)
 void ContinuousPageProvider::setNumPages(int numPages)
 {
     numPagesValue = std::max(0, numPages);
-    rawDataReady.fill(false, numPagesValue);
     invalidateAll();
 }
 
@@ -184,7 +183,7 @@ void ContinuousPageProvider::requestRange(int firstPage, int lastPage)
     // Schedule decode for requested pages whose raw bytes are loaded and that
     // are not already decoded or in flight.
     for (int i = firstPage; i <= lastPage; ++i) {
-        if (rawDataReady.value(i, false) && !cache.contains(i) && !pending.contains(i)) {
+        if (rawDataReady.contains(i) && !cache.contains(i) && !pending.contains(i)) {
             scheduleDecode(i);
         }
     }
@@ -201,8 +200,8 @@ const QImage *ContinuousPageProvider::image(int pageIndex) const
 
 void ContinuousPageProvider::onRawDataReady(int page)
 {
-    if (page >= 0 && page < rawDataReady.size()) {
-        rawDataReady[page] = true;
+    if (page >= 0) {
+        rawDataReady.insert(page);
     }
 
     if (page < requestedFirst || page > requestedLast) {

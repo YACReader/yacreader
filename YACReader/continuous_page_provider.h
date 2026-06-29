@@ -72,10 +72,12 @@ private:
     quint64 generation = 0;
     QHash<int, QImage> cache;
     QSet<int> pending;
-    // Whether a page's raw bytes have finished loading. We only read raw bytes
-    // (and decode) after this is set, so we never race the comic's loader thread
-    // writing that slot.
-    QVector<bool> rawDataReady;
+    // Pages whose raw bytes have finished loading (signalled by imageLoaded).
+    // We only read raw bytes (and decode) for pages in this set, so we never
+    // race the comic's loader thread writing that slot. Populated from
+    // construction onward — independent of view mode — so pages loaded while in
+    // a fit mode are still known when the user later switches to continuous.
+    QSet<int> rawDataReady;
     int requestedFirst = 0;
     int requestedLast = -1;
 
