@@ -13,6 +13,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve last page detection in continuous scroll mode.
 * Improve What's new dialog to show the full changelog.
 * Improve continuous scroll mode with better performance and less flickering when resizing/loading.
+* Fix reading position being reset to the cover when changing between fit modes.
 
 ### YACReaderLibrary
 * Fix comics order when opening a comic from YACReaderLibrary.
