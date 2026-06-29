@@ -1387,6 +1387,12 @@ void Viewer::applyContinuousStateToUi()
         return;
     }
 
+    // Save/restore both guards: this can run re-entrantly (e.g. setActiveWidget's
+    // setWidget triggers a viewport resize -> setViewportSize -> recompute -> here).
+    // Unconditionally clearing them would defeat an outer block: setActiveWidget
+    // blocks the scrollbar so setWidget's reset-to-0 won't fire onContinuousScroll;
+    // if we unblock it here, that reset then snaps reading progress to the cover.
+    const bool wasApplying = applyingContinuousModelState;
     applyingContinuousModelState = true;
 
     continuousWidget->setFixedHeight(continuousViewModel->totalHeight());
@@ -1394,11 +1400,11 @@ void Viewer::applyContinuousStateToUi()
 
     auto *sb = verticalScrollBar();
     const int target = qBound(sb->minimum(), continuousViewModel->scrollY(), sb->maximum());
-    sb->blockSignals(true);
+    const bool wasBlocked = sb->blockSignals(true);
     sb->setValue(target);
-    sb->blockSignals(false);
+    sb->blockSignals(wasBlocked);
 
-    applyingContinuousModelState = false;
+    applyingContinuousModelState = wasApplying;
 
     continuousWidget->update();
     viewport()->update();
