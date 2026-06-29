@@ -205,6 +205,7 @@ private:
     void probeContinuousBufferedPages();
     void applyContinuousStateToUi();
     void scrollToCurrentContinuousPage();
+    void syncRenderToContinuousReadingProgress();
     // Brings Render's current page in line with the continuous-scroll reading
     // position. Continuous mode never calls render->goTo() while scrolling, so
     // this is used lazily (on save / leaving continuous mode) to keep Render

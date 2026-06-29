@@ -301,6 +301,7 @@ void Viewer::next()
     }
 
     direction = 1;
+    syncRenderToContinuousReadingProgress();
     if (doublePage && render->currentPageIsDoublePage()) {
         render->nextDoublePage();
     } else {
@@ -343,6 +344,7 @@ void Viewer::prev()
     }
 
     direction = -1;
+    syncRenderToContinuousReadingProgress();
     if (doublePage && render->previousPageIsDoublePage()) {
         render->previousDoublePage();
     } else {
@@ -1417,6 +1419,17 @@ void Viewer::scrollToCurrentContinuousPage()
     }
 
     continuousViewModel->setCurrentPage(lastCenterPage);
+}
+
+void Viewer::syncRenderToContinuousReadingProgress()
+{
+    if (!continuousScroll || continuousViewModel->numPages() <= 0) {
+        return;
+    }
+
+    lastCenterPage = continuousViewModel->readingProgressPage();
+    continuousViewModel->setAnchorPage(lastCenterPage);
+    syncRenderToContinuousPage();
 }
 
 void Viewer::syncRenderToContinuousPage()
