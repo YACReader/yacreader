@@ -74,6 +74,9 @@ QWidget *YACReaderContentViewsManager::containerWidget()
 
 void YACReaderContentViewsManager::updateCurrentContentView()
 {
+    if (!libraryWindow->hasLoadedLibraryModels())
+        return;
+
     if (libraryWindow->status == LibraryWindow::Searching) {
         auto currentWidget = comicsViewStack->currentWidget();
 
@@ -87,8 +90,10 @@ void YACReaderContentViewsManager::updateCurrentContentView()
 
     if (!libraryWindow->listsView->selectionModel()->selectedRows().isEmpty()) {
         auto currentListIndex = libraryWindow->listsModelProxy->mapToSource(libraryWindow->listsView->currentIndex());
-        libraryWindow->navigationController->loadListInfo(currentListIndex);
-        return;
+        if (currentListIndex.isValid()) {
+            libraryWindow->navigationController->loadListInfo(currentListIndex);
+            return;
+        }
     }
 
     libraryWindow->navigationController->loadFolderInfo(libraryWindow->getCurrentFolderIndex());

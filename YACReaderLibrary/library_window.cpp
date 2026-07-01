@@ -54,6 +54,7 @@
 #include "export_library_dialog.h"
 #include "folder_content_view.h"
 #include "folder_item.h"
+#include "folder_model.h"
 #include "help_about_dialog.h"
 #include "import_comics_info_dialog.h"
 #include "import_library_dialog.h"
@@ -442,6 +443,14 @@ void LibraryWindow::setupCoordinators()
     librariesUpdateCoordinator->init();
 
     connect(sideBar->librariesTitle, &YACReaderTitledToolBar::cancelOperationRequested, librariesUpdateCoordinator, &LibrariesUpdateCoordinator::cancel);
+}
+
+bool LibraryWindow::hasLoadedLibraryModels() const
+{
+    return foldersView->model() == foldersModelProxy &&
+            listsView->model() == listsModelProxy &&
+            foldersModelProxy->sourceModel() == foldersModel &&
+            listsModelProxy->sourceModel() == listsModel;
 }
 
 void LibraryWindow::createToolBars()
@@ -1142,6 +1151,9 @@ void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
 
 QModelIndex LibraryWindow::getCurrentFolderIndex()
 {
+    if (!hasLoadedLibraryModels())
+        return QModelIndex();
+
     if (foldersView->selectionModel()->selectedRows().length() > 0)
         return foldersModelProxy->mapToSource(foldersView->currentIndex());
     else
@@ -1792,6 +1804,9 @@ void LibraryWindow::create(QString source, QString dest, QString name)
 
 void LibraryWindow::reloadCurrentLibrary()
 {
+    if (!hasLoadedLibraryModels())
+        return;
+
     foldersModel->reload();
     contentViewsManager->updateCurrentContentView();
 
@@ -2017,7 +2032,9 @@ void LibraryWindow::setRootIndex()
             contentViewsManager->comicsView->setModel(NULL);
         }
 
-        foldersView->selectionModel()->clear();
+        auto selectionModel = foldersView->selectionModel();
+        if (selectionModel != nullptr)
+            selectionModel->clear();
     }
 }
 

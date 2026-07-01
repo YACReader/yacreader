@@ -196,6 +196,7 @@ public:
     void setUpShortcutsManagement();
     void doModels();
     void setupCoordinators();
+    bool hasLoadedLibraryModels() const;
 
     QString currentPath();
     QString currentFolderPath();
