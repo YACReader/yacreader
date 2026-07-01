@@ -18,6 +18,7 @@
 #include <QProcess>
 #include <QProgressDialog>
 #include <QSettings>
+#include <QShowEvent>
 #include <QSplitter>
 #include <QSqlError>
 #include <QStackedWidget>
@@ -105,7 +106,7 @@ void moveAndConnectRemoverToThread(Remover *remover, QThread *thread)
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
-    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false)
+    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false), pendingAfterLaunchTasks(false)
 {
     createSettings();
 
@@ -120,7 +121,11 @@ LibraryWindow::LibraryWindow()
         selectedLibrary->setCurrentIndex(0);
     }
 
-    afterLaunchTasks();
+    if (startsHiddenInTray()) {
+        pendingAfterLaunchTasks = true;
+    } else {
+        afterLaunchTasks();
+    }
 }
 
 void LibraryWindow::afterLaunchTasks()
@@ -128,6 +133,21 @@ void LibraryWindow::afterLaunchTasks()
     if (!libraries.isEmpty()) {
         WhatsNewController whatsNewController;
         whatsNewController.showWhatsNewIfNeeded(this);
+    }
+}
+
+bool LibraryWindow::startsHiddenInTray() const
+{
+    return settings->value(START_TO_TRAY, false).toBool() && settings->value(CLOSE_TO_TRAY, false).toBool();
+}
+
+void LibraryWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+
+    if (pendingAfterLaunchTasks) {
+        pendingAfterLaunchTasks = false;
+        afterLaunchTasks();
     }
 }
 
@@ -230,6 +250,8 @@ void LibraryWindow::setupUI()
             const QRect avail = QApplication::primaryScreen()->availableGeometry();
             setGeometry(QRect(avail.center() - QPoint(width() / 2, height() / 2), size()));
         }
+    } else if (startsHiddenInTray()) {
+        setWindowState(windowState() | Qt::WindowMaximized);
     } else {
         // if(settings->value(USE_OPEN_GL).toBool() == false)
         showMaximized();

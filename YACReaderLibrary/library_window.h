@@ -60,6 +60,7 @@ class QCloseEvent;
 class ImportWidget;
 class QSettings;
 class LibraryItem;
+class QShowEvent;
 class YACReaderTableView;
 class YACReaderSideBar;
 class YACReaderLibraryListWidget;
@@ -213,6 +214,7 @@ public:
 
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
+    void showEvent(QShowEvent *event) override;
     void applyTheme(const Theme &theme) override;
 
 public:
@@ -347,6 +349,7 @@ private:
     //! @brief Exits search mode if it is active.
     //! @return true If the search mode was active when this function was called.
     bool exitSearchMode();
+    bool startsHiddenInTray() const;
 
     std::future<void> upgradeLibraryFuture;
 
@@ -355,6 +358,7 @@ private:
     std::unique_ptr<FolderQueryResultProcessor> folderQueryResultProcessor;
 
     RecentVisibilityCoordinator *recentVisibilityCoordinator;
+    bool pendingAfterLaunchTasks;
 };
 
 #endif
