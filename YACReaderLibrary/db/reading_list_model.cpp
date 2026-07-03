@@ -359,20 +359,26 @@ void ReadingListModel::setupReadingListsData(QString path)
     cleanAll();
 
     _databasePath = path;
-    QSqlDatabase db = DataBaseManagement::loadDatabase(path);
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(path);
 
-    // setup special lists
-    specialLists = setupSpecialLists(db);
+        // setup special lists
+        specialLists = setupSpecialLists(db);
 
-    // separator--------------------------------------------
+        // separator--------------------------------------------
 
-    // setup labels
-    setupLabels(db);
+        // setup labels
+        setupLabels(db);
 
-    // separator--------------------------------------------
+        // separator--------------------------------------------
 
-    // setup reading list
-    setupReadingLists(db);
+        // setup reading list
+        setupReadingLists(db);
+
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 
     endResetModel();
 }

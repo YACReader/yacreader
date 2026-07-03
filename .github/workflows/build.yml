@@ -52,6 +52,27 @@ jobs:
           git diff ${{ github.sha }}
           if [ "$(git diff ${{ github.sha }})" != "" ]; then exit 1; fi
 
+  # Source tarball
+  source-tarball:
+    name: Source Tarball
+    runs-on: ubuntu-24.04
+    needs: [initialization, code-format-validation]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Create tarball
+        run: |
+          VERSION="$(tr -d '\r\n' < VERSION)"
+          ./mktarball.sh "$VERSION"
+          mkdir tarball
+          cp yacreader-*-src.tar.xz* tarball/
+
+      - name: Upload tarball
+        uses: actions/upload-artifact@v6
+        with:
+          name: src-${{ needs.initialization.outputs.build_number }}-tarball
+          path: tarball/*
+
   # Linux Qt6 build
   linux-qt6:
     name: Linux (Qt6)
@@ -388,8 +409,41 @@ jobs:
         shell: cmd
         working-directory: ci/win
         run: |
+          rem The ARM64 cross package's own tools cannot run on the x64 runner, so use
+          rem the host x64 windeployqt but point it at the ARM64 Qt via qtpaths,
+          rem otherwise it deploys x64 Qt DLLs and the app dies with 0xc000007b on ARM.
+          if not exist C:\Qt\6.9.3\msvc2022_arm64\bin\qtpaths.bat (
+            echo qtpaths.bat not found in the ARM64 Qt package & exit /b 1
+          )
           set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
+          set WINDEPLOYQT_EXTRA_ARGS=--qtpaths C:\Qt\6.9.3\msvc2022_arm64\bin\qtpaths.bat
           .\create_installer.cmd arm64 7z ${{ needs.initialization.outputs.build_number }}
+
+      - name: Verify deployed binaries are ARM64
+        shell: pwsh
+        working-directory: ci/win
+        run: |
+          $bad = @()
+          Get-ChildItem -Path installer_contents -Recurse -Include *.dll, *.exe |
+            Where-Object { $_.Name -notlike 'vc_redist*' } |
+            ForEach-Object {
+              $fs = [System.IO.File]::OpenRead($_.FullName)
+              try {
+                $br = New-Object System.IO.BinaryReader($fs)
+                $null = $fs.Seek(0x3C, 'Begin')
+                $peOffset = $br.ReadInt32()
+                $null = $fs.Seek($peOffset + 4, 'Begin')
+                $machine = $br.ReadUInt16()
+              } finally { $fs.Close() }
+              if ($machine -ne 0xAA64) {
+                $bad += ('{0} (machine: 0x{1:X4})' -f $_.FullName, $machine)
+              }
+            }
+          if ($bad.Count -gt 0) {
+            $bad | ForEach-Object { Write-Host "Not ARM64: $_" }
+            throw "$($bad.Count) non-ARM64 binaries found in installer contents"
+          }
+          Write-Host "All deployed DLLs/EXEs are ARM64"
 
       - name: Verify installer was created
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
@@ -456,7 +510,10 @@ jobs:
       - name: Build amd64 Image
         working-directory: docker
         run: |
-          docker build --no-cache --platform linux/amd64 -f Dockerfile --build-arg YACR_VERSION=${{ github.head_ref || github.ref_name }} -t yacreader/yacreaderlibraryserver:develop-amd64 .
+          docker build --no-cache --platform linux/amd64 -f Dockerfile \
+            --build-arg YACR_REPOSITORY=${{ github.event.pull_request.head.repo.clone_url || format('https://github.com/{0}.git', github.repository) }} \
+            --build-arg YACR_VERSION=${{ github.event.pull_request.head.sha || github.sha }} \
+            -t yacreader/yacreaderlibraryserver:develop-amd64 .
           docker save yacreader/yacreaderlibraryserver:develop-amd64 -o amd64.tar
 
       - name: Upload Docker Image
@@ -476,7 +533,10 @@ jobs:
       - name: Build arm64 Image (native)
         working-directory: docker
         run: |
-          docker build --no-cache -f Dockerfile.aarch64 --build-arg YACR_VERSION=${{ github.head_ref || github.ref_name }} -t yacreader/yacreaderlibraryserver:develop-arm64 .
+          docker build --no-cache --platform linux/arm64 -f Dockerfile \
+            --build-arg YACR_REPOSITORY=${{ github.event.pull_request.head.repo.clone_url || format('https://github.com/{0}.git', github.repository) }} \
+            --build-arg YACR_VERSION=${{ github.event.pull_request.head.sha || github.sha }} \
+            -t yacreader/yacreaderlibraryserver:develop-arm64 .
           docker save yacreader/yacreaderlibraryserver:develop-arm64 -o arm64.tar
 
       - name: Upload Docker Image
@@ -492,6 +552,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs:
       - initialization
+      - source-tarball
       - linux-qt6
       - linux-qt6-7zip
       - macos-qt6-universal
@@ -559,6 +620,7 @@ jobs:
     runs-on: ubuntu-24.04
     needs:
       - initialization
+      - source-tarball
       - linux-qt6
       - linux-qt6-7zip
       - macos-qt6-universal

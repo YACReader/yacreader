@@ -6,8 +6,10 @@
 #include "themable.h"
 
 #include <QAction>
+#include <QByteArray>
 #include <QCloseEvent>
 #include <QLabel>
+#include <QList>
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QParallelAnimationGroup>
@@ -30,6 +32,7 @@ class YACReaderTranslator;
 class GoToFlowWidget;
 class Bookmarks;
 class ContinuousPageWidget;
+class ContinuousPageProvider;
 class ContinuousViewModel;
 class PageLabelWidget;
 class NotificationsLabelWidget;
@@ -151,8 +154,10 @@ private:
     QLabel *content;
     QLabel *messageLabel;
     ContinuousPageWidget *continuousWidget;
+    ContinuousPageProvider *continuousPageProvider;
     ContinuousViewModel *continuousViewModel;
     int lastCenterPage = -1;
+    int continuousRotation = 0;
     bool syncingRenderFromContinuousScroll = false;
     bool applyingContinuousModelState = false;
 
@@ -200,6 +205,12 @@ private:
     void probeContinuousBufferedPages();
     void applyContinuousStateToUi();
     void scrollToCurrentContinuousPage();
+    void syncRenderToContinuousReadingProgress();
+    // Brings Render's current page in line with the continuous-scroll reading
+    // position. Continuous mode never calls render->goTo() while scrolling, so
+    // this is used lazily (on save / leaving continuous mode) to keep Render
+    // state correct. It can block briefly, so it is kept off the scroll path.
+    void syncRenderToContinuousPage();
     void onNumPagesReady(unsigned int numPages);
     void onRenderPageChanged(int page);
     void setActiveWidget(QWidget *w);
@@ -217,6 +228,8 @@ public:
     Viewer(QWidget *parent = nullptr);
     ~Viewer();
     QPixmap pixmap() const;
+    QByteArray rawPage(int page) const;
+    QList<int> currentVisiblePages();
     QImage grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const;
     // Comic * getComic(){return comic;}
     const BookmarksDialog *getBookmarksDialog() { return bd; }

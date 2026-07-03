@@ -11,6 +11,8 @@
 
 #include <QString>
 
+class LibrariesUpdateCoordinator;
+
 /**
   This class contains some static resources that are used by the application.
 */
@@ -48,6 +50,13 @@ public:
 
     /** Controller for static files */
     static stefanfrings::StaticFileController *staticFileController;
+
+    /**
+      Coordinates on-demand and scheduled library updates. Owned by the host
+      application (GUI or standalone server); the server only borrows it to
+      trigger updates from HTTP requests. May be null if no host wired it up.
+     */
+    static LibrariesUpdateCoordinator *librariesUpdateCoordinator;
 
 private:
     /** Directory of the main config file */

@@ -7,6 +7,8 @@
 
 #include <QtCore>
 
+void variantToJson(const QString &name, QMetaType::Type type, const QVariant &value, QJsonObject &json);
+
 class YACReaderServerDataHelper
 {
 public:

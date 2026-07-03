@@ -1,13 +1,13 @@
 #include "continuous_view_model.h"
 
-#include <QWidget>
 #include <QtMath>
 
 #include <algorithm>
 #include <limits>
 
-ContinuousViewModel::ContinuousViewModel(QObject *parent)
-    : QObject(parent)
+ContinuousViewModel::ContinuousViewModel(int maximumLayoutHeight, QObject *parent)
+    : QObject(parent),
+      maximumLayoutHeightValue(std::max(1, maximumLayoutHeight))
 {
 }
 
@@ -128,6 +128,22 @@ int ContinuousViewModel::centerPage() const
     return pageAtY(centerY);
 }
 
+int ContinuousViewModel::readingProgressPage() const
+{
+    if (numPagesValue <= 0) {
+        return 0;
+    }
+
+    const int lastPage = numPagesValue - 1;
+    const int lastPageMidY = yPositionForPage(lastPage) + scaledPageSize(lastPage).height() / 2;
+    const int viewportBottomY = scrollYValue + std::max(0, viewportHeightValue - 1);
+    if (viewportBottomY >= lastPageMidY) {
+        return lastPage;
+    }
+
+    return centerPage();
+}
+
 int ContinuousViewModel::yPositionForPage(int pageIndex) const
 {
     if (pageIndex < 0 || pageIndex >= layoutSnapshot.yPositions.size()) {
@@ -202,7 +218,7 @@ ContinuousViewModel::LayoutSnapshot ContinuousViewModel::buildLayoutSnapshot(int
         y += scaled.height();
     }
 
-    snapshot.totalHeight = static_cast<int>(std::min<qint64>(y, static_cast<qint64>(QWIDGETSIZE_MAX)));
+    snapshot.totalHeight = static_cast<int>(std::min<qint64>(y, maximumLayoutHeightValue));
     return snapshot;
 }
 

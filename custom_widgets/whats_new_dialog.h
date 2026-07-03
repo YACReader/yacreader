@@ -4,6 +4,9 @@
 #include "rounded_corners_dialog.h"
 #include "themable.h"
 
+#include <QString>
+#include <QStringList>
+
 class QLabel;
 class QPushButton;
 
@@ -19,12 +22,27 @@ protected:
     void applyTheme(const Theme &theme) override;
 
 private:
+    void loadChangelog();
+    void renderChangelog();
+    QString renderChangelogEntry(const QString &entry, bool includeVersionHeader, bool flushVersionTopMargin = false) const;
+    QString renderLatestChangelogEntries() const;
+    QString renderPreviousChangelogEntries() const;
+    QString renderHtmlDocument(const QString &content) const;
+    QString renderBody() const;
+    QString renderIntro() const;
+    QString renderFooter() const;
+    QString versionSeriesFromEntry(const QString &entry) const;
+
     QLabel *headerImageLabel;
     QLabel *headerLabel;
     QLabel *versionLabel;
     QLabel *textLabel;
     QPushButton *closeButton;
-    QString htmlTemplate;
+    QStringList changelogEntries;
+    int latestEntryCount = 0;
+    QString linkColor;
+    QString contentTextColor;
+    QString backgroundColor;
 };
 }
 

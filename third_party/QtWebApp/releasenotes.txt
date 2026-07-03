@@ -1,5 +1,26 @@
-Dont forget to update the release number also in
+Don't forget to update the release number also in
 QtWebApp.pro and httpserver/httpglobal.cpp.
+
+1.9.1
+14.11.2024
+Improve performance and memory usage when iterating over connection handler pool.
+Also fixed a seldom race condition in connection handler pool (malloc(): unsorted
+double linked list corrupted).
+
+1.9.0
+07.09.2023
+Some methods return now const references instead of objects to improve
+the performance a little bit.
+Chunked transfer is not used anymore if the Content-Length is known.
+
+1.8.8
+24.01.2023
+Better HTTP status code (400 bad request) if the first line of request is malformed.
+Connection closes more quickly after an Error.
+
+1.8.7
+23.01.2023
+Fix possible endless loop with high CPU load after receiveing a broken HTTP request.
 
 1.8.6
 30.09.2022

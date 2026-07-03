@@ -7,6 +7,7 @@
 #include <QFileInfo>
 #include <QDir>
 #include <QDateTime>
+#include <QThread>
 
 using namespace stefanfrings;
 

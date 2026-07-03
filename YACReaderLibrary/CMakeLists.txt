@@ -411,6 +411,12 @@ qt_add_resources(YACReaderLibrary "yacreaderlibrary_files_es"
     FILES
         ${yacreaderlibrary_file_files_es}
 )
+qt_add_resources(YACReaderLibrary "yacreaderlibrary_changelog"
+    PREFIX "/files"
+    BASE "${PROJECT_SOURCE_DIR}"
+    FILES
+        ${PROJECT_SOURCE_DIR}/CHANGELOG.md
+)
 qt_add_resources(YACReaderLibrary "yacreaderlibrary_qml"
     PREFIX "/"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -458,8 +464,14 @@ endif()
 qt_add_translations(YACReaderLibrary
     SOURCE_TARGETS
         YACReaderLibrary
-    # Keep full C++ extraction via SOURCE_TARGETS and add the QML files directly
-    # so qsTr() strings in QML are collected too.
+        db_helper
+        comic_backend
+        common_gui
+        custom_widgets_library
+        shortcuts_library
+        comic_vine
+    # Keep extraction scoped to targets used by this app and add the QML files
+    # directly so qsTr() strings in QML are collected too.
     TS_FILES
         yacreaderlibrary_es.ts
         yacreaderlibrary_ru.ts
@@ -472,6 +484,7 @@ qt_add_translations(YACReaderLibrary
         yacreaderlibrary_zh_TW.ts
         yacreaderlibrary_zh_HK.ts
         yacreaderlibrary_it.ts
+        yacreaderlibrary_ko.ts
         yacreaderlibrary_source.ts
         yacreaderlibrary_en.ts
     SOURCES
@@ -512,15 +525,18 @@ target_link_libraries(YACReaderLibrary PRIVATE
 if(WIN32 OR APPLE)
     add_custom_command(TARGET YACReaderLibrary POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${PROJECT_SOURCE_DIR}/release/server/docroot/images/webui"
-            "$<TARGET_FILE_DIR:YACReaderLibrary>/server/docroot/images/webui"
-        COMMENT "Copying webui images to build output"
+            "${PROJECT_SOURCE_DIR}/release/server/docroot"
+            "$<TARGET_FILE_DIR:YACReaderLibrary>/server/docroot"
+        COMMENT "Copying webui files to build output"
     )
 endif()
 
 # Platform-specific
 if(WIN32)
     target_sources(YACReaderLibrary PRIVATE icon.rc)
+    if(MSVC)
+        target_link_options(YACReaderLibrary PRIVATE "/MANIFESTINPUT:${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest")
+    endif()
     target_link_libraries(YACReaderLibrary PRIVATE oleaut32 ole32 shell32 user32)
 endif()
 

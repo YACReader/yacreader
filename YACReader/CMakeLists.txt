@@ -11,6 +11,8 @@ qt_add_executable(YACReader WIN32
     main_window_viewer.cpp
     continuous_page_widget.h
     continuous_page_widget.cpp
+    continuous_page_provider.h
+    continuous_page_provider.cpp
     continuous_view_model.h
     continuous_view_model.cpp
     mouse_handler.h
@@ -107,6 +109,7 @@ set(yacreader_image_files
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateL.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateR.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/save.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/extract.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/shortcuts.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/showBookmarks.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toHeight.svg
@@ -135,6 +138,7 @@ set(yacreader_image_files
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateL_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/rotateR_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/save_18x18.svg
+    ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/extract_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/shortcuts_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/showBookmarks_18x18.svg
     ${PROJECT_SOURCE_DIR}/images/viewer_toolbar/toHeight_18x18.svg
@@ -201,6 +205,12 @@ qt_add_resources(YACReader "yacreader_files_es"
     FILES
         ${yacreader_file_files_es}
 )
+qt_add_resources(YACReader "yacreader_changelog"
+    PREFIX "/files"
+    BASE "${PROJECT_SOURCE_DIR}"
+    FILES
+        ${PROJECT_SOURCE_DIR}/CHANGELOG.md
+)
 qt_add_resources(YACReader "yacreader_themes"
     PREFIX "/themes"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/themes"
@@ -216,6 +226,12 @@ qt_add_resources(YACReader "yacreader_common_theme_images"
 
 # Translations
 qt_add_translations(YACReader
+    SOURCE_TARGETS
+        YACReader
+        comic_backend
+        common_gui
+        custom_widgets_reader
+        shortcuts_reader
     TS_FILES
         yacreader_es.ts
         yacreader_fr.ts
@@ -228,6 +244,7 @@ qt_add_translations(YACReader
         yacreader_zh_TW.ts
         yacreader_zh_HK.ts
         yacreader_it.ts
+        yacreader_ko.ts
         yacreader_source.ts
         yacreader_en.ts
 )
@@ -255,6 +272,9 @@ target_link_libraries(YACReader PRIVATE
 # Platform-specific
 if(WIN32)
     target_sources(YACReader PRIVATE icon.rc)
+    if(MSVC)
+        target_link_options(YACReader PRIVATE "/MANIFESTINPUT:${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest")
+    endif()
     target_link_libraries(YACReader PRIVATE oleaut32 ole32 shell32 user32)
 endif()
 

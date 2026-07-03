@@ -18,12 +18,13 @@ runs:
       shell: bash
       run: |
         VERSION="${{ inputs.version }}"
-        MAJOR="${VERSION%%.*}"
-        # Try exact version match first, fall back to major version match
-        NOTES=$(awk "/^## ${VERSION}( |$)/{found=1; next} /^## /{if(found) exit} found{print}" CHANGELOG.md)
-        if [ -z "$NOTES" ]; then
-          NOTES=$(awk "/^## ${MAJOR}( |$)/{found=1; next} /^## /{if(found) exit} found{print}" CHANGELOG.md)
+        CHANGELOG_VERSION=$(printf "%s\n" "$VERSION" | sed -nE 's/^([0-9]+\.[0-9]+\.[0-9]+).*/\1/p')
+        if [ -z "$CHANGELOG_VERSION" ]; then
+          echo "Unable to derive x.y.z changelog version from '$VERSION'" >&2
+          exit 1
         fi
+        CHANGELOG_VERSION_PATTERN=$(printf "%s\n" "$CHANGELOG_VERSION" | sed 's/[.[\*^$()+?{}|\\]/\\&/g')
+        NOTES=$(awk "/^## ${CHANGELOG_VERSION_PATTERN}( |$)/{found=1; next} /^## /{if(found) exit} found{print}" CHANGELOG.md)
         {
           echo "notes<<EOF"
           echo "$NOTES"

@@ -861,6 +861,14 @@ unsigned int Render::numPages()
     return comic->numPages();
 }
 
+QByteArray Render::getRawPage(int page) const
+{
+    if (comic == nullptr)
+        return QByteArray();
+
+    return comic->getRawPage(page);
+}
+
 bool Render::hasLoadedComic()
 {
     if (comic != nullptr)

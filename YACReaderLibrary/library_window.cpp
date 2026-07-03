@@ -18,6 +18,7 @@
 #include <QProcess>
 #include <QProgressDialog>
 #include <QSettings>
+#include <QShowEvent>
 #include <QSplitter>
 #include <QSqlError>
 #include <QStackedWidget>
@@ -53,6 +54,7 @@
 #include "export_library_dialog.h"
 #include "folder_content_view.h"
 #include "folder_item.h"
+#include "folder_model.h"
 #include "help_about_dialog.h"
 #include "import_comics_info_dialog.h"
 #include "import_library_dialog.h"
@@ -69,6 +71,7 @@
 #include "rename_library_dialog.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
+#include "static.h"
 #include "trayicon_controller.h"
 #include "whats_new_controller.h"
 #include "xml_info_library_scanner.h"
@@ -104,7 +107,7 @@ void moveAndConnectRemoverToThread(Remover *remover, QThread *thread)
 using namespace YACReader;
 
 LibraryWindow::LibraryWindow()
-    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false)
+    : QMainWindow(), fullscreen(false), previousFilter(""), fetching(false), status(LibraryWindow::Normal), removeError(false), pendingAfterLaunchTasks(false)
 {
     createSettings();
 
@@ -119,7 +122,11 @@ LibraryWindow::LibraryWindow()
         selectedLibrary->setCurrentIndex(0);
     }
 
-    afterLaunchTasks();
+    if (startsHiddenInTray()) {
+        pendingAfterLaunchTasks = true;
+    } else {
+        afterLaunchTasks();
+    }
 }
 
 void LibraryWindow::afterLaunchTasks()
@@ -127,6 +134,21 @@ void LibraryWindow::afterLaunchTasks()
     if (!libraries.isEmpty()) {
         WhatsNewController whatsNewController;
         whatsNewController.showWhatsNewIfNeeded(this);
+    }
+}
+
+bool LibraryWindow::startsHiddenInTray() const
+{
+    return settings->value(START_TO_TRAY, false).toBool() && settings->value(CLOSE_TO_TRAY, false).toBool();
+}
+
+void LibraryWindow::showEvent(QShowEvent *event)
+{
+    QMainWindow::showEvent(event);
+
+    if (pendingAfterLaunchTasks) {
+        pendingAfterLaunchTasks = false;
+        afterLaunchTasks();
     }
 }
 
@@ -229,6 +251,8 @@ void LibraryWindow::setupUI()
             const QRect avail = QApplication::primaryScreen()->availableGeometry();
             setGeometry(QRect(avail.center() - QPoint(width() / 2, height() / 2), size()));
         }
+    } else if (startsHiddenInTray()) {
+        setWindowState(windowState() | Qt::WindowMaximized);
     } else {
         // if(settings->value(USE_OPEN_GL).toBool() == false)
         showMaximized();
@@ -405,6 +429,9 @@ void LibraryWindow::setupCoordinators()
     };
     librariesUpdateCoordinator = new LibrariesUpdateCoordinator(settings, libraries, canStartUpdateProvider, this);
 
+    // Allow HTTP requests (e.g. the WebUI "Update now" button) to trigger updates.
+    Static::librariesUpdateCoordinator = librariesUpdateCoordinator;
+
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateStarted, sideBar->librariesTitle, &YACReaderTitledToolBar::showBusyIndicator);
     connect(librariesUpdateCoordinator, &LibrariesUpdateCoordinator::updateEnded, sideBar->librariesTitle, &YACReaderTitledToolBar::hideBusyIndicator);
 
@@ -416,6 +443,14 @@ void LibraryWindow::setupCoordinators()
     librariesUpdateCoordinator->init();
 
     connect(sideBar->librariesTitle, &YACReaderTitledToolBar::cancelOperationRequested, librariesUpdateCoordinator, &LibrariesUpdateCoordinator::cancel);
+}
+
+bool LibraryWindow::hasLoadedLibraryModels() const
+{
+    return foldersView->model() == foldersModelProxy &&
+            listsView->model() == listsModelProxy &&
+            foldersModelProxy->sourceModel() == foldersModel &&
+            listsModelProxy->sourceModel() == listsModel;
 }
 
 void LibraryWindow::createToolBars()
@@ -1116,6 +1151,9 @@ void LibraryWindow::reloadAfterCopyMove(const QModelIndex &mi)
 
 QModelIndex LibraryWindow::getCurrentFolderIndex()
 {
+    if (!hasLoadedLibraryModels())
+        return QModelIndex();
+
     if (foldersView->selectionModel()->selectedRows().length() > 0)
         return foldersModelProxy->mapToSource(foldersView->currentIndex());
     else
@@ -1766,6 +1804,9 @@ void LibraryWindow::create(QString source, QString dest, QString name)
 
 void LibraryWindow::reloadCurrentLibrary()
 {
+    if (!hasLoadedLibraryModels())
+        return;
+
     foldersModel->reload();
     contentViewsManager->updateCurrentContentView();
 
@@ -1991,7 +2032,9 @@ void LibraryWindow::setRootIndex()
             contentViewsManager->comicsView->setModel(NULL);
         }
 
-        foldersView->selectionModel()->clear();
+        auto selectionModel = foldersView->selectionModel();
+        if (selectionModel != nullptr)
+            selectionModel->clear();
     }
 }
 

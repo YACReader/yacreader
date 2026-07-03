@@ -23,6 +23,8 @@ add_library(server STATIC
     controllers/v2/folderinfocontroller_v2.cpp
     controllers/v2/librariescontroller_v2.h
     controllers/v2/librariescontroller_v2.cpp
+    controllers/v2/updatelibrariescontroller_v2.h
+    controllers/v2/updatelibrariescontroller_v2.cpp
     controllers/v2/pagecontroller_v2.h
     controllers/v2/pagecontroller_v2.cpp
     controllers/v2/covercontroller_v2.h
@@ -59,8 +61,8 @@ add_library(server STATIC
     controllers/v2/foldermetadatacontroller_v2.cpp
     controllers/v2/searchcontroller_v2.h
     controllers/v2/searchcontroller_v2.cpp
-    controllers/webui/statuspagecontroller.h
-    controllers/webui/statuspagecontroller.cpp
+    controllers/webui/webuicontroller.h
+    controllers/webui/webuicontroller.cpp
 )
 target_include_directories(server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -68,7 +70,7 @@ target_include_directories(server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers/v2
 )
 yacreader_apply_build_options(server)
-target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.1")
+target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.2")
 if(UNIX AND NOT APPLE)
     target_compile_definitions(server PRIVATE
         "DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\"")

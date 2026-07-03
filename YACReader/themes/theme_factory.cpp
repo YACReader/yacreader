@@ -139,6 +139,7 @@ Theme makeTheme(const ThemeParams &params)
     setToolbarIconPairT(theme.toolbar.openFolderAction, theme.toolbar.openFolderAction18x18, ":/images/viewer_toolbar/openFolder.svg");
     setToolbarIconPairT(theme.toolbar.openLatestComicAction, theme.toolbar.openLatestComicAction18x18, ":/images/viewer_toolbar/openNext.svg");
     setToolbarIconPairT(theme.toolbar.saveImageAction, theme.toolbar.saveImageAction18x18, ":/images/viewer_toolbar/save.svg");
+    setToolbarIconPairT(theme.toolbar.extractPagesAction, theme.toolbar.extractPagesAction18x18, ":/images/viewer_toolbar/extract.svg");
     setToolbarIconPairT(theme.toolbar.openComicOnTheLeftAction, theme.toolbar.openComicOnTheLeftAction18x18, ":/images/viewer_toolbar/openPrevious.svg");
     setToolbarIconPairT(theme.toolbar.openComicOnTheRightAction, theme.toolbar.openComicOnTheRightAction18x18, ":/images/viewer_toolbar/openNext.svg");
     setToolbarIconPairT(theme.toolbar.goToPageOnTheLeftAction, theme.toolbar.goToPageOnTheLeftAction18x18, ":/images/viewer_toolbar/previous.svg");

@@ -92,6 +92,8 @@ struct ToolbarTheme {
     QIcon openLatestComicAction18x18;
     QIcon saveImageAction;
     QIcon saveImageAction18x18;
+    QIcon extractPagesAction;
+    QIcon extractPagesAction18x18;
     QIcon openComicOnTheLeftAction;
     QIcon openComicOnTheLeftAction18x18;
     QIcon openComicOnTheRightAction;

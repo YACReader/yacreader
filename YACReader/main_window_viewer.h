@@ -43,6 +43,7 @@ public slots:
     void openLatestComic();
     void openComicFromRecentAction(QAction *action);
     void saveImage();
+    void extractPages();
     void toggleToolBars();
     void hideToolBars();
     void showToolBars();
@@ -92,7 +93,7 @@ private:
     bool fromMaximized;
 
     QString currentDirectory;
-    QString currentDirectoryImgDest;
+    QString currentComicPath;
     //! Widgets
     Viewer *viewer;
     // GoToDialog * goToDialog;
@@ -118,6 +119,7 @@ private:
     QList<QAction *> recentFilesActionList;
     QAction *clearRecentFilesAction;
     QAction *saveImageAction;
+    QAction *extractPagesAction;
     QAction *openComicOnTheLeftAction;
     QAction *openComicOnTheRightAction;
     QAction *goToPageOnTheRightAction;

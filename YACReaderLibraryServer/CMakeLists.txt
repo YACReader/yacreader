@@ -25,6 +25,9 @@ endif()
 
 # Translations
 qt_add_translations(YACReaderLibraryServer
+    SOURCE_TARGETS
+        YACReaderLibraryServer
+        comic_backend
     TS_FILES
         yacreaderlibraryserver_es.ts
         yacreaderlibraryserver_ru.ts
@@ -36,6 +39,7 @@ qt_add_translations(YACReaderLibraryServer
         yacreaderlibraryserver_zh_CN.ts
         yacreaderlibraryserver_zh_TW.ts
         yacreaderlibraryserver_zh_HK.ts
+        yacreaderlibraryserver_ko.ts
         yacreaderlibraryserver_source.ts
 )
 
@@ -59,14 +63,17 @@ target_link_libraries(YACReaderLibraryServer PRIVATE
 if(WIN32 OR APPLE)
     add_custom_command(TARGET YACReaderLibraryServer POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${PROJECT_SOURCE_DIR}/release/server/docroot/images/webui"
-            "$<TARGET_FILE_DIR:YACReaderLibraryServer>/server/docroot/images/webui"
-        COMMENT "Copying webui images to build output"
+            "${PROJECT_SOURCE_DIR}/release/server/docroot"
+            "$<TARGET_FILE_DIR:YACReaderLibraryServer>/server/docroot"
+        COMMENT "Copying webui files to build output"
     )
 endif()
 
 # Platform-specific
 if(WIN32)
+    if(MSVC)
+        target_link_options(YACReaderLibraryServer PRIVATE "/MANIFESTINPUT:${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest")
+    endif()
     target_link_libraries(YACReaderLibraryServer PRIVATE oleaut32 ole32 shell32 user32)
 endif()
 

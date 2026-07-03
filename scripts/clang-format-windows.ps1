@@ -38,19 +38,14 @@ else {
     Write-Host "Running using $versionOutput"
 }
 
-$extensions = @("*.h", "*.cpp", "*.c", "*.mm", "*.m")
-$files = Get-ChildItem -Path . -Recurse -File | Where-Object {
-    $name = $_.Name
-    foreach ($ext in $extensions) {
-        if ($name -clike $ext) {
-            return $true
-        }
-    }
-    return $false
-}
+$files = @(git ls-files --cached --modified --others --exclude-standard --deduplicate -- "*.h" "*.cpp" "*.c" "*.mm" "*.m")
 
-foreach ($file in $files) {
-    & $clangFormat -style=file -i $file.FullName
+if ($files.Count -gt 0) {
+    $batchSize = 100
+    for ($i = 0; $i -lt $files.Count; $i += $batchSize) {
+        $end = [Math]::Min($i + $batchSize - 1, $files.Count - 1)
+        & $clangFormat -style=file -i $files[$i..$end]
+    }
 }
 
 if ($test) {

@@ -33,7 +33,14 @@ else
   echo "Running using ${VERSION_OUTPUT}"
 fi
 
-find . \( -name '*.h' -or -name '*.cpp' -or -name '*.c' -or -name '*.mm' -or -name '*.m' \) -print0 | xargs -0 clang-format -style=file -i
+FILES=()
+while IFS= read -r -d '' FILE; do
+  FILES+=("${FILE}")
+done < <(git ls-files -z --cached --modified --others --exclude-standard --deduplicate -- '*.h' '*.cpp' '*.c' '*.mm' '*.m')
+
+if [[ "${#FILES[@]}" -gt 0 ]]; then
+  printf '%s\0' "${FILES[@]}" | xargs -0 clang-format -style=file -i
+fi
 
 if [[ "${TEST_MODE}" -eq 1 ]]; then
   BASE_SHA="$(git rev-parse HEAD)"

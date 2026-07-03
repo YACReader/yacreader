@@ -40,8 +40,8 @@ required qml modules (Quick, QuickControls2) are missing.
 
 ### Decompression
 
-YACReader currently supports two decompression backends, 7zip and (lib)unarr. YACReader
-defaults to 7zip for Windows and Mac OS and unarr for Linux and other OS, but you can
+YACReader currently supports three decompression backends: 7zip, (lib)unarr, and libarchive. YACReader
+defaults to 7zip for Windows, macOS, Linux, and other OSes, but you can
 override this using the `DECOMPRESSION_BACKEND` option:
 
 ```
@@ -52,9 +52,9 @@ cmake -B build -DDECOMPRESSION_BACKEND=libarchive
 
 #### 7zip
 
-[7zip](https://www.7-zip.org/) is the default decompression backend for Windows and Mac OS builds.
+[7zip](https://www.7-zip.org/) is the default decompression backend.
 
-It is recommended for these systems, as it currently has better support for 7z
+It is recommended for most builds, as it currently has better support for 7z
 files and supports the RAR5 format.
 
 The 7zip source code is automatically downloaded during configuration via CMake's
@@ -65,7 +65,7 @@ recommended for installations where the license is an issue.
 
 #### unarr
 
-[(lib)unarr](https://github.com/selmf/unarr) is the default backend for Linux builds.
+[(lib)unarr](https://github.com/selmf/unarr) is a lightweight decompression backend.
 
 As of version 1.0.1, it supports less formats than 7zip, notably missing RAR5 support and only having
 limited support for 7z on git versions. However, this is rarely an issue in practice as the vast majority
