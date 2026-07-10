@@ -31,6 +31,7 @@ int removeLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
 int listLibraries(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
 int setPort(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
 int rescanXmlInfo(QCoreApplication &app, QCommandLineParser &parser, QSettings *settings);
+int repairLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *settings);
 
 void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
 void printServerInfo(YACReaderHttpServer *httpServer);
@@ -81,7 +82,7 @@ int main(int argc, char **argv)
                                              .arg(settingsPath));
     parser.addHelpOption();
     const QCommandLineOption versionOption = parser.addVersionOption();
-    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, add-library, remove-library, list-libraries, set-port, rescan-xml-info]");
+    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, repair-library, add-library, remove-library, list-libraries, set-port, rescan-xml-info]");
     parser.addOption({ "loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "info" });
     parser.addOption({ "port", "Set server port (temporary). Valid values: 1-65535", "port" });
     parser.addOption({ "system-info", "Prints detailed information about the system environment, including OS version, hardware specifications, and available resources." });
@@ -115,6 +116,8 @@ int main(int argc, char **argv)
         return createLibrary(app, parser, settings);
     } else if (command == "update-library") {
         return updateLibrary(app, parser, settings);
+    } else if (command == "repair-library") {
+        return repairLibrary(app, parser, settings);
     } else if (command == "add-library") {
         return addLibrary(app, parser, settings);
     } else if (command == "remove-library") {
@@ -311,6 +314,26 @@ int updateLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
     libraryCreatorUI->updateLibrary(args.at(1));
 
     return 0;
+}
+
+// -----------------------------------------------------------------------------
+// repair-library---------------------------------------------------------------
+// -----------------------------------------------------------------------------
+int repairLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *settings)
+{
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("repair-library", "Repairs missing covers and incomplete comic information in an existing library at <path>");
+    parser.addPositionalArgument("path", "Path to the library to repair", "<path>");
+    parser.process(app);
+
+    const QStringList args = parser.positionalArguments();
+    if (args.length() != 2) {
+        parser.showHelp(1);
+        return 1;
+    }
+
+    ConsoleUILibraryCreator libraryCreatorUI(settings);
+    return libraryCreatorUI.repairLibrary(args.at(1));
 }
 
 // -----------------------------------------------------------------------------

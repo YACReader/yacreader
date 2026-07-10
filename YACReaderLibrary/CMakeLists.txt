@@ -10,6 +10,8 @@ add_library(library_common STATIC
     bundle_creator.cpp
     initial_comic_info_extractor.h
     initial_comic_info_extractor.cpp
+    comic_info_repairer.h
+    comic_info_repairer.cpp
     xml_info_parser.h
     xml_info_parser.cpp
     xml_info_library_scanner.h

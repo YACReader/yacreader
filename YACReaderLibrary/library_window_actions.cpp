@@ -68,6 +68,11 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     updateLibraryAction->setData(UPDATE_LIBRARY_ACTION_YL);
     updateLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_LIBRARY_ACTION_YL));
 
+    repairLibraryAction = new QAction(tr("Repair covers and comic info"), window);
+    repairLibraryAction->setToolTip(tr("Retry comics with missing covers or incomplete information"));
+    repairLibraryAction->setData(REPAIR_LIBRARY_ACTION_YL);
+    repairLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REPAIR_LIBRARY_ACTION_YL));
+
     renameLibraryAction = new QAction(tr("Rename library"), window);
     renameLibraryAction->setToolTip(tr("Rename current library"));
     renameLibraryAction->setData(RENAME_LIBRARY_ACTION_YL);
@@ -511,6 +516,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(renameListAction, &QAction::triggered, window, &LibraryWindow::showRenameCurrentList);
 
     QObject::connect(updateLibraryAction, &QAction::triggered, window, &LibraryWindow::updateLibrary);
+    QObject::connect(repairLibraryAction, &QAction::triggered, window, &LibraryWindow::repairLibrary);
     QObject::connect(renameLibraryAction, &QAction::triggered, window, &LibraryWindow::renameLibrary);
     // connect(deleteLibraryAction,SIGNAL(triggered()),window,SLOT(deleteLibrary()));
     QObject::connect(removeLibraryAction, &QAction::triggered, window, &LibraryWindow::removeLibrary);
@@ -629,6 +635,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << exportLibraryAction
                                                  << importLibraryAction
                                                  << updateLibraryAction
+                                                 << repairLibraryAction
                                                  << renameLibraryAction
                                                  << removeLibraryAction
                                                  << rescanLibraryForXMLInfoAction
@@ -684,6 +691,7 @@ void LibraryWindowActions::disableComicsActions(bool disabled)
 void LibraryWindowActions::disableLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
+    repairLibraryAction->setDisabled(disabled);
     renameLibraryAction->setDisabled(disabled);
     removeLibraryAction->setDisabled(disabled);
     exportComicsInfoAction->setDisabled(disabled);
@@ -696,6 +704,7 @@ void LibraryWindowActions::disableLibrariesActions(bool disabled)
 void LibraryWindowActions::disableNoUpdatedLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
+    repairLibraryAction->setDisabled(disabled);
     exportComicsInfoAction->setDisabled(disabled);
     importComicsInfoAction->setDisabled(disabled);
     exportLibraryAction->setDisabled(disabled);

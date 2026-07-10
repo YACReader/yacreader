@@ -37,6 +37,7 @@ public:
     QAction *rescanLibraryForXMLInfoAction;
 
     QAction *updateLibraryAction;
+    QAction *repairLibraryAction;
     QAction *removeLibraryAction;
     QAction *helpAboutAction;
     QAction *renameLibraryAction;

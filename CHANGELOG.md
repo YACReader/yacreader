@@ -2,6 +2,14 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.2.0
+
+### YACReaderLibrary
+* Add a new function to repair some aspects of a library. It's available in the library context menu. It can restore missing covers and rescan files that failed to be added to the library (placeholder x cover).
+
+### YACReaderLibrary
+* Add a new command `repair-library` to repair some aspects of a library. It can restore missing covers and rescan files that failed to be added to the library (placeholder x cover).
+
 ## 10.1.0
 
 ### YACReader

@@ -13,6 +13,7 @@ public:
     void addExistingLibrary(const QString &name, const QString &path);
     void removeLibrary(const QString &name);
     void rescanXMLInfoLibrary(const QString &path);
+    int repairLibrary(const QString &path);
 
 private:
     uint numComicsProcessed;

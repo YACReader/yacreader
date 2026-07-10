@@ -358,6 +358,18 @@ void ImportWidget::setXMLScanLook()
     hideButton->setVisible(false);
 }
 
+void ImportWidget::setRepairLook()
+{
+    iconLabel->setPixmap(theme.importWidget.updatingIcon);
+    text->setText(QCoreApplication::translate("LibraryWindowActions", "Repair covers and comic info"));
+    textDescription->setText(tr("<p>The current library is being checked for missing covers and incomplete comic information.</p><p>This can take several minutes. You can stop the process and run it again later.</p>"));
+
+    stopButton->setVisible(true);
+    coversLabel->setVisible(false);
+    coversViewContainer->setVisible(false);
+    hideButton->setVisible(false);
+}
+
 void ImportWidget::clearScene()
 {
 }

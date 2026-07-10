@@ -1,5 +1,6 @@
 #include "console_ui_library_creator.h"
 
+#include "comic_info_repairer.h"
 #include "library_creator.h"
 #include "xml_info_library_scanner.h"
 #include "yacreader_libraries.h"
@@ -138,6 +139,82 @@ void ConsoleUILibraryCreator::rescanXMLInfoLibrary(const QString &path)
     scanner->scanLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath));
 
     eventLoop.exec();
+}
+
+int ConsoleUILibraryCreator::repairLibrary(const QString &path)
+{
+    QDir pathDir(path);
+    if (!pathDir.exists()) {
+        std::cout << "Directory not found." << std::endl;
+        return 1;
+    }
+
+    QEventLoop eventLoop;
+    ComicInfoRepairer *repairer = new ComicInfoRepairer(settings);
+    const auto cleanPath = QDir::cleanPath(pathDir.absolutePath());
+
+    connect(repairer, &ComicInfoRepairer::comicProcessed, this, &ConsoleUILibraryCreator::newComic);
+    connect(repairer, &QThread::finished, &eventLoop, &QEventLoop::quit);
+
+    auto runRepair = [&](bool removeStaleLock) {
+        std::cout << "Repairing comics";
+        repairer->repairLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath), removeStaleLock);
+        eventLoop.exec();
+        return repairer->summary();
+    };
+
+    auto summary = runRepair(false);
+
+    if (summary.lockedByAnotherProcess) {
+        if (summary.lockHolderIsRunningLocally) {
+            std::cout << std::endl
+                      << "A repair of this library is already running (" << summary.lockHolderInfo.toStdString() << "). Wait for it to finish." << std::endl;
+            delete repairer;
+            return 1;
+        }
+
+        std::cout << std::endl;
+        if (summary.lockHolderInfo.isEmpty()) {
+            std::cout << "The library is locked by a repair that did not finish." << std::endl;
+        } else {
+            std::cout << "The library is locked by a repair started by " << summary.lockHolderInfo.toStdString() << "." << std::endl;
+        }
+        std::cout << "If you are sure that no other repair is running, the lock can be removed." << std::endl
+                  << "Remove the lock and continue? [y/N] " << std::flush;
+
+        std::string answer;
+        std::getline(std::cin, answer);
+        // piped input can keep the trailing carriage return on Windows
+        const auto trimmedAnswer = QString::fromStdString(answer).trimmed().toLower();
+        if (trimmedAnswer != "y" && trimmedAnswer != "yes") {
+            delete repairer;
+            return 1;
+        }
+
+        summary = runRepair(true);
+        if (summary.lockedByAnotherProcess) {
+            std::cout << std::endl
+                      << "The library is still locked, another process took the lock." << std::endl;
+            delete repairer;
+            return 1;
+        }
+    }
+
+    if (!summary.error.isEmpty()) {
+        std::cout << std::endl
+                  << "Repair failed: " << summary.error.toStdString() << std::endl;
+        delete repairer;
+        return 1;
+    }
+    std::cout << std::endl
+              << "Repaired: " << summary.repaired << std::endl
+              << "Failed: " << summary.failed << std::endl
+              << "Missing files: " << summary.missingFiles << std::endl;
+    for (const auto &failedPath : summary.failedFilePaths) {
+        std::cout << "  " << failedPath.toStdString() << std::endl;
+    }
+    delete repairer;
+    return 0;
 }
 
 void ConsoleUILibraryCreator::newComic(const QString & /*relativeComicPath*/, const QString & /*coverPath*/)
