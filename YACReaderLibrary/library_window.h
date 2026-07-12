@@ -241,6 +241,11 @@ public slots:
     void reloadCurrentLibrary();
     void openLastCreated();
     void updateLibrary();
+    void backupLibrary();
+    void restoreLibrary();
+    void startLibraryRestore(const QString &backupPath, bool allowInvalidCurrent = false, bool removeStaleLock = false);
+    void offerDatabaseRecovery(const QString &libraryName);
+    void startDatabaseSalvage(const QString &libraryName, bool removeStaleLock = false);
     void repairLibrary();
     void startLibraryRepair(bool removeStaleLock);
     // void deleteLibrary();

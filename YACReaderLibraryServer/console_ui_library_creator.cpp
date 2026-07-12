@@ -51,12 +51,13 @@ void ConsoleUILibraryCreator::createLibrary(const QString &name, const QString &
     yacreaderLibraries.save();
 }
 
-void ConsoleUILibraryCreator::updateLibrary(const QString &path)
+bool ConsoleUILibraryCreator::updateLibrary(const QString &path)
 {
+    operationFailed = false;
     QDir pathDir(path);
     if (!pathDir.exists()) {
         std::cout << "Directory not found." << std::endl;
-        return;
+        return false;
     }
 
     QEventLoop eventLoop;
@@ -75,6 +76,7 @@ void ConsoleUILibraryCreator::updateLibrary(const QString &path)
 
     libraryCreator->start();
     eventLoop.exec();
+    return !operationFailed;
 }
 
 void ConsoleUILibraryCreator::addExistingLibrary(const QString &name, const QString &path)
@@ -231,6 +233,7 @@ void ConsoleUILibraryCreator::manageCreatingError(const QString &error)
 
 void ConsoleUILibraryCreator::manageUpdatingError(const QString &error)
 {
+    operationFailed = true;
     std::cout << std::endl
               << "Error updating library! " << error.toUtf8().constData() << std::endl;
 }

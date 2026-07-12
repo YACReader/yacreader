@@ -4,22 +4,22 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="456"/>
+        <location filename="../common/comic.cpp" line="457"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>%1번 페이지에서 CRC 오류 발생: 일부 페이지가 올바르게 표시되지 않을 수 있습니다</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="463"/>
+        <location filename="../common/comic.cpp" line="464"/>
         <source>Unknown error opening the file</source>
         <translation>파일을 여는 중 알 수 없는 오류가 발생했습니다</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="564"/>
+        <location filename="../common/comic.cpp" line="565"/>
         <source>7z not found</source>
         <translation>7z를 찾을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="570"/>
+        <location filename="../common/comic.cpp" line="571"/>
         <source>Format not supported</source>
         <translation>지원하지 않는 형식입니다</translation>
     </message>
@@ -27,7 +27,7 @@
 <context>
     <name>QCoreApplication</name>
     <message>
-        <location filename="main.cpp" line="77"/>
+        <location filename="main.cpp" line="83"/>
         <source>
 YACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary.
 

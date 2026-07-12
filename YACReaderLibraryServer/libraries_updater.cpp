@@ -18,6 +18,11 @@ void LibrariesUpdater::updateIfNeeded()
 
     for (const QString &name : libraries.getNames()) {
         QString libraryPath = libraries.getPath(name);
+        QString recoveryError;
+        if (!DataBaseManagement::recoverInterruptedRestore(libraryPath, &recoveryError)) {
+            qWarning() << "Unable to recover interrupted restore for" << libraryPath << recoveryError;
+            continue;
+        }
         QString libraryDataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
         QString databasePath = YACReader::LibraryPaths::libraryDatabasePath(libraryPath);
 

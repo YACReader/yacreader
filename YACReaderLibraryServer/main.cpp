@@ -32,6 +32,10 @@ int listLibraries(QCoreApplication &app, QCommandLineParser &parser, QTextStream
 int setPort(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
 int rescanXmlInfo(QCoreApplication &app, QCommandLineParser &parser, QSettings *settings);
 int repairLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *settings);
+int backupLibrary(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
+int listBackups(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
+int restoreLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *settings, QTextStream &qout);
+int repairLibraryDb(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
 
 void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
 void printServerInfo(YACReaderHttpServer *httpServer);
@@ -82,10 +86,13 @@ int main(int argc, char **argv)
                                              .arg(settingsPath));
     parser.addHelpOption();
     const QCommandLineOption versionOption = parser.addVersionOption();
-    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, repair-library, add-library, remove-library, list-libraries, set-port, rescan-xml-info]");
+    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, repair-library, backup-library, list-backups, restore-library, repair-library-db, add-library, remove-library, list-libraries, set-port, rescan-xml-info]");
     parser.addOption({ "loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "info" });
     parser.addOption({ "port", "Set server port (temporary). Valid values: 1-65535", "port" });
     parser.addOption({ "system-info", "Prints detailed information about the system environment, including OS version, hardware specifications, and available resources." });
+    parser.addOption({ "update-library", "Run a full library update after restoring a backup." });
+    parser.addOption({ "allow-invalid-current", "Allow restore when the current library database is invalid." });
+    parser.addOption({ "remove-stale-lock", "Remove a stale maintenance lock after validating that it is stale." });
     parser.parse(app.arguments());
 
     const QStringList args = parser.positionalArguments();
@@ -118,6 +125,14 @@ int main(int argc, char **argv)
         return updateLibrary(app, parser, settings);
     } else if (command == "repair-library") {
         return repairLibrary(app, parser, settings);
+    } else if (command == "backup-library") {
+        return backupLibrary(app, parser, qout);
+    } else if (command == "list-backups") {
+        return listBackups(app, parser, qout);
+    } else if (command == "restore-library") {
+        return restoreLibrary(app, parser, settings, qout);
+    } else if (command == "repair-library-db") {
+        return repairLibraryDb(app, parser, qout);
     } else if (command == "add-library") {
         return addLibrary(app, parser, settings);
     } else if (command == "remove-library") {
@@ -311,8 +326,120 @@ int updateLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
     }
 
     ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
-    libraryCreatorUI->updateLibrary(args.at(1));
+    return libraryCreatorUI->updateLibrary(args.at(1)) ? 0 : 1;
+}
 
+int backupLibrary(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout)
+{
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("backup-library", "Creates a manual database backup");
+    parser.addPositionalArgument("path", "Path to the library", "<path>");
+    parser.addPositionalArgument("destination", "Destination .ydb file", "<destination>");
+    parser.process(app);
+
+    const auto args = parser.positionalArguments();
+    if (args.length() != 3) {
+        parser.showHelp(1);
+        return 1;
+    }
+
+    QString error;
+    if (!DataBaseManagement::backupLibrary(args.at(1), DatabaseBackupReason::Manual, &error, args.at(2))) {
+        qout << "Backup failed: " << error << Qt::endl;
+        return 1;
+    }
+    qout << "Backup created: " << QDir::cleanPath(args.at(2)) << Qt::endl;
+    return 0;
+}
+
+int listBackups(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout)
+{
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("list-backups", "Lists managed database backups newest first");
+    parser.addPositionalArgument("path", "Path to the library", "<path>");
+    parser.process(app);
+
+    const auto args = parser.positionalArguments();
+    if (args.length() != 2) {
+        parser.showHelp(1);
+        return 1;
+    }
+
+    for (const auto &backup : DataBaseManagement::libraryBackups(args.at(1)))
+        qout << backup.fileName() << '\t' << backup.absoluteFilePath() << Qt::endl;
+    return 0;
+}
+
+int restoreLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *settings, QTextStream &qout)
+{
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("restore-library", "Restores a library database backup");
+    parser.addPositionalArgument("path", "Path to the library", "<path>");
+    parser.addPositionalArgument("backup", "Backup .ydb file", "<backup>");
+    parser.process(app);
+
+    const auto args = parser.positionalArguments();
+    if (args.length() != 3) {
+        parser.showHelp(1);
+        return 1;
+    }
+
+    if (YACReaderLocalServer::isRunning()) {
+        qout << "Restore failed: stop YACReaderLibraryServer and other YACReader applications first." << Qt::endl;
+        return 3;
+    }
+
+    const auto result = DataBaseManagement::restoreLibrary(args.at(1), args.at(2), parser.isSet("allow-invalid-current"), parser.isSet("remove-stale-lock"));
+    if (!result.success()) {
+        qout << "Restore failed: " << result.error << Qt::endl;
+        if (result.status == DatabaseRestoreStatus::LockFailed)
+            return 3;
+        if (result.status == DatabaseRestoreStatus::RollbackFailed)
+            return 4;
+        return 1;
+    }
+
+    qout << "Database restored (version " << result.restoredVersion << ")" << Qt::endl;
+    if (parser.isSet("update-library")) {
+        ConsoleUILibraryCreator libraryCreatorUI(settings);
+        if (!libraryCreatorUI.updateLibrary(args.at(1))) {
+            qout << "Restore succeeded, but the library update failed." << Qt::endl;
+            return 5;
+        }
+    }
+    return 0;
+}
+
+int repairLibraryDb(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout)
+{
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("repair-library-db", "Tries to repair a damaged library database");
+    parser.addPositionalArgument("path", "Path to the library", "<path>");
+    parser.process(app);
+
+    const auto args = parser.positionalArguments();
+    if (args.length() != 2) {
+        parser.showHelp(1);
+        return 1;
+    }
+
+    const auto result = DataBaseManagement::salvageLibrary(args.at(1), parser.isSet("remove-stale-lock"));
+    if (!result.success()) {
+        qout << "Repair failed: " << result.error << Qt::endl;
+        if (!result.preservedDatabasePath.isEmpty())
+            qout << "The damaged original was preserved at: " << result.preservedDatabasePath << Qt::endl;
+        qout << "You can restore a backup with restore-library or recreate the library." << Qt::endl;
+        return result.status == DatabaseSalvageStatus::LockFailed ? 3 : 1;
+    }
+    if (result.status == DatabaseSalvageStatus::AlreadyValid) {
+        qout << "Library database is already valid." << Qt::endl;
+    } else if (result.status == DatabaseSalvageStatus::Reindexed) {
+        qout << "Library database repaired by rebuilding its indexes." << Qt::endl;
+    } else {
+        qout << "Library database repaired by rebuilding it." << Qt::endl;
+    }
+    if (!result.preservedDatabasePath.isEmpty())
+        qout << "The damaged original was preserved at: " << result.preservedDatabasePath << Qt::endl;
     return 0;
 }
 

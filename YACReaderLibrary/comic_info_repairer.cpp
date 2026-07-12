@@ -438,32 +438,20 @@ void ComicInfoRepairer::run()
     };
 #endif
 
-    // serialize repairs across processes (GUI and CLI); released automatically when run() ends.
-    // Never steal the lock based on age: a repair can legitimately run for hours, and on a
-    // network share the holder's PID can't be verified. A crashed process on this host is
-    // still detected through its dead PID; for a holder on another host the frontends ask
-    // the user and retry with removeStaleLock.
-    QLockFile lockFile(QDir(target).filePath("repair.lock"));
-    lockFile.setStaleLockTime(0);
-    bool lockAcquired = lockFile.tryLock();
-    if (!lockAcquired && removeStaleLock) {
-        lockFile.removeStaleLockFile();
-        lockAcquired = lockFile.tryLock();
-    }
-    if (!lockAcquired) {
+    LibraryMaintenanceLock maintenanceLock(source);
+    if (!maintenanceLock.tryLock(removeStaleLock)) {
         repairSummary.lockedByAnotherProcess = true;
-        repairSummary.lockFilePath = lockFile.fileName();
+        repairSummary.lockHolderInfo = maintenanceLock.holderInfo();
+        repairSummary.lockHolderIsRunningLocally = maintenanceLock.holderIsRunningLocally();
+        repairSummary.error = maintenanceLock.errorString();
+        return;
+    }
 
-        qint64 holderPid = 0;
-        QString holderHostname, holderAppname;
-        if (lockFile.getLockInfo(&holderPid, &holderHostname, &holderAppname)) {
-            repairSummary.lockHolderInfo = QString("%1 (PID %2) on %3").arg(holderAppname).arg(holderPid).arg(holderHostname.isEmpty() ? QString("unknown host") : holderHostname);
-            // a stale same-host lock would have been removed by tryLock already, so a
-            // local holder is actually running right now
-            repairSummary.lockHolderIsRunningLocally = !holderHostname.isEmpty() && holderHostname == QSysInfo::machineHostName();
-        }
-
-        repairSummary.error = QString("Another process is already repairing this library (lock file: %1)").arg(lockFile.fileName());
+    QString backupError;
+    if (!DataBaseManagement::backupLibrary(source, DatabaseBackupReason::BeforeRepair, &backupError)) {
+        repairSummary.error = QString("Unable to back up library database: %1").arg(backupError);
+        QLOG_ERROR() << repairSummary.error;
+        emit failed(repairSummary.error);
         return;
     }
 

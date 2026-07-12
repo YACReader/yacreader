@@ -5,10 +5,16 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ## 10.2.0
 
 ### YACReaderLibrary
-* Add a new function to repair some aspects of a library. It's available in the library context menu. It can restore missing covers and rescan files that failed to be added to the library (placeholder x cover).
+* Add a library repair function to restore missing covers and rescan files that previously failed to be added.
+* Add actions to create and restore library database backups.
+* Automatically create and retain database backups in `.yacreaderlibrary/backups`.
+* When database corruption is detected, offer to attempt a repair or restore a backup. Damaged originals are preserved in `.yacreaderlibrary/recovery`.
 
-### YACReaderLibrary
-* Add a new command `repair-library` to repair some aspects of a library. It can restore missing covers and rescan files that failed to be added to the library (placeholder x cover).
+### YACReaderLibraryServer
+* Add the `repair-library` command to restore missing covers and rescan files that previously failed to be added.
+* Add the `backup-library`, `list-backups`, and `restore-library` commands.
+* Automatically create and retain database backups in `.yacreaderlibrary/backups`.
+* Add the `repair-library-db` command to attempt to repair a damaged database. Damaged originals are preserved in `.yacreaderlibrary/recovery`.
 
 ## 10.1.0
 

@@ -152,7 +152,7 @@
 <context>
     <name>ContinuousPageWidget</name>
     <message>
-        <location filename="continuous_page_widget.cpp" line="157"/>
+        <location filename="continuous_page_widget.cpp" line="272"/>
         <source>Loading page %1</source>
         <translation>%1 sayfası yükleniyor</translation>
     </message>
@@ -188,22 +188,22 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="564"/>
+        <location filename="../common/comic.cpp" line="565"/>
         <source>7z not found</source>
         <translation>7z bulunamadı</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="456"/>
+        <location filename="../common/comic.cpp" line="457"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>(%1). sayfada CRC hatası : bazı sayfalar düzgün görüntülenmeyecek</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="463"/>
+        <location filename="../common/comic.cpp" line="464"/>
         <source>Unknown error opening the file</source>
         <translation>Dosya açılırken bilinmeyen hata</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="570"/>
+        <location filename="../common/comic.cpp" line="571"/>
         <source>Format not supported</source>
         <translation>Biçim desteklenmiyor</translation>
     </message>
@@ -248,17 +248,22 @@
 <context>
     <name>HelpAboutDialog</name>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="27"/>
         <source>Help</source>
         <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="28"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="30"/>
         <source>System info</source>
         <translation>Sistem bilgisi</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="22"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="35"/>
+        <source>Changelog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="24"/>
         <source>About</source>
         <translation>Hakkında</translation>
     </message>
@@ -704,48 +709,48 @@
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="60"/>
-        <location filename="viewer.cpp" line="1407"/>
+        <location filename="viewer.cpp" line="61"/>
+        <location filename="viewer.cpp" line="1517"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>&apos;O&apos;ya basarak aç.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1642"/>
+        <location filename="viewer.cpp" line="1764"/>
         <source>Cover!</source>
         <translation>Kapak!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="262"/>
+        <location filename="viewer.cpp" line="282"/>
         <source>Comic not found</source>
         <translation>Çizgi roman bulunamadı</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="262"/>
+        <location filename="viewer.cpp" line="282"/>
         <source>Not found</source>
         <translation>Bulunamadı</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1656"/>
+        <location filename="viewer.cpp" line="1778"/>
         <source>Last page!</source>
         <translation>Son sayfa!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1423"/>
+        <location filename="viewer.cpp" line="1534"/>
         <source>Loading...please wait!</source>
         <translation>Yükleniyor... lütfen bekleyin!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="268"/>
+        <location filename="viewer.cpp" line="288"/>
         <source>Error opening comic</source>
         <translation>Çizgi roman açılırken hata</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="274"/>
+        <location filename="viewer.cpp" line="294"/>
         <source>CRC Error</source>
         <translation>CRC Hatası</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1434"/>
+        <location filename="viewer.cpp" line="1545"/>
         <source>Page not available!</source>
         <translation>Sayfa bulunamadı!</translation>
     </message>
@@ -871,545 +876,545 @@
 <context>
     <name>YACReader::MainWindowViewer</name>
     <message>
-        <location filename="main_window_viewer.cpp" line="319"/>
+        <location filename="main_window_viewer.cpp" line="329"/>
         <source>&amp;Open</source>
         <translation>&amp;Aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="320"/>
+        <location filename="main_window_viewer.cpp" line="330"/>
         <source>Open a comic</source>
         <translation>Çizgi romanı aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="326"/>
+        <location filename="main_window_viewer.cpp" line="336"/>
         <source>New instance</source>
         <translation>Yeni örnek</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="345"/>
+        <location filename="main_window_viewer.cpp" line="355"/>
         <source>Open Folder</source>
         <translation>Dosyayı Aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="346"/>
+        <location filename="main_window_viewer.cpp" line="356"/>
         <source>Open image folder</source>
         <translation>Resim dosyasınıaç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="351"/>
+        <location filename="main_window_viewer.cpp" line="361"/>
         <source>Open latest comic</source>
         <translation>En son çizgi romanı aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="352"/>
+        <location filename="main_window_viewer.cpp" line="362"/>
         <source>Open the latest comic opened in the previous reading session</source>
         <translation>Önceki okuma oturumunda açılan en son çizgi romanı aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="364"/>
+        <location filename="main_window_viewer.cpp" line="374"/>
         <source>Clear</source>
         <translation>Temizle</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="365"/>
+        <location filename="main_window_viewer.cpp" line="375"/>
         <source>Clear open recent list</source>
         <translation>Son açılanlar listesini temizle</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="368"/>
+        <location filename="main_window_viewer.cpp" line="378"/>
         <source>Save</source>
         <translation>Kaydet</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="369"/>
-        <location filename="main_window_viewer.cpp" line="1083"/>
+        <location filename="main_window_viewer.cpp" line="379"/>
+        <location filename="main_window_viewer.cpp" line="1093"/>
         <source>Save current page</source>
         <translation>Geçerli sayfayı kaydet</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="374"/>
-        <location filename="main_window_viewer.cpp" line="1107"/>
-        <location filename="main_window_viewer.cpp" line="1130"/>
-        <location filename="main_window_viewer.cpp" line="1148"/>
+        <location filename="main_window_viewer.cpp" line="384"/>
+        <location filename="main_window_viewer.cpp" line="1117"/>
+        <location filename="main_window_viewer.cpp" line="1140"/>
+        <location filename="main_window_viewer.cpp" line="1158"/>
         <source>Extract page(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="375"/>
+        <location filename="main_window_viewer.cpp" line="385"/>
         <source>Extract page(s) from the original source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="380"/>
+        <location filename="main_window_viewer.cpp" line="390"/>
         <source>Previous Comic</source>
         <translation>Önce ki çizgi roman</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="381"/>
-        <location filename="main_window_viewer.cpp" line="1879"/>
-        <location filename="main_window_viewer.cpp" line="1883"/>
+        <location filename="main_window_viewer.cpp" line="391"/>
+        <location filename="main_window_viewer.cpp" line="1889"/>
+        <location filename="main_window_viewer.cpp" line="1893"/>
         <source>Open previous comic</source>
         <translation>Önceki çizgi romanı aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="386"/>
+        <location filename="main_window_viewer.cpp" line="396"/>
         <source>Next Comic</source>
         <translation>Sırada ki çizgi roman</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="387"/>
-        <location filename="main_window_viewer.cpp" line="1878"/>
-        <location filename="main_window_viewer.cpp" line="1884"/>
+        <location filename="main_window_viewer.cpp" line="397"/>
+        <location filename="main_window_viewer.cpp" line="1888"/>
+        <location filename="main_window_viewer.cpp" line="1894"/>
         <source>Open next comic</source>
         <translation>Sıradaki çizgi romanı aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="392"/>
+        <location filename="main_window_viewer.cpp" line="402"/>
         <source>&amp;Previous</source>
         <translation>&amp;Geri</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="394"/>
-        <location filename="main_window_viewer.cpp" line="1881"/>
-        <location filename="main_window_viewer.cpp" line="1885"/>
+        <location filename="main_window_viewer.cpp" line="404"/>
+        <location filename="main_window_viewer.cpp" line="1891"/>
+        <location filename="main_window_viewer.cpp" line="1895"/>
         <source>Go to previous page</source>
         <translation>Önceki sayfaya dön</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="399"/>
+        <location filename="main_window_viewer.cpp" line="409"/>
         <source>&amp;Next</source>
         <translation>&amp;İleri</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="401"/>
-        <location filename="main_window_viewer.cpp" line="1880"/>
-        <location filename="main_window_viewer.cpp" line="1886"/>
+        <location filename="main_window_viewer.cpp" line="411"/>
+        <location filename="main_window_viewer.cpp" line="1890"/>
+        <location filename="main_window_viewer.cpp" line="1896"/>
         <source>Go to next page</source>
         <translation>Sonra ki sayfaya geç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="406"/>
+        <location filename="main_window_viewer.cpp" line="416"/>
         <source>Fit Height</source>
         <translation>Yüksekliğe Sığdır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="407"/>
+        <location filename="main_window_viewer.cpp" line="417"/>
         <source>Fit image to height</source>
         <translation>Uygun yüksekliğe getir</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="413"/>
+        <location filename="main_window_viewer.cpp" line="423"/>
         <source>Fit Width</source>
         <translation>Uygun Genişlik</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="414"/>
+        <location filename="main_window_viewer.cpp" line="424"/>
         <source>Fit image to width</source>
         <translation>Görüntüyü sığdır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="420"/>
+        <location filename="main_window_viewer.cpp" line="430"/>
         <source>Show full size</source>
         <translation>Tam erken</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="427"/>
+        <location filename="main_window_viewer.cpp" line="437"/>
         <source>Fit to page</source>
         <translation>Sayfaya sığdır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="433"/>
+        <location filename="main_window_viewer.cpp" line="443"/>
         <source>Continuous scroll</source>
         <translation>Sürekli kaydırma</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="434"/>
+        <location filename="main_window_viewer.cpp" line="444"/>
         <source>Switch to continuous scroll mode</source>
         <translation>Sürekli kaydırma moduna geç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="466"/>
+        <location filename="main_window_viewer.cpp" line="476"/>
         <source>Reset zoom</source>
         <translation>Yakınlaştırmayı sıfırla</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="471"/>
+        <location filename="main_window_viewer.cpp" line="481"/>
         <source>Show zoom slider</source>
         <translation>Yakınlaştırma çubuğunu göster</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="473"/>
+        <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
         <translation>Yakınlaştır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="478"/>
+        <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
         <translation>Uzaklaştır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="483"/>
+        <location filename="main_window_viewer.cpp" line="493"/>
         <source>Rotate image to the left</source>
         <translation>Sayfayı sola yatır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="488"/>
+        <location filename="main_window_viewer.cpp" line="498"/>
         <source>Rotate image to the right</source>
         <translation>Sayfayı sağa yator</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="493"/>
+        <location filename="main_window_viewer.cpp" line="503"/>
         <source>Double page mode</source>
         <translation>Çift sayfa modu</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="494"/>
+        <location filename="main_window_viewer.cpp" line="504"/>
         <source>Switch to double page mode</source>
         <translation>Çift sayfa moduna geç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="502"/>
+        <location filename="main_window_viewer.cpp" line="512"/>
         <source>Double page manga mode</source>
         <translation>Çift sayfa manga kipi</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="503"/>
+        <location filename="main_window_viewer.cpp" line="513"/>
         <source>Reverse reading order in double page mode</source>
         <translation>Çift sayfa kipinde ters okuma sırası</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="511"/>
+        <location filename="main_window_viewer.cpp" line="521"/>
         <source>Go To</source>
         <translation>Git</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="512"/>
+        <location filename="main_window_viewer.cpp" line="522"/>
         <source>Go to page ...</source>
         <translation>Sayfata git...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="517"/>
+        <location filename="main_window_viewer.cpp" line="527"/>
         <source>Options</source>
         <translation>Ayarlar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="518"/>
+        <location filename="main_window_viewer.cpp" line="528"/>
         <source>YACReader options</source>
         <translation>YACReader ayarları</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="524"/>
-        <location filename="main_window_viewer.cpp" line="822"/>
+        <location filename="main_window_viewer.cpp" line="534"/>
+        <location filename="main_window_viewer.cpp" line="832"/>
         <source>Help</source>
         <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="525"/>
+        <location filename="main_window_viewer.cpp" line="535"/>
         <source>Help, About YACReader</source>
         <translation>YACReader hakkında yardım ve bilgi</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="530"/>
+        <location filename="main_window_viewer.cpp" line="540"/>
         <source>Magnifying glass</source>
         <translation>Büyüteç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="531"/>
+        <location filename="main_window_viewer.cpp" line="541"/>
         <source>Switch Magnifying glass</source>
         <translation>Büyüteç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="537"/>
+        <location filename="main_window_viewer.cpp" line="547"/>
         <source>Set bookmark</source>
         <translation>Yer imi yap</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="538"/>
+        <location filename="main_window_viewer.cpp" line="548"/>
         <source>Set a bookmark on the current page</source>
         <translation>Sayfayı yer imi olarak ayarla</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="546"/>
+        <location filename="main_window_viewer.cpp" line="556"/>
         <source>Show bookmarks</source>
         <translation>Yer imlerini göster</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="547"/>
+        <location filename="main_window_viewer.cpp" line="557"/>
         <source>Show the bookmarks of the current comic</source>
         <translation>Bu çizgi romanın yer imlerini göster</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="552"/>
+        <location filename="main_window_viewer.cpp" line="562"/>
         <source>Show keyboard shortcuts</source>
         <translation>Klavye kısayollarını göster</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="557"/>
+        <location filename="main_window_viewer.cpp" line="567"/>
         <source>Show Info</source>
         <translation>Bilgiyi göster</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="562"/>
+        <location filename="main_window_viewer.cpp" line="572"/>
         <source>Close</source>
         <translation>Kapat</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="567"/>
+        <location filename="main_window_viewer.cpp" line="577"/>
         <source>Show Dictionary</source>
         <translation>Sözlüğü göster</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="573"/>
+        <location filename="main_window_viewer.cpp" line="583"/>
         <source>Show go to flow</source>
         <translation>&quot;Comic Flow&apos;a git&quot;i göster</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="578"/>
+        <location filename="main_window_viewer.cpp" line="588"/>
         <source>Edit shortcuts</source>
         <translation>Kısayolları düzenle</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="599"/>
+        <location filename="main_window_viewer.cpp" line="609"/>
         <source>&amp;File</source>
         <translation>&amp;Dosya</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="614"/>
-        <location filename="main_window_viewer.cpp" line="776"/>
+        <location filename="main_window_viewer.cpp" line="624"/>
+        <location filename="main_window_viewer.cpp" line="786"/>
         <source>Open recent</source>
         <translation>Son dosyaları aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="764"/>
+        <location filename="main_window_viewer.cpp" line="774"/>
         <source>File</source>
         <translation>Dosya</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="786"/>
+        <location filename="main_window_viewer.cpp" line="796"/>
         <source>Edit</source>
         <translation>Düzen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="790"/>
+        <location filename="main_window_viewer.cpp" line="800"/>
         <source>View</source>
         <translation>Görünüm</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="807"/>
+        <location filename="main_window_viewer.cpp" line="817"/>
         <source>Go</source>
         <translation>Git</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="815"/>
+        <location filename="main_window_viewer.cpp" line="825"/>
         <source>Window</source>
         <translation>Pencere</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="932"/>
-        <location filename="main_window_viewer.cpp" line="934"/>
-        <location filename="main_window_viewer.cpp" line="936"/>
+        <location filename="main_window_viewer.cpp" line="942"/>
+        <location filename="main_window_viewer.cpp" line="944"/>
+        <location filename="main_window_viewer.cpp" line="946"/>
         <source>Open Comic</source>
         <translation>Çizgi Romanı Aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="932"/>
-        <location filename="main_window_viewer.cpp" line="934"/>
-        <location filename="main_window_viewer.cpp" line="936"/>
+        <location filename="main_window_viewer.cpp" line="942"/>
+        <location filename="main_window_viewer.cpp" line="944"/>
+        <location filename="main_window_viewer.cpp" line="946"/>
         <source>Comic files</source>
         <translation>Çizgi Roman Dosyaları</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1024"/>
+        <location filename="main_window_viewer.cpp" line="1034"/>
         <source>Open folder</source>
         <translation>Dosyayı aç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1293"/>
-        <location filename="main_window_viewer.cpp" line="1306"/>
+        <location filename="main_window_viewer.cpp" line="1303"/>
+        <location filename="main_window_viewer.cpp" line="1316"/>
         <source>Comics</source>
         <translation>Çizgi Roman</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1317"/>
+        <location filename="main_window_viewer.cpp" line="1327"/>
         <source>Toggle fullscreen mode</source>
         <translation>Tam ekran kipini aç/kapat</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1320"/>
+        <location filename="main_window_viewer.cpp" line="1330"/>
         <source>Hide/show toolbar</source>
         <translation>Araç çubuğunu göster/gizle</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1294"/>
-        <location filename="main_window_viewer.cpp" line="1323"/>
+        <location filename="main_window_viewer.cpp" line="1304"/>
+        <location filename="main_window_viewer.cpp" line="1333"/>
         <source>General</source>
         <translation>Genel</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1342"/>
+        <location filename="main_window_viewer.cpp" line="1352"/>
         <source>Size up magnifying glass</source>
         <translation>Büyüteci büyüt</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1345"/>
+        <location filename="main_window_viewer.cpp" line="1355"/>
         <source>Size down magnifying glass</source>
         <translation>Büyüteci küçült</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1348"/>
+        <location filename="main_window_viewer.cpp" line="1358"/>
         <source>Zoom in magnifying glass</source>
         <translation>Büyüteci yakınlaştır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1351"/>
+        <location filename="main_window_viewer.cpp" line="1361"/>
         <source>Zoom out magnifying glass</source>
         <translation>Büyüteci uzaklaştır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1354"/>
+        <location filename="main_window_viewer.cpp" line="1364"/>
         <source>Reset magnifying glass</source>
         <translation>Büyüteci sıfırla</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1295"/>
-        <location filename="main_window_viewer.cpp" line="1361"/>
+        <location filename="main_window_viewer.cpp" line="1305"/>
+        <location filename="main_window_viewer.cpp" line="1371"/>
         <source>Magnifiying glass</source>
         <translation>Büyüteç</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1368"/>
+        <location filename="main_window_viewer.cpp" line="1378"/>
         <source>Toggle between fit to width and fit to height</source>
         <translation>Genişliğe sığdır ile yüksekliğe sığdır arasında geçiş yap</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1296"/>
-        <location filename="main_window_viewer.cpp" line="1372"/>
+        <location filename="main_window_viewer.cpp" line="1306"/>
+        <location filename="main_window_viewer.cpp" line="1382"/>
         <source>Page adjustement</source>
         <translation>Sayfa ayarı</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1094"/>
+        <location filename="main_window_viewer.cpp" line="1104"/>
         <source>Overwrite file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1094"/>
+        <location filename="main_window_viewer.cpp" line="1104"/>
         <source>The file already exists. Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1130"/>
+        <location filename="main_window_viewer.cpp" line="1140"/>
         <source>The current page could not be extracted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1135"/>
+        <location filename="main_window_viewer.cpp" line="1145"/>
         <source>Overwrite files?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1135"/>
+        <location filename="main_window_viewer.cpp" line="1145"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1148"/>
+        <location filename="main_window_viewer.cpp" line="1158"/>
         <source>Some pages could not be extracted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1390"/>
+        <location filename="main_window_viewer.cpp" line="1400"/>
         <source>Autoscroll down</source>
         <translation>Otomatik aşağı kaydır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1393"/>
+        <location filename="main_window_viewer.cpp" line="1403"/>
         <source>Autoscroll up</source>
         <translation>Otomatik yukarı kaydır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1396"/>
+        <location filename="main_window_viewer.cpp" line="1406"/>
         <source>Autoscroll forward, horizontal first</source>
         <translation>Otomatik ileri kaydır, önce yatay</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1400"/>
+        <location filename="main_window_viewer.cpp" line="1410"/>
         <source>Autoscroll backward, horizontal first</source>
         <translation>Otomatik geri kaydır, önce yatay</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1404"/>
+        <location filename="main_window_viewer.cpp" line="1414"/>
         <source>Autoscroll forward, vertical first</source>
         <translation>Otomatik ileri kaydır, önce dikey</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1408"/>
+        <location filename="main_window_viewer.cpp" line="1418"/>
         <source>Autoscroll backward, vertical first</source>
         <translation>Otomatik geri kaydır, önce dikey</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1412"/>
+        <location filename="main_window_viewer.cpp" line="1422"/>
         <source>Move down</source>
         <translation>Aşağı git</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1415"/>
+        <location filename="main_window_viewer.cpp" line="1425"/>
         <source>Move up</source>
         <translation>Yukarı git</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1418"/>
+        <location filename="main_window_viewer.cpp" line="1428"/>
         <source>Move left</source>
         <translation>Sola git</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1421"/>
+        <location filename="main_window_viewer.cpp" line="1431"/>
         <source>Move right</source>
         <translation>Sağa git</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1424"/>
+        <location filename="main_window_viewer.cpp" line="1434"/>
         <source>Go to the first page</source>
         <translation>İlk sayfaya git</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1427"/>
+        <location filename="main_window_viewer.cpp" line="1437"/>
         <source>Go to the last page</source>
         <translation>En son sayfaya git</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1430"/>
+        <location filename="main_window_viewer.cpp" line="1440"/>
         <source>Offset double page to the left</source>
         <translation>Çift sayfayı sola kaydır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1432"/>
+        <location filename="main_window_viewer.cpp" line="1442"/>
         <source>Offset double page to the right</source>
         <translation>Çift sayfayı sağa kaydır</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1297"/>
-        <location filename="main_window_viewer.cpp" line="1450"/>
+        <location filename="main_window_viewer.cpp" line="1307"/>
+        <location filename="main_window_viewer.cpp" line="1460"/>
         <source>Reading</source>
         <translation>Okuma</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1499"/>
+        <location filename="main_window_viewer.cpp" line="1509"/>
         <source>There is a new version available</source>
         <translation>Yeni versiyon mevcut</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1500"/>
+        <location filename="main_window_viewer.cpp" line="1510"/>
         <source>Do you want to download the new version?</source>
         <translation>Yeni versiyonu indirmek ister misin ?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1503"/>
+        <location filename="main_window_viewer.cpp" line="1513"/>
         <source>Remind me in 14 days</source>
         <translation>14 gün içinde hatırlat</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1504"/>
+        <location filename="main_window_viewer.cpp" line="1514"/>
         <source>Not now</source>
         <translation>Şimdi değil</translation>
     </message>

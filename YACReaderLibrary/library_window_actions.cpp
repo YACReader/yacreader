@@ -68,6 +68,16 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     updateLibraryAction->setData(UPDATE_LIBRARY_ACTION_YL);
     updateLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_LIBRARY_ACTION_YL));
 
+    backupLibraryAction = new QAction(tr("Back up library database"), window);
+    backupLibraryAction->setToolTip(tr("Create a backup of the current library database"));
+    backupLibraryAction->setData(BACKUP_LIBRARY_ACTION_YL);
+    backupLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACKUP_LIBRARY_ACTION_YL));
+
+    restoreLibraryAction = new QAction(tr("Restore library database backup"), window);
+    restoreLibraryAction->setToolTip(tr("Restore the current library database from a backup"));
+    restoreLibraryAction->setData(RESTORE_LIBRARY_ACTION_YL);
+    restoreLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESTORE_LIBRARY_ACTION_YL));
+
     repairLibraryAction = new QAction(tr("Repair covers and comic info"), window);
     repairLibraryAction->setToolTip(tr("Retry comics with missing covers or incomplete information"));
     repairLibraryAction->setData(REPAIR_LIBRARY_ACTION_YL);
@@ -516,6 +526,8 @@ void LibraryWindowActions::createConnections(
     QObject::connect(renameListAction, &QAction::triggered, window, &LibraryWindow::showRenameCurrentList);
 
     QObject::connect(updateLibraryAction, &QAction::triggered, window, &LibraryWindow::updateLibrary);
+    QObject::connect(backupLibraryAction, &QAction::triggered, window, &LibraryWindow::backupLibrary);
+    QObject::connect(restoreLibraryAction, &QAction::triggered, window, &LibraryWindow::restoreLibrary);
     QObject::connect(repairLibraryAction, &QAction::triggered, window, &LibraryWindow::repairLibrary);
     QObject::connect(renameLibraryAction, &QAction::triggered, window, &LibraryWindow::renameLibrary);
     // connect(deleteLibraryAction,SIGNAL(triggered()),window,SLOT(deleteLibrary()));
@@ -635,6 +647,8 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << exportLibraryAction
                                                  << importLibraryAction
                                                  << updateLibraryAction
+                                                 << backupLibraryAction
+                                                 << restoreLibraryAction
                                                  << repairLibraryAction
                                                  << renameLibraryAction
                                                  << removeLibraryAction
@@ -691,6 +705,8 @@ void LibraryWindowActions::disableComicsActions(bool disabled)
 void LibraryWindowActions::disableLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
+    backupLibraryAction->setDisabled(disabled);
+    restoreLibraryAction->setDisabled(disabled);
     repairLibraryAction->setDisabled(disabled);
     renameLibraryAction->setDisabled(disabled);
     removeLibraryAction->setDisabled(disabled);
@@ -704,6 +720,8 @@ void LibraryWindowActions::disableLibrariesActions(bool disabled)
 void LibraryWindowActions::disableNoUpdatedLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
+    backupLibraryAction->setDisabled(disabled);
+    restoreLibraryAction->setDisabled(disabled);
     repairLibraryAction->setDisabled(disabled);
     exportComicsInfoAction->setDisabled(disabled);
     importComicsInfoAction->setDisabled(disabled);

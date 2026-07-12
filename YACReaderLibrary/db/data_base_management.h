@@ -4,6 +4,8 @@
 #include <QSqlDatabase>
 #include <QtCore>
 
+#include <memory>
+
 class ComicsInfoExporter : public QThread
 {
     Q_OBJECT
@@ -47,6 +49,78 @@ struct DatabaseAccess {
     }
 };
 
+enum class DatabaseBackupReason {
+    AutoUpdate,
+    BeforeUpgrade,
+    BeforeRepair,
+    BeforeRestore,
+    Manual
+};
+
+class LibraryMaintenanceLock
+{
+public:
+    explicit LibraryMaintenanceLock(const QString &libraryPath);
+    ~LibraryMaintenanceLock();
+
+    bool tryLock(bool removeStaleLock = false);
+    QString errorString() const;
+    QString holderInfo() const;
+    bool holderIsRunningLocally() const;
+
+private:
+    bool tryLockFile(QLockFile &lock, bool removeStaleLock);
+    void captureLockInfo(QLockFile &lock);
+
+    std::unique_ptr<QLockFile> maintenanceLock;
+    std::unique_ptr<QLockFile> legacyRepairLock;
+    QString failedLockPath;
+    QString currentHolderInfo;
+    bool currentHolderIsRunningLocally { false };
+};
+
+enum class DatabaseRestoreStatus {
+    Success,
+    InvalidBackup,
+    NewerBackup,
+    InvalidCurrentDatabase,
+    LockFailed,
+    Failed,
+    RollbackFailed
+};
+
+struct DatabaseRestoreResult {
+    DatabaseRestoreStatus status { DatabaseRestoreStatus::Failed };
+    QString error;
+    QString restoredVersion;
+    QString lockHolderInfo;
+    bool lockHolderIsRunningLocally { false };
+    bool upgraded { false };
+
+    bool success() const { return status == DatabaseRestoreStatus::Success; }
+};
+
+enum class DatabaseSalvageStatus {
+    AlreadyValid,
+    Reindexed,
+    Rebuilt,
+    LockFailed,
+    Failed
+};
+
+struct DatabaseSalvageResult {
+    DatabaseSalvageStatus status { DatabaseSalvageStatus::Failed };
+    QString error;
+    QString preservedDatabasePath;
+    QString lockHolderInfo;
+    bool lockHolderIsRunningLocally { false };
+
+    bool success() const
+    {
+        return status == DatabaseSalvageStatus::AlreadyValid || status == DatabaseSalvageStatus::Reindexed || status == DatabaseSalvageStatus::Rebuilt;
+    }
+};
+
 class DataBaseManagement : public QObject
 {
     Q_OBJECT
@@ -76,7 +150,14 @@ public:
 
     static QString checkValidDB(const QString &fullPath); // retorna "" si la DB es inválida ó la versión si es válida.
     static int compareVersions(const QString &v1, const QString v2); // retorna <0 si v1 < v2, 0 si v1 = v2 y >0 si v1 > v2
-    static bool updateToCurrentVersion(const QString &libraryPath);
+    static bool updateToCurrentVersion(const QString &libraryPath, bool maintenanceLockHeld = false);
+    static bool backupLibrary(const QString &libraryPath, DatabaseBackupReason reason, QString *error = nullptr, const QString &destinationPath = { }, const QString &protectedBackup = { });
+    static DatabaseRestoreResult restoreLibrary(const QString &libraryPath, const QString &backupPath, bool allowInvalidCurrent = false, bool removeStaleLock = false);
+    static bool recoverInterruptedRestore(const QString &libraryPath, QString *error = nullptr, bool maintenanceLockHeld = false);
+    static bool prepareForRecreation(const QString &libraryPath, QString *error = nullptr, bool maintenanceLockHeld = false);
+    static QFileInfoList libraryBackups(const QString &libraryPath);
+    static bool isLibraryDatabaseValid(const QString &libraryPath);
+    static DatabaseSalvageResult salvageLibrary(const QString &libraryPath, bool removeStaleLock = false);
 
     static DatabaseAccess getDatabaseAccess(const QString &libraryPath);
 };
