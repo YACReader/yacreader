@@ -846,6 +846,9 @@ void LibraryWindow::createConnections()
     connect(importLibraryDialog, &ImportLibraryDialog::libraryExists, this, &LibraryWindow::libraryAlreadyExists);
     connect(packageManager, &PackageManager::imported, importLibraryDialog, &QWidget::hide);
     connect(packageManager, &PackageManager::imported, this, &LibraryWindow::openLastCreated);
+    connect(packageManager, &PackageManager::failed, this, [this](const QString &error) {
+        QMessageBox::critical(this, tr("Package operation failed"), error.isEmpty() ? tr("The covers package operation could not be completed.") : error);
+    });
 
     // create and update dialogs
     connect(createLibraryDialog, &CreateLibraryDialog::cancelCreate, this, &LibraryWindow::cancelCreating);
@@ -2740,7 +2743,7 @@ void LibraryWindow::showExportComicsInfo()
 
 void LibraryWindow::showImportComicsInfo()
 {
-    importComicsInfoDialog->dest = currentPath() + LibraryPaths::libraryDatabasePath(currentPath());
+    importComicsInfoDialog->dest = LibraryPaths::libraryDatabasePath(currentPath());
     importComicsInfoDialog->open();
 }
 

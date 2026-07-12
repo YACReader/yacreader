@@ -360,8 +360,6 @@ static QString fields = "title,"
                         "edited,"
                         "read,"
 
-                        "comicVineID,"
-
                         "hasBeenOpened,"
                         "rating,"
                         "currentPage,"
@@ -811,30 +809,46 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 {
     QString connectionName = "";
     {
-        QSqlDatabase destDB = loadDatabaseFromFile(dest);
+        QFile::remove(dest);
+
+        QString threadId = QString::number((quintptr)QThread::currentThreadId(), 16);
+        connectionName = dest + threadId;
+        QSqlDatabase destDB = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+        destDB.setDatabaseName(dest);
+        bool success = true;
+        if (!destDB.open()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to create export database" << dest << destDB.lastError().text();
+            success = false;
+        }
 
         QSqlQuery attach(destDB);
-        attach.prepare("ATTACH DATABASE '" + QDir().toNativeSeparators(dest) + "' AS dest;");
-        attach.exec();
-
-        QSqlQuery attach2(destDB);
-        attach2.prepare("ATTACH DATABASE '" + QDir().toNativeSeparators(source) + "' AS source;");
-        attach2.exec();
+        attach.prepare("ATTACH DATABASE '" + QDir::toNativeSeparators(source) + "' AS source;");
+        if (success && !attach.exec()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to attach source database" << source << attach.lastError().text();
+            success = false;
+        }
 
         QSqlQuery queryDBInfo(destDB);
-        queryDBInfo.prepare("CREATE TABLE dest.db_info (version TEXT NOT NULL)");
-        queryDBInfo.exec();
+        queryDBInfo.prepare("CREATE TABLE db_info (version TEXT NOT NULL)");
+        if (success && !queryDBInfo.exec()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to create db_info table" << queryDBInfo.lastError().text();
+            success = false;
+        }
 
-        QSqlQuery query("INSERT INTO dest.db_info (version) "
+        QSqlQuery query("INSERT INTO db_info (version) "
                         "VALUES ('" DB_VERSION "')",
                         destDB);
-        query.exec();
+        if (success && !query.exec()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to write db_info" << query.lastError().text();
+            success = false;
+        }
 
         QSqlQuery exportData(destDB);
-        exportData.prepare("CREATE TABLE dest.comic_info AS SELECT " + fields +
+        exportData.prepare("CREATE TABLE comic_info AS SELECT " + fields +
                            " FROM source.comic_info WHERE source.comic_info.edited = 1 OR source.comic_info.comicVineID IS NOT NULL");
-        exportData.exec();
-        connectionName = destDB.connectionName();
+        if (success && !exportData.exec()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to export comic_info" << exportData.lastError().text();
+        }
     }
 
     QSqlDatabase::removeDatabase(connectionName);
@@ -919,6 +933,11 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
                            // new 9.5 fields
                            "lastTimeOpened = :lastTimeOpened,"
+                           "imageFiltersJson = :imageFiltersJson,"
+                           "lastTimeImageFiltersSet = :lastTimeImageFiltersSet,"
+                           "lastTimeCoverSet = :lastTimeCoverSet,"
+                           "usesExternalCover = :usesExternalCover,"
+                           "lastTimeMetadataSet = :lastTimeMetadataSet,"
 
                            //"coverSizeRatio = :coverSizeRatio,"
                            //"originalCoverSize = :originalCoverSize,"
@@ -978,7 +997,13 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            "edited,"
                            "comicVineID,"
                            "lastTimeOpened,"
+                           "imageFiltersJson,"
+                           "lastTimeImageFiltersSet,"
+                           "lastTimeCoverSet,"
+                           "usesExternalCover,"
+                           "lastTimeMetadataSet,"
                            "coverSizeRatio,"
+                           "originalCoverSize,"
                            "added,"
                            "type,"
                            "editor,"
@@ -993,6 +1018,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            "seriesGroup,"
                            "mainCharacterOrTeam,"
                            "review,"
+                           "tags,"
                            "hash)"
 
                            "VALUES (:title,"
@@ -1031,6 +1057,11 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            ":comicVineID,"
 
                            ":lastTimeOpened,"
+                           ":imageFiltersJson,"
+                           ":lastTimeImageFiltersSet,"
+                           ":lastTimeCoverSet,"
+                           ":usesExternalCover,"
+                           ":lastTimeMetadataSet,"
 
                            ":coverSizeRatio,"
                            ":originalCoverSize,"
@@ -1085,6 +1116,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
         }
 
         destDB.commit();
+        b = true;
         for (const auto &hash : hashes) {
             QSqlQuery getComic(destDB);
             getComic.prepare("SELECT c.path,ci.coverPage FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) where ci.hash = :hash");
@@ -1163,6 +1195,11 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord &record, QSqlQuer
     bindValue("comicVineID", record, query);
 
     bindValue("lastTimeOpened", record, query);
+    bindValue("imageFiltersJson", record, query);
+    bindValue("lastTimeImageFiltersSet", record, query);
+    bindValue("lastTimeCoverSet", record, query);
+    bindValue("usesExternalCover", record, query);
+    bindValue("lastTimeMetadataSet", record, query);
 
     bindValue("coverSizeRatio", record, query);
     bindValue("originalCoverSize", record, query);
