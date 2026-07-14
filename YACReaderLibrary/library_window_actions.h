@@ -44,6 +44,7 @@ public:
     QAction *helpAboutAction;
     QAction *renameLibraryAction;
 
+    QAction *openLibraryFolderAction;
     QAction *showLibraryInfo;
 
 #ifndef Q_OS_MACOS

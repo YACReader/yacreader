@@ -11,6 +11,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * When database corruption is detected, offer to attempt a repair or restore a backup. Damaged originals are preserved in `.yacreaderlibrary/recovery`.
 * Fix comics info export/import and covers package import/export error handling.
 * Fix grid comic cells info height so the title doesn't overlap the other fields.
+* Add funtion to open the library root location.
 
 ### YACReaderLibraryServer
 * Add the `repair-library` command to restore missing covers and rescan files that previously failed to be added.

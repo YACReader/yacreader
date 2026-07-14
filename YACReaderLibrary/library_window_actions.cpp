@@ -98,6 +98,11 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     rescanLibraryForXMLInfoAction->setData(RESCAN_LIBRARY_XML_INFO_ACTION_YL);
     rescanLibraryForXMLInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESCAN_LIBRARY_XML_INFO_ACTION_YL));
 
+    openLibraryFolderAction = new QAction(tr("Open library folder..."), window);
+    openLibraryFolderAction->setToolTip(tr("Open the root folder of the current library"));
+    openLibraryFolderAction->setData(OPEN_LIBRARY_FOLDER_ACTION_YL);
+    openLibraryFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_LIBRARY_FOLDER_ACTION_YL));
+
     showLibraryInfo = new QAction(tr("Show library info"), window);
     showLibraryInfo->setToolTip(tr("Show information about the current library"));
     showLibraryInfo->setData(SHOW_LIBRARY_INFO_ACTION_YL);
@@ -533,6 +538,7 @@ void LibraryWindowActions::createConnections(
     // connect(deleteLibraryAction,SIGNAL(triggered()),window,SLOT(deleteLibrary()));
     QObject::connect(removeLibraryAction, &QAction::triggered, window, &LibraryWindow::removeLibrary);
     QObject::connect(rescanLibraryForXMLInfoAction, &QAction::triggered, window, &LibraryWindow::rescanLibraryForXMLInfo);
+    QObject::connect(openLibraryFolderAction, &QAction::triggered, window, &LibraryWindow::openLibraryFolder);
     QObject::connect(showLibraryInfo, &QAction::triggered, window, &LibraryWindow::showLibraryInfo);
 
     QObject::connect(openComicAction, &QAction::triggered, window, QOverload<>::of(&LibraryWindow::openComic));
@@ -653,6 +659,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << renameLibraryAction
                                                  << removeLibraryAction
                                                  << rescanLibraryForXMLInfoAction
+                                                 << openLibraryFolderAction
                                                  << showLibraryInfo);
 
     allActions << tmpList;
@@ -804,6 +811,7 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     updateLibraryAction->setIcon(menuIcons.updateLibraryIcon);
     renameLibraryAction->setIcon(menuIcons.renameLibraryIcon);
     removeLibraryAction->setIcon(menuIcons.removeLibraryIcon);
+    openLibraryFolderAction->setIcon(menuIcons.openContainingFolderIcon);
     openContainingFolderAction->setIcon(menuIcons.openContainingFolderIcon);
     openContainingFolderComicAction->setIcon(menuIcons.openContainingFolderIcon);
     updateFolderAction->setIcon(menuIcons.updateCurrentFolderIcon);

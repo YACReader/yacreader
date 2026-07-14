@@ -265,6 +265,7 @@ public slots:
     void renameLibrary();
     void rescanLibraryForXMLInfo();
     void showLibraryInfo();
+    void openLibraryFolder();
     void rescanCurrentFolderForXMLInfo();
     void rescanFolderForXMLInfo(QModelIndex modelIndex);
     void rename(QString newName);

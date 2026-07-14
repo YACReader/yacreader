@@ -659,6 +659,7 @@ void LibraryWindow::createMenus()
     selectedLibrary->addAction(actions.importLibraryAction);
     YACReader::addSperator(selectedLibrary);
 
+    selectedLibrary->addAction(actions.openLibraryFolderAction);
     selectedLibrary->addAction(actions.showLibraryInfo);
 
 // MacOSX app menus
@@ -696,6 +697,7 @@ void LibraryWindow::createMenus()
 
     libraryMenu->addSeparator();
 
+    libraryMenu->addAction(actions.openLibraryFolderAction);
     libraryMenu->addAction(actions.showLibraryInfo);
 
     // folder
@@ -2332,6 +2334,13 @@ void LibraryWindow::showLibraryInfo()
     msgBox.setStandardButtons(QMessageBox::Close);
     msgBox.setDefaultButton(QMessageBox::Close);
     msgBox.exec();
+}
+
+void LibraryWindow::openLibraryFolder()
+{
+    const auto path = libraries.getPath(selectedLibrary->currentText());
+    if (!path.isEmpty())
+        QDesktopServices::openUrl(QUrl::fromLocalFile(QDir::cleanPath(path)));
 }
 
 void LibraryWindow::rescanCurrentFolderForXMLInfo()
