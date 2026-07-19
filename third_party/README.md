@@ -6,5 +6,5 @@ needed to build YACReader.
 | Name      | Purpose  | Upstream | Version | License |
 |---------- |--------- |--------- |-------- |-------- |
 | QsLog     | Logging  | https://bitbucket.org/codeimproved/qslog | 2.1 46b643d5bcbc| 3-clause BSD|
-| QtWebApp  | Server   | http://stefanfrings.de/qtwebapp/ | 1.8.6 | LGPL3 |
+| QtWebApp  | Server   | http://stefanfrings.de/qtwebapp/ | 1.9.1 | LGPL3 |
 | QR-Code-generator | | https://github.com/nayuki/QR-Code-generator/tree/master/cpp | 1.8.0 | MIT|

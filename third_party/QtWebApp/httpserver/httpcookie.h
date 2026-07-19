@@ -88,22 +88,22 @@ public:
     void setSameSite(const QByteArray sameSite);
 
     /** Get the name of this cookie */
-    QByteArray getName() const;
+    const QByteArray& getName() const;
 
     /** Get the value of this cookie */
-    QByteArray getValue() const;
+    const QByteArray& getValue() const;
 
     /** Get the comment of this cookie */
-    QByteArray getComment() const;
+    const QByteArray& getComment() const;
 
     /** Get the domain of this cookie */
-    QByteArray getDomain() const;
+    const QByteArray& getDomain() const;
 
     /** Get the maximum age of this cookie in seconds. */
     int getMaxAge() const;
 
     /** Set the path of this cookie */
-    QByteArray getPath() const;
+    const QByteArray& getPath() const;
 
     /** Get the secure flag of this cookie */
     bool getSecure() const;
@@ -112,7 +112,7 @@ public:
     bool getHttpOnly() const;
 
     /** Get the same-site flag of this cookie */
-    QByteArray getSameSite() const;
+    const QByteArray& getSameSite() const;
 
     /** Returns always 1 */
     int getVersion() const;

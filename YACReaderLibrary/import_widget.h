@@ -37,6 +37,7 @@ public slots:
     void setUpdateLook();
     void setUpgradeLook();
     void setXMLScanLook();
+    void setRepairLook();
     void showCovers(bool hide);
 
 private:

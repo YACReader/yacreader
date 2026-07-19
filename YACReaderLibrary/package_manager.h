@@ -14,12 +14,17 @@ public slots:
     void cancel();
 
 private:
+    void start7z(const QStringList &arguments);
+    void handleFinished(int exitCode, QProcess::ExitStatus exitStatus);
+    void handleError(QProcess::ProcessError error);
+
     bool creating;
     QProcess *_7z;
 
 signals:
     void exported();
     void imported();
+    void failed(const QString &error);
 };
 
 #endif

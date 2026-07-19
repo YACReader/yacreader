@@ -4,6 +4,8 @@ When you launch `yacreaderlibraryserver` the app uses a settings file to determi
 
 The settings file follows the `INI` format and it contains various sections, the one you should modify is `[libraryConfig]`. The settings file is shared between `YACReaderLibrary` and `YACReaderLibraryServer`, this file only describes the settings relevant for `YACReaderLibraryServer`.
 
+These options can also be managed from the server WebUI at `/webui/settings`.
+
 The following is a template for the settings available for `YACReaderLibraryServer`, it includes the default values and the values available for each setting:
 
 ```

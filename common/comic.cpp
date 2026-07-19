@@ -4,6 +4,7 @@
 #include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
 #include "comic_db.h"
 #include "compressed_archive.h"
+#include "pdf_render_size.h"
 #include "qnaturalsorting.h"
 
 #include <QCoreApplication>
@@ -881,7 +882,13 @@ void PDFComic::renderPage(int page)
 #else
     std::unique_ptr<Poppler::Page> pdfpage(pdfComic->page(page));
     if (pdfpage) {
-        QImage img = pdfpage->renderToImage(150, 150);
+        const QSizeF pageSize = pdfpage->pageSizeF();
+        const QSize renderSize = YACReaderPdfRender::renderSizeFromPagePoints(pageSize);
+        const double renderDpi = YACReaderPdfRender::renderDpiForWidth(pageSize, renderSize.width());
+        QImage img = renderDpi > 0.0 ? pdfpage->renderToImage(renderDpi, renderDpi) : QImage();
+        if (img.isNull()) {
+            return;
+        }
 #endif
         QByteArray ba;
         QBuffer buf(&ba);

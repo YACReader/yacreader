@@ -37,10 +37,14 @@ public:
     QAction *rescanLibraryForXMLInfoAction;
 
     QAction *updateLibraryAction;
+    QAction *backupLibraryAction;
+    QAction *restoreLibraryAction;
+    QAction *repairLibraryAction;
     QAction *removeLibraryAction;
     QAction *helpAboutAction;
     QAction *renameLibraryAction;
 
+    QAction *openLibraryFolderAction;
     QAction *showLibraryInfo;
 
 #ifndef Q_OS_MACOS

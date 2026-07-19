@@ -7,6 +7,7 @@
 
 class QTabWidget;
 class QTextBrowser;
+class QPushButton;
 
 class HelpAboutDialog : public QDialog, protected Themable
 {
@@ -26,6 +27,7 @@ private:
     QTextBrowser *aboutText;
     QTextBrowser *helpText;
     QTextBrowser *systemInfoText;
+    QPushButton *changelogButton = nullptr;
     QString fileToString(const QString &path);
     void loadSystemInfo();
     void applyHtmlTheme();

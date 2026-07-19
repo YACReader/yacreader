@@ -205,6 +205,9 @@ void YACReaderNavigationController::reselectCurrentList()
 
 void YACReaderNavigationController::reselectCurrentSource()
 {
+    if (!libraryWindow->hasLoadedLibraryModels())
+        return;
+
     if (!libraryWindow->listsView->selectionModel()->selectedRows().isEmpty()) {
         reselectCurrentList();
     } else {

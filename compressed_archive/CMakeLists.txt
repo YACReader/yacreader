@@ -71,6 +71,17 @@ elseif(DECOMPRESSION_BACKEND STREQUAL "7zip")
         lib7zip/CPP/7zip/Common/StreamObjects.cpp
     )
 
+    if(WIN32)
+        target_sources(cbx_backend PRIVATE
+            lib7zip/CPP/Windows/FileDir.cpp
+            lib7zip/CPP/Windows/FileFind.cpp
+            lib7zip/CPP/Windows/FileName.cpp
+        )
+        target_compile_definitions(cbx_backend PRIVATE
+            Z7_LONG_PATH
+        )
+    endif()
+
     if(UNIX)
         target_sources(cbx_backend PRIVATE
             lib7zip/CPP/Common/NewHandler.cpp

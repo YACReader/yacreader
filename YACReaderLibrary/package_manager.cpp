@@ -3,41 +3,44 @@
 #include <QCoreApplication>
 
 PackageManager::PackageManager()
-    : _7z(nullptr)
+    : creating(false), _7z(nullptr)
 {
 }
 
 void PackageManager::createPackage(const QString &libraryPath, const QString &dest)
 {
+    creating = true;
     QStringList attributes;
     attributes << "a"
                << "-y"
                << "-ttar" << dest + ".clc" << libraryPath;
-    _7z = new QProcess();
-    // TODO: Missing slot for openingError!!!
-    connect(_7z, SIGNAL(error(QProcess::ProcessError)), this, SLOT(openingError(QProcess::ProcessError)));
-    connect(_7z, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &PackageManager::exported);
-#if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    _7z->start("7z", attributes); // TODO: use 7z.so
-#else
-    _7z->start(QCoreApplication::applicationDirPath() + "/utils/7zip", attributes); // TODO: use 7z.dll
-#endif
+    start7z(attributes);
 }
 
 void PackageManager::extractPackage(const QString &packagePath, const QString &destDir)
 {
+    creating = false;
     QStringList attributes;
     QString output = "-o";
     output += destDir;
     attributes << "x"
                << "-y" << output << packagePath;
-    _7z = new QProcess();
-    connect(_7z, SIGNAL(error(QProcess::ProcessError)), this, SLOT(openingError(QProcess::ProcessError)));
-    connect(_7z, SIGNAL(finished(int, QProcess::ExitStatus)), this, SIGNAL(imported()));
+    start7z(attributes);
+}
+
+void PackageManager::start7z(const QStringList &arguments)
+{
+    if (_7z != nullptr) {
+        _7z->deleteLater();
+    }
+
+    _7z = new QProcess(this);
+    connect(_7z, &QProcess::errorOccurred, this, &PackageManager::handleError);
+    connect(_7z, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &PackageManager::handleFinished);
 #if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    _7z->start("7z", attributes); // TODO: use 7z.so
+    _7z->start("7z", arguments); // TODO: use 7z.so
 #else
-    _7z->start(QCoreApplication::applicationDirPath() + "/utils/7zip", attributes); // TODO: use 7z.dll
+    _7z->start(QCoreApplication::applicationDirPath() + "/utils/7zip", arguments); // TODO: use 7z.dll
 #endif
 }
 
@@ -52,4 +55,24 @@ void PackageManager::cancel()
             // TODO fixed: is done by libraryWindow
         }
     }
+}
+
+void PackageManager::handleFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    if (exitStatus == QProcess::NormalExit && exitCode == 0) {
+        if (creating) {
+            emit exported();
+        } else {
+            emit imported();
+        }
+        return;
+    }
+
+    emit failed(_7z != nullptr ? QString::fromLocal8Bit(_7z->readAllStandardError()).trimmed() : QString());
+}
+
+void PackageManager::handleError(QProcess::ProcessError error)
+{
+    Q_UNUSED(error)
+    emit failed(_7z != nullptr ? _7z->errorString() : QString());
 }

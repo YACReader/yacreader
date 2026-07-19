@@ -167,6 +167,48 @@ bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
     return false;
 }
 
+const QList<YACReader::XmlMetadataField> &YACReader::xmlMetadataFields()
+{
+    static const QList<XmlMetadataField> fields = {
+        { "title", &ComicInfo::title },
+        { "number", &ComicInfo::number },
+        { "count", &ComicInfo::count },
+        { "volume", &ComicInfo::volume },
+        { "storyArc", &ComicInfo::storyArc },
+        { "genere", &ComicInfo::genere },
+        { "writer", &ComicInfo::writer },
+        { "penciller", &ComicInfo::penciller },
+        { "inker", &ComicInfo::inker },
+        { "colorist", &ComicInfo::colorist },
+        { "letterer", &ComicInfo::letterer },
+        { "coverArtist", &ComicInfo::coverArtist },
+        { "date", &ComicInfo::date },
+        { "publisher", &ComicInfo::publisher },
+        { "format", &ComicInfo::format },
+        { "color", &ComicInfo::color },
+        { "ageRating", &ComicInfo::ageRating },
+        { "synopsis", &ComicInfo::synopsis },
+        { "characters", &ComicInfo::characters },
+        { "notes", &ComicInfo::notes },
+        { "comicVineID", &ComicInfo::comicVineID },
+        { "type", &ComicInfo::type },
+        { "editor", &ComicInfo::editor },
+        { "imprint", &ComicInfo::imprint },
+        { "teams", &ComicInfo::teams },
+        { "locations", &ComicInfo::locations },
+        { "series", &ComicInfo::series },
+        { "alternateSeries", &ComicInfo::alternateSeries },
+        { "alternateNumber", &ComicInfo::alternateNumber },
+        { "alternateCount", &ComicInfo::alternateCount },
+        { "languageISO", &ComicInfo::languageISO },
+        { "seriesGroup", &ComicInfo::seriesGroup },
+        { "mainCharacterOrTeam", &ComicInfo::mainCharacterOrTeam },
+        { "review", &ComicInfo::review },
+    };
+
+    return fields;
+}
+
 bool YACReader::parseXMLIntoInfo(const QByteArray &xmlRawData, ComicInfo &info)
 {
     if (xmlRawData.isEmpty()) {

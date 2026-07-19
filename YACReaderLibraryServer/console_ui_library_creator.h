@@ -9,14 +9,16 @@ class ConsoleUILibraryCreator : public QObject
 public:
     explicit ConsoleUILibraryCreator(QSettings *settings, QObject *parent = 0);
     void createLibrary(const QString &name, const QString &path);
-    void updateLibrary(const QString &path);
+    bool updateLibrary(const QString &path);
     void addExistingLibrary(const QString &name, const QString &path);
     void removeLibrary(const QString &name);
     void rescanXMLInfoLibrary(const QString &path);
+    int repairLibrary(const QString &path);
 
 private:
     uint numComicsProcessed;
     QSettings *settings;
+    bool operationFailed { false };
 signals:
 
 public slots:

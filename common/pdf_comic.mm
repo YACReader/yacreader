@@ -1,5 +1,7 @@
 #include "pdf_comic.h"
 
+#include "pdf_render_size.h"
+
 #undef __OBJC_BOOL_IS_BOOL
 
 #include "QsLog.h"
@@ -95,15 +97,15 @@ QImage MacOSXPDFComic::getPage(const int pageNum)
         return QImage();
     }
 
-    const CGFloat targetWidth = 2560.0;
-    CGFloat pdfScale = targetWidth / sourceRect.size.width;
-    CGSize renderSize = CGSizeMake(floor(sourceRect.size.width * pdfScale), floor(sourceRect.size.height * pdfScale));
-    if (!isValidRenderDimension(renderSize.width) || !isValidRenderDimension(renderSize.height)) {
+    const QSize renderSize = YACReaderPdfRender::renderSizeFromPagePoints(QSizeF(sourceRect.size.width,
+                                                                                 sourceRect.size.height));
+    if (!renderSize.isValid()) {
         return QImage();
     }
 
-    const int imageWidth = static_cast<int>(renderSize.width);
-    const int imageHeight = static_cast<int>(renderSize.height);
+    const int imageWidth = renderSize.width();
+    const int imageHeight = renderSize.height();
+    const CGFloat pdfScale = static_cast<CGFloat>(imageWidth) / sourceRect.size.width;
 
     CGColorSpaceRef genericColorSpace = CGColorSpaceCreateDeviceRGB();
 

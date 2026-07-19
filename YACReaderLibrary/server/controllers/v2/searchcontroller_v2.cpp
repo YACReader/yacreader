@@ -5,6 +5,7 @@
 #include "db_helper.h"
 #include "search_query.h"
 #include "yacreader_libraries.h"
+#include "yacreader_server_data_helper.h"
 
 #include <QJsonDocument>
 #include <QSqlDatabase>
@@ -101,7 +102,9 @@ void SearchController::getComics(int libraryId, QSqlQuery &sqlQuery, QJsonArray 
         json["read"] = sqlQuery.value("read").toBool();
         json["cover_size_ratio"] = sqlQuery.value("coverSizeRatio").toFloat();
         json["title"] = sqlQuery.value("title").toString();
-        json["number"] = sqlQuery.value("number").toInt();
+        auto number = sqlQuery.value("number");
+        json["number"] = number.toInt();
+        variantToJson("universal_number", QMetaType::QString, number, json);
         json["last_time_opened"] = sqlQuery.value("lastTimeOpened").toLongLong();
         auto typeVariant = sqlQuery.value("type");
         auto type = typeVariant.value<YACReader::FileType>();

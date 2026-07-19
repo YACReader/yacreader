@@ -60,6 +60,7 @@ class QCloseEvent;
 class ImportWidget;
 class QSettings;
 class LibraryItem;
+class QShowEvent;
 class YACReaderTableView;
 class YACReaderSideBar;
 class YACReaderLibraryListWidget;
@@ -86,6 +87,7 @@ class RecentVisibilityCoordinator;
 namespace YACReader {
 class TrayIconController;
 class XMLInfoLibraryScanner;
+class ComicInfoRepairer;
 }
 
 #include "comic_db.h"
@@ -109,6 +111,7 @@ public:
     AddLibraryDialog *addLibraryDialog;
     LibraryCreator *libraryCreator;
     XMLInfoLibraryScanner *xmlInfoLibraryScanner;
+    ComicInfoRepairer *comicInfoRepairer;
     HelpAboutDialog *had;
     RenameLibraryDialog *renameLibraryDialog;
     PropertiesDialog *propertiesDialog;
@@ -195,6 +198,7 @@ public:
     void setUpShortcutsManagement();
     void doModels();
     void setupCoordinators();
+    bool hasLoadedLibraryModels() const;
 
     QString currentPath();
     QString currentFolderPath();
@@ -213,6 +217,7 @@ public:
 
 protected:
     virtual void closeEvent(QCloseEvent *event) override;
+    void showEvent(QShowEvent *event) override;
     void applyTheme(const Theme &theme) override;
 
 public:
@@ -236,6 +241,13 @@ public slots:
     void reloadCurrentLibrary();
     void openLastCreated();
     void updateLibrary();
+    void backupLibrary();
+    void restoreLibrary();
+    void startLibraryRestore(const QString &backupPath, bool allowInvalidCurrent = false, bool removeStaleLock = false);
+    void offerDatabaseRecovery(const QString &libraryName);
+    void startDatabaseSalvage(const QString &libraryName, bool removeStaleLock = false);
+    void repairLibrary();
+    void startLibraryRepair(bool removeStaleLock);
     // void deleteLibrary();
     void openContainingFolder();
     void organizeFiles();
@@ -254,12 +266,14 @@ public slots:
     void renameLibrary();
     void rescanLibraryForXMLInfo();
     void showLibraryInfo();
+    void openLibraryFolder();
     void rescanCurrentFolderForXMLInfo();
     void rescanFolderForXMLInfo(QModelIndex modelIndex);
     void rename(QString newName);
     void cancelCreating();
     void stopLibraryCreator();
     void stopXMLScanning();
+    void stopComicInfoRepair();
     void setRootIndex();
     void toggleFullScreen();
     void toNormal();
@@ -348,6 +362,7 @@ private:
     //! @brief Exits search mode if it is active.
     //! @return true If the search mode was active when this function was called.
     bool exitSearchMode();
+    bool startsHiddenInTray() const;
 
     std::future<void> upgradeLibraryFuture;
 
@@ -356,6 +371,7 @@ private:
     std::unique_ptr<FolderQueryResultProcessor> folderQueryResultProcessor;
 
     RecentVisibilityCoordinator *recentVisibilityCoordinator;
+    bool pendingAfterLaunchTasks;
 };
 
 #endif

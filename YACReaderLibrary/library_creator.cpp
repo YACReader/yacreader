@@ -57,6 +57,7 @@ void LibraryCreator::createLibrary(const QString &source, const QString &target)
 
 void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 {
+    creation = false;
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = false;
     _source = source;
@@ -66,6 +67,7 @@ void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 
 void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, qulonglong folderId)
 {
+    creation = false;
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = true;
     _folderDestinationId = folderId;
@@ -124,10 +126,7 @@ void LibraryCreator::processLibrary(const QString &source, const QString &target
     _source = source;
     _target = target;
     if (DataBaseManagement::checkValidDB(target + "/library.ydb") == "") {
-        // se limpia el directorio ./yacreaderlibrary
-        QDir d(target);
-        d.removeRecursively();
-        _mode = CREATOR;
+        _mode = creation ? CREATOR : UPDATER;
     } else { //
         _mode = UPDATER;
     }
@@ -148,8 +147,37 @@ void LibraryCreator::run()
     }
     sevenzLib->deleteLater();
 #endif
+    if (_mode == CREATOR)
+        QDir().mkpath(_target);
+
+    LibraryMaintenanceLock maintenanceLock(_source);
+    if (!maintenanceLock.tryLock()) {
+        const auto error = maintenanceLock.errorString();
+        QLOG_ERROR() << error;
+        if (_mode == CREATOR)
+            emit failedCreatingDB(error);
+        else
+            emit failedOpeningDB(error);
+        return;
+    }
+
+    if (_mode == UPDATER) {
+        QString recoveryError;
+        if (!DataBaseManagement::recoverInterruptedRestore(_source, &recoveryError, true)) {
+            QLOG_ERROR() << recoveryError;
+            emit failedOpeningDB(recoveryError);
+            return;
+        }
+    }
+
     if (_mode == CREATOR) {
         QLOG_INFO() << "Starting to create new library ( " << _source << "," << _target << ")";
+        QString cleanupError;
+        if (!DataBaseManagement::prepareForRecreation(_source, &cleanupError, true)) {
+            QLOG_ERROR() << cleanupError;
+            emit failedCreatingDB(cleanupError);
+            return;
+        }
         _currentPathFolders.clear();
         // se crean los directorios .yacreaderlibrary y .yacreaderlibrary/covers
         QDir dir;
@@ -183,6 +211,13 @@ void LibraryCreator::run()
         QLOG_INFO() << "Create library END";
     } else {
         QLOG_INFO() << "Starting to update folder" << _sourceFolder << "in library ( " << _source << "," << _target << ")";
+        QString backupError;
+        if (!DataBaseManagement::backupLibrary(_source, DatabaseBackupReason::AutoUpdate, &backupError)) {
+            const auto error = QString("Unable to back up library database: %1").arg(backupError);
+            QLOG_ERROR() << error;
+            emit failedOpeningDB(error);
+            return;
+        }
         {
             auto _database = DataBaseManagement::loadDatabase(_target);
 

@@ -68,6 +68,21 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     updateLibraryAction->setData(UPDATE_LIBRARY_ACTION_YL);
     updateLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(UPDATE_LIBRARY_ACTION_YL));
 
+    backupLibraryAction = new QAction(tr("Back up library database"), window);
+    backupLibraryAction->setToolTip(tr("Create a backup of the current library database"));
+    backupLibraryAction->setData(BACKUP_LIBRARY_ACTION_YL);
+    backupLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACKUP_LIBRARY_ACTION_YL));
+
+    restoreLibraryAction = new QAction(tr("Restore library database backup"), window);
+    restoreLibraryAction->setToolTip(tr("Restore the current library database from a backup"));
+    restoreLibraryAction->setData(RESTORE_LIBRARY_ACTION_YL);
+    restoreLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESTORE_LIBRARY_ACTION_YL));
+
+    repairLibraryAction = new QAction(tr("Repair covers and comic info"), window);
+    repairLibraryAction->setToolTip(tr("Retry comics with missing covers or incomplete information"));
+    repairLibraryAction->setData(REPAIR_LIBRARY_ACTION_YL);
+    repairLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REPAIR_LIBRARY_ACTION_YL));
+
     renameLibraryAction = new QAction(tr("Rename library"), window);
     renameLibraryAction->setToolTip(tr("Rename current library"));
     renameLibraryAction->setData(RENAME_LIBRARY_ACTION_YL);
@@ -82,6 +97,11 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     rescanLibraryForXMLInfoAction->setToolTip(tr("Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files."));
     rescanLibraryForXMLInfoAction->setData(RESCAN_LIBRARY_XML_INFO_ACTION_YL);
     rescanLibraryForXMLInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESCAN_LIBRARY_XML_INFO_ACTION_YL));
+
+    openLibraryFolderAction = new QAction(tr("Open library folder..."), window);
+    openLibraryFolderAction->setToolTip(tr("Open the root folder of the current library"));
+    openLibraryFolderAction->setData(OPEN_LIBRARY_FOLDER_ACTION_YL);
+    openLibraryFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_LIBRARY_FOLDER_ACTION_YL));
 
     showLibraryInfo = new QAction(tr("Show library info"), window);
     showLibraryInfo->setToolTip(tr("Show information about the current library"));
@@ -516,10 +536,14 @@ void LibraryWindowActions::createConnections(
     QObject::connect(renameListAction, &QAction::triggered, window, &LibraryWindow::showRenameCurrentList);
 
     QObject::connect(updateLibraryAction, &QAction::triggered, window, &LibraryWindow::updateLibrary);
+    QObject::connect(backupLibraryAction, &QAction::triggered, window, &LibraryWindow::backupLibrary);
+    QObject::connect(restoreLibraryAction, &QAction::triggered, window, &LibraryWindow::restoreLibrary);
+    QObject::connect(repairLibraryAction, &QAction::triggered, window, &LibraryWindow::repairLibrary);
     QObject::connect(renameLibraryAction, &QAction::triggered, window, &LibraryWindow::renameLibrary);
     // connect(deleteLibraryAction,SIGNAL(triggered()),window,SLOT(deleteLibrary()));
     QObject::connect(removeLibraryAction, &QAction::triggered, window, &LibraryWindow::removeLibrary);
     QObject::connect(rescanLibraryForXMLInfoAction, &QAction::triggered, window, &LibraryWindow::rescanLibraryForXMLInfo);
+    QObject::connect(openLibraryFolderAction, &QAction::triggered, window, &LibraryWindow::openLibraryFolder);
     QObject::connect(showLibraryInfo, &QAction::triggered, window, &LibraryWindow::showLibraryInfo);
 
     QObject::connect(openComicAction, &QAction::triggered, window, QOverload<>::of(&LibraryWindow::openComic));
@@ -635,9 +659,13 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << exportLibraryAction
                                                  << importLibraryAction
                                                  << updateLibraryAction
+                                                 << backupLibraryAction
+                                                 << restoreLibraryAction
+                                                 << repairLibraryAction
                                                  << renameLibraryAction
                                                  << removeLibraryAction
                                                  << rescanLibraryForXMLInfoAction
+                                                 << openLibraryFolderAction
                                                  << showLibraryInfo);
 
     allActions << tmpList;
@@ -690,6 +718,9 @@ void LibraryWindowActions::disableComicsActions(bool disabled)
 void LibraryWindowActions::disableLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
+    backupLibraryAction->setDisabled(disabled);
+    restoreLibraryAction->setDisabled(disabled);
+    repairLibraryAction->setDisabled(disabled);
     renameLibraryAction->setDisabled(disabled);
     removeLibraryAction->setDisabled(disabled);
     exportComicsInfoAction->setDisabled(disabled);
@@ -702,6 +733,9 @@ void LibraryWindowActions::disableLibrariesActions(bool disabled)
 void LibraryWindowActions::disableNoUpdatedLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
+    backupLibraryAction->setDisabled(disabled);
+    restoreLibraryAction->setDisabled(disabled);
+    repairLibraryAction->setDisabled(disabled);
     exportComicsInfoAction->setDisabled(disabled);
     importComicsInfoAction->setDisabled(disabled);
     exportLibraryAction->setDisabled(disabled);
@@ -784,6 +818,7 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     updateLibraryAction->setIcon(menuIcons.updateLibraryIcon);
     renameLibraryAction->setIcon(menuIcons.renameLibraryIcon);
     removeLibraryAction->setIcon(menuIcons.removeLibraryIcon);
+    openLibraryFolderAction->setIcon(menuIcons.openContainingFolderIcon);
     openContainingFolderAction->setIcon(menuIcons.openContainingFolderIcon);
     openContainingFolderComicAction->setIcon(menuIcons.openContainingFolderIcon);
     updateFolderAction->setIcon(menuIcons.updateCurrentFolderIcon);

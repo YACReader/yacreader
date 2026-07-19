@@ -13,7 +13,7 @@ using namespace YACReader;
 bool InitialComicInfoExtractor::crash = false;
 
 InitialComicInfoExtractor::InitialComicInfoExtractor(QString fileSource, QString target, int coverPage, bool getXMLMetadata)
-    : _fileSource(fileSource), _target(target), _numPages(0), _coverPage(coverPage), getXMLMetadata(getXMLMetadata), _xmlInfoData()
+    : _fileSource(fileSource), _target(target), _numPages(0), _coverSize(0, 0), _coverExtracted(false), _coverPage(coverPage), getXMLMetadata(getXMLMetadata), _xmlInfoData()
 {
     if (coverPage <= 0) {
         _coverPage = 1;
@@ -62,13 +62,16 @@ void InitialComicInfoExtractor::extract()
 #else
             QImage p = pdfComic->page(_coverPage - 1)->renderToImage(72, 72);
 #endif //
-            _cover = p;
-            _coverSize = QPair<int, int>(p.width(), p.height());
-            if (_target != "") {
-                saveCover(_target, p);
-            } else if (_target != "") {
-                QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
+            if (!p.isNull()) {
+                _cover = p;
+                _coverSize = QPair<int, int>(p.width(), p.height());
+                _coverExtracted = true;
+                if (_target != "") {
+                    saveCover(_target, p);
+                }
             }
+        } else {
+            QLOG_WARN() << "Extracting cover: requested cover index greater than numPages " << _fileSource;
         }
         return;
     }
@@ -126,14 +129,19 @@ void InitialComicInfoExtractor::extract()
         int index = order.indexOf(fileNames.at(_coverPage - 1));
 
         if (_target == "") {
-            if (!_cover.loadFromData(archive.getRawDataAtIndex(index))) {
+            if (_cover.loadFromData(archive.getRawDataAtIndex(index))) {
+                _coverSize = QPair<int, int>(_cover.width(), _cover.height());
+                _coverExtracted = true;
+            } else {
                 QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;
                 _cover.load(":/images/notCover.png");
             }
         } else {
             QImage p;
             if (p.loadFromData(archive.getRawDataAtIndex(index))) {
+                _cover = p;
                 _coverSize = QPair<int, int>(p.width(), p.height());
+                _coverExtracted = true;
                 saveCover(_target, p);
             } else {
                 QLOG_WARN() << "Extracting cover: unable to load image from extracted cover " << _fileSource;

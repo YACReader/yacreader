@@ -10,7 +10,318 @@
 #include <QSqlRecord>
 #include <QtCore>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#else
+#include <cstdio>
+#endif
+
 using namespace YACReader;
+
+namespace {
+const auto backupTimestampFormat = QStringLiteral("yyyyMMdd-HHmmss");
+
+QString backupReasonName(DatabaseBackupReason reason)
+{
+    switch (reason) {
+    case DatabaseBackupReason::AutoUpdate:
+        return "auto-update";
+    case DatabaseBackupReason::BeforeUpgrade:
+        return "before-upgrade";
+    case DatabaseBackupReason::BeforeRepair:
+        return "before-repair";
+    case DatabaseBackupReason::BeforeRestore:
+        return "before-restore";
+    case DatabaseBackupReason::Manual:
+        return "manual";
+    }
+    return { };
+}
+
+bool validateDatabase(const QString &path, QString *error, QString *versionOut = nullptr)
+{
+    QString connectionName;
+    bool valid = false;
+    {
+        auto db = DataBaseManagement::loadDatabaseFromFile(path);
+        connectionName = db.connectionName();
+        if (!db.isOpen()) {
+            if (error)
+                *error = QString("Unable to open database: %1").arg(path);
+        } else {
+            QSqlQuery versionQuery(db);
+            QSqlQuery check(db);
+            valid = versionQuery.exec("SELECT version FROM db_info") && versionQuery.next() && check.exec("PRAGMA quick_check") && check.next() && check.value(0).toString() == "ok";
+            if (valid && versionOut)
+                *versionOut = versionQuery.value(0).toString();
+            if (!valid && error)
+                *error = QString("Database validation failed: %1").arg(path);
+        }
+    }
+    if (!connectionName.isEmpty())
+        QSqlDatabase::removeDatabase(connectionName);
+    return valid;
+}
+
+bool vacuumDatabaseInto(const QString &sourcePath, const QString &destinationPath, QString *error)
+{
+    QString connectionName;
+    bool created = false;
+    {
+        auto db = DataBaseManagement::loadDatabaseFromFile(sourcePath);
+        connectionName = db.connectionName();
+        if (!db.isOpen()) {
+            if (error)
+                *error = QString("Unable to open database: %1").arg(sourcePath);
+        } else {
+            QString escapedPath = QDir::toNativeSeparators(destinationPath);
+            escapedPath.replace('\'', "''");
+            QSqlQuery vacuum(db);
+            created = vacuum.exec(QString("VACUUM main INTO '%1'").arg(escapedPath));
+            if (!created && error)
+                *error = vacuum.lastError().text();
+        }
+    }
+    if (!connectionName.isEmpty())
+        QSqlDatabase::removeDatabase(connectionName);
+    return created;
+}
+
+QFileInfoList backupsForReason(const QDir &directory, const QString &reason)
+{
+    return directory.entryInfoList({ QString("library-*-*-%1.ydb").arg(reason) }, QDir::Files, QDir::Name | QDir::Reversed);
+}
+
+QDateTime backupDateTime(const QFileInfo &backup)
+{
+    constexpr qsizetype prefixLength = 8; // "library-"
+    constexpr qsizetype timestampLength = 15;
+    return QDateTime::fromString(backup.completeBaseName().mid(prefixLength, timestampLength), backupTimestampFormat);
+}
+
+void removeOldBackups(const QDir &directory, DatabaseBackupReason reason, const QString &newBackup, const QString &protectedBackup = { })
+{
+    const auto name = backupReasonName(reason);
+    const auto backups = backupsForReason(directory, name);
+    QSet<QString> keep;
+    keep.insert(QFileInfo(newBackup).absoluteFilePath());
+    if (!protectedBackup.isEmpty())
+        keep.insert(QFileInfo(protectedBackup).absoluteFilePath());
+
+    if (reason == DatabaseBackupReason::AutoUpdate) {
+        const auto now = QDateTime::currentDateTime();
+        QSet<QString> olderMonths;
+        for (const auto &backup : backups) {
+            const auto created = backupDateTime(backup);
+            if (!created.isValid())
+                continue;
+            const auto age = created.daysTo(now);
+            if (age < 14) {
+                keep.insert(backup.absoluteFilePath());
+            } else if (age < 14 + 366) {
+                const auto month = created.toString("yyyy-MM");
+                if (!olderMonths.contains(month)) {
+                    olderMonths.insert(month);
+                    keep.insert(backup.absoluteFilePath());
+                }
+            }
+        }
+    } else {
+        int limit = reason == DatabaseBackupReason::Manual ? 10 : 3;
+        for (int i = 0; i < qMin(limit, backups.size()); ++i)
+            keep.insert(backups.at(i).absoluteFilePath());
+    }
+
+    for (const auto &backup : backups) {
+        if (!keep.contains(backup.absoluteFilePath())) {
+            QLOG_INFO() << "Removing old database backup" << backup.absoluteFilePath();
+            QFile::remove(backup.absoluteFilePath());
+        }
+    }
+}
+
+const QStringList sqliteSidecarSuffixes { "-journal", "-wal", "-shm" };
+
+QString restoreMarkerPath(const QString &databasePath)
+{
+    return databasePath + ".restore";
+}
+
+QString stagedDatabasePath(const QString &databasePath)
+{
+    return databasePath + ".staged";
+}
+
+QString rollbackDatabasePath(const QString &databasePath)
+{
+    return databasePath + ".rollback";
+}
+
+QString salvageDatabasePath(const QString &databasePath)
+{
+    return databasePath + ".salvage";
+}
+
+QString damagedDatabasePath(const QString &libraryPath)
+{
+    const auto recoveryDirectory = QDir(LibraryPaths::libraryDataPath(libraryPath)).filePath("recovery");
+    return QDir(recoveryDirectory).filePath(QString("library-%1-damaged.ydb").arg(QDateTime::currentDateTime().toString("yyyyMMdd-HHmmss-zzz")));
+}
+
+bool removeDatabaseUnit(const QString &databasePath)
+{
+    bool success = !QFile::exists(databasePath) || QFile::remove(databasePath);
+    for (const auto &suffix : sqliteSidecarSuffixes) {
+        const auto path = databasePath + suffix;
+        success = (!QFile::exists(path) || QFile::remove(path)) && success;
+    }
+    return success;
+}
+
+bool moveDatabaseUnit(const QString &source, const QString &destination, QString *error)
+{
+    QStringList movedSuffixes;
+    const QStringList suffixes = { QString(), "-journal", "-wal", "-shm" };
+    for (const auto &suffix : suffixes) {
+        const auto sourcePath = source + suffix;
+        if (!QFile::exists(sourcePath))
+            continue;
+
+        const auto destinationPath = destination + suffix;
+        if (QFile::exists(destinationPath) || !QFile::rename(sourcePath, destinationPath)) {
+            for (auto it = movedSuffixes.crbegin(); it != movedSuffixes.crend(); ++it)
+                QFile::rename(destination + *it, source + *it);
+            if (error)
+                *error = QString("Unable to move %1 to %2").arg(sourcePath, destinationPath);
+            return false;
+        }
+        movedSuffixes.append(suffix);
+    }
+    return true;
+}
+
+bool copyDatabaseUnit(const QString &source, const QString &destination, QString *error)
+{
+    if (!QDir().mkpath(QFileInfo(destination).absolutePath())) {
+        if (error)
+            *error = QString("Unable to create recovery folder: %1").arg(QFileInfo(destination).absolutePath());
+        return false;
+    }
+
+    const QStringList suffixes = { QString(), "-journal", "-wal", "-shm" };
+    for (const auto &suffix : suffixes) {
+        const auto sourcePath = source + suffix;
+        if (!QFile::exists(sourcePath))
+            continue;
+        if (!QFile::copy(sourcePath, destination + suffix)) {
+            removeDatabaseUnit(destination);
+            if (error)
+                *error = QString("Unable to preserve damaged database: %1").arg(sourcePath);
+            return false;
+        }
+    }
+    return true;
+}
+
+bool writeRestoreMarker(const QString &path, bool hadOriginal, const QString &stage, QString *error)
+{
+    QSaveFile marker(path);
+    if (!marker.open(QIODevice::WriteOnly)) {
+        if (error)
+            *error = marker.errorString();
+        return false;
+    }
+    marker.write(hadOriginal ? "original=1\n" : "original=0\n");
+    marker.write("stage=" + stage.toUtf8() + "\n");
+    if (!marker.commit()) {
+        if (error)
+            *error = marker.errorString();
+        return false;
+    }
+    return true;
+}
+
+bool markerHadOriginal(const QString &path)
+{
+    QFile marker(path);
+    return marker.open(QIODevice::ReadOnly) && marker.readAll().contains("original=1\n");
+}
+
+bool replaceFileAtomically(const QString &source, const QString &destination, QString *error)
+{
+#ifdef Q_OS_WIN
+    const bool replaced = MoveFileExW(reinterpret_cast<LPCWSTR>(source.utf16()), reinterpret_cast<LPCWSTR>(destination.utf16()), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH);
+#else
+    const auto sourceName = QFile::encodeName(source);
+    const auto destinationName = QFile::encodeName(destination);
+    const bool replaced = std::rename(sourceName.constData(), destinationName.constData()) == 0;
+#endif
+    if (!replaced && error)
+        *error = QString("Unable to replace destination file: %1").arg(destination);
+    return replaced;
+}
+}
+
+LibraryMaintenanceLock::LibraryMaintenanceLock(const QString &libraryPath)
+    : maintenanceLock(std::make_unique<QLockFile>(QDir(LibraryPaths::libraryDataPath(libraryPath)).filePath("maintenance.lock"))), legacyRepairLock(std::make_unique<QLockFile>(QDir(LibraryPaths::libraryDataPath(libraryPath)).filePath("repair.lock")))
+{
+    maintenanceLock->setStaleLockTime(0);
+    legacyRepairLock->setStaleLockTime(0);
+}
+
+LibraryMaintenanceLock::~LibraryMaintenanceLock() = default;
+
+bool LibraryMaintenanceLock::tryLockFile(QLockFile &lock, bool removeStaleLock)
+{
+    if (lock.tryLock())
+        return true;
+    if (removeStaleLock && lock.removeStaleLockFile() && lock.tryLock())
+        return true;
+    captureLockInfo(lock);
+    failedLockPath = lock.fileName();
+    return false;
+}
+
+bool LibraryMaintenanceLock::tryLock(bool removeStaleLock)
+{
+    failedLockPath.clear();
+    currentHolderInfo.clear();
+    currentHolderIsRunningLocally = false;
+    if (!tryLockFile(*maintenanceLock, removeStaleLock))
+        return false;
+    if (!tryLockFile(*legacyRepairLock, removeStaleLock)) {
+        maintenanceLock->unlock();
+        return false;
+    }
+    return true;
+}
+
+void LibraryMaintenanceLock::captureLockInfo(QLockFile &lock)
+{
+    qint64 pid = 0;
+    QString hostname;
+    QString appname;
+    if (lock.getLockInfo(&pid, &hostname, &appname)) {
+        currentHolderInfo = QString("%1 (PID %2) on %3").arg(appname).arg(pid).arg(hostname.isEmpty() ? QString("unknown host") : hostname);
+        currentHolderIsRunningLocally = !hostname.isEmpty() && hostname == QSysInfo::machineHostName();
+    }
+}
+
+QString LibraryMaintenanceLock::errorString() const
+{
+    return QString("Another maintenance operation is using this library (%1)%2")
+            .arg(failedLockPath, currentHolderInfo.isEmpty() ? QString() : QString(": %1").arg(currentHolderInfo));
+}
+
+QString LibraryMaintenanceLock::holderInfo() const
+{
+    return currentHolderInfo;
+}
+
+bool LibraryMaintenanceLock::holderIsRunningLocally() const
+{
+    return currentHolderIsRunningLocally;
+}
 
 static QString fields = "title,"
 
@@ -48,8 +359,6 @@ static QString fields = "title,"
                         "hash,"
                         "edited,"
                         "read,"
-
-                        "comicVineID,"
 
                         "hasBeenOpened,"
                         "rating,"
@@ -500,30 +809,46 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 {
     QString connectionName = "";
     {
-        QSqlDatabase destDB = loadDatabaseFromFile(dest);
+        QFile::remove(dest);
+
+        QString threadId = QString::number((quintptr)QThread::currentThreadId(), 16);
+        connectionName = dest + threadId;
+        QSqlDatabase destDB = QSqlDatabase::addDatabase("QSQLITE", connectionName);
+        destDB.setDatabaseName(dest);
+        bool success = true;
+        if (!destDB.open()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to create export database" << dest << destDB.lastError().text();
+            success = false;
+        }
 
         QSqlQuery attach(destDB);
-        attach.prepare("ATTACH DATABASE '" + QDir().toNativeSeparators(dest) + "' AS dest;");
-        attach.exec();
-
-        QSqlQuery attach2(destDB);
-        attach2.prepare("ATTACH DATABASE '" + QDir().toNativeSeparators(source) + "' AS source;");
-        attach2.exec();
+        attach.prepare("ATTACH DATABASE '" + QDir::toNativeSeparators(source) + "' AS source;");
+        if (success && !attach.exec()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to attach source database" << source << attach.lastError().text();
+            success = false;
+        }
 
         QSqlQuery queryDBInfo(destDB);
-        queryDBInfo.prepare("CREATE TABLE dest.db_info (version TEXT NOT NULL)");
-        queryDBInfo.exec();
+        queryDBInfo.prepare("CREATE TABLE db_info (version TEXT NOT NULL)");
+        if (success && !queryDBInfo.exec()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to create db_info table" << queryDBInfo.lastError().text();
+            success = false;
+        }
 
-        QSqlQuery query("INSERT INTO dest.db_info (version) "
+        QSqlQuery query("INSERT INTO db_info (version) "
                         "VALUES ('" DB_VERSION "')",
                         destDB);
-        query.exec();
+        if (success && !query.exec()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to write db_info" << query.lastError().text();
+            success = false;
+        }
 
         QSqlQuery exportData(destDB);
-        exportData.prepare("CREATE TABLE dest.comic_info AS SELECT " + fields +
+        exportData.prepare("CREATE TABLE comic_info AS SELECT " + fields +
                            " FROM source.comic_info WHERE source.comic_info.edited = 1 OR source.comic_info.comicVineID IS NOT NULL");
-        exportData.exec();
-        connectionName = destDB.connectionName();
+        if (success && !exportData.exec()) {
+            QLOG_ERROR() << "exportComicsInfo: failed to export comic_info" << exportData.lastError().text();
+        }
     }
 
     QSqlDatabase::removeDatabase(connectionName);
@@ -608,6 +933,11 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 
                            // new 9.5 fields
                            "lastTimeOpened = :lastTimeOpened,"
+                           "imageFiltersJson = :imageFiltersJson,"
+                           "lastTimeImageFiltersSet = :lastTimeImageFiltersSet,"
+                           "lastTimeCoverSet = :lastTimeCoverSet,"
+                           "usesExternalCover = :usesExternalCover,"
+                           "lastTimeMetadataSet = :lastTimeMetadataSet,"
 
                            //"coverSizeRatio = :coverSizeRatio,"
                            //"originalCoverSize = :originalCoverSize,"
@@ -667,7 +997,13 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            "edited,"
                            "comicVineID,"
                            "lastTimeOpened,"
+                           "imageFiltersJson,"
+                           "lastTimeImageFiltersSet,"
+                           "lastTimeCoverSet,"
+                           "usesExternalCover,"
+                           "lastTimeMetadataSet,"
                            "coverSizeRatio,"
+                           "originalCoverSize,"
                            "added,"
                            "type,"
                            "editor,"
@@ -682,6 +1018,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            "seriesGroup,"
                            "mainCharacterOrTeam,"
                            "review,"
+                           "tags,"
                            "hash)"
 
                            "VALUES (:title,"
@@ -720,6 +1057,11 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
                            ":comicVineID,"
 
                            ":lastTimeOpened,"
+                           ":imageFiltersJson,"
+                           ":lastTimeImageFiltersSet,"
+                           ":lastTimeCoverSet,"
+                           ":usesExternalCover,"
+                           ":lastTimeMetadataSet,"
 
                            ":coverSizeRatio,"
                            ":originalCoverSize,"
@@ -774,6 +1116,7 @@ bool DataBaseManagement::importComicsInfo(QString source, QString dest)
         }
 
         destDB.commit();
+        b = true;
         for (const auto &hash : hashes) {
             QSqlQuery getComic(destDB);
             getComic.prepare("SELECT c.path,ci.coverPage FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) where ci.hash = :hash");
@@ -852,6 +1195,11 @@ void DataBaseManagement::bindValuesFromRecord(const QSqlRecord &record, QSqlQuer
     bindValue("comicVineID", record, query);
 
     bindValue("lastTimeOpened", record, query);
+    bindValue("imageFiltersJson", record, query);
+    bindValue("lastTimeImageFiltersSet", record, query);
+    bindValue("lastTimeCoverSet", record, query);
+    bindValue("usesExternalCover", record, query);
+    bindValue("lastTimeMetadataSet", record, query);
 
     bindValue("coverSizeRatio", record, query);
     bindValue("originalCoverSize", record, query);
@@ -968,35 +1316,33 @@ int DataBaseManagement::compareVersions(const QString &v1, const QString v2)
     return 0;
 }
 
-bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
+bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool maintenanceLockHeld)
 {
-    bool pre7 = false;
-    bool pre7_1 = false;
-    bool pre8 = false;
-    bool pre9_5 = false;
-    bool pre9_8 = false;
-    bool pre9_13 = false;
-    bool pre9_14 = false;
-    bool pre9_16 = false;
+    std::unique_ptr<LibraryMaintenanceLock> lock;
+    if (!maintenanceLockHeld) {
+        lock = std::make_unique<LibraryMaintenanceLock>(libraryPath);
+        if (!lock->tryLock()) {
+            QLOG_ERROR() << "Database upgrade blocked:" << lock->errorString();
+            return false;
+        }
+    }
 
     QString libraryDatabasePath = LibraryPaths::libraryDatabasePath(libraryPath);
+    QString backupError;
+    if (!backupLibrary(libraryPath, DatabaseBackupReason::BeforeUpgrade, &backupError)) {
+        QLOG_ERROR() << "Database upgrade blocked:" << backupError;
+        return false;
+    }
 
-    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "7.0.0") < 0)
-        pre7 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "7.0.3") < 0)
-        pre7_1 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "8.0.0") < 0)
-        pre8 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.5.0") < 0)
-        pre9_5 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.8.0") < 0)
-        pre9_8 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.13.0") < 0)
-        pre9_13 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.14.0") < 0)
-        pre9_14 = true;
-    if (compareVersions(DataBaseManagement::checkValidDB(libraryDatabasePath), "9.16.0") < 0)
-        pre9_16 = true;
+    const auto oldVersion = DataBaseManagement::checkValidDB(libraryDatabasePath);
+    const bool pre7 = compareVersions(oldVersion, "7.0.0") < 0;
+    const bool pre7_1 = compareVersions(oldVersion, "7.0.3") < 0;
+    const bool pre8 = compareVersions(oldVersion, "8.0.0") < 0;
+    const bool pre9_5 = compareVersions(oldVersion, "9.5.0") < 0;
+    const bool pre9_8 = compareVersions(oldVersion, "9.8.0") < 0;
+    const bool pre9_13 = compareVersions(oldVersion, "9.13.0") < 0;
+    const bool pre9_14 = compareVersions(oldVersion, "9.14.0") < 0;
+    const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1241,6 +1587,400 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath)
 
     QSqlDatabase::removeDatabase(connectionName);
     return returnValue;
+}
+
+bool DataBaseManagement::backupLibrary(const QString &libraryPath, DatabaseBackupReason reason, QString *error, const QString &destinationPath, const QString &protectedBackup)
+{
+    const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
+    const auto dataPath = LibraryPaths::libraryDataPath(libraryPath);
+    QDir backupsDirectory(QDir(dataPath).filePath("backups"));
+    if (destinationPath.isEmpty() && !backupsDirectory.exists() && !QDir().mkpath(backupsDirectory.path())) {
+        if (error)
+            *error = QString("Unable to create backup directory: %1").arg(backupsDirectory.path());
+        return false;
+    }
+
+    if (destinationPath.isEmpty() && (reason == DatabaseBackupReason::AutoUpdate || reason == DatabaseBackupReason::BeforeRepair)) {
+        const auto automatic = backupsForReason(backupsDirectory, "auto-update");
+        const auto maximumAge = reason == DatabaseBackupReason::AutoUpdate ? 24 * 60 * 60 : 60 * 60;
+        for (const auto &backup : automatic) {
+            const auto created = backupDateTime(backup);
+            if (!created.isValid())
+                continue;
+            if (created.secsTo(QDateTime::currentDateTime()) >= maximumAge)
+                break;
+            QLOG_INFO() << "Skipping database backup: a recent automatic backup exists" << backup.absoluteFilePath();
+            return true;
+        }
+    }
+
+    QString sourceVersion;
+    if (!validateDatabase(databasePath, error, &sourceVersion)) {
+        QLOG_ERROR() << "Database backup blocked: source database is invalid" << databasePath;
+        return false;
+    }
+
+    const auto reasonName = backupReasonName(reason);
+    const auto finalPath = destinationPath.isEmpty()
+            ? backupsDirectory.filePath(QString("library-%1-db-%2-%3.ydb").arg(QDateTime::currentDateTime().toString(backupTimestampFormat), sourceVersion, reasonName))
+            : QDir::cleanPath(destinationPath);
+    if (QFileInfo(finalPath).absoluteFilePath() == QFileInfo(databasePath).absoluteFilePath()) {
+        if (error)
+            *error = "The backup destination cannot be the live library database";
+        return false;
+    }
+
+    QString backupPath = finalPath;
+    if (!destinationPath.isEmpty()) {
+        QTemporaryFile temporary(finalPath + ".XXXXXX.tmp");
+        temporary.setAutoRemove(false);
+        if (!temporary.open()) {
+            if (error)
+                *error = temporary.errorString();
+            return false;
+        }
+        backupPath = temporary.fileName();
+        temporary.close();
+        temporary.remove();
+    }
+    if (QFile::exists(backupPath)) {
+        if (error)
+            *error = QString("Backup file already exists: %1").arg(backupPath);
+        return false;
+    }
+    if (!vacuumDatabaseInto(databasePath, backupPath, error)) {
+        QFile::remove(backupPath);
+        QLOG_ERROR() << "Database backup failed" << backupPath << (error ? *error : QString());
+        return false;
+    }
+    if (!validateDatabase(backupPath, error)) {
+        QFile::remove(backupPath);
+        QLOG_ERROR() << "Database backup failed" << backupPath << (error ? *error : QString());
+        return false;
+    }
+
+    if (!destinationPath.isEmpty() && !replaceFileAtomically(backupPath, finalPath, error)) {
+        QFile::remove(backupPath);
+        QLOG_ERROR() << "Database backup replacement failed" << finalPath << (error ? *error : QString());
+        return false;
+    }
+
+    QLOG_INFO() << "Database backup created" << finalPath;
+    if (destinationPath.isEmpty())
+        removeOldBackups(backupsDirectory, reason, finalPath, protectedBackup);
+    return true;
+}
+
+DatabaseRestoreResult DataBaseManagement::restoreLibrary(const QString &libraryPath, const QString &backupPath, bool allowInvalidCurrent, bool removeStaleLock)
+{
+    DatabaseRestoreResult result;
+    QString selectedVersion;
+    if (!validateDatabase(backupPath, &result.error, &selectedVersion)) {
+        result.status = DatabaseRestoreStatus::InvalidBackup;
+        return result;
+    }
+    if (compareVersions(selectedVersion, DB_VERSION) > 0) {
+        result.status = DatabaseRestoreStatus::NewerBackup;
+        result.error = QString("The backup database version %1 is newer than supported version %2").arg(selectedVersion, DB_VERSION);
+        return result;
+    }
+
+    if (!QDir(libraryPath).exists()) {
+        result.status = DatabaseRestoreStatus::Failed;
+        result.error = QString("Library folder does not exist: %1").arg(libraryPath);
+        return result;
+    }
+    if (!QDir().mkpath(LibraryPaths::libraryDataPath(libraryPath))) {
+        result.status = DatabaseRestoreStatus::Failed;
+        result.error = QString("Unable to create library metadata folder: %1").arg(LibraryPaths::libraryDataPath(libraryPath));
+        return result;
+    }
+
+    LibraryMaintenanceLock lock(libraryPath);
+    if (!lock.tryLock(removeStaleLock)) {
+        result.status = DatabaseRestoreStatus::LockFailed;
+        result.error = lock.errorString();
+        result.lockHolderInfo = lock.holderInfo();
+        result.lockHolderIsRunningLocally = lock.holderIsRunningLocally();
+        return result;
+    }
+
+    if (!recoverInterruptedRestore(libraryPath, &result.error, true)) {
+        result.status = DatabaseRestoreStatus::Failed;
+        return result;
+    }
+
+    const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
+    const auto stagedPath = stagedDatabasePath(databasePath);
+    const auto rollbackPath = rollbackDatabasePath(databasePath);
+    const auto markerPath = restoreMarkerPath(databasePath);
+    const bool hadOriginal = QFile::exists(databasePath);
+
+    QString currentVersion;
+    const bool currentValid = hadOriginal && validateDatabase(databasePath, nullptr, &currentVersion);
+    if (hadOriginal && !currentValid && !allowInvalidCurrent) {
+        result.status = DatabaseRestoreStatus::InvalidCurrentDatabase;
+        result.error = "The current library database is invalid; confirmation is required before replacing it";
+        return result;
+    }
+
+    if (currentValid && !backupLibrary(libraryPath, DatabaseBackupReason::BeforeRestore, &result.error, { }, backupPath)) {
+        result.status = DatabaseRestoreStatus::Failed;
+        return result;
+    }
+
+    removeDatabaseUnit(stagedPath);
+    removeDatabaseUnit(rollbackPath);
+    QFile::remove(markerPath);
+    if (!QFile::copy(backupPath, stagedPath)) {
+        result.status = DatabaseRestoreStatus::Failed;
+        result.error = QString("Unable to stage backup: %1").arg(backupPath);
+        return result;
+    }
+
+    QString stagedVersion;
+    if (!validateDatabase(stagedPath, &result.error, &stagedVersion)) {
+        removeDatabaseUnit(stagedPath);
+        result.status = DatabaseRestoreStatus::InvalidBackup;
+        return result;
+    }
+    if (compareVersions(stagedVersion, DB_VERSION) > 0) {
+        removeDatabaseUnit(stagedPath);
+        result.status = DatabaseRestoreStatus::NewerBackup;
+        result.error = QString("The staged database version %1 is newer than supported version %2").arg(stagedVersion, DB_VERSION);
+        return result;
+    }
+
+    if (!writeRestoreMarker(markerPath, hadOriginal, "prepared", &result.error)) {
+        removeDatabaseUnit(stagedPath);
+        result.status = DatabaseRestoreStatus::Failed;
+        return result;
+    }
+
+    auto rollBack = [&]() {
+        if (!removeDatabaseUnit(databasePath))
+            return false;
+        if (hadOriginal && !moveDatabaseUnit(rollbackPath, databasePath, &result.error))
+            return false;
+        if (!removeDatabaseUnit(stagedPath) || !removeDatabaseUnit(rollbackPath)) {
+            result.error = "The original database was restored, but restore cleanup failed";
+            return false;
+        }
+        if (!QFile::remove(markerPath)) {
+            result.error = "The original database was restored, but the restore marker could not be removed";
+            return false;
+        }
+        return true;
+    };
+
+    if (hadOriginal && !moveDatabaseUnit(databasePath, rollbackPath, &result.error)) {
+        removeDatabaseUnit(stagedPath);
+        QFile::remove(markerPath);
+        result.status = DatabaseRestoreStatus::Failed;
+        return result;
+    }
+    if (!writeRestoreMarker(markerPath, hadOriginal, "original-moved", &result.error)) {
+        result.status = rollBack() ? DatabaseRestoreStatus::Failed : DatabaseRestoreStatus::RollbackFailed;
+        return result;
+    }
+    if (!moveDatabaseUnit(stagedPath, databasePath, &result.error)) {
+        result.status = rollBack() ? DatabaseRestoreStatus::Failed : DatabaseRestoreStatus::RollbackFailed;
+        return result;
+    }
+    if (!writeRestoreMarker(markerPath, hadOriginal, "installed", &result.error)) {
+        result.status = rollBack() ? DatabaseRestoreStatus::Failed : DatabaseRestoreStatus::RollbackFailed;
+        return result;
+    }
+
+    if (compareVersions(stagedVersion, DB_VERSION) < 0) {
+        if (!updateToCurrentVersion(libraryPath, true)) {
+            result.error = "Unable to upgrade the restored database";
+            result.status = rollBack() ? DatabaseRestoreStatus::Failed : DatabaseRestoreStatus::RollbackFailed;
+            return result;
+        }
+        result.upgraded = true;
+        result.restoredVersion = DB_VERSION;
+    } else {
+        result.restoredVersion = stagedVersion;
+    }
+
+    QFile::remove(markerPath);
+    removeDatabaseUnit(rollbackPath);
+    removeDatabaseUnit(stagedPath);
+    result.status = DatabaseRestoreStatus::Success;
+    return result;
+}
+
+bool DataBaseManagement::recoverInterruptedRestore(const QString &libraryPath, QString *error, bool maintenanceLockHeld)
+{
+    const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
+    const auto stagedPath = stagedDatabasePath(databasePath);
+    const auto rollbackPath = rollbackDatabasePath(databasePath);
+    const auto markerPath = restoreMarkerPath(databasePath);
+    if (!QFile::exists(markerPath) && !QFile::exists(stagedPath) && !QFile::exists(rollbackPath))
+        return true;
+
+    std::unique_ptr<LibraryMaintenanceLock> lock;
+    if (!maintenanceLockHeld) {
+        lock = std::make_unique<LibraryMaintenanceLock>(libraryPath);
+        if (!lock->tryLock()) {
+            if (error)
+                *error = lock->errorString();
+            return false;
+        }
+    }
+
+    if (!QFile::exists(markerPath)) {
+        removeDatabaseUnit(stagedPath);
+        if (QFile::exists(databasePath))
+            removeDatabaseUnit(rollbackPath);
+        else if (QFile::exists(rollbackPath) && !moveDatabaseUnit(rollbackPath, databasePath, error))
+            return false;
+        return true;
+    }
+
+    const bool hadOriginal = markerHadOriginal(markerPath);
+    if (QFile::exists(rollbackPath)) {
+        if (!removeDatabaseUnit(databasePath) || !moveDatabaseUnit(rollbackPath, databasePath, error))
+            return false;
+    } else if (!hadOriginal) {
+        if (!QFile::exists(databasePath)) {
+            removeDatabaseUnit(stagedPath);
+            QFile::remove(markerPath);
+            if (error)
+                *error = "Interrupted restore did not install a database; retry the restore";
+            return false;
+        }
+        QString ignoredVersion;
+        if (!validateDatabase(databasePath, error, &ignoredVersion)) {
+            removeDatabaseUnit(stagedPath);
+            removeDatabaseUnit(rollbackPath);
+            QFile::remove(markerPath);
+            if (error)
+                error->clear();
+            return true;
+        }
+    } else if (hadOriginal && !QFile::exists(databasePath)) {
+        removeDatabaseUnit(stagedPath);
+        QFile::remove(markerPath);
+        if (error)
+            error->clear();
+        return true;
+    }
+
+    removeDatabaseUnit(stagedPath);
+    removeDatabaseUnit(rollbackPath);
+    QFile::remove(markerPath);
+    return true;
+}
+
+bool DataBaseManagement::prepareForRecreation(const QString &libraryPath, QString *error, bool maintenanceLockHeld)
+{
+    if (!recoverInterruptedRestore(libraryPath, error, maintenanceLockHeld))
+        return false;
+
+    const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
+    bool success = removeDatabaseUnit(databasePath);
+    success = removeDatabaseUnit(stagedDatabasePath(databasePath)) && success;
+    success = removeDatabaseUnit(rollbackDatabasePath(databasePath)) && success;
+    success = removeDatabaseUnit(salvageDatabasePath(databasePath)) && success;
+    success = (!QFile::exists(restoreMarkerPath(databasePath)) || QFile::remove(restoreMarkerPath(databasePath))) && success;
+
+    QDir covers(LibraryPaths::libraryCoversFolderPath(libraryPath));
+    success = (!covers.exists() || covers.removeRecursively()) && success;
+    const auto idPath = LibraryPaths::idPath(libraryPath);
+    success = (!QFile::exists(idPath) || QFile::remove(idPath)) && success;
+    if (!success && error)
+        *error = QString("Unable to prepare library metadata for recreation: %1").arg(LibraryPaths::libraryDataPath(libraryPath));
+    return success;
+}
+
+QFileInfoList DataBaseManagement::libraryBackups(const QString &libraryPath)
+{
+    return QDir(QDir(LibraryPaths::libraryDataPath(libraryPath)).filePath("backups"))
+            .entryInfoList({ "library-*.ydb" }, QDir::Files, QDir::Name | QDir::Reversed);
+}
+
+bool DataBaseManagement::isLibraryDatabaseValid(const QString &libraryPath)
+{
+    return validateDatabase(LibraryPaths::libraryDatabasePath(libraryPath), nullptr);
+}
+
+DatabaseSalvageResult DataBaseManagement::salvageLibrary(const QString &libraryPath, bool removeStaleLock)
+{
+    DatabaseSalvageResult result;
+    const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
+    if (!QFile::exists(databasePath)) {
+        result.error = QString("Library database not found: %1").arg(databasePath);
+        return result;
+    }
+    if (validateDatabase(databasePath, nullptr)) {
+        result.status = DatabaseSalvageStatus::AlreadyValid;
+        return result;
+    }
+
+    const auto salvagePath = salvageDatabasePath(databasePath);
+    {
+        LibraryMaintenanceLock lock(libraryPath);
+        if (!lock.tryLock(removeStaleLock)) {
+            result.status = DatabaseSalvageStatus::LockFailed;
+            result.error = lock.errorString();
+            result.lockHolderInfo = lock.holderInfo();
+            result.lockHolderIsRunningLocally = lock.holderIsRunningLocally();
+            return result;
+        }
+
+        result.preservedDatabasePath = damagedDatabasePath(libraryPath);
+        if (!copyDatabaseUnit(databasePath, result.preservedDatabasePath, &result.error)) {
+            result.preservedDatabasePath.clear();
+            return result;
+        }
+
+        // index corruption can be repaired in place without losing anything
+        QString connectionName;
+        {
+            auto db = loadDatabaseFromFile(databasePath);
+            connectionName = db.connectionName();
+            if (db.isOpen()) {
+                QSqlQuery reindex(db);
+                if (!reindex.exec("REINDEX"))
+                    QLOG_INFO() << "REINDEX did not complete during salvage:" << reindex.lastError().text();
+            }
+        }
+        if (!connectionName.isEmpty())
+            QSqlDatabase::removeDatabase(connectionName);
+
+        if (validateDatabase(databasePath, nullptr)) {
+            QLOG_INFO() << "Library database salvaged with REINDEX" << databasePath;
+            result.status = DatabaseSalvageStatus::Reindexed;
+            return result;
+        }
+
+        // rebuild the reachable logical content into a fresh file; this fails if
+        // table pages themselves are unreadable, in which case only restoring a
+        // backup or recreating the library can help
+        QFile::remove(salvagePath);
+        QString rebuildError;
+        if (!vacuumDatabaseInto(databasePath, salvagePath, &rebuildError) || !validateDatabase(salvagePath, &rebuildError)) {
+            QFile::remove(salvagePath);
+            result.error = QString("The library database could not be repaired: %1").arg(rebuildError);
+            QLOG_ERROR() << "Library database salvage failed" << databasePath << rebuildError;
+            return result;
+        }
+    }
+
+    // the rebuilt database is installed through the restore machinery to get its
+    // staging, rollback, and crash-recovery guarantees; restoreLibrary acquires
+    // the maintenance lock itself, so it is released above
+    const auto restoreResult = restoreLibrary(libraryPath, salvagePath, true);
+    QFile::remove(salvagePath);
+    if (!restoreResult.success()) {
+        result.error = restoreResult.error;
+        return result;
+    }
+    QLOG_INFO() << "Library database salvaged by rebuilding it" << databasePath;
+    result.status = DatabaseSalvageStatus::Rebuilt;
+    return result;
 }
 
 DatabaseAccess DataBaseManagement::getDatabaseAccess(const QString &libraryPath)

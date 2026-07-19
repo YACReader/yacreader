@@ -11,6 +11,8 @@ qt_add_executable(YACReader WIN32
     main_window_viewer.cpp
     continuous_page_widget.h
     continuous_page_widget.cpp
+    continuous_page_provider.h
+    continuous_page_provider.cpp
     continuous_view_model.h
     continuous_view_model.cpp
     mouse_handler.h
@@ -270,6 +272,9 @@ target_link_libraries(YACReader PRIVATE
 # Platform-specific
 if(WIN32)
     target_sources(YACReader PRIVATE icon.rc)
+    if(MSVC)
+        target_link_options(YACReader PRIVATE "/MANIFESTINPUT:${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest")
+    endif()
     target_link_libraries(YACReader PRIVATE oleaut32 ole32 shell32 user32)
 endif()
 

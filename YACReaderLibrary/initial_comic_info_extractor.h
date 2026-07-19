@@ -22,6 +22,7 @@ private:
     int _numPages;
     QPair<int, int> _coverSize;
     QImage _cover;
+    bool _coverExtracted;
     int _coverPage;
     int getXMLMetadata;
     static bool crash;
@@ -32,6 +33,8 @@ public slots:
     void extract();
     int getNumPages() { return _numPages; }
     QPixmap getCover() { return QPixmap::fromImage(_cover); }
+    QImage getCoverImage() const { return _cover; }
+    bool hasValidCover() const { return _coverExtracted; }
     QPair<int, int> getOriginalCoverSize() { return _coverSize; }
     QByteArray getXMLInfoRawData();
 signals:

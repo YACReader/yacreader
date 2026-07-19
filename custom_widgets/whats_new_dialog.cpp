@@ -272,7 +272,7 @@ QString YACReader::WhatsNewDialog::renderHtmlDocument(const QString &content) co
 
 QString YACReader::WhatsNewDialog::renderIntro() const
 {
-    return "YACReader 10.1 is work in progress, this is all the new stuff:";
+    return "YACReader 10.1 is here, with smoother reading, better page saving and exporting, Windows long path support, a refreshed server web UI and more:";
 }
 
 QString YACReader::WhatsNewDialog::renderFooter() const

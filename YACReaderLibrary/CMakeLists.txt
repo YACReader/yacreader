@@ -10,6 +10,8 @@ add_library(library_common STATIC
     bundle_creator.cpp
     initial_comic_info_extractor.h
     initial_comic_info_extractor.cpp
+    comic_info_repairer.h
+    comic_info_repairer.cpp
     xml_info_parser.h
     xml_info_parser.cpp
     xml_info_library_scanner.h
@@ -527,15 +529,18 @@ target_link_libraries(YACReaderLibrary PRIVATE
 if(WIN32 OR APPLE)
     add_custom_command(TARGET YACReaderLibrary POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
-            "${PROJECT_SOURCE_DIR}/release/server/docroot/images/webui"
-            "$<TARGET_FILE_DIR:YACReaderLibrary>/server/docroot/images/webui"
-        COMMENT "Copying webui images to build output"
+            "${PROJECT_SOURCE_DIR}/release/server/docroot"
+            "$<TARGET_FILE_DIR:YACReaderLibrary>/server/docroot"
+        COMMENT "Copying webui files to build output"
     )
 endif()
 
 # Platform-specific
 if(WIN32)
     target_sources(YACReaderLibrary PRIVATE icon.rc)
+    if(MSVC)
+        target_link_options(YACReaderLibrary PRIVATE "/MANIFESTINPUT:${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest")
+    endif()
     target_link_libraries(YACReaderLibrary PRIVATE oleaut32 ole32 shell32 user32)
 endif()
 

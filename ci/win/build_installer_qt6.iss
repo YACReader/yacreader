@@ -29,8 +29,8 @@ Root: HKCR; Subkey: Comic Book (rar)\DefaultIcon; ValueType: string; ValueData: 
 Root: HKCR; Subkey: .clc; ValueType: string; ValueData: Compressed Library Covers (clc); Flags: uninsdeletekey
 Root: HKCR; SubKey: Compressed Library Covers (clc); ValueType: string; ValueData: Compressed Library Covers; Flags: uninsdeletekey
 Root: HKCR; Subkey: Compressed Library Covers (clc)\DefaultIcon; ValueType: string; ValueData: {app}\YACReaderLibrary.exe,1; Flags: uninsdeletevalue
-Root: HKCR; Subkey: .ydb; ValueType: string; ValueData: Compressed Library Covers (clc); Flags: uninsdeletekey
-Root: HKCR; SubKey: YACReader Data Base (ydb); ValueType: string; ValueData: Compressed Library Covers; Flags: uninsdeletekey
+Root: HKCR; Subkey: .ydb; ValueType: string; ValueData: YACReader Data Base (ydb); Flags: uninsdeletekey
+Root: HKCR; SubKey: YACReader Data Base (ydb); ValueType: string; ValueData: YACReader Library Database; Flags: uninsdeletekey
 Root: HKCR; Subkey: YACReader Data Base (ydb)\DefaultIcon; ValueType: string; ValueData: {app}\YACReaderLibrary.exe,1; Flags: uninsdeletevalue
 
 [Files]

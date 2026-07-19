@@ -18,6 +18,8 @@ StaticFileController *Static::staticFileController = 0;
 
 YACReaderHttpSessionStore *Static::yacreaderSessionStore = nullptr;
 
+LibrariesUpdateCoordinator *Static::librariesUpdateCoordinator = nullptr;
+
 QString Static::getConfigFileName()
 {
     return QString("%1/%2.ini").arg(getConfigDir()).arg(QCoreApplication::applicationName());
