@@ -1,13 +1,21 @@
 #include "organize_files_dialog.h"
 
+#include "yacreader_global.h"
+
+#include <QCheckBox>
 #include <QDialogButtonBox>
+#include <QDir>
 #include <QFileInfo>
 #include <QLabel>
 #include <QLineEdit>
+#include <QSettings>
 #include <QVBoxLayout>
 
-OrganizeFilesDialog::OrganizeFilesDialog(QWidget *parent)
-    : QDialog(parent)
+OrganizeFilesDialog::OrganizeFilesDialog(const QString &libraryRoot,
+                                         const QString &selectedFolderPath,
+                                         QSettings *settings,
+                                         QWidget *parent)
+    : QDialog(parent), libraryRoot(libraryRoot), selectedFolderPath(selectedFolderPath), settings(settings)
 {
     setupUI();
 }
@@ -33,6 +41,17 @@ void OrganizeFilesDialog::setupUI()
     patternEdit = new QLineEdit(defaultPattern());
     connect(patternEdit, &QLineEdit::textChanged, this, &OrganizeFilesDialog::updatePreview);
 
+    relativeToRootCheck = new QCheckBox(tr("Place folders relative to the library root"));
+    relativeToRootCheck->setToolTip(tr("When enabled, the format is applied from the library root instead of the "
+                                       "selected folder, so it is not nested inside the folder being organized."));
+    const bool relativeToRoot = settings ? settings->value(ORGANIZE_FILES_RELATIVE_TO_ROOT, true).toBool() : true;
+    relativeToRootCheck->setChecked(relativeToRoot);
+    connect(relativeToRootCheck, &QCheckBox::toggled, this, [this](bool checked) {
+        if (settings)
+            settings->setValue(ORGANIZE_FILES_RELATIVE_TO_ROOT, checked);
+        updatePreview();
+    });
+
     previewLabel = new QLabel;
     previewLabel->setWordWrap(true);
     previewLabel->setTextInteractionFlags(Qt::TextSelectableByMouse);
@@ -45,6 +64,7 @@ void OrganizeFilesDialog::setupUI()
     mainLayout->addWidget(description);
     mainLayout->addWidget(new QLabel(tr("Format:")));
     mainLayout->addWidget(patternEdit);
+    mainLayout->addWidget(relativeToRootCheck);
     mainLayout->addWidget(tokensLabel);
     mainLayout->addWidget(hintLabel);
     mainLayout->addSpacing(8);
@@ -65,31 +85,35 @@ QString OrganizeFilesDialog::formatPattern() const
     return patternEdit->text();
 }
 
+bool OrganizeFilesDialog::relativeToRoot() const
+{
+    return relativeToRootCheck->isChecked();
+}
+
 void OrganizeFilesDialog::updatePreview()
 {
-    // Example metadata so the user can see the resulting layout live.
-    const QString example = buildRelativePath(patternEdit->text(),
-                                              QStringLiteral("Marvel"),
-                                              QStringLiteral("The Amazing Spider-Man"),
-                                              QStringLiteral("42"),
-                                              QStringLiteral("The Sinister Six"),
-                                              QStringLiteral("1"),
-                                              QStringLiteral("2018"),
-                                              QStringLiteral(".cbz"));
+    const QString relative = buildRelativePath(patternEdit->text(),
+                                               QStringLiteral("Marvel"),
+                                               QStringLiteral("The Amazing Spider-Man"),
+                                               QStringLiteral("42"),
+                                               QStringLiteral("The Sinister Six"),
+                                               QStringLiteral("1"),
+                                               QStringLiteral("2018"),
+                                               QStringLiteral(".cbz"));
+
+    const QString base = relativeToRootCheck->isChecked() ? libraryRoot : selectedFolderPath;
+    const QString example = base.isEmpty() ? relative : QDir::cleanPath(base + QLatin1Char('/') + relative);
     previewLabel->setText(tr("Example: %1").arg(example));
 }
 
 static QString sanitizeSegment(QString segment)
 {
-    // Replace characters that are invalid in file/folder names on common
-    // filesystems, then collapse whitespace and trim.
     static const QString invalid = QStringLiteral("<>:\"/\\|?*");
     for (QChar &c : segment) {
         if (invalid.contains(c) || c < QChar(0x20))
             c = QLatin1Char('_');
     }
     segment = segment.simplified();
-    // Windows does not allow trailing dots or spaces in names.
     while (segment.endsWith(QLatin1Char('.')) || segment.endsWith(QLatin1Char(' ')))
         segment.chop(1);
     return segment;
@@ -106,7 +130,6 @@ QString OrganizeFilesDialog::buildRelativePath(const QString &pattern,
 {
     const QString safeSeries = series.trimmed().isEmpty() ? tr("Unknown Series") : series.trimmed();
     const QString safePublisher = publisher.trimmed().isEmpty() ? tr("Unknown Publisher") : publisher.trimmed();
-    // {title} falls back to the series name, as requested.
     const QString effectiveTitle = title.trimmed().isEmpty() ? safeSeries : title.trimmed();
 
     QString result = pattern;
@@ -117,7 +140,6 @@ QString OrganizeFilesDialog::buildRelativePath(const QString &pattern,
     result.replace(QStringLiteral("{volume}"), volume.trimmed());
     result.replace(QStringLiteral("{year}"), year.trimmed());
 
-    // Split into segments, sanitize each, drop empty ones.
     const QStringList rawSegments = result.split(QLatin1Char('/'), Qt::SkipEmptyParts);
     QStringList segments;
     for (const QString &raw : rawSegments) {

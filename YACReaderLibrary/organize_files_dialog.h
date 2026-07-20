@@ -5,6 +5,8 @@
 
 class QLineEdit;
 class QLabel;
+class QCheckBox;
+class QSettings;
 
 // Dialog that lets the user define the path/name format used to organize comic
 // files on disk. The format is a path template where each path segment becomes a
@@ -17,10 +19,20 @@ class OrganizeFilesDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit OrganizeFilesDialog(QWidget *parent = nullptr);
+    // libraryRoot and selectedFolderPath are absolute paths used to render a
+    // realistic preview and to reflect the "relative to library root" toggle.
+    // settings persists that toggle across runs (may be null).
+    explicit OrganizeFilesDialog(const QString &libraryRoot,
+                                 const QString &selectedFolderPath,
+                                 QSettings *settings = nullptr,
+                                 QWidget *parent = nullptr);
 
     // Returns the format pattern entered by the user.
     QString formatPattern() const;
+
+    // Whether the destination should be rooted at the library root (true) or at
+    // the currently selected folder (false).
+    bool relativeToRoot() const;
 
     // Default format used when none has been configured yet.
     static QString defaultPattern();
@@ -44,6 +56,11 @@ private slots:
 private:
     QLineEdit *patternEdit;
     QLabel *previewLabel;
+    QCheckBox *relativeToRootCheck;
+
+    QString libraryRoot;
+    QString selectedFolderPath;
+    QSettings *settings;
 
     void setupUI();
 };

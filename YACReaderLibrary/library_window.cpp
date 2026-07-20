@@ -2648,7 +2648,6 @@ static void collectComicsRecursively(qulonglong libraryId, qulonglong folderId, 
     qDeleteAll(subfolders);
 }
 
-// Removes empty directories under basePath (but never basePath itself).
 static void removeEmptyDirs(const QString &basePath)
 {
     QDir base(basePath);
@@ -2656,7 +2655,7 @@ static void removeEmptyDirs(const QString &basePath)
     for (const QString &entry : entries) {
         const QString childPath = base.absoluteFilePath(entry);
         removeEmptyDirs(childPath);
-        QDir().rmdir(childPath); // only succeeds if empty
+        QDir().rmdir(childPath);
     }
 }
 
@@ -2671,7 +2670,7 @@ void LibraryWindow::organizeFiles()
     const QString libraryRoot = QDir::cleanPath(currentPath());
     const QString folderAbsolutePath = QDir::cleanPath(currentPath() + foldersModel->getFolderPath(sourceIndex));
 
-    OrganizeFilesDialog dialog(this);
+    OrganizeFilesDialog dialog(libraryRoot, folderAbsolutePath, settings, this);
     if (dialog.exec() != QDialog::Accepted)
         return;
 
@@ -2687,13 +2686,12 @@ void LibraryWindow::organizeFiles()
         return;
     }
 
-    // Compute the moves. The destination is rooted at the selected folder.
     struct Move {
         QString source;
         QString destination;
     };
     QList<Move> moves;
-    const QDir destinationRoot(folderAbsolutePath);
+    const QDir destinationRoot(dialog.relativeToRoot() ? libraryRoot : folderAbsolutePath);
 
     for (const ComicDB &comic : comics) {
         const QString source = QDir::cleanPath(libraryRoot + comic.path);
@@ -2714,9 +2712,8 @@ void LibraryWindow::organizeFiles()
 
         QString destination = QDir::cleanPath(destinationRoot.absoluteFilePath(relative));
         if (destination == QDir::cleanPath(source))
-            continue; // already in place
+            continue;
 
-        // Avoid clobbering an existing destination by appending a counter.
         if (QFileInfo::exists(destination)) {
             const QFileInfo destInfo(destination);
             const QString dir = destInfo.absolutePath();
@@ -2760,7 +2757,6 @@ void LibraryWindow::organizeFiles()
             failures << move.source;
     }
 
-    // Clean up directories that became empty after moving files out of them.
     removeEmptyDirs(folderAbsolutePath);
 
     if (!failures.isEmpty()) {
@@ -2771,7 +2767,6 @@ void LibraryWindow::organizeFiles()
                                      .arg(failures.size()));
     }
 
-    // Rescan the folder so the database reflects the new on-disk layout.
     updateFolder(sourceIndex);
 }
 
