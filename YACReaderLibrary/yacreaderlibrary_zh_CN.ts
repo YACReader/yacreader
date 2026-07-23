@@ -98,17 +98,17 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>亮度</translation>
+        <translation>明亮</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Dark</source>
-        <translation>黑暗的</translation>
+        <translation>暗黑</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Custom</source>
-        <translation>风俗</translation>
+        <translation>自定义</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
@@ -123,12 +123,12 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>光：</translation>
+        <translation>明亮：</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Dark:</source>
-        <translation>黑暗的：</translation>
+        <translation>暗黑：</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
@@ -204,7 +204,7 @@
     <message>
         <location filename="classic_comics_view.cpp" line="92"/>
         <source>Hide comic flow</source>
-        <translation>隐藏 Comic Flow</translation>
+        <translation>隐藏漫画页面流</translation>
     </message>
 </context>
 <context>
@@ -222,7 +222,7 @@
     <message>
         <location filename="qml/ComicInfoView.qml" line="611"/>
         <source>imprint</source>
-        <translation>出版品牌</translation>
+        <translation>压印</translation>
     </message>
     <message>
         <location filename="qml/ComicInfoView.qml" line="359"/>
@@ -1147,12 +1147,12 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_window.cpp" line="852"/>
         <source>Package operation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>打包操作失败</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="852"/>
         <source>The covers package operation could not be completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>封面包操作无法完成。</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="940"/>
@@ -1601,7 +1601,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="132"/>
         <source>Set issue as manga</source>
-        <translation>将问题设置为漫画</translation>
+        <translation>设置为漫画</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="136"/>
@@ -1998,7 +1998,7 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="37"/>
         <source>Appearance</source>
-        <translation>外貌</translation>
+        <translation>外观</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="175"/>
@@ -2160,7 +2160,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="options_dialog.cpp" line="35"/>
         <source>Comic Flow</source>
-        <translation>Comic Flow</translation>
+        <translation>漫画页面流</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="36"/>
@@ -2300,7 +2300,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="261"/>
         <source>Imprint:</source>
-        <translation>印记：</translation>
+        <translation>压印：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="206"/>
@@ -2310,7 +2310,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="178"/>
         <source>Issue number:</source>
-        <translation>发行刊号:</translation>
+        <translation>期刊号:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="286"/>
@@ -2717,7 +2717,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="98"/>
         <source>issues</source>
-        <translation>发行</translation>
+        <translation>期</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="59"/>
@@ -2790,7 +2790,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
         <source>Variant:</source>
-        <translation>变体：</translation>
+        <translation>颜色设置：</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
@@ -2805,7 +2805,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
         <source>Value</source>
-        <translation>价值</translation>
+        <translation>值</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="149"/>
@@ -2840,7 +2840,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>真的</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -2848,7 +2848,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>错误的</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
@@ -2966,7 +2966,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="120"/>
         <source>issues</source>
-        <translation>发行</translation>
+        <translation>期</translation>
     </message>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="122"/>
