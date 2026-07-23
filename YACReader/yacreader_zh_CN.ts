@@ -24,17 +24,17 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>亮度</translation>
+        <translation>明亮</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Dark</source>
-        <translation>黑暗的</translation>
+        <translation>暗黑</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Custom</source>
-        <translation>风俗</translation>
+        <translation>自定义</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
@@ -49,12 +49,12 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>光：</translation>
+        <translation>明亮：</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Dark:</source>
-        <translation>黑暗的：</translation>
+        <translation>暗黑：</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
@@ -265,7 +265,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="35"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>更新日志</translation>
     </message>
 </context>
 <context>
@@ -308,7 +308,7 @@
     <message>
         <location filename="options_dialog.cpp" line="66"/>
         <source>&quot;Go to flow&quot; size</source>
-        <translation>“转到 Comic Flow”大小</translation>
+        <translation>“转到页面流”大小</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="87"/>
@@ -373,7 +373,7 @@
     <message>
         <location filename="options_dialog.cpp" line="257"/>
         <source>Appearance</source>
-        <translation>外貌</translation>
+        <translation>外观</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="272"/>
@@ -554,12 +554,12 @@
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>亮度</translation>
+        <translation>明亮</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
         <source>Dark</source>
-        <translation>黑暗的</translation>
+        <translation>暗黑</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
@@ -574,7 +574,7 @@
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
         <source>Variant:</source>
-        <translation>变体：</translation>
+        <translation>颜色设置：</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
@@ -589,7 +589,7 @@
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
         <source>Value</source>
-        <translation>价值</translation>
+        <translation>值</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="149"/>
@@ -624,7 +624,7 @@
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>真的</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -632,7 +632,7 @@
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>错误的</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
@@ -845,7 +845,7 @@
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="143"/>
         <source>Light</source>
-        <translation>亮度</translation>
+        <translation>明亮</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="149"/>
@@ -1192,7 +1192,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="512"/>
         <source>Double page manga mode</source>
-        <translation>双页漫画模式</translation>
+        <translation>双页日漫模式</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1509"/>
@@ -1249,12 +1249,12 @@
         <location filename="main_window_viewer.cpp" line="1140"/>
         <location filename="main_window_viewer.cpp" line="1158"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>提取页面</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="385"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>从原始来源提取页面</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="443"/>
@@ -1284,32 +1284,32 @@
     <message>
         <location filename="main_window_viewer.cpp" line="1104"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>覆盖文件？</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1104"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>文件已存在。是​​否要覆盖它？</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1140"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法提取当前页面。</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1145"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>覆盖文件？</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1145"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>部分文件已存在。是​​否要覆盖它们？</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1158"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>部分页面无法提取。</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1364"/>
@@ -1349,7 +1349,7 @@
     <message>
         <location filename="main_window_viewer.cpp" line="583"/>
         <source>Show go to flow</source>
-        <translation>显示“转到 Comic Flow”</translation>
+        <translation>显示转到页面流</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="390"/>
@@ -1424,12 +1424,12 @@
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="183"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>暂无发行说明。</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="239"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>先前版本</translation>
     </message>
 </context>
 <context>
