@@ -19,6 +19,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Automatically create and retain database backups in `.yacreaderlibrary/backups`.
 * Add the `repair-library-db` command to attempt to repair a damaged database. Damaged originals are preserved in `.yacreaderlibrary/recovery`.
 
+### WebUI
+* Add a very basic web reader.
+
 ## 10.1.0
 
 ### YACReader
