@@ -228,6 +228,9 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderAction->setData(OPEN_CONTAINING_FOLDER_ACTION_YL);
     openContainingFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_ACTION_YL));
 
+    organizeFilesAction = new QAction(window);
+    organizeFilesAction->setText(tr("Organize files"));
+
     setFolderAsNotCompletedAction = new QAction(window);
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
     setFolderAsNotCompletedAction->setData(SET_FOLDER_AS_NOT_COMPLETED_ACTION_YL);
@@ -401,6 +404,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     // actions not asigned to any widget
     window->addAction(saveCoversToAction);
     window->addAction(openContainingFolderAction);
+    window->addAction(organizeFilesAction);
     window->addAction(updateCurrentFolderAction);
     window->addAction(resetComicRatingAction);
     window->addAction(setFolderAsCompletedAction);
@@ -481,6 +485,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(setFolderAsReadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsRead);
     QObject::connect(setFolderAsUnreadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsUnread);
     QObject::connect(openContainingFolderAction, &QAction::triggered, window, &LibraryWindow::openContainingFolder);
+    QObject::connect(organizeFilesAction, &QAction::triggered, window, &LibraryWindow::organizeFiles);
     QObject::connect(setFolderCoverAction, &QAction::triggered, window, &LibraryWindow::setFolderCover);
     QObject::connect(deleteCustomFolderCoverAction, &QAction::triggered, window, &LibraryWindow::deleteCustomFolderCover);
 
@@ -610,6 +615,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << expandAllNodesAction
                                                  << colapseAllNodesAction
                                                  << openContainingFolderAction
+                                                 << organizeFilesAction
                                                  << setFolderAsNotCompletedAction
                                                  << setFolderAsCompletedAction
                                                  << setFolderAsReadAction
@@ -743,6 +749,7 @@ void LibraryWindowActions::disableFoldersActions(bool disabled)
     colapseAllNodesAction->setDisabled(disabled);
 
     openContainingFolderAction->setDisabled(disabled);
+    organizeFilesAction->setDisabled(disabled);
 
     updateFolderAction->setDisabled(disabled);
     rescanXMLFromCurrentFolderAction->setDisabled(disabled);

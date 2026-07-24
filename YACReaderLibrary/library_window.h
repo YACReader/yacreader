@@ -250,6 +250,7 @@ public slots:
     void startLibraryRepair(bool removeStaleLock);
     // void deleteLibrary();
     void openContainingFolder();
+    void organizeFiles();
     void setFolderAsNotCompleted();
     void setFolderAsCompleted();
     void setFolderAsRead();

@@ -90,6 +90,8 @@ qt_add_executable(YACReaderLibrary WIN32
     add_library_dialog.cpp
     rename_library_dialog.h
     rename_library_dialog.cpp
+    organize_files_dialog.h
+    organize_files_dialog.cpp
     properties_dialog.h
     properties_dialog.cpp
     options_dialog.h
