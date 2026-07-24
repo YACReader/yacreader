@@ -109,7 +109,9 @@ void YACReader::MouseHandler::mouseMoveEvent(QMouseEvent *event)
                     if (gtfPos.y() < 0 || gtfPos.x() < 0 || gtfPos.x() > viewer->goToFlow->width()) // TODO this extra check is for Mavericks (mouseMove over goToFlowGL seems to be broken)
                         viewer->animateHideGoToFlow();
                     // goToFlow->hide();
-                } else {
+                } else if (!viewer->magnifyingGlassShown) {
+                    // Don't pop up the bottom page-selection bar while the
+                    // magnifying glass is active: it prevents magnifying that area.
                     int umbral = (viewer->width() - viewer->goToFlow->width()) / 2;
                     if ((position.y() > viewer->height() - 15) && (position.x() > umbral) && (position.x() < viewer->width() - umbral)) {
 
