@@ -1703,6 +1703,13 @@ void MainWindowViewer::setMglassActionsEnabled(bool enabled)
 {
     for (auto *a : std::as_const(mglassActions))
         a->setEnabled(enabled);
+
+    // The default magnifying glass size actions (+/-) share their shortcuts with the
+    // page zoom actions. While the magnifying glass is visible its actions take
+    // over those keys, so the page zoom actions must be disabled to avoid an
+    // ambiguous shortcut that would leave both unresponsive.
+    increasePageZoomAction->setEnabled(!enabled);
+    decreasePageZoomAction->setEnabled(!enabled);
 }
 
 void MainWindowViewer::setLoadedComicActionsEnabled(bool enabled)
