@@ -1070,8 +1070,12 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
     }
 
     if (outImage) {
+        // The magnified image is kept at source resolution (device pixel ratio 1),
+        // matching the in-bounds path below. Do NOT set a >1 device pixel ratio here:
+        // a QPainter draws in logical coordinates, so painting the DPR-1 source crop
+        // onto a DPR>1 image would scale the content up by the ratio (and clip it),
+        // producing a sudden magnification jump at the image edges on HiDPI displays.
         QImage img(zoomWScaled, zoomHScaled, QImage::Format_RGB32);
-        img.setDevicePixelRatio(devicePixelRatioF());
         img.fill(bgColor);
         if (zw > 0 && zh > 0) {
             QPainter painter(&img);
