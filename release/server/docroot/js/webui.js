@@ -35,6 +35,362 @@
     return node;
   }
 
+  function svgIcon(className, iconMarkup) {
+    var icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    icon.setAttribute("class", className);
+    icon.setAttribute("viewBox", "0 0 24 24");
+    icon.setAttribute("fill", "none");
+    icon.setAttribute("stroke", "currentColor");
+    icon.setAttribute("stroke-width", "1.8");
+    icon.setAttribute("stroke-linecap", "round");
+    icon.setAttribute("stroke-linejoin", "round");
+    icon.setAttribute("aria-hidden", "true");
+    icon.innerHTML = iconMarkup;
+    return icon;
+  }
+
+  function storeBadge(className, imageSource, href, ariaLabel) {
+    var link = element("a", "store-badge-link " + className);
+    link.href = href;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.setAttribute("aria-label", ariaLabel);
+
+    var badge = element("img");
+    badge.src = imageSource;
+    badge.alt = "";
+    link.appendChild(badge);
+    return link;
+  }
+
+  var firstReaderPromotionShown = false;
+
+  function showFirstReaderPromotion(returnFocus) {
+    if (firstReaderPromotionShown) {
+      return;
+    }
+
+    try {
+      if (localStorage.getItem("yacreader-webui-reader-promotion-v2") === "shown") {
+        firstReaderPromotionShown = true;
+        return;
+      }
+      localStorage.setItem("yacreader-webui-reader-promotion-v2", "shown");
+    } catch (error) {
+    }
+    firstReaderPromotionShown = true;
+
+    var overlay = element("div", "mobile-promotion-overlay");
+    var dialog = element("section", "mobile-promotion-dialog");
+    dialog.setAttribute("role", "dialog");
+    dialog.setAttribute("aria-modal", "true");
+    dialog.setAttribute("aria-labelledby", "first-comic-promotion-title");
+    dialog.setAttribute("aria-describedby", "first-comic-promotion-copy");
+
+    var closeButton = element("button", "mobile-promotion-close");
+    closeButton.type = "button";
+    closeButton.setAttribute("aria-label", "Close mobile app promotion");
+    closeButton.appendChild(svgIcon("mobile-promotion-close-icon", '<path d="m7 7 10 10M17 7 7 17"/>'));
+
+    var intro = element("header", "mobile-promotion-intro");
+    var title = element("h2", "", "Upgrade your reading");
+    title.id = "first-comic-promotion-title";
+    var introCopy = element(
+      "p",
+      "",
+      "The best YACReader reading experience is on iOS and Android. Go far beyond the basic web reader with a fast, deeply customizable reader engineered for comics, manga and webtoons."
+    );
+    introCopy.id = "first-comic-promotion-copy";
+    intro.append(title, introCopy);
+
+    var featureList = element("ul", "mobile-promotion-features");
+    [
+      [
+        "Guided, panel by panel",
+        "Automatic panel detection, configurable framing and optional full-page stops."
+      ],
+      [
+        "A layout for every comic",
+        "Fit and fill modes, single or double pages, manga direction, auto-scroll and continuous webtoon reading."
+      ],
+      [
+        "Make every page look its best",
+        "Automatic margin trimming and powerful image filters for faded colors, dark scans and imperfect pages."
+      ],
+      [
+        "Your library, everywhere",
+        "Browse and stream remotely, import for offline reading, and keep progress and settings synchronized."
+      ]
+    ].forEach(function (feature) {
+      var item = element("li");
+      var featureCopy = element("span", "mobile-promotion-feature-copy");
+      featureCopy.append(element("strong", "", feature[0]), element("span", "", feature[1]));
+      item.append(
+        svgIcon("mobile-promotion-check", '<path d="m5 12 4 4L19 6"/>'),
+        featureCopy
+      );
+      featureList.appendChild(item);
+    });
+
+    var moreFeatures = element("p", "mobile-promotion-more");
+    moreFeatures.append(
+      element("strong", "", "And much more."),
+      document.createTextNode(" Discover the complete feature set for your device.")
+    );
+
+    function platformCard(platform, devices, website, storeLink) {
+      var card = element("section", "mobile-platform-card");
+      var cardCopy = element("div", "mobile-platform-copy");
+      cardCopy.append(element("h3", "", platform), element("span", "", devices));
+
+      var websiteLink = element("a", "mobile-platform-website", "Discover every " + platform + " feature");
+      websiteLink.href = website;
+      websiteLink.target = "_blank";
+      websiteLink.rel = "noopener noreferrer";
+      websiteLink.appendChild(svgIcon("mobile-platform-link-icon", '<path d="M7 17 17 7M8 7h9v9"/>'));
+
+      card.append(cardCopy, websiteLink, storeLink);
+      return card;
+    }
+
+    var platforms = element("div", "mobile-platform-grid");
+    platforms.append(
+      platformCard(
+        "iOS",
+        "iPhone and iPad",
+        "https://ios.yacreader.com/",
+        storeBadge(
+          "app-store-badge",
+          "/images/webui/app-store-badge.svg",
+          "https://apps.apple.com/app/id635717885",
+          "Download YACReader on the App Store"
+        )
+      ),
+      platformCard(
+        "Android",
+        "Phones, tablets and desktop layouts",
+        "https://android.yacreader.com/",
+        storeBadge(
+          "google-play-badge",
+          "/images/webui/google-play-badge.png",
+          "https://play.google.com/store/apps/details?id=com.yacreader.yacreader",
+          "Get YACReader on Google Play"
+        )
+      )
+    );
+
+    var continueButton = element("button", "secondary-button mobile-promotion-continue", "Continue on the web");
+    continueButton.type = "button";
+
+    dialog.append(closeButton, intro, featureList, moreFeatures, platforms, continueButton);
+    overlay.appendChild(dialog);
+    document.body.appendChild(overlay);
+    document.body.classList.add("mobile-promotion-open");
+
+    function closePromotion() {
+      document.removeEventListener("keydown", handlePromotionKeys);
+      document.body.classList.remove("mobile-promotion-open");
+      overlay.remove();
+      if (returnFocus && returnFocus.isConnected) {
+        returnFocus.focus();
+      }
+    }
+
+    function handlePromotionKeys(event) {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        closePromotion();
+        return;
+      }
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      var focusable = Array.from(dialog.querySelectorAll("a[href], button:not([disabled])"));
+      if (!focusable.length) {
+        return;
+      }
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    closeButton.addEventListener("click", closePromotion);
+    continueButton.addEventListener("click", closePromotion);
+    overlay.addEventListener("pointerdown", function (event) {
+      if (event.target === overlay) {
+        closePromotion();
+      }
+    });
+    document.addEventListener("keydown", handlePromotionKeys);
+    closeButton.focus();
+  }
+
+  function initSidebarActions() {
+    var sidebar = document.querySelector(".sidebar");
+    var serverSummary = sidebar && sidebar.querySelector(".server-summary");
+    if (!sidebar || !serverSummary) {
+      return;
+    }
+
+    var promos = element("div", "sidebar-promos");
+
+    var mobilePromo = element("section", "sidebar-mobile-promo");
+    mobilePromo.setAttribute("aria-labelledby", "mobile-promo-title");
+    var mobileHeader = element("div", "sidebar-mobile-header");
+    var mobileCopy = element("div");
+    var mobileTitle = element("h2", "", "Upgrade your reading");
+    mobileTitle.id = "mobile-promo-title";
+    mobileCopy.append(mobileTitle, element("p", "", "Unlock a richer reading experience with panel-by-panel navigation, flexible fit modes, image filters, fluid animations, and much more."));
+    mobileHeader.appendChild(mobileCopy);
+
+    var storeLinks = element("nav", "store-links");
+    storeLinks.setAttribute("aria-label", "Get the YACReader mobile apps");
+    storeLinks.append(
+      storeBadge(
+        "app-store-badge",
+        "/images/webui/app-store-badge.svg",
+        "https://apps.apple.com/app/id635717885",
+        "Download YACReader on the App Store"
+      ),
+      storeBadge(
+        "google-play-badge",
+        "/images/webui/google-play-badge.png",
+        "https://play.google.com/store/apps/details?id=com.yacreader.yacreader",
+        "Get YACReader on Google Play"
+      )
+    );
+    mobilePromo.append(mobileHeader, storeLinks);
+
+    var donation = element("section", "sidebar-donation");
+    var donationCopy = element("div", "sidebar-donation-copy");
+    donationCopy.append(element("strong", "", "Love YACReader?"), element("span", "", "Help keep it independent."));
+    var donateLink = element("a", "donate-button");
+    donateLink.href = "https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader";
+    donateLink.target = "_blank";
+    donateLink.rel = "noopener noreferrer";
+    donateLink.append(
+      svgIcon("donate-button-icon", '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z"/>'),
+      element("span", "", "Donate")
+    );
+    donation.append(donationCopy, donateLink);
+
+    promos.append(mobilePromo, donation);
+    sidebar.insertBefore(promos, serverSummary);
+
+    var sidebarHeader = sidebar.querySelector(".sidebar-header");
+    var themeToggle = sidebar.querySelector("[data-theme-toggle]");
+    if (!sidebarHeader || !themeToggle) {
+      return;
+    }
+
+    var compactActions = element("div", "compact-promo-actions");
+    var compactDonate = element("a", "compact-promo-button compact-donate-button");
+    compactDonate.href = donateLink.href;
+    compactDonate.target = "_blank";
+    compactDonate.rel = "noopener noreferrer";
+    compactDonate.title = "Support YACReader";
+    compactDonate.setAttribute("aria-label", "Support YACReader with a donation");
+    compactDonate.appendChild(svgIcon("compact-promo-icon", '<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z"/>'));
+
+    var compactMobile = element("button", "compact-promo-button");
+    compactMobile.type = "button";
+    compactMobile.title = "Get the mobile apps";
+    compactMobile.setAttribute("aria-label", "Get the YACReader mobile apps");
+    compactMobile.setAttribute("aria-haspopup", "dialog");
+    compactMobile.setAttribute("aria-expanded", "false");
+    compactMobile.setAttribute("aria-controls", "compact-mobile-popover");
+    compactMobile.appendChild(svgIcon("compact-promo-icon", '<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10 5h4M11 18.5h2"/>'));
+
+    var compactPopover = element("div", "compact-mobile-popover");
+    compactPopover.id = "compact-mobile-popover";
+    compactPopover.hidden = true;
+    compactPopover.setAttribute("role", "dialog");
+    compactPopover.setAttribute("aria-labelledby", "compact-mobile-popover-title");
+
+    var compactPopoverHeader = element("div", "compact-mobile-popover-header");
+    var compactPopoverHeading = element("div");
+    var compactPopoverTitle = element("h2", "", "Upgrade your reading");
+    compactPopoverTitle.id = "compact-mobile-popover-title";
+    compactPopoverHeading.appendChild(compactPopoverTitle);
+
+    var compactPopoverClose = element("button", "compact-popover-close");
+    compactPopoverClose.type = "button";
+    compactPopoverClose.setAttribute("aria-label", "Close mobile apps");
+    compactPopoverClose.appendChild(svgIcon("compact-popover-close-icon", '<path d="m7 7 10 10M17 7 7 17"/>'));
+    compactPopoverHeader.append(compactPopoverHeading, compactPopoverClose);
+
+    compactPopover.append(
+      compactPopoverHeader,
+      element("p", "", "Unlock a richer reading experience with panel-by-panel navigation, flexible fit modes, image filters, fluid animations, and much more."),
+      storeBadge(
+        "app-store-badge",
+        "/images/webui/app-store-badge.svg",
+        "https://apps.apple.com/app/id635717885",
+        "Download YACReader on the App Store"
+      ),
+      storeBadge(
+        "google-play-badge",
+        "/images/webui/google-play-badge.png",
+        "https://play.google.com/store/apps/details?id=com.yacreader.yacreader",
+        "Get YACReader on Google Play"
+      )
+    );
+
+    function closeCompactPopover(returnFocus) {
+      if (compactPopover.hidden) {
+        return;
+      }
+      compactPopover.hidden = true;
+      compactMobile.setAttribute("aria-expanded", "false");
+      if (returnFocus) {
+        compactMobile.focus();
+      }
+    }
+
+    compactMobile.addEventListener("click", function (event) {
+      event.stopPropagation();
+      var willOpen = compactPopover.hidden;
+      if (willOpen) {
+        compactPopover.hidden = false;
+        compactMobile.setAttribute("aria-expanded", "true");
+      } else {
+        closeCompactPopover(false);
+      }
+    });
+    compactPopoverClose.addEventListener("click", function () {
+      closeCompactPopover(true);
+    });
+    compactPopover.addEventListener("click", function (event) {
+      event.stopPropagation();
+    });
+    document.addEventListener("click", function () {
+      closeCompactPopover(false);
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        closeCompactPopover(true);
+      }
+    });
+    var compactLayout = window.matchMedia("(max-width: 800px)");
+    if (compactLayout.addEventListener) {
+      compactLayout.addEventListener("change", function (event) {
+        if (!event.matches) {
+          closeCompactPopover(false);
+        }
+      });
+    }
+
+    compactActions.append(compactDonate, compactMobile, compactPopover);
+    sidebarHeader.insertBefore(compactActions, themeToggle);
+  }
+
   function initLibraryBrowser() {
     var browserRoot = document.querySelector("[data-browser-root]");
     if (!browserRoot) {
@@ -49,6 +405,7 @@
     var navigationVersion = 0;
     var folderMetadataCache = {};
     var browserBackAction = null;
+    var readerCleanup = null;
 
     if (browserBack) {
       browserBack.addEventListener("click", function () {
@@ -121,6 +478,10 @@
       return libraryUrl() + "/comic/" + encodeURIComponent(comicId);
     }
 
+    function readerUrl(comicId) {
+      return comicUrl(comicId) + "/read";
+    }
+
     function folderContentApi(folderId) {
       return "/v2/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId) + "/content";
     }
@@ -131,6 +492,38 @@
 
     function comicInfoApi(comicId) {
       return "/v2/library/" + encodeURIComponent(libraryId) + "/comic/" + encodeURIComponent(comicId) + "/fullinfo";
+    }
+
+    function comicOpenApi(comicId) {
+      return "/v2/library/" + encodeURIComponent(libraryId) + "/comic/" + encodeURIComponent(comicId) + "/remote";
+    }
+
+    function comicPageApi(comicId, page) {
+      return "/v2/library/" + encodeURIComponent(libraryId) + "/comic/" + encodeURIComponent(comicId) + "/page/" + page + "/remote";
+    }
+
+    function comicProgressApi(comicId) {
+      return "/v2/library/" + encodeURIComponent(libraryId) + "/comic/" + encodeURIComponent(comicId) + "/update";
+    }
+
+    function apiHeaders(accept) {
+      var headers = {};
+      if (accept) {
+        headers.Accept = accept;
+      }
+      var id = requestId();
+      if (id) {
+        headers["X-Request-Id"] = id;
+      }
+      return headers;
+    }
+
+    function leaveReader() {
+      if (readerCleanup) {
+        readerCleanup();
+        readerCleanup = null;
+      }
+      document.body.classList.remove("web-reader-active");
     }
 
     function safeCoverPath(path) {
@@ -414,6 +807,7 @@
     }
 
     function showFolder(folderId, pushHistory) {
+      leaveReader();
       var version = ++navigationVersion;
       showLoading();
 
@@ -614,7 +1008,360 @@
       return result;
     }
 
+    function showReader(comicId, pushHistory, existingComic) {
+      leaveReader();
+      var version = ++navigationVersion;
+      showLoading();
+
+      Promise.resolve(existingComic || fetchJson(comicInfoApi(comicId))).then(function (comic) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var title = readableComicTitle(comic);
+        var numPages = Math.max(0, Number(comic.num_pages) || 0);
+        if (!numPages) {
+          throw new Error("This comic has no readable pages.");
+        }
+
+        var savedPage = Number(comic.current_page) || 1;
+        var currentPage = Math.min(numPages - 1, Math.max(0, savedPage - 1));
+        var requestedPage = currentPage;
+        var pageRequestVersion = 0;
+        var pageCache = Object.create(null);
+        var pageLoads = Object.create(null);
+        var pageAbortControllers = Object.create(null);
+        var destroyed = false;
+        var hasDisplayedPage = false;
+        var progressSynced = false;
+        var comicOpened = false;
+
+        setPageHeading(title);
+        setBrowserBack(null);
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+        document.body.classList.add("web-reader-active");
+
+        var reader = element("article", "web-reader");
+        var toolbar = element("header", "web-reader-toolbar");
+        var exitButton = element("button", "reader-toolbar-button reader-exit-button");
+        exitButton.type = "button";
+        exitButton.setAttribute("aria-label", "Back to comic details");
+        exitButton.append(svgIcon("reader-toolbar-icon", '<path d="m15 18-6-6 6-6"/>'), element("span", "", "Back"));
+
+        var readerHeading = element("div", "web-reader-heading");
+        readerHeading.append(element("div", "web-reader-title", title));
+        var pageIndicator = element("div", "web-reader-page-indicator");
+        pageIndicator.setAttribute("aria-live", "polite");
+        toolbar.append(exitButton, readerHeading, pageIndicator);
+
+        var stage = element("div", "web-reader-stage");
+        var previousButton = element("button", "reader-page-button reader-previous-button");
+        previousButton.type = "button";
+        previousButton.setAttribute("aria-label", "Previous page");
+        previousButton.appendChild(svgIcon("reader-page-button-icon", '<path d="m15 18-6-6 6-6"/>'));
+
+        var imageFrame = element("div", "web-reader-image-frame");
+        var pageImage = element("img", "web-reader-page");
+        pageImage.alt = "";
+        pageImage.hidden = true;
+        var loading = element("div", "web-reader-loading");
+        loading.setAttribute("role", "status");
+        loading.append(element("span", "web-reader-spinner"), element("span", "", "Loading page…"));
+        var errorState = element("div", "web-reader-error");
+        errorState.hidden = true;
+        errorState.append(element("strong", "", "Couldn’t load this page"), element("span", "", "The comic may still be opening on the server."));
+        var retryButton = element("button", "secondary-button", "Try again");
+        retryButton.type = "button";
+        errorState.appendChild(retryButton);
+        imageFrame.append(pageImage, loading, errorState);
+
+        var nextButton = element("button", "reader-page-button reader-next-button");
+        nextButton.type = "button";
+        nextButton.setAttribute("aria-label", "Next page");
+        nextButton.appendChild(svgIcon("reader-page-button-icon", '<path d="m9 18 6-6-6-6"/>'));
+        stage.append(previousButton, imageFrame, nextButton);
+        reader.append(toolbar, stage);
+        browserRoot.appendChild(reader);
+        showFirstReaderPromotion(exitButton);
+
+        function updateNavigation() {
+          pageIndicator.textContent = (requestedPage + 1) + " / " + numPages;
+          previousButton.disabled = !comicOpened || requestedPage <= 0;
+          nextButton.disabled = !comicOpened || requestedPage >= numPages - 1;
+        }
+
+        function syncProgress() {
+          if (!hasDisplayedPage || progressSynced) {
+            return;
+          }
+          progressSynced = true;
+          var headers = apiHeaders("text/plain");
+          headers["Content-Type"] = "text/plain; charset=utf-8";
+          fetch(comicProgressApi(comicId), {
+            method: "POST",
+            headers: headers,
+            body: "currentPage:" + (currentPage + 1) + "\n",
+            keepalive: true
+          }).catch(function () {
+          });
+        }
+
+        function cancelledPageError() {
+          var error = new Error("Page request cancelled.");
+          error.name = "AbortError";
+          return error;
+        }
+
+        function pageFetch(page, controller, attempt) {
+          if (destroyed || (controller && controller.signal.aborted)) {
+            return Promise.reject(cancelledPageError());
+          }
+          return fetch(comicPageApi(comicId, page), {
+            headers: apiHeaders("image/jpeg"),
+            cache: "no-store",
+            signal: controller ? controller.signal : undefined
+          }).then(function (response) {
+            if (response.status === 412 && attempt < 120) {
+              return new Promise(function (resolve) {
+                window.setTimeout(resolve, 500);
+              }).then(function () {
+                return pageFetch(page, controller, attempt + 1);
+              });
+            }
+            if (!response.ok) {
+              var error = new Error("Page request failed with status " + response.status);
+              error.status = response.status;
+              throw error;
+            }
+            return response.blob();
+          });
+        }
+
+        function decodePage(blob) {
+          return new Promise(function (resolve, reject) {
+            var objectUrl = URL.createObjectURL(blob);
+            var decodedImage = new Image();
+            decodedImage.onload = function () {
+              resolve(objectUrl);
+            };
+            decodedImage.onerror = function () {
+              URL.revokeObjectURL(objectUrl);
+              reject(new Error("Page image could not be decoded."));
+            };
+            decodedImage.src = objectUrl;
+          });
+        }
+
+        function ensurePage(page) {
+          if (Object.prototype.hasOwnProperty.call(pageCache, page)) {
+            return Promise.resolve(pageCache[page]);
+          }
+          if (pageLoads[page]) {
+            return pageLoads[page];
+          }
+
+          var controller = window.AbortController ? new AbortController() : null;
+          pageAbortControllers[page] = controller;
+          pageLoads[page] = pageFetch(page, controller, 0).then(decodePage).then(function (objectUrl) {
+            delete pageLoads[page];
+            delete pageAbortControllers[page];
+            if (destroyed) {
+              URL.revokeObjectURL(objectUrl);
+              throw cancelledPageError();
+            }
+            pageCache[page] = objectUrl;
+            return objectUrl;
+          }).catch(function (error) {
+            delete pageLoads[page];
+            delete pageAbortControllers[page];
+            throw error;
+          });
+          return pageLoads[page];
+        }
+
+        function preloadAdjacentPages(page) {
+          [page - 1, page + 1].forEach(function (adjacentPage) {
+            if (adjacentPage >= 0 && adjacentPage < numPages) {
+              ensurePage(adjacentPage).catch(function () {
+              });
+            }
+          });
+        }
+
+        function prunePageCache(page) {
+          Object.keys(pageCache).forEach(function (cachedPage) {
+            if (Math.abs(Number(cachedPage) - page) > 1) {
+              URL.revokeObjectURL(pageCache[cachedPage]);
+              delete pageCache[cachedPage];
+            }
+          });
+          Object.keys(pageAbortControllers).forEach(function (loadingPage) {
+            if (Math.abs(Number(loadingPage) - page) > 1 && pageAbortControllers[loadingPage]) {
+              pageAbortControllers[loadingPage].abort();
+            }
+          });
+        }
+
+        function loadPage(page) {
+          if (destroyed) {
+            return;
+          }
+          requestedPage = Math.min(numPages - 1, Math.max(0, page));
+          updateNavigation();
+          errorState.hidden = true;
+          var pageWasCached = Object.prototype.hasOwnProperty.call(pageCache, requestedPage);
+          loading.hidden = pageWasCached;
+          imageFrame.classList.toggle("is-loading", !pageWasCached);
+          pageRequestVersion += 1;
+          var requestVersion = pageRequestVersion;
+          var pageToDisplay = requestedPage;
+
+          ensurePage(pageToDisplay).then(function (objectUrl) {
+            if (destroyed || requestVersion !== pageRequestVersion) {
+              return;
+            }
+            pageImage.src = objectUrl;
+            pageImage.alt = title + ", page " + (pageToDisplay + 1);
+            pageImage.hidden = false;
+            loading.hidden = true;
+            imageFrame.classList.remove("is-loading");
+            currentPage = pageToDisplay;
+            hasDisplayedPage = true;
+            prunePageCache(currentPage);
+            preloadAdjacentPages(currentPage);
+          }).catch(function (error) {
+            if (destroyed || requestVersion !== pageRequestVersion || (error && error.name === "AbortError")) {
+              return;
+            }
+            if (error && (error.status === 404 || error.status === 424)) {
+              comicOpened = false;
+              updateNavigation();
+            }
+            loading.hidden = true;
+            imageFrame.classList.remove("is-loading");
+            errorState.hidden = false;
+          });
+        }
+
+        function openComicAndLoad() {
+          errorState.hidden = true;
+          loading.hidden = false;
+          imageFrame.classList.add("is-loading");
+          fetch(comicOpenApi(comicId), {
+            headers: apiHeaders("text/plain"),
+            cache: "no-store"
+          }).then(function (response) {
+            if (!response.ok) {
+              throw new Error("Comic request failed with status " + response.status);
+            }
+            if (destroyed) {
+              return;
+            }
+            comicOpened = true;
+            loadPage(requestedPage);
+          }).catch(function () {
+            if (destroyed) {
+              return;
+            }
+            comicOpened = false;
+            updateNavigation();
+            loading.hidden = true;
+            imageFrame.classList.remove("is-loading");
+            errorState.hidden = false;
+          });
+        }
+
+        function exitReader() {
+          if (history.state && history.state.view === "reader" && history.state.fromComicDetail) {
+            history.back();
+          } else {
+            showComic(comicId, false);
+          }
+        }
+
+        function handleReaderKeys(event) {
+          if (event.key === "ArrowLeft") {
+            event.preventDefault();
+            if (requestedPage > 0) {
+              loadPage(requestedPage - 1);
+            }
+          } else if (event.key === "ArrowRight" || event.key === " ") {
+            event.preventDefault();
+            if (requestedPage < numPages - 1) {
+              loadPage(requestedPage + 1);
+            }
+          } else if (event.key === "Escape") {
+            event.preventDefault();
+            exitReader();
+          }
+        }
+
+        function handleReaderPageHide(event) {
+          if (!event.persisted) {
+            syncProgress();
+          }
+        }
+
+        previousButton.addEventListener("click", function () {
+          loadPage(requestedPage - 1);
+        });
+        nextButton.addEventListener("click", function () {
+          loadPage(requestedPage + 1);
+        });
+        retryButton.addEventListener("click", function () {
+          if (comicOpened) {
+            loadPage(requestedPage);
+          } else {
+            openComicAndLoad();
+          }
+        });
+        exitButton.addEventListener("click", exitReader);
+        document.addEventListener("keydown", handleReaderKeys);
+        window.addEventListener("pagehide", handleReaderPageHide);
+
+        readerCleanup = function () {
+          syncProgress();
+          destroyed = true;
+          pageRequestVersion += 1;
+          Object.keys(pageAbortControllers).forEach(function (page) {
+            if (pageAbortControllers[page]) {
+              pageAbortControllers[page].abort();
+            }
+          });
+          Object.keys(pageCache).forEach(function (page) {
+            URL.revokeObjectURL(pageCache[page]);
+          });
+          document.removeEventListener("keydown", handleReaderKeys);
+          window.removeEventListener("pagehide", handleReaderPageHide);
+        };
+
+        var existingReaderState = !pushHistory && history.state && history.state.view === "reader"
+          ? Boolean(history.state.fromComicDetail)
+          : false;
+        var url = readerUrl(comicId);
+        var state = { view: "reader", itemId: comicId, fromComicDetail: pushHistory || existingReaderState };
+        if (pushHistory) {
+          history.pushState(state, "", url);
+        } else {
+          history.replaceState(state, "", url);
+        }
+
+        updateNavigation();
+        openComicAndLoad();
+      }).catch(function () {
+        if (version !== navigationVersion) {
+          return;
+        }
+        leaveReader();
+        showError(function () {
+          showReader(comicId, false);
+        });
+      });
+    }
+
     function showComic(comicId, pushHistory) {
+      leaveReader();
       var version = ++navigationVersion;
       showLoading();
 
@@ -651,35 +1398,92 @@
         }
         coverColumn.appendChild(cover);
 
-        var back = element("a", "secondary-button comic-back-button", "Back to folder");
-        back.href = folderUrl(parentId);
-        back.addEventListener("click", function (event) {
-          event.preventDefault();
-          showFolder(parentId, true);
+        var read = element("button", "secondary-button comic-read-button", "Read");
+        read.type = "button";
+        read.addEventListener("click", function () {
+          showReader(comicId, true, comic);
         });
-        coverColumn.appendChild(back);
+        coverColumn.appendChild(read);
 
-        var mobilePromo = element("aside", "mobile-app-promo");
-        mobilePromo.appendChild(element("div", "section-title", "Read on mobile"));
-        mobilePromo.appendChild(element("h3", "", "Take your library with you"));
-        mobilePromo.appendChild(element("p", "", "Browse this library and read your comics with YACReader for iOS or Android."));
+        var compactMobileActions = element("div", "comic-mobile-compact-actions");
+        var compactReadMobile = element("button", "primary-button comic-read-mobile-button");
+        compactReadMobile.type = "button";
+        compactReadMobile.setAttribute("aria-expanded", "false");
+        compactReadMobile.setAttribute("aria-controls", "comic-mobile-popover");
+        compactReadMobile.append(
+          svgIcon("comic-read-mobile-icon", '<rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10 5h4M11 18.5h2"/>'),
+          element("span", "", "Read on mobile")
+        );
 
-        var mobileLinks = element("div", "mobile-app-links");
-        var iosLink = element("a", "mobile-app-link", "iOS app");
-        iosLink.href = "https://apps.apple.com/app/id635717885";
-        iosLink.target = "_blank";
-        iosLink.rel = "noopener noreferrer";
-        iosLink.setAttribute("aria-label", "Get YACReader for iOS on the App Store");
+        var compactComicPopover = element("div", "compact-mobile-popover comic-mobile-popover");
+        compactComicPopover.id = "comic-mobile-popover";
+        compactComicPopover.hidden = true;
+        compactComicPopover.setAttribute("role", "dialog");
+        compactComicPopover.setAttribute("aria-labelledby", "comic-mobile-popover-title");
 
-        var androidLink = element("a", "mobile-app-link", "Android app");
-        androidLink.href = "https://play.google.com/store/apps/details?id=com.yacreader.yacreader";
-        androidLink.target = "_blank";
-        androidLink.rel = "noopener noreferrer";
-        androidLink.setAttribute("aria-label", "Get YACReader for Android on Google Play");
+        var compactComicPopoverHeader = element("div", "compact-mobile-popover-header");
+        var compactComicPopoverHeading = element("div");
+        var compactComicPopoverTitle = element("h2", "", "Upgrade your reading");
+        compactComicPopoverTitle.id = "comic-mobile-popover-title";
+        compactComicPopoverHeading.appendChild(compactComicPopoverTitle);
+        var compactComicPopoverClose = element("button", "compact-popover-close");
+        compactComicPopoverClose.type = "button";
+        compactComicPopoverClose.setAttribute("aria-label", "Close mobile apps");
+        compactComicPopoverClose.appendChild(svgIcon("compact-popover-close-icon", '<path d="m7 7 10 10M17 7 7 17"/>'));
+        compactComicPopoverHeader.append(compactComicPopoverHeading, compactComicPopoverClose);
 
-        mobileLinks.append(iosLink, androidLink);
-        mobilePromo.appendChild(mobileLinks);
-        coverColumn.appendChild(mobilePromo);
+        compactComicPopover.append(
+          compactComicPopoverHeader,
+          element("p", "", "Unlock a richer reading experience with panel-by-panel navigation, flexible fit modes, image filters, fluid animations, and much more."),
+          storeBadge(
+            "app-store-badge",
+            "/images/webui/app-store-badge.svg",
+            "https://apps.apple.com/app/id635717885",
+            "Download YACReader on the App Store"
+          ),
+          storeBadge(
+            "google-play-badge",
+            "/images/webui/google-play-badge.png",
+            "https://play.google.com/store/apps/details?id=com.yacreader.yacreader",
+            "Get YACReader on Google Play"
+          )
+        );
+
+        function closeComicMobilePopover(returnFocus) {
+          compactComicPopover.hidden = true;
+          compactReadMobile.setAttribute("aria-expanded", "false");
+          document.removeEventListener("pointerdown", handleComicMobileOutside);
+          if (returnFocus) {
+            compactReadMobile.focus();
+          }
+        }
+
+        function handleComicMobileOutside(event) {
+          if (!compactMobileActions.contains(event.target)) {
+            closeComicMobilePopover(false);
+          }
+        }
+
+        compactReadMobile.addEventListener("click", function () {
+          if (compactComicPopover.hidden) {
+            compactComicPopover.hidden = false;
+            compactReadMobile.setAttribute("aria-expanded", "true");
+            document.addEventListener("pointerdown", handleComicMobileOutside);
+          } else {
+            closeComicMobilePopover(false);
+          }
+        });
+        compactComicPopoverClose.addEventListener("click", function () {
+          closeComicMobilePopover(true);
+        });
+        compactMobileActions.addEventListener("keydown", function (event) {
+          if (event.key === "Escape") {
+            closeComicMobilePopover(true);
+          }
+        });
+
+        compactMobileActions.append(compactReadMobile, compactComicPopover);
+        coverColumn.appendChild(compactMobileActions);
 
         var copy = element("div", "comic-detail-copy");
         copy.appendChild(element("div", "section-title", "Comic information"));
@@ -785,19 +1589,21 @@
 
     function routeFromLocation() {
       var escapedLibraryId = libraryId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId + "(?:/(folder|comic)/([0-9]+))?/?$"));
+      var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId + "(?:/(folder|comic)/([0-9]+)(?:/(read))?)?/?$"));
       if (!match) {
         return { view: "folder", itemId: "1" };
       }
       return {
-        view: match[1] || "folder",
+        view: match[3] ? "reader" : match[1] || "folder",
         itemId: match[2] || "1"
       };
     }
 
     window.addEventListener("popstate", function () {
       var route = routeFromLocation();
-      if (route.view === "comic") {
+      if (route.view === "reader") {
+        showReader(route.itemId, false);
+      } else if (route.view === "comic") {
         showComic(route.itemId, false);
       } else {
         showFolder(route.itemId, false);
@@ -806,7 +1612,9 @@
 
     var initialView = document.body.dataset.browserInitialView;
     var initialItemId = document.body.dataset.browserInitialItemId || "1";
-    if (initialView === "comic") {
+    if (initialView === "reader") {
+      showReader(initialItemId, false);
+    } else if (initialView === "comic") {
       showComic(initialItemId, false);
     } else {
       showFolder(initialItemId, false);
@@ -999,6 +1807,8 @@
   applyTheme(preferredTheme());
 
   document.addEventListener("DOMContentLoaded", function () {
+    initSidebarActions();
+
     var toggle = document.querySelector("[data-theme-toggle]");
     if (toggle) {
       toggle.addEventListener("click", function () {

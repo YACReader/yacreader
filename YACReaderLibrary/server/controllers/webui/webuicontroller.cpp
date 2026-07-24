@@ -53,7 +53,7 @@ void setPageHeaders(HttpResponse &response)
     response.setHeader("Content-Type", "text/html; charset=utf-8");
     response.setHeader("Connection", "close");
     response.setHeader("Cache-Control", "no-store");
-    response.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self'; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'");
+    response.setHeader("Content-Security-Policy", "default-src 'self'; img-src 'self' blob:; style-src 'self'; script-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'");
     response.setHeader("Referrer-Policy", "no-referrer");
     response.setHeader("X-Content-Type-Options", "nosniff");
     response.setHeader("X-Frame-Options", "DENY");
@@ -92,7 +92,7 @@ void WebUIController::service(HttpRequest &request, HttpResponse &response)
     }
 
     const QRegularExpression libraryBrowserPath(
-            QStringLiteral(R"(^/webui/library/([0-9]+)(?:/(folder|comic)/([0-9]+))?/?$)"));
+            QStringLiteral(R"(^/webui/library/([0-9]+)(?:/(folder|comic)/([0-9]+)(?:/(read))?)?/?$)"));
     const QRegularExpressionMatch libraryBrowserMatch = libraryBrowserPath.match(QString::fromUtf8(path));
     if (libraryBrowserMatch.hasMatch()) {
         if (method != "GET") {
@@ -110,7 +110,18 @@ void WebUIController::service(HttpRequest &request, HttpResponse &response)
             return;
         }
 
-        const QString initialView = libraryBrowserMatch.captured(2).isEmpty() ? QStringLiteral("folder") : libraryBrowserMatch.captured(2);
+        if (!libraryBrowserMatch.captured(4).isEmpty() && libraryBrowserMatch.captured(2) != QStringLiteral("comic")) {
+            response.setStatus(404, "Not Found");
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.write("404 invalid reader path", true);
+            return;
+        }
+
+        const QString initialView = !libraryBrowserMatch.captured(4).isEmpty()
+                ? QStringLiteral("reader")
+                : libraryBrowserMatch.captured(2).isEmpty()
+                ? QStringLiteral("folder")
+                : libraryBrowserMatch.captured(2);
         bool itemIdIsValid = false;
         qulonglong initialItemId = libraryBrowserMatch.captured(3).toULongLong(&itemIdIsValid);
         if (libraryBrowserMatch.captured(3).isEmpty()) {
@@ -403,7 +414,7 @@ void WebUIController::renderLibraryBrowser(HttpRequest &request,
           </svg>
           Status
         </a>
-        <a class="navigation-item active" href="/webui#libraries" aria-current="page">
+        <a class="navigation-item active" href="/webui/library/{library.id}" aria-current="page">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H10l2 2h5.5A2.5 2.5 0 0 1 20 7.5v9A2.5 2.5 0 0 1 17.5 19h-11A2.5 2.5 0 0 1 4 16.5z"/>
           </svg>
