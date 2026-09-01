@@ -54,6 +54,7 @@ public:
     void rename(const QModelIndex &mi, const QString &name);
     void deleteItem(const QModelIndex &mi);
     const QList<LabelItem *> getLabels();
+    QString databasePath() const { return _databasePath; }
 
     enum Roles {
         TypeListsRole = Qt::UserRole + 1,
