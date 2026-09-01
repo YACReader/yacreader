@@ -130,6 +130,7 @@ public:
 
     // reading lists actions
     QAction *addReadingListAction;
+    QAction *importCblReadingListAction;
     QAction *deleteReadingListAction;
     QAction *addLabelAction;
     QAction *renameListAction;
