@@ -5,8 +5,10 @@
 #include "comic_model.h"
 #include "reading_list_model.h"
 
+#include <QAction>
 #include <QFileDialog>
 #include <QInputDialog>
+#include <QKeySequence>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QWidget>
@@ -22,6 +24,15 @@ ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dial
     connect(listsModel, &ReadingListModel::addComicsToFavorites, comicsModel, QOverload<const QList<qulonglong> &>::of(&ComicModel::addComicsToFavorites));
     connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToLabel));
     connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
+
+    // Phase 1: expose the importer immediately without touching the database.
+    // The permanent toolbar action will replace this temporary shortcut once the
+    // import preview and matching flow are settled.
+    auto *importCblAction = new QAction(tr("Import CBL Reading List..."), dialogParent);
+    importCblAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+Shift+I")));
+    importCblAction->setShortcutContext(Qt::ApplicationShortcut);
+    dialogParent->addAction(importCblAction);
+    connect(importCblAction, &QAction::triggered, this, &ReadingListManagementCoordinator::importCblReadingList);
 }
 
 void ReadingListManagementCoordinator::addReadingList()
