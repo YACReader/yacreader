@@ -24,6 +24,7 @@ public:
 
 public slots:
     void addReadingList();
+    void importCblReadingList();
     void deleteCurrentList();
     void addLabel();
     void renameCurrentList();
