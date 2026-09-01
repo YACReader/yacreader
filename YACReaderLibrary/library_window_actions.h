@@ -8,14 +8,22 @@
 
 class LibraryWindow;
 class YACReaderHistoryController;
+class YACReaderNavigationController;
 class EditShortcutsDialog;
 class HelpAboutDialog;
-class ExportLibraryDialog;
 class YACReaderContentViewsManager;
 class YACReaderFoldersView;
 class YACReaderOptionsDialog;
 class ServerConfigDialog;
 class RecentVisibilityCoordinator;
+class ComicManagementCoordinator;
+class ReadingListManagementCoordinator;
+class FolderManagementCoordinator;
+class OrganizeFilesCoordinator;
+class LibraryManagementCoordinator;
+class LibraryDatabaseMaintenanceCoordinator;
+class LibraryRepairCoordinator;
+class RenameLibraryDialog;
 struct Theme;
 
 class LibraryWindowActions
@@ -56,6 +64,7 @@ public:
 
     // tree actions
     QAction *addFolderAction;
+    QAction *renameFolderAction;
     QAction *deleteFolderAction;
     //--
     QAction *setRootIndexAction;
@@ -63,6 +72,8 @@ public:
     QAction *colapseAllNodesAction;
 
     QAction *openContainingFolderAction;
+    QAction *renameFilesAction;
+    QAction *organizeFilesAction;
     QAction *saveCoversToAction;
     //--
     QAction *setFolderAsNotCompletedAction;
@@ -81,6 +92,8 @@ public:
     QAction *deleteCustomFolderCoverAction;
 
     QAction *openContainingFolderComicAction;
+    QAction *renameComicsFilesAction;
+    QAction *organizeComicsFilesAction;
     QAction *setAsReadAction;
     QAction *setAsNonReadAction;
 
@@ -127,17 +140,26 @@ public:
     LibraryWindowActions();
     void createActions(LibraryWindow *window, QSettings *settings);
     void createConnections(YACReaderHistoryController *historyController,
+                           YACReaderNavigationController *navigationController,
                            LibraryWindow *window,
                            HelpAboutDialog *had,
-                           ExportLibraryDialog *exportLibraryDialog,
                            YACReaderContentViewsManager *contentViewsManager,
                            EditShortcutsDialog *editShortcutsDialog,
                            YACReaderFoldersView *foldersView,
                            YACReaderOptionsDialog *optionsDialog,
                            ServerConfigDialog *serverConfigDialog,
-                           RecentVisibilityCoordinator *recentVisibilityCoordinator);
+                           RecentVisibilityCoordinator *recentVisibilityCoordinator,
+                           ComicManagementCoordinator *comicManagementCoordinator,
+                           ReadingListManagementCoordinator *readingListManagementCoordinator,
+                           FolderManagementCoordinator *folderManagementCoordinator,
+                           OrganizeFilesCoordinator *organizeFilesCoordinator,
+                           LibraryManagementCoordinator *libraryManagementCoordinator,
+                           LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator,
+                           LibraryRepairCoordinator *libraryRepairCoordinator,
+                           RenameLibraryDialog *renameLibraryDialog);
 
-    void disableComicsActions(bool disabled);
+    void setComicActionsDisabled(bool disabled);
+    void setComicSelectionActionsEnabled(bool enabled);
     void disableLibrariesActions(bool disabled);
     void disableNoUpdatedLibrariesActions(bool disabled);
     void disableFoldersActions(bool disabled);

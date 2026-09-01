@@ -27,7 +27,7 @@ void FavoritesControllerV2::serviceContent(const int library, HttpResponse &resp
 {
     auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(library);
 
-    QList<ComicDB> comics = DBHelper::getFavorites(library);
+    const QList<ComicDB> comics = DBHelper::getFavorites(library);
 
     QJsonArray items;
 

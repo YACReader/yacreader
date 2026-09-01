@@ -402,10 +402,215 @@
     var breadcrumbs = document.querySelector("[data-browser-breadcrumbs]");
     var pageTitle = document.querySelector("[data-browser-title]");
     var browserBack = document.querySelector("[data-browser-back]");
+    var searchForm = document.querySelector("[data-browser-search]");
+    var searchInput = document.querySelector("[data-browser-search-input]");
+    var searchClear = document.querySelector("[data-browser-search-clear]");
     var navigationVersion = 0;
     var folderMetadataCache = {};
     var browserBackAction = null;
     var readerCleanup = null;
+    var progressSyncPromise = Promise.resolve();
+    var historyNavigationPending = false;
+    var historyTraversalPending = false;
+    var browserItemCollator = new Intl.Collator(undefined, {
+      numeric: true,
+      sensitivity: "base"
+    });
+
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+
+    function shouldHandleInAppLink(event) {
+      return event.button === 0
+        && !event.metaKey
+        && !event.ctrlKey
+        && !event.shiftKey
+        && !event.altKey;
+    }
+
+    function routesMatch(left, right) {
+      if (!left || !right || left.view !== right.view) {
+        return false;
+      }
+      if (left.view === "search") {
+        return left.query === right.query;
+      }
+      return String(left.itemId || "") === String(right.itemId || "");
+    }
+
+    function browserViewportTop() {
+      var topbar = document.querySelector(".browser-topbar");
+      return topbar ? topbar.getBoundingClientRect().bottom : 0;
+    }
+
+    function currentScrollAnchor(preferredCard) {
+      var viewportTop = browserViewportTop();
+      if (preferredCard
+          && preferredCard.isConnected
+          && preferredCard.dataset.browserHistoryKey) {
+        return {
+          key: preferredCard.dataset.browserHistoryKey,
+          offset: preferredCard.getBoundingClientRect().top - viewportTop
+        };
+      }
+
+      var cards = browserRoot.querySelectorAll("[data-browser-history-key]");
+
+      for (var i = 0; i < cards.length; i++) {
+        var bounds = cards[i].getBoundingClientRect();
+        if (bounds.bottom > viewportTop && bounds.top < window.innerHeight) {
+          return {
+            key: cards[i].dataset.browserHistoryKey,
+            offset: bounds.top - viewportTop
+          };
+        }
+      }
+
+      return null;
+    }
+
+    function scrollPositionForState(state, fallbackScrollY) {
+      if (!state || !state.scrollAnchorKey || !Number.isFinite(state.scrollAnchorOffset)) {
+        return fallbackScrollY;
+      }
+
+      var cards = browserRoot.querySelectorAll("[data-browser-history-key]");
+      var anchor = null;
+      for (var i = 0; i < cards.length; i++) {
+        if (cards[i].dataset.browserHistoryKey === state.scrollAnchorKey) {
+          anchor = cards[i];
+          break;
+        }
+      }
+      if (!anchor) {
+        return fallbackScrollY;
+      }
+
+      var bounds = anchor.getBoundingClientRect();
+      var viewportTop = browserViewportTop();
+      var viewportBottomPadding = 16;
+      var availableHeight = Math.max(0, window.innerHeight - viewportTop - viewportBottomPadding);
+      var maximumVisibleOffset = Math.max(0, availableHeight - bounds.height);
+      var restoredOffset = Math.min(
+        Math.max(0, state.scrollAnchorOffset),
+        maximumVisibleOffset
+      );
+      return window.scrollY + bounds.top - viewportTop - restoredOffset;
+    }
+
+    function saveCurrentScrollPosition(preferredCard) {
+      if (historyNavigationPending) {
+        return;
+      }
+
+      var state = history.state || routeFromLocation();
+      var nextState = Object.assign({}, state, {
+        scrollY: window.scrollY
+      });
+      var anchor = currentScrollAnchor(preferredCard);
+      if (anchor) {
+        nextState.scrollAnchorKey = anchor.key;
+        nextState.scrollAnchorOffset = anchor.offset;
+      } else {
+        delete nextState.scrollAnchorKey;
+        delete nextState.scrollAnchorOffset;
+      }
+      history.replaceState(nextState, "", window.location.href);
+    }
+
+    function startHistoryNavigation(pushHistory, returnToCard) {
+      if (pushHistory) {
+        saveCurrentScrollPosition(returnToCard);
+      }
+      historyNavigationPending = true;
+    }
+
+    function finishHistoryNavigation(state, url, pushHistory, version) {
+      var existingState = history.state;
+      var restoringExistingState = !pushHistory && routesMatch(existingState, state);
+      var scrollY = restoringExistingState && Number.isFinite(existingState.scrollY)
+        ? existingState.scrollY
+        : 0;
+      var restoredScrollY = restoringExistingState
+        ? scrollPositionForState(existingState, scrollY)
+        : 0;
+      var nextState = restoringExistingState
+        ? Object.assign({}, existingState, state, { scrollY: restoredScrollY })
+        : Object.assign({}, state, { scrollY: scrollY });
+
+      if (pushHistory) {
+        history.pushState(nextState, "", url);
+      } else {
+        history.replaceState(nextState, "", url);
+      }
+
+      // The destination DOM has already been built. Applying the saved offset in
+      // this same task prevents the browser from painting an intermediate frame
+      // with the document clamped to the top.
+      if (version === navigationVersion) {
+        window.scrollTo(0, restoredScrollY);
+      }
+      historyNavigationPending = false;
+      historyTraversalPending = false;
+    }
+
+    function naturalBrowserCompare(left, right) {
+      return browserItemCollator.compare(String(left || ""), String(right || ""));
+    }
+
+    function compareBrowserItems(left, right) {
+      if (left.type !== right.type) {
+        if (left.type === "folder") {
+          return -1;
+        }
+        if (right.type === "folder") {
+          return 1;
+        }
+        if (left.type === "comic") {
+          return -1;
+        }
+        if (right.type === "comic") {
+          return 1;
+        }
+        return 0;
+      }
+
+      if (left.type === "folder") {
+        return naturalBrowserCompare(left.folder_name, right.folder_name);
+      }
+
+      if (left.type === "comic") {
+        var leftHasNumber = left.universal_number !== undefined && left.universal_number !== null;
+        var rightHasNumber = right.universal_number !== undefined && right.universal_number !== null;
+
+        if (leftHasNumber && rightHasNumber) {
+          // universal_number is a string: natural comparison supports decimals,
+          // suffixes and other non-integer issue identifiers used by the apps.
+          return naturalBrowserCompare(left.universal_number, right.universal_number);
+        }
+        if (leftHasNumber) {
+          return -1;
+        }
+        if (rightHasNumber) {
+          return 1;
+        }
+
+        return naturalBrowserCompare(left.file_name, right.file_name);
+      }
+
+      return 0;
+    }
+
+    function sortBrowserItems(items) {
+      return items.map(function (item, index) {
+        return { item: item, index: index };
+      }).sort(function (left, right) {
+        return compareBrowserItems(left.item, right.item) || left.index - right.index;
+      }).map(function (entry) {
+        return entry.item;
+      });
+    }
 
     if (browserBack) {
       browserBack.addEventListener("click", function () {
@@ -428,7 +633,15 @@
 
       browserBack.hidden = false;
       browserBackAction = function () {
-        showFolder(String(parentFolderId), true);
+        var state = history.state;
+        if (state
+            && state.view === "folder"
+            && String(state.enteredFromFolderId || "") === String(parentFolderId)) {
+          saveCurrentScrollPosition();
+          history.back();
+        } else {
+          showFolder(String(parentFolderId), true);
+        }
       };
     }
 
@@ -464,6 +677,22 @@
       });
     }
 
+    function postJson(url, payload) {
+      var headers = apiHeaders("application/json");
+      headers["Content-Type"] = "application/json";
+
+      return fetch(url, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify(payload)
+      }).then(function (response) {
+        if (!response.ok) {
+          throw new Error("Request failed with status " + response.status);
+        }
+        return response.json();
+      });
+    }
+
     function libraryUrl() {
       return "/webui/library/" + encodeURIComponent(libraryId);
     }
@@ -486,6 +715,10 @@
       return "/v2/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId) + "/content";
     }
 
+    function continueReadingApi() {
+      return "/v2/library/" + encodeURIComponent(libraryId) + "/reading";
+    }
+
     function folderMetadataApi(folderId) {
       return "/v2/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId) + "/metadata";
     }
@@ -504,6 +737,10 @@
 
     function comicProgressApi(comicId) {
       return "/v2/library/" + encodeURIComponent(libraryId) + "/comic/" + encodeURIComponent(comicId) + "/update";
+    }
+
+    function searchApi() {
+      return "/v2/library/" + encodeURIComponent(libraryId) + "/search";
     }
 
     function apiHeaders(accept) {
@@ -590,6 +827,9 @@
           link.href = part.href;
           if (part.action) {
             link.addEventListener("click", function (event) {
+              if (!shouldHandleInAppLink(event)) {
+                return;
+              }
               event.preventDefault();
               part.action();
             });
@@ -615,7 +855,17 @@
       browserRoot.appendChild(loading);
     }
 
+    function showNavigationLoading() {
+      if (historyTraversalPending) {
+        browserRoot.setAttribute("aria-busy", "true");
+        return;
+      }
+      showLoading();
+    }
+
     function showError(retry) {
+      historyNavigationPending = false;
+      historyTraversalPending = false;
       browserRoot.removeAttribute("aria-busy");
       browserRoot.replaceChildren();
 
@@ -663,12 +913,16 @@
       return image;
     }
 
-    function folderCard(folder) {
+    function folderCard(folder, containingFolderId) {
       var card = element("a", "browser-card folder-card");
       card.href = folderUrl(String(folder.id));
+      card.dataset.browserHistoryKey = "folder:" + String(folder.id);
       card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
         event.preventDefault();
-        showFolder(String(folder.id), true);
+        showFolder(String(folder.id), true, containingFolderId, card);
       });
 
       var cover = element("div", "browser-cover folder-cover");
@@ -692,12 +946,22 @@
       return card;
     }
 
-    function comicCard(comic) {
-      var card = element("a", "browser-card comic-card");
-      card.href = comicUrl(String(comic.id));
+    function comicCard(comic, options) {
+      options = options || {};
+      var comicId = String(comic.id);
+      var card = element("a", "browser-card comic-card" + (options.continueReading ? " continue-reading-card" : ""));
+      card.href = options.continueReading ? readerUrl(comicId) : comicUrl(comicId);
+      card.dataset.browserHistoryKey = (options.continueReading ? "continue-reading:" : "comic:") + comicId;
       card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
         event.preventDefault();
-        showComic(String(comic.id), true);
+        if (options.continueReading) {
+          showReader(comicId, true, comic, card);
+        } else {
+          showComic(comicId, true, card);
+        }
       });
 
       var cover = element("div", "browser-cover comic-cover");
@@ -710,7 +974,7 @@
 
       if (comic.read) {
         cover.appendChild(element("span", "comic-status read", "Read"));
-      } else if (Number(comic.current_page) > 1) {
+      } else if (!options.continueReading && Number(comic.current_page) > 1) {
         cover.appendChild(element("span", "comic-status reading", "Page " + comic.current_page));
       }
 
@@ -726,10 +990,185 @@
 
       var copy = element("div", "browser-card-copy");
       copy.appendChild(element("div", "browser-card-title", readableComicTitle(comic)));
-      copy.appendChild(element("div", "browser-card-meta", numPages === 1 ? "1 page" : numPages + " pages"));
+      var meta = options.continueReading && currentPage > 0 && numPages > 0
+        ? "Page " + currentPage + " of " + numPages
+        : numPages === 1 ? "1 page" : numPages + " pages";
+      copy.appendChild(element("div", "browser-card-meta", meta));
 
       card.append(cover, copy);
       return card;
+    }
+
+    function continueReadingShelf(comics) {
+      var shelf = element("section", "continue-reading-shelf");
+      shelf.setAttribute("aria-labelledby", "continue-reading-title");
+
+      var heading = element("div", "continue-reading-heading");
+      var title = element("h3", "", "Continue reading");
+      title.id = "continue-reading-title";
+      heading.appendChild(title);
+
+      var list = element("div", "continue-reading-list");
+      list.setAttribute("role", "list");
+      list.addEventListener("wheel", function (event) {
+        if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) {
+          return;
+        }
+
+        var previousScrollLeft = list.scrollLeft;
+        list.scrollLeft += event.deltaY;
+        if (list.scrollLeft !== previousScrollLeft) {
+          event.preventDefault();
+        }
+      }, { passive: false });
+      comics.forEach(function (comic) {
+        var item = element("div", "continue-reading-item");
+        item.setAttribute("role", "listitem");
+        var card = comicCard(comic, { continueReading: true });
+        item.appendChild(card);
+        list.appendChild(item);
+      });
+
+      shelf.append(heading, list);
+      return shelf;
+    }
+
+    function setSearchValue(query) {
+      if (!searchInput) {
+        return;
+      }
+      searchInput.value = query || "";
+      if (searchClear) {
+        searchClear.hidden = searchInput.value.length === 0;
+      }
+    }
+
+    function setSearchVisible(visible) {
+      if (searchForm) {
+        searchForm.hidden = !visible;
+      }
+    }
+
+    function showSearch(query, pushHistory) {
+      var normalizedQuery = String(query || "").trim();
+      if (!normalizedQuery) {
+        showFolder("1", pushHistory);
+        return;
+      }
+
+      startHistoryNavigation(pushHistory);
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      setSearchValue(normalizedQuery);
+      showNavigationLoading();
+
+      postJson(searchApi(), { query: normalizedQuery }).then(function (items) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        items = sortBrowserItems(items);
+        var folders = items.filter(function (item) { return item.type === "folder"; });
+        var comics = items.filter(function (item) { return item.type === "comic"; });
+        var resultCount = folders.length + comics.length;
+
+        setPageHeading("Search");
+        setBrowserBack("1");
+        renderBreadcrumbs([
+          { label: "Libraries", href: "/webui#libraries" },
+          {
+            label: libraryName,
+            href: libraryUrl(),
+            action: function () { showFolder("1", true); }
+          },
+          { label: "Search" }
+        ]);
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+
+        var header = element("section", "browser-library-header search-results-header");
+        header.appendChild(element("div", "section-title", "Search results"));
+        header.appendChild(element("h2", "", 'Results for "' + normalizedQuery + '"'));
+        var summary = resultCount === 1 ? "1 result" : resultCount + " results";
+        var resultParts = [];
+        if (folders.length) {
+          resultParts.push(folders.length === 1 ? "1 folder" : folders.length + " folders");
+        }
+        if (comics.length) {
+          resultParts.push(comics.length === 1 ? "1 comic" : comics.length + " comics");
+        }
+        header.appendChild(element("p", "", resultParts.length ? summary + " - " + resultParts.join(" - ") : summary));
+        browserRoot.appendChild(header);
+
+        if (!resultCount) {
+          var empty = element("div", "browser-state compact");
+          empty.appendChild(svgIcon("browser-state-icon browser-state-search-icon", '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>'));
+          empty.appendChild(element("h2", "", "No matching comics or folders"));
+          empty.appendChild(element("p", "", "Try a different term or use YACReader search fields such as writer:, series:, read:, or added>."));
+          browserRoot.appendChild(empty);
+        } else {
+          var grid = element("div", "browser-grid");
+          items.forEach(function (item) {
+            if (item.type === "folder") {
+              grid.appendChild(folderCard(item));
+            } else if (item.type === "comic") {
+              grid.appendChild(comicCard(item));
+            }
+          });
+          browserRoot.appendChild(grid);
+        }
+
+        var url = libraryUrl() + "?q=" + encodeURIComponent(normalizedQuery);
+        var state = { view: "search", query: normalizedQuery };
+        finishHistoryNavigation(state, url, pushHistory, version);
+      }).catch(function () {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showSearch(normalizedQuery, false);
+        });
+      });
+    }
+
+    if (searchForm && searchInput) {
+      searchForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var query = searchInput.value.trim();
+        if (query) {
+          showSearch(query, true);
+        } else {
+          showFolder("1", true);
+        }
+      });
+
+      searchInput.addEventListener("input", function () {
+        if (searchClear) {
+          searchClear.hidden = searchInput.value.length === 0;
+        }
+      });
+
+      searchInput.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && searchInput.value) {
+          event.preventDefault();
+          setSearchValue("");
+        }
+      });
+    }
+
+    if (searchClear) {
+      searchClear.addEventListener("click", function () {
+        var route = routeFromLocation();
+        setSearchValue("");
+        if (route.view === "search") {
+          showFolder("1", true);
+        }
+        if (searchInput) {
+          searchInput.focus();
+        }
+      });
     }
 
     function getFolderMetadata(folderId) {
@@ -806,21 +1245,30 @@
       return parts;
     }
 
-    function showFolder(folderId, pushHistory) {
+    function showFolder(folderId, pushHistory, enteredFromFolderId, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
+      setSearchVisible(folderId === "1");
+      if (folderId === "1") {
+        setSearchValue("");
+      }
       var version = ++navigationVersion;
-      showLoading();
+      showNavigationLoading();
 
       Promise.all([
         fetchJson(folderContentApi(folderId)),
-        folderTrail(folderId)
+        folderTrail(folderId),
+        folderId === "1"
+          ? progressSyncPromise.then(function () { return fetchJson(continueReadingApi()); })
+          : Promise.resolve([])
       ]).then(function (results) {
         if (version !== navigationVersion) {
           return;
         }
 
-        var items = results[0];
+        var items = sortBrowserItems(results[0]);
         var trail = results[1];
+        var continueReading = results[2].filter(function (item) { return item.type === "comic"; });
         var folderName = trail.length ? trail[trail.length - 1].name : libraryName;
         var folders = items.filter(function (item) { return item.type === "folder"; });
         var comics = items.filter(function (item) { return item.type === "comic"; });
@@ -850,6 +1298,10 @@
         header.appendChild(element("p", "", summaryParts.join(" · ") || "No items"));
         browserRoot.appendChild(header);
 
+        if (continueReading.length) {
+          browserRoot.appendChild(continueReadingShelf(continueReading));
+        }
+
         if (!items.length) {
           var empty = element("div", "browser-state compact");
           empty.appendChild(element("div", "browser-state-icon folder-state-icon"));
@@ -860,7 +1312,7 @@
           var grid = element("div", "browser-grid");
           items.forEach(function (item) {
             if (item.type === "folder") {
-              grid.appendChild(folderCard(item));
+              grid.appendChild(folderCard(item, folderId));
             } else if (item.type === "comic") {
               grid.appendChild(comicCard(item));
             }
@@ -870,11 +1322,10 @@
 
         var url = folderUrl(folderId);
         var state = { view: "folder", itemId: folderId };
-        if (pushHistory) {
-          history.pushState(state, "", url);
-        } else {
-          history.replaceState(state, "", url);
+        if (pushHistory && enteredFromFolderId) {
+          state.enteredFromFolderId = String(enteredFromFolderId);
         }
+        finishHistoryNavigation(state, url, pushHistory, version);
       }).catch(function () {
         if (version !== navigationVersion) {
           return;
@@ -1116,10 +1567,12 @@
       return result;
     }
 
-    function showReader(comicId, pushHistory, existingComic) {
+    function showReader(comicId, pushHistory, existingComic, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
+      setSearchVisible(false);
       var version = ++navigationVersion;
-      showLoading();
+      showNavigationLoading();
 
       Promise.resolve(existingComic || fetchJson(comicInfoApi(comicId))).then(function (comic) {
         if (version !== navigationVersion) {
@@ -1201,18 +1654,19 @@
 
         function syncProgress() {
           if (!hasDisplayedPage || progressSynced) {
-            return;
+            return progressSyncPromise;
           }
           progressSynced = true;
           var headers = apiHeaders("text/plain");
           headers["Content-Type"] = "text/plain; charset=utf-8";
-          fetch(comicProgressApi(comicId), {
+          progressSyncPromise = fetch(comicProgressApi(comicId), {
             method: "POST",
             headers: headers,
             body: "currentPage:" + (currentPage + 1) + "\n",
             keepalive: true
           }).catch(function () {
           });
+          return progressSyncPromise;
         }
 
         function cancelledPageError() {
@@ -1449,11 +1903,7 @@
           : false;
         var url = readerUrl(comicId);
         var state = { view: "reader", itemId: comicId, fromComicDetail: pushHistory || existingReaderState };
-        if (pushHistory) {
-          history.pushState(state, "", url);
-        } else {
-          history.replaceState(state, "", url);
-        }
+        finishHistoryNavigation(state, url, pushHistory, version);
 
         updateNavigation();
         openComicAndLoad();
@@ -1468,10 +1918,12 @@
       });
     }
 
-    function showComic(comicId, pushHistory) {
+    function showComic(comicId, pushHistory, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
+      setSearchVisible(false);
       var version = ++navigationVersion;
-      showLoading();
+      showNavigationLoading();
 
       fetchJson(comicInfoApi(comicId)).then(function (comic) {
         return Promise.all([
@@ -1698,11 +2150,7 @@
 
         var url = comicUrl(comicId);
         var state = { view: "comic", itemId: comicId };
-        if (pushHistory) {
-          history.pushState(state, "", url);
-        } else {
-          history.replaceState(state, "", url);
-        }
+        finishHistoryNavigation(state, url, pushHistory, version);
       }).catch(function () {
         if (version !== navigationVersion) {
           return;
@@ -1714,6 +2162,10 @@
     }
 
     function routeFromLocation() {
+      var query = new URL(window.location.href).searchParams.get("q");
+      if (query && query.trim()) {
+        return { view: "search", query: query.trim() };
+      }
       var escapedLibraryId = libraryId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId + "(?:/(folder|comic)/([0-9]+)(?:/(read))?)?/?$"));
       if (!match) {
@@ -1726,8 +2178,14 @@
     }
 
     window.addEventListener("popstate", function () {
+      historyNavigationPending = true;
+      historyTraversalPending = Boolean(history.state
+        && (history.state.scrollAnchorKey
+          || (Number.isFinite(history.state.scrollY) && history.state.scrollY > 0)));
       var route = routeFromLocation();
-      if (route.view === "reader") {
+      if (route.view === "search") {
+        showSearch(route.query, false);
+      } else if (route.view === "reader") {
         showReader(route.itemId, false);
       } else if (route.view === "comic") {
         showComic(route.itemId, false);
@@ -1738,7 +2196,10 @@
 
     var initialView = document.body.dataset.browserInitialView;
     var initialItemId = document.body.dataset.browserInitialItemId || "1";
-    if (initialView === "reader") {
+    var initialRoute = routeFromLocation();
+    if (initialRoute.view === "search") {
+      showSearch(initialRoute.query, false);
+    } else if (initialView === "reader") {
       showReader(initialItemId, false);
     } else if (initialView === "comic") {
       showComic(initialItemId, false);

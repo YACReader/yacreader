@@ -24,6 +24,8 @@
 
 #include <QCommandLineParser>
 #include <QImageReader>
+
+#include <utility>
 #ifdef Q_OS_MACOS
 #include "trayhandler.h"
 #endif
@@ -81,7 +83,7 @@ void logSystemAndConfig()
 
     auto libraries = DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "Libraries: ";
-    for (auto library : libraries) {
+    for (const auto &library : std::as_const(libraries)) {
         QLOG_INFO() << "    " << library;
         auto access = DataBaseManagement::getDatabaseAccess(library.getPath());
         QLOG_INFO() << "     > STATUS: " << access;

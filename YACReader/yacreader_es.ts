@@ -188,27 +188,23 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="633"/>
+        <location filename="../common/comic.cpp" line="610"/>
+        <location filename="../common/comic.cpp" line="626"/>
         <source>Format not supported</source>
         <translation>Formato no soportado</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="627"/>
+        <location filename="../common/comic.cpp" line="604"/>
         <source>7z not found</source>
         <translation>7z no encontrado</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="520"/>
+        <location filename="../common/comic.cpp" line="497"/>
         <source>Unknown error opening the file</source>
         <translation>Error desconocido abriendo el archivo</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="647"/>
-        <source>Unsupported EPUB: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../common/comic.cpp" line="513"/>
+        <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>Error CRC en la página (%1): algunas de las páginas no se mostrarán correctamente</translation>
     </message>
@@ -371,7 +367,7 @@
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="329"/>
+        <location filename="options_dialog.cpp" line="327"/>
         <source>Comics directory</source>
         <translation>Directorio de cómics</translation>
     </message>
@@ -774,48 +770,48 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="1704"/>
+        <location filename="viewer.cpp" line="1773"/>
         <source>Page not available!</source>
         <translation>¡Página no disponible!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="95"/>
-        <location filename="viewer.cpp" line="1676"/>
+        <location filename="viewer.cpp" line="122"/>
+        <location filename="viewer.cpp" line="1745"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>Pulsa &apos;O&apos; para abrir un fichero.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="326"/>
+        <location filename="viewer.cpp" line="353"/>
         <source>Error opening comic</source>
         <translation>Error abriendo cómic</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1927"/>
+        <location filename="viewer.cpp" line="2121"/>
         <source>Cover!</source>
         <translation>¡Portada!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="332"/>
+        <location filename="viewer.cpp" line="359"/>
         <source>CRC Error</source>
         <translation>Error CRC</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Comic not found</source>
         <translation>Cómic no encontrado</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Not found</source>
         <translation>No encontrado</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1941"/>
+        <location filename="viewer.cpp" line="2135"/>
         <source>Last page!</source>
         <translation>¡Última página!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1693"/>
+        <location filename="viewer.cpp" line="1762"/>
         <source>Loading...please wait!</source>
         <translation>Cargando...espere, por favor!</translation>
     </message>

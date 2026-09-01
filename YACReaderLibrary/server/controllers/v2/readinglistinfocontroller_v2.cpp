@@ -26,7 +26,7 @@ void ReadingListInfoControllerV2::service(HttpRequest &request, HttpResponse &re
 
 void ReadingListInfoControllerV2::serviceComics(const int &library, const qulonglong &readingListId, HttpResponse &response)
 {
-    QList<ComicDB> comics = DBHelper::getReadingListFullContent(library, readingListId);
+    const QList<ComicDB> comics = DBHelper::getReadingListFullContent(library, readingListId);
 
     for (const ComicDB &comic : comics) {
         response.write(QString("/v2/library/%1/comic/%2:%3:%4:%5:%6\r\n")

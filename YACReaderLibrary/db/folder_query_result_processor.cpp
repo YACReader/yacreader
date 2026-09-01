@@ -21,7 +21,7 @@ void YACReader::FolderQueryResultProcessor::createModelData(const QString &filte
 {
     querySearchQueue.cancelPending();
 
-    querySearchQueue.enqueue([=] {
+    querySearchQueue.enqueue([=, this] {
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(model->getDatabase());

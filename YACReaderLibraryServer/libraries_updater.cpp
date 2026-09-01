@@ -16,7 +16,8 @@ void LibrariesUpdater::updateIfNeeded()
 
     libraries.load();
 
-    for (const QString &name : libraries.getNames()) {
+    const auto libraryNames = libraries.getNames();
+    for (const QString &name : libraryNames) {
         QString libraryPath = libraries.getPath(name);
         QString recoveryError;
         if (!DataBaseManagement::recoverInterruptedRestore(libraryPath, &recoveryError)) {

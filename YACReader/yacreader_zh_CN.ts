@@ -188,27 +188,27 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="633"/>
+        <location filename="../common/comic.cpp" line="610"/>
+        <location filename="../common/comic.cpp" line="626"/>
         <source>Format not supported</source>
         <translation>不支持的文件格式</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="627"/>
+        <location filename="../common/comic.cpp" line="604"/>
         <source>7z not found</source>
         <translation>未找到 7z</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="520"/>
+        <location filename="../common/comic.cpp" line="497"/>
         <source>Unknown error opening the file</source>
         <translation>打开文件时出现未知错误</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="647"/>
         <source>Unsupported EPUB: %1</source>
-        <translation>不支持的 EPUB 格式：%1</translation>
+        <translation type="vanished">不支持的 EPUB 格式：%1</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="513"/>
+        <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>第 %1 页 CRC 校验失败: 部分页面将无法正确显示</translation>
     </message>
@@ -466,7 +466,7 @@ If none is active, Escape does nothing.</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="329"/>
+        <location filename="options_dialog.cpp" line="327"/>
         <source>Comics directory</source>
         <translation>漫画目录</translation>
     </message>
@@ -774,48 +774,48 @@ If none is active, Escape does nothing.</source>
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="1704"/>
+        <location filename="viewer.cpp" line="1773"/>
         <source>Page not available!</source>
         <translation>页面不可用!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="95"/>
-        <location filename="viewer.cpp" line="1676"/>
+        <location filename="viewer.cpp" line="122"/>
+        <location filename="viewer.cpp" line="1745"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>按下 &apos;O&apos; 以打开漫画.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="326"/>
+        <location filename="viewer.cpp" line="353"/>
         <source>Error opening comic</source>
         <translation>打开漫画时发生错误</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1927"/>
+        <location filename="viewer.cpp" line="2121"/>
         <source>Cover!</source>
         <translation>封面!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="332"/>
+        <location filename="viewer.cpp" line="359"/>
         <source>CRC Error</source>
         <translation>CRC 校验失败</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Comic not found</source>
         <translation>未找到漫画</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Not found</source>
         <translation>未找到</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1941"/>
+        <location filename="viewer.cpp" line="2135"/>
         <source>Last page!</source>
         <translation>尾页!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1693"/>
+        <location filename="viewer.cpp" line="1762"/>
         <source>Loading...please wait!</source>
         <translation>载入中... 请稍候!</translation>
     </message>

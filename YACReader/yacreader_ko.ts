@@ -188,29 +188,25 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="627"/>
+        <location filename="../common/comic.cpp" line="604"/>
         <source>7z not found</source>
         <translation>7z를 찾을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="513"/>
+        <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>%1번 페이지에서 CRC 오류 발생: 일부 페이지가 올바르게 표시되지 않을 수 있습니다</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="520"/>
+        <location filename="../common/comic.cpp" line="497"/>
         <source>Unknown error opening the file</source>
         <translation>파일을 여는 중 알 수 없는 오류가 발생했습니다</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="633"/>
+        <location filename="../common/comic.cpp" line="610"/>
+        <location filename="../common/comic.cpp" line="626"/>
         <source>Format not supported</source>
         <translation>지원하지 않는 형식입니다</translation>
-    </message>
-    <message>
-        <location filename="../common/comic.cpp" line="647"/>
-        <source>Unsupported EPUB: %1</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -536,7 +532,7 @@ If none is active, Escape does nothing.</source>
         <translation>재시작이 필요합니다</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="329"/>
+        <location filename="options_dialog.cpp" line="327"/>
         <source>Comics directory</source>
         <translation>만화 폴더</translation>
     </message>
@@ -774,48 +770,48 @@ If none is active, Escape does nothing.</source>
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="95"/>
-        <location filename="viewer.cpp" line="1676"/>
+        <location filename="viewer.cpp" line="122"/>
+        <location filename="viewer.cpp" line="1745"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>&apos;O&apos;를 눌러 만화를 열어보세요.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Not found</source>
         <translation>찾을 수 없음</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="320"/>
+        <location filename="viewer.cpp" line="347"/>
         <source>Comic not found</source>
         <translation>만화를 찾을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="326"/>
+        <location filename="viewer.cpp" line="353"/>
         <source>Error opening comic</source>
         <translation>만화를 여는 중 오류가 발생했습니다</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="332"/>
+        <location filename="viewer.cpp" line="359"/>
         <source>CRC Error</source>
         <translation>CRC 오류</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1693"/>
+        <location filename="viewer.cpp" line="1762"/>
         <source>Loading...please wait!</source>
         <translation>불러오는 중... 잠시 기다려주세요!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1704"/>
+        <location filename="viewer.cpp" line="1773"/>
         <source>Page not available!</source>
         <translation>페이지를 불러올 수 없습니다!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1927"/>
+        <location filename="viewer.cpp" line="2121"/>
         <source>Cover!</source>
         <translation>표지!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1941"/>
+        <location filename="viewer.cpp" line="2135"/>
         <source>Last page!</source>
         <translation>마지막 페이지!</translation>
     </message>
@@ -1002,12 +998,12 @@ If none is active, Escape does nothing.</source>
         <location filename="main_window_viewer.cpp" line="1141"/>
         <location filename="main_window_viewer.cpp" line="1159"/>
         <source>Extract page(s)</source>
-        <translation></translation>
+        <translation>페이지 추출</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="382"/>
         <source>Extract page(s) from the original source</source>
-        <translation></translation>
+        <translation>원본 소스에서 페이지 추출</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="387"/>
@@ -1302,32 +1298,32 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1105"/>
         <source>Overwrite file?</source>
-        <translation></translation>
+        <translation>파일을 덮어쓰시겠습니까?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1105"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation></translation>
+        <translation>파일이 이미 존재합니다. 덮어쓰시겠습니까?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1141"/>
         <source>The current page could not be extracted.</source>
-        <translation></translation>
+        <translation>현재 페이지를 추출할 수 없습니다.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1146"/>
         <source>Overwrite files?</source>
-        <translation></translation>
+        <translation>파일을 덮어쓰시겠습니까?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1146"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation></translation>
+        <translation>일부 파일이 이미 존재합니다. 덮어쓰시겠습니까?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1159"/>
         <source>Some pages could not be extracted.</source>
-        <translation></translation>
+        <translation>일부 페이지를 추출할 수 없습니다.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1343"/>
@@ -1495,12 +1491,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation></translation>
+        <translation>릴리스 노트를 사용할 수 없습니다.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation></translation>
+        <translation>이전 버전</translation>
     </message>
 </context>
 <context>

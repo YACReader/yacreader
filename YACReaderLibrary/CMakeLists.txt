@@ -86,6 +86,23 @@ qt_add_executable(YACReaderLibrary WIN32
     library_window.cpp
     library_window_actions.h
     library_window_actions.cpp
+    library_window_menus.h
+    library_window_menus.cpp
+    library_search_coordinator.h
+    library_search_coordinator.cpp
+    comic_management_coordinator.h
+    comic_management_coordinator.cpp
+    reading_list_management_coordinator.h
+    reading_list_management_coordinator.cpp
+    folder_management_coordinator.h
+    folder_management_coordinator.cpp
+    library_database_maintenance_coordinator.h
+    library_database_maintenance_coordinator.cpp
+    library_repair_coordinator.h
+    library_repair_coordinator.cpp
+    library_management_coordinator.h
+    library_management_coordinator.cpp
+    feature_flags.h
     create_library_dialog.h
     create_library_dialog.cpp
     add_library_dialog.h
@@ -122,16 +139,17 @@ qt_add_executable(YACReaderLibrary WIN32
     yacreader_main_toolbar.cpp
     comics_view.h
     comics_view.cpp
+    content_view_state.h
     comics_view_transition.h
     comics_view_transition.cpp
     classic_comics_view.h
     classic_comics_view.cpp
     grid_comics_view.h
     grid_comics_view.cpp
+    grid_content_model.h
+    grid_content_model.cpp
     no_search_results_widget.h
     no_search_results_widget.cpp
-    folder_content_view.h
-    folder_content_view.cpp
     recent_visibility_coordinator.h
     recent_visibility_coordinator.cpp
     library_comic_opener.h
@@ -228,6 +246,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/getInfo.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/hideComicFlow.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/openInYACReader.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/organize.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/selectAll.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/setReadButton.svg
     ${PROJECT_SOURCE_DIR}/images/comics_view_toolbar/setUnread.svg
@@ -348,7 +367,15 @@ set_source_files_properties(
 )
 set(yacreaderlibrary_qml_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
-    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderContentView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/SelectedComicsInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ContinueReadingGridHeader.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FlowView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoTick.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoFavorites.qml
@@ -370,7 +397,15 @@ set(yacreaderlibrary_qml_files
 )
 set(yacreaderlibrary_qml_translation_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/GridComicsView.qml
-    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderContentView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ComicGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/SelectedComicsInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListInfoView.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ContinueReadingGridHeader.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FlowView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoTick.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/InfoFavorites.qml
@@ -477,6 +512,7 @@ qt_add_translations(YACReaderLibrary
         custom_widgets_library
         shortcuts_library
         comic_vine
+        organize_files
     # Keep extraction scoped to targets used by this app and add the QML files
     # directly so qsTr() strings in QML are collected too.
     TS_FILES
@@ -520,6 +556,7 @@ target_link_libraries(YACReaderLibrary PRIVATE
     shortcuts_library
     server
     comic_vine
+    organize_files
     cbx_backend
     concurrent_queue
     worker

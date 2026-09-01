@@ -36,7 +36,7 @@ class YACReaderSideBar : public QWidget, protected Themable
     Q_OBJECT
 public:
     explicit YACReaderSideBar(QWidget *parent = 0);
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
 
     YACReaderFoldersView *foldersView;
     YACReaderReadingListsView *readingListsView;
@@ -50,8 +50,8 @@ signals:
 public slots:
 
 protected:
-    void paintEvent(QPaintEvent *);
-    void closeEvent(QCloseEvent *event);
+    void paintEvent(QPaintEvent *) override;
+    void closeEvent(QCloseEvent *event) override;
     void applyTheme(const Theme &theme) override;
 
     QSettings *settings;

@@ -25,12 +25,18 @@ void YACReaderComicFlow3D::setImagePaths(QStringList paths)
     }
 
     this->paths = paths;
+    loadingWindowCenter = -1;
 }
 
 void YACReaderComicFlow3D::updateImageData()
 {
     if (worker->busy())
         return;
+
+    if (loadingWindowCenter != currentSelected) {
+        failedImageLoads.clear();
+        loadingWindowCenter = currentSelected;
+    }
 
     int idx = worker->index();
     if (idx >= 0 && !worker->result().isNull()) {
@@ -55,6 +61,9 @@ void YACReaderComicFlow3D::updateImageData()
             }
         }
     }
+
+    if (idx >= 0 && idx < loaded.size() && !loaded[idx])
+        failedImageLoads.insert(idx);
 
     int count = 8;
     switch (performance) {
@@ -83,11 +92,9 @@ void YACReaderComicFlow3D::updateImageData()
     for (int c = 0; c < 2 * count + 1; c++) {
         int i = indexes[c];
         if ((i >= 0) && (i < numObjects))
-            if (!loaded[i]) {
-                if (paths.size() > 0) {
-                    QString fname = paths.at(i);
-                    worker->generate(i, fname);
-                }
+            if (!loaded[i] && !failedImageLoads.contains(i)) {
+                if (!paths.isEmpty())
+                    worker->generate(i, paths.at(i));
                 delete[] indexes;
                 return;
             }
@@ -104,6 +111,7 @@ void YACReaderComicFlow3D::remove(int item)
     if (item >= 0 && item < paths.size()) {
         paths.removeAt(item);
     }
+    loadingWindowCenter = -1;
     worker->unlock();
 }
 
@@ -113,6 +121,7 @@ void YACReaderComicFlow3D::add(const QString &path, int index)
     worker->reset();
     paths.insert(index, path);
     YACReaderFlow3D::add(index);
+    loadingWindowCenter = -1;
     worker->unlock();
 }
 
@@ -144,7 +153,7 @@ void YACReaderComicFlow3D::resortCovers(QList<int> newOrder)
     loaded = loadedNew;
     marks = marksNew;
     images = imagesNew;
-
+    loadingWindowCenter = -1;
     worker->unlock();
 }
 
@@ -189,7 +198,8 @@ ImageLoader3D::~ImageLoader3D()
 
 bool ImageLoader3D::busy() const
 {
-    return isRunning() ? working : false;
+    QMutexLocker locker(&mutex);
+    return working;
 }
 
 void ImageLoader3D::generate(int index, const QString &fileName)
@@ -198,14 +208,16 @@ void ImageLoader3D::generate(int index, const QString &fileName)
     this->idx = index;
     this->fileName = fileName;
     this->img = QImage();
-    mutex.unlock();
-
-    if (!isRunning())
-        start();
-    else {
+    this->working = true;
+    const bool shouldStart = !isRunning();
+    if (!shouldStart) {
         restart = true;
         condition.wakeOne();
     }
+    mutex.unlock();
+
+    if (shouldStart)
+        start();
 }
 
 void ImageLoader3D::lock()
@@ -233,6 +245,10 @@ void ImageLoader3D::run()
         this->img = image;
         mutex.unlock();
 
+        QMetaObject::invokeMethod(flow, [flow = flow] {
+            flow->startAnimationTimer();
+        });
+
         mutex.lock();
         if (!this->restart)
             condition.wait(&mutex);
@@ -243,5 +259,12 @@ void ImageLoader3D::run()
 
 QImage ImageLoader3D::result()
 {
+    QMutexLocker locker(&mutex);
     return img;
+}
+
+int ImageLoader3D::index() const
+{
+    QMutexLocker locker(&mutex);
+    return idx;
 }

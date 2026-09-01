@@ -271,9 +271,7 @@ QString YACReader::WhatsNewDialog::renderHtmlDocument(const QString &content) co
 
 QString YACReader::WhatsNewDialog::renderIntro() const
 {
-    return "YACReader 10.2 adds a new basic web reader, redesigned settings dialogs, and experimental EPUB support. "
-           "It also brings more natural zoom controls, a better magnifying glass with an option to make it round, and more. "
-           "Don't forget to check the new built-in search guide so you can make the most of the search engine.";
+    return "YACReader 10.3 brings a much better library navigation experience!";
 }
 
 QString YACReader::WhatsNewDialog::renderFooter() const

@@ -106,8 +106,9 @@ int main(int argc, char **argv)
     }
 
     if (parser.isSet("system-info")) {
-        auto globalInfo = YACReader::getGlobalInfo();
-        for (const auto &line : globalInfo.split("\n")) {
+        const auto globalInfo = YACReader::getGlobalInfo();
+        const auto globalInfoLines = globalInfo.split("\n");
+        for (const auto &line : globalInfoLines) {
             qout << line << Qt::endl;
         }
 
@@ -365,7 +366,8 @@ int listBackups(QCoreApplication &app, QCommandLineParser &parser, QTextStream &
         return 1;
     }
 
-    for (const auto &backup : DataBaseManagement::libraryBackups(args.at(1)))
+    const auto backups = DataBaseManagement::libraryBackups(args.at(1));
+    for (const auto &backup : backups)
         qout << backup.fileName() << '\t' << backup.absoluteFilePath() << Qt::endl;
     return 0;
 }
@@ -518,7 +520,8 @@ int listLibraries(QCoreApplication &app, QCommandLineParser &parser, QTextStream
     parser.process(app);
 
     YACReaderLibraries libraries = DBHelper::getLibraries();
-    for (QString libraryName : libraries.getNames())
+    const auto libraryNames = libraries.getNames();
+    for (const QString &libraryName : libraryNames)
         qout << libraryName << " : " << libraries.getPath(libraryName) << Qt::endl;
 
     return 0;
@@ -613,14 +616,15 @@ void messageHandler(QtMsgType type, const QMessageLogContext &context, const QSt
 void logSystemAndConfig()
 {
     QLOG_INFO() << "---------- System & configuration ----------";
-    auto globalInfo = YACReader::getGlobalInfo();
-    for (const auto &line : globalInfo.split("\n")) {
+    const auto globalInfo = YACReader::getGlobalInfo();
+    const auto globalInfoLines = globalInfo.split("\n");
+    for (const auto &line : globalInfoLines) {
         QLOG_INFO() << line;
     }
 
-    auto libraries = DBHelper::getLibraries().getLibraries();
+    const auto libraries = DBHelper::getLibraries().getLibraries();
     QLOG_INFO() << "Libraries: ";
-    for (auto library : libraries) {
+    for (const auto &library : libraries) {
         QLOG_INFO() << "    " << library;
         auto access = DataBaseManagement::getDatabaseAccess(library.getPath());
         QLOG_INFO() << "     > STATUS: " << access;

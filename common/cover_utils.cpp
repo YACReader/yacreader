@@ -1,5 +1,8 @@
 #include "cover_utils.h"
 
+#include <QFileInfo>
+#include <QImageReader>
+
 bool YACReader::saveCover(const QString &path, const QImage &cover)
 {
     QImage scaled;
@@ -15,4 +18,17 @@ bool YACReader::saveCover(const QString &path, const QImage &cover)
         }
     }
     return scaled.save(path, 0, 75);
+}
+
+QString YACReader::droppedImagePath(const QList<QUrl> &urls)
+{
+    if (urls.size() != 1 || !urls.constFirst().isLocalFile())
+        return { };
+
+    const auto path = urls.constFirst().toLocalFile();
+    if (!QFileInfo(path).isFile())
+        return { };
+
+    QImageReader reader(path);
+    return reader.canRead() ? path : QString();
 }

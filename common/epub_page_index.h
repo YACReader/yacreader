@@ -34,7 +34,7 @@ struct ScanInfo {
 using FileReader = std::function<QByteArray(int)>;
 using ImageFilter = std::function<bool(const QString &)>;
 
-PageIndex readPageIndex(const QStringList &fileNames, const FileReader &readFile);
+PageIndex readPageIndex(const QStringList &fileNames, const FileReader &readFile, const ImageFilter &acceptImage = { });
 ScanInfo readScanInfo(const QStringList &fileNames, const FileReader &readFile, int coverPage, const ImageFilter &acceptImage);
 
 }

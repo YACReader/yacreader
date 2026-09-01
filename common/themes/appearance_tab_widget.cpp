@@ -232,7 +232,8 @@ void AppearanceTabWidget::populateCombo(QComboBox *combo,
     if (!repository)
         return;
 
-    for (const auto &entry : repository->availableThemes()) {
+    const auto availableThemes = repository->availableThemes();
+    for (const auto &entry : availableThemes) {
         if (variantFilter && entry.variant != *variantFilter)
             continue;
         combo->addItem(entry.displayName, entry.id);

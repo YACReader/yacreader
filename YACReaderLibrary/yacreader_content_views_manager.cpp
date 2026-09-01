@@ -1,29 +1,28 @@
 #include "yacreader_content_views_manager.h"
 
 #include "classic_comics_view.h"
+#include "comic_management_coordinator.h"
 #include "comics_view_transition.h"
 #include "empty_folder_widget.h"
 #include "empty_label_widget.h"
 #include "empty_reading_list_widget.h"
 #include "empty_special_list.h"
-#include "folder_content_view.h"
 #include "grid_comics_view.h"
 #include "info_comics_view.h"
 #include "library_window.h"
+#include "library_window_menus.h"
 #include "no_search_results_widget.h"
 #include "options_dialog.h"
-#include "reading_list_model.h"
 #include "yacreader_options_dialog.h"
-#include "yacreader_reading_lists_view.h"
 #include "yacreader_sidebar.h"
 
-//--
-#include "yacreader_search_line_edit.h"
+#include <utility>
 
 YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, LibraryWindow *parent)
-    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr)
+    : QObject(parent), libraryWindow(parent), classicComicsView(nullptr), gridComicsView(nullptr), infoComicsView(nullptr), toolbarOwner(nullptr), comicManagementCoordinator(nullptr), libraryWindowMenus(nullptr)
 {
     comicsViewStack = new QStackedWidget();
+    gridComicsView = new GridComicsView();
 
     switch ((YACReader::ComicsViewStatus)settings->value(COMICS_VIEW_STATUS).toInt()) {
     case Flow:
@@ -38,33 +37,72 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
 
     case Grid:
     default:
-        comicsView = gridComicsView = new GridComicsView();
-        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
-        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::finished, gridComicsView, &GridComicsView::updateSettings); // TODO: we can link constante changes to updateSettings because of bad performance
+        comicsView = gridComicsView;
         comicsViewStatus = Grid;
         break;
     }
 
-    doComicsViewConnections();
+    connectComicsViewConnections(comicsView);
+    toolbarOwner = comicsView;
+    connect(gridComicsView, &GridComicsView::comicSelectionStateChanged, this, [this](bool hasSelection) {
+        if (comicsViewStack->currentWidget() == gridComicsView)
+            libraryWindow->actions.setComicSelectionActionsEnabled(hasSelection);
+    });
+    connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateSettings);
 
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
-    comicsViewStack->addWidget(folderContentView = new FolderContentView(parent->actions.toogleShowRecentIndicatorAction));
     comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
     comicsViewStack->addWidget(emptySpecialList = new EmptySpecialListWidget());
     comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());
     comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
     comicsViewStack->addWidget(noSearchResultsWidget = new NoSearchResultsWidget());
 
-    comicsViewStack->addWidget(comicsView);
+    ensureInStack(comicsView);
+    ensureInStack(gridComicsView);
 
     comicsViewStack->setCurrentWidget(comicsView);
 
-    // connections
-    connect(folderContentView, &FolderContentView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
-    connect(folderContentView, &FolderContentView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
-    connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, folderContentView, &FolderContentView::updateSettings);
-
     initTheme(this);
+}
+
+void YACReaderContentViewsManager::setComicManagementCoordinator(ComicManagementCoordinator *coordinator)
+{
+    if (comicManagementCoordinator == coordinator)
+        return;
+
+    if (comicManagementCoordinator != nullptr) {
+        disconnect(comicsView, &ComicsView::selected, comicManagementCoordinator, &ComicManagementCoordinator::openCurrentComic);
+        disconnect(comicsView, &ComicsView::openComic, comicManagementCoordinator, &ComicManagementCoordinator::openComic);
+        disconnect(comicsView, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder);
+        disconnect(comicsView, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder);
+        disconnect(comicsView, &ComicsView::customComicCoverRequested, comicManagementCoordinator, &ComicManagementCoordinator::setCustomCover);
+    }
+
+    comicManagementCoordinator = coordinator;
+    if (comicManagementCoordinator != nullptr) {
+        connect(comicsView, &ComicsView::selected, comicManagementCoordinator, &ComicManagementCoordinator::openCurrentComic, Qt::UniqueConnection);
+        connect(comicsView, &ComicsView::openComic, comicManagementCoordinator, &ComicManagementCoordinator::openComic, Qt::UniqueConnection);
+        connect(comicsView, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+        connect(comicsView, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+        connect(comicsView, &ComicsView::customComicCoverRequested, comicManagementCoordinator, &ComicManagementCoordinator::setCustomCover, Qt::UniqueConnection);
+    }
+}
+
+void YACReaderContentViewsManager::setLibraryWindowMenus(LibraryWindowMenus *menus)
+{
+    if (libraryWindowMenus == menus)
+        return;
+
+    if (libraryWindowMenus != nullptr) {
+        disconnect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsViewContextMenu);
+        disconnect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsItemContextMenu);
+    }
+
+    libraryWindowMenus = menus;
+    if (libraryWindowMenus != nullptr) {
+        connect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsViewContextMenu, Qt::UniqueConnection);
+        connect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsItemContextMenu, Qt::UniqueConnection);
+    }
 }
 
 QWidget *YACReaderContentViewsManager::containerWidget()
@@ -72,44 +110,46 @@ QWidget *YACReaderContentViewsManager::containerWidget()
     return comicsViewStack;
 }
 
-void YACReaderContentViewsManager::updateCurrentContentView()
+GridComicsView *YACReaderContentViewsManager::gridView() const
 {
-    if (!libraryWindow->hasLoadedLibraryModels())
-        return;
+    return gridComicsView;
+}
 
-    if (libraryWindow->status == LibraryWindow::Searching) {
-        auto currentWidget = comicsViewStack->currentWidget();
+bool YACReaderContentViewsManager::isComicsViewVisible() const
+{
+    return comicsViewStack->currentWidget() == comicsView;
+}
 
-        libraryWindow->comicsModel->reload();
+void YACReaderContentViewsManager::prepareToClose()
+{
+    const auto saveIfInactive = [this](ComicsView *view) {
+        if (view && view != comicsView)
+            view->saveViewConfig();
+    };
 
-        if (currentWidget == comicsView) {
-            comicsView->reloadContent();
-        }
-        return;
-    }
+    saveIfInactive(classicComicsView);
+    saveIfInactive(gridComicsView);
+    saveIfInactive(infoComicsView);
 
-    if (!libraryWindow->listsView->selectionModel()->selectedRows().isEmpty()) {
-        auto currentListIndex = libraryWindow->listsModelProxy->mapToSource(libraryWindow->listsView->currentIndex());
-        if (currentListIndex.isValid()) {
-            libraryWindow->navigationController->loadListInfo(currentListIndex);
-            return;
-        }
-    }
+    comicsView->close();
+}
 
-    libraryWindow->navigationController->loadFolderInfo(libraryWindow->getCurrentFolderIndex());
+ContentViewState YACReaderContentViewsManager::captureViewState() const
+{
+    const auto *view = qobject_cast<ComicsView *>(comicsViewStack->currentWidget());
+    return view ? view->captureViewState() : ContentViewState { };
+}
+
+void YACReaderContentViewsManager::restoreViewState(const ContentViewState &state)
+{
+    if (auto *view = qobject_cast<ComicsView *>(comicsViewStack->currentWidget()))
+        view->restoreViewState(state);
 }
 
 void YACReaderContentViewsManager::updateCurrentComicView()
 {
     if (comicsViewStack->currentWidget() == comicsView) {
         comicsView->updateCurrentComicView();
-    }
-}
-
-void YACReaderContentViewsManager::updateContinueReadingView()
-{
-    if (comicsViewStack->currentWidget() == folderContentView) {
-        folderContentView->reloadContinueReadingModel();
     }
 }
 
@@ -131,7 +171,9 @@ void YACReaderContentViewsManager::toNormal()
 
 void YACReaderContentViewsManager::showComicsView()
 {
-    comicsViewStack->setCurrentWidget(comicsView);
+    setToolBarOwner(comicsView);
+
+    showStackWidget(comicsView, true);
 
     // TODO: check if this is still needed in the rhi implementation
     // BUG, ugly workaround for glitch when QOpenGLWidget (flow) is used just after any other widget in the views stack
@@ -139,50 +181,67 @@ void YACReaderContentViewsManager::showComicsView()
     libraryWindow->sideBar->update();
 }
 
-void YACReaderContentViewsManager::showFolderContentView()
+void YACReaderContentViewsManager::showFoldersOnlyGrid()
 {
-    comicsViewStack->setCurrentWidget(folderContentView);
+    setToolBarOwner(gridComicsView);
+    connectComicsViewConnections(gridComicsView);
+    ensureInStack(gridComicsView);
+    showStackWidget(gridComicsView, false);
 }
 
-void YACReaderContentViewsManager::showEmptyLabelView()
+void YACReaderContentViewsManager::showEmptyLabel(YACReader::LabelColors color)
 {
-    comicsViewStack->setCurrentWidget(emptyLabelWidget);
+    emptyLabelWidget->setColor(color);
+    showStackWidget(emptyLabelWidget, true);
 }
 
-void YACReaderContentViewsManager::showEmptySpecialList()
+void YACReaderContentViewsManager::showEmptySpecialList(ReadingListModel::TypeSpecialList type)
 {
-    comicsViewStack->setCurrentWidget(emptySpecialList);
+    switch (type) {
+    case ReadingListModel::TypeSpecialList::Favorites:
+        emptySpecialList->showFavorites();
+        break;
+    case ReadingListModel::TypeSpecialList::Reading:
+        emptySpecialList->showReading();
+        break;
+    case ReadingListModel::TypeSpecialList::Recent:
+        emptySpecialList->showRecent();
+        break;
+    }
+
+    showStackWidget(emptySpecialList, true);
 }
 
-void YACReaderContentViewsManager::showEmptyReadingListWidget()
+void YACReaderContentViewsManager::showEmptyReadingList()
 {
-    comicsViewStack->setCurrentWidget(emptyReadingList);
+    showStackWidget(emptyReadingList, true);
 }
 
-void YACReaderContentViewsManager::showEmptyFolderWidget()
+void YACReaderContentViewsManager::showEmptyFolder()
 {
-    comicsViewStack->setCurrentWidget(emptyFolderWidget);
+    showStackWidget(emptyFolderWidget, false);
 }
 
-void YACReaderContentViewsManager::showNoSearchResultsView()
+void YACReaderContentViewsManager::showNoSearchResults()
 {
-    comicsViewStack->setCurrentWidget(noSearchResultsWidget);
+    showStackWidget(noSearchResultsWidget, true);
 }
 
-// TODO recover the current comics selection and restore it in the destination
 void YACReaderContentViewsManager::toggleComicsView()
 {
+    const auto viewState = captureViewState();
     if (comicsViewStack->currentWidget() == comicsView) {
         QTimer::singleShot(0, this, &YACReaderContentViewsManager::showComicsViewTransition);
-        QTimer::singleShot(100, this, &YACReaderContentViewsManager::_toggleComicsView);
+        QTimer::singleShot(100, this, [this, viewState]() { switchToNextComicsView(viewState); });
     } else {
-        _toggleComicsView();
+        switchToNextComicsView(viewState);
     }
 }
 
 void YACReaderContentViewsManager::focusComicsViewViaShortcut()
 {
-    comicsView->focusComicsNavigation(Qt::ShortcutFocusReason);
+    if (auto *currentView = qobject_cast<ComicsView *>(comicsViewStack->currentWidget()))
+        currentView->focusComicsNavigation(Qt::ShortcutFocusReason);
 }
 
 // PROTECTED
@@ -191,44 +250,55 @@ void YACReaderContentViewsManager::disconnectComicsViewConnections(ComicsView *w
 {
     disconnect(widget, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating);
     disconnect(libraryWindow->actions.showHideMarksAction, &QAction::toggled, widget, &ComicsView::setShowMarks);
-    disconnect(widget, &ComicsView::selected, libraryWindow, QOverload<>::of(&LibraryWindow::openComic));
-    disconnect(widget, &ComicsView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
     disconnect(libraryWindow->actions.selectAllComicsAction, &QAction::triggered, widget, &ComicsView::selectAll);
-    disconnect(comicsView, &ComicsView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
-    disconnect(comicsView, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
-    disconnect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
-    disconnect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
+    if (comicManagementCoordinator != nullptr) {
+        disconnect(widget, &ComicsView::selected, comicManagementCoordinator, &ComicManagementCoordinator::openCurrentComic);
+        disconnect(widget, &ComicsView::openComic, comicManagementCoordinator, &ComicManagementCoordinator::openComic);
+        disconnect(widget, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder);
+        disconnect(widget, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder);
+        disconnect(widget, &ComicsView::customComicCoverRequested, comicManagementCoordinator, &ComicManagementCoordinator::setCustomCover);
+    }
+    if (libraryWindowMenus != nullptr) {
+        disconnect(widget, &ComicsView::customContextMenuViewRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsViewContextMenu);
+        disconnect(widget, &ComicsView::customContextMenuItemRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsItemContextMenu);
+    }
 }
 
-void YACReaderContentViewsManager::doComicsViewConnections()
+void YACReaderContentViewsManager::connectComicsViewConnections(ComicsView *view)
 {
-    connect(comicsView, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating);
-    connect(libraryWindow->actions.showHideMarksAction, &QAction::toggled, comicsView, &ComicsView::setShowMarks);
-    connect(comicsView, &ComicsView::selected, libraryWindow, QOverload<>::of(&LibraryWindow::openComic));
-    connect(comicsView, &ComicsView::openComic, libraryWindow, QOverload<const ComicDB &, const ComicModel::Mode>::of(&LibraryWindow::openComic));
+    connect(view, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating, Qt::UniqueConnection);
+    connect(libraryWindow->actions.showHideMarksAction, &QAction::toggled, view, &ComicsView::setShowMarks, Qt::UniqueConnection);
 
-    connect(libraryWindow->actions.selectAllComicsAction, &QAction::triggered, comicsView, &ComicsView::selectAll);
+    connect(libraryWindow->actions.selectAllComicsAction, &QAction::triggered, view, &ComicsView::selectAll, Qt::UniqueConnection);
 
-    connect(comicsView, &ComicsView::customContextMenuViewRequested, libraryWindow, &LibraryWindow::showComicsViewContextMenu);
-    connect(comicsView, &ComicsView::customContextMenuItemRequested, libraryWindow, &LibraryWindow::showComicsItemContextMenu);
+    if (libraryWindowMenus != nullptr) {
+        connect(view, &ComicsView::customContextMenuViewRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsViewContextMenu, Qt::UniqueConnection);
+        connect(view, &ComicsView::customContextMenuItemRequested, libraryWindowMenus, &LibraryWindowMenus::showComicsItemContextMenu, Qt::UniqueConnection);
+    }
     // Drops
-    connect(comicsView, &ComicsView::copyComicsToCurrentFolder, libraryWindow, &LibraryWindow::copyAndImportComicsToCurrentFolder);
-    connect(comicsView, &ComicsView::moveComicsToCurrentFolder, libraryWindow, &LibraryWindow::moveAndImportComicsToCurrentFolder);
+    if (comicManagementCoordinator != nullptr) {
+        connect(view, &ComicsView::selected, comicManagementCoordinator, &ComicManagementCoordinator::openCurrentComic, Qt::UniqueConnection);
+        connect(view, &ComicsView::openComic, comicManagementCoordinator, &ComicManagementCoordinator::openComic, Qt::UniqueConnection);
+        connect(view, &ComicsView::copyComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::copyAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+        connect(view, &ComicsView::moveComicsToCurrentFolder, comicManagementCoordinator, &ComicManagementCoordinator::moveAndImportComicsToCurrentFolder, Qt::UniqueConnection);
+        connect(view, &ComicsView::customComicCoverRequested, comicManagementCoordinator, &ComicManagementCoordinator::setCustomCover, Qt::UniqueConnection);
+    }
 }
 
-void YACReaderContentViewsManager::switchToComicsView(ComicsView *from, ComicsView *to)
+void YACReaderContentViewsManager::switchToComicsView(ComicsView *from, ComicsView *to, const ContentViewState &viewState)
 {
     // setup views
     disconnectComicsViewConnections(from);
-    from->close();
+    from->saveViewConfig();
+    from->hide();
 
     comicsView = to;
-    doComicsViewConnections();
+    connectComicsViewConnections(comicsView);
 
-    comicsView->setToolBar(libraryWindow->editInfoToolBar);
+    setToolBarOwner(comicsView);
 
     comicsViewStack->removeWidget(from);
-    comicsViewStack->addWidget(comicsView);
+    ensureInStack(comicsView);
 
     // delete from; No need to delete the previews view, because all views are going to be kept in memory
 
@@ -238,78 +308,64 @@ void YACReaderContentViewsManager::switchToComicsView(ComicsView *from, ComicsVi
     if (!libraryWindow->searchText().isEmpty()) {
         comicsView->enableFilterMode(true);
     }
+
+    to->restoreViewState(viewState);
+    updateComicActionsForCurrentView();
 }
 
-void YACReaderContentViewsManager::showComicsViewTransition()
+void YACReaderContentViewsManager::ensureInStack(ComicsView *view)
 {
-    comicsViewStack->setCurrentWidget(comicsViewTransition);
+    if (comicsViewStack->indexOf(view) < 0)
+        comicsViewStack->addWidget(view);
 }
 
-void YACReaderContentViewsManager::_toggleComicsView()
+void YACReaderContentViewsManager::showStackWidget(QWidget *widget, bool viewSelectorEnabled)
 {
-    const auto &mainToolbar = theme.mainToolbar;
+    // showFoldersOnlyGrid() lends the comics view connections to gridComicsView while
+    // another view mode owns comicsView. Take them back as soon as the grid stops
+    // being shown, otherwise it keeps reacting to comic actions while hidden.
+    if (widget != gridComicsView && comicsView != gridComicsView)
+        disconnectComicsViewConnections(gridComicsView);
 
-    switch (comicsViewStatus) {
-    case Flow: {
-        QIcon icoViewsButton = mainToolbar.infoIcon;
-        libraryWindow->actions.toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Y_MAC_UI
-        libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
-#endif
-        if (gridComicsView == nullptr)
-            gridComicsView = new GridComicsView();
-
-        switchToComicsView(classicComicsView, gridComicsView);
-        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateBackgroundConfig);
-        connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::finished, gridComicsView, &GridComicsView::updateSettings); // TODO: we can link constante changes to updateSettings because of bad performance
-        comicsViewStatus = Grid;
-
-        break;
-    }
-
-    case Grid: {
-        QIcon icoViewsButton = mainToolbar.flowIcon;
-        libraryWindow->actions.toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Y_MAC_UI
-        libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
-#endif
-        if (infoComicsView == nullptr)
-            infoComicsView = new InfoComicsView();
-
-        switchToComicsView(gridComicsView, infoComicsView);
-        comicsViewStatus = Info;
-
-        break;
-    }
-
-    case Info: {
-        QIcon icoViewsButton = mainToolbar.gridIcon;
-        libraryWindow->actions.toggleComicsViewAction->setIcon(icoViewsButton);
-#ifdef Y_MAC_UI
-        libraryWindow->libraryToolBar->updateViewSelectorIcon(icoViewsButton);
-#endif
-        if (classicComicsView == nullptr)
-            classicComicsView = new ClassicComicsView();
-
-        switchToComicsView(infoComicsView, classicComicsView);
-        comicsViewStatus = Flow;
-
-        break;
-    }
-    }
-
-    libraryWindow->settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);
-
-    if (comicsViewStack->currentWidget() == comicsViewTransition)
-        showComicsView();
+    comicsViewStack->setCurrentWidget(widget);
+    setViewSelectorEnabled(viewSelectorEnabled);
 }
 
-void YACReaderContentViewsManager::applyTheme(const Theme &theme)
+void YACReaderContentViewsManager::updateComicActionsForCurrentView()
+{
+    if (libraryWindow->comicsModel == nullptr)
+        return;
+
+    libraryWindow->setComicActionsDisabled(libraryWindow->comicsModel->rowCount() == 0);
+
+    // Only the grid tracks a live comic selection, and it can have a folder focused
+    // instead of a comic. Every other view keeps the comic actions available as long
+    // as the current content has comics.
+    if (comicsView == gridComicsView)
+        libraryWindow->actions.setComicSelectionActionsEnabled(gridComicsView->hasComicSelection());
+}
+
+void YACReaderContentViewsManager::setToolBarOwner(ComicsView *view)
+{
+    if (!view || toolbarOwner == view)
+        return;
+
+    if (toolbarOwner)
+        toolbarOwner->releaseToolBar();
+
+    view->setToolBar(libraryWindow->editInfoToolBar);
+    toolbarOwner = view;
+}
+
+void YACReaderContentViewsManager::setViewSelectorEnabled(bool enabled)
+{
+    libraryWindow->actions.toggleComicsViewAction->setEnabled(enabled);
+}
+
+void YACReaderContentViewsManager::updateViewSelectorIcon(const Theme &theme)
 {
     const auto &mainToolbar = theme.mainToolbar;
 
-    // Update the toggle button icon based on current view status
-    // The icon shows what the NEXT view will be when clicked
     QIcon icon;
     switch (comicsViewStatus) {
     case Flow:
@@ -327,4 +383,52 @@ void YACReaderContentViewsManager::applyTheme(const Theme &theme)
 #ifdef Y_MAC_UI
     libraryWindow->libraryToolBar->updateViewSelectorIcon(icon);
 #endif
+}
+
+void YACReaderContentViewsManager::showComicsViewTransition()
+{
+    comicsViewStack->setCurrentWidget(comicsViewTransition);
+}
+
+void YACReaderContentViewsManager::switchToNextComicsView(const ContentViewState &viewState)
+{
+    switch (comicsViewStatus) {
+    case Flow: {
+        switchToComicsView(classicComicsView, gridComicsView, viewState);
+        comicsViewStatus = Grid;
+
+        break;
+    }
+
+    case Grid: {
+        if (infoComicsView == nullptr)
+            infoComicsView = new InfoComicsView();
+
+        switchToComicsView(gridComicsView, infoComicsView, viewState);
+        comicsViewStatus = Info;
+
+        break;
+    }
+
+    case Info: {
+        if (classicComicsView == nullptr)
+            classicComicsView = new ClassicComicsView();
+
+        switchToComicsView(infoComicsView, classicComicsView, viewState);
+        comicsViewStatus = Flow;
+
+        break;
+    }
+    }
+
+    updateViewSelectorIcon(theme);
+    libraryWindow->settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);
+
+    if (comicsViewStack->currentWidget() == comicsViewTransition)
+        showComicsView();
+}
+
+void YACReaderContentViewsManager::applyTheme(const Theme &theme)
+{
+    updateViewSelectorIcon(theme);
 }

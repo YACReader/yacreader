@@ -2,6 +2,27 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.3.0
+
+### YACReaderLibrary
+* Unify folder and comic browsing in the grid view. The side information panel can show information about folders, lists and selected items. There are settings to decide if folders should be displayed alongside comics and if folders and comics should be kept visually separated.
+* Fix drag & drop for sorting comics in lists.
+* Add state restoration when going back and forth through the navigation history.
+* Add scroll and current item restoration when switching between content views.
+* Keep current scroll position when editing comics.
+* Fix info panel in the grid view not getting updates when the selected comic metadata changes.
+* Fix rating context menu in the grid view.
+* Add reset rating to the comic context menu.
+* Add support for renaming folders inside the app. This preserves the state of the folder and its subfolders (completed, read, dates, etc.) rather than creating a new folder like updating the library does if you rename the folder directly on the file system.
+* Add organizing functionalities for renaming files and creating folder structures based on metadata. Highly experimental.
+* Support for dropping images onto folders and comics to change their covers.
+
+### WebUI
+* Add per-library search.
+* Use the same sorting as the rest of the apps.
+* Restore the previous scroll position when navigating back through library folders.
+* Add per-library continue reading list.
+
 ## 10.2.0
 
 ### YACReader

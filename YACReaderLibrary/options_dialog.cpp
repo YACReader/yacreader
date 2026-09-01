@@ -90,6 +90,9 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     displayGlobalContinueReadingBannerCheck->setChecked(settings->value(DISPLAY_GLOBAL_CONTINUE_READING_IN_GRID_VIEW, true).toBool());
     displayContinueReadingBannerCheck->setChecked(settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool());
+    mixFoldersAndComicsCheck->setChecked(settings->value(COMICS_GRID_MIX_FOLDERS_AND_COMICS, true).toBool());
+    startComicsOnNewRowCheck->setChecked(settings->value(COMICS_GRID_START_COMICS_ON_NEW_ROW, false).toBool());
+    startComicsOnNewRowCheck->setEnabled(mixFoldersAndComicsCheck->isChecked());
 
     updateLibrariesAtStartupCheck->setChecked(settings->value(UPDATE_LIBRARIES_AT_STARTUP, false).toBool());
     detectChangesAutomaticallyCheck->setChecked(settings->value(DETECT_CHANGES_IN_LIBRARIES_AUTOMATICALLY, false).toBool());
@@ -192,13 +195,13 @@ QWidget *OptionsDialog::createGeneralTab()
     startToTrayCheckbox = new QCheckBox(tr("Start into the system tray"));
 
     connect(trayIconCheckbox, &QCheckBox::clicked, this,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(CLOSE_TO_TRAY, checked);
                 startToTrayCheckbox->setEnabled(checked);
                 emit optionsChanged();
             });
     connect(startToTrayCheckbox, &QCheckBox::clicked, this,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(START_TO_TRAY, checked);
             });
 
@@ -219,7 +222,7 @@ QWidget *OptionsDialog::createGeneralTab()
 
     comicInfoXMLCheckbox = new QCheckBox(tr("Import metadata from ComicInfo.xml when adding new comics"));
     connect(comicInfoXMLCheckbox, &QCheckBox::clicked, this,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(IMPORT_COMIC_INFO_XML_METADATA, checked);
             });
 
@@ -268,17 +271,17 @@ QWidget *OptionsDialog::createLibrariesTab()
 {
     updateLibrariesAtStartupCheck = new QCheckBox(tr("Update libraries at startup"));
     connect(updateLibrariesAtStartupCheck, &QCheckBox::clicked, this,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(UPDATE_LIBRARIES_AT_STARTUP, checked);
             });
     detectChangesAutomaticallyCheck = new QCheckBox(tr("Try to detect changes automatically"));
     connect(detectChangesAutomaticallyCheck, &QCheckBox::clicked, this,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(DETECT_CHANGES_IN_LIBRARIES_AUTOMATICALLY, checked);
             });
     updateLibrariesPeriodicallyCheck = new QCheckBox(tr("Update libraries periodically"));
     connect(updateLibrariesPeriodicallyCheck, &QCheckBox::clicked, this,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(UPDATE_LIBRARIES_PERIODICALLY, checked);
             });
 
@@ -293,13 +296,13 @@ QWidget *OptionsDialog::createLibrariesTab()
     intervalComboBox->addItem(tr("daily"), static_cast<typename std::underlying_type<YACReader::LibrariesUpdateInterval>::type>(LibrariesUpdateInterval::Daily));
 
     connect(intervalComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this,
-            [=](int index) {
+            [=, this](int index) {
                 settings->setValue(UPDATE_LIBRARIES_PERIODICALLY_INTERVAL, index);
             });
 
     updateLibrariesAtCertainTimeCheck = new QCheckBox(tr("Update libraries at certain time"));
     connect(updateLibrariesAtCertainTimeCheck, &QCheckBox::clicked, this,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(UPDATE_LIBRARIES_AT_CERTAIN_TIME, checked);
             });
 
@@ -307,7 +310,7 @@ QWidget *OptionsDialog::createLibrariesTab()
     updateLibrariesTimeEdit = new QTimeEdit;
     updateLibrariesTimeEdit->setDisplayFormat("hh:mm");
     connect(updateLibrariesTimeEdit, &QTimeEdit::timeChanged, this,
-            [=](const QTime &time) {
+            [=, this](const QTime &time) {
                 settings->setValue(UPDATE_LIBRARIES_AT_CERTAIN_TIME_TIME, time.toString("hh:mm"));
             });
 
@@ -346,7 +349,7 @@ QWidget *OptionsDialog::createLibrariesTab()
 
     compareModifiedDateWhenUpdatingLibrariesCheck = new QCheckBox(tr("Compare the modified date of files when updating a library (not recommended)"));
     connect(compareModifiedDateWhenUpdatingLibrariesCheck, &QCheckBox::clicked, this,
-            [=](bool checked) {
+            [=, this](bool checked) {
                 settings->setValue(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, checked);
             });
 
@@ -421,6 +424,16 @@ QWidget *OptionsDialog::createGridTab()
     auto continueReadingGroup = new QGroupBox(tr("Continue reading"));
     continueReadingGroup->setLayout(continueReadingLayout);
 
+    mixFoldersAndComicsCheck = new QCheckBox(tr("Mix folders and comics"));
+    startComicsOnNewRowCheck = new QCheckBox(tr("Start comics on a new row"));
+
+    auto gridContentLayout = new QVBoxLayout();
+    gridContentLayout->addWidget(mixFoldersAndComicsCheck);
+    gridContentLayout->addWidget(startComicsOnNewRowCheck);
+
+    auto gridContentGroup = new QGroupBox(tr("Content"));
+    gridContentGroup->setLayout(gridContentLayout);
+
     connect(useBackgroundImageCheck, &QAbstractButton::clicked, this, &OptionsDialog::useBackgroundImageCheckClicked);
     connect(backgroundImageOpacitySlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::backgroundImageOpacitySliderChanged);
     connect(backgroundImageBlurRadiusSlider, &QAbstractSlider::valueChanged, this, &OptionsDialog::backgroundImageBlurRadiusSliderChanged);
@@ -440,8 +453,20 @@ QWidget *OptionsDialog::createGridTab()
         emit optionsChanged();
     });
 
+    connect(mixFoldersAndComicsCheck, &QCheckBox::clicked, this, [this](bool checked) {
+        settings->setValue(COMICS_GRID_MIX_FOLDERS_AND_COMICS, checked);
+        startComicsOnNewRowCheck->setEnabled(checked);
+        emit optionsChanged();
+    });
+
+    connect(startComicsOnNewRowCheck, &QCheckBox::clicked, this, [this](bool checked) {
+        settings->setValue(COMICS_GRID_START_COMICS_ON_NEW_ROW, checked);
+        emit optionsChanged();
+    });
+
     auto gridViewLayout = new QVBoxLayout();
     gridViewLayout->addWidget(gridBackgroundGroup);
+    gridViewLayout->addWidget(gridContentGroup);
     gridViewLayout->addWidget(continueReadingGroup);
     gridViewLayout->addStretch();
 

@@ -20,6 +20,7 @@ YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
     : QRhiWidget(parent),
       numObjects(0),
       lazyPopulateObjects(-1),
+      pendingCurrentIndex(-1),
       showMarks(true),
       hasBeenInitialized(false),
       backgroundColor(Qt::black),
@@ -980,6 +981,31 @@ void YACReaderFlow3D::setCurrentIndex(int pos)
     viewRotateActive = 1;
 }
 
+void YACReaderFlow3D::setCurrentIndexWithoutAnimation(int pos)
+{
+    if (pos < 0)
+        return;
+
+    if (images.isEmpty() && lazyPopulateObjects > 0) {
+        pendingCurrentIndex = qMin(pos, lazyPopulateObjects - 1);
+        return;
+    }
+
+    if (pos >= images.size())
+        return;
+
+    pendingCurrentIndex = -1;
+    currentSelected = pos;
+    for (auto index = 0; index < images.size(); ++index) {
+        calcVector(images[index].animEnd, index - currentSelected);
+        images[index].current = images[index].animEnd;
+    }
+
+    viewRotate = 0;
+    cleanupAnimation();
+    startAnimationTimer();
+}
+
 void YACReaderFlow3D::updatePositions()
 {
     int count;
@@ -1103,7 +1129,6 @@ void YACReaderFlow3D::populate(int n)
     if (hasBeenInitialized) {
         clear();
     }
-    emit centerIndexChanged(0);
 
     float x = 1;
     float y = 1 * (700.f / 480.0f);
@@ -1114,6 +1139,14 @@ void YACReaderFlow3D::populate(int n)
     }
 
     loaded = QVector<bool>(n, false);
+
+    if (pendingCurrentIndex >= 0 && n > 0) {
+        const auto index = qMin(pendingCurrentIndex, n - 1);
+        setCurrentIndexWithoutAnimation(index);
+        emit centerIndexChanged(index);
+    } else {
+        emit centerIndexChanged(0);
+    }
 }
 
 void YACReaderFlow3D::reset()
@@ -1139,6 +1172,7 @@ void YACReaderFlow3D::reset()
 
     numObjects = 0;
     images.clear();
+    pendingCurrentIndex = -1;
 
     if (!hasBeenInitialized)
         lazyPopulateObjects = -1;

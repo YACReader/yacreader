@@ -3,6 +3,7 @@
 #include "QsLog.h"
 #include "comic_item.h"
 #include "comic_model.h"
+#include "cover_utils.h"
 #include "yacreader_global_gui.h"
 
 #include <QApplication>
@@ -121,13 +122,20 @@ void YACReaderTableView::performDrag()
     QLOG_DEBUG() << "performDrag";
     QDrag *drag = new QDrag(this);
     drag->setMimeData(model()->mimeData(selectionModel()->selectedRows()));
-    drag->setPixmap(YACReader::hdpiPixmap(":/images/comics_view_toolbar/openInYACReader.svg", QSize(18, 18))); // TODO add better image
+    drag->setPixmap(theme.comicsViewToolbar.openInYACReaderIcon.pixmap(18, 18)); // TODO add better image
 
     /*Qt::DropAction dropAction =*/drag->exec(Qt::CopyAction | Qt::MoveAction, Qt::CopyAction);
 }
 
 void YACReaderTableView::dragEnterEvent(QDragEnterEvent *event)
 {
+    const auto imagePath = event->mimeData()->hasUrls() ? YACReader::droppedImagePath(event->mimeData()->urls()) : QString();
+    if (!imagePath.isEmpty()) {
+        event->setDropAction(Qt::CopyAction);
+        event->accept();
+        return;
+    }
+
     QTableView::dragEnterEvent(event);
 
     if (model()->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex()))
@@ -137,6 +145,13 @@ void YACReaderTableView::dragEnterEvent(QDragEnterEvent *event)
 
 void YACReaderTableView::dragMoveEvent(QDragMoveEvent *event)
 {
+    const auto imagePath = event->mimeData()->hasUrls() ? YACReader::droppedImagePath(event->mimeData()->urls()) : QString();
+    if (!imagePath.isEmpty() && indexAt(event->position().toPoint()).isValid()) {
+        event->setDropAction(Qt::CopyAction);
+        event->accept();
+        return;
+    }
+
     QTableView::dragMoveEvent(event);
 
     if (model()->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex()))
@@ -146,10 +161,35 @@ void YACReaderTableView::dragMoveEvent(QDragMoveEvent *event)
 
 void YACReaderTableView::dropEvent(QDropEvent *event)
 {
-    QTableView::dropEvent(event);
+    const auto imagePath = event->mimeData()->hasUrls() ? YACReader::droppedImagePath(event->mimeData()->urls()) : QString();
+    const auto imageIndex = indexAt(event->position().toPoint());
+    if (!imagePath.isEmpty() && imageIndex.isValid()) {
+        emit customCoverDropped(imagePath, imageIndex.siblingAtColumn(0));
+        event->setDropAction(Qt::CopyAction);
+        event->accept();
+        return;
+    }
 
-    if (model()->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex()))
-        event->acceptProposedAction();
+    if (!model()->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex())) {
+        event->ignore();
+        return;
+    }
+
+    const QPoint position = event->position().toPoint();
+    const QModelIndex destination = indexAt(position);
+    int destinationRow = -1;
+    if (destination.isValid()) {
+        destinationRow = destination.row();
+        if (position.y() >= visualRect(destination).center().y())
+            ++destinationRow;
+    }
+
+    if (model()->dropMimeData(event->mimeData(), Qt::MoveAction, destinationRow, 0, QModelIndex())) {
+        event->setDropAction(Qt::MoveAction);
+        event->accept();
+    } else {
+        event->ignore();
+    }
     QLOG_DEBUG() << "drop on table";
 }
 

@@ -6,6 +6,7 @@
 #include "yacreader_libraries.h"
 
 #include <iostream>
+#include <utility>
 
 using namespace YACReader;
 
@@ -212,7 +213,7 @@ int ConsoleUILibraryCreator::repairLibrary(const QString &path)
               << "Repaired: " << summary.repaired << std::endl
               << "Failed: " << summary.failed << std::endl
               << "Missing files: " << summary.missingFiles << std::endl;
-    for (const auto &failedPath : summary.failedFilePaths) {
+    for (const auto &failedPath : std::as_const(summary.failedFilePaths)) {
         std::cout << "  " << failedPath.toStdString() << std::endl;
     }
     delete repairer;

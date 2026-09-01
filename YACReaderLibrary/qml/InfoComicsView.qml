@@ -113,7 +113,8 @@ Rectangle {
         onEntered: {
             if(drag.hasUrls)
             {
-                if(dropManager.canDropUrls(drag.urls, drag.action))
+                if(dropManager.canDropImage(drag.urls)
+                        || dropManager.canDropUrls(drag.urls, drag.action))
                 {
                     drag.accepted = true;
                 }else
@@ -122,7 +123,12 @@ Rectangle {
         }
 
         onDropped: {
-            if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
+            if(drop.hasUrls && dropManager.canDropImage(drop.urls))
+            {
+                dropManager.droppedImage(drop.urls);
+                drop.accepted = true;
+            }
+            else if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
             {
                 dropManager.droppedFiles(drop.urls, drop.action);
             }

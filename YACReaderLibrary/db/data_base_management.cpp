@@ -10,6 +10,8 @@
 #include <QSqlRecord>
 #include <QtCore>
 
+#include <utility>
+
 #ifdef Q_OS_WIN
 #include <windows.h>
 #else
@@ -857,8 +859,6 @@ void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 // TODO_METADATA: validate imported info
 bool DataBaseManagement::importComicsInfo(QString source, QString dest)
 {
-    QString error;
-    QString driver;
     QStringList hashes;
 
     bool b = false;
@@ -1293,10 +1293,10 @@ int DataBaseManagement::compareVersions(const QString &v1, const QString v2)
     QList<int> v1il;
     QList<int> v2il;
 
-    for (const auto &s : v1l)
+    for (const auto &s : std::as_const(v1l))
         v1il.append(s.toInt());
 
-    for (const auto &s : v2l)
+    for (const auto &s : std::as_const(v2l))
         v2il.append(s.toInt());
 
     for (int i = 0; i < qMin(v1il.length(), v2il.length()); i++) {
@@ -1943,8 +1943,9 @@ DatabaseSalvageResult DataBaseManagement::salvageLibrary(const QString &libraryP
             connectionName = db.connectionName();
             if (db.isOpen()) {
                 QSqlQuery reindex(db);
-                if (!reindex.exec("REINDEX"))
+                if (!reindex.exec("REINDEX")) {
                     QLOG_INFO() << "REINDEX did not complete during salvage:" << reindex.lastError().text();
+                }
             }
         }
         if (!connectionName.isEmpty())

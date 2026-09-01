@@ -10,6 +10,8 @@
 #include <QPushButton>
 #include <QToolButton>
 
+#include <utility>
+
 DropShadowLabel::DropShadowLabel(QWidget *parent)
     : QLabel(parent)
 {
@@ -149,7 +151,7 @@ void YACReaderTitledToolBar::applyTheme(const Theme &theme)
     busyIndicator->setColor(sidebarTheme.busyIndicatorColor);
 
     QString qss = QString("QWidget {background-color:%1;}").arg(sidebarTheme.separatorColor.name());
-    for (auto separator : separators) {
+    for (auto separator : std::as_const(separators)) {
         separator->setStyleSheet(qss);
     }
 }

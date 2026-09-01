@@ -21,7 +21,7 @@ public:
     void setSearchMenu(QMenu *menu);
 
 protected:
-    void resizeEvent(QResizeEvent *);
+    void resizeEvent(QResizeEvent *) override;
     void applyTheme(const Theme &theme) override;
 
 signals:

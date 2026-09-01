@@ -12,7 +12,7 @@ void LibrariesControllerV2::service(HttpRequest & /* request */, HttpResponse &r
 {
     response.setHeader("Content-Type", "application/json");
 
-    auto libraries = DBHelper::getLibraries().sortedLibraries();
+    const auto libraries = DBHelper::getLibraries().sortedLibraries();
 
     QJsonArray librariesJson;
 

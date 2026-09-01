@@ -87,7 +87,8 @@ QPixmap YACReader::hdpiPixmap(const QString &file, QSize size)
 QString YACReader::imageFileLoader(QWidget *parent)
 {
     QString supportedImageFormatsString;
-    for (const QByteArray &format : QImageReader::supportedImageFormats()) {
+    const auto supportedImageFormats = QImageReader::supportedImageFormats();
+    for (const QByteArray &format : supportedImageFormats) {
         supportedImageFormatsString += QString("*.%1 ").arg(QString(format));
     }
 
@@ -108,7 +109,7 @@ QString YACReader::imagePathFromMimeData(const QMimeData *mimeData)
 
                 QFileInfo fileInfo(filePath);
                 QString extension = fileInfo.suffix().toLower();
-                QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+                const QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
                 bool isSupported = false;
 
                 for (const QByteArray &format : supportedFormats) {

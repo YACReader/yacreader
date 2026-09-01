@@ -459,6 +459,21 @@ void WebUIController::renderLibraryBrowser(HttpRequest &request,
           </nav>
           <h1 class="page-title" data-browser-title>{library.name}</h1>
         </div>
+        <form class="browser-search" data-browser-search role="search" hidden>
+          <button class="browser-search-submit" type="submit" aria-label="Search this library">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"/>
+              <path d="m20 20-4-4"/>
+            </svg>
+          </button>
+          <label class="visually-hidden" for="library-search">Search this library</label>
+          <input id="library-search" data-browser-search-input type="search" inputmode="search" autocomplete="off" spellcheck="false" placeholder="Search or use field:value">
+          <button class="browser-search-clear" data-browser-search-clear type="button" aria-label="Clear search" hidden>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <path d="m7 7 10 10M17 7 7 17"/>
+            </svg>
+          </button>
+        </form>
       </header>
 
       <div class="content browser-content" data-browser-root aria-live="polite">

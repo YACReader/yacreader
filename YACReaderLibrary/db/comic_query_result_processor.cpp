@@ -17,7 +17,7 @@ void YACReader::ComicQueryResultProcessor::createModelData(const QString &filter
 {
     querySearchQueue.cancelPending();
 
-    querySearchQueue.enqueue([=] {
+    querySearchQueue.enqueue([=, this] {
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);

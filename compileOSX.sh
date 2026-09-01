@@ -37,7 +37,7 @@ cmake -B build \
     -DBUILD_NUMBER="${BUILD_NUMBER}" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_OSX_ARCHITECTURES="${ARCHS}" \
-    -DCMAKE_OSX_DEPLOYMENT_TARGET=11
+    -DCMAKE_OSX_DEPLOYMENT_TARGET=12
 
 cmake --build build --parallel
 

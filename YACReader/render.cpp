@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <utility>
 
 template<class T>
 inline const T &kClamp(const T &x, const T &low, const T &high)
@@ -382,14 +383,14 @@ Render::Render()
 
 Render::~Render()
 {
-    for (auto *pr : pageRenders) {
+    for (auto *pr : std::as_const(pageRenders)) {
         if (pr != nullptr && pr->wait()) {
             delete pr;
         }
     }
 
     // TODO move to share_ptr
-    for (auto *filter : filters) {
+    for (auto *filter : std::as_const(filters)) {
         delete filter;
     }
 
@@ -693,23 +694,24 @@ void Render::load(const QString &path, const ComicDB &comicDB)
 {
     // TODO prepare filters
     for (int i = 0; i < filters.count(); i++) {
-        if (typeid(*filters[i]) == typeid(BrightnessFilter)) {
+        auto *filter = filters.at(i);
+        if (typeid(*filter) == typeid(BrightnessFilter)) {
             if (comicDB.info.brightness == -1)
-                filters[i]->setLevel(0);
+                filter->setLevel(0);
             else
-                filters[i]->setLevel(comicDB.info.brightness);
+                filter->setLevel(comicDB.info.brightness);
         }
-        if (typeid(*filters[i]) == typeid(ContrastFilter)) {
+        if (typeid(*filter) == typeid(ContrastFilter)) {
             if (comicDB.info.contrast == -1)
-                filters[i]->setLevel(100);
+                filter->setLevel(100);
             else
-                filters[i]->setLevel(comicDB.info.contrast);
+                filter->setLevel(comicDB.info.contrast);
         }
-        if (typeid(*filters[i]) == typeid(GammaFilter)) {
+        if (typeid(*filter) == typeid(GammaFilter)) {
             if (comicDB.info.gamma == -1)
-                filters[i]->setLevel(100);
+                filter->setLevel(100);
             else
-                filters[i]->setLevel(comicDB.info.gamma);
+                filter->setLevel(comicDB.info.gamma);
         }
     }
     createComic(path);
@@ -1128,12 +1130,13 @@ void Render::reload()
 void Render::updateFilters(int brightness, int contrast, int gamma)
 {
     for (int i = 0; i < filters.count(); i++) {
-        if (typeid(*filters[i]) == typeid(BrightnessFilter))
-            filters[i]->setLevel(brightness);
-        if (typeid(*filters[i]) == typeid(ContrastFilter))
-            filters[i]->setLevel(contrast);
-        if (typeid(*filters[i]) == typeid(GammaFilter))
-            filters[i]->setLevel(gamma);
+        auto *filter = filters.at(i);
+        if (typeid(*filter) == typeid(BrightnessFilter))
+            filter->setLevel(brightness);
+        if (typeid(*filter) == typeid(ContrastFilter))
+            filter->setLevel(contrast);
+        if (typeid(*filter) == typeid(GammaFilter))
+            filter->setLevel(gamma);
     }
 
     reload();

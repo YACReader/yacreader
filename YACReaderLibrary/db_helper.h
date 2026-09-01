@@ -6,6 +6,7 @@ class QString;
 
 #include <QList>
 #include <QMap>
+#include <QVariantMap>
 
 class ComicDB;
 class Folder;
@@ -81,6 +82,13 @@ public:
     static void updateFromRemoteClientWithHash(const QList<ComicInfo> &comics);
     static void renameLabel(qulonglong id, const QString &name, QSqlDatabase &db);
     static void renameList(qulonglong id, const QString &name, QSqlDatabase &db);
+    static bool renameFolder(qulonglong id, const QString &name, const QString &oldPath, const QString &newPath, QSqlDatabase &db, QString *error = nullptr);
+    static bool moveComic(qulonglong comicId, qulonglong newParentId, const QString &newFileName, const QString &newRelativePath, QSqlDatabase &db);
+    static qulonglong ensureFolderPath(const QString &relativePath, QSqlDatabase &db, QList<qulonglong> *createdFolderIds = nullptr);
+    static void syncFolderAddedFromContents(const QList<qulonglong> &folderIds, QSqlDatabase &db);
+    static void removeEmptyFolderPaths(const QStringList &relativePaths, QSqlDatabase &db, QList<QVariantMap> *removedRows = nullptr);
+    static bool restoreFolderRows(const QList<QVariantMap> &rows, QSqlDatabase &db);
+    static void removeEmptyFolderRows(const QList<qulonglong> &folderIds, QSqlDatabase &db);
     static void reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db);
     static void reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase &db);
     static void reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase &db);
@@ -108,6 +116,7 @@ public:
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
 
     // library
+    static QVariantMap getLibraryInfoData(QUuid id);
     static QString getLibraryInfo(QUuid id);
 };
 

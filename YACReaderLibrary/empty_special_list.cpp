@@ -23,7 +23,7 @@ void EmptySpecialListWidget::showReading()
 void EmptySpecialListWidget::showRecent()
 {
     currentType = Recent;
-    setPixmap(QPixmap());
+    setPixmap(theme.emptyContainer.emptyRecentIcon);
     setText(tr("There are no recent comics!"));
 }
 
@@ -43,6 +43,8 @@ void EmptySpecialListWidget::updateIcon()
         setPixmap(theme.emptyContainer.emptyCurrentReadingsIcon);
         break;
     case Recent:
+        setPixmap(theme.emptyContainer.emptyRecentIcon);
+        break;
     case None:
         break;
     }

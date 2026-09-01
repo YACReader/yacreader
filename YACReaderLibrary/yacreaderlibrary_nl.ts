@@ -202,9 +202,20 @@
 <context>
     <name>ClassicComicsView</name>
     <message>
-        <location filename="classic_comics_view.cpp" line="92"/>
+        <location filename="classic_comics_view.cpp" line="93"/>
         <source>Hide comic flow</source>
         <translation>Comic Flow verbergen</translation>
+    </message>
+</context>
+<context>
+    <name>ComicFilesCoordinator</name>
+    <message>
+        <source>Copying comics...</source>
+        <translation type="obsolete">Strips kopiëren...</translation>
+    </message>
+    <message>
+        <source>Moving comics...</source>
+        <translation type="obsolete">Strips verplaatsen...</translation>
     </message>
 </context>
 <context>
@@ -291,69 +302,98 @@
     </message>
 </context>
 <context>
+    <name>ComicManagementCoordinator</name>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="134"/>
+        <location filename="comic_management_coordinator.cpp" line="136"/>
+        <source>YACReader not found</source>
+        <translation>YACReader niet gevonden</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="134"/>
+        <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
+        <translation>YACReader niet gevonden. YACReader moet in dezelfde map worden geïnstalleerd als YACReaderLibrary.</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="136"/>
+        <source>YACReader not found. There might be a problem with your YACReader installation.</source>
+        <translation>YACReader niet gevonden. Er is mogelijk een probleem met uw YACReader-installatie.</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="143"/>
+        <source>Error</source>
+        <translation>Fout</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="143"/>
+        <source>Error opening comic with third party reader.</source>
+        <translation>Fout bij het openen van een strip met een lezer van een derde partij.</translation>
+    </message>
+</context>
+<context>
     <name>ComicModel</name>
     <message>
-        <location filename="db/comic_model.cpp" line="369"/>
+        <location filename="db/comic_model.cpp" line="378"/>
         <source>no</source>
         <translation>neen</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="369"/>
+        <location filename="db/comic_model.cpp" line="378"/>
         <source>yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="408"/>
+        <location filename="db/comic_model.cpp" line="417"/>
         <source>Read</source>
         <translation>Gelezen</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="406"/>
+        <location filename="db/comic_model.cpp" line="415"/>
         <source>Size</source>
         <translation>Grootte(MB)</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="404"/>
+        <location filename="db/comic_model.cpp" line="413"/>
         <source>Pages</source>
         <translation>Pagina&apos;s</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="400"/>
+        <location filename="db/comic_model.cpp" line="409"/>
         <source>Title</source>
         <translation>Titel</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="402"/>
+        <location filename="db/comic_model.cpp" line="411"/>
         <source>File Name</source>
         <translation>Bestandsnaam</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="410"/>
+        <location filename="db/comic_model.cpp" line="419"/>
         <source>Current Page</source>
         <translation>Huidige pagina</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="412"/>
+        <location filename="db/comic_model.cpp" line="421"/>
         <source>Publication Date</source>
         <translation>Publicatiedatum</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="414"/>
+        <location filename="db/comic_model.cpp" line="423"/>
         <source>Rating</source>
         <translation>Beoordeling</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="416"/>
+        <location filename="db/comic_model.cpp" line="425"/>
         <source>Series</source>
         <translation>Serie</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="418"/>
+        <location filename="db/comic_model.cpp" line="427"/>
         <source>Volume</source>
         <translation>Deel</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="420"/>
+        <location filename="db/comic_model.cpp" line="429"/>
         <source>Story Arc</source>
         <translation>Verhaalboog</translation>
     </message>
@@ -386,43 +426,51 @@
         <translation>dichtbij</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="135"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="589"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="628"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="133"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="596"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="635"/>
         <source>Looking for volume...</source>
         <translation>Op zoek naar volumes...</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="133"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="547"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="131"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="544"/>
         <source>comic %1 of %2 - %3</source>
         <translation>strip %1 van %2 - %3</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="250"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="248"/>
         <source>%1 comics selected</source>
         <translation>%1 strips geselecteerd</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="281"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="279"/>
         <source>Error connecting to ComicVine</source>
         <translation>Fout bij verbinden met ComicVine</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="461"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="487"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="459"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="484"/>
         <source>Retrieving tags for : %1</source>
         <translation>Tags ophalen voor: %1</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="608"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="615"/>
         <source>Retrieving volume info...</source>
         <translation>Volume-informatie ophalen...</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="640"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="647"/>
         <source>Looking for comic...</source>
         <translation>Op zoek naar komische...</translation>
+    </message>
+</context>
+<context>
+    <name>ContinueReadingGridHeader</name>
+    <message>
+        <location filename="qml/ContinueReadingGridHeader.qml" line="33"/>
+        <source>Continue Reading...</source>
+        <translation>Verder lezen...</translation>
     </message>
 </context>
 <context>
@@ -469,6 +517,14 @@
     </message>
 </context>
 <context>
+    <name>DBHelper</name>
+    <message>
+        <location filename="db_helper.cpp" line="1442"/>
+        <source>The folder entry could not be found in the library database.</source>
+        <translation>De mapvermelding is niet gevonden in de database van de bibliotheek.</translation>
+    </message>
+</context>
+<context>
     <name>EditShortcutsDialog</name>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="19"/>
@@ -502,6 +558,19 @@
         <location filename="empty_folder_widget.cpp" line="8"/>
         <source>This folder doesn&apos;t contain comics yet</source>
         <translation>Deze map bevat nog geen strips</translation>
+    </message>
+</context>
+<context>
+    <name>EmptyInfoView</name>
+    <message>
+        <location filename="qml/EmptyInfoView.qml" line="21"/>
+        <source>Nothing selected</source>
+        <translation>Niets geselecteerd</translation>
+    </message>
+    <message>
+        <location filename="qml/EmptyInfoView.qml" line="32"/>
+        <source>Select a comic or folder to see its information.</source>
+        <translation>Selecteer een strip of map om de informatie te bekijken.</translation>
     </message>
 </context>
 <context>
@@ -617,45 +686,157 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="627"/>
+        <location filename="../common/comic.cpp" line="604"/>
         <source>7z not found</source>
         <translation>7Z Archiefbestand niet gevonden</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="513"/>
+        <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>CRC-fout op pagina (%1): sommige pagina&apos;s worden niet correct weergegeven</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="520"/>
+        <location filename="../common/comic.cpp" line="497"/>
         <source>Unknown error opening the file</source>
         <translation>Onbekende fout bij het openen van het bestand</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="633"/>
+        <location filename="../common/comic.cpp" line="610"/>
+        <location filename="../common/comic.cpp" line="626"/>
         <source>Format not supported</source>
         <translation>Formaat niet ondersteund</translation>
-    </message>
-    <message>
-        <location filename="../common/comic.cpp" line="647"/>
-        <source>Unsupported EPUB: %1</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>FolderContentView</name>
     <message>
-        <location filename="qml/FolderContentView.qml" line="223"/>
         <source>Continue Reading...</source>
-        <translation>Verder lezen...</translation>
+        <translation type="vanished">Verder lezen...</translation>
+    </message>
+</context>
+<context>
+    <name>FolderInfoView</name>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="22"/>
+        <source>Unknown</source>
+        <translation>Onbekend</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="69"/>
+        <source>Items</source>
+        <translation>Items</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="72"/>
+        <source>Type</source>
+        <translation>Type</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="75"/>
+        <source>Reading status</source>
+        <translation>Leesstatus</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="76"/>
+        <source>Read</source>
+        <translation>Gelezen</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="76"/>
+        <source>Unread</source>
+        <translation>Ongelezen</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="78"/>
+        <source>Collection status</source>
+        <translation>Collectiestatus</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="79"/>
+        <source>Completed</source>
+        <translation>Voltooid</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="79"/>
+        <source>In progress</source>
+        <translation>Bezig</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="81"/>
+        <source>Added</source>
+        <translation>Toegevoegd</translation>
+    </message>
+    <message>
+        <location filename="qml/FolderInfoView.qml" line="84"/>
+        <source>Updated</source>
+        <translation>Bijgewerkt</translation>
+    </message>
+</context>
+<context>
+    <name>FolderManagementCoordinator</name>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="62"/>
+        <source>Add new folder</source>
+        <translation>Nieuwe map toevoegen</translation>
+    </message>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="63"/>
+        <source>Folder name:</source>
+        <translation>Mapnaam:</translation>
     </message>
 </context>
 <context>
     <name>GridComicsView</name>
     <message>
-        <location filename="grid_comics_view.cpp" line="72"/>
+        <location filename="grid_comics_view.cpp" line="114"/>
         <source>Show info</source>
         <translation>Toon informatie</translation>
+    </message>
+    <message>
+        <source>Library</source>
+        <translation type="obsolete">Bibliotheek</translation>
+    </message>
+    <message>
+        <source>Folder</source>
+        <translation type="obsolete">Map</translation>
+    </message>
+    <message>
+        <source>Favorites</source>
+        <translation type="obsolete">Favorieten</translation>
+    </message>
+    <message>
+        <source>Recently added</source>
+        <translation type="obsolete">Onlangs toegevoegd</translation>
+    </message>
+    <message>
+        <location filename="grid_comics_view.cpp" line="854"/>
+        <source>Manga</source>
+        <translation>Manga</translation>
+    </message>
+    <message>
+        <location filename="grid_comics_view.cpp" line="857"/>
+        <source>Western manga</source>
+        <translation>Westerse manga</translation>
+    </message>
+    <message>
+        <location filename="grid_comics_view.cpp" line="860"/>
+        <source>Web comic</source>
+        <translation>Webcomic</translation>
+    </message>
+    <message>
+        <location filename="grid_comics_view.cpp" line="863"/>
+        <source>Yonkoma</source>
+        <translation>Yonkoma</translation>
+    </message>
+    <message>
+        <location filename="grid_comics_view.cpp" line="867"/>
+        <source>Comic</source>
+        <translation>Grappig</translation>
+    </message>
+    <message>
+        <location filename="grid_comics_view.cpp" line="871"/>
+        <source>Unknown</source>
+        <translation>Onbekend</translation>
     </message>
 </context>
 <context>
@@ -806,73 +987,89 @@
     </message>
 </context>
 <context>
+    <name>LibraryInfoView</name>
+    <message>
+        <location filename="qml/LibraryInfoView.qml" line="40"/>
+        <source>Library info</source>
+        <translation>Bibliotheekinformatie</translation>
+    </message>
+    <message>
+        <location filename="qml/LibraryInfoView.qml" line="74"/>
+        <source>Number of folders</source>
+        <translation>Aantal mappen</translation>
+    </message>
+    <message>
+        <location filename="qml/LibraryInfoView.qml" line="77"/>
+        <source>Number of comics</source>
+        <translation>Aantal strips</translation>
+    </message>
+    <message>
+        <location filename="qml/LibraryInfoView.qml" line="80"/>
+        <source>Number of read comics</source>
+        <translation>Aantal gelezen strips</translation>
+    </message>
+</context>
+<context>
+    <name>LibraryManagementCoordinator</name>
+    <message>
+        <location filename="library_management_coordinator.cpp" line="66"/>
+        <source>Error opening the library</source>
+        <translation>Fout bij openen Bibliotheek</translation>
+    </message>
+    <message>
+        <location filename="library_management_coordinator.cpp" line="69"/>
+        <source>Error creating the library</source>
+        <translation>Fout bij aanmaken Bibliotheek</translation>
+    </message>
+    <message>
+        <location filename="library_management_coordinator.cpp" line="72"/>
+        <source>Error updating the library</source>
+        <translation>Fout bij bijwerken Bibliotheek</translation>
+    </message>
+</context>
+<context>
     <name>LibraryWindow</name>
     <message>
-        <location filename="library_window.cpp" line="2052"/>
+        <location filename="library_management_coordinator.cpp" line="328"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
         <translation>De geselecteerde map bevat geen bibliotheek.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1066"/>
+        <location filename="library_management_coordinator.cpp" line="134"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
         <translation>Deze bibliotheek is gemaakt met een vorige versie van YACReaderLibrary. Het moet worden bijgewerkt. Nu bijwerken?</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="2921"/>
-        <source>Error opening the library</source>
-        <translation>Fout bij openen Bibliotheek</translation>
     </message>
     <message>
         <source>Remove and delete metadata</source>
         <translation type="vanished">Verwijder  metagegevens </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1178"/>
+        <location filename="library_management_coordinator.cpp" line="185"/>
         <source>Old library</source>
         <translation>Oude Bibliotheek </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="768"/>
-        <source>Library</source>
-        <translation>Bibliotheek</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1135"/>
+        <location filename="library_management_coordinator.cpp" line="155"/>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
         <translation>Deze bibliotheek is gemaakt met een nieuwere versie van YACReaderLibrary. Download de nieuwe versie?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1157"/>
+        <location filename="library_management_coordinator.cpp" line="170"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
         <translation>Bibliotheek &apos; %1&apos; is niet langer beschikbaar. Wilt u het verwijderen?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1650"/>
-        <source>Open folder...</source>
-        <translation>Map openen ...</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="2353"/>
+        <location filename="library_management_coordinator.cpp" line="400"/>
         <source>Do you want remove </source>
         <translation>Wilt u verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2916"/>
-        <source>Error updating the library</source>
-        <translation>Fout bij bijwerken Bibliotheek</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1178"/>
+        <location filename="library_management_coordinator.cpp" line="186"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
         <translation>Bibliotheek &apos; %1&apos; is gemaakt met een oudere versie van YACReaderLibrary. Zij moet opnieuw worden aangemaakt. Wilt u de bibliotheek nu aanmaken?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1665"/>
-        <source>Set as read</source>
-        <translation>Instellen als gelezen</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1157"/>
+        <location filename="library_management_coordinator.cpp" line="169"/>
         <source>Library not available</source>
         <translation>Bibliotheek niet beschikbaar </translation>
     </message>
@@ -882,321 +1079,254 @@
         <translation>YACReader Bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2911"/>
-        <source>Error creating the library</source>
-        <translation>Fout bij aanmaken Bibliotheek</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1066"/>
+        <location filename="library_management_coordinator.cpp" line="133"/>
         <source>Update needed</source>
         <translation>Bijwerken is nodig</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3109"/>
+        <location filename="library_management_coordinator.cpp" line="452"/>
         <source>Library name already exists</source>
         <translation>Bibliotheek naam bestaat al</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3109"/>
+        <location filename="library_management_coordinator.cpp" line="453"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>Er is al een bibliotheek met de naam &apos; %1 &apos;.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1135"/>
+        <location filename="library_management_coordinator.cpp" line="154"/>
         <source>Download new version</source>
         <translation>Nieuwe versie ophalen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2970"/>
+        <location filename="comic_management_coordinator.cpp" line="439"/>
         <source>Delete comics</source>
         <translation>Strips verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2970"/>
+        <location filename="comic_management_coordinator.cpp" line="440"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Alle geselecteerde strips worden verwijderd van uw schijf. Weet u het zeker?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1668"/>
-        <location filename="library_window.cpp" line="1809"/>
-        <source>Set as unread</source>
-        <translation>Instellen als ongelezen </translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="2052"/>
+        <location filename="library_management_coordinator.cpp" line="327"/>
         <source>Library not found</source>
         <translation>Bibliotheek niet gevonden</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="678"/>
-        <location filename="library_window.cpp" line="1549"/>
-        <location filename="library_window.cpp" line="1671"/>
-        <source>manga</source>
-        <translation>Manga</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="675"/>
-        <location filename="library_window.cpp" line="1546"/>
-        <location filename="library_window.cpp" line="1674"/>
-        <source>comic</source>
-        <translation>grappig</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="681"/>
-        <location filename="library_window.cpp" line="1552"/>
-        <location filename="library_window.cpp" line="1677"/>
-        <source>western manga (left to right)</source>
-        <translation>westerse manga (van links naar rechts)</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="687"/>
-        <location filename="library_window.cpp" line="1558"/>
-        <location filename="library_window.cpp" line="1683"/>
-        <source>4koma (top to botom)</source>
-        <oldsource>4koma (top to botom</oldsource>
-        <translation>4koma (van boven naar beneden)</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="2353"/>
+        <location filename="library_management_coordinator.cpp" line="400"/>
         <source> library?</source>
         <translation>Bibliotheek?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2352"/>
+        <location filename="library_management_coordinator.cpp" line="399"/>
         <source>Are you sure?</source>
         <translation>Weet u het zeker?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1656"/>
-        <source>Rescan library for XML info</source>
-        <translation>Bibliotheek opnieuw scannen op XML-info</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="684"/>
-        <location filename="library_window.cpp" line="1555"/>
-        <location filename="library_window.cpp" line="1680"/>
-        <source>web comic</source>
-        <translation>web-strip</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1392"/>
-        <source>Add new folder</source>
-        <translation>Nieuwe map toevoegen</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1428"/>
+        <location filename="folder_management_coordinator.cpp" line="216"/>
         <source>Delete folder</source>
         <translation>Map verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1659"/>
-        <source>Set as uncompleted</source>
-        <translation>Ingesteld als onvoltooid</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1662"/>
-        <source>Set as completed</source>
-        <translation>Instellen als voltooid</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1653"/>
-        <source>Update folder</source>
-        <translation>Map bijwerken</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="800"/>
-        <source>Folder</source>
-        <translation>Map</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="822"/>
-        <source>Comic</source>
-        <translation>Grappig</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1018"/>
+        <location filename="library_management_coordinator.cpp" line="52"/>
         <source>Upgrade failed</source>
         <translation>Upgrade mislukt</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1018"/>
+        <location filename="library_management_coordinator.cpp" line="53"/>
         <source>There were errors during library upgrade in: </source>
         <translation>Er zijn fouten opgetreden tijdens de bibliotheekupgrade in: </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1208"/>
-        <location filename="library_window.cpp" line="1244"/>
+        <location filename="comic_management_coordinator.cpp" line="204"/>
         <source>Copying comics...</source>
         <translation>Strips kopiëren...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1225"/>
-        <location filename="library_window.cpp" line="1263"/>
+        <location filename="comic_management_coordinator.cpp" line="220"/>
         <source>Moving comics...</source>
         <translation>Strips verplaatsen...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1393"/>
+        <location filename="folder_management_coordinator.cpp" line="154"/>
         <source>Folder name:</source>
         <translation>Mapnaam:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1422"/>
+        <location filename="folder_management_coordinator.cpp" line="133"/>
+        <location filename="folder_management_coordinator.cpp" line="145"/>
+        <location filename="folder_management_coordinator.cpp" line="199"/>
         <source>No folder selected</source>
         <translation>Geen map geselecteerd</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1422"/>
+        <location filename="folder_management_coordinator.cpp" line="134"/>
+        <location filename="folder_management_coordinator.cpp" line="146"/>
+        <location filename="folder_management_coordinator.cpp" line="200"/>
         <source>Please, select a folder first</source>
         <translation>Selecteer eerst een map</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1426"/>
+        <location filename="folder_management_coordinator.cpp" line="209"/>
         <source>Error in path</source>
         <translation>Fout in pad</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1426"/>
+        <location filename="folder_management_coordinator.cpp" line="210"/>
         <source>There was an error accessing the folder&apos;s path</source>
         <translation>Er is een fout opgetreden bij het verkrijgen van toegang tot het pad van de map</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1428"/>
+        <location filename="folder_management_coordinator.cpp" line="217"/>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
         <translation>De geselecteerde map en de volledige inhoud ervan worden van uw schijf verwijderd. Weet je het zeker?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1454"/>
-        <location filename="library_window.cpp" line="2637"/>
+        <location filename="comic_management_coordinator.cpp" line="514"/>
+        <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Kan niet verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1454"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</source>
-        <translation>Er is een probleem opgetreden bij het verwijderen van de geselecteerde mappen. Controleer of er schrijfrechten zijn en zorg ervoor dat alle toepassingen deze mappen of een van de daarin opgenomen bestanden gebruiken.</translation>
+        <location filename="folder_management_coordinator.cpp" line="251"/>
+        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
+        <translation>Er is een probleem opgetreden bij het verwijderen van de geselecteerde mappen. Controleer de schrijfrechten en zorg ervoor dat geen toepassingen deze mappen of bestanden daarin gebruiken.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1466"/>
-        <source>Add new reading lists</source>
-        <translation>Voeg nieuwe leeslijsten toe</translation>
+        <location filename="library_window.cpp" line="732"/>
+        <source>Rename or organize files</source>
+        <translation>Bestanden hernoemen of ordenen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1467"/>
-        <location filename="library_window.cpp" line="1516"/>
-        <source>List name:</source>
-        <translation>Lijstnaam:</translation>
+        <location filename="library_window.cpp" line="754"/>
+        <source>Set the type of the selected comics</source>
+        <translation>Het type van de geselecteerde strips instellen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1485"/>
-        <source>Delete list/label</source>
-        <translation>Lijst/label verwijderen</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1485"/>
-        <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
-        <translation>Het geselecteerde item wordt verwijderd, uw strips of mappen worden NIET van uw schijf verwijderd. Weet je het zeker?</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1515"/>
-        <source>Rename list name</source>
-        <translation>Hernoem de lijstnaam</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="727"/>
-        <location filename="library_window.cpp" line="1617"/>
-        <location filename="library_window.cpp" line="1731"/>
-        <location filename="library_window.cpp" line="3091"/>
-        <source>Set type</source>
-        <translation>Soort instellen</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="555"/>
+        <location filename="library_window.cpp" line="773"/>
         <source>Search filters</source>
         <translation>Zoekfilters</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="565"/>
+        <location filename="library_window.cpp" line="783"/>
         <source>Unread</source>
         <translation>Ongelezen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="567"/>
+        <location filename="library_window.cpp" line="785"/>
         <source>In progress</source>
         <translation>Bezig</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="569"/>
+        <location filename="library_window.cpp" line="787"/>
         <source>Highly rated</source>
         <translation>Hoog gewaardeerd</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="571"/>
+        <location filename="library_window.cpp" line="789"/>
         <source>Recently added</source>
         <translation>Onlangs toegevoegd</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="578"/>
+        <location filename="library_window.cpp" line="796"/>
         <source>Search syntax…</source>
         <translation>Zoeksyntaxis…</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="886"/>
+        <location filename="library_repair_coordinator.cpp" line="61"/>
         <source>A repair of this library is already running (%1). Wait for it to finish.</source>
         <translation>Er wordt al een herstel van deze bibliotheek uitgevoerd (%1). Wacht tot dit is voltooid.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="891"/>
+        <location filename="library_repair_coordinator.cpp" line="66"/>
         <source>The library is locked by a repair that did not finish.</source>
         <translation>De bibliotheek is vergrendeld door een herstel dat niet is voltooid.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="892"/>
+        <location filename="library_repair_coordinator.cpp" line="67"/>
         <source>The library is locked by a repair started by %1.</source>
         <translation>De bibliotheek is vergrendeld door een herstel gestart door %1.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="894"/>
+        <location filename="library_repair_coordinator.cpp" line="69"/>
         <source>If you are sure that no other repair is running, the lock can be removed. Remove the lock and continue?</source>
         <translation>Als u zeker weet dat er geen ander herstel bezig is, kan de vergrendeling worden verwijderd. Vergrendeling verwijderen en doorgaan?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="948"/>
+        <location filename="library_window.cpp" line="618"/>
         <source>Package operation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Pakketbewerking mislukt</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="948"/>
+        <location filename="library_window.cpp" line="618"/>
         <source>The covers package operation could not be completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>De bewerking van het omslagpakket kon niet worden voltooid.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1036"/>
+        <location filename="library_management_coordinator.cpp" line="111"/>
         <source>Restore recovery failed</source>
         <translation>Herstel na onderbroken terugzetting mislukt</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1686"/>
-        <source>Set custom cover</source>
-        <translation>Aangepaste omslag instellen</translation>
+        <location filename="folder_management_coordinator.cpp" line="153"/>
+        <source>Rename folder</source>
+        <translation>Map hernoemen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1689"/>
-        <source>Delete custom cover</source>
-        <translation>Aangepaste omslag verwijderen</translation>
+        <location filename="folder_management_coordinator.cpp" line="168"/>
+        <source>Invalid folder name</source>
+        <translation>Ongeldige mapnaam</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1874"/>
+        <location filename="folder_management_coordinator.cpp" line="169"/>
+        <source>The folder name is empty or contains characters that are not supported.</source>
+        <translation>De mapnaam is leeg of bevat tekens die niet worden ondersteund.</translation>
+    </message>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="173"/>
+        <location filename="folder_management_coordinator.cpp" line="178"/>
+        <location filename="folder_management_coordinator.cpp" line="188"/>
+        <source>Unable to rename folder</source>
+        <translation>Kan de map niet hernoemen</translation>
+    </message>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="174"/>
+        <source>A file or folder named &apos;%1&apos; already exists.</source>
+        <translation>Er bestaat al een bestand of map met de naam &apos;%1&apos;.</translation>
+    </message>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="179"/>
+        <source>The folder could not be renamed on disk. Please check the folder name and write permissions.
+
+Folder: %1</source>
+        <translation>De map kon niet op de schijf worden hernoemd. Controleer de mapnaam en de schrijfrechten.
+
+Map: %1</translation>
+    </message>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="184"/>
+        <source>The library database could not be updated. The folder rename on disk was reverted.</source>
+        <translation>De database van de bibliotheek kon niet worden bijgewerkt. Het hernoemen van de map op de schijf is teruggedraaid.</translation>
+    </message>
+    <message>
+        <location filename="folder_management_coordinator.cpp" line="185"/>
+        <source>The library database could not be updated, and the folder rename on disk could not be reverted. The library now needs to be updated manually.</source>
+        <translation>De database van de bibliotheek kon niet worden bijgewerkt en het hernoemen van de map op de schijf kon niet worden teruggedraaid. De bibliotheek moet nu handmatig worden bijgewerkt.</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="356"/>
         <source>Save covers</source>
         <translation>Bewaar hoesjes</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1893"/>
+        <location filename="library_management_coordinator.cpp" line="445"/>
         <source>You are adding too many libraries.</source>
         <translation>U voegt te veel bibliotheken toe.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1893"/>
+        <location filename="library_management_coordinator.cpp" line="446"/>
         <source>You are adding too many libraries.
 
 You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
@@ -1209,74 +1339,48 @@ Je hebt waarschijnlijk maar één bibliotheek nodig in je stripmap op het hoogst
 YACReaderLibrary zal u er niet van weerhouden om meer bibliotheken te creëren, maar u moet het aantal bibliotheken laag houden.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="1953"/>
-        <location filename="library_window.cpp" line="1955"/>
-        <source>YACReader not found</source>
-        <translation>YACReader niet gevonden</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1953"/>
-        <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
-        <translation>YACReader niet gevonden. YACReader moet in dezelfde map worden geïnstalleerd als YACReaderLibrary.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1955"/>
-        <source>YACReader not found. There might be a problem with your YACReader installation.</source>
-        <translation>YACReader niet gevonden. Er is mogelijk een probleem met uw YACReader-installatie.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1962"/>
-        <source>Error</source>
-        <translation>Fout</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="1962"/>
-        <source>Error opening comic with third party reader.</source>
-        <translation>Fout bij het openen van een strip met een lezer van een derde partij.</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="2097"/>
-        <location filename="library_window.cpp" line="2137"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="51"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="90"/>
         <source>YACReader library database (*.ydb)</source>
         <translation>YACReader-bibliotheekdatabase (*.ydb)</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2117"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="71"/>
         <source>The library database backup was created at:
 %1</source>
         <translation>De back-up van de bibliotheekdatabase is gemaakt in:
 %1</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2121"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="75"/>
         <source>Unable to create the library database backup:
 %1</source>
         <translation>De back-up van de bibliotheekdatabase kon niet worden gemaakt:
 %1</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2143"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="96"/>
         <source>Close YACReaderLibraryServer and any other YACReader application using this library before restoring. Continue?</source>
         <translation>Sluit YACReaderLibraryServer en alle andere YACReader-programma&apos;s die deze bibliotheek gebruiken voordat je deze herstelt. Doorgaan?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2155"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="106"/>
         <source>Restoring library database...</source>
         <translation>Bibliotheekdatabase wordt hersteld...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2174"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="122"/>
         <source>The current library database is invalid. Restore the selected backup anyway?</source>
         <translation>De huidige bibliotheekdatabase is ongeldig. De geselecteerde back-up toch herstellen?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2188"/>
-        <location filename="library_window.cpp" line="2267"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="134"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="211"/>
         <source>The library maintenance lock may be stale. Remove it and retry?</source>
         <translation>Het onderhoudsslot van de bibliotheek is mogelijk verouderd. Verwijderen en opnieuw proberen?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2202"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="148"/>
         <source>
 
 Restart YACReaderLibrary before attempting recovery again.</source>
@@ -1285,71 +1389,71 @@ Restart YACReaderLibrary before attempting recovery again.</source>
 Start YACReaderLibrary opnieuw voordat je nogmaals herstel probeert.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2216"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="160"/>
         <source>The library database was restored successfully. Update the library now?</source>
         <translation>De bibliotheekdatabase is hersteld. De bibliotheek nu bijwerken?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2229"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="174"/>
         <source>Library database damaged</source>
         <translation>Bibliotheekdatabase beschadigd</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2230"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="175"/>
         <source>The database of library &apos;%1&apos; is damaged, so normal updates, maintenance, and backups are unavailable. YACReader can attempt to repair the database. Some damaged data may not be recoverable. Existing backups will not be changed.</source>
         <translation>De database van bibliotheek &apos;%1&apos; is beschadigd. Normale updates, onderhoud en back-ups zijn daarom niet beschikbaar. YACReader kan proberen de database te herstellen. Sommige beschadigde gegevens kunnen mogelijk niet worden hersteld. Bestaande back-ups worden niet gewijzigd.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2233"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="178"/>
         <source>Attempt repair</source>
         <translation>Herstel proberen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2234"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="179"/>
         <source>Restore a backup...</source>
         <translation>Een back-up herstellen...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2252"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="196"/>
         <source>Repairing library database...</source>
         <translation>Bibliotheekdatabase wordt hersteld...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2266"/>
-        <location filename="library_window.cpp" line="2274"/>
-        <location filename="library_window.cpp" line="2284"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="210"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="218"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="228"/>
         <source>Library database repair</source>
         <translation>Bibliotheekdatabase herstellen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2275"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="219"/>
         <source>Another maintenance operation is currently using this library. Try again after it finishes.</source>
         <translation>Een andere onderhoudsbewerking gebruikt deze bibliotheek momenteel. Probeer het opnieuw wanneer die is voltooid.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2285"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="229"/>
         <source>The library database is already valid.</source>
         <translation>De bibliotheekdatabase is al geldig.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2288"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="232"/>
         <source>Library database repaired</source>
         <translation>Bibliotheekdatabase hersteld</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2289"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="233"/>
         <source>The library database was repaired by rebuilding its indexes. The damaged original was preserved at:
 %1</source>
         <translation>De bibliotheekdatabase is hersteld door de indexen opnieuw op te bouwen. Het beschadigde origineel is bewaard in:
 %1</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2292"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="236"/>
         <source>Library database rebuilt</source>
         <translation>Bibliotheekdatabase opnieuw opgebouwd</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2293"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="237"/>
         <source>The library database was rebuilt successfully. The damaged original was preserved at:
 %1
 
@@ -1360,7 +1464,7 @@ Update the library now?</source>
 De bibliotheek nu bijwerken?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2302"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="246"/>
         <source>
 
 The damaged original was preserved at:
@@ -1371,12 +1475,12 @@ Het beschadigde origineel is bewaard in:
 %1</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2304"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="248"/>
         <source>Library database repair failed</source>
         <translation>Herstel van bibliotheekdatabase mislukt</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2305"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="249"/>
         <source>The library database could not be repaired:
 %1%2
 
@@ -1387,62 +1491,62 @@ You can restore a backup from the Library menu or recreate the library.</source>
 Je kunt een back-up herstellen via het menu Bibliotheek of de bibliotheek opnieuw maken.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2356"/>
+        <location filename="library_management_coordinator.cpp" line="403"/>
         <source>Remove and delete metadata and backups</source>
         <translation>Metagegevens en back-ups verwijderen en wissen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2425"/>
+        <location filename="library_window.cpp" line="562"/>
         <source>Library info</source>
         <translation>Bibliotheekinformatie</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2637"/>
+        <location filename="comic_management_coordinator.cpp" line="515"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Er is een probleem opgetreden bij het verwijderen van de geselecteerde strips. Controleer of er schrijfrechten zijn voor de geselecteerde bestanden of de map waarin deze zich bevinden.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2668"/>
+        <location filename="comic_management_coordinator.cpp" line="299"/>
         <source>Assign comics numbers</source>
         <translation>Wijs stripnummers toe</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2669"/>
+        <location filename="comic_management_coordinator.cpp" line="300"/>
         <source>Assign numbers starting in:</source>
         <translation>Nummers toewijzen beginnend met:</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2764"/>
+        <location filename="folder_management_coordinator.cpp" line="326"/>
         <source>Invalid image</source>
         <translation>Ongeldige afbeelding</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2764"/>
+        <location filename="folder_management_coordinator.cpp" line="327"/>
         <source>The selected file is not a valid image.</source>
         <translation>Het geselecteerde bestand is geen geldige afbeelding.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2770"/>
+        <location filename="folder_management_coordinator.cpp" line="334"/>
         <source>Error saving cover</source>
         <translation>Fout bij opslaan van dekking</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="2770"/>
+        <location filename="folder_management_coordinator.cpp" line="335"/>
         <source>There was an error saving the cover image.</source>
         <translation>Er is een fout opgetreden bij het opslaan van de omslagafbeelding.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3007"/>
+        <location filename="comic_management_coordinator.cpp" line="479"/>
         <source>Remove comics</source>
         <translation>Verwijder strips</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="3007"/>
+        <location filename="comic_management_coordinator.cpp" line="480"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Strips worden alleen verwijderd van het huidige label/de huidige lijst. Weet je het zeker?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="913"/>
+        <location filename="library_repair_coordinator.cpp" line="86"/>
         <source>Repaired: %1
 Failed: %2
 Missing files: %3</source>
@@ -1454,480 +1558,653 @@ Ontbrekende bestanden: %3</translation>
 <context>
     <name>LibraryWindowActions</name>
     <message>
-        <location filename="library_window_actions.cpp" line="37"/>
+        <location filename="library_window_actions.cpp" line="46"/>
         <source>Create a new library</source>
         <translation>Maak een nieuwe Bibliotheek </translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="42"/>
+        <location filename="library_window_actions.cpp" line="51"/>
         <source>Open an existing library</source>
         <translation>Open een bestaande Bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="46"/>
-        <location filename="library_window_actions.cpp" line="47"/>
+        <location filename="library_window_actions.cpp" line="55"/>
+        <location filename="library_window_actions.cpp" line="56"/>
         <source>Export comics info</source>
         <translation>Strip info exporteren </translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="51"/>
-        <location filename="library_window_actions.cpp" line="52"/>
+        <location filename="library_window_actions.cpp" line="60"/>
+        <location filename="library_window_actions.cpp" line="61"/>
         <source>Import comics info</source>
         <translation>Strip info Importeren</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="56"/>
+        <location filename="library_window_actions.cpp" line="65"/>
         <source>Pack covers</source>
         <translation>Inpakken strip voorbladen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="57"/>
+        <location filename="library_window_actions.cpp" line="66"/>
         <source>Pack the covers of the selected library</source>
         <translation>Inpakken alle strip voorbladen  van de geselecteerde Bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="61"/>
+        <location filename="library_window_actions.cpp" line="70"/>
         <source>Unpack covers</source>
         <translation>Uitpakken voorbladen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="62"/>
+        <location filename="library_window_actions.cpp" line="71"/>
         <source>Unpack a catalog</source>
         <translation>Uitpaken van een catalogus</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="66"/>
+        <location filename="library_window_actions.cpp" line="75"/>
         <source>Update library</source>
         <translation>Bibliotheek bijwerken</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="67"/>
+        <location filename="library_window_actions.cpp" line="76"/>
         <source>Update current library</source>
         <translation>Huidige Bibliotheek bijwerken</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="71"/>
+        <location filename="library_window_actions.cpp" line="80"/>
         <source>Back up library database</source>
         <translation>Back-up van bibliotheekdatabase maken</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="72"/>
+        <location filename="library_window_actions.cpp" line="81"/>
         <source>Create a backup of the current library database</source>
         <translation>Een back-up van de huidige bibliotheekdatabase maken</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="76"/>
+        <location filename="library_window_actions.cpp" line="85"/>
         <source>Restore library database backup</source>
         <translation>Back-up van bibliotheekdatabase herstellen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="77"/>
+        <location filename="library_window_actions.cpp" line="86"/>
         <source>Restore the current library database from a backup</source>
         <translation>De huidige bibliotheekdatabase vanuit een back-up herstellen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="81"/>
+        <location filename="library_window_actions.cpp" line="90"/>
         <location filename="import_widget.cpp" line="364"/>
         <source>Repair covers and comic info</source>
         <translation>Covers en stripinformatie herstellen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="82"/>
+        <location filename="library_window_actions.cpp" line="91"/>
         <source>Retry comics with missing covers or incomplete information</source>
         <translation>Strips met ontbrekende covers of onvolledige informatie opnieuw verwerken</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="86"/>
+        <location filename="library_window_actions.cpp" line="95"/>
         <source>Rename library</source>
         <translation>Bibliotheek hernoemen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="87"/>
+        <location filename="library_window_actions.cpp" line="96"/>
         <source>Rename current library</source>
         <translation>Huidige Bibliotheek hernoemen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="91"/>
+        <location filename="library_window_actions.cpp" line="100"/>
         <source>Remove library</source>
         <translation>Bibliotheek verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="92"/>
+        <location filename="library_window_actions.cpp" line="101"/>
         <source>Remove current library from your collection</source>
         <translation>De huidige Bibliotheek verwijderen uit uw verzameling</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="96"/>
+        <location filename="library_window_actions.cpp" line="105"/>
         <source>Rescan library for XML info</source>
         <translation>Bibliotheek opnieuw scannen op XML-info</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="97"/>
+        <location filename="library_window_actions.cpp" line="106"/>
         <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
         <translation>Probeert XML-informatie te vinden die is ingebed in stripbestanden. U hoeft dit alleen te doen als de bibliotheek is gemaakt met versie 9.8.2 of eerdere versies of als u software van derden gebruikt om XML-informatie in de bestanden in te sluiten.</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="101"/>
+        <location filename="library_window_actions.cpp" line="110"/>
         <source>Open library folder...</source>
         <translation>Bibliotheekmap openen...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="102"/>
+        <location filename="library_window_actions.cpp" line="111"/>
         <source>Open the root folder of the current library</source>
         <translation>De hoofdmap van de huidige bibliotheek openen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="106"/>
+        <location filename="library_window_actions.cpp" line="115"/>
         <source>Show library info</source>
         <translation>Bibliotheekinfo tonen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="107"/>
+        <location filename="library_window_actions.cpp" line="116"/>
         <source>Show information about the current library</source>
         <translation>Toon informatie over de huidige bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="111"/>
+        <location filename="library_window_actions.cpp" line="120"/>
         <source>Open current comic</source>
         <translation>Huidige strip openen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="112"/>
+        <location filename="library_window_actions.cpp" line="121"/>
         <source>Open current comic on YACReader</source>
         <translation>Huidige strip openen in YACReader</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="116"/>
+        <location filename="library_window_actions.cpp" line="125"/>
         <source>Save selected covers to...</source>
         <translation>Geselecteerde omslagen opslaan in...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="117"/>
+        <location filename="library_window_actions.cpp" line="126"/>
         <source>Save covers of the selected comics as JPG files</source>
         <translation>Sla covers van de geselecteerde strips op als JPG-bestanden</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="121"/>
-        <location filename="library_window_actions.cpp" line="242"/>
+        <location filename="library_window_actions.cpp" line="130"/>
+        <location filename="library_window_actions.cpp" line="266"/>
         <source>Set as read</source>
         <translation>Instellen als gelezen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="122"/>
+        <location filename="library_window_actions.cpp" line="131"/>
         <source>Set comic as read</source>
         <translation>Strip Instellen als gelezen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="126"/>
-        <location filename="library_window_actions.cpp" line="247"/>
+        <location filename="library_window_actions.cpp" line="135"/>
+        <location filename="library_window_actions.cpp" line="271"/>
         <source>Set as unread</source>
         <translation>Instellen als ongelezen </translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="127"/>
+        <location filename="library_window_actions.cpp" line="136"/>
         <source>Set comic as unread</source>
         <translation>Strip Instellen als ongelezen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="131"/>
-        <location filename="library_window_actions.cpp" line="262"/>
+        <location filename="library_window_actions.cpp" line="140"/>
+        <location filename="library_window_actions.cpp" line="286"/>
         <source>manga</source>
         <translation>Manga</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="132"/>
+        <location filename="library_window_actions.cpp" line="141"/>
         <source>Set issue as manga</source>
         <translation>Stel het probleem in als manga</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="136"/>
-        <location filename="library_window_actions.cpp" line="267"/>
+        <location filename="library_window_actions.cpp" line="145"/>
+        <location filename="library_window_actions.cpp" line="291"/>
         <source>comic</source>
         <translation>grappig</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="137"/>
+        <location filename="library_window_actions.cpp" line="146"/>
         <source>Set issue as normal</source>
         <translation>Stel het probleem in als normaal</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="141"/>
+        <location filename="library_window_actions.cpp" line="150"/>
         <source>western manga</source>
         <translation>westerse manga</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="142"/>
+        <location filename="library_window_actions.cpp" line="151"/>
         <source>Set issue as western manga</source>
         <translation>Stel het probleem in als westerse manga</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="147"/>
-        <location filename="library_window_actions.cpp" line="277"/>
+        <location filename="library_window_actions.cpp" line="156"/>
+        <location filename="library_window_actions.cpp" line="301"/>
         <source>web comic</source>
         <translation>web-strip</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="148"/>
+        <location filename="library_window_actions.cpp" line="157"/>
         <source>Set issue as web comic</source>
         <translation>Stel het probleem in als webstrip</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="153"/>
-        <location filename="library_window_actions.cpp" line="282"/>
+        <location filename="library_window_actions.cpp" line="162"/>
+        <location filename="library_window_actions.cpp" line="306"/>
         <source>yonkoma</source>
         <translation>yokoma</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="154"/>
+        <location filename="library_window_actions.cpp" line="163"/>
         <source>Set issue as yonkoma</source>
         <translation>Stel het probleem in als yonkoma</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="158"/>
+        <location filename="library_window_actions.cpp" line="167"/>
         <source>Show/Hide marks</source>
         <translation>Toon/Verberg markeringen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="159"/>
+        <location filename="library_window_actions.cpp" line="168"/>
         <source>Show or hide read marks</source>
         <translation>Toon of verberg leesmarkeringen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="165"/>
+        <location filename="library_window_actions.cpp" line="174"/>
         <source>Show/Hide recent indicator</source>
         <translation>Recente indicator tonen/verbergen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="166"/>
+        <location filename="library_window_actions.cpp" line="175"/>
         <source>Show or hide recent indicator</source>
         <translation>Toon of verberg recente indicator</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="173"/>
-        <location filename="library_window_actions.cpp" line="174"/>
+        <location filename="library_window_actions.cpp" line="182"/>
+        <location filename="library_window_actions.cpp" line="183"/>
         <source>Fullscreen mode on/off</source>
         <translation>Volledig scherm modus aan/of</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="179"/>
+        <location filename="library_window_actions.cpp" line="188"/>
         <source>Help, About YACReader</source>
         <translation>Help, Over YACReader</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="183"/>
+        <location filename="library_window_actions.cpp" line="192"/>
         <source>Add new folder</source>
         <translation>Nieuwe map toevoegen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="186"/>
+        <location filename="library_window_actions.cpp" line="195"/>
         <source>Add new folder to the current library</source>
         <translation>Voeg een nieuwe map toe aan de huidige bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="188"/>
+        <location filename="library_window_actions.cpp" line="197"/>
+        <source>Rename folder</source>
+        <translation>Map hernoemen</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="198"/>
+        <source>Rename the current folder on disk and in the library</source>
+        <translation>De huidige map hernoemen op de schijf en in de bibliotheek</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="200"/>
         <source>Delete folder</source>
         <translation>Map verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="191"/>
+        <location filename="library_window_actions.cpp" line="203"/>
         <source>Delete current folder from disk</source>
         <translation>Verwijder de huidige map van schijf</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="196"/>
+        <location filename="library_window_actions.cpp" line="208"/>
         <source>Select root node</source>
         <translation>Selecteer de hoofd categorie</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="199"/>
+        <location filename="library_window_actions.cpp" line="211"/>
         <source>Expand all nodes</source>
         <translation>Alle categorieën uitklappen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="204"/>
+        <location filename="library_window_actions.cpp" line="216"/>
         <source>Collapse all nodes</source>
         <translation>Vouw alle knooppunten samen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="209"/>
+        <location filename="library_window_actions.cpp" line="221"/>
         <source>Show options dialog</source>
         <translation>Toon opties dialoog</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="214"/>
+        <location filename="library_window_actions.cpp" line="226"/>
         <source>Show comics server options dialog</source>
         <translation>Toon strips-server opties dialoog</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="218"/>
-        <location filename="library_window_actions.cpp" line="219"/>
+        <location filename="library_window_actions.cpp" line="230"/>
+        <location filename="library_window_actions.cpp" line="231"/>
         <source>Change between comics views</source>
         <translation>Wisselen tussen stripweergaven</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="227"/>
+        <location filename="library_window_actions.cpp" line="239"/>
         <source>Open folder...</source>
         <translation>Map openen ...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="232"/>
+        <location filename="library_window_actions.cpp" line="244"/>
+        <location filename="library_window_actions.cpp" line="318"/>
+        <source>Rename files...</source>
+        <oldsource>Organize files</oldsource>
+        <translation>Bestanden hernoemen...</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="250"/>
+        <location filename="library_window_actions.cpp" line="324"/>
+        <source>Organize into folders...</source>
+        <translation>In mappen ordenen...</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="256"/>
         <source>Set as uncompleted</source>
         <translation>Ingesteld als onvoltooid</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="237"/>
+        <location filename="library_window_actions.cpp" line="261"/>
         <source>Set as completed</source>
         <translation>Instellen als voltooid</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="252"/>
+        <location filename="library_window_actions.cpp" line="276"/>
         <source>Set custom cover</source>
         <translation>Aangepaste omslag instellen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="257"/>
+        <location filename="library_window_actions.cpp" line="281"/>
         <source>Delete custom cover</source>
         <translation>Aangepaste omslag verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="272"/>
+        <location filename="library_window_actions.cpp" line="296"/>
         <source>western manga (left to right)</source>
         <translation>westerse manga (van links naar rechts)</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="289"/>
+        <location filename="library_window_actions.cpp" line="313"/>
         <source>Open containing folder...</source>
         <translation>Open map ...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="294"/>
         <source>Reset comic rating</source>
-        <translation>Stripbeoordeling opnieuw instellen</translation>
+        <translation type="vanished">Stripbeoordeling opnieuw instellen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="300"/>
+        <location filename="library_window_actions.cpp" line="336"/>
         <source>Select all comics</source>
         <translation>Selecteer alle strips</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="305"/>
+        <location filename="library_window_actions.cpp" line="341"/>
         <source>Edit</source>
         <translation>Bewerken</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="310"/>
+        <location filename="library_window_actions.cpp" line="346"/>
         <source>Assign current order to comics</source>
         <translation>Wijs de huidige volgorde toe aan strips</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="315"/>
+        <location filename="library_window_actions.cpp" line="351"/>
         <source>Update cover</source>
         <translation>Strip omslagen bijwerken</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="321"/>
+        <location filename="library_window_actions.cpp" line="357"/>
         <source>Delete selected comics</source>
         <translation>Geselecteerde strips verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="326"/>
+        <location filename="library_window_actions.cpp" line="362"/>
         <source>Delete metadata from selected comics</source>
         <translation>Verwijder metadata uit geselecteerde strips</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="333"/>
+        <location filename="library_window_actions.cpp" line="369"/>
         <source>Download tags from Comic Vine</source>
         <translation>Tags downloaden van Comic Vine</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="336"/>
+        <location filename="library_window_actions.cpp" line="372"/>
         <source>Focus search line</source>
         <translation>Focus zoeklijn</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="342"/>
+        <location filename="library_window_actions.cpp" line="378"/>
         <source>Focus comics view</source>
         <translation>Focus stripweergave</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="347"/>
+        <location filename="library_window_actions.cpp" line="383"/>
         <source>Edit shortcuts</source>
         <translation>Snelkoppelingen bewerken</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="353"/>
+        <location filename="library_window_actions.cpp" line="389"/>
         <source>&amp;Quit</source>
         <translation>&amp;Afsluiten</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="360"/>
+        <location filename="library_window_actions.cpp" line="396"/>
         <source>Update folder</source>
         <translation>Map bijwerken</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="362"/>
+        <location filename="library_window_actions.cpp" line="398"/>
         <source>Update current folder</source>
         <translation>Werk de huidige map bij</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="366"/>
+        <location filename="library_window_actions.cpp" line="402"/>
         <source>Scan legacy XML metadata</source>
         <translation>Scan oudere XML-metagegevens</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="370"/>
+        <location filename="library_window_actions.cpp" line="406"/>
         <source>Add new reading list</source>
         <translation>Nieuwe leeslijst toevoegen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="373"/>
+        <location filename="library_window_actions.cpp" line="409"/>
         <source>Add a new reading list to the current library</source>
         <translation>Voeg een nieuwe leeslijst toe aan de huidige bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="375"/>
+        <location filename="library_window_actions.cpp" line="411"/>
         <source>Remove reading list</source>
         <translation>Leeslijst verwijderen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="378"/>
+        <location filename="library_window_actions.cpp" line="414"/>
         <source>Remove current reading list from the library</source>
         <translation>Verwijder de huidige leeslijst uit de bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="380"/>
+        <location filename="library_window_actions.cpp" line="416"/>
         <source>Add new label</source>
         <translation>Nieuw etiket toevoegen</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="383"/>
+        <location filename="library_window_actions.cpp" line="419"/>
         <source>Add a new label to this library</source>
         <translation>Voeg een nieuw label toe aan deze bibliotheek</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="385"/>
+        <location filename="library_window_actions.cpp" line="421"/>
         <source>Rename selected list</source>
         <translation>Hernoem de geselecteerde lijst</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="388"/>
+        <location filename="library_window_actions.cpp" line="424"/>
         <source>Rename any selected labels or lists</source>
         <translation>Hernoem alle geselecteerde labels of lijsten</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="391"/>
+        <location filename="library_window_actions.cpp" line="427"/>
         <source>Add to...</source>
         <translation>Toevoegen aan...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="393"/>
+        <location filename="library_window_actions.cpp" line="429"/>
         <source>Favorites</source>
         <translation>Favorieten</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="396"/>
+        <location filename="library_window_actions.cpp" line="432"/>
         <source>Add selected comics to favorites list</source>
         <translation>Voeg geselecteerde strips toe aan de favorietenlijst</translation>
+    </message>
+    <message>
+        <location filename="qml/ComicGridDelegate.qml" line="300"/>
+        <location filename="library_window_actions.cpp" line="330"/>
+        <source>Reset rating</source>
+        <translation>Beoordeling opnieuw instellen</translation>
+    </message>
+</context>
+<context>
+    <name>LibraryWindowMenus</name>
+    <message>
+        <location filename="library_window_menus.cpp" line="38"/>
+        <source>comic</source>
+        <translation>grappig</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="39"/>
+        <source>manga</source>
+        <translation>Manga</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="40"/>
+        <source>western manga (left to right)</source>
+        <translation>westerse manga (van links naar rechts)</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="41"/>
+        <source>web comic</source>
+        <translation>web-strip</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="42"/>
+        <source>4koma (top to botom)</source>
+        <translation>4koma (van boven naar beneden)</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="135"/>
+        <location filename="library_window_menus.cpp" line="236"/>
+        <location filename="library_window_menus.cpp" line="327"/>
+        <location filename="library_window_menus.cpp" line="417"/>
+        <source>Set type</source>
+        <translation>Soort instellen</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="165"/>
+        <source>Library</source>
+        <translation>Bibliotheek</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="187"/>
+        <source>Folder</source>
+        <translation>Map</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="209"/>
+        <source>Comic</source>
+        <translation>Grappig</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="295"/>
+        <source>Open folder...</source>
+        <translation>Map openen ...</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="297"/>
+        <source>Update folder</source>
+        <translation>Map bijwerken</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="299"/>
+        <source>Rename folder</source>
+        <translation>Map hernoemen</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="301"/>
+        <source>Rename files...</source>
+        <translation>Bestanden hernoemen...</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="302"/>
+        <source>Organize into folders...</source>
+        <translation>In mappen ordenen...</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="303"/>
+        <source>Rescan library for XML info</source>
+        <translation>Bibliotheek opnieuw scannen op XML-info</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="304"/>
+        <source>Set as uncompleted</source>
+        <translation>Ingesteld als onvoltooid</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="305"/>
+        <source>Set as completed</source>
+        <translation>Instellen als voltooid</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="306"/>
+        <source>Set as read</source>
+        <translation>Instellen als gelezen</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="307"/>
+        <location filename="library_window_menus.cpp" line="357"/>
+        <source>Set as unread</source>
+        <translation>Instellen als ongelezen </translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="308"/>
+        <source>Set custom cover</source>
+        <translation>Aangepaste omslag instellen</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="309"/>
+        <source>Delete custom cover</source>
+        <translation>Aangepaste omslag verwijderen</translation>
+    </message>
+</context>
+<context>
+    <name>ListInfoView</name>
+    <message>
+        <location filename="qml/ListInfoView.qml" line="46"/>
+        <source>1 comic</source>
+        <translation>1 strip</translation>
+    </message>
+    <message>
+        <location filename="qml/ListInfoView.qml" line="47"/>
+        <source>%1 comics</source>
+        <translation>%1 strips</translation>
+    </message>
+    <message>
+        <location filename="qml/ListInfoView.qml" line="57"/>
+        <source>Last day</source>
+        <translation>Afgelopen dag</translation>
+    </message>
+    <message>
+        <location filename="qml/ListInfoView.qml" line="58"/>
+        <source>Last %1 days</source>
+        <translation>Afgelopen %1 dagen</translation>
+    </message>
+    <message>
+        <location filename="qml/ListInfoView.qml" line="69"/>
+        <source>1 sublist</source>
+        <translation>1 sublijst</translation>
+    </message>
+    <message>
+        <location filename="qml/ListInfoView.qml" line="70"/>
+        <source>%1 sublists</source>
+        <translation>%1 sublijsten</translation>
     </message>
 </context>
 <context>
@@ -1982,143 +2259,143 @@ Ontbrekende bestanden: %3</translation>
         <translation>Opties</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="176"/>
+        <location filename="options_dialog.cpp" line="177"/>
         <source>Language</source>
         <translation>Taal</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="178"/>
+        <location filename="options_dialog.cpp" line="179"/>
         <source>Application language</source>
         <translation>Applicatietaal</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="180"/>
+        <location filename="options_dialog.cpp" line="181"/>
         <source>System default</source>
         <translation>Standaard van het systeem</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="190"/>
+        <location filename="options_dialog.cpp" line="191"/>
         <source>Tray icon settings (experimental)</source>
         <translation>Instellingen voor ladepictogram (experimenteel)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="193"/>
+        <location filename="options_dialog.cpp" line="194"/>
         <source>Close to tray</source>
         <translation>Dicht bij lade</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="194"/>
+        <location filename="options_dialog.cpp" line="195"/>
         <source>Start into the system tray</source>
         <translation>Begin in het systeemvak</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="212"/>
+        <location filename="options_dialog.cpp" line="213"/>
         <source>Edit Comic Vine API key</source>
         <translation>Bewerk de Comic Vine API-sleutel</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="215"/>
+        <location filename="options_dialog.cpp" line="216"/>
         <source>Comic Vine API key</source>
         <translation>Comic Vine API-sleutel</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="220"/>
+        <location filename="options_dialog.cpp" line="221"/>
         <source>ComicInfo.xml legacy support</source>
         <translation>ComicInfo.xml verouderde ondersteuning</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="222"/>
+        <location filename="options_dialog.cpp" line="223"/>
         <source>Import metadata from ComicInfo.xml when adding new comics</source>
         <oldsource>Import metada from ComicInfo.xml when adding new comics</oldsource>
         <translation>Importeer metagegevens uit ComicInfo.xml wanneer u nieuwe strips toevoegt</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="232"/>
+        <location filename="options_dialog.cpp" line="233"/>
         <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
         <translation>Overweeg &apos;recente&apos; items die sinds X dagen geleden zijn toegevoegd of bijgewerkt</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="244"/>
+        <location filename="options_dialog.cpp" line="245"/>
         <source>Third party reader</source>
         <translation>Lezer van derden</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="246"/>
+        <location filename="options_dialog.cpp" line="247"/>
         <source>Write {comic_file_path} where the path should go in the command</source>
         <translation>Schrijf {comic_file_path} waar het pad naartoe moet in de opdracht</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="247"/>
+        <location filename="options_dialog.cpp" line="248"/>
         <source>Clear</source>
         <translation>Duidelijk</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="271"/>
+        <location filename="options_dialog.cpp" line="272"/>
         <source>Update libraries at startup</source>
         <translation>Update bibliotheken bij het opstarten</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="276"/>
+        <location filename="options_dialog.cpp" line="277"/>
         <source>Try to detect changes automatically</source>
         <translation>Probeer wijzigingen automatisch te detecteren</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="281"/>
+        <location filename="options_dialog.cpp" line="282"/>
         <source>Update libraries periodically</source>
         <translation>Update bibliotheken regelmatig</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="287"/>
+        <location filename="options_dialog.cpp" line="288"/>
         <source>Interval:</source>
         <translation>Tijdsinterval:</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="289"/>
+        <location filename="options_dialog.cpp" line="290"/>
         <source>30 minutes</source>
         <translation>30 minuten</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="290"/>
+        <location filename="options_dialog.cpp" line="291"/>
         <source>1 hour</source>
         <translation>1 uur</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="291"/>
+        <location filename="options_dialog.cpp" line="292"/>
         <source>2 hours</source>
         <translation>2 uur</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="292"/>
+        <location filename="options_dialog.cpp" line="293"/>
         <source>4 hours</source>
         <translation>4 uur</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="293"/>
+        <location filename="options_dialog.cpp" line="294"/>
         <source>8 hours</source>
         <translation>8 uur</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="294"/>
+        <location filename="options_dialog.cpp" line="295"/>
         <source>12 hours</source>
         <translation>12 uur</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="295"/>
+        <location filename="options_dialog.cpp" line="296"/>
         <source>daily</source>
         <translation>dagelijks</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="302"/>
+        <location filename="options_dialog.cpp" line="303"/>
         <source>Update libraries at certain time</source>
         <translation>Update bibliotheken op een bepaald tijdstip</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="308"/>
+        <location filename="options_dialog.cpp" line="309"/>
         <source>Time:</source>
         <translation>Tijd:</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="335"/>
+        <location filename="options_dialog.cpp" line="338"/>
         <source>WARNING! During library updates writes to the database are disabled!
 Don&apos;t schedule updates while you may be using the app actively.
 During automatic updates the app will block some of the actions until the update is finished.
@@ -2132,59 +2409,74 @@ During automatic updates the app will block some of the actions until the update
 Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de titel van Bibliotheken.</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="343"/>
+        <location filename="options_dialog.cpp" line="348"/>
         <source>Modifications detection</source>
         <translation>Detectie van wijzigingen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="345"/>
+        <location filename="options_dialog.cpp" line="350"/>
         <source>Compare the modified date of files when updating a library (not recommended)</source>
         <translation>Vergelijk de wijzigingsdatum van bestanden bij het updaten van een bibliotheek (niet aanbevolen)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="384"/>
+        <location filename="options_dialog.cpp" line="389"/>
         <source>Enable background image</source>
         <translation>Achtergrondafbeelding inschakelen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="386"/>
+        <location filename="options_dialog.cpp" line="391"/>
         <source>Opacity level</source>
         <translation>Dekkingsniveau</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="391"/>
+        <location filename="options_dialog.cpp" line="396"/>
         <source>Blur level</source>
         <translation>Vervagingsniveau</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="396"/>
+        <location filename="options_dialog.cpp" line="401"/>
         <source>Use selected comic cover as background</source>
         <translation>Gebruik geselecteerde stripomslag als achtergrond</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="398"/>
+        <location filename="options_dialog.cpp" line="403"/>
         <source>Restore defautls</source>
         <translation>Standaardwaarden herstellen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="409"/>
+        <location filename="options_dialog.cpp" line="414"/>
         <source>Background</source>
         <translation>Achtergrond</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="412"/>
+        <location filename="options_dialog.cpp" line="417"/>
         <source>Display continue reading banner</source>
         <translation>Toon de banner voor verder lezen</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="413"/>
+        <location filename="options_dialog.cpp" line="418"/>
         <source>Display current comic banner</source>
         <translation>Toon huidige stripbanner</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="419"/>
+        <location filename="options_dialog.cpp" line="424"/>
         <source>Continue reading</source>
         <translation>Lees verder</translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="427"/>
+        <source>Mix folders and comics</source>
+        <translation>Mappen en strips mengen</translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="428"/>
+        <source>Start comics on a new row</source>
+        <translation>Strips op een nieuwe rij beginnen</translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="434"/>
+        <source>Content</source>
+        <translation>Inhoud</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="35"/>
@@ -2193,7 +2485,7 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
     </message>
     <message>
         <location filename="options_dialog.cpp" line="34"/>
-        <location filename="options_dialog.cpp" line="340"/>
+        <location filename="options_dialog.cpp" line="345"/>
         <source>Libraries</source>
         <translation>Bibliotheken</translation>
     </message>
@@ -2211,6 +2503,651 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         <location filename="options_dialog.cpp" line="42"/>
         <source>Restart is needed</source>
         <translation>Herstart is nodig</translation>
+    </message>
+</context>
+<context>
+    <name>OrganizeFiles</name>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="536"/>
+        <source>Renamed, %1 is already in use</source>
+        <translation>Hernoemd, %1 is al in gebruik</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="539"/>
+        <source>Missing metadata: %1</source>
+        <translation>Ontbrekende metagegevens: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_journal.cpp" line="53"/>
+        <source>%1 could not be created</source>
+        <translation>%1 kon niet worden gemaakt</translation>
+    </message>
+</context>
+<context>
+    <name>OrganizeFilesCoordinator</name>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="143"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="175"/>
+        <source>Organize files</source>
+        <translation>Bestanden ordenen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="143"/>
+        <source>This folder does not contain any comics.</source>
+        <translation>Deze map bevat geen strips.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="176"/>
+        <source>This library is busy: %1</source>
+        <translation>Deze bibliotheek is bezig: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="219"/>
+        <source>the library database could not be opened</source>
+        <translation>de database van de bibliotheek kon niet worden geopend</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="226"/>
+        <source>the library database could not be locked for writing</source>
+        <translation>de database van de bibliotheek kon niet worden vergrendeld om te schrijven</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="235"/>
+        <source>a folder entry could not be restored</source>
+        <translation>een mapvermelding kon niet worden hersteld</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="246"/>
+        <source>a comic entry could not be updated</source>
+        <translation>een stripvermelding kon niet worden bijgewerkt</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="265"/>
+        <source>the library database could not be saved: %1</source>
+        <translation>de database van de bibliotheek kon niet worden opgeslagen: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="310"/>
+        <source>the record of the last organize run could not be read</source>
+        <translation>het verslag van de laatste ordening kon niet worden gelezen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="335"/>
+        <source>the folder %1 could not be created</source>
+        <translation>de map %1 kon niet worden gemaakt</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_coordinator.cpp" line="383"/>
+        <source>%n file(s) could not be moved back</source>
+        <translation>
+            <numerusform>%n bestand kon niet worden teruggezet</numerusform>
+            <numerusform>%n bestanden konden niet worden teruggezet</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>OrganizeFilesDialog</name>
+    <message>
+        <source>Format:</source>
+        <translation type="obsolete">Formaat:</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="152"/>
+        <source>Organize files</source>
+        <translation>Bestanden ordenen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="152"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="395"/>
+        <source>Rename files</source>
+        <translation>Bestanden hernoemen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="217"/>
+        <source>Preparing the preview...</source>
+        <translation>Voorbeeld voorbereiden...</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="238"/>
+        <source>&amp;Filename format:</source>
+        <translation>&amp;Bestandsnaamopmaak:</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="238"/>
+        <source>&amp;Path format:</source>
+        <translation>&amp;Padopmaak:</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="240"/>
+        <source>Filename format</source>
+        <translation>Bestandsnaamopmaak</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="240"/>
+        <source>Path format</source>
+        <translation>Padopmaak</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="244"/>
+        <source>Presets</source>
+        <translation>Voorinstellingen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="250"/>
+        <source>Insert</source>
+        <translation>Invoegen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="265"/>
+        <source>Optional part &lt; &gt;</source>
+        <translation>Optioneel deel &lt; &gt;</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="266"/>
+        <source>Disappears completely when the fields inside it are empty.</source>
+        <translation>Verdwijnt volledig wanneer de velden erin leeg zijn.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="269"/>
+        <source>Padded number {number:000}</source>
+        <translation>Nummer met voorloopnullen {number:000}</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="276"/>
+        <source>Format help...</source>
+        <translation>Hulp bij de opmaak...</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="290"/>
+        <source>selected folder</source>
+        <translation>geselecteerde map</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="294"/>
+        <source>library root</source>
+        <translation>hoofdmap van de bibliotheek</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="335"/>
+        <source>Move into</source>
+        <translation>Verplaatsen naar</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="344"/>
+        <source>Reset changes</source>
+        <translation>Wijzigingen terugzetten</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="348"/>
+        <source>Remove selected</source>
+        <translation>Selectie verwijderen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="352"/>
+        <source>Show unchanged</source>
+        <translation>Ongewijzigde tonen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="371"/>
+        <source>New name</source>
+        <translation>Nieuwe naam</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="371"/>
+        <source>Renamed from</source>
+        <translation>Vorige naam</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="372"/>
+        <source>New location</source>
+        <translation>Nieuwe locatie</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="372"/>
+        <source>Moved from</source>
+        <translation>Vorige locatie</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="384"/>
+        <source>Remove from list</source>
+        <translation>Uit de lijst verwijderen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="395"/>
+        <source>Move files</source>
+        <translation>Bestanden verplaatsen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="399"/>
+        <source>Cancel</source>
+        <translation>Annuleren</translation>
+    </message>
+    <message>
+        <source>Copy the list</source>
+        <translation type="vanished">De lijst kopiëren</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="468"/>
+        <source>Undo</source>
+        <translation>Ongedaan maken</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="vanished">Sluiten</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="464"/>
+        <source>Copy failure details</source>
+        <translation>Foutdetails kopiëren</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="471"/>
+        <source>Finish</source>
+        <translation>Voltooien</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="595"/>
+        <source>Remove preset</source>
+        <translation>Voorinstelling verwijderen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="614"/>
+        <source>Save current format as preset...</source>
+        <translation>Huidige opmaak als voorinstelling bewaren...</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="619"/>
+        <source>Reset to default format</source>
+        <translation>Standaardopmaak herstellen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="625"/>
+        <source>Save preset</source>
+        <translation>Voorinstelling bewaren</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="625"/>
+        <source>Preset name:</source>
+        <translation>Naam voorinstelling:</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="645"/>
+        <source>A filename format cannot contain &quot;/&quot;. Use Organize files to move comics into folders.</source>
+        <translation>Een bestandsnaamopmaak mag geen &quot;/&quot; bevatten. Gebruik Bestanden ordenen om strips naar mappen te verplaatsen.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="647"/>
+        <source>This format cannot be used: %1</source>
+        <translation>Deze opmaak kan niet worden gebruikt: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="798"/>
+        <source>new folder</source>
+        <translation>nieuwe map</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="799"/>
+        <source>This folder does not exist yet. It will be created.</source>
+        <translation>Deze map bestaat nog niet. Ze wordt gemaakt.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="824"/>
+        <source>file not found</source>
+        <translation>bestand niet gevonden</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="825"/>
+        <source>This comic is in the library but not on disk. It is skipped.</source>
+        <translation>Deze strip staat in de bibliotheek, maar niet op de schijf. Ze wordt overgeslagen.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="829"/>
+        <source>name in use</source>
+        <translation>naam in gebruik</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="832"/>
+        <source>no metadata</source>
+        <translation>geen metagegevens</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="835"/>
+        <source>already here</source>
+        <translation>al hier</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="836"/>
+        <source>This file is already in the right place.</source>
+        <translation>Dit bestand staat al op de juiste plek.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="840"/>
+        <source>edited</source>
+        <translation>bewerkt</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="892"/>
+        <source>%n will be renamed</source>
+        <translation>
+            <numerusform>%n wordt hernoemd</numerusform>
+            <numerusform>%n worden hernoemd</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="892"/>
+        <source>%n will move</source>
+        <translation>
+            <numerusform>%n wordt verplaatst</numerusform>
+            <numerusform>%n worden verplaatst</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="893"/>
+        <source>%n unchanged</source>
+        <translation>
+            <numerusform>%n ongewijzigd</numerusform>
+            <numerusform>%n ongewijzigd</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="895"/>
+        <source>%n renamed</source>
+        <translation>
+            <numerusform>%n hernoemd</numerusform>
+            <numerusform>%n hernoemd</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="897"/>
+        <source>%n removed</source>
+        <translation>
+            <numerusform>%n verwijderd</numerusform>
+            <numerusform>%n verwijderd</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="899"/>
+        <source>%n missing</source>
+        <translation>
+            <numerusform>%n ontbreekt</numerusform>
+            <numerusform>%n ontbreken</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="901"/>
+        <source>%n new folder(s)</source>
+        <translation>
+            <numerusform>%n nieuwe map</numerusform>
+            <numerusform>%n nieuwe mappen</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="906"/>
+        <source>%n manual change(s) kept</source>
+        <translation>
+            <numerusform>%n handmatige wijziging behouden</numerusform>
+            <numerusform>%n handmatige wijzigingen behouden</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="911"/>
+        <source>Nothing would be renamed with this format.</source>
+        <translation>Met deze opmaak wordt niets hernoemd.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="912"/>
+        <source>Nothing would move with this format.</source>
+        <translation>Met deze opmaak wordt niets verplaatst.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="914"/>
+        <source>%n file(s) will be renamed. The folders do not change. You can undo it afterwards.</source>
+        <translation>
+            <numerusform>%n bestand wordt hernoemd. De mappen veranderen niet. U kunt dit daarna ongedaan maken.</numerusform>
+            <numerusform>%n bestanden worden hernoemd. De mappen veranderen niet. U kunt dit daarna ongedaan maken.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="916"/>
+        <source>%n file(s) will move into %1. This changes your files on disk. You can undo it afterwards.</source>
+        <translation>
+            <numerusform>%n bestand wordt verplaatst naar %1. Dit wijzigt uw bestanden op de schijf. U kunt dit daarna ongedaan maken.</numerusform>
+            <numerusform>%n bestanden worden verplaatst naar %1. Dit wijzigt uw bestanden op de schijf. U kunt dit daarna ongedaan maken.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1071"/>
+        <source>Moving %1 of %2
+%3</source>
+        <translation>%1 van %2 wordt verplaatst
+%3</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1077"/>
+        <source>Updating the library...</source>
+        <translation>Bibliotheek bijwerken...</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <source>Restored name</source>
+        <translation>Herstelde naam</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1100"/>
+        <source>Moved back from</source>
+        <translation>Terugverplaatst vanuit</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1097"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1100"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <source>Status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <source>Final name</source>
+        <translation>Definitieve naam</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1098"/>
+        <source>Previous name</source>
+        <translation>Vorige naam</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1100"/>
+        <source>Restored location</source>
+        <translation>Herstelde locatie</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <source>Final location</source>
+        <translation>Definitieve locatie</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1101"/>
+        <source>Previous location</source>
+        <translation>Vorige locatie</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1141"/>
+        <source>Restored</source>
+        <translation>Hersteld</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1141"/>
+        <source>Renamed</source>
+        <translation>Hernoemd</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1141"/>
+        <source>Moved</source>
+        <translation>Verplaatst</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1158"/>
+        <source>Undo failed: %1</source>
+        <translation>Ongedaan maken mislukt: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1158"/>
+        <source>Failed: %1</source>
+        <translation>Mislukt: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1189"/>
+        <source>Nothing was moved.</source>
+        <translation>Er is niets verplaatst.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
+        <source>The record this run could be undone from could not be written, so the run did not start: %1</source>
+        <translation>Het verslag waarmee deze bewerking ongedaan gemaakt kan worden, kon niet worden geschreven. Daarom is de bewerking niet gestart: %1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1192"/>
+        <source>%n file(s) renamed.</source>
+        <translation>
+            <numerusform>%n bestand hernoemd.</numerusform>
+            <numerusform>%n bestanden hernoemd.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
+        <source>%n file(s) moved into %1.</source>
+        <translation>
+            <numerusform>%n bestand verplaatst naar %1.</numerusform>
+            <numerusform>%n bestanden verplaatst naar %1.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1196"/>
+        <source>The record of this run stopped early, so the run stopped with it: %1</source>
+        <translation>Het verslag van deze bewerking is vroegtijdig gestopt, daarom is de bewerking mee gestopt: %1</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1198"/>
+        <source>%n file(s) were not moved.</source>
+        <translation>
+            <numerusform>%n bestand is niet verplaatst.</numerusform>
+            <numerusform>%n bestanden zijn niet verplaatst.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1206"/>
+        <source>The library database could not be updated: %1</source>
+        <translation>De database van de bibliotheek kon niet worden bijgewerkt: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
+        <source>Use Undo to move the files back, or update the library to make it match the files.</source>
+        <translation>Gebruik Ongedaan maken om de bestanden terug te zetten, of werk de bibliotheek bij zodat ze bij de bestanden past.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1211"/>
+        <source>%n empty folder(s) were removed.</source>
+        <translation>
+            <numerusform>%n lege map is verwijderd.</numerusform>
+            <numerusform>%n lege mappen zijn verwijderd.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="organize_files/organize_files_dialog.cpp" line="1214"/>
+        <source>%n file(s) could not be moved.</source>
+        <translation>
+            <numerusform>%n bestand kon niet worden verplaatst.</numerusform>
+            <numerusform>%n bestanden konden niet worden verplaatst.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1246"/>
+        <source>Moving the files back...</source>
+        <translation>Bestanden worden teruggezet...</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1272"/>
+        <source>Moving back %1 of %2
+%3</source>
+        <translation>%1 van %2 wordt teruggezet
+%3</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1294"/>
+        <source>Everything was moved back.</source>
+        <translation>Alles is teruggezet.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1299"/>
+        <source>The undo did not finish: %1</source>
+        <translation>Het ongedaan maken is niet voltooid: %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1365"/>
+        <source>Format help</source>
+        <translation>Hulp bij de opmaak</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1392"/>
+        <source>Fields</source>
+        <translation>Velden</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
+        <source>Every field is written between braces and is replaced by the metadata of the comic. The Insert menu lists all of them.</source>
+        <translation>Elk veld staat tussen accolades en wordt vervangen door de metagegevens van de strip. Het menu Invoegen toont ze allemaal.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1395"/>
+        <source>{series} gives %1</source>
+        <translation>{series} geeft %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1397"/>
+        <source>Optional parts</source>
+        <translation>Optionele delen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
+        <source>A part written between the signs &lt; and &gt; disappears completely when every field inside it is empty. Use it for punctuation that belongs to a field, such as brackets or a leading number sign. Text at the start or the end of a name is trimmed without it.</source>
+        <translation>Een deel dat tussen de tekens &lt; en &gt; staat, verdwijnt volledig wanneer alle velden erin leeg zijn. Gebruik het voor leestekens die bij een veld horen, zoals haakjes of een nummerteken ervoor. Tekst aan het begin of het eind van een naam wordt ook zonder dit deel afgekapt.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
+        <source>{series} ({year})     with no year gives %1</source>
+        <translation>{series} ({year})     zonder jaar geeft %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
+        <source>{series}&lt; ({year})&gt;   with no year gives %1</source>
+        <translation>{series}&lt; ({year})&gt;   zonder jaar geeft %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1403"/>
+        <source>Numbers</source>
+        <translation>Nummers</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
+        <source>Write a colon and some zeros to pad the issue number. This keeps the issues in order in a file browser.</source>
+        <translation>Schrijf een dubbele punt en enkele nullen om het nummer aan te vullen. Zo blijven de nummers op volgorde in een bestandsbeheerder.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1409"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1414"/>
+        <source>Folders</source>
+        <translation>Mappen</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
+        <source>A filename format cannot contain a slash. Every comic keeps its current folder. Use Organize into folders to move comics.</source>
+        <translation>Een bestandsnaamopmaak mag geen schuine streep bevatten. Elke strip blijft in de huidige map. Gebruik In mappen ordenen om strips te verplaatsen.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
+        <source>Each part separated by a slash becomes a folder. The last part becomes the file name. The original extension is always kept.</source>
+        <translation>Elk deel dat door een schuine streep wordt gescheiden, wordt een map. Het laatste deel wordt de bestandsnaam. De oorspronkelijke extensie blijft altijd behouden.</translation>
     </message>
 </context>
 <context>
@@ -2381,12 +3318,12 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         <translation>Opmerkingen:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="1211"/>
+        <location filename="properties_dialog.cpp" line="1210"/>
         <source>Invalid cover</source>
         <translation>Ongeldige dekking</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="1211"/>
+        <location filename="properties_dialog.cpp" line="1210"/>
         <source>The image is invalid.</source>
         <translation>De afbeelding is ongeldig.</translation>
     </message>
@@ -2534,6 +3471,35 @@ Om een ​​automatische update te stoppen, tikt u op de laadindicator naast de
         <location filename="../custom_widgets/yacreader_sidebar.cpp" line="149"/>
         <source>Reading Lists</source>
         <translation>Leeslijsten</translation>
+    </message>
+</context>
+<context>
+    <name>ReadingListManagementCoordinator</name>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="33"/>
+        <source>Add new reading lists</source>
+        <translation>Voeg nieuwe leeslijsten toe</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="34"/>
+        <location filename="reading_list_management_coordinator.cpp" line="81"/>
+        <source>List name:</source>
+        <translation>Lijstnaam:</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="54"/>
+        <source>Delete list/label</source>
+        <translation>Lijst/label verwijderen</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="55"/>
+        <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
+        <translation>Het geselecteerde item wordt verwijderd, uw strips of mappen worden NIET van uw schijf verwijderd. Weet je het zeker?</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="80"/>
+        <source>Rename list name</source>
+        <translation>Hernoem de lijstnaam</translation>
     </message>
 </context>
 <context>
@@ -3250,6 +4216,61 @@ Use quotes to include spaces in a value.</source>
     </message>
 </context>
 <context>
+    <name>SelectedComicsInfoView</name>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="26"/>
+        <source>Unknown</source>
+        <translation type="unfinished">Onbekend</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="28"/>
+        <source>%1 (%2 unknown)</source>
+        <oldsource>%1 (%n unknown)</oldsource>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="36"/>
+        <source>%1 series</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="58"/>
+        <source>%1 comics selected</source>
+        <oldsource>%n comic(s) selected</oldsource>
+        <translation type="unfinished">%1 strips geselecteerd</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="77"/>
+        <source>Read</source>
+        <translation type="unfinished">Gelezen</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="80"/>
+        <source>In progress</source>
+        <translation type="unfinished">Bezig</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="83"/>
+        <source>Unread</source>
+        <translation type="unfinished">Ongelezen</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="86"/>
+        <source>Total pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="89"/>
+        <source>Total size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="74"/>
+        <source>Series</source>
+        <translation type="unfinished">Serie</translation>
+    </message>
+</context>
+<context>
     <name>SeriesQuestion</name>
     <message>
         <location filename="comic_vine/series_question.cpp" line="14"/>
@@ -3270,53 +4291,53 @@ Use quotes to include spaces in a value.</source>
 <context>
     <name>ServerConfigDialog</name>
     <message>
-        <location filename="server_config_dialog.cpp" line="26"/>
-        <location filename="server_config_dialog.cpp" line="48"/>
+        <location filename="server_config_dialog.cpp" line="27"/>
+        <location filename="server_config_dialog.cpp" line="50"/>
         <source>Server connectivity</source>
         <translation>Serververbinding</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="37"/>
+        <location filename="server_config_dialog.cpp" line="38"/>
         <source>Scan to connect</source>
         <translation>Scan om verbinding te maken</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="52"/>
+        <location filename="server_config_dialog.cpp" line="54"/>
         <source>Devices on this network can reach your library at the address below.</source>
         <translation>Apparaten op dit netwerk kunnen je bibliotheek bereiken via het onderstaande adres.</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="62"/>
+        <location filename="server_config_dialog.cpp" line="68"/>
         <source>IP address</source>
         <translation>IP-adres</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="63"/>
+        <location filename="server_config_dialog.cpp" line="69"/>
         <source>Port</source>
         <translation>Poort</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="92"/>
+        <location filename="server_config_dialog.cpp" line="96"/>
         <source>Web interface</source>
         <translation>Webinterface</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="107"/>
+        <location filename="server_config_dialog.cpp" line="111"/>
         <source>Copy link</source>
         <translation>Link kopiëren</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="109"/>
+        <location filename="server_config_dialog.cpp" line="113"/>
         <source>Open web UI</source>
         <translation>Webinterface openen</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="117"/>
+        <location filename="server_config_dialog.cpp" line="121"/>
         <source>Enable the server</source>
         <translation>Server inschakelen</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="121"/>
+        <location filename="server_config_dialog.cpp" line="125"/>
         <source>YACReader is available for iOS and Android. Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos;&gt;Android&lt;/a&gt;.</source>
         <translation>YACReader is beschikbaar voor iOS en Android. Ontdek de app voor &lt;a href=&apos;https://ios.yacreader.com&apos;&gt;iOS&lt;/a&gt; of &lt;a href=&apos;https://android.yacreader.com&apos;&gt;Android&lt;/a&gt;.</translation>
     </message>
@@ -3325,7 +4346,7 @@ Use quotes to include spaces in a value.</source>
         <translation type="vanished">De server instellen</translation>
     </message>
     <message>
-        <location filename="server_config_dialog.cpp" line="72"/>
+        <location filename="server_config_dialog.cpp" line="80"/>
         <source>Set port</source>
         <oldsource>set port</oldsource>
         <translation>Poort instellen</translation>

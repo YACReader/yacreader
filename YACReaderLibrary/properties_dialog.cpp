@@ -12,6 +12,7 @@
 #include <QApplication>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QDateTime>
 #include <QDialogButtonBox>
 #include <QFileInfo>
 #include <QFormLayout>
@@ -737,6 +738,8 @@ void PropertiesDialog::updateComics()
                         itr->info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
                         itr->info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
                     }
+                    itr->info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+                    itr->info.usesExternalCover = false;
 
                     emit coverChangedSignal(*itr);
 
@@ -750,6 +753,8 @@ void PropertiesDialog::updateComics()
                     auto height = customCover.height();
                     itr->info.originalCoverSize = QString("%1x%2").arg(width).arg(height);
                     itr->info.coverSizeRatio = static_cast<float>(width) / height;
+                    itr->info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+                    itr->info.usesExternalCover = true;
 
                     DBHelper::update(&(itr->info), db);
                     updated = true;
@@ -1000,6 +1005,8 @@ void PropertiesDialog::save()
                     comics[currentComicIndex].info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
                     comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
                 }
+                comics[currentComicIndex].info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+                comics[currentComicIndex].info.usesExternalCover = false;
 
                 comics[currentComicIndex].info.edited = true;
 
@@ -1010,6 +1017,8 @@ void PropertiesDialog::save()
 
                 comics[currentComicIndex].info.originalCoverSize = QString("%1x%2").arg(width).arg(height);
                 comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(width) / height;
+                comics[currentComicIndex].info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+                comics[currentComicIndex].info.usesExternalCover = true;
 
                 comics[currentComicIndex].info.edited = true;
 
@@ -1061,7 +1070,6 @@ void PropertiesDialog::saveAndClose()
     updateComics();
 
     close();
-    emit accepted();
 }
 
 void PropertiesDialog::setDisableUniqueValues(bool disabled)

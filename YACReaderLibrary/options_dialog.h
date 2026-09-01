@@ -63,6 +63,8 @@ private:
     QLabel *opacityLabel;
     QLabel *blurLabel;
     QPushButton *resetButton;
+    QCheckBox *mixFoldersAndComicsCheck;
+    QCheckBox *startComicsOnNewRowCheck;
 
     QWidget *createGeneralTab();
     QWidget *createLibrariesTab();

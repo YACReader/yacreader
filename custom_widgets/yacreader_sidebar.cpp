@@ -10,6 +10,8 @@
 #include <QLayout>
 #include <QPainter>
 
+#include <utility>
+
 YACReaderSideBar::YACReaderSideBar(QWidget *parent)
     : QWidget(parent)
 {
@@ -148,7 +150,7 @@ void YACReaderSideBar::applyTheme(const Theme &theme)
     foldersTitle->setTitle(applyCase(QObject::tr("Folders")));
     readingListsTitle->setTitle(applyCase(QObject::tr("Reading Lists")));
 
-    for (auto separator : separators) {
+    for (auto separator : std::as_const(separators)) {
         separator->setColor(theme.sidebar.sectionSeparatorColor);
     }
 

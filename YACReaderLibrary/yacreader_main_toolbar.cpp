@@ -8,6 +8,8 @@
 #include <QResizeEvent>
 #include <QToolButton>
 
+#include <utility>
+
 YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     : QWidget(parent)
 {
@@ -157,7 +159,7 @@ void YACReaderMainToolBar::applyTheme(const Theme &theme)
     currentFolder->setStyleSheet(mt.folderNameLabelQSS);
 
     // Update dividers
-    for (QLabel *divider : dividers) {
+    for (QLabel *divider : std::as_const(dividers)) {
         divider->setPixmap(mt.dividerPixmap);
     }
 

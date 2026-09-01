@@ -636,7 +636,7 @@ void ConcurrentQueueTest::waitAllFromMultipleThreads()
     std::vector<std::thread> waitingThreads;
     waitingThreads.reserve(waitingThreadCount - 1);
     for (int id = 1; id < waitingThreadCount; ++id) {
-        waitingThreads.emplace_back([=, &queue] {
+        waitingThreads.emplace_back([=, &queue, this] {
             waitAndPrint(queue, QueueControlMessagePrinter(total, id, queueThreadCount));
         });
     }

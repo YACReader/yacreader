@@ -30,7 +30,7 @@ void ReadingComicsControllerV2::serviceContent(const int &library, HttpResponse 
 {
     auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(library);
 
-    QList<ComicDB> readingComics = DBHelper::getReading(library);
+    const QList<ComicDB> readingComics = DBHelper::getReading(library);
 
     QJsonArray comics;
 

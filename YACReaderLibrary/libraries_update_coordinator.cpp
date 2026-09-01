@@ -156,7 +156,8 @@ LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::star
 
     QStringList targets = paths;
     if (targets.isEmpty()) {
-        for (const auto &library : libraries.getLibraries()) {
+        const auto availableLibraries = libraries.getLibraries();
+        for (const auto &library : availableLibraries) {
             targets.append(library.getPath());
         }
     }

@@ -110,8 +110,6 @@ void ComicVineDialog::doConnections()
     connect(selectVolumeWidget, &SelectVolume::loadPage, this, &ComicVineDialog::searchVolume);
     connect(selectComicWidget, &SelectComic::loadPage, this, &ComicVineDialog::getVolumeComicsInfo);
     connect(sortVolumeComicsWidget, &SortVolumeComics::loadPage, this, &ComicVineDialog::getVolumeComicsInfo);
-
-    connect(this, &QDialog::accepted, this, &QWidget::close, Qt::QueuedConnection);
 }
 
 void ComicVineDialog::goNext()
@@ -463,7 +461,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo,
 
     DBHelper::updateComicsInfo(comics, databasePath);
 
-    emit accepted();
+    finishSuccessfully();
 }
 
 void ComicVineDialog::getComicInfo(const QString &comicId, const SelectedVolumeInfo &volumeInfo)
@@ -474,12 +472,11 @@ void ComicVineDialog::getComicInfo(const QString &comicId, const SelectedVolumeI
     bool timeout;
     QByteArray result = comicVineClient->getComicDetail(comicId, error, timeout); // TODO check timeOut or Connection error
     if (error || timeout) {
-        // TODO
-        if (mode == ScraperMode::SingleComic || currentIndex == (comics.count() - 1)) {
-            emit accepted();
-        } else {
+        if (mode == ScraperMode::SingleComic || currentIndex == (comics.count() - 1))
+            finishSuccessfully();
+        else
             goToNextComic();
-        }
+        return;
     }
 
     ComicDB comic = YACReader::parseCVJSONComicInfo(comics[currentIndex], result, volumeInfo); // TODO check result error
@@ -499,7 +496,7 @@ void ComicVineDialog::getComicInfo(const QString &comicId, const SelectedVolumeI
     QSqlDatabase::removeDatabase(connectionName);
 
     if (mode == ScraperMode::SingleComic || currentIndex == (comics.count() - 1)) {
-        emit accepted();
+        finishSuccessfully();
     } else {
         goToNextComic();
     }
@@ -535,7 +532,7 @@ QString ComicVineDialog::volumeSearchStringFromComic(const ComicDB &comic)
 void ComicVineDialog::goToNextComic()
 {
     if (mode == ScraperMode::SingleComic || currentIndex == (comics.count() - 1)) {
-        emit accepted();
+        finishSuccessfully();
         return;
     }
 
@@ -552,6 +549,16 @@ void ComicVineDialog::goToNextComic()
 void ComicVineDialog::clearState()
 {
     selectVolumeWidget->clearFilter();
+}
+
+void ComicVineDialog::finishSuccessfully()
+{
+    // Scraping completion may be reported from a worker thread. Complete the
+    // dialog through QDialog's canonical success path on the GUI thread so it
+    // closes and emits accepted exactly once.
+    QMetaObject::invokeMethod(this, [this]() {
+        clearState();
+        accept(); }, Qt::QueuedConnection);
 }
 
 void ComicVineDialog::showLoading(const QString &message)

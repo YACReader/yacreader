@@ -8,6 +8,8 @@
 #include <QQmlContext>
 #include <QQuickWidget>
 
+#include <utility>
+
 ComicsView::ComicsView(QWidget *parent)
     : QWidget(parent), model(nullptr), comicDB(nullptr)
 {
@@ -20,13 +22,13 @@ ComicsView::ComicsView(QWidget *parent)
     view->setResizeMode(QQuickWidget::SizeRootObjectToView);
     connect(
             view, &QQuickWidget::statusChanged, this,
-            [=](QQuickWidget::Status status) {
+            [=, this](QQuickWidget::Status status) {
                 if (status == QQuickWidget::Error) {
                     QLOG_ERROR() << view->errors();
                 }
             });
 
-    auto comicDB = new ComicDB();
+    comicDB = new ComicDB();
     auto comicInfo = &(comicDB->info);
     QQmlContext *ctxt = view->rootContext();
 
@@ -55,8 +57,10 @@ void ComicsView::updateInfoForIndex(int index)
 {
     QQmlContext *ctxt = view->rootContext();
 
-    if (comicDB != nullptr)
-        delete comicDB;
+    // Clear the member before destroying the object. Deleting ComicDB notifies
+    // QML and can re-enter this method; an invalid index must also not leave a
+    // dangling pointer that is deleted again when the next comic is selected.
+    delete std::exchange(comicDB, nullptr);
 
     if ((index < 0) || (index >= model->rowCount())) {
         ctxt->setContextProperty("comic", nullptr);

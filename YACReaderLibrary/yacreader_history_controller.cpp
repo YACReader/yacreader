@@ -15,9 +15,10 @@ void YACReaderHistoryController::clear()
     emit enabledForward(false);
 }
 
-void YACReaderHistoryController::backward()
+void YACReaderHistoryController::backward(const ContentViewState &currentViewState)
 {
     if (currentFolderNavigation > 0) {
+        history[currentFolderNavigation].viewState = currentViewState;
         currentFolderNavigation--;
         emit modelIndexSelected(history.at(currentFolderNavigation));
         emit enabledForward(true);
@@ -27,9 +28,10 @@ void YACReaderHistoryController::backward()
         emit enabledBackward(false);
 }
 
-void YACReaderHistoryController::forward()
+void YACReaderHistoryController::forward(const ContentViewState &currentViewState)
 {
     if (currentFolderNavigation < history.count() - 1) {
+        history[currentFolderNavigation].viewState = currentViewState;
         currentFolderNavigation++;
         emit modelIndexSelected(history.at(currentFolderNavigation));
         emit enabledBackward(true);
@@ -37,6 +39,12 @@ void YACReaderHistoryController::forward()
 
     if (currentFolderNavigation == history.count() - 1)
         emit enabledForward(false);
+}
+
+void YACReaderHistoryController::recordViewStateForCurrentEntry(const ContentViewState &state)
+{
+    if (!history.isEmpty())
+        history[currentFolderNavigation].viewState = state;
 }
 
 void YACReaderHistoryController::updateHistory(const YACReaderLibrarySourceContainer &source)
@@ -91,6 +99,11 @@ QModelIndex YACReaderLibrarySourceContainer::getSourceModelIndex() const
 YACReaderLibrarySourceContainer::SourceType YACReaderLibrarySourceContainer::getType() const
 {
     return type;
+}
+
+ContentViewState YACReaderLibrarySourceContainer::getViewState() const
+{
+    return viewState;
 }
 
 bool YACReaderLibrarySourceContainer::operator==(const YACReaderLibrarySourceContainer &other) const

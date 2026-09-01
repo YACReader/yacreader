@@ -457,31 +457,8 @@ bool FileComic::isSupportedImage(const QString &fileName, const QStringList &sup
 
 YACReaderEpub::PageIndex FileComic::epubPageIndex(const QStringList &fileNames, CompressedArchive &archive)
 {
-    auto result = YACReaderEpub::readPageIndex(fileNames, [&archive](int index) { return archive.getRawDataAtIndex(index); });
-    if (!result.isValid()) {
-        return result;
-    }
-
-    QStringList pageNames;
-    for (const YACReaderEpub::Page &page : std::as_const(result.pages)) {
-        pageNames.append(page.fileName);
-    }
-    QSet<QString> supportedPageNames;
-    for (const QString &pageName : filter(pageNames)) {
-        supportedPageNames.insert(pageName);
-    }
-
-    QVector<YACReaderEpub::Page> supportedPages;
-    for (const YACReaderEpub::Page &page : std::as_const(result.pages)) {
-        if (supportedPageNames.contains(page.fileName)) {
-            supportedPages.append(page);
-        }
-    }
-    result.pages = std::move(supportedPages);
-    if (result.pages.isEmpty()) {
-        result.error = QStringLiteral("Package spine contains no supported image pages");
-    }
-    return result;
+    const QStringList supportedExtensions = Comic::getSupportedImageLiteralFormats();
+    return YACReaderEpub::readPageIndex(fileNames, [&archive](int index) { return archive.getRawDataAtIndex(index); }, [&supportedExtensions](const QString &fileName) { return isSupportedImage(fileName, supportedExtensions); });
 }
 
 YACReaderEpub::ScanInfo FileComic::epubScanInfo(const QStringList &fileNames, CompressedArchive &archive, int coverPage)
@@ -643,8 +620,10 @@ void FileComic::process()
     if (Comic::fileIsEpub(_path)) {
         const auto epub = epubPageIndex(archiveFileNames, archive);
         if (!epub.isValid()) {
+            // An EPUB book is not a comic, it is just a file type YACReader cannot open.
+            QLOG_INFO() << "Unable to open EPUB, it is not an image based comic" << _path << epub.error;
             moveToThread(QCoreApplication::instance()->thread());
-            emit errorOpening(tr("Unsupported EPUB: %1").arg(epub.error));
+            emit errorOpening(tr("Format not supported"));
             return;
         }
 

@@ -1143,6 +1143,91 @@ input[type="time"]:focus-visible {
   min-width: 0;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  margin: -1px;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.browser-search {
+  display: flex;
+  width: min(40vw, 430px);
+  min-width: 220px;
+  height: 42px;
+  align-items: center;
+  gap: 2px;
+  margin-left: auto;
+  padding: 0 6px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  background: var(--surface);
+  color: var(--text-muted);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+.browser-search[hidden] {
+  display: none;
+}
+
+.browser-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.browser-search input {
+  min-width: 0;
+  height: 100%;
+  flex: 1;
+  padding: 0 5px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.browser-search input::placeholder {
+  color: var(--text-muted);
+}
+
+.browser-search input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.browser-search-submit,
+.browser-search-clear {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  place-items: center;
+}
+
+.browser-search-submit:hover,
+.browser-search-clear:hover {
+  background: var(--surface-subtle);
+  color: var(--accent-strong);
+}
+
+.browser-search-submit:focus-visible,
+.browser-search-clear:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .breadcrumbs {
   display: flex;
   min-width: 0;
@@ -1192,6 +1277,57 @@ input[type="time"]:focus-visible {
   margin: 0;
   color: var(--text-muted);
   font-size: 13px;
+}
+
+.continue-reading-shelf {
+  margin: 0 0 34px;
+  padding: 20px 0 22px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.continue-reading-heading {
+  display: flex;
+  position: relative;
+  z-index: 1;
+  align-items: end;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.continue-reading-heading h3 {
+  margin: 0;
+  font-size: 19px;
+  letter-spacing: -0.018em;
+}
+
+.continue-reading-list {
+  --continue-reading-main-width: calc(100vw - 252px);
+  --continue-reading-inline-padding: max(32px, calc(50vw - 714px));
+
+  display: grid;
+  width: var(--continue-reading-main-width);
+  overflow-x: auto;
+  grid-auto-columns: 142px;
+  grid-auto-flow: column;
+  align-items: start;
+  gap: 20px;
+  margin: -40px 0 -26px calc(-1 * var(--continue-reading-inline-padding));
+  padding: 44px var(--continue-reading-inline-padding) 40px;
+  -ms-overflow-style: none;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  scroll-padding-inline: var(--continue-reading-inline-padding);
+  scroll-snap-type: inline proximity;
+}
+
+.continue-reading-list::-webkit-scrollbar {
+  display: none;
+}
+
+.continue-reading-item {
+  min-width: 0;
+  scroll-snap-align: start;
 }
 
 .browser-grid {
@@ -1459,6 +1595,12 @@ input[type="time"]:focus-visible {
   font-size: 23px;
   font-weight: 800;
   place-items: center;
+}
+
+.browser-state-search-icon {
+  padding: 13px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
 }
 
 .folder-state-icon {
@@ -2422,6 +2564,21 @@ input[type="time"]:disabled {
     padding: 14px 20px;
   }
 
+  .browser-topbar {
+    flex-wrap: wrap;
+  }
+
+  .browser-heading {
+    flex: 1;
+  }
+
+  .browser-search {
+    width: 100%;
+    min-width: 0;
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
   .browser-back:not([hidden]) {
     display: grid;
   }
@@ -2433,6 +2590,14 @@ input[type="time"]:disabled {
   .browser-grid {
     grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
     gap: 24px 16px;
+  }
+
+  .continue-reading-list {
+    --continue-reading-main-width: 100vw;
+    --continue-reading-inline-padding: 20px;
+
+    grid-auto-columns: 125px;
+    gap: 16px;
   }
 
   .browser-loading-grid {

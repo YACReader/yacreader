@@ -1,16 +1,25 @@
 #include "library_window_actions.h"
 
+#include "comic_management_coordinator.h"
 #include "edit_shortcuts_dialog.h"
-#include "export_library_dialog.h"
+#include "feature_flags.h"
+#include "folder_management_coordinator.h"
 #include "help_about_dialog.h"
+#include "library_database_maintenance_coordinator.h"
+#include "library_management_coordinator.h"
+#include "library_repair_coordinator.h"
 #include "library_window.h"
+#include "organize_files_coordinator.h"
+#include "reading_list_management_coordinator.h"
 #include "recent_visibility_coordinator.h"
+#include "rename_library_dialog.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
 #include "theme_manager.h"
 #include "yacreader_content_views_manager.h"
 #include "yacreader_folders_view.h"
 #include "yacreader_history_controller.h"
+#include "yacreader_navigation_controller.h"
 #include "yacreader_options_dialog.h"
 
 #include <QtCore>
@@ -185,6 +194,9 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     addFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_FOLDER_ACTION_YL));
     addFolderAction->setToolTip(tr("Add new folder to the current library"));
 
+    renameFolderAction = new QAction(tr("Rename folder"), window);
+    renameFolderAction->setToolTip(tr("Rename the current folder on disk and in the library"));
+
     deleteFolderAction = new QAction(tr("Delete folder"), window);
     deleteFolderAction->setData(REMOVE_FOLDER_ACTION_YL);
     deleteFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_FOLDER_ACTION_YL));
@@ -227,6 +239,18 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderAction->setText(tr("Open folder..."));
     openContainingFolderAction->setData(OPEN_CONTAINING_FOLDER_ACTION_YL);
     openContainingFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_ACTION_YL));
+
+    renameFilesAction = new QAction(window);
+    renameFilesAction->setText(tr("Rename files..."));
+    renameFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
+    renameFilesAction->setData(RENAME_FILES_ACTION_YL);
+    renameFilesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_FILES_ACTION_YL));
+
+    organizeFilesAction = new QAction(window);
+    organizeFilesAction->setText(tr("Organize into folders..."));
+    organizeFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
+    organizeFilesAction->setData(ORGANIZE_FILES_ACTION_YL);
+    organizeFilesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ORGANIZE_FILES_ACTION_YL));
 
     setFolderAsNotCompletedAction = new QAction(window);
     setFolderAsNotCompletedAction->setText(tr("Set as uncompleted"));
@@ -290,8 +314,20 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     openContainingFolderComicAction->setData(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL);
     openContainingFolderComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_CONTAINING_FOLDER_COMIC_ACTION_YL));
 
+    renameComicsFilesAction = new QAction(window);
+    renameComicsFilesAction->setText(tr("Rename files..."));
+    renameComicsFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
+    renameComicsFilesAction->setData(RENAME_COMICS_FILES_ACTION_YL);
+    renameComicsFilesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RENAME_COMICS_FILES_ACTION_YL));
+
+    organizeComicsFilesAction = new QAction(window);
+    organizeComicsFilesAction->setText(tr("Organize into folders..."));
+    organizeComicsFilesAction->setVisible(YACReader::FeatureFlags::organizeFiles);
+    organizeComicsFilesAction->setData(ORGANIZE_COMICS_FILES_ACTION_YL);
+    organizeComicsFilesAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ORGANIZE_COMICS_FILES_ACTION_YL));
+
     resetComicRatingAction = new QAction(window);
-    resetComicRatingAction->setText(tr("Reset comic rating"));
+    resetComicRatingAction->setText(tr("Reset rating"));
     resetComicRatingAction->setData(RESET_COMIC_RATING_ACTION_YL);
     resetComicRatingAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESET_COMIC_RATING_ACTION_YL));
 
@@ -401,6 +437,10 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     // actions not asigned to any widget
     window->addAction(saveCoversToAction);
     window->addAction(openContainingFolderAction);
+    if (YACReader::FeatureFlags::organizeFiles) {
+        window->addAction(renameFilesAction);
+        window->addAction(organizeFilesAction);
+    }
     window->addAction(updateCurrentFolderAction);
     window->addAction(resetComicRatingAction);
     window->addAction(setFolderAsCompletedAction);
@@ -417,6 +457,10 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     window->addAction(deleteMetadataAction);
     window->addAction(rescanXMLFromCurrentFolderAction);
     window->addAction(openContainingFolderComicAction);
+    if (YACReader::FeatureFlags::organizeFiles) {
+        window->addAction(renameComicsFilesAction);
+        window->addAction(organizeComicsFilesAction);
+    }
 #ifndef Q_OS_MACOS
     window->addAction(toggleFullScreenAction);
 #endif
@@ -427,47 +471,53 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
 
 void LibraryWindowActions::createConnections(
         YACReaderHistoryController *historyController,
+        YACReaderNavigationController *navigationController,
         LibraryWindow *window,
         HelpAboutDialog *had,
-        ExportLibraryDialog *exportLibraryDialog,
         YACReaderContentViewsManager *contentViewsManager,
         EditShortcutsDialog *editShortcutsDialog,
         YACReaderFoldersView *foldersView,
         YACReaderOptionsDialog *optionsDialog,
         ServerConfigDialog *serverConfigDialog,
-        RecentVisibilityCoordinator *recentVisibilityCoordinator)
+        RecentVisibilityCoordinator *recentVisibilityCoordinator,
+        ComicManagementCoordinator *comicManagementCoordinator,
+        ReadingListManagementCoordinator *readingListManagementCoordinator,
+        FolderManagementCoordinator *folderManagementCoordinator,
+        OrganizeFilesCoordinator *organizeFilesCoordinator,
+        LibraryManagementCoordinator *libraryManagementCoordinator,
+        LibraryDatabaseMaintenanceCoordinator *libraryDatabaseMaintenanceCoordinator,
+        LibraryRepairCoordinator *libraryRepairCoordinator,
+        RenameLibraryDialog *renameLibraryDialog)
 {
-    // history navigation
-    QObject::connect(backAction, &QAction::triggered, historyController, &YACReaderHistoryController::backward);
-    QObject::connect(forwardAction, &QAction::triggered, historyController, &YACReaderHistoryController::forward);
-    //--
+    QObject::connect(backAction, &QAction::triggered, navigationController, &YACReaderNavigationController::backward);
+    QObject::connect(forwardAction, &QAction::triggered, navigationController, &YACReaderNavigationController::forward);
     QObject::connect(historyController, &YACReaderHistoryController::enabledBackward, backAction, &QAction::setEnabled);
     QObject::connect(historyController, &YACReaderHistoryController::enabledForward, forwardAction, &QAction::setEnabled);
     // connect(foldersView, SIGNAL(clicked(QModelIndex)), historyController, SLOT(updateHistory(QModelIndex)));
 
     // actions
-    QObject::connect(createLibraryAction, &QAction::triggered, window, &LibraryWindow::createLibrary);
-    QObject::connect(exportLibraryAction, &QAction::triggered, exportLibraryDialog, &ExportLibraryDialog::open);
-    QObject::connect(importLibraryAction, &QAction::triggered, window, &LibraryWindow::importLibraryPackage);
+    QObject::connect(createLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showCreateLibraryDialog);
+    QObject::connect(exportLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showExportLibraryDialog);
+    QObject::connect(importLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showImportLibraryDialog);
 
-    QObject::connect(openLibraryAction, &QAction::triggered, window, &LibraryWindow::showAddLibrary);
-    QObject::connect(setAsReadAction, &QAction::triggered, window, &LibraryWindow::setCurrentComicReaded);
-    QObject::connect(setAsNonReadAction, &QAction::triggered, window, &LibraryWindow::setCurrentComicUnreaded);
+    QObject::connect(openLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showAddLibraryDialog);
+    QObject::connect(setAsReadAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::setSelectedComicsRead);
+    QObject::connect(setAsNonReadAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::setSelectedComicsUnread);
 
     QObject::connect(setNormalAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::Comic);
+        comicManagementCoordinator->setSelectedComicsType(FileType::Comic);
     });
     QObject::connect(setMangaAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::Manga);
+        comicManagementCoordinator->setSelectedComicsType(FileType::Manga);
     });
     QObject::connect(setWesternMangaAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::WesternManga);
+        comicManagementCoordinator->setSelectedComicsType(FileType::WesternManga);
     });
     QObject::connect(setWebComicAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::WebComic);
+        comicManagementCoordinator->setSelectedComicsType(FileType::WebComic);
     });
     QObject::connect(setYonkomaAction, &QAction::triggered, window, [=]() {
-        window->setSelectedComicsType(FileType::Yonkoma);
+        comicManagementCoordinator->setSelectedComicsType(FileType::Yonkoma);
     });
 
     // comicsInfoManagement
@@ -475,42 +525,58 @@ void LibraryWindowActions::createConnections(
     QObject::connect(importComicsInfoAction, &QAction::triggered, window, &LibraryWindow::showImportComicsInfo);
 
     // ContextMenus
-    QObject::connect(openContainingFolderComicAction, &QAction::triggered, window, &LibraryWindow::openContainingFolderComic);
-    QObject::connect(setFolderAsNotCompletedAction, &QAction::triggered, window, &LibraryWindow::setFolderAsNotCompleted);
-    QObject::connect(setFolderAsCompletedAction, &QAction::triggered, window, &LibraryWindow::setFolderAsCompleted);
-    QObject::connect(setFolderAsReadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsRead);
-    QObject::connect(setFolderAsUnreadAction, &QAction::triggered, window, &LibraryWindow::setFolderAsUnread);
-    QObject::connect(openContainingFolderAction, &QAction::triggered, window, &LibraryWindow::openContainingFolder);
-    QObject::connect(setFolderCoverAction, &QAction::triggered, window, &LibraryWindow::setFolderCover);
-    QObject::connect(deleteCustomFolderCoverAction, &QAction::triggered, window, &LibraryWindow::deleteCustomFolderCover);
+    QObject::connect(openContainingFolderComicAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::openContainingFolderOfCurrentComic);
+    if (YACReader::FeatureFlags::organizeFiles) {
+        QObject::connect(renameComicsFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::renameSelectedComics);
+        QObject::connect(organizeComicsFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::organizeSelectedComics);
+    }
+    QObject::connect(setFolderAsNotCompletedAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
+        folderManagementCoordinator->setCurrentFolderCompleted(false);
+    });
+    QObject::connect(setFolderAsCompletedAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
+        folderManagementCoordinator->setCurrentFolderCompleted(true);
+    });
+    QObject::connect(setFolderAsReadAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
+        folderManagementCoordinator->setCurrentFolderRead(true);
+    });
+    QObject::connect(setFolderAsUnreadAction, &QAction::triggered, folderManagementCoordinator, [folderManagementCoordinator] {
+        folderManagementCoordinator->setCurrentFolderRead(false);
+    });
+    QObject::connect(openContainingFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::openCurrentFolder);
+    if (YACReader::FeatureFlags::organizeFiles) {
+        QObject::connect(renameFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::renameCurrentFolder);
+        QObject::connect(organizeFilesAction, &QAction::triggered, organizeFilesCoordinator, &OrganizeFilesCoordinator::organizeCurrentFolder);
+    }
+    QObject::connect(setFolderCoverAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::selectAndSetCurrentFolderCover);
+    QObject::connect(deleteCustomFolderCoverAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::resetCurrentFolderCover);
 
     QObject::connect(setFolderAsMangaAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::Manga);
+        folderManagementCoordinator->setCurrentFolderType(FileType::Manga);
     });
     QObject::connect(setFolderAsNormalAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::Comic);
+        folderManagementCoordinator->setCurrentFolderType(FileType::Comic);
     });
     QObject::connect(setFolderAsWesternMangaAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::WesternManga);
+        folderManagementCoordinator->setCurrentFolderType(FileType::WesternManga);
     });
     QObject::connect(setFolderAsWebComicAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::WebComic);
+        folderManagementCoordinator->setCurrentFolderType(FileType::WebComic);
     });
     QObject::connect(setFolderAsYonkomaAction, &QAction::triggered, window, [=]() {
-        window->setFolderType(FileType::Yonkoma);
+        folderManagementCoordinator->setCurrentFolderType(FileType::Yonkoma);
     });
 
-    QObject::connect(resetComicRatingAction, &QAction::triggered, window, &LibraryWindow::resetComicRating);
+    QObject::connect(resetComicRatingAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::resetSelectedComicRatings);
 
     // Comicts edition
-    QObject::connect(editSelectedComicsAction, &QAction::triggered, window, &LibraryWindow::showProperties);
-    QObject::connect(asignOrderAction, &QAction::triggered, window, &LibraryWindow::asignNumbers);
+    QObject::connect(editSelectedComicsAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::showProperties);
+    QObject::connect(asignOrderAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::assignNumbers);
 
-    QObject::connect(deleteMetadataAction, &QAction::triggered, window, &LibraryWindow::deleteMetadataFromSelectedComics);
+    QObject::connect(deleteMetadataAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::deleteMetadataFromSelectedComics);
 
-    QObject::connect(deleteComicsAction, &QAction::triggered, window, &LibraryWindow::deleteComics);
+    QObject::connect(deleteComicsAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::deleteSelectedComics);
 
-    QObject::connect(getInfoAction, &QAction::triggered, window, &LibraryWindow::showComicVineScraper);
+    QObject::connect(getInfoAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::showComicVineScraper);
 
     QObject::connect(focusComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::focusComicsViewViaShortcut);
 
@@ -519,32 +585,41 @@ void LibraryWindowActions::createConnections(
     QObject::connect(quitAction, &QAction::triggered, window, &LibraryWindow::closeApp);
 
     // update folders (partial updates)
-    QObject::connect(updateCurrentFolderAction, &QAction::triggered, window, &LibraryWindow::updateCurrentFolder);
-    QObject::connect(updateFolderAction, &QAction::triggered, window, &LibraryWindow::updateCurrentFolder);
+    QObject::connect(updateCurrentFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentFolder);
+    QObject::connect(updateFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentFolder);
 
-    QObject::connect(rescanXMLFromCurrentFolderAction, &QAction::triggered, window, &LibraryWindow::rescanCurrentFolderForXMLInfo);
+    QObject::connect(rescanXMLFromCurrentFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::rescanCurrentFolderForXMLInfo);
 
     // lists
-    QObject::connect(addReadingListAction, &QAction::triggered, window, &LibraryWindow::addNewReadingList);
-    QObject::connect(deleteReadingListAction, &QAction::triggered, window, &LibraryWindow::deleteSelectedReadingList);
-    QObject::connect(addLabelAction, &QAction::triggered, window, &LibraryWindow::showAddNewLabelDialog);
-    QObject::connect(renameListAction, &QAction::triggered, window, &LibraryWindow::showRenameCurrentList);
+    QObject::connect(addReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addReadingList);
+    QObject::connect(deleteReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::deleteCurrentList);
+    QObject::connect(addLabelAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addLabel);
+    QObject::connect(renameListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::renameCurrentList);
 
-    QObject::connect(updateLibraryAction, &QAction::triggered, window, &LibraryWindow::updateLibrary);
-    QObject::connect(backupLibraryAction, &QAction::triggered, window, &LibraryWindow::backupLibrary);
-    QObject::connect(restoreLibraryAction, &QAction::triggered, window, &LibraryWindow::restoreLibrary);
-    QObject::connect(repairLibraryAction, &QAction::triggered, window, &LibraryWindow::repairLibrary);
-    QObject::connect(renameLibraryAction, &QAction::triggered, window, &LibraryWindow::renameLibrary);
+    QObject::connect(updateLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentLibrary);
+    QObject::connect(backupLibraryAction, &QAction::triggered, libraryDatabaseMaintenanceCoordinator, [this, libraryDatabaseMaintenanceCoordinator] {
+        libraryDatabaseMaintenanceCoordinator->backupCurrentLibrary(backupLibraryAction->text());
+    });
+    QObject::connect(restoreLibraryAction, &QAction::triggered, libraryDatabaseMaintenanceCoordinator, [this, libraryDatabaseMaintenanceCoordinator] {
+        libraryDatabaseMaintenanceCoordinator->restoreCurrentLibrary(restoreLibraryAction->text());
+    });
+    QObject::connect(repairLibraryAction, &QAction::triggered, libraryRepairCoordinator, [this, libraryRepairCoordinator] {
+        libraryRepairCoordinator->repairCurrentLibrary(repairLibraryAction->text());
+    });
+    QObject::connect(renameLibraryAction, &QAction::triggered, renameLibraryDialog, &QDialog::open);
+    QObject::connect(renameLibraryDialog, &RenameLibraryDialog::renameLibrary, libraryManagementCoordinator, &LibraryManagementCoordinator::renameCurrentLibrary);
+    QObject::connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryRenamed, renameLibraryDialog, &QDialog::close);
     // connect(deleteLibraryAction,SIGNAL(triggered()),window,SLOT(deleteLibrary()));
-    QObject::connect(removeLibraryAction, &QAction::triggered, window, &LibraryWindow::removeLibrary);
-    QObject::connect(rescanLibraryForXMLInfoAction, &QAction::triggered, window, &LibraryWindow::rescanLibraryForXMLInfo);
-    QObject::connect(openLibraryFolderAction, &QAction::triggered, window, &LibraryWindow::openLibraryFolder);
-    QObject::connect(showLibraryInfo, &QAction::triggered, window, &LibraryWindow::showLibraryInfo);
+    QObject::connect(removeLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::askToRemoveCurrentLibrary);
+    QObject::connect(rescanLibraryForXMLInfoAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::rescanCurrentLibraryForXMLInfo);
+    QObject::connect(openLibraryFolderAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::openCurrentLibraryFolder);
+    QObject::connect(showLibraryInfo, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::showCurrentLibraryInfo);
 
-    QObject::connect(openComicAction, &QAction::triggered, window, QOverload<>::of(&LibraryWindow::openComic));
+    QObject::connect(openComicAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::openCurrentComic);
     QObject::connect(helpAboutAction, &QAction::triggered, had, &QWidget::show);
-    QObject::connect(addFolderAction, &QAction::triggered, window, &LibraryWindow::addFolderToCurrentIndex);
-    QObject::connect(deleteFolderAction, &QAction::triggered, window, &LibraryWindow::deleteSelectedFolder);
+    QObject::connect(addFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::addFolderToCurrentFolder);
+    QObject::connect(renameFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::renameCurrentFolder);
+    QObject::connect(deleteFolderAction, &QAction::triggered, folderManagementCoordinator, &FolderManagementCoordinator::deleteCurrentFolder);
     QObject::connect(setRootIndexAction, &QAction::triggered, window, &LibraryWindow::setRootIndex);
     QObject::connect(expandAllNodesAction, &QAction::triggered, foldersView, &QTreeView::expandAll);
     QObject::connect(colapseAllNodesAction, &QAction::triggered, foldersView, &QTreeView::collapseAll);
@@ -557,10 +632,10 @@ void LibraryWindowActions::createConnections(
     QObject::connect(serverConfigAction, &QAction::triggered, serverConfigDialog, &QWidget::show);
 #endif
 
-    QObject::connect(addToFavoritesAction, &QAction::triggered, window, &LibraryWindow::addSelectedComicsToFavorites);
+    QObject::connect(addToFavoritesAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::addSelectedComicsToFavorites);
 
     // save covers
-    QObject::connect(saveCoversToAction, &QAction::triggered, window, &LibraryWindow::saveSelectedCoversTo);
+    QObject::connect(saveCoversToAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::saveSelectedCoversTo);
 
     QObject::connect(toogleShowRecentIndicatorAction, &QAction::toggled, recentVisibilityCoordinator, &RecentVisibilityCoordinator::toggleVisibility);
 }
@@ -583,43 +658,56 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
     // Get current theme for initial icons
     const auto &theme = ThemeManager::instance().getCurrentTheme();
 
-    editShortcutsDialog->addActionsGroup("Comics", theme.shortcutsIcons.comicsIcon,
-                                         tmpList = QList<QAction *>()
-                                                 << openComicAction
-                                                 << saveCoversToAction
-                                                 << setAsReadAction
-                                                 << setAsNonReadAction
-                                                 << setMangaAction
-                                                 << setNormalAction
-                                                 << openContainingFolderComicAction
-                                                 << resetComicRatingAction
-                                                 << selectAllComicsAction
-                                                 << editSelectedComicsAction
-                                                 << asignOrderAction
-                                                 << deleteMetadataAction
-                                                 << deleteComicsAction
-                                                 << getInfoAction);
+    tmpList = QList<QAction *>()
+            << openComicAction
+            << saveCoversToAction
+            << setAsReadAction
+            << setAsNonReadAction
+            << setMangaAction
+            << setNormalAction
+            << openContainingFolderComicAction
+            << renameComicsFilesAction
+            << organizeComicsFilesAction
+            << resetComicRatingAction
+            << selectAllComicsAction
+            << editSelectedComicsAction
+            << asignOrderAction
+            << deleteMetadataAction
+            << deleteComicsAction
+            << getInfoAction;
+    if (!YACReader::FeatureFlags::organizeFiles) {
+        tmpList.removeOne(renameComicsFilesAction);
+        tmpList.removeOne(organizeComicsFilesAction);
+    }
+    editShortcutsDialog->addActionsGroup("Comics", theme.shortcutsIcons.comicsIcon, tmpList);
 
     allActions << tmpList;
 
-    editShortcutsDialog->addActionsGroup("Folders", theme.shortcutsIcons.foldersIcon,
-                                         tmpList = QList<QAction *>()
-                                                 << addFolderAction
-                                                 << deleteFolderAction
-                                                 << setRootIndexAction
-                                                 << expandAllNodesAction
-                                                 << colapseAllNodesAction
-                                                 << openContainingFolderAction
-                                                 << setFolderAsNotCompletedAction
-                                                 << setFolderAsCompletedAction
-                                                 << setFolderAsReadAction
-                                                 << setFolderAsUnreadAction
-                                                 << setFolderAsMangaAction
-                                                 << setFolderAsNormalAction
-                                                 << updateCurrentFolderAction
-                                                 << rescanXMLFromCurrentFolderAction
-                                                 << setFolderCoverAction
-                                                 << deleteCustomFolderCoverAction);
+    tmpList = QList<QAction *>()
+            << addFolderAction
+            << renameFolderAction
+            << deleteFolderAction
+            << setRootIndexAction
+            << expandAllNodesAction
+            << colapseAllNodesAction
+            << openContainingFolderAction
+            << renameFilesAction
+            << organizeFilesAction
+            << setFolderAsNotCompletedAction
+            << setFolderAsCompletedAction
+            << setFolderAsReadAction
+            << setFolderAsUnreadAction
+            << setFolderAsMangaAction
+            << setFolderAsNormalAction
+            << updateCurrentFolderAction
+            << rescanXMLFromCurrentFolderAction
+            << setFolderCoverAction
+            << deleteCustomFolderCoverAction;
+    if (!YACReader::FeatureFlags::organizeFiles) {
+        tmpList.removeOne(renameFilesAction);
+        tmpList.removeOne(organizeFilesAction);
+    }
+    editShortcutsDialog->addActionsGroup("Folders", theme.shortcutsIcons.foldersIcon, tmpList);
     allActions << tmpList;
 
     editShortcutsDialog->addActionsGroup("Lists", theme.shortcutsIcons.foldersIcon, // TODO change icon
@@ -678,36 +766,43 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
     ShortcutsManager::getShortcutsManager().registerActions(allActions);
 }
 
-void LibraryWindowActions::disableComicsActions(bool disabled)
+void LibraryWindowActions::setComicActionsDisabled(bool disabled)
 {
     // if there aren't comics, no fullscreen option will be available
 #ifndef Q_OS_MACOS
     toggleFullScreenAction->setDisabled(disabled);
 #endif
     // edit toolbar
-    openComicAction->setDisabled(disabled);
-    editSelectedComicsAction->setDisabled(disabled);
+    setComicSelectionActionsEnabled(!disabled);
     selectAllComicsAction->setDisabled(disabled);
-    asignOrderAction->setDisabled(disabled);
-    setAsReadAction->setDisabled(disabled);
-    setAsNonReadAction->setDisabled(disabled);
-    setNormalAction->setDisabled(disabled);
-    setMangaAction->setDisabled(disabled);
-    setWebComicAction->setDisabled(disabled);
-    setWesternMangaAction->setDisabled(disabled);
-    setYonkomaAction->setDisabled(disabled);
     // setAllAsReadAction->setDisabled(disabled);
     // setAllAsNonReadAction->setDisabled(disabled);
     showHideMarksAction->setDisabled(disabled);
-    deleteMetadataAction->setDisabled(disabled);
-    deleteComicsAction->setDisabled(disabled);
-    // context menu
-    openContainingFolderComicAction->setDisabled(disabled);
-    resetComicRatingAction->setDisabled(disabled);
-
-    getInfoAction->setDisabled(disabled);
-
     updateCurrentFolderAction->setDisabled(disabled);
+}
+
+void LibraryWindowActions::setComicSelectionActionsEnabled(bool enabled)
+{
+    openComicAction->setEnabled(enabled);
+    saveCoversToAction->setEnabled(enabled);
+    editSelectedComicsAction->setEnabled(enabled);
+    asignOrderAction->setEnabled(enabled);
+    setAsReadAction->setEnabled(enabled);
+    setAsNonReadAction->setEnabled(enabled);
+    setNormalAction->setEnabled(enabled);
+    setMangaAction->setEnabled(enabled);
+    setWebComicAction->setEnabled(enabled);
+    setWesternMangaAction->setEnabled(enabled);
+    setYonkomaAction->setEnabled(enabled);
+    deleteMetadataAction->setEnabled(enabled);
+    deleteComicsAction->setEnabled(enabled);
+    openContainingFolderComicAction->setEnabled(enabled);
+    renameComicsFilesAction->setEnabled(enabled);
+    organizeComicsFilesAction->setEnabled(enabled);
+    resetComicRatingAction->setEnabled(enabled);
+    getInfoAction->setEnabled(enabled);
+    addToMenuAction->setEnabled(enabled);
+    addToFavoritesAction->setEnabled(enabled);
 }
 void LibraryWindowActions::disableLibrariesActions(bool disabled)
 {
@@ -743,14 +838,17 @@ void LibraryWindowActions::disableFoldersActions(bool disabled)
     colapseAllNodesAction->setDisabled(disabled);
 
     openContainingFolderAction->setDisabled(disabled);
+    renameFilesAction->setDisabled(disabled);
+    organizeFilesAction->setDisabled(disabled);
 
+    renameFolderAction->setDisabled(disabled);
     updateFolderAction->setDisabled(disabled);
     rescanXMLFromCurrentFolderAction->setDisabled(disabled);
 }
 
 void LibraryWindowActions::disableAllActions()
 {
-    disableComicsActions(true);
+    setComicActionsDisabled(true);
     disableLibrariesActions(true);
     disableFoldersActions(true);
 }
@@ -767,6 +865,7 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     createLibraryAction->setIcon(sidebarIcons.newLibraryIcon);
     openLibraryAction->setIcon(sidebarIcons.openLibraryIcon);
     addFolderAction->setIcon(sidebarIcons.addNewIcon);
+    renameFolderAction->setIcon(sidebarIcons.renameListIcon);
     deleteFolderAction->setIcon(sidebarIcons.deleteIcon);
     setRootIndexAction->setIcon(sidebarIcons.setRootIcon);
     expandAllNodesAction->setIcon(sidebarIcons.expandIcon);

@@ -4,6 +4,7 @@
 #include "comic.h"
 #include "comic_files_manager.h"
 #include "comic_model.h"
+#include "cover_utils.h"
 #include "yacreader_comic_info_helper.h"
 #include "yacreader_comics_selection_helper.h"
 
@@ -14,7 +15,7 @@
 #include <QVBoxLayout>
 
 InfoComicsView::InfoComicsView(QWidget *parent)
-    : ComicsView(parent), flow(nullptr), list(nullptr)
+    : ComicsView(parent), toolbar(nullptr), flow(nullptr), list(nullptr)
 {
 
     // container->setFocusPolicy(Qt::StrongFocus);
@@ -53,7 +54,11 @@ InfoComicsView::~InfoComicsView()
 void InfoComicsView::setToolBar(QToolBar *toolBar)
 {
     static_cast<QVBoxLayout *>(this->layout())->insertWidget(1, toolBar);
-    this->toolbar = toolBar;
+    toolbar = toolBar;
+}
+
+void InfoComicsView::releaseToolBar()
+{
 }
 
 void InfoComicsView::setModel(ComicModel *model)
@@ -143,6 +148,36 @@ void InfoComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::ScrollHi
     Q_UNUSED(hint);
 }
 
+ContentViewState InfoComicsView::captureViewState() const
+{
+    ContentViewState state;
+    const auto index = selectionHelper->currentIndex();
+    if (index.isValid()) {
+        state.topItem.kind = ContentItemRef::Comic;
+        state.topItem.id = index.data(ComicModel::IdRole).toULongLong();
+        state.fallbackComicRow = index.row();
+        state.currentItem = state.topItem;
+    }
+    return state;
+}
+
+void InfoComicsView::restoreViewState(const ContentViewState &state)
+{
+    if (!model || model->rowCount() == 0)
+        return;
+
+    auto index = state.currentItem.kind == ContentItemRef::Comic ? model->getIndexFromId(state.currentItem.id) : QModelIndex();
+    if (!index.isValid() && state.fallbackComicRow >= 0)
+        index = model->index(qBound(0, state.fallbackComicRow, model->rowCount() - 1), 0);
+    if (!index.isValid())
+        return;
+
+    selectionHelper->clear();
+    selectionHelper->selectIndex(index.row());
+    if (list)
+        QMetaObject::invokeMethod(list, "restoreCurrentIndex", Q_ARG(QVariant, index.row()));
+}
+
 void InfoComicsView::toFullScreen()
 {
     toolbar->hide();
@@ -202,6 +237,11 @@ bool InfoComicsView::canDropUrls(const QList<QUrl> &urls, Qt::DropAction action)
     return false;
 }
 
+bool InfoComicsView::canDropImage(const QList<QUrl> &urls)
+{
+    return !YACReader::droppedImagePath(urls).isEmpty() && currentIndex().isValid();
+}
+
 void InfoComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action)
 {
     bool validAction = action == Qt::CopyAction; // TODO add move
@@ -210,6 +250,14 @@ void InfoComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action
         QList<QPair<QString, QString>> droppedFiles = ComicFilesManager::getDroppedFiles(urls);
         emit copyComicsToCurrentFolder(droppedFiles);
     }
+}
+
+void InfoComicsView::droppedImage(const QList<QUrl> &urls)
+{
+    const auto imagePath = YACReader::droppedImagePath(urls);
+    const auto index = currentIndex();
+    if (!imagePath.isEmpty() && index.isValid())
+        emit customComicCoverRequested(index.data(ComicModel::IdRole).toULongLong(), imagePath);
 }
 
 void InfoComicsView::requestedContextMenu(const QPoint &point)

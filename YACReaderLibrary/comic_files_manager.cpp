@@ -12,19 +12,19 @@ ComicFilesManager::ComicFilesManager(QObject *parent)
 {
 }
 
-void ComicFilesManager::copyComicsTo(const QList<QPair<QString, QString>> &sourceComics, const QString &folderDest, const QModelIndex &dest)
+void ComicFilesManager::copyComicsTo(const QList<QPair<QString, QString>> &sourceComics, const QString &folderDest, qulonglong destinationFolderId)
 {
     comics = sourceComics;
     folder = folderDest;
-    folderDestinationModelIndex = dest;
+    this->destinationFolderId = destinationFolderId;
     move = false;
 }
 
-void ComicFilesManager::moveComicsTo(const QList<QPair<QString, QString>> &sourceComics, const QString &folderDest, const QModelIndex &dest)
+void ComicFilesManager::moveComicsTo(const QList<QPair<QString, QString>> &sourceComics, const QString &folderDest, qulonglong destinationFolderId)
 {
     comics = sourceComics;
     folder = folderDest;
-    folderDestinationModelIndex = dest;
+    this->destinationFolderId = destinationFolderId;
     move = true;
 }
 
@@ -69,7 +69,7 @@ void ComicFilesManager::process()
 
         if (canceled) {
             if (successProcesingFiles)
-                emit success(folderDestinationModelIndex);
+                emit success(destinationFolderId);
             emit finished();
 
             return; // TODO rollback?
@@ -91,7 +91,7 @@ void ComicFilesManager::process()
     }
 
     if (successProcesingFiles)
-        emit success(folderDestinationModelIndex);
+        emit success(destinationFolderId);
     emit finished();
 }
 

@@ -128,6 +128,7 @@ struct EmptyContainerTheme {
     QPixmap emptyFolderIcon;
     QPixmap emptyFavoritesIcon;
     QPixmap emptyCurrentReadingsIcon;
+    QPixmap emptyRecentIcon;
     QPixmap emptyReadingListIcon;
     QMap<int, QPixmap> emptyLabelIcons; // Keyed by YACReader::LabelColors enum value
 };
@@ -211,7 +212,7 @@ struct NavigationTreeTheme {
     QIcon folderFinishedIcon;
 };
 
-// Grid and info view theme colors (used by GridComicsView, FolderContentView, InfoComicsView)
+// Grid and info view theme colors (used by GridComicsView and InfoComicsView)
 struct GridAndInfoViewTheme {
     // Grid colors
     QColor backgroundColor;
@@ -243,7 +244,7 @@ struct GridAndInfoViewTheme {
     // Current comic banner
     QColor currentComicBackgroundColor;
 
-    // Continue reading section (FolderContentView)
+    // Continue reading section (grid content view)
     QColor continueReadingBackgroundColor;
     QColor continueReadingTextColor;
 
@@ -422,6 +423,7 @@ struct ComicsViewToolbarTheme {
     QIcon setAsMangaIcon;
     QIcon editComicIcon;
     QIcon getInfoIcon;
+    QIcon organizeIcon;
     QIcon assignNumberIcon;
     QIcon selectAllIcon;
     QIcon deleteIcon;

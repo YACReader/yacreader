@@ -26,7 +26,7 @@ void TagInfoControllerV2::service(HttpRequest &request, HttpResponse &response)
 
 void TagInfoControllerV2::serviceComics(const int &library, const qulonglong &tagId, HttpResponse &response)
 {
-    QList<ComicDB> comics = DBHelper::getLabelComics(library, tagId);
+    const QList<ComicDB> comics = DBHelper::getLabelComics(library, tagId);
 
     for (const ComicDB &comic : comics) {
         response.write(QString("/v2/library/%1/comic/%2:%3:%4:%5:%6\r\n")

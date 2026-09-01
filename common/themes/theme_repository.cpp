@@ -9,6 +9,7 @@
 #include <QUuid>
 
 #include <algorithm>
+#include <utility>
 
 namespace {
 QString builtinNameFromFileName(QString fileName)
@@ -131,7 +132,7 @@ bool ThemeRepository::deleteUserTheme(const QString &themeId)
     if (themeId.startsWith("builtin/"))
         return false;
 
-    for (const auto &u : userThemes) {
+    for (const auto &u : std::as_const(userThemes)) {
         if (u.id == themeId) {
             const bool removed = QFile::remove(u.filePath);
             if (removed)
@@ -194,7 +195,7 @@ void ThemeRepository::scanBuiltins()
         return lhsName < rhsName;
     });
 
-    for (const auto &fileName : builtinFiles) {
+    for (const auto &fileName : std::as_const(builtinFiles)) {
         const QString name = builtinNameFromFileName(fileName);
         if (name.isEmpty())
             continue;

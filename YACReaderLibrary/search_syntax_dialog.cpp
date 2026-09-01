@@ -265,7 +265,8 @@ QWidget *SearchSyntaxDialog::createFieldsTab()
                                              tr("Input"),
                                              tr("Example") });
 
-    for (const auto category : fieldCategories()) {
+    const auto categories = fieldCategories();
+    for (const auto category : categories) {
         QList<QStandardItem *> categoryRow {
             new QStandardItem(categoryName(category)),
             new QStandardItem(),

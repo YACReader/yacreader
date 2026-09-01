@@ -25,7 +25,7 @@ QMargins marginsForEffect(const QGraphicsEffect &effect, const QSize &contentSiz
 YACReader::RoundedCornersDialog::RoundedCornersDialog(QWidget *parent)
     : QDialog(parent), m_dialogSurface(new QWidget(this))
 {
-    setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint);
+    setWindowFlags(windowFlags() | Qt::FramelessWindowHint | Qt::WindowSystemMenuHint | Qt::NoDropShadowWindowHint);
     setAttribute(Qt::WA_TranslucentBackground);
 
     auto layout = new QVBoxLayout(this);

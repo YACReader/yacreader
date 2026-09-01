@@ -176,7 +176,7 @@ struct GridAndInfoViewParams {
     // Current comic banner
     QColor currentComicBackgroundColor;
 
-    // Continue reading section (FolderContentView)
+    // Continue reading section (grid content view)
     QColor continueReadingBackgroundColor;
     QColor continueReadingTextColor;
 
@@ -419,15 +419,17 @@ Theme makeTheme(const ThemeParams &params)
     const auto &msd = params.metadataScraperDialogParams;
     const auto &t = msd.t;
 
-    auto recolor = [&](const QString &path, const QColor &color) {
-        return recoloredSvgToThemeFile(path, color, params.meta.id);
+    // Recolored icons are written to a flat per-theme folder keyed by the source file
+    // name, so any icon recolored more than once needs a suffix to get its own file.
+    auto recolor = [&](const QString &path, const QColor &color, const QString &suffix = { }) {
+        return recoloredSvgToThemeFile(path, color, params.meta.id, { .suffix = suffix });
     };
 
     theme.metadataScraperDialog.defaultLabelQSS = t.defaultLabelQSS.arg(msd.labelTextColor.name());
     theme.metadataScraperDialog.titleLabelQSS = t.titleLabelQSS.arg(msd.labelTextColor.name());
     theme.metadataScraperDialog.coverLabelQSS = t.coverLabelQSS.arg(msd.labelBackgroundColor.name(), msd.labelTextColor.name());
     theme.metadataScraperDialog.radioButtonQSS = t.radioButtonQSS.arg(msd.buttonTextColor.name(), recolor(":/images/comic_vine/radioUnchecked.svg", msd.radioUncheckedColor), recoloredSvgToThemeFile(":/images/comic_vine/radioChecked.svg", msd.radioCheckedBackgroundColor, msd.radioCheckedIndicatorColor, params.meta.id));
-    theme.metadataScraperDialog.checkBoxQSS = t.checkBoxQSS.arg(msd.buttonTextColor.name(), msd.buttonBorderColor.name(), msd.buttonBackgroundColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", msd.checkBoxTickColor));
+    theme.metadataScraperDialog.checkBoxQSS = t.checkBoxQSS.arg(msd.buttonTextColor.name(), msd.buttonBorderColor.name(), msd.buttonBackgroundColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", msd.checkBoxTickColor, "_metadata_scraper"));
 
     theme.metadataScraperDialog.scraperLineEditTitleLabelQSS = t.scraperLineEditTitleLabelQSS.arg(msd.contentTextColor.name());
     theme.metadataScraperDialog.scraperLineEditQSS = t.scraperLineEditQSS.arg(msd.contentAltBackgroundColor.name(), msd.contentTextColor.name(), "%1");
@@ -497,6 +499,7 @@ Theme makeTheme(const ThemeParams &params)
         theme.emptyContainer.emptyFolderIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_folder.svg", ec.iconColor, params.meta.id), 319, 243, dpr);
         theme.emptyContainer.emptyFavoritesIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_favorites.svg", rli.favoritesMainColor, params.meta.id), 238, 223, dpr);
         theme.emptyContainer.emptyCurrentReadingsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_current_readings.svg", ec.iconColor, params.meta.id), 167, 214, dpr);
+        theme.emptyContainer.emptyRecentIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainColor, rli.specialListShadowColor, rli.currentlyReadingOuterColor, params.meta.id), 167, dpr);
         theme.emptyContainer.emptyReadingListIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.iconColor, params.meta.id), 248, 187, dpr);
 
         // Generate empty label icons for each label color
@@ -822,6 +825,7 @@ Theme makeTheme(const ThemeParams &params)
     theme.comicsViewToolbar.setAsMangaIcon = makeComicsViewIcon(":/images/comics_view_toolbar/setManga.svg");
     theme.comicsViewToolbar.editComicIcon = makeComicsViewIcon(":/images/comics_view_toolbar/editComic.svg");
     theme.comicsViewToolbar.getInfoIcon = makeComicsViewIcon(":/images/comics_view_toolbar/getInfo.svg");
+    theme.comicsViewToolbar.organizeIcon = makeComicsViewIcon(":/images/comics_view_toolbar/organize.svg");
     theme.comicsViewToolbar.assignNumberIcon = makeComicsViewIcon(":/images/comics_view_toolbar/asignNumber.svg");
     theme.comicsViewToolbar.selectAllIcon = makeComicsViewIcon(":/images/comics_view_toolbar/selectAll.svg");
     theme.comicsViewToolbar.deleteIcon = makeComicsViewIcon(":/images/comics_view_toolbar/trash.svg");
@@ -955,13 +959,13 @@ Theme makeTheme(const ThemeParams &params)
     const auto &scd = params.serverConfigDialogParams;
     QColor cardColor = scd.backgroundColor;
     cardColor = cardColor.darker(cardColor.lightness() > 127 ? 104 : 112);
-    theme.serverConfigDialog.dialogQSS = scd.t.dialogQSS.arg(scd.backgroundColor.name(), scd.textColor.name(), scd.borderColor.name(), scd.accentColor.name(), cardColor.name(), recolor(":/images/chevronDown.svg", scd.accentColor), scd.secondaryTextColor.name(), scd.accentForegroundColor.name(), recolor(":/images/chevronDown.svg", scd.secondaryTextColor));
+    theme.serverConfigDialog.dialogQSS = scd.t.dialogQSS.arg(scd.backgroundColor.name(), scd.textColor.name(), scd.borderColor.name(), scd.accentColor.name(), cardColor.name(), recolor(":/images/chevronDown.svg", scd.accentColor, "_accent"), scd.secondaryTextColor.name(), scd.accentForegroundColor.name(), recolor(":/images/chevronDown.svg", scd.secondaryTextColor, "_disabled"));
     theme.serverConfigDialog.titleLabelQSS = scd.t.titleLabelQSS.arg(scd.titleTextColor.name());
     theme.serverConfigDialog.qrMessageLabelQSS = scd.t.qrMessageLabelQSS.arg(scd.qrMessageTextColor.name());
     theme.serverConfigDialog.propagandaLabelQSS = scd.t.propagandaLabelQSS.arg(scd.propagandaTextColor.name());
     theme.serverConfigDialog.textLabelQSS = scd.t.textLabelQSS.arg(scd.textColor.name());
     theme.serverConfigDialog.secondaryLabelQSS = scd.t.secondaryLabelQSS.arg(scd.secondaryTextColor.name());
-    theme.serverConfigDialog.checkBoxQSS = scd.t.checkBoxQSS.arg(scd.textColor.name(), scd.accentColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", scd.accentForegroundColor));
+    theme.serverConfigDialog.checkBoxQSS = scd.t.checkBoxQSS.arg(scd.textColor.name(), scd.accentColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", scd.accentForegroundColor, "_server_config"));
     theme.serverConfigDialog.linkColor = scd.linkColor;
     theme.serverConfigDialog.qrBackgroundColor = scd.qrBackgroundColor;
     theme.serverConfigDialog.qrForegroundColor = scd.qrForegroundColor;

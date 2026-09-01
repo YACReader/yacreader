@@ -8,7 +8,7 @@ Out-of-source builds are required. In-source builds will be rejected by CMake.
 
 ```bash
 cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --parallel
+cmake --build build --parallel 16
 ```
 
 Build options:
@@ -16,6 +16,7 @@ Build options:
 - `PDF_BACKEND`: `pdfium` | `poppler` | `pdfkit` | `no_pdf` (default: pdfium on Windows, pdfkit on macOS, poppler on Linux)
 - `BUILD_SERVER_STANDALONE=ON`: builds only `YACReaderLibraryServer` (headless), requires only Qt 6.4+
 - `BUILD_TESTS=ON` (default): enables the test suite
+- Always use the highest parallelism allowed by the CPU.
 
 ## Translations
 

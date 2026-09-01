@@ -99,6 +99,16 @@ Rectangle {
 
         highlightMoveDuration: 250
 
+        function restoreCurrentIndex(index) {
+            const previousDuration = highlightMoveDuration
+            highlightMoveDuration = 0
+            currentIndex = index
+            positionViewAtIndex(index, ListView.SnapPosition)
+            Qt.callLater(function() {
+                list.highlightMoveDuration = previousDuration
+            })
+        }
+
         onCurrentIndexChanged: currentIndex => {
                                    if (list.currentIndex !== -1) {
                                        mainFlowContainer.currentCoverChanged(list.currentIndex);

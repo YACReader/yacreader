@@ -23,7 +23,8 @@ QList<QString> getIpAddresses()
     };
 
     QList<QString> addresses;
-    for (auto add : QNetworkInterface::allAddresses()) {
+    const auto allAddresses = QNetworkInterface::allAddresses();
+    for (const auto &add : allAddresses) {
         // Exclude loopback, local, multicast
         if (add.isGlobal()) {
             addresses.push_back(add.toString());

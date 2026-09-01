@@ -19,6 +19,7 @@
 #include <QSqlRecord>
 
 #include <algorithm>
+#include <utility>
 
 using namespace std;
 using namespace YACReader;
@@ -102,7 +103,7 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
 
         _currentPathFolders.append(rootFolder(db));
 
-        for (const auto &folderName : folders) {
+        for (const auto &folderName : std::as_const(folders)) {
             if (folderName.isEmpty()) {
                 break;
             }
@@ -363,7 +364,6 @@ void LibraryCreator::create(QDir dir)
         if (stopRunning)
             return;
         QFileInfo fileInfo = list.at(i);
-        QString fileName = fileInfo.fileName();
 #ifdef Q_OS_MACOS
         QStringList src = _source.split("/");
         QString filePath = fileInfo.absoluteFilePath();
@@ -419,8 +419,18 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
     auto coverPath = LibraryPaths::coverPathFromLibraryDataPath(_target, hash);
     YACReader::InitialComicInfoExtractor ie(QDir::cleanPath(fileInfo.absoluteFilePath()), coverPath, comic.info.coverPage.toInt(), settings->value(IMPORT_COMIC_INFO_XML_METADATA, false).toBool());
 
-    if (!(comic.hasCover() && exists)) {
+    // A comic_info row without pages describes a file that never produced a comic, so it
+    // is no proof that the file is one: check it again instead of taking the shortcut.
+    const bool knownComic = comic.hasCover() && comic.info.numPages.toInt() > 0;
+
+    if (!(knownComic && exists)) {
         ie.extract();
+        if (!ie.isFileSupported()) {
+            // Not a comic YACReader can show, so it does not belong to the library. It
+            // leaves no cover behind either, otherwise the next scan would take that
+            // cover as proof that the file had been imported before.
+            return;
+        }
         numPages = ie.getNumPages();
         originalCoverSize = ie.getOriginalCoverSize();
         if (numPages > 0) {

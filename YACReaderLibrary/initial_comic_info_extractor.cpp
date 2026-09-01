@@ -16,7 +16,7 @@ using namespace YACReader;
 bool InitialComicInfoExtractor::crash = false;
 
 InitialComicInfoExtractor::InitialComicInfoExtractor(QString fileSource, QString target, int coverPage, bool getXMLMetadata)
-    : _fileSource(fileSource), _target(target), _numPages(0), _coverSize(0, 0), _coverExtracted(false), _coverPage(coverPage), getXMLMetadata(getXMLMetadata), _xmlInfoData()
+    : _fileSource(fileSource), _target(target), _numPages(0), _coverSize(0, 0), _coverExtracted(false), _coverPage(coverPage), _fileSupported(true), getXMLMetadata(getXMLMetadata), _xmlInfoData()
 {
     if (coverPage <= 0) {
         _coverPage = 1;
@@ -122,7 +122,12 @@ void InitialComicInfoExtractor::extract()
     if (isEpub) {
         const auto epub = FileComic::epubScanInfo(order, archive, _coverPage);
         if (!epub.isValid()) {
-            QLOG_WARN() << "Extracting cover: unsupported EPUB" << _fileSource << epub.error;
+            // An EPUB book is a different kind of file that happens to share the
+            // extension with EPUB comics. It is not a comic, so it is left alone.
+            QLOG_INFO() << "Skipping EPUB, it is not an image based comic" << _fileSource << epub.error;
+            _fileSupported = false;
+            _cover.load(":/images/notCover.png");
+            return;
         }
         _numPages = epub.pageCount;
         coverArchiveIndex = epub.coverArchiveIndex;

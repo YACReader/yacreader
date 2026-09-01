@@ -15,6 +15,8 @@
 #include <QtDebug>
 #include <QtGui>
 
+#include <utility>
+
 #ifdef use_unarr
 #include <unarr.h>
 #endif
@@ -61,14 +63,18 @@ bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, i
 // TODO: optimize this method (seriously)
 bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
 {
-
-    QAbstractItemModel::dropMimeData(data, action, row, column, parent);
     QLOG_TRACE() << ">>>>>>>>>>>>>>dropMimeData ComicModel<<<<<<<<<<<<<<<<<" << parent << row << "," << column;
 
-    if (!data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
+    if (!canDropMimeData(data, action, row, column, parent))
         return false;
 
     const QList<qulonglong> comicIds = YACReader::mimeDataToComicsIds(data);
+    if (comicIds.isEmpty())
+        return false;
+
+    if (row < 0 || row > _data.count())
+        row = _data.count();
+
     QList<int> currentIndexes;
     int i;
     {
@@ -84,6 +90,9 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
             }
         }
     }
+
+    if (currentIndexes.size() != comicIds.size())
+        return false;
 
     std::sort(currentIndexes.begin(), currentIndexes.end());
     QList<ComicItem *> resortedData;
@@ -132,26 +141,24 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     int tempRow = row;
 
-    if (tempRow < 0)
-        tempRow = _data.count();
-
     for (const auto id : comicIds) {
         int i = 0;
         const auto dataSnapshot = _data;
         for (auto *item : dataSnapshot) {
             if (item->data(Id) == id) {
-                beginMoveRows(parent, i, i, parent, tempRow);
-
-                bool skipElement = i == tempRow || i + 1 == tempRow;
+                const bool skipElement = i == tempRow || i + 1 == tempRow;
 
                 if (!skipElement) {
+                    if (!beginMoveRows(parent, i, i, parent, tempRow))
+                        return false;
+
                     if (i > tempRow)
                         _data.move(i, tempRow);
                     else
                         _data.move(i, tempRow - 1);
-                }
 
-                endMoveRows();
+                    endMoveRows();
+                }
 
                 if (i > tempRow)
                     tempRow++;
@@ -327,9 +334,13 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(FileName);
     else if (role == RatingRole)
         return item->data(Rating);
-    else if (role == CoverPathRole)
-        return getCoverUrlPathForComicHash(item->data(Hash).toString());
-    else if (role == NumPagesRole)
+    else if (role == CoverPathRole) {
+        auto coverUrl = getCoverUrlPathForComicHash(item->data(Hash).toString());
+        const auto revision = coverRevisions.value(item->data(Id).toULongLong());
+        if (revision > 0)
+            coverUrl.setQuery(QStringLiteral("revision=%1").arg(revision));
+        return coverUrl;
+    } else if (role == NumPagesRole)
         return item->data(NumPages);
     else if (role == CurrentPageRole)
         return item->data(CurrentPage);
@@ -339,6 +350,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(HasBeenOpened);
     else if (role == IdRole)
         return item->data(Id);
+    else if (role == HashRole)
+        return item->data(Hash);
     else if (role == PublicationDateRole)
         return QVariant(localizedDate(item->data(PublicationDate).toString()));
     else if (role == AddedRole)
@@ -1224,20 +1237,16 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
 void ComicModel::notifyCoverChange(const ComicDB &comic)
 {
     auto it = std::find_if(_data.begin(), _data.end(), [comic](ComicItem *item) { return item->data(ComicModel::Id).toULongLong() == comic.id; });
-    auto itemIndex = std::distance(_data.begin(), it);
-    auto item = _data[itemIndex];
+    if (it == _data.end())
+        return;
 
-    // emiting a dataChage doesn't work in QML for some reason, CoverPathRole is requested but the view doesn't update the image
-    // removing and reading again works with the flow views without any additional code, but it's not the best solution
-    beginRemoveRows(QModelIndex(), itemIndex, itemIndex);
-    _data.removeAt(itemIndex);
-    endRemoveRows();
-
-    beginInsertRows(QModelIndex(), itemIndex, itemIndex);
-    _data.insert(itemIndex, item);
-    endInsertRows();
-
-    // this doesn't work in QML -> emit dataChanged(index(itemIndex, 0), index(itemIndex, 0), QVector<int>() << CoverPathRole);
+    // Keep cover changes non-structural. Removing and reinserting the row makes
+    // views adjust their selection and scroll position before the edit refresh can
+    // capture them. Changing the URL also makes QML reload the image even though
+    // the underlying cover file path is unchanged.
+    ++coverRevisions[comic.id];
+    const auto itemIndex = std::distance(_data.begin(), it);
+    emit dataChanged(index(itemIndex, 0), index(itemIndex, columnCount() - 1), { CoverPathRole });
 }
 
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
@@ -1262,6 +1271,12 @@ void ComicModel::addComicsToFavorites(const QList<QModelIndex> &comicsList)
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+
+    QList<qulonglong> comicIds;
+    comicIds.reserve(comics.size());
+    for (const auto &comic : std::as_const(comics))
+        comicIds.append(comic.id);
+    emit favoritesChanged(comicIds);
 }
 
 void ComicModel::addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId)
@@ -1311,6 +1326,12 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+
+    QList<qulonglong> comicIds;
+    comicIds.reserve(comics.size());
+    for (const auto &comic : std::as_const(comics))
+        comicIds.append(comic.id);
+    emit favoritesChanged(comicIds);
 
     if (mode == Favorites)
         deleteComicsFromModel(comicsList);

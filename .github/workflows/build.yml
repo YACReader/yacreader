@@ -169,7 +169,7 @@ jobs:
 
       - name: Build
         env:
-          MACOSX_DEPLOYMENT_TARGET: "11"
+          MACOSX_DEPLOYMENT_TARGET: "12"
         run: |
           VERSION="$(tr -d '\r\n' < VERSION)"
           SKIP_CODESIGN="${{ env.IS_FORK }}"
@@ -228,7 +228,7 @@ jobs:
         shell: cmd
         run: |
           call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          set PATH=C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
+          set PATH=%GITHUB_WORKSPACE%\dependencies\pdfium\win\x64;C:\Qt\6.9.3\msvc2022_64\bin;%PATH%
           ctest --test-dir build --output-on-failure
 
       - name: Upload executables for signing
@@ -683,4 +683,3 @@ jobs:
           files: staging/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

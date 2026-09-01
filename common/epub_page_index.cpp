@@ -7,6 +7,7 @@
 #include <QUrl>
 #include <QXmlStreamReader>
 
+#include <algorithm>
 #include <optional>
 
 namespace {
@@ -179,16 +180,66 @@ std::optional<Package> readPackage(const QByteArray &packageXml, QString &error)
     return package;
 }
 
-std::optional<QString> imageFromWrapper(const QByteArray &document, const QString &documentPath, const QHash<QString, int> &archiveIndexes)
+// A page of an image based comic may carry a handful of incidental characters (a page
+// number, a chapter marker). Anything beyond that is real text that YACReader cannot
+// render, so the document is not a picture wrapper.
+constexpr int maximumIncidentalTextCharacters = 32;
+
+// Elements whose character data is never rendered as page text.
+bool isNonRenderedSubtree(QStringView name)
+{
+    return name == QStringLiteral("head") || name == QStringLiteral("script") || name == QStringLiteral("style") || name == QStringLiteral("title") || name == QStringLiteral("desc") || name == QStringLiteral("metadata");
+}
+
+// Scanned comics sometimes carry an invisible OCR or accessibility text layer over the
+// page image. It is not content the reader is expected to show.
+bool isHiddenElement(const QXmlStreamAttributes &attributes)
+{
+    if (attributes.hasAttribute(QStringLiteral("hidden"))) {
+        return true;
+    }
+    const QString style = attribute(attributes, u"style").remove(' ');
+    return style.contains(QStringLiteral("display:none"), Qt::CaseInsensitive) || style.contains(QStringLiteral("visibility:hidden"), Qt::CaseInsensitive);
+}
+
+int significantTextLength(QStringView text)
+{
+    int length = 0;
+    for (const QChar character : text) {
+        if (character.isSpace() || character.category() == QChar::Other_Format) {
+            continue;
+        }
+        ++length;
+    }
+    return length;
+}
+
+struct WrapperImage {
+    QString path;
+    QString error;
+
+    bool isValid() const { return error.isEmpty(); }
+};
+
+WrapperImage imageFromWrapper(const QByteArray &document, const QString &documentPath, const QHash<QString, int> &archiveIndexes)
 {
     HtmlEntityResolver entityResolver;
     QXmlStreamReader reader(document);
     reader.setEntityResolver(&entityResolver);
     QSet<QString> images;
+    int textLength = 0;
 
     while (!reader.atEnd()) {
         reader.readNext();
+        if (reader.isCharacters()) {
+            textLength += significantTextLength(reader.text());
+            continue;
+        }
         if (!reader.isStartElement()) {
+            continue;
+        }
+        if (isNonRenderedSubtree(reader.name()) || isHiddenElement(reader.attributes())) {
+            reader.skipCurrentElement();
             continue;
         }
 
@@ -211,12 +262,15 @@ std::optional<QString> imageFromWrapper(const QByteArray &document, const QStrin
     }
 
     if (reader.hasError()) {
-        return std::nullopt;
+        return { { }, QStringLiteral("%1 is malformed: %2").arg(documentPath, reader.errorString()) };
+    }
+    if (textLength > maximumIncidentalTextCharacters) {
+        return { { }, QStringLiteral("%1 contains %2 characters of text").arg(documentPath).arg(textLength) };
     }
     if (images.size() != 1) {
-        return std::nullopt;
+        return { { }, QStringLiteral("%1 references %2 usable images").arg(documentPath).arg(images.size()) };
     }
-    return *images.constBegin();
+    return { *images.constBegin(), { } };
 }
 
 struct Book {
@@ -267,6 +321,14 @@ std::optional<QString> packageCoverPath(const Book &book)
     return std::nullopt;
 }
 
+// A comic may legitimately carry a credits or copyright page among its images. A book
+// whose spine is mostly made of documents YACReader cannot render is not a comic, and
+// showing only the pictures it happens to contain would silently drop its content.
+int toleratedNonImageSpineItems(int spineItemCount)
+{
+    return std::max(1, spineItemCount / 20);
+}
+
 YACReaderEpub::PageIndex pageIndexFromBook(const Book &book, const YACReaderEpub::FileReader &readFile, const YACReaderEpub::ImageFilter &acceptImage = { })
 {
     YACReaderEpub::PageIndex result;
@@ -275,14 +337,38 @@ YACReaderEpub::PageIndex pageIndexFromBook(const Book &book, const YACReaderEpub
         result.coverPath = *coverPath;
     }
 
+    int consideredItems = 0;
+    int nonImageItems = 0;
+    QString firstRejection;
+    const int tolerance = toleratedNonImageSpineItems(static_cast<int>(book.package.spine.size()));
+
+    const auto reject = [&](const QString &reason) {
+        ++nonImageItems;
+        if (firstRejection.isEmpty()) {
+            firstRejection = reason;
+        }
+    };
+
     for (const SpineItem &spineItem : book.package.spine) {
+        // Give up as soon as the book cannot qualify, so text books are cheap to reject.
+        if (nonImageItems > tolerance) {
+            break;
+        }
+
         const auto manifestItem = book.package.manifest.constFind(spineItem.id);
         if (manifestItem == book.package.manifest.cend()) {
+            reject(QStringLiteral("spine item %1 is not in the manifest").arg(spineItem.id));
             continue;
         }
+        // The navigation document is structural, not a page of the comic.
+        if (containsProperty(manifestItem->properties, u"nav")) {
+            continue;
+        }
+        ++consideredItems;
 
         const auto contentPath = resolvePath(book.packagePath, manifestItem->href);
         if (!contentPath) {
+            reject(QStringLiteral("%1 is not a valid resource path").arg(manifestItem->href));
             continue;
         }
 
@@ -292,24 +378,37 @@ YACReaderEpub::PageIndex pageIndexFromBook(const Book &book, const YACReaderEpub
         } else if (manifestItem->mediaType == QStringLiteral("application/xhtml+xml") || manifestItem->mediaType == QStringLiteral("image/svg+xml")) {
             const int wrapperIndex = book.archiveIndexes.value(*contentPath, -1);
             if (wrapperIndex < 0) {
+                reject(QStringLiteral("%1 is missing from the archive").arg(*contentPath));
                 continue;
             }
-            const auto wrapperImage = imageFromWrapper(readFile(wrapperIndex), *contentPath, book.archiveIndexes);
-            if (!wrapperImage) {
+            const WrapperImage wrapperImage = imageFromWrapper(readFile(wrapperIndex), *contentPath, book.archiveIndexes);
+            if (!wrapperImage.isValid()) {
+                reject(wrapperImage.error);
                 continue;
             }
-            imagePath = *wrapperImage;
+            imagePath = wrapperImage.path;
         } else {
+            reject(QStringLiteral("%1 is not a page (%2)").arg(*contentPath, manifestItem->mediaType));
             continue;
         }
 
         const int imageIndex = book.archiveIndexes.value(imagePath, -1);
-        if (imageIndex < 0 || (acceptImage && !acceptImage(imagePath))) {
+        if (imageIndex < 0) {
+            reject(QStringLiteral("%1 is missing from the archive").arg(imagePath));
+            continue;
+        }
+        if (acceptImage && !acceptImage(imagePath)) {
+            reject(QStringLiteral("%1 is not a supported image").arg(imagePath));
             continue;
         }
         result.pages.append({ imagePath, imageIndex });
     }
 
+    if (nonImageItems > tolerance) {
+        result.pages.clear();
+        result.error = QStringLiteral("EPUB is not image based: %1 of %2 checked spine items are not single image pages (%3)").arg(nonImageItems).arg(consideredItems).arg(firstRejection);
+        return result;
+    }
     if (result.pages.isEmpty()) {
         result.error = QStringLiteral("Package spine contains no usable image pages");
     }
@@ -320,7 +419,7 @@ YACReaderEpub::PageIndex pageIndexFromBook(const Book &book, const YACReaderEpub
 
 namespace YACReaderEpub {
 
-PageIndex readPageIndex(const QStringList &fileNames, const FileReader &readFile)
+PageIndex readPageIndex(const QStringList &fileNames, const FileReader &readFile, const ImageFilter &acceptImage)
 {
     QString error;
     const auto book = readBook(fileNames, readFile, error);
@@ -329,7 +428,7 @@ PageIndex readPageIndex(const QStringList &fileNames, const FileReader &readFile
         result.error = error;
         return result;
     }
-    return pageIndexFromBook(*book, readFile);
+    return pageIndexFromBook(*book, readFile, acceptImage);
 }
 
 ScanInfo readScanInfo(const QStringList &fileNames, const FileReader &readFile, int coverPage, const ImageFilter &acceptImage)
@@ -340,49 +439,12 @@ ScanInfo readScanInfo(const QStringList &fileNames, const FileReader &readFile, 
         return result;
     }
 
-    const auto scanAllPages = [&] {
-        ScanInfo fullResult;
-        const PageIndex pages = pageIndexFromBook(*book, readFile, acceptImage);
-        fullResult.error = pages.error;
-        fullResult.pageCount = static_cast<int>(pages.pages.size());
-        if (fullResult.pageCount > 0) {
-            const int coverIndex = coverPage > 0 && coverPage <= fullResult.pageCount ? coverPage - 1 : 0;
-            fullResult.coverArchiveIndex = pages.pages.at(coverIndex).archiveIndex;
-        }
-        return fullResult;
-    };
-
-    if (!book->package.fixedLayout) {
-        return scanAllPages();
-    }
-
-    struct Candidate {
-        QString path;
-        bool wrapper = false;
-    };
-    QVector<Candidate> candidates;
-    for (const SpineItem &spineItem : book->package.spine) {
-        const auto manifestItem = book->package.manifest.constFind(spineItem.id);
-        if (manifestItem == book->package.manifest.cend()) {
-            continue;
-        }
-        const auto contentPath = resolvePath(book->packagePath, manifestItem->href);
-        if (!contentPath || !book->archiveIndexes.contains(*contentPath)) {
-            continue;
-        }
-
-        if (manifestItem->mediaType.startsWith(QStringLiteral("image/")) && manifestItem->mediaType != QStringLiteral("image/svg+xml")) {
-            if (!acceptImage || acceptImage(*contentPath)) {
-                candidates.append({ *contentPath, false });
-            }
-        } else if (manifestItem->mediaType == QStringLiteral("application/xhtml+xml") || manifestItem->mediaType == QStringLiteral("image/svg+xml")) {
-            candidates.append({ *contentPath, true });
-        }
-    }
-
-    result.pageCount = static_cast<int>(candidates.size());
+    // The whole spine has to be walked to tell an image based comic from a book that
+    // merely contains images, so the reader and the library always agree on the pages.
+    const PageIndex pages = pageIndexFromBook(*book, readFile, acceptImage);
+    result.error = pages.error;
+    result.pageCount = static_cast<int>(pages.pages.size());
     if (result.pageCount == 0) {
-        result.error = QStringLiteral("Package spine contains no usable image pages");
         return result;
     }
 
@@ -395,17 +457,7 @@ ScanInfo readScanInfo(const QStringList &fileNames, const FileReader &readFile, 
     }
 
     const int coverIndex = coverPage > 0 && coverPage <= result.pageCount ? coverPage - 1 : 0;
-    const Candidate &cover = candidates.at(coverIndex);
-    QString imagePath = cover.path;
-    if (cover.wrapper) {
-        const int wrapperIndex = book->archiveIndexes.value(cover.path);
-        const auto wrapperImage = imageFromWrapper(readFile(wrapperIndex), cover.path, book->archiveIndexes);
-        if (!wrapperImage || (acceptImage && !acceptImage(*wrapperImage))) {
-            return scanAllPages();
-        }
-        imagePath = *wrapperImage;
-    }
-    result.coverArchiveIndex = book->archiveIndexes.value(imagePath, -1);
+    result.coverArchiveIndex = pages.pages.at(coverIndex).archiveIndex;
     return result;
 }
 

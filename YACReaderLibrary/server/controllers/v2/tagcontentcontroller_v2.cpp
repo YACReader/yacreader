@@ -32,7 +32,7 @@ void TagContentControllerV2::serviceContent(const int &library, const qulonglong
 {
     auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(library);
 
-    QList<ComicDB> comics = DBHelper::getLabelComics(library, tagId);
+    const QList<ComicDB> comics = DBHelper::getLabelComics(library, tagId);
 
     QJsonArray items;
 

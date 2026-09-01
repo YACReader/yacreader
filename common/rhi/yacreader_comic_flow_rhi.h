@@ -4,6 +4,7 @@
 #include "yacreader_flow_rhi.h"
 
 #include <QMutex>
+#include <QSet>
 #include <QWaitCondition>
 
 class ImageLoader3D;
@@ -21,6 +22,8 @@ public:
 
 private:
     ImageLoader3D *worker;
+    QSet<int> failedImageLoads;
+    int loadingWindowCenter = -1;
 
 protected:
     QList<QString> paths;
@@ -38,7 +41,7 @@ public:
         idx = -1;
         fileName = "";
     }
-    int index() const { return idx; }
+    int index() const;
     void lock();
     void unlock();
     QImage result();
@@ -49,7 +52,7 @@ protected:
     void run() override;
 
 private:
-    QMutex mutex;
+    mutable QMutex mutex;
     QWaitCondition condition;
 
     bool restart;

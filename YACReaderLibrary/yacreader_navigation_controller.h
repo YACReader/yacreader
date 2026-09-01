@@ -1,8 +1,15 @@
 #ifndef YACREADER_NAVIGATION_CONTROLLER_H
 #define YACREADER_NAVIGATION_CONTROLLER_H
 
+#include "content_view_state.h"
+
 #include <QObject>
+#include <QPersistentModelIndex>
+
+#include <optional>
+
 class LibraryWindow;
+class LibrarySearchCoordinator;
 class YACReaderLibrarySourceContainer;
 class YACReaderContentViewsManager;
 
@@ -10,44 +17,48 @@ class YACReaderNavigationController : public QObject
 {
     Q_OBJECT
 public:
-    explicit YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager);
-
-signals:
+    explicit YACReaderNavigationController(LibraryWindow *parent, YACReaderContentViewsManager *contentViewsManager, LibrarySearchCoordinator *librarySearchCoordinator);
 
 public slots:
-    // info origins
-    // folders view
-    void selectedFolder(const QModelIndex &mi);
+    void selectedFolder(const QModelIndex &proxyIndex);
+    void navigateToFolder(const QModelIndex &sourceIndex);
     void reselectCurrentFolder();
-    // reading lists
-    void selectedList(const QModelIndex &mi);
+    void selectedList(const QModelIndex &proxyIndex);
     void reselectCurrentList();
 
     void reselectCurrentSource();
+    void beginCurrentSourceRefresh();
+    void cancelCurrentSourceRefresh();
+    void refreshCurrentSource();
 
     // history navigation
+    void backward();
+    void forward();
     void selectedIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
     void loadIndexFromHistory(const YACReaderLibrarySourceContainer &sourceContainer);
-    // empty subfolder
-    void selectSubfolder(const QModelIndex &sourceMI, int child);
 
-    void loadEmptyFolderInfo(const QModelIndex &modelIndex);
-
-    void loadFolderInfo(const QModelIndex &modelIndex);
-    void loadListInfo(const QModelIndex &modelIndex);
-    void loadSpecialListInfo(const QModelIndex &modelIndex);
-    void loadLabelInfo(const QModelIndex &modelIndex);
-    void loadReadingListInfo(const QModelIndex &modelIndex);
+    void loadFolderContent(const QModelIndex &folderIndex);
+    void loadListContent(const QModelIndex &listIndex);
+    void loadSpecialListContent(const QModelIndex &listIndex);
+    void loadLabelContent(const QModelIndex &listIndex);
+    void loadReadingListContent(const QModelIndex &listIndex);
 
     void loadPreviousStatus();
+    void reloadRootContinueReading();
 
 private:
     void setupConnections();
+    void loadRootContinueReading();
+    void recordCurrentViewState();
+
     LibraryWindow *libraryWindow;
     YACReaderContentViewsManager *contentViewsManager;
+    LibrarySearchCoordinator *librarySearchCoordinator;
+    bool restoringHistorySelection = false;
+    std::optional<ContentViewState> pendingRefreshViewState;
+    QPersistentModelIndex loadedFolder;
 
-    // convenience methods
-    qulonglong folderModelIndexToID(const QModelIndex &mi);
+    qulonglong folderIdForIndex(const QModelIndex &folderIndex) const;
 };
 
 #endif // YACREADER_NAVIGATION_CONTROLLER_H

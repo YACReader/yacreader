@@ -68,6 +68,7 @@ protected slots:
 
 private:
     void clearState();
+    void finishSuccessfully();
     void toggleSkipButton();
     QString volumeSearchStringFromComic(const ComicDB &comic);
 

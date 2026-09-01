@@ -1,6 +1,8 @@
 #ifndef YACREADER_HISTORY_CONTROLLER_H
 #define YACREADER_HISTORY_CONTROLLER_H
 
+#include "content_view_state.h"
+
 #include <QModelIndex>
 #include <QObject>
 
@@ -19,6 +21,7 @@ public:
     explicit YACReaderLibrarySourceContainer(const QModelIndex &sourceModelIndex, YACReaderLibrarySourceContainer::SourceType type);
     QModelIndex getSourceModelIndex() const;
     YACReaderLibrarySourceContainer::SourceType getType() const;
+    ContentViewState getViewState() const;
 
     bool operator==(const YACReaderLibrarySourceContainer &other) const;
     bool operator!=(const YACReaderLibrarySourceContainer &other) const;
@@ -26,6 +29,7 @@ public:
 protected:
     QModelIndex sourceModelIndex;
     YACReaderLibrarySourceContainer::SourceType type;
+    ContentViewState viewState;
 
     friend class YACReaderHistoryController;
 };
@@ -45,9 +49,10 @@ signals:
 
 public slots:
     void clear();
-    void backward();
-    void forward();
+    void backward(const ContentViewState &currentViewState);
+    void forward(const ContentViewState &currentViewState);
     void updateHistory(const YACReaderLibrarySourceContainer &source);
+    void recordViewStateForCurrentEntry(const ContentViewState &state);
     YACReaderLibrarySourceContainer lastSourceContainer();
     YACReaderLibrarySourceContainer currentSourceContainer();
 

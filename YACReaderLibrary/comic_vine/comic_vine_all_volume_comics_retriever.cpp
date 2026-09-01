@@ -7,6 +7,8 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
+#include <utility>
+
 ComicVineAllVolumeComicsRetriever::ComicVineAllVolumeComicsRetriever(const QString &volumeURLString, const QString &userAgent, QObject *parent)
     : QObject(parent), volumeURLString(volumeURLString), userAgent(userAgent)
 {
@@ -54,7 +56,7 @@ QString ComicVineAllVolumeComicsRetriever::consolidateJSON()
     QJsonObject consolidatedJSON;
     QJsonArray comicsInfo;
 
-    for (const auto &json : jsonResponses) {
+    for (const auto &json : std::as_const(jsonResponses)) {
         QJsonDocument doc = QJsonDocument::fromJson(json);
 
         if (doc.isNull() || !doc.isObject() || doc.isEmpty()) {

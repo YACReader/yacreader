@@ -126,7 +126,7 @@ if(BUILD_SERVER_STANDALONE)
         Sql
     )
 else()
-    find_package(Qt6 6.7 REQUIRED COMPONENTS
+    find_package(Qt6 6.9 REQUIRED COMPONENTS
         Core
         Core5Compat
         Gui
@@ -173,6 +173,7 @@ add_subdirectory(YACReaderLibrary/server)
 
 if(NOT BUILD_SERVER_STANDALONE)
     add_subdirectory(YACReaderLibrary/comic_vine)
+    add_subdirectory(YACReaderLibrary/organize_files)
 endif()
 
 # Always add YACReaderLibrary: defines library_common and db_helper (shared with server)

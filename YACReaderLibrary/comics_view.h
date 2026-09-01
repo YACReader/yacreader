@@ -2,6 +2,7 @@
 #define COMICS_VIEW_H
 
 #include "comic_model.h"
+#include "content_view_state.h"
 
 #include <QAbstractItemView>
 #include <QSettings>
@@ -20,6 +21,8 @@ class ComicsView : public QWidget
 public:
     explicit ComicsView(QWidget *parent = nullptr);
     virtual void setToolBar(QToolBar *toolBar) = 0;
+    virtual void releaseToolBar() = 0;
+    virtual void saveViewConfig() { }
     virtual void setModel(ComicModel *model);
     virtual void setCurrentIndex(const QModelIndex &index) = 0;
     virtual QModelIndex currentIndex() = 0;
@@ -33,6 +36,8 @@ public:
     virtual void updateCurrentComicView() = 0;
     virtual void focusComicsNavigation(Qt::FocusReason reason) = 0;
     virtual void reloadContent();
+    virtual ContentViewState captureViewState() const { return { }; }
+    virtual void restoreViewState(const ContentViewState &state) { Q_UNUSED(state); }
 
 public slots:
     virtual void updateInfoForIndex(int index);
@@ -51,6 +56,8 @@ signals:
     // Drops
     void copyComicsToCurrentFolder(QList<QPair<QString, QString>>);
     void moveComicsToCurrentFolder(QList<QPair<QString, QString>>);
+    void customComicCoverRequested(qulonglong comicId, const QString &imagePath);
+    void customFolderCoverRequested(qulonglong folderId, const QString &imagePath);
 
 protected:
     ComicModel *model;

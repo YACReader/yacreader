@@ -9,6 +9,7 @@
 #include <QHeaderView>
 #include <QLabel>
 #include <QMenu>
+#include <QScrollBar>
 #include <QSettings>
 #include <QSplitter>
 #include <QStackedWidget>
@@ -16,7 +17,7 @@
 #include <QVBoxLayout>
 
 ClassicComicsView::ClassicComicsView(QWidget *parent)
-    : ComicsView(parent), searching(false)
+    : ComicsView(parent), toolbar(nullptr), startSeparatorAction(nullptr), searching(false)
 {
     auto layout = new QHBoxLayout;
 
@@ -64,6 +65,13 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(tableView, &QAbstractItemView::doubleClicked, this, &ClassicComicsView::selectedComicForOpening);
     connect(comicFlow, &ComicFlowWidget::centerIndexChanged, this, &ClassicComicsView::updateTableView);
     connect(tableView, &YACReaderTableView::comicRated, this, &ComicsView::comicRated);
+    connect(tableView, &YACReaderTableView::customCoverDropped, this, [this](const QString &imagePath, const QModelIndex &index) {
+        emit customComicCoverRequested(index.data(ComicModel::IdRole).toULongLong(), imagePath);
+    });
+    connect(comicFlow, &ComicFlowWidget::customCoverDropped, this, [this](const QString &imagePath, int index) {
+        if (model && index >= 0 && index < model->rowCount())
+            emit customComicCoverRequested(model->index(index, 0).data(ComicModel::IdRole).toULongLong(), imagePath);
+    });
     connect(comicFlow, &ComicFlowWidget::selected, this, &ComicsView::selected);
     connect(tableView->horizontalHeader(), &QHeaderView::sectionMoved, this, &ClassicComicsView::saveTableHeadersStatus);
     connect(tableView->horizontalHeader(), &QHeaderView::sectionResized, this, &ClassicComicsView::saveTableHeadersStatus);
@@ -132,10 +140,33 @@ void ClassicComicsView::hideComicFlow(bool hide)
 void ClassicComicsView::setToolBar(QToolBar *toolBar)
 {
     static_cast<QVBoxLayout *>(comics->layout())->insertWidget(0, toolBar);
-    this->toolbar = toolBar;
+    toolbar = toolBar;
 
-    startSeparatorAction = toolBar->addSeparator();
-    toolBar->addAction(hideFlowViewAction);
+    if (!startSeparatorAction) {
+        startSeparatorAction = new QAction(this);
+        startSeparatorAction->setSeparator(true);
+    }
+
+    const auto actions = toolbar->actions();
+    if (!actions.contains(startSeparatorAction))
+        toolbar->addAction(startSeparatorAction);
+    if (!actions.contains(hideFlowViewAction))
+        toolbar->addAction(hideFlowViewAction);
+}
+
+void ClassicComicsView::releaseToolBar()
+{
+    if (!toolbar)
+        return;
+
+    toolbar->removeAction(startSeparatorAction);
+    toolbar->removeAction(hideFlowViewAction);
+}
+
+void ClassicComicsView::saveViewConfig()
+{
+    saveTableHeadersStatus();
+    saveSplitterStatus();
 }
 
 void ClassicComicsView::setModel(ComicModel *model)
@@ -233,6 +264,49 @@ void ClassicComicsView::scrollTo(const QModelIndex &mi, QAbstractItemView::Scrol
     Q_UNUSED(hint);
 
     comicFlow->setCenterIndex(mi.row());
+}
+
+ContentViewState ClassicComicsView::captureViewState() const
+{
+    ContentViewState state;
+    const auto topIndex = tableView->indexAt(QPoint(0, 0));
+    if (topIndex.isValid()) {
+        state.topItem.kind = ContentItemRef::Comic;
+        state.topItem.id = topIndex.data(ComicModel::IdRole).toULongLong();
+        state.fallbackComicRow = topIndex.row();
+        state.offset = -tableView->visualRect(topIndex).top();
+        state.itemExtent = tableView->rowHeight(topIndex.row());
+    }
+
+    const auto selectedIndex = tableView->currentIndex();
+    if (selectedIndex.isValid()) {
+        state.currentItem.kind = ContentItemRef::Comic;
+        state.currentItem.id = selectedIndex.data(ComicModel::IdRole).toULongLong();
+    }
+    return state;
+}
+
+void ClassicComicsView::restoreViewState(const ContentViewState &state)
+{
+    if (!model || model->rowCount() == 0)
+        return;
+
+    if (state.currentItem.kind == ContentItemRef::Comic) {
+        const auto current = model->getIndexFromId(state.currentItem.id);
+        if (current.isValid()) {
+            tableView->setCurrentIndex(current);
+            comicFlow->setCenterIndexWithoutAnimation(current.row());
+        }
+    }
+
+    const auto topIndex = state.topItem.kind == ContentItemRef::Comic ? model->getIndexFromId(state.topItem.id) : QModelIndex();
+    const auto fallbackRow = qBound(0, state.fallbackComicRow, model->rowCount() - 1);
+    const auto restoreIndex = topIndex.isValid() ? topIndex : model->index(fallbackRow, 0);
+    if (restoreIndex.isValid()) {
+        tableView->scrollTo(restoreIndex, QAbstractItemView::PositionAtTop);
+        if (state.offset > 0)
+            tableView->verticalScrollBar()->setValue(tableView->verticalScrollBar()->value() + qRound(state.offset));
+    }
 }
 
 void ClassicComicsView::toFullScreen()
@@ -383,11 +457,19 @@ void ClassicComicsView::saveSplitterStatus()
 
 void ClassicComicsView::applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles)
 {
-    Q_UNUSED(topLeft);
-    Q_UNUSED(bottomRight);
     if (roles.contains(ComicModel::ReadColumnRole)) {
         comicFlow->setMarks(model->getReadList());
         comicFlow->updateMarks();
+    }
+
+    if (roles.contains(ComicModel::CoverPathRole)) {
+        const auto centerIndex = comicFlow->centerIndex();
+        for (auto row = topLeft.row(); row <= bottomRight.row(); ++row) {
+            comicFlow->remove(row);
+            comicFlow->add(model->index(row, 0).data(ComicModel::CoverPathRole).toUrl().toLocalFile(), row);
+        }
+        comicFlow->setMarks(model->getReadList());
+        comicFlow->setCenterIndexWithoutAnimation(centerIndex);
     }
 }
 
@@ -409,11 +491,8 @@ void ClassicComicsView::addItemsToFlow(const QModelIndex &parent, int from, int 
 
 void ClassicComicsView::closeEvent(QCloseEvent *event)
 {
-    toolbar->removeAction(startSeparatorAction);
-    toolbar->removeAction(hideFlowViewAction);
-
-    saveTableHeadersStatus();
-    saveSplitterStatus();
+    releaseToolBar();
+    saveViewConfig();
     ComicsView::closeEvent(event);
 }
 

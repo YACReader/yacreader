@@ -3,8 +3,8 @@
 
 #include "yacreader_global_gui.h"
 
-RecentVisibilityCoordinator::RecentVisibilityCoordinator(QSettings *settings, FolderModel *folderModel, FolderContentView *folderContentView, ComicModel *comicModel)
-    : QObject(), settings(settings), folderModel(folderModel), folderContentView(folderContentView), comicModel(comicModel)
+RecentVisibilityCoordinator::RecentVisibilityCoordinator(QSettings *settings, FolderModel *folderModel, ComicModel *comicModel)
+    : QObject(), settings(settings), folderModel(folderModel), comicModel(comicModel)
 {
     updateVisibility();
     updateTimeRange();
@@ -21,7 +21,6 @@ void RecentVisibilityCoordinator::updateTimeRange()
 {
     auto days = settings->value(NUM_DAYS_TO_CONSIDER_RECENT, 1).toInt();
     folderModel->setRecentRange(days);
-    folderContentView->setRecentRange(days);
     comicModel->setRecentRange(days);
 }
 
@@ -30,6 +29,5 @@ void RecentVisibilityCoordinator::updateVisibility()
     auto visibility = settings->value(DISPLAY_RECENTLY_INDICATOR, true).toBool();
 
     folderModel->setShowRecent(visibility);
-    folderContentView->setShowRecent(visibility);
     comicModel->setShowRecent(visibility);
 }

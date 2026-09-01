@@ -1,4 +1,4 @@
-import QtQuick
+﻿import QtQuick
 
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -9,9 +9,10 @@ import com.yacreader.ComicModel 1.0
 
 import com.yacreader.ComicInfo 1.0
 import com.yacreader.ComicDB 1.0
+import com.yacreader.GridContentModel 1.0
 
 import QtQuick.Controls.Basic
-import QtQuick.Controls.impl
+import QtQml.Models
 
 SplitView {
     orientation: Qt.Horizontal
@@ -55,375 +56,67 @@ SplitView {
         height: parent.height
         anchors.margins: 0
 
-        Component {
+        DelegateChooser {
             id: appDelegate
-            Rectangle
-            {
-                id: cell
-                width: grid.cellWidth
-                height: grid.cellHeight
-                color: "#00000000"
+            role: "item_kind"
 
-                scale: mouseArea.containsMouse ? 1.025 : 1
+            DelegateChoice {
+                roleValue: GridContentModel.FolderItem
 
-                Behavior on scale {
-                    NumberAnimation { duration: 90 }
-                }
+                FolderGridDelegate {
+                    id: folderCell
+                    width: grid.cellWidth
+                    height: grid.cellHeight
+                    selected: currentIndexHelper.focusedFolderRow === index
 
-                BorderImage {
-                    anchors {
-                        top: realCell.top
-                        left: realCell.left
-                        right: realCell.right
-                        bottom: realCell.bottom
-                        margins: -10
+                    onFocusRequested: {
+                        comicsSelectionHelper.clear()
+                        grid.focusItemFromPointer(index)
                     }
-                    border { left: 10; top: 10; right: 10; bottom: 10 }
-                    horizontalTileMode: BorderImage.Stretch
-                    verticalTileMode: BorderImage.Stretch
-                    source: "prerendered_cover_shadow.png"
-                    visible: showDropShadow
-                }
-
-                Rectangle {
-                    id: realCell
-
-                    property int position : 0
-                    property bool dragging: false;
-                    Drag.active: mouseArea.drag.active
-                    Drag.hotSpot.x: 32
-                    Drag.hotSpot.y: 32
-                    Drag.dragType: Drag.Automatic
-                    //Drag.mimeData: { "x": 1 }
-                    Drag.proposedAction: Qt.CopyAction
-                    Drag.onActiveChanged: {
-                        if(!dragging)
-                        {
-                            dragManager.startDrag();
-                            dragging = true;
-                        }else
-                            dragging = false;
-                    }
-
-                    width: itemWidth
-                    height: itemHeight
-
-                    color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?cellSelectedColor:cellColor;
-                    //border.color: ((dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index))?cellSelectedBorderColor:borderColor;
-                    //border.width: ?1:0;
-                    anchors.horizontalCenter: parent.horizontalCenter
-
-                    Rectangle
-                    {
-                        id: mouseOverBorder
-
-                        property bool commonBorder : false
-
-                        property int lBorderwidth : 2
-                        property int rBorderwidth : 2
-                        property int tBorderwidth : 2
-                        property int bBorderwidth : 2
-
-                        property int commonBorderWidth : 1
-
-                        z : -1
-
-                        color: "#00000000"
-
-                        anchors
-                        {
-                            left: parent.left
-                            right: parent.right
-                            top: parent.top
-                            bottom: parent.bottom
-
-                            topMargin    : commonBorder ? -commonBorderWidth : -tBorderwidth
-                            bottomMargin : commonBorder ? -commonBorderWidth : -bBorderwidth
-                            leftMargin   : commonBorder ? -commonBorderWidth : -lBorderwidth
-                            rightMargin  : commonBorder ? -commonBorderWidth : -rBorderwidth
-                        }
-
-                        border.color: cellSelectedBorderColor
-                        border.width: 3
-
-                        opacity: (dummyValue || !dummyValue) && comicsSelectionHelper.isSelectedIndex(index) ? 1 : 0
-
-                        Behavior on opacity {
-                            NumberAnimation { duration: 300 }
-                        }
-
-                        radius : 2
-                    }
-
-
-                    MouseArea  {
-                        id: mouseArea
-                        drag.target: realCell
-
-                        drag.minimumX: 0
-                        drag.maximumX: 0
-                        drag.minimumY: 0
-                        drag.maximumY: 0
-
-                        anchors.fill: parent
-                        acceptedButtons: Qt.LeftButton | Qt.RightButton
-
-                        hoverEnabled: true
-
-                        onDoubleClicked: {
-                            comicsSelectionHelper.clear();
-
-                            comicsSelectionHelper.selectIndex(index);
-                            grid.currentIndex = index;
-                            currentIndexHelper.selectedItem(index);
-                        }
-
-                        function selectAll(from,to)
-                        {
-                            for(var i = from;i<=to;i++)
-                            {
-                                comicsSelectionHelper.selectIndex(i);
-                            }
-                        }
-
-                        onPressed: mouse => {
-                                       var ci = grid.currentIndex; //save current index
-
-                                       /*if(mouse.button != Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
-                        {
-                            if(!comicsSelectionHelper.isSelectedIndex(index))
-                                comicsSelectionHelper.clear();
-                        }*/
-
-                                       if(mouse.modifiers & Qt.ShiftModifier)
-                                       if(index < ci)
-                                       {
-                                           selectAll(index,ci);
-                                           grid.currentIndex = index;
-                                       }
-                                       else if (index > ci)
-                                       {
-                                           selectAll(ci,index);
-                                           grid.currentIndex = index;
-                                       }
-
-                                       mouse.accepted = true;
-
-                                       if(mouse.button === Qt.RightButton) // context menu is requested
-                                       {
-                                           if(!comicsSelectionHelper.isSelectedIndex(index)) //the context menu is requested outside the current selection, the selection will be
-                                           {
-                                               currentIndexHelper.setCurrentIndex(index)
-                                               grid.currentIndex = index;
-                                           }
-
-                                           var coordinates = main.mapFromItem(realCell,mouseX,mouseY)
-                                           contextMenuHelper.requestedContextMenu(Qt.point(coordinates.x,coordinates.y));
-                                           mouse.accepted = false;
-
-                                       } else //left button
-                                       {
-
-                                           if(mouse.modifiers & Qt.ControlModifier)
-                                           {
-                                               if(comicsSelectionHelper.isSelectedIndex(index))
-                                               {
-                                                   if(comicsSelectionHelper.numItemsSelected()>1)
-                                                   {
-                                                       comicsSelectionHelper.deselectIndex(index);
-                                                       if(grid.currentIndex === index)
-                                                       grid.currentIndex = comicsSelectionHelper.lastSelectedIndex();
-                                                   }
-                                               }
-                                               else
-                                               {
-                                                   comicsSelectionHelper.selectIndex(index);
-                                                   grid.currentIndex = index;
-                                               }
-                                           }
-
-                                           if(mouse.button !== Qt.RightButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier)) //just left button click
-                                           {
-                                               if(comicsSelectionHelper.isSelectedIndex(index)) //the context menu is requested outside the current selection, the selection will be
-                                               {
-
-                                               }
-                                               else
-                                               {
-                                                   currentIndexHelper.setCurrentIndex(index)
-                                               }
-
-                                               grid.currentIndex = index;
-                                           }
-                                       }
-
-                                   }
-
-                        onReleased: mouse => {
-                                        if(mouse.button === Qt.LeftButton && !(mouse.modifiers & Qt.ControlModifier || mouse.modifiers & Qt.ShiftModifier))
-                                        {
-                                            if(comicsSelectionHelper.isSelectedIndex(index))
-                                            {
-                                                currentIndexHelper.setCurrentIndex(index)
-                                                grid.currentIndex = index;
-                                            }
-                                        }
-                                    }
+                    onOpenRequested: currentIndexHelper.openFolder(index)
+                    onContextMenuRequested: localPosition => {
+                        var coordinates = main.mapFromItem(folderCell.interactionItem,
+                                                           localPosition.x,
+                                                           localPosition.y)
+                        contextMenuHelper.requestItemContextMenu(Qt.point(coordinates.x, coordinates.y), folderCell.index)
                     }
                 }
+            }
 
-                /**/
+            DelegateChoice {
+                roleValue: GridContentModel.ComicItem
 
-                //cover
-                Image {
-                    id: coverElement
-                    width: coverWidth
-                    height: coverHeight
-                    anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
-                    source: cover_path
-                    fillMode: Image.PreserveAspectCrop
-                    smooth: true
-                    mipmap: true
-                    asynchronous : true
-                    cache: false //TODO clear cache only when it is needed
+                ComicGridDelegate {
+                    id: comicCell
+                    width: grid.cellWidth
+                    height: grid.cellHeight
+                    currentViewIndex: grid.currentIndex
+                    selectionHelper: comicsSelectionHelper
 
-                }
-
-                //is new
-                Rectangle {
-                    width: 10
-                    height: 10
-                    radius: 5
-                    anchors { left: coverElement.left; top: coverElement.top; topMargin: 5; leftMargin: 5; }
-                    color: newItemColor
-                    visible: (((new Date() / 1000) - added_date) < recent_range) && show_recent
-                }
-
-                //border
-                Rectangle {
-                    width: coverElement.width
-                    height: coverElement.height
-                    anchors {horizontalCenter: parent.horizontalCenter; top: realCell.top; topMargin: 0}
-                    color: "transparent"
-                    border {
-                        color: comicCoverBorderColor
-                        width: 1
+                    onActivateRequested: viewRow => currentIndexHelper.activateItem(viewRow)
+                    onClearFolderFocusRequested: currentIndexHelper.clearFolderFocus()
+                    onContextMenuRequested: localPosition => {
+                        var coordinates = main.mapFromItem(comicCell.interactionItem,
+                                                           localPosition.x,
+                                                           localPosition.y)
+                        contextMenuHelper.requestItemContextMenu(Qt.point(coordinates.x, coordinates.y), comicCell.index)
                     }
+                    onFocusViewRowRequested: viewRow => grid.focusItemFromPointer(viewRow)
+                    onRateRequested: (sourceRow, rating) => comicRatingHelper.rate(sourceRow, rating)
+                    onSelectRangeRequested: (from, to) => currentIndexHelper.selectComicRange(from, to)
+                    onSetCurrentViewRowRequested: viewRow => grid.setCurrentIndexFromPointer(viewRow)
+                    onSetCurrentComicRowRequested: sourceRow => {
+                        grid.setCurrentIndexFromPointer(currentIndexHelper.viewRowForComicRow(sourceRow))
+                    }
+                    onStartDragRequested: dragManager.startDrag()
                 }
+            }
 
-                //mark
-                Image {
-                    id: mark
-                    width: 23
-                    height: 23
-                    source: read_column&&show_marks?"tick.svg":has_been_opened&&show_marks?"reading.svg":""
-                    anchors {right: coverElement.right; top: coverElement.top; topMargin: 9; rightMargin: 9}
-                    asynchronous : true
-                }
-
-                //title
-                Text {
-                    id : titleText
-                    anchors { top: coverElement.bottom; left: realCell.left; leftMargin: 4; rightMargin: 4; topMargin: 4; }
-                    width: itemWidth - 8
-                    maximumLineCount: 2
-                    wrapMode: Text.WordWrap
-                    text: title
-                    elide: Text.ElideRight
-                    color: itemTitleColor
-                    clip: true
-                    font.letterSpacing: fontSpacing
-                    font.pointSize: fontSize
-                    font.family: fontFamily
-                }
-
-                //number
-                Text {
-                    anchors {bottom: realCell.bottom; left: realCell.left; margins: 4}
-                    text: number?"<b>#</b>"+number:""
-                    color: itemDetailsColor
-                    font.letterSpacing: fontSpacing
-                    font.pointSize: fontSize
-                    font.family: fontFamily
-                }
-
-                //page icon
-                ColorImage {
-                    id: pageImage
-                    anchors {bottom: realCell.bottom; right: realCell.right; bottomMargin: 6; rightMargin: 4; leftMargin: 4}
-                    source: "page.svg"
-                    color: itemDetailsColor
-                    width: 8
-                    height: 10
-                }
-
-                //numPages
-                Text {
-                    id: pages
-                    anchors {bottom: realCell.bottom; right: pageImage.left; margins: 4}
-                    text: has_been_opened?current_page+"/"+num_pages:num_pages
-                    color: itemDetailsColor
-                    font.letterSpacing: fontSpacing
-                    font.pointSize: fontSize
-                    font.family: fontFamily
-                }
-
-                //rating icon
-                ColorImage {
-                    id: ratingImage
-                    anchors {bottom: realCell.bottom; right: pageImage.left; bottomMargin: 6.5; rightMargin: Math.floor(pages.width)+12}
-                    source: "star.svg"
-                    color: itemDetailsColor
-                    width: 11
-                    height: 11
-
-                    MouseArea  {
-                        anchors.fill: parent
-                        onPressed: {
-                            console.log("rating");
-                            comicsSelectionHelper.clear();
-                            comicsSelectionHelper.selectIndex(index);
-                            grid.currentIndex = index;
-                            ratingLoader.active = true;
-                            ratingLoader.item.popup();
-                           }
-                       }
-
-                       Loader {
-                           id: ratingLoader
-                           active: false
-                           sourceComponent: ratingConextMenuComponent
-                       }
-
-                       Component {
-                           id: ratingConextMenuComponent
-                           Menu {
-                               background: Rectangle {
-                                   implicitWidth: 42
-                                   implicitHeight: 100
-                               }
-
-                               id: ratingConextMenu
-
-                               Action { text: "1"; enabled: true; onTriggered: comicRatingHelper.rate(index,1) }
-                               Action { text: "2"; enabled: true; onTriggered: comicRatingHelper.rate(index,2) }
-                               Action { text: "3"; enabled: true; onTriggered: comicRatingHelper.rate(index,3) }
-                               Action { text: "4"; enabled: true; onTriggered: comicRatingHelper.rate(index,4) }
-                               Action { text: "5"; enabled: true; onTriggered: comicRatingHelper.rate(index,5) }
-
-                               delegate: MenuItem {
-                                   implicitHeight: 30
-                               }
-                           }
-                       }
-                }
-
-                //comic rating
-                Text {
-                    id: comicRating
-                    anchors {bottom: realCell.bottom; right: ratingImage.left; margins: 4}
-                    text: rating>0?rating:"-"
-                    color: itemDetailsColor
+            DelegateChoice {
+                roleValue: GridContentModel.SpacerItem
+                Item {
+                    width: grid.cellWidth
+                    height: grid.cellHeight
                 }
             }
         }
@@ -442,13 +135,61 @@ SplitView {
                 grid.contentX = grid.originX
             }
 
+            function capturePosition() {
+                const probeX = Math.max(1, grid.cellWidth / 2)
+                const viewRow = grid.indexAt(probeX, grid.contentY + 1)
+                if (viewRow < 0) {
+                    return {
+                        "header": true,
+                        "viewRow": -1,
+                        "offset": grid.contentY - grid.originY,
+                        "itemExtent": Math.max(1, -grid.originY)
+                    }
+                }
+
+                const item = grid.itemAtIndex(viewRow)
+                return {
+                    "header": false,
+                    "viewRow": viewRow,
+                    "offset": item ? grid.contentY - item.y : 0,
+                    "itemExtent": grid.cellHeight
+                }
+            }
+
+            function restorePosition(viewRow, offset, oldItemExtent) {
+                if (viewRow < 0) {
+                    const currentExtent = Math.max(1, -grid.originY)
+                    const restoredOffset = oldItemExtent === currentExtent
+                            ? offset
+                            : offset * currentExtent / Math.max(1, oldItemExtent)
+                    grid.contentY = grid.originY + restoredOffset
+                    return
+                }
+
+                grid.positionViewAtIndex(viewRow, GridView.Beginning)
+                const restoredOffset = oldItemExtent === grid.cellHeight
+                        ? offset
+                        : offset * grid.cellHeight / Math.max(1, oldItemExtent)
+                const maximumY = Math.max(grid.originY, grid.contentHeight - grid.height + grid.originY)
+                grid.contentY = Math.max(grid.originY, Math.min(maximumY, grid.contentY + restoredOffset))
+            }
+
             property Component currentComicView: Component {
                 id: currentComicView
                 Rectangle {
                     id: currentComicViewTopView
                     color: "#00000000"
 
-                    height: showCurrentComic ? 270 : 20
+                    function handlesWheelAt(position) {
+                        const synopsisPosition = synopsisScroller.mapFromItem(currentComicViewTopView,
+                                                                              position.x,
+                                                                              position.y)
+                        return synopsisPosition.x >= 0 && synopsisPosition.x <= synopsisScroller.width
+                                && synopsisPosition.y >= 0 && synopsisPosition.y <= synopsisScroller.height
+                                && synopsisScroller.contentHeight > synopsisScroller.availableHeight
+                    }
+
+                    height: currentIndexHelper.currentComicBannerVisible ? 270 : 20
 
                     Rectangle {
                         color: currentComicBackgroundColor
@@ -458,7 +199,7 @@ SplitView {
                         width: main.width
                         height: 250
 
-                        visible: showCurrentComic
+                        visible: currentIndexHelper.currentComicBannerVisible
 
                         //cover
                         Image {
@@ -471,7 +212,7 @@ SplitView {
                             anchors.rightMargin: 15
                             horizontalAlignment: Image.AlignLeft
                             anchors {horizontalCenter: parent.horizontalCenter; top: parent.top; topMargin: 0}
-                            source: comicsList.getCoverUrlPathForComicHash(currentComicInfo.hash.toString())
+                            source: comicsList.comicCoverUrlForHash(currentComicInfo.hash.toString())
                             fillMode: Image.PreserveAspectFit
                             smooth: true
                             mipmap: true
@@ -698,12 +439,26 @@ SplitView {
                 }
             }
 
+            property Component rootFolderHeader: Component {
+                ContinueReadingGridHeader {
+                    id: continueReadingHeader
+                    width: main.width
+                    contentModel: currentIndexHelper.rootContinueReadingModel
+                    sectionVisible: currentIndexHelper.globalContinueReadingEnabled
+                    onOpenRequested: index => currentIndexHelper.openContinueReadingComic(index)
+                    onContextMenuRequested: (index, position) => {
+                        var coordinates = main.mapFromItem(continueReadingHeader, position.x, position.y)
+                        currentIndexHelper.requestContinueReadingComicContextMenu(Qt.point(coordinates.x, coordinates.y), index)
+                    }
+                }
+            }
+
             GridView {
                 id:grid
                 objectName: "grid"
                 anchors.fill: parent
                 cellHeight: cellCustomHeight
-                header: currentComicView
+                header: currentIndexHelper.rootFolder ? scrollView.rootFolderHeader : scrollView.currentComicView
                 focus: true
                 model: comicsList
                 delegate: appDelegate
@@ -714,10 +469,36 @@ SplitView {
                 pixelAligned: true
                 highlightFollowsCurrentItem: true
 
-                currentIndex: 0
+                currentIndex: -1
                 cacheBuffer: 0
+                readonly property var wheelAwareHeader: headerItem
 
                 interactive: true
+
+                // Clears the selection when the click does not land on an item. The
+                // MouseArea must be a child of the view content item, because a plain
+                // child of the view stays behind the flickable itself and never gets
+                // mouse events. Its geometry follows the viewport (in content
+                // coordinates), so the empty space after the last row is included too.
+                MouseArea {
+                    parent: grid.contentItem
+                    z: -1
+                    x: grid.contentX
+                    y: grid.contentY
+                    width: grid.width
+                    height: grid.height
+                    acceptedButtons: Qt.LeftButton
+
+                    onClicked: mouse => {
+                        if (mouse.modifiers !== Qt.NoModifier)
+                            return
+
+                        comicsSelectionHelper.clear()
+                        currentIndexHelper.clearFolderFocus()
+                        grid.currentIndex = -1
+                        grid.forceActiveFocus()
+                    }
+                }
 
                 move: Transition {
                     NumberAnimation { properties: "x,y"; duration: 250 }
@@ -748,25 +529,69 @@ SplitView {
                     return Math.floor(width / cellCustomWidth);
                 }
 
+                function firstVisibleSelectableIndex() {
+                    if (count === 0)
+                        return -1
+
+                    const columns = Math.max(1, numCellsPerRow())
+                    const visibleRow = Math.max(0, Math.floor((contentY - originY) / cellHeight))
+                    const candidate = Math.min(visibleRow * columns, count - 1)
+                    return currentIndexHelper.nearestSelectableRow(candidate, 1)
+                }
+
+                function setCurrentIndexFromPointer(index) {
+                    var previousContentX = contentX
+                    var previousContentY = contentY
+                    currentIndex = index
+                    contentX = previousContentX
+                    contentY = previousContentY
+                }
+
+                function focusItemFromPointer(index) {
+                    var previousContentX = contentX
+                    var previousContentY = contentY
+                    currentIndexHelper.focusItem(index)
+                    currentIndex = index
+                    contentX = previousContentX
+                    contentY = previousContentY
+                }
+
                 onWidthChanged: {
                     calculateCellWidths(cellCustomWidth);
                 }
 
                 function calculateCellWidths(cWidth) {
-                    var wholeCells = Math.floor(width / cWidth);
+                    var wholeCells = Math.max(1, Math.floor(width / cWidth));
                     var rest = width - (cWidth * wholeCells)
 
                     grid.cellWidth = cWidth + Math.floor(rest / wholeCells);
+                    currentIndexHelper.setGridColumnCount(wholeCells)
                 }
 
-                WheelHandler {
-                    onWheel: {
-                        if (grid.contentHeight <= grid.height) {
-                            return;
+                MouseArea {
+                    id: gridWheelArea
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
+
+                    onWheel: (wheel) => {
+                        if (grid.wheelAwareHeader && grid.wheelAwareHeader.handlesWheelAt) {
+                            const headerPosition = grid.wheelAwareHeader.mapFromItem(gridWheelArea,
+                                                                                    wheel.x,
+                                                                                    wheel.y)
+                            if (grid.wheelAwareHeader.handlesWheelAt(headerPosition)) {
+                                wheel.accepted = false
+                                return
+                            }
                         }
 
-                        var newValue =  Math.min((grid.contentHeight - grid.height + grid.originY), (Math.max(grid.originY , grid.contentY - event.angleDelta.y)));
-                        grid.contentY = newValue;
+                        if (grid.contentHeight <= grid.height)
+                            return
+
+                            var newValue = Math.min(
+                                (grid.contentHeight - grid.height + grid.originY),
+                                                    Math.max(grid.originY, grid.contentY - wheel.angleDelta.y)
+                            )
+                            grid.contentY = newValue
                     }
                 }
 
@@ -796,6 +621,25 @@ SplitView {
                         return;
                     }
 
+                    if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                        event.accepted = true
+                        currentIndexHelper.activateItem(grid.currentIndex)
+                        return
+                    }
+
+                    const cursorKey = event.key === Qt.Key_Right || event.key === Qt.Key_Left
+                                      || event.key === Qt.Key_Up || event.key === Qt.Key_Down
+                    if (cursorKey && grid.currentIndex < 0) {
+                        const initialIndex = grid.firstVisibleSelectableIndex()
+                        if (initialIndex >= 0) {
+                            comicsSelectionHelper.clear()
+                            currentIndexHelper.focusItem(initialIndex)
+                            grid.currentIndex = initialIndex
+                        }
+                        event.accepted = true
+                        return
+                    }
+
                     var numCells = grid.numCellsPerRow();
                     var ci = 0;
                     if (event.key === Qt.Key_Right) {
@@ -813,20 +657,44 @@ SplitView {
                         return;
                     }
 
+                    ci = currentIndexHelper.nearestSelectableRow(ci,
+                                                               event.key === Qt.Key_Left || event.key === Qt.Key_Up ? -1 : 1)
+
                     event.accepted = true;
                     grid.currentIndex = -1
                     comicsSelectionHelper.clear();
-                    currentIndexHelper.setCurrentIndex(ci);
+                    currentIndexHelper.focusItem(ci);
                     grid.currentIndex = ci;
                 }
 
                 DropArea {
+                    id: gridDropArea
                     anchors.fill: parent
+
+                    function visibleItemIndexAt(x, y) {
+                        const contentPosition = grid.contentItem.mapFromItem(gridDropArea, x, y)
+                        const viewIndex = grid.indexAt(contentPosition.x, contentPosition.y)
+                        if (viewIndex < 0)
+                            return -1
+
+                        const item = grid.itemAtIndex(viewIndex)
+                        if (!item || !item.interactionItem)
+                            return -1
+
+                        const localPosition = item.interactionItem.mapFromItem(gridDropArea, x, y)
+                        return localPosition.x >= 0
+                                && localPosition.x <= item.interactionItem.width
+                                && localPosition.y >= 0
+                                && localPosition.y <= item.interactionItem.height
+                                ? viewIndex
+                                : -1
+                    }
 
                     onEntered: drag => {
                                    if(drag.hasUrls)
                                    {
-                                       if(dropManager.canDropUrls(drag.urls, drag.action))
+                                       if(dropManager.canDropImage(drag.urls)
+                                               || dropManager.canDropUrls(drag.urls, drag.action))
                                        {
                                            drag.accepted = true;
                                        }else
@@ -839,21 +707,30 @@ SplitView {
                                }
 
                     onDropped: drop => {
-                                   if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
+                                   if(drop.hasUrls && dropManager.canDropImage(drop.urls))
+                                   {
+                                       var coverIndex = gridDropArea.visibleItemIndexAt(drop.x, drop.y);
+                                       if (coverIndex !== -1) {
+                                           dropManager.droppedImageAt(drop.urls, coverIndex);
+                                           drop.accepted = true;
+                                       }
+                                   }
+                                   else if(drop.hasUrls && dropManager.canDropUrls(drop.urls, drop.action))
                                    {
                                        dropManager.droppedFiles(drop.urls, drop.action);
                                    }
                                    else{
                                        if (dropManager.canDropFormats(drop.formats))
                                        {
-                                           var destItem = grid.itemAt(drop.x,drop.y + grid.contentY);
-                                           var destLocalX = grid.mapToItem(destItem,drop.x,drop.y + grid.contentY).x
                                            var realIndex = grid.indexAt(drop.x,drop.y + grid.contentY);
-
-                                           if(realIndex === -1)
-                                           realIndex = grid.count - 1;
-
-                                           var destIndex = destLocalX < (grid.cellWidth / 2) ? realIndex : realIndex + 1;
+                                           var destIndex = grid.count;
+                                           if (realIndex !== -1) {
+                                               var destItem = grid.itemAtIndex(realIndex);
+                                               var destLocalX = grid.mapToItem(destItem,
+                                                                               drop.x,
+                                                                               drop.y + grid.contentY).x;
+                                               destIndex = destLocalX < (grid.cellWidth / 2) ? realIndex : realIndex + 1;
+                                           }
                                            dropManager.droppedComicsForResortingAt("", destIndex);
                                        }
                                    }
@@ -883,19 +760,81 @@ SplitView {
             contentWidth: infoView.width
             contentHeight: infoView.height
 
-            ComicInfoView {
+            Loader {
                 id: infoView
                 width: info_container.width
+                sourceComponent: currentIndexHelper.focusedFolderRow >= 0
+                                 ? folderInfoComponent
+                                 : currentIndexHelper.selectedComicCount > 1
+                                   ? selectedComicsInfoComponent
+                                 : currentIndexHelper.hasComicSelection
+                                   ? comicInfoComponent
+                                   : currentIndexHelper.currentLocationInfo.kind === "folder"
+                                     ? folderInfoComponent
+                                     : currentIndexHelper.currentLocationInfo.kind === "library"
+                                       ? libraryInfoComponent
+                                     : currentIndexHelper.currentLocationInfo.name
+                                       ? listInfoComponent
+                                       : emptyInfoComponent
             }
 
-            WheelHandler {
-                onWheel: {
-                    if (infoFlickable.contentHeight <= infoFlickable.height) {
-                        return;
-                    }
+            Component {
+                id: comicInfoComponent
+                ComicInfoView { width: infoView.width }
+            }
 
-                    var newValue =  Math.min((infoFlickable.contentHeight - infoFlickable.height), (Math.max(infoFlickable.originY , infoFlickable.contentY - event.angleDelta.y)));
-                    infoFlickable.contentY = newValue;
+            Component {
+                id: selectedComicsInfoComponent
+                SelectedComicsInfoView {
+                    width: infoView.width
+                    selectionInfo: currentIndexHelper.selectedComicsInfo
+                }
+            }
+
+            Component {
+                id: folderInfoComponent
+                FolderInfoView {
+                    width: infoView.width
+                    folderInfo: currentIndexHelper.focusedFolderRow >= 0
+                                ? currentIndexHelper.focusedFolderInfo
+                                : currentIndexHelper.currentLocationInfo
+                }
+            }
+
+            Component {
+                id: libraryInfoComponent
+                LibraryInfoView {
+                    width: infoView.width
+                    libraryInfo: currentIndexHelper.currentLocationInfo
+                }
+            }
+
+            Component {
+                id: listInfoComponent
+                ListInfoView {
+                    width: infoView.width
+                    listInfo: currentIndexHelper.currentLocationInfo
+                }
+            }
+
+            Component {
+                id: emptyInfoComponent
+                EmptyInfoView { width: infoView.width }
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.NoButton
+
+                onWheel: (wheel) => {
+                    if (infoFlickable.contentHeight <= infoFlickable.height)
+                        return
+
+                        var newValue = Math.min(
+                            (infoFlickable.contentHeight - infoFlickable.height),
+                                                Math.max(infoFlickable.originY, infoFlickable.contentY - wheel.angleDelta.y)
+                        )
+                        infoFlickable.contentY = newValue
                 }
             }
 
