@@ -3,6 +3,7 @@
 #include "add_label_dialog.h"
 #include "cbl_reader.h"
 #include "comic_model.h"
+#include "data_base_management.h"
 #include "reading_list_model.h"
 
 #include <QAction>
@@ -11,9 +12,120 @@
 #include <QKeySequence>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QRegularExpression>
+#include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
 #include <QWidget>
 
 #include <utility>
+
+namespace {
+struct LibraryComicMatchData
+{
+    qulonglong id = 0;
+    QString fileName;
+    QString series;
+    QString number;
+    QString volume;
+};
+
+enum class CblMatchState {
+    Matched,
+    Missing,
+    Ambiguous
+};
+
+struct CblMatchResult
+{
+    CblMatchState state = CblMatchState::Missing;
+    QList<LibraryComicMatchData> candidates;
+};
+
+QString normalized(const QString &value)
+{
+    return value.simplified().toCaseFolded();
+}
+
+bool sameValue(const QString &left, const QString &right)
+{
+    return normalized(left) == normalized(right);
+}
+
+CblMatchResult matchBook(const CblBook &book, const QList<LibraryComicMatchData> &libraryComics)
+{
+    CblMatchResult result;
+
+    QList<LibraryComicMatchData> seriesNumberMatches;
+    QList<LibraryComicMatchData> exactMatches;
+
+    for (const auto &comic : libraryComics) {
+        if (!sameValue(book.series, comic.series) || !sameValue(book.number, comic.number))
+            continue;
+
+        seriesNumberMatches.append(comic);
+
+        if (!book.volume.isEmpty() && sameValue(book.volume, comic.volume))
+            exactMatches.append(comic);
+    }
+
+    if (!book.volume.isEmpty() && exactMatches.size() == 1) {
+        result.state = CblMatchState::Matched;
+        result.candidates = exactMatches;
+        return result;
+    }
+
+    if (!book.volume.isEmpty() && exactMatches.size() > 1) {
+        result.state = CblMatchState::Ambiguous;
+        result.candidates = exactMatches;
+        return result;
+    }
+
+    if (seriesNumberMatches.size() == 1) {
+        result.state = CblMatchState::Matched;
+        result.candidates = seriesNumberMatches;
+        return result;
+    }
+
+    if (seriesNumberMatches.size() > 1) {
+        result.state = CblMatchState::Ambiguous;
+        result.candidates = seriesNumberMatches;
+        return result;
+    }
+
+    // Metadata is preferred, but older libraries can have sparse ComicInfo data.
+    // Fall back to the user's filename convention: "Series #Number" with an
+    // optional leading zero and optional "(of N)" issue suffix.
+    if (!book.series.isEmpty() && !book.number.isEmpty()) {
+        const QString issuePattern = QStringLiteral("#0*%1(?:\\s*\\(of\\s+\\d+\\))?(?=\\D|$)")
+                                             .arg(QRegularExpression::escape(book.number));
+        const QRegularExpression issueExpression(issuePattern, QRegularExpression::CaseInsensitiveOption);
+        const QString normalizedSeries = normalized(book.series);
+
+        QList<LibraryComicMatchData> fileMatches;
+        for (const auto &comic : libraryComics) {
+            if (!normalized(comic.fileName).contains(normalizedSeries))
+                continue;
+            if (issueExpression.match(comic.fileName).hasMatch())
+                fileMatches.append(comic);
+        }
+
+        if (fileMatches.size() == 1) {
+            result.state = CblMatchState::Matched;
+            result.candidates = fileMatches;
+            return result;
+        }
+
+        if (fileMatches.size() > 1) {
+            result.state = CblMatchState::Ambiguous;
+            result.candidates = fileMatches;
+            return result;
+        }
+    }
+
+    return result;
+}
+}
 
 ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dialogParent,
                                                                    ReadingListModel *listsModel,
@@ -76,32 +188,97 @@ void ReadingListManagementCoordinator::importCblReadingList()
         return;
     }
 
+    if (listsModel->databasePath().isEmpty()) {
+        QMessageBox::warning(dialogParent,
+                             tr("CBL import unavailable"),
+                             tr("Open a library before importing a CBL reading list."));
+        return;
+    }
+
+    QList<LibraryComicMatchData> libraryComics;
+    QString databaseError;
+    QString connectionName;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(listsModel->databasePath());
+        connectionName = db.connectionName();
+
+        QSqlQuery query(db);
+        if (!query.exec(QStringLiteral("SELECT c.id, c.fileName, ci.series, ci.number, ci.volume "
+                                       "FROM comic c "
+                                       "INNER JOIN comic_info ci ON c.comicInfoId = ci.id"))) {
+            databaseError = query.lastError().text();
+        } else {
+            while (query.next()) {
+                LibraryComicMatchData comic;
+                comic.id = query.value(0).toULongLong();
+                comic.fileName = query.value(1).toString();
+                comic.series = query.value(2).toString();
+                comic.number = query.value(3).toString();
+                comic.volume = query.value(4).toString();
+                libraryComics.append(comic);
+            }
+        }
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    if (!databaseError.isEmpty()) {
+        QMessageBox::critical(dialogParent,
+                              tr("Unable to inspect library"),
+                              tr("YACReader could not read comic metadata for CBL matching.\n\n%1").arg(databaseError));
+        return;
+    }
+
     QString preview;
-    const int previewLimit = 20;
+    const int previewLimit = 30;
     const int count = result.readingList.books.size();
+    int matchedCount = 0;
+    int missingCount = 0;
+    int ambiguousCount = 0;
 
-    for (int i = 0; i < count && i < previewLimit; ++i) {
+    for (int i = 0; i < count; ++i) {
         const auto &book = result.readingList.books.at(i);
-        preview += QStringLiteral("%1. %2 #%3")
-                           .arg(i + 1)
-                           .arg(book.series.isEmpty() ? tr("Unknown series") : book.series)
-                           .arg(book.number.isEmpty() ? QStringLiteral("?") : book.number);
+        const auto match = matchBook(book, libraryComics);
 
-        if (!book.volume.isEmpty())
-            preview += tr(" (Vol. %1)").arg(book.volume);
-        if (!book.year.isEmpty())
-            preview += tr(" [%1]").arg(book.year);
-        preview += QLatin1Char('\n');
+        if (match.state == CblMatchState::Matched)
+            ++matchedCount;
+        else if (match.state == CblMatchState::Ambiguous)
+            ++ambiguousCount;
+        else
+            ++missingCount;
+
+        if (i >= previewLimit)
+            continue;
+
+        const QString bookName = QStringLiteral("%1 #%2")
+                                         .arg(book.series.isEmpty() ? tr("Unknown series") : book.series)
+                                         .arg(book.number.isEmpty() ? QStringLiteral("?") : book.number);
+
+        if (match.state == CblMatchState::Matched) {
+            preview += tr("%1. [MATCHED] %2  ->  %3\n")
+                               .arg(i + 1)
+                               .arg(bookName)
+                               .arg(match.candidates.constFirst().fileName);
+        } else if (match.state == CblMatchState::Ambiguous) {
+            preview += tr("%1. [AMBIGUOUS] %2  ->  %3 possible matches\n")
+                               .arg(i + 1)
+                               .arg(bookName)
+                               .arg(match.candidates.size());
+        } else {
+            preview += tr("%1. [MISSING] %2\n").arg(i + 1).arg(bookName);
+        }
     }
 
     if (count > previewLimit)
         preview += tr("\n...and %1 more entries.").arg(count - previewLimit);
 
     QMessageBox::information(dialogParent,
-                             tr("CBL reading list parsed"),
-                             tr("%1\n\n%2 entries found.\n\n%3\nThis is a preview only. No changes have been made to your library yet.")
+                             tr("CBL import preview"),
+                             tr("%1\n\n%2 entries\n%3 matched\n%4 missing\n%5 ambiguous\n\n%6\n\nPreview only. No changes have been made to your library yet.")
                                      .arg(result.readingList.name)
                                      .arg(count)
+                                     .arg(matchedCount)
+                                     .arg(missingCount)
+                                     .arg(ambiguousCount)
                                      .arg(preview));
 }
 
