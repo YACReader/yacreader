@@ -8,6 +8,7 @@
 
 #include <QAction>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QInputDialog>
 #include <QKeySequence>
 #include <QLineEdit>
@@ -31,15 +32,21 @@ struct LibraryComicMatchData
 };
 
 enum class CblMatchState {
-    Matched,
-    Missing,
-    Ambiguous
+    Matched = 0,
+    Missing = 1,
+    Ambiguous = 2
 };
 
 struct CblMatchResult
 {
     CblMatchState state = CblMatchState::Missing;
     QList<LibraryComicMatchData> candidates;
+};
+
+struct MatchedCblEntry
+{
+    CblBook book;
+    CblMatchResult match;
 };
 
 QString normalized(const QString &value)
@@ -125,6 +132,154 @@ CblMatchResult matchBook(const CblBook &book, const QList<LibraryComicMatchData>
 
     return result;
 }
+
+bool execSql(QSqlQuery &query, QString *error)
+{
+    if (query.exec())
+        return true;
+    if (error)
+        *error = query.lastError().text();
+    return false;
+}
+
+bool ensureCblImportTables(QSqlDatabase &db, QString *error)
+{
+    QSqlQuery meta(db);
+    meta.prepare(QStringLiteral(
+            "CREATE TABLE IF NOT EXISTS cbl_reading_list_meta ("
+            "reading_list_id INTEGER PRIMARY KEY, "
+            "source_name TEXT, "
+            "imported_at INTEGER NOT NULL, "
+            "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE)"));
+    if (!execSql(meta, error))
+        return false;
+
+    QSqlQuery entries(db);
+    entries.prepare(QStringLiteral(
+            "CREATE TABLE IF NOT EXISTS cbl_reading_list_entry ("
+            "id INTEGER PRIMARY KEY, "
+            "reading_list_id INTEGER NOT NULL, "
+            "ordering INTEGER NOT NULL, "
+            "comic_id INTEGER, "
+            "series TEXT, "
+            "number TEXT, "
+            "volume TEXT, "
+            "year TEXT, "
+            "source_id TEXT, "
+            "match_state INTEGER NOT NULL, "
+            "candidate_count INTEGER NOT NULL DEFAULT 0, "
+            "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
+            "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE SET NULL, "
+            "UNIQUE(reading_list_id, ordering))"));
+    if (!execSql(entries, error))
+        return false;
+
+    QSqlQuery index(db);
+    index.prepare(QStringLiteral(
+            "CREATE INDEX IF NOT EXISTS cbl_reading_list_entry_ordering_index "
+            "ON cbl_reading_list_entry(reading_list_id, ordering)"));
+    return execSql(index, error);
+}
+
+bool persistCblReadingList(QSqlDatabase &db,
+                           const CblReadingList &readingList,
+                           const QList<MatchedCblEntry> &entries,
+                           const QString &sourceName,
+                           qulonglong *readingListId,
+                           QString *error)
+{
+    if (!db.transaction()) {
+        if (error)
+            *error = db.lastError().text();
+        return false;
+    }
+
+    auto rollback = [&db, error](const QString &message) {
+        db.rollback();
+        if (error)
+            *error = message;
+        return false;
+    };
+
+    if (!ensureCblImportTables(db, error)) {
+        const auto message = error ? *error : QStringLiteral("Unable to create CBL import tables.");
+        return rollback(message);
+    }
+
+    QSqlQuery createList(db);
+    createList.prepare(QStringLiteral("INSERT INTO reading_list (name) VALUES (:name)"));
+    createList.bindValue(QStringLiteral(":name"), readingList.name);
+    if (!createList.exec())
+        return rollback(createList.lastError().text());
+
+    const qulonglong newReadingListId = createList.lastInsertId().toULongLong();
+    if (newReadingListId == 0)
+        return rollback(QStringLiteral("YACReader did not return an id for the new reading list."));
+
+    QSqlQuery meta(db);
+    meta.prepare(QStringLiteral(
+            "INSERT INTO cbl_reading_list_meta (reading_list_id, source_name, imported_at) "
+            "VALUES (:reading_list_id, :source_name, :imported_at)"));
+    meta.bindValue(QStringLiteral(":reading_list_id"), newReadingListId);
+    meta.bindValue(QStringLiteral(":source_name"), sourceName);
+    meta.bindValue(QStringLiteral(":imported_at"), QDateTime::currentSecsSinceEpoch());
+    if (!meta.exec())
+        return rollback(meta.lastError().text());
+
+    QSet<qulonglong> linkedComicIds;
+
+    for (const auto &entry : entries) {
+        qulonglong comicId = 0;
+        if (entry.match.state == CblMatchState::Matched && !entry.match.candidates.isEmpty())
+            comicId = entry.match.candidates.constFirst().id;
+
+        QSqlQuery insertEntry(db);
+        insertEntry.prepare(QStringLiteral(
+                "INSERT INTO cbl_reading_list_entry "
+                "(reading_list_id, ordering, comic_id, series, number, volume, year, source_id, match_state, candidate_count) "
+                "VALUES (:reading_list_id, :ordering, :comic_id, :series, :number, :volume, :year, :source_id, :match_state, :candidate_count)"));
+        insertEntry.bindValue(QStringLiteral(":reading_list_id"), newReadingListId);
+        insertEntry.bindValue(QStringLiteral(":ordering"), entry.book.ordering);
+        if (comicId != 0)
+            insertEntry.bindValue(QStringLiteral(":comic_id"), comicId);
+        else
+            insertEntry.bindValue(QStringLiteral(":comic_id"), QVariant());
+        insertEntry.bindValue(QStringLiteral(":series"), entry.book.series);
+        insertEntry.bindValue(QStringLiteral(":number"), entry.book.number);
+        insertEntry.bindValue(QStringLiteral(":volume"), entry.book.volume);
+        insertEntry.bindValue(QStringLiteral(":year"), entry.book.year);
+        insertEntry.bindValue(QStringLiteral(":source_id"), entry.book.id);
+        insertEntry.bindValue(QStringLiteral(":match_state"), static_cast<int>(entry.match.state));
+        insertEntry.bindValue(QStringLiteral(":candidate_count"), entry.match.candidates.size());
+        if (!insertEntry.exec())
+            return rollback(insertEntry.lastError().text());
+
+        // Keep matched entries visible to existing YACReader builds. Imported CBL
+        // metadata remains authoritative for ordering and missing placeholders.
+        // The legacy relation cannot contain the same comic twice in one list,
+        // so a duplicate CBL occurrence is retained in cbl_reading_list_entry but
+        // linked only once here.
+        if (comicId != 0 && !linkedComicIds.contains(comicId)) {
+            QSqlQuery link(db);
+            link.prepare(QStringLiteral(
+                    "INSERT INTO comic_reading_list (reading_list_id, comic_id, ordering) "
+                    "VALUES (:reading_list_id, :comic_id, :ordering)"));
+            link.bindValue(QStringLiteral(":reading_list_id"), newReadingListId);
+            link.bindValue(QStringLiteral(":comic_id"), comicId);
+            link.bindValue(QStringLiteral(":ordering"), entry.book.ordering);
+            if (!link.exec())
+                return rollback(link.lastError().text());
+            linkedComicIds.insert(comicId);
+        }
+    }
+
+    if (!db.commit())
+        return rollback(db.lastError().text());
+
+    if (readingListId)
+        *readingListId = newReadingListId;
+    return true;
+}
 }
 
 ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dialogParent,
@@ -137,9 +292,6 @@ ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dial
     connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToLabel));
     connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
 
-    // Phase 1: expose the importer immediately without touching the database.
-    // The permanent toolbar action will replace this temporary shortcut once the
-    // import preview and matching flow are settled.
     auto *importCblAction = new QAction(tr("Import CBL Reading List..."), dialogParent);
     importCblAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+Shift+I")));
     importCblAction->setShortcutContext(Qt::ApplicationShortcut);
@@ -234,10 +386,13 @@ void ReadingListManagementCoordinator::importCblReadingList()
     int matchedCount = 0;
     int missingCount = 0;
     int ambiguousCount = 0;
+    QList<MatchedCblEntry> matchedEntries;
+    matchedEntries.reserve(count);
 
     for (int i = 0; i < count; ++i) {
         const auto &book = result.readingList.books.at(i);
         const auto match = matchBook(book, libraryComics);
+        matchedEntries.append({ book, match });
 
         if (match.state == CblMatchState::Matched)
             ++matchedCount;
@@ -271,15 +426,61 @@ void ReadingListManagementCoordinator::importCblReadingList()
     if (count > previewLimit)
         preview += tr("\n...and %1 more entries.").arg(count - previewLimit);
 
+    const auto answer = QMessageBox::question(
+            dialogParent,
+            tr("Import CBL reading list"),
+            tr("%1\n\n%2 entries\n%3 matched\n%4 missing\n%5 ambiguous\n\n%6\n\n"
+               "Import this reading list? Matched comics will be added immediately. "
+               "Missing and ambiguous entries will be preserved for placeholder/manual matching support.")
+                    .arg(result.readingList.name)
+                    .arg(count)
+                    .arg(matchedCount)
+                    .arg(missingCount)
+                    .arg(ambiguousCount)
+                    .arg(preview),
+            QMessageBox::Yes | QMessageBox::No,
+            QMessageBox::No);
+
+    if (answer != QMessageBox::Yes)
+        return;
+
+    QString importError;
+    qulonglong readingListId = 0;
+    connectionName.clear();
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(listsModel->databasePath());
+        connectionName = db.connectionName();
+        if (!db.isOpen()) {
+            importError = tr("Unable to open the library database for writing.");
+        } else {
+            persistCblReadingList(db,
+                                  result.readingList,
+                                  matchedEntries,
+                                  QFileInfo(filePath).fileName(),
+                                  &readingListId,
+                                  &importError);
+        }
+    }
+    if (!connectionName.isEmpty())
+        QSqlDatabase::removeDatabase(connectionName);
+
+    if (!importError.isEmpty() || readingListId == 0) {
+        QMessageBox::critical(dialogParent,
+                              tr("CBL import failed"),
+                              tr("No partial import was kept. The database transaction was rolled back.\n\n%1")
+                                      .arg(importError.isEmpty() ? tr("Unknown database error.") : importError));
+        return;
+    }
+
+    listsModel->setupReadingListsData(listsModel->databasePath());
+
     QMessageBox::information(dialogParent,
-                             tr("CBL import preview"),
-                             tr("%1\n\n%2 entries\n%3 matched\n%4 missing\n%5 ambiguous\n\n%6\n\nPreview only. No changes have been made to your library yet.")
+                             tr("CBL import complete"),
+                             tr("%1 was imported.\n\n%2 matched comics are available in the reading list now. "
+                                "%3 unresolved entries were preserved in CBL import storage for the next placeholder/manual-match step.")
                                      .arg(result.readingList.name)
-                                     .arg(count)
                                      .arg(matchedCount)
-                                     .arg(missingCount)
-                                     .arg(ambiguousCount)
-                                     .arg(preview));
+                                     .arg(missingCount + ambiguousCount));
 }
 
 void ReadingListManagementCoordinator::deleteCurrentList()
