@@ -1,3 +1,5 @@
+pragma ComponentBehavior: Bound
+
 import QtQuick
 
 // Delegate for GridContentModel folder rows; required properties intentionally match its role names.
