@@ -361,37 +361,106 @@ SplitView {
                                 }
                             }
 
-                            ScrollView {
+                            Item {
+                                id: synopsisViewport
+
                                 Layout.topMargin: 6
                                 Layout.rightMargin: 30
                                 Layout.bottomMargin: 5
                                 Layout.fillWidth: true
-                                Layout.maximumHeight: (currentComicVisualView.height * 0.32)
+                                // Let the synopsis run down to just above the Read button. Its y inside the
+                                // column only depends on the items above it, so this does not loop.
+                                Layout.maximumHeight: Math.max(0, readButton.y - readButtonGap - (currentComicInfoView.y + synopsisViewport.y))
                                 Layout.maximumWidth: 960
+                                implicitHeight: synopsisScroller.implicitHeight
 
-                                ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                                readonly property int fadeHeight: 18
+                                readonly property int readButtonGap: 12
 
-                                contentWidth: -1
-                                contentItem: currentComicInfoSinopsis
+                                ScrollView {
+                                    anchors.fill: parent
 
-                                id: synopsisScroller
+                                    layer.enabled: true
+                                    layer.smooth: true
+                                    layer.effect: MultiEffect {
+                                        maskEnabled: true
+                                        maskSource: synopsisFadeMask
+                                        // By default MultiEffect thresholds the mask alpha (spread 0 = hard edge).
+                                        // Threshold 0.5 + spread 1.0 = smoothstep over the full 0..1 alpha range,
+                                        // so the gradient in synopsisFadeMask becomes a real fade.
+                                        maskThresholdMin: 0.5
+                                        maskSpreadAtMin: 1.0
+                                    }
 
-                                clip: true
+                                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                                    // Parented outside the masked layer so the fade never touches the scroll bar.
+                                    // Geometry mirrors the Basic style defaults: ScrollView only lays out its own child.
+                                    ScrollBar.vertical: ScrollBar {
+                                        id: synopsisVerticalScrollBar
+                                        parent: synopsisViewport
+                                        x: synopsisScroller.mirrored ? 0 : synopsisScroller.width - width
+                                        y: synopsisScroller.topPadding
+                                        height: synopsisScroller.availableHeight
+                                    }
 
-                                Text {
-                                    Layout.maximumWidth: 960
+                                    contentWidth: -1
+                                    contentItem: currentComicInfoSinopsis
 
-                                    width: synopsisScroller.width
+                                    id: synopsisScroller
 
-                                    id: currentComicInfoSinopsis
-                                    color: infoTextColor
-                                    font.family: "Arial"
-                                    font.pixelSize: 14
-                                    wrapMode: Text.WordWrap
+                                    clip: true
 
-                                    text: '<html><head><style>a { color: ' + themeLinkColorStr + '; text-decoration: none; }</style></head><body>' + (currentComicInfo.synopsis ?? "") + '</body></html>'
-                                    visible: currentComicInfo.synopsis ?? false
-                                                                          textFormat: Text.RichText
+                                    Text {
+                                        Layout.maximumWidth: 960
+
+                                        width: synopsisScroller.width
+
+                                        id: currentComicInfoSinopsis
+                                        color: infoTextColor
+                                        font.family: "Arial"
+                                        font.pixelSize: 14
+                                        wrapMode: Text.WordWrap
+
+                                        text: '<html><head><style>a { color: ' + themeLinkColorStr + '; text-decoration: none; }</style></head><body>' + (currentComicInfo.synopsis ?? "") + '</body></html>'
+                                        visible: currentComicInfo.synopsis ?? false
+                                        textFormat: Text.RichText
+                                    }
+                                }
+
+                                Item {
+                                    id: synopsisFadeMask
+                                    anchors.fill: parent
+                                    visible: false
+                                    layer.enabled: true
+                                    layer.smooth: true
+
+                                    readonly property real fadeFraction: Math.min(0.45, synopsisViewport.fadeHeight / Math.max(1, height))
+
+                                    Rectangle {
+                                        anchors.fill: parent
+
+                                        gradient: Gradient {
+                                            GradientStop {
+                                                position: 0
+                                                color: synopsisVerticalScrollBar.position > 0.001 ? "transparent" : "black"
+                                                Behavior on color { ColorAnimation { duration: 120 } }
+                                            }
+                                            GradientStop {
+                                                position: synopsisFadeMask.fadeFraction
+                                                color: "black"
+                                            }
+                                            GradientStop {
+                                                position: 1 - synopsisFadeMask.fadeFraction
+                                                color: "black"
+                                            }
+                                            GradientStop {
+                                                position: 1
+                                                color: synopsisVerticalScrollBar.size < 0.999
+                                                       && synopsisVerticalScrollBar.position + synopsisVerticalScrollBar.size < 0.999 ? "transparent" : "black"
+                                                Behavior on color { ColorAnimation { duration: 120 } }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
