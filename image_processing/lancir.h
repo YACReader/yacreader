@@ -229,19 +229,19 @@
 
 namespace avir {
 
-using std ::ceil;
-using std ::cos;
-using std ::fabs;
-using std ::floor;
-using std ::memcpy;
-using std ::memset;
-using std ::sin;
-using std ::size_t;
+using std::ceil;
+using std::cos;
+using std::fabs;
+using std::floor;
+using std::memcpy;
+using std::memset;
+using std::sin;
+using std::size_t;
 
 #if __cplusplus >= 201103L
 
-using std ::intptr_t;
-using std ::uintptr_t;
+using std::intptr_t;
+using std::uintptr_t;
 
 #else // __cplusplus >= 201103L
 
