@@ -7,6 +7,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReader
 * Fix continuous vertical scroll mode shortcut not being saved.
 * Improve reading performance on old systems.
+* Improve non valid characters handling in the renaming feature.
+* Improve layout in the renaming/organizing dialog.
 
 ## 10.3.0
 

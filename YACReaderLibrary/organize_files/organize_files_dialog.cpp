@@ -455,7 +455,7 @@ QWidget *OrganizeFilesDialog::createResultPage()
     resultTree->setEditTriggers(QAbstractItemView::NoEditTriggers);
     resultTree->setSelectionMode(QAbstractItemView::ExtendedSelection);
     resultTree->header()->setSectionResizeMode(QHeaderView::Interactive);
-    resultTree->header()->setStretchLastSection(true);
+    resultTree->header()->setStretchLastSection(false);
     resultTree->setVisible(false);
 
     failureList = new QListWidget;
@@ -1159,12 +1159,50 @@ void OrganizeFilesDialog::showCompletedMoves(const QList<FileMove> &moves, const
                errorColor);
     }
 
-    resultTree->setVisible(!moves.isEmpty() || !failures.isEmpty());
-    if (resultTree->isVisible()) {
-        const int availableWidth = qMax(resultTree->viewport()->width(), width() - 48);
-        resultTree->setColumnWidth(0, availableWidth * 2 / 5);
-        resultTree->setColumnWidth(1, availableWidth * 2 / 5);
+    const bool hasResults = !moves.isEmpty() || !failures.isEmpty();
+    resultTree->setVisible(hasResults);
+    if (hasResults)
+        QTimer::singleShot(0, this, &OrganizeFilesDialog::sizeResultColumns);
+}
+
+void OrganizeFilesDialog::sizeResultColumns()
+{
+    if (resultTree->isHidden())
+        return;
+
+    for (int column = 0; column < resultTree->columnCount(); ++column)
+        resultTree->resizeColumnToContents(column);
+
+    const int availableWidth = resultTree->viewport()->width();
+    const int minimumWidth = resultTree->header()->minimumSectionSize();
+    const int minimumTotal = minimumWidth * resultTree->columnCount();
+    if (availableWidth <= minimumTotal)
+        return;
+
+    QList<int> desiredWidths;
+    int desiredExtra = 0;
+    for (int column = 0; column < resultTree->columnCount(); ++column) {
+        const int width = resultTree->columnWidth(column);
+        desiredWidths.append(width);
+        desiredExtra += qMax(0, width - minimumWidth);
     }
+
+    const int availableExtra = availableWidth - minimumTotal;
+    if (desiredExtra > availableExtra) {
+        int assignedWidth = 0;
+        for (int column = 0; column < resultTree->columnCount() - 1; ++column) {
+            const int extra = desiredExtra == 0 ? 0 : availableExtra * qMax(0, desiredWidths.at(column) - minimumWidth) / desiredExtra;
+            const int width = minimumWidth + extra;
+            resultTree->setColumnWidth(column, width);
+            assignedWidth += width;
+        }
+        resultTree->setColumnWidth(resultTree->columnCount() - 1, availableWidth - assignedWidth);
+        return;
+    }
+
+    const int unusedWidth = availableExtra - desiredExtra;
+    resultTree->setColumnWidth(0, desiredWidths.at(0) + unusedWidth / 2);
+    resultTree->setColumnWidth(1, desiredWidths.at(1) + unusedWidth - unusedWidth / 2);
 }
 
 void OrganizeFilesDialog::moveFinished()
