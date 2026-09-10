@@ -173,15 +173,23 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     QWidget *pageFlow = new QWidget();
     auto layoutFlow = new QVBoxLayout();
 
+    useSoftwareGoToFlow = new QCheckBox(tr("Use software-rendered \"go to flow\" (requires restart)"));
+    useSoftwareGoToFlow->setToolTip(tr("Use a simple horizontal list of page thumbnails instead of the GPU-rendered 3D flow. "
+                                       "Enable this if reading is not smooth on your system."));
+
     quickNavi = new QCheckBox(tr("Quick Navigation Mode"));
     disableShowOnMouseOver = new QCheckBox(tr("Disable mouse over activation"));
 
+    layoutFlow->addWidget(useSoftwareGoToFlow);
     layoutFlow->addWidget(gl);
     layoutFlow->addWidget(slideSizeBox);
 
     layoutFlow->addWidget(quickNavi);
     layoutFlow->addWidget(disableShowOnMouseOver);
     layoutFlow->addStretch();
+
+    // 3D flow settings do not apply to the software thumbnail strip.
+    connect(useSoftwareGoToFlow, &QCheckBox::toggled, gl, &QWidget::setDisabled);
 
     gl->vSyncCheck->hide();
 
@@ -359,6 +367,7 @@ void OptionsDialog::saveOptions()
         settings->remove(BACKGROUND_COLOR);
     }
     // settings->setValue(FIT_TO_WIDTH_RATIO,fitToWidthRatioS->sliderPosition()/100.0);
+    settings->setValue(USE_SOFTWARE_GO_TO_FLOW, useSoftwareGoToFlow->isChecked());
     settings->setValue(QUICK_NAVI_MODE, quickNavi->isChecked());
     settings->setValue(DISABLE_MOUSE_OVER_GOTO_FLOW, disableShowOnMouseOver->isChecked());
 
@@ -420,6 +429,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
                         : settings->value(BACKGROUND_COLOR).value<QColor>());
     // fitToWidthRatioS->setSliderPosition(settings->value(FIT_TO_WIDTH_RATIO).toFloat()*100);
 
+    useSoftwareGoToFlow->setChecked(settings->value(USE_SOFTWARE_GO_TO_FLOW, false).toBool());
     quickNavi->setChecked(settings->value(QUICK_NAVI_MODE).toBool());
     disableShowOnMouseOver->setChecked(settings->value(DISABLE_MOUSE_OVER_GOTO_FLOW).toBool());
 

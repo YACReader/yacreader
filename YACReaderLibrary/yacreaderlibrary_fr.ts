@@ -166,24 +166,24 @@
         <translation>Le thème actuel JSON n&apos;a pas pu être chargé.</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
         <source>Import theme</source>
         <translation>Importer un thème</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="284"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>Fichiers JSON (*.json);;Tous les fichiers (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="292"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
         <source>Could not import theme from:
 %1</source>
         <translation>Impossible d&apos;importer le thème depuis&#xa0;:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
         <source>Could not import theme from:
 %1
 
@@ -194,7 +194,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="295"/>
         <source>Import failed</source>
         <translation>Échec de l&apos;importation</translation>
     </message>
@@ -202,7 +202,7 @@
 <context>
     <name>ClassicComicsView</name>
     <message>
-        <location filename="classic_comics_view.cpp" line="93"/>
+        <location filename="classic_comics_view.cpp" line="100"/>
         <source>Hide comic flow</source>
         <translation>Masquer Comic Flow</translation>
     </message>
@@ -304,28 +304,28 @@
 <context>
     <name>ComicManagementCoordinator</name>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="134"/>
-        <location filename="comic_management_coordinator.cpp" line="136"/>
+        <location filename="comic_management_coordinator.cpp" line="138"/>
+        <location filename="comic_management_coordinator.cpp" line="140"/>
         <source>YACReader not found</source>
         <translation>YACReader introuvable</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="134"/>
+        <location filename="comic_management_coordinator.cpp" line="138"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>YACReader introuvable. YACReader doit être installé dans le même dossier que YACReaderLibrary.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="136"/>
+        <location filename="comic_management_coordinator.cpp" line="140"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>YACReader introuvable. Il se peut qu&apos;il y ait un problème avec votre installation de YACReader.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="143"/>
+        <location filename="comic_management_coordinator.cpp" line="147"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="143"/>
+        <location filename="comic_management_coordinator.cpp" line="147"/>
         <source>Error opening comic with third party reader.</source>
         <translation>Erreur lors de l&apos;ouverture de la bande dessinée avec un lecteur tiers.</translation>
     </message>
@@ -333,67 +333,67 @@
 <context>
     <name>ComicModel</name>
     <message>
-        <location filename="db/comic_model.cpp" line="378"/>
+        <location filename="db/comic_model.cpp" line="382"/>
         <source>no</source>
         <translation>non</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="378"/>
+        <location filename="db/comic_model.cpp" line="382"/>
         <source>yes</source>
         <translation>oui</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="417"/>
+        <location filename="db/comic_model.cpp" line="421"/>
         <source>Read</source>
         <translation>Lu</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="425"/>
+        <location filename="db/comic_model.cpp" line="429"/>
         <source>Series</source>
         <translation>Série</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="427"/>
+        <location filename="db/comic_model.cpp" line="431"/>
         <source>Volume</source>
         <translation>Tome</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="429"/>
+        <location filename="db/comic_model.cpp" line="433"/>
         <source>Story Arc</source>
         <translation>Arc d&apos;histoire</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="415"/>
+        <location filename="db/comic_model.cpp" line="419"/>
         <source>Size</source>
         <translation>Taille</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="413"/>
+        <location filename="db/comic_model.cpp" line="417"/>
         <source>Pages</source>
         <translation>Feuilles</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="409"/>
+        <location filename="db/comic_model.cpp" line="413"/>
         <source>Title</source>
         <translation>Titre</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="419"/>
+        <location filename="db/comic_model.cpp" line="423"/>
         <source>Current Page</source>
         <translation>Page en cours</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="411"/>
+        <location filename="db/comic_model.cpp" line="415"/>
         <source>File Name</source>
         <translation>Nom du fichier</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="421"/>
+        <location filename="db/comic_model.cpp" line="425"/>
         <source>Publication Date</source>
         <translation>Date de publication</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="423"/>
+        <location filename="db/comic_model.cpp" line="427"/>
         <source>Rating</source>
         <translation>Note</translation>
     </message>
@@ -788,7 +788,7 @@
 <context>
     <name>GridComicsView</name>
     <message>
-        <location filename="grid_comics_view.cpp" line="114"/>
+        <location filename="grid_comics_view.cpp" line="115"/>
         <source>Show info</source>
         <translation>Afficher les informations</translation>
     </message>
@@ -809,32 +809,32 @@
         <translation type="obsolete">Ajoutés récemment</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="854"/>
+        <location filename="grid_comics_view.cpp" line="855"/>
         <source>Manga</source>
         <translation>Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="857"/>
+        <location filename="grid_comics_view.cpp" line="858"/>
         <source>Western manga</source>
         <translation>Manga occidental</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="860"/>
+        <location filename="grid_comics_view.cpp" line="861"/>
         <source>Web comic</source>
         <translation>Webcomic</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="863"/>
+        <location filename="grid_comics_view.cpp" line="864"/>
         <source>Yonkoma</source>
         <translation>Yonkoma</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="867"/>
+        <location filename="grid_comics_view.cpp" line="868"/>
         <source>Comic</source>
         <translation>Bande dessinée</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="871"/>
+        <location filename="grid_comics_view.cpp" line="872"/>
         <source>Unknown</source>
         <translation>Inconnu</translation>
     </message>
@@ -936,12 +936,12 @@
         <translation>Arrêter</translation>
     </message>
     <message>
-        <location filename="import_widget.cpp" line="316"/>
+        <location filename="import_widget.cpp" line="318"/>
         <source>Importing comics</source>
         <translation>Importation de bande dessinée</translation>
     </message>
     <message>
-        <location filename="import_widget.cpp" line="317"/>
+        <location filename="import_widget.cpp" line="319"/>
         <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
         <translation>&lt;p&gt;YACReaderLibrary est en train de créer une nouvelle librairie.&lt;/p&gt;&lt;p&gt;La création d&apos;une librairie peut prendre quelques minutes. Vous pouvez arrêter le processus et poursuivre plus tard.&lt;/p&gt;</translation>
     </message>
@@ -951,37 +951,37 @@
         <translation>Ajout de bande dessinée...</translation>
     </message>
     <message>
-        <location filename="import_widget.cpp" line="328"/>
+        <location filename="import_widget.cpp" line="330"/>
         <source>Updating the library</source>
         <translation>Mise à jour de la librairie</translation>
     </message>
     <message>
-        <location filename="import_widget.cpp" line="329"/>
+        <location filename="import_widget.cpp" line="331"/>
         <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Mise à jour de la librairie. Pour plus de rapidité lors de la mise à jour, veuillez effectuer cette dernière régulièrement.&lt;/p&gt;&lt;p&gt;Vous pouvez arrêter le processus et poursuivre plus tard.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="import_widget.cpp" line="340"/>
+        <location filename="import_widget.cpp" line="342"/>
         <source>Upgrading the library</source>
         <translation>Mise à niveau de la bibliothèque</translation>
     </message>
     <message>
-        <location filename="import_widget.cpp" line="341"/>
+        <location filename="import_widget.cpp" line="343"/>
         <source>&lt;p&gt;The current library is being upgraded, please wait.&lt;/p&gt;</source>
         <translation>&lt;p&gt;La bibliothèque actuelle est en cours de mise à niveau, veuillez patienter.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="import_widget.cpp" line="352"/>
+        <location filename="import_widget.cpp" line="354"/>
         <source>Scanning the library</source>
         <translation>Scanner la bibliothèque</translation>
     </message>
     <message>
-        <location filename="import_widget.cpp" line="353"/>
+        <location filename="import_widget.cpp" line="355"/>
         <source>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
         <translation>&lt;p&gt;La bibliothèque actuelle est en cours d&apos;analyse pour rechercher des informations sur les métadonnées XML héritées.&lt;/p&gt;&lt;p&gt;Ceci n&apos;est nécessaire qu&apos;une seule fois, et uniquement si la bibliothèque a été créée avec YACReaderLibrary 9.8.2 ou une version antérieure.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="import_widget.cpp" line="365"/>
+        <location filename="import_widget.cpp" line="367"/>
         <source>&lt;p&gt;The current library is being checked for missing covers and incomplete comic information.&lt;/p&gt;&lt;p&gt;This can take several minutes. You can stop the process and run it again later.&lt;/p&gt;</source>
         <translation>&lt;p&gt;La bibliothèque actuelle est analysée pour rechercher les couvertures manquantes et les informations de BD incomplètes.&lt;/p&gt;&lt;p&gt;Cette opération peut prendre plusieurs minutes. Vous pouvez l&apos;arrêter et la relancer plus tard.&lt;/p&gt;</translation>
     </message>
@@ -1054,12 +1054,12 @@
         <translation>Cette librairie a été créée avec une version plus récente de YACReaderLibrary. Télécharger la nouvelle version?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="220"/>
+        <location filename="comic_management_coordinator.cpp" line="224"/>
         <source>Moving comics...</source>
         <translation>Déplacer la bande dessinée...</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="204"/>
+        <location filename="comic_management_coordinator.cpp" line="208"/>
         <source>Copying comics...</source>
         <translation>Copier la bande dessinée...</translation>
     </message>
@@ -1097,7 +1097,7 @@ YACReaderLibrary ne vous empêchera pas de créer plus de bibliothèques, mais v
         <translation>Librairie non disponible</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="237"/>
+        <location filename="library_window.cpp" line="238"/>
         <source>YACReader Library</source>
         <translation>Librairie de YACReader</translation>
     </message>
@@ -1122,12 +1122,12 @@ YACReaderLibrary ne vous empêchera pas de créer plus de bibliothèques, mais v
         <translation>Téléchrger la nouvelle version</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="439"/>
+        <location filename="comic_management_coordinator.cpp" line="520"/>
         <source>Delete comics</source>
         <translation>Supprimer les comics</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="440"/>
+        <location filename="comic_management_coordinator.cpp" line="521"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Tous les comics sélectionnés vont être supprimés de votre disque. Êtes-vous sûr?</translation>
     </message>
@@ -1196,7 +1196,7 @@ YACReaderLibrary ne vous empêchera pas de créer plus de bibliothèques, mais v
         <translation>Le dossier sélectionné et tout son contenu seront supprimés de votre disque. Es-tu sûr?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="514"/>
+        <location filename="comic_management_coordinator.cpp" line="595"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Impossible de supprimer</translation>
@@ -1208,42 +1208,42 @@ YACReaderLibrary ne vous empêchera pas de créer plus de bibliothèques, mais v
         <translation>Un problème est survenu lors de la tentative de suppression des dossiers sélectionnés. Veuillez vérifier les autorisations d&apos;écriture et vous assurer qu&apos;aucune application n&apos;utilise ces dossiers ni aucun des fichiers qu&apos;ils contiennent.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="732"/>
+        <location filename="library_window.cpp" line="734"/>
         <source>Rename or organize files</source>
         <translation>Renommer ou organiser les fichiers</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="754"/>
+        <location filename="library_window.cpp" line="756"/>
         <source>Set the type of the selected comics</source>
         <translation>Définir le type des bandes dessinées sélectionnées</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="773"/>
+        <location filename="library_window.cpp" line="775"/>
         <source>Search filters</source>
         <translation>Filtres de recherche</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="783"/>
+        <location filename="library_window.cpp" line="785"/>
         <source>Unread</source>
         <translation>Non lus</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="785"/>
+        <location filename="library_window.cpp" line="787"/>
         <source>In progress</source>
         <translation>En cours</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="787"/>
+        <location filename="library_window.cpp" line="789"/>
         <source>Highly rated</source>
         <translation>Très bien notés</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="789"/>
+        <location filename="library_window.cpp" line="791"/>
         <source>Recently added</source>
         <translation>Ajoutés récemment</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="796"/>
+        <location filename="library_window.cpp" line="798"/>
         <source>Search syntax…</source>
         <translation>Syntaxe de recherche…</translation>
     </message>
@@ -1268,12 +1268,12 @@ YACReaderLibrary ne vous empêchera pas de créer plus de bibliothèques, mais v
         <translation>Si vous êtes sûr qu&apos;aucune autre réparation n&apos;est en cours, le verrou peut être supprimé. Supprimer le verrou et continuer ?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="618"/>
+        <location filename="library_window.cpp" line="620"/>
         <source>Package operation failed</source>
         <translation>Échec de l&apos;opération de paquet</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="618"/>
+        <location filename="library_window.cpp" line="620"/>
         <source>The covers package operation could not be completed.</source>
         <translation>L&apos;opération sur le paquet de couvertures n&apos;a pas pu être terminée.</translation>
     </message>
@@ -1329,7 +1329,7 @@ Dossier : %1</translation>
         <translation>La base de données de la bibliothèque n&apos;a pas pu être mise à jour et le renommage du dossier sur le disque n&apos;a pas pu être annulé. La bibliothèque doit maintenant être mise à jour manuellement.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="356"/>
+        <location filename="comic_management_coordinator.cpp" line="360"/>
         <source>Save covers</source>
         <translation>Enregistrer les couvertures</translation>
     </message>
@@ -1496,52 +1496,56 @@ Vous pouvez restaurer une sauvegarde depuis le menu Bibliothèque ou recréer la
         <translation>Retirer et supprimer les métadonnées et les sauvegardes</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="562"/>
+        <location filename="library_window.cpp" line="564"/>
         <source>Library info</source>
         <translation>Informations sur la bibliothèque</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="515"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Un problème est survenu lors de la tentative de suppression des bandes dessinées sélectionnées. Veuillez vérifier les autorisations d&apos;écriture dans les fichiers sélectionnés ou le dossier contenant.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="299"/>
+        <location filename="comic_management_coordinator.cpp" line="303"/>
         <source>Assign comics numbers</source>
         <translation>Attribuer des numéros de bandes dessinées</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="300"/>
+        <location filename="comic_management_coordinator.cpp" line="304"/>
         <source>Assign numbers starting in:</source>
         <translation>Attribuez des numéros commençant par&#xa0;:</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="326"/>
+        <location filename="comic_management_coordinator.cpp" line="389"/>
+        <location filename="folder_management_coordinator.cpp" line="339"/>
         <source>Invalid image</source>
         <translation>Image invalide</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="327"/>
+        <location filename="comic_management_coordinator.cpp" line="390"/>
+        <location filename="folder_management_coordinator.cpp" line="340"/>
         <source>The selected file is not a valid image.</source>
         <translation>Le fichier sélectionné n&apos;est pas une image valide.</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="334"/>
+        <location filename="comic_management_coordinator.cpp" line="398"/>
+        <location filename="folder_management_coordinator.cpp" line="347"/>
         <source>Error saving cover</source>
         <translation>Erreur lors de l&apos;enregistrement de la couverture</translation>
     </message>
     <message>
-        <location filename="folder_management_coordinator.cpp" line="335"/>
+        <location filename="comic_management_coordinator.cpp" line="399"/>
+        <location filename="folder_management_coordinator.cpp" line="348"/>
         <source>There was an error saving the cover image.</source>
         <translation>Une erreur s&apos;est produite lors de l&apos;enregistrement de l&apos;image de couverture.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="479"/>
+        <location filename="comic_management_coordinator.cpp" line="560"/>
         <source>Remove comics</source>
         <translation>Supprimer les bandes dessinées</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="480"/>
+        <location filename="comic_management_coordinator.cpp" line="561"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Les bandes dessinées seront uniquement supprimées du label/liste actuelle. Es-tu sûr?</translation>
     </message>
@@ -1631,7 +1635,7 @@ Fichiers manquants : %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="90"/>
-        <location filename="import_widget.cpp" line="364"/>
+        <location filename="import_widget.cpp" line="366"/>
         <source>Repair covers and comic info</source>
         <translation>Réparer les couvertures et les informations des BD</translation>
     </message>
@@ -2092,8 +2096,8 @@ Fichiers manquants : %3</translation>
     <message>
         <location filename="library_window_menus.cpp" line="135"/>
         <location filename="library_window_menus.cpp" line="236"/>
-        <location filename="library_window_menus.cpp" line="327"/>
-        <location filename="library_window_menus.cpp" line="417"/>
+        <location filename="library_window_menus.cpp" line="331"/>
+        <location filename="library_window_menus.cpp" line="421"/>
         <source>Set type</source>
         <translation>Définir le type</translation>
     </message>
@@ -2113,63 +2117,64 @@ Fichiers manquants : %3</translation>
         <translation>Bande dessinée</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="295"/>
+        <location filename="library_window_menus.cpp" line="299"/>
         <source>Open folder...</source>
         <translation>Ouvrir le dossier...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="297"/>
+        <location filename="library_window_menus.cpp" line="301"/>
         <source>Update folder</source>
         <translation>Mettre à jour le dossier</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="299"/>
+        <location filename="library_window_menus.cpp" line="303"/>
         <source>Rename folder</source>
         <translation>Renommer le dossier</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="301"/>
+        <location filename="library_window_menus.cpp" line="305"/>
         <source>Rename files...</source>
         <translation>Renommer les fichiers...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="302"/>
+        <location filename="library_window_menus.cpp" line="306"/>
         <source>Organize into folders...</source>
         <translation>Organiser en dossiers...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="303"/>
+        <location filename="library_window_menus.cpp" line="307"/>
         <source>Rescan library for XML info</source>
         <translation>Réanalyser la bibliothèque pour les informations XML</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="304"/>
+        <location filename="library_window_menus.cpp" line="308"/>
         <source>Set as uncompleted</source>
         <translation>Marquer comme incomplet</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="305"/>
+        <location filename="library_window_menus.cpp" line="309"/>
         <source>Set as completed</source>
         <translation>Marquer comme complet</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="306"/>
+        <location filename="library_window_menus.cpp" line="310"/>
         <source>Set as read</source>
         <translation>Marquer comme lu</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="307"/>
-        <location filename="library_window_menus.cpp" line="357"/>
+        <location filename="library_window_menus.cpp" line="311"/>
+        <location filename="library_window_menus.cpp" line="361"/>
         <source>Set as unread</source>
         <translation>Marquer comme non-lu</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="308"/>
+        <location filename="library_window_menus.cpp" line="312"/>
         <source>Set custom cover</source>
         <translation>Définir une couverture personnalisée</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="309"/>
+        <location filename="library_window_menus.cpp" line="268"/>
+        <location filename="library_window_menus.cpp" line="313"/>
         <source>Delete custom cover</source>
         <translation>Supprimer la couverture personnalisée</translation>
     </message>
@@ -2508,12 +2513,12 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
 <context>
     <name>OrganizeFiles</name>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="536"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="540"/>
         <source>Renamed, %1 is already in use</source>
         <translation>Renommé, %1 est déjà utilisé</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="539"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="543"/>
         <source>Missing metadata: %1</source>
         <translation>Métadonnées manquantes : %1</translation>
     </message>
@@ -2997,17 +3002,17 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         <translation>Échec : %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1189"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1227"/>
         <source>Nothing was moved.</source>
         <translation>Rien n&apos;a été déplacé.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1190"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1228"/>
         <source>The record this run could be undone from could not be written, so the run did not start: %1</source>
         <translation>L&apos;enregistrement permettant d&apos;annuler cette opération n&apos;a pas pu être écrit, l&apos;opération n&apos;a donc pas démarré : %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1192"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1230"/>
         <source>%n file(s) renamed.</source>
         <translation>
             <numerusform>%n fichier renommé.</numerusform>
@@ -3015,7 +3020,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1193"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1231"/>
         <source>%n file(s) moved into %1.</source>
         <translation>
             <numerusform>%n fichier déplacé vers %1.</numerusform>
@@ -3023,12 +3028,12 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1196"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1234"/>
         <source>The record of this run stopped early, so the run stopped with it: %1</source>
         <translation>L&apos;enregistrement de cette opération s&apos;est arrêté prématurément, l&apos;opération s&apos;est donc arrêtée avec lui : %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1198"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1236"/>
         <source>%n file(s) were not moved.</source>
         <translation>
             <numerusform>%n fichier n&apos;a pas été déplacé.</numerusform>
@@ -3036,17 +3041,17 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1206"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1244"/>
         <source>The library database could not be updated: %1</source>
         <translation>La base de données de la bibliothèque n&apos;a pas pu être mise à jour : %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1207"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1245"/>
         <source>Use Undo to move the files back, or update the library to make it match the files.</source>
         <translation>Utilisez Revenir en arrière pour remettre les fichiers en place, ou mettez la bibliothèque à jour pour qu&apos;elle corresponde aux fichiers.</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1211"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1249"/>
         <source>%n empty folder(s) were removed.</source>
         <translation>
             <numerusform>%n dossier vide a été supprimé.</numerusform>
@@ -3054,7 +3059,7 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_dialog.cpp" line="1214"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1252"/>
         <source>%n file(s) could not be moved.</source>
         <translation>
             <numerusform>%n fichier n&apos;a pas pu être déplacé.</numerusform>
@@ -3062,90 +3067,90 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         </translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1246"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1284"/>
         <source>Moving the files back...</source>
         <translation>Remise en place des fichiers...</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1272"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1310"/>
         <source>Moving back %1 of %2
 %3</source>
         <translation>Remise en place de %1 sur %2
 %3</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1294"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1332"/>
         <source>Everything was moved back.</source>
         <translation>Tout a été remis en place.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1299"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1337"/>
         <source>The undo did not finish: %1</source>
         <translation>Le retour en arrière ne s&apos;est pas terminé : %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1365"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1403"/>
         <source>Format help</source>
         <translation>Aide sur le format</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1392"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1430"/>
         <source>Fields</source>
         <translation>Champs</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1393"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1431"/>
         <source>Every field is written between braces and is replaced by the metadata of the comic. The Insert menu lists all of them.</source>
         <translation>Chaque champ s&apos;écrit entre accolades et est remplacé par les métadonnées de la bande dessinée. Le menu Insérer les liste tous.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1395"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1433"/>
         <source>{series} gives %1</source>
         <translation>{series} donne %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1397"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1435"/>
         <source>Optional parts</source>
         <translation>Parties facultatives</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1398"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1436"/>
         <source>A part written between the signs &lt; and &gt; disappears completely when every field inside it is empty. Use it for punctuation that belongs to a field, such as brackets or a leading number sign. Text at the start or the end of a name is trimmed without it.</source>
         <translation>Une partie écrite entre les signes &lt; et &gt; disparaît complètement quand tous les champs qu&apos;elle contient sont vides. Utilisez-la pour la ponctuation qui appartient à un champ, comme des parenthèses ou un dièse en tête. Le texte au début ou à la fin d&apos;un nom est rogné sans elle.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1439"/>
         <source>{series} ({year})     with no year gives %1</source>
         <translation>{series} ({year})     sans année donne %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1401"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1439"/>
         <source>{series}&lt; ({year})&gt;   with no year gives %1</source>
         <translation>{series}&lt; ({year})&gt;   sans année donne %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1403"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1441"/>
         <source>Numbers</source>
         <translation>Numéros</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1404"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1442"/>
         <source>Write a colon and some zeros to pad the issue number. This keeps the issues in order in a file browser.</source>
         <translation>Écrivez deux-points et quelques zéros pour compléter le numéro. Les numéros restent ainsi dans l&apos;ordre dans un gestionnaire de fichiers.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1409"/>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1414"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1447"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1452"/>
         <source>Folders</source>
         <translation>Dossiers</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1410"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1448"/>
         <source>A filename format cannot contain a slash. Every comic keeps its current folder. Use Organize into folders to move comics.</source>
         <translation>Un format de nom de fichier ne peut pas contenir de barre oblique. Chaque bande dessinée reste dans son dossier actuel. Utilisez Organiser en dossiers pour déplacer des bandes dessinées.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_dialog.cpp" line="1415"/>
+        <location filename="organize_files/organize_files_dialog.cpp" line="1453"/>
         <source>Each part separated by a slash becomes a folder. The last part becomes the file name. The original extension is always kept.</source>
         <translation>Chaque partie séparée par une barre oblique devient un dossier. La dernière partie devient le nom du fichier. L&apos;extension d&apos;origine est toujours conservée.</translation>
     </message>
@@ -3153,274 +3158,274 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
 <context>
     <name>PropertiesDialog</name>
     <message>
-        <location filename="properties_dialog.cpp" line="173"/>
-        <location filename="properties_dialog.cpp" line="187"/>
-        <location filename="properties_dialog.cpp" line="198"/>
+        <location filename="properties_dialog.cpp" line="174"/>
+        <location filename="properties_dialog.cpp" line="188"/>
+        <location filename="properties_dialog.cpp" line="199"/>
         <source>of:</source>
         <translation>sur:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="282"/>
+        <location filename="properties_dialog.cpp" line="283"/>
         <source>Day:</source>
         <translation>Jour:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="89"/>
+        <location filename="properties_dialog.cpp" line="90"/>
         <source>Plot</source>
         <translation>Intrigue</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="208"/>
+        <location filename="properties_dialog.cpp" line="209"/>
         <source>Size:</source>
         <translation>Taille:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="290"/>
+        <location filename="properties_dialog.cpp" line="291"/>
         <source>Year:</source>
         <translation>Année:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="238"/>
+        <location filename="properties_dialog.cpp" line="239"/>
         <source>Inker(s):</source>
         <translation>Encreur(s):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="91"/>
+        <location filename="properties_dialog.cpp" line="92"/>
         <source>Publishing</source>
         <translation>Publication</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="298"/>
+        <location filename="properties_dialog.cpp" line="299"/>
         <source>Publisher:</source>
         <translation>Editeur:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="88"/>
+        <location filename="properties_dialog.cpp" line="89"/>
         <source>General info</source>
         <translation>Infos générales</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="300"/>
+        <location filename="properties_dialog.cpp" line="301"/>
         <source>Color/BW:</source>
         <translation>Couleur/Noir et blanc:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="593"/>
+        <location filename="properties_dialog.cpp" line="594"/>
         <source>Edit selected comics information</source>
         <translation>Editer les informations du comic sélectionné</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="231"/>
+        <location filename="properties_dialog.cpp" line="232"/>
         <source>Penciller(s):</source>
         <translation>Dessinateur(s):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="241"/>
+        <location filename="properties_dialog.cpp" line="242"/>
         <source>Colorist(s):</source>
         <translation>Coloriste(s):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="206"/>
+        <location filename="properties_dialog.cpp" line="207"/>
         <source>Genre:</source>
         <translation>Genre :</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="92"/>
+        <location filename="properties_dialog.cpp" line="93"/>
         <source>Notes</source>
         <translation>Remarques</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="110"/>
+        <location filename="properties_dialog.cpp" line="111"/>
         <source>Load previous page as cover</source>
         <translation>Charger la page précédente comme couverture</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="114"/>
+        <location filename="properties_dialog.cpp" line="115"/>
         <source>Load next page as cover</source>
         <translation>Charger la page suivante comme couverture</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="119"/>
+        <location filename="properties_dialog.cpp" line="120"/>
         <source>Reset cover to the default image</source>
         <translation>Réinitialiser la couverture à l&apos;image par défaut</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="124"/>
+        <location filename="properties_dialog.cpp" line="125"/>
         <source>Load custom cover image</source>
         <translation>Charger une image de couverture personnalisée</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="168"/>
+        <location filename="properties_dialog.cpp" line="169"/>
         <source>Series:</source>
         <translation>Série:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="178"/>
+        <location filename="properties_dialog.cpp" line="179"/>
         <source>Issue number:</source>
         <translation>Numéro:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="196"/>
+        <location filename="properties_dialog.cpp" line="197"/>
         <source>alt. number:</source>
         <translation>alt. nombre:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="202"/>
+        <location filename="properties_dialog.cpp" line="203"/>
         <source>Alternate series:</source>
         <translation>Série alternative&#xa0;:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="204"/>
+        <location filename="properties_dialog.cpp" line="205"/>
         <source>Series Group:</source>
         <translation>Groupe de séries&#xa0;:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="258"/>
+        <location filename="properties_dialog.cpp" line="259"/>
         <source>Editor(s):</source>
         <translation>Editeur(s)&#xa0;:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="261"/>
+        <location filename="properties_dialog.cpp" line="262"/>
         <source>Imprint:</source>
         <translation>Imprimer:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="286"/>
+        <location filename="properties_dialog.cpp" line="287"/>
         <source>Month:</source>
         <translation>Mois:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="302"/>
+        <location filename="properties_dialog.cpp" line="303"/>
         <source>Type:</source>
         <translation>Taper:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="303"/>
+        <location filename="properties_dialog.cpp" line="304"/>
         <source>Language (ISO):</source>
         <translation>Langue (ISO)&#xa0;:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="334"/>
+        <location filename="properties_dialog.cpp" line="335"/>
         <source>Teams:</source>
         <translation>Équipes&#xa0;:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="340"/>
+        <location filename="properties_dialog.cpp" line="341"/>
         <source>Locations:</source>
         <translation>Emplacements&#xa0;:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="346"/>
+        <location filename="properties_dialog.cpp" line="347"/>
         <source>Main character or team:</source>
         <translation>Personnage principal ou équipe&#xa0;:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="368"/>
+        <location filename="properties_dialog.cpp" line="369"/>
         <source>Review:</source>
         <translation>Revoir:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="369"/>
+        <location filename="properties_dialog.cpp" line="370"/>
         <source>Notes:</source>
         <translation>Remarques&#xa0;:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="1210"/>
+        <location filename="properties_dialog.cpp" line="1219"/>
         <source>Invalid cover</source>
         <translation>Couverture invalide</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="1210"/>
+        <location filename="properties_dialog.cpp" line="1219"/>
         <source>The image is invalid.</source>
         <translation>L&apos;image n&apos;est pas valide.</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="324"/>
+        <location filename="properties_dialog.cpp" line="325"/>
         <source>Synopsis:</source>
         <translation>Synopsis :</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="169"/>
+        <location filename="properties_dialog.cpp" line="170"/>
         <source>Title:</source>
         <translation>Titre:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="185"/>
+        <location filename="properties_dialog.cpp" line="186"/>
         <source>Arc number:</source>
         <translation>Arc numéro:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="370"/>
+        <location filename="properties_dialog.cpp" line="371"/>
         <source>Tags:</source>
         <translation>Balises&#xa0;:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="487"/>
+        <location filename="properties_dialog.cpp" line="488"/>
         <source>Not found</source>
         <translation>Introuvable</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="331"/>
+        <location filename="properties_dialog.cpp" line="332"/>
         <source>Characters:</source>
         <translation>Personnages:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="90"/>
+        <location filename="properties_dialog.cpp" line="91"/>
         <source>Authors</source>
         <translation>Auteurs</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="301"/>
+        <location filename="properties_dialog.cpp" line="302"/>
         <source>Age rating:</source>
         <translation>Limite d&apos;âge:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="191"/>
+        <location filename="properties_dialog.cpp" line="192"/>
         <source>Story arc:</source>
         <translation>Arc narratif:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="228"/>
+        <location filename="properties_dialog.cpp" line="229"/>
         <source>Writer(s):</source>
         <translation>Scénariste(s):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="487"/>
+        <location filename="properties_dialog.cpp" line="488"/>
         <source>Comic not found. You should update your library.</source>
         <translation>Comic introuvable. Vous devriez mettre à jour votre librairie.</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="555"/>
+        <location filename="properties_dialog.cpp" line="556"/>
         <source>Edit comic information</source>
         <translation>Editer les informations du comic</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="101"/>
+        <location filename="properties_dialog.cpp" line="102"/>
         <source>Cover page</source>
         <translation>Couverture</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="251"/>
+        <location filename="properties_dialog.cpp" line="252"/>
         <source>Cover Artist(s):</source>
         <translation>Artiste(s) de couverture:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="180"/>
+        <location filename="properties_dialog.cpp" line="181"/>
         <source>Volume:</source>
         <translation>Tome :</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="299"/>
+        <location filename="properties_dialog.cpp" line="300"/>
         <source>Format:</source>
         <translation>Format :</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="248"/>
+        <location filename="properties_dialog.cpp" line="249"/>
         <source>Letterer(s):</source>
         <translation>Lettreur(s):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="467"/>
+        <location filename="properties_dialog.cpp" line="468"/>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
         <translation>Lien Comic Vine&#xa0;: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; vue &lt;/a&gt;</translation>
     </message>
@@ -3438,37 +3443,37 @@ Pour arrêter une mise à jour automatique, appuyez sur l&apos;indicateur de cha
         <translation>impossible de charger 7z depuis ./utils</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="94"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
         <source>Select custom cover</source>
         <translation>Sélectionnez une couverture personnalisée</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="94"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
         <source>Images (%1)</source>
         <translation>Illustrations (%1)</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_repository.cpp" line="151"/>
+        <location filename="../common/themes/theme_repository.cpp" line="152"/>
         <source>The file could not be read or is not valid JSON.</source>
         <translation>Le fichier n&apos;a pas pu être lu ou n&apos;est pas un JSON valide.</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_repository.cpp" line="160"/>
+        <location filename="../common/themes/theme_repository.cpp" line="161"/>
         <source>This theme is for %1, not %2.</source>
         <translation>Ce thème est pour %1, pas pour %2.</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="147"/>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="149"/>
         <source>Libraries</source>
         <translation>Bibliothèques</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="148"/>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="150"/>
         <source>Folders</source>
         <translation>Dossiers</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="149"/>
+        <location filename="../custom_widgets/yacreader_sidebar.cpp" line="151"/>
         <source>Reading Lists</source>
         <translation>Listes de lecture</translation>
     </message>
@@ -4031,102 +4036,102 @@ Use quotes to include spaces in a value.</source>
         <translation>Exemple</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="328"/>
+        <location filename="search_syntax_dialog.cpp" line="329"/>
         <source>Examples show the pattern—replace the values with your own.</source>
         <translation>Les exemples montrent le modèle — remplacez les valeurs par les vôtres.</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="334"/>
+        <location filename="search_syntax_dialog.cpp" line="335"/>
         <source>Query</source>
         <translation>Requête</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="334"/>
+        <location filename="search_syntax_dialog.cpp" line="335"/>
         <source>What it finds</source>
         <translation>Résultat</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="339"/>
+        <location filename="search_syntax_dialog.cpp" line="340"/>
         <source>Common filters</source>
         <translation>Filtres courants</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="340"/>
+        <location filename="search_syntax_dialog.cpp" line="341"/>
         <source>Unread comics</source>
         <translation>Bandes dessinées non lues</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="341"/>
+        <location filename="search_syntax_dialog.cpp" line="342"/>
         <source>Comics in progress</source>
         <translation>Bandes dessinées en cours de lecture</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="342"/>
+        <location filename="search_syntax_dialog.cpp" line="343"/>
         <source>Highly rated comics</source>
         <translation>Bandes dessinées très bien notées</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="343"/>
+        <location filename="search_syntax_dialog.cpp" line="344"/>
         <source>Comics added in the last 7 days</source>
         <translation>Bandes dessinées ajoutées au cours des 7 derniers jours</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="345"/>
+        <location filename="search_syntax_dialog.cpp" line="346"/>
         <source>Metadata</source>
         <translation>Métadonnées</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="346"/>
+        <location filename="search_syntax_dialog.cpp" line="347"/>
         <source>Search by series</source>
         <translation>Rechercher par série</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="347"/>
+        <location filename="search_syntax_dialog.cpp" line="348"/>
         <source>Search by writer</source>
         <translation>Rechercher par scénariste</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="348"/>
+        <location filename="search_syntax_dialog.cpp" line="349"/>
         <source>Manga comics</source>
         <translation>Mangas</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="349"/>
+        <location filename="search_syntax_dialog.cpp" line="350"/>
         <source>Search textual tags</source>
         <translation>Rechercher les étiquettes textuelles</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="351"/>
+        <location filename="search_syntax_dialog.cpp" line="352"/>
         <source>Advanced combinations</source>
         <translation>Combinaisons avancées</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="355"/>
+        <location filename="search_syntax_dialog.cpp" line="356"/>
         <source>Match either writer</source>
         <translation>Correspond à l&apos;un des scénaristes</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="359"/>
+        <location filename="search_syntax_dialog.cpp" line="360"/>
         <source>Group alternatives</source>
         <translation>Regrouper les alternatives</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="360"/>
+        <location filename="search_syntax_dialog.cpp" line="361"/>
         <source>Exclude a value</source>
         <translation>Exclure une valeur</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="364"/>
+        <location filename="search_syntax_dialog.cpp" line="365"/>
         <source>Older, highly rated comics</source>
         <translation>Bandes dessinées anciennes et très bien notées</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="381"/>
+        <location filename="search_syntax_dialog.cpp" line="382"/>
         <source>Copy query</source>
         <translation>Copier la requête</translation>
     </message>
     <message>
-        <location filename="search_syntax_dialog.cpp" line="387"/>
+        <location filename="search_syntax_dialog.cpp" line="388"/>
         <source>Spaces behave like AND. Use quotes for phrases and parentheses to control grouping.</source>
         <translation>Les espaces agissent comme AND. Utilisez des guillemets pour les expressions et des parenthèses pour contrôler le regroupement.</translation>
     </message>
