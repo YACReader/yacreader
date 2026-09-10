@@ -10,7 +10,6 @@
 
 #include <QApplication>
 #include <QCommandLineParser>
-#include <QCoreApplication>
 #include <QDir>
 #include <QImageReader>
 
@@ -94,12 +93,6 @@ int main(int argc, char *argv[])
     qInstallMessageHandler(messageHandler);
 
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
-
-    // The go to flow is the only native child widget in the reader (see goto_flow_widget.cpp).
-    // By default Qt promotes every sibling of a native widget to be native too, which would turn
-    // the whole viewer, its viewport and every overlay into separate native views and change how
-    // they are painted. Keep the promotion contained to the flow itself.
-    QCoreApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 
     QImageReader::setAllocationLimit(0);
 

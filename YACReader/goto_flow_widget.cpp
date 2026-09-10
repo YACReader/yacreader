@@ -22,19 +22,6 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
 
     setLayout(mainLayout);
 
-    // Make this widget a native child window. Without this, the QRhiWidget below forces the whole
-    // reader window (the QScrollArea and the page contents) to be flushed through QRhi (Metal on
-    // macOS): the full raster backing store gets uploaded as a texture on every repaint, even while
-    // the flow is hidden. As a native child, only this widget uses the RHI path and the reader
-    // window keeps the plain raster flush.
-    //
-    // WA_DontCreateNativeAncestors keeps the promotion from walking up to the viewer and the
-    // main window. Without it the viewer becomes native, the page contents end up inside a
-    // native child window, and switching to continuous scroll leaves the viewport unpainted
-    // until the first scroll. Sibling promotion is disabled application wide in main.cpp.
-    setAttribute(Qt::WA_DontCreateNativeAncestors);
-    setAttribute(Qt::WA_NativeWindow);
-
     flow = new YACReaderPageFlow3D(this);
     flow->setShowMarks(false);
 
