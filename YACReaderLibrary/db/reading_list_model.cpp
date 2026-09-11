@@ -79,6 +79,12 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
         return item->getId();
     }
 
+    if (role == ReadingListModel::IsFolderRole && typeid(*item) == typeid(ReadingListItem))
+        return static_cast<ReadingListItem *>(item)->isFolder();
+
+    if (role == ReadingListModel::IsSmartListRole && typeid(*item) == typeid(ReadingListItem))
+        return static_cast<ReadingListItem *>(item)->isSmartList();
+
     if (role == ReadingListModel::SpecialListTypeRole && typeid(*item) == typeid(SpecialListItem)) {
         auto specialListItem = static_cast<SpecialListItem *>(item);
         return QVariant::fromValue(specialListItem->getType());
@@ -277,6 +283,8 @@ bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, 
     }
 
     if (rowIsReadingList(dest.row(), parentDest)) {
+        if (dest.data(IsSmartListRole).toBool())
+            return false;
         QLOG_DEBUG() << "///////////addComicsToReadingList : " << comicIds << " to " << dest.data(IDRole).toULongLong();
         emit addComicsToReadingList(comicIds, dest.data(IDRole).toULongLong());
         return true;
@@ -423,6 +431,24 @@ void ReadingListModel::addReadingList(const QString &name)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
+void ReadingListModel::addReadingListFolder(const QString &name)
+{
+    QString connectionName;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS reading_list_folder (reading_list_id INTEGER PRIMARY KEY, "
+                               "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE)"));
+        const qulonglong id = DBHelper::insertReadingList(name, db);
+        QSqlQuery markFolder(db);
+        markFolder.prepare(QStringLiteral("INSERT INTO reading_list_folder (reading_list_id) VALUES (:id)"));
+        markFolder.bindValue(QStringLiteral(":id"), id);
+        markFolder.exec();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    setupReadingListsData(_databasePath);
+}
+
 void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &mi)
 {
     QString connectionName = "";
@@ -478,6 +504,20 @@ bool ReadingListModel::isReadingSubList(const QModelIndex &mi)
             return true;
     } else
         return false;
+}
+
+bool ReadingListModel::isReadingListFolder(const QModelIndex &mi)
+{
+    if (!isReadingList(mi))
+        return false;
+    return static_cast<ReadingListItem *>(mi.internalPointer())->isFolder();
+}
+
+bool ReadingListModel::isSmartList(const QModelIndex &mi)
+{
+    if (!isReadingList(mi))
+        return false;
+    return static_cast<ReadingListItem *>(mi.internalPointer())->isSmartList();
 }
 
 QString ReadingListModel::name(const QModelIndex &mi)
@@ -584,6 +624,8 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
     int completed = record.indexOf("completed");
     int ordering = record.indexOf("ordering");
     int parentId = record.indexOf("parentId");
+    int isFolder = record.indexOf("isFolder");
+    int isSmartList = record.indexOf("isSmartList");
 
     while (sqlquery.next()) {
         ReadingListItem *rli = new ReadingListItem(QList<QVariant>()
@@ -591,7 +633,10 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
                                                    << sqlquery.value(id)
                                                    << sqlquery.value(finished)
                                                    << sqlquery.value(completed)
-                                                   << sqlquery.value(ordering));
+                                                   << sqlquery.value(ordering),
+                                                   nullptr,
+                                                   isFolder >= 0 && sqlquery.value(isFolder).toBool(),
+                                                   isSmartList >= 0 && sqlquery.value(isSmartList).toBool());
 
         ReadingListItem *currentParent;
         if (sqlquery.value(parentId).isNull())
@@ -665,10 +710,18 @@ void ReadingListModel::setupLabels(QSqlDatabase &db)
 
 void ReadingListModel::setupReadingLists(QSqlDatabase &db)
 {
+    DBHelper::ensureReadingListEntries(db);
     // setup root item
     rootItem = new ReadingListItem(QList<QVariant>() << "ROOT" << 0 << true << false);
 
-    QSqlQuery selectQuery("select * from reading_list order by parentId IS NULL DESC", db);
+    db.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS reading_list_folder (reading_list_id INTEGER PRIMARY KEY, "
+                           "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE)"));
+    db.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS reading_list_smart (reading_list_id INTEGER PRIMARY KEY, rules_json TEXT NOT NULL, "
+                           "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE)"));
+    QSqlQuery selectQuery("SELECT rl.*, rlf.reading_list_id IS NOT NULL AS isFolder, rls.reading_list_id IS NOT NULL AS isSmartList "
+                          "FROM reading_list rl LEFT JOIN reading_list_folder rlf ON rlf.reading_list_id = rl.id "
+                          "LEFT JOIN reading_list_smart rls ON rls.reading_list_id = rl.id "
+                          "ORDER BY rl.parentId IS NULL DESC", db);
 
     // setup reading lists
     setupReadingListsData(selectQuery, rootItem);
