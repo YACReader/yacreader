@@ -10,6 +10,9 @@
 #include "reading_list_model.h"
 #include "yacreader_global_gui.h"
 
+#include <QDateTime>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QSqlRecord>
 #include <QStringBuilder>
 #include <QtDebug>
@@ -271,6 +274,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[SeriesRole] = "series";
     roles[VolumeRole] = "volume";
     roles[StoryArcRole] = "story_arc";
+    roles[IsPlaceholderRole] = "is_placeholder";
 
     return roles;
 }
@@ -370,6 +374,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return item->data(Volume);
     else if (role == StoryArcRole)
         return item->data(StoryArc);
+    else if (role == IsPlaceholderRole)
+        return item->data(Id).toLongLong() < 0;
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -397,6 +403,9 @@ Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return { };
+    const auto item = static_cast<ComicItem *>(index.internalPointer());
+    if (item->data(Id).toLongLong() < 0)
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     if (index.column() == ComicModel::Rating)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
@@ -521,6 +530,134 @@ QStringList ComicModel::getPaths(const QString &_source)
 
 #define COMIC_MODEL_QUERY_FIELDS "ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date,ci.added,ci.type,ci.lastTimeOpened,ci.series,ci.volume,ci.storyArc"
 
+namespace {
+QString likePattern(const QString &value)
+{
+    return QStringLiteral("%") + value.trimmed() + QStringLiteral("%");
+}
+
+bool addTextRule(const QJsonObject &rules, const QString &key, const QStringList &columns, QStringList &where, QHash<QString, QVariant> &binds)
+{
+    const QString value = rules.value(key).toString().trimmed();
+    if (value.isEmpty())
+        return false;
+
+    QStringList matches;
+    const QString bindName = QStringLiteral(":%1").arg(key);
+    for (const auto &column : columns)
+        matches << QStringLiteral("COALESCE(%1,'') LIKE %2 COLLATE NOCASE").arg(column, bindName);
+    where << QStringLiteral("(%1)").arg(matches.join(QStringLiteral(" OR ")));
+    binds.insert(bindName, likePattern(value));
+    return true;
+}
+
+QString smartListSortOrder(const QJsonObject &rules)
+{
+    const QString direction = rules.value(QStringLiteral("sortDirection")).toString(QStringLiteral("asc")) == QStringLiteral("desc")
+            ? QStringLiteral("DESC")
+            : QStringLiteral("ASC");
+    const QString textDirection = QStringLiteral("COLLATE NOCASE ") + direction;
+    const QString sortField = rules.value(QStringLiteral("sortField")).toString(QStringLiteral("series"));
+
+    if (sortField == QStringLiteral("title"))
+        return QStringLiteral("COALESCE(ci.title,'') %1, c.fileName %1").arg(textDirection);
+    if (sortField == QStringLiteral("fileName"))
+        return QStringLiteral("c.fileName %1").arg(textDirection);
+    if (sortField == QStringLiteral("year"))
+        return QStringLiteral("CAST(substr(COALESCE(ci.date,''), -4) AS INTEGER) %1, COALESCE(ci.series,'') %2, CAST(ci.number AS REAL) %1, ci.number %2, c.fileName %2")
+                .arg(direction, textDirection);
+    if (sortField == QStringLiteral("added"))
+        return QStringLiteral("COALESCE(ci.added,0) %1, COALESCE(ci.series,'') %2, CAST(ci.number AS REAL) %1, ci.number %2, c.fileName %2")
+                .arg(direction, textDirection);
+    if (sortField == QStringLiteral("lastOpened"))
+        return QStringLiteral("COALESCE(ci.lastTimeOpened,0) %1, COALESCE(ci.series,'') %2, CAST(ci.number AS REAL) %1, ci.number %2, c.fileName %2")
+                .arg(direction, textDirection);
+    if (sortField == QStringLiteral("rating"))
+        return QStringLiteral("COALESCE(ci.rating,0) %1, COALESCE(ci.series,'') %2, CAST(ci.number AS REAL) %1, ci.number %2, c.fileName %2")
+                .arg(direction, textDirection);
+    if (sortField == QStringLiteral("publisher"))
+        return QStringLiteral("COALESCE(ci.publisher,'') %1, COALESCE(ci.series,'') %1, CAST(ci.number AS REAL) %2, ci.number %1, c.fileName %1")
+                .arg(textDirection, direction);
+
+    return QStringLiteral("COALESCE(ci.series,'') %1, CAST(ci.number AS REAL) %2, ci.number %1, c.fileName %1")
+            .arg(textDirection, direction);
+}
+
+bool prepareSmartListQuery(QSqlQuery &query, const QString &rulesJson)
+{
+    const auto document = QJsonDocument::fromJson(rulesJson.toUtf8());
+    const QJsonObject rules = document.object();
+    QStringList where;
+    QHash<QString, QVariant> binds;
+
+    addTextRule(rules, QStringLiteral("series"), { QStringLiteral("ci.series"), QStringLiteral("ci.alternateSeries") }, where, binds);
+    addTextRule(rules, QStringLiteral("title"), { QStringLiteral("ci.title") }, where, binds);
+    addTextRule(rules, QStringLiteral("publisher"), { QStringLiteral("ci.publisher"), QStringLiteral("ci.imprint") }, where, binds);
+    addTextRule(rules, QStringLiteral("storyArc"), { QStringLiteral("ci.storyArc"), QStringLiteral("ci.seriesGroup") }, where, binds);
+    addTextRule(rules, QStringLiteral("path"), { QStringLiteral("c.path"), QStringLiteral("c.fileName") }, where, binds);
+    addTextRule(rules, QStringLiteral("tag"), { QStringLiteral("ci.tags"), QStringLiteral("ci.characters"), QStringLiteral("ci.teams"), QStringLiteral("ci.locations"), QStringLiteral("ci.mainCharacterOrTeam") }, where, binds);
+    addTextRule(rules, QStringLiteral("creator"), { QStringLiteral("ci.writer"), QStringLiteral("ci.penciller"), QStringLiteral("ci.inker"), QStringLiteral("ci.colorist"), QStringLiteral("ci.letterer"), QStringLiteral("ci.coverArtist"), QStringLiteral("ci.editor") }, where, binds);
+
+    const int readState = rules.value(QStringLiteral("readState")).toInt(0);
+    if (readState == 1)
+        where << QStringLiteral("COALESCE(ci.read,0) = 0");
+    else if (readState == 2)
+        where << QStringLiteral("COALESCE(ci.read,0) <> 0");
+
+    const int openedState = rules.value(QStringLiteral("openedState")).toInt(0);
+    if (openedState == 1)
+        where << QStringLiteral("COALESCE(ci.hasBeenOpened,0) = 0");
+    else if (openedState == 2)
+        where << QStringLiteral("COALESCE(ci.hasBeenOpened,0) <> 0");
+
+    const int ratingMin = rules.value(QStringLiteral("ratingMin")).toInt(0);
+    if (ratingMin > 0) {
+        where << QStringLiteral("COALESCE(ci.rating,0) >= :ratingMin");
+        binds.insert(QStringLiteral(":ratingMin"), ratingMin);
+    }
+
+    const int type = rules.value(QStringLiteral("type")).toInt(-1);
+    if (type >= 0) {
+        where << QStringLiteral("COALESCE(ci.type,0) = :type");
+        binds.insert(QStringLiteral(":type"), type);
+    }
+
+    const int yearFrom = rules.value(QStringLiteral("yearFrom")).toInt(0);
+    if (yearFrom > 0) {
+        where << QStringLiteral("CAST(substr(COALESCE(ci.date,''), -4) AS INTEGER) >= :yearFrom");
+        binds.insert(QStringLiteral(":yearFrom"), yearFrom);
+    }
+
+    const int yearTo = rules.value(QStringLiteral("yearTo")).toInt(0);
+    if (yearTo > 0) {
+        where << QStringLiteral("CAST(substr(COALESCE(ci.date,''), -4) AS INTEGER) <= :yearTo");
+        binds.insert(QStringLiteral(":yearTo"), yearTo);
+    }
+
+    const int addedWithinDays = rules.value(QStringLiteral("addedWithinDays")).toInt(0);
+    if (addedWithinDays > 0) {
+        where << QStringLiteral("COALESCE(ci.added,0) >= :addedAfter");
+        binds.insert(QStringLiteral(":addedAfter"), QDateTime::currentSecsSinceEpoch() - qint64(addedWithinDays) * 86400);
+    }
+
+    const int openedWithinDays = rules.value(QStringLiteral("openedWithinDays")).toInt(0);
+    if (openedWithinDays > 0) {
+        where << QStringLiteral("COALESCE(ci.lastTimeOpened,0) >= :openedAfter");
+        binds.insert(QStringLiteral(":openedAfter"), QDateTime::currentSecsSinceEpoch() - qint64(openedWithinDays) * 86400);
+    }
+
+    const QString whereClause = where.isEmpty() ? QString() : QStringLiteral("WHERE ") + where.join(QStringLiteral(" AND "));
+    const QString orderClause = smartListSortOrder(rules);
+    query.prepare(QStringLiteral("SELECT " COMIC_MODEL_QUERY_FIELDS " "
+                                 "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                                 "%1 ORDER BY %2")
+                          .arg(whereClause, orderClause));
+    for (auto it = binds.constBegin(); it != binds.constEnd(); ++it)
+        query.bindValue(it.key(), it.value());
+    return true;
+}
+}
+
 QList<ComicItem *> ComicModel::createFolderModelData(unsigned long long folderId, const QString &databasePath) const
 {
     QList<ComicItem *> modelData;
@@ -624,13 +761,58 @@ QList<ComicItem *> ComicModel::createReadingListData(unsigned long long parentRe
         enableResorting = ids.length() == 1; // only resorting if no sublists exist
 
         const auto &readingListIds = ids;
+        DBHelper::ensureReadingListEntries(db);
+        db.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS reading_list_smart (reading_list_id INTEGER PRIMARY KEY, rules_json TEXT NOT NULL, "
+                               "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE)"));
         for (const auto id : readingListIds) {
+            DBHelper::relinkMissingReadingListEntries(db, id);
             QSqlQuery selectQuery(db);
-            selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
-                                "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
-                                "WHERE crl.reading_list_id = :parentReadingList "
-                                "ORDER BY crl.ordering");
+            QSqlQuery smartList(db);
+            smartList.prepare("SELECT rules_json FROM reading_list_smart WHERE reading_list_id = :id");
+            smartList.bindValue(":id", id);
+            const bool isSmartList = smartList.exec() && smartList.next();
+            if (isSmartList) {
+                enableResorting = false;
+                prepareSmartListQuery(selectQuery, smartList.value(0).toString());
+                selectQuery.exec();
+                modelData << createModelDataForList(selectQuery);
+                continue;
+            }
+
+            QSqlQuery tableCheck(db);
+            const bool hasCblTables = tableCheck.exec("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'")
+                    && tableCheck.next();
+            bool isImportedCbl = false;
+            if (hasCblTables) {
+                QSqlQuery importedList(db);
+                importedList.prepare("SELECT 1 FROM cbl_reading_list_meta WHERE reading_list_id = :id");
+                importedList.bindValue(":id", id);
+                isImportedCbl = importedList.exec() && importedList.next();
+            }
+
+            if (isImportedCbl) {
+                selectQuery.prepare(
+                        "SELECT COALESCE(ci.number,e.number), ci.title, "
+                        "CASE WHEN c.id IS NULL THEN '[MISSING]' ELSE c.fileName END, "
+                        "COALESCE(ci.numPages,0), CASE WHEN c.id IS NULL THEN -e.id ELSE c.id END, c.parentId, c.path, ci.hash, "
+                        "COALESCE(ci.read,0), COALESCE(ci.currentPage,0), COALESCE(ci.rating,0), COALESCE(ci.hasBeenOpened,0), "
+                        "COALESCE(ci.date,e.year), ci.added, ci.type, ci.lastTimeOpened, COALESCE(ci.series,e.series), COALESCE(ci.volume,e.volume), ci.storyArc "
+                        "FROM cbl_reading_list_entry e "
+                        "LEFT JOIN comic c ON c.id = e.comic_id "
+                        "LEFT JOIN comic_info ci ON c.comicInfoId = ci.id "
+                        "WHERE e.reading_list_id = :parentReadingList ORDER BY e.ordering");
+            } else {
+                selectQuery.prepare(
+                        "SELECT COALESCE(ci.number,e.number), ci.title, "
+                        "CASE WHEN c.id IS NULL THEN '[MISSING]' ELSE c.fileName END, "
+                        "COALESCE(ci.numPages,0), CASE WHEN c.id IS NULL THEN -e.id ELSE c.id END, c.parentId, c.path, ci.hash, "
+                        "COALESCE(ci.read,0), COALESCE(ci.currentPage,0), COALESCE(ci.rating,0), COALESCE(ci.hasBeenOpened,0), "
+                        "COALESCE(ci.date,e.year), ci.added, ci.type, ci.lastTimeOpened, COALESCE(ci.series,e.series), COALESCE(ci.volume,e.volume), ci.storyArc "
+                        "FROM reading_list_entry e "
+                        "LEFT JOIN comic c ON c.id = e.comic_id "
+                        "LEFT JOIN comic_info ci ON c.comicInfoId = ci.id "
+                        "WHERE e.reading_list_id = :parentReadingList ORDER BY e.ordering");
+            }
             selectQuery.bindValue(":parentReadingList", id);
             selectQuery.exec();
 

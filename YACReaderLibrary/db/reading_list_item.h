@@ -62,7 +62,7 @@ private:
 class ReadingListItem : public ListItem
 {
 public:
-    ReadingListItem(const QList<QVariant> &data, ReadingListItem *parent = nullptr);
+    ReadingListItem(const QList<QVariant> &data, ReadingListItem *parent = nullptr, bool folder = false, bool smartList = false);
     QIcon getIcon() const override;
     ReadingListItem *parent;
     int childCount() const;
@@ -77,9 +77,13 @@ public:
     int getOrdering() const;
     void setOrdering(const int ordering);
     QList<ReadingListItem *> children();
+    bool isFolder() const;
+    bool isSmartList() const;
 
 private:
     QList<ReadingListItem *> childItems;
+    bool folder;
+    bool smart;
 
     enum DataIndexes {
         Name,

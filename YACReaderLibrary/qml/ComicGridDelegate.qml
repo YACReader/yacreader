@@ -22,6 +22,7 @@ Rectangle {
     required property double added_date
     required property bool show_recent
     required property double recent_range
+    required property bool is_placeholder
 
     required property int currentViewIndex
     required property var selectionHelper
@@ -113,6 +114,8 @@ Rectangle {
             hoverEnabled: true
 
             onDoubleClicked: {
+                if (cell.is_placeholder)
+                    return
                 cell.selectionHelper.selectOnly(cell.source_index)
                 cell.setCurrentViewRowRequested(cell.index)
                 cell.activateRequested(cell.index)
@@ -184,6 +187,26 @@ Rectangle {
         mipmap: true
         asynchronous: true
         cache: false
+        visible: !cell.is_placeholder
+    }
+
+    Rectangle {
+        width: coverWidth
+        height: coverHeight
+        anchors { horizontalCenter: parent.horizontalCenter; top: realCell.top }
+        visible: cell.is_placeholder
+        color: Qt.darker(realCell.color, 1.15)
+        border { color: comicCoverBorderColor; width: 1 }
+
+        Text {
+            anchors.centerIn: parent
+            width: parent.width - 20
+            text: qsTr("Missing issue")
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            color: itemTitleColor
+            font.bold: true
+        }
     }
 
     Rectangle {

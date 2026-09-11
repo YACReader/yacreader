@@ -140,20 +140,21 @@ qulonglong LabelItem::getId() const
 
 //------------------------------------------------------
 
-ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p)
-    : ListItem(data), parent(p)
+ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p, bool folder, bool smartList)
+    : ListItem(data), parent(p), folder(folder), smart(smartList)
 {
 }
 
 QIcon ReadingListItem::getIcon() const
 {
     const auto &theme = ThemeManager::instance().getCurrentTheme();
-    if (parent->getId() == 0)
-        return theme.readingListIcons.listIcon; // top level list
-    else if (theme.sidebarIcons.useSystemFolderIcons)
+    if (isFolder() && theme.sidebarIcons.useSystemFolderIcons)
         return QFileIconProvider().icon(QFileIconProvider::Folder);
-    else
+    if (isFolder())
         return theme.navigationTree.folderIcon; // sublist
+    if (isSmartList())
+        return theme.readingListIcons.currentlyReadingIcon;
+    return theme.readingListIcons.listIcon;
 }
 
 int ReadingListItem::childCount() const
@@ -259,6 +260,16 @@ void ReadingListItem::setOrdering(const int ordering)
 QList<ReadingListItem *> ReadingListItem::children()
 {
     return childItems;
+}
+
+bool ReadingListItem::isFolder() const
+{
+    return folder || !childItems.isEmpty();
+}
+
+bool ReadingListItem::isSmartList() const
+{
+    return smart;
 }
 
 int ReadingListItem::row() const
