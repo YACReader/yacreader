@@ -13,7 +13,11 @@ struct CblBook
     QString number;
     QString volume;
     QString year;
+    QString format;
+    QString fileName;
     QString id;
+    QString comicVineSeriesId;
+    QString comicVineIssueId;
     int ordering = 0;
 };
 
@@ -74,12 +78,27 @@ public:
                 book.number = attributes.value(QLatin1String("Number")).toString().trimmed();
                 book.volume = attributes.value(QLatin1String("Volume")).toString().trimmed();
                 book.year = attributes.value(QLatin1String("Year")).toString().trimmed();
+                book.format = attributes.value(QLatin1String("Format")).toString().trimmed();
                 book.ordering = ordering++;
 
                 while (!(xml.isEndElement() && xml.name() == QLatin1String("Book")) && !xml.atEnd()) {
                     xml.readNext();
-                    if (xml.isStartElement() && xml.name() == QLatin1String("Id"))
+                    if (!xml.isStartElement())
+                        continue;
+
+                    if (xml.name() == QLatin1String("Id")) {
                         book.id = xml.readElementText().trimmed();
+                    } else if (xml.name() == QLatin1String("FileName")) {
+                        book.fileName = xml.readElementText().trimmed();
+                    } else if (xml.name() == QLatin1String("Database")) {
+                        const auto databaseAttributes = xml.attributes();
+                        const auto databaseName = databaseAttributes.value(QLatin1String("Name")).toString().trimmed();
+                        if (databaseName.compare(QLatin1String("cv"), Qt::CaseInsensitive) == 0
+                            || databaseName.compare(QLatin1String("comicvine"), Qt::CaseInsensitive) == 0) {
+                            book.comicVineSeriesId = databaseAttributes.value(QLatin1String("Series")).toString().trimmed();
+                            book.comicVineIssueId = databaseAttributes.value(QLatin1String("Issue")).toString().trimmed();
+                        }
+                    }
                 }
 
                 result.readingList.books.append(book);

@@ -46,10 +46,13 @@ public:
     void setupReadingListsData(QString path);
     void addNewLabel(const QString &name, YACReader::LabelColors color);
     void addReadingList(const QString &name); // top level reading list
+    void addReadingListFolder(const QString &name);
     void addReadingListAt(const QString &name, const QModelIndex &mi);
     bool isEditable(const QModelIndex &mi);
     bool isReadingList(const QModelIndex &mi);
     bool isReadingSubList(const QModelIndex &mi);
+    bool isReadingListFolder(const QModelIndex &mi);
+    bool isSmartList(const QModelIndex &mi);
     QString name(const QModelIndex &mi);
     void rename(const QModelIndex &mi, const QString &name);
     void deleteItem(const QModelIndex &mi);
@@ -60,7 +63,9 @@ public:
         TypeListsRole = Qt::UserRole + 1,
         IDRole,
         LabelColorRole,
-        SpecialListTypeRole
+        SpecialListTypeRole,
+        IsFolderRole,
+        IsSmartListRole
     };
 
     enum TypeList {

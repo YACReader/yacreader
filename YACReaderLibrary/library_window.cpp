@@ -329,12 +329,28 @@ void LibraryWindow::doLayout()
     foldersTitle->addAction(actions.colapseAllNodesAction);
 
     readingListsTitle->addAction(actions.addReadingListAction);
+    readingListsTitle->addAction(actions.addSmartListAction);
+    readingListsTitle->addAction(actions.importCblReadingListAction);
+    readingListsTitle->addAction(actions.addReadingListFolderAction);
     // readingListsTitle->addSepartor();
     readingListsTitle->addAction(actions.addLabelAction);
     // readingListsTitle->addSepartor();
     readingListsTitle->addAction(actions.renameListAction);
     readingListsTitle->addAction(actions.deleteReadingListAction);
     readingListsTitle->addSpacing(3);
+
+    listsView->setContextMenuPolicy(Qt::ActionsContextMenu);
+    listsView->addAction(actions.editSmartListAction);
+    listsView->addAction(actions.editCblReadingListAction);
+    listsView->addAction(actions.addSmartListAction);
+    listsView->addAction(actions.importCblReadingListAction);
+    listsView->addAction(actions.updateCblReadingListAction);
+    listsView->addAction(actions.exportReadingListAction);
+    listsView->addAction(actions.showMissingComicsAction);
+    listsView->addAction(actions.addReadingListFolderAction);
+    listsView->addAction(actions.moveReadingListToFolderAction);
+    listsView->addAction(actions.renameListAction);
+    listsView->addAction(actions.deleteReadingListAction);
 
     // FINAL LAYOUT-------------------------------------------------------------
 

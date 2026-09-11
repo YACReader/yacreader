@@ -24,7 +24,15 @@ public:
 
 public slots:
     void addReadingList();
+    void addSmartList();
+    void editSmartList();
+    void addReadingListFolder();
+    void moveReadingListToFolder();
     void importCblReadingList();
+    void updateCblReadingListFromSource();
+    void exportReadingList();
+    void showMissingComics();
+    void editCblReadingList();
     void deleteCurrentList();
     void addLabel();
     void renameCurrentList();
@@ -33,6 +41,7 @@ signals:
     void currentListReselectionRequested();
 
 private:
+    void importCblReadingListFromPath(const QString &filePath, qulonglong updateReadingListId = 0);
     QWidget *dialogParent;
     ReadingListModel *listsModel;
     CurrentListProvider currentListProvider;
