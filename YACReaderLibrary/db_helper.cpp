@@ -1395,6 +1395,7 @@ void DBHelper::reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong>
 void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase &db)
 {
     ensureReadingListEntries(db);
+    const bool importedCbl = isImportedCblReadingList(readingListId, db);
     QSqlQuery updateOrdering(db);
     updateOrdering.prepare("UPDATE comic_reading_list SET "
                            "ordering = :ordering "
@@ -1411,10 +1412,14 @@ void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList
 
         QSqlQuery updateEntry(db);
         if (signedId < 0) {
-            updateEntry.prepare("UPDATE reading_list_entry SET ordering = :ordering WHERE id = :entry_id AND reading_list_id = :reading_list_id");
+            updateEntry.prepare(importedCbl
+                                ? "UPDATE cbl_reading_list_entry SET ordering = :ordering WHERE id = :entry_id AND reading_list_id = :reading_list_id"
+                                : "UPDATE reading_list_entry SET ordering = :ordering WHERE id = :entry_id AND reading_list_id = :reading_list_id");
             updateEntry.bindValue(":entry_id", -signedId);
         } else {
-            updateEntry.prepare("UPDATE reading_list_entry SET ordering = :ordering WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+            updateEntry.prepare(importedCbl
+                                ? "UPDATE cbl_reading_list_entry SET ordering = :ordering WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id"
+                                : "UPDATE reading_list_entry SET ordering = :ordering WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
             updateEntry.bindValue(":comic_id", id);
         }
         updateEntry.bindValue(":ordering", order - 1);
@@ -1795,8 +1800,11 @@ void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong 
 void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db)
 {
     ensureReadingListEntries(db);
+    const bool importedCbl = isImportedCblReadingList(readingListId, db);
     QSqlQuery getNumComics(db);
-    getNumComics.prepare("SELECT count(*) FROM reading_list_entry WHERE reading_list_id = :reading_list_id");
+    getNumComics.prepare(importedCbl
+                         ? "SELECT count(*) FROM cbl_reading_list_entry WHERE reading_list_id = :reading_list_id"
+                         : "SELECT count(*) FROM reading_list_entry WHERE reading_list_id = :reading_list_id");
     getNumComics.bindValue(":reading_list_id", readingListId);
     getNumComics.exec();
     getNumComics.next();
@@ -1806,12 +1814,18 @@ void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulon
     db.transaction();
 
     QSqlQuery query(db);
-    query.prepare("INSERT INTO comic_reading_list (reading_list_id, comic_id, ordering) "
+    query.prepare("INSERT OR IGNORE INTO comic_reading_list (reading_list_id, comic_id, ordering) "
                   "VALUES (:reading_list_id, :comic_id, :ordering)");
     QSqlQuery entry(db);
-    entry.prepare("INSERT OR IGNORE INTO reading_list_entry "
-                  "(reading_list_id, comic_id, ordering, series, number, volume, year, format, file_name, comicvine_issue_id, hash) "
-                  "VALUES (:reading_list_id, :comic_id, :ordering, :series, :number, :volume, :year, :format, :file_name, :comicvine_issue_id, :hash)");
+    if (importedCbl) {
+        entry.prepare("INSERT INTO cbl_reading_list_entry "
+                      "(reading_list_id, comic_id, ordering, series, number, volume, year, format, file_name, source_id, comicvine_series_id, comicvine_issue_id, match_state, match_tier, candidate_count) "
+                      "VALUES (:reading_list_id, :comic_id, :ordering, :series, :number, :volume, :year, :format, :file_name, '', '', :comicvine_issue_id, 0, 6, 1)");
+    } else {
+        entry.prepare("INSERT OR IGNORE INTO reading_list_entry "
+                      "(reading_list_id, comic_id, ordering, series, number, volume, year, format, file_name, comicvine_issue_id, hash) "
+                      "VALUES (:reading_list_id, :comic_id, :ordering, :series, :number, :volume, :year, :format, :file_name, :comicvine_issue_id, :hash)");
+    }
 
     for (const auto &comic : comicsList) {
         query.bindValue(":reading_list_id", readingListId);
@@ -1828,11 +1842,25 @@ void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulon
         entry.bindValue(":format", comic.info.format);
         entry.bindValue(":file_name", comic.name);
         entry.bindValue(":comicvine_issue_id", comic.info.comicVineID);
-        entry.bindValue(":hash", comic.info.hash);
+        if (!importedCbl)
+            entry.bindValue(":hash", comic.info.hash);
         entry.exec();
     }
 
     db.commit();
+}
+
+bool DBHelper::isImportedCblReadingList(qulonglong readingListId, QSqlDatabase &db)
+{
+    QSqlQuery tableCheck(db);
+    if (!tableCheck.exec("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'")
+        || !tableCheck.next())
+        return false;
+
+    QSqlQuery imported(db);
+    imported.prepare("SELECT 1 FROM cbl_reading_list_meta WHERE reading_list_id = :reading_list_id");
+    imported.bindValue(":reading_list_id", readingListId);
+    return imported.exec() && imported.next();
 }
 
 bool DBHelper::ensureReadingListEntries(QSqlDatabase &db)

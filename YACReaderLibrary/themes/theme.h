@@ -359,6 +359,7 @@ struct ReadingListIconsTheme {
 
     // Reading list icon
     QIcon listIcon;
+    QIcon importedListIcon;
 };
 
 struct DialogIconsTheme {

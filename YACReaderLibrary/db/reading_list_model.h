@@ -53,6 +53,7 @@ public:
     bool isReadingSubList(const QModelIndex &mi);
     bool isReadingListFolder(const QModelIndex &mi);
     bool isSmartList(const QModelIndex &mi);
+    bool isImportedCblList(const QModelIndex &mi);
     QString name(const QModelIndex &mi);
     void rename(const QModelIndex &mi, const QString &name);
     void deleteItem(const QModelIndex &mi);
@@ -65,7 +66,8 @@ public:
         LabelColorRole,
         SpecialListTypeRole,
         IsFolderRole,
-        IsSmartListRole
+        IsSmartListRole,
+        IsImportedCblRole
     };
 
     enum TypeList {

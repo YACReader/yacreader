@@ -64,6 +64,7 @@ public:
     static void insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
     static void insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
     static bool ensureReadingListEntries(QSqlDatabase &db);
+    static bool isImportedCblReadingList(qulonglong readingListId, QSqlDatabase &db);
     static int relinkMissingReadingListEntries(QSqlDatabase &db, qulonglong readingListId = 0);
     // updates
     static void update(qulonglong libraryId, ComicInfo &comicInfo);

@@ -140,8 +140,8 @@ qulonglong LabelItem::getId() const
 
 //------------------------------------------------------
 
-ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p, bool folder, bool smartList)
-    : ListItem(data), parent(p), folder(folder), smart(smartList)
+ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p, bool folder, bool smartList, bool importedCbl)
+    : ListItem(data), parent(p), folder(folder), smart(smartList), imported(importedCbl)
 {
 }
 
@@ -154,6 +154,8 @@ QIcon ReadingListItem::getIcon() const
         return theme.navigationTree.folderIcon; // sublist
     if (isSmartList())
         return theme.readingListIcons.currentlyReadingIcon;
+    if (isImportedCbl())
+        return theme.readingListIcons.importedListIcon;
     return theme.readingListIcons.listIcon;
 }
 
@@ -270,6 +272,11 @@ bool ReadingListItem::isFolder() const
 bool ReadingListItem::isSmartList() const
 {
     return smart;
+}
+
+bool ReadingListItem::isImportedCbl() const
+{
+    return imported;
 }
 
 int ReadingListItem::row() const
