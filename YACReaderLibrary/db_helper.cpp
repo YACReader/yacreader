@@ -1872,38 +1872,61 @@ int DBHelper::countMissingReadingListEntries(QSqlDatabase &db, qulonglong readin
 {
     ensureReadingListEntries(db);
 
-    QList<qulonglong> ids;
-    ids << readingListId;
+    QSqlQuery hasCblMetaTable(db);
+    const bool hasCblTables = hasCblMetaTable.exec("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'")
+            && hasCblMetaTable.next();
+
+    if (hasCblTables && isImportedCblReadingList(readingListId, db)) {
+        QSqlQuery count(db);
+        count.prepare("SELECT COUNT(*) FROM cbl_reading_list_entry WHERE reading_list_id = :id AND comic_id IS NULL");
+        count.bindValue(":id", readingListId);
+        return count.exec() && count.next() ? count.value(0).toInt() : 0;
+    }
 
     QSqlQuery subfolders(db);
     subfolders.prepare("SELECT id "
                        "FROM reading_list "
                        "WHERE parentId = :parentId");
     subfolders.bindValue(":parentId", readingListId);
+    QList<qulonglong> childIds;
     if (subfolders.exec()) {
         while (subfolders.next())
-            ids << subfolders.value(0).toULongLong();
+            childIds << subfolders.value(0).toULongLong();
+    }
+
+    if (childIds.isEmpty()) {
+        QSqlQuery count(db);
+        count.prepare("SELECT COUNT(*) FROM reading_list_entry WHERE reading_list_id = :id AND comic_id IS NULL");
+        count.bindValue(":id", readingListId);
+        return count.exec() && count.next() ? count.value(0).toInt() : 0;
     }
 
     int missing = 0;
-    const auto countTable = [&](const QString &table) {
-        QSqlQuery exists(db);
-        exists.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = :table");
-        exists.bindValue(":table", table);
-        if (!exists.exec() || !exists.next())
-            return;
-
-        QSqlQuery count(db);
-        count.prepare(QStringLiteral("SELECT COUNT(*) FROM %1 WHERE reading_list_id = :id AND comic_id IS NULL").arg(table));
-        for (const auto id : ids) {
-            count.bindValue(":id", id);
-            if (count.exec() && count.next())
-                missing += count.value(0).toInt();
+    if (hasCblTables) {
+        QSqlQuery countImported(db);
+        countImported.prepare("SELECT COUNT(*) FROM cbl_reading_list_entry e "
+                              "INNER JOIN cbl_reading_list_meta m ON m.reading_list_id = e.reading_list_id "
+                              "WHERE e.reading_list_id = :id AND e.comic_id IS NULL");
+        for (const auto id : childIds) {
+            countImported.bindValue(":id", id);
+            if (countImported.exec() && countImported.next())
+                missing += countImported.value(0).toInt();
         }
-    };
+    }
 
-    countTable(QStringLiteral("reading_list_entry"));
-    countTable(QStringLiteral("cbl_reading_list_entry"));
+    QSqlQuery countRegular(db);
+    countRegular.prepare(QStringLiteral("SELECT COUNT(*) FROM reading_list_entry e "
+                                        "WHERE e.reading_list_id = :id AND e.comic_id IS NULL "
+                                        "%1")
+                                 .arg(hasCblTables
+                                              ? QStringLiteral("AND NOT EXISTS (SELECT 1 FROM cbl_reading_list_meta m WHERE m.reading_list_id = e.reading_list_id)")
+                                              : QString()));
+    for (const auto id : childIds) {
+        countRegular.bindValue(":id", id);
+        if (countRegular.exec() && countRegular.next())
+            missing += countRegular.value(0).toInt();
+    }
+
     return missing;
 }
 
