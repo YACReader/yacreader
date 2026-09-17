@@ -905,10 +905,8 @@ Theme makeTheme(const ThemeParams &params)
 
     // Imported CBL list icon (3 colors)
     {
-        const QColor normalAccent = rli.importedListAccentColor.isValid() ? rli.importedListAccentColor : rli.listDetailColor;
-        const QColor selectedAccent = rli.importedListAccentSelectedColor.isValid() ? rli.importedListAccentSelectedColor : rli.listDetailSelectedColor;
-        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/imported.svg", rli.listMainColor, rli.listShadowColor, normalAccent, params.meta.id);
-        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/imported.svg", rli.listMainSelectedColor, rli.listShadowSelectedColor, selectedAccent, params.meta.id, { .suffix = "_selected" });
+        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/imported.svg", rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/imported.svg", rli.listMainSelectedColor, rli.listShadowSelectedColor, rli.listDetailSelectedColor, params.meta.id, { .suffix = "_selected" });
         QIcon icon;
         icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
