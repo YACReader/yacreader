@@ -471,16 +471,27 @@ bool reviewMatches(QWidget *parent,
     table->verticalHeader()->hide();
     table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
-    for (int row = 0; row < entries->size(); ++row) {
+    auto ensureTableRow = [table, entries](int row) {
         const auto &entry = entries->at(row);
         const QString status = entry.match.state == CblMatchState::Matched ? QObject::tr("Matched")
                 : entry.match.state == CblMatchState::Ambiguous ? QObject::tr("Ambiguous") : QObject::tr("Missing");
-        table->setItem(row, 0, new QTableWidgetItem(QString::number(row + 1)));
-        table->setItem(row, 1, new QTableWidgetItem(QStringLiteral("%1 #%2").arg(entry.book.series, entry.book.number)));
-        table->setItem(row, 2, new QTableWidgetItem(status));
-        table->setItem(row, 3, new QTableWidgetItem(matchTierName(entry.match.tier)));
-        table->setItem(row, 4, new QTableWidgetItem(entry.match.state == CblMatchState::Matched && !entry.match.candidates.isEmpty()
-                                                            ? comicLabel(entry.match.candidates.constFirst()) : QString()));
+        const QStringList values {
+            QString::number(row + 1),
+            QStringLiteral("%1 #%2").arg(entry.book.series, entry.book.number),
+            status,
+            matchTierName(entry.match.tier),
+            entry.match.state == CblMatchState::Matched && !entry.match.candidates.isEmpty()
+                    ? comicLabel(entry.match.candidates.constFirst()) : QString()
+        };
+        for (int column = 0; column < values.size(); ++column) {
+            if (!table->item(row, column))
+                table->setItem(row, column, new QTableWidgetItem(values.at(column)));
+            else
+                table->item(row, column)->setText(values.at(column));
+        }
+    };
+    for (int row = 0; row < entries->size(); ++row) {
+        ensureTableRow(row);
     }
     layout->addWidget(table, 1);
 
@@ -513,8 +524,10 @@ bool reviewMatches(QWidget *parent,
 
     auto *applyChoice = new QPushButton(QObject::tr("Use selected comic"), &dialog);
     auto *clearChoice = new QPushButton(QObject::tr("Leave as placeholder"), &dialog);
+    auto *addSelectedComic = new QPushButton(QObject::tr("Add selected comic to list"), &dialog);
     auto *choiceLayout = new QHBoxLayout;
     choiceLayout->addStretch(1);
+    choiceLayout->addWidget(addSelectedComic);
     choiceLayout->addWidget(applyChoice);
     choiceLayout->addWidget(clearChoice);
     layout->addLayout(choiceLayout);
@@ -528,13 +541,12 @@ bool reviewMatches(QWidget *parent,
         table->item(row, 4)->setText(entry.match.state == CblMatchState::Matched && !entry.match.candidates.isEmpty()
                                              ? comicLabel(entry.match.candidates.constFirst()) : QString());
     };
-    auto refreshAllRows = [table, entries, refreshRow, filter] {
+    auto refreshAllRows = [table, entries, refreshRow, filter, ensureTableRow] {
         const int wanted = filter->currentData().toInt();
         for (int row = 0; row < entries->size(); ++row) {
             auto &entry = (*entries)[row];
             entry.book.ordering = row;
-            table->item(row, 0)->setText(QString::number(row + 1));
-            table->item(row, 1)->setText(QStringLiteral("%1 #%2").arg(entry.book.series, entry.book.number));
+            ensureTableRow(row);
             refreshRow(row);
             table->setRowHidden(row, wanted >= 0 && static_cast<int>(entry.match.state) != wanted);
         }
@@ -547,6 +559,36 @@ bool reviewMatches(QWidget *parent,
         undo->setEnabled(true);
         saveState->setText(QObject::tr("Unsaved changes"));
     };
+    QObject::connect(addSelectedComic, &QPushButton::clicked, &dialog, [=] {
+        const auto selected = comicTree->selectedItems();
+        const auto comicId = selected.isEmpty() ? 0 : selected.constFirst()->data(0, Qt::UserRole).toULongLong();
+        if (comicId == 0)
+            return;
+
+        for (const auto &comic : libraryComics) {
+            if (comic.id != comicId)
+                continue;
+
+            rememberChange();
+            MatchedCblEntry entry;
+            entry.book.ordering = entries->size();
+            entry.book.series = comic.series;
+            entry.book.number = comic.number;
+            entry.book.volume = comic.volume;
+            entry.book.year = comic.year;
+            entry.book.format = comic.format;
+            entry.book.fileName = comic.fileName;
+            entry.book.comicVineIssueId = comic.comicVineIssueId;
+            entry.match = resolvedMatch({ comic }, CblMatchTier::Manual);
+            entries->append(entry);
+            table->setRowCount(entries->size());
+            filter->setCurrentIndex(0);
+            refreshAllRows();
+            table->selectRow(entries->size() - 1);
+            table->scrollToItem(table->item(entries->size() - 1, 0));
+            break;
+        }
+    });
     QObject::connect(applyChoice, &QPushButton::clicked, &dialog, [=] {
         const int row = table->currentRow();
         const auto selected = comicTree->selectedItems();

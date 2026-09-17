@@ -85,6 +85,9 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
     if (role == ReadingListModel::IsSmartListRole && typeid(*item) == typeid(ReadingListItem))
         return static_cast<ReadingListItem *>(item)->isSmartList();
 
+    if (role == ReadingListModel::IsImportedCblRole && typeid(*item) == typeid(ReadingListItem))
+        return static_cast<ReadingListItem *>(item)->isImportedCbl();
+
     if (role == ReadingListModel::SpecialListTypeRole && typeid(*item) == typeid(SpecialListItem)) {
         auto specialListItem = static_cast<SpecialListItem *>(item);
         return QVariant::fromValue(specialListItem->getType());
@@ -193,8 +196,20 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
 
     QLOG_DEBUG() << "trying to drop into row = " << row << "column column = " << column << "parent" << parent;
 
-    if (row == -1)
+    if (data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat)) {
+        const QModelIndex dest = row == -1 ? parent : index(row, column, parent);
+        if (!dest.isValid())
+            return false;
+
+        const QModelIndex parentDest = dest.parent();
+        if (rowIsSpecialList(dest.row(), parentDest))
+            return dest.row() == 0;
+        if (rowIsLabel(dest.row(), parentDest))
+            return true;
+        if (rowIsReadingList(dest.row(), parentDest))
+            return !dest.data(IsFolderRole).toBool() && !dest.data(IsSmartListRole).toBool();
         return false;
+    }
 
     if (!parent.isValid()) // top level items
     {
@@ -210,9 +225,6 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
         if (rowIsSeparator(row, parent))
             return false;
     }
-
-    if (data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
-        return true;
 
     if (rowIsReadingList(row, parent)) // TODO avoid droping in a different parent
     {
@@ -520,6 +532,13 @@ bool ReadingListModel::isSmartList(const QModelIndex &mi)
     return static_cast<ReadingListItem *>(mi.internalPointer())->isSmartList();
 }
 
+bool ReadingListModel::isImportedCblList(const QModelIndex &mi)
+{
+    if (!isReadingList(mi))
+        return false;
+    return static_cast<ReadingListItem *>(mi.internalPointer())->isImportedCbl();
+}
+
 QString ReadingListModel::name(const QModelIndex &mi)
 {
     return data(mi, Qt::DisplayRole).toString();
@@ -626,6 +645,7 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
     int parentId = record.indexOf("parentId");
     int isFolder = record.indexOf("isFolder");
     int isSmartList = record.indexOf("isSmartList");
+    int isImportedCbl = record.indexOf("isImportedCbl");
 
     while (sqlquery.next()) {
         ReadingListItem *rli = new ReadingListItem(QList<QVariant>()
@@ -636,7 +656,8 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
                                                    << sqlquery.value(ordering),
                                                    nullptr,
                                                    isFolder >= 0 && sqlquery.value(isFolder).toBool(),
-                                                   isSmartList >= 0 && sqlquery.value(isSmartList).toBool());
+                                                   isSmartList >= 0 && sqlquery.value(isSmartList).toBool(),
+                                                   isImportedCbl >= 0 && sqlquery.value(isImportedCbl).toBool());
 
         ReadingListItem *currentParent;
         if (sqlquery.value(parentId).isNull())
@@ -718,9 +739,13 @@ void ReadingListModel::setupReadingLists(QSqlDatabase &db)
                            "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE)"));
     db.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS reading_list_smart (reading_list_id INTEGER PRIMARY KEY, rules_json TEXT NOT NULL, "
                            "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE)"));
-    QSqlQuery selectQuery("SELECT rl.*, rlf.reading_list_id IS NOT NULL AS isFolder, rls.reading_list_id IS NOT NULL AS isSmartList "
+    db.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS cbl_reading_list_meta (reading_list_id INTEGER PRIMARY KEY, source_name TEXT, source_path TEXT, "
+                           "source_hash TEXT, imported_at INTEGER NOT NULL, FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE)"));
+    QSqlQuery selectQuery("SELECT rl.*, rlf.reading_list_id IS NOT NULL AS isFolder, rls.reading_list_id IS NOT NULL AS isSmartList, "
+                          "cbl.reading_list_id IS NOT NULL AS isImportedCbl "
                           "FROM reading_list rl LEFT JOIN reading_list_folder rlf ON rlf.reading_list_id = rl.id "
                           "LEFT JOIN reading_list_smart rls ON rls.reading_list_id = rl.id "
+                          "LEFT JOIN cbl_reading_list_meta cbl ON cbl.reading_list_id = rl.id "
                           "ORDER BY rl.parentId IS NULL DESC", db);
 
     // setup reading lists

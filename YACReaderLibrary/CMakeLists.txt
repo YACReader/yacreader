@@ -344,6 +344,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/lists/default_0.svg
     ${PROJECT_SOURCE_DIR}/images/lists/default_1.svg
     ${PROJECT_SOURCE_DIR}/images/lists/default_2.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/imported.svg
     ${PROJECT_SOURCE_DIR}/images/lists/label_template.svg
     ${PROJECT_SOURCE_DIR}/images/lists/list.svg
     ${PROJECT_SOURCE_DIR}/images/clearSearchNew.svg
