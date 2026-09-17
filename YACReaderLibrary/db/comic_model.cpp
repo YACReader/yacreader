@@ -10,7 +10,9 @@
 #include "reading_list_model.h"
 #include "yacreader_global_gui.h"
 
+#include <QCoreApplication>
 #include <QDateTime>
+#include <QEventLoop>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QSqlRecord>
@@ -765,7 +767,6 @@ QList<ComicItem *> ComicModel::createReadingListData(unsigned long long parentRe
         db.exec(QStringLiteral("CREATE TABLE IF NOT EXISTS reading_list_smart (reading_list_id INTEGER PRIMARY KEY, rules_json TEXT NOT NULL, "
                                "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE)"));
         for (const auto id : readingListIds) {
-            DBHelper::relinkMissingReadingListEntries(db, id);
             QSqlQuery selectQuery(db);
             QSqlQuery smartList(db);
             smartList.prepare("SELECT rules_json FROM reading_list_smart WHERE reading_list_id = :id");
@@ -1016,6 +1017,7 @@ QList<ComicItem *> ComicModel::createModelDataForList(QSqlQuery &sqlquery) const
     QList<ComicItem *> modelData;
 
     int numColumns = sqlquery.record().count();
+    int row = 0;
 
     while (sqlquery.next()) {
         QList<QVariant> data;
@@ -1023,6 +1025,8 @@ QList<ComicItem *> ComicModel::createModelDataForList(QSqlQuery &sqlquery) const
             data << sqlquery.value(i);
 
         modelData.append(new ComicItem(data));
+        if (++row % 250 == 0)
+            QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 5);
     }
 
     return modelData;

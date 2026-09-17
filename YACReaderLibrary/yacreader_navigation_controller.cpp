@@ -3,6 +3,7 @@
 #include "QsLog.h"
 #include "comic_model.h"
 #include "comics_view.h"
+#include "data_base_management.h"
 #include "db_helper.h"
 #include "empty_label_widget.h"
 #include "empty_special_list.h"
@@ -19,7 +20,13 @@
 #include "yacreader_library_list_widget.h"
 #include "yacreader_reading_lists_view.h"
 
+#include <QApplication>
+#include <QEventLoop>
+#include <QMessageBox>
 #include <QModelIndex>
+#include <QProgressDialog>
+#include <QSqlDatabase>
+#include <QTimer>
 
 #include <memory>
 
@@ -177,8 +184,31 @@ void YACReaderNavigationController::loadLabelContent(const QModelIndex &listInde
 void YACReaderNavigationController::loadReadingListContent(const QModelIndex &listIndex)
 {
     const qulonglong id = listIndex.data(ReadingListModel::IDRole).toULongLong();
-    // check comics in label with id = id
+    const QString listName = listIndex.data(Qt::DisplayRole).toString();
+    int missingEntries = 0;
+    QString connectionName;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(libraryWindow->foldersModel->getDatabase());
+        connectionName = db.connectionName();
+        missingEntries = DBHelper::countMissingReadingListEntries(db, id);
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    QProgressDialog loadingProgress(tr("Loading reading list..."),
+                                    QString(),
+                                    0,
+                                    0,
+                                    libraryWindow);
+    loadingProgress.setWindowTitle(tr("Loading reading list"));
+    loadingProgress.setWindowModality(Qt::WindowModal);
+    loadingProgress.setMinimumDuration(300);
+    loadingProgress.setCancelButton(nullptr);
+    loadingProgress.show();
+    QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+
     libraryWindow->comicsModel->setupReadingListModelData(id, libraryWindow->foldersModel->getDatabase());
+
+    loadingProgress.close();
     contentViewsManager->comicsView->setModel(libraryWindow->comicsModel);
 
     // configure views
@@ -189,6 +219,16 @@ void YACReaderNavigationController::loadReadingListContent(const QModelIndex &li
     } else {
         contentViewsManager->showEmptyReadingList();
         libraryWindow->setComicActionsDisabled(true);
+    }
+
+    if (missingEntries > 0) {
+        QTimer::singleShot(0, libraryWindow, [this, listName, missingEntries] {
+            QMessageBox::information(libraryWindow,
+                                     tr("Reading list has missing comics"),
+                                     tr("%1 has %2 missing comic(s).\n\nOpen Missing Comics from the reading list context menu and use Match all again to rescan for them.")
+                                             .arg(listName)
+                                             .arg(missingEntries));
+        });
     }
 }
 
