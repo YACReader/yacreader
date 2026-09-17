@@ -525,9 +525,11 @@ bool reviewMatches(QWidget *parent,
     auto *applyChoice = new QPushButton(QObject::tr("Use selected comic"), &dialog);
     auto *clearChoice = new QPushButton(QObject::tr("Leave as placeholder"), &dialog);
     auto *addSelectedComic = new QPushButton(QObject::tr("Add selected comic to list"), &dialog);
+    auto *removeSelectedEntry = new QPushButton(QObject::tr("Remove selected from list"), &dialog);
     auto *choiceLayout = new QHBoxLayout;
     choiceLayout->addStretch(1);
     choiceLayout->addWidget(addSelectedComic);
+    choiceLayout->addWidget(removeSelectedEntry);
     choiceLayout->addWidget(applyChoice);
     choiceLayout->addWidget(clearChoice);
     layout->addLayout(choiceLayout);
@@ -588,6 +590,18 @@ bool reviewMatches(QWidget *parent,
             table->scrollToItem(table->item(entries->size() - 1, 0));
             break;
         }
+    });
+    QObject::connect(removeSelectedEntry, &QPushButton::clicked, &dialog, [=] {
+        const int row = table->currentRow();
+        if (row < 0 || row >= entries->size())
+            return;
+
+        rememberChange();
+        entries->removeAt(row);
+        table->removeRow(row);
+        refreshAllRows();
+        if (!entries->isEmpty())
+            table->selectRow(qMin(row, entries->size() - 1));
     });
     QObject::connect(applyChoice, &QPushButton::clicked, &dialog, [=] {
         const int row = table->currentRow();

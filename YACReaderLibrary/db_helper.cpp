@@ -630,6 +630,7 @@ void DBHelper::deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglon
 void DBHelper::deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db)
 {
     ensureReadingListEntries(db);
+    const bool importedCbl = isImportedCblReadingList(readingListId, db);
     db.transaction();
 
     QLOG_DEBUG() << "deleteComicsFromReadingList----------------------------------";
@@ -643,10 +644,14 @@ void DBHelper::deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qul
         query.bindValue(":reading_list_id", readingListId);
         query.exec();
         if (signedId < 0) {
-            deleteEntry.prepare("DELETE FROM reading_list_entry WHERE id = :entry_id AND reading_list_id = :reading_list_id");
+            deleteEntry.prepare(importedCbl
+                                ? "DELETE FROM cbl_reading_list_entry WHERE id = :entry_id AND reading_list_id = :reading_list_id"
+                                : "DELETE FROM reading_list_entry WHERE id = :entry_id AND reading_list_id = :reading_list_id");
             deleteEntry.bindValue(":entry_id", -signedId);
         } else {
-            deleteEntry.prepare("DELETE FROM reading_list_entry WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+            deleteEntry.prepare(importedCbl
+                                ? "DELETE FROM cbl_reading_list_entry WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id"
+                                : "DELETE FROM reading_list_entry WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
             deleteEntry.bindValue(":comic_id", comic.id);
         }
         deleteEntry.bindValue(":reading_list_id", readingListId);
