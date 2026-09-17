@@ -1868,6 +1868,45 @@ bool DBHelper::isImportedCblReadingList(qulonglong readingListId, QSqlDatabase &
     return imported.exec() && imported.next();
 }
 
+int DBHelper::countMissingReadingListEntries(QSqlDatabase &db, qulonglong readingListId)
+{
+    ensureReadingListEntries(db);
+
+    QList<qulonglong> ids;
+    ids << readingListId;
+
+    QSqlQuery subfolders(db);
+    subfolders.prepare("SELECT id "
+                       "FROM reading_list "
+                       "WHERE parentId = :parentId");
+    subfolders.bindValue(":parentId", readingListId);
+    if (subfolders.exec()) {
+        while (subfolders.next())
+            ids << subfolders.value(0).toULongLong();
+    }
+
+    int missing = 0;
+    const auto countTable = [&](const QString &table) {
+        QSqlQuery exists(db);
+        exists.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = :table");
+        exists.bindValue(":table", table);
+        if (!exists.exec() || !exists.next())
+            return;
+
+        QSqlQuery count(db);
+        count.prepare(QStringLiteral("SELECT COUNT(*) FROM %1 WHERE reading_list_id = :id AND comic_id IS NULL").arg(table));
+        for (const auto id : ids) {
+            count.bindValue(":id", id);
+            if (count.exec() && count.next())
+                missing += count.value(0).toInt();
+        }
+    };
+
+    countTable(QStringLiteral("reading_list_entry"));
+    countTable(QStringLiteral("cbl_reading_list_entry"));
+    return missing;
+}
+
 bool DBHelper::ensureReadingListEntries(QSqlDatabase &db)
 {
     QSqlQuery query(db);
