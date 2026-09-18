@@ -41,6 +41,7 @@
 #include <QSpinBox>
 #include <QTableWidget>
 #include <QTextDocument>
+#include <QThread>
 #include <QTreeWidget>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -1998,24 +1999,64 @@ void ReadingListManagementCoordinator::showMissingComics()
     exportPdf->setEnabled(!missingComics.isEmpty());
     connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
     connect(matchAll, &QPushButton::clicked, &dialog, [&] {
-        QString relinkConnection;
         int relinked = 0;
-        {
-            QSqlDatabase db = DataBaseManagement::loadDatabase(listsModel->databasePath());
-            relinkConnection = db.connectionName();
-            if (folderReport) {
-                QSqlQuery children(db);
-                children.prepare(QStringLiteral("SELECT id FROM reading_list WHERE parentId = :id"));
-                children.bindValue(QStringLiteral(":id"), readingListId);
-                if (children.exec()) {
-                    while (children.next())
-                        relinked += DBHelper::relinkMissingReadingListEntries(db, children.value(0).toULongLong());
+        QString relinkError;
+        const QString databasePath = listsModel->databasePath();
+
+        QProgressDialog matchingProgress(tr("Matching missing comics..."),
+                                         QString(),
+                                         0,
+                                         0,
+                                         &dialog);
+        matchingProgress.setWindowTitle(tr("Matching comics"));
+        matchingProgress.setWindowModality(Qt::WindowModal);
+        matchingProgress.setMinimumDuration(0);
+        matchingProgress.setCancelButton(nullptr);
+        matchingProgress.setAutoClose(false);
+        matchingProgress.setAutoReset(false);
+        matchingProgress.show();
+        QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+
+        auto *worker = QThread::create([databasePath, readingListId, folderReport, &relinked, &relinkError] {
+            QString relinkConnection;
+            {
+                QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+                relinkConnection = db.connectionName();
+                if (!db.isOpen()) {
+                    relinkError = QObject::tr("Unable to open the library database.");
+                    return;
                 }
-            } else {
-                relinked = DBHelper::relinkMissingReadingListEntries(db, readingListId);
+
+                if (folderReport) {
+                    QSqlQuery children(db);
+                    children.prepare(QStringLiteral("SELECT id FROM reading_list WHERE parentId = :id"));
+                    children.bindValue(QStringLiteral(":id"), readingListId);
+                    if (children.exec()) {
+                        while (children.next())
+                            relinked += DBHelper::relinkMissingReadingListEntries(db, children.value(0).toULongLong());
+                    } else {
+                        relinkError = children.lastError().text();
+                    }
+                } else {
+                    relinked = DBHelper::relinkMissingReadingListEntries(db, readingListId);
+                }
             }
+            QSqlDatabase::removeDatabase(relinkConnection);
+        });
+        worker->start();
+        while (worker->isRunning()) {
+            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 50);
+            QThread::msleep(20);
         }
-        QSqlDatabase::removeDatabase(relinkConnection);
+        worker->wait();
+        worker->deleteLater();
+        matchingProgress.close();
+
+        if (!relinkError.isEmpty()) {
+            QMessageBox::critical(&dialog, tr("Matching failed"), relinkError);
+            return;
+        }
+
         listsModel->setupReadingListsData(listsModel->databasePath());
         emit currentListReselectionRequested();
         QMessageBox::information(&dialog,
