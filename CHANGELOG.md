@@ -9,6 +9,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve non valid characters handling in the renaming feature.
 * Improve layout in the renaming/organizing dialog.
 * Add a software-rendered "go to flow" option for systems with performance problems.
+* Fix scrolling while a file is loading.
 
 ## 10.3.0
 

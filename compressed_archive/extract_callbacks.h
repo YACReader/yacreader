@@ -80,7 +80,7 @@ public:
     QMap<qint32, qint32> indexesToPages;
 
     YCArchiveExtractCallback(const QMap<qint32, qint32> &indexesToPages, bool c = false, ExtractDelegate *d = 0)
-        : PasswordIsDefined(false), all(c), delegate(d), indexesToPages(indexesToPages) { }
+        : _extractMode(false), all(c), delegate(d), PasswordIsDefined(false), data(nullptr), newFileSize(0), indexesToPages(indexesToPages) { }
     ~YCArchiveExtractCallback() { MidFree(data); }
 };
 
@@ -128,9 +128,8 @@ Z7_COM7F_IMF(YCArchiveExtractCallback::GetStream(UInt32 index,
         _filePath = fullPath;
     }
 
-    askExtractMode; // unused
-    // if (askExtractMode != NArchive::NExtract::NAskMode::kExtract)
-    // return S_OK;
+    if (askExtractMode != NArchive::NExtract::NAskMode::kExtract)
+        return S_OK;
 
     {
         // Get Attrib
@@ -235,7 +234,7 @@ Z7_COM7F_IMF(YCArchiveExtractCallback::SetOperationResult(Int32 operationResult)
 {
     switch (operationResult) {
     case NArchive::NExtract::NOperationResult::kOK:
-        if (all && !_processedFileInfo.isDir) {
+        if (all && _extractMode && !_processedFileInfo.isDir) {
             QByteArray rawData((char *)data, newFileSize);
             MidFree(data);
             data = 0;
