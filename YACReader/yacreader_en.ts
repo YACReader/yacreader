@@ -302,32 +302,32 @@
         <translation>Disable mouse over activation</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="264"/>
+        <location filename="options_dialog.cpp" line="271"/>
         <source>Scaling</source>
         <translation>Scaling</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="266"/>
+        <location filename="options_dialog.cpp" line="273"/>
         <source>Scaling method</source>
         <translation>Scaling method</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="268"/>
+        <location filename="options_dialog.cpp" line="275"/>
         <source>Nearest (fast, low quality)</source>
         <translation>Nearest (fast, low quality)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="269"/>
+        <location filename="options_dialog.cpp" line="276"/>
         <source>Bilinear</source>
         <translation>Bilinear</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="270"/>
+        <location filename="options_dialog.cpp" line="277"/>
         <source>Lanczos (better quality)</source>
         <translation>Lanczos (better quality)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="310"/>
+        <location filename="options_dialog.cpp" line="317"/>
         <source>Restart is needed</source>
         <translation>Restart is needed</translation>
     </message>
@@ -512,12 +512,17 @@ If none is active, Escape does nothing.</translation>
         <translation>Show covers as single page</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="300"/>
+        <location filename="options_dialog.cpp" line="259"/>
+        <source>Show book fold shadow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="307"/>
         <source>General</source>
         <translation>General</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="303"/>
+        <location filename="options_dialog.cpp" line="310"/>
         <source>Appearance</source>
         <translation>Appearance</translation>
     </message>
@@ -527,22 +532,22 @@ If none is active, Escape does nothing.</translation>
         <translation>Clear</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="301"/>
+        <location filename="options_dialog.cpp" line="308"/>
         <source>Page Flow</source>
         <translation>Page Flow</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="302"/>
+        <location filename="options_dialog.cpp" line="309"/>
         <source>Image adjustment</source>
         <translation>Image adjustment</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="319"/>
+        <location filename="options_dialog.cpp" line="326"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="335"/>
+        <location filename="options_dialog.cpp" line="342"/>
         <source>Comics directory</source>
         <translation>Comics directory</translation>
     </message>
@@ -780,48 +785,48 @@ If none is active, Escape does nothing.</translation>
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="122"/>
-        <location filename="viewer.cpp" line="1765"/>
+        <location filename="viewer.cpp" line="162"/>
+        <location filename="viewer.cpp" line="1790"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>Press &apos;O&apos; to open comic.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="350"/>
+        <location filename="viewer.cpp" line="387"/>
         <source>Not found</source>
         <translation>Not found</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="350"/>
+        <location filename="viewer.cpp" line="387"/>
         <source>Comic not found</source>
         <translation>Comic not found</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="356"/>
+        <location filename="viewer.cpp" line="393"/>
         <source>Error opening comic</source>
         <translation>Error opening comic</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="362"/>
+        <location filename="viewer.cpp" line="399"/>
         <source>CRC Error</source>
         <translation>CRC Error</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1783"/>
+        <location filename="viewer.cpp" line="1807"/>
         <source>Loading...please wait!</source>
         <translation>Loading...please wait!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1794"/>
+        <location filename="viewer.cpp" line="1818"/>
         <source>Page not available!</source>
         <translation>Page not available!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="2144"/>
+        <location filename="viewer.cpp" line="2166"/>
         <source>Cover!</source>
         <translation>Cover!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="2158"/>
+        <location filename="viewer.cpp" line="2180"/>
         <source>Last page!</source>
         <translation>Last page!</translation>
     </message>

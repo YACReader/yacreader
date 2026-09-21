@@ -131,6 +131,9 @@ private:
     bool doublePage;
     bool doubleMangaPage;
     bool continuousScroll;
+    bool currentPageHasDoublePageSeam = false;
+    qreal doublePageSeamRatio = 0.5;
+    Qt::Orientation doublePageSeamOrientation = Qt::Vertical;
 
     int zoom;
 
