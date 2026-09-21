@@ -138,8 +138,8 @@ public:
 public slots:
     void render();
     QPixmap *getCurrentPage();
-    QPixmap *getCurrentDoublePage();
-    QPixmap *getCurrentDoubleMangaPage();
+    QPixmap *getCurrentDoublePage(qreal *seamRatio = nullptr, Qt::Orientation *seamOrientation = nullptr);
+    QPixmap *getCurrentDoubleMangaPage(qreal *seamRatio = nullptr, Qt::Orientation *seamOrientation = nullptr);
     bool currentPageIsDoublePage();
     bool nextPageIsDoublePage();
     bool previousPageIsDoublePage();
