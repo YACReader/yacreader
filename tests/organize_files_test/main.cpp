@@ -224,7 +224,9 @@ void OrganizeFilesTest::reportsInvalidTokens()
 
 void OrganizeFilesTest::sanitizesSegments()
 {
-    QCOMPARE(sanitizeSegment(QStringLiteral("a/b:c*d")), QStringLiteral("a_b_c_d"));
+    QCOMPARE(sanitizeSegment(QStringLiteral("a/b:c*d")), QStringLiteral("a_b - c_d"));
+    QCOMPARE(sanitizeSegment(QStringLiteral("Series: the return")), QStringLiteral("Series - the return"));
+    QCOMPARE(sanitizeSegment(QStringLiteral("Another series : again")), QStringLiteral("Another series - again"));
     QCOMPARE(sanitizeSegment(QStringLiteral("trailing dots...")), QStringLiteral("trailing dots"));
     QCOMPARE(sanitizeSegment(QStringLiteral("  spaced   out  ")), QStringLiteral("spaced out"));
     QCOMPARE(sanitizeSegment(QStringLiteral("- leading dash")), QStringLiteral("leading dash"));

@@ -5,7 +5,10 @@
 #include "yacreader_global_gui.h"
 #include "yacreader_page_flow_rhi.h"
 
+#include <QQueue>
+#include <QSet>
 #include <QSettings>
+#include <QVector>
 #include <QWidget>
 
 using namespace YACReader;
@@ -14,6 +17,10 @@ class QSettings;
 class GoToFlowToolBar;
 class QVBoxLayout;
 class QKeyEvent;
+class QEvent;
+class QHideEvent;
+class QListWidget;
+class QShowEvent;
 
 class GoToFlowWidget : public QWidget, protected Themable
 {
@@ -38,15 +45,38 @@ signals:
     void goToPage(unsigned int);
 
 protected:
+    bool eventFilter(QObject *watched, QEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void resizeEvent(QResizeEvent *event) override;
+    void showEvent(QShowEvent *event) override;
     void applyTheme(const Theme &theme) override;
 
 private:
+    void updateSoftwareFlowMetrics();
+    void updateSoftwareFlowEdgeSpacing();
+    void updateSoftwareThumbnail(int index);
+    void updateSoftwareThumbnailWindow();
+    void enqueueSoftwareThumbnail(int index);
+    void processNextSoftwareThumbnail();
+    void clearSoftwareThumbnailQueue();
+
     QVBoxLayout *mainLayout;
     GoToFlowToolBar *toolBar;
-    YACReaderPageFlow3D *flow;
+    YACReaderPageFlow3D *rhiFlow = nullptr;
+    QListWidget *softwareFlow = nullptr;
+    QVector<QByteArray> softwareImages;
     QSize imageSize;
+    bool softwareRendering = false;
+    bool rightToLeft = false;
+    int softwareCurrentPage = -1;
+    int wheelDeltaAccumulator = 0;
+    int softwareThumbnailFirst = -1;
+    int softwareThumbnailLast = -1;
+    bool softwareThumbnailDecodeScheduled = false;
+    QQueue<int> softwareThumbnailQueue;
+    QSet<int> softwareQueuedThumbnails;
+    QSet<int> softwareDecodedThumbnails;
 };
 
 #endif

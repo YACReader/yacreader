@@ -9,7 +9,7 @@ NoSearchResultsWidget::NoSearchResultsWidget(QWidget *parent)
     setText(tr("No results"));
 
     setContentsMargins(0, 0, 0, 0);
-    setSizePolicy(QSizePolicy ::Expanding, QSizePolicy ::Expanding);
+    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 }
 
 void NoSearchResultsWidget::applyTheme(const Theme &theme)

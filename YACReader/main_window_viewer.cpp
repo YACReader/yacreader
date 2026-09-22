@@ -440,6 +440,8 @@ void MainWindowViewer::createActions()
     continuousScrollAction = new QAction(tr("Continuous scroll"), this);
     continuousScrollAction->setToolTip(tr("Switch to continuous scroll mode"));
     continuousScrollAction->setCheckable(true);
+    continuousScrollAction->setData(CONTINUOUS_SCROLL_ACTION_Y);
+    continuousScrollAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(CONTINUOUS_SCROLL_ACTION_Y));
     continuousScrollAction->setChecked(Configuration::getConfiguration().getContinuousScroll());
     connect(continuousScrollAction, &QAction::toggled, viewer, &Viewer::setContinuousScroll);
 

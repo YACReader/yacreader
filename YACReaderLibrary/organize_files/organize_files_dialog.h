@@ -109,6 +109,7 @@ private:
     void collectFileItems(QTreeWidgetItem *item, QList<QTreeWidgetItem *> &out) const;
     QList<OrganizeFiles::FileMove> movesToExecute() const;
     void showCompletedMoves(const QList<OrganizeFiles::FileMove> &moves, const QList<OrganizeFiles::FileFailure> &failures = { }, bool restored = false);
+    void sizeResultColumns();
     void showFailures(const QList<OrganizeFiles::FileFailure> &failures);
     void saveSettings();
     QString presetsKey() const;

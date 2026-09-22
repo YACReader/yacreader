@@ -216,6 +216,8 @@ QString pathKey(const QString &path)
 
 QString sanitizeSegment(QString segment)
 {
+    segment.replace(QLatin1Char(':'), QStringLiteral(" - "));
+
     static const QString invalid = QStringLiteral("<>:\"/\\|?*");
     for (QChar &c : segment) {
         if (invalid.contains(c) || c < QChar(0x20))
