@@ -141,6 +141,24 @@ GoToFlowWidget::~GoToFlowWidget()
 {
 }
 
+QString GoToFlowWidget::renderingSystemInfo() const
+{
+    if (!rhiFlow)
+        return QStringLiteral("Go To Flow renderer: QWidget (Software)\n");
+
+    if (!rhiFlow->isRhiInitialized())
+        return QStringLiteral("Go To Flow renderer: RHI (%1 requested, not initialized)\n").arg(rhiFlow->rhiBackendName());
+
+    QString text = QStringLiteral("Go To Flow renderer: RHI (%1)\n").arg(rhiFlow->rhiBackendName());
+    const QString deviceName = rhiFlow->rhiDeviceName();
+    if (!deviceName.isEmpty())
+        text.append(QStringLiteral("Graphics device: %1\n").arg(deviceName));
+    const QString deviceType = rhiFlow->rhiDeviceType();
+    if (!deviceType.isEmpty())
+        text.append(QStringLiteral("Graphics device type: %1\n").arg(deviceType));
+    return text;
+}
+
 void GoToFlowWidget::reset()
 {
     if (rhiFlow != nullptr) {

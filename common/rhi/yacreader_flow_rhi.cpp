@@ -850,6 +850,71 @@ void YACReaderFlow3D::resizeEvent(QResizeEvent *event)
     updateIndexLabelStyle();
 }
 
+QString YACReaderFlow3D::rhiBackendName() const
+{
+    if (!m_rhi) {
+        switch (api()) {
+        case QRhiWidget::Api::Null:
+            return QStringLiteral("Null");
+        case QRhiWidget::Api::OpenGL:
+            return QStringLiteral("OpenGL");
+        case QRhiWidget::Api::Metal:
+            return QStringLiteral("Metal");
+        case QRhiWidget::Api::Vulkan:
+            return QStringLiteral("Vulkan");
+        case QRhiWidget::Api::Direct3D11:
+            return QStringLiteral("Direct3D 11");
+        case QRhiWidget::Api::Direct3D12:
+            return QStringLiteral("Direct3D 12");
+        }
+        return QStringLiteral("Unknown");
+    }
+
+    switch (m_rhi->backend()) {
+    case QRhi::Null:
+        return QStringLiteral("Null");
+    case QRhi::Vulkan:
+        return QStringLiteral("Vulkan");
+    case QRhi::OpenGLES2: // also used for desktop OpenGL
+        return QStringLiteral("OpenGL");
+    case QRhi::D3D11:
+        return QStringLiteral("Direct3D 11");
+    case QRhi::D3D12:
+        return QStringLiteral("Direct3D 12");
+    case QRhi::Metal:
+        return QStringLiteral("Metal");
+    }
+    return QStringLiteral("Unknown");
+}
+
+QString YACReaderFlow3D::rhiDeviceName() const
+{
+    return m_rhi ? QString::fromUtf8(m_rhi->driverInfo().deviceName) : QString();
+}
+
+// Empty when the backend does not report it (D3D11/D3D12 and OpenGL only flag software adapters)
+QString YACReaderFlow3D::rhiDeviceType() const
+{
+    if (!m_rhi)
+        return QString();
+
+    switch (m_rhi->driverInfo().deviceType) {
+    case QRhiDriverInfo::UnknownDevice:
+        return QString();
+    case QRhiDriverInfo::IntegratedDevice:
+        return QStringLiteral("Integrated");
+    case QRhiDriverInfo::DiscreteDevice:
+        return QStringLiteral("Discrete");
+    case QRhiDriverInfo::ExternalDevice:
+        return QStringLiteral("External");
+    case QRhiDriverInfo::VirtualDevice:
+        return QStringLiteral("Virtual");
+    case QRhiDriverInfo::CpuDevice:
+        return QStringLiteral("CPU (software)");
+    }
+    return QStringLiteral("Unknown");
+}
+
 void YACReaderFlow3D::cleanupAnimation()
 {
     config.animationStep = stepBackup;

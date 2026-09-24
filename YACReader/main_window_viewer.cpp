@@ -282,6 +282,7 @@ void MainWindowViewer::setupUI()
     }
 
     had = new HelpAboutDialog(this); // TODO load data
+    had->setAdditionalSystemInfoProvider([this]() { return viewer->renderingSystemInfo(); });
 
     had->loadAboutInformation(":/files/about.html");
     had->loadHelp(":/files/helpYACReader.html");

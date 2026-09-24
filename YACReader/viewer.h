@@ -279,6 +279,7 @@ public:
     unsigned int getIndex();
     void updateComic(ComicDB &comic);
     void moveView(Qt::Key directionKey);
+    QString renderingSystemInfo() const;
 
 signals:
     void backgroundChanges();

@@ -291,6 +291,10 @@ public slots:
     void resizeGL(int width, int height); // Compatibility method (no-op for RHI)
 
     QVector3D getPlaneIntersection(int x, int y, YACReader3DImageRHI plane);
+    QString rhiBackendName() const;
+    QString rhiDeviceName() const;
+    QString rhiDeviceType() const;
+    bool isRhiInitialized() const { return m_rhi != nullptr; }
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;

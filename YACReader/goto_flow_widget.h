@@ -29,6 +29,7 @@ class GoToFlowWidget : public QWidget, protected Themable
 public:
     GoToFlowWidget(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~GoToFlowWidget() override;
+    QString renderingSystemInfo() const;
 
 public slots:
     void reset();

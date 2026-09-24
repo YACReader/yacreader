@@ -240,6 +240,14 @@ Viewer::~Viewer()
         delete currentPage;
 }
 
+QString Viewer::renderingSystemInfo() const
+{
+    QString text = QStringLiteral("\nRENDERING INFORMATION\n");
+    text.append(QStringLiteral("Reader renderer: QWidget (Raster)\n"));
+    text.append(goToFlow->renderingSystemInfo());
+    return text;
+}
+
 void Viewer::createConnections()
 {
     // magnifyingGlass (update mg after a background change
