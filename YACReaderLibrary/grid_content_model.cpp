@@ -22,7 +22,7 @@ int GridContentModel::rowCount(const QModelIndex &parent) const
 QVariant GridContentModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
-        return { };
+        return {};
 
     if (isFolderRow(index.row())) {
         const auto sourceIndex = sourceFolderIndex(index.row());
@@ -51,7 +51,7 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
         case FinishedRole:
             return sourceIndex.data(FolderModel::FinishedRole);
         default:
-            return { };
+            return {};
         }
     }
 
@@ -60,11 +60,11 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
             return SpacerItem;
         if (role == SourceIndexRole)
             return -1;
-        return { };
+        return {};
     }
 
     if (!comicModel)
-        return { };
+        return {};
 
     const auto sourceRow = sourceComicRow(index.row());
     const auto sourceIndex = comicModel->index(sourceRow, 0);
@@ -104,7 +104,7 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
     case PlaceholderRole:
         return sourceIndex.data(ComicModel::IsPlaceholderRole);
     default:
-        return { };
+        return {};
     }
 }
 
@@ -156,7 +156,7 @@ void GridContentModel::setFolderModel(FolderModel *model, const QModelIndex &fol
 
 void GridContentModel::clearFolderModel()
 {
-    setFolderModel(nullptr, { });
+    setFolderModel(nullptr, {});
 }
 
 void GridContentModel::setMixFoldersAndComics(bool enabled)
@@ -240,7 +240,7 @@ int GridContentModel::viewRowForFolderId(qulonglong id) const
 QModelIndex GridContentModel::sourceFolderIndex(int viewRow) const
 {
     if (!folderModel || !isFolderRow(viewRow))
-        return { };
+        return {};
     const QModelIndex parent = selectedFolderIsRoot ? QModelIndex() : QModelIndex(selectedFolderIndex);
     return folderModel->index(viewRow, 0, parent);
 }
@@ -248,7 +248,7 @@ QModelIndex GridContentModel::sourceFolderIndex(int viewRow) const
 Folder GridContentModel::folderAt(int viewRow) const
 {
     if (!folderModel)
-        return { };
+        return {};
 
     return folderModel->getFolder(sourceFolderIndex(viewRow));
 }
@@ -268,7 +268,7 @@ void GridContentModel::reconnectModels()
         sourceConnections << connect(folderModel, &QAbstractItemModel::modelReset, this, &GridContentModel::resetFromSource);
         sourceConnections << connect(folderModel, &QAbstractItemModel::rowsAboutToBeInserted, this, [this](const QModelIndex &parent, int first, int last) {
             if (parent == selectedFolderIndex && forwardsFolderRowsDirectly())
-                beginInsertRows({ }, first, last);
+                beginInsertRows({}, first, last);
         });
         sourceConnections << connect(folderModel, &QAbstractItemModel::rowsInserted, this, [this](const QModelIndex &parent) {
             if (parent != selectedFolderIndex)
@@ -280,7 +280,7 @@ void GridContentModel::reconnectModels()
         });
         sourceConnections << connect(folderModel, &QAbstractItemModel::rowsAboutToBeRemoved, this, [this](const QModelIndex &parent, int first, int last) {
             if (parent == selectedFolderIndex && forwardsFolderRowsDirectly())
-                beginRemoveRows({ }, first, last);
+                beginRemoveRows({}, first, last);
         });
         sourceConnections << connect(folderModel, &QAbstractItemModel::rowsRemoved, this, [this](const QModelIndex &parent) {
             if (parent != selectedFolderIndex)
@@ -304,7 +304,7 @@ void GridContentModel::reconnectModels()
             if (!forwardsComicRowsDirectly())
                 return;
             const auto offset = visibleFolderCount();
-            beginInsertRows({ }, offset + first, offset + last);
+            beginInsertRows({}, offset + first, offset + last);
         });
         sourceConnections << connect(comicModel, &QAbstractItemModel::rowsInserted, this, [this](const QModelIndex &parent) {
             if (parent.isValid())
@@ -320,7 +320,7 @@ void GridContentModel::reconnectModels()
             if (!forwardsComicRowsDirectly())
                 return;
             const auto offset = visibleFolderCount();
-            beginRemoveRows({ }, offset + first, offset + last);
+            beginRemoveRows({}, offset + first, offset + last);
         });
         sourceConnections << connect(comicModel, &QAbstractItemModel::rowsRemoved, this, [this](const QModelIndex &parent) {
             if (parent.isValid())
@@ -336,7 +336,7 @@ void GridContentModel::reconnectModels()
             if (!forwardsComicRowsDirectly())
                 return;
             const auto offset = visibleFolderCount();
-            beginMoveRows({ }, offset + first, offset + last, { }, offset + destination);
+            beginMoveRows({}, offset + first, offset + last, {}, offset + destination);
         });
         sourceConnections << connect(comicModel, &QAbstractItemModel::rowsMoved, this, [this](const QModelIndex &sourceParent, int, int, const QModelIndex &destinationParent) {
             if (sourceParent.isValid() || destinationParent.isValid())

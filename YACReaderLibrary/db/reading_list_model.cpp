@@ -109,11 +109,11 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return { };
+        return {};
 
     auto item = static_cast<ListItem *>(index.internalPointer());
     if (typeid(*item) == typeid(ReadingListSeparatorItem))
-        return { };
+        return {};
 
     if (typeid(*item) == typeid(ReadingListItem) && static_cast<ReadingListItem *>(item)->parent->getId() != 0)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled; // only sublists are dragable
@@ -649,11 +649,11 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
 
     while (sqlquery.next()) {
         ReadingListItem *rli = new ReadingListItem(QList<QVariant>()
-                                                   << sqlquery.value(name)
-                                                   << sqlquery.value(id)
-                                                   << sqlquery.value(finished)
-                                                   << sqlquery.value(completed)
-                                                   << sqlquery.value(ordering),
+                                                           << sqlquery.value(name)
+                                                           << sqlquery.value(id)
+                                                           << sqlquery.value(finished)
+                                                           << sqlquery.value(completed)
+                                                           << sqlquery.value(ordering),
                                                    nullptr,
                                                    isFolder >= 0 && sqlquery.value(isFolder).toBool(),
                                                    isSmartList >= 0 && sqlquery.value(isSmartList).toBool(),
@@ -746,7 +746,8 @@ void ReadingListModel::setupReadingLists(QSqlDatabase &db)
                           "FROM reading_list rl LEFT JOIN reading_list_folder rlf ON rlf.reading_list_id = rl.id "
                           "LEFT JOIN reading_list_smart rls ON rls.reading_list_id = rl.id "
                           "LEFT JOIN cbl_reading_list_meta cbl ON cbl.reading_list_id = rl.id "
-                          "ORDER BY rl.parentId IS NULL DESC", db);
+                          "ORDER BY rl.parentId IS NULL DESC",
+                          db);
 
     // setup reading lists
     setupReadingListsData(selectQuery, rootItem);
