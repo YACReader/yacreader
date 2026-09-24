@@ -551,33 +551,19 @@ void Viewer::updateContentSize()
 
 void Viewer::increaseZoomFactor()
 {
-    zoom = std::min(zoom + 10, 500);
-
-    if (continuousScroll) {
-        continuousViewModel->setZoomFactor(zoom);
-        continuousWidget->invalidateScaledImageCache();
-    } else {
-        updateContentSize();
-    }
+    captureZoomAnchor();
+    applyZoomAtAnchor(zoom + 10);
+    zoomHud->hide();
     notificationsLabel->setText(QString::number(getZoomFactor()) + "%");
     notificationsLabel->flash();
-
-    emit zoomUpdated(zoom);
 }
 void Viewer::decreaseZoomFactor()
 {
-    zoom = std::max(zoom - 10, 30);
-
-    if (continuousScroll) {
-        continuousViewModel->setZoomFactor(zoom);
-        continuousWidget->invalidateScaledImageCache();
-    } else {
-        updateContentSize();
-    }
+    captureZoomAnchor();
+    applyZoomAtAnchor(zoom - 10);
+    zoomHud->hide();
     notificationsLabel->setText(QString::number(getZoomFactor()) + "%");
     notificationsLabel->flash();
-
-    emit zoomUpdated(zoom);
 }
 
 int Viewer::getZoomFactor()
@@ -1920,7 +1906,9 @@ bool Viewer::applyZoomAtAnchor(int newZoom)
     }
 
     if (continuousScroll) {
-        updateZoomRatio(newZoom);
+        zoom = newZoom;
+        continuousViewModel->setZoomFactor(zoom);
+        continuousWidget->invalidateScaledImageCache();
     } else {
         const int previousZoom = zoom;
         zoom = newZoom;
@@ -2032,13 +2020,9 @@ void Viewer::setActiveWidget(QWidget *w)
 
 void Viewer::updateZoomRatio(int ratio)
 {
-    zoom = ratio;
-    if (continuousScroll) {
-        continuousViewModel->setZoomFactor(zoom);
-        continuousWidget->invalidateScaledImageCache();
-    } else {
-        updateContentSize();
-    }
+    captureZoomAnchor();
+    applyZoomAtAnchor(ratio);
+    zoomHud->hide();
 }
 
 bool Viewer::getIsMangaMode()

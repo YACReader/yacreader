@@ -4,6 +4,7 @@
 #include <QLabel>
 #include <QPainter>
 #include <QPushButton>
+#include <QSignalBlocker>
 #include <QSlider>
 
 YACReaderSliderAction::YACReaderSliderAction(QWidget *parent)
@@ -104,6 +105,7 @@ void YACReaderSlider::updateText(int value)
 
 void YACReaderSlider::updateZoomRatio(int value)
 {
+    const QSignalBlocker blocker(slider);
     slider->setValue(value);
     percentageLabel->setText(QString("%1%").arg(value));
 }

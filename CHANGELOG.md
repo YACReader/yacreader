@@ -2,11 +2,12 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
-## 10.3.1
+## 10.3.2
 
 ### YACReader
 * Improve double page layout stability when going back and forth after finding single image exceptions.
 * Add more system information about the rendering pipelines used.
+* Improve zooming performance in the regular reading mode.
 
 ## 10.3.1
 
