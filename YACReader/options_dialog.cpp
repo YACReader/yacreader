@@ -256,8 +256,15 @@ OptionsDialog::OptionsDialog(QWidget *parent)
                 settings->setValue(COVER_IS_SP, checked);
                 emit changedImageOptions();
             });
+    doublePageShadowCheckBox = new QCheckBox(tr("Show book fold shadow"));
+    connect(doublePageShadowCheckBox, &QCheckBox::clicked, doublePageShadowCheckBox,
+            [this](bool checked) {
+                Configuration::getConfiguration().setDoublePageShadow(checked);
+                emit changedImageOptions();
+            });
 
     doublePageBoxLayout->addWidget(coverSPCheckBox);
+    doublePageBoxLayout->addWidget(doublePageShadowCheckBox);
     doublePageBox->setLayout(doublePageBoxLayout);
     layoutImageV->addWidget(doublePageBox);
 
@@ -439,6 +446,7 @@ void OptionsDialog::restoreOptions(QSettings *settings)
 
     scaleCheckbox->setChecked(settings->value(ENLARGE_IMAGES, true).toBool());
     coverSPCheckBox->setChecked(settings->value(COVER_IS_SP, true).toBool());
+    doublePageShadowCheckBox->setChecked(Configuration::getConfiguration().getDoublePageShadow());
 
     doNotTurnPageOnScroll->setChecked(settings->value(DO_NOT_TURN_PAGE_ON_SCROLL, false).toBool());
     useSingleScrollStepToTurnPage->setChecked(settings->value(USE_SINGLE_SCROLL_STEP_TO_TURN_PAGE, false).toBool());

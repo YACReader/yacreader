@@ -17,6 +17,7 @@
 
 #include <QFile>
 #include <QKeyEvent>
+#include <QLinearGradient>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPinchGesture>
@@ -30,6 +31,45 @@
 #endif
 
 namespace {
+void drawBookFoldShadow(QPixmap &page, qreal seamRatio, Qt::Orientation seamOrientation, qreal devicePixelRatio)
+{
+    const bool verticalSeam = seamOrientation == Qt::Vertical;
+    const int axisLength = verticalSeam ? page.width() : page.height();
+    const int seamPosition = qRound(axisLength * seamRatio);
+    const int maximumRadius = qMin(seamPosition, axisLength - seamPosition);
+    const int radius = qMin(qRound(36 * devicePixelRatio), maximumRadius);
+    if (radius <= 0) {
+        return;
+    }
+
+    QLinearGradient gradient;
+    if (verticalSeam) {
+        gradient = QLinearGradient(seamPosition - radius, 0, seamPosition + radius, 0);
+    } else {
+        gradient = QLinearGradient(0, seamPosition - radius, 0, seamPosition + radius);
+    }
+    gradient.setColorAt(0.0, QColor(0, 0, 0, 0));
+    gradient.setColorAt(0.32, QColor(0, 0, 0, 8));
+    gradient.setColorAt(0.42, QColor(0, 0, 0, 35));
+    gradient.setColorAt(0.48, QColor(0, 0, 0, 90));
+    gradient.setColorAt(0.5, QColor(0, 0, 0, 125));
+    gradient.setColorAt(0.54, QColor(0, 0, 0, 72));
+    gradient.setColorAt(0.68, QColor(0, 0, 0, 18));
+    gradient.setColorAt(1.0, QColor(0, 0, 0, 0));
+
+    QPainter painter(&page);
+    const QRect shadowRect = verticalSeam
+            ? QRect(seamPosition - radius, 0, radius * 2, page.height())
+            : QRect(0, seamPosition - radius, page.width(), radius * 2);
+    painter.fillRect(shadowRect, gradient);
+
+    const int creaseWidth = qMax(1, qRound(devicePixelRatio));
+    const QRect creaseRect = verticalSeam
+            ? QRect(seamPosition - creaseWidth / 2, 0, creaseWidth, page.height())
+            : QRect(0, seamPosition - creaseWidth / 2, page.width(), creaseWidth);
+    painter.fillRect(creaseRect, QColor(0, 0, 0, 145));
+}
+
 // QCursor::setPos moves the pointer by synthesizing a mouse event and injecting
 // it into the HID event stream (QCocoaCursor::setPos -> CGEventPost). macOS
 // gates that behind the accessibility "control this computer" permission, so on
@@ -463,12 +503,14 @@ void Viewer::updatePage()
     setActiveWidget(content);
 
     QPixmap *previousPage = currentPage;
+    currentPageHasDoublePageSeam = false;
     if (doublePage) {
         if (!doubleMangaPage)
-            currentPage = render->getCurrentDoublePage();
+            currentPage = render->getCurrentDoublePage(&doublePageSeamRatio, &doublePageSeamOrientation);
         else {
-            currentPage = render->getCurrentDoubleMangaPage();
+            currentPage = render->getCurrentDoubleMangaPage(&doublePageSeamRatio, &doublePageSeamOrientation);
         }
+        currentPageHasDoublePageSeam = currentPage != nullptr;
         if (currentPage == nullptr) {
             currentPage = render->getCurrentPage();
         }
@@ -541,6 +583,9 @@ void Viewer::updateContentSize()
                                    qRound(content->width() * dpr),
                                    qRound(content->height() * dpr),
                                    Configuration::getConfiguration().getScalingMethod());
+        if (currentPageHasDoublePageSeam && Configuration::getConfiguration().getDoublePageShadow()) {
+            drawBookFoldShadow(page, doublePageSeamRatio, doublePageSeamOrientation, dpr);
+        }
         page.setDevicePixelRatio(dpr);
         content->setPixmap(page);
 
