@@ -16,6 +16,9 @@ SetupIconFile=setup.ico
 UninstallDisplayIcon=uninstall.ico
 ArchitecturesInstallIn64BitMode={#PLATFORM}
 ArchitecturesAllowed={#PLATFORM}
+DisableWelcomePage=no
+WizardImageFile=wizard_image_100.bmp,wizard_image_125.bmp,wizard_image_150.bmp,wizard_image_175.bmp,wizard_image_200.bmp,wizard_image_225.bmp,wizard_image_250.bmp
+WizardSmallImageFile=wizard_small_image_100.bmp,wizard_small_image_125.bmp,wizard_small_image_150.bmp,wizard_small_image_175.bmp,wizard_small_image_200.bmp,wizard_small_image_225.bmp,wizard_small_image_250.bmp
 
 [Registry]
 Root: HKCR; SubKey: .cbz; ValueType: string; ValueData: Comic Book (zip); Flags: uninsdeletekey; Tasks: File_association
@@ -139,9 +142,6 @@ Name: File_association; Description: Associate .cbz and .cbr files with YACReade
 CompileLogMethod=append
 
 [Code]
-var
-  CommunityPage: TWizardPage;
-
 procedure OpenWebPage(const URL: String);
 var
   ErrorCode: Integer;
@@ -169,24 +169,31 @@ begin
   OpenWebPage('https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader');
 end;
 
-function AddPageLabel(const Caption: String; Top: Integer; Bold: Boolean): TNewStaticText;
+// Adds a wrapped text line to the Welcome page, below the standard text
+function AddWelcomeText(const Caption: String; Y: Integer; Bold: Boolean): TNewStaticText;
 begin
-  Result := TNewStaticText.Create(CommunityPage);
-  Result.Parent := CommunityPage.Surface;
-  Result.Caption := Caption;
+  Result := TNewStaticText.Create(WizardForm);
+  Result.Parent := WizardForm.WelcomePage;
   Result.AutoSize := False;
   Result.WordWrap := True;
-  Result.SetBounds(0, ScaleY(Top), CommunityPage.SurfaceWidth, ScaleY(42));
-  Result.Font.Style := [];
   if Bold then
     Result.Font.Style := [fsBold];
+  Result.SetBounds(WizardForm.WelcomeLabel2.Left, Y, WizardForm.WelcomeLabel2.Width, ScaleY(14));
+  Result.Caption := Caption;
+  Result.AdjustHeight();
 end;
 
-procedure ConfigureActionButton(ActionButton: TNewButton; const Caption: String; Left, Top, Width: Integer);
+function AddWelcomeLink(const Caption: String; X, Y: Integer; OnClick: TNotifyEvent): TNewStaticText;
 begin
-  ActionButton.Parent := CommunityPage.Surface;
-  ActionButton.Caption := Caption;
-  ActionButton.SetBounds(ScaleX(Left), ScaleY(Top), ScaleX(Width), ScaleY(29));
+  Result := TNewStaticText.Create(WizardForm);
+  Result.Parent := WizardForm.WelcomePage;
+  Result.Caption := Caption;
+  Result.Left := X;
+  Result.Top := Y;
+  Result.Cursor := crHand;
+  Result.Font.Style := [fsUnderline];
+  Result.Font.Color := $CC6600;
+  Result.OnClick := OnClick;
 end;
 
 function GetUninstallString(): String;
@@ -245,41 +252,29 @@ end;
 
 procedure InitializeWizard();
 var
-  IOSButton: TNewButton;
-  AndroidButton: TNewButton;
-  PatreonButton: TNewButton;
-  PayPalButton: TNewButton;
+  InfoLabel: TNewStaticText;
+  LinkLabel: TNewStaticText;
+  LinkX: Integer;
+  Y: Integer;
 begin
-  CommunityPage := CreateCustomPage(
-    wpWelcome,
-    'Take your library with you',
-    'Discover YACReader for iOS and Android, and support the project.');
+  // Replace the standard Welcome text with one line and use the rest of the page for the mobile apps and donations
+  WizardForm.WelcomeLabel2.Caption := 'This will install {#SetupSetting("AppVerName")} on your computer.';
+  WizardForm.WelcomeLabel2.AdjustHeight();
+  LinkX := WizardForm.WelcomeLabel2.Left;
+  Y := WizardForm.WelcomeLabel2.Top + WizardForm.WelcomeLabel2.Height + ScaleY(20);
 
-  AddPageLabel('YACReader for mobile', 8, True);
-  AddPageLabel(
-    'Browse your YACReaderLibrary collection and enjoy your comics on your phone or tablet.',
-    34,
-    False);
+  InfoLabel := AddWelcomeText('Keep YACReader free and independent', Y, True);
+  Y := InfoLabel.Top + InfoLabel.Height + ScaleY(4);
+  InfoLabel := AddWelcomeText('YACReader is free and has no ads. Your support pays for new features and fixes.', Y, False);
+  Y := InfoLabel.Top + InfoLabel.Height + ScaleY(6);
+  LinkLabel := AddWelcomeLink('Become a patron', LinkX, Y, @PatreonLinkOnClick);
+  AddWelcomeLink('Make a one-time donation', LinkLabel.Left + LinkLabel.Width + ScaleX(20), Y, @PayPalLinkOnClick);
 
-  IOSButton := TNewButton.Create(CommunityPage);
-  ConfigureActionButton(IOSButton, 'Download for iPhone and iPad', 0, 82, 195);
-  IOSButton.OnClick := @IOSLinkOnClick;
-
-  AndroidButton := TNewButton.Create(CommunityPage);
-  ConfigureActionButton(AndroidButton, 'Download for Android', 215, 82, 195);
-  AndroidButton.OnClick := @AndroidLinkOnClick;
-
-  AddPageLabel('Keep YACReader independent', 132, True);
-  AddPageLabel(
-    'YACReader is free software. If it makes your reading better, please consider helping fund its continued development.',
-    158,
-    False);
-
-  PatreonButton := TNewButton.Create(CommunityPage);
-  ConfigureActionButton(PatreonButton, 'Become a patron', 0, 205, 195);
-  PatreonButton.OnClick := @PatreonLinkOnClick;
-
-  PayPalButton := TNewButton.Create(CommunityPage);
-  ConfigureActionButton(PayPalButton, 'Make a one-time donation', 215, 205, 195);
-  PayPalButton.OnClick := @PayPalLinkOnClick;
+  Y := LinkLabel.Top + LinkLabel.Height + ScaleY(20);
+  InfoLabel := AddWelcomeText('Take your comics everywhere', Y, True);
+  Y := InfoLabel.Top + InfoLabel.Height + ScaleY(4);
+  InfoLabel := AddWelcomeText('YACReader for iPhone, iPad and Android connects to the library on this computer. Browse your collection over Wi-Fi, download comics to read offline, and keep your reading progress in sync.', Y, False);
+  Y := InfoLabel.Top + InfoLabel.Height + ScaleY(6);
+  LinkLabel := AddWelcomeLink('Get it on the App Store', LinkX, Y, @IOSLinkOnClick);
+  AddWelcomeLink('Get it on Google Play', LinkLabel.Left + LinkLabel.Width + ScaleX(20), Y, @AndroidLinkOnClick);
 end;
