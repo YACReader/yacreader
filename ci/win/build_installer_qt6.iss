@@ -139,8 +139,55 @@ Name: File_association; Description: Associate .cbz and .cbr files with YACReade
 CompileLogMethod=append
 
 [Code]
-var donationPage: TOutputMsgWizardPage;
-var URLLabel: TNewStaticText;
+var
+  CommunityPage: TWizardPage;
+
+procedure OpenWebPage(const URL: String);
+var
+  ErrorCode: Integer;
+begin
+  ShellExec('open', URL, '', '', SW_SHOWNORMAL, ewNoWait, ErrorCode);
+end;
+
+procedure IOSLinkOnClick(Sender: TObject);
+begin
+  OpenWebPage('https://apps.apple.com/app/id635717885');
+end;
+
+procedure AndroidLinkOnClick(Sender: TObject);
+begin
+  OpenWebPage('https://play.google.com/store/apps/details?id=com.yacreader.yacreader');
+end;
+
+procedure PatreonLinkOnClick(Sender: TObject);
+begin
+  OpenWebPage('https://www.patreon.com/yacreader');
+end;
+
+procedure PayPalLinkOnClick(Sender: TObject);
+begin
+  OpenWebPage('https://www.paypal.com/donate?business=5TAMNQCDDMVP8&item_name=Support+YACReader');
+end;
+
+function AddPageLabel(const Caption: String; Top: Integer; Bold: Boolean): TNewStaticText;
+begin
+  Result := TNewStaticText.Create(CommunityPage);
+  Result.Parent := CommunityPage.Surface;
+  Result.Caption := Caption;
+  Result.AutoSize := False;
+  Result.WordWrap := True;
+  Result.SetBounds(0, ScaleY(Top), CommunityPage.SurfaceWidth, ScaleY(42));
+  Result.Font.Style := [];
+  if Bold then
+    Result.Font.Style := [fsBold];
+end;
+
+procedure ConfigureActionButton(ActionButton: TNewButton; const Caption: String; Left, Top, Width: Integer);
+begin
+  ActionButton.Parent := CommunityPage.Surface;
+  ActionButton.Caption := Caption;
+  ActionButton.SetBounds(ScaleX(Left), ScaleY(Top), ScaleX(Width), ScaleY(29));
+end;
 
 function GetUninstallString(): String;
 var
@@ -196,36 +243,43 @@ begin
   end;
 end;
 
-procedure URLLabelOnClick(Sender: TObject);
-var ErrorCode: Integer;
-begin
-ShellExec('open', 'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=5TAMNQCDDMVP8&item_name=YACReader&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_LG%2egif%3aNonHosted', '', '', SW_SHOWNORMAL, ewNoWait, ErrorCode);
-end;
-
 procedure InitializeWizard();
-
+var
+  IOSButton: TNewButton;
+  AndroidButton: TNewButton;
+  PatreonButton: TNewButton;
+  PayPalButton: TNewButton;
 begin
+  CommunityPage := CreateCustomPage(
+    wpWelcome,
+    'Take your library with you',
+    'Discover YACReader for iOS and Android, and support the project.');
 
-  URLLabel := TNewStaticText.Create(WizardForm);
-  URLLabel.Caption:='Make a DONATION/Haz una DONACIÓN';
-  URLLabel.Cursor:=crHand;
-  URLLabel.OnClick:=@URLLabelOnClick;
-  URLLabel.Parent:=WizardForm;
-  // Alter Font
-  URLLabel.Font.Style:=URLLabel.Font.Style + [fsUnderline];
-  URLLabel.Font.Color:=clBlue;
-  URLLabel.Top:=250;
+  AddPageLabel('YACReader for mobile', 8, True);
+  AddPageLabel(
+    'Browse your YACReaderLibrary collection and enjoy your comics on your phone or tablet.',
+    34,
+    False);
 
-  URLLabel.Left:=35;
+  IOSButton := TNewButton.Create(CommunityPage);
+  ConfigureActionButton(IOSButton, 'Download for iPhone and iPad', 0, 82, 195);
+  IOSButton.OnClick := @IOSLinkOnClick;
 
-donationPage := CreateOutputMsgPage(wpWelcome,
-  'Iformation', 'Please read the following information before continuing.',
-  'YACReader is FREE software. If you like it, please, consider to make a DONATION'#13#13 +
-  'YACReader es software libre y GRATUITO. Si te gusta, por favor, considera realizar una DONACIÓN'#13#13)
+  AndroidButton := TNewButton.Create(CommunityPage);
+  ConfigureActionButton(AndroidButton, 'Download for Android', 215, 82, 195);
+  AndroidButton.OnClick := @AndroidLinkOnClick;
 
-end;
+  AddPageLabel('Keep YACReader independent', 132, True);
+  AddPageLabel(
+    'YACReader is free software. If it makes your reading better, please consider helping fund its continued development.',
+    158,
+    False);
 
-procedure CurPageChanged(CurPageID: Integer);
-begin
-if CurPageID=donationPage.ID then URLLabel.Visible:=true else URLLabel.Visible:=false;
+  PatreonButton := TNewButton.Create(CommunityPage);
+  ConfigureActionButton(PatreonButton, 'Become a patron', 0, 205, 195);
+  PatreonButton.OnClick := @PatreonLinkOnClick;
+
+  PayPalButton := TNewButton.Create(CommunityPage);
+  ConfigureActionButton(PayPalButton, 'Make a one-time donation', 215, 205, 195);
+  PayPalButton.OnClick := @PayPalLinkOnClick;
 end;

@@ -5,7 +5,7 @@
     "window": {
         "size": {
             "width": 600,
-            "height": 403
+            "height": 560
         }
     },
     "icon-size": 128,
@@ -29,19 +29,19 @@
         },
         {
             "x": 470,
-            "y": 295,
+            "y": 265,
             "type": "file",
             "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-#ARCH_NAME# #QT_VERSION#/YACReaderLibraryServer"
         },
         {
             "x": 120,
-            "y": 295,
+            "y": 265,
             "type": "file",
             "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-#ARCH_NAME# #QT_VERSION#/README.md"
         },
         {
             "x": 290,
-            "y": 295,
+            "y": 265,
             "type": "file",
             "path": "YACReader-#VERSION#.#BUILD_NUMBER# MacOSX-#ARCH_NAME# #QT_VERSION#/COPYING.txt"
         }
