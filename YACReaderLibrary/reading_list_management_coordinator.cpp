@@ -19,8 +19,8 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QFormLayout>
-#include <QHeaderView>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -31,19 +31,19 @@
 #include <QPageLayout>
 #include <QPageSize>
 #include <QPdfWriter>
-#include <QRegularExpression>
-#include <QPushButton>
 #include <QProgressDialog>
+#include <QPushButton>
+#include <QRegularExpression>
 #include <QSaveFile>
+#include <QSpinBox>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
-#include <QSpinBox>
 #include <QTableWidget>
 #include <QTextDocument>
 #include <QThread>
-#include <QTreeWidget>
 #include <QTimer>
+#include <QTreeWidget>
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QXmlStreamWriter>
@@ -52,8 +52,7 @@
 #include <utility>
 
 namespace {
-struct LibraryComicMatchData
-{
+struct LibraryComicMatchData {
     qulonglong id = 0;
     QString fileName;
     QString series;
@@ -82,22 +81,19 @@ enum class CblMatchState {
     Ambiguous = 2
 };
 
-struct CblMatchResult
-{
+struct CblMatchResult {
     CblMatchState state = CblMatchState::Missing;
     QList<LibraryComicMatchData> candidates;
     CblMatchTier tier = CblMatchTier::None;
     bool saveRemap = false;
 };
 
-struct MatchedCblEntry
-{
+struct MatchedCblEntry {
     CblBook book;
     CblMatchResult match;
 };
 
-struct MissingComicEntry
-{
+struct MissingComicEntry {
     QString series;
     QString number;
     QString volume;
@@ -211,12 +207,10 @@ bool matchesRequiredDates(const CblBook &book, const LibraryComicMatchData &comi
     // CBL Volume commonly contains the series start year (for example, 2016).
     // Treat supplied dates as constraints: missing or different target metadata
     // is not safe enough for an automatic match, but remains available manually.
-    if (!book.volume.isEmpty()
-        && (comic.volume.isEmpty() || !sameValue(book.volume, comic.volume)))
+    if (!book.volume.isEmpty() && (comic.volume.isEmpty() || !sameValue(book.volume, comic.volume)))
         return false;
 
-    if (!book.year.isEmpty()
-        && (comic.year.isEmpty() || !sameValue(book.year, comic.year)))
+    if (!book.year.isEmpty() && (comic.year.isEmpty() || !sameValue(book.year, comic.year)))
         return false;
 
     return true;
@@ -224,15 +218,14 @@ bool matchesRequiredDates(const CblBook &book, const LibraryComicMatchData &comi
 
 QString remapKey(const CblBook &book)
 {
-    return normalizedSeries(book.series, true) + QLatin1Char('|')
-            + normalized(book.volume) + QLatin1Char('|') + normalizedIssueNumber(book.number);
+    return normalizedSeries(book.series, true) + QLatin1Char('|') + normalized(book.volume) + QLatin1Char('|') + normalizedIssueNumber(book.number);
 }
 
 QString normalizedComicVineIssueId(const QString &value)
 {
     const auto trimmed = value.trimmed();
     if (trimmed.isEmpty())
-        return { };
+        return {};
 
     static const QRegularExpression issueIdExpression(
             QStringLiteral("(?:^|/issue/|4000-)(\\d+)/?(?:[?#].*)?$"),
@@ -247,7 +240,7 @@ CblMatchResult resolvedMatch(const QList<LibraryComicMatchData> &matches, CblMat
     result.candidates = matches;
     result.tier = tier;
     result.state = matches.size() == 1 ? CblMatchState::Matched
-                                      : (matches.isEmpty() ? CblMatchState::Missing : CblMatchState::Ambiguous);
+                                       : (matches.isEmpty() ? CblMatchState::Missing : CblMatchState::Ambiguous);
     return result;
 }
 
@@ -267,7 +260,7 @@ CblMatchResult matchBook(const CblBook &book,
     if (remappedId != 0) {
         for (const auto &comic : libraryComics) {
             if (!continueMatching())
-                return { };
+                return {};
             if (comic.id == remappedId)
                 return resolvedMatch({ comic }, CblMatchTier::SavedRemap);
         }
@@ -278,7 +271,7 @@ CblMatchResult matchBook(const CblBook &book,
         QList<LibraryComicMatchData> comicVineMatches;
         for (const auto &comic : libraryComics) {
             if (!continueMatching())
-                return { };
+                return {};
             if (normalizedComicVineIssueId(comic.comicVineIssueId) == cblComicVineIssueId)
                 comicVineMatches.append(comic);
         }
@@ -297,10 +290,8 @@ CblMatchResult matchBook(const CblBook &book,
 
     for (const auto &comic : libraryComics) {
         if (!continueMatching())
-            return { };
-        if (!sameValue(book.series, comic.series)
-            || normalizedIssueNumber(book.number) != normalizedIssueNumber(comic.number)
-            || !matchesRequiredDates(book, comic))
+            return {};
+        if (!sameValue(book.series, comic.series) || normalizedIssueNumber(book.number) != normalizedIssueNumber(comic.number) || !matchesRequiredDates(book, comic))
             continue;
 
         seriesNumberMatches.append(comic);
@@ -348,10 +339,8 @@ CblMatchResult matchBook(const CblBook &book,
     const auto relaxedSeries = normalizedSeries(book.series, true);
     for (const auto &comic : libraryComics) {
         if (!continueMatching())
-            return { };
-        if (normalizedIssueNumber(book.number) == normalizedIssueNumber(comic.number)
-            && relaxedSeries == normalizedSeries(comic.series, true)
-            && matchesRequiredDates(book, comic))
+            return {};
+        if (normalizedIssueNumber(book.number) == normalizedIssueNumber(comic.number) && relaxedSeries == normalizedSeries(comic.series, true) && matchesRequiredDates(book, comic))
             normalizedMatches.append(comic);
     }
     if (!normalizedMatches.isEmpty())
@@ -360,10 +349,8 @@ CblMatchResult matchBook(const CblBook &book,
     QList<LibraryComicMatchData> alternateMatches;
     for (const auto &comic : libraryComics) {
         if (!continueMatching())
-            return { };
-        if (normalizedIssueNumber(book.number) == normalizedIssueNumber(comic.number)
-            && relaxedSeries == normalizedSeries(comic.alternateSeries, true)
-            && matchesRequiredDates(book, comic))
+            return {};
+        if (normalizedIssueNumber(book.number) == normalizedIssueNumber(comic.number) && relaxedSeries == normalizedSeries(comic.alternateSeries, true) && matchesRequiredDates(book, comic))
             alternateMatches.append(comic);
     }
     if (!alternateMatches.isEmpty())
@@ -381,7 +368,7 @@ CblMatchResult matchBook(const CblBook &book,
         QList<LibraryComicMatchData> fileMatches;
         for (const auto &comic : libraryComics) {
             if (!continueMatching())
-                return { };
+                return {};
             if (!matchesRequiredDates(book, comic))
                 continue;
             if (!normalized(comic.fileName).contains(normalizedSeries))
@@ -399,20 +386,28 @@ CblMatchResult matchBook(const CblBook &book,
         }
     }
 
-    return { };
+    return {};
 }
 
 QString matchTierName(CblMatchTier tier)
 {
     switch (tier) {
-    case CblMatchTier::SavedRemap: return QObject::tr("saved choice");
-    case CblMatchTier::ComicVineIssue: return QObject::tr("ComicVine ID");
-    case CblMatchTier::ExactMetadata: return QObject::tr("exact metadata");
-    case CblMatchTier::NormalizedMetadata: return QObject::tr("normalized metadata");
-    case CblMatchTier::AlternateSeries: return QObject::tr("alternate series");
-    case CblMatchTier::FileName: return QObject::tr("filename");
-    case CblMatchTier::Manual: return QObject::tr("manual choice");
-    case CblMatchTier::None: return QObject::tr("unresolved");
+    case CblMatchTier::SavedRemap:
+        return QObject::tr("saved choice");
+    case CblMatchTier::ComicVineIssue:
+        return QObject::tr("ComicVine ID");
+    case CblMatchTier::ExactMetadata:
+        return QObject::tr("exact metadata");
+    case CblMatchTier::NormalizedMetadata:
+        return QObject::tr("normalized metadata");
+    case CblMatchTier::AlternateSeries:
+        return QObject::tr("alternate series");
+    case CblMatchTier::FileName:
+        return QObject::tr("filename");
+    case CblMatchTier::Manual:
+        return QObject::tr("manual choice");
+    case CblMatchTier::None:
+        return QObject::tr("unresolved");
     }
     return QObject::tr("unresolved");
 }
@@ -475,14 +470,16 @@ bool reviewMatches(QWidget *parent,
     auto ensureTableRow = [table, entries](int row) {
         const auto &entry = entries->at(row);
         const QString status = entry.match.state == CblMatchState::Matched ? QObject::tr("Matched")
-                : entry.match.state == CblMatchState::Ambiguous ? QObject::tr("Ambiguous") : QObject::tr("Missing");
+                : entry.match.state == CblMatchState::Ambiguous            ? QObject::tr("Ambiguous")
+                                                                           : QObject::tr("Missing");
         const QStringList values {
             QString::number(row + 1),
             QStringLiteral("%1 #%2").arg(entry.book.series, entry.book.number),
             status,
             matchTierName(entry.match.tier),
             entry.match.state == CblMatchState::Matched && !entry.match.candidates.isEmpty()
-                    ? comicLabel(entry.match.candidates.constFirst()) : QString()
+                    ? comicLabel(entry.match.candidates.constFirst())
+                    : QString()
         };
         for (int column = 0; column < values.size(); ++column) {
             if (!table->item(row, column))
@@ -538,11 +535,13 @@ bool reviewMatches(QWidget *parent,
     auto refreshRow = [table, entries](int row) {
         const auto &entry = entries->at(row);
         const QString status = entry.match.state == CblMatchState::Matched ? QObject::tr("Matched")
-                : entry.match.state == CblMatchState::Ambiguous ? QObject::tr("Ambiguous") : QObject::tr("Missing");
+                : entry.match.state == CblMatchState::Ambiguous            ? QObject::tr("Ambiguous")
+                                                                           : QObject::tr("Missing");
         table->item(row, 2)->setText(status);
         table->item(row, 3)->setText(matchTierName(entry.match.tier));
         table->item(row, 4)->setText(entry.match.state == CblMatchState::Matched && !entry.match.candidates.isEmpty()
-                                             ? comicLabel(entry.match.candidates.constFirst()) : QString());
+                                             ? comicLabel(entry.match.candidates.constFirst())
+                                             : QString());
     };
     auto refreshAllRows = [table, entries, refreshRow, filter, ensureTableRow] {
         const int wanted = filter->currentData().toInt();
@@ -626,7 +625,7 @@ bool reviewMatches(QWidget *parent,
         if (row < 0)
             return;
         rememberChange();
-        (*entries)[row].match = { };
+        (*entries)[row].match = {};
         refreshRow(row);
     });
     QObject::connect(moveUp, &QPushButton::clicked, &dialog, [=] {
@@ -781,13 +780,7 @@ bool ensureCblImportTables(QSqlDatabase &db, QString *error)
     if (!execSql(remaps, error))
         return false;
 
-    if (!ensureColumn(db, QStringLiteral("cbl_reading_list_meta"), QStringLiteral("source_path"), QStringLiteral("TEXT"), error)
-        || !ensureColumn(db, QStringLiteral("cbl_reading_list_meta"), QStringLiteral("source_hash"), QStringLiteral("TEXT"), error)
-        || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("comicvine_series_id"), QStringLiteral("TEXT"), error)
-        || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("comicvine_issue_id"), QStringLiteral("TEXT"), error)
-        || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("format"), QStringLiteral("TEXT"), error)
-        || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("file_name"), QStringLiteral("TEXT"), error)
-        || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("match_tier"), QStringLiteral("INTEGER NOT NULL DEFAULT 0"), error))
+    if (!ensureColumn(db, QStringLiteral("cbl_reading_list_meta"), QStringLiteral("source_path"), QStringLiteral("TEXT"), error) || !ensureColumn(db, QStringLiteral("cbl_reading_list_meta"), QStringLiteral("source_hash"), QStringLiteral("TEXT"), error) || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("comicvine_series_id"), QStringLiteral("TEXT"), error) || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("comicvine_issue_id"), QStringLiteral("TEXT"), error) || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("format"), QStringLiteral("TEXT"), error) || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("file_name"), QStringLiteral("TEXT"), error) || !ensureColumn(db, QStringLiteral("cbl_reading_list_entry"), QStringLiteral("match_tier"), QStringLiteral("INTEGER NOT NULL DEFAULT 0"), error))
         return false;
 
     QSqlQuery index(db);
@@ -1156,7 +1149,6 @@ ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dial
     connect(listsModel, &ReadingListModel::addComicsToFavorites, comicsModel, QOverload<const QList<qulonglong> &>::of(&ComicModel::addComicsToFavorites));
     connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToLabel));
     connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
-
 }
 
 void ReadingListManagementCoordinator::addReadingList()
@@ -1170,7 +1162,7 @@ void ReadingListManagementCoordinator::addReadingList()
                                             tr("Add new reading lists"),
                                             tr("List name:"),
                                             QLineEdit::Normal,
-                                            { },
+                                            {},
                                             &accepted);
     if (!accepted)
         return;
@@ -1294,7 +1286,7 @@ void ReadingListManagementCoordinator::addReadingListFolder()
                                             tr("Add reading-list folder"),
                                             tr("Folder name:"),
                                             QLineEdit::Normal,
-                                            { },
+                                            {},
                                             &accepted);
     if (accepted && !name.trimmed().isEmpty())
         listsModel->addReadingListFolder(name.trimmed());
@@ -1332,12 +1324,12 @@ void ReadingListManagementCoordinator::moveReadingListToFolder()
 
     bool accepted = false;
     const auto choice = QInputDialog::getItem(dialogParent,
-                                               tr("Move reading list"),
-                                               tr("Destination:"),
-                                               choices,
-                                               0,
-                                               false,
-                                               &accepted);
+                                              tr("Move reading list"),
+                                              tr("Destination:"),
+                                              choices,
+                                              0,
+                                              false,
+                                              &accepted);
     if (!accepted) {
         db.close();
         db = QSqlDatabase();
@@ -1383,7 +1375,7 @@ void ReadingListManagementCoordinator::importCblReadingList()
 {
     const auto filePath = QFileDialog::getOpenFileName(dialogParent,
                                                        tr("Import CBL reading list"),
-                                                       { },
+                                                       {},
                                                        tr("Comic Book Reading Lists (*.cbl);;XML files (*.xml);;All files (*)"));
     if (filePath.isEmpty())
         return;
@@ -1469,8 +1461,8 @@ void ReadingListManagementCoordinator::importCblReadingListFromPath(const QStrin
 
         QSqlQuery query(db);
         if (databaseError.isEmpty() && !query.exec(QStringLiteral("SELECT c.id, c.fileName, ci.series, ci.number, ci.volume, ci.comicVineID, ci.date, ci.format, ci.alternateSeries "
-                                       "FROM comic c "
-                                       "INNER JOIN comic_info ci ON c.comicInfoId = ci.id"))) {
+                                                                  "FROM comic c "
+                                                                  "INNER JOIN comic_info ci ON c.comicInfoId = ci.id"))) {
             databaseError = query.lastError().text();
         } else {
             while (query.next()) {
@@ -1502,8 +1494,7 @@ void ReadingListManagementCoordinator::importCblReadingListFromPath(const QStrin
                 databaseError = remapQuery.lastError().text();
             } else if (!matchingCanceled) {
                 while (remapQuery.next()) {
-                    const QString key = remapQuery.value(0).toString() + QLatin1Char('|')
-                            + remapQuery.value(1).toString() + QLatin1Char('|') + remapQuery.value(2).toString();
+                    const QString key = remapQuery.value(0).toString() + QLatin1Char('|') + remapQuery.value(1).toString() + QLatin1Char('|') + remapQuery.value(2).toString();
                     remaps.insert(key, remapQuery.value(3).toULongLong());
                 }
             }
@@ -1672,7 +1663,8 @@ void ReadingListManagementCoordinator::importCblReadingListFromPath(const QStrin
     qulonglong readingListId = 0;
     const auto selectedList = currentListProvider();
     const qulonglong parentReadingListId = listsModel->isReadingListFolder(selectedList)
-            ? selectedList.data(ReadingListModel::IDRole).toULongLong() : 0;
+            ? selectedList.data(ReadingListModel::IDRole).toULongLong()
+            : 0;
     QString sourceHash;
     QFile sourceFile(filePath);
     if (sourceFile.open(QIODevice::ReadOnly))
@@ -1736,12 +1728,12 @@ void ReadingListManagementCoordinator::exportReadingList()
     if (exportingFolder) {
         bool accepted = false;
         const auto mode = QInputDialog::getItem(dialogParent,
-                                                 tr("Export reading-list folder"),
-                                                 tr("Export format:"),
-                                                 { tr("One combined CBL"), tr("Separate CBL files") },
-                                                 0,
-                                                 false,
-                                                 &accepted);
+                                                tr("Export reading-list folder"),
+                                                tr("Export format:"),
+                                                { tr("One combined CBL"), tr("Separate CBL files") },
+                                                0,
+                                                false,
+                                                &accepted);
         if (!accepted)
             return;
         separateFiles = mode == tr("Separate CBL files");
@@ -1758,8 +1750,7 @@ void ReadingListManagementCoordinator::exportReadingList()
 
         bool importedCbl = false;
         QSqlQuery tableCheck(db);
-        if (tableCheck.exec(QStringLiteral("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'"))
-            && tableCheck.next()) {
+        if (tableCheck.exec(QStringLiteral("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'")) && tableCheck.next()) {
             QSqlQuery importedCheck(db);
             importedCheck.prepare(QStringLiteral("SELECT 1 FROM cbl_reading_list_meta WHERE reading_list_id = :id"));
             importedCheck.bindValue(QStringLiteral(":id"), readingListId);
@@ -1853,9 +1844,9 @@ void ReadingListManagementCoordinator::exportReadingList()
 
     const QString safeName = safeFileName(readingListName);
     QString filePath = QFileDialog::getSaveFileName(dialogParent,
-                                                     tr("Export reading list"),
-                                                     safeName + QStringLiteral(".cbl"),
-                                                     tr("Comic Book Reading Lists (*.cbl)"));
+                                                    tr("Export reading list"),
+                                                    safeName + QStringLiteral(".cbl"),
+                                                    tr("Comic Book Reading Lists (*.cbl)"));
     if (filePath.isEmpty())
         return;
     if (!filePath.endsWith(QStringLiteral(".cbl"), Qt::CaseInsensitive))
@@ -1898,8 +1889,7 @@ void ReadingListManagementCoordinator::showMissingComics()
 
         bool importedCbl = false;
         QSqlQuery tableCheck(db);
-        if (tableCheck.exec(QStringLiteral("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'"))
-            && tableCheck.next()) {
+        if (tableCheck.exec(QStringLiteral("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'")) && tableCheck.next()) {
             QSqlQuery importedCheck(db);
             importedCheck.prepare(QStringLiteral("SELECT 1 FROM cbl_reading_list_meta WHERE reading_list_id = :id"));
             importedCheck.bindValue(QStringLiteral(":id"), readingListId);
@@ -2080,10 +2070,10 @@ void ReadingListManagementCoordinator::showMissingComics()
             filePath += QStringLiteral(".pdf");
 
         QString html = QStringLiteral(
-                "<html><head><style>body{font-family:sans-serif;font-size:9pt}h1{font-size:18pt}"
-                "table{border-collapse:collapse;width:100%}th{background:#333;color:white}"
-                "th,td{border:1px solid #888;padding:4px;text-align:left}tr:nth-child(even){background:#eee}"
-                "</style></head><body><h1>%1</h1><p>%2</p><table><thead><tr>")
+                               "<html><head><style>body{font-family:sans-serif;font-size:9pt}h1{font-size:18pt}"
+                               "table{border-collapse:collapse;width:100%}th{background:#333;color:white}"
+                               "th,td{border:1px solid #888;padding:4px;text-align:left}tr:nth-child(even){background:#eee}"
+                               "</style></head><body><h1>%1</h1><p>%2</p><table><thead><tr>")
                                .arg(tr("Missing comics — %1").arg(readingListName).toHtmlEscaped(),
                                     tr("%1 missing comics • Generated %2")
                                             .arg(missingComics.size())
@@ -2126,8 +2116,7 @@ void ReadingListManagementCoordinator::showMissingComics()
 void ReadingListManagementCoordinator::editCblReadingList()
 {
     const auto currentList = currentListProvider();
-    if (!currentList.isValid()
-        || currentList.data(ReadingListModel::TypeListsRole).toInt() != ReadingListModel::ReadingList) {
+    if (!currentList.isValid() || currentList.data(ReadingListModel::TypeListsRole).toInt() != ReadingListModel::ReadingList) {
         QMessageBox::information(dialogParent, tr("Edit CBL reading list"), tr("Select an imported CBL reading list first."));
         return;
     }
@@ -2167,7 +2156,7 @@ void ReadingListManagementCoordinator::editCblReadingList()
         if (loadError.isEmpty()) {
             QSqlQuery comics(db);
             if (!comics.exec(QStringLiteral("SELECT c.id, c.fileName, ci.series, ci.number, ci.volume, ci.comicVineID, ci.date, ci.format, ci.alternateSeries "
-                                             "FROM comic c INNER JOIN comic_info ci ON c.comicInfoId = ci.id"))) {
+                                            "FROM comic c INNER JOIN comic_info ci ON c.comicInfoId = ci.id"))) {
                 loadError = comics.lastError().text();
             } else {
                 while (comics.next()) {

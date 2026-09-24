@@ -7,8 +7,7 @@
 #include <QString>
 #include <QXmlStreamReader>
 
-struct CblBook
-{
+struct CblBook {
     QString series;
     QString number;
     QString volume;
@@ -21,14 +20,12 @@ struct CblBook
     int ordering = 0;
 };
 
-struct CblReadingList
-{
+struct CblReadingList {
     QString name;
     QList<CblBook> books;
 };
 
-struct CblReadResult
-{
+struct CblReadResult {
     bool success = false;
     CblReadingList readingList;
     QString errorMessage;
@@ -93,8 +90,7 @@ public:
                     } else if (xml.name() == QLatin1String("Database")) {
                         const auto databaseAttributes = xml.attributes();
                         const auto databaseName = databaseAttributes.value(QLatin1String("Name")).toString().trimmed();
-                        if (databaseName.compare(QLatin1String("cv"), Qt::CaseInsensitive) == 0
-                            || databaseName.compare(QLatin1String("comicvine"), Qt::CaseInsensitive) == 0) {
+                        if (databaseName.compare(QLatin1String("cv"), Qt::CaseInsensitive) == 0 || databaseName.compare(QLatin1String("comicvine"), Qt::CaseInsensitive) == 0) {
                             book.comicVineSeriesId = databaseAttributes.value(QLatin1String("Series")).toString().trimmed();
                             book.comicVineIssueId = databaseAttributes.value(QLatin1String("Issue")).toString().trimmed();
                         }

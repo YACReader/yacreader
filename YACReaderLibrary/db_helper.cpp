@@ -645,13 +645,13 @@ void DBHelper::deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qul
         query.exec();
         if (signedId < 0) {
             deleteEntry.prepare(importedCbl
-                                ? "DELETE FROM cbl_reading_list_entry WHERE id = :entry_id AND reading_list_id = :reading_list_id"
-                                : "DELETE FROM reading_list_entry WHERE id = :entry_id AND reading_list_id = :reading_list_id");
+                                        ? "DELETE FROM cbl_reading_list_entry WHERE id = :entry_id AND reading_list_id = :reading_list_id"
+                                        : "DELETE FROM reading_list_entry WHERE id = :entry_id AND reading_list_id = :reading_list_id");
             deleteEntry.bindValue(":entry_id", -signedId);
         } else {
             deleteEntry.prepare(importedCbl
-                                ? "DELETE FROM cbl_reading_list_entry WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id"
-                                : "DELETE FROM reading_list_entry WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+                                        ? "DELETE FROM cbl_reading_list_entry WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id"
+                                        : "DELETE FROM reading_list_entry WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
             deleteEntry.bindValue(":comic_id", comic.id);
         }
         deleteEntry.bindValue(":reading_list_id", readingListId);
@@ -1418,13 +1418,13 @@ void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList
         QSqlQuery updateEntry(db);
         if (signedId < 0) {
             updateEntry.prepare(importedCbl
-                                ? "UPDATE cbl_reading_list_entry SET ordering = :ordering WHERE id = :entry_id AND reading_list_id = :reading_list_id"
-                                : "UPDATE reading_list_entry SET ordering = :ordering WHERE id = :entry_id AND reading_list_id = :reading_list_id");
+                                        ? "UPDATE cbl_reading_list_entry SET ordering = :ordering WHERE id = :entry_id AND reading_list_id = :reading_list_id"
+                                        : "UPDATE reading_list_entry SET ordering = :ordering WHERE id = :entry_id AND reading_list_id = :reading_list_id");
             updateEntry.bindValue(":entry_id", -signedId);
         } else {
             updateEntry.prepare(importedCbl
-                                ? "UPDATE cbl_reading_list_entry SET ordering = :ordering WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id"
-                                : "UPDATE reading_list_entry SET ordering = :ordering WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+                                        ? "UPDATE cbl_reading_list_entry SET ordering = :ordering WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id"
+                                        : "UPDATE reading_list_entry SET ordering = :ordering WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
             updateEntry.bindValue(":comic_id", id);
         }
         updateEntry.bindValue(":ordering", order - 1);
@@ -1808,8 +1808,8 @@ void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulon
     const bool importedCbl = isImportedCblReadingList(readingListId, db);
     QSqlQuery getNumComics(db);
     getNumComics.prepare(importedCbl
-                         ? "SELECT count(*) FROM cbl_reading_list_entry WHERE reading_list_id = :reading_list_id"
-                         : "SELECT count(*) FROM reading_list_entry WHERE reading_list_id = :reading_list_id");
+                                 ? "SELECT count(*) FROM cbl_reading_list_entry WHERE reading_list_id = :reading_list_id"
+                                 : "SELECT count(*) FROM reading_list_entry WHERE reading_list_id = :reading_list_id");
     getNumComics.bindValue(":reading_list_id", readingListId);
     getNumComics.exec();
     getNumComics.next();
@@ -1858,8 +1858,7 @@ void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulon
 bool DBHelper::isImportedCblReadingList(qulonglong readingListId, QSqlDatabase &db)
 {
     QSqlQuery tableCheck(db);
-    if (!tableCheck.exec("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'")
-        || !tableCheck.next())
+    if (!tableCheck.exec("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'") || !tableCheck.next())
         return false;
 
     QSqlQuery imported(db);
@@ -1873,8 +1872,7 @@ int DBHelper::countMissingReadingListEntries(QSqlDatabase &db, qulonglong readin
     ensureReadingListEntries(db);
 
     QSqlQuery hasCblMetaTable(db);
-    const bool hasCblTables = hasCblMetaTable.exec("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'")
-            && hasCblMetaTable.next();
+    const bool hasCblTables = hasCblMetaTable.exec("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'") && hasCblMetaTable.next();
 
     if (hasCblTables && isImportedCblReadingList(readingListId, db)) {
         QSqlQuery count(db);
@@ -1976,10 +1974,10 @@ int DBHelper::relinkMissingReadingListEntries(QSqlDatabase &db, qulonglong readi
         const QString idFilter = readingListId == 0 ? QString() : QStringLiteral(" AND e.reading_list_id = %1").arg(readingListId);
         const QString hashMatch = imported ? QString() : QStringLiteral("((COALESCE(e.hash,'') <> '') AND ci.hash = e.hash) OR ");
         const QString safeMatch = QStringLiteral(
-                "(%1((COALESCE(e.comicvine_issue_id,'') <> '') AND ci.comicVineID = e.comicvine_issue_id) OR "
-                "(LOWER(TRIM(ci.series)) = LOWER(TRIM(e.series)) AND LOWER(TRIM(ci.number)) = LOWER(TRIM(e.number)) "
-                "AND (COALESCE(e.volume,'') = '' OR LOWER(TRIM(ci.volume)) = LOWER(TRIM(e.volume))) "
-                "AND (COALESCE(e.year,'') = '' OR substr(ci.date,-4) = e.year)))")
+                                          "(%1((COALESCE(e.comicvine_issue_id,'') <> '') AND ci.comicVineID = e.comicvine_issue_id) OR "
+                                          "(LOWER(TRIM(ci.series)) = LOWER(TRIM(e.series)) AND LOWER(TRIM(ci.number)) = LOWER(TRIM(e.number)) "
+                                          "AND (COALESCE(e.volume,'') = '' OR LOWER(TRIM(ci.volume)) = LOWER(TRIM(e.volume))) "
+                                          "AND (COALESCE(e.year,'') = '' OR substr(ci.date,-4) = e.year)))")
                                           .arg(hashMatch);
         QSqlQuery update(db);
         update.prepare(QStringLiteral(
@@ -1999,12 +1997,12 @@ int DBHelper::relinkMissingReadingListEntries(QSqlDatabase &db, qulonglong readi
     relinkTable(QStringLiteral("cbl_reading_list_entry"), true);
     QSqlQuery legacy(db);
     legacy.exec(QStringLiteral(
-            "INSERT OR IGNORE INTO comic_reading_list(reading_list_id, comic_id, ordering) "
-            "SELECT reading_list_id, comic_id, ordering FROM reading_list_entry WHERE comic_id IS NOT NULL%1")
+                        "INSERT OR IGNORE INTO comic_reading_list(reading_list_id, comic_id, ordering) "
+                        "SELECT reading_list_id, comic_id, ordering FROM reading_list_entry WHERE comic_id IS NOT NULL%1")
                         .arg(readingListId == 0 ? QString() : QStringLiteral(" AND reading_list_id = %1").arg(readingListId)));
     legacy.exec(QStringLiteral(
-            "INSERT OR IGNORE INTO comic_reading_list(reading_list_id, comic_id, ordering) "
-            "SELECT reading_list_id, comic_id, ordering FROM cbl_reading_list_entry WHERE comic_id IS NOT NULL%1")
+                        "INSERT OR IGNORE INTO comic_reading_list(reading_list_id, comic_id, ordering) "
+                        "SELECT reading_list_id, comic_id, ordering FROM cbl_reading_list_entry WHERE comic_id IS NOT NULL%1")
                         .arg(readingListId == 0 ? QString() : QStringLiteral(" AND reading_list_id = %1").arg(readingListId)));
     db.commit();
     return relinked;

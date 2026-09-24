@@ -404,7 +404,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return { };
+        return {};
     const auto item = static_cast<ComicItem *>(index.internalPointer());
     if (item->data(Id).toLongLong() < 0)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
@@ -781,8 +781,7 @@ QList<ComicItem *> ComicModel::createReadingListData(unsigned long long parentRe
             }
 
             QSqlQuery tableCheck(db);
-            const bool hasCblTables = tableCheck.exec("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'")
-                    && tableCheck.next();
+            const bool hasCblTables = tableCheck.exec("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'cbl_reading_list_meta'") && tableCheck.next();
             bool isImportedCbl = false;
             if (hasCblTables) {
                 QSqlQuery importedList(db);
