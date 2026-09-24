@@ -845,12 +845,6 @@ bool persistCblReadingList(QSqlDatabase &db,
         if (!hasMatch && previousMatches.value(0).toInt() > 0)
             return rollback(QStringLiteral("No comics matched during re-import, so the existing reading list was left unchanged."));
 
-        QSqlQuery updateList(db);
-        updateList.prepare(QStringLiteral("UPDATE reading_list SET name = :name WHERE id = :id"));
-        updateList.bindValue(QStringLiteral(":name"), readingList.name);
-        updateList.bindValue(QStringLiteral(":id"), newReadingListId);
-        if (!updateList.exec())
-            return rollback(updateList.lastError().text());
         for (const auto &table : { QStringLiteral("comic_reading_list"), QStringLiteral("cbl_reading_list_entry") }) {
             QSqlQuery clear(db);
             clear.prepare(QStringLiteral("DELETE FROM %1 WHERE reading_list_id = :id").arg(table));
