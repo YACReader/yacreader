@@ -22,6 +22,7 @@
 #include <QPinchGesture>
 #include <QPropertyAnimation>
 #include <QScrollBar>
+#include <QWindow>
 
 #include <cmath>
 
@@ -243,7 +244,12 @@ Viewer::~Viewer()
 QString Viewer::renderingSystemInfo() const
 {
     QString text = QStringLiteral("\nRENDERING INFORMATION\n");
-    text.append(QStringLiteral("Reader renderer: QWidget (Raster)\n"));
+    // Qt 6 switches the top-level window to a GPU surface type once it has to compose
+    const QWindow *topLevel = window()->windowHandle();
+    if (topLevel == nullptr || topLevel->surfaceType() == QSurface::RasterSurface)
+        text.append(QStringLiteral("Reader renderer: QWidget (Raster)\n"));
+    else
+        text.append(QStringLiteral("Reader renderer: QWidget (Raster, window composited through RHI)\n"));
     text.append(goToFlow->renderingSystemInfo());
     return text;
 }
