@@ -367,11 +367,7 @@ void Viewer::next()
 
     direction = 1;
     syncRenderToContinuousReadingProgress();
-    if (doublePage && render->currentPageIsDoublePage()) {
-        render->nextDoublePage();
-    } else {
-        render->nextPage();
-    }
+    render->nextPage();
     updateInformation();
     shouldOpenPrevious = false;
 }
@@ -410,11 +406,7 @@ void Viewer::prev()
 
     direction = -1;
     syncRenderToContinuousReadingProgress();
-    if (doublePage && render->previousPageIsDoublePage()) {
-        render->previousDoublePage();
-    } else {
-        render->previousPage();
-    }
+    render->previousPage();
     updateInformation();
     shouldOpenNext = false;
 }
@@ -2091,11 +2083,7 @@ void Viewer::offsetDoublePageToTheLeft()
         return;
     }
 
-    if (doubleMangaPage) {
-        render->previousPage();
-    } else {
-        render->nextPage();
-    }
+    render->offsetDoublePage(doubleMangaPage ? -1 : 1);
 
     updateInformation();
 }
@@ -2106,11 +2094,7 @@ void Viewer::offsetDoublePageToTheRight()
         return;
     }
 
-    if (doubleMangaPage) {
-        render->nextPage();
-    } else {
-        render->previousPage();
-    }
+    render->offsetDoublePage(doubleMangaPage ? 1 : -1);
 
     updateInformation();
 }

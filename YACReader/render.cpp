@@ -367,8 +367,10 @@ void PageRender::run()
 //-----------------------------------------------------------------------------
 
 Render::Render()
-    : comic(nullptr), doublePage(false), doubleMangaPage(false), currentIndex(0), numLeftPages(4), numRightPages(4), loadedComic(false), imageRotation(0)
+    : comic(nullptr), doublePage(false), doubleMangaPage(false), currentIndex(0), doublePageViewHistoryPosition(0), numLeftPages(4), numRightPages(4), loadedComic(false), imageRotation(0)
 {
+    doublePageViewHistory.append(currentIndex);
+
     int size = numLeftPages + numRightPages + 1;
     currentPageBufferedIndex = numLeftPages;
     for (int i = 0; i < size; i++) {
@@ -724,6 +726,7 @@ void Render::load(const QString &path, const ComicDB &comicDB)
 void Render::createComic(const QString &path)
 {
     previousIndex = currentIndex = 0;
+    resetDoublePageNavigation();
     pagesEmited.clear();
 
     if (comic != nullptr) {
@@ -797,6 +800,7 @@ void Render::startLoad()
 void Render::renderAt(int page)
 {
     previousIndex = currentIndex = page;
+    resetDoublePageNavigation();
     emit pageChanged(page);
 }
 
@@ -809,33 +813,18 @@ void Render::reset()
 // la página sólo se renderiza, si realmente ha cambiado.
 void Render::nextPage()
 {
-    int nextPage; // indica cuál será la próxima página
-    nextPage = comic->nextPage();
+    const int nextPage = doublePage ? nextDoublePageViewIndex() : comic->nextPage();
     // se fuerza renderizado si la página ha cambiado
     if (currentIndex != nextPage) {
+        if (doublePage) {
+            comic->setIndex(nextPage);
+        }
         previousIndex = currentIndex;
         currentIndex = nextPage;
         update();
         emit pageChanged(currentIndex);
-    } else if (hasLoadedComic() && ((unsigned int)currentIndex == numPages() - 1)) {
-        emit isLast();
-    }
-}
-void Render::nextDoublePage()
-{
-    int nextPage;
-    if (currentIndex + 2 < (int)comic->numPages()) {
-        nextPage = currentIndex + 2;
-    } else {
-        nextPage = currentIndex;
-    }
-    if (currentIndex != nextPage) {
-        comic->setIndex(nextPage);
-        previousIndex = currentIndex;
-        currentIndex = nextPage;
-        update();
-        emit pageChanged(currentIndex);
-    } else if (hasLoadedComic() && ((unsigned int)currentIndex >= numPages() - 2)) {
+    } else if (hasLoadedComic() && (doublePage || (unsigned int)currentIndex == numPages() - 1)) {
+        // in double page mode the view only stays put when it is already the last one
         emit isLast();
     }
 }
@@ -844,11 +833,13 @@ void Render::nextDoublePage()
 // la página sólo se renderiza, si realmente ha cambiado.
 void Render::previousPage()
 {
-    int previousPage; // indica cuál será la próxima página
-    previousPage = comic->previousPage();
+    const int previousPage = doublePage ? previousDoublePageViewIndex() : comic->previousPage();
 
     // se fuerza renderizado si la página ha cambiado
     if (currentIndex != previousPage) {
+        if (doublePage) {
+            comic->setIndex(previousPage);
+        }
         previousIndex = currentIndex;
         currentIndex = previousPage;
         update();
@@ -858,16 +849,20 @@ void Render::previousPage()
     }
 }
 
-void Render::previousDoublePage()
+// moves the double page grouping by one page, the new grouping starts a new navigation history
+void Render::offsetDoublePage(int offset)
 {
-    int previousPage; // indica cuál será la próxima página
-    previousPage = qMax(currentIndex - 2, 0);
-    if (currentIndex != previousPage) {
-        comic->setIndex(previousPage);
-        previousIndex = currentIndex;
-        currentIndex = previousPage;
-        update();
-        emit pageChanged(currentIndex);
+    if (!hasLoadedComic()) {
+        return;
+    }
+
+    const int page = qBound(0, currentIndex + offset, static_cast<int>(numPages()) - 1);
+    if (page != currentIndex) {
+        goTo(page);
+    } else if (offset > 0) {
+        emit isLast();
+    } else {
+        emit isCover();
     }
 }
 
@@ -930,7 +925,6 @@ void Render::pageRawDataReady(int page)
 // sólo se renderiza la página, si ha habido un cambio de página
 void Render::goTo(int index)
 {
-
     if (currentIndex != index) {
         comic->setIndex(index);
         previousIndex = currentIndex;
@@ -938,11 +932,14 @@ void Render::goTo(int index)
         update();
         emit pageChanged(currentIndex);
     }
+
+    resetDoublePageNavigation();
 }
 
 void Render::rotateRight()
 {
     imageRotation = (imageRotation + 90) % 360;
+    resetDoublePageNavigation();
     reload();
 }
 void Render::rotateLeft()
@@ -951,7 +948,58 @@ void Render::rotateLeft()
         imageRotation = 270;
     else
         imageRotation = imageRotation - 90;
+    resetDoublePageNavigation();
     reload();
+}
+
+void Render::resetDoublePageNavigation()
+{
+    doublePageViewHistory.clear();
+    doublePageViewHistory.append(currentIndex);
+    doublePageViewHistoryPosition = 0;
+}
+
+bool Render::doublePageHistoryTracksCurrentIndex() const
+{
+    return doublePageViewHistoryPosition < doublePageViewHistory.size() && doublePageViewHistory.at(doublePageViewHistoryPosition) == currentIndex;
+}
+
+// the views already visited are replayed so going back and forth keeps the same page groupings
+int Render::nextDoublePageViewIndex()
+{
+    if (!doublePageHistoryTracksCurrentIndex()) {
+        resetDoublePageNavigation();
+    }
+
+    if (doublePageViewHistoryPosition + 1 < doublePageViewHistory.size()) {
+        return doublePageViewHistory.at(++doublePageViewHistoryPosition);
+    }
+
+    const int pageStep = currentPageIsDoublePage() ? 2 : 1;
+    if (currentIndex + pageStep >= static_cast<int>(comic->numPages())) {
+        return currentIndex;
+    }
+
+    doublePageViewHistory.append(currentIndex + pageStep);
+    return doublePageViewHistory.at(++doublePageViewHistoryPosition);
+}
+
+int Render::previousDoublePageViewIndex()
+{
+    if (!doublePageHistoryTracksCurrentIndex()) {
+        resetDoublePageNavigation();
+    }
+
+    if (doublePageViewHistoryPosition > 0) {
+        return doublePageViewHistory.at(--doublePageViewHistoryPosition);
+    }
+
+    const int pageStep = previousPageIsDoublePage() ? 2 : 1;
+    const int previousPage = qMax(currentIndex - pageStep, 0);
+    if (previousPage != currentIndex) {
+        doublePageViewHistory.prepend(previousPage);
+    }
+    return previousPage;
 }
 
 // Actualiza el buffer, añadiendo las imágenes (vacías) necesarias para su posterior renderizado y
@@ -1060,6 +1108,7 @@ void Render::invalidate()
 void Render::doublePageSwitch()
 {
     doublePage = !doublePage;
+    resetDoublePageNavigation();
     if (comic) {
         // invalidate();
         update();

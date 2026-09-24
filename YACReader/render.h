@@ -157,8 +157,7 @@ public slots:
     //--comic interface
     void nextPage();
     void previousPage();
-    void nextDoublePage();
-    void previousDoublePage();
+    void offsetDoublePage(int offset);
     void load(const QString &path, const ComicDB &comic);
     void load(const QString &path, int atPage);
     void createComic(const QString &path);
@@ -209,6 +208,8 @@ private:
     bool doubleMangaPage;
     int previousIndex;
     int currentIndex;
+    QVector<int> doublePageViewHistory;
+    int doublePageViewHistoryPosition;
     // QPixmap * currentPage;
     int currentPageBufferedIndex;
     int numLeftPages;
@@ -223,6 +224,10 @@ private:
     QVector<bool> pagesReady;
     int imageRotation;
     QVector<ImageFilter *> filters;
+    void resetDoublePageNavigation();
+    int nextDoublePageViewIndex();
+    int previousDoublePageViewIndex();
+    bool doublePageHistoryTracksCurrentIndex() const;
     QMutex mutex;
 
     friend class PageRender;

@@ -5,6 +5,11 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ## 10.3.1
 
 ### YACReader
+* Improve double page layout stability when going back and forth after finding single image exceptions.
+
+## 10.3.1
+
+### YACReader
 * Fix continuous vertical scroll mode shortcut not being saved.
 * Improve non valid characters handling in the renaming feature.
 * Improve layout in the renaming/organizing dialog.
