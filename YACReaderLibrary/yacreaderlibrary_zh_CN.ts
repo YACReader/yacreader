@@ -4209,54 +4209,54 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="26"/>
         <source>Unknown</source>
-        <translation type="unfinished">未知</translation>
+        <translation>未知</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="28"/>
         <source>%1 (%2 unknown)</source>
         <oldsource>%1 (%n unknown)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2 未知)</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="36"/>
         <source>%1 series</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 系列</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="58"/>
         <source>%1 comics selected</source>
         <oldsource>%n comic(s) selected</oldsource>
-        <translation type="unfinished">已选择 %1 本漫画</translation>
+        <translation>已选择 %1 本漫画</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="77"/>
         <source>Read</source>
-        <translation type="unfinished">阅读</translation>
+        <translation>阅读</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="80"/>
         <source>In progress</source>
-        <translation type="unfinished">阅读中</translation>
+        <translation>阅读中</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="83"/>
         <source>Unread</source>
-        <translation type="unfinished">未读</translation>
+        <translation>未读</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="86"/>
         <source>Total pages</source>
-        <translation type="unfinished"></translation>
+        <translation>总页数</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="89"/>
         <source>Total size</source>
-        <translation type="unfinished"></translation>
+        <translation>总大小</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="74"/>
         <source>Series</source>
-        <translation type="unfinished">系列</translation>
+        <translation>系列</translation>
     </message>
 </context>
 <context>
