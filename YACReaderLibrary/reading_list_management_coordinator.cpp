@@ -225,7 +225,7 @@ QString normalizedComicVineIssueId(const QString &value)
 {
     const auto trimmed = value.trimmed();
     if (trimmed.isEmpty())
-        return {};
+        return { };
 
     static const QRegularExpression issueIdExpression(
             QStringLiteral("(?:^|/issue/|4000-)(\\d+)/?(?:[?#].*)?$"),
@@ -260,7 +260,7 @@ CblMatchResult matchBook(const CblBook &book,
     if (remappedId != 0) {
         for (const auto &comic : libraryComics) {
             if (!continueMatching())
-                return {};
+                return { };
             if (comic.id == remappedId)
                 return resolvedMatch({ comic }, CblMatchTier::SavedRemap);
         }
@@ -271,7 +271,7 @@ CblMatchResult matchBook(const CblBook &book,
         QList<LibraryComicMatchData> comicVineMatches;
         for (const auto &comic : libraryComics) {
             if (!continueMatching())
-                return {};
+                return { };
             if (normalizedComicVineIssueId(comic.comicVineIssueId) == cblComicVineIssueId)
                 comicVineMatches.append(comic);
         }
@@ -290,7 +290,7 @@ CblMatchResult matchBook(const CblBook &book,
 
     for (const auto &comic : libraryComics) {
         if (!continueMatching())
-            return {};
+            return { };
         if (!sameValue(book.series, comic.series) || normalizedIssueNumber(book.number) != normalizedIssueNumber(comic.number) || !matchesRequiredDates(book, comic))
             continue;
 
@@ -339,7 +339,7 @@ CblMatchResult matchBook(const CblBook &book,
     const auto relaxedSeries = normalizedSeries(book.series, true);
     for (const auto &comic : libraryComics) {
         if (!continueMatching())
-            return {};
+            return { };
         if (normalizedIssueNumber(book.number) == normalizedIssueNumber(comic.number) && relaxedSeries == normalizedSeries(comic.series, true) && matchesRequiredDates(book, comic))
             normalizedMatches.append(comic);
     }
@@ -349,7 +349,7 @@ CblMatchResult matchBook(const CblBook &book,
     QList<LibraryComicMatchData> alternateMatches;
     for (const auto &comic : libraryComics) {
         if (!continueMatching())
-            return {};
+            return { };
         if (normalizedIssueNumber(book.number) == normalizedIssueNumber(comic.number) && relaxedSeries == normalizedSeries(comic.alternateSeries, true) && matchesRequiredDates(book, comic))
             alternateMatches.append(comic);
     }
@@ -368,7 +368,7 @@ CblMatchResult matchBook(const CblBook &book,
         QList<LibraryComicMatchData> fileMatches;
         for (const auto &comic : libraryComics) {
             if (!continueMatching())
-                return {};
+                return { };
             if (!matchesRequiredDates(book, comic))
                 continue;
             if (!normalized(comic.fileName).contains(normalizedSeries))
@@ -386,7 +386,7 @@ CblMatchResult matchBook(const CblBook &book,
         }
     }
 
-    return {};
+    return { };
 }
 
 QString matchTierName(CblMatchTier tier)
@@ -625,7 +625,7 @@ bool reviewMatches(QWidget *parent,
         if (row < 0)
             return;
         rememberChange();
-        (*entries)[row].match = {};
+        (*entries)[row].match = { };
         refreshRow(row);
     });
     QObject::connect(moveUp, &QPushButton::clicked, &dialog, [=] {
@@ -1156,7 +1156,7 @@ void ReadingListManagementCoordinator::addReadingList()
                                             tr("Add new reading lists"),
                                             tr("List name:"),
                                             QLineEdit::Normal,
-                                            {},
+                                            { },
                                             &accepted);
     if (!accepted)
         return;
@@ -1280,7 +1280,7 @@ void ReadingListManagementCoordinator::addReadingListFolder()
                                             tr("Add reading-list folder"),
                                             tr("Folder name:"),
                                             QLineEdit::Normal,
-                                            {},
+                                            { },
                                             &accepted);
     if (accepted && !name.trimmed().isEmpty())
         listsModel->addReadingListFolder(name.trimmed());
@@ -1369,7 +1369,7 @@ void ReadingListManagementCoordinator::importCblReadingList()
 {
     const auto filePath = QFileDialog::getOpenFileName(dialogParent,
                                                        tr("Import CBL reading list"),
-                                                       {},
+                                                       { },
                                                        tr("Comic Book Reading Lists (*.cbl);;XML files (*.xml);;All files (*)"));
     if (filePath.isEmpty())
         return;
