@@ -404,7 +404,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return {};
+        return { };
     const auto item = static_cast<ComicItem *>(index.internalPointer());
     if (item->data(Id).toLongLong() < 0)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;

@@ -423,7 +423,7 @@ Theme makeTheme(const ThemeParams &params)
 
     // Recolored icons are written to a flat per-theme folder keyed by the source file
     // name, so any icon recolored more than once needs a suffix to get its own file.
-    auto recolor = [&](const QString &path, const QColor &color, const QString &suffix = {}) {
+    auto recolor = [&](const QString &path, const QColor &color, const QString &suffix = { }) {
         return recoloredSvgToThemeFile(path, color, params.meta.id, { .suffix = suffix });
     };
 
