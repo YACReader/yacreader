@@ -101,6 +101,8 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
         return sourceIndex.data(ComicModel::ShowRecentRole);
     case RecentRangeRole:
         return sourceIndex.data(ComicModel::RecentRangeRole);
+    case PlaceholderRole:
+        return sourceIndex.data(ComicModel::IsPlaceholderRole);
     default:
         return { };
     }
@@ -127,6 +129,7 @@ QHash<int, QByteArray> GridContentModel::roleNames() const
         { RecentRangeRole, "recent_range" },
         { UpdatedRole, "updated" },
         { FinishedRole, "is_finished" },
+        { PlaceholderRole, "is_placeholder" },
     };
 }
 

@@ -344,6 +344,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/lists/default_0.svg
     ${PROJECT_SOURCE_DIR}/images/lists/default_1.svg
     ${PROJECT_SOURCE_DIR}/images/lists/default_2.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/imported.svg
     ${PROJECT_SOURCE_DIR}/images/lists/label_template.svg
     ${PROJECT_SOURCE_DIR}/images/lists/list.svg
     ${PROJECT_SOURCE_DIR}/images/clearSearchNew.svg
@@ -577,10 +578,10 @@ endif()
 
 # Platform-specific
 if(WIN32)
-    target_sources(YACReaderLibrary PRIVATE icon.rc)
-    if(MSVC)
-        target_link_options(YACReaderLibrary PRIVATE "/MANIFESTINPUT:${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest")
-    endif()
+    target_sources(YACReaderLibrary PRIVATE
+        icon.rc
+        ${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest
+    )
     target_link_libraries(YACReaderLibrary PRIVATE oleaut32 ole32 shell32 user32)
 endif()
 

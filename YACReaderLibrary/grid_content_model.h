@@ -39,7 +39,8 @@ public:
         ShowRecentRole,
         RecentRangeRole,
         UpdatedRole,
-        FinishedRole
+        FinishedRole,
+        PlaceholderRole
     };
 
     explicit GridContentModel(QObject *parent = nullptr);

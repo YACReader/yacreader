@@ -72,6 +72,7 @@ public:
         SeriesRole,
         VolumeRole,
         StoryArcRole,
+        IsPlaceholderRole,
     };
 
     enum Mode {
