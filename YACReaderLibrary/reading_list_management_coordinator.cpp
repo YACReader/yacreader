@@ -41,7 +41,6 @@
 #include <QSqlQuery>
 #include <QTableWidget>
 #include <QTextDocument>
-#include <QThread>
 #include <QTimer>
 #include <QTreeWidget>
 #include <QVBoxLayout>
@@ -952,6 +951,163 @@ bool persistCblReadingList(QSqlDatabase &db,
     if (readingListId)
         *readingListId = newReadingListId;
     return true;
+}
+
+int rematchImportedCblReadingList(QSqlDatabase &db,
+                                  qulonglong readingListId,
+                                  QProgressDialog *progress,
+                                  QString *error)
+{
+    QString readingListName;
+    QString sourceName;
+    QString sourcePath;
+    QString sourceHash;
+    QList<LibraryComicMatchData> libraryComics;
+    QHash<qulonglong, LibraryComicMatchData> comicsById;
+    QHash<QString, qulonglong> remaps;
+    QList<MatchedCblEntry> entries;
+    QList<bool> wasMissing;
+
+    if (!ensureCblImportTables(db, error))
+        return 0;
+
+    QSqlQuery list(db);
+    list.prepare(QStringLiteral("SELECT rl.name, m.source_name, m.source_path, m.source_hash "
+                                "FROM reading_list rl "
+                                "INNER JOIN cbl_reading_list_meta m ON m.reading_list_id = rl.id "
+                                "WHERE rl.id = :id"));
+    list.bindValue(QStringLiteral(":id"), readingListId);
+    if (!list.exec()) {
+        if (error)
+            *error = list.lastError().text();
+        return 0;
+    }
+    if (!list.next()) {
+        if (error)
+            *error = QObject::tr("This is not an imported CBL reading list.");
+        return 0;
+    }
+    readingListName = list.value(0).toString();
+    sourceName = list.value(1).toString();
+    sourcePath = list.value(2).toString();
+    sourceHash = list.value(3).toString();
+
+    QSqlQuery comics(db);
+    if (!comics.exec(QStringLiteral("SELECT c.id, c.fileName, ci.series, ci.number, ci.volume, ci.comicVineID, ci.date, ci.format, ci.alternateSeries "
+                                    "FROM comic c INNER JOIN comic_info ci ON c.comicInfoId = ci.id"))) {
+        if (error)
+            *error = comics.lastError().text();
+        return 0;
+    }
+    while (comics.next()) {
+        LibraryComicMatchData comic;
+        comic.id = comics.value(0).toULongLong();
+        comic.fileName = comics.value(1).toString();
+        comic.series = comics.value(2).toString();
+        comic.number = comics.value(3).toString();
+        comic.volume = comics.value(4).toString();
+        comic.comicVineIssueId = comics.value(5).toString();
+        comic.year = comics.value(6).toString().right(4);
+        comic.format = comics.value(7).toString();
+        comic.alternateSeries = comics.value(8).toString();
+        libraryComics.append(comic);
+        comicsById.insert(comic.id, comic);
+    }
+
+    QSqlQuery remapQuery(db);
+    if (!remapQuery.exec(QStringLiteral("SELECT series_key, volume_key, number_key, comic_id FROM cbl_remap_rule"))) {
+        if (error)
+            *error = remapQuery.lastError().text();
+        return 0;
+    }
+    while (remapQuery.next()) {
+        const QString key = remapQuery.value(0).toString() + QLatin1Char('|') + remapQuery.value(1).toString() + QLatin1Char('|') + remapQuery.value(2).toString();
+        remaps.insert(key, remapQuery.value(3).toULongLong());
+    }
+
+    QSqlQuery storedEntries(db);
+    storedEntries.prepare(QStringLiteral(
+            "SELECT ordering, comic_id, series, number, volume, year, format, file_name, source_id, "
+            "comicvine_series_id, comicvine_issue_id, match_state, match_tier "
+            "FROM cbl_reading_list_entry WHERE reading_list_id = :id ORDER BY ordering"));
+    storedEntries.bindValue(QStringLiteral(":id"), readingListId);
+    if (!storedEntries.exec()) {
+        if (error)
+            *error = storedEntries.lastError().text();
+        return 0;
+    }
+    while (storedEntries.next()) {
+        MatchedCblEntry entry;
+        entry.book.ordering = storedEntries.value(0).toInt();
+        const auto comicId = storedEntries.value(1).toULongLong();
+        entry.book.series = storedEntries.value(2).toString();
+        entry.book.number = storedEntries.value(3).toString();
+        entry.book.volume = storedEntries.value(4).toString();
+        entry.book.year = storedEntries.value(5).toString();
+        entry.book.format = storedEntries.value(6).toString();
+        entry.book.fileName = storedEntries.value(7).toString();
+        entry.book.id = storedEntries.value(8).toString();
+        entry.book.comicVineSeriesId = storedEntries.value(9).toString();
+        entry.book.comicVineIssueId = storedEntries.value(10).toString();
+        entry.match.state = static_cast<CblMatchState>(storedEntries.value(11).toInt());
+        entry.match.tier = static_cast<CblMatchTier>(storedEntries.value(12).toInt());
+        const bool missing = comicId == 0 || !comicsById.contains(comicId);
+        if (!missing) {
+            entry.match.state = CblMatchState::Matched;
+            entry.match.candidates = { comicsById.value(comicId) };
+        }
+        wasMissing.append(missing);
+        entries.append(entry);
+    }
+
+    if (progress) {
+        progress->setRange(0, qMax(entries.size(), 1));
+        progress->setValue(0);
+    }
+
+    int relinked = 0;
+    for (int i = 0; i < entries.size(); ++i) {
+        if (wasMissing.at(i)) {
+            entries[i].match = matchBook(entries.at(i).book, libraryComics, remaps, progress);
+            if (entries.at(i).match.state == CblMatchState::Matched)
+                ++relinked;
+        }
+
+        if (progress) {
+            progress->setValue(i + 1);
+            progress->setLabelText(QObject::tr("Matching comics... %1 of %2").arg(i + 1).arg(entries.size()));
+            if ((i + 1) % 10 == 0 || i + 1 == entries.size())
+                QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+            if (progress->wasCanceled())
+                return relinked;
+        }
+    }
+
+    if (relinked == 0)
+        return 0;
+
+    list.finish();
+    comics.finish();
+    remapQuery.finish();
+    storedEntries.finish();
+
+    CblReadingList readingList;
+    readingList.name = readingListName;
+    qulonglong savedId = 0;
+    if (!persistCblReadingList(db,
+                               readingList,
+                               entries,
+                               sourceName,
+                               sourcePath,
+                               sourceHash,
+                               0,
+                               readingListId,
+                               false,
+                               &savedId,
+                               error))
+        return 0;
+
+    return relinked;
 }
 
 void ensureSmartListTables(QSqlDatabase &db)
@@ -1985,7 +2141,6 @@ void ReadingListManagementCoordinator::showMissingComics()
     connect(matchAll, &QPushButton::clicked, &dialog, [&] {
         int relinked = 0;
         QString relinkError;
-        const QString databasePath = listsModel->databasePath();
 
         QProgressDialog matchingProgress(tr("Matching missing comics..."),
                                          QString(),
@@ -2001,39 +2156,47 @@ void ReadingListManagementCoordinator::showMissingComics()
         matchingProgress.show();
         QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 
-        auto *worker = QThread::create([databasePath, readingListId, folderReport, &relinked, &relinkError] {
-            QString relinkConnection;
-            {
-                QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-                relinkConnection = db.connectionName();
-                if (!db.isOpen()) {
-                    relinkError = QObject::tr("Unable to open the library database.");
-                    return;
-                }
-
-                if (folderReport) {
-                    QSqlQuery children(db);
-                    children.prepare(QStringLiteral("SELECT id FROM reading_list WHERE parentId = :id"));
-                    children.bindValue(QStringLiteral(":id"), readingListId);
-                    if (children.exec()) {
-                        while (children.next())
-                            relinked += DBHelper::relinkMissingReadingListEntries(db, children.value(0).toULongLong());
-                    } else {
-                        relinkError = children.lastError().text();
-                    }
+        QString relinkConnection;
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(listsModel->databasePath());
+            relinkConnection = db.connectionName();
+            if (!db.isOpen()) {
+                relinkError = tr("Unable to open the library database.");
+            } else if (folderReport) {
+                QSqlQuery children(db);
+                children.prepare(QStringLiteral("SELECT id FROM reading_list WHERE parentId = :id ORDER BY ordering"));
+                children.bindValue(QStringLiteral(":id"), readingListId);
+                if (!children.exec()) {
+                    relinkError = children.lastError().text();
                 } else {
-                    relinked = DBHelper::relinkMissingReadingListEntries(db, readingListId);
+                    QList<qulonglong> childIds;
+                    while (children.next())
+                        childIds.append(children.value(0).toULongLong());
+                    children.finish();
+
+                    for (const auto childId : std::as_const(childIds)) {
+                        if (DBHelper::isImportedCblReadingList(childId, db)) {
+                            matchingProgress.setLabelText(tr("Matching imported reading list..."));
+                            relinked += rematchImportedCblReadingList(db, childId, &matchingProgress, &relinkError);
+                        } else {
+                            matchingProgress.setLabelText(tr("Matching regular reading list..."));
+                            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+                            relinked += DBHelper::relinkMissingReadingListEntries(db, childId);
+                        }
+
+                        if (!relinkError.isEmpty())
+                            break;
+                    }
                 }
+            } else if (DBHelper::isImportedCblReadingList(readingListId, db)) {
+                relinked = rematchImportedCblReadingList(db, readingListId, &matchingProgress, &relinkError);
+            } else {
+                matchingProgress.setLabelText(tr("Matching regular reading list..."));
+                QApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+                relinked = DBHelper::relinkMissingReadingListEntries(db, readingListId);
             }
-            QSqlDatabase::removeDatabase(relinkConnection);
-        });
-        worker->start();
-        while (worker->isRunning()) {
-            QApplication::processEvents(QEventLoop::ExcludeUserInputEvents, 50);
-            QThread::msleep(20);
         }
-        worker->wait();
-        worker->deleteLater();
+        QSqlDatabase::removeDatabase(relinkConnection);
         matchingProgress.close();
 
         if (!relinkError.isEmpty()) {
