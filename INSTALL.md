@@ -20,7 +20,7 @@ cmake --install build
 - C++20 compiler
 - Qt >= 6.7 with the following modules:
 	- Core, Core5Compat, Gui, Widgets
-	- Quick, QuickControls2, QuickWidgets, Qml
+	- Quick, QuickControls2, Qml
 	- Sql (with SQLite driver)
 	- Multimedia
 	- Network

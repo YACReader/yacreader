@@ -5,8 +5,9 @@
 #include "comic_db.h"
 #include "comic_files_manager.h"
 
+#include <QGuiApplication>
 #include <QQmlContext>
-#include <QQuickWidget>
+#include <QQuickView>
 
 #include <utility>
 
@@ -17,16 +18,24 @@ ComicsView::ComicsView(QWidget *parent)
     qmlRegisterType<ComicDB>("com.yacreader.ComicDB", 1, 0, "ComicDB");
     qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
 
-    view = new QQuickWidget();
+    // QML renders into its own native window. A QQuickWidget would make Qt compose the whole
+    // library window through RHI and copy its full backing store on every repaint (QTBUG-120565),
+    // which makes the library slow on large screens.
+    view = new QQuickView();
 
-    view->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    view->setResizeMode(QQuickView::SizeRootObjectToView);
     connect(
-            view, &QQuickWidget::statusChanged, this,
-            [=, this](QQuickWidget::Status status) {
-                if (status == QQuickWidget::Error) {
+            view, &QQuickView::statusChanged, this,
+            [=, this](QQuickView::Status status) {
+                if (status == QQuickView::Error) {
                     QLOG_ERROR() << view->errors();
                 }
             });
+
+    // No parent: the QML based views add the container to their layout
+    container = QWidget::createWindowContainer(view);
+    container->setFocusPolicy(Qt::StrongFocus);
+    view->installEventFilter(this);
 
     comicDB = new ComicDB();
     auto comicInfo = &(comicDB->info);
@@ -38,6 +47,27 @@ ComicsView::ComicsView(QWidget *parent)
     ctxt->setContextProperty("comic_info_index", 0);
 
     setAcceptDrops(true);
+}
+
+ComicsView::~ComicsView()
+{
+    // Views that do not show QML (e.g. the classic view) never add the container to a layout
+    if (container->parentWidget() == nullptr)
+        delete container;
+}
+
+bool ComicsView::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched == view && event->type() == QEvent::MouseButtonPress) {
+        // A click does not give keyboard focus to an embedded child window (Windows only
+        // activates the top-level window), so move the focus to the view here.
+        if (!container->hasFocus())
+            container->setFocus(Qt::MouseFocusReason);
+        else if (QGuiApplication::focusWindow() != view)
+            view->requestActivate();
+    }
+
+    return QWidget::eventFilter(watched, event);
 }
 
 void ComicsView::setModel(ComicModel *m)
@@ -79,28 +109,38 @@ void ComicsView::updateInfoForIndex(int index)
     ctxt->setContextProperty("comic_info_index", index);
 }
 
-void ComicsView::dragEnterEvent(QDragEnterEvent *event)
+bool ComicsView::canImportDrop(const QDropEvent *event) const
 {
-    if (model->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex()))
-        event->acceptProposedAction();
-    else {
-        QLOG_TRACE() << "dragEnterEvent";
-        if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction) {
-            const auto urlList = event->mimeData()->urls();
-            QString currentPath;
-            for (const auto &url : urlList) {
-                // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
-                currentPath = url.toLocalFile();
-                if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir()) {
-                    event->acceptProposedAction();
-                    return;
-                }
-            }
+    if (model != nullptr && model->canDropMimeData(event->mimeData(), event->proposedAction(), 0, 0, QModelIndex()))
+        return true;
+
+    QLOG_TRACE() << "dragEnterEvent";
+    if (event->mimeData()->hasUrls() && event->dropAction() == Qt::CopyAction) {
+        const auto urlList = event->mimeData()->urls();
+        QString currentPath;
+        for (const auto &url : urlList) {
+            // comics or folders are accepted, folders' content is validate in dropEvent (avoid any lag before droping)
+            currentPath = url.toLocalFile();
+            if (Comic::fileIsComic(currentPath) || QFileInfo(currentPath).isDir())
+                return true;
         }
     }
+
+    return false;
+}
+
+void ComicsView::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (canImportDrop(event))
+        event->acceptProposedAction();
 }
 
 void ComicsView::dropEvent(QDropEvent *event)
+{
+    importDrop(event);
+}
+
+void ComicsView::importDrop(QDropEvent *event)
 {
     QLOG_DEBUG() << "drop" << event->dropAction();
 

@@ -1,22 +1,49 @@
 #include "comic_flow_widget.h"
 
+#include "comics_view.h"
 #include "cover_utils.h"
 
+#include <QContextMenuEvent>
+#include <QCoreApplication>
 #include <QDragEnterEvent>
 #include <QDropEvent>
 #include <QMimeData>
 #include <QVBoxLayout>
 
+namespace {
+bool canDropCustomCover(const QMimeData *mimeData)
+{
+    return mimeData->hasUrls() && !YACReader::droppedImagePath(mimeData->urls()).isEmpty();
+}
+
+// The comics view that imports the drops that are not a custom cover
+ComicsView *importTarget(const QWidget *widget)
+{
+    for (QWidget *parent = widget->parentWidget(); parent != nullptr; parent = parent->parentWidget()) {
+        if (auto *comicsView = qobject_cast<ComicsView *>(parent))
+            return comicsView;
+    }
+    return nullptr;
+}
+} // namespace
+
 ComicFlowWidget::ComicFlowWidget(QWidget *parent)
     : QWidget(parent)
 {
-    flow = new YACReaderComicFlow3D(this);
+    // The flow renders into its own native window. A render-to-texture widget would make
+    // Qt compose the whole library window through RHI, which is slow on large screens.
+    flow = new YACReaderComicFlow3D();
+    flowContainer = QWidget::createWindowContainer(flow, this);
+    flowContainer->setFocusPolicy(Qt::StrongFocus);
+    setFocusProxy(flowContainer);
+    // Events that the native window does not use do not propagate to the widgets.
+    flow->installEventFilter(this);
 
     connect(flow, &YACReaderComicFlow3D::centerIndexChanged, this, &ComicFlowWidget::centerIndexChanged);
     connect(flow, &YACReaderComicFlow3D::selected, this, &ComicFlowWidget::selected);
 
     auto l = new QVBoxLayout;
-    l->addWidget(flow);
+    l->addWidget(flowContainer);
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
 
@@ -45,12 +72,13 @@ void ComicFlowWidget::setTextColor(const QColor &color)
 
 QSize ComicFlowWidget::minimumSizeHint() const
 {
-    return flow->minimumSizeHint();
+    return QSize(320, 200);
 }
 
 QSize ComicFlowWidget::sizeHint() const
 {
-    return flow->sizeHint();
+    // No preferred size, the same as the former QRhiWidget flow
+    return QSize();
 }
 
 void ComicFlowWidget::setShowMarks(bool value)
@@ -162,7 +190,7 @@ void ComicFlowWidget::mouseDoubleClickEvent(QMouseEvent *event)
 
 void ComicFlowWidget::dragEnterEvent(QDragEnterEvent *event)
 {
-    if (event->mimeData()->hasUrls() && !YACReader::droppedImagePath(event->mimeData()->urls()).isEmpty()) {
+    if (canDropCustomCover(event->mimeData())) {
         event->setDropAction(Qt::CopyAction);
         event->accept();
     }
@@ -180,6 +208,67 @@ void ComicFlowWidget::dropEvent(QDropEvent *event)
     emit customCoverDropped(imagePath, index);
     event->setDropAction(Qt::CopyAction);
     event->accept();
+}
+
+bool ComicFlowWidget::eventFilter(QObject *watched, QEvent *event)
+{
+    if (watched != flow)
+        return QWidget::eventFilter(watched, event);
+
+    switch (event->type()) {
+    case QEvent::MouseButtonPress:
+        // Keep the widget focus in sync with the flow window, which activates itself on click
+        if (!flowContainer->hasFocus())
+            flowContainer->setFocus(Qt::MouseFocusReason);
+        return false;
+    case QEvent::KeyPress: {
+        // Keys that the flow does not use go up the widget hierarchy, as they did from the widget flow
+        auto *keyEvent = static_cast<QKeyEvent *>(event);
+        flow->keyPressEvent(keyEvent);
+        if (!keyEvent->isAccepted() && parentWidget() != nullptr) {
+            keyEvent->accept();
+            QCoreApplication::sendEvent(parentWidget(), keyEvent);
+        }
+        return true;
+    }
+    case QEvent::ContextMenu:
+        if (contextMenuPolicy() == Qt::CustomContextMenu) {
+            const auto *menuEvent = static_cast<QContextMenuEvent *>(event);
+            emit customContextMenuRequested(flowContainer->mapTo(this, menuEvent->pos()));
+            event->accept();
+            return true;
+        }
+        return false;
+    // Drags are custom covers for the flow, or comics that the parent comics view imports
+    // (a widget flow propagated the drags that it did not accept to its parents).
+    case QEvent::DragEnter:
+    case QEvent::DragMove: {
+        auto *dragEvent = static_cast<QDragMoveEvent *>(event);
+        auto *comicsView = importTarget(this);
+        if (canDropCustomCover(dragEvent->mimeData())) {
+            dragEvent->setDropAction(Qt::CopyAction);
+            dragEvent->accept();
+        } else if (comicsView != nullptr && comicsView->canImportDrop(dragEvent)) {
+            dragEvent->acceptProposedAction();
+        } else {
+            dragEvent->ignore();
+        }
+        return true;
+    }
+    case QEvent::Drop: {
+        auto *dropEvent = static_cast<QDropEvent *>(event);
+        auto *comicsView = importTarget(this);
+        if (canDropCustomCover(dropEvent->mimeData()))
+            this->dropEvent(dropEvent);
+        else if (comicsView != nullptr && comicsView->canImportDrop(dropEvent))
+            comicsView->importDrop(dropEvent);
+        else
+            dropEvent->ignore();
+        return true;
+    }
+    default:
+        return false;
+    }
 }
 
 void ComicFlowWidget::updateConfig(QSettings *settings)

@@ -20,7 +20,7 @@
 #include <QQmlContext>
 #include <QQmlProperty>
 #include <QQuickItem>
-#include <QQuickWidget>
+#include <QQuickView>
 #include <QTimer>
 #include <QToolBar>
 #include <QVBoxLayout>
@@ -133,7 +133,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     setShowMarks(true); // TODO save this in settings
 
     auto l = new QVBoxLayout;
-    l->addWidget(view);
+    l->addWidget(container);
     this->setLayout(l);
 
     setContentsMargins(0, 0, 0, 0);
@@ -243,10 +243,8 @@ void GridComicsView::setModel(ComicModel *model)
     if (model == nullptr)
         return;
 
-    // Keep the previous frame visible while QML resets the model. The pending
-    // origin/anchor is applied before painting is enabled again.
-    view->setUpdatesEnabled(false);
-
+    // The pending origin/anchor is applied before the next Qt Quick frame (see eventFilter()),
+    // so no frame shows the reset model at the old scroll position.
     clearFocusedFolder();
     disconnect(modelDataChangedConnection);
     disconnect(modelFavoritesChangedConnection);
@@ -915,19 +913,14 @@ void GridComicsView::clearFocusedFolder()
 void GridComicsView::applyPendingViewState()
 {
     auto *rootObject = view->rootObject();
-    if (!rootObject) {
-        view->setUpdatesEnabled(true);
+    if (!rootObject)
         return;
-    }
     auto scrollView = rootObject->findChild<QObject *>("topScrollView", Qt::FindChildrenRecursively);
-    if (!scrollView) {
-        view->setUpdatesEnabled(true);
+    if (!scrollView)
         return;
-    }
 
     if (!pendingViewState) {
         QMetaObject::invokeMethod(scrollView, "scrollToOrigin");
-        view->setUpdatesEnabled(true);
         view->update();
         return;
     }
@@ -958,8 +951,21 @@ void GridComicsView::applyPendingViewState()
                               Q_ARG(QVariant, viewRow),
                               Q_ARG(QVariant, state.offset),
                               Q_ARG(QVariant, state.itemExtent));
-    view->setUpdatesEnabled(true);
     view->update();
+}
+
+bool GridComicsView::eventFilter(QObject *watched, QEvent *event)
+{
+    // QQuickView renders on its own and setUpdatesEnabled() does not stop it. Apply a pending
+    // view state just before Qt Quick starts a frame (a frame starts with an UpdateRequest, or
+    // with an Expose when the view is shown or resized), so the first frame after a model
+    // change already shows the restored position.
+    if (watched == view && viewStateTimer->isActive() && (event->type() == QEvent::UpdateRequest || event->type() == QEvent::Expose)) {
+        viewStateTimer->stop();
+        applyPendingViewState();
+    }
+
+    return ComicsView::eventFilter(watched, event);
 }
 
 int GridComicsView::viewRowForItem(const ContentItemRef &item) const
@@ -1004,7 +1010,7 @@ void GridComicsView::updateCurrentComicView()
 
 void GridComicsView::focusComicsNavigation(Qt::FocusReason reason)
 {
-    view->setFocus(reason);
+    container->setFocus(reason);
 }
 
 void GridComicsView::reloadContent()
