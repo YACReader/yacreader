@@ -137,7 +137,6 @@ else()
         OpenGLWidgets
         Quick
         QuickControls2
-        QuickWidgets
         Qml
         ShaderTools
         Sql

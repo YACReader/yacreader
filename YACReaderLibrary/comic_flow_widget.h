@@ -51,11 +51,13 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
 private:
     YACReaderComicFlow3D *flow;
+    QWidget *flowContainer;
 };
 
 #endif

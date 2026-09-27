@@ -13,13 +13,14 @@ class QSplitter;
 class ComicFlowWidget;
 class QToolBar;
 class ComicModel;
-class QQuickWidget;
+class QQuickView;
 
 class ComicsView : public QWidget
 {
     Q_OBJECT
 public:
     explicit ComicsView(QWidget *parent = nullptr);
+    ~ComicsView() override;
     virtual void setToolBar(QToolBar *toolBar) = 0;
     virtual void releaseToolBar() = 0;
     virtual void saveViewConfig() { }
@@ -38,6 +39,11 @@ public:
     virtual void reloadContent();
     virtual ContentViewState captureViewState() const { return { }; }
     virtual void restoreViewState(const ContentViewState &state) { Q_UNUSED(state); }
+
+    // Import of comics dropped on the view. Native child windows (e.g. the 3D flow) use these,
+    // because their drag events do not propagate to this widget.
+    bool canImportDrop(const QDropEvent *event) const;
+    void importDrop(QDropEvent *event);
 
 public slots:
     virtual void updateInfoForIndex(int index);
@@ -65,8 +71,11 @@ protected:
     // Drop to import
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dropEvent(QDropEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
-    QQuickWidget *view;
+    // The QML view is a native window embedded with QWidget::createWindowContainer.
+    // Add 'container' to layouts and give it the focus; do not use 'view' as a widget.
+    QQuickView *view;
     QWidget *container;
 
     ComicDB *comicDB;

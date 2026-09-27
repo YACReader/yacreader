@@ -544,7 +544,6 @@ target_link_libraries(YACReaderLibrary PRIVATE
     Qt6::Svg
     Qt6::Quick
     Qt6::Qml
-    Qt6::QuickWidgets
     Qt6::QuickControls2
     Qt6::Core5Compat
     library_common

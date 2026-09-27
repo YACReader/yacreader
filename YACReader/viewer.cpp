@@ -245,6 +245,7 @@ QString Viewer::renderingSystemInfo() const
 {
     QString text = QStringLiteral("\nRENDERING INFORMATION\n");
     // Qt 6 switches the top-level window to a GPU surface type once it has to compose
+    // RHI-rendered widgets (e.g. QRhiWidget); from then on every repaint is composited.
     const QWindow *topLevel = window()->windowHandle();
     if (topLevel == nullptr || topLevel->surfaceType() == QSurface::RasterSurface)
         text.append(QStringLiteral("Reader renderer: QWidget (Raster)\n"));
@@ -1388,6 +1389,19 @@ void Viewer::showGoToFlow()
 
 void Viewer::animateShowGoToFlow()
 {
+    if (goToFlow->usesNativeRhiWindow()) {
+        if (goToFlow->isHidden()) {
+            showGoToFlowAnimation->stop();
+            goToFlow->move((width() - goToFlow->width()) / 2, height() - goToFlow->height());
+            goToFlow->setPageNumber(render->getIndex());
+            goToFlow->centerSlide(render->getIndex());
+            goToFlow->show();
+            goToFlow->setFocus(Qt::OtherFocusReason);
+            moveCursoToGoToFlow();
+        }
+        return;
+    }
+
     if (goToFlow->isHidden() && showGoToFlowAnimation->state() != QPropertyAnimation::Running) {
         disconnect(showGoToFlowAnimation, &QAbstractAnimation::finished, goToFlow, &QWidget::hide);
         connect(showGoToFlowAnimation, &QAbstractAnimation::finished, this, &Viewer::moveCursoToGoToFlow);
@@ -1403,6 +1417,18 @@ void Viewer::animateShowGoToFlow()
 
 void Viewer::animateHideGoToFlow()
 {
+    if (goToFlow->usesNativeRhiWindow()) {
+        if (goToFlow->isVisible()) {
+            showGoToFlowAnimation->stop();
+            goToFlow->centerSlide(render->getIndex());
+            goToFlow->setPageNumber(render->getIndex());
+            goToFlow->hide();
+            viewport()->update();
+            setFocus(Qt::OtherFocusReason);
+        }
+        return;
+    }
+
     if (goToFlow->isVisible() && showGoToFlowAnimation->state() != QPropertyAnimation::Running) {
         connect(showGoToFlowAnimation, &QAbstractAnimation::finished, goToFlow, &QWidget::hide);
         disconnect(showGoToFlowAnimation, &QAbstractAnimation::finished, this, &Viewer::moveCursoToGoToFlow);

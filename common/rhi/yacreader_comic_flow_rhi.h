@@ -12,7 +12,7 @@ class ImageLoader3D;
 class YACReaderComicFlow3D : public YACReaderFlow3D
 {
 public:
-    YACReaderComicFlow3D(QWidget *parent = nullptr, struct Preset p = defaultYACReaderFlowConfig);
+    YACReaderComicFlow3D(struct Preset p = defaultYACReaderFlowConfig);
     void setImagePaths(QStringList paths);
     void updateImageData() override;
     void remove(int item) override;

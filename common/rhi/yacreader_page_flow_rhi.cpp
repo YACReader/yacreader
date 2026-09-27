@@ -3,8 +3,8 @@
 #include <QImage>
 
 // YACReaderPageFlow3D implementation
-YACReaderPageFlow3D::YACReaderPageFlow3D(QWidget *parent, struct Preset p)
-    : YACReaderFlow3D(parent, p)
+YACReaderPageFlow3D::YACReaderPageFlow3D(struct Preset p)
+    : YACReaderFlow3D(p)
 {
     worker = new ImageLoaderByteArray3D(this);
     worker->flow = this;
@@ -12,10 +12,7 @@ YACReaderPageFlow3D::YACReaderPageFlow3D(QWidget *parent, struct Preset p)
 
 YACReaderPageFlow3D::~YACReaderPageFlow3D()
 {
-    if (timerId != -1) {
-        this->killTimer(timerId);
-        timerId = -1;
-    }
+    stopAnimationTimer();
     rawImages.clear();
 
     // Clean up textures and clear images to prevent double-delete in base destructor

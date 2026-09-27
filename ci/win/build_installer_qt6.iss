@@ -60,7 +60,6 @@ Source: Qt6QuickControls2FusionStyleImpl.dll; DestDir: {app}
 Source: Qt6QuickLayouts.dll; DestDir: {app}
 Source: Qt6QuickShapes.dll; DestDir: {app}
 Source: Qt6QuickTemplates2.dll; DestDir: {app}
-Source: Qt6QuickWidgets.dll; DestDir: {app}
 Source: Qt6Sql.dll; DestDir: {app}
 Source: Qt6Svg.dll; DestDir: {app}
 Source: Qt6TextToSpeech.dll; DestDir: {app}

@@ -10,7 +10,7 @@
 
 #include <QQmlProperty>
 #include <QQuickItem>
-#include <QQuickWidget>
+#include <QQuickView>
 #include <QToolBar>
 #include <QVBoxLayout>
 
@@ -34,7 +34,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     comicInfoHelper = new YACReaderComicInfoHelper(this);
 
     auto l = new QVBoxLayout;
-    l->addWidget(view);
+    l->addWidget(container);
     this->setLayout(l);
 
     setContentsMargins(0, 0, 0, 0);
@@ -209,7 +209,7 @@ void InfoComicsView::updateCurrentComicView()
 
 void InfoComicsView::focusComicsNavigation(Qt::FocusReason reason)
 {
-    view->setFocus(reason);
+    container->setFocus(reason);
 }
 
 void InfoComicsView::setShowMarks(bool show)

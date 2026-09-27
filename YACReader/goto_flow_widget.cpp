@@ -90,7 +90,12 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
             }
         });
     } else {
-        rhiFlow = new YACReaderPageFlow3D(this);
+        rhiFlow = new YACReaderPageFlow3D();
+        rhiContainer = QWidget::createWindowContainer(rhiFlow, this);
+        rhiContainer->setFocusPolicy(Qt::StrongFocus);
+        setFocusProxy(rhiContainer);
+        // The flow is a native window, so key events that it ignores do not propagate to this widget.
+        rhiFlow->installEventFilter(this);
         rhiFlow->setShowMarks(false);
         rhiFlow->setSlideSize(imageSize);
         connect(rhiFlow, &YACReaderPageFlow3D::centerIndexChanged, this, &GoToFlowWidget::setPageNumber);
@@ -103,7 +108,9 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
         centerSlide(static_cast<int>(page));
     });
 
-    mainLayout->addWidget(softwareRendering ? static_cast<QWidget *>(softwareFlow) : static_cast<QWidget *>(rhiFlow));
+    mainLayout->addWidget(softwareRendering ? static_cast<QWidget *>(softwareFlow) : rhiContainer);
+    if (!softwareRendering)
+        mainLayout->addWidget(toolBar);
     toolBar->raise();
 
     const int flowHeight = softwareRendering
@@ -370,6 +377,28 @@ void GoToFlowWidget::keyPressEvent(QKeyEvent *event)
 
 bool GoToFlowWidget::eventFilter(QObject *watched, QEvent *event)
 {
+    if (rhiFlow != nullptr && watched == rhiFlow && event->type() == QEvent::KeyPress) {
+        auto *keyEvent = static_cast<QKeyEvent *>(event);
+        switch (keyEvent->key()) {
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+        case Qt::Key_Space:
+        case Qt::Key_S:
+            keyPressEvent(keyEvent);
+            return true;
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab:
+            // A plain QWindow has no focus chain, so move the widget focus like QWidget::event() does
+            if (!(keyEvent->modifiers() & (Qt::ControlModifier | Qt::AltModifier))) {
+                focusNextPrevChild(keyEvent->key() == Qt::Key_Tab);
+                return true;
+            }
+            break;
+        }
+        // Arrow keys are handled by the flow itself.
+        return false;
+    }
+
     if (softwareFlow != nullptr && watched == softwareFlow->viewport() && event->type() == QEvent::Wheel) {
         auto *wheelEvent = static_cast<QWheelEvent *>(event);
         const QPoint angleDelta = wheelEvent->angleDelta();
@@ -516,6 +545,8 @@ void GoToFlowWidget::clearSoftwareThumbnailQueue()
 void GoToFlowWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
+    if (rhiFlow != nullptr)
+        QTimer::singleShot(0, this, [this] { rhiFlow->render(); });
     updateSoftwareThumbnailWindow();
 }
 
@@ -529,9 +560,11 @@ void GoToFlowWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
 
-    toolBar->move(0, event->size().height() - toolBar->height());
-    toolBar->setFixedWidth(width());
-    toolBar->raise();
+    if (softwareRendering) {
+        toolBar->move(0, event->size().height() - toolBar->height());
+        toolBar->setFixedWidth(width());
+        toolBar->raise();
+    }
 
     if (softwareFlow != nullptr) {
         QTimer::singleShot(0, this, [this] {

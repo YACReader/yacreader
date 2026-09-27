@@ -11,7 +11,7 @@ class ImageLoaderByteArray3D;
 class YACReaderPageFlow3D : public YACReaderFlow3D
 {
 public:
-    YACReaderPageFlow3D(QWidget *parent = nullptr, struct Preset p = defaultYACReaderFlowConfig);
+    YACReaderPageFlow3D(struct Preset p = defaultYACReaderFlowConfig);
     ~YACReaderPageFlow3D();
     void updateImageData() override;
     void populate(int n);
