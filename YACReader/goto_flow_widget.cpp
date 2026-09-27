@@ -184,7 +184,11 @@ void GoToFlowWidget::reset()
 void GoToFlowWidget::centerSlide(int slide)
 {
     if (rhiFlow != nullptr) {
-        if (rhiFlow->centerIndex() != slide)
+        // The flow only animates while it renders, so a hidden flow must jump to the slide.
+        // Otherwise a pending animation plays the next time the flow is shown.
+        if (isHidden())
+            rhiFlow->setCurrentIndexWithoutAnimation(slide);
+        else if (rhiFlow->centerIndex() != slide)
             rhiFlow->setCenterIndex(slide);
         return;
     }

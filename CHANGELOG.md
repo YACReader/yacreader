@@ -8,6 +8,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve double page layout stability when going back and forth after finding single image exceptions.
 * Add more system information about the rendering pipelines used.
 * Improve zooming performance in the regular reading mode.
+* Fix unecessary animation when the flow is shown.
 
 ## 10.3.1
 

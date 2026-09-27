@@ -1420,9 +1420,9 @@ void Viewer::animateHideGoToFlow()
     if (goToFlow->usesNativeRhiWindow()) {
         if (goToFlow->isVisible()) {
             showGoToFlowAnimation->stop();
+            goToFlow->hide();
             goToFlow->centerSlide(render->getIndex());
             goToFlow->setPageNumber(render->getIndex());
-            goToFlow->hide();
             viewport()->update();
             setFocus(Qt::OtherFocusReason);
         }
