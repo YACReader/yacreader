@@ -9,6 +9,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add more system information about the rendering pipelines used.
 * Improve zooming performance in the regular reading mode.
 * Fix unecessary animation when the flow is shown.
+* Fix continuous scroll mode not updating the flow.
 
 ## 10.3.1
 

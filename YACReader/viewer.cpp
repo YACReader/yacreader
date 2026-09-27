@@ -1393,8 +1393,8 @@ void Viewer::animateShowGoToFlow()
         if (goToFlow->isHidden()) {
             showGoToFlowAnimation->stop();
             goToFlow->move((width() - goToFlow->width()) / 2, height() - goToFlow->height());
-            goToFlow->setPageNumber(render->getIndex());
-            goToFlow->centerSlide(render->getIndex());
+            goToFlow->setPageNumber(getCurrentPageNumber());
+            goToFlow->centerSlide(getCurrentPageNumber());
             goToFlow->show();
             goToFlow->setFocus(Qt::OtherFocusReason);
             moveCursoToGoToFlow();
@@ -1409,8 +1409,8 @@ void Viewer::animateShowGoToFlow()
         showGoToFlowAnimation->setEndValue(QPoint((width() - goToFlow->width()) / 2, height() - goToFlow->height()));
         showGoToFlowAnimation->start();
         goToFlow->show();
-        goToFlow->setPageNumber(render->getIndex());
-        goToFlow->centerSlide(render->getIndex());
+        goToFlow->setPageNumber(getCurrentPageNumber());
+        goToFlow->centerSlide(getCurrentPageNumber());
         goToFlow->setFocus(Qt::OtherFocusReason);
     }
 }
@@ -1421,8 +1421,8 @@ void Viewer::animateHideGoToFlow()
         if (goToFlow->isVisible()) {
             showGoToFlowAnimation->stop();
             goToFlow->hide();
-            goToFlow->centerSlide(render->getIndex());
-            goToFlow->setPageNumber(render->getIndex());
+            goToFlow->centerSlide(getCurrentPageNumber());
+            goToFlow->setPageNumber(getCurrentPageNumber());
             viewport()->update();
             setFocus(Qt::OtherFocusReason);
         }
@@ -1435,8 +1435,8 @@ void Viewer::animateHideGoToFlow()
         showGoToFlowAnimation->setStartValue(QPoint((width() - goToFlow->width()) / 2, height() - goToFlow->height()));
         showGoToFlowAnimation->setEndValue(QPoint((width() - goToFlow->width()) / 2, height()));
         showGoToFlowAnimation->start();
-        goToFlow->centerSlide(render->getIndex());
-        goToFlow->setPageNumber(render->getIndex());
+        goToFlow->centerSlide(getCurrentPageNumber());
+        goToFlow->setPageNumber(getCurrentPageNumber());
         this->setFocus(Qt::OtherFocusReason);
     }
 }
