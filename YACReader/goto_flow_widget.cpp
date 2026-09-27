@@ -78,7 +78,6 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
         softwareFlow->setItemDelegate(new SoftwareFlowItemDelegate(softwareFlow));
         softwareFlow->viewport()->installEventFilter(this);
         softwareFlow->viewport()->setAutoFillBackground(true);
-        setAutoFillBackground(true);
         mainLayout->setContentsMargins(0, softwareFlowPadding, 0, toolBar->height() + softwareFlowPadding);
         updateSoftwareFlowMetrics();
 
@@ -120,6 +119,9 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
 
     this->setCursor(QCursor(Qt::ArrowCursor));
 
+    // The toolbar background is translucent, so this widget must paint an opaque base under it.
+    setAutoFillBackground(true);
+
     initTheme(this);
 }
 
@@ -137,11 +139,11 @@ void GoToFlowWidget::applyTheme(const Theme &theme)
         palette.setColor(QPalette::Text, goToFlowTheme.flowTextColor);
         softwareFlow->setPalette(palette);
         softwareFlow->viewport()->setPalette(palette);
-
-        QPalette widgetPalette = this->palette();
-        widgetPalette.setColor(QPalette::Window, goToFlowTheme.flowBackgroundColor);
-        setPalette(widgetPalette);
     }
+
+    QPalette widgetPalette = this->palette();
+    widgetPalette.setColor(QPalette::Window, goToFlowTheme.flowBackgroundColor);
+    setPalette(widgetPalette);
 }
 
 GoToFlowWidget::~GoToFlowWidget()
