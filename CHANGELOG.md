@@ -14,8 +14,11 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix saving pages in continous scroll mode.
 * Fix saving/exporting while pages are still missing.
 
-### All GUI apps.
+### All GUI apps
 * Fix performance degradation in high resolution screens. This has been affecting builds using Qt 6.5 or later. It's a deep change so please let me know if you find any issues in the flow views or the grid views.
+
+### All apps
+* Fixed sorting when using Qt builds without ICU. This was affecting mostly Linux users.
 
 ## 10.3.1
 
