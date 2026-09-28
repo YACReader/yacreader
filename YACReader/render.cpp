@@ -1148,14 +1148,14 @@ QString Render::getCurrentPagesInformation()
     return s;
 }
 
-void Render::setBookmark()
+void Render::setBookmark(int page)
 {
-    comic->setBookmark();
+    comic->setBookmark(page);
 }
 
-void Render::removeBookmark()
+void Render::removeBookmark(int page)
 {
-    comic->removeBookmark();
+    comic->removeBookmark(page);
 }
 
 void Render::save()

@@ -87,8 +87,8 @@ public:
 
 public slots:
     void loadFinished();
-    void setBookmark();
-    void removeBookmark();
+    void setBookmark(int index);
+    void removeBookmark(int index);
     void saveBookmarks();
     void checkIsBookmark(int index);
     void updateBookmarkImage(int);

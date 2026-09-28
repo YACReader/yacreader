@@ -302,7 +302,15 @@ void Viewer::createConnections()
     connect(render, qOverload<unsigned int>(&Render::numPages), this, &Viewer::onNumPagesReady);
     connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &Viewer::onContinuousScroll);
     connect(render, &Render::processingPage, this, &Viewer::setLoadingMessage);
-    connect(render, &Render::currentPageIsBookmark, this, &Viewer::pageIsBookmark);
+    connect(render, &Render::currentPageIsBookmark, this, [this](bool isBookmark) {
+        if (continuousScroll && render->hasLoadedComic() && continuousViewModel->numPages() > 0) {
+            if (Bookmarks *bookmarks = render->getBookmarks()) {
+                emit pageIsBookmark(bookmarks->isBookmark(continuousViewModel->readingProgressPage()));
+            }
+        } else {
+            emit pageIsBookmark(isBookmark);
+        }
+    });
     connect(render, &Render::pageChanged, this, &Viewer::updateInformation);
     connect(render, &Render::pageChanged, this, &Viewer::onRenderPageChanged);
 
@@ -1490,14 +1498,18 @@ void Viewer::rotateRight()
 // TODO
 void Viewer::setBookmark(bool set)
 {
-    render->setBookmark();
-    if (set) // add bookmark
-    {
-        render->setBookmark();
-    } else // remove bookmark
-    {
-        render->removeBookmark();
-    }
+    if (!render->hasLoadedComic())
+        return;
+
+    const int page = (continuousScroll && continuousViewModel->numPages() > 0)
+            ? continuousViewModel->readingProgressPage()
+            : static_cast<int>(render->getIndex());
+    if (set)
+        render->setBookmark(page);
+    else
+        render->removeBookmark(page);
+
+    emit pageIsBookmark(set);
 }
 
 void Viewer::save()
@@ -1588,6 +1600,10 @@ void Viewer::onContinuousScroll(int value)
         // switch) instead.
         updateInformation();
         emit pageAvailable(true);
+        // Render only reports bookmark state for its own page changes.
+        if (Bookmarks *bookmarks = render->getBookmarks()) {
+            emit pageIsBookmark(bookmarks->isBookmark(currentPage));
+        }
     }
 }
 

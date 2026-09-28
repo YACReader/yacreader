@@ -174,8 +174,8 @@ public slots:
     void fillBuffer();
     void invalidate();
     QString getCurrentPagesInformation();
-    void setBookmark();
-    void removeBookmark();
+    void setBookmark(int page);
+    void removeBookmark(int page);
     void save();
     void reset();
     void reload();

@@ -10,6 +10,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve zooming performance in the regular reading mode.
 * Fix unecessary animation when the flow is shown.
 * Fix continuous scroll mode not updating the flow.
+* Fix bookmars when continous scroll mode is used.
 
 ## 10.3.1
 
