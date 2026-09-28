@@ -1101,8 +1101,13 @@ void MainWindowViewer::saveImage()
     settings->setValue(SAVE_RENDERED_PAGE_DIRECTORY, outputDir);
 
     const QString baseName = comicBaseName(currentComicPath);
-    const QList<int> pages = viewer->currentVisiblePages();
+    const QList<int> pages = viewer->currentRenderedPages();
     const QString pathFile = QDir(outputDir).filePath(QString("%1-%2.jpg").arg(baseName).arg(pageSuffix(pages)));
+    const QPixmap p = viewer->pixmap();
+    if (p.isNull()) {
+        QMessageBox::warning(this, tr("Save current page"), tr("The current page is not ready. Please try again later."));
+        return;
+    }
 
     if (QFileInfo::exists(pathFile)) {
         const auto answer = QMessageBox::question(this, tr("Overwrite file?"), tr("The file already exists. Do you want to overwrite it?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
@@ -1110,10 +1115,8 @@ void MainWindowViewer::saveImage()
             return;
     }
 
-    const QPixmap p = viewer->pixmap();
-    if (!p.isNull()) {
-        p.save(pathFile);
-    }
+    if (!p.save(pathFile))
+        QMessageBox::warning(this, tr("Save current page"), tr("The current page could not be saved."));
 }
 
 void MainWindowViewer::extractPages()
@@ -1131,8 +1134,10 @@ void MainWindowViewer::extractPages()
 
     for (const int page : pages) {
         const QByteArray rawPage = viewer->rawPage(page);
-        if (rawPage.isEmpty())
-            continue;
+        if (rawPage.isEmpty()) {
+            QMessageBox::warning(this, tr("Extract page(s)"), tr("The selected pages are not ready. Please try again later."));
+            return;
+        }
 
         const QString path = QDir(outputDir).filePath(QString("%1-%2.%3").arg(baseName).arg(page + 1).arg(imageExtension(rawPage)));
         pageExtractions.append({ rawPage, path });

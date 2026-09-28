@@ -995,6 +995,12 @@ void Viewer::resizeEvent(QResizeEvent *event)
 
 QPixmap Viewer::pixmap() const
 {
+    if (continuousScroll && continuousViewModel->numPages() > 0) {
+        // Render's page buffer does not follow the scroll position.
+        const QImage *img = continuousPageProvider->image(continuousViewModel->readingProgressPage());
+        return img && !img->isNull() ? QPixmap::fromImage(*img) : QPixmap();
+    }
+
     if (currentPage != nullptr && !currentPage->isNull())
         return *currentPage;
 
@@ -1006,7 +1012,15 @@ QByteArray Viewer::rawPage(int page) const
     return render->getRawPage(page);
 }
 
-QList<int> Viewer::currentVisiblePages()
+QList<int> Viewer::currentRenderedPages() const
+{
+    if (continuousScroll && continuousViewModel->numPages() > 0)
+        return { continuousViewModel->readingProgressPage() };
+
+    return currentVisiblePages();
+}
+
+QList<int> Viewer::currentVisiblePages() const
 {
     QList<int> pages;
 

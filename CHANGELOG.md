@@ -11,6 +11,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix unecessary animation when the flow is shown.
 * Fix continuous scroll mode not updating the flow.
 * Fix bookmars when continous scroll mode is used.
+* Fix saving pages in continous scroll mode.
+* Fix saving/exporting while pages are still missing.
 
 ## 10.3.1
 
