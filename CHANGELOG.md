@@ -8,23 +8,23 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve double page layout stability when going back and forth after finding single image exceptions.
 * Add more system information about the rendering pipelines used.
 * Improve zooming performance in the regular reading mode.
-* Fix unecessary animation when the flow is shown.
+* Fix unnecessary animation when the flow is shown.
 * Fix continuous scroll mode not updating the flow.
-* Fix bookmars when continous scroll mode is used.
-* Fix saving pages in continous scroll mode.
+* Fix bookmarks when continuous scroll mode is used.
+* Fix saving pages in continuous scroll mode.
 * Fix saving/exporting while pages are still missing.
 
 ### All GUI apps
-* Fix performance degradation in high resolution screens. This has been affecting builds using Qt 6.5 or later. It's a deep change so please let me know if you find any issues in the flow views or the grid views.
+* Fix performance degradation on high-resolution screens. This has affected builds using Qt 6.5 or later. It's a deep change, so please let me know if you find any issues in the flow views or grid views.
 
 ### All apps
-* Fixed sorting when using Qt builds without ICU. This was affecting mostly Linux users.
+* Fix sorting when using Qt builds without ICU. This mostly affected Linux users.
 
 ## 10.3.1
 
 ### YACReader
 * Fix continuous vertical scroll mode shortcut not being saved.
-* Improve non valid characters handling in the renaming feature.
+* Improve handling of invalid characters in the renaming feature.
 * Improve layout in the renaming/organizing dialog.
 * Add a software-rendered "go to flow" option for systems with performance problems.
 * Fix scrolling while a file is loading.
