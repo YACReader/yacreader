@@ -14,6 +14,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix saving pages in continous scroll mode.
 * Fix saving/exporting while pages are still missing.
 
+### All GUI apps.
+* Fix performance degradation in high resolution screens. This has been affecting builds using Qt 6.5 or later. It's a deep change so please let me know if you find any issues in the flow views or the grid views.
+
 ## 10.3.1
 
 ### YACReader
