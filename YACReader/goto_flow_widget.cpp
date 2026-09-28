@@ -253,8 +253,7 @@ void GoToFlowWidget::setNumSlides(unsigned int slides)
 void GoToFlowWidget::setImageReady(int index, const QByteArray &imageData)
 {
     if (rhiFlow != nullptr) {
-        rhiFlow->rawImages[index] = imageData;
-        rhiFlow->imagesReady[index] = true;
+        rhiFlow->setImageReady(index, imageData);
     } else if (index >= 0 && index < softwareImages.size()) {
         softwareImages[index] = imageData;
         if (isVisible() && index >= softwareThumbnailFirst && index <= softwareThumbnailLast)
