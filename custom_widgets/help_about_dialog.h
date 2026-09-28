@@ -5,19 +5,24 @@
 
 #include <QDialog>
 
+#include <functional>
+
 class QTabWidget;
 class QTextBrowser;
 class QPushButton;
+class QShowEvent;
 
 class HelpAboutDialog : public QDialog, protected Themable
 {
     Q_OBJECT
 protected:
     void applyTheme(const Theme &theme) override;
+    void showEvent(QShowEvent *event) override;
 
 public:
     HelpAboutDialog(QWidget *parent = 0);
     HelpAboutDialog(const QString &pathAbout, const QString &pathHelp, QWidget *parent = 0);
+    void setAdditionalSystemInfoProvider(std::function<QString()> provider);
 public slots:
     void loadAboutInformation(const QString &path);
     void loadHelp(const QString &path);
@@ -34,6 +39,7 @@ private:
 
     QString aboutHtmlContent;
     QString helpHtmlContent;
+    std::function<QString()> additionalSystemInfoProvider;
 };
 
 #endif // HELP_ABOUT_DIALOG_H

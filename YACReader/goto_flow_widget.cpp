@@ -78,7 +78,6 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
         softwareFlow->setItemDelegate(new SoftwareFlowItemDelegate(softwareFlow));
         softwareFlow->viewport()->installEventFilter(this);
         softwareFlow->viewport()->setAutoFillBackground(true);
-        setAutoFillBackground(true);
         mainLayout->setContentsMargins(0, softwareFlowPadding, 0, toolBar->height() + softwareFlowPadding);
         updateSoftwareFlowMetrics();
 
@@ -90,7 +89,12 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
             }
         });
     } else {
-        rhiFlow = new YACReaderPageFlow3D(this);
+        rhiFlow = new YACReaderPageFlow3D();
+        rhiContainer = QWidget::createWindowContainer(rhiFlow, this);
+        rhiContainer->setFocusPolicy(Qt::StrongFocus);
+        setFocusProxy(rhiContainer);
+        // The flow is a native window, so key events that it ignores do not propagate to this widget.
+        rhiFlow->installEventFilter(this);
         rhiFlow->setShowMarks(false);
         rhiFlow->setSlideSize(imageSize);
         connect(rhiFlow, &YACReaderPageFlow3D::centerIndexChanged, this, &GoToFlowWidget::setPageNumber);
@@ -103,7 +107,9 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
         centerSlide(static_cast<int>(page));
     });
 
-    mainLayout->addWidget(softwareRendering ? static_cast<QWidget *>(softwareFlow) : static_cast<QWidget *>(rhiFlow));
+    mainLayout->addWidget(softwareRendering ? static_cast<QWidget *>(softwareFlow) : rhiContainer);
+    if (!softwareRendering)
+        mainLayout->addWidget(toolBar);
     toolBar->raise();
 
     const int flowHeight = softwareRendering
@@ -112,6 +118,9 @@ GoToFlowWidget::GoToFlowWidget(QWidget *parent, FlowType flowType)
     resize(static_cast<int>(5 * imageSize.width()), flowHeight);
 
     this->setCursor(QCursor(Qt::ArrowCursor));
+
+    // The toolbar background is translucent, so this widget must paint an opaque base under it.
+    setAutoFillBackground(true);
 
     initTheme(this);
 }
@@ -130,15 +139,33 @@ void GoToFlowWidget::applyTheme(const Theme &theme)
         palette.setColor(QPalette::Text, goToFlowTheme.flowTextColor);
         softwareFlow->setPalette(palette);
         softwareFlow->viewport()->setPalette(palette);
-
-        QPalette widgetPalette = this->palette();
-        widgetPalette.setColor(QPalette::Window, goToFlowTheme.flowBackgroundColor);
-        setPalette(widgetPalette);
     }
+
+    QPalette widgetPalette = this->palette();
+    widgetPalette.setColor(QPalette::Window, goToFlowTheme.flowBackgroundColor);
+    setPalette(widgetPalette);
 }
 
 GoToFlowWidget::~GoToFlowWidget()
 {
+}
+
+QString GoToFlowWidget::renderingSystemInfo() const
+{
+    if (!rhiFlow)
+        return QStringLiteral("Go To Flow renderer: QWidget (Software)\n");
+
+    if (!rhiFlow->isRhiInitialized())
+        return QStringLiteral("Go To Flow renderer: RHI (%1 requested, not initialized)\n").arg(rhiFlow->rhiBackendName());
+
+    QString text = QStringLiteral("Go To Flow renderer: RHI (%1)\n").arg(rhiFlow->rhiBackendName());
+    const QString deviceName = rhiFlow->rhiDeviceName();
+    if (!deviceName.isEmpty())
+        text.append(QStringLiteral("Graphics device: %1\n").arg(deviceName));
+    const QString deviceType = rhiFlow->rhiDeviceType();
+    if (!deviceType.isEmpty())
+        text.append(QStringLiteral("Graphics device type: %1\n").arg(deviceType));
+    return text;
 }
 
 void GoToFlowWidget::reset()
@@ -157,7 +184,11 @@ void GoToFlowWidget::reset()
 void GoToFlowWidget::centerSlide(int slide)
 {
     if (rhiFlow != nullptr) {
-        if (rhiFlow->centerIndex() != slide)
+        // The flow only animates while it renders, so a hidden flow must jump to the slide.
+        // Otherwise a pending animation plays the next time the flow is shown.
+        if (isHidden())
+            rhiFlow->setCurrentIndexWithoutAnimation(slide);
+        else if (rhiFlow->centerIndex() != slide)
             rhiFlow->setCenterIndex(slide);
         return;
     }
@@ -222,8 +253,7 @@ void GoToFlowWidget::setNumSlides(unsigned int slides)
 void GoToFlowWidget::setImageReady(int index, const QByteArray &imageData)
 {
     if (rhiFlow != nullptr) {
-        rhiFlow->rawImages[index] = imageData;
-        rhiFlow->imagesReady[index] = true;
+        rhiFlow->setImageReady(index, imageData);
     } else if (index >= 0 && index < softwareImages.size()) {
         softwareImages[index] = imageData;
         if (isVisible() && index >= softwareThumbnailFirst && index <= softwareThumbnailLast)
@@ -352,6 +382,28 @@ void GoToFlowWidget::keyPressEvent(QKeyEvent *event)
 
 bool GoToFlowWidget::eventFilter(QObject *watched, QEvent *event)
 {
+    if (rhiFlow != nullptr && watched == rhiFlow && event->type() == QEvent::KeyPress) {
+        auto *keyEvent = static_cast<QKeyEvent *>(event);
+        switch (keyEvent->key()) {
+        case Qt::Key_Return:
+        case Qt::Key_Enter:
+        case Qt::Key_Space:
+        case Qt::Key_S:
+            keyPressEvent(keyEvent);
+            return true;
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab:
+            // A plain QWindow has no focus chain, so move the widget focus like QWidget::event() does
+            if (!(keyEvent->modifiers() & (Qt::ControlModifier | Qt::AltModifier))) {
+                focusNextPrevChild(keyEvent->key() == Qt::Key_Tab);
+                return true;
+            }
+            break;
+        }
+        // Arrow keys are handled by the flow itself.
+        return false;
+    }
+
     if (softwareFlow != nullptr && watched == softwareFlow->viewport() && event->type() == QEvent::Wheel) {
         auto *wheelEvent = static_cast<QWheelEvent *>(event);
         const QPoint angleDelta = wheelEvent->angleDelta();
@@ -498,6 +550,8 @@ void GoToFlowWidget::clearSoftwareThumbnailQueue()
 void GoToFlowWidget::showEvent(QShowEvent *event)
 {
     QWidget::showEvent(event);
+    if (rhiFlow != nullptr)
+        QTimer::singleShot(0, this, [this] { rhiFlow->render(); });
     updateSoftwareThumbnailWindow();
 }
 
@@ -511,9 +565,11 @@ void GoToFlowWidget::resizeEvent(QResizeEvent *event)
 {
     QWidget::resizeEvent(event);
 
-    toolBar->move(0, event->size().height() - toolBar->height());
-    toolBar->setFixedWidth(width());
-    toolBar->raise();
+    if (softwareRendering) {
+        toolBar->move(0, event->size().height() - toolBar->height());
+        toolBar->setFixedWidth(width());
+        toolBar->raise();
+    }
 
     if (softwareFlow != nullptr) {
         QTimer::singleShot(0, this, [this] {

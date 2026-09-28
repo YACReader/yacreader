@@ -3,19 +3,17 @@
 #include <QImage>
 
 // YACReaderPageFlow3D implementation
-YACReaderPageFlow3D::YACReaderPageFlow3D(QWidget *parent, struct Preset p)
-    : YACReaderFlow3D(parent, p)
+YACReaderPageFlow3D::YACReaderPageFlow3D(struct Preset p)
+    : YACReaderFlow3D(p)
 {
     worker = new ImageLoaderByteArray3D(this);
     worker->flow = this;
+    connect(worker, &ImageLoaderByteArray3D::imageDecoded, this, &YACReaderPageFlow3D::render, Qt::QueuedConnection);
 }
 
 YACReaderPageFlow3D::~YACReaderPageFlow3D()
 {
-    if (timerId != -1) {
-        this->killTimer(timerId);
-        timerId = -1;
-    }
+    stopAnimationTimer();
     rawImages.clear();
 
     // Clean up textures and clear images to prevent double-delete in base destructor
@@ -26,6 +24,34 @@ YACReaderPageFlow3D::~YACReaderPageFlow3D()
     }
     images.clear();
     numObjects = 0;
+}
+
+int YACReaderPageFlow3D::loadingWindowRadius() const
+{
+    switch (performance) {
+    case low:
+        return 8;
+    case medium:
+        return 10;
+    case high:
+        return 12;
+    case ultraHigh:
+        return 14;
+    }
+    return 8;
+}
+
+void YACReaderPageFlow3D::setImageReady(int index, const QByteArray &imageData)
+{
+    if (index < 0 || index >= rawImages.size())
+        return;
+
+    rawImages[index] = imageData;
+    imagesReady[index] = true;
+
+    const int center = pendingCurrentIndex >= 0 ? pendingCurrentIndex : currentSelected;
+    if (qAbs(index - center) <= loadingWindowRadius())
+        render();
 }
 
 void YACReaderPageFlow3D::updateImageData()
@@ -58,21 +84,7 @@ void YACReaderPageFlow3D::updateImageData()
         }
     }
 
-    int count = 8;
-    switch (performance) {
-    case low:
-        count = 8;
-        break;
-    case medium:
-        count = 10;
-        break;
-    case high:
-        count = 12;
-        break;
-    case ultraHigh:
-        count = 14;
-        break;
-    }
+    const int count = loadingWindowRadius();
 
     int *indexes = new int[2 * count + 1];
     int center = currentSelected;
@@ -188,6 +200,8 @@ void ImageLoaderByteArray3D::run()
         this->working = false;
         this->img = image;
         mutex.unlock();
+
+        emit imageDecoded();
 
         mutex.lock();
         if (!this->restart)

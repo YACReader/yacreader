@@ -1,7 +1,13 @@
 #include "yacreader_flow_rhi.h"
 
+#include <QExposeEvent>
 #include <QFile>
-#include <QLabel>
+#include <QFontMetrics>
+#include <QGuiApplication>
+#include <QOffscreenSurface>
+#include <QPainter>
+#include <QPlatformSurfaceEvent>
+#include <QScopedValueRollback>
 #if defined(YACREADER_RHI_PERF)
 #include <QElapsedTimer>
 #endif
@@ -15,9 +21,31 @@ static QShader getShader(const QString &name)
     return f.open(QIODevice::ReadOnly) ? QShader::fromSerialized(f.readAll()) : QShader();
 }
 
+namespace {
+QString rhiBackendDisplayName(QRhi::Implementation implementation)
+{
+    switch (implementation) {
+    case QRhi::Null:
+        return QStringLiteral("Null");
+    case QRhi::Vulkan:
+        return QStringLiteral("Vulkan");
+    case QRhi::OpenGLES2: // also used for desktop OpenGL
+        return QStringLiteral("OpenGL");
+    case QRhi::D3D11:
+        return QStringLiteral("Direct3D 11");
+    case QRhi::D3D12:
+        return QStringLiteral("Direct3D 12");
+    case QRhi::Metal:
+        return QStringLiteral("Metal");
+    }
+    return QStringLiteral("Unknown");
+}
+
+}
+
 /*Constructor*/
-YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
-    : QRhiWidget(parent),
+YACReaderFlow3D::YACReaderFlow3D(struct Preset p)
+    : QWindow(),
       numObjects(0),
       lazyPopulateObjects(-1),
       pendingCurrentIndex(-1),
@@ -27,6 +55,20 @@ YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
       textColor(Qt::white),
       flowRightToLeft(false)
 {
+#if defined(Q_OS_WIN)
+    setSurfaceType(QSurface::Direct3DSurface);
+#elif defined(Q_OS_MACOS)
+    setSurfaceType(QSurface::MetalSurface);
+#else
+    // With OpenGL the swap chain renders to the window's default framebuffer, so
+    // depth/stencil and MSAA must be requested in the surface format.
+    setSurfaceType(QSurface::OpenGLSurface);
+    QSurfaceFormat surfaceFormat = QSurfaceFormat::defaultFormat();
+    surfaceFormat.setDepthBufferSize(24);
+    surfaceFormat.setStencilBufferSize(8);
+    surfaceFormat.setSamples(4);
+    setFormat(surfaceFormat);
+#endif
     updateCount = 0;
     config = p;
     currentSelected = 0;
@@ -48,34 +90,12 @@ YACReaderFlow3D::YACReaderFlow3D(QWidget *parent, struct Preset p)
     viewRotateActive = 0;
     stepBackup = config.animationStep / config.animationSpeedUp;
 
-    // Request 4x MSAA for the QRhiWidget's render target
-    setSampleCount(4);
-
     timerId = -1;
-
-    // Create and configure the index label
-    indexLabel = new QLabel(this);
-    indexLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
-    indexLabel->setAutoFillBackground(false);
-    updateIndexLabelStyle();
-
-#if defined(YACREADER_RHI_PERF)
-    // Create performance label (shows averaged render time)
-    perfLabel = new QLabel(this);
-    perfLabel->setAttribute(Qt::WA_TransparentForMouseEvents);
-    perfLabel->setAutoFillBackground(false);
-    perfLabel->setText(QString());
-    perfLabel->hide();
-    // Style will be applied by updateIndexLabelStyle()
-#endif
 }
 
 YACReaderFlow3D::~YACReaderFlow3D()
 {
-    if (timerId != -1) {
-        killTimer(timerId);
-        timerId = -1;
-    }
+    stopAnimationTimer();
 
     // Clean up image textures (not owned by Scene)
     for (int i = 0; i < numObjects; i++) {
@@ -88,12 +108,13 @@ YACReaderFlow3D::~YACReaderFlow3D()
 
     // Release all RHI resources
     scene.reset();
+    releaseRhi();
 }
 
 void YACReaderFlow3D::timerEvent(QTimerEvent *event)
 {
     if (timerId == event->timerId())
-        update();
+        requestRender();
 }
 
 void YACReaderFlow3D::startAnimationTimer()
@@ -110,14 +131,8 @@ void YACReaderFlow3D::stopAnimationTimer()
     }
 }
 
-void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
+void YACReaderFlow3D::initializeScene(QRhiCommandBuffer *cb)
 {
-    auto newRhi = rhi();
-    if (m_rhi != newRhi) {
-        scene.reset();
-        m_rhi = newRhi;
-    }
-
     if (m_rhi == nullptr)
         return;
 
@@ -137,6 +152,13 @@ void YACReaderFlow3D::initialize(QRhiCommandBuffer *cb)
         getResourceBatch()->uploadTexture(scene.defaultTexture.get(), defaultImage);
         getResourceBatch()->generateMips(scene.defaultTexture.get());
         qDebug() << "YACReaderFlow3D: Created defaultTexture" << defaultImage.size();
+
+        // After a device loss the cover textures are gone; show the default cover until the
+        // loader uploads them again (releaseRhi() marks every cover as not loaded).
+        for (auto &image : images) {
+            if (!image.texture)
+                image.texture = scene.defaultTexture.get();
+        }
     }
 
     if (ribbonTexturesDirty || (!readRibbonImage.isNull() && !scene.markTexture) || (!readingRibbonImage.isNull() && !scene.readingTexture))
@@ -306,7 +328,7 @@ void YACReaderFlow3D::ensurePipeline()
     scene.pipeline->setCullMode(QRhiGraphicsPipeline::Back);
 
     // Determine the MSAA sample count to use
-    int requestedSamples = sampleCount();
+    int requestedSamples = renderSampleCount();
     if (requestedSamples > 1 && m_rhi) {
         QVector<int> supported = m_rhi->supportedSampleCounts();
         auto it = std::upper_bound(supported.begin(), supported.end(), requestedSamples);
@@ -344,7 +366,7 @@ void YACReaderFlow3D::ensurePipeline()
 
     // Set shader resource bindings and render pass descriptor
     scene.pipeline->setShaderResourceBindings(scene.shaderBindings.get());
-    scene.pipeline->setRenderPassDescriptor(renderTarget()->renderPassDescriptor());
+    scene.pipeline->setRenderPassDescriptor(currentRenderTarget()->renderPassDescriptor());
 
     if (!scene.pipeline->create()) {
         qWarning() << "YACReaderFlow3D: Failed to create graphics pipeline!";
@@ -352,7 +374,7 @@ void YACReaderFlow3D::ensurePipeline()
     }
 }
 
-void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
+void YACReaderFlow3D::renderScene(QRhiCommandBuffer *cb)
 {
     if (!m_rhi)
         return;
@@ -375,16 +397,18 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         syncRibbonTextures(ensureBatch());
 #endif
 
-    // Even without draw calls, pending uploads still have to reach the GPU.
-    // Otherwise recreated ribbon textures would exist but never receive pixels.
+    const QSize outputSize = currentRenderTarget()->pixelSize();
+    const QColor clearColor = backgroundColor;
+
+    // Every swap chain frame needs a pass that clears it: the back buffer content is undefined.
+    // Pending uploads (e.g. recreated ribbon textures) also have to reach the GPU.
     if (numObjects == 0) {
-        if (batch)
-            cb->resourceUpdate(batch);
+        cb->beginPass(currentRenderTarget(), clearColor, { 1.0f, 0 }, batch);
+        cb->endPass();
+        // Nothing to animate. Expose, resize and data changes request the next frame.
+        stopAnimationTimer();
         return;
     }
-
-    const QSize outputSize = renderTarget()->pixelSize();
-    const QColor clearColor = backgroundColor;
 
     // Update positions and animations
     updatePositions();
@@ -555,6 +579,51 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         }
     }
 
+    // Index label, drawn last in window pixel coordinates over the covers
+    syncOverlayTexture(ensureBatch());
+    if (scene.overlayTexture) {
+        const QSize overlaySize = scene.overlayTexture->pixelSize();
+        const float margin = std::round(10.0f * devicePixelRatio());
+        // Nearest depth, so the covers never hide the label
+        const float overlayZ = m_rhi->isClipDepthZeroToOne() ? 0.0f : 0.999f;
+
+        QMatrix4x4 overlayProjection;
+        overlayProjection.ortho(0, outputSize.width(), 0, outputSize.height(), -1, 1);
+
+        QMatrix4x4 overlayModel;
+        overlayModel.translate(margin + overlaySize.width() / 2.0f,
+                               outputSize.height() - margin - overlaySize.height() / 2.0f,
+                               overlayZ);
+        overlayModel.scale(overlaySize.width(), overlaySize.height(), 1.0f);
+
+        DrawInfo overlayDraw;
+        overlayDraw.imageIndex = -1;
+        overlayDraw.isReflection = false;
+        overlayDraw.isMark = false;
+        overlayDraw.texture = scene.overlayTexture.get();
+
+        const float *modelData = overlayModel.constData();
+        for (int i = 0; i < 16; ++i)
+            overlayDraw.instanceData[i] = modelData[i];
+        for (int i = 16; i < 21; ++i)
+            overlayDraw.instanceData[i] = 1.0f; // no shading, full opacity
+        overlayDraw.instanceData[21] = 0.0f; // not a reflection
+
+        const float *projectionData = overlayProjection.constData();
+        for (int i = 0; i < 16; ++i)
+            overlayDraw.uniformData.viewProjectionMatrix[i] = projectionData[i];
+        overlayDraw.uniformData.backgroundColor[0] = backgroundColor.redF();
+        overlayDraw.uniformData.backgroundColor[1] = backgroundColor.greenF();
+        overlayDraw.uniformData.backgroundColor[2] = backgroundColor.blueF();
+        overlayDraw.uniformData._pad0 = 0.0f;
+        overlayDraw.uniformData.reflectionUp = reflectionUp;
+        overlayDraw.uniformData.reflectionDown = reflectionBottom;
+        overlayDraw.uniformData.isReflection = 0.0f;
+        overlayDraw.uniformData._pad1 = 0.0f;
+
+        draws.append(overlayDraw);
+    }
+
     // Ensure uniform buffer is large enough
     ensureUniformBufferCapacity(draws.size());
 
@@ -612,7 +681,7 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
     }
 
     // === PHASE 2: RENDER (DURING PASS) ===
-    cb->beginPass(renderTarget(), clearColor, { 1.0f, 0 }, batch);
+    cb->beginPass(currentRenderTarget(), clearColor, { 1.0f, 0 }, batch);
     batch = nullptr;
 
     cb->setGraphicsPipeline(scene.pipeline.get());
@@ -645,11 +714,8 @@ void YACReaderFlow3D::render(QRhiCommandBuffer *cb)
         perfAccumCount = 0;
         perfFrameCounter = 0;
 
-        if (perfLabel) {
-            perfLabel->setText(QString("R: %1 ms").arg(lastRenderMs, 0, 'f', 2));
-            perfLabel->adjustSize();
-            perfLabel->show();
-        }
+        // Shown in the index label from the next frame on
+        overlayTextureDirty = true;
     }
 #endif
 }
@@ -832,22 +898,229 @@ void YACReaderFlow3D::syncRibbonTextures(QRhiResourceUpdateBatch *batch)
 #endif
 }
 
-void YACReaderFlow3D::releaseResources()
-{
-    scene.reset();
-    m_rhi = nullptr;
-}
-
-void YACReaderFlow3D::showEvent(QShowEvent *event)
-{
-    QRhiWidget::showEvent(event);
-    startAnimationTimer();
-}
-
 void YACReaderFlow3D::resizeEvent(QResizeEvent *event)
 {
-    QRhiWidget::resizeEvent(event);
+    QWindow::resizeEvent(event);
     updateIndexLabelStyle();
+    requestRender();
+}
+
+void YACReaderFlow3D::requestRender()
+{
+    requestUpdate();
+}
+
+QRhiRenderTarget *YACReaderFlow3D::currentRenderTarget() const
+{
+    return swapChain ? swapChain->currentFrameRenderTarget() : nullptr;
+}
+
+int YACReaderFlow3D::renderSampleCount() const
+{
+    return swapChain ? swapChain->sampleCount() : 1;
+}
+
+bool YACReaderFlow3D::initializeRhi()
+{
+    QRhi::Implementation implementation;
+#if defined(Q_OS_WIN)
+    implementation = QRhi::D3D11;
+    QRhiD3D11InitParams params;
+    ownedRhi.reset(QRhi::create(implementation, &params));
+#elif defined(Q_OS_MACOS)
+    implementation = QRhi::Metal;
+    QRhiMetalInitParams params;
+    ownedRhi.reset(QRhi::create(implementation, &params));
+#else
+    implementation = QRhi::OpenGLES2;
+    fallbackSurface.reset(QRhiGles2InitParams::newFallbackSurface(format()));
+    QRhiGles2InitParams params;
+    params.format = format();
+    params.fallbackSurface = fallbackSurface.get();
+    params.window = this;
+    ownedRhi.reset(QRhi::create(implementation, &params));
+#endif
+    Q_UNUSED(implementation);
+    if (!ownedRhi)
+        return false;
+
+    m_rhi = ownedRhi.get();
+    swapChain.reset(m_rhi->newSwapChain());
+    swapChain->setWindow(this);
+
+    int samples = 1;
+    const auto supportedSamples = m_rhi->supportedSampleCounts();
+    for (int supported : supportedSamples) {
+        if (supported <= 4)
+            samples = qMax(samples, supported);
+    }
+    swapChain->setSampleCount(samples);
+    depthStencil.reset(m_rhi->newRenderBuffer(QRhiRenderBuffer::DepthStencil, QSize(), samples, QRhiRenderBuffer::UsedWithSwapChainOnly));
+    swapChain->setDepthStencil(depthStencil.get());
+    renderPassDescriptor.reset(swapChain->newCompatibleRenderPassDescriptor());
+    swapChain->setRenderPassDescriptor(renderPassDescriptor.get());
+    newlyExposed = true;
+    return true;
+}
+
+void YACReaderFlow3D::releaseSwapChain()
+{
+    swapChainReady = false;
+    swapChain.reset();
+    depthStencil.reset();
+    renderPassDescriptor.reset();
+}
+
+void YACReaderFlow3D::releaseRhi()
+{
+    stopAnimationTimer();
+    QRhiTexture *defaultTexture = scene.defaultTexture.get();
+    for (auto &image : images) {
+        if (image.texture && image.texture != defaultTexture)
+            delete image.texture;
+        image.texture = nullptr;
+    }
+    loaded.fill(false);
+    pendingTextureUploads.clear();
+    scene.reset();
+    overlayTextureDirty = true;
+    releaseSwapChain();
+    m_rhi = nullptr;
+    ownedRhi.reset();
+    fallbackSurface.reset();
+    hasBeenInitialized = false;
+}
+
+void YACReaderFlow3D::renderFrame()
+{
+    // Expose events can arrive while a frame is recorded (e.g. during a swap chain resize)
+    if (renderingFrame || !isExposed() || size().isEmpty())
+        return;
+    const QScopedValueRollback<bool> renderingFrameGuard(renderingFrame, true);
+
+    if (!m_rhi && !initializeRhi()) {
+        // Try again on the next expose or data change, not on every timer tick
+        stopAnimationTimer();
+        if (!rhiInitializationFailed)
+            qWarning() << "YACReaderFlow3D: Failed to initialize QRhi";
+        rhiInitializationFailed = true;
+        return;
+    }
+    rhiInitializationFailed = false;
+
+    if (swapChain->currentPixelSize() != swapChain->surfacePixelSize() || newlyExposed) {
+        swapChainReady = swapChain->createOrResize();
+        newlyExposed = false;
+    }
+    if (!swapChainReady) {
+        recoverFromDeviceLoss();
+        return;
+    }
+
+    QRhi::FrameOpResult result = m_rhi->beginFrame(swapChain.get());
+    if (result == QRhi::FrameOpSwapChainOutOfDate) {
+        swapChainReady = swapChain->createOrResize();
+        if (!swapChainReady) {
+            recoverFromDeviceLoss();
+            return;
+        }
+        result = m_rhi->beginFrame(swapChain.get());
+    }
+    if (result != QRhi::FrameOpSuccess) {
+        recoverFromDeviceLoss();
+        return;
+    }
+
+    QRhiCommandBuffer *cb = swapChain->currentFrameCommandBuffer();
+    initializeScene(cb);
+    renderScene(cb);
+    // Device loss is most often detected when the frame is presented
+    if (m_rhi->endFrame(swapChain.get()) != QRhi::FrameOpSuccess)
+        recoverFromDeviceLoss();
+}
+
+void YACReaderFlow3D::recoverFromDeviceLoss()
+{
+    // Not every backend reports a lost device with FrameOpDeviceLost from every call (D3D11
+    // detects it in Present() and later frames only fail), so ask the QRhi directly.
+    if (!m_rhi || !m_rhi->isDeviceLost())
+        return;
+    qWarning() << "YACReaderFlow3D: Graphics device lost, recreating the renderer";
+    releaseRhi();
+    requestUpdate();
+}
+
+void YACReaderFlow3D::exposeEvent(QExposeEvent *event)
+{
+    QWindow::exposeEvent(event);
+    if (isExposed()) {
+        newlyExposed = true;
+        startAnimationTimer();
+        // Render now (like the QRhiWidget flow did on every repaint), so a newly shown or
+        // resized window never shows undefined swap chain content until the next timer tick.
+        renderFrame();
+    } else
+        stopAnimationTimer();
+}
+
+bool YACReaderFlow3D::event(QEvent *event)
+{
+    if (event->type() == QEvent::UpdateRequest) {
+        renderFrame();
+        return true;
+    }
+    if (event->type() == QEvent::PlatformSurface) {
+        auto *surfaceEvent = static_cast<QPlatformSurfaceEvent *>(event);
+        if (surfaceEvent->surfaceEventType() == QPlatformSurfaceEvent::SurfaceAboutToBeDestroyed)
+            releaseRhi();
+    }
+    if (event->type() == QEvent::DevicePixelRatioChange) {
+        updateIndexLabelStyle();
+        requestRender();
+    }
+    return QWindow::event(event);
+}
+
+QString YACReaderFlow3D::rhiBackendName() const
+{
+    if (!m_rhi) {
+#if defined(Q_OS_WIN)
+        return rhiBackendDisplayName(QRhi::D3D11);
+#elif defined(Q_OS_MACOS)
+        return rhiBackendDisplayName(QRhi::Metal);
+#else
+        return rhiBackendDisplayName(QRhi::OpenGLES2);
+#endif
+    }
+    return rhiBackendDisplayName(m_rhi->backend());
+}
+
+QString YACReaderFlow3D::rhiDeviceName() const
+{
+    return m_rhi ? QString::fromUtf8(m_rhi->driverInfo().deviceName) : QString();
+}
+
+// Empty when the backend does not report it (D3D11/D3D12 and OpenGL only flag software adapters)
+QString YACReaderFlow3D::rhiDeviceType() const
+{
+    if (!m_rhi)
+        return QString();
+
+    switch (m_rhi->driverInfo().deviceType) {
+    case QRhiDriverInfo::UnknownDevice:
+        return QString();
+    case QRhiDriverInfo::IntegratedDevice:
+        return QStringLiteral("Integrated");
+    case QRhiDriverInfo::DiscreteDevice:
+        return QStringLiteral("Discrete");
+    case QRhiDriverInfo::ExternalDevice:
+        return QStringLiteral("External");
+    case QRhiDriverInfo::VirtualDevice:
+        return QStringLiteral("Virtual");
+    case QRhiDriverInfo::CpuDevice:
+        return QStringLiteral("CPU (software)");
+    }
+    return QStringLiteral("Unknown");
 }
 
 void YACReaderFlow3D::cleanupAnimation()
@@ -858,7 +1131,7 @@ void YACReaderFlow3D::cleanupAnimation()
 
 void YACReaderFlow3D::draw()
 {
-    update();
+    requestRender();
 }
 
 void YACReaderFlow3D::calcPos(YACReader3DImageRHI &image, int pos)
@@ -1350,7 +1623,7 @@ void YACReaderFlow3D::updateMarks() { }
 
 void YACReaderFlow3D::render()
 {
-    update();
+    requestRender();
 }
 
 void YACReaderFlow3D::resizeGL(int width, int height)
@@ -1368,17 +1641,14 @@ void YACReaderFlow3D::setFlowRightToLeft(bool b)
 void YACReaderFlow3D::setBackgroundColor(const QColor &color)
 {
     backgroundColor = color;
-    update();
+    requestRender();
 }
 
 void YACReaderFlow3D::setTextColor(const QColor &color)
 {
     textColor = color;
-
-    auto styleSheet = QString("QLabel { color: %1; }").arg(textColor.name());
-    indexLabel->setStyleSheet(styleSheet);
-
-    update();
+    overlayTextureDirty = true;
+    requestRender();
 }
 
 void YACReaderFlow3D::setRibbonImages(const QImage &readImage, const QImage &readingImage)
@@ -1391,7 +1661,7 @@ void YACReaderFlow3D::setRibbonImages(const QImage &readImage, const QImage &rea
     ribbonTexturesDirty = false;
 #endif
 
-    update();
+    requestRender();
 }
 
 // Event handlers
@@ -1441,6 +1711,16 @@ void YACReaderFlow3D::keyPressEvent(QKeyEvent *event)
 
 void YACReaderFlow3D::mousePressEvent(QMouseEvent *event)
 {
+    // A click does not give keyboard focus to an embedded child window (Windows only activates
+    // the top-level window), so request it here to keep the arrow keys working.
+    if (QGuiApplication::focusWindow() != this)
+        requestActivate();
+
+    if (currentRenderTarget() == nullptr) {
+        event->ignore();
+        return;
+    }
+
     if (event->button() == Qt::LeftButton && currentSelected >= 0 && currentSelected < images.size()) {
         auto position = event->position();
         QVector3D intersection = getPlaneIntersection(position.x(), position.y(), images[currentSelected]);
@@ -1450,12 +1730,17 @@ void YACReaderFlow3D::mousePressEvent(QMouseEvent *event)
             showPrevious();
         }
     } else {
-        QRhiWidget::mousePressEvent(event);
+        QWindow::mousePressEvent(event);
     }
 }
 
 void YACReaderFlow3D::mouseDoubleClickEvent(QMouseEvent *event)
 {
+    if (currentRenderTarget() == nullptr) {
+        event->ignore();
+        return;
+    }
+
     if (currentSelected >= 0 && currentSelected < images.size()) {
         auto position = event->position();
         QVector3D intersection = getPlaneIntersection(position.x(), position.y(), images[currentSelected]);
@@ -1471,7 +1756,7 @@ QVector3D YACReaderFlow3D::getPlaneIntersection(int x, int y, YACReader3DImageRH
 {
     // Simplified for now - proper ray-plane intersection calculation needed
     // This requires access to the viewport and matrices
-    const QSize outputSize = renderTarget()->pixelSize();
+    const QSize outputSize = currentRenderTarget()->pixelSize();
 
     QMatrix4x4 m_projection;
     m_projection.perspective(config.zoom, float(outputSize.width()) / float(outputSize.height()), 1.0, 200.0);
@@ -1485,8 +1770,9 @@ QVector3D YACReaderFlow3D::getPlaneIntersection(int x, int y, YACReader3DImageRH
     m_modelview.rotate(plane.current.rot, 0, 1, 0);
     m_modelview.scale(plane.width, plane.height, 1.0f);
 
-    QVector3D ray_origin(x * devicePixelRatioF(), y * devicePixelRatioF(), 0);
-    QVector3D ray_end(x * devicePixelRatioF(), y * devicePixelRatioF(), 1.0);
+    const qreal scale = devicePixelRatio();
+    QVector3D ray_origin(x * scale, y * scale, 0);
+    QVector3D ray_end(x * scale, y * scale, 1.0);
 
     ray_origin = ray_origin.unproject(m_modelview, m_projection, QRect(0, 0, outputSize.width(), outputSize.height()));
     ray_end = ray_end.unproject(m_modelview, m_projection, QRect(0, 0, outputSize.width(), outputSize.height()));
@@ -1524,41 +1810,69 @@ void YACReaderFlow3D::updateIndexLabel()
     if (indexLabelState.current != currentDisplay || indexLabelState.total != totalDisplay) {
         indexLabelState.current = currentDisplay;
         indexLabelState.total = totalDisplay;
-        indexLabel->setText(QString("%1/%2").arg(currentDisplay).arg(totalDisplay));
-        indexLabel->adjustSize();
+        overlayTextureDirty = true;
     }
 }
 
 void YACReaderFlow3D::updateIndexLabelStyle()
 {
-    int w = width();
-    int h = height();
-
-    int newFontSize = static_cast<int>((w + h) * 0.010);
-    if (newFontSize < 10)
-        newFontSize = 10;
-
-    QFont font("Arial", newFontSize);
-    indexLabel->setFont(font);
-
-    auto styleSheet = QString("QLabel { color: %1; }").arg(textColor.name());
-    indexLabel->setStyleSheet(styleSheet);
-
-    indexLabel->move(10, 10);
-    indexLabel->adjustSize();
-
-    // Position and style performance label below index label
-#if defined(YACREADER_RHI_PERF)
-    if (perfLabel) {
-        perfLabel->setFont(font);
-        perfLabel->setStyleSheet(styleSheet);
-        perfLabel->move(10, 10 + indexLabel->height() + 4);
-        perfLabel->adjustSize();
-    }
-#endif
+    // The font size follows the window size
+    overlayTextureDirty = true;
 }
 
-QSize YACReaderFlow3D::minimumSizeHint() const
+void YACReaderFlow3D::syncOverlayTexture(QRhiResourceUpdateBatch *batch)
 {
-    return QSize(320, 200);
+    const qreal dpr = devicePixelRatio();
+    if (!overlayTextureDirty && scene.overlayTexture && overlayTextureDevicePixelRatio == dpr)
+        return;
+    if (!m_rhi || !batch)
+        return;
+
+    QString overlayText = QString("%1/%2").arg(indexLabelState.current).arg(indexLabelState.total);
+#if defined(YACREADER_RHI_PERF)
+    if (lastRenderMs > 0.0)
+        overlayText += QString("\nR: %1 ms").arg(lastRenderMs, 0, 'f', 2);
+#endif
+
+    int fontSize = static_cast<int>((width() + height()) * 0.010);
+    if (fontSize < 10)
+        fontSize = 10;
+    const QFont font("Arial", fontSize);
+
+    const QSize logicalSize = QFontMetrics(font).size(0, overlayText);
+    if (logicalSize.isEmpty())
+        return;
+
+    QImage image(logicalSize * dpr, QImage::Format_ARGB32_Premultiplied);
+    image.setDevicePixelRatio(dpr);
+    image.fill(Qt::transparent);
+    {
+        QPainter painter(&image);
+        painter.setRenderHint(QPainter::TextAntialiasing);
+        painter.setFont(font);
+        painter.setPen(textColor);
+        painter.drawText(QRect(QPoint(0, 0), logicalSize), Qt::AlignLeft | Qt::AlignTop, overlayText);
+    }
+    // The pipeline blends with straight (non-premultiplied) alpha
+    image = image.convertToFormat(QImage::Format_RGBA8888);
+
+    if (!scene.overlayTexture || scene.overlayTexture->pixelSize() != image.size()) {
+        if (scene.overlayTexture) {
+            removeCachedShaderBindings(scene.overlayTexture.get());
+            scene.overlayTexture.reset();
+        }
+        // Mipmapped like the other textures: the shared sampler uses mipmap filtering
+        std::unique_ptr<QRhiTexture> texture(m_rhi->newTexture(QRhiTexture::RGBA8, image.size(), 1, QRhiTexture::MipMapped | QRhiTexture::UsedWithGenerateMips));
+        if (!texture->create()) {
+            qWarning() << "YACReaderFlow3D: Failed to create index label texture";
+            return;
+        }
+        scene.overlayTexture = std::move(texture);
+    }
+
+    batch->uploadTexture(scene.overlayTexture.get(), image);
+    batch->generateMips(scene.overlayTexture.get());
+
+    overlayTextureDevicePixelRatio = dpr;
+    overlayTextureDirty = false;
 }

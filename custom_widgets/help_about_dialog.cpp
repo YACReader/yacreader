@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QPushButton>
 #include <QScreen>
+#include <QShowEvent>
 #include <QTabWidget>
 #include <QTextBrowser>
 #include <QTextStream>
@@ -28,6 +29,10 @@ HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     helpText->setOpenExternalLinks(true);
 
     tabWidget->addTab(systemInfoText = new QTextBrowser(), tr("System info"));
+    connect(tabWidget, &QTabWidget::currentChanged, this, [this](int index) {
+        if (tabWidget->widget(index) == systemInfoText)
+            loadSystemInfo();
+    });
     // helpText->setFont(QFont("Comic Sans MS", 10));
     // helpText->setDisabled(true);
     // tabWidget->addTab(,"About Qt");
@@ -53,8 +58,6 @@ HelpAboutDialog::HelpAboutDialog(QWidget *parent)
     int heightDesktopResolution = screen != nullptr ? screen->size().height() : 600;
 
     resize(500, heightDesktopResolution * 0.83);
-
-    loadSystemInfo();
 
     initTheme(this);
 }
@@ -84,6 +87,11 @@ void HelpAboutDialog::loadHelp(const QString &path)
     applyHtmlTheme();
 }
 
+void HelpAboutDialog::setAdditionalSystemInfoProvider(std::function<QString()> provider)
+{
+    additionalSystemInfoProvider = std::move(provider);
+}
+
 QString HelpAboutDialog::fileToString(const QString &path)
 {
     QFile f(path);
@@ -105,7 +113,16 @@ void HelpAboutDialog::loadSystemInfo()
     text.append("\nGRAPHIC INFORMATION\n");
     text.append(QString("Screen pixel ratio: %1\n").arg(devicePixelRatioF()));
 
+    if (additionalSystemInfoProvider)
+        text.append(additionalSystemInfoProvider());
+
     systemInfoText->setText(text);
+}
+
+void HelpAboutDialog::showEvent(QShowEvent *event)
+{
+    QDialog::showEvent(event);
+    loadSystemInfo();
 }
 
 void HelpAboutDialog::applyTheme(const Theme &theme)

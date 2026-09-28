@@ -11,21 +11,26 @@ class ImageLoaderByteArray3D;
 class YACReaderPageFlow3D : public YACReaderFlow3D
 {
 public:
-    YACReaderPageFlow3D(QWidget *parent = nullptr, struct Preset p = defaultYACReaderFlowConfig);
+    YACReaderPageFlow3D(struct Preset p = defaultYACReaderFlowConfig);
     ~YACReaderPageFlow3D();
     void updateImageData() override;
     void populate(int n);
-    QVector<bool> imagesReady;
-    QVector<QByteArray> rawImages;
-    QVector<bool> imagesSetted;
+    void setImageReady(int index, const QByteArray &imageData);
     friend class ImageLoaderByteArray3D;
 
 private:
+    int loadingWindowRadius() const;
+
     ImageLoaderByteArray3D *worker;
+    QVector<bool> imagesReady;
+    QVector<QByteArray> rawImages;
+    QVector<bool> imagesSetted;
 };
 
 class ImageLoaderByteArray3D : public QThread
 {
+    Q_OBJECT
+
 public:
     ImageLoaderByteArray3D(YACReaderFlow3D *flow);
     ~ImageLoaderByteArray3D();
@@ -40,6 +45,9 @@ public:
     QImage result();
     YACReaderFlow3D *flow;
     QImage loadImage(const QByteArray &rawData);
+
+signals:
+    void imageDecoded();
 
 protected:
     void run() override;

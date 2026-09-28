@@ -264,7 +264,8 @@ public:
     ~Viewer();
     QPixmap pixmap() const;
     QByteArray rawPage(int page) const;
-    QList<int> currentVisiblePages();
+    QList<int> currentRenderedPages() const;
+    QList<int> currentVisiblePages() const;
     QImage grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSize, float zoomLevel) const;
     //! Eases a cursor position (viewport coords) toward the edges to give the loupe's
     //! *content* its sampled-region center, normalized against the viewport. The outward push
@@ -279,6 +280,7 @@ public:
     unsigned int getIndex();
     void updateComic(ComicDB &comic);
     void moveView(Qt::Key directionKey);
+    QString renderingSystemInfo() const;
 
 signals:
     void backgroundChanges();

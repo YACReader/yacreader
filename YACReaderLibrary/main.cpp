@@ -131,6 +131,14 @@ int main(int argc, char **argv)
 
     QImageReader::setAllocationLimit(0);
 
+#ifdef Q_OS_WIN
+    // Resize glitch (QTBUG-99602): the default FLIP_DISCARD swap chain of the embedded D3D11 windows
+    // (3D flow, QML views) is composited apart from the raster widgets, so it falls behind the layout
+    // while resizing. The legacy (blit) swap chain model is composited with the parent window.
+    if (!qEnvironmentVariableIsSet("QT_D3D_NO_FLIP"))
+        qputenv("QT_D3D_NO_FLIP", "1");
+#endif
+
     QApplication app(argc, argv);
 
     app.setApplicationName("YACReaderLibrary");

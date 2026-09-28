@@ -22,6 +22,7 @@
 #include <QPinchGesture>
 #include <QPropertyAnimation>
 #include <QScrollBar>
+#include <QWindow>
 
 #include <cmath>
 
@@ -240,6 +241,20 @@ Viewer::~Viewer()
         delete currentPage;
 }
 
+QString Viewer::renderingSystemInfo() const
+{
+    QString text = QStringLiteral("\nRENDERING INFORMATION\n");
+    // Qt 6 switches the top-level window to a GPU surface type once it has to compose
+    // RHI-rendered widgets (e.g. QRhiWidget); from then on every repaint is composited.
+    const QWindow *topLevel = window()->windowHandle();
+    if (topLevel == nullptr || topLevel->surfaceType() == QSurface::RasterSurface)
+        text.append(QStringLiteral("Reader renderer: QWidget (Raster)\n"));
+    else
+        text.append(QStringLiteral("Reader renderer: QWidget (Raster, window composited through RHI)\n"));
+    text.append(goToFlow->renderingSystemInfo());
+    return text;
+}
+
 void Viewer::createConnections()
 {
     // magnifyingGlass (update mg after a background change
@@ -287,7 +302,15 @@ void Viewer::createConnections()
     connect(render, qOverload<unsigned int>(&Render::numPages), this, &Viewer::onNumPagesReady);
     connect(verticalScrollBar(), &QScrollBar::valueChanged, this, &Viewer::onContinuousScroll);
     connect(render, &Render::processingPage, this, &Viewer::setLoadingMessage);
-    connect(render, &Render::currentPageIsBookmark, this, &Viewer::pageIsBookmark);
+    connect(render, &Render::currentPageIsBookmark, this, [this](bool isBookmark) {
+        if (continuousScroll && render->hasLoadedComic() && continuousViewModel->numPages() > 0) {
+            if (Bookmarks *bookmarks = render->getBookmarks()) {
+                emit pageIsBookmark(bookmarks->isBookmark(continuousViewModel->readingProgressPage()));
+            }
+        } else {
+            emit pageIsBookmark(isBookmark);
+        }
+    });
     connect(render, &Render::pageChanged, this, &Viewer::updateInformation);
     connect(render, &Render::pageChanged, this, &Viewer::onRenderPageChanged);
 
@@ -367,11 +390,7 @@ void Viewer::next()
 
     direction = 1;
     syncRenderToContinuousReadingProgress();
-    if (doublePage && render->currentPageIsDoublePage()) {
-        render->nextDoublePage();
-    } else {
-        render->nextPage();
-    }
+    render->nextPage();
     updateInformation();
     shouldOpenPrevious = false;
 }
@@ -410,11 +429,7 @@ void Viewer::prev()
 
     direction = -1;
     syncRenderToContinuousReadingProgress();
-    if (doublePage && render->previousPageIsDoublePage()) {
-        render->previousDoublePage();
-    } else {
-        render->previousPage();
-    }
+    render->previousPage();
     updateInformation();
     shouldOpenNext = false;
 }
@@ -551,33 +566,19 @@ void Viewer::updateContentSize()
 
 void Viewer::increaseZoomFactor()
 {
-    zoom = std::min(zoom + 10, 500);
-
-    if (continuousScroll) {
-        continuousViewModel->setZoomFactor(zoom);
-        continuousWidget->invalidateScaledImageCache();
-    } else {
-        updateContentSize();
-    }
+    captureZoomAnchor();
+    applyZoomAtAnchor(zoom + 10);
+    zoomHud->hide();
     notificationsLabel->setText(QString::number(getZoomFactor()) + "%");
     notificationsLabel->flash();
-
-    emit zoomUpdated(zoom);
 }
 void Viewer::decreaseZoomFactor()
 {
-    zoom = std::max(zoom - 10, 30);
-
-    if (continuousScroll) {
-        continuousViewModel->setZoomFactor(zoom);
-        continuousWidget->invalidateScaledImageCache();
-    } else {
-        updateContentSize();
-    }
+    captureZoomAnchor();
+    applyZoomAtAnchor(zoom - 10);
+    zoomHud->hide();
     notificationsLabel->setText(QString::number(getZoomFactor()) + "%");
     notificationsLabel->flash();
-
-    emit zoomUpdated(zoom);
 }
 
 int Viewer::getZoomFactor()
@@ -994,6 +995,12 @@ void Viewer::resizeEvent(QResizeEvent *event)
 
 QPixmap Viewer::pixmap() const
 {
+    if (continuousScroll && continuousViewModel->numPages() > 0) {
+        // Render's page buffer does not follow the scroll position.
+        const QImage *img = continuousPageProvider->image(continuousViewModel->readingProgressPage());
+        return img && !img->isNull() ? QPixmap::fromImage(*img) : QPixmap();
+    }
+
     if (currentPage != nullptr && !currentPage->isNull())
         return *currentPage;
 
@@ -1005,7 +1012,15 @@ QByteArray Viewer::rawPage(int page) const
     return render->getRawPage(page);
 }
 
-QList<int> Viewer::currentVisiblePages()
+QList<int> Viewer::currentRenderedPages() const
+{
+    if (continuousScroll && continuousViewModel->numPages() > 0)
+        return { continuousViewModel->readingProgressPage() };
+
+    return currentVisiblePages();
+}
+
+QList<int> Viewer::currentVisiblePages() const
 {
     QList<int> pages;
 
@@ -1396,6 +1411,19 @@ void Viewer::showGoToFlow()
 
 void Viewer::animateShowGoToFlow()
 {
+    if (goToFlow->usesNativeRhiWindow()) {
+        if (goToFlow->isHidden()) {
+            showGoToFlowAnimation->stop();
+            goToFlow->move((width() - goToFlow->width()) / 2, height() - goToFlow->height());
+            goToFlow->setPageNumber(getCurrentPageNumber());
+            goToFlow->centerSlide(getCurrentPageNumber());
+            goToFlow->show();
+            goToFlow->setFocus(Qt::OtherFocusReason);
+            moveCursoToGoToFlow();
+        }
+        return;
+    }
+
     if (goToFlow->isHidden() && showGoToFlowAnimation->state() != QPropertyAnimation::Running) {
         disconnect(showGoToFlowAnimation, &QAbstractAnimation::finished, goToFlow, &QWidget::hide);
         connect(showGoToFlowAnimation, &QAbstractAnimation::finished, this, &Viewer::moveCursoToGoToFlow);
@@ -1403,22 +1431,34 @@ void Viewer::animateShowGoToFlow()
         showGoToFlowAnimation->setEndValue(QPoint((width() - goToFlow->width()) / 2, height() - goToFlow->height()));
         showGoToFlowAnimation->start();
         goToFlow->show();
-        goToFlow->setPageNumber(render->getIndex());
-        goToFlow->centerSlide(render->getIndex());
+        goToFlow->setPageNumber(getCurrentPageNumber());
+        goToFlow->centerSlide(getCurrentPageNumber());
         goToFlow->setFocus(Qt::OtherFocusReason);
     }
 }
 
 void Viewer::animateHideGoToFlow()
 {
+    if (goToFlow->usesNativeRhiWindow()) {
+        if (goToFlow->isVisible()) {
+            showGoToFlowAnimation->stop();
+            goToFlow->hide();
+            goToFlow->centerSlide(getCurrentPageNumber());
+            goToFlow->setPageNumber(getCurrentPageNumber());
+            viewport()->update();
+            setFocus(Qt::OtherFocusReason);
+        }
+        return;
+    }
+
     if (goToFlow->isVisible() && showGoToFlowAnimation->state() != QPropertyAnimation::Running) {
         connect(showGoToFlowAnimation, &QAbstractAnimation::finished, goToFlow, &QWidget::hide);
         disconnect(showGoToFlowAnimation, &QAbstractAnimation::finished, this, &Viewer::moveCursoToGoToFlow);
         showGoToFlowAnimation->setStartValue(QPoint((width() - goToFlow->width()) / 2, height() - goToFlow->height()));
         showGoToFlowAnimation->setEndValue(QPoint((width() - goToFlow->width()) / 2, height()));
         showGoToFlowAnimation->start();
-        goToFlow->centerSlide(render->getIndex());
-        goToFlow->setPageNumber(render->getIndex());
+        goToFlow->centerSlide(getCurrentPageNumber());
+        goToFlow->setPageNumber(getCurrentPageNumber());
         this->setFocus(Qt::OtherFocusReason);
     }
 }
@@ -1472,14 +1512,18 @@ void Viewer::rotateRight()
 // TODO
 void Viewer::setBookmark(bool set)
 {
-    render->setBookmark();
-    if (set) // add bookmark
-    {
-        render->setBookmark();
-    } else // remove bookmark
-    {
-        render->removeBookmark();
-    }
+    if (!render->hasLoadedComic())
+        return;
+
+    const int page = (continuousScroll && continuousViewModel->numPages() > 0)
+            ? continuousViewModel->readingProgressPage()
+            : static_cast<int>(render->getIndex());
+    if (set)
+        render->setBookmark(page);
+    else
+        render->removeBookmark(page);
+
+    emit pageIsBookmark(set);
 }
 
 void Viewer::save()
@@ -1570,6 +1614,10 @@ void Viewer::onContinuousScroll(int value)
         // switch) instead.
         updateInformation();
         emit pageAvailable(true);
+        // Render only reports bookmark state for its own page changes.
+        if (Bookmarks *bookmarks = render->getBookmarks()) {
+            emit pageIsBookmark(bookmarks->isBookmark(currentPage));
+        }
     }
 }
 
@@ -1920,7 +1968,9 @@ bool Viewer::applyZoomAtAnchor(int newZoom)
     }
 
     if (continuousScroll) {
-        updateZoomRatio(newZoom);
+        zoom = newZoom;
+        continuousViewModel->setZoomFactor(zoom);
+        continuousWidget->invalidateScaledImageCache();
     } else {
         const int previousZoom = zoom;
         zoom = newZoom;
@@ -2032,13 +2082,9 @@ void Viewer::setActiveWidget(QWidget *w)
 
 void Viewer::updateZoomRatio(int ratio)
 {
-    zoom = ratio;
-    if (continuousScroll) {
-        continuousViewModel->setZoomFactor(zoom);
-        continuousWidget->invalidateScaledImageCache();
-    } else {
-        updateContentSize();
-    }
+    captureZoomAnchor();
+    applyZoomAtAnchor(ratio);
+    zoomHud->hide();
 }
 
 bool Viewer::getIsMangaMode()
@@ -2091,11 +2137,7 @@ void Viewer::offsetDoublePageToTheLeft()
         return;
     }
 
-    if (doubleMangaPage) {
-        render->previousPage();
-    } else {
-        render->nextPage();
-    }
+    render->offsetDoublePage(doubleMangaPage ? -1 : 1);
 
     updateInformation();
 }
@@ -2106,11 +2148,7 @@ void Viewer::offsetDoublePageToTheRight()
         return;
     }
 
-    if (doubleMangaPage) {
-        render->nextPage();
-    } else {
-        render->previousPage();
-    }
+    render->offsetDoublePage(doubleMangaPage ? 1 : -1);
 
     updateInformation();
 }

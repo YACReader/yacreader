@@ -225,18 +225,18 @@ void Comic::loadFinished()
     emit imagesLoaded();
 }
 //-----------------------------------------------------------------------------
-void Comic::setBookmark()
+void Comic::setBookmark(int index)
 {
     QImage p;
-    p.loadFromData(_pages[_index]);
-    bm->setBookmark(_index, p);
+    p.loadFromData(_pages[index]);
+    bm->setBookmark(index, p);
     // emit bookmarksLoaded(*bm);
     emit bookmarksUpdated();
 }
 //-----------------------------------------------------------------------------
-void Comic::removeBookmark()
+void Comic::removeBookmark(int index)
 {
-    bm->removeBookmark(_index);
+    bm->removeBookmark(index);
     // emit bookmarksLoaded(*bm);
     emit bookmarksUpdated();
 }

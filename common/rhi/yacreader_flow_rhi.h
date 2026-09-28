@@ -1,5 +1,5 @@
 // Qt RHI-based Coverflow for YACReader
-// Compatible with Qt 6.7+ using QRhiWidget
+// Compatible with Qt 6.7+
 #ifndef __YACREADER_FLOW_RHI_H
 #define __YACREADER_FLOW_RHI_H
 
@@ -11,7 +11,7 @@
 #include "scroll_management.h"
 #include "yacreader_global.h"
 
-#include <QRhiWidget>
+#include <QWindow>
 
 #include <rhi/qrhi.h>
 
@@ -31,13 +31,17 @@ struct YACReader3DImageRHI {
     YACReader3DVector animEnd;
 };
 
-class QLabel;
 class ImageLoader3D;
 class ImageLoaderByteArray3D;
 class YACReaderComicFlow3D;
 class YACReaderPageFlow3D;
+class QOffscreenSurface;
 
-class YACReaderFlow3D : public QRhiWidget, public ScrollManagement
+// The flow renders into its own native window (embed it with QWidget::createWindowContainer).
+// A render-to-texture widget (QRhiWidget, QOpenGLWidget, QQuickWidget) would switch the whole
+// top-level window to RHI composition, and Qt then copies the full window backing store on every
+// flush (QTBUG-120565). That makes the rest of the UI slow on large screens.
+class YACReaderFlow3D : public QWindow, public ScrollManagement
 {
     Q_OBJECT
 
@@ -87,6 +91,7 @@ protected:
         std::unique_ptr<QRhiTexture> defaultTexture;
         std::unique_ptr<QRhiTexture> markTexture;
         std::unique_ptr<QRhiTexture> readingTexture;
+        std::unique_ptr<QRhiTexture> overlayTexture;
 
         // Buffers
         std::unique_ptr<QRhiBuffer> vertexBuffer;
@@ -116,6 +121,7 @@ protected:
             defaultTexture.reset();
             markTexture.reset();
             readingTexture.reset();
+            overlayTexture.reset();
             vertexBuffer.reset();
             instanceBuffer.reset();
             uniformBuffer.reset();
@@ -131,14 +137,13 @@ protected:
     Scene scene;
     QVector<PendingTextureUpload> pendingTextureUploads;
 
-    // Index label (shows "current/total" in top-left corner)
-    QLabel *indexLabel = nullptr;
+    // Index label (shows "current/total" in top-left corner). A native window cannot host
+    // child widgets, so the label is rendered into overlayTexture and drawn over the covers.
     IndexLabelState indexLabelState;
+    qreal overlayTextureDevicePixelRatio = 0;
+    bool overlayTextureDirty = true;
 
 #if defined(YACREADER_RHI_PERF)
-    // Performance label (shows averaged render time)
-    QLabel *perfLabel = nullptr;
-
     // Performance measurement state
     double perfAccumMs = 0.0; // accumulated ms over samples
     int perfAccumCount = 0; // number of samples accumulated
@@ -194,16 +199,25 @@ protected:
     void startAnimationTimer();
     void stopAnimationTimer();
 
-    // QRhiWidget overrides
-    void initialize(QRhiCommandBuffer *cb) override;
-    void render(QRhiCommandBuffer *cb) override;
-    void releaseResources() override;
-    void showEvent(QShowEvent *event) override;
+    // Rendering surface callbacks
+    bool event(QEvent *event) override;
+    void exposeEvent(QExposeEvent *event) override;
+    void releaseSwapChain();
+    void releaseRhi();
+    bool initializeRhi();
+    void renderFrame();
+    void recoverFromDeviceLoss();
     void resizeEvent(QResizeEvent *event) override;
+    void initializeScene(QRhiCommandBuffer *cb);
+    void renderScene(QRhiCommandBuffer *cb);
+    void requestRender();
+    QRhiRenderTarget *currentRenderTarget() const;
+    int renderSampleCount() const;
 
     // Index label helpers
     void updateIndexLabel();
     void updateIndexLabelStyle();
+    void syncOverlayTexture(QRhiResourceUpdateBatch *batch);
 
     // Helper methods
     QRhiTexture *createTextureFromImage(QRhiCommandBuffer *cb, const QImage &image);
@@ -223,12 +237,19 @@ protected:
 
 protected:
     QRhi *m_rhi = nullptr;
+    std::unique_ptr<QRhi> ownedRhi;
+    std::unique_ptr<QRhiSwapChain> swapChain;
+    std::unique_ptr<QRhiRenderBuffer> depthStencil;
+    std::unique_ptr<QRhiRenderPassDescriptor> renderPassDescriptor;
+    std::unique_ptr<QOffscreenSurface> fallbackSurface;
+    bool swapChainReady = false;
+    bool newlyExposed = false;
+    bool renderingFrame = false;
+    bool rhiInitializationFailed = false;
 
 public:
-    YACReaderFlow3D(QWidget *parent = nullptr, struct Preset p = pressetYACReaderFlowDownConfig);
+    YACReaderFlow3D(struct Preset p = pressetYACReaderFlowDownConfig);
     virtual ~YACReaderFlow3D();
-
-    QSize minimumSizeHint() const override;
 
     void showPrevious();
     void showNext();
@@ -291,6 +312,10 @@ public slots:
     void resizeGL(int width, int height); // Compatibility method (no-op for RHI)
 
     QVector3D getPlaneIntersection(int x, int y, YACReader3DImageRHI plane);
+    QString rhiBackendName() const;
+    QString rhiDeviceName() const;
+    QString rhiDeviceType() const;
+    bool isRhiInitialized() const { return m_rhi != nullptr; }
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;

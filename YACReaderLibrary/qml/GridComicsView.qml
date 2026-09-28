@@ -366,7 +366,7 @@ SplitView {
 
                                 Layout.topMargin: 6
                                 Layout.rightMargin: 30
-                                Layout.bottomMargin: 5
+                                Layout.bottomMargin: 50
                                 Layout.fillWidth: true
                                 // Let the synopsis run down to just above the Read button. Its y inside the
                                 // column only depends on the items above it, so this does not loop.
@@ -374,8 +374,8 @@ SplitView {
                                 Layout.maximumWidth: 960
                                 implicitHeight: synopsisScroller.implicitHeight
 
-                                readonly property int fadeHeight: 18
-                                readonly property int readButtonGap: 12
+                                readonly property int fadeHeight: 24
+                                readonly property int readButtonGap: 8
 
                                 ScrollView {
                                     anchors.fill: parent

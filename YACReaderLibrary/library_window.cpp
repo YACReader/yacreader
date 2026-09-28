@@ -71,6 +71,7 @@
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QToolButton>
+#include <QWindow>
 #include <QtCore>
 
 #include <algorithm>
@@ -400,6 +401,17 @@ void LibraryWindow::doDialogs()
 #endif
 
     had = new HelpAboutDialog(this); // TODO load data.
+    had->setAdditionalSystemInfoProvider([this]() {
+        QString text = QStringLiteral("\nRENDERING INFORMATION\n");
+        // Qt 6 switches the top-level window to a GPU surface type once it has to compose
+        // RHI-rendered widgets (e.g. QQuickWidget, QRhiWidget); from then on every repaint is composited.
+        const QWindow *topLevel = windowHandle();
+        if (topLevel == nullptr || topLevel->surfaceType() == QSurface::RasterSurface)
+            text.append(QStringLiteral("Library renderer: QWidget (Raster)\n"));
+        else
+            text.append(QStringLiteral("Library renderer: QWidget (Raster, window composited through RHI)\n"));
+        return text;
+    });
     QString sufix = QLocale::system().name();
     if (QFile(":/files/about_" + sufix + ".html").exists())
         had->loadAboutInformation(":/files/about_" + sufix + ".html");

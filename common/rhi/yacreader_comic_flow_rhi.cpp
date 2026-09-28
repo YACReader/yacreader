@@ -5,8 +5,8 @@
 #include <utility>
 
 // YACReaderComicFlow3D implementation
-YACReaderComicFlow3D::YACReaderComicFlow3D(QWidget *parent, struct Preset p)
-    : YACReaderFlow3D(parent, p)
+YACReaderComicFlow3D::YACReaderComicFlow3D(struct Preset p)
+    : YACReaderFlow3D(p)
 {
     worker = new ImageLoader3D(this);
     worker->flow = this;

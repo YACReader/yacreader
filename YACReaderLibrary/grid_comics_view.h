@@ -15,7 +15,6 @@
 
 class QAbstractListModel;
 class QItemSelectionModel;
-class QQuickWidget;
 class QQmlContext;
 class QTimer;
 
@@ -106,6 +105,7 @@ protected:
     void reloadContent() override;
     ContentViewState captureViewState() const override;
     void restoreViewState(const ContentViewState &state) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 public slots:
     // ComicsView

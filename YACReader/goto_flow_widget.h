@@ -29,6 +29,8 @@ class GoToFlowWidget : public QWidget, protected Themable
 public:
     GoToFlowWidget(QWidget *parent = nullptr, FlowType flowType = CoverFlowLike);
     ~GoToFlowWidget() override;
+    bool usesNativeRhiWindow() const { return rhiFlow != nullptr; }
+    QString renderingSystemInfo() const;
 
 public slots:
     void reset();
@@ -64,6 +66,7 @@ private:
     QVBoxLayout *mainLayout;
     GoToFlowToolBar *toolBar;
     YACReaderPageFlow3D *rhiFlow = nullptr;
+    QWidget *rhiContainer = nullptr;
     QListWidget *softwareFlow = nullptr;
     QVector<QByteArray> softwareImages;
     QSize imageSize;
