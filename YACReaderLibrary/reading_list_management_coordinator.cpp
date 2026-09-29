@@ -2142,10 +2142,14 @@ void ReadingListManagementCoordinator::showMissingComics()
     dialog.setWindowTitle(tr("Missing comics — %1").arg(readingListName));
     dialog.resize(1150, 650);
     auto *layout = new QVBoxLayout(&dialog);
-    layout->addWidget(new QLabel(tr("%1 unresolved comics in %2")
-                                         .arg(missingComics.size())
-                                         .arg(readingListName),
-                                 &dialog));
+    auto *summary = new QLabel(&dialog);
+    layout->addWidget(summary);
+    const auto refreshSummary = [&] {
+        summary->setText(tr("%1 unresolved comics in %2")
+                                 .arg(missingComics.size())
+                                 .arg(readingListName));
+    };
+    refreshSummary();
 
     const QStringList headers { tr("Status"), tr("Series"), tr("Issue"), tr("Volume"), tr("Year"), tr("Format"),
                                 tr("File name"), tr("Source ID"), tr("ComicVine series"), tr("ComicVine issue") };
@@ -2219,7 +2223,12 @@ void ReadingListManagementCoordinator::showMissingComics()
     useSelectedComic->setEnabled(!missingComics.isEmpty() && !libraryComics.isEmpty());
     exportPdf->setEnabled(!missingComics.isEmpty());
     connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
-    connect(useSelectedComic, &QPushButton::clicked, &dialog, [&] {
+    const auto refreshActionButtons = [&] {
+        matchAll->setEnabled(!missingComics.isEmpty());
+        useSelectedComic->setEnabled(!missingComics.isEmpty() && !libraryComics.isEmpty());
+        exportPdf->setEnabled(!missingComics.isEmpty());
+    };
+    const auto useCurrentComic = [&] {
         const int row = table->currentRow();
         const auto selectedComics = comicTree->selectedItems();
         const auto comicId = selectedComics.isEmpty() ? 0 : selectedComics.constFirst()->data(0, Qt::UserRole).toULongLong();
@@ -2328,8 +2337,24 @@ void ReadingListManagementCoordinator::showMissingComics()
 
         listsModel->setupReadingListsData(listsModel->databasePath());
         emit currentListReselectionRequested();
-        dialog.accept();
-        QTimer::singleShot(0, this, &ReadingListManagementCoordinator::showMissingComics);
+        missingComics.removeAt(unresolvedIndex);
+        table->removeRow(row);
+        for (int tableRow = 0; tableRow < table->rowCount(); ++tableRow) {
+            const int previousIndex = table->item(tableRow, 0)->data(Qt::UserRole).toInt();
+            if (previousIndex > unresolvedIndex) {
+                for (int column = 0; column < table->columnCount(); ++column)
+                    table->item(tableRow, column)->setData(Qt::UserRole, previousIndex - 1);
+            }
+        }
+        refreshSummary();
+        refreshActionButtons();
+        if (table->rowCount() > 0)
+            table->selectRow(qMin(row, table->rowCount() - 1));
+    };
+    connect(useSelectedComic, &QPushButton::clicked, &dialog, useCurrentComic);
+    connect(comicTree, &QTreeWidget::itemDoubleClicked, &dialog, [=, &useCurrentComic](QTreeWidgetItem *item, int) {
+        if (item && item->data(0, Qt::UserRole).toULongLong() != 0)
+            useCurrentComic();
     });
     connect(matchAll, &QPushButton::clicked, &dialog, [&] {
         int relinked = 0;
