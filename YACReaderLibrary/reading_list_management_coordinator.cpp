@@ -93,6 +93,9 @@ struct MatchedCblEntry {
 };
 
 struct MissingComicEntry {
+    bool importedCbl = false;
+    qulonglong readingListId = 0;
+    qulonglong entryId = 0;
     QString status;
     QString series;
     QString number;
@@ -2031,6 +2034,7 @@ void ReadingListManagementCoordinator::showMissingComics()
     const bool folderReport = listsModel->isReadingListFolder(currentList);
     bool importedCbl = false;
     QList<MissingComicEntry> missingComics;
+    QList<LibraryComicMatchData> libraryComics;
     QString loadError;
     QString connectionName;
     {
@@ -2050,27 +2054,27 @@ void ReadingListManagementCoordinator::showMissingComics()
         QSqlQuery entries(db);
         if (folderReport) {
             entries.prepare(QStringLiteral(
-                    "SELECT status, series, number, volume, year, format, file_name, source_id, comicvine_series_id, comicvine_issue_id FROM ("
-                    "SELECT rl.ordering list_order, e.ordering entry_order, e.match_state status, e.series, e.number, e.volume, e.year, e.format, e.file_name, "
+                    "SELECT imported_cbl, reading_list_id, entry_id, status, series, number, volume, year, format, file_name, source_id, comicvine_series_id, comicvine_issue_id FROM ("
+                    "SELECT rl.ordering list_order, e.ordering entry_order, 1 imported_cbl, rl.id reading_list_id, e.id entry_id, e.match_state status, e.series, e.number, e.volume, e.year, e.format, e.file_name, "
                     "e.source_id, e.comicvine_series_id, e.comicvine_issue_id FROM reading_list rl "
                     "INNER JOIN cbl_reading_list_meta m ON m.reading_list_id = rl.id "
                     "INNER JOIN cbl_reading_list_entry e ON e.reading_list_id = rl.id "
                     "WHERE rl.parentId = :imported_folder_id AND (e.comic_id IS NULL OR e.match_state = :ambiguous_state) "
                     "UNION ALL "
-                    "SELECT rl.ordering, e.ordering, :missing_state, e.series, e.number, e.volume, e.year, e.format, e.file_name, '', '', e.comicvine_issue_id "
+                    "SELECT rl.ordering, e.ordering, 0, rl.id, e.id, :missing_state, e.series, e.number, e.volume, e.year, e.format, e.file_name, '', '', e.comicvine_issue_id "
                     "FROM reading_list rl INNER JOIN reading_list_entry e ON e.reading_list_id = rl.id "
                     "WHERE rl.parentId = :regular_folder_id AND e.comic_id IS NULL "
                     "AND NOT EXISTS (SELECT 1 FROM cbl_reading_list_meta m WHERE m.reading_list_id = rl.id) "
                     "ORDER BY list_order, entry_order"));
         } else if (importedCbl) {
             entries.prepare(QStringLiteral(
-                    "SELECT match_state, series, number, volume, year, format, file_name, source_id, "
+                    "SELECT 1, reading_list_id, id, match_state, series, number, volume, year, format, file_name, source_id, "
                     "comicvine_series_id, comicvine_issue_id "
                     "FROM cbl_reading_list_entry WHERE reading_list_id = :id AND (comic_id IS NULL OR match_state = :ambiguous_state) ORDER BY ordering"));
         } else {
             DBHelper::ensureReadingListEntries(db);
             entries.prepare(QStringLiteral(
-                    "SELECT :missing_state, series, number, volume, year, format, file_name, '', '', comicvine_issue_id "
+                    "SELECT 0, reading_list_id, id, :missing_state, series, number, volume, year, format, file_name, '', '', comicvine_issue_id "
                     "FROM reading_list_entry WHERE reading_list_id = :id AND comic_id IS NULL ORDER BY ordering"));
         }
         if (folderReport) {
@@ -2087,18 +2091,43 @@ void ReadingListManagementCoordinator::showMissingComics()
         } else {
             while (entries.next()) {
                 MissingComicEntry comic;
-                const auto state = static_cast<CblMatchState>(entries.value(0).toInt());
+                comic.importedCbl = entries.value(0).toBool();
+                comic.readingListId = entries.value(1).toULongLong();
+                comic.entryId = entries.value(2).toULongLong();
+                const auto state = static_cast<CblMatchState>(entries.value(3).toInt());
                 comic.status = state == CblMatchState::Ambiguous ? tr("Ambiguous") : tr("Missing");
-                comic.series = entries.value(1).toString();
-                comic.number = entries.value(2).toString();
-                comic.volume = entries.value(3).toString();
-                comic.year = entries.value(4).toString();
-                comic.format = entries.value(5).toString();
-                comic.fileName = entries.value(6).toString();
-                comic.sourceId = entries.value(7).toString();
-                comic.comicVineSeriesId = entries.value(8).toString();
-                comic.comicVineIssueId = entries.value(9).toString();
+                comic.series = entries.value(4).toString();
+                comic.number = entries.value(5).toString();
+                comic.volume = entries.value(6).toString();
+                comic.year = entries.value(7).toString();
+                comic.format = entries.value(8).toString();
+                comic.fileName = entries.value(9).toString();
+                comic.sourceId = entries.value(10).toString();
+                comic.comicVineSeriesId = entries.value(11).toString();
+                comic.comicVineIssueId = entries.value(12).toString();
                 missingComics.append(comic);
+            }
+        }
+
+        if (loadError.isEmpty()) {
+            QSqlQuery comics(db);
+            if (!comics.exec(QStringLiteral("SELECT c.id, c.fileName, ci.series, ci.number, ci.volume, ci.comicVineID, ci.date, ci.format, ci.alternateSeries "
+                                            "FROM comic c INNER JOIN comic_info ci ON c.comicInfoId = ci.id"))) {
+                loadError = comics.lastError().text();
+            } else {
+                while (comics.next()) {
+                    LibraryComicMatchData comic;
+                    comic.id = comics.value(0).toULongLong();
+                    comic.fileName = comics.value(1).toString();
+                    comic.series = comics.value(2).toString();
+                    comic.number = comics.value(3).toString();
+                    comic.volume = comics.value(4).toString();
+                    comic.comicVineIssueId = comics.value(5).toString();
+                    comic.year = comics.value(6).toString().right(4);
+                    comic.format = comics.value(7).toString();
+                    comic.alternateSeries = comics.value(8).toString();
+                    libraryComics.append(comic);
+                }
             }
         }
     }
@@ -2129,25 +2158,178 @@ void ReadingListManagementCoordinator::showMissingComics()
         const auto &comic = missingComics.at(row);
         const QStringList values { comic.status, comic.series, comic.number, comic.volume, comic.year, comic.format,
                                    comic.fileName, comic.sourceId, comic.comicVineSeriesId, comic.comicVineIssueId };
-        for (int column = 0; column < values.size(); ++column)
-            table->setItem(row, column, new QTableWidgetItem(values.at(column)));
+        for (int column = 0; column < values.size(); ++column) {
+            auto *item = new QTableWidgetItem(values.at(column));
+            item->setData(Qt::UserRole, row);
+            table->setItem(row, column, item);
+        }
     }
     table->setSortingEnabled(true);
     table->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     table->horizontalHeader()->setStretchLastSection(true);
     layout->addWidget(table);
 
+    auto *comicSearch = new QLineEdit(&dialog);
+    comicSearch->setPlaceholderText(tr("Search library comics to match the selected unresolved row..."));
+    layout->addWidget(comicSearch);
+
+    auto *comicTree = new QTreeWidget(&dialog);
+    comicTree->setHeaderLabels({ tr("Library series and comics") });
+    comicTree->setUniformRowHeights(true);
+    comicTree->setRootIsDecorated(true);
+    comicTree->setMinimumHeight(180);
+    QHash<QString, QTreeWidgetItem *> seriesItems;
+    for (const auto &comic : std::as_const(libraryComics)) {
+        const QString seriesName = comic.series.isEmpty() ? tr("Unknown series") : comic.series;
+        const QString key = normalized(seriesName);
+        auto *seriesItem = seriesItems.value(key, nullptr);
+        if (!seriesItem) {
+            seriesItem = new QTreeWidgetItem(comicTree, { seriesName });
+            seriesItem->setFlags(seriesItem->flags() & ~Qt::ItemIsSelectable);
+            seriesItems.insert(key, seriesItem);
+        }
+        auto *comicItem = new QTreeWidgetItem(seriesItem, { comicLabel(comic) });
+        comicItem->setData(0, Qt::UserRole, QVariant::fromValue(comic.id));
+    }
+    comicTree->sortItems(0, Qt::AscendingOrder);
+    layout->addWidget(comicTree, 1);
+
+    connect(comicSearch, &QLineEdit::textChanged, &dialog, [=](const QString &text) {
+        const QString needle = normalized(text);
+        for (int seriesRow = 0; seriesRow < comicTree->topLevelItemCount(); ++seriesRow) {
+            auto *seriesItem = comicTree->topLevelItem(seriesRow);
+            const bool seriesMatches = needle.isEmpty() || normalized(seriesItem->text(0)).contains(needle);
+            bool anyVisible = seriesMatches;
+            for (int comicRow = 0; comicRow < seriesItem->childCount(); ++comicRow) {
+                auto *comicItem = seriesItem->child(comicRow);
+                const bool visible = seriesMatches || normalized(comicItem->text(0)).contains(needle);
+                comicItem->setHidden(!visible);
+                anyVisible = anyVisible || visible;
+            }
+            seriesItem->setHidden(!anyVisible);
+            seriesItem->setExpanded(!needle.isEmpty() && anyVisible);
+        }
+    });
+
     auto *buttons = new QDialogButtonBox(QDialogButtonBox::Close, &dialog);
     auto *matchAll = buttons->addButton(tr("Match all again"), QDialogButtonBox::ActionRole);
-    auto *reviewMatchesButton = buttons->addButton(tr("Review matches..."), QDialogButtonBox::ActionRole);
+    auto *useSelectedComic = buttons->addButton(tr("Use selected comic"), QDialogButtonBox::ActionRole);
     auto *exportPdf = buttons->addButton(tr("Export PDF..."), QDialogButtonBox::ActionRole);
     matchAll->setEnabled(!missingComics.isEmpty());
-    reviewMatchesButton->setEnabled(importedCbl && !folderReport && !missingComics.isEmpty());
+    useSelectedComic->setEnabled(!missingComics.isEmpty() && !libraryComics.isEmpty());
     exportPdf->setEnabled(!missingComics.isEmpty());
     connect(buttons, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
-    connect(reviewMatchesButton, &QPushButton::clicked, &dialog, [&] {
+    connect(useSelectedComic, &QPushButton::clicked, &dialog, [&] {
+        const int row = table->currentRow();
+        const auto selectedComics = comicTree->selectedItems();
+        const auto comicId = selectedComics.isEmpty() ? 0 : selectedComics.constFirst()->data(0, Qt::UserRole).toULongLong();
+        if (row < 0 || row >= missingComics.size() || comicId == 0) {
+            QMessageBox::information(&dialog,
+                                     tr("Match comic"),
+                                     tr("Select an unresolved row and a library comic first."));
+            return;
+        }
+
+        const int unresolvedIndex = table->item(row, 0)->data(Qt::UserRole).toInt();
+        if (unresolvedIndex < 0 || unresolvedIndex >= missingComics.size())
+            return;
+
+        LibraryComicMatchData selectedComic;
+        bool foundComic = false;
+        for (const auto &comic : std::as_const(libraryComics)) {
+            if (comic.id == comicId) {
+                selectedComic = comic;
+                foundComic = true;
+                break;
+            }
+        }
+        if (!foundComic)
+            return;
+
+        const auto unresolved = missingComics.at(unresolvedIndex);
+        QString matchError;
+        QString matchConnection;
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(listsModel->databasePath());
+            matchConnection = db.connectionName();
+            if (!db.isOpen()) {
+                matchError = tr("Unable to open the library database.");
+            } else if (!db.transaction()) {
+                matchError = db.lastError().text();
+            } else if (unresolved.importedCbl) {
+                QSqlQuery update(db);
+                update.prepare(QStringLiteral("UPDATE cbl_reading_list_entry "
+                                              "SET comic_id = :comic_id, match_state = :match_state, match_tier = :match_tier, candidate_count = 1 "
+                                              "WHERE id = :entry_id AND reading_list_id = :reading_list_id"));
+                update.bindValue(QStringLiteral(":comic_id"), selectedComic.id);
+                update.bindValue(QStringLiteral(":match_state"), static_cast<int>(CblMatchState::Matched));
+                update.bindValue(QStringLiteral(":match_tier"), static_cast<int>(CblMatchTier::Manual));
+                update.bindValue(QStringLiteral(":entry_id"), unresolved.entryId);
+                update.bindValue(QStringLiteral(":reading_list_id"), unresolved.readingListId);
+                if (!update.exec()) {
+                    matchError = update.lastError().text();
+                } else {
+                    QSqlQuery link(db);
+                    link.prepare(QStringLiteral("INSERT OR IGNORE INTO comic_reading_list (reading_list_id, comic_id, ordering) "
+                                                "SELECT reading_list_id, comic_id, ordering FROM cbl_reading_list_entry "
+                                                "WHERE id = :entry_id AND reading_list_id = :reading_list_id AND comic_id IS NOT NULL"));
+                    link.bindValue(QStringLiteral(":entry_id"), unresolved.entryId);
+                    link.bindValue(QStringLiteral(":reading_list_id"), unresolved.readingListId);
+                    if (!link.exec()) {
+                        matchError = link.lastError().text();
+                    } else {
+                        QSqlQuery remap(db);
+                        remap.prepare(QStringLiteral(
+                                "INSERT OR REPLACE INTO cbl_remap_rule (series_key, volume_key, number_key, comic_id, created_at) "
+                                "VALUES (:series, :volume, :number, :comic_id, :created_at)"));
+                        remap.bindValue(QStringLiteral(":series"), normalizedSeries(unresolved.series, true));
+                        remap.bindValue(QStringLiteral(":volume"), normalized(unresolved.volume));
+                        remap.bindValue(QStringLiteral(":number"), normalizedIssueNumber(unresolved.number));
+                        remap.bindValue(QStringLiteral(":comic_id"), selectedComic.id);
+                        remap.bindValue(QStringLiteral(":created_at"), QDateTime::currentSecsSinceEpoch());
+                        if (!remap.exec())
+                            matchError = remap.lastError().text();
+                    }
+                }
+            } else {
+                QSqlQuery update(db);
+                update.prepare(QStringLiteral("UPDATE reading_list_entry SET comic_id = :comic_id "
+                                              "WHERE id = :entry_id AND reading_list_id = :reading_list_id"));
+                update.bindValue(QStringLiteral(":comic_id"), selectedComic.id);
+                update.bindValue(QStringLiteral(":entry_id"), unresolved.entryId);
+                update.bindValue(QStringLiteral(":reading_list_id"), unresolved.readingListId);
+                if (!update.exec()) {
+                    matchError = update.lastError().text();
+                } else {
+                    QSqlQuery link(db);
+                    link.prepare(QStringLiteral("INSERT OR IGNORE INTO comic_reading_list (reading_list_id, comic_id, ordering) "
+                                                "SELECT reading_list_id, comic_id, ordering FROM reading_list_entry "
+                                                "WHERE id = :entry_id AND reading_list_id = :reading_list_id AND comic_id IS NOT NULL"));
+                    link.bindValue(QStringLiteral(":entry_id"), unresolved.entryId);
+                    link.bindValue(QStringLiteral(":reading_list_id"), unresolved.readingListId);
+                    if (!link.exec())
+                        matchError = link.lastError().text();
+                }
+            }
+
+            if (matchError.isEmpty()) {
+                if (!db.commit())
+                    matchError = db.lastError().text();
+            } else {
+                db.rollback();
+            }
+        }
+        QSqlDatabase::removeDatabase(matchConnection);
+
+        if (!matchError.isEmpty()) {
+            QMessageBox::critical(&dialog, tr("Unable to match comic"), matchError);
+            return;
+        }
+
+        listsModel->setupReadingListsData(listsModel->databasePath());
+        emit currentListReselectionRequested();
         dialog.accept();
-        QTimer::singleShot(0, this, &ReadingListManagementCoordinator::editCblReadingList);
+        QTimer::singleShot(0, this, &ReadingListManagementCoordinator::showMissingComics);
     });
     connect(matchAll, &QPushButton::clicked, &dialog, [&] {
         int relinked = 0;
