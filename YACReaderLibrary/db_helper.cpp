@@ -1235,12 +1235,14 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
     return moreRecentComics;
 }
 
-void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
+QList<QUuid> DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
 {
+    QList<QUuid> updatedLibraries;
     const YACReaderLibraries libraries = DBHelper::getLibraries();
     const QStringList names = libraries.getNames();
 
     for (const auto &name : names) {
+        bool libraryUpdated = false;
         QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
         QString connectionName = "";
         {
@@ -1292,13 +1294,20 @@ void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
                 updateComicInfo.bindValue(":id", info.id);
                 updateComicInfo.bindValue(":rating", info.rating);
                 updateComicInfo.exec();
+                libraryUpdated = true;
             }
 
             db.commit();
             connectionName = db.connectionName();
         }
         QSqlDatabase::removeDatabase(connectionName);
+
+        if (libraryUpdated) {
+            updatedLibraries.append(libraries.getUuid(name));
+        }
     }
+
+    return updatedLibraries;
 }
 
 void DBHelper::renameLabel(qulonglong id, const QString &name, QSqlDatabase &db)
