@@ -133,8 +133,12 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
         if (serverVersion.exactMatch(path)) {
             VersionController().service(request, response);
         } else if (sync.exactMatch(path)) {
-            SyncControllerV2().service(request, response);
-            emit clientSync();
+            SyncControllerV2 syncController;
+            syncController.service(request, response);
+
+            for (const auto &libraryId : std::as_const(syncController.changedLibraries)) {
+                emit libraryContentChanged(libraryId);
+            }
         } else if (librariesUpdate.exactMatch(path) || librariesUpdateStatus.exactMatch(path) || librariesUpdateCancel.exactMatch(path)) {
             UpdateLibrariesControllerV2().service(request, response);
         } else {

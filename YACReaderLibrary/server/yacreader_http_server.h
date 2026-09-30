@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+#include <QUuid>
 
 namespace stefanfrings {
 class HttpListener;
@@ -23,8 +24,8 @@ public:
     QString errorString() const;
 
 signals:
-    void clientSync();
     void comicUpdated(qulonglong libraryId, qulonglong comicId);
+    void libraryContentChanged(const QUuid &libraryId);
 
 private:
     stefanfrings::HttpListener *listener;

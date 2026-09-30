@@ -215,7 +215,7 @@ public slots:
     void showRootWidget();
     void showImportingWidget();
     QModelIndexList getSelectedComics();
-    void updateViewsOnClientSync();
+    void updateViewsOnLibraryContentChanged(const QUuid &libraryId);
     void updateViewsOnComicUpdateWithId(quint64 libraryId, quint64 comicId);
     void updateViewsOnComicUpdate(quint64 libraryId, const ComicDB &comic);
     void loadCoversFromCurrentModel();
