@@ -4,6 +4,7 @@
 #include "httprequesthandler.h"
 
 #include <QMutex>
+#include <QUuid>
 
 class RequestMapper : public stefanfrings::HttpRequestHandler
 {
@@ -16,8 +17,9 @@ public:
     void loadSessionV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);
 
 signals:
-    void clientSync();
     void comicUpdated(qulonglong libraryId, qulonglong comicId);
+    // a remote client changed the content of a library (reading progress, read status, type...)
+    void libraryContentChanged(const QUuid &libraryId);
 
 private:
     void serviceV2(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response);

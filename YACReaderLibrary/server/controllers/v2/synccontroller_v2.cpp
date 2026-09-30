@@ -166,6 +166,12 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
 
         if (!comics.isEmpty()) {
             auto moreRecentComicsFound = DBHelper::updateFromRemoteClient(comics, clientSendsHasBeenOpened, clientSendsImageFilters);
+
+            const auto updatedLibraryIds = comics.keys();
+            for (const auto libraryId : updatedLibraryIds) {
+                addChangedLibrary(libraries.getLibraryIdFromLegacyId(libraryId));
+            }
+
             const auto libraryIds = moreRecentComicsFound.keys();
 
             for (const auto libraryId : libraryIds) {
@@ -183,11 +189,23 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         response.write(output.toJson(QJsonDocument::Compact), true);
 
         // TODO does it make sense to send these back? The source is not YACReaderLibrary...
-        DBHelper::updateFromRemoteClientWithHash(comicsWithNoLibrary);
+        if (!comicsWithNoLibrary.isEmpty()) {
+            const auto updatedLibraries = DBHelper::updateFromRemoteClientWithHash(comicsWithNoLibrary);
+            for (const auto &libraryId : updatedLibraries) {
+                addChangedLibrary(libraryId);
+            }
+        }
 
     } else {
         response.setStatus(412, "No comic info received");
         response.write("[]", true);
         return;
+    }
+}
+
+void SyncControllerV2::addChangedLibrary(const QUuid &libraryId)
+{
+    if (!libraryId.isNull() && !changedLibraries.contains(libraryId)) {
+        changedLibraries.append(libraryId);
     }
 }

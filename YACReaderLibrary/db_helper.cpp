@@ -1235,12 +1235,14 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
     return moreRecentComics;
 }
 
-void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
+QList<QUuid> DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
 {
+    QList<QUuid> updatedLibraries;
     const YACReaderLibraries libraries = DBHelper::getLibraries();
     const QStringList names = libraries.getNames();
 
     for (const auto &name : names) {
+        bool libraryUpdated = false;
         QString libraryPath = DBHelper::getLibraries().getPath(libraries.getId(name));
         QString connectionName = "";
         {
@@ -1292,13 +1294,20 @@ void DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &comics)
                 updateComicInfo.bindValue(":id", info.id);
                 updateComicInfo.bindValue(":rating", info.rating);
                 updateComicInfo.exec();
+                libraryUpdated = true;
             }
 
             db.commit();
             connectionName = db.connectionName();
         }
         QSqlDatabase::removeDatabase(connectionName);
+
+        if (libraryUpdated) {
+            updatedLibraries.append(libraries.getUuid(name));
+        }
     }
+
+    return updatedLibraries;
 }
 
 void DBHelper::renameLabel(qulonglong id, const QString &name, QSqlDatabase &db)
@@ -1974,7 +1983,7 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     return labels;
 }
 
-void DBHelper::updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type)
+bool DBHelper::updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type)
 {
     QSqlQuery updateFolderQuery(db);
     updateFolderQuery.prepare("UPDATE folder "
@@ -1982,7 +1991,7 @@ void DBHelper::updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::
                               "WHERE id = :id");
     updateFolderQuery.bindValue(":type", static_cast<int>(type));
     updateFolderQuery.bindValue(":id", id);
-    updateFolderQuery.exec();
+    bool success = updateFolderQuery.exec();
 
     QSqlQuery updateComicInfo(db);
     updateComicInfo.prepare("UPDATE comic_info "
@@ -1990,18 +1999,92 @@ void DBHelper::updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::
                             "WHERE id IN (SELECT ci.id FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId)");
     updateComicInfo.bindValue(":type", static_cast<int>(type));
     updateComicInfo.bindValue(":parentId", id);
-    updateComicInfo.exec();
+    success = updateComicInfo.exec() && success;
 
     QSqlQuery getSubFoldersQuery(db);
     getSubFoldersQuery.prepare("SELECT id FROM folder WHERE parentId = :parentId AND id <> 1"); // do not select the root folder
     getSubFoldersQuery.bindValue(":parentId", id);
-    getSubFoldersQuery.exec();
+    success = getSubFoldersQuery.exec() && success;
 
     int childFolderIdPos = getSubFoldersQuery.record().indexOf("id");
 
     while (getSubFoldersQuery.next()) {
-        updateFolderTreeType(getSubFoldersQuery.value(childFolderIdPos).toULongLong(), db, type);
+        success = updateFolderTreeType(getSubFoldersQuery.value(childFolderIdPos).toULongLong(), db, type) && success;
     }
+
+    return success;
+}
+
+bool DBHelper::setComicRead(qulonglong comicId, bool read, QSqlDatabase &db)
+{
+    QSqlQuery updateComicInfo(db);
+    if (read) {
+        updateComicInfo.prepare("UPDATE comic_info SET "
+                                "read = 1 "
+                                "WHERE id = (SELECT comicInfoId FROM comic WHERE id = :id)");
+    } else {
+        updateComicInfo.prepare("UPDATE comic_info SET "
+                                "read = 0, "
+                                "currentPage = 1, "
+                                "hasBeenOpened = 0, "
+                                "lastTimeOpened = NULL "
+                                "WHERE id = (SELECT comicInfoId FROM comic WHERE id = :id)");
+    }
+    updateComicInfo.bindValue(":id", comicId);
+
+    if (!updateComicInfo.exec()) {
+        QLOG_ERROR() << "setComicRead failed for comic" << comicId << ":" << updateComicInfo.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+bool DBHelper::setComicType(qulonglong comicId, YACReader::FileType type, QSqlDatabase &db)
+{
+    QSqlQuery updateComicInfo(db);
+    updateComicInfo.prepare("UPDATE comic_info SET "
+                            "type = :type "
+                            "WHERE id = (SELECT comicInfoId FROM comic WHERE id = :id)");
+    updateComicInfo.bindValue(":type", static_cast<int>(type));
+    updateComicInfo.bindValue(":id", comicId);
+
+    if (!updateComicInfo.exec()) {
+        QLOG_ERROR() << "setComicType failed for comic" << comicId << ":" << updateComicInfo.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+bool DBHelper::setFolderFinished(qulonglong folderId, bool finished, QSqlDatabase &db)
+{
+    QSqlQuery updateFolder(db);
+    updateFolder.prepare("UPDATE folder SET finished = :finished WHERE id = :id");
+    updateFolder.bindValue(":finished", finished ? 1 : 0);
+    updateFolder.bindValue(":id", folderId);
+
+    if (!updateFolder.exec()) {
+        QLOG_ERROR() << "setFolderFinished failed for folder" << folderId << ":" << updateFolder.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
+bool DBHelper::setFolderCompleted(qulonglong folderId, bool completed, QSqlDatabase &db)
+{
+    QSqlQuery updateFolder(db);
+    updateFolder.prepare("UPDATE folder SET completed = :completed WHERE id = :id");
+    updateFolder.bindValue(":completed", completed ? 1 : 0);
+    updateFolder.bindValue(":id", folderId);
+
+    if (!updateFolder.exec()) {
+        QLOG_ERROR() << "setFolderCompleted failed for folder" << folderId << ":" << updateFolder.lastError().text();
+        return false;
+    }
+
+    return true;
 }
 
 void DBHelper::updateDBType(QSqlDatabase &db, YACReader::FileType type)
