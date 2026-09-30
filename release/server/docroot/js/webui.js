@@ -678,16 +678,26 @@
     }
 
     function postJson(url, payload) {
+      return sendJson("POST", url, payload);
+    }
+
+    function patchJson(url, payload) {
+      return sendJson("PATCH", url, payload);
+    }
+
+    function sendJson(method, url, payload) {
       var headers = apiHeaders("application/json");
       headers["Content-Type"] = "application/json";
 
       return fetch(url, {
-        method: "POST",
+        method: method,
         headers: headers,
         body: JSON.stringify(payload)
       }).then(function (response) {
         if (!response.ok) {
-          throw new Error("Request failed with status " + response.status);
+          var error = new Error("Request failed with status " + response.status);
+          error.status = response.status;
+          throw error;
         }
         return response.json();
       });
@@ -741,6 +751,15 @@
 
     function searchApi() {
       return "/v2/library/" + encodeURIComponent(libraryId) + "/search";
+    }
+
+    // PATCH these to change fields of an item (see YACReaderLibrary/server/API.md)
+    function comicApi(comicId) {
+      return "/v2/library/" + encodeURIComponent(libraryId) + "/comic/" + encodeURIComponent(comicId);
+    }
+
+    function folderApi(folderId) {
+      return "/v2/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId);
     }
 
     function apiHeaders(accept) {
@@ -856,6 +875,7 @@
     }
 
     function showNavigationLoading() {
+      closeActionMenu(false);
       if (historyTraversalPending) {
         browserRoot.setAttribute("aria-busy", "true");
         return;
@@ -911,6 +931,446 @@
         placeholder.hidden = false;
       });
       return image;
+    }
+
+    // Item actions: a menu on each card (and on the comic and folder pages) that
+    // changes the read status or the type of comics and folders. The server sends
+    // back the updated items, and every view of those items is rebuilt in place.
+    var fileTypeNames = ["Comic", "Manga", "Western manga", "Web comic", "Yonkoma"];
+    var itemViews = [];
+    var activeActionMenu = null;
+    var toast = null;
+    var toastTimer = null;
+
+    function itemKey(item) {
+      return item.type + ":" + String(item.id);
+    }
+
+    function registerItemView(item, node, refresh) {
+      itemViews.push({ key: itemKey(item), node: node, refresh: refresh });
+    }
+
+    function applyUpdatedItems(items) {
+      itemViews = itemViews.filter(function (view) {
+        return view.node.isConnected;
+      });
+
+      var views = itemViews.slice();
+      items.forEach(function (item) {
+        if (item.type === "folder" && folderMetadataCache[String(item.id)]) {
+          Object.assign(folderMetadataCache[String(item.id)], item);
+        }
+        views.forEach(function (view) {
+          if (view.key === itemKey(item) && view.node.isConnected) {
+            view.refresh(item);
+          }
+        });
+      });
+    }
+
+    function showToast(message, isError) {
+      if (!toast) {
+        toast = element("div", "browser-toast");
+        toast.setAttribute("role", "status");
+        toast.setAttribute("aria-live", "polite");
+        document.body.appendChild(toast);
+      }
+
+      toast.textContent = message;
+      toast.classList.toggle("error", Boolean(isError));
+      toast.classList.add("visible");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(function () {
+        toast.classList.remove("visible");
+      }, 3200);
+    }
+
+    function actionErrorMessage(error) {
+      if (error && error.status === 503) {
+        return "The library is busy. Try again in a moment.";
+      }
+      if (error && error.status === 404) {
+        return "This item is no longer in the library. Reload the page.";
+      }
+      return "The change could not be saved. Try again.";
+    }
+
+    function updateItem(url, fields, successMessage) {
+      return patchJson(url, fields).then(function (item) {
+        applyUpdatedItems(item ? [item] : []);
+        showToast(successMessage);
+      }).catch(function (error) {
+        showToast(actionErrorMessage(error), true);
+      });
+    }
+
+    function setComicRead(comic, read, successMessage) {
+      return updateItem(comicApi(String(comic.id)), { read: read }, successMessage);
+    }
+
+    function setComicType(comic, type) {
+      return updateItem(comicApi(String(comic.id)), { file_type: type }, "Type set to " + fileTypeNames[type]);
+    }
+
+    function updateFolder(folder, fields, successMessage) {
+      return updateItem(folderApi(String(folder.id)), fields, successMessage);
+    }
+
+    function setFolderType(folder, type) {
+      return updateFolder(folder, { file_type: type }, "Type set to " + fileTypeNames[type] + " for the folder and all its content");
+    }
+
+    function typeMenuEntries(currentType, apply) {
+      var entries = [{ heading: "Type" }];
+      fileTypeNames.forEach(function (name, type) {
+        entries.push({
+          label: name,
+          checked: Number(currentType) === type,
+          run: function () {
+            apply(type);
+          }
+        });
+      });
+      return entries;
+    }
+
+    function comicIsInProgress(comic) {
+      return !comic.read && (Boolean(comic.has_been_opened) || Number(comic.current_page) > 1);
+    }
+
+    // options.continueReading: the card is in the Continue reading shelf.
+    function comicMenuEntries(comic, options) {
+      options = options || {};
+      var entries = [];
+
+      if (options.continueReading) {
+        entries.push({
+          label: "Remove from Continue reading",
+          run: function () {
+            setComicRead(comic, false, "Removed from Continue reading");
+          }
+        });
+      }
+      if (!comic.read) {
+        entries.push({
+          label: "Set as read",
+          run: function () {
+            setComicRead(comic, true, "Set as read");
+          }
+        });
+      }
+      if (!options.continueReading && (comic.read || comicIsInProgress(comic))) {
+        entries.push({
+          label: "Set as unread",
+          run: function () {
+            setComicRead(comic, false, "Set as unread");
+          }
+        });
+      }
+
+      if (entries.length) {
+        entries.push({ separator: true });
+      }
+
+      return entries.concat(typeMenuEntries(comic.file_type, function (type) {
+        setComicType(comic, type);
+      }));
+    }
+
+    function folderMenuEntries(folder) {
+      return [
+        {
+          label: folder.finished ? "Set as unread" : "Set as read",
+          run: function () {
+            updateFolder(folder, { finished: !folder.finished }, folder.finished ? "Folder set as unread" : "Folder set as read");
+          }
+        },
+        {
+          label: folder.completed ? "Set as uncompleted" : "Set as completed",
+          run: function () {
+            updateFolder(folder, { completed: !folder.completed }, folder.completed ? "Folder set as uncompleted" : "Folder set as completed");
+          }
+        },
+        { separator: true }
+      ].concat(typeMenuEntries(folder.file_type, function (type) {
+        setFolderType(folder, type);
+      }));
+    }
+
+    function closeActionMenu(returnFocus) {
+      if (!activeActionMenu) {
+        return;
+      }
+
+      var menu = activeActionMenu;
+      activeActionMenu = null;
+      menu.popover.remove();
+      menu.anchor.setAttribute("aria-expanded", "false");
+      document.removeEventListener("pointerdown", menu.onPointerDown, true);
+      window.removeEventListener("scroll", menu.onViewportChange, true);
+      window.removeEventListener("resize", menu.onViewportChange);
+      if (returnFocus && menu.anchor.isConnected) {
+        menu.anchor.focus({ preventScroll: true });
+      }
+    }
+
+    function actionMenuItems(popover) {
+      return Array.prototype.slice.call(popover.querySelectorAll(".menu-item"));
+    }
+
+    // Opens the menu below `anchor`, or at `point` ({ x, y }) for a right click.
+    function openActionMenu(entries, anchor, point) {
+      closeActionMenu(false);
+
+      var popover = element("div", "action-menu");
+      popover.setAttribute("role", "menu");
+      if (anchor.getAttribute("aria-label")) {
+        popover.setAttribute("aria-label", anchor.getAttribute("aria-label"));
+      }
+
+      entries.forEach(function (entry) {
+        if (entry.separator) {
+          var separator = element("div", "action-menu-separator");
+          separator.setAttribute("role", "separator");
+          popover.appendChild(separator);
+          return;
+        }
+
+        if (entry.heading) {
+          var heading = element("div", "action-menu-heading", entry.heading);
+          heading.setAttribute("role", "presentation");
+          popover.appendChild(heading);
+          return;
+        }
+
+        var item = element("button", "menu-item");
+        item.type = "button";
+        item.tabIndex = -1;
+        var isRadio = typeof entry.checked === "boolean";
+        item.setAttribute("role", isRadio ? "menuitemradio" : "menuitem");
+        if (isRadio) {
+          item.setAttribute("aria-checked", entry.checked ? "true" : "false");
+          var check = element("span", "action-menu-check");
+          if (entry.checked) {
+            check.appendChild(svgIcon("action-menu-check-icon", '<path d="M20 6 9 17l-5-5"/>'));
+          }
+          item.appendChild(check);
+        }
+        item.appendChild(element("span", "", entry.label));
+        item.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          closeActionMenu(true);
+          if (!entry.checked) {
+            entry.run();
+          }
+        });
+        popover.appendChild(item);
+      });
+
+      popover.addEventListener("keydown", function (event) {
+        var items = actionMenuItems(popover);
+        var index = items.indexOf(document.activeElement);
+        var next = null;
+
+        if (event.key === "ArrowDown") {
+          next = items[(index + 1) % items.length];
+        } else if (event.key === "ArrowUp") {
+          next = items[index <= 0 ? items.length - 1 : index - 1];
+        } else if (event.key === "Home") {
+          next = items[0];
+        } else if (event.key === "End") {
+          next = items[items.length - 1];
+        } else if (event.key === "Escape") {
+          event.preventDefault();
+          event.stopPropagation();
+          closeActionMenu(true);
+          return;
+        } else if (event.key === "Tab") {
+          closeActionMenu(false);
+          return;
+        }
+
+        if (next) {
+          event.preventDefault();
+          next.focus();
+        }
+      });
+
+      popover.style.visibility = "hidden";
+      document.body.appendChild(popover);
+
+      var margin = 8;
+      var width = popover.offsetWidth;
+      var height = popover.offsetHeight;
+      var left;
+      var top;
+      if (point) {
+        left = point.x;
+        top = point.y + height > window.innerHeight - margin ? point.y - height : point.y;
+      } else {
+        var bounds = anchor.getBoundingClientRect();
+        left = bounds.left + width > window.innerWidth - margin ? bounds.right - width : bounds.left;
+        top = bounds.bottom + 6 + height > window.innerHeight - margin ? bounds.top - height - 6 : bounds.bottom + 6;
+      }
+      popover.style.left = Math.max(margin, Math.min(left, window.innerWidth - width - margin)) + "px";
+      popover.style.top = Math.max(margin, Math.min(top, window.innerHeight - height - margin)) + "px";
+      popover.style.visibility = "";
+
+      var menu = {
+        popover: popover,
+        anchor: anchor,
+        onPointerDown: function (event) {
+          if (!popover.contains(event.target) && !anchor.contains(event.target)) {
+            closeActionMenu(false);
+          }
+        },
+        onViewportChange: function (event) {
+          if (event.type === "scroll" && popover.contains(event.target)) {
+            return;
+          }
+          closeActionMenu(false);
+        }
+      };
+
+      activeActionMenu = menu;
+      anchor.setAttribute("aria-expanded", "true");
+      document.addEventListener("pointerdown", menu.onPointerDown, true);
+      window.addEventListener("scroll", menu.onViewportChange, true);
+      window.addEventListener("resize", menu.onViewportChange);
+
+      var firstItem = actionMenuItems(popover)[0];
+      if (firstItem) {
+        firstItem.focus({ preventScroll: true });
+      }
+    }
+
+    function actionMenuButton(className, label, entriesProvider) {
+      var button = element("button", className);
+      button.type = "button";
+      button.setAttribute("aria-haspopup", "menu");
+      button.setAttribute("aria-expanded", "false");
+      button.setAttribute("aria-label", label);
+      button.appendChild(svgIcon("action-menu-button-icon", '<circle cx="5" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.7" fill="currentColor" stroke="none"/>'));
+      button.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        if (activeActionMenu && activeActionMenu.anchor === button) {
+          closeActionMenu(true);
+          return;
+        }
+        openActionMenu(entriesProvider(), button);
+      });
+      return button;
+    }
+
+    var longPressDelay = 500;
+    var longPressMoveTolerance = 10;
+
+    // The card menu opens with a right click (or the context menu key) and with a
+    // long press on touch screens. Some touch browsers also send `contextmenu` on a
+    // long press, so whichever comes first opens the menu and the other is ignored.
+    function addItemMenuGestures(target, open) {
+      var timer = null;
+      var startX = 0;
+      var startY = 0;
+      var lastTouchOpenTime = 0;
+      var suppressClick = false;
+
+      function cancelTimer() {
+        window.clearTimeout(timer);
+        timer = null;
+      }
+
+      function openMenu(point, fromTouch) {
+        cancelTimer();
+        if (fromTouch) {
+          if (Date.now() - lastTouchOpenTime < 1000) {
+            return;
+          }
+          lastTouchOpenTime = Date.now();
+        }
+        open(point);
+      }
+
+      target.addEventListener("pointerdown", function (event) {
+        cancelTimer();
+        suppressClick = false;
+        if (event.pointerType === "mouse" || !event.isPrimary) {
+          return;
+        }
+
+        startX = event.clientX;
+        startY = event.clientY;
+        timer = window.setTimeout(function () {
+          suppressClick = true;
+          openMenu({ x: startX, y: startY }, true);
+        }, longPressDelay);
+      });
+
+      target.addEventListener("pointermove", function (event) {
+        if (timer && (Math.abs(event.clientX - startX) > longPressMoveTolerance
+            || Math.abs(event.clientY - startY) > longPressMoveTolerance)) {
+          cancelTimer();
+        }
+      });
+
+      ["pointerup", "pointercancel", "pointerleave"].forEach(function (type) {
+        target.addEventListener(type, cancelTimer);
+      });
+
+      target.addEventListener("contextmenu", function (event) {
+        event.preventDefault();
+        var fromKeyboard = event.clientX === 0 && event.clientY === 0;
+        // older touch browsers send a contextmenu without pointerType after our own long press
+        var fromTouch = event.pointerType === "touch" || event.pointerType === "pen"
+          || Date.now() - lastTouchOpenTime < 1000;
+        if (fromTouch) {
+          suppressClick = true;
+        }
+        openMenu(fromKeyboard ? null : { x: event.clientX, y: event.clientY }, fromTouch);
+      });
+
+      // The click that ends a long press must not open the item.
+      target.addEventListener("click", function (event) {
+        if (suppressClick) {
+          suppressClick = false;
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      }, true);
+    }
+
+    // The shell holds the card link; the item views are keyed on it.
+    function withActionMenu(card, item, entriesProvider, rebuild) {
+      var shell = element("div", "browser-card-shell");
+      addItemMenuGestures(shell, function (point) {
+        openActionMenu(entriesProvider(), card, point);
+      });
+      shell.appendChild(card);
+      registerItemView(item, shell, function (updated) {
+        rebuild(Object.assign(item, updated), shell);
+      });
+      return shell;
+    }
+
+    function replaceCard(shell, replacement) {
+      var hadFocus = shell.contains(document.activeElement);
+      shell.replaceWith(replacement);
+      if (hadFocus) {
+        var card = replacement.querySelector(".browser-card");
+        if (card) {
+          card.focus({ preventScroll: true });
+        }
+      }
+    }
+
+    function removeContinueReadingCard(shell) {
+      var shelf = shell.closest(".continue-reading-shelf");
+      (shell.closest(".continue-reading-item") || shell).remove();
+      if (shelf && !shelf.querySelector(".continue-reading-item")) {
+        shelf.remove();
+      }
     }
 
     function folderCard(folder, containingFolderId) {
