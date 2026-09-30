@@ -1279,6 +1279,20 @@ input[type="time"]:focus-visible {
   font-size: 13px;
 }
 
+.browser-library-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.browser-library-title-row h2 {
+  min-width: 0;
+}
+
+.browser-header-menu-button {
+  flex: none;
+}
+
 .continue-reading-shelf {
   margin: 0 0 34px;
   padding: 20px 0 22px;
@@ -1348,6 +1362,15 @@ input[type="time"]:focus-visible {
 
 .browser-card:hover {
   transform: translateY(-4px);
+}
+
+/* Holds a card link. The card action menu opens with a right click or a long
+   press, so a long press must not show the link preview or select text. */
+.browser-card-shell {
+  min-width: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .action-menu-button-icon {
@@ -1745,7 +1768,15 @@ input[type="time"]:focus-visible {
   padding-top: 5px;
 }
 
-.comic-detail-copy > h2 {
+.comic-detail-title-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.comic-detail-title-row h2 {
+  min-width: 0;
+  flex: 1;
   margin: 7px 0 5px;
   font-size: clamp(28px, 4vw, 42px);
   letter-spacing: -0.04em;
@@ -1973,6 +2004,18 @@ input[type="time"]:focus-visible {
 .comic-read-button {
   width: 100%;
   margin-top: 18px;
+}
+
+.comic-detail-menu-button {
+  flex: none;
+  margin-top: 9px;
+}
+
+/* The cover opens the comic action menu with a right click or a long press. */
+.comic-detail-cover {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .comic-mobile-compact-actions {
@@ -2816,7 +2859,7 @@ input[type="time"]:disabled {
     margin: 0 auto;
   }
 
-  .comic-detail-copy > h2 {
+  .comic-detail-title-row h2 {
     font-size: 30px;
   }
 

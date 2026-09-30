@@ -1397,13 +1397,22 @@
       }
       cover.appendChild(front);
 
+      if (folder.finished) {
+        cover.appendChild(element("span", "comic-status read", "Read"));
+      }
+
+      var folderName = folder.folder_name || "Untitled folder";
       var copy = element("div", "browser-card-copy");
-      copy.appendChild(element("div", "browser-card-title", folder.folder_name || "Untitled folder"));
+      copy.appendChild(element("div", "browser-card-title", folderName));
       var count = Number(folder.num_children) || 0;
       copy.appendChild(element("div", "browser-card-meta", count === 1 ? "1 item" : count + " items"));
 
       card.append(cover, copy);
-      return card;
+      return withActionMenu(card, folder, function () {
+        return folderMenuEntries(folder);
+      }, function (updated, shell) {
+        replaceCard(shell, folderCard(updated, containingFolderId));
+      });
     }
 
     function comicCard(comic, options) {
@@ -1456,7 +1465,15 @@
       copy.appendChild(element("div", "browser-card-meta", meta));
 
       card.append(cover, copy);
-      return card;
+      return withActionMenu(card, comic, function () {
+        return comicMenuEntries(comic, options);
+      }, function (updated, shell) {
+        if (options.continueReading && (updated.read || !updated.has_been_opened)) {
+          removeContinueReadingCard(shell);
+          return;
+        }
+        replaceCard(shell, comicCard(updated, options));
+      });
     }
 
     function continueReadingShelf(comics) {
@@ -1747,7 +1764,15 @@
 
         var header = element("section", "browser-library-header");
         header.appendChild(element("div", "section-title", folderId === "1" ? "Library" : "Folder"));
-        header.appendChild(element("h2", "", folderName));
+        var titleRow = element("div", "browser-library-title-row");
+        titleRow.appendChild(element("h2", "", folderName));
+        var currentFolder = folderMetadataCache[folderId];
+        if (folderId !== "1" && currentFolder) {
+          titleRow.appendChild(actionMenuButton("icon-button browser-header-menu-button", "Actions for " + folderName, function () {
+            return folderMenuEntries(currentFolder);
+          }));
+        }
+        header.appendChild(titleRow);
         var summaryParts = [];
         if (folders.length) {
           summaryParts.push(folders.length === 1 ? "1 folder" : folders.length + " folders");
@@ -2417,6 +2442,9 @@
           cover.appendChild(image);
         }
         coverColumn.appendChild(cover);
+        addItemMenuGestures(cover, function (point) {
+          openActionMenu(comicMenuEntries(comic), cover, point);
+        });
 
         var read = element("button", "secondary-button comic-read-button", "Read");
         read.type = "button";
@@ -2507,33 +2535,49 @@
 
         var copy = element("div", "comic-detail-copy");
         copy.appendChild(element("div", "section-title", "Comic information"));
-        copy.appendChild(element("h2", "", title));
+        var titleRow = element("div", "comic-detail-title-row");
+        titleRow.appendChild(element("h2", "", title));
+        titleRow.appendChild(actionMenuButton("icon-button comic-detail-menu-button", "Actions for " + title, function () {
+          return comicMenuEntries(comic);
+        }));
+        copy.appendChild(titleRow);
         if (comic.file_name && comic.file_name !== title) {
           copy.appendChild(element("p", "comic-file-name", comic.file_name));
         }
 
-        var facts = element("div", "comic-facts");
-        var numPages = Number(comic.num_pages) || 0;
-        if (numPages) {
-          facts.appendChild(element("span", "comic-fact", numPages === 1 ? "1 page" : numPages + " pages"));
+        function comicFacts() {
+          var facts = element("div", "comic-facts");
+          var numPages = Number(comic.num_pages) || 0;
+          if (numPages) {
+            facts.appendChild(element("span", "comic-fact", numPages === 1 ? "1 page" : numPages + " pages"));
+          }
+          if (comic.read) {
+            facts.appendChild(element("span", "comic-fact success", "Read"));
+          } else if (Number(comic.current_page) > 1) {
+            facts.appendChild(element("span", "comic-fact accent", "Page " + comic.current_page));
+          }
+          if (hasValue(comic.format)) {
+            facts.appendChild(element("span", "comic-fact", comic.format));
+          }
+          var fileType = fileTypeName(comic.file_type);
+          if (fileType) {
+            facts.appendChild(element("span", "comic-fact", fileType));
+          }
+          var fileSize = formatFileSize(comic.file_size);
+          if (fileSize) {
+            facts.appendChild(element("span", "comic-fact", fileSize));
+          }
+          return facts;
         }
-        if (comic.read) {
-          facts.appendChild(element("span", "comic-fact success", "Read"));
-        } else if (Number(comic.current_page) > 0) {
-          facts.appendChild(element("span", "comic-fact accent", "Page " + comic.current_page));
-        }
-        if (hasValue(comic.format)) {
-          facts.appendChild(element("span", "comic-fact", comic.format));
-        }
-        var fileType = fileTypeName(comic.file_type);
-        if (fileType) {
-          facts.appendChild(element("span", "comic-fact", fileType));
-        }
-        var fileSize = formatFileSize(comic.file_size);
-        if (fileSize) {
-          facts.appendChild(element("span", "comic-fact", fileSize));
-        }
+
+        var facts = comicFacts();
         copy.appendChild(facts);
+        registerItemView(comic, detail, function (updated) {
+          Object.assign(comic, updated);
+          var updatedFacts = comicFacts();
+          facts.replaceWith(updatedFacts);
+          facts = updatedFacts;
+        });
 
         if (hasValue(comic.synopsis)) {
           var synopsis = element("section", "comic-copy-section");
