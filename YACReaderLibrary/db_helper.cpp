@@ -1974,7 +1974,7 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     return labels;
 }
 
-void DBHelper::updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type)
+bool DBHelper::updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type)
 {
     QSqlQuery updateFolderQuery(db);
     updateFolderQuery.prepare("UPDATE folder "
@@ -1982,7 +1982,7 @@ void DBHelper::updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::
                               "WHERE id = :id");
     updateFolderQuery.bindValue(":type", static_cast<int>(type));
     updateFolderQuery.bindValue(":id", id);
-    updateFolderQuery.exec();
+    bool success = updateFolderQuery.exec();
 
     QSqlQuery updateComicInfo(db);
     updateComicInfo.prepare("UPDATE comic_info "
@@ -1990,18 +1990,20 @@ void DBHelper::updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::
                             "WHERE id IN (SELECT ci.id FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId)");
     updateComicInfo.bindValue(":type", static_cast<int>(type));
     updateComicInfo.bindValue(":parentId", id);
-    updateComicInfo.exec();
+    success = updateComicInfo.exec() && success;
 
     QSqlQuery getSubFoldersQuery(db);
     getSubFoldersQuery.prepare("SELECT id FROM folder WHERE parentId = :parentId AND id <> 1"); // do not select the root folder
     getSubFoldersQuery.bindValue(":parentId", id);
-    getSubFoldersQuery.exec();
+    success = getSubFoldersQuery.exec() && success;
 
     int childFolderIdPos = getSubFoldersQuery.record().indexOf("id");
 
     while (getSubFoldersQuery.next()) {
-        updateFolderTreeType(getSubFoldersQuery.value(childFolderIdPos).toULongLong(), db, type);
+        success = updateFolderTreeType(getSubFoldersQuery.value(childFolderIdPos).toULongLong(), db, type) && success;
     }
+
+    return success;
 }
 
 void DBHelper::updateDBType(QSqlDatabase &db, YACReader::FileType type)

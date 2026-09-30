@@ -100,7 +100,7 @@ public:
     static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<Label> getLabels(qulonglong libraryId);
 
-    static void updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type);
+    static bool updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type);
     static void updateDBType(QSqlDatabase &db, YACReader::FileType type);
 
     // load
