@@ -61,6 +61,8 @@ add_library(server STATIC
     controllers/v2/foldermetadatacontroller_v2.cpp
     controllers/v2/searchcontroller_v2.h
     controllers/v2/searchcontroller_v2.cpp
+    controllers/v2/itemupdatecontroller_v2.h
+    controllers/v2/itemupdatecontroller_v2.cpp
     controllers/webui/webuicontroller.h
     controllers/webui/webuicontroller.cpp
 )
