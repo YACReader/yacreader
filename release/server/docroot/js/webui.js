@@ -1055,9 +1055,9 @@
 
       if (options.continueReading) {
         entries.push({
-          label: "Remove from Continue reading",
+          label: "Remove from this list",
           run: function () {
-            setComicRead(comic, false, "Removed from Continue reading");
+            setComicRead(comic, false, "Removed from the list");
           }
         });
       }
