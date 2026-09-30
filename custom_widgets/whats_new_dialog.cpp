@@ -271,7 +271,7 @@ QString YACReader::WhatsNewDialog::renderHtmlDocument(const QString &content) co
 
 QString YACReader::WhatsNewDialog::renderIntro() const
 {
-    return "YACReader 10.3 brings a much better library navigation experience!";
+    return "A more capable server!";
 }
 
 QString YACReader::WhatsNewDialog::renderFooter() const
