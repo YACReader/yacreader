@@ -995,12 +995,15 @@
       return "The change could not be saved. Try again.";
     }
 
+    // Resolves to true when the change is saved.
     function updateItem(url, fields, successMessage) {
       return patchJson(url, fields).then(function (item) {
         applyUpdatedItems(item ? [item] : []);
         showToast(successMessage);
+        return true;
       }).catch(function (error) {
         showToast(actionErrorMessage(error), true);
+        return false;
       });
     }
 
@@ -1017,7 +1020,14 @@
     }
 
     function setFolderType(folder, type) {
-      return updateFolder(folder, { file_type: type }, "Type set to " + fileTypeNames[type] + " for the folder and all its content");
+      return updateFolder(folder, { file_type: type }, "Type set to " + fileTypeNames[type] + " for the folder and all its content").then(function (updated) {
+        // the server also changed every subfolder and comic in the folder, so the loaded data is old now
+        if (updated) {
+          folderMetadataCache = {};
+          reloadCurrentView();
+        }
+        return updated;
+      });
     }
 
     function typeMenuEntries(currentType, apply) {
@@ -2681,12 +2691,7 @@
       };
     }
 
-    window.addEventListener("popstate", function () {
-      historyNavigationPending = true;
-      historyTraversalPending = Boolean(history.state
-        && (history.state.scrollAnchorKey
-          || (Number.isFinite(history.state.scrollY) && history.state.scrollY > 0)));
-      var route = routeFromLocation();
+    function showRoute(route) {
       if (route.view === "search") {
         showSearch(route.query, false);
       } else if (route.view === "reader") {
@@ -2696,6 +2701,28 @@
       } else {
         showFolder(route.itemId, false);
       }
+    }
+
+    // Loads the current view again from the server. The old content stays visible
+    // while it loads, and the scroll position is kept.
+    function reloadCurrentView() {
+      var route = routeFromLocation();
+      if (route.view === "reader") {
+        return;
+      }
+
+      saveCurrentScrollPosition();
+      historyNavigationPending = true;
+      historyTraversalPending = true;
+      showRoute(route);
+    }
+
+    window.addEventListener("popstate", function () {
+      historyNavigationPending = true;
+      historyTraversalPending = Boolean(history.state
+        && (history.state.scrollAnchorKey
+          || (Number.isFinite(history.state.scrollY) && history.state.scrollY > 0)));
+      showRoute(routeFromLocation());
     });
 
     var initialView = document.body.dataset.browserInitialView;
