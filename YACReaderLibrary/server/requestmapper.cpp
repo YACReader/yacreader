@@ -10,6 +10,7 @@
 #include "controllers/v2/foldercontentcontroller_v2.h"
 #include "controllers/v2/folderinfocontroller_v2.h"
 #include "controllers/v2/foldermetadatacontroller_v2.h"
+#include "controllers/v2/itemupdatecontroller_v2.h"
 #include "controllers/v2/librariescontroller_v2.h"
 #include "controllers/v2/pagecontroller_v2.h"
 #include "controllers/v2/readingcomicscontroller_v2.h"
@@ -109,6 +110,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     QRegExp readingListContent("/v2/library/.+/reading_list/[0-9]+/content/?");
     QRegExp readingListInfo("/v2/library/.+/reading_list/[0-9]+/info/?");
     QRegExp search("/v2/library/.+/search/?");
+    QRegExp itemUpdate("/v2/library/[0-9]+/(comic|folder)/[0-9]+/?"); // PATCH: change fields of a comic or a folder (see server/API.md)
 
     QRegExp sync("/v2/sync");
 
@@ -143,7 +145,20 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
             UpdateLibrariesControllerV2().service(request, response);
         } else {
             if (library.indexIn(path) != -1 && DBHelper::getLibraries().contains(library.cap(1).toInt())) {
-                if (folderInfo.exactMatch(path)) {
+                if (request.getMethod() == "PATCH") {
+                    // only the update endpoints accept PATCH, the other routes do not check the method
+                    if (itemUpdate.exactMatch(path)) {
+                        ItemUpdateControllerV2 itemUpdateController;
+                        itemUpdateController.service(request, response);
+
+                        if (!itemUpdateController.changedLibraryId.isNull()) {
+                            emit libraryContentChanged(itemUpdateController.changedLibraryId);
+                        }
+                    } else {
+                        response.setStatus(405, "Method Not Allowed");
+                        response.write("405 method not allowed", true);
+                    }
+                } else if (folderInfo.exactMatch(path)) {
                     FolderInfoControllerV2().service(request, response);
                 } else if (cover.exactMatch(path)) {
                     CoverControllerV2().service(request, response);

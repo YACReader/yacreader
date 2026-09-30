@@ -72,7 +72,7 @@ target_include_directories(server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers/v2
 )
 yacreader_apply_build_options(server)
-target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.2")
+target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.3")
 if(UNIX AND NOT APPLE)
     target_compile_definitions(server PRIVATE
         "DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\"")
