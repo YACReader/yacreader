@@ -4,6 +4,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## 10.4.0
 
+### YACReader
+* Avoid duplicated images in double page mode after a layout adjustment.
+
 ### YACReaderLibrary
 * Reload the views only when a remote client changes the library that is open, and only after a sync that changed something.
 

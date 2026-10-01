@@ -582,6 +582,11 @@ bool Render::currentPageIsDoublePage()
     if (currentIndex == 0 && Configuration::getConfiguration().getSettings()->value(COVER_IS_SP, true).toBool()) {
         return false;
     }
+    if (doublePageHistoryTracksCurrentIndex() && doublePageViewHistoryPosition + 1 < doublePageViewHistory.size() &&
+        currentIndex + 1 >= doublePageViewHistory.at(doublePageViewHistoryPosition + 1)) {
+        // Keep the second page out of the next view already recorded in history.
+        return false;
+    }
     if (buffer[currentPageBufferedIndex]->isNull() || buffer[currentPageBufferedIndex + 1]->isNull()) {
         return false;
     }
