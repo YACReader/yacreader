@@ -408,6 +408,34 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     addReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_READING_LIST_ACTION_YL));
     addReadingListAction->setToolTip(tr("Add a new reading list to the current library"));
 
+    addSmartListAction = new QAction(tr("Add smart list..."), window);
+    addSmartListAction->setToolTip(tr("Create a dynamic reading list from saved rules"));
+
+    importCblReadingListAction = new QAction(tr("Import CBL reading list..."), window);
+    importCblReadingListAction->setShortcut(QKeySequence(QStringLiteral("Ctrl+Shift+I")));
+    importCblReadingListAction->setToolTip(tr("Import a Comic Book Reading List"));
+
+    updateCblReadingListAction = new QAction(tr("Update from source CBL..."), window);
+    updateCblReadingListAction->setToolTip(tr("Re-import the selected list from its original CBL file"));
+
+    exportReadingListAction = new QAction(tr("Export reading list..."), window);
+    exportReadingListAction->setToolTip(tr("Export the selected reading list as a CBL file"));
+
+    showMissingComicsAction = new QAction(tr("Missing comics..."), window);
+    showMissingComicsAction->setToolTip(tr("View missing comics and export a PDF report"));
+
+    editSmartListAction = new QAction(tr("Edit smart list..."), window);
+    editSmartListAction->setToolTip(tr("Change the saved rules for the selected smart list"));
+
+    addReadingListFolderAction = new QAction(tr("Add reading-list folder"), window);
+    addReadingListFolderAction->setToolTip(tr("Create a folder for organizing reading lists"));
+
+    moveReadingListToFolderAction = new QAction(tr("Move reading list to folder..."), window);
+    moveReadingListToFolderAction->setToolTip(tr("Move the selected reading list into a folder or back to the top level"));
+
+    editCblReadingListAction = new QAction(tr("Edit CBL reading list..."), window);
+    editCblReadingListAction->setToolTip(tr("Repair matches and reorder an imported CBL reading list"));
+
     deleteReadingListAction = new QAction(tr("Remove reading list"), window);
     deleteReadingListAction->setData(REMOVE_READING_LIST_ACTION_YL);
     deleteReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_READING_LIST_ACTION_YL));
@@ -592,6 +620,15 @@ void LibraryWindowActions::createConnections(
 
     // lists
     QObject::connect(addReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addReadingList);
+    QObject::connect(addSmartListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addSmartList);
+    QObject::connect(importCblReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::importCblReadingList);
+    QObject::connect(updateCblReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::updateCblReadingListFromSource);
+    QObject::connect(exportReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::exportReadingList);
+    QObject::connect(showMissingComicsAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::showMissingComics);
+    QObject::connect(addReadingListFolderAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addReadingListFolder);
+    QObject::connect(moveReadingListToFolderAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::moveReadingListToFolder);
+    QObject::connect(editSmartListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::editSmartList);
+    QObject::connect(editCblReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::editCblReadingList);
     QObject::connect(deleteReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::deleteCurrentList);
     QObject::connect(addLabelAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addLabel);
     QObject::connect(renameListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::renameCurrentList);
@@ -713,6 +750,15 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
     editShortcutsDialog->addActionsGroup("Lists", theme.shortcutsIcons.foldersIcon, // TODO change icon
                                          tmpList = QList<QAction *>()
                                                  << addReadingListAction
+                                                 << addSmartListAction
+                                                 << importCblReadingListAction
+                                                 << updateCblReadingListAction
+                                                 << exportReadingListAction
+                                                 << showMissingComicsAction
+                                                 << addReadingListFolderAction
+                                                 << moveReadingListToFolderAction
+                                                 << editSmartListAction
+                                                 << editCblReadingListAction
                                                  << deleteReadingListAction
                                                  << addLabelAction
                                                  << renameListAction);
@@ -871,6 +917,15 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     expandAllNodesAction->setIcon(sidebarIcons.expandIcon);
     colapseAllNodesAction->setIcon(sidebarIcons.colapseIcon);
     addReadingListAction->setIcon(sidebarIcons.addNewIcon);
+    addSmartListAction->setIcon(theme.readingListIcons.currentlyReadingIcon);
+    importCblReadingListAction->setIcon(sidebarIcons.openLibraryIcon);
+    updateCblReadingListAction->setIcon(sidebarIcons.openLibraryIcon);
+    exportReadingListAction->setIcon(menuIcons.exportLibraryIcon);
+    showMissingComicsAction->setIcon(menuIcons.exportLibraryIcon);
+    addReadingListFolderAction->setIcon(theme.navigationTree.folderIcon);
+    moveReadingListToFolderAction->setIcon(theme.navigationTree.folderIcon);
+    editSmartListAction->setIcon(sidebarIcons.renameListIcon);
+    editCblReadingListAction->setIcon(sidebarIcons.renameListIcon);
     deleteReadingListAction->setIcon(sidebarIcons.deleteIcon);
     addLabelAction->setIcon(sidebarIcons.addLabelIcon);
     renameListAction->setIcon(sidebarIcons.renameListIcon);
