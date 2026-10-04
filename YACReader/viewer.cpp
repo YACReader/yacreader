@@ -1,7 +1,9 @@
 #include "viewer.h"
 
+#include "book_fold_shadow.h"
 #include "bookmarks_dialog.h"
 #include "comic_db.h"
+#include "comic_page_label.h"
 #include "configuration.h"
 #include "continuous_page_provider.h"
 #include "continuous_page_widget.h"
@@ -17,7 +19,6 @@
 
 #include <QFile>
 #include <QKeyEvent>
-#include <QLinearGradient>
 #include <QMessageBox>
 #include <QPainter>
 #include <QPinchGesture>
@@ -32,45 +33,6 @@
 #endif
 
 namespace {
-void drawBookFoldShadow(QPixmap &page, qreal seamRatio, Qt::Orientation seamOrientation, qreal devicePixelRatio)
-{
-    const bool verticalSeam = seamOrientation == Qt::Vertical;
-    const int axisLength = verticalSeam ? page.width() : page.height();
-    const int seamPosition = qRound(axisLength * seamRatio);
-    const int maximumRadius = qMin(seamPosition, axisLength - seamPosition);
-    const int radius = qMin(qRound(36 * devicePixelRatio), maximumRadius);
-    if (radius <= 0) {
-        return;
-    }
-
-    QLinearGradient gradient;
-    if (verticalSeam) {
-        gradient = QLinearGradient(seamPosition - radius, 0, seamPosition + radius, 0);
-    } else {
-        gradient = QLinearGradient(0, seamPosition - radius, 0, seamPosition + radius);
-    }
-    gradient.setColorAt(0.0, QColor(0, 0, 0, 0));
-    gradient.setColorAt(0.32, QColor(0, 0, 0, 8));
-    gradient.setColorAt(0.42, QColor(0, 0, 0, 35));
-    gradient.setColorAt(0.48, QColor(0, 0, 0, 90));
-    gradient.setColorAt(0.5, QColor(0, 0, 0, 125));
-    gradient.setColorAt(0.54, QColor(0, 0, 0, 72));
-    gradient.setColorAt(0.68, QColor(0, 0, 0, 18));
-    gradient.setColorAt(1.0, QColor(0, 0, 0, 0));
-
-    QPainter painter(&page);
-    const QRect shadowRect = verticalSeam
-            ? QRect(seamPosition - radius, 0, radius * 2, page.height())
-            : QRect(0, seamPosition - radius, page.width(), radius * 2);
-    painter.fillRect(shadowRect, gradient);
-
-    const int creaseWidth = qMax(1, qRound(devicePixelRatio));
-    const QRect creaseRect = verticalSeam
-            ? QRect(seamPosition - creaseWidth / 2, 0, creaseWidth, page.height())
-            : QRect(0, seamPosition - creaseWidth / 2, page.width(), creaseWidth);
-    painter.fillRect(creaseRect, QColor(0, 0, 0, 145));
-}
-
 // QCursor::setPos moves the pointer by synthesizing a mouse event and injecting
 // it into the HID event stream (QCocoaCursor::setPos -> CGEventPost). macOS
 // gates that behind the accessibility "control this computer" permission, so on
@@ -149,7 +111,7 @@ Viewer::Viewer(QWidget *parent)
     translatorXPos = -10000;
     translator->move(-translator->width(), 10);
     // current comic page (used in non-continuous mode when a comic is open)
-    content = new QLabel(this);
+    content = new ComicPageLabel(this);
     content->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     if (!(devicePixelRatioF() > 1))
         content->setScaledContents(true);
@@ -598,11 +560,10 @@ void Viewer::updateContentSize()
                                    qRound(content->width() * dpr),
                                    qRound(content->height() * dpr),
                                    Configuration::getConfiguration().getScalingMethod());
-        if (currentPageHasDoublePageSeam && Configuration::getConfiguration().getDoublePageShadow()) {
-            drawBookFoldShadow(page, doublePageSeamRatio, doublePageSeamOrientation, dpr);
-        }
         page.setDevicePixelRatio(dpr);
         content->setPixmap(page);
+        content->setBookFoldShadow(currentPageHasDoublePageSeam && Configuration::getConfiguration().getDoublePageShadow(),
+                                   doublePageSeamRatio, doublePageSeamOrientation);
 
         emit backgroundChanges();
     }
@@ -1319,6 +1280,19 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
         yp = static_cast<int>((viewerPos.y() + scrollPos) * hFactor - zoomHScaled / 2);
     }
 
+    // Keep the unclipped crop origin so the fold also aligns in padded edge crops.
+    const QPoint cropOrigin(xp, yp);
+    const auto addFoldShadow = [&](QImage &image) {
+        if (!currentPageHasDoublePageSeam || !Configuration::getConfiguration().getDoublePageShadow()) {
+            return;
+        }
+        QPainter painter(&image);
+        painter.setClipRect(image.rect());
+        painter.translate(-cropOrigin.x(), -cropOrigin.y());
+        painter.scale(wFactor, hFactor);
+        drawBookFoldShadow(painter, QRectF(QPointF(0, 0), content->size()), doublePageSeamRatio, doublePageSeamOrientation);
+    };
+
     int xOffset = 0, yOffset = 0;
     int zw = zoomWScaled, zh = zoomHScaled;
     bool outImage = false;
@@ -1355,10 +1329,13 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
             QPainter painter(&img);
             painter.drawPixmap(xOffset, yOffset, sourceImage.copy(xp, yp, zw, zh));
         }
+        addFoldShadow(img);
         return img;
     }
 
-    return sourceImage.copy(xp, yp, zoomWScaled, zoomHScaled).toImage();
+    QImage image = sourceImage.copy(xp, yp, zoomWScaled, zoomHScaled).toImage();
+    addFoldShadow(image);
+    return image;
 }
 
 void Viewer::magnifyingGlassSwitch()
