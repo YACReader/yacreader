@@ -6,6 +6,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReader
 * Avoid duplicated images in double page mode after a layout adjustment.
+* New setting to draw a fold shadow in the double page mode.
 
 ### YACReaderLibrary
 * Reload the views only when a remote client changes the library that is open, and only after a sync that changed something.
