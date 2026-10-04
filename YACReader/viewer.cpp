@@ -1,7 +1,9 @@
 #include "viewer.h"
 
+#include "book_fold_shadow.h"
 #include "bookmarks_dialog.h"
 #include "comic_db.h"
+#include "comic_page_label.h"
 #include "configuration.h"
 #include "continuous_page_provider.h"
 #include "continuous_page_widget.h"
@@ -109,7 +111,7 @@ Viewer::Viewer(QWidget *parent)
     translatorXPos = -10000;
     translator->move(-translator->width(), 10);
     // current comic page (used in non-continuous mode when a comic is open)
-    content = new QLabel(this);
+    content = new ComicPageLabel(this);
     content->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     if (!(devicePixelRatioF() > 1))
         content->setScaledContents(true);
@@ -478,12 +480,14 @@ void Viewer::updatePage()
     setActiveWidget(content);
 
     QPixmap *previousPage = currentPage;
+    currentPageHasDoublePageSeam = false;
     if (doublePage) {
         if (!doubleMangaPage)
-            currentPage = render->getCurrentDoublePage();
+            currentPage = render->getCurrentDoublePage(&doublePageSeamRatio, &doublePageSeamOrientation);
         else {
-            currentPage = render->getCurrentDoubleMangaPage();
+            currentPage = render->getCurrentDoubleMangaPage(&doublePageSeamRatio, &doublePageSeamOrientation);
         }
+        currentPageHasDoublePageSeam = currentPage != nullptr;
         if (currentPage == nullptr) {
             currentPage = render->getCurrentPage();
         }
@@ -558,6 +562,8 @@ void Viewer::updateContentSize()
                                    Configuration::getConfiguration().getScalingMethod());
         page.setDevicePixelRatio(dpr);
         content->setPixmap(page);
+        content->setBookFoldShadow(currentPageHasDoublePageSeam && Configuration::getConfiguration().getDoublePageShadow(),
+                                   doublePageSeamRatio, doublePageSeamOrientation);
 
         emit backgroundChanges();
     }
@@ -1274,6 +1280,19 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
         yp = static_cast<int>((viewerPos.y() + scrollPos) * hFactor - zoomHScaled / 2);
     }
 
+    // Keep the unclipped crop origin so the fold also aligns in padded edge crops.
+    const QPoint cropOrigin(xp, yp);
+    const auto addFoldShadow = [&](QImage &image) {
+        if (!currentPageHasDoublePageSeam || !Configuration::getConfiguration().getDoublePageShadow()) {
+            return;
+        }
+        QPainter painter(&image);
+        painter.setClipRect(image.rect());
+        painter.translate(-cropOrigin.x(), -cropOrigin.y());
+        painter.scale(wFactor, hFactor);
+        drawBookFoldShadow(painter, QRectF(QPointF(0, 0), content->size()), doublePageSeamRatio, doublePageSeamOrientation);
+    };
+
     int xOffset = 0, yOffset = 0;
     int zw = zoomWScaled, zh = zoomHScaled;
     bool outImage = false;
@@ -1310,10 +1329,13 @@ QImage Viewer::grabMagnifiedRegion(const QPoint &viewerPos, const QSize &glassSi
             QPainter painter(&img);
             painter.drawPixmap(xOffset, yOffset, sourceImage.copy(xp, yp, zw, zh));
         }
+        addFoldShadow(img);
         return img;
     }
 
-    return sourceImage.copy(xp, yp, zoomWScaled, zoomHScaled).toImage();
+    QImage image = sourceImage.copy(xp, yp, zoomWScaled, zoomHScaled).toImage();
+    addFoldShadow(image);
+    return image;
 }
 
 void Viewer::magnifyingGlassSwitch()
