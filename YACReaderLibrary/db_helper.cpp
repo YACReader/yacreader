@@ -1734,6 +1734,24 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
     query.bindValue(":name", comic->name);
     query.bindValue(":path", comic->path);
     query.exec();
+    const auto comicId = query.lastInsertId().toULongLong();
+    comic->id = comicId;
+
+    QSqlQuery relinkMissingReadingListEntries(db);
+    relinkMissingReadingListEntries.prepare("UPDATE reading_list_entry SET "
+                                            "comic_id = :comic_id "
+                                            "WHERE comic_id IS NULL AND hash = :hash");
+    relinkMissingReadingListEntries.bindValue(":comic_id", comicId);
+    relinkMissingReadingListEntries.bindValue(":hash", comic->info.hash);
+    relinkMissingReadingListEntries.exec();
+
+    QSqlQuery restoreReadingListLinks(db);
+    restoreReadingListLinks.prepare("INSERT OR IGNORE INTO comic_reading_list (reading_list_id, comic_id, ordering) "
+                                    "SELECT reading_list_id, comic_id, ordering "
+                                    "FROM reading_list_entry "
+                                    "WHERE comic_id = :comic_id");
+    restoreReadingListLinks.bindValue(":comic_id", comicId);
+    restoreReadingListLinks.exec();
 
     // loop through parents and update their updated field
     // TODO: use stored procedures
@@ -1752,7 +1770,7 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
     }
     //----
 
-    return query.lastInsertId().toULongLong();
+    return comicId;
 }
 
 qulonglong DBHelper::insertLabel(const QString &name, YACReader::LabelColors color, QSqlDatabase &db)
