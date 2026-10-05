@@ -448,7 +448,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="259"/>
         <source>Show book fold shadow</source>
-        <translation type="unfinished"></translation>
+        <translation>显示书页折叠阴影</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="310"/>
