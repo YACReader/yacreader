@@ -635,10 +635,24 @@ void DBHelper::deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qul
 
     QSqlQuery query(db);
     query.prepare("DELETE FROM comic_reading_list WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+    QSqlQuery entryByComic(db);
+    entryByComic.prepare("DELETE FROM reading_list_entry WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+    QSqlQuery missingEntry(db);
+    missingEntry.prepare("DELETE FROM reading_list_entry WHERE id = :entry_id AND reading_list_id = :reading_list_id");
     for (const auto &comic : comicsList) {
-        query.bindValue(":comic_id", comic.id);
-        query.bindValue(":reading_list_id", readingListId);
-        query.exec();
+        if (comic.id == 0) {
+            missingEntry.bindValue(":entry_id", comic.parentId);
+            missingEntry.bindValue(":reading_list_id", readingListId);
+            missingEntry.exec();
+        } else {
+            query.bindValue(":comic_id", comic.id);
+            query.bindValue(":reading_list_id", readingListId);
+            query.exec();
+
+            entryByComic.bindValue(":comic_id", comic.id);
+            entryByComic.bindValue(":reading_list_id", readingListId);
+            entryByComic.exec();
+        }
     }
 
     db.commit();
@@ -1395,15 +1409,64 @@ void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, QList
     updateOrdering.prepare("UPDATE comic_reading_list SET "
                            "ordering = :ordering "
                            "WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+    QSqlQuery updateEntry(db);
+    updateEntry.prepare("UPDATE reading_list_entry SET "
+                        "ordering = :ordering "
+                        "WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
     db.transaction();
     int order = 0;
     const auto &readingListComicIds = comicIds;
     for (const auto id : readingListComicIds) {
-        updateOrdering.bindValue(":ordering", order++);
+        updateOrdering.bindValue(":ordering", order);
         updateOrdering.bindValue(":comic_id", id);
         updateOrdering.bindValue(":reading_list_id", readingListId);
         updateOrdering.exec();
         QLOG_TRACE() << updateOrdering.lastError().databaseText() << "-" << updateOrdering.lastError().driverText();
+
+        updateEntry.bindValue(":ordering", order++);
+        updateEntry.bindValue(":comic_id", id);
+        updateEntry.bindValue(":reading_list_id", readingListId);
+        updateEntry.exec();
+    }
+
+    db.commit();
+}
+
+void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, const QList<ComicDB> &comics, QSqlDatabase &db)
+{
+    QSqlQuery updateComicReadingListOrdering(db);
+    updateComicReadingListOrdering.prepare("UPDATE comic_reading_list SET "
+                                           "ordering = :ordering "
+                                           "WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+    QSqlQuery updateEntryByComic(db);
+    updateEntryByComic.prepare("UPDATE reading_list_entry SET "
+                               "ordering = :ordering "
+                               "WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
+    QSqlQuery updateMissingEntry(db);
+    updateMissingEntry.prepare("UPDATE reading_list_entry SET "
+                               "ordering = :ordering "
+                               "WHERE id = :entry_id AND reading_list_id = :reading_list_id");
+
+    db.transaction();
+    int order = 0;
+    for (const auto &comic : comics) {
+        if (comic.id == 0) {
+            updateMissingEntry.bindValue(":ordering", order++);
+            updateMissingEntry.bindValue(":entry_id", comic.parentId);
+            updateMissingEntry.bindValue(":reading_list_id", readingListId);
+            updateMissingEntry.exec();
+            continue;
+        }
+
+        updateComicReadingListOrdering.bindValue(":ordering", order);
+        updateComicReadingListOrdering.bindValue(":comic_id", comic.id);
+        updateComicReadingListOrdering.bindValue(":reading_list_id", readingListId);
+        updateComicReadingListOrdering.exec();
+
+        updateEntryByComic.bindValue(":ordering", order++);
+        updateEntryByComic.bindValue(":comic_id", comic.id);
+        updateEntryByComic.bindValue(":reading_list_id", readingListId);
+        updateEntryByComic.exec();
     }
 
     db.commit();
@@ -1777,7 +1840,10 @@ void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong 
 
 void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db)
 {
-    QSqlQuery getNumComics("SELECT count(*) FROM comic_reading_list;", db);
+    QSqlQuery getNumComics(db);
+    getNumComics.prepare("SELECT count(*) FROM reading_list_entry WHERE reading_list_id = :reading_list_id");
+    getNumComics.bindValue(":reading_list_id", readingListId);
+    getNumComics.exec();
     getNumComics.next();
 
     int numComics = getNumComics.value(0).toInt();
@@ -1787,12 +1853,29 @@ void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulon
     QSqlQuery query(db);
     query.prepare("INSERT INTO comic_reading_list (reading_list_id, comic_id, ordering) "
                   "VALUES (:reading_list_id, :comic_id, :ordering)");
+    QSqlQuery entry(db);
+    entry.prepare("INSERT OR IGNORE INTO reading_list_entry "
+                  "(reading_list_id, comic_id, ordering, number, title, file_name, hash, date, series, volume, story_arc) "
+                  "VALUES (:reading_list_id, :comic_id, :ordering, :number, :title, :file_name, :hash, :date, :series, :volume, :story_arc)");
 
     for (const auto &comic : comicsList) {
         query.bindValue(":reading_list_id", readingListId);
         query.bindValue(":comic_id", comic.id);
-        query.bindValue(":ordering", numComics++);
+        query.bindValue(":ordering", numComics);
         query.exec();
+
+        entry.bindValue(":reading_list_id", readingListId);
+        entry.bindValue(":comic_id", comic.id);
+        entry.bindValue(":ordering", numComics++);
+        entry.bindValue(":number", comic.info.number);
+        entry.bindValue(":title", comic.info.title);
+        entry.bindValue(":file_name", comic.name);
+        entry.bindValue(":hash", comic.info.hash);
+        entry.bindValue(":date", comic.info.date);
+        entry.bindValue(":series", comic.info.series);
+        entry.bindValue(":volume", comic.info.volume);
+        entry.bindValue(":story_arc", comic.info.storyArc);
+        entry.exec();
     }
 
     db.commit();

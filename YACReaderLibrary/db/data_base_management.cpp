@@ -37,7 +37,7 @@ QString backupReasonName(DatabaseBackupReason reason)
     case DatabaseBackupReason::Manual:
         return "manual";
     }
-    return { };
+        return { };
 }
 
 bool validateDatabase(const QString &path, QString *error, QString *versionOut = nullptr)
@@ -772,6 +772,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
 
         QSqlQuery queryIndexComicReadingList(database);
         success = success && queryIndexComicReadingList.exec("CREATE INDEX comic_reading_list_ordering_index ON label (ordering)");
+        success = success && createReadingListEntryTable(database);
 
         // DEFAULT READING LISTS
         QSqlQuery queryDefaultReadingList(database);
@@ -804,6 +805,47 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
 
         // Reading doesn't need its onw list
     }
+    return success;
+}
+
+bool DataBaseManagement::createReadingListEntryTable(QSqlDatabase &database)
+{
+    bool success = true;
+
+    QSqlQuery query(database);
+    success = success && query.exec("CREATE TABLE IF NOT EXISTS reading_list_entry ("
+                                    "id INTEGER PRIMARY KEY, "
+                                    "reading_list_id INTEGER NOT NULL, "
+                                    "comic_id INTEGER, "
+                                    "ordering INTEGER NOT NULL, "
+                                    "number TEXT, "
+                                    "title TEXT, "
+                                    "file_name TEXT, "
+                                    "hash TEXT, "
+                                    "date TEXT, "
+                                    "series TEXT, "
+                                    "volume TEXT, "
+                                    "story_arc TEXT, "
+                                    "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
+                                    "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE SET NULL)");
+
+    QSqlQuery uniqueIndex(database);
+    success = success && uniqueIndex.exec("CREATE UNIQUE INDEX IF NOT EXISTS reading_list_entry_comic_index "
+                                          "ON reading_list_entry(reading_list_id, comic_id) "
+                                          "WHERE comic_id IS NOT NULL");
+
+    QSqlQuery orderingIndex(database);
+    success = success && orderingIndex.exec("CREATE INDEX IF NOT EXISTS reading_list_entry_ordering_index "
+                                            "ON reading_list_entry(reading_list_id, ordering)");
+
+    QSqlQuery populate(database);
+    success = success && populate.exec("INSERT OR IGNORE INTO reading_list_entry "
+                                       "(reading_list_id, comic_id, ordering, number, title, file_name, hash, date, series, volume, story_arc) "
+                                       "SELECT crl.reading_list_id, c.id, crl.ordering, ci.number, ci.title, c.fileName, ci.hash, ci.date, ci.series, ci.volume, ci.storyArc "
+                                       "FROM comic_reading_list crl "
+                                       "INNER JOIN comic c ON c.id = crl.comic_id "
+                                       "INNER JOIN comic_info ci ON ci.id = c.comicInfoId");
+
     return success;
 }
 
@@ -1343,6 +1385,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_13 = compareVersions(oldVersion, "9.13.0") < 0;
     const bool pre9_14 = compareVersions(oldVersion, "9.14.0") < 0;
     const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
+    const bool pre9_16_1 = compareVersions(oldVersion, "9.16.1") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1557,6 +1600,10 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                         bool successAddingColumns = addColumns("comic_info", columnDefs, db);
                         returnValue = returnValue && successAddingColumns;
                     }
+                }
+
+                if (pre9_16_1) {
+                    returnValue = returnValue && createReadingListEntryTable(db);
                 }
 
                 if (returnValue) {
