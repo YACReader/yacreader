@@ -1,5 +1,7 @@
 #include "yacreader_server_data_helper.h"
 
+#include "missing_comic_server_helper.h"
+
 void variantToJson(const QString &name, QMetaType::Type type, const QVariant &value, QJsonObject &json)
 {
     if (value.isNull() || !value.isValid()) {
@@ -85,15 +87,23 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     QJsonObject json;
 
     json["type"] = "comic";
+    const bool missing = comic.id == 0 || MissingComicServerHelper::isPlaceholderId(comic.id);
+    json["missing"] = missing;
+    if (missing) {
+        // Durable entry identity remains separate from the server placeholder id.
+        json["entry_id"] = QString::number(comic.parentId);
+        json["missing_message"] = MissingComicServerHelper::description();
+        json["synopsis"] = MissingComicServerHelper::description();
+    }
     json["id"] = QString::number(comic.id);
     json["comic_info_id"] = QString::number(comic.info.id);
-    json["parent_id"] = QString::number(comic.parentId); // 9.14
+    json["parent_id"] = missing ? QJsonValue(QJsonValue::Null) : QJsonValue(QString::number(comic.parentId)); // 9.14
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
         json["library_uuid"] = libraryUuid.toString();
     }
     json["file_name"] = comic.name;
-    json["file_size"] = QString::number(comic.getFileSize());
+    json["file_size"] = QString::number(comic.id == 0 ? 0 : comic.getFileSize());
     json["hash"] = comic.info.hash;
     json["path"] = comic.path; // 9.14
 
@@ -109,7 +119,9 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     json["number"] = comic.info.number.toInt();
 
     variantToJson("cover_page", QMetaType::Int, comic.info.coverPage, json);
-    variantToJson("title", QMetaType::QString, comic.info.title, json);
+    // Missing navigation rows use their descriptive filename, like untitled real comics.
+    if (!missing)
+        variantToJson("title", QMetaType::QString, comic.info.title, json);
     variantToJson("universal_number", QMetaType::QString, comic.info.number, json);
     variantToJson("last_time_opened", QMetaType::LongLong, comic.info.lastTimeOpened, json);
     json["has_been_opened"] = comic.info.hasBeenOpened;
@@ -124,6 +136,9 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
 QJsonObject YACReaderServerDataHelper::fullComicToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicDB &comic)
 {
     QJsonObject json = comicToJSON(libraryId, libraryUuid, comic);
+
+    // Preserve the imported placeholder's descriptive title metadata.
+    variantToJson("title", QMetaType::QString, comic.info.title, json);
 
     variantToJson("volume", QMetaType::QString, comic.info.volume, json);
     variantToJson("total_volume_count", QMetaType::Int, comic.info.count, json);

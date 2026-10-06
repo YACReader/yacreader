@@ -22,6 +22,8 @@ Rectangle {
 
     property int topMargin : 27
 
+    readonly property bool missing: comicInfo !== null && comicInfo !== undefined && comicInfo.id === 0
+
     property bool compact : width <= 650
 
     RowLayout
@@ -46,6 +48,8 @@ Rectangle {
                 height: 24
 
                 InfoTick {
+
+                    enabled: !mainContainer.missing
                     x: 27
                     y: 5
 
@@ -80,6 +84,8 @@ Rectangle {
                 Layout.topMargin: topMargin
 
                 InfoTick {
+
+                    enabled: !mainContainer.missing
                     Layout.alignment: Qt.AlignTop | Qt.AlignLeft
                     Layout.topMargin: 5
 
@@ -96,6 +102,8 @@ Rectangle {
                 }
 
                 InfoFavorites {
+
+                    enabled: !mainContainer.missing
                     Layout.topMargin: 2
                     Layout.rightMargin: 17
                     Layout.alignment: Qt.AlignTop
@@ -113,6 +121,8 @@ Rectangle {
                 }
 
                 InfoRating {
+
+                    enabled: !mainContainer.missing
                     Layout.alignment: Qt.AlignTop
                     Layout.rightMargin: 30
                     rating: comicInfo ? comicInfo.rating ?? 0 : 0
@@ -152,6 +162,8 @@ Rectangle {
                     Layout.topMargin: topMargin
 
                     InfoFavorites {
+
+                        enabled: !mainContainer.missing
                         Layout.topMargin: 1
                         Layout.rightMargin: 17
                         Layout.alignment: Qt.AlignTop
@@ -169,6 +181,8 @@ Rectangle {
                     }
 
                     InfoRating {
+
+                        enabled: !mainContainer.missing
                         Layout.alignment: Qt.AlignTop
                         Layout.rightMargin: 30
                         rating: comicInfo ? comicInfo.rating ?? 0 : 0
@@ -284,8 +298,8 @@ Rectangle {
                 font.pixelSize: 15
                 wrapMode: Text.WordWrap
                 horizontalAlignment: Text.AlignJustify
-                text: '<html><head><style>a { color: ' + themeLinkColorStr + '; text-decoration: none; }</style></head><body>' + (comicInfo ? comicInfo.synopsis ?? "" : "") + '</body></html>'
-                visible: comicInfo ? comicInfo.synopsis ?? false : false
+                text: mainContainer.missing ? qsTranslate("MissingComic", "This comic is missing from your collection.") : '<html><head><style>a { color: ' + themeLinkColorStr + '; text-decoration: none; }</style></head><body>' + (comicInfo ? comicInfo.synopsis ?? "" : "") + '</body></html>'
+                visible: mainContainer.missing || (comicInfo ? comicInfo.synopsis ?? false : false)
                 textFormat: Text.RichText
             }
 
@@ -665,7 +679,7 @@ Rectangle {
 
                     text: comicInfo ? comicInfo.getTypeString() : ""
 
-                    visible: comicInfo ? comicInfo.getTypeString() : false
+                    visible: !mainContainer.missing && (comicInfo ? comicInfo.getTypeString() : false)
                 }
 
                 Text {

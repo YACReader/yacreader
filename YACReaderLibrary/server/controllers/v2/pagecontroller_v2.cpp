@@ -2,6 +2,7 @@
 
 #include "../static.h"
 #include "comic.h"
+#include "missing_comic_server_helper.h"
 #include "yacreader_http_session.h"
 
 #include <QDataStream>
@@ -30,6 +31,18 @@ void PageControllerV2::service(HttpRequest &request, HttpResponse &response)
     QStringList pathElements = path.split('/');
     qulonglong comicId = pathElements.at(5).toULongLong();
     unsigned int page = pathElements.at(7).toUInt();
+
+    if (MissingComicServerHelper::isPlaceholderId(comicId)) {
+        const auto placeholder = MissingComicServerHelper::resolve(pathElements.at(3).toULongLong(), comicId);
+        if (page != 0 || !placeholder.info.existOnDb) {
+            response.setStatus(404, "not found");
+            response.write("404 not found", true);
+            return;
+        }
+        response.setHeader("Content-Type", "image/jpeg");
+        response.write(MissingComicServerHelper::cover(), true);
+        return;
+    }
 
     Comic *comicFile;
     qulonglong currentComicId;

@@ -2,6 +2,7 @@
 
 #include "comic_db.h"
 #include "db_helper.h"
+#include "missing_comic_server_helper.h"
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
@@ -30,12 +31,12 @@ void ReadingListContentControllerV2::serviceContent(const int &library, const qu
 {
     auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(library);
 
-    const QList<ComicDB> comics = DBHelper::getReadingListFullContent(library, readingListId);
+    const QList<ComicDB> comics = DBHelper::getCollectionEntries(library, readingListId);
 
     QJsonArray items;
 
     for (const ComicDB &comic : comics) {
-        items.append(YACReaderServerDataHelper::comicToJSON(library, libraryUuid, comic));
+        items.append(YACReaderServerDataHelper::comicToJSON(library, libraryUuid, MissingComicServerHelper::placeholder(library, comic)));
     }
 
     QJsonDocument output(items);

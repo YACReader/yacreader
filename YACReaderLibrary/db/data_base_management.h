@@ -143,6 +143,8 @@ public:
     static bool createTables(QSqlDatabase &database);
     static bool createComicInfoTable(QSqlDatabase &database, QString tableName);
     static bool createComicInfoTable9_14(QSqlDatabase &database, QString tableName);
+    static bool createReadingListEntryTable(QSqlDatabase &database);
+    static bool createLabelEntryTable(QSqlDatabase &database);
     static bool createV8Tables(QSqlDatabase &database);
 
     static void exportComicsInfo(QString source, QString dest);
