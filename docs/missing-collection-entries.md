@@ -1,6 +1,6 @@
 # Missing reading-list and label entries
 
-Normal reading lists and labels retain entries when a comic leaves the library. Scanning the same content hash again relinks the entry and restores its position. Database version 9.16.2 adds `label_entry` and migrates existing label memberships.
+Normal reading lists and labels retain entries when a comic leaves the library. Scanning the same content hash again relinks the entry and restores its position. Database version 9.16.1 adds `reading_list_entry` and `label_entry`, migrating existing collection memberships in one upgrade.
 
 Both JSON collection content and legacy text import endpoints include missing entries in collection order. The server presents each as a downloadable one-page placeholder, with a valid JPEG cover/page, a `[MISSING]` filename, preserved title/issue metadata, and the synopsis �This comic is missing from your collection.� This supports clients that require a nonzero page count and cover before importing.
 

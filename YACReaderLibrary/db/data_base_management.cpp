@@ -1427,7 +1427,6 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_13 = compareVersions(oldVersion, "9.13.0") < 0;
     const bool pre9_14 = compareVersions(oldVersion, "9.14.0") < 0;
     const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
-    const bool pre9_16_2 = compareVersions(oldVersion, "9.16.2") < 0;
     const bool pre9_16_1 = compareVersions(oldVersion, "9.16.1") < 0;
 
     QString connectionName = "";
@@ -1645,12 +1644,9 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                     }
                 }
 
-                if (pre9_16_2) {
-                    returnValue = returnValue && createLabelEntryTable(db);
-                }
-
                 if (pre9_16_1) {
                     returnValue = returnValue && createReadingListEntryTable(db);
+                    returnValue = returnValue && createLabelEntryTable(db);
                 }
 
                 if (returnValue) {
