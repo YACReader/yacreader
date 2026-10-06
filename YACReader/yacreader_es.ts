@@ -249,22 +249,22 @@
 <context>
     <name>HelpAboutDialog</name>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="27"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="28"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="30"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="31"/>
         <source>System info</source>
         <translation>Información de sistema</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="35"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="24"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
         <source>About</source>
         <translation>Acerca de</translation>
     </message>
@@ -289,7 +289,7 @@
     <message>
         <location filename="options_dialog.cpp" line="259"/>
         <source>Show book fold shadow</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar sombra en el pliegue del libro</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="271"/>
@@ -785,48 +785,48 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
 <context>
     <name>Viewer</name>
     <message>
-        <location filename="viewer.cpp" line="1818"/>
+        <location filename="viewer.cpp" line="1843"/>
         <source>Page not available!</source>
         <translation>¡Página no disponible!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="162"/>
-        <location filename="viewer.cpp" line="1790"/>
+        <location filename="viewer.cpp" line="125"/>
+        <location filename="viewer.cpp" line="1815"/>
         <source>Press &apos;O&apos; to open comic.</source>
         <translation>Pulsa &apos;O&apos; para abrir un fichero.</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="393"/>
+        <location filename="viewer.cpp" line="378"/>
         <source>Error opening comic</source>
         <translation>Error abriendo cómic</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="2166"/>
+        <location filename="viewer.cpp" line="2181"/>
         <source>Cover!</source>
         <translation>¡Portada!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="399"/>
+        <location filename="viewer.cpp" line="384"/>
         <source>CRC Error</source>
         <translation>Error CRC</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="387"/>
+        <location filename="viewer.cpp" line="372"/>
         <source>Comic not found</source>
         <translation>Cómic no encontrado</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="387"/>
+        <location filename="viewer.cpp" line="372"/>
         <source>Not found</source>
         <translation>No encontrado</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="2180"/>
+        <location filename="viewer.cpp" line="2195"/>
         <source>Last page!</source>
         <translation>¡Última página!</translation>
     </message>
     <message>
-        <location filename="viewer.cpp" line="1807"/>
+        <location filename="viewer.cpp" line="1832"/>
         <source>Loading...please wait!</source>
         <translation>Cargando...espere, por favor!</translation>
     </message>
@@ -952,551 +952,569 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
 <context>
     <name>YACReader::MainWindowViewer</name>
     <message>
-        <location filename="main_window_viewer.cpp" line="326"/>
+        <location filename="main_window_viewer.cpp" line="327"/>
         <source>&amp;Open</source>
         <translation>&amp;Abrir</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="327"/>
+        <location filename="main_window_viewer.cpp" line="328"/>
         <source>Open a comic</source>
         <translation>Abrir cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="333"/>
+        <location filename="main_window_viewer.cpp" line="334"/>
         <source>New instance</source>
         <translation>Nueva instancia</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="352"/>
+        <location filename="main_window_viewer.cpp" line="353"/>
         <source>Open Folder</source>
         <translation>Abrir carpeta</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="353"/>
+        <location filename="main_window_viewer.cpp" line="354"/>
         <source>Open image folder</source>
         <translation>Abrir carpeta de imágenes</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="358"/>
+        <location filename="main_window_viewer.cpp" line="359"/>
         <source>Open latest comic</source>
         <translation>Abrir el cómic más reciente</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="359"/>
+        <location filename="main_window_viewer.cpp" line="360"/>
         <source>Open the latest comic opened in the previous reading session</source>
         <translation>Abrir el cómic más reciente abierto en la sesión de lectura anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="371"/>
+        <location filename="main_window_viewer.cpp" line="372"/>
         <source>Clear</source>
         <translation>Limpiar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="372"/>
+        <location filename="main_window_viewer.cpp" line="373"/>
         <source>Clear open recent list</source>
         <translation>Limpiar lista de abiertos recientemente</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="375"/>
+        <location filename="main_window_viewer.cpp" line="376"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="376"/>
-        <location filename="main_window_viewer.cpp" line="1096"/>
+        <location filename="main_window_viewer.cpp" line="377"/>
+        <location filename="main_window_viewer.cpp" line="1097"/>
+        <location filename="main_window_viewer.cpp" line="1108"/>
+        <location filename="main_window_viewer.cpp" line="1119"/>
         <source>Save current page</source>
         <translation>Guardar la página actual</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="381"/>
-        <location filename="main_window_viewer.cpp" line="1120"/>
-        <location filename="main_window_viewer.cpp" line="1143"/>
-        <location filename="main_window_viewer.cpp" line="1161"/>
+        <location filename="main_window_viewer.cpp" line="382"/>
+        <location filename="main_window_viewer.cpp" line="1124"/>
+        <location filename="main_window_viewer.cpp" line="1138"/>
+        <location filename="main_window_viewer.cpp" line="1149"/>
+        <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Extract page(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="382"/>
+        <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="387"/>
+        <location filename="main_window_viewer.cpp" line="388"/>
         <source>Previous Comic</source>
         <translation>Cómic anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="388"/>
-        <location filename="main_window_viewer.cpp" line="1909"/>
-        <location filename="main_window_viewer.cpp" line="1913"/>
+        <location filename="main_window_viewer.cpp" line="389"/>
+        <location filename="main_window_viewer.cpp" line="1915"/>
+        <location filename="main_window_viewer.cpp" line="1919"/>
         <source>Open previous comic</source>
         <translation>Abrir cómic anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="393"/>
+        <location filename="main_window_viewer.cpp" line="394"/>
         <source>Next Comic</source>
         <translation>Siguiente Cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="394"/>
-        <location filename="main_window_viewer.cpp" line="1908"/>
+        <location filename="main_window_viewer.cpp" line="395"/>
         <location filename="main_window_viewer.cpp" line="1914"/>
+        <location filename="main_window_viewer.cpp" line="1920"/>
         <source>Open next comic</source>
         <translation>Abrir siguiente cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="399"/>
+        <location filename="main_window_viewer.cpp" line="400"/>
         <source>&amp;Previous</source>
         <translation>A&amp;nterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="401"/>
-        <location filename="main_window_viewer.cpp" line="1911"/>
-        <location filename="main_window_viewer.cpp" line="1915"/>
+        <location filename="main_window_viewer.cpp" line="402"/>
+        <location filename="main_window_viewer.cpp" line="1917"/>
+        <location filename="main_window_viewer.cpp" line="1921"/>
         <source>Go to previous page</source>
         <translation>Ir a la página anterior</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="406"/>
+        <location filename="main_window_viewer.cpp" line="407"/>
         <source>&amp;Next</source>
         <translation>Siguie&amp;nte</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="408"/>
-        <location filename="main_window_viewer.cpp" line="1910"/>
+        <location filename="main_window_viewer.cpp" line="409"/>
         <location filename="main_window_viewer.cpp" line="1916"/>
+        <location filename="main_window_viewer.cpp" line="1922"/>
         <source>Go to next page</source>
         <translation>Ir a la página siguiente</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="413"/>
+        <location filename="main_window_viewer.cpp" line="414"/>
         <source>Fit Height</source>
         <translation>Ajustar altura</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="414"/>
+        <location filename="main_window_viewer.cpp" line="415"/>
         <source>Fit image to height</source>
         <translation>Ajustar página a lo alto</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="420"/>
+        <location filename="main_window_viewer.cpp" line="421"/>
         <source>Fit Width</source>
         <translation>Ajustar anchura</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="421"/>
+        <location filename="main_window_viewer.cpp" line="422"/>
         <source>Fit image to width</source>
         <translation>Ajustar página a lo ancho</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="427"/>
+        <location filename="main_window_viewer.cpp" line="428"/>
         <source>Show full size</source>
         <translation>Mostrar a tamaño original</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="434"/>
+        <location filename="main_window_viewer.cpp" line="435"/>
         <source>Fit to page</source>
         <translation>Ajustar a página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="440"/>
+        <location filename="main_window_viewer.cpp" line="441"/>
         <source>Continuous scroll</source>
         <translation>Desplazamiento continuo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="441"/>
+        <location filename="main_window_viewer.cpp" line="442"/>
         <source>Switch to continuous scroll mode</source>
         <translation>Cambiar al modo de desplazamiento continuo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="475"/>
+        <location filename="main_window_viewer.cpp" line="476"/>
         <source>Reset zoom</source>
         <translation>Restablecer zoom</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="480"/>
+        <location filename="main_window_viewer.cpp" line="481"/>
         <source>Show zoom slider</source>
         <translation>Mostrar control deslizante de zoom</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="482"/>
+        <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
         <translation>Ampliar+</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="487"/>
+        <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
         <translation>Reducir</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="492"/>
+        <location filename="main_window_viewer.cpp" line="493"/>
         <source>Rotate image to the left</source>
         <translation>Rotar imagen a la izquierda</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="497"/>
+        <location filename="main_window_viewer.cpp" line="498"/>
         <source>Rotate image to the right</source>
         <translation>Rotar imagen a la derecha</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="502"/>
+        <location filename="main_window_viewer.cpp" line="503"/>
         <source>Double page mode</source>
         <translation>Modo a doble página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="503"/>
+        <location filename="main_window_viewer.cpp" line="504"/>
         <source>Switch to double page mode</source>
         <translation>Cambiar a modo de doble página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="511"/>
+        <location filename="main_window_viewer.cpp" line="512"/>
         <source>Double page manga mode</source>
         <translation>Modo de manga de página doble</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="512"/>
+        <location filename="main_window_viewer.cpp" line="513"/>
         <source>Reverse reading order in double page mode</source>
         <translation>Invertir el orden de lectura en modo de página doble</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="520"/>
+        <location filename="main_window_viewer.cpp" line="521"/>
         <source>Go To</source>
         <translation>Ir a</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="521"/>
+        <location filename="main_window_viewer.cpp" line="522"/>
         <source>Go to page ...</source>
         <translation>Ir a página...</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="526"/>
+        <location filename="main_window_viewer.cpp" line="527"/>
         <source>Options</source>
         <translation>Opciones</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="527"/>
+        <location filename="main_window_viewer.cpp" line="528"/>
         <source>YACReader options</source>
         <translation>Opciones de YACReader</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="533"/>
-        <location filename="main_window_viewer.cpp" line="840"/>
+        <location filename="main_window_viewer.cpp" line="534"/>
+        <location filename="main_window_viewer.cpp" line="841"/>
         <source>Help</source>
         <translation>Ayuda</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="534"/>
+        <location filename="main_window_viewer.cpp" line="535"/>
         <source>Help, About YACReader</source>
         <translation>Ayuda, Sobre YACReader</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="539"/>
+        <location filename="main_window_viewer.cpp" line="540"/>
         <source>Magnifying glass</source>
         <translation>Lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="541"/>
         <source>Switch Magnifying glass</source>
         <translation>Lupa On/Off</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="546"/>
+        <location filename="main_window_viewer.cpp" line="547"/>
         <source>Set bookmark</source>
         <translation>Añadir marcador</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="547"/>
+        <location filename="main_window_viewer.cpp" line="548"/>
         <source>Set a bookmark on the current page</source>
         <translation>Añadir un marcador en la página actual</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="555"/>
+        <location filename="main_window_viewer.cpp" line="556"/>
         <source>Show bookmarks</source>
         <translation>Mostrar marcadores</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="556"/>
+        <location filename="main_window_viewer.cpp" line="557"/>
         <source>Show the bookmarks of the current comic</source>
         <translation>Mostrar los marcadores del cómic actual</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="561"/>
+        <location filename="main_window_viewer.cpp" line="562"/>
         <source>Show keyboard shortcuts</source>
         <translation>Mostrar atajos de teclado</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="566"/>
+        <location filename="main_window_viewer.cpp" line="567"/>
         <source>Show Info</source>
         <translation>Mostrar información</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="574"/>
+        <location filename="main_window_viewer.cpp" line="575"/>
         <source>Escape</source>
         <translation>Esc</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="577"/>
+        <location filename="main_window_viewer.cpp" line="578"/>
         <source>Escape key: quit, or cancel the active mode</source>
         <translation>Tecla Esc: salir o cancelar el modo activo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="582"/>
+        <location filename="main_window_viewer.cpp" line="583"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="585"/>
+        <location filename="main_window_viewer.cpp" line="586"/>
         <source>Show Dictionary</source>
         <translation>Mostrar diccionario</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="591"/>
+        <location filename="main_window_viewer.cpp" line="592"/>
         <source>Show go to flow</source>
         <translation>Mostrar &quot;Ir a Comic Flow&quot;</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="596"/>
+        <location filename="main_window_viewer.cpp" line="597"/>
         <source>Edit shortcuts</source>
         <translation>Editar accesos directos</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="617"/>
+        <location filename="main_window_viewer.cpp" line="618"/>
         <source>&amp;File</source>
         <translation>&amp;Archivo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="632"/>
-        <location filename="main_window_viewer.cpp" line="794"/>
+        <location filename="main_window_viewer.cpp" line="633"/>
+        <location filename="main_window_viewer.cpp" line="795"/>
         <source>Open recent</source>
         <translation>Abrir reciente</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="782"/>
+        <location filename="main_window_viewer.cpp" line="783"/>
         <source>File</source>
         <translation>Archivo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="804"/>
+        <location filename="main_window_viewer.cpp" line="805"/>
         <source>Edit</source>
         <translation>Editar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="808"/>
+        <location filename="main_window_viewer.cpp" line="809"/>
         <source>View</source>
         <translation>Ver</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="825"/>
+        <location filename="main_window_viewer.cpp" line="826"/>
         <source>Go</source>
         <translation>Ir</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="833"/>
+        <location filename="main_window_viewer.cpp" line="834"/>
         <source>Window</source>
         <translation>Ventana</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="950"/>
+        <location filename="main_window_viewer.cpp" line="951"/>
         <source>Open Comic</source>
         <translation>Abrir cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="949"/>
+        <location filename="main_window_viewer.cpp" line="950"/>
         <source>Comic files</source>
         <translation>Archivos de cómic</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1037"/>
+        <location filename="main_window_viewer.cpp" line="1038"/>
         <source>Open folder</source>
         <translation>Abrir carpeta</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1345"/>
-        <location filename="main_window_viewer.cpp" line="1358"/>
+        <location filename="main_window_viewer.cpp" line="1351"/>
+        <location filename="main_window_viewer.cpp" line="1364"/>
         <source>Comics</source>
         <translation>Cómics</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1369"/>
+        <location filename="main_window_viewer.cpp" line="1375"/>
         <source>Toggle fullscreen mode</source>
         <translation>Alternar modo de pantalla completa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1372"/>
+        <location filename="main_window_viewer.cpp" line="1378"/>
         <source>Hide/show toolbar</source>
         <translation>Ocultar/mostrar barra de herramientas</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1346"/>
-        <location filename="main_window_viewer.cpp" line="1375"/>
+        <location filename="main_window_viewer.cpp" line="1352"/>
+        <location filename="main_window_viewer.cpp" line="1381"/>
         <source>General</source>
         <translation>Opciones generales</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1394"/>
+        <location filename="main_window_viewer.cpp" line="1400"/>
         <source>Size up magnifying glass</source>
         <translation>Aumentar tamaño de la lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1397"/>
+        <location filename="main_window_viewer.cpp" line="1403"/>
         <source>Size down magnifying glass</source>
         <translation>Disminuir tamaño de lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1400"/>
+        <location filename="main_window_viewer.cpp" line="1406"/>
         <source>Zoom in magnifying glass</source>
         <translation>Incrementar el aumento de la lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1403"/>
+        <location filename="main_window_viewer.cpp" line="1409"/>
         <source>Zoom out magnifying glass</source>
         <translation>Reducir el aumento de la lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1406"/>
+        <location filename="main_window_viewer.cpp" line="1412"/>
         <source>Reset magnifying glass</source>
         <translation>Resetear lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1347"/>
-        <location filename="main_window_viewer.cpp" line="1413"/>
+        <location filename="main_window_viewer.cpp" line="1353"/>
+        <location filename="main_window_viewer.cpp" line="1419"/>
         <source>Magnifiying glass</source>
         <translation>Lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1420"/>
+        <location filename="main_window_viewer.cpp" line="1426"/>
         <source>Toggle between fit to width and fit to height</source>
         <translation>Alternar entre ajuste al ancho y ajuste al alto</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1348"/>
-        <location filename="main_window_viewer.cpp" line="1424"/>
+        <location filename="main_window_viewer.cpp" line="1354"/>
+        <location filename="main_window_viewer.cpp" line="1430"/>
         <source>Page adjustement</source>
         <translation>Ajuste de página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1107"/>
+        <location filename="main_window_viewer.cpp" line="1108"/>
+        <source>The current page is not ready. Please try again later.</source>
+        <translation>La página actual aún no está lista. Por favor, inténtelo de nuevo más tarde.</translation>
+    </message>
+    <message>
+        <location filename="main_window_viewer.cpp" line="1113"/>
         <source>Overwrite file?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1107"/>
+        <location filename="main_window_viewer.cpp" line="1113"/>
         <source>The file already exists. Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1143"/>
+        <location filename="main_window_viewer.cpp" line="1119"/>
+        <source>The current page could not be saved.</source>
+        <translation>No se ha podido guardar la página actual.</translation>
+    </message>
+    <message>
+        <location filename="main_window_viewer.cpp" line="1138"/>
+        <source>The selected pages are not ready. Please try again later.</source>
+        <translation>Las páginas seleccionadas aún no están listas. Por favor, inténtelo de nuevo más tarde.</translation>
+    </message>
+    <message>
+        <location filename="main_window_viewer.cpp" line="1149"/>
         <source>The current page could not be extracted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1148"/>
+        <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Overwrite files?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1148"/>
+        <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1161"/>
+        <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Some pages could not be extracted.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1442"/>
+        <location filename="main_window_viewer.cpp" line="1448"/>
         <source>Autoscroll down</source>
         <translation>Desplazamiento automático hacia abajo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1445"/>
+        <location filename="main_window_viewer.cpp" line="1451"/>
         <source>Autoscroll up</source>
         <translation>Desplazamiento automático hacia arriba</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1448"/>
+        <location filename="main_window_viewer.cpp" line="1454"/>
         <source>Autoscroll forward, horizontal first</source>
         <translation>Desplazamiento automático hacia adelante, primero horizontal</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1452"/>
+        <location filename="main_window_viewer.cpp" line="1458"/>
         <source>Autoscroll backward, horizontal first</source>
         <translation>Desplazamiento automático hacia atrás, primero horizontal</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1456"/>
+        <location filename="main_window_viewer.cpp" line="1462"/>
         <source>Autoscroll forward, vertical first</source>
         <translation>Desplazamiento automático hacia adelante, primero vertical</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1460"/>
+        <location filename="main_window_viewer.cpp" line="1466"/>
         <source>Autoscroll backward, vertical first</source>
         <translation>Desplazamiento automático hacia atrás, primero vertical</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1464"/>
+        <location filename="main_window_viewer.cpp" line="1470"/>
         <source>Move down</source>
         <translation>Mover abajo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1467"/>
+        <location filename="main_window_viewer.cpp" line="1473"/>
         <source>Move up</source>
         <translation>Mover arriba</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1470"/>
+        <location filename="main_window_viewer.cpp" line="1476"/>
         <source>Move left</source>
         <translation>Mover a la izquierda</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1473"/>
+        <location filename="main_window_viewer.cpp" line="1479"/>
         <source>Move right</source>
         <translation>Mover a la derecha</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1476"/>
+        <location filename="main_window_viewer.cpp" line="1482"/>
         <source>Go to the first page</source>
         <translation>Ir a la primera página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1479"/>
+        <location filename="main_window_viewer.cpp" line="1485"/>
         <source>Go to the last page</source>
         <translation>Ir a la última página</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1482"/>
+        <location filename="main_window_viewer.cpp" line="1488"/>
         <source>Offset double page to the left</source>
         <translation>Mover una página a la izquierda</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1484"/>
+        <location filename="main_window_viewer.cpp" line="1490"/>
         <source>Offset double page to the right</source>
         <translation>Mover una página a la derecha</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1349"/>
-        <location filename="main_window_viewer.cpp" line="1502"/>
+        <location filename="main_window_viewer.cpp" line="1355"/>
+        <location filename="main_window_viewer.cpp" line="1508"/>
         <source>Reading</source>
         <translation>Leyendo</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1551"/>
+        <location filename="main_window_viewer.cpp" line="1557"/>
         <source>There is a new version available</source>
         <translation>Hay una nueva versión disponible</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1552"/>
+        <location filename="main_window_viewer.cpp" line="1558"/>
         <source>Do you want to download the new version?</source>
         <translation>¿Desea descargar la nueva versión?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1555"/>
+        <location filename="main_window_viewer.cpp" line="1561"/>
         <source>Remind me in 14 days</source>
         <translation>Recordar en 14 días</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1556"/>
+        <location filename="main_window_viewer.cpp" line="1562"/>
         <source>Not now</source>
         <translation>Ahora no</translation>
     </message>
@@ -1580,7 +1598,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
 <context>
     <name>YACReaderSlider</name>
     <message>
-        <location filename="width_slider.cpp" line="51"/>
+        <location filename="width_slider.cpp" line="52"/>
         <source>Reset</source>
         <translation>Restablecer</translation>
     </message>
