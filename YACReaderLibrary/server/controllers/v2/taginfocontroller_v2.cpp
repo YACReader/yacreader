@@ -2,6 +2,7 @@
 
 #include "comic_db.h"
 #include "db_helper.h"
+#include "missing_comic_server_helper.h"
 
 #include <QUrl>
 
@@ -26,9 +27,10 @@ void TagInfoControllerV2::service(HttpRequest &request, HttpResponse &response)
 
 void TagInfoControllerV2::serviceComics(const int &library, const qulonglong &tagId, HttpResponse &response)
 {
-    const QList<ComicDB> comics = DBHelper::getLabelComics(library, tagId);
+    const QList<ComicDB> comics = DBHelper::getCollectionEntries(library, tagId, true);
 
-    for (const ComicDB &comic : comics) {
+    for (const ComicDB &entry : comics) {
+        const auto comic = MissingComicServerHelper::placeholder(library, entry, true);
         response.write(QString("/v2/library/%1/comic/%2:%3:%4:%5:%6\r\n")
                                .arg(library)
                                .arg(comic.id)

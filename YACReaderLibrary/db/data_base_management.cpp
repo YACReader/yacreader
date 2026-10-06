@@ -37,7 +37,7 @@ QString backupReasonName(DatabaseBackupReason reason)
     case DatabaseBackupReason::Manual:
         return "manual";
     }
-        return { };
+    return { };
 }
 
 bool validateDatabase(const QString &path, QString *error, QString *versionOut = nullptr)
@@ -773,6 +773,7 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
         QSqlQuery queryIndexComicReadingList(database);
         success = success && queryIndexComicReadingList.exec("CREATE INDEX comic_reading_list_ordering_index ON label (ordering)");
         success = success && createReadingListEntryTable(database);
+        success = success && createLabelEntryTable(database);
 
         // DEFAULT READING LISTS
         QSqlQuery queryDefaultReadingList(database);
@@ -843,6 +844,47 @@ bool DataBaseManagement::createReadingListEntryTable(QSqlDatabase &database)
                                        "(reading_list_id, comic_id, ordering, number, title, file_name, hash, date, series, volume, story_arc) "
                                        "SELECT crl.reading_list_id, c.id, crl.ordering, ci.number, ci.title, c.fileName, ci.hash, ci.date, ci.series, ci.volume, ci.storyArc "
                                        "FROM comic_reading_list crl "
+                                       "INNER JOIN comic c ON c.id = crl.comic_id "
+                                       "INNER JOIN comic_info ci ON ci.id = c.comicInfoId");
+
+    return success;
+}
+
+bool DataBaseManagement::createLabelEntryTable(QSqlDatabase &database)
+{
+    bool success = true;
+
+    QSqlQuery query(database);
+    success = success && query.exec("CREATE TABLE IF NOT EXISTS label_entry ("
+                                    "id INTEGER PRIMARY KEY, "
+                                    "label_id INTEGER NOT NULL, "
+                                    "comic_id INTEGER, "
+                                    "ordering INTEGER NOT NULL, "
+                                    "number TEXT, "
+                                    "title TEXT, "
+                                    "file_name TEXT, "
+                                    "hash TEXT, "
+                                    "date TEXT, "
+                                    "series TEXT, "
+                                    "volume TEXT, "
+                                    "story_arc TEXT, "
+                                    "FOREIGN KEY(label_id) REFERENCES label(id) ON DELETE CASCADE, "
+                                    "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE SET NULL)");
+
+    QSqlQuery uniqueIndex(database);
+    success = success && uniqueIndex.exec("CREATE UNIQUE INDEX IF NOT EXISTS label_entry_comic_index "
+                                          "ON label_entry(label_id, comic_id) "
+                                          "WHERE comic_id IS NOT NULL");
+
+    QSqlQuery orderingIndex(database);
+    success = success && orderingIndex.exec("CREATE INDEX IF NOT EXISTS label_entry_ordering_index "
+                                            "ON label_entry(label_id, ordering)");
+
+    QSqlQuery populate(database);
+    success = success && populate.exec("INSERT OR IGNORE INTO label_entry "
+                                       "(label_id, comic_id, ordering, number, title, file_name, hash, date, series, volume, story_arc) "
+                                       "SELECT crl.label_id, c.id, crl.ordering, ci.number, ci.title, c.fileName, ci.hash, ci.date, ci.series, ci.volume, ci.storyArc "
+                                       "FROM comic_label crl "
                                        "INNER JOIN comic c ON c.id = crl.comic_id "
                                        "INNER JOIN comic_info ci ON ci.id = c.comicInfoId");
 
@@ -1385,6 +1427,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_13 = compareVersions(oldVersion, "9.13.0") < 0;
     const bool pre9_14 = compareVersions(oldVersion, "9.14.0") < 0;
     const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
+    const bool pre9_16_2 = compareVersions(oldVersion, "9.16.2") < 0;
     const bool pre9_16_1 = compareVersions(oldVersion, "9.16.1") < 0;
 
     QString connectionName = "";
@@ -1600,6 +1643,10 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                         bool successAddingColumns = addColumns("comic_info", columnDefs, db);
                         returnValue = returnValue && successAddingColumns;
                     }
+                }
+
+                if (pre9_16_2) {
+                    returnValue = returnValue && createLabelEntryTable(db);
                 }
 
                 if (pre9_16_1) {

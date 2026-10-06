@@ -42,6 +42,8 @@ public:
     static QList<ComicDB> getReading(qulonglong libraryId);
     static QList<ReadingList> getReadingLists(qulonglong libraryId);
     static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId, bool getFullComicInfoFields = false);
+    static QList<ComicDB> getCollectionEntries(qulonglong libraryId, qulonglong collectionId, bool label = false);
+    static QList<ComicDB> getCollectionEntries(qulonglong collectionId, QSqlDatabase &db, bool label = false);
 
     // objects management
     // deletes
@@ -99,6 +101,7 @@ public:
     static void reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db);
     static void reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase &db);
     static void reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase &db);
+    static void reasignOrderToComicsInLabel(qulonglong labelId, const QList<ComicDB> &comics, QSqlDatabase &db);
     static void reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase &db);
     static void reasignOrderToComicsInReadingList(qulonglong readingListId, const QList<ComicDB> &comics, QSqlDatabase &db);
     static void updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath);

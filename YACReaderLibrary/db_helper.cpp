@@ -535,6 +535,70 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
     return list;
 }
 
+QList<ComicDB> DBHelper::getCollectionEntries(qulonglong libraryId, qulonglong collectionId, bool label)
+{
+    const auto libraryPath = getLibraries().getPath(libraryId);
+    QList<ComicDB> comics;
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
+        comics = getCollectionEntries(collectionId, db, label);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    return comics;
+}
+
+QList<ComicDB> DBHelper::getCollectionEntries(qulonglong collectionId, QSqlDatabase &db, bool label)
+{
+    QList<ComicDB> comics;
+    const auto table = label ? QStringLiteral("label_entry") : QStringLiteral("reading_list_entry");
+    const auto column = label ? QStringLiteral("label_id") : QStringLiteral("reading_list_id");
+    QList<qulonglong> collectionIds { collectionId };
+    if (!label) {
+        QSqlQuery children(db);
+        children.prepare("SELECT id FROM reading_list WHERE parentId = :id ORDER BY ordering");
+        children.bindValue(":id", collectionId);
+        children.exec();
+        while (children.next())
+            collectionIds << children.value(0).toULongLong();
+    }
+    for (const auto id : collectionIds) {
+        QSqlQuery entries(db);
+        entries.prepare(QString("SELECT e.*, c.id AS live_comic_id FROM %1 e "
+                                "LEFT JOIN comic c ON c.id = e.comic_id "
+                                "WHERE e.%2 = :id ORDER BY e.ordering")
+                                .arg(table, column));
+        entries.bindValue(":id", id);
+        entries.exec();
+        while (entries.next()) {
+            if (!entries.value("live_comic_id").isNull()) {
+                bool found = false;
+                const auto comic = loadComic(entries.value("live_comic_id").toULongLong(), db, found);
+                if (found)
+                    comics << comic;
+                continue;
+            }
+            ComicDB comic;
+            comic.id = 0;
+            comic.info.id = 0;
+            comic.parentId = entries.value("id").toULongLong();
+            comic.name = QStringLiteral("[MISSING]");
+            comic._hasCover = false;
+            comic.info.title = entries.value("title");
+            comic.info.number = entries.value("number");
+            comic.info.hash = entries.value("hash").toString();
+            comic.info.date = entries.value("date");
+            comic.info.series = entries.value("series");
+            comic.info.volume = entries.value("volume");
+            comic.info.storyArc = entries.value("story_arc");
+            comic.info.numPages = 0;
+            comic.info.coverSizeRatio = 0.7;
+            comics << comic;
+        }
+    }
+    return comics;
+}
 // objects management
 // deletes
 void DBHelper::removeFromDB(LibraryItem *item, QSqlDatabase &db)
@@ -615,13 +679,24 @@ void DBHelper::deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglon
 
     QSqlQuery query(db);
     query.prepare("DELETE FROM comic_label WHERE comic_id = :comic_id AND label_id = :label_id");
+    QSqlQuery entryByComic(db);
+    entryByComic.prepare("DELETE FROM label_entry WHERE comic_id = :comic_id AND label_id = :label_id");
+    QSqlQuery missingEntry(db);
+    missingEntry.prepare("DELETE FROM label_entry WHERE id = :entry_id AND label_id = :label_id");
     for (const auto &comic : comicsList) {
-        query.bindValue(":comic_id", comic.id);
-        query.bindValue(":label_id", labelId);
-        query.exec();
+        if (comic.id == 0) {
+            missingEntry.bindValue(":entry_id", comic.parentId);
+            missingEntry.bindValue(":label_id", labelId);
+            missingEntry.exec();
+        } else {
+            query.bindValue(":comic_id", comic.id);
+            query.bindValue(":label_id", labelId);
+            query.exec();
 
-        QLOG_DEBUG() << "cid = " << comic.id << "lid = " << labelId;
-        QLOG_DEBUG() << query.lastError().databaseText() << "-" << query.lastError().driverText();
+            entryByComic.bindValue(":comic_id", comic.id);
+            entryByComic.bindValue(":label_id", labelId);
+            entryByComic.exec();
+        }
     }
 
     db.commit();
@@ -1472,6 +1547,46 @@ void DBHelper::reasignOrderToComicsInReadingList(qulonglong readingListId, const
     db.commit();
 }
 
+void DBHelper::reasignOrderToComicsInLabel(qulonglong labelId, const QList<ComicDB> &comics, QSqlDatabase &db)
+{
+    QSqlQuery updateComicLabelOrdering(db);
+    updateComicLabelOrdering.prepare("UPDATE comic_label SET "
+                                     "ordering = :ordering "
+                                     "WHERE comic_id = :comic_id AND label_id = :label_id");
+    QSqlQuery updateEntryByComic(db);
+    updateEntryByComic.prepare("UPDATE label_entry SET "
+                               "ordering = :ordering "
+                               "WHERE comic_id = :comic_id AND label_id = :label_id");
+    QSqlQuery updateMissingEntry(db);
+    updateMissingEntry.prepare("UPDATE label_entry SET "
+                               "ordering = :ordering "
+                               "WHERE id = :entry_id AND label_id = :label_id");
+
+    db.transaction();
+    int order = 0;
+    for (const auto &comic : comics) {
+        if (comic.id == 0) {
+            updateMissingEntry.bindValue(":ordering", order++);
+            updateMissingEntry.bindValue(":entry_id", comic.parentId);
+            updateMissingEntry.bindValue(":label_id", labelId);
+            updateMissingEntry.exec();
+            continue;
+        }
+
+        updateComicLabelOrdering.bindValue(":ordering", order);
+        updateComicLabelOrdering.bindValue(":comic_id", comic.id);
+        updateComicLabelOrdering.bindValue(":label_id", labelId);
+        updateComicLabelOrdering.exec();
+
+        updateEntryByComic.bindValue(":ordering", order++);
+        updateEntryByComic.bindValue(":comic_id", comic.id);
+        updateEntryByComic.bindValue(":label_id", labelId);
+        updateEntryByComic.exec();
+    }
+
+    db.commit();
+}
+
 void DBHelper::updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath)
 {
     QString connectionName = "";
@@ -1753,6 +1868,22 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
     restoreReadingListLinks.bindValue(":comic_id", comicId);
     restoreReadingListLinks.exec();
 
+    QSqlQuery relinkMissingLabelEntries(db);
+    relinkMissingLabelEntries.prepare("UPDATE label_entry SET "
+                                      "comic_id = :comic_id "
+                                      "WHERE comic_id IS NULL AND hash = :hash");
+    relinkMissingLabelEntries.bindValue(":comic_id", comicId);
+    relinkMissingLabelEntries.bindValue(":hash", comic->info.hash);
+    relinkMissingLabelEntries.exec();
+
+    QSqlQuery restoreLabelLinks(db);
+    restoreLabelLinks.prepare("INSERT OR IGNORE INTO comic_label (label_id, comic_id, ordering) "
+                              "SELECT label_id, comic_id, ordering "
+                              "FROM label_entry "
+                              "WHERE comic_id = :comic_id");
+    restoreLabelLinks.bindValue(":comic_id", comicId);
+    restoreLabelLinks.exec();
+
     // loop through parents and update their updated field
     // TODO: use stored procedures
     QSqlQuery updateFolder(db);
@@ -1833,7 +1964,10 @@ void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDat
 
 void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db)
 {
-    QSqlQuery getNumComics(QString("SELECT count(*) FROM comic_label WHERE label_id = %1;").arg(labelId), db);
+    QSqlQuery getNumComics(db);
+    getNumComics.prepare("SELECT count(*) FROM label_entry WHERE label_id = :label_id");
+    getNumComics.bindValue(":label_id", labelId);
+    getNumComics.exec();
     getNumComics.next();
 
     int numComics = getNumComics.value(0).toInt();
@@ -1843,15 +1977,30 @@ void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong 
     QSqlQuery query(db);
     query.prepare("INSERT INTO comic_label (label_id, comic_id, ordering) "
                   "VALUES (:label_id, :comic_id, :ordering)");
+    QSqlQuery entry(db);
+    entry.prepare("INSERT OR IGNORE INTO label_entry "
+                  "(label_id, comic_id, ordering, number, title, file_name, hash, date, series, volume, story_arc) "
+                  "VALUES (:label_id, :comic_id, :ordering, :number, :title, :file_name, :hash, :date, :series, :volume, :story_arc)");
 
     for (const auto &comic : comicsList) {
         query.bindValue(":label_id", labelId);
         query.bindValue(":comic_id", comic.id);
-        query.bindValue(":ordering", numComics++);
+        query.bindValue(":ordering", numComics);
         query.exec();
-    }
 
-    QLOG_TRACE() << query.lastError();
+        entry.bindValue(":label_id", labelId);
+        entry.bindValue(":comic_id", comic.id);
+        entry.bindValue(":ordering", numComics++);
+        entry.bindValue(":number", comic.info.number);
+        entry.bindValue(":title", comic.info.title);
+        entry.bindValue(":file_name", comic.name);
+        entry.bindValue(":hash", comic.info.hash);
+        entry.bindValue(":date", comic.info.date);
+        entry.bindValue(":series", comic.info.series);
+        entry.bindValue(":volume", comic.info.volume);
+        entry.bindValue(":story_arc", comic.info.storyArc);
+        entry.exec();
+    }
 
     db.commit();
 }

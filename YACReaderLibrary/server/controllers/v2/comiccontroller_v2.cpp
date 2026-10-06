@@ -5,6 +5,7 @@
 #include "comic.h"
 #include "comic_db.h"
 #include "db_helper.h"
+#include "missing_comic_server_helper.h"
 #include "yacreader_http_session.h"
 #include "yacreader_libraries.h"
 
@@ -47,11 +48,19 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 
     YACReaderLibraries libraries = DBHelper::getLibraries();
 
-    ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
+    ComicDB comic = MissingComicServerHelper::resolve(libraryId, comicId);
 
     if (!comic.info.existOnDb) {
         response.setStatus(404, "Not Found");
         response.write("", true);
+        return;
+    }
+
+    if (MissingComicServerHelper::isPlaceholderId(comic.id)) {
+        response.setHeader("Content-Type", "text/plain; charset=utf-8");
+        response.write(QString("library:%1\r\n").arg(libraryName).toUtf8());
+        response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
+        response.write(comic.toTXT().toUtf8(), true);
         return;
     }
 

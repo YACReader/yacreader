@@ -182,9 +182,13 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         case Favorites:
             DBHelper::reasignOrderToComicsInFavorites(allComicIds, db);
             break;
-        case Label:
-            DBHelper::reasignOrderToComicsInLabel(sourceId, allComicIds, db);
+        case Label: {
+            QList<ComicDB> comics;
+            for (int i = 0; i < _data.size(); ++i)
+                comics << _getComic(index(i, 0, QModelIndex()));
+            DBHelper::reasignOrderToComicsInLabel(sourceId, comics, db);
             break;
+        }
         case ReadingList: {
             QList<ComicDB> comics;
             for (int i = 0; i < _data.size(); ++i)
@@ -340,6 +344,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     else if (role == RatingRole)
         return item->data(Rating);
     else if (role == CoverPathRole) {
+        if (item->data(Id).toULongLong() == 0)
+            return QUrl(QStringLiteral("qrc:/images/defaultCover.png"));
         auto coverUrl = getCoverUrlPathForComicHash(item->data(Hash).toString());
         const auto revision = coverRevisions.value(item->data(Id).toULongLong());
         if (revision > 0)
@@ -521,7 +527,7 @@ QStringList ComicModel::getPaths(const QString &_source)
     QList<ComicItem *>::ConstIterator itr;
     for (itr = _data.constBegin(); itr != _data.constEnd(); itr++) {
         QString hash = (*itr)->data(ComicModel::Hash).toString();
-        paths << LibraryPaths::coverPath(_source, hash);
+        paths << ((*itr)->data(Id).toULongLong() == 0 ? QStringLiteral(":/images/defaultCover.png") : LibraryPaths::coverPath(_source, hash));
     }
 
     return paths;
@@ -577,11 +583,31 @@ QList<ComicItem *> ComicModel::createLabelModelData(unsigned long long parentLab
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT " COMIC_MODEL_QUERY_FIELDS " "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
-                            "WHERE cl.label_id = :parentLabelId "
-                            "ORDER BY cl.ordering");
+        selectQuery.prepare("SELECT "
+                            "COALESCE(ci.number, e.number) AS number, "
+                            "COALESCE(ci.title, e.title) AS title, "
+                            "CASE WHEN c.id IS NULL THEN '[MISSING]' ELSE c.fileName END AS fileName, "
+                            "COALESCE(ci.numPages, 0) AS numPages, "
+                            "COALESCE(c.id, 0) AS id, "
+                            "CASE WHEN c.id IS NULL THEN e.id ELSE c.parentId END AS parentId, "
+                            "COALESCE(c.path, '') AS path, "
+                            "COALESCE(ci.hash, e.hash, '') AS hash, "
+                            "COALESCE(ci.read, 0) AS read, "
+                            "COALESCE(ci.currentPage, 0) AS currentPage, "
+                            "COALESCE(ci.rating, 0) AS rating, "
+                            "COALESCE(ci.hasBeenOpened, 0) AS hasBeenOpened, "
+                            "COALESCE(ci.date, e.date, '') AS date, "
+                            "COALESCE(ci.added, 0) AS added, "
+                            "COALESCE(ci.type, 0) AS type, "
+                            "COALESCE(ci.lastTimeOpened, 0) AS lastTimeOpened, "
+                            "COALESCE(ci.series, e.series, '') AS series, "
+                            "COALESCE(ci.volume, e.volume, '') AS volume, "
+                            "COALESCE(ci.storyArc, e.story_arc, '') AS storyArc "
+                            "FROM label_entry e "
+                            "LEFT JOIN comic c ON c.id = e.comic_id "
+                            "LEFT JOIN comic_info ci ON c.comicInfoId = ci.id "
+                            "WHERE e.label_id = :parentLabelId "
+                            "ORDER BY e.ordering");
         selectQuery.bindValue(":parentLabelId", parentLabel);
         selectQuery.exec();
         modelData = createModelDataForList(selectQuery);
@@ -968,6 +994,7 @@ ComicDB ComicModel::_getComic(const QModelIndex &mi)
     const auto *item = _data.at(mi.row());
     if (item->data(ComicModel::Id).toULongLong() == 0) {
         c.id = 0;
+        c.info.id = 0;
         c.parentId = item->data(ComicModel::Parent_Id).toULongLong();
         c.name = item->data(ComicModel::FileName).toString();
         c.path = item->data(ComicModel::Path).toString();
@@ -1008,7 +1035,9 @@ QVector<YACReaderComicReadStatus> ComicModel::getReadList()
     int numComics = _data.count();
     QVector<YACReaderComicReadStatus> readList(numComics);
     for (int i = 0; i < numComics; i++) {
-        if (_data.value(i)->data(ComicModel::ReadColumn).toBool())
+        if (_data.value(i)->data(ComicModel::Id).toULongLong() == 0)
+            readList[i] = YACReader::Unread;
+        else if (_data.value(i)->data(ComicModel::ReadColumn).toBool())
             readList[i] = YACReader::Read;
         else if (_data.value(i)->data(ComicModel::CurrentPage).toInt() == _data.value(i)->data(ComicModel::NumPages).toInt())
             readList[i] = YACReader::Read;
@@ -1035,6 +1064,10 @@ QList<ComicDB> ComicModel::getAllComics()
 
         int numComics = _data.count();
         for (int i = 0; i < numComics; i++) {
+            if (_data.value(i)->data(ComicModel::Id).toULongLong() == 0) {
+                comics.append(_getComic(index(i, 0)));
+                continue;
+            }
             bool found;
             comics.append(DBHelper::loadComic(_data.value(i)->data(ComicModel::Id).toULongLong(), db, found));
         }

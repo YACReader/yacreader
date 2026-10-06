@@ -2,6 +2,7 @@
 
 #include "comic_db.h"
 #include "db_helper.h"
+#include "missing_comic_server_helper.h"
 
 #include <QUrl>
 
@@ -20,7 +21,7 @@ void ComicDownloadInfoControllerV2::service(HttpRequest &request, HttpResponse &
     qulonglong libraryId = pathElements.at(3).toLongLong();
     qulonglong comicId = pathElements.at(5).toULongLong();
 
-    ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
+    ComicDB comic = MissingComicServerHelper::resolve(libraryId, comicId);
 
     if (!comic.info.existOnDb) {
         response.setStatus(404, "Not Found");

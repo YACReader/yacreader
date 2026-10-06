@@ -13,6 +13,8 @@ add_library(server STATIC
     yacreader_http_session_store.cpp
     yacreader_server_data_helper.h
     yacreader_server_data_helper.cpp
+    missing_comic_server_helper.h
+    missing_comic_server_helper.cpp
     controllers/versioncontroller.h
     controllers/versioncontroller.cpp
     controllers/v2/comiccontroller_v2.h
@@ -65,6 +67,11 @@ add_library(server STATIC
     controllers/v2/itemupdatecontroller_v2.cpp
     controllers/webui/webuicontroller.h
     controllers/webui/webuicontroller.cpp
+)
+qt_add_resources(server "missing_comic_cover"
+    PREFIX "/"
+    BASE "${PROJECT_SOURCE_DIR}"
+    FILES "${PROJECT_SOURCE_DIR}/images/defaultCover.png"
 )
 target_include_directories(server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
