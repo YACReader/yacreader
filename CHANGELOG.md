@@ -2,6 +2,21 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.4.0
+
+### YACReader
+* Avoid duplicated images in double page mode after a layout adjustment.
+* New setting to draw a fold shadow in the double page mode.
+
+### YACReaderLibrary
+* Reload the views only when a remote client changes the library that is open, and only after a sync that changed something.
+
+### Server
+* New API to change comic and folder fields from remote clients and webui. You'll be able to set comics and folders as read/unread, completed and theirs types.
+
+### WebUI
+* Add actions for comics and folders: set as read/unread, set as completed/uncompleted, set the type, and remove comics from Continue reading. Open them with a right click or a long press on a cover, or with the menu next to the comic or folder title.
+
 ## 10.3.2
 
 ### YACReader

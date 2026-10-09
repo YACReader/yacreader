@@ -6,8 +6,10 @@
 
 #include <QApplication>
 #include <QByteArray>
+#include <QColor>
 #include <QImage>
 #include <QList>
+#include <QPainter>
 #include <QPixmap>
 
 #include <algorithm>
@@ -466,7 +468,7 @@ QPixmap *Render::getCurrentPage()
     return page;
 }
 
-QPixmap *Render::getCurrentDoublePage()
+QPixmap *Render::getCurrentDoublePage(qreal *seamRatio, Qt::Orientation *seamOrientation)
 {
     if (currentPageIsDoublePage()) {
         QPoint leftpage(0, 0);
@@ -510,13 +512,21 @@ QPixmap *Render::getCurrentDoublePage()
         QPainter painter(page);
         painter.drawImage(QRect(leftpage, leftsize), *buffer[currentPageBufferedIndex]);
         painter.drawImage(QRect(rightpage, rightsize), *buffer[currentPageBufferedIndex + 1]);
+        const bool verticalSeam = imageRotation == 0 || imageRotation == 180;
+        if (seamRatio != nullptr) {
+            const int seamPosition = verticalSeam ? qMax(leftpage.x(), rightpage.x()) : qMax(leftpage.y(), rightpage.y());
+            *seamRatio = static_cast<qreal>(seamPosition) / (verticalSeam ? totalWidth : totalHeight);
+        }
+        if (seamOrientation != nullptr) {
+            *seamOrientation = verticalSeam ? Qt::Vertical : Qt::Horizontal;
+        }
         return page;
     } else {
         return nullptr;
     }
 }
 
-QPixmap *Render::getCurrentDoubleMangaPage()
+QPixmap *Render::getCurrentDoubleMangaPage(qreal *seamRatio, Qt::Orientation *seamOrientation)
 {
     if (currentPageIsDoublePage()) {
         QPoint leftpage(0, 0);
@@ -560,6 +570,14 @@ QPixmap *Render::getCurrentDoubleMangaPage()
         QPainter painter(page);
         painter.drawImage(QRect(rightpage, rightsize), *buffer[currentPageBufferedIndex]);
         painter.drawImage(QRect(leftpage, leftsize), *buffer[currentPageBufferedIndex + 1]);
+        const bool verticalSeam = imageRotation == 0 || imageRotation == 180;
+        if (seamRatio != nullptr) {
+            const int seamPosition = verticalSeam ? qMax(leftpage.x(), rightpage.x()) : qMax(leftpage.y(), rightpage.y());
+            *seamRatio = static_cast<qreal>(seamPosition) / (verticalSeam ? totalWidth : totalHeight);
+        }
+        if (seamOrientation != nullptr) {
+            *seamOrientation = verticalSeam ? Qt::Vertical : Qt::Horizontal;
+        }
         return page;
     } else {
         return nullptr;
@@ -580,6 +598,11 @@ const QImage *Render::bufferedImage(int absolutePageIndex) const
 bool Render::currentPageIsDoublePage()
 {
     if (currentIndex == 0 && Configuration::getConfiguration().getSettings()->value(COVER_IS_SP, true).toBool()) {
+        return false;
+    }
+    if (doublePageHistoryTracksCurrentIndex() && doublePageViewHistoryPosition + 1 < doublePageViewHistory.size() &&
+        currentIndex + 1 >= doublePageViewHistory.at(doublePageViewHistoryPosition + 1)) {
+        // Keep the second page out of the next view already recorded in history.
         return false;
     }
     if (buffer[currentPageBufferedIndex]->isNull() || buffer[currentPageBufferedIndex + 1]->isNull()) {

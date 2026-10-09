@@ -519,7 +519,7 @@
 <context>
     <name>DBHelper</name>
     <message>
-        <location filename="db_helper.cpp" line="1442"/>
+        <location filename="db_helper.cpp" line="1451"/>
         <source>The folder entry could not be found in the library database.</source>
         <translation>De mapvermelding is niet gevonden in de database van de bibliotheek.</translation>
     </message>
@@ -809,32 +809,32 @@
         <translation type="obsolete">Onlangs toegevoegd</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="855"/>
+        <location filename="grid_comics_view.cpp" line="853"/>
         <source>Manga</source>
         <translation>Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="858"/>
+        <location filename="grid_comics_view.cpp" line="856"/>
         <source>Western manga</source>
         <translation>Westerse manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="861"/>
+        <location filename="grid_comics_view.cpp" line="859"/>
         <source>Web comic</source>
         <translation>Webcomic</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="864"/>
+        <location filename="grid_comics_view.cpp" line="862"/>
         <source>Yonkoma</source>
         <translation>Yonkoma</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="868"/>
+        <location filename="grid_comics_view.cpp" line="866"/>
         <source>Comic</source>
         <translation>Grappig</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="872"/>
+        <location filename="grid_comics_view.cpp" line="870"/>
         <source>Unknown</source>
         <translation>Onbekend</translation>
     </message>
@@ -842,22 +842,22 @@
 <context>
     <name>HelpAboutDialog</name>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="27"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="28"/>
         <source>Help</source>
         <translation>Hulp</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="30"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="31"/>
         <source>System info</source>
         <translation>Systeeminformatie</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="35"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
         <translation>Wijzigingslogboek</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="24"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
         <source>About</source>
         <translation>Over</translation>
     </message>
@@ -1074,7 +1074,7 @@
         <translation>Bibliotheek niet beschikbaar </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="238"/>
+        <location filename="library_window.cpp" line="239"/>
         <source>YACReader Library</source>
         <translation>YACReader Bibliotheek</translation>
     </message>
@@ -1195,42 +1195,42 @@
         <translation>Er is een probleem opgetreden bij het verwijderen van de geselecteerde mappen. Controleer de schrijfrechten en zorg ervoor dat geen toepassingen deze mappen of bestanden daarin gebruiken.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="734"/>
+        <location filename="library_window.cpp" line="746"/>
         <source>Rename or organize files</source>
         <translation>Bestanden hernoemen of ordenen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="756"/>
+        <location filename="library_window.cpp" line="768"/>
         <source>Set the type of the selected comics</source>
         <translation>Het type van de geselecteerde strips instellen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="775"/>
+        <location filename="library_window.cpp" line="787"/>
         <source>Search filters</source>
         <translation>Zoekfilters</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="785"/>
+        <location filename="library_window.cpp" line="797"/>
         <source>Unread</source>
         <translation>Ongelezen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="787"/>
+        <location filename="library_window.cpp" line="799"/>
         <source>In progress</source>
         <translation>Bezig</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="789"/>
+        <location filename="library_window.cpp" line="801"/>
         <source>Highly rated</source>
         <translation>Hoog gewaardeerd</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="791"/>
+        <location filename="library_window.cpp" line="803"/>
         <source>Recently added</source>
         <translation>Onlangs toegevoegd</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="798"/>
+        <location filename="library_window.cpp" line="810"/>
         <source>Search syntax…</source>
         <translation>Zoeksyntaxis…</translation>
     </message>
@@ -1255,12 +1255,12 @@
         <translation>Als u zeker weet dat er geen ander herstel bezig is, kan de vergrendeling worden verwijderd. Vergrendeling verwijderen en doorgaan?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="620"/>
+        <location filename="library_window.cpp" line="632"/>
         <source>Package operation failed</source>
         <translation>Pakketbewerking mislukt</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="620"/>
+        <location filename="library_window.cpp" line="632"/>
         <source>The covers package operation could not be completed.</source>
         <translation>De bewerking van het omslagpakket kon niet worden voltooid.</translation>
     </message>
@@ -1496,7 +1496,7 @@ Je kunt een back-up herstellen via het menu Bibliotheek of de bibliotheek opnieu
         <translation>Metagegevens en back-ups verwijderen en wissen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="564"/>
+        <location filename="library_window.cpp" line="576"/>
         <source>Library info</source>
         <translation>Bibliotheekinformatie</translation>
     </message>

@@ -1,6 +1,10 @@
 # YACReader - Comic Viewer
 
 qt_add_executable(YACReader WIN32
+    book_fold_shadow.h
+    book_fold_shadow.cpp
+    comic_page_label.h
+    comic_page_label.cpp
     configuration.h
     configuration.cpp
     goto_dialog.h

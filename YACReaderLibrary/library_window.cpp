@@ -1281,8 +1281,13 @@ QModelIndexList LibraryWindow::getSelectedComics()
     return selection;
 }
 
-void LibraryWindow::updateViewsOnClientSync()
+void LibraryWindow::updateViewsOnLibraryContentChanged(const QUuid &libraryId)
 {
+    if (libraryId != libraries.getUuid(selectedLibrary->currentText())) {
+        return;
+    }
+
+    foldersModel->reload();
     comicsModel->reload();
     contentViewsManager->updateCurrentComicView();
     navigationController->reloadRootContinueReading();

@@ -519,7 +519,7 @@
 <context>
     <name>DBHelper</name>
     <message>
-        <location filename="db_helper.cpp" line="1442"/>
+        <location filename="db_helper.cpp" line="1451"/>
         <source>The folder entry could not be found in the library database.</source>
         <translation>A entrada da pasta não foi encontrada no banco de dados da biblioteca.</translation>
     </message>
@@ -809,32 +809,32 @@
         <translation type="obsolete">Adicionados recentemente</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="855"/>
+        <location filename="grid_comics_view.cpp" line="853"/>
         <source>Manga</source>
         <translation>Mangá</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="858"/>
+        <location filename="grid_comics_view.cpp" line="856"/>
         <source>Western manga</source>
         <translation>Mangá ocidental</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="861"/>
+        <location filename="grid_comics_view.cpp" line="859"/>
         <source>Web comic</source>
         <translation>Quadrinho da web</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="864"/>
+        <location filename="grid_comics_view.cpp" line="862"/>
         <source>Yonkoma</source>
         <translation>Yonkoma</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="868"/>
+        <location filename="grid_comics_view.cpp" line="866"/>
         <source>Comic</source>
         <translation>Quadrinhos</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="872"/>
+        <location filename="grid_comics_view.cpp" line="870"/>
         <source>Unknown</source>
         <translation>Desconhecido</translation>
     </message>
@@ -842,22 +842,22 @@
 <context>
     <name>HelpAboutDialog</name>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="24"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
         <source>About</source>
         <translation>Sobre</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="27"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="28"/>
         <source>Help</source>
         <translation>Ajuda</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="30"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="31"/>
         <source>System info</source>
         <translation>Informações do sistema</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="35"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
         <translation>Registro de alterações</translation>
     </message>
@@ -1035,7 +1035,7 @@
         <translation>Você deseja remover </translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="238"/>
+        <location filename="library_window.cpp" line="239"/>
         <source>YACReader Library</source>
         <translation>Biblioteca YACReader</translation>
     </message>
@@ -1161,42 +1161,42 @@
         <translation>Ocorreu um problema ao tentar excluir as pastas selecionadas. Por favor, verifique as permissões de gravação e certifique-se de que nenhum aplicativo esteja usando essas pastas ou qualquer um dos arquivos contidos.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="734"/>
+        <location filename="library_window.cpp" line="746"/>
         <source>Rename or organize files</source>
         <translation>Renomear ou organizar arquivos</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="756"/>
+        <location filename="library_window.cpp" line="768"/>
         <source>Set the type of the selected comics</source>
         <translation>Definir o tipo dos quadrinhos selecionados</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="775"/>
+        <location filename="library_window.cpp" line="787"/>
         <source>Search filters</source>
         <translation>Filtros de pesquisa</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="785"/>
+        <location filename="library_window.cpp" line="797"/>
         <source>Unread</source>
         <translation>Não lidos</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="787"/>
+        <location filename="library_window.cpp" line="799"/>
         <source>In progress</source>
         <translation>Em andamento</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="789"/>
+        <location filename="library_window.cpp" line="801"/>
         <source>Highly rated</source>
         <translation>Bem avaliados</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="791"/>
+        <location filename="library_window.cpp" line="803"/>
         <source>Recently added</source>
         <translation>Adicionados recentemente</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="798"/>
+        <location filename="library_window.cpp" line="810"/>
         <source>Search syntax…</source>
         <translation>Sintaxe de pesquisa…</translation>
     </message>
@@ -1221,12 +1221,12 @@
         <translation>Se tem certeza de que nenhuma outra reparação está em execução, o bloqueio pode ser removido. Remover o bloqueio e continuar?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="620"/>
+        <location filename="library_window.cpp" line="632"/>
         <source>Package operation failed</source>
         <translation>Falha na operação de pacote</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="620"/>
+        <location filename="library_window.cpp" line="632"/>
         <source>The covers package operation could not be completed.</source>
         <translation>Não foi possível concluir a operação com o pacote de capas.</translation>
     </message>
@@ -1476,7 +1476,7 @@ Pode restaurar uma cópia de segurança no menu Biblioteca ou recriar a bibliote
         <translation type="vanished">Remover e excluir metadados</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="564"/>
+        <location filename="library_window.cpp" line="576"/>
         <source>Library info</source>
         <translation>Informações da biblioteca</translation>
     </message>

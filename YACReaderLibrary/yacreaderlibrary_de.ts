@@ -519,7 +519,7 @@
 <context>
     <name>DBHelper</name>
     <message>
-        <location filename="db_helper.cpp" line="1442"/>
+        <location filename="db_helper.cpp" line="1451"/>
         <source>The folder entry could not be found in the library database.</source>
         <translation>Der Ordnereintrag wurde in der Datenbank der Bibliothek nicht gefunden.</translation>
     </message>
@@ -809,32 +809,32 @@
         <translation type="obsolete">Kürzlich hinzugefügt</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="855"/>
+        <location filename="grid_comics_view.cpp" line="853"/>
         <source>Manga</source>
         <translation>Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="858"/>
+        <location filename="grid_comics_view.cpp" line="856"/>
         <source>Western manga</source>
         <translation>Westlicher Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="861"/>
+        <location filename="grid_comics_view.cpp" line="859"/>
         <source>Web comic</source>
         <translation>Webcomic</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="864"/>
+        <location filename="grid_comics_view.cpp" line="862"/>
         <source>Yonkoma</source>
         <translation>Yonkoma</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="868"/>
+        <location filename="grid_comics_view.cpp" line="866"/>
         <source>Comic</source>
         <translation>Comic</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="872"/>
+        <location filename="grid_comics_view.cpp" line="870"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
@@ -842,22 +842,22 @@
 <context>
     <name>HelpAboutDialog</name>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="27"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="28"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="30"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="31"/>
         <source>System info</source>
         <translation>Systeminformationen</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="35"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
         <translation>Änderungsprotokoll</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/help_about_dialog.cpp" line="24"/>
+        <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
         <source>About</source>
         <translation>Über</translation>
     </message>
@@ -1079,7 +1079,7 @@
         <translation>Es gab ein Problem beim Löschen der ausgewählten Comics. Überprüfen Sie bitte die Schreibberechtigung für die ausgewählten Dateien oder Ordner.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="238"/>
+        <location filename="library_window.cpp" line="239"/>
         <source>YACReader Library</source>
         <translation>YACReader Bibliothek</translation>
     </message>
@@ -1200,42 +1200,42 @@
         <translation>Beim Löschen des ausgewählten Ordners ist ein Problem aufgetreten. Bitte überprüfen Sie die Schreibrechte und stellen Sie sicher, dass keine Anwendung diese Ordner oder die darin enthaltenen Dateien verwendet.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="734"/>
+        <location filename="library_window.cpp" line="746"/>
         <source>Rename or organize files</source>
         <translation>Dateien umbenennen oder organisieren</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="756"/>
+        <location filename="library_window.cpp" line="768"/>
         <source>Set the type of the selected comics</source>
         <translation>Typ der ausgewählten Comics festlegen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="775"/>
+        <location filename="library_window.cpp" line="787"/>
         <source>Search filters</source>
         <translation>Suchfilter</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="785"/>
+        <location filename="library_window.cpp" line="797"/>
         <source>Unread</source>
         <translation>Ungelesen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="787"/>
+        <location filename="library_window.cpp" line="799"/>
         <source>In progress</source>
         <translation>In Bearbeitung</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="789"/>
+        <location filename="library_window.cpp" line="801"/>
         <source>Highly rated</source>
         <translation>Hoch bewertet</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="791"/>
+        <location filename="library_window.cpp" line="803"/>
         <source>Recently added</source>
         <translation>Kürzlich hinzugefügt</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="798"/>
+        <location filename="library_window.cpp" line="810"/>
         <source>Search syntax…</source>
         <translation>Suchsyntax…</translation>
     </message>
@@ -1260,12 +1260,12 @@
         <translation>Wenn Sie sicher sind, dass keine andere Reparatur läuft, kann die Sperre entfernt werden. Sperre entfernen und fortfahren?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="620"/>
+        <location filename="library_window.cpp" line="632"/>
         <source>Package operation failed</source>
         <translation>Paketvorgang fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="620"/>
+        <location filename="library_window.cpp" line="632"/>
         <source>The covers package operation could not be completed.</source>
         <translation>Der Vorgang mit dem Cover-Paket konnte nicht abgeschlossen werden.</translation>
     </message>
@@ -1501,7 +1501,7 @@ Sie können über das Bibliotheksmenü eine Sicherung wiederherstellen oder die 
         <translation>Metadaten und Sicherungen entfernen und löschen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="564"/>
+        <location filename="library_window.cpp" line="576"/>
         <source>Library info</source>
         <translation>Informationen zur Bibliothek</translation>
     </message>

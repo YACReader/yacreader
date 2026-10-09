@@ -6,7 +6,9 @@
 #include "httprequesthandler.h"
 #include "httpresponse.h"
 
+#include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QUuid>
 
 class SearchController : public stefanfrings::HttpRequestHandler
 {
@@ -19,8 +21,8 @@ public:
 
 private:
     void serviceSearch(int libraryId, const QString &query, stefanfrings::HttpResponse &response);
-    void getFolders(int libraryId, QSqlQuery &sqlQuery, QJsonArray &items);
-    void getComics(int libraryId, QSqlQuery &sqlQuery, QJsonArray &items);
+    void getFolders(int libraryId, const QUuid &libraryUuid, QSqlQuery &sqlQuery, QJsonArray &items);
+    void getComics(int libraryId, const QUuid &libraryUuid, QSqlDatabase &db, QSqlQuery &sqlQuery, QJsonArray &items);
 };
 
 #endif // SEARCHCONTROLLER_H

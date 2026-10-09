@@ -1,8 +1,10 @@
 
 #include "searchcontroller_v2.h"
 
+#include "comic_db.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "folder.h"
 #include "search_query.h"
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
@@ -35,6 +37,7 @@ void SearchController::serviceSearch(int libraryId, const QString &query, stefan
 
     // TODO replace + "/yacreaderlibrary" concatenations with getDBPath
     QString libraryDBPath = DBHelper::getLibraries().getDBPath(libraryId);
+    auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(libraryDBPath);
@@ -42,14 +45,14 @@ void SearchController::serviceSearch(int libraryId, const QString &query, stefan
         // folders
         try {
             auto sqlQuery = foldersSearchQuery(db, query);
-            getFolders(libraryId, sqlQuery, results);
+            getFolders(libraryId, libraryUuid, sqlQuery, results);
         } catch (const std::exception &e) {
         }
 
         // comics
         try {
             auto sqlQuery = comicsSearchQuery(db, query);
-            getComics(libraryId, sqlQuery, results);
+            getComics(libraryId, libraryUuid, db, sqlQuery, results);
         } catch (const std::exception &e) {
         }
 
@@ -62,55 +65,35 @@ void SearchController::serviceSearch(int libraryId, const QString &query, stefan
     response.write(output.toJson(QJsonDocument::Compact));
 }
 
-void SearchController::getFolders(int libraryId, QSqlQuery &sqlQuery, QJsonArray &items)
+// The results use the same JSON as the folder content, so the clients get the same fields (parent_id, path, etc.)
+void SearchController::getFolders(int libraryId, const QUuid &libraryUuid, QSqlQuery &sqlQuery, QJsonArray &items)
 {
-    while (sqlQuery.next()) {
-        QJsonObject folder;
+    // readFolderFromQuery reads the next row, knownId is false when there are no more rows
+    while (true) {
+        Folder folder;
+        DBHelper::readFolderFromQuery(folder, sqlQuery);
+        if (!folder.knownId) {
+            break;
+        }
 
-        folder["type"] = "folder";
-        folder["id"] = sqlQuery.value("id").toString();
-        folder["library_id"] = QString::number(libraryId);
-        folder["folder_name"] = sqlQuery.value("name").toString();
-        folder["num_children"] = sqlQuery.value("numChildren").toInt();
-        folder["first_comic_hash"] = sqlQuery.value("firstChildHash").toString();
-        // 9.13
-        folder["finished"] = sqlQuery.value("finished").toBool();
-        folder["completed"] = sqlQuery.value("completed").toBool();
-        folder["custom_image"] = sqlQuery.value("customImage").toString();
-        folder["file_type"] = sqlQuery.value("type").toInt();
-        folder["added"] = sqlQuery.value("added").toLongLong();
-        folder["updated"] = sqlQuery.value("updated").toLongLong();
-
-        items.append(folder);
+        items.append(YACReaderServerDataHelper::folderToJSON(libraryId, libraryUuid, folder));
     }
 }
 
-void SearchController::getComics(int libraryId, QSqlQuery &sqlQuery, QJsonArray &items)
+void SearchController::getComics(int libraryId, const QUuid &libraryUuid, QSqlDatabase &db, QSqlQuery &sqlQuery, QJsonArray &items)
 {
+    // The search query already contains the comic fields; load only the metadata, like in the folder content.
     while (sqlQuery.next()) {
-        QJsonObject json;
+        ComicDB comic;
+        comic.id = sqlQuery.value("id").toULongLong();
+        comic.parentId = sqlQuery.value("parentId").toULongLong();
+        comic.name = sqlQuery.value("fileName").toString();
+        comic.path = sqlQuery.value("path").toString();
+        comic.info = DBHelper::loadComicInfo(sqlQuery.value("hash").toString(), db);
+        if (!comic.info.existOnDb) {
+            continue;
+        }
 
-        json["type"] = "comic";
-        json["id"] = sqlQuery.value("id").toString();
-        json["library_id"] = QString::number(libraryId);
-        json["file_name"] = sqlQuery.value("fileName").toString();
-        auto hash = sqlQuery.value("hash").toString();
-        json["file_size"] = hash.right(hash.length() - 40);
-        json["hash"] = hash;
-        json["current_page"] = sqlQuery.value("currentPage").toInt();
-        json["num_pages"] = sqlQuery.value("numPages").toInt();
-        json["read"] = sqlQuery.value("read").toBool();
-        json["cover_size_ratio"] = sqlQuery.value("coverSizeRatio").toFloat();
-        json["title"] = sqlQuery.value("title").toString();
-        auto number = sqlQuery.value("number");
-        json["number"] = number.toInt();
-        variantToJson("universal_number", QMetaType::QString, number, json);
-        json["last_time_opened"] = sqlQuery.value("lastTimeOpened").toLongLong();
-        auto typeVariant = sqlQuery.value("type");
-        auto type = typeVariant.value<YACReader::FileType>();
-        json["manga"] = type == YACReader::FileType::Manga; // legacy, kept for compatibility with old clients
-        json["file_type"] = typeVariant.toInt(); // 9.13
-
-        items.append(json);
+        items.append(YACReaderServerDataHelper::comicToJSON(libraryId, libraryUuid, comic));
     }
 }

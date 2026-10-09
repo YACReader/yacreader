@@ -24,6 +24,7 @@
 #include <QTimer>
 #include <QWheelEvent>
 
+class ComicPageLabel;
 class ComicDB;
 class Comic;
 class MagnifyingGlass;
@@ -131,6 +132,9 @@ private:
     bool doublePage;
     bool doubleMangaPage;
     bool continuousScroll;
+    bool currentPageHasDoublePageSeam = false;
+    qreal doublePageSeamRatio = 0.5;
+    Qt::Orientation doublePageSeamOrientation = Qt::Vertical;
 
     int zoom;
 
@@ -156,7 +160,7 @@ private:
     bool drag;
 
     //! Widgets
-    QLabel *content;
+    ComicPageLabel *content;
     QLabel *messageLabel;
     ContinuousPageWidget *continuousWidget;
     ContinuousPageProvider *continuousPageProvider;

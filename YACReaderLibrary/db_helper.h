@@ -6,6 +6,7 @@ class QString;
 
 #include <QList>
 #include <QMap>
+#include <QUuid>
 #include <QVariantMap>
 
 class ComicDB;
@@ -75,11 +76,17 @@ public:
     static void updateChildrenInfo(QSqlDatabase &db);
     static void updateProgress(qulonglong libraryId, const ComicInfo &comicInfo);
     static void updateImageFilters(qulonglong libraryId, const ComicInfo &comicInfo);
+    // targeted updates, they only write the columns that change; unread matches ComicModel::setComicsRead(Unread)
+    static bool setComicRead(qulonglong comicId, bool read, QSqlDatabase &db);
+    static bool setComicType(qulonglong comicId, YACReader::FileType type, QSqlDatabase &db);
+    static bool setFolderFinished(qulonglong folderId, bool finished, QSqlDatabase &db);
+    static bool setFolderCompleted(qulonglong folderId, bool completed, QSqlDatabase &db);
     static void setComicAsReading(qulonglong libraryId, const ComicInfo &comicInfo);
     [[deprecated("Server v1")]] static void updateFromRemoteClient(qulonglong libraryId, const ComicInfo &comicInfo);
     static void updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatabase &db);
     static QMap<qulonglong, QList<ComicDB>> updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics, bool clientSendsHasBeenOpened, bool clientSendsImageFilters);
-    static void updateFromRemoteClientWithHash(const QList<ComicInfo> &comics);
+    // returns the libraries where at least one comic was updated
+    static QList<QUuid> updateFromRemoteClientWithHash(const QList<ComicInfo> &comics);
     static void renameLabel(qulonglong id, const QString &name, QSqlDatabase &db);
     static void renameList(qulonglong id, const QString &name, QSqlDatabase &db);
     static bool renameFolder(qulonglong id, const QString &name, const QString &oldPath, const QString &newPath, QSqlDatabase &db, QString *error = nullptr);
@@ -100,7 +107,7 @@ public:
     static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<Label> getLabels(qulonglong libraryId);
 
-    static void updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type);
+    static bool updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type);
     static void updateDBType(QSqlDatabase &db, YACReader::FileType type);
 
     // load
