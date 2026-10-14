@@ -117,14 +117,10 @@ public:
     ComicDB getComic(const QModelIndex &mi); //--> para la edición
     // ComicDB getComic(int row);
     QVector<YACReaderComicReadStatus> getReadList();
-    QVector<YACReaderComicReadStatus> setAllComicsRead(YACReaderComicReadStatus readStatus);
     QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
     QList<ComicDB> getAllComics();
     QModelIndex getIndexFromId(quint64 id);
     QList<QModelIndex> getIndexesFromIds(const QList<qulonglong> &comicIds);
-    // setcomicInfo(QModelIndex & mi); --> inserta en la base datos
-    // setComicInfoForAllComics(); --> inserta la información común a todos los cómics de una sola vez.
-    // setComicInfoForSelectedComis(QList<QModelIndex> list); -->inserta la información común para los comics seleccionados
     QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read);
     void setComicsType(QList<QModelIndex> list, FileType type);
     qint64 asignNumbers(QList<QModelIndex> list, int startingNumber);
@@ -204,7 +200,6 @@ private:
 signals:
     void isEmpty();
     void favoritesChanged(const QList<qulonglong> &comicIds);
-    void searchNumResults(int);
     void resortedIndexes(QList<int>);
     void newSelectedIndex(const QModelIndex &);
 };

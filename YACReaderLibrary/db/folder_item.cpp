@@ -82,12 +82,6 @@ void FolderItem::removeChild(int childIndex)
     childItems.removeAt(childIndex);
 }
 
-void FolderItem::clearChildren()
-{
-    qDeleteAll(childItems);
-    childItems.clear();
-}
-
 QList<FolderItem *> FolderItem::children()
 {
     return childItems;

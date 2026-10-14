@@ -78,8 +78,6 @@ public:
     void setCustomFolderCover(const QModelIndex &index, const QString &path);
     void resetFolderCover(const QModelIndex &index);
 
-    QStringList getSubfoldersNames(const QModelIndex &mi);
-
     Folder getRootFolder() const;
     Folder getFolder(const QModelIndex &mi) const;
     QModelIndex getIndexFromFolderId(qulonglong folderId, const QModelIndex &parent = QModelIndex());

@@ -796,8 +796,6 @@ void ComicModel::setModelData(QList<ComicItem *> *data, const QString &databaseP
 
     endResetModel();
 
-    emit searchNumResults(_data.length());
-
     delete data;
 }
 
@@ -975,12 +973,6 @@ QVector<YACReaderComicReadStatus> ComicModel::getReadList()
     }
     return readList;
 }
-// TODO untested, this method is no longer used
-QVector<YACReaderComicReadStatus> ComicModel::setAllComicsRead(YACReaderComicReadStatus read)
-{
-    return setComicsRead(persistentIndexList(), read);
-}
-
 QList<ComicDB> ComicModel::getAllComics()
 {
     QList<ComicDB> comics;

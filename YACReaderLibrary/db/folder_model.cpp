@@ -799,30 +799,6 @@ void FolderModel::resetFolderCover(const QModelIndex &index)
     emit dataChanged(index, index);
 }
 
-QStringList FolderModel::getSubfoldersNames(const QModelIndex &mi)
-{
-    QStringList result;
-    qulonglong id = 1;
-    if (mi.isValid()) {
-        auto item = static_cast<FolderItem *>(mi.internalPointer());
-        id = item->id;
-    }
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        db.transaction();
-
-        result = DBHelper::loadSubfoldersNames(id, db);
-
-        db.commit();
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
-
-    std::sort(result.begin(), result.end(), naturalSortLessThanCI);
-    return result;
-}
-
 Folder FolderModel::getRootFolder() const
 {
     if (this->rootItem == nullptr) {

@@ -69,7 +69,6 @@ public:
     void addChild(FolderItem *child, int childIndex);
     void removeChild(FolderItem *child);
     void removeChild(int childIndex);
-    void clearChildren();
     QList<FolderItem *> children();
 
 private:

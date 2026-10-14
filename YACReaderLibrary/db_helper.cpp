@@ -86,50 +86,6 @@ QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, 
     return list;
 }
 
-quint32 DBHelper::getNumChildrenFromFolder(qulonglong libraryId, qulonglong folderId)
-{
-    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    quint32 result = 0;
-    QString connectionName = "";
-
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
-
-        QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT count(*) FROM folder WHERE parentId = :parentId and id <> 1");
-        selectQuery.bindValue(":parentId", folderId);
-        selectQuery.exec();
-
-        result += selectQuery.record().value(0).toULongLong();
-
-        selectQuery.prepare("SELECT count(*) FROM comic c WHERE c.parentId = :parentId");
-        selectQuery.bindValue(":parentId", folderId);
-        selectQuery.exec();
-
-        result += selectQuery.record().value(0).toULongLong();
-        connectionName = db.connectionName();
-    }
-
-    QSqlDatabase::removeDatabase(connectionName);
-
-    return result;
-}
-
-qulonglong DBHelper::getParentFromComicFolderId(qulonglong libraryId, qulonglong id)
-{
-    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QString connectionName = "";
-    Folder f;
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
-
-        f = DBHelper::loadFolder(id, db);
-        connectionName = db.connectionName();
-    }
-
-    QSqlDatabase::removeDatabase(connectionName);
-    return f.parentId;
-}
 ComicDB DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
@@ -159,30 +115,6 @@ QList<ComicDB> DBHelper::getSiblings(qulonglong libraryId, qulonglong parentId)
 
     QSqlDatabase::removeDatabase(connectionName);
     return comics;
-}
-
-QString DBHelper::getFolderName(qulonglong libraryId, qulonglong id)
-{
-    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-
-    QString name = "";
-    QString connectionName = "";
-
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
-        QSqlQuery selectQuery(db); // TODO check
-        selectQuery.prepare("SELECT name FROM folder WHERE id = :id");
-        selectQuery.bindValue(":id", id);
-        selectQuery.exec();
-
-        if (selectQuery.next()) {
-            name = selectQuery.value(0).toString();
-        }
-        connectionName = db.connectionName();
-    }
-
-    QSqlDatabase::removeDatabase(connectionName);
-    return name;
 }
 
 Folder DBHelper::getFolder(qulonglong libraryId, qulonglong id)
@@ -235,12 +167,6 @@ Folder DBHelper::getFolder(qulonglong libraryId, qulonglong id)
     return folder;
 }
 
-QList<QString> DBHelper::getLibrariesNames()
-{
-    auto names = getLibraries().getNames();
-    std::sort(names.begin(), names.end(), naturalSortLessThanCI);
-    return names;
-}
 QString DBHelper::getLibraryName(int id)
 {
     return getLibraries().getName(id);
@@ -843,18 +769,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     QLOG_INFO() << updateComicInfo.lastError().databaseText();
     QLOG_INFO() << updateComicInfo.lastError().text();
     QLOG_INFO() << updateComicInfo.lastQuery();
-}
-
-void DBHelper::updateRead(ComicInfo *comicInfo, QSqlDatabase &db)
-{
-    QSqlQuery updateComicInfo(db);
-    updateComicInfo.prepare("UPDATE comic_info SET "
-                            "read = :read"
-                            " WHERE id = :id ");
-
-    updateComicInfo.bindValue(":read", comicInfo->read ? 1 : 0);
-    updateComicInfo.bindValue(":id", comicInfo->id);
-    updateComicInfo.exec();
 }
 
 void DBHelper::updateAdded(ComicInfo *comicInfo, QSqlDatabase &db)
@@ -2424,22 +2338,6 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     comicInfo.existOnDb = true;
 
     return comicInfo;
-}
-
-QList<QString> DBHelper::loadSubfoldersNames(qulonglong folderId, QSqlDatabase &db)
-{
-    QList<QString> result;
-    QSqlQuery selectQuery(db);
-    selectQuery.prepare("SELECT name FROM folder WHERE parentId = :parentId AND id <> 1"); // do not select the root folder
-    selectQuery.bindValue(":parentId", folderId);
-    selectQuery.exec();
-
-    int name = selectQuery.record().indexOf("name");
-
-    while (selectQuery.next()) {
-        result << selectQuery.value(name).toString();
-    }
-    return result;
 }
 
 bool DBHelper::isFavoriteComic(qulonglong id, QSqlDatabase &db)

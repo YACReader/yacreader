@@ -29,13 +29,9 @@ public:
     static QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId);
     static QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort);
     static QList<LibraryItem *> getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId);
-    static quint32 getNumChildrenFromFolder(qulonglong libraryId, qulonglong folderId);
-    static qulonglong getParentFromComicFolderId(qulonglong libraryId, qulonglong id);
     static ComicDB getComicInfo(qulonglong libraryId, qulonglong id);
     static QList<ComicDB> getSiblings(qulonglong libraryId, qulonglong parentId);
-    static QString getFolderName(qulonglong libraryId, qulonglong id);
     static Folder getFolder(qulonglong libraryId, qulonglong id);
-    static QList<QString> getLibrariesNames();
     static QString getLibraryName(int id);
     static QList<ComicDB> getLabelComics(qulonglong libraryId, qulonglong labelId);
     static QList<ComicDB> getFavorites(qulonglong libraryId);
@@ -68,7 +64,6 @@ public:
     static void update(qulonglong libraryId, ComicInfo &comicInfo);
     static void update(ComicDB *comics, QSqlDatabase &db);
     static void update(ComicInfo *comicInfo, QSqlDatabase &db);
-    static void updateRead(ComicInfo *comicInfo, QSqlDatabase &db);
     static void updateAdded(ComicInfo *comicInfo, QSqlDatabase &db);
     static void update(const Folder &folder, QSqlDatabase &db);
     static void propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db);
@@ -118,7 +113,6 @@ public:
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase &database);
     static ComicInfo loadComicInfo(QString hash, QSqlDatabase &db);
     static ComicInfo getComicInfoFromQuery(QSqlQuery &query, const QString &idKey = "id");
-    static QList<QString> loadSubfoldersNames(qulonglong folderId, QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
 
