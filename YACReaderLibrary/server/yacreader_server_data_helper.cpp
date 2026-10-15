@@ -186,12 +186,12 @@ QJsonObject YACReaderServerDataHelper::readingListToJSON(const qulonglong librar
     QJsonObject json;
 
     json["type"] = "reading_list";
-    json["id"] = QString::number(readingList.getId());
+    json["id"] = QString::number(readingList.id.value());
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
         json["library_uuid"] = libraryUuid.toString();
     }
-    json["reading_list_name"] = readingList.getName();
+    json["reading_list_name"] = readingList.name;
 
     // TODO
     // json["num_children"] = readingList.getNumChildren();
@@ -205,13 +205,13 @@ QJsonObject YACReaderServerDataHelper::labelToJSON(const qulonglong libraryId, c
     QJsonObject json;
 
     json["type"] = "label";
-    json["id"] = QString::number(label.getId());
+    json["id"] = QString::number(label.id.value());
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
         json["library_uuid"] = libraryUuid.toString();
     }
-    json["label_name"] = label.getName();
-    json["color_id"] = label.getColorID();
+    json["label_name"] = label.name;
+    json["color_id"] = label.ordering;
 
     // TODO
     // json["num_children"] = label.getNumChildren();

@@ -8,6 +8,7 @@
 #include "library_item.h"
 #include "qnaturalsorting.h"
 #include "reading_list.h"
+#include "table_projection.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 
@@ -341,24 +342,20 @@ QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
-        QSqlQuery selectQuery("SELECT * from reading_list WHERE parentId IS NULL ORDER BY name DESC", db);
+        QSqlQuery selectQuery("SELECT " + TableProjection::selectList("rl", ReadingList::columns()) +
+                                      " FROM reading_list rl WHERE rl.parentId IS NULL ORDER BY rl.name DESC",
+                              db);
 
         selectQuery.exec();
 
-        QSqlRecord record = selectQuery.record();
-
-        int name = record.indexOf("name");
-        int id = record.indexOf("id");
-        int ordering = record.indexOf("ordering");
-
         while (selectQuery.next()) {
-            ReadingList item(selectQuery.value(name).toString(), selectQuery.value(id).toLongLong(), selectQuery.value(ordering).toInt());
+            const auto item = ReadingList::fromRecord(selectQuery.record(), "rl");
 
             if (list.isEmpty()) {
                 list.append(item);
             } else {
                 int i = 0;
-                while (i < list.length() && naturalSortLessThanCI(list.at(i).getName(), item.getName()))
+                while (i < list.length() && naturalSortLessThanCI(list.at(i).name, item.name))
                     i++;
                 list.insert(i, item);
             }
@@ -1768,30 +1765,25 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
-        QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name", db); // TODO add some kind of
-        QSqlRecord record = selectQuery.record();
-
-        int name = record.indexOf("name");
-        int id = record.indexOf("id");
-        int ordering = record.indexOf("ordering");
+        QSqlQuery selectQuery("SELECT " + TableProjection::selectList("l", Label::columns()) +
+                                      " FROM label l ORDER BY l.ordering, l.name",
+                              db); // TODO add some kind of
 
         while (selectQuery.next()) {
-            Label item(selectQuery.value(name).toString(),
-                       selectQuery.value(id).toLongLong(),
-                       static_cast<YACReader::LabelColors>(selectQuery.value(ordering).toInt()));
+            const auto item = Label::fromRecord(selectQuery.record(), "l");
 
             if (labels.isEmpty()) {
                 labels << item;
             } else {
                 int i = 0;
 
-                while (i < labels.count() && (labels.at(i).getColorID() < item.getColorID()))
+                while (i < labels.count() && (labels.at(i).ordering < item.ordering))
                     i++;
 
                 if (i < labels.count()) {
-                    if (labels.at(i).getColorID() == item.getColorID()) // sort by name
+                    if (labels.at(i).ordering == item.ordering) // sort by name
                     {
-                        while (i < labels.count() && labels.at(i).getColorID() == item.getColorID() && naturalSortLessThanCI(labels.at(i).getName(), item.getName()))
+                        while (i < labels.count() && labels.at(i).ordering == item.ordering && naturalSortLessThanCI(labels.at(i).name, item.name))
                             i++;
                     }
                 }

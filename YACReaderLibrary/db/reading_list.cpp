@@ -1,41 +1,61 @@
 #include "reading_list.h"
 
-ReadingList::ReadingList(const QString &name, qulonglong id, int ordering)
-    : name(name), id(id), ordering(ordering)
+#include "table_projection.h"
+
+#include <QSqlQuery>
+#include <QSqlRecord>
+
+using TableProjection::value;
+
+const QStringList &ReadingList::columns()
 {
+    static const QStringList columns = { "parentId", "ordering", "name", "finished", "completed" };
+    return columns;
 }
 
-qulonglong ReadingList::getId() const
+ReadingList ReadingList::fromRecord(const QSqlRecord &record, const QString &alias)
 {
-    return id;
+    ReadingList list;
+    list.id = ReadingListId(value(record, alias, "id").toULongLong());
+    const auto parentId = value(record, alias, "parentId");
+    if (!parentId.isNull()) {
+        list.parentId = ReadingListId(parentId.toULongLong());
+    }
+    list.ordering = value(record, alias, "ordering").toInt();
+    list.name = value(record, alias, "name").toString();
+    list.finished = value(record, alias, "finished").toBool();
+    list.completed = value(record, alias, "completed").toBool();
+    return list;
 }
 
-QString ReadingList::getName() const
+void ReadingList::bindTo(QSqlQuery &query) const
 {
-    return name;
+    query.bindValue(":parentId", parentId ? QVariant(parentId->value()) : QVariant());
+    query.bindValue(":ordering", ordering);
+    query.bindValue(":name", name);
+    query.bindValue(":finished", finished);
+    query.bindValue(":completed", completed);
 }
 
-int ReadingList::getOrdering() const
+const QStringList &Label::columns()
 {
-    return ordering;
+    static const QStringList columns = { "name", "color", "ordering" };
+    return columns;
 }
 
-Label::Label(const QString &name, qulonglong id, YACReader::LabelColors colorid)
-    : name(name), id(id), colorid(colorid)
+Label Label::fromRecord(const QSqlRecord &record, const QString &alias)
 {
+    Label label;
+    label.id = LabelId(value(record, alias, "id").toULongLong());
+    label.name = value(record, alias, "name").toString();
+    label.color = value(record, alias, "color").toString();
+    label.ordering = value(record, alias, "ordering").toInt();
+    return label;
 }
 
-YACReader::LabelColors Label::getColorID() const
+void Label::bindTo(QSqlQuery &query) const
 {
-    return colorid;
-}
-
-QString Label::getName() const
-{
-    return name;
-}
-
-qulonglong Label::getId() const
-{
-    return id;
+    query.bindValue(":name", name);
+    query.bindValue(":color", color);
+    query.bindValue(":ordering", ordering);
 }
