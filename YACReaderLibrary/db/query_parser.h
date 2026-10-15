@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-#define SEARCH_FOLDERS_QUERY "SELECT DISTINCT f.* FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE "
+#define SEARCH_FOLDERS_FROM "FROM folder f LEFT JOIN comic c ON (f.id = c.parentId) INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE "
 #define SEARCH_COMICS_QUERY "SELECT ci.number,ci.title,c.fileName,ci.numPages,c.id,c.parentId,c.path,ci.hash,ci.read,ci.currentPage,ci.rating,ci.hasBeenOpened,ci.date,ci.added,ci.type,ci.lastTimeOpened,ci.series,ci.volume,ci.storyArc FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) LEFT JOIN folder f ON (f.id == c.parentId) WHERE "
 
 /**

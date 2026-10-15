@@ -17,7 +17,7 @@ void FolderMetadataControllerV2::service(stefanfrings::HttpRequest &request, ste
     qulonglong folderId = pathElements.at(5).toULongLong();
 
     auto folder = DBHelper::getFolder(libraryId, folderId);
-    if (!folder.knownId) {
+    if (!folder) {
         response.setStatus(404, "not found");
         response.write("404 not found", true);
         return;
@@ -25,7 +25,7 @@ void FolderMetadataControllerV2::service(stefanfrings::HttpRequest &request, ste
 
     auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
 
-    auto json = YACReaderServerDataHelper::folderToJSON(libraryId, libraryUuid, folder);
+    auto json = YACReaderServerDataHelper::folderToJSON(libraryId, libraryUuid, *folder);
 
     QJsonDocument output(json);
 

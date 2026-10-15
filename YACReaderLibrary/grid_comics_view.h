@@ -23,7 +23,7 @@ class YACReaderComicsSelectionHelper;
 class YACReaderComicInfoHelper;
 class GridContentModel;
 class FolderModel;
-class Folder;
+struct Folder;
 class ComicInfoObject;
 
 // values relative to visible cells

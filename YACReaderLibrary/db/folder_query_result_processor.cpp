@@ -1,6 +1,7 @@
 #include "folder_query_result_processor.h"
 
 #include "data_base_management.h"
+#include "db_helper.h"
 #include "folder_item.h"
 #include "folder_model.h"
 #include "search_query.h"
@@ -59,16 +60,12 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
     // add tree root node
     filteredItems->insert(parent->id, parent);
 
-    QSqlRecord record = sqlquery.record();
-
-    int parentIdIndex = record.indexOf("parentId");
-
-    while (sqlquery.next()) {
+    while (const auto folder = DBHelper::readFolderFromQuery(sqlquery)) {
         auto item = new FolderItem(QList<QVariant>()); // no need for data, we just need the ids of the folders in the search result
-        item->id = sqlquery.value(0).toULongLong();
+        item->id = folder->id.value();
 
         // id del padre
-        quint64 parentId = sqlquery.value(parentIdIndex).toULongLong();
+        quint64 parentId = folder->parentId.value();
 
         // se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
         if (!filteredItems->contains(item->id))

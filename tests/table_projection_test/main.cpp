@@ -1,5 +1,6 @@
 #include "comic_file.h"
 #include "data_base_management.h"
+#include "folder.h"
 #include "library_ids.h"
 #include "reading_list.h"
 #include "table_projection.h"
@@ -34,6 +35,9 @@ private slots:
     void readingListRoundTrip();
     void readingListUpdate();
     void labelRoundTrip();
+    void folderReadsNullColumns();
+    void folderRoundTrip();
+    void folderKeepsAStoredUnknownCount();
     void aliasesKeepJoinedTypesApart();
 
 private:
@@ -111,6 +115,7 @@ void TableProjectionTest::columnsMatchSchema_data()
     QTest::newRow("comic") << "comic" << ComicFile::columns() << QStringList();
     QTest::newRow("reading_list") << "reading_list" << ReadingList::columns() << QStringList { "manga" };
     QTest::newRow("label") << "label" << Label::columns() << QStringList();
+    QTest::newRow("folder") << "folder" << Folder::columns() << QStringList { "manga" };
 }
 
 void TableProjectionTest::columnsMatchSchema()
@@ -251,6 +256,75 @@ void TableProjectionTest::labelRoundTrip()
     QCOMPARE(read.name, QString("To read"));
     QCOMPARE(read.color, QString("green"));
     QCOMPARE(read.ordering, int(YACReader::YGreen));
+}
+
+void TableProjectionTest::folderReadsNullColumns()
+{
+    const auto folder = Folder::fromRecord(selectOne("folder", "f", Folder::columns(), 7), "f");
+    QCOMPARE(folder.id, FolderId(7));
+    QCOMPARE(folder.parentId, FolderId(1));
+    QCOMPARE(folder.name, QString("Series"));
+    QCOMPARE(folder.path, QString("/Series"));
+    QCOMPARE(folder.finished, false);
+    QCOMPARE(folder.completed, true);
+    QVERIFY(!folder.numChildren.has_value());
+    QVERIFY(folder.firstChildHash.isNull());
+    QVERIFY(folder.customImage.isNull());
+    QCOMPARE(folder.type, YACReader::FileType::Comic);
+    QCOMPARE(folder.added, 0);
+    QCOMPARE(folder.updated, 0);
+}
+
+void TableProjectionTest::folderRoundTrip()
+{
+    auto folder = Folder::fromRecord(selectOne("folder", "f", Folder::columns(), 7), "f");
+    folder.name = "Renamed";
+    folder.path = "/Renamed";
+    folder.finished = true;
+    folder.completed = false;
+    folder.numChildren = 3;
+    folder.firstChildHash = "hash-3";
+    folder.customImage = "cover.jpg";
+    folder.type = YACReader::FileType::Manga;
+    folder.added = 10;
+    folder.updated = 20;
+
+    QSqlQuery update(db);
+    QVERIFY(update.prepare("UPDATE folder SET " + TableProjection::assignments(Folder::columns()) + " WHERE id = :id"));
+    folder.bindTo(update);
+    update.bindValue(":id", folder.id.value());
+    QVERIFY2(update.exec(), qPrintable(update.lastError().text()));
+
+    const auto read = Folder::fromRecord(selectOne("folder", "f", Folder::columns(), 7), "f");
+    QCOMPARE(read.name, QString("Renamed"));
+    QCOMPARE(read.path, QString("/Renamed"));
+    QCOMPARE(read.finished, true);
+    QCOMPARE(read.completed, false);
+    QCOMPARE(read.numChildren, std::optional<qint32>(3));
+    QCOMPARE(read.firstChildHash, QString("hash-3"));
+    QCOMPARE(read.customImage, QString("cover.jpg"));
+    QCOMPARE(read.type, YACReader::FileType::Manga);
+    QCOMPARE(read.added, 10);
+    QCOMPARE(read.updated, 20);
+
+    folder.numChildren.reset();
+    folder.bindTo(update);
+    update.bindValue(":id", folder.id.value());
+    QVERIFY2(update.exec(), qPrintable(update.lastError().text()));
+
+    QSqlQuery q(db);
+    QVERIFY(q.exec("SELECT numChildren IS NULL FROM folder WHERE id = 7"));
+    QVERIFY(q.next());
+    QVERIFY(q.value(0).toBool());
+}
+
+void TableProjectionTest::folderKeepsAStoredUnknownCount()
+{
+    QSqlQuery q(db);
+    QVERIFY(q.exec("UPDATE folder SET numChildren = -1 WHERE id = 7"));
+
+    const auto folder = Folder::fromRecord(selectOne("folder", "f", Folder::columns(), 7), "f");
+    QCOMPARE(folder.numChildren, std::optional<qint32>(-1));
 }
 
 void TableProjectionTest::aliasesKeepJoinedTypesApart()

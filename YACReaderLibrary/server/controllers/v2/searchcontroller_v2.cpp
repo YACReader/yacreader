@@ -68,15 +68,8 @@ void SearchController::serviceSearch(int libraryId, const QString &query, stefan
 // The results use the same JSON as the folder content, so the clients get the same fields (parent_id, path, etc.)
 void SearchController::getFolders(int libraryId, const QUuid &libraryUuid, QSqlQuery &sqlQuery, QJsonArray &items)
 {
-    // readFolderFromQuery reads the next row, knownId is false when there are no more rows
-    while (true) {
-        Folder folder;
-        DBHelper::readFolderFromQuery(folder, sqlQuery);
-        if (!folder.knownId) {
-            break;
-        }
-
-        items.append(YACReaderServerDataHelper::folderToJSON(libraryId, libraryUuid, folder));
+    while (const auto folder = DBHelper::readFolderFromQuery(sqlQuery)) {
+        items.append(YACReaderServerDataHelper::folderToJSON(libraryId, libraryUuid, *folder));
     }
 }
 

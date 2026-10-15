@@ -292,7 +292,7 @@ void LibraryWindowMenus::showGridFoldersContextMenu(const QPoint &point, const F
     auto menu = new QMenu(window);
     connect(menu, &QMenu::aboutToHide, menu, &QObject::deleteLater);
 
-    const auto folderId = folder.id;
+    const auto folderId = folder.id.value();
     const auto libraryPath = libraryPathProvider();
     const auto &theme = themeProvider();
 

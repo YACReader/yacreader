@@ -35,7 +35,7 @@ void collectComicsRecursively(qulonglong libraryId, qulonglong folderId, QList<C
 
     const auto subfolders = DBHelper::getFolderSubfoldersFromLibrary(libraryId, folderId);
     for (const auto &folder : subfolders)
-        collectComicsRecursively(libraryId, folder.id, out);
+        collectComicsRecursively(libraryId, folder.id.value(), out);
 }
 
 QList<ComicEntry> buildEntries(const QList<ComicDB> &comics, const QString &libraryRoot)
@@ -130,7 +130,7 @@ void OrganizeFilesCoordinator::runOnFolder(OrganizeFiles::Mode mode, const QMode
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QList<ComicDB> comics;
-    collectComicsRecursively(library.id, folder.id, comics);
+    collectComicsRecursively(library.id, folder.id.value(), comics);
     QApplication::restoreOverrideCursor();
 
     if (comics.isEmpty()) {

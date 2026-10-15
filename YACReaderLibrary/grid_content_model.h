@@ -7,7 +7,7 @@
 
 class ComicModel;
 class FolderModel;
-class Folder;
+struct Folder;
 
 class GridContentModel : public QAbstractListModel
 {

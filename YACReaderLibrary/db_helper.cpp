@@ -120,49 +120,16 @@ QList<ComicDB> DBHelper::getSiblings(qulonglong libraryId, qulonglong parentId)
     return comics;
 }
 
-Folder DBHelper::getFolder(qulonglong libraryId, qulonglong id)
+std::optional<Folder> DBHelper::getFolder(qulonglong libraryId, qulonglong id)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
 
-    Folder folder;
+    std::optional<Folder> folder;
     QString connectionName = "";
 
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
-        QSqlQuery selectQuery(db); // TODO check
-        selectQuery.prepare("SELECT * FROM folder WHERE id = :id");
-        selectQuery.bindValue(":id", id);
-        selectQuery.exec();
-
-        auto record = selectQuery.record();
-
-        int name = record.indexOf("name");
-        int path = record.indexOf("path");
-        int finished = record.indexOf("finished");
-        int completed = record.indexOf("completed");
-        int id = record.indexOf("id");
-        int parentId = record.indexOf("parentId");
-        int numChildren = record.indexOf("numChildren");
-        int firstChildHash = record.indexOf("firstChildHash");
-        int customImage = record.indexOf("customImage");
-        int type = record.indexOf("type");
-        int added = record.indexOf("added");
-        int updated = record.indexOf("updated");
-
-        if (selectQuery.next()) {
-            folder = Folder(selectQuery.value(id).toULongLong(), selectQuery.value(parentId).toULongLong(), selectQuery.value(name).toString(), selectQuery.value(path).toString());
-
-            folder.finished = selectQuery.value(finished).toBool();
-            folder.completed = selectQuery.value(completed).toBool();
-            if (!selectQuery.value(numChildren).isNull() && selectQuery.value(numChildren).isValid()) {
-                folder.numChildren = selectQuery.value(numChildren).toInt();
-            }
-            folder.firstChildHash = selectQuery.value(firstChildHash).toString();
-            folder.customImage = selectQuery.value(customImage).toString();
-            folder.type = selectQuery.value(type).value<YACReader::FileType>();
-            folder.added = selectQuery.value(added).toLongLong();
-            folder.updated = selectQuery.value(updated).toLongLong();
-        }
+        folder = DBHelper::loadFolder(id, db);
         connectionName = db.connectionName();
     }
 
@@ -474,7 +441,7 @@ void DBHelper::removeFromDB(Folder *folder, QSqlDatabase &db)
 {
     QSqlQuery query(db);
     query.prepare("DELETE FROM folder WHERE id = :id");
-    query.bindValue(":id", folder->id);
+    query.bindValue(":id", folder->id.value());
     query.exec();
 }
 void DBHelper::removeFromDB(ComicDB *comic, QSqlDatabase &db)
@@ -698,60 +665,39 @@ void DBHelper::update(const Folder &folder, QSqlDatabase &db)
 {
     QSqlQuery updateFolderInfo(db);
 
-    updateFolderInfo.prepare("UPDATE folder SET "
-                             "parentId = :parentId, "
-                             "name = :name, "
-                             "path = :path, "
-                             "finished = :finished, "
-                             "completed = :completed, "
-                             "numChildren = :numChildren, "
-                             "firstChildHash = :firstChildHash, "
-                             "customImage = :customImage, "
-                             "type = :type, "
-                             "added = :added, "
-                             "updated = :updated "
-                             "WHERE id = :id");
+    updateFolderInfo.prepare("UPDATE folder SET " + TableProjection::assignments(Folder::columns()) + " WHERE id = :id");
 
-    updateFolderInfo.bindValue(":parentId", folder.parentId);
-    updateFolderInfo.bindValue(":name", folder.name);
-    updateFolderInfo.bindValue(":path", folder.path);
-    updateFolderInfo.bindValue(":finished", folder.finished ? 1 : 0);
-    updateFolderInfo.bindValue(":completed", folder.completed ? 1 : 0);
-    updateFolderInfo.bindValue(":numChildren", folder.numChildren);
-    updateFolderInfo.bindValue(":firstChildHash", folder.firstChildHash);
-    updateFolderInfo.bindValue(":customImage", folder.customImage);
-    updateFolderInfo.bindValue(":type", static_cast<int>(folder.type));
-    updateFolderInfo.bindValue(":added", folder.added);
-    updateFolderInfo.bindValue(":updated", folder.updated);
-    updateFolderInfo.bindValue(":id", folder.id);
+    folder.bindTo(updateFolderInfo);
+    updateFolderInfo.bindValue(":id", folder.id.value());
 
     updateFolderInfo.exec();
 }
 
 void DBHelper::propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db)
 {
-    auto currentParentId = folder.parentId;
-    auto currentId = folder.id;
+    auto currentParentId = folder.parentId.value();
+    auto currentId = folder.id.value();
     while (currentParentId != 1 && currentParentId != 0) { // currentParentId is 0 if `folder` is the root folder
-        auto f = loadFolder(currentParentId, db);
-        currentParentId = f.parentId;
-        currentId = f.id;
+        const auto f = loadFolder(currentParentId, db);
+        currentId = currentParentId;
+        currentParentId = f ? f->parentId.value() : 0;
     }
 
-    if (currentId != folder.id) {
+    if (currentId != folder.id.value()) {
         updateChildrenInfo(currentId, db);
     }
 }
 
 Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
 {
-    auto folder = loadFolder(folderId, db);
+    auto folder = loadFolder(folderId, db).value_or(Folder());
+    folder.id = FolderId(folderId);
     const auto subfolders = DBHelper::getFoldersFromParent(folderId, db, true);
     const auto comics = DBHelper::getComicsFromParent(folderId, db, true);
 
     QList<Folder> updatedSubfolders;
     for (const auto &sf : subfolders) {
-        updatedSubfolders.append(updateChildrenInfo(sf.id, db));
+        updatedSubfolders.append(updateChildrenInfo(sf.id.value(), db));
     }
 
     QString coverHash = "";
@@ -780,7 +726,7 @@ Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
                              "numChildren = :numChildren, "
                              "firstChildHash = :firstChildHash "
                              "WHERE id = :id ");
-    updateFolderInfo.bindValue(":numChildren", folder.numChildren);
+    updateFolderInfo.bindValue(":numChildren", *folder.numChildren);
     updateFolderInfo.bindValue(":firstChildHash", folder.firstChildHash);
     updateFolderInfo.bindValue(":id", folderId);
     updateFolderInfo.exec();
@@ -1272,21 +1218,23 @@ qulonglong DBHelper::ensureFolderPath(const QString &relativePath, QSqlDatabase 
     const auto segments = relativePath.split('/', Qt::SkipEmptyParts);
 
     qulonglong parentId = 1;
-    auto inheritedType = DBHelper::loadFolder(parentId, db).type;
+    auto inheritedType = DBHelper::loadFolder(parentId, db).value_or(Folder()).type;
     QString currentPath;
 
     for (const auto &segment : segments) {
         currentPath += '/' + segment;
 
         const auto existing = DBHelper::loadFolder(segment, parentId, db);
-        if (existing.knownId) {
-            parentId = existing.id;
-            inheritedType = existing.type;
+        if (existing) {
+            parentId = existing->id.value();
+            inheritedType = existing->type;
             continue;
         }
 
-        Folder folder(segment, currentPath);
-        folder.setFather(parentId);
+        Folder folder;
+        folder.name = segment;
+        folder.path = currentPath;
+        folder.parentId = FolderId(parentId);
         folder.type = inheritedType;
 
         parentId = DBHelper::insert(&folder, db);
@@ -1412,7 +1360,7 @@ qulonglong DBHelper::insert(Folder *folder, QSqlDatabase &db)
     QSqlQuery query(db);
     query.prepare("INSERT INTO folder (parentId, name, path, added, type) "
                   "VALUES (:parentId, :name, :path, :added, :type)");
-    query.bindValue(":parentId", folder->parentId);
+    query.bindValue(":parentId", folder->parentId.value());
     query.bindValue(":name", folder->name);
     query.bindValue(":path", folder->path);
     query.bindValue(":added", added);
@@ -1469,8 +1417,8 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
         updateFolder.bindValue(":id", currentParentId);
         updateFolder.exec();
 
-        auto f = loadFolder(currentParentId, db);
-        currentParentId = f.parentId;
+        const auto f = loadFolder(currentParentId, db);
+        currentParentId = f ? f->parentId.value() : 0;
     }
     //----
 
@@ -1589,38 +1537,13 @@ QList<Folder> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDatabase &
     QList<Folder> list;
 
     QSqlQuery selectQuery(db); // TODO check
-    selectQuery.prepare("SELECT * FROM folder WHERE parentId = :parentId and id <> 1");
+    selectQuery.prepare("SELECT " + TableProjection::selectList("f", Folder::columns()) + " FROM folder f WHERE f.parentId = :parentId and f.id <> 1");
     selectQuery.bindValue(":parentId", parentId);
     selectQuery.exec();
 
-    QSqlRecord record = selectQuery.record();
-
-    int name = record.indexOf("name");
-    int path = record.indexOf("path");
-    int finished = record.indexOf("finished");
-    int completed = record.indexOf("completed");
-    int id = record.indexOf("id");
-    int numChildren = record.indexOf("numChildren");
-    int firstChildHash = record.indexOf("firstChildHash");
-    int customImage = record.indexOf("customImage");
-    int type = record.indexOf("type");
-    int added = record.indexOf("added");
-    int updated = record.indexOf("updated");
-
     while (selectQuery.next()) {
         // TODO sort by sort indicator and name
-        Folder currentItem(selectQuery.value(id).toULongLong(), parentId, selectQuery.value(name).toString(), selectQuery.value(path).toString());
-
-        currentItem.finished = selectQuery.value(finished).toBool();
-        currentItem.completed = selectQuery.value(completed).toBool();
-        if (!selectQuery.value(numChildren).isNull() && selectQuery.value(numChildren).isValid()) {
-            currentItem.numChildren = selectQuery.value(numChildren).toInt();
-        }
-        currentItem.firstChildHash = selectQuery.value(firstChildHash).toString();
-        currentItem.customImage = selectQuery.value(customImage).toString();
-        currentItem.type = selectQuery.value(type).value<YACReader::FileType>();
-        currentItem.added = selectQuery.value(added).toLongLong();
-        currentItem.updated = selectQuery.value(updated).toLongLong();
+        const auto currentItem = Folder::fromRecord(selectQuery.record(), "f");
 
         int lessThan = 0;
 
@@ -1881,83 +1804,34 @@ void DBHelper::updateDBType(QSqlDatabase &db, YACReader::FileType type)
     updateComicInfo.exec();
 }
 
-Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
+std::optional<Folder> DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
 {
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM folder WHERE id = :id");
+    query.prepare("SELECT " + TableProjection::selectList("f", Folder::columns()) + " FROM folder f WHERE f.id = :id");
     query.bindValue(":id", id);
     query.exec();
 
-    Folder folder;
-
-    folder.id = id;
-    folder.parentId = 0;
-
-    DBHelper::readFolderFromQuery(folder, query);
-
-    return folder;
+    return DBHelper::readFolderFromQuery(query);
 }
 
-Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db)
+std::optional<Folder> DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db)
 {
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM folder WHERE parentId = :parentId AND name = :folderName");
+    query.prepare("SELECT " + TableProjection::selectList("f", Folder::columns()) + " FROM folder f WHERE f.parentId = :parentId AND f.name = :folderName");
     query.bindValue(":parentId", parentId);
     query.bindValue(":folderName", folderName);
     query.exec();
 
-    Folder folder;
-
-    folder.parentId = parentId;
-
-    DBHelper::readFolderFromQuery(folder, query);
-
-    return folder;
+    return DBHelper::readFolderFromQuery(query);
 }
 
-void DBHelper::readFolderFromQuery(Folder &folder, QSqlQuery &query)
+std::optional<Folder> DBHelper::readFolderFromQuery(QSqlQuery &query)
 {
-    QSqlRecord record = query.record();
-
-    int id = record.indexOf("id");
-    int parentId = record.indexOf("parentId");
-    int name = record.indexOf("name");
-    int path = record.indexOf("path");
-    int finished = record.indexOf("finished");
-    int completed = record.indexOf("completed");
-    int numChildren = record.indexOf("numChildren");
-    int firstChildHash = record.indexOf("firstChildHash");
-    int customImage = record.indexOf("customImage");
-    int type = record.indexOf("type");
-    int added = record.indexOf("added");
-    int updated = record.indexOf("updated");
-
     if (query.next()) {
-        folder.id = query.value(id).toULongLong();
-        folder.parentId = query.value(parentId).toULongLong();
-        folder.name = query.value(name).toString();
-        folder.path = query.value(path).toString();
-        folder.knownId = true;
-
-        // new 7.1
-        folder.finished = query.value(finished).toBool();
-        folder.completed = query.value(completed).toBool();
-
-        // new 9.5
-        if (!query.value(numChildren).isNull() && query.value(numChildren).isValid()) {
-            folder.numChildren = query.value(numChildren).toInt();
-        }
-        folder.firstChildHash = query.value(firstChildHash).toString();
-        folder.customImage = query.value(customImage).toString();
-
-        // new 9.8
-        // folder.manga = query.value(manga).toBool(); //removed in 9.13
-
-        // new 9.13
-        folder.type = query.value(type).value<YACReader::FileType>();
-        folder.added = query.value(added).toLongLong();
-        folder.updated = query.value(updated).toLongLong();
+        return Folder::fromRecord(query.record(), "f");
     }
+
+    return std::nullopt;
 }
 
 ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db, bool &found)

@@ -50,7 +50,6 @@ class ServerConfigDialog;
 class QCloseEvent;
 class ImportWidget;
 class QSettings;
-class LibraryItem;
 class QShowEvent;
 class YACReaderTableView;
 class YACReaderSideBar;

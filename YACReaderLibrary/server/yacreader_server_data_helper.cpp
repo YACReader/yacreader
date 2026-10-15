@@ -34,9 +34,9 @@ QString YACReaderServerDataHelper::folderToYSFormat(const qulonglong libraryId, 
 {
     return QString("f\x1F\t%1\x1F\t%2\x1F\t%3\x1F\t%4\x1F\t%5\x1E\r\n")
             .arg(libraryId)
-            .arg(folder.id)
+            .arg(folder.id.value())
             .arg(folder.name)
-            .arg(folder.numChildren)
+            .arg(folder.numChildren.value_or(-1))
             .arg(folder.firstChildHash);
 }
 
@@ -58,13 +58,13 @@ QJsonObject YACReaderServerDataHelper::folderToJSON(const qulonglong libraryId, 
     QJsonObject json;
 
     json["type"] = "folder";
-    json["id"] = QString::number(folder.id);
+    json["id"] = QString::number(folder.id.value());
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
         json["library_uuid"] = libraryUuid.toString();
     }
     json["folder_name"] = folder.name;
-    json["num_children"] = folder.numChildren;
+    json["num_children"] = folder.numChildren.value_or(-1);
     json["first_comic_hash"] = folder.firstChildHash;
     // 9.13
     json["finished"] = folder.finished;
@@ -74,7 +74,7 @@ QJsonObject YACReaderServerDataHelper::folderToJSON(const qulonglong libraryId, 
     json["added"] = folder.added;
     json["updated"] = folder.updated;
     // 9.14
-    json["parent_id"] = QString::number(folder.parentId);
+    json["parent_id"] = QString::number(folder.parentId.value());
     json["path"] = folder.path;
 
     return json;

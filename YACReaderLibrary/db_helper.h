@@ -13,14 +13,14 @@ class QString;
 #include <optional>
 
 class ComicDB;
-class Folder;
-class Label;
+struct Folder;
+struct Label;
 class QSqlDatabase;
 class ComicInfo;
 class QSqlRecord;
 class QSqlQuery;
 class YACReaderLibraries;
-class ReadingList;
+struct ReadingList;
 
 struct ComicProgressUpdate {
     ComicId comicId;
@@ -38,7 +38,7 @@ public:
     static QList<ComicDB> getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId);
     static std::optional<ComicDB> getComicInfo(qulonglong libraryId, qulonglong id);
     static QList<ComicDB> getSiblings(qulonglong libraryId, qulonglong parentId);
-    static Folder getFolder(qulonglong libraryId, qulonglong id);
+    static std::optional<Folder> getFolder(qulonglong libraryId, qulonglong id);
     static QString getLibraryName(int id);
     static QList<ComicDB> getLabelComics(qulonglong libraryId, qulonglong labelId);
     static QList<ComicDB> getFavorites(qulonglong libraryId);
@@ -112,9 +112,10 @@ public:
     static void updateDBType(QSqlDatabase &db, YACReader::FileType type);
 
     // load
-    static Folder loadFolder(qulonglong id, QSqlDatabase &db);
-    static Folder loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db);
-    static void readFolderFromQuery(Folder &folder, QSqlQuery &query);
+    static std::optional<Folder> loadFolder(qulonglong id, QSqlDatabase &db);
+    static std::optional<Folder> loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db);
+    // reads the next row; the query selects the Folder projection with alias "f"
+    static std::optional<Folder> readFolderFromQuery(QSqlQuery &query);
     static ComicDB loadComic(qulonglong id, QSqlDatabase &db, bool &found);
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase &database);
     static std::optional<ComicInfo> loadComicInfo(QString hash, QSqlDatabase &db);

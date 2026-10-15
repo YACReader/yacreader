@@ -505,7 +505,7 @@ void GridComicsView::setFolderModel(FolderModel *model, const QModelIndex &folde
         currentLocationInfo.insert(QStringLiteral("name"), rootName);
     } else {
         const auto folder = model->getFolder(folderIndex);
-        const auto cover = folder.customImage.isEmpty() ? model->getCoverUrlPathForComicHash(folder.firstChildHash) : model->getCoverUrlPathForFolderId(folder.id);
+        const auto cover = folder.customImage.isEmpty() ? model->getCoverUrlPathForComicHash(folder.firstChildHash) : model->getCoverUrlPathForFolderId(folder.id.value());
         currentLocationInfo = makeFolderInfo(folder, cover);
     }
     emit currentLocationInfoChanged();
@@ -875,7 +875,7 @@ QVariantMap GridComicsView::makeFolderInfo(const Folder &folder, const QVariant 
         break;
     }
 
-    const QVariant itemCount = folder.numChildren < 0 ? QVariant(tr("Unknown")) : QVariant(folder.numChildren);
+    const QVariant itemCount = (!folder.numChildren || *folder.numChildren < 0) ? QVariant(tr("Unknown")) : QVariant(*folder.numChildren);
     return {
         { QStringLiteral("kind"), QStringLiteral("folder") },
         { QStringLiteral("name"), folder.name },
@@ -1077,7 +1077,7 @@ void GridComicsView::droppedImageAt(const QList<QUrl> &urls, int viewRow)
         return;
 
     if (contentModel->isFolderRow(viewRow)) {
-        emit customFolderCoverRequested(contentModel->folderAt(viewRow).id, imagePath);
+        emit customFolderCoverRequested(contentModel->folderAt(viewRow).id.value(), imagePath);
         return;
     }
 

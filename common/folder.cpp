@@ -1,81 +1,51 @@
 #include "folder.h"
 
-Folder::Folder()
-    : knownParent(false),
-      knownId(false),
-      numChildren(-1)
+#include "table_projection.h"
+
+#include <QSqlQuery>
+#include <QSqlRecord>
+
+const QStringList &Folder::columns()
 {
+    static const QStringList columns = { "parentId", "name", "path", "finished", "completed", "numChildren",
+                                         "firstChildHash", "customImage", "type", "added", "updated" };
+    return columns;
 }
 
-Folder::Folder(qulonglong folderId, qulonglong parentId, const QString &folderName, const QString &folderPath)
-    : knownParent(true),
-      knownId(true),
-      numChildren(-1)
+Folder Folder::fromRecord(const QSqlRecord &record, const QString &alias)
 {
-    this->id = folderId;
-    this->parentId = parentId;
-    this->name = folderName;
-    this->path = folderPath;
+    using TableProjection::value;
+
+    Folder folder;
+    folder.id = FolderId(value(record, alias, "id").toULongLong());
+    folder.parentId = FolderId(value(record, alias, "parentId").toULongLong());
+    folder.name = value(record, alias, "name").toString();
+    folder.path = value(record, alias, "path").toString();
+    folder.finished = value(record, alias, "finished").toBool();
+    folder.completed = value(record, alias, "completed").toBool();
+    const auto numChildren = value(record, alias, "numChildren");
+    if (!numChildren.isNull()) {
+        folder.numChildren = numChildren.toInt();
+    }
+    folder.firstChildHash = value(record, alias, "firstChildHash").toString();
+    folder.customImage = value(record, alias, "customImage").toString();
+    folder.type = value(record, alias, "type").value<YACReader::FileType>();
+    folder.added = value(record, alias, "added").toLongLong();
+    folder.updated = value(record, alias, "updated").toLongLong();
+    return folder;
 }
 
-Folder::Folder(qulonglong folderId,
-               qulonglong parentId,
-               const QString &folderName,
-               const QString &folderPath,
-               bool completed,
-               bool finished,
-               int numChildren,
-               const QString &firstChildHash,
-               const QString &customImage,
-               YACReader::FileType type,
-               qint64 added,
-               qint64 updated)
-    : knownParent(true),
-      knownId(true),
-      numChildren(-1)
+void Folder::bindTo(QSqlQuery &query) const
 {
-    this->id = folderId;
-    this->parentId = parentId;
-    this->name = folderName;
-    this->path = folderPath;
-    this->completed = completed;
-    this->finished = finished;
-    this->numChildren = numChildren;
-    this->firstChildHash = firstChildHash;
-    this->customImage = customImage;
-    this->type = type;
-    this->added = added;
-    this->updated = updated;
-}
-
-Folder::Folder(const Folder &folder)
-{
-    operator=(folder);
-}
-
-Folder &Folder::operator=(const Folder &other)
-{
-    LibraryItem::operator=(other);
-
-    this->knownParent = other.knownParent;
-    this->knownId = other.knownId;
-    this->finished = other.finished;
-    this->completed = other.completed;
-    this->numChildren = other.numChildren;
-    this->firstChildHash = other.firstChildHash;
-    this->customImage = other.customImage;
-    this->type = other.type;
-    this->added = other.added;
-    this->updated = other.updated;
-
-    return *this;
-}
-
-Folder::Folder(const QString &folderName, const QString &folderPath)
-    : knownParent(false),
-      knownId(false),
-      numChildren(-1)
-{
-    this->name = folderName;
-    this->path = folderPath;
+    query.bindValue(":parentId", parentId.value());
+    query.bindValue(":name", name);
+    query.bindValue(":path", path);
+    query.bindValue(":finished", finished);
+    query.bindValue(":completed", completed);
+    query.bindValue(":numChildren", numChildren ? QVariant(*numChildren) : QVariant());
+    query.bindValue(":firstChildHash", firstChildHash);
+    query.bindValue(":customImage", customImage);
+    query.bindValue(":type", static_cast<int>(type));
+    query.bindValue(":added", added);
+    query.bindValue(":updated", updated);
 }

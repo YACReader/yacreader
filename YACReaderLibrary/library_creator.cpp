@@ -33,7 +33,11 @@ Folder rootFolder(QSqlDatabase &db)
     selectQuery.prepare("SELECT * FROM folder WHERE id = 1");
     selectQuery.exec();
 
-    auto root = Folder(1, 1, "root", "/");
+    Folder root;
+    root.id = FolderId(1);
+    root.parentId = FolderId(1);
+    root.name = "root";
+    root.path = "/";
 
     if (!selectQuery.next()) {
 
@@ -44,6 +48,14 @@ Folder rootFolder(QSqlDatabase &db)
     root.type = selectQuery.value("type").value<YACReader::FileType>();
 
     return root;
+}
+
+Folder newFolder(const QString &name, const QString &path)
+{
+    Folder folder;
+    folder.name = name;
+    folder.path = path;
+    return folder;
 }
 
 //--------------------------------------------------------------------------------
@@ -104,15 +116,22 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
             return;
         }
 
-        _currentPathFolders.append(rootFolder(db));
+        _currentPathFolders.append({ rootFolder(db), true });
 
         for (const auto &folderName : std::as_const(folders)) {
             if (folderName.isEmpty()) {
                 break;
             }
-            qulonglong parentId = _currentPathFolders.last().id;
-            _currentPathFolders.append(DBHelper::loadFolder(folderName, parentId, db));
-            QLOG_DEBUG() << "Folder appended : " << _currentPathFolders.last().id << " " << _currentPathFolders.last().name << " with parent" << _currentPathFolders.last().parentId;
+            qulonglong parentId = _currentPathFolders.last().folder.id.value();
+            if (auto folder = DBHelper::loadFolder(folderName, parentId, db)) {
+                _currentPathFolders.append({ *folder, true });
+            } else {
+                Folder missing;
+                missing.parentId = FolderId(parentId);
+                _currentPathFolders.append({ missing, false });
+            }
+            const auto &appended = _currentPathFolders.last().folder;
+            QLOG_DEBUG() << "Folder appended : " << appended.id.value() << " " << appended.name << " with parent" << appended.parentId.value();
         }
         connectionName = db.connectionName();
     }
@@ -198,7 +217,7 @@ void LibraryCreator::run()
                 return;
             }
 
-            _currentPathFolders.append(rootFolder(_database));
+            _currentPathFolders.append({ rootFolder(_database), true });
 
             /*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
             _database.transaction();
@@ -244,7 +263,7 @@ void LibraryCreator::run()
 
             if (!partialUpdate) {
                 _currentPathFolders.clear();
-                _currentPathFolders.append(rootFolder(_database));
+                _currentPathFolders.append({ rootFolder(_database), true });
                 QLOG_DEBUG() << "update whole library";
             }
 
@@ -340,20 +359,21 @@ void LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
 qulonglong LibraryCreator::insertFolders()
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
-    QList<Folder>::iterator i;
+    QList<ScanFolder>::iterator i;
     int currentId = 0;
     Folder currentParent;
     for (i = _currentPathFolders.begin(); i != _currentPathFolders.end(); ++i) {
-        if (!(i->knownId)) {
-            i->setFather(currentId);
-            i->type = currentParent.type;
-            currentId = DBHelper::insert(&(*i), _database); // insertFolder(currentId,*i);
-            i->setId(currentId);
+        if (!i->inDatabase) {
+            i->folder.parentId = FolderId(currentId);
+            i->folder.type = currentParent.type;
+            currentId = DBHelper::insert(&i->folder, _database); // insertFolder(currentId,*i);
+            i->folder.id = FolderId(currentId);
+            i->inDatabase = true;
         } else {
-            currentId = i->id;
+            currentId = i->folder.id.value();
         }
 
-        currentParent = *i;
+        currentParent = i->folder;
     }
     return currentId;
 }
@@ -381,7 +401,7 @@ void LibraryCreator::create(QDir dir)
         if (fileInfo.isDir()) {
             QLOG_TRACE() << "Parsing folder" << fileInfo.canonicalPath();
             // se añade al path actual el folder, aún no se sabe si habrá que añadirlo a la base de datos
-            _currentPathFolders.append(Folder(fileInfo.fileName(), relativePath));
+            _currentPathFolders.append({ newFolder(fileInfo.fileName(), relativePath), false });
             create(QDir(fileInfo.absoluteFilePath()));
             // una vez importada la información del folder, se retira del path actual ya que no volverá a ser visitado
             _currentPathFolders.pop_back();
@@ -453,8 +473,8 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
             comic.info.coverSizeRatio = static_cast<float>(originalCoverSize.first) / originalCoverSize.second;
         }
 
-        comic.file.folderId = FolderId(_currentPathFolders.last().id);
-        comic.info.type = QVariant::fromValue(_currentPathFolders.last().type);
+        comic.file.folderId = _currentPathFolders.last().folder.id;
+        comic.info.type = QVariant::fromValue(_currentPathFolders.last().folder.type);
 
         DBHelper::insert(&comic, _database, parsed);
     }
@@ -526,8 +546,8 @@ void LibraryCreator::update(QDir dirS)
     // QLOG_TRACE() << "END Getting info from dir" << dirS.absolutePath();
 
     // QLOG_TRACE() << "Getting info from DB" << dirS.absolutePath();
-    QList<Folder> folders = DBHelper::getFoldersFromParent(_currentPathFolders.last().id, _database);
-    QList<ComicDB> comics = DBHelper::getComicsFromParent(_currentPathFolders.last().id, _database);
+    QList<Folder> folders = DBHelper::getFoldersFromParent(_currentPathFolders.last().folder.id.value(), _database);
+    QList<ComicDB> comics = DBHelper::getComicsFromParent(_currentPathFolders.last().folder.id.value(), _database);
     // QLOG_TRACE() << "END Getting info from DB" << dirS.absolutePath();
 
     QList<DiskItem> listD;
@@ -591,7 +611,7 @@ void LibraryCreator::update(QDir dirS)
 #else
                     QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                    _currentPathFolders.append(Folder(fileInfoS.fileName(), path)); // folder actual no está en la BD
+                    _currentPathFolders.append({ newFolder(fileInfoS.fileName(), path), false }); // folder actual no está en la BD
                     create(QDir(fileInfoS.absoluteFilePath()));
                     _currentPathFolders.pop_back();
                 } else // create comic
@@ -628,7 +648,7 @@ void LibraryCreator::update(QDir dirS)
             if (fileInfoS.isDir() && isFolderD)
                 if (comparation == 0) // same folder, update
                 {
-                    _currentPathFolders.append(std::get<Folder>(fileInfoD)); // fileInfoD conoce su padre y su id
+                    _currentPathFolders.append({ std::get<Folder>(fileInfoD), true }); // fileInfoD conoce su padre y su id
                     update(QDir(fileInfoS.absoluteFilePath()));
                     _currentPathFolders.pop_back();
                     i++;
@@ -649,7 +669,7 @@ void LibraryCreator::update(QDir dirS)
 #else
                         QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                        _currentPathFolders.append(Folder(fileInfoS.fileName(), path));
+                        _currentPathFolders.append({ newFolder(fileInfoS.fileName(), path), false });
                         create(QDir(fileInfoS.absoluteFilePath()));
                         _currentPathFolders.pop_back();
                     }
@@ -680,7 +700,7 @@ void LibraryCreator::update(QDir dirS)
 #else
                         QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                        _currentPathFolders.append(Folder(fileInfoS.fileName(), path));
+                        _currentPathFolders.append({ newFolder(fileInfoS.fileName(), path), false });
                         create(QDir(fileInfoS.absoluteFilePath()));
                         _currentPathFolders.pop_back();
                     }

@@ -42,6 +42,6 @@ void FolderInfoControllerV2::serviceComics(const int &library, const qulonglong 
     }
 
     for (const auto &folder : folderContent) {
-        serviceComics(library, folder.id, response);
+        serviceComics(library, folder.id.value(), response);
     }
 }

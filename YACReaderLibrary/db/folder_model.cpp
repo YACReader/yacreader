@@ -310,18 +310,19 @@ Folder FolderModel::folderFromItem(FolderItem *folderItem) const
         path = parentItem->data(Columns::Path).toString() + "/" + name;
     }
 
-    auto folder = Folder(folderItem->id,
-                         parentItem->id,
-                         name,
-                         path,
-                         folderItem->data(Columns::Completed).toBool(),
-                         folderItem->data(Columns::Finished).toBool(),
-                         folderItem->data(Columns::NumChildren).toInt(),
-                         folderItem->data(Columns::FirstChildHash).toString(),
-                         folderItem->data(Columns::CustomImage).toString(),
-                         folderItem->data(Columns::Type).value<YACReader::FileType>(),
-                         folderItem->data(Columns::Added).toLongLong(),
-                         folderItem->data(Columns::Updated).toLongLong());
+    Folder folder;
+    folder.id = FolderId(folderItem->id);
+    folder.parentId = FolderId(parentItem->id);
+    folder.name = name;
+    folder.path = path;
+    folder.completed = folderItem->data(Columns::Completed).toBool();
+    folder.finished = folderItem->data(Columns::Finished).toBool();
+    folder.numChildren = folderItem->data(Columns::NumChildren).toInt();
+    folder.firstChildHash = folderItem->data(Columns::FirstChildHash).toString();
+    folder.customImage = folderItem->data(Columns::CustomImage).toString();
+    folder.type = folderItem->data(Columns::Type).value<YACReader::FileType>();
+    folder.added = folderItem->data(Columns::Added).toLongLong();
+    folder.updated = folderItem->data(Columns::Updated).toLongLong();
 
     return folder;
 }
@@ -582,9 +583,10 @@ void FolderModel::updateFolderCompletedStatus(const QModelIndexList &list, bool 
             auto item = static_cast<FolderItem *>(mi.internalPointer());
             item->setData(FolderModel::Completed, status);
 
-            Folder f = DBHelper::loadFolder(item->id, db);
-            f.completed = status;
-            DBHelper::update(f, db);
+            if (auto f = DBHelper::loadFolder(item->id, db)) {
+                f->completed = status;
+                DBHelper::update(*f, db);
+            }
         }
         db.commit();
         connectionName = db.connectionName();
@@ -608,9 +610,10 @@ void FolderModel::updateFolderFinishedStatus(const QModelIndexList &list, bool s
             auto item = static_cast<FolderItem *>(mi.internalPointer());
             item->setData(FolderModel::Finished, status);
 
-            Folder f = DBHelper::loadFolder(item->id, db);
-            f.finished = status;
-            DBHelper::update(f, db);
+            if (auto f = DBHelper::loadFolder(item->id, db)) {
+                f->finished = status;
+                DBHelper::update(*f, db);
+            }
         }
         db.commit();
         connectionName = db.connectionName();
@@ -764,9 +767,10 @@ void FolderModel::setCustomFolderCover(const QModelIndex &index, const QString &
         auto item = static_cast<FolderItem *>(index.internalPointer());
         item->setData(FolderModel::CustomImage, path);
 
-        Folder f = DBHelper::loadFolder(item->id, db);
-        f.customImage = path;
-        DBHelper::update(f, db);
+        if (auto f = DBHelper::loadFolder(item->id, db)) {
+            f->customImage = path;
+            DBHelper::update(*f, db);
+        }
 
         db.commit();
         connectionName = db.connectionName();
@@ -787,9 +791,10 @@ void FolderModel::resetFolderCover(const QModelIndex &index)
         auto item = static_cast<FolderItem *>(index.internalPointer());
         item->setData(FolderModel::CustomImage, "");
 
-        Folder f = DBHelper::loadFolder(item->id, db);
-        f.customImage = "";
-        DBHelper::update(f, db);
+        if (auto f = DBHelper::loadFolder(item->id, db)) {
+            f->customImage = "";
+            DBHelper::update(*f, db);
+        }
 
         db.commit();
         connectionName = db.connectionName();
@@ -852,7 +857,7 @@ QModelIndex FolderModel::getIndexFromFolderId(qulonglong folderId, const QModelI
 
 QModelIndex FolderModel::getIndexFromFolder(const Folder &folder, const QModelIndex &parent)
 {
-    return getIndexFromFolderId(folder.id, parent);
+    return getIndexFromFolderId(folder.id.value(), parent);
 }
 
 QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QModelIndex &parent)
@@ -866,14 +871,14 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
 
     Folder newFolder;
     newFolder.name = folderName;
-    newFolder.parentId = parentItem->id;
+    newFolder.parentId = FolderId(parentItem->id);
     newFolder.path = parentItem->data(Columns::Path).toString() + "/" + folderName;
     newFolder.type = parentItem->data(Columns::Type).value<YACReader::FileType>();
 
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        newFolder.id = DBHelper::insert(&newFolder, db);
+        newFolder.id = FolderId(DBHelper::insert(&newFolder, db));
         DBHelper::updateChildrenInfo(parentItem->id, db);
         connectionName = db.connectionName();
     }
@@ -894,7 +899,7 @@ QModelIndex FolderModel::addFolderAtParent(const QString &folderName, const QMod
     data << newFolder.updated;
 
     auto item = new FolderItem(data);
-    item->id = newFolder.id;
+    item->id = newFolder.id.value();
 
     beginInsertRows(parent, 0, 0); // TODO calculate the destRow before inserting the new child
 
@@ -964,7 +969,7 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
     parent->removeChild(mi.row());
 
     Folder f;
-    f.setId(item->id);
+    f.id = FolderId(item->id);
 
     QString connectionName = "";
     {

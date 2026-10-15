@@ -75,8 +75,6 @@ add_library(common_all STATIC
     descriptive_comic_metadata.cpp
     folder.h
     folder.cpp
-    library_item.h
-    library_item.cpp
     bookmarks.h
     bookmarks.cpp
     http_worker.h

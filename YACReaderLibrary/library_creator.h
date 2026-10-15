@@ -38,7 +38,11 @@ private:
     QString _sourceFolder; // used for partial updates
     QStringList _nameFilter;
     QString _databaseConnection;
-    QList<Folder> _currentPathFolders; // lista de folders en el orden en el que están siendo explorados, el último es el folder actual
+    struct ScanFolder {
+        Folder folder;
+        bool inDatabase;
+    };
+    QList<ScanFolder> _currentPathFolders; // lista de folders en el orden en el que están siendo explorados, el último es el folder actual
     // recursive method
     void create(QDir currentDirectory);
     void update(QDir currentDirectory);
