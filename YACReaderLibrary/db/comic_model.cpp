@@ -1196,7 +1196,7 @@ void ComicModel::reload(const ComicDB &comic)
     bool found = false;
     const auto &currentData = _data;
     for (auto *item : currentData) {
-        if (item->data(ComicModel::Id).toULongLong() == comic.id) {
+        if (item->data(ComicModel::Id).toULongLong() == comic.file.id.value()) {
             found = true;
             item->setData(ComicModel::ReadColumn, comic.info.read);
             item->setData(ComicModel::CurrentPage, comic.info.currentPage);
@@ -1228,7 +1228,7 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
 
 void ComicModel::notifyCoverChange(const ComicDB &comic)
 {
-    auto it = std::find_if(_data.begin(), _data.end(), [comic](ComicItem *item) { return item->data(ComicModel::Id).toULongLong() == comic.id; });
+    auto it = std::find_if(_data.begin(), _data.end(), [comic](ComicItem *item) { return item->data(ComicModel::Id).toULongLong() == comic.file.id.value(); });
     if (it == _data.end())
         return;
 
@@ -1236,7 +1236,7 @@ void ComicModel::notifyCoverChange(const ComicDB &comic)
     // views adjust their selection and scroll position before the edit refresh can
     // capture them. Changing the URL also makes QML reload the image even though
     // the underlying cover file path is unchanged.
-    ++coverRevisions[comic.id];
+    ++coverRevisions[comic.file.id.value()];
     const auto itemIndex = std::distance(_data.begin(), it);
     emit dataChanged(index(itemIndex, 0), index(itemIndex, columnCount() - 1), { CoverPathRole });
 }
@@ -1267,7 +1267,7 @@ void ComicModel::addComicsToFavorites(const QList<QModelIndex> &comicsList)
     QList<qulonglong> comicIds;
     comicIds.reserve(comics.size());
     for (const auto &comic : std::as_const(comics))
-        comicIds.append(comic.id);
+        comicIds.append(comic.file.id.value());
     emit favoritesChanged(comicIds);
 }
 
@@ -1322,7 +1322,7 @@ void ComicModel::deleteComicsFromFavorites(const QList<QModelIndex> &comicsList)
     QList<qulonglong> comicIds;
     comicIds.reserve(comics.size());
     for (const auto &comic : std::as_const(comics))
-        comicIds.append(comic.id);
+        comicIds.append(comic.file.id.value());
     emit favoritesChanged(comicIds);
 
     if (mode == Favorites)

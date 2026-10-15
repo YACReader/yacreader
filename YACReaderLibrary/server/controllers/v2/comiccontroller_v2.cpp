@@ -57,7 +57,7 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
 
     ComicDB &comic = *loadedComic;
 
-    Comic *comicFile = FactoryComic::newComic(libraries.getPath(libraryId) + comic.path);
+    Comic *comicFile = FactoryComic::newComic(libraries.getPath(libraryId) + comic.file.path);
 
     if (comicFile != nullptr) {
         QThread *thread = nullptr;
@@ -72,18 +72,18 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
         connect(thread, &QThread::started, comicFile, &Comic::process);
         connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 
-        comicFile->load(libraries.getPath(libraryId) + comic.path);
+        comicFile->load(libraries.getPath(libraryId) + comic.file.path);
 
         if (thread != nullptr)
             thread->start();
 
         if (remoteComic) {
             QLOG_TRACE() << "remote comic requested";
-            ySession->setCurrentRemoteComic(comic.id, comicFile);
+            ySession->setCurrentRemoteComic(comic.file.id.value(), comicFile);
 
         } else {
             QLOG_TRACE() << "comic requested";
-            ySession->setCurrentComic(comic.id, comicFile);
+            ySession->setCurrentComic(comic.file.id.value(), comicFile);
         }
 
         response.setHeader("Content-Type", "text/plain; charset=utf-8");
@@ -95,31 +95,30 @@ void ComicControllerV2::service(HttpRequest &request, HttpResponse &response)
             // Same reading order the desktop reader walks with next/previous, and the
             // one the iOS client sorts a folder's comics with, so previousComic/nextComic
             // agree with what the user sees listed.
-            QList<LibraryItem *> siblings = DBHelper::getFolderComicsFromLibraryForReading(libraryId, comic.parentId);
+            const auto siblings = DBHelper::getFolderComicsFromLibraryForReading(libraryId, comic.file.folderId.value());
 
             bool found = false;
             int i;
             for (i = 0; i < siblings.length(); i++) {
-                if (siblings.at(i)->id == comic.id) {
+                if (siblings.at(i).file.id == comic.file.id) {
                     found = true;
                     break;
                 }
             }
             if (found) {
                 if (i > 0) {
-                    ComicDB *previousComic = static_cast<ComicDB *>(siblings.at(i - 1));
-                    response.write(QString("previousComic:%1\r\n").arg(previousComic->id).toUtf8());
-                    response.write(QString("previousComicHash:%1\r\n").arg(previousComic->info.hash).toUtf8());
+                    const ComicDB &previousComic = siblings.at(i - 1);
+                    response.write(QString("previousComic:%1\r\n").arg(previousComic.file.id.value()).toUtf8());
+                    response.write(QString("previousComicHash:%1\r\n").arg(previousComic.info.hash).toUtf8());
                 }
                 if (i < siblings.length() - 1) {
-                    ComicDB *nextComic = static_cast<ComicDB *>(siblings.at(i + 1));
-                    response.write(QString("nextComic:%1\r\n").arg(nextComic->id).toUtf8());
-                    response.write(QString("nextComicHash:%1\r\n").arg(nextComic->info.hash).toUtf8());
+                    const ComicDB &nextComic = siblings.at(i + 1);
+                    response.write(QString("nextComic:%1\r\n").arg(nextComic.file.id.value()).toUtf8());
+                    response.write(QString("nextComicHash:%1\r\n").arg(nextComic.info.hash).toUtf8());
                 }
             } else {
                 // ERROR
             }
-            qDeleteAll(siblings);
         }
         response.write(comic.toTXT().toUtf8(), true);
     } else {

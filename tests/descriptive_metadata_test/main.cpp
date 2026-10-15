@@ -186,7 +186,7 @@ void DescriptiveMetadataTest::partialProjectionKeepsUnknownFieldsNull()
     QVERIFY(q.exec("SELECT id AS metadata_id,title FROM comic_info WHERE id=1"));
     QVERIFY(q.next());
     const auto info = DBHelper::getComicInfoFromQuery(q, "metadata_id");
-    QCOMPARE(info.id, qulonglong(1));
+    QCOMPARE(info.id, ComicInfoId(1));
     QCOMPARE(info.title.toString(), QString("Original"));
     QVERIFY(info.number.isNull());
     QVERIFY(info.comicVineID.isNull());

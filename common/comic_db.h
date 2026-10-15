@@ -1,8 +1,9 @@
 #ifndef __COMICDB_H
 #define __COMICDB_H
 
+#include "comic_file.h"
 #include "descriptive_comic_metadata.h"
-#include "library_item.h"
+#include "library_ids.h"
 
 #include <QImage>
 #include <QList>
@@ -21,7 +22,7 @@ public:
     bool operator!=(const ComicInfo &other) const { return id != other.id; }
 
     // mandatory fields
-    qulonglong id;
+    ComicInfoId id;
     bool read;
     bool edited;
     QString hash;
@@ -88,40 +89,30 @@ public:
     friend QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo);
 };
 
-class ComicDB : public LibraryItem
+class ComicDB
 {
-    Q_OBJECT
 public:
-    ComicDB();
-    ComicDB(const ComicDB &comicDB);
-
-    bool isDir() const;
-
-    bool _hasCover;
-
-    bool hasCover() { return _hasCover; }
+    ComicFile file;
+    ComicInfo info;
 
     // return comic file name
     QString getFileName() const;
 
     // returns comic title if it isn't null or empty, in other case returns fileName
-    Q_INVOKABLE QString getTitleOrFileName() const;
+    QString getTitleOrFileName() const;
 
     // returns parent folder name
     QString getParentFolderName() const;
 
     // return the size of the file in bytes
-    Q_INVOKABLE qulonglong getFileSize() const;
+    qulonglong getFileSize() const;
 
-    Q_INVOKABLE QString getTitleIncludingNumber() const;
-    Q_INVOKABLE QString getInfoTitle() const;
+    QString getTitleIncludingNumber() const;
+    QString getInfoTitle() const;
 
-    QString toTXT();
+    QString toTXT() const;
 
-    ComicInfo info;
-
-    ComicDB &operator=(const ComicDB &other);
-    bool operator==(const ComicDB &other) const { return id == other.id; }
+    bool operator==(const ComicDB &other) const { return file.id == other.file.id; }
 
     friend QDataStream &operator<<(QDataStream &, const ComicDB &);
     friend QDataStream &operator>>(QDataStream &, ComicDB &);

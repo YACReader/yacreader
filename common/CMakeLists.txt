@@ -64,6 +64,8 @@ target_sources(worker INTERFACE
 add_library(common_all STATIC
     comic_db.h
     comic_db.cpp
+    library_item_types.h
+    overloaded.h
     comic_file.h
     comic_file.cpp
     library_ids.h

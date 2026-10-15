@@ -268,7 +268,7 @@ void prepareInvalidPageCountUpdate(QSqlQuery &query,
 
     query.prepare(QString("UPDATE comic_info SET %1 WHERE id = :id").arg(assignments.join(", ")));
     query.bindValue(":numPages", extracted.numPages);
-    query.bindValue(":id", info.id);
+    query.bindValue(":id", info.id.value());
 
     if (preserveCustomCover) {
         if (!hasValidRatio(info.coverSizeRatio)) {

@@ -8,28 +8,14 @@
 //-----------------------------------------------------------------------------
 // COMIC------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-ComicDB::ComicDB()
-{
-}
-
-ComicDB::ComicDB(const ComicDB &comicDB)
-{
-    operator=(comicDB);
-}
-
-bool ComicDB::isDir() const
-{
-    return false;
-}
-
-QString ComicDB::toTXT()
+QString ComicDB::toTXT() const
 {
     QString txt;
 
     // Legacy info
-    txt.append(QString("comicid:%1\r\n").arg(id));
+    txt.append(QString("comicid:%1\r\n").arg(file.id.value()));
     txt.append(QString("hash:%1\r\n").arg(info.hash));
-    txt.append(QString("path:%1\r\n").arg(path));
+    txt.append(QString("path:%1\r\n").arg(file.path));
     txt.append(QString("numpages:%1\r\n").arg(info.numPages.toString()));
 
     // new 7.0
@@ -186,20 +172,9 @@ QString ComicDB::toTXT()
     return txt;
 }
 
-ComicDB &ComicDB::operator=(const ComicDB &other)
-{
-    LibraryItem::operator=(other);
-
-    this->_hasCover = other._hasCover;
-
-    this->info = other.info;
-
-    return *this;
-}
-
 QString ComicDB::getFileName() const
 {
-    return QFileInfo(path).fileName();
+    return QFileInfo(file.path).fileName();
 }
 
 QString ComicDB::getTitleOrFileName() const
@@ -207,12 +182,12 @@ QString ComicDB::getTitleOrFileName() const
     if (!info.title.isNull() && !info.title.toString().isEmpty())
         return info.title.toString();
     else
-        return QFileInfo(path).fileName();
+        return QFileInfo(file.path).fileName();
 }
 
 QString ComicDB::getParentFolderName() const
 {
-    QStringList paths = path.split('/');
+    QStringList paths = file.path.split('/');
     if (paths.length() < 2)
         return "";
     else
@@ -260,15 +235,14 @@ QString ComicDB::getInfoTitle() const
     if (!info.series.isNull())
         return info.series.toString();
 
-    return QFileInfo(path).fileName();
+    return QFileInfo(file.path).fileName();
 }
 
 //-----------------------------------------------------------------------------
 // COMIC_INFO-------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 ComicInfo::ComicInfo()
-    : id(0),
-      read(false),
+    : read(false),
       edited(false),
       rating(0),
       hasBeenOpened(false),
@@ -508,33 +482,38 @@ QString ComicInfo::getAlternateSeriesString() const
 
 QDataStream &operator<<(QDataStream &stream, const ComicDB &comic)
 {
-    stream << comic.id;
-    stream << comic.name;
-    stream << comic.parentId;
-    stream << comic.path;
-    stream << comic._hasCover;
+    stream << comic.file.id.value();
+    stream << comic.file.fileName;
+    stream << comic.file.folderId.value();
+    stream << comic.file.path;
+    stream << (comic.info.id != ComicInfoId()); // hasCover
     stream << comic.info;
     return stream;
 }
 
 QDataStream &operator>>(QDataStream &stream, ComicDB &comic)
 {
-    stream >> comic.id;
-    stream >> comic.name;
-    stream >> comic.parentId;
-    stream >> comic.path;
-    stream >> comic._hasCover;
+    qulonglong id;
+    qulonglong folderId;
+    bool hasCover;
+    stream >> id;
+    stream >> comic.file.fileName;
+    stream >> folderId;
+    stream >> comic.file.path;
+    stream >> hasCover;
     stream >> comic.info;
+    comic.file.id = ComicId(id);
+    comic.file.folderId = FolderId(folderId);
     return stream;
 }
 
 QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo)
 {
-    stream << comicInfo.id;
+    stream << comicInfo.id.value();
     stream << comicInfo.read;
     stream << comicInfo.edited;
     stream << comicInfo.hash;
-    stream << (comicInfo.id != 0); // existOnDb
+    stream << (comicInfo.id != ComicInfoId()); // existOnDb
 
     stream << comicInfo.hasBeenOpened;
     stream << comicInfo.rating;
@@ -615,7 +594,9 @@ QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo)
 
 QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo)
 {
-    stream >> comicInfo.id;
+    qulonglong id;
+    stream >> id;
+    comicInfo.id = ComicInfoId(id);
     stream >> comicInfo.read;
     stream >> comicInfo.edited;
     stream >> comicInfo.hash;

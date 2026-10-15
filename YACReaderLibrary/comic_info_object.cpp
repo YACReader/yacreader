@@ -12,7 +12,7 @@ ComicInfoObject::ComicInfoObject(const ComicDB &comic, bool isFavorite, QObject 
 
 qulonglong ComicInfoObject::id() const
 {
-    return comic.info.id;
+    return comic.info.id.value();
 }
 
 bool ComicInfoObject::read() const

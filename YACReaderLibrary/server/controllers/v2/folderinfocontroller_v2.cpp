@@ -27,27 +27,21 @@ void FolderInfoControllerV2::service(HttpRequest &request, HttpResponse &respons
 
 void FolderInfoControllerV2::serviceComics(const int &library, const qulonglong &folderId, HttpResponse &response)
 {
-    QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(library, folderId);
-    QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library, folderId);
+    const auto folderContent = DBHelper::getFolderSubfoldersFromLibrary(library, folderId);
+    const auto folderComics = DBHelper::getFolderComicsFromLibrary(library, folderId);
 
-    ComicDB *currentComic;
-    for (QList<LibraryItem *>::const_iterator itr = folderComics.constBegin(); itr != folderComics.constEnd(); itr++) {
-        currentComic = (ComicDB *)(*itr);
+    for (const auto &comic : folderComics) {
         response.write(QString("/v2/library/%1/comic/%2:%3:%4:%5:%6\r\n")
                                .arg(library)
-                               .arg(currentComic->id)
-                               .arg(currentComic->getFileName())
-                               .arg(currentComic->getFileSize())
-                               .arg(currentComic->info.read ? 1 : 0)
-                               .arg(currentComic->info.hash)
+                               .arg(comic.file.id.value())
+                               .arg(comic.getFileName())
+                               .arg(comic.getFileSize())
+                               .arg(comic.info.read ? 1 : 0)
+                               .arg(comic.info.hash)
                                .toUtf8());
-        delete currentComic;
     }
 
-    Folder *currentFolder;
-    for (QList<LibraryItem *>::const_iterator itr = folderContent.constBegin(); itr != folderContent.constEnd(); itr++) {
-        currentFolder = (Folder *)(*itr);
-        serviceComics(library, currentFolder->id, response);
-        delete currentFolder;
+    for (const auto &folder : folderContent) {
+        serviceComics(library, folder.id, response);
     }
 }

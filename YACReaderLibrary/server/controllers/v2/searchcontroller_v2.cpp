@@ -85,10 +85,10 @@ void SearchController::getComics(int libraryId, const QUuid &libraryUuid, QSqlDa
     // The search query already contains the comic fields; load only the metadata, like in the folder content.
     while (sqlQuery.next()) {
         ComicDB comic;
-        comic.id = sqlQuery.value("id").toULongLong();
-        comic.parentId = sqlQuery.value("parentId").toULongLong();
-        comic.name = sqlQuery.value("fileName").toString();
-        comic.path = sqlQuery.value("path").toString();
+        comic.file.id = ComicId(sqlQuery.value("id").toULongLong());
+        comic.file.folderId = FolderId(sqlQuery.value("parentId").toULongLong());
+        comic.file.fileName = sqlQuery.value("fileName").toString();
+        comic.file.path = sqlQuery.value("path").toString();
         auto info = DBHelper::loadComicInfo(sqlQuery.value("hash").toString(), db);
         if (!info) {
             continue;

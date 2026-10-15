@@ -2,6 +2,7 @@
 #define DB_HELPER_H
 
 class QString;
+#include "library_item_types.h"
 #include "yacreader_global.h"
 
 #include <QList>
@@ -13,7 +14,6 @@ class QString;
 
 class ComicDB;
 class Folder;
-class LibraryItem;
 class Label;
 class QSqlDatabase;
 class ComicInfo;
@@ -22,15 +22,20 @@ class QSqlQuery;
 class YACReaderLibraries;
 class ReadingList;
 
+struct ComicProgressUpdate {
+    ComicId comicId;
+    ComicInfo info;
+};
+
 class DBHelper
 {
 public:
     // server
     static YACReaderLibraries getLibraries();
-    static QList<LibraryItem *> getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId);
-    static QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId);
-    static QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort);
-    static QList<LibraryItem *> getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId);
+    static QList<Folder> getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId);
+    static QList<ComicDB> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId);
+    static QList<ComicDB> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort);
+    static QList<ComicDB> getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId);
     static std::optional<ComicDB> getComicInfo(qulonglong libraryId, qulonglong id);
     static QList<ComicDB> getSiblings(qulonglong libraryId, qulonglong parentId);
     static Folder getFolder(qulonglong libraryId, qulonglong id);
@@ -43,7 +48,7 @@ public:
 
     // objects management
     // deletes
-    static void removeFromDB(LibraryItem *item, QSqlDatabase &db);
+    static void removeFromDB(DiskItem &item, QSqlDatabase &db);
     static void removeFromDB(Folder *folder, QSqlDatabase &db);
     static void removeFromDB(ComicDB *comic, QSqlDatabase &db);
     static void removeLabelFromDB(qulonglong id, QSqlDatabase &db);
@@ -71,17 +76,16 @@ public:
     static void propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db);
     static Folder updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
     static void updateChildrenInfo(QSqlDatabase &db);
-    static void updateProgress(qulonglong libraryId, const ComicInfo &comicInfo);
-    static void updateImageFilters(qulonglong libraryId, const ComicInfo &comicInfo);
+    static void updateProgress(qulonglong libraryId, ComicId comicId, const ComicInfo &comicInfo);
+    static void updateImageFilters(qulonglong libraryId, ComicId comicId, const ComicInfo &comicInfo);
     // targeted updates, they only write the columns that change; unread matches ComicModel::setComicsRead(Unread)
     static bool setComicRead(qulonglong comicId, bool read, QSqlDatabase &db);
     static bool setComicType(qulonglong comicId, YACReader::FileType type, QSqlDatabase &db);
     static bool setFolderFinished(qulonglong folderId, bool finished, QSqlDatabase &db);
     static bool setFolderCompleted(qulonglong folderId, bool completed, QSqlDatabase &db);
-    static void setComicAsReading(qulonglong libraryId, const ComicInfo &comicInfo);
-    [[deprecated("Server v1")]] static void updateFromRemoteClient(qulonglong libraryId, const ComicInfo &comicInfo);
+    static void setComicAsReading(qulonglong libraryId, ComicId comicId);
     static void updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatabase &db);
-    static QMap<qulonglong, QList<ComicDB>> updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics, bool clientSendsHasBeenOpened, bool clientSendsImageFilters);
+    static QMap<qulonglong, QList<ComicDB>> updateFromRemoteClient(const QMap<qulonglong, QList<ComicProgressUpdate>> &comics, bool clientSendsHasBeenOpened, bool clientSendsImageFilters);
     // returns the libraries where at least one comic was updated
     static QList<QUuid> updateFromRemoteClientWithHash(const QList<ComicInfo> &comics);
     static void renameLabel(qulonglong id, const QString &name, QSqlDatabase &db);
@@ -99,9 +103,9 @@ public:
     static void reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase &db);
     static void updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath);
 
-    static QList<LibraryItem *> getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
+    static QList<Folder> getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db);
-    static QList<LibraryItem *> getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
+    static QList<ComicDB> getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<Label> getLabels(qulonglong libraryId);
 
     static bool updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type);

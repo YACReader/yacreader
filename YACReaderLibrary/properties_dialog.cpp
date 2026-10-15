@@ -484,7 +484,7 @@ void PropertiesDialog::loadComic(ComicDB &comic)
         coverChanged = false;
         updateCoverBoxForSingleComic();
 
-        if (!QFileInfo(basePath + comic.path).exists()) {
+        if (!QFileInfo(basePath + comic.file.path).exists()) {
             QMessageBox::warning(this, tr("Not found"), tr("Comic not found. You should update your library."));
             showPreviousCoverPageButton->setDisabled(true);
             showNextCoverPageButton->setDisabled(true);
@@ -731,7 +731,7 @@ void PropertiesDialog::updateComics()
                 if (customCover.isNull()) { // reseted, we need to restore the default cover
                     itr->info.coverPage = QVariant();
 
-                    InitialComicInfoExtractor ie(basePath + itr->path, coverPath, 1);
+                    InitialComicInfoExtractor ie(basePath + itr->file.path, coverPath, 1);
                     ie.extract();
 
                     if (ie.getOriginalCoverSize().second > 0) {
@@ -998,7 +998,7 @@ void PropertiesDialog::save()
             auto coverPath = LibraryPaths::coverPath(basePath, comics[currentComicIndex].info.hash);
 
             if (customCover.isNull()) {
-                InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, coverPath, comics[currentComicIndex].info.coverPage.toInt());
+                InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].file.path, coverPath, comics[currentComicIndex].info.coverPage.toInt());
                 ie.extract();
 
                 if (ie.getOriginalCoverSize().second > 0) {
@@ -1186,7 +1186,7 @@ void PropertiesDialog::resetCover()
         setCoverPage(1);
         coverChanged = true; // it could be that the cover is a custom cover, so we need to always update it
     } else {
-        InitialComicInfoExtractor ie(basePath + comics.last().path, "", 1);
+        InitialComicInfoExtractor ie(basePath + comics.last().file.path, "", 1);
         ie.extract();
         auto cover = ie.getCover();
         cover = cover.scaledToHeight(575, Qt::SmoothTransformation);
@@ -1228,7 +1228,7 @@ void PropertiesDialog::setCoverPage(int pageNumber)
     customCover = QImage();
 
     updateCoverPageNumberLabel(pageNumber);
-    InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].path, "", pageNumber);
+    InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].file.path, "", pageNumber);
     ie.extract();
     setCover(ie.getCover());
     repaint();

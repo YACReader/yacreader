@@ -44,7 +44,7 @@ QString YACReaderServerDataHelper::comicToYSFormat(const qulonglong libraryId, c
 {
     return QString("c\x1F\t%1\x1F\t%2\x1F\t%3\x1F\t%4\x1F\t%5\x1F\t%6\x1F\t%7\x1F\t%8\x1E\r\n")
             .arg(libraryId)
-            .arg(comic.id)
+            .arg(comic.file.id.value())
             .arg(comic.getFileName())
             .arg(comic.getFileSize())
             .arg(comic.info.hash)
@@ -85,17 +85,17 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     QJsonObject json;
 
     json["type"] = "comic";
-    json["id"] = QString::number(comic.id);
-    json["comic_info_id"] = QString::number(comic.info.id);
-    json["parent_id"] = QString::number(comic.parentId); // 9.14
+    json["id"] = QString::number(comic.file.id.value());
+    json["comic_info_id"] = QString::number(comic.info.id.value());
+    json["parent_id"] = QString::number(comic.file.folderId.value()); // 9.14
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
         json["library_uuid"] = libraryUuid.toString();
     }
-    json["file_name"] = comic.name;
+    json["file_name"] = comic.file.fileName;
     json["file_size"] = QString::number(comic.getFileSize());
     json["hash"] = comic.info.hash;
-    json["path"] = comic.path; // 9.14
+    json["path"] = comic.file.path; // 9.14
 
     json["current_page"] = comic.info.currentPage;
     json["num_pages"] = comic.info.numPages.toInt();

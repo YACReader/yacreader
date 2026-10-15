@@ -25,16 +25,18 @@ private slots:
     void streamKeepsTheExistOnDbSlot_data();
     void streamKeepsTheExistOnDbSlot();
     void streamRoundTrip();
+    void comicStreamKeepsTheLayout_data();
+    void comicStreamKeepsTheLayout();
 };
 
 static ComicDB sampleComic()
 {
     ComicDB comic;
-    comic.id = 11;
-    comic.parentId = 3;
-    comic.name = "Issue 1.cbz";
-    comic.path = "/Series/Issue 1.cbz";
-    comic.info.id = 42;
+    comic.file.id = ComicId(11);
+    comic.file.folderId = FolderId(3);
+    comic.file.fileName = "Issue 1.cbz";
+    comic.file.path = "/Series/Issue 1.cbz";
+    comic.info.id = ComicInfoId(42);
     comic.info.hash = "hash-42";
     comic.info.read = true;
     comic.info.rating = 4;
@@ -194,14 +196,55 @@ void ComicInfoObjectTest::streamRoundTrip()
     in >> read;
     QCOMPARE(in.status(), QDataStream::Ok);
     QVERIFY(in.atEnd());
-    QCOMPARE(read.id, comic.id);
-    QCOMPARE(read.path, comic.path);
+    QCOMPARE(read.file.id, comic.file.id);
+    QCOMPARE(read.file.path, comic.file.path);
     QCOMPARE(read.info.id, comic.info.id);
     QCOMPARE(read.info.hash, comic.info.hash);
     QCOMPARE(read.info.rating, comic.info.rating);
     QCOMPARE(read.info.title, comic.info.title);
     QCOMPARE(read.info.writer, comic.info.writer);
     QCOMPARE(read.info.arcCount, comic.info.arcCount);
+}
+
+void ComicInfoObjectTest::comicStreamKeepsTheLayout_data()
+{
+    QTest::addColumn<bool>("loaded");
+
+    QTest::newRow("loaded from the database") << true;
+    QTest::newRow("not in the database") << false;
+}
+
+void ComicInfoObjectTest::comicStreamKeepsTheLayout()
+{
+    QFETCH(bool, loaded);
+
+    auto comic = sampleComic();
+    if (!loaded) {
+        comic.info = ComicInfo();
+    }
+
+    QByteArray data;
+    {
+        QDataStream out(&data, QIODevice::WriteOnly);
+        out << comic;
+    }
+
+    QDataStream in(data);
+    qulonglong id;
+    QString name;
+    qulonglong parentId;
+    QString path;
+    bool hasCover = !loaded;
+    ComicInfo info;
+    in >> id >> name >> parentId >> path >> hasCover >> info;
+    QCOMPARE(in.status(), QDataStream::Ok);
+    QVERIFY(in.atEnd());
+    QCOMPARE(id, 11ULL);
+    QCOMPARE(name, QString("Issue 1.cbz"));
+    QCOMPARE(parentId, 3ULL);
+    QCOMPARE(path, QString("/Series/Issue 1.cbz"));
+    QCOMPARE(hasCover, loaded);
+    QCOMPARE(info.id, loaded ? ComicInfoId(42) : ComicInfoId());
 }
 
 QTEST_GUILESS_MAIN(ComicInfoObjectTest)

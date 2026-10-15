@@ -16,7 +16,6 @@ ComicsView::ComicsView(QWidget *parent)
     : QWidget(parent), model(nullptr), comicInfo(nullptr)
 {
     qmlRegisterType<ComicModel>("com.yacreader.ComicModel", 1, 0, "ComicModel");
-    qmlRegisterType<ComicDB>("com.yacreader.ComicDB", 1, 0, "ComicDB");
     qmlRegisterType<ComicInfoObject>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
 
     // QML renders into its own native window. A QQuickWidget would make Qt compose the whole

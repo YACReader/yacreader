@@ -983,7 +983,7 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, YACR
 
     enableActions();
 
-    currentComicDB.id = comicId;
+    currentComicDB.file.id = ComicId(comicId);
     YACReaderLocalClient client;
     int tries = 1;
     bool success = false;
@@ -992,7 +992,7 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, YACR
 
     if (success) {
         isClient = true;
-        open(path + currentComicDB.path, currentComicDB, siblingComics);
+        open(path + currentComicDB.file.path, currentComicDB, siblingComics);
     } else {
         isClient = false;
         QMessageBox::information(this, "Connection Error", "Unable to connect to YACReaderLibrary");
@@ -1603,7 +1603,7 @@ void MainWindowViewer::openPreviousComic()
         if (currentIndex - 1 >= 0 && currentIndex - 1 < siblingComics.count()) {
             siblingComics[currentIndex] = currentComicDB; // updated
             currentComicDB = siblingComics.at(currentIndex - 1);
-            open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
+            open(currentDirectory + currentComicDB.file.path, currentComicDB, siblingComics);
         }
         return;
     }
@@ -1623,7 +1623,7 @@ void MainWindowViewer::openNextComic()
         if (currentIndex + 1 > 0 && currentIndex + 1 < siblingComics.count()) {
             siblingComics[currentIndex] = currentComicDB; // updated
             currentComicDB = siblingComics.at(currentIndex + 1);
-            open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
+            open(currentDirectory + currentComicDB.file.path, currentComicDB, siblingComics);
         }
 
         return;
@@ -1871,7 +1871,7 @@ void MainWindowViewer::sendComic()
         ComicDB &nextComic = siblingComics[currentIndex + 1];
         nextComic.info.hasBeenOpened = true;
         int retries = 1;
-        while (!client->sendComicInfo(libraryId, currentComicDB, nextComic.id) && retries != 0)
+        while (!client->sendComicInfo(libraryId, currentComicDB, nextComic.file.id.value()) && retries != 0)
             retries--;
     } else {
         int retries = 1;
