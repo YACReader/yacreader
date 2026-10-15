@@ -6,12 +6,12 @@
     <message>
         <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>CRC Error auf Seite (%1): Einige Seiten werden nicht korrekt dargestellt</translation>
+        <translation>CRC-Fehler auf Seite (%1): Einige Seiten werden nicht korrekt dargestellt</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="497"/>
         <source>Unknown error opening the file</source>
-        <translation>Unbekannter Fehler beim Öffnen des Files</translation>
+        <translation>Unbekannter Fehler beim Öffnen der Datei</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="604"/>
@@ -37,8 +37,8 @@ To learn about the available settings, please check the documentation at https:/
         <translation>
 YACReaderLibraryServer ist die Headless-Version (keine GUI) von YACReaderLibrary.
 
-Diese Anwendung unterstützt dauerhafte Einstellungen. Um sie einzurichten, bearbeiten Sie diese Datei %1
-Um mehr über die verfügbaren Einstellungen zu erfahren, lesen Sie bitte die Dokumentation unter https://raw.githubusercontent.com/YACReader/yareader/develop/YACReaderLibraryServer/SETTINGS_README.md</translation>
+Diese Anwendung unterstützt dauerhafte Einstellungen. Um sie einzurichten, bearbeiten Sie diese Datei: %1
+Um mehr über die verfügbaren Einstellungen zu erfahren, lesen Sie bitte die Dokumentation unter https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</translation>
     </message>
 </context>
 </TS>

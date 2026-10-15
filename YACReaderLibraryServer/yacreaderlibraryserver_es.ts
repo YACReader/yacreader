@@ -11,7 +11,7 @@
     <message>
         <location filename="../common/comic.cpp" line="497"/>
         <source>Unknown error opening the file</source>
-        <translation>Error desconocido abriendo el archivo</translation>
+        <translation>Error desconocido al abrir el archivo</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="604"/>
@@ -37,7 +37,7 @@ To learn about the available settings, please check the documentation at https:/
         <translation>
 YACReaderLibraryServer es la versión sin interfaz gráfica (headless) de YACReaderLibrary.
 
-Esta aplicación admite ajustes persistentes; para configurarlos, edita este archivo %1
+Esta aplicación admite ajustes persistentes; para configurarlos, edita este archivo: %1
 Para conocer los ajustes disponibles, consulta la documentación en https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</translation>
     </message>
 </context>

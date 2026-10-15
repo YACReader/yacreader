@@ -6,7 +6,7 @@
     <message>
         <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>第 %1 页 CRC 校验失败: 部分页面将无法正确显示</translation>
+        <translation>第 %1 页 CRC 校验失败：部分页面将无法正确显示</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="497"/>
@@ -35,7 +35,7 @@ YACReaderLibraryServer is the headless (no GUI) version of YACReaderLibrary.
 This application supports persistent settings. To set them up, edit this file: %1
 To learn about the available settings, please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</source>
         <translation>
-YACReaderLibraryServer 是 YACReaderLibrary 的无头（无 GUI）版本。
+YACReaderLibraryServer 是 YACReaderLibrary 的 headless（无 GUI）版本。
 
 此应用程序支持持久设置，要设置它们，请编辑此文件 %1
 要了解可用设置，请查看文档：https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</translation>

@@ -6,7 +6,7 @@
     <message>
         <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>(%1). sayfada CRC hatası : bazı sayfalar düzgün görüntülenmeyecek</translation>
+        <translation>(%1). sayfada CRC hatası: bazı sayfalar düzgün görüntülenmeyecek</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="497"/>
@@ -35,9 +35,9 @@ YACReaderLibraryServer is the headless (no GUI) version of YACReaderLibrary.
 This application supports persistent settings. To set them up, edit this file: %1
 To learn about the available settings, please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</source>
         <translation>
-YACReaderLibraryServer, YACReaderLibrary&apos;nin başsız (gui yok) sürümüdür.
+YACReaderLibraryServer, YACReaderLibrary&apos;nin headless (arayüzsüz) sürümüdür.
 
-Bu uygulama kalıcı ayarları destekler, bunları ayarlamak için bu dosyayı düzenleyin %1
+Bu uygulama kalıcı ayarları destekler. Bunları ayarlamak için şu dosyayı düzenleyin: %1
 Mevcut ayarlar hakkında bilgi edinmek için lütfen https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md adresindeki belgelere bakın.</translation>
     </message>
 </context>

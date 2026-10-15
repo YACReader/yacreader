@@ -44,7 +44,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
         <source>Remove this user-imported theme</source>
-        <translation>사용자 가져온 이 테마 제거</translation>
+        <translation>사용자가 가져온 이 테마 제거</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
@@ -167,7 +167,7 @@
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
         <source>To change a shortcut, double-click the key combination and type the new keys.</source>
-        <translation>단축키를 바꾸려면 키 조합을 더블 클릭하고 새 키를 입력하세요.</translation>
+        <translation>단축키를 바꾸려면 키 조합을 두 번 클릭하고 새 키를 입력하세요.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="67"/>
@@ -266,7 +266,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>변경 로그</translation>
     </message>
 </context>
 <context>
@@ -489,7 +489,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="240"/>
         <source>Enlarge images to fit width/height</source>
-        <translation>작은 그림도 꽉차게 보기</translation>
+        <translation>이미지를 폭/높이에 맞게 확대</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="251"/>
@@ -519,22 +519,22 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="275"/>
         <source>Nearest (fast, low quality)</source>
-        <translation>빠른 모드 (빠름, 저화질)</translation>
+        <translation>최근접 (빠름, 저화질)</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="276"/>
         <source>Bilinear</source>
-        <translation>보통 모드 (중간 품질)</translation>
+        <translation>Bilinear</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="277"/>
         <source>Lanczos (better quality)</source>
-        <translation>고화질 모드 (더 좋은 화질)</translation>
+        <translation>Lanczos (더 좋은 화질)</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="308"/>
         <source>Page Flow</source>
-        <translation>페이지 플로우</translation>
+        <translation>페이지 흐름</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="309"/>
@@ -896,7 +896,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>확대/축소</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -941,7 +941,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
         <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
-        <translation>수직 동기화 사용 (전체화면 결의 이미지 품질 향상, 성능 저하)</translation>
+        <translation>VSync 사용 (전체 화면 모드에서 이미지 품질 향상, 성능 저하)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
@@ -1074,7 +1074,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="414"/>
         <source>Fit Height</source>
-        <translation>꽉차게 보기 (높이 맞춤)</translation>
+        <translation>높이 맞춤</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="415"/>
@@ -1084,7 +1084,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="421"/>
         <source>Fit Width</source>
-        <translation>꽉차게 보기 (폭 맞춤)</translation>
+        <translation>폭 맞춤</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="422"/>
@@ -1099,7 +1099,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="435"/>
         <source>Fit to page</source>
-        <translation>꽉차게 보기</translation>
+        <translation>페이지에 맞춤</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="441"/>
@@ -1114,22 +1114,22 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="476"/>
         <source>Reset zoom</source>
-        <translation>확대/축소 초기화</translation>
+        <translation>Zoom 초기화</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="481"/>
         <source>Show zoom slider</source>
-        <translation>확대/축소 슬라이더 보기</translation>
+        <translation>Zoom 슬라이더 보기</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>확대+</translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>축소-</translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="493"/>
@@ -1387,7 +1387,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1375"/>
         <source>Toggle fullscreen mode</source>
-        <translation>전체화면 전환</translation>
+        <translation>전체 화면 전환</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1378"/>
@@ -1407,12 +1407,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1406"/>
         <source>Zoom in magnifying glass</source>
-        <translation>돋보기 확대</translation>
+        <translation>돋보기 Zoom 확대</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1409"/>
         <source>Zoom out magnifying glass</source>
-        <translation>돋보기 축소</translation>
+        <translation>돋보기 Zoom 축소</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1412"/>
@@ -1437,22 +1437,22 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1454"/>
         <source>Autoscroll forward, horizontal first</source>
-        <translation>세로 우선으로 정방향 자동 스크롤</translation>
+        <translation>가로 우선으로 정방향 자동 스크롤</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1458"/>
         <source>Autoscroll backward, horizontal first</source>
-        <translation>가로 우선으로 정방향 자동 스크롤</translation>
+        <translation>가로 우선으로 역방향 자동 스크롤</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1462"/>
         <source>Autoscroll forward, vertical first</source>
-        <translation>세로 우선으로 역방향 자동 스크롤</translation>
+        <translation>세로 우선으로 정방향 자동 스크롤</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1466"/>
         <source>Autoscroll backward, vertical first</source>
-        <translation>가로 우선으로 역방향 자동 스크롤</translation>
+        <translation>세로 우선으로 역방향 자동 스크롤</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1470"/>
@@ -1497,7 +1497,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1557"/>
         <source>There is a new version available</source>
-        <translation>새 버전을 내려받으시겠습니까?</translation>
+        <translation>새 버전이 있습니다</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1558"/>

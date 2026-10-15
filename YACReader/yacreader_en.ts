@@ -266,7 +266,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>Changelog</translation>
     </message>
 </context>
 <context>
@@ -339,17 +339,17 @@
     <message>
         <location filename="options_dialog.cpp" line="45"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Language</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="47"/>
         <source>Application language</source>
-        <translation type="unfinished"></translation>
+        <translation>Application language</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="49"/>
         <source>System default</source>
-        <translation type="unfinished"></translation>
+        <translation>System default</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="58"/>
@@ -1016,12 +1016,12 @@ If none is active, Escape does nothing.</translation>
         <location filename="main_window_viewer.cpp" line="1149"/>
         <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Extract page(s)</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>Extract page(s) from the original source</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
@@ -1381,12 +1381,12 @@ If none is active, Escape does nothing.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1113"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Overwrite file?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1113"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>The file already exists. Do you want to overwrite it?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1119"/>
@@ -1401,22 +1401,22 @@ If none is active, Escape does nothing.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1149"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>The current page could not be extracted.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>Overwrite files?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Some files already exist. Do you want to overwrite them?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Some pages could not be extracted.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1448"/>
@@ -1520,12 +1520,12 @@ If none is active, Escape does nothing.</translation>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Release notes are not available.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>Previous versions</translation>
     </message>
 </context>
 <context>

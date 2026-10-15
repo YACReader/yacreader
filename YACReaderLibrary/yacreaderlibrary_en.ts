@@ -3994,7 +3994,9 @@ To stop an automatic update, tap on the loading indicator next to the Libraries 
         <source>Tips:
 Spaces act like AND, and searches are not case-sensitive.
 Use quotes to include spaces in a value.</source>
-        <translation>Tips: Spaces act like AND, and searches are not case-sensitive. Use quotes to include spaces in a value.</translation>
+        <translation>Tips:
+Spaces act like AND, and searches are not case-sensitive.
+Use quotes to include spaces in a value.</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="251"/>
@@ -4216,54 +4218,54 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="26"/>
         <source>Unknown</source>
-        <translation type="unfinished">Unknown</translation>
+        <translation>Unknown</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="28"/>
         <source>%1 (%2 unknown)</source>
         <oldsource>%1 (%n unknown)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2 unknown)</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="36"/>
         <source>%1 series</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 series</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="58"/>
         <source>%1 comics selected</source>
         <oldsource>%n comic(s) selected</oldsource>
-        <translation type="unfinished">%1 comics selected</translation>
+        <translation>%1 comics selected</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="77"/>
         <source>Read</source>
-        <translation type="unfinished">Read</translation>
+        <translation>Read</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="80"/>
         <source>In progress</source>
-        <translation type="unfinished">In progress</translation>
+        <translation>In progress</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="83"/>
         <source>Unread</source>
-        <translation type="unfinished">Unread</translation>
+        <translation>Unread</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="86"/>
         <source>Total pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Total pages</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="89"/>
         <source>Total size</source>
-        <translation type="unfinished"></translation>
+        <translation>Total size</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="74"/>
         <source>Series</source>
-        <translation type="unfinished">Series</translation>
+        <translation>Series</translation>
     </message>
 </context>
 <context>

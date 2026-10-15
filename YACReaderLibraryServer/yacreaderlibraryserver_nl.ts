@@ -16,7 +16,7 @@
     <message>
         <location filename="../common/comic.cpp" line="604"/>
         <source>7z not found</source>
-        <translation>7Z Archiefbestand niet gevonden</translation>
+        <translation>7z niet gevonden</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="610"/>

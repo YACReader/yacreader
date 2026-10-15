@@ -35,7 +35,7 @@ YACReaderLibraryServer is the headless (no GUI) version of YACReaderLibrary.
 This application supports persistent settings. To set them up, edit this file: %1
 To learn about the available settings, please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</source>
         <translation>
-YACReaderLibraryServer é a versão sem cabeça (sem interface gráfica) do YACReaderLibrary.
+YACReaderLibraryServer é a versão headless (sem interface gráfica) do YACReaderLibrary.
 
 Este aplicativo suporta configurações persistentes, para configurá-las edite este arquivo %1
 Para saber mais sobre as configurações disponíveis, verifique a documentação em https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</translation>
