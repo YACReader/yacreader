@@ -241,6 +241,7 @@ qt_add_translations(YACReader
         yacreader_fr.ts
         yacreader_ru.ts
         yacreader_pt.ts
+        yacreader_pt_PT.ts
         yacreader_nl.ts
         yacreader_tr.ts
         yacreader_de.ts
