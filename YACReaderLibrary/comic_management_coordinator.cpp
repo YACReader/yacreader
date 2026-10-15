@@ -301,7 +301,7 @@ void ComicManagementCoordinator::assignNumbers()
         bool accepted;
         startingNumber = QInputDialog::getInt(window,
                                               QCoreApplication::translate("LibraryWindow", "Assign comics numbers"),
-                                              QCoreApplication::translate("LibraryWindow", "Assign numbers starting in:"),
+                                              QCoreApplication::translate("LibraryWindow", "Assign numbers starting at:"),
                                               startingNumber,
                                               0,
                                               2147483647,
@@ -593,7 +593,7 @@ void ComicManagementCoordinator::finishComicDeletion()
     if (comicDeletionFailed) {
         QMessageBox::critical(window,
                               QCoreApplication::translate("LibraryWindow", "Unable to delete"),
-                              QCoreApplication::translate("LibraryWindow", "There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder."));
+                              QCoreApplication::translate("LibraryWindow", "There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder."));
     }
     comicDeletionFailed = false;
 }

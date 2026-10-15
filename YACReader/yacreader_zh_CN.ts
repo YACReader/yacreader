@@ -145,7 +145,7 @@
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>尾页</translation>
     </message>
 </context>
@@ -176,12 +176,12 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>快捷键 &quot;%1&quot; 已被映射至其他功能</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>更改快捷键: 双击按键组合并输入新的映射.</translation>
     </message>
 </context>
@@ -228,7 +228,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
+        <source>Total pages: </source>
         <translation>总页数: </translation>
     </message>
     <message>
@@ -238,7 +238,7 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>页码 : </translation>
     </message>
 </context>
@@ -246,7 +246,7 @@
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>页码 : </translation>
     </message>
 </context>
@@ -387,7 +387,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>单击屏幕的左半部分或右半部分即可翻页。</translation>
     </message>
     <message>
@@ -502,7 +502,7 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>滚动效果</translation>
     </message>
     <message>
@@ -796,7 +796,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
+        <source>Press &apos;O&apos; to open a comic.</source>
         <translation>按下 &apos;O&apos; 以打开漫画.</translation>
     </message>
     <message>
@@ -831,7 +831,7 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
+        <source>Loading... please wait!</source>
         <translation>载入中... 请稍候!</translation>
     </message>
 </context>
@@ -944,7 +944,7 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
         <translation>使用VSync (在全屏模式下提高图像质量, 性能更差)</translation>
     </message>
     <message>
@@ -1194,13 +1194,14 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
+        <source>Go to page...</source>
         <translation>跳转至页面 ...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1353"/>
         <location filename="main_window_viewer.cpp" line="1419"/>
-        <source>Magnifiying glass</source>
+        <location filename="main_window_viewer.cpp" line="540"/>
+        <source>Magnifying glass</source>
         <translation>放大镜</translation>
     </message>
     <message>
@@ -1471,11 +1472,6 @@ If none is active, Escape does nothing.</source>
         <translation>隐藏/显示 工具栏</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="540"/>
-        <source>Magnifying glass</source>
-        <translation>放大镜</translation>
-    </message>
-    <message>
         <location filename="main_window_viewer.cpp" line="597"/>
         <source>Edit shortcuts</source>
         <translation>编辑快捷键</translation>
@@ -1494,7 +1490,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1354"/>
         <location filename="main_window_viewer.cpp" line="1430"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
         <translation>页面调整</translation>
     </message>
     <message>

@@ -145,7 +145,7 @@
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>Laatste Pagina</translation>
     </message>
 </context>
@@ -166,7 +166,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>Om een ​​snelkoppeling te wijzigen, dubbelklikt u op de toetsencombinatie en typt u de nieuwe toetsen.</translation>
     </message>
     <message>
@@ -181,7 +181,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>De sneltoets &quot;%1&quot; is al aan een andere functie toegewezen</translation>
     </message>
 </context>
@@ -224,7 +224,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
+        <source>Total pages: </source>
         <translation>Totaal aantal pagina&apos;s : </translation>
     </message>
     <message>
@@ -234,7 +234,7 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>Pagina : </translation>
     </message>
 </context>
@@ -242,7 +242,7 @@
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>Pagina : </translation>
     </message>
 </context>
@@ -438,7 +438,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>Scrollgedrag</translation>
     </message>
     <message>
@@ -473,7 +473,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>Klik op de linker- of rechterhelft van het scherm om pagina&apos;s om te slaan.</translation>
     </message>
     <message>
@@ -787,7 +787,7 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
+        <source>Press &apos;O&apos; to open a comic.</source>
         <translation>Druk &apos;O&apos; om een strip te openen.</translation>
     </message>
     <message>
@@ -812,7 +812,7 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
+        <source>Loading... please wait!</source>
         <translation>Inladen...even wachten!</translation>
     </message>
     <message>
@@ -940,7 +940,7 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
         <translation>Gebruik VSync (verbetering van de beeldkwaliteit in de modus volledig scherm, slechtere prestatie)</translation>
     </message>
     <message>
@@ -1168,7 +1168,7 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
+        <source>Go to page...</source>
         <translation>Ga naar bladzijde ...</translation>
     </message>
     <message>
@@ -1194,6 +1194,8 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1353"/>
+        <location filename="main_window_viewer.cpp" line="1419"/>
         <source>Magnifying glass</source>
         <translation>Vergrootglas</translation>
     </message>
@@ -1361,12 +1363,6 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
         <translation>Vergrootglas opnieuw instellen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1353"/>
-        <location filename="main_window_viewer.cpp" line="1419"/>
-        <source>Magnifiying glass</source>
-        <translation>Vergrootglas</translation>
-    </message>
-    <message>
         <location filename="main_window_viewer.cpp" line="1426"/>
         <source>Toggle between fit to width and fit to height</source>
         <translation>Schakel tussen Aanpassen aan breedte en Aanpassen aan hoogte</translation>
@@ -1374,7 +1370,7 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1354"/>
         <location filename="main_window_viewer.cpp" line="1430"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
         <translation>Pagina-aanpassing</translation>
     </message>
     <message>

@@ -9,7 +9,7 @@
 ExportLibraryDialog::ExportLibraryDialog(QWidget *parent)
     : QDialog(parent), progressCount(0)
 {
-    textLabel = new QLabel(tr("Output folder : "));
+    textLabel = new QLabel(tr("Output folder: "));
     path = new QLineEdit;
     textLabel->setBuddy(path);
 

@@ -80,9 +80,9 @@ int main(int argc, char **argv)
     auto settingsPath = YACReader::getSettingsPath() + "/" + QCoreApplication::applicationName() + ".ini";
 
     QCommandLineParser parser;
-    parser.setApplicationDescription(QString(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary.\n\n"
-                                                                  "This appplication supports persistent settings, to set them up edit this file %1\n"
-                                                                  "To learn about the available settings please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md"))
+    parser.setApplicationDescription(QString(QCoreApplication::tr("\nYACReaderLibraryServer is the headless (no GUI) version of YACReaderLibrary.\n\n"
+                                                                  "This application supports persistent settings. To set them up, edit this file: %1\n"
+                                                                  "To learn about the available settings, please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md"))
                                              .arg(settingsPath));
     parser.addHelpOption();
     const QCommandLineOption versionOption = parser.addVersionOption();

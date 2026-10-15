@@ -56,7 +56,7 @@ void ScrapperToolButton::applyTheme(const Theme &theme)
 SortVolumeComics::SortVolumeComics(QWidget *parent)
     : QWidget(parent)
 {
-    label = new QLabel(tr("Please, sort the list of comics on the left until it matches the comics' information."));
+    label = new QLabel(tr("Please sort the list of comics on the left until it matches the comics' information."));
 
     sortLabel = new QLabel(tr("sort comics to match comic information"));
 

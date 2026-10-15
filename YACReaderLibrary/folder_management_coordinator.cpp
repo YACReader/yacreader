@@ -131,7 +131,7 @@ void FolderManagementCoordinator::renameCurrentFolder()
     if (!folder.isValid()) {
         QMessageBox::information(dialogParent,
                                  QCoreApplication::translate("LibraryWindow", "No folder selected"),
-                                 QCoreApplication::translate("LibraryWindow", "Please, select a folder first"));
+                                 QCoreApplication::translate("LibraryWindow", "Please select a folder first"));
         return;
     }
 
@@ -143,7 +143,7 @@ void FolderManagementCoordinator::renameFolder(const QModelIndex &folder, const 
     if (!folder.isValid()) {
         QMessageBox::information(dialogParent,
                                  QCoreApplication::translate("LibraryWindow", "No folder selected"),
-                                 QCoreApplication::translate("LibraryWindow", "Please, select a folder first"));
+                                 QCoreApplication::translate("LibraryWindow", "Please select a folder first"));
         return;
     }
 
@@ -197,7 +197,7 @@ void FolderManagementCoordinator::deleteCurrentFolder()
     if (!folder.isValid()) {
         QMessageBox::information(dialogParent,
                                  QCoreApplication::translate("LibraryWindow", "No folder selected"),
-                                 QCoreApplication::translate("LibraryWindow", "Please, select a folder first"));
+                                 QCoreApplication::translate("LibraryWindow", "Please select a folder first"));
         return;
     }
 
@@ -248,7 +248,7 @@ void FolderManagementCoordinator::showFolderDeletionError()
 {
     QMessageBox::critical(dialogParent,
                           QCoreApplication::translate("LibraryWindow", "Unable to delete"),
-                          QCoreApplication::translate("LibraryWindow", "There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files."));
+                          QCoreApplication::translate("LibraryWindow", "There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files."));
 }
 
 void FolderManagementCoordinator::setFolderCompleted(qulonglong folderId, const QString &libraryPath, bool completed)
