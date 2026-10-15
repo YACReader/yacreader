@@ -1,6 +1,7 @@
 #ifndef __COMICDB_H
 #define __COMICDB_H
 
+#include "descriptive_comic_metadata.h"
 #include "library_item.h"
 
 #include <QImage>
@@ -9,7 +10,7 @@
 #include <QPixmap>
 #include <QVariant>
 
-class ComicInfo : public QObject
+class ComicInfo : public QObject, public DescriptiveComicMetadata
 {
     Q_OBJECT
 public:
@@ -45,45 +46,12 @@ public:
     [[deprecated("Use imageFiltersJson")]] int gamma;
     //-----------------
 
-    QVariant title; // string
-
     QVariant coverPage; // int
     QVariant numPages; // int
-
-    QVariant number; // string (changed in 9.13 from int)
-    QVariant isBis; // bool
-    QVariant count; // int
-
-    QVariant volume; // string
-    QVariant storyArc; // string
-    QVariant arcNumber; // string (changed in 9.13 from int)
-    QVariant arcCount; // int
-
-    QVariant genere; // string
-
-    QVariant writer; // string
-    QVariant penciller; // string
-    QVariant inker; // string
-    QVariant colorist; // string
-    QVariant letterer; // string
-    QVariant coverArtist; // string
-
-    QVariant date; // string
 
     QVariant day;
     QVariant month;
     QVariant year;
-
-    QVariant publisher; // string
-    QVariant format; // string
-    QVariant color; // bool
-    QVariant ageRating; // string
-
-    QVariant synopsis; // string
-    QVariant characters; // string
-    QVariant notes; // string
-
-    QVariant comicVineID; // string
 
     QVariant lastTimeOpened; // integer/date
     QVariant coverSizeRatio; // h/w
@@ -91,19 +59,6 @@ public:
 
     QVariant added; // integer/date
     QVariant type; // enum
-    QVariant editor; // string
-    QVariant imprint; // string
-    QVariant teams; // string/list
-    QVariant locations; // string/list
-    QVariant series; // string
-    QVariant alternateSeries; // string
-    QVariant alternateNumber; // string
-    QVariant alternateCount; // int
-    QVariant languageISO; // string
-    QVariant seriesGroup; // string
-    QVariant mainCharacterOrTeam; // string
-    QVariant review; // string
-    QVariant tags; // string/list
 
     QVariant imageFiltersJson; // string, JSON with image filters
     QVariant lastTimeImageFiltersSet; // integer/date, last time image filters were set

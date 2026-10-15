@@ -368,32 +368,10 @@ ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
     contrast = comicInfo.contrast;
     gamma = comicInfo.gamma;
 
-    title = comicInfo.title;
+    DescriptiveComicMetadata::operator=(comicInfo);
+
     coverPage = comicInfo.coverPage;
     numPages = comicInfo.numPages;
-    number = comicInfo.number;
-    isBis = comicInfo.isBis;
-    count = comicInfo.count;
-    volume = comicInfo.volume;
-    storyArc = comicInfo.storyArc;
-    arcNumber = comicInfo.arcNumber;
-    arcCount = comicInfo.arcCount;
-    genere = comicInfo.genere;
-    writer = comicInfo.writer;
-    penciller = comicInfo.penciller;
-    inker = comicInfo.inker;
-    colorist = comicInfo.colorist;
-    letterer = comicInfo.letterer;
-    coverArtist = comicInfo.coverArtist;
-    date = comicInfo.date;
-    publisher = comicInfo.publisher;
-    format = comicInfo.format;
-    color = comicInfo.color;
-    ageRating = comicInfo.ageRating;
-    synopsis = comicInfo.synopsis;
-    characters = comicInfo.characters;
-    notes = comicInfo.notes;
-    comicVineID = comicInfo.comicVineID;
 
     lastTimeOpened = comicInfo.lastTimeOpened;
 
@@ -402,19 +380,6 @@ ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
 
     added = comicInfo.added;
     type = comicInfo.type;
-    editor = comicInfo.editor;
-    imprint = comicInfo.imprint;
-    teams = comicInfo.teams;
-    locations = comicInfo.locations;
-    series = comicInfo.series;
-    alternateSeries = comicInfo.alternateSeries;
-    alternateNumber = comicInfo.alternateNumber;
-    alternateCount = comicInfo.alternateCount;
-    languageISO = comicInfo.languageISO;
-    seriesGroup = comicInfo.seriesGroup;
-    mainCharacterOrTeam = comicInfo.mainCharacterOrTeam;
-    review = comicInfo.review;
-    tags = comicInfo.tags;
 
     imageFiltersJson = comicInfo.imageFiltersJson;
     lastTimeImageFiltersSet = comicInfo.lastTimeImageFiltersSet;

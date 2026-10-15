@@ -64,6 +64,8 @@ target_sources(worker INTERFACE
 add_library(common_all STATIC
     comic_db.h
     comic_db.cpp
+    descriptive_comic_metadata.h
+    descriptive_comic_metadata.cpp
     folder.h
     folder.cpp
     library_item.h

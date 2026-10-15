@@ -3,6 +3,7 @@
 #include "QsLog.h"
 #include "comic_db.h"
 #include "data_base_management.h"
+#include "descriptive_comic_metadata.h"
 #include "folder.h"
 #include "library_item.h"
 #include "qnaturalsorting.h"
@@ -596,39 +597,9 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
         return;
 
     QSqlQuery updateComicInfo(db);
-    updateComicInfo.prepare("UPDATE comic_info SET "
-                            "title = :title,"
-
+    updateComicInfo.prepare("UPDATE comic_info SET " + DescriptiveComicMetadata::assignments().join(",") + "," +
                             "coverPage = :coverPage,"
                             "numPages = :numPages,"
-
-                            "number = :number,"
-                            "isBis = :isBis,"
-                            "count = :count,"
-
-                            "volume = :volume,"
-                            "storyArc = :storyArc,"
-                            "arcNumber = :arcNumber,"
-                            "arcCount = :arcCount,"
-
-                            "genere = :genere,"
-
-                            "writer = :writer,"
-                            "penciller = :penciller,"
-                            "inker = :inker,"
-                            "colorist = :colorist,"
-                            "letterer = :letterer,"
-                            "coverArtist = :coverArtist,"
-
-                            "date = :date,"
-                            "publisher = :publisher,"
-                            "format = :format,"
-                            "color = :color,"
-                            "ageRating = :ageRating,"
-
-                            "synopsis = :synopsis,"
-                            "characters = :characters,"
-                            "notes = :notes,"
 
                             "read = :read,"
                             "edited = :edited,"
@@ -644,9 +615,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             "gamma = :gamma,"
                             "rating = :rating,"
 
-                            // new 7.1 fields
-                            "comicVineID = :comicVineID,"
-
                             // new 9.5 fields
                             "lastTimeOpened = :lastTimeOpened,"
 
@@ -661,19 +629,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             // new 9.13 fields
                             "added = :added,"
                             "type = :type,"
-                            "editor = :editor,"
-                            "imprint = :imprint,"
-                            "teams = :teams,"
-                            "locations = :locations,"
-                            "series = :series,"
-                            "alternateSeries = :alternateSeries,"
-                            "alternateNumber = :alternateNumber,"
-                            "alternateCount = :alternateCount,"
-                            "languageISO = :languageISO,"
-                            "seriesGroup = :seriesGroup,"
-                            "mainCharacterOrTeam = :mainCharacterOrTeam,"
-                            "review = :review,"
-                            "tags = :tags,"
 
                             // new 9.16 fields
                             "imageFiltersJson = :imageFiltersJson,"
@@ -685,38 +640,10 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             //--
                             " WHERE id = :id");
 
-    updateComicInfo.bindValue(":title", comicInfo->title);
+    comicInfo->bindTo(updateComicInfo);
 
     updateComicInfo.bindValue(":coverPage", comicInfo->coverPage);
     updateComicInfo.bindValue(":numPages", comicInfo->numPages);
-
-    updateComicInfo.bindValue(":number", comicInfo->number);
-    updateComicInfo.bindValue(":isBis", comicInfo->isBis);
-    updateComicInfo.bindValue(":count", comicInfo->count);
-
-    updateComicInfo.bindValue(":volume", comicInfo->volume);
-    updateComicInfo.bindValue(":storyArc", comicInfo->storyArc);
-    updateComicInfo.bindValue(":arcNumber", comicInfo->arcNumber);
-    updateComicInfo.bindValue(":arcCount", comicInfo->arcCount);
-
-    updateComicInfo.bindValue(":genere", comicInfo->genere);
-
-    updateComicInfo.bindValue(":writer", comicInfo->writer);
-    updateComicInfo.bindValue(":penciller", comicInfo->penciller);
-    updateComicInfo.bindValue(":inker", comicInfo->inker);
-    updateComicInfo.bindValue(":colorist", comicInfo->colorist);
-    updateComicInfo.bindValue(":letterer", comicInfo->letterer);
-    updateComicInfo.bindValue(":coverArtist", comicInfo->coverArtist);
-
-    updateComicInfo.bindValue(":date", comicInfo->date);
-    updateComicInfo.bindValue(":publisher", comicInfo->publisher);
-    updateComicInfo.bindValue(":format", comicInfo->format);
-    updateComicInfo.bindValue(":color", comicInfo->color);
-    updateComicInfo.bindValue(":ageRating", comicInfo->ageRating);
-
-    updateComicInfo.bindValue(":synopsis", comicInfo->synopsis);
-    updateComicInfo.bindValue(":characters", comicInfo->characters);
-    updateComicInfo.bindValue(":notes", comicInfo->notes);
 
     bool read = comicInfo->read || comicInfo->currentPage == comicInfo->numPages.toInt(); // if current page is the las page, the comic is read(completed)
     comicInfo->read = read;
@@ -734,8 +661,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":gamma", comicInfo->gamma);
     updateComicInfo.bindValue(":rating", comicInfo->rating);
 
-    updateComicInfo.bindValue(":comicVineID", comicInfo->comicVineID);
-
     updateComicInfo.bindValue(":lastTimeOpened", comicInfo->lastTimeOpened);
 
     updateComicInfo.bindValue(":coverSizeRatio", comicInfo->coverSizeRatio);
@@ -744,19 +669,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":added", comicInfo->added);
     auto intType = static_cast<int>(comicInfo->type.value<YACReader::FileType>());
     updateComicInfo.bindValue(":type", intType);
-    updateComicInfo.bindValue(":editor", comicInfo->editor);
-    updateComicInfo.bindValue(":imprint", comicInfo->imprint);
-    updateComicInfo.bindValue(":teams", comicInfo->teams);
-    updateComicInfo.bindValue(":locations", comicInfo->locations);
-    updateComicInfo.bindValue(":series", comicInfo->series);
-    updateComicInfo.bindValue(":alternateSeries", comicInfo->alternateSeries);
-    updateComicInfo.bindValue(":alternateNumber", comicInfo->alternateNumber);
-    updateComicInfo.bindValue(":alternateCount", comicInfo->alternateCount);
-    updateComicInfo.bindValue(":languageISO", comicInfo->languageISO);
-    updateComicInfo.bindValue(":seriesGroup", comicInfo->seriesGroup);
-    updateComicInfo.bindValue(":mainCharacterOrTeam", comicInfo->mainCharacterOrTeam);
-    updateComicInfo.bindValue(":review", comicInfo->review);
-    updateComicInfo.bindValue(":tags", comicInfo->tags);
 
     updateComicInfo.bindValue(":imageFiltersJson", comicInfo->imageFiltersJson);
     updateComicInfo.bindValue(":lastTimeImageFiltersSet", comicInfo->lastTimeImageFiltersSet);
@@ -2183,40 +2095,9 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     int rating = record.indexOf("rating");
     //--
 
-    int title = record.indexOf("title");
     int numPages = record.indexOf("numPages");
 
     int coverPage = record.indexOf("coverPage");
-
-    int number = record.indexOf("number");
-    int isBis = record.indexOf("isBis");
-    int count = record.indexOf("count");
-
-    int volume = record.indexOf("volume");
-    int storyArc = record.indexOf("storyArc");
-    int arcNumber = record.indexOf("arcNumber");
-    int arcCount = record.indexOf("arcCount");
-
-    int genere = record.indexOf("genere");
-
-    int writer = record.indexOf("writer");
-    int penciller = record.indexOf("penciller");
-    int inker = record.indexOf("inker");
-    int colorist = record.indexOf("colorist");
-    int letterer = record.indexOf("letterer");
-    int coverArtist = record.indexOf("coverArtist");
-
-    int date = record.indexOf("date");
-    int publisher = record.indexOf("publisher");
-    int format = record.indexOf("format");
-    int color = record.indexOf("color");
-    int ageRating = record.indexOf("ageRating");
-
-    int synopsis = record.indexOf("synopsis");
-    int characters = record.indexOf("characters");
-    int notes = record.indexOf("notes");
-
-    int comicVineID = record.indexOf("comicVineID");
 
     int lastTimeOpened = record.indexOf("lastTimeOpened");
 
@@ -2225,19 +2106,6 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
 
     int added = record.indexOf("added");
     int type = record.indexOf("type");
-    int editor = record.indexOf("editor");
-    int imprint = record.indexOf("imprint");
-    int teams = record.indexOf("teams");
-    int locations = record.indexOf("locations");
-    int series = record.indexOf("series");
-    int alternateSeries = record.indexOf("alternateSeries");
-    int alternateNumber = record.indexOf("alternateNumber");
-    int alternateCount = record.indexOf("alternateCount");
-    int languageISO = record.indexOf("languageISO");
-    int seriesGroup = record.indexOf("seriesGroup");
-    int mainCharacterOrTeam = record.indexOf("mainCharacterOrTeam");
-    int review = record.indexOf("review");
-    int tags = record.indexOf("tags");
 
     int imageFiltersJson = record.indexOf("imageFiltersJson");
     int lastTimeImageFiltersSet = record.indexOf("lastTimeImageFiltersSet");
@@ -2246,6 +2114,7 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     int lastTimeMetadataSet = record.indexOf("lastTimeMetadataSet");
 
     ComicInfo comicInfo;
+    comicInfo.loadFrom(record);
 
     comicInfo.hash = query.value(hash).toString();
     comicInfo.id = query.value(id).toULongLong();
@@ -2263,40 +2132,9 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     comicInfo.gamma = query.value(gamma).toInt();
     comicInfo.rating = query.value(rating).toInt();
     //--
-    comicInfo.title = query.value(title);
     comicInfo.numPages = query.value(numPages);
 
     comicInfo.coverPage = query.value(coverPage);
-
-    comicInfo.number = query.value(number);
-    comicInfo.isBis = query.value(isBis);
-    comicInfo.count = query.value(count);
-
-    comicInfo.volume = query.value(volume);
-    comicInfo.storyArc = query.value(storyArc);
-    comicInfo.arcNumber = query.value(arcNumber);
-    comicInfo.arcCount = query.value(arcCount);
-
-    comicInfo.genere = query.value(genere);
-
-    comicInfo.writer = query.value(writer);
-    comicInfo.penciller = query.value(penciller);
-    comicInfo.inker = query.value(inker);
-    comicInfo.colorist = query.value(colorist);
-    comicInfo.letterer = query.value(letterer);
-    comicInfo.coverArtist = query.value(coverArtist);
-
-    comicInfo.date = query.value(date);
-    comicInfo.publisher = query.value(publisher);
-    comicInfo.format = query.value(format);
-    comicInfo.color = query.value(color);
-    comicInfo.ageRating = query.value(ageRating);
-
-    comicInfo.synopsis = query.value(synopsis);
-    comicInfo.characters = query.value(characters);
-    comicInfo.notes = query.value(notes);
-
-    comicInfo.comicVineID = query.value(comicVineID);
 
     // new 9.5 fields
     comicInfo.lastTimeOpened = query.value(lastTimeOpened);
@@ -2312,19 +2150,6 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     // new 9.13 fields
     comicInfo.added = query.value(added);
     comicInfo.type = query.value(type);
-    comicInfo.editor = query.value(editor);
-    comicInfo.imprint = query.value(imprint);
-    comicInfo.teams = query.value(teams);
-    comicInfo.locations = query.value(locations);
-    comicInfo.series = query.value(series);
-    comicInfo.alternateSeries = query.value(alternateSeries);
-    comicInfo.alternateNumber = query.value(alternateNumber);
-    comicInfo.alternateCount = query.value(alternateCount);
-    comicInfo.languageISO = query.value(languageISO);
-    comicInfo.seriesGroup = query.value(seriesGroup);
-    comicInfo.mainCharacterOrTeam = query.value(mainCharacterOrTeam);
-    comicInfo.review = query.value(review);
-    comicInfo.tags = query.value(tags);
     //--
 
     // new 9.16 fields
