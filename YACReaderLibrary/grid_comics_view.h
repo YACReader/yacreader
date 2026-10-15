@@ -24,6 +24,7 @@ class YACReaderComicInfoHelper;
 class GridContentModel;
 class FolderModel;
 class Folder;
+class ComicInfoObject;
 
 // values relative to visible cells
 const unsigned int YACREADER_MIN_GRID_ZOOM_WIDTH = 156;
@@ -188,6 +189,8 @@ private:
     QMetaObject::Connection modelFavoritesChangedConnection;
 
     ComicDB currentComic;
+    ComicInfoObject *currentComicInfo = nullptr;
+    void publishCurrentComic(QQmlContext *ctxt);
 
     void closeEvent(QCloseEvent *event) override;
     void createCoverSizeSliderWidget();

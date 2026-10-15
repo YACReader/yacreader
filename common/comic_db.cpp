@@ -267,9 +267,9 @@ QString ComicDB::getInfoTitle() const
 // COMIC_INFO-------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 ComicInfo::ComicInfo()
-    : read(false),
+    : id(0),
+      read(false),
       edited(false),
-      existOnDb(false),
       rating(0),
       hasBeenOpened(false),
       currentPage(1),
@@ -279,16 +279,6 @@ ComicInfo::ComicInfo()
       brightness(-1),
       contrast(-1),
       gamma(-1)
-{
-}
-
-ComicInfo::ComicInfo(const ComicInfo &comicInfo)
-    : QObject()
-{
-    operator=(comicInfo);
-}
-
-ComicInfo::~ComicInfo()
 {
 }
 
@@ -349,53 +339,12 @@ void ComicInfo::deleteMetadata()
 
     comicVineID = QVariant();
 }
-// the default operator= should work
-ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
-{
-    hash = comicInfo.hash;
-    id = comicInfo.id;
-    existOnDb = comicInfo.existOnDb;
-    read = comicInfo.read;
-    edited = comicInfo.edited;
-
-    hasBeenOpened = comicInfo.hasBeenOpened;
-    rating = comicInfo.rating;
-    currentPage = comicInfo.currentPage;
-    bookmark1 = comicInfo.bookmark1;
-    bookmark2 = comicInfo.bookmark2;
-    bookmark3 = comicInfo.bookmark3;
-    brightness = comicInfo.brightness;
-    contrast = comicInfo.contrast;
-    gamma = comicInfo.gamma;
-
-    DescriptiveComicMetadata::operator=(comicInfo);
-
-    coverPage = comicInfo.coverPage;
-    numPages = comicInfo.numPages;
-
-    lastTimeOpened = comicInfo.lastTimeOpened;
-
-    coverSizeRatio = comicInfo.coverSizeRatio;
-    originalCoverSize = comicInfo.originalCoverSize;
-
-    added = comicInfo.added;
-    type = comicInfo.type;
-
-    imageFiltersJson = comicInfo.imageFiltersJson;
-    lastTimeImageFiltersSet = comicInfo.lastTimeImageFiltersSet;
-    lastTimeCoverSet = comicInfo.lastTimeCoverSet;
-    usesExternalCover = comicInfo.usesExternalCover;
-    lastTimeMetadataSet = comicInfo.lastTimeMetadataSet;
-
-    return *this;
-}
-
-QPixmap ComicInfo::getCover(const QString &basePath)
+QPixmap ComicInfo::getCover(const QString &basePath) const
 {
     return QPixmap(YACReader::LibraryPaths::coverPath(basePath, hash));
 }
 
-QStringList ComicInfo::getWriters()
+QStringList ComicInfo::getWriters() const
 {
     if (writer.toString().length() > 0) {
         return writer.toString().split("\n");
@@ -404,7 +353,7 @@ QStringList ComicInfo::getWriters()
     return QStringList();
 }
 
-QStringList ComicInfo::getPencillers()
+QStringList ComicInfo::getPencillers() const
 {
     if (penciller.toString().length() > 0) {
         return penciller.toString().split("\n");
@@ -413,7 +362,7 @@ QStringList ComicInfo::getPencillers()
     return QStringList();
 }
 
-QStringList ComicInfo::getInkers()
+QStringList ComicInfo::getInkers() const
 {
     if (inker.toString().length() > 0) {
         return inker.toString().split("\n");
@@ -422,7 +371,7 @@ QStringList ComicInfo::getInkers()
     return QStringList();
 }
 
-QStringList ComicInfo::getColorists()
+QStringList ComicInfo::getColorists() const
 {
     if (colorist.toString().length() > 0) {
         return colorist.toString().split("\n");
@@ -431,7 +380,7 @@ QStringList ComicInfo::getColorists()
     return QStringList();
 }
 
-QStringList ComicInfo::getLetterers()
+QStringList ComicInfo::getLetterers() const
 {
     if (letterer.toString().length() > 0) {
         return letterer.toString().split("\n");
@@ -440,7 +389,7 @@ QStringList ComicInfo::getLetterers()
     return QStringList();
 }
 
-QStringList ComicInfo::getCoverArtists()
+QStringList ComicInfo::getCoverArtists() const
 {
     if (coverArtist.toString().length() > 0) {
         return coverArtist.toString().split("\n");
@@ -449,7 +398,7 @@ QStringList ComicInfo::getCoverArtists()
     return QStringList();
 }
 
-QStringList ComicInfo::getEditors()
+QStringList ComicInfo::getEditors() const
 {
     if (editor.toString().length() > 0) {
         return editor.toString().split("\n");
@@ -458,7 +407,7 @@ QStringList ComicInfo::getEditors()
     return QStringList();
 }
 
-QStringList ComicInfo::getImprint()
+QStringList ComicInfo::getImprint() const
 {
     if (imprint.toString().length() > 0) {
         return imprint.toString().split("\n");
@@ -467,7 +416,7 @@ QStringList ComicInfo::getImprint()
     return QStringList();
 }
 
-QStringList ComicInfo::getCharacters()
+QStringList ComicInfo::getCharacters() const
 {
     if (characters.toString().length() > 0) {
         return characters.toString().split("\n");
@@ -476,7 +425,7 @@ QStringList ComicInfo::getCharacters()
     return QStringList();
 }
 
-QStringList ComicInfo::getTeams()
+QStringList ComicInfo::getTeams() const
 {
     if (teams.toString().length() > 0) {
         return teams.toString().split("\n");
@@ -485,7 +434,7 @@ QStringList ComicInfo::getTeams()
     return QStringList();
 }
 
-QStringList ComicInfo::getLocations()
+QStringList ComicInfo::getLocations() const
 {
     if (locations.toString().length() > 0) {
         return locations.toString().split("\n");
@@ -494,7 +443,7 @@ QStringList ComicInfo::getLocations()
     return QStringList();
 }
 
-QStringList ComicInfo::getTags()
+QStringList ComicInfo::getTags() const
 {
     if (tags.toString().length() > 0) {
         return tags.toString().split("\n");
@@ -503,7 +452,7 @@ QStringList ComicInfo::getTags()
     return QStringList();
 }
 
-QString ComicInfo::getTypeString()
+QString ComicInfo::getTypeString() const
 {
     if (type.isNull()) {
         return QStringLiteral("Null");
@@ -531,7 +480,7 @@ QString ComicInfo::getTypeString()
     return QStringLiteral("Unknown");
 }
 
-QString ComicInfo::getStoryArcInfoString()
+QString ComicInfo::getStoryArcInfoString() const
 {
     if (arcNumber.toString().length() > 0 && arcCount.toString().length() > 0 && storyArc.toString().length() > 0) {
         return "(" + arcNumber.toString() + "/" + arcCount.toString() + ") " + storyArc.toString();
@@ -544,7 +493,7 @@ QString ComicInfo::getStoryArcInfoString()
     return storyArc.toString().length() > 0 ? storyArc.toString() : "";
 }
 
-QString ComicInfo::getAlternateSeriesString()
+QString ComicInfo::getAlternateSeriesString() const
 {
     if (alternateNumber.toString().length() > 0 && alternateCount.toString().length() > 0 && alternateSeries.toString().length() > 0) {
         return "(" + alternateNumber.toString() + "/" + alternateCount.toString() + ") " + alternateSeries.toString();
@@ -555,30 +504,6 @@ QString ComicInfo::getAlternateSeriesString()
     }
 
     return alternateSeries.toString().length() > 0 ? alternateSeries.toString() : "";
-}
-
-void ComicInfo::setRead(bool r)
-{
-    if (r != read) {
-        read = r;
-        emit readChanged();
-    }
-}
-
-void ComicInfo::setRating(int r)
-{
-    if (r != rating) {
-        rating = r;
-        emit ratingChanged();
-    }
-}
-
-void ComicInfo::setFavorite(bool f)
-{
-    if (f != isFavorite) {
-        isFavorite = f;
-        emit favoriteChanged();
-    }
 }
 
 QDataStream &operator<<(QDataStream &stream, const ComicDB &comic)
@@ -609,7 +534,7 @@ QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo)
     stream << comicInfo.read;
     stream << comicInfo.edited;
     stream << comicInfo.hash;
-    stream << comicInfo.existOnDb;
+    stream << (comicInfo.id != 0); // existOnDb
 
     stream << comicInfo.hasBeenOpened;
     stream << comicInfo.rating;
@@ -694,7 +619,8 @@ QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo)
     stream >> comicInfo.read;
     stream >> comicInfo.edited;
     stream >> comicInfo.hash;
-    stream >> comicInfo.existOnDb;
+    bool existOnDb;
+    stream >> existOnDb;
 
     stream >> comicInfo.hasBeenOpened;
     stream >> comicInfo.rating;

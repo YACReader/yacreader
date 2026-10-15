@@ -29,13 +29,15 @@ void ComicFullinfoController_v2::serviceContent(const int &libraryId, const qulo
 {
     auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
 
-    ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
+    auto loadedComic = DBHelper::getComicInfo(libraryId, comicId);
 
-    if (!comic.info.existOnDb) {
+    if (!loadedComic) {
         response.setStatus(404, "Not Found");
         response.write("", true);
         return;
     }
+
+    ComicDB &comic = *loadedComic;
 
     QJsonObject json = YACReaderServerDataHelper::fullComicToJSON(libraryId, libraryUuid, comic);
 

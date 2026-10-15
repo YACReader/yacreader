@@ -89,10 +89,11 @@ void SearchController::getComics(int libraryId, const QUuid &libraryUuid, QSqlDa
         comic.parentId = sqlQuery.value("parentId").toULongLong();
         comic.name = sqlQuery.value("fileName").toString();
         comic.path = sqlQuery.value("path").toString();
-        comic.info = DBHelper::loadComicInfo(sqlQuery.value("hash").toString(), db);
-        if (!comic.info.existOnDb) {
+        auto info = DBHelper::loadComicInfo(sqlQuery.value("hash").toString(), db);
+        if (!info) {
             continue;
         }
+        comic.info = *info;
 
         items.append(YACReaderServerDataHelper::comicToJSON(libraryId, libraryUuid, comic));
     }

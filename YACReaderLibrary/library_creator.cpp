@@ -468,7 +468,7 @@ void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &
 
     ComicDB insertedComic = DBHelper::loadComic(fileInfo.fileName(), relativePath, hash, _database);
 
-    if (!insertedComic.info.existOnDb) {
+    if (insertedComic.info.id == 0) {
         return;
     }
 

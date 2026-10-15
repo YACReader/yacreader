@@ -9,6 +9,8 @@ class QString;
 #include <QUuid>
 #include <QVariantMap>
 
+#include <optional>
+
 class ComicDB;
 class Folder;
 class LibraryItem;
@@ -29,7 +31,7 @@ public:
     static QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId);
     static QList<LibraryItem *> getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort);
     static QList<LibraryItem *> getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId);
-    static ComicDB getComicInfo(qulonglong libraryId, qulonglong id);
+    static std::optional<ComicDB> getComicInfo(qulonglong libraryId, qulonglong id);
     static QList<ComicDB> getSiblings(qulonglong libraryId, qulonglong parentId);
     static Folder getFolder(qulonglong libraryId, qulonglong id);
     static QString getLibraryName(int id);
@@ -111,7 +113,7 @@ public:
     static void readFolderFromQuery(Folder &folder, QSqlQuery &query);
     static ComicDB loadComic(qulonglong id, QSqlDatabase &db, bool &found);
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase &database);
-    static ComicInfo loadComicInfo(QString hash, QSqlDatabase &db);
+    static std::optional<ComicInfo> loadComicInfo(QString hash, QSqlDatabase &db);
     static ComicInfo getComicInfoFromQuery(QSqlQuery &query, const QString &idKey = "id");
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);

@@ -88,16 +88,19 @@ QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, 
     return list;
 }
 
-ComicDB DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
+std::optional<ComicDB> DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QString connectionName = "";
-    ComicDB comic;
+    std::optional<ComicDB> comic;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
         bool found;
-        comic = DBHelper::loadComic(id, db, found);
+        auto loaded = DBHelper::loadComic(id, db, found);
+        if (found) {
+            comic = loaded;
+        }
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1088,11 +1091,13 @@ QList<QUuid> DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &co
                                     " WHERE id = :id ");
 
             for (const auto &comicInfo : comics) {
-                ComicInfo info = loadComicInfo(comicInfo.hash, db);
+                const auto storedInfo = loadComicInfo(comicInfo.hash, db);
 
-                if (!info.existOnDb) {
+                if (!storedInfo) {
                     continue;
                 }
+
+                ComicInfo info = *storedInfo;
 
                 if (comicInfo.currentPage > 0) {
                     info.currentPage = comicInfo.currentPage;
@@ -1463,7 +1468,7 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
 {
     auto added = QDateTime::currentSecsSinceEpoch();
 
-    if (!comic->info.existOnDb) {
+    if (comic->info.id == 0) {
         QSqlQuery comicInfoInsert(db);
 
         comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages,coverSizeRatio,originalCoverSize,added,type) "
@@ -1743,7 +1748,9 @@ QList<LibraryItem *> DBHelper::getComicsFromParent(qulonglong parentId, QSqlData
         currentItem->parentId = selectQuery.value(1).toULongLong();
         currentItem->name = selectQuery.value(2).toString();
         currentItem->path = selectQuery.value(3).toString();
-        currentItem->info = DBHelper::loadComicInfo(selectQuery.value(4).toString(), db);
+        if (auto info = DBHelper::loadComicInfo(selectQuery.value(4).toString(), db)) {
+            currentItem->info = *info;
+        }
 
         list.append(currentItem);
     }
@@ -2020,7 +2027,9 @@ ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db, bool &found)
         comic.parentId = selectQuery.value(parentId).toULongLong();
         comic.name = selectQuery.value(name).toString();
         comic.path = selectQuery.value(path).toString();
-        comic.info = DBHelper::loadComicInfo(selectQuery.value(hash).toString(), db);
+        if (auto info = DBHelper::loadComicInfo(selectQuery.value(hash).toString(), db)) {
+            comic.info = *info;
+        }
         found = true;
     } else {
         found = false;
@@ -2037,33 +2046,30 @@ ComicDB DBHelper::loadComic(QString cname, QString cpath, QString chash, QSqlDat
     comic.name = cname;
     comic.path = cpath;
 
-    comic.info = DBHelper::loadComicInfo(chash, database);
-
-    if (!comic.info.existOnDb) {
+    if (auto info = DBHelper::loadComicInfo(chash, database)) {
+        comic.info = *info;
+        comic._hasCover = true;
+    } else {
         comic.info.hash = chash;
         comic.info.coverPage = 1;
         comic._hasCover = false;
-    } else
-        comic._hasCover = true;
+    }
 
     return comic;
 }
 
-ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
+std::optional<ComicInfo> DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
 {
-    ComicInfo comicInfo;
-
     QSqlQuery findComicInfo(db);
     findComicInfo.prepare("SELECT * FROM comic_info WHERE hash = :hash");
     findComicInfo.bindValue(":hash", hash);
     findComicInfo.exec();
 
     if (findComicInfo.next()) {
-        comicInfo = getComicInfoFromQuery(findComicInfo);
-    } else
-        comicInfo.existOnDb = false;
+        return getComicInfoFromQuery(findComicInfo);
+    }
 
-    return comicInfo;
+    return std::nullopt;
 }
 
 ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey)
@@ -2151,8 +2157,6 @@ ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey
     comicInfo.usesExternalCover = query.value(usesExternalCover).toBool();
     comicInfo.lastTimeMetadataSet = query.value(lastTimeMetadataSet);
     //--
-
-    comicInfo.existOnDb = true;
 
     return comicInfo;
 }

@@ -139,6 +139,8 @@ qt_add_executable(YACReaderLibrary WIN32
     yacreader_main_toolbar.cpp
     comics_view.h
     comics_view.cpp
+    comic_info_object.h
+    comic_info_object.cpp
     content_view_state.h
     comics_view_transition.h
     comics_view_transition.cpp

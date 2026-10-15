@@ -4,6 +4,7 @@
 #include "comic.h"
 #include "comic_db.h"
 #include "comic_files_manager.h"
+#include "comic_info_object.h"
 #include "cover_utils.h"
 #include "current_comic_view_helper.h"
 #include "folder_model.h"
@@ -27,6 +28,7 @@
 #include <QWidgetAction>
 
 #include <algorithm>
+#include <utility>
 
 namespace {
 QString pixmapDataUrl(const QPixmap &pixmap)
@@ -109,8 +111,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     bool showInfo = settings->value(COMICS_GRID_SHOW_INFO, false).toBool();
     ctxt->setContextProperty("showInfo", showInfo);
 
-    ctxt->setContextProperty("currentComic", &currentComic);
-    ctxt->setContextProperty("currentComicInfo", &currentComic.info);
+    publishCurrentComic(ctxt);
 
     showInfoAction = new QAction(tr("Show info"), this);
     showInfoAction->setCheckable(true);
@@ -832,12 +833,19 @@ void GridComicsView::updateCurrentComicBanner()
             (mode == ComicModel::Mode::Folder || mode == ComicModel::Mode::ReadingList) &&
             settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool();
 
-    ctxt->setContextProperty("currentComic", &currentComic);
-    ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
+    publishCurrentComic(ctxt);
     if (currentComicBannerVisible != showCurrentComic) {
         currentComicBannerVisible = showCurrentComic;
         emit currentComicBannerVisibleChanged();
     }
+}
+
+void GridComicsView::publishCurrentComic(QQmlContext *ctxt)
+{
+    auto previous = std::exchange(currentComicInfo, new ComicInfoObject(currentComic, false, this));
+    ctxt->setContextProperty("currentComic", currentComicInfo);
+    ctxt->setContextProperty("currentComicInfo", currentComicInfo);
+    delete previous;
 }
 
 void GridComicsView::clearFolderFocus()

@@ -543,12 +543,13 @@ void ComicInfoRepairer::run()
                 bool repaired = false;
                 if (repairCase == RepairCase::InvalidPageCount) {
                     // this repair needs the full comic_info row: it is the base the parsed XML metadata is merged over
-                    const auto info = DBHelper::loadComicInfo(task.hash, db);
+                    const auto storedInfo = DBHelper::loadComicInfo(task.hash, db);
+                    const auto info = storedInfo.value_or(ComicInfo());
                     QImage customCover;
-                    const bool preserveCustomCover = info.existOnDb && info.usesExternalCover.toBool() && customCover.load(coverPath);
+                    const bool preserveCustomCover = storedInfo && info.usesExternalCover.toBool() && customCover.load(coverPath);
                     const auto extracted = extractInfo(comicPath, task.coverPage, importXmlMetadata);
 
-                    if (info.existOnDb && extracted.numPages > 0 && (preserveCustomCover || (extracted.hasValidCover && extracted.originalCoverSize.second > 0))) {
+                    if (storedInfo && extracted.numPages > 0 && (preserveCustomCover || (extracted.hasValidCover && extracted.originalCoverSize.second > 0))) {
                         auto updatedInfo = info;
                         const bool xmlParsed = importXmlMetadata && parseXMLIntoInfo(extracted.xmlData, updatedInfo);
                         QSqlQuery update(db);

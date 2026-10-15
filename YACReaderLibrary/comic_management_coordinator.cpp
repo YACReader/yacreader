@@ -263,7 +263,7 @@ void ComicManagementCoordinator::setSelectedComicsUnread()
 void ComicManagementCoordinator::setComicUnread(qulonglong libraryId, const ComicDB &comic)
 {
     auto info = comic.info;
-    info.setRead(false);
+    info.read = false;
     info.currentPage = 1;
     info.hasBeenOpened = false;
     info.lastTimeOpened = QVariant();

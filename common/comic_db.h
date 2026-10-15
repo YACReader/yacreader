@@ -10,27 +10,21 @@
 #include <QPixmap>
 #include <QVariant>
 
-class ComicInfo : public QObject, public DescriptiveComicMetadata
+class ComicInfo : public DescriptiveComicMetadata
 {
-    Q_OBJECT
 public:
     ComicInfo();
-    ComicInfo(const ComicInfo &comicInfo);
-    ~ComicInfo();
 
     void deleteMetadata();
 
-    ComicInfo &operator=(const ComicInfo &comicInfo);
-
-    bool operator==(const ComicInfo &other) { return id == other.id; }
-    bool operator!=(const ComicInfo &other) { return id != other.id; }
+    bool operator==(const ComicInfo &other) const { return id == other.id; }
+    bool operator!=(const ComicInfo &other) const { return id != other.id; }
 
     // mandatory fields
     qulonglong id;
     bool read;
     bool edited;
     QString hash;
-    bool existOnDb;
 
     int rating; // TODO_METADATA: change to float
 
@@ -66,130 +60,32 @@ public:
     QVariant usesExternalCover; // bool, whether the cover is external or not
     QVariant lastTimeMetadataSet; // integer/date, last time metadata was set
 
-    QPixmap getCover(const QString &basePath);
+    QPixmap getCover(const QString &basePath) const;
 
-    Q_INVOKABLE QStringList getWriters();
-    Q_INVOKABLE QStringList getPencillers();
-    Q_INVOKABLE QStringList getInkers();
-    Q_INVOKABLE QStringList getColorists();
-    Q_INVOKABLE QStringList getLetterers();
-    Q_INVOKABLE QStringList getCoverArtists();
-    Q_INVOKABLE QStringList getEditors();
-    Q_INVOKABLE QStringList getImprint();
+    QStringList getWriters() const;
+    QStringList getPencillers() const;
+    QStringList getInkers() const;
+    QStringList getColorists() const;
+    QStringList getLetterers() const;
+    QStringList getCoverArtists() const;
+    QStringList getEditors() const;
+    QStringList getImprint() const;
 
-    Q_INVOKABLE QStringList getCharacters();
+    QStringList getCharacters() const;
 
-    Q_INVOKABLE QStringList getTeams();
-    Q_INVOKABLE QStringList getLocations();
+    QStringList getTeams() const;
+    QStringList getLocations() const;
 
-    Q_INVOKABLE QStringList getTags();
+    QStringList getTags() const;
 
-    Q_INVOKABLE QString getTypeString();
+    QString getTypeString() const;
 
-    Q_INVOKABLE QString getStoryArcInfoString();
-    Q_INVOKABLE QString getAlternateSeriesString();
+    QString getStoryArcInfoString() const;
+    QString getAlternateSeriesString() const;
 
     friend QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo);
 
     friend QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo);
-
-    Q_PROPERTY(qulonglong id MEMBER id CONSTANT)
-    Q_PROPERTY(bool read MEMBER read WRITE setRead NOTIFY readChanged)
-    Q_PROPERTY(bool edited MEMBER edited CONSTANT)
-    Q_PROPERTY(QString hash MEMBER hash CONSTANT)
-    Q_PROPERTY(bool existOnDb MEMBER existOnDb CONSTANT)
-
-    Q_PROPERTY(int rating MEMBER rating WRITE setRating NOTIFY ratingChanged)
-
-    Q_PROPERTY(bool hasBeenOpened MEMBER hasBeenOpened CONSTANT)
-
-    Q_PROPERTY(int currentPage MEMBER currentPage CONSTANT)
-    Q_PROPERTY(int bookmark1 MEMBER bookmark1 CONSTANT)
-    Q_PROPERTY(int bookmark2 MEMBER bookmark2 CONSTANT)
-    Q_PROPERTY(int bookmark3 MEMBER bookmark3 CONSTANT)
-    Q_PROPERTY(int brightness MEMBER brightness CONSTANT)
-    Q_PROPERTY(int contrast MEMBER contrast CONSTANT)
-    Q_PROPERTY(int gamma MEMBER gamma CONSTANT)
-
-    Q_PROPERTY(QVariant title MEMBER title CONSTANT)
-
-    Q_PROPERTY(QVariant coverPage MEMBER coverPage CONSTANT)
-    Q_PROPERTY(QVariant numPages MEMBER numPages CONSTANT)
-
-    Q_PROPERTY(QVariant number MEMBER number CONSTANT)
-    Q_PROPERTY(QVariant isBis MEMBER isBis CONSTANT)
-    Q_PROPERTY(QVariant count MEMBER count CONSTANT)
-
-    Q_PROPERTY(QVariant volume MEMBER volume CONSTANT)
-    Q_PROPERTY(QVariant storyArc MEMBER storyArc CONSTANT)
-    Q_PROPERTY(QVariant arcNumber MEMBER arcNumber CONSTANT)
-    Q_PROPERTY(QVariant arcCount MEMBER arcCount CONSTANT)
-
-    Q_PROPERTY(QVariant genere MEMBER genere CONSTANT)
-
-    Q_PROPERTY(QVariant writer MEMBER writer CONSTANT)
-    Q_PROPERTY(QVariant penciller MEMBER penciller CONSTANT)
-    Q_PROPERTY(QVariant inker MEMBER inker CONSTANT)
-    Q_PROPERTY(QVariant colorist MEMBER colorist CONSTANT)
-    Q_PROPERTY(QVariant letterer MEMBER letterer CONSTANT)
-    Q_PROPERTY(QVariant coverArtist MEMBER coverArtist CONSTANT)
-
-    Q_PROPERTY(QVariant date MEMBER date CONSTANT)
-    Q_PROPERTY(QVariant day MEMBER day CONSTANT)
-    Q_PROPERTY(QVariant month MEMBER month CONSTANT)
-    Q_PROPERTY(QVariant year MEMBER year CONSTANT)
-    Q_PROPERTY(QVariant publisher MEMBER publisher CONSTANT)
-    Q_PROPERTY(QVariant format MEMBER format CONSTANT)
-    Q_PROPERTY(QVariant color MEMBER color CONSTANT)
-    Q_PROPERTY(QVariant ageRating MEMBER ageRating CONSTANT)
-
-    Q_PROPERTY(QVariant synopsis MEMBER synopsis CONSTANT)
-    Q_PROPERTY(QVariant characters MEMBER characters CONSTANT)
-    Q_PROPERTY(QVariant notes MEMBER notes CONSTANT)
-
-    Q_PROPERTY(QVariant comicVineID MEMBER comicVineID CONSTANT)
-
-    Q_PROPERTY(QVariant lastTimeOpened MEMBER lastTimeOpened CONSTANT)
-
-    Q_PROPERTY(QVariant coverSizeRatio MEMBER coverSizeRatio CONSTANT)
-    Q_PROPERTY(QVariant originalCoverSize MEMBER originalCoverSize CONSTANT)
-
-    Q_PROPERTY(QVariant added MEMBER added CONSTANT)
-    Q_PROPERTY(QVariant type MEMBER type CONSTANT)
-    Q_PROPERTY(QVariant editor MEMBER editor CONSTANT)
-    Q_PROPERTY(QVariant imprint MEMBER imprint CONSTANT)
-    Q_PROPERTY(QVariant teams MEMBER teams CONSTANT)
-    Q_PROPERTY(QVariant locations MEMBER locations CONSTANT)
-    Q_PROPERTY(QVariant series MEMBER series CONSTANT)
-    Q_PROPERTY(QVariant alternateSeries MEMBER alternateSeries CONSTANT)
-    Q_PROPERTY(QVariant alternateNumber MEMBER alternateNumber CONSTANT)
-    Q_PROPERTY(QVariant alternateCount MEMBER alternateCount CONSTANT)
-    Q_PROPERTY(QVariant languageISO MEMBER languageISO CONSTANT)
-    Q_PROPERTY(QVariant seriesGroup MEMBER seriesGroup CONSTANT)
-    Q_PROPERTY(QVariant mainCharacterOrTeam MEMBER mainCharacterOrTeam CONSTANT)
-    Q_PROPERTY(QVariant review MEMBER review CONSTANT)
-    Q_PROPERTY(QVariant tags MEMBER tags CONSTANT)
-
-    Q_PROPERTY(QVariant imageFiltersJson MEMBER imageFiltersJson CONSTANT)
-    Q_PROPERTY(QVariant lastTimeImageFiltersSet MEMBER lastTimeImageFiltersSet CONSTANT)
-    Q_PROPERTY(QVariant lastTimeCoverSet MEMBER lastTimeCoverSet CONSTANT)
-    Q_PROPERTY(QVariant usesExternalCover MEMBER usesExternalCover CONSTANT)
-    Q_PROPERTY(QVariant lastTimeMetadataSet MEMBER lastTimeMetadataSet CONSTANT)
-
-    //-new properties, not loaded from the DB automatically
-    bool isFavorite;
-    Q_PROPERTY(bool isFavorite MEMBER isFavorite WRITE setFavorite NOTIFY favoriteChanged)
-
-    // setters, used in QML only for now
-    void setRead(bool r);
-    void setRating(int r);
-    void setFavorite(bool f);
-
-private:
-signals:
-    void readChanged();
-    void ratingChanged();
-    void favoriteChanged();
 };
 
 class ComicDB : public LibraryItem
@@ -223,7 +119,6 @@ public:
     QString toTXT();
 
     ComicInfo info;
-    Q_PROPERTY(ComicInfo info MEMBER info)
 
     ComicDB &operator=(const ComicDB &other);
     bool operator==(const ComicDB &other) const { return id == other.id; }
