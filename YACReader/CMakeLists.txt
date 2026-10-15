@@ -249,6 +249,23 @@ qt_add_translations(YACReader
         yacreader_zh_HK.ts
         yacreader_it.ts
         yacreader_ko.ts
+        yacreader_bg.ts
+        yacreader_cs.ts
+        yacreader_da.ts
+        yacreader_el.ts
+        yacreader_et.ts
+        yacreader_fi.ts
+        yacreader_ga.ts
+        yacreader_hr.ts
+        yacreader_hu.ts
+        yacreader_lt.ts
+        yacreader_lv.ts
+        yacreader_mt.ts
+        yacreader_pl.ts
+        yacreader_ro.ts
+        yacreader_sk.ts
+        yacreader_sl.ts
+        yacreader_sv.ts
         yacreader_source.ts
         yacreader_en.ts
 )
