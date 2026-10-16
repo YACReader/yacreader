@@ -6,6 +6,8 @@
 #include "yacreader_global_gui.h"
 
 #include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QMimeData>
 #include <QSignalSpy>
 #include <QSqlDatabase>
@@ -36,6 +38,11 @@ private slots:
     void addAppendsTheComicInfoOfEachRow();
     void reorderWritesTheEntryOrder();
     void failedReorderShowsTheStoredOrder();
+    void reorderMovesADeletedComic();
+    void deletedComicRowsShowTheirInfoAndLastKnownFile();
+    void deletedComicCoverIsTheHashCoverOrTheDefaultImage();
+    void deletedComicsSupportOnlyComicInfoActions();
+    void comicInfoActionsWriteDeletedComics();
     void reloadUpdatesChangedRows();
     void reloadAddsAndRemovesRows();
     void readingReloadKeepsTheLastOpenedOrder();
@@ -251,7 +258,9 @@ void ComicModelTest::listShowsTheFirstFileOfEachComicInfo()
 
     ComicModel model;
     model.setupReadingListModelData(1, dataPath);
-    QCOMPARE(rowIds(model), QList<qulonglong>({ 5 }));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 0, 5 }));
+    QCOMPARE(model.index(0, 0).data(ComicModel::KindRole).toString(), QString("DeletedComicInList"));
+    QCOMPARE(model.index(1, 0).data(ComicModel::KindRole).toString(), QString("ComicInList"));
 }
 
 void ComicModelTest::removeFromAnAggregatedReadingListUsesTheOwningList()
@@ -310,9 +319,9 @@ void ComicModelTest::reorderWritesTheEntryOrder()
 
 void ComicModelTest::failedReorderShowsTheStoredOrder()
 {
-    // an entry of a comic_info without files is not shown, so the view does not have every entry
-    QVERIFY(exec("INSERT INTO comic_info (id, hash) VALUES (6, 'hash-6')"));
-    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 2, 6)"));
+    // a placeholder entry is not shown yet, so the view does not have every entry
+    QVERIFY(exec("INSERT INTO placeholder (id, title) VALUES (1, 'Expected')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1)"));
 
     ComicModel model;
     model.setupReadingListModelData(1, dataPath);
@@ -321,7 +330,118 @@ void ComicModelTest::failedReorderShowsTheStoredOrder()
 
     QVERIFY(!model.dropMimeData(data.get(), Qt::MoveAction, 0, 0, QModelIndex()));
     QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1 }));
-    QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 3, 1, 6 }));
+    QCOMPARE(ints("SELECT ordering FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY id"), QList<int>({ 0, 1, 2 }));
+}
+
+void ComicModelTest::reorderMovesADeletedComic()
+{
+    QVERIFY(exec("DELETE FROM comic WHERE id = 1"));
+    QVERIFY(exec("DELETE FROM comic WHERE id = 5"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(model.rowCount(), 2);
+    std::unique_ptr<QMimeData> data(model.mimeData({ model.index(1, 0) }));
+
+    QVERIFY(model.dropMimeData(data.get(), Qt::MoveAction, 0, 0, QModelIndex()));
+    QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 1, 3 }));
+    QCOMPARE(model.index(0, 0).data(ComicModel::KindRole).toString(), QString("DeletedComicInList"));
+}
+
+void ComicModelTest::deletedComicRowsShowTheirInfoAndLastKnownFile()
+{
+    QVERIFY(exec("DELETE FROM comic WHERE id = 3"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(model.rowCount(), 2);
+    const auto deleted = model.index(0, 0);
+    QCOMPARE(deleted.data(ComicModel::KindRole).toString(), QString("DeletedComicInList"));
+    QCOMPARE(deleted.data(ComicModel::AvailableRole).toBool(), false);
+    QCOMPARE(deleted.data(ComicModel::LastKnownNameRole).toString(), QString("c3.cbz"));
+    QVERIFY(deleted.data(ComicModel::ListItemIdRole).isValid());
+    QCOMPARE(deleted.data(ComicModel::ListIdRole).toULongLong(), 1ULL);
+    QVERIFY(deleted.data(ComicModel::IdRole).isNull());
+    QVERIFY(deleted.data(ComicModel::FileNameRole).isNull());
+    QCOMPARE(deleted.data(ComicModel::TitleRole).toString(), QString("Title 3"));
+    QCOMPARE(deleted.data(ComicModel::ReadableTitle).toString(), QString("#3 Title 3"));
+    QCOMPARE(deleted.data(ComicModel::RatingRole).toInt(), 3);
+    QCOMPARE(model.index(0, ComicModel::FileName).data().toString(), QString("c3.cbz"));
+    QCOMPARE(model.index(0, ComicModel::Path).data().toString(), QString("/Series/c3.cbz"));
+    QVERIFY(model.index(0, ComicModel::Id).data().isNull());
+    QVERIFY(model.index(0, ComicModel::Parent_Id).data().isNull());
+    QCOMPARE(model.index(0, ComicModel::Hash).data().toString(), QString("hash-3"));
+    QCOMPARE(model.getComicPath(deleted), QString());
+    QVERIFY(!model.getComic(deleted).has_value());
+    QVERIFY(model.getComics({ deleted, model.index(1, 0) }).size() == 1);
+}
+
+void ComicModelTest::deletedComicCoverIsTheHashCoverOrTheDefaultImage()
+{
+    QVERIFY(exec("DELETE FROM comic WHERE id = 3"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
+    // an available comic keeps the path of its hash
+    QCOMPARE(model.index(1, 0).data(ComicModel::CoverPathRole).toUrl(), model.getCoverUrlPathForComicHash("hash-1"));
+
+    const auto coverPath = LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-3");
+    QVERIFY(QDir().mkpath(QFileInfo(coverPath).absolutePath()));
+    QFile cover(coverPath);
+    QVERIFY(cover.open(QIODevice::WriteOnly));
+    cover.write("jpg");
+    cover.close();
+    QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), model.getCoverUrlPathForComicHash("hash-3"));
+}
+
+void ComicModelTest::deletedComicsSupportOnlyComicInfoActions()
+{
+    QVERIFY(exec("DELETE FROM comic WHERE id = 3"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    const auto deleted = model.index(0, 0);
+    const auto available = model.index(1, 0);
+
+    for (const auto action : { ComicAction::SaveCover, ComicAction::SetReadState, ComicAction::SetType, ComicAction::DeleteMetadata, ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromList }) {
+        QVERIFY(model.supports(deleted, action));
+        QVERIFY(model.supports(available, action));
+    }
+    for (const auto action : { ComicAction::Open, ComicAction::OpenContainingFolder, ComicAction::ChangeFile, ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover, ComicAction::AddToFavorites }) {
+        QVERIFY(!model.supports(deleted, action));
+        QVERIFY(model.supports(available, action));
+    }
+    QCOMPARE(model.supportedIndexes({ deleted, available }, ComicAction::Open), QModelIndexList({ available }));
+
+    model.setupFolderModelData(2, dataPath);
+    QVERIFY(!model.supports(model.index(0, 0), ComicAction::RemoveFromList));
+    QVERIFY(model.supports(model.index(0, 0), ComicAction::ChangeFile));
+}
+
+void ComicModelTest::comicInfoActionsWriteDeletedComics()
+{
+    QVERIFY(exec("DELETE FROM comic WHERE id = 3"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    const auto deleted = model.index(0, 0);
+
+    model.setComicsRead({ deleted }, YACReader::Read);
+    QCOMPARE(ints("SELECT read FROM comic_info WHERE id = 3"), QList<int>({ 1 }));
+    QCOMPARE(model.index(0, 0).data(ComicModel::ReadColumnRole).toBool(), true);
+
+    model.setComicsType({ deleted }, YACReader::FileType::Manga);
+    QCOMPARE(ints("SELECT type FROM comic_info WHERE id = 3"), QList<int>({ int(YACReader::FileType::Manga) }));
+
+    model.updateRating(5, deleted);
+    QCOMPARE(ints("SELECT rating FROM comic_info WHERE id = 3"), QList<int>({ 5 }));
+
+    model.asignNumbers({ deleted }, 40);
+    QCOMPARE(ints("SELECT number FROM comic_info WHERE id = 3"), QList<int>({ 40 }));
+
+    model.deleteMetadata({ deleted });
+    QCOMPARE(ints("SELECT COUNT(*) FROM comic_info WHERE id = 3 AND title IS NULL"), QList<int>({ 1 }));
 }
 
 void ComicModelTest::reloadUpdatesChangedRows()

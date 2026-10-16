@@ -714,7 +714,8 @@ void GridComicsView::openContinueReadingComic(int sourceRow)
     if (!rootContinueReadingModelStorage || sourceRow < 0 || sourceRow >= rootContinueReadingModelStorage->rowCount())
         return;
 
-    emit openComic(rootContinueReadingModelStorage->getComic(rootContinueReadingModelStorage->index(sourceRow, 0)), ComicModel::Folder);
+    if (const auto comic = rootContinueReadingModelStorage->getComic(rootContinueReadingModelStorage->index(sourceRow, 0)))
+        emit openComic(*comic, ComicModel::Folder);
 }
 
 void GridComicsView::requestContinueReadingComicContextMenu(const QPoint &point, int sourceRow)
@@ -722,7 +723,8 @@ void GridComicsView::requestContinueReadingComicContextMenu(const QPoint &point,
     if (!rootContinueReadingModelStorage || sourceRow < 0 || sourceRow >= rootContinueReadingModelStorage->rowCount())
         return;
 
-    emit openContinueReadingComicContextMenu(point, rootContinueReadingModelStorage->getComic(rootContinueReadingModelStorage->index(sourceRow, 0)));
+    if (const auto comic = rootContinueReadingModelStorage->getComic(rootContinueReadingModelStorage->index(sourceRow, 0)))
+        emit openContinueReadingComicContextMenu(point, *comic);
 }
 
 void GridComicsView::openFolder(int viewRow)

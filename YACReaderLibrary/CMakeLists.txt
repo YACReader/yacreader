@@ -309,6 +309,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/noLibrariesIcon.svg
     ${PROJECT_SOURCE_DIR}/images/noLibrariesLine.svg
     ${PROJECT_SOURCE_DIR}/images/notCover.png
+    ${PROJECT_SOURCE_DIR}/images/unavailableCover.png
     ${PROJECT_SOURCE_DIR}/images/library_dialogs/openLibrary.svg
     ${PROJECT_SOURCE_DIR}/images/metadata_dialog/previousCoverPage.svg
     ${PROJECT_SOURCE_DIR}/images/readingRibbon.svg

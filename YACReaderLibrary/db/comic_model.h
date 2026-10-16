@@ -116,16 +116,21 @@ public:
 
     // Métodos de conveniencia
     QStringList getPaths(const QString &_source);
-    QString getComicPath(QModelIndex mi);
+    QString getComicPath(QModelIndex mi); // empty for a row without a file
     QString getCurrentPath() { return QString(_databasePath).remove("/.yacreaderlibrary"); }
-    ComicDB getComic(const QModelIndex &mi); //--> para la edición
-    // ComicDB getComic(int row);
+    // the comic of a row with a file, loaded again; nothing for a deleted comic
+    std::optional<ComicDB> getComic(const QModelIndex &mi);
     QVector<YACReaderComicReadStatus> getReadList();
-    QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
+    // the comics of the rows that have a file, loaded again; rows without a file are skipped
+    QList<ComicDB> getComics(QList<QModelIndex> list);
     QList<ComicDB> getAllComics();
+    bool supports(const QModelIndex &index, ComicAction action) const;
+    QModelIndexList supportedIndexes(const QModelIndexList &indexes, ComicAction action) const;
+    // each comic_info of the rows once, loaded again, in row order
+    void deleteMetadata(const QModelIndexList &indexes);
     // from the rows, without a query: the rows are as fresh as the last load
     std::optional<ComicDB> firstUnreadComic() const;
-    QModelIndex getIndexFromId(quint64 id);
+    QModelIndex getIndexFromId(quint64 id); // the first row with that file
     ComicRowId rowId(const QModelIndex &index) const;
     // an invalid index when the row is not in the model
     QModelIndex indexOf(const ComicRowId &rowId) const;
@@ -133,7 +138,7 @@ public:
     QList<QModelIndex> getIndexesFromIds(const QList<qulonglong> &comicIds);
     QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read);
     void setComicsType(QList<QModelIndex> list, FileType type);
-    qint64 asignNumbers(QList<QModelIndex> list, int startingNumber);
+    ComicRowId asignNumbers(QList<QModelIndex> list, int startingNumber);
     // void remove(ComicDB * comic, int row);
     void removeInTransaction(int row);
     void reloadContinueReading();

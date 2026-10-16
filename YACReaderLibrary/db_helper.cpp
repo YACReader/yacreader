@@ -177,6 +177,17 @@ QString listComicsQuery(const EntryTable &entries)
                     .arg(entries.table, entries.parentColumn);
 }
 
+QString listEntriesQuery(const EntryTable &entries)
+{
+    return "SELECT " + ComicDB::selectList("c", "ci") + ", " + TableProjection::selectList("e", ListEntry::columns(entries.listKind)) +
+            QString(" FROM %1 e "
+                    "INNER JOIN comic_info ci ON (ci.id = e.comic_info_id) "
+                    "LEFT JOIN comic c ON (c.id = (SELECT MIN(id) FROM comic WHERE comicInfoId = e.comic_info_id)) "
+                    "WHERE e.%2 = :list_id "
+                    "ORDER BY e.ordering, e.id")
+                    .arg(entries.table, entries.parentColumn);
+}
+
 bool allOfKind(const QList<ListItemId> &entryIds, ListKind listKind)
 {
     return std::all_of(entryIds.begin(), entryIds.end(), [listKind](const ListItemId &id) { return id.listKind == listKind; });
@@ -305,6 +316,20 @@ const QString &DBHelper::listComicsQuery(ListKind listKind)
 {
     static const QString readingListQuery = ::listComicsQuery(readingListEntries);
     static const QString labelQuery = ::listComicsQuery(labelEntries);
+
+    switch (listKind) {
+    case ListKind::ReadingList:
+        return readingListQuery;
+    case ListKind::Label:
+        return labelQuery;
+    }
+    return readingListQuery;
+}
+
+const QString &DBHelper::listEntriesQuery(ListKind listKind)
+{
+    static const QString readingListQuery = ::listEntriesQuery(readingListEntries);
+    static const QString labelQuery = ::listEntriesQuery(labelEntries);
 
     switch (listKind) {
     case ListKind::ReadingList:
@@ -1857,6 +1882,21 @@ std::optional<ComicInfo> DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
     QSqlQuery findComicInfo(db);
     findComicInfo.prepare(sql);
     findComicInfo.bindValue(":hash", hash);
+    findComicInfo.exec();
+
+    if (findComicInfo.next()) {
+        return ComicInfo::fromRecord(findComicInfo.record(), "ci");
+    }
+
+    return std::nullopt;
+}
+
+std::optional<ComicInfo> DBHelper::loadComicInfo(ComicInfoId id, QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + TableProjection::selectList("ci", ComicInfo::columns()) + " FROM comic_info ci WHERE ci.id = :id";
+    QSqlQuery findComicInfo(db);
+    findComicInfo.prepare(sql);
+    findComicInfo.bindValue(":id", id.value());
     findComicInfo.exec();
 
     if (findComicInfo.next()) {

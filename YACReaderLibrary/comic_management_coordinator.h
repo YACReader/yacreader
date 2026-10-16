@@ -83,7 +83,7 @@ signals:
     void currentSourceRefreshStarted();
     void currentSourceRefreshAccepted();
     void currentSourceRefreshCancelled();
-    void comicNumbersAssigned(qint64 editedComicId);
+    void comicNumbersAssigned(const ComicRowId &firstRow);
     void comicDeletionFinished();
     void rootContinueReadingReloadRequested();
 
@@ -102,7 +102,8 @@ private:
                              const QModelIndex &destinationFolder,
                              const QString &libraryPath);
     void processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog);
-    QList<ComicRowId> selectedRowIds() const;
+    // the selected rows that support the action
+    QList<ComicRowId> selectedRowIds(ComicAction action) const;
     SourceContext currentSource() const;
     // empty when the source changed or a row is no longer in the model
     QModelIndexList indexesForRows(const QList<ComicRowId> &rowIds, const SourceContext &source) const;

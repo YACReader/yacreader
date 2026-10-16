@@ -103,12 +103,12 @@ void ComicManagementCoordinator::moveAndImportComicsToFolder(const QList<QPair<Q
 
 void ComicManagementCoordinator::addSelectedComicsToFavorites()
 {
-    comicsModel->addComicsToFavorites(selectionProvider());
+    comicsModel->addComicsToFavorites(comicsModel->supportedIndexes(selectionProvider(), ComicAction::AddToFavorites));
 }
 
 void ComicManagementCoordinator::addSelectedComicsToLabel(qulonglong labelId)
 {
-    comicsModel->addComicsToLabel(selectionProvider(), labelId);
+    comicsModel->addComicsToLabel(comicsModel->supportedIndexes(selectionProvider(), ComicAction::AddToList), labelId);
 }
 
 void ComicManagementCoordinator::openCurrentComic()
@@ -117,10 +117,11 @@ void ComicManagementCoordinator::openCurrentComic()
         return;
 
     const auto currentComic = currentComicProvider();
-    if (!currentComic.isValid())
+    if (!comicsModel->supports(currentComic, ComicAction::Open))
         return;
 
-    openComic(comicsModel->getComic(currentComic), comicsModel->getMode());
+    if (const auto comic = comicsModel->getComic(currentComic))
+        openComic(*comic, comicsModel->getMode());
 }
 
 void ComicManagementCoordinator::openComic(const ComicDB &comic, ComicModel::Mode mode)
@@ -150,7 +151,7 @@ void ComicManagementCoordinator::openComic(const ComicDB &comic, ComicModel::Mod
 void ComicManagementCoordinator::openContainingFolderOfCurrentComic()
 {
     const auto currentComic = currentComicProvider();
-    if (!currentComic.isValid())
+    if (!comicsModel->supports(currentComic, ComicAction::OpenContainingFolder))
         return;
 
     const QFileInfo file(QDir::cleanPath(libraryPathProvider() + comicsModel->getComicPath(currentComic)));
@@ -186,7 +187,10 @@ void ComicManagementCoordinator::showComicVineScraper()
     if (!comicVineSettings.contains(COMIC_VINE_API_KEY))
         return;
 
-    const auto comics = comicsModel->getComics(selectionProvider());
+    const auto comics = comicsModel->getComics(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SearchComicVine));
+    if (comics.isEmpty())
+        return;
+
     comicVineDialog->databasePath = foldersModel->getDatabase();
     comicVineDialog->basePath = libraryPathProvider();
     comicVineDialog->setComics(comics);
@@ -229,7 +233,7 @@ void ComicManagementCoordinator::moveAndImportComics(const QList<QPair<QString, 
 
 void ComicManagementCoordinator::showProperties()
 {
-    const auto indexList = selectionProvider();
+    const auto indexList = comicsModel->supportedIndexes(selectionProvider(), ComicAction::EditMetadata);
     const auto comics = comicsModel->getComics(indexList);
     if (comics.isEmpty())
         return;
@@ -250,13 +254,13 @@ void ComicManagementCoordinator::showProperties()
 
 void ComicManagementCoordinator::setSelectedComicsRead()
 {
-    comicsModel->setComicsRead(selectionProvider(), YACReader::Read);
+    comicsModel->setComicsRead(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetReadState), YACReader::Read);
     emit currentComicViewUpdateRequested();
 }
 
 void ComicManagementCoordinator::setSelectedComicsUnread()
 {
-    comicsModel->setComicsRead(selectionProvider(), YACReader::Unread);
+    comicsModel->setComicsRead(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetReadState), YACReader::Unread);
     emit currentComicViewUpdateRequested();
 }
 
@@ -273,12 +277,12 @@ void ComicManagementCoordinator::setComicUnread(qulonglong libraryId, const Comi
 
 void ComicManagementCoordinator::setSelectedComicsType(YACReader::FileType type)
 {
-    comicsModel->setComicsType(selectionProvider(), type);
+    comicsModel->setComicsType(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetType), type);
 }
 
 void ComicManagementCoordinator::resetSelectedComicRatings()
 {
-    const auto indexList = selectionProvider();
+    const auto indexList = comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetReadState);
     comicsModel->startTransaction();
     for (const auto &index : indexList)
         comicsModel->resetComicRating(index);
@@ -287,7 +291,7 @@ void ComicManagementCoordinator::resetSelectedComicRatings()
 
 void ComicManagementCoordinator::assignNumbers()
 {
-    const auto selectedIds = selectedRowIds();
+    const auto selectedIds = selectedRowIds(ComicAction::AssignNumbers);
     if (selectedIds.isEmpty())
         return;
 
@@ -320,25 +324,21 @@ void ComicManagementCoordinator::assignNumbers()
 
 void ComicManagementCoordinator::deleteMetadataFromSelectedComics()
 {
-    auto comics = comicsModel->getComics(selectionProvider());
-    if (comics.isEmpty())
+    const auto indexes = comicsModel->supportedIndexes(selectionProvider(), ComicAction::DeleteMetadata);
+    if (indexes.isEmpty())
         return;
 
-    for (auto &comic : comics)
-        comic.info.deleteMetadata();
-
-    DBHelper::updateComicsInfo(comics, foldersModel->getDatabase());
-    comicsModel->reload();
+    comicsModel->deleteMetadata(indexes);
 }
 
 void ComicManagementCoordinator::deleteSelectedComics()
 {
-    const auto rowIds = selectedRowIds();
+    const auto listIndex = currentListProvider();
+    const auto rowIds = selectedRowIds(listIndex.isValid() ? ComicAction::RemoveFromList : ComicAction::ChangeFile);
     if (rowIds.isEmpty())
         return;
 
     const auto source = currentSource();
-    const auto listIndex = currentListProvider();
     if (listIndex.isValid()) {
         deleteComicsFromList(rowIds,
                              source,
@@ -351,7 +351,7 @@ void ComicManagementCoordinator::deleteSelectedComics()
 
 void ComicManagementCoordinator::saveSelectedCoversTo()
 {
-    const auto rowIds = selectedRowIds();
+    const auto rowIds = selectedRowIds(ComicAction::SaveCover);
     if (rowIds.isEmpty())
         return;
 
@@ -365,7 +365,12 @@ void ComicManagementCoordinator::saveSelectedCoversTo()
     const auto indexList = indexesForRows(rowIds, source);
     for (const auto &comic : indexList) {
         QString origin = comic.data(ComicModel::CoverPathRole).toString().remove("file:///").remove("file:");
-        const auto destination = QDir(destinationFolder).filePath(comic.data(ComicModel::FileNameRole).toString() + ".jpg");
+        auto name = comic.data(ComicModel::FileNameRole).toString();
+        if (name.isEmpty())
+            name = comic.data(ComicModel::LastKnownNameRole).toString();
+        if (name.isEmpty())
+            name = comic.data(ComicModel::ReadableTitle).toString();
+        const auto destination = QDir(destinationFolder).filePath(name + ".jpg");
 
         QLOG_DEBUG() << "From : " << origin;
         QLOG_DEBUG() << "To : " << destination;
@@ -380,7 +385,7 @@ void ComicManagementCoordinator::setCustomCover(qulonglong comicId, const QStrin
         return;
 
     const auto index = comicsModel->getIndexFromId(comicId);
-    if (!index.isValid())
+    if (!comicsModel->supports(index, ComicAction::SetCustomCover))
         return;
 
     const QImage cover(imagePath);
@@ -391,7 +396,10 @@ void ComicManagementCoordinator::setCustomCover(qulonglong comicId, const QStrin
         return;
     }
 
-    auto comic = comicsModel->getComic(index);
+    auto loaded = comicsModel->getComic(index);
+    if (!loaded)
+        return;
+    auto &comic = *loaded;
     const auto coverPath = YACReader::LibraryPaths::coverPath(libraryPathProvider(), comic.info.hash);
     if (!YACReader::saveCover(coverPath, cover)) {
         QMessageBox::warning(window,
@@ -411,7 +419,7 @@ void ComicManagementCoordinator::setCustomCover(qulonglong comicId, const QStrin
 
 bool ComicManagementCoordinator::hasCustomCoverInSelection() const
 {
-    const auto comics = comicsModel->getComics(selectionProvider());
+    const auto comics = comicsModel->getComics(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetCustomCover));
     return std::any_of(comics.cbegin(), comics.cend(), [](const ComicDB &comic) {
         return comic.info.usesExternalCover.toBool();
     });
@@ -424,11 +432,12 @@ void ComicManagementCoordinator::resetSelectedCustomCovers()
 
     const auto libraryPath = libraryPathProvider();
     const auto libraryId = libraryIdProvider();
-    const auto indexes = selectionProvider();
+    const auto indexes = comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetCustomCover);
     for (const auto &index : indexes) {
-        auto comic = comicsModel->getComic(index);
-        if (!comic.info.usesExternalCover.toBool())
+        auto loaded = comicsModel->getComic(index);
+        if (!loaded || !loaded->info.usesExternalCover.toBool())
             continue;
+        auto &comic = *loaded;
 
         YACReader::InitialComicInfoExtractor extractor(QDir::cleanPath(libraryPath + comic.file.path), QString(), 1);
         extractor.extract();
@@ -479,10 +488,10 @@ void ComicManagementCoordinator::processComicFiles(ComicFilesManager *comicFiles
     thread->start();
 }
 
-QList<ComicRowId> ComicManagementCoordinator::selectedRowIds() const
+QList<ComicRowId> ComicManagementCoordinator::selectedRowIds(ComicAction action) const
 {
     QList<ComicRowId> rowIds;
-    const auto selection = selectionProvider();
+    const auto selection = comicsModel->supportedIndexes(selectionProvider(), action);
     rowIds.reserve(selection.size());
     for (const auto &index : selection)
         rowIds.append(comicsModel->rowId(index));

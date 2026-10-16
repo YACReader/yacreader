@@ -21,9 +21,33 @@ struct ComicInList {
     ListEntry entry;
 };
 
+// an entry whose comic_info has no file in the library
+struct DeletedComicInList {
+    ComicInfo info;
+    ListEntry entry;
+};
+
 }
 
-using ComicItem = std::variant<ComicItemCase::Comic, ComicItemCase::ComicInList>;
+using ComicItem = std::variant<ComicItemCase::Comic, ComicItemCase::ComicInList, ComicItemCase::DeletedComicInList>;
+
+// what can be done with a row; ComicModel::supports answers it for each case
+enum class ComicAction {
+    Open,
+    OpenContainingFolder,
+    ChangeFile, // rename, organize, delete from disk, cover from the file
+    SaveCover,
+    SetReadState, // read, unread, rating
+    SetType,
+    EditMetadata,
+    DeleteMetadata,
+    SearchComicVine,
+    AssignNumbers,
+    SetCustomCover,
+    AddToFavorites,
+    AddToList,
+    RemoveFromList,
+};
 
 // which row this is: a comic in folders and special lists, an entry in reading lists and labels
 using ComicRowId = std::variant<ComicId, ListItemId>;

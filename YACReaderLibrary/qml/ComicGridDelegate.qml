@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Basic
 import QtQuick.Controls.impl
+import QtQuick.Effects
 
 // Delegate for GridContentModel comic rows; required properties intentionally match its role names.
 Rectangle {
@@ -19,6 +20,7 @@ Rectangle {
     required property int rating
     required property bool has_been_opened
     required property url cover_path
+    required property var available
     required property double added_date
     required property bool show_recent
     required property double recent_range
@@ -184,6 +186,17 @@ Rectangle {
         mipmap: true
         asynchronous: true
         cache: false
+
+        // a deleted comic keeps its cover in grayscale
+        layer.enabled: cell.available === false
+        layer.effect: MultiEffect {
+            saturation: -1.0
+        }
+
+        onStatusChanged: {
+            if (status === Image.Error && cell.available === false)
+                source = "qrc:/images/unavailableCover.png"
+        }
     }
 
     Rectangle {

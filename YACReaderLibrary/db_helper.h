@@ -48,6 +48,8 @@ public:
     static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId);
     // the available comics of a list with their entries, in list order; binds :list_id
     static const QString &listComicsQuery(ListKind listKind);
+    // every entry of a list that refers to a comic_info, with its first file when it has one (c_id is NULL without a file); binds :list_id
+    static const QString &listEntriesQuery(ListKind listKind);
 
     // objects management
     // deletes
@@ -130,6 +132,7 @@ public:
     static QList<ComicDB> loadComics(const QList<qulonglong> &ids, QSqlDatabase &db);
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase &database);
     static std::optional<ComicInfo> loadComicInfo(QString hash, QSqlDatabase &db);
+    static std::optional<ComicInfo> loadComicInfo(ComicInfoId id, QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
 
