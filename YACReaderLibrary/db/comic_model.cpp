@@ -11,11 +11,14 @@
 #include "reading_list_model.h"
 #include "yacreader_global_gui.h"
 
+#include <QMap>
+#include <QSet>
 #include <QSqlRecord>
 #include <QStringBuilder>
 #include <QtDebug>
 #include <QtGui>
 
+#include <algorithm>
 #include <utility>
 
 #ifdef use_unarr
@@ -52,17 +55,21 @@ bool sameRow(const ComicItem &a, const ComicItem &b)
 
     return std::visit(overloaded {
                               [&](const ComicItemCase::Comic &row) { return row.comic.file.id == std::get<ComicItemCase::Comic>(b).comic.file.id; },
-                              [&](const ComicItemCase::ComicInList &row) {
-                                  const auto &other = std::get<ComicItemCase::ComicInList>(b);
-                                  return row.listKind == other.listKind && row.listId == other.listId && row.comic.file.id == other.comic.file.id;
-                              },
+                              [&](const ComicItemCase::ComicInList &row) { return row.entry.id == std::get<ComicItemCase::ComicInList>(b).entry.id; },
                       },
                       a);
 }
 
+bool sameEntry(const ComicItem &a, const ComicItem &b)
+{
+    const auto *entryA = std::get_if<ComicItemCase::ComicInList>(&a);
+    const auto *entryB = std::get_if<ComicItemCase::ComicInList>(&b);
+    return (entryA == nullptr) == (entryB == nullptr) && (entryA == nullptr || entryA->entry == entryB->entry);
+}
+
 bool sameValues(const ComicItem &a, const ComicItem &b)
 {
-    return sameRow(a, b) && rowComic(a).file == rowComic(b).file && rowComic(a).info.hasSameValues(rowComic(b).info);
+    return sameRow(a, b) && sameEntry(a, b) && rowComic(a).file == rowComic(b).file && rowComic(a).info.hasSameValues(rowComic(b).info);
 }
 
 QVariant columnValue(const ComicDB &comic, int column)
@@ -248,10 +255,15 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
     // TODO fix selection
     QList<qulonglong> allComicIds;
-    const auto &allData = _data;
-    for (const auto &item : allData) {
-        allComicIds << rowComic(item).file.id.value();
+    QList<ListItemId> allEntryIds;
+    for (const auto &item : std::as_const(_data)) {
+        std::visit(overloaded {
+                           [&allComicIds](const ComicItemCase::Comic &row) { allComicIds << row.comic.file.id.value(); },
+                           [&allEntryIds](const ComicItemCase::ComicInList &row) { allEntryIds << row.entry.id; },
+                   },
+                   item);
     }
+    bool reordered = true;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
@@ -260,10 +272,10 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
             DBHelper::reasignOrderToComicsInFavorites(allComicIds, db);
             break;
         case Label:
-            DBHelper::reasignOrderToComicsInLabel(sourceId, allComicIds, db);
+            reordered = DBHelper::reorderLabelEntries(LabelId(sourceId), allEntryIds, db);
             break;
         case ReadingList:
-            DBHelper::reasignOrderToComicsInReadingList(sourceId, allComicIds, db);
+            reordered = DBHelper::reorderReadingListEntries(ReadingListId(sourceId), allEntryIds, db);
             break;
         case Folder:
         case Reading:
@@ -274,6 +286,12 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+
+    // the rows show the stored order again
+    if (!reordered) {
+        reload();
+        return false;
+    }
 
     // endMoveRows();
 
@@ -645,14 +663,10 @@ QList<ComicItem> ComicModel::createLabelModelData(unsigned long long parentLabel
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         QSqlQuery selectQuery(db);
         selectQuery.setForwardOnly(true);
-        selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
-                                                                         "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                                                         "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
-                                                                         "WHERE cl.label_id = :parentLabelId "
-                                                                         "ORDER BY cl.ordering");
-        selectQuery.bindValue(":parentLabelId", parentLabel);
+        selectQuery.prepare(DBHelper::listComicsQuery(ListKind::Label));
+        selectQuery.bindValue(":list_id", parentLabel);
         selectQuery.exec();
-        modelData = createItems(selectQuery, ListKind::Label, parentLabel);
+        modelData = createItems(selectQuery, ListKind::Label);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -698,20 +712,14 @@ QList<ComicItem> ComicModel::createReadingListData(unsigned long long parentRead
 
         enableResorting = ids.length() == 1; // only resorting if no sublists exist
 
-        const auto &readingListIds = ids;
-        for (const auto id : readingListIds) {
-            QSqlQuery selectQuery(db);
-            selectQuery.setForwardOnly(true);
-            selectQuery.setForwardOnly(true);
-            selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
-                                                                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                                                             "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
-                                                                             "WHERE crl.reading_list_id = :parentReadingList "
-                                                                             "ORDER BY crl.ordering");
-            selectQuery.bindValue(":parentReadingList", id);
+        QSqlQuery selectQuery(db);
+        selectQuery.setForwardOnly(true);
+        selectQuery.prepare(DBHelper::listComicsQuery(ListKind::ReadingList));
+        for (const auto id : std::as_const(ids)) {
+            selectQuery.bindValue(":list_id", id);
             selectQuery.exec();
 
-            modelData << createItems(selectQuery, ListKind::ReadingList, id);
+            modelData << createItems(selectQuery, ListKind::ReadingList);
         }
         connectionName = db.connectionName();
     }
@@ -889,12 +897,14 @@ QList<ComicItem> ComicModel::createItems(QSqlQuery &query)
 }
 
 // the sorting of lists is done in the sql query
-QList<ComicItem> ComicModel::createItems(QSqlQuery &query, ListKind listKind, qulonglong listId)
+QList<ComicItem> ComicModel::createItems(QSqlQuery &query, ListKind listKind)
 {
     QList<ComicItem> items;
-    const auto indexes = ComicDB::columnIndexes(query.record(), "c", "ci");
+    const auto record = query.record();
+    const auto indexes = ComicDB::columnIndexes(record, "c", "ci");
+    const auto entryIndexes = ListEntry::columnIndexes(record, "e", listKind);
     while (query.next()) {
-        items.append(ComicItemCase::ComicInList { ComicDB::fromQuery(query, indexes), listKind, listId });
+        items.append(ComicItemCase::ComicInList { ComicDB::fromQuery(query, indexes), ListEntry::fromQuery(query, entryIndexes, listKind) });
     }
     return items;
 }
@@ -1343,12 +1353,16 @@ void ComicModel::addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong 
 
 void ComicModel::addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)
 {
-    QList<ComicDB> comics = getComics(comicsList);
+    QList<ComicInfoId> comicInfoIds;
+    comicInfoIds.reserve(comicsList.size());
+    for (const auto &index : comicsList)
+        comicInfoIds.append(rowComic(_data.at(index.row())).info.id);
+
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-        DBHelper::insertComicsInLabel(comics, labelId, db);
+        DBHelper::appendComicsToLabel(LabelId(labelId), comicInfoIds, db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1361,12 +1375,16 @@ void ComicModel::addComicsToReadingList(const QList<qulonglong> &comicIds, qulon
 
 void ComicModel::addComicsToReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId)
 {
-    QList<ComicDB> comics = getComics(comicsList);
+    QList<ComicInfoId> comicInfoIds;
+    comicInfoIds.reserve(comicsList.size());
+    for (const auto &index : comicsList)
+        comicInfoIds.append(rowComic(_data.at(index.row())).info.id);
+
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-        DBHelper::insertComicsInReadingList(comics, readingListId, db);
+        DBHelper::appendComicsToReadingList(ReadingListId(readingListId), comicInfoIds, db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1427,34 +1445,49 @@ void ComicModel::deleteComicsFromSpecialList(const QList<QModelIndex> &comicsLis
     }
 }
 
-void ComicModel::deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)
+// a reading list also shows the rows of its child lists, so each row is removed from the list that holds it
+void ComicModel::deleteComicsFromLists(const QList<QModelIndex> &comicsList)
 {
-    QList<ComicDB> comics = getComics(comicsList);
+    QSet<int> rows;
+    QMap<std::pair<ListKind, qulonglong>, QList<ListItemId>> entryIdsByList;
+    for (const auto &index : comicsList) {
+        if (const auto *row = std::get_if<ComicItemCase::ComicInList>(&_data.at(index.row())); row != nullptr && !rows.contains(index.row())) {
+            rows.insert(index.row());
+            entryIdsByList[{ row->entry.id.listKind, row->entry.listId }].append(row->entry.id);
+        }
+    }
+
+    bool removed = true;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-        DBHelper::deleteComicsFromLabel(comics, labelId, db);
+        for (auto it = entryIdsByList.cbegin(); it != entryIdsByList.cend(); ++it) {
+            const auto [listKind, listId] = it.key();
+            switch (listKind) {
+            case ListKind::ReadingList:
+                removed = DBHelper::removeReadingListEntries(ReadingListId(listId), it.value(), db) && removed;
+                break;
+            case ListKind::Label:
+                removed = DBHelper::removeLabelEntries(LabelId(listId), it.value(), db) && removed;
+                break;
+            }
+        }
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    deleteComicsFromModel(comicsList);
-}
-
-void ComicModel::deleteComicsFromReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId)
-{
-    QList<ComicDB> comics = getComics(comicsList);
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-        DBHelper::deleteComicsFromReadingList(comics, readingListId, db);
-        connectionName = db.connectionName();
+    if (!removed) {
+        reload();
+        return;
     }
-    QSqlDatabase::removeDatabase(connectionName);
 
-    deleteComicsFromModel(comicsList);
+    QList<int> sortedRows(rows.begin(), rows.end());
+    std::sort(sortedRows.begin(), sortedRows.end());
+    QList<QModelIndex> removedRows;
+    for (const auto row : std::as_const(sortedRows))
+        removedRows.append(index(row, 0));
+    deleteComicsFromModel(removedRows);
 }
 
 void ComicModel::deleteComicsFromModel(const QList<QModelIndex> &comicsList)

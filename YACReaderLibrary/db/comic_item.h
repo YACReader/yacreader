@@ -2,6 +2,7 @@
 #define COMIC_ITEM_H
 
 #include "comic_db.h"
+#include "list_entry.h"
 
 #include <QList>
 
@@ -16,8 +17,7 @@ struct Comic {
 
 struct ComicInList {
     ComicDB comic;
-    ListKind listKind;
-    qulonglong listId;
+    ListEntry entry;
 };
 
 }

@@ -171,9 +171,9 @@ bool createLibrary(const QString &libraryPath, int size)
         QSqlQuery comic(db);
         comic.prepare("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES (:id, 2, :id, :fileName, :path)");
         QSqlQuery inList(db);
-        inList.prepare("INSERT INTO comic_reading_list (reading_list_id, comic_id, ordering) VALUES (1, :id, :id)");
+        inList.prepare("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, :id, :id)");
         QSqlQuery inLabel(db);
-        inLabel.prepare("INSERT INTO comic_label (label_id, comic_id, ordering) VALUES (1, :id, :id)");
+        inLabel.prepare("INSERT INTO label_entry (label_id, ordering, comic_info_id) VALUES (1, :id, :id)");
         QSqlQuery inFavorites(db);
         inFavorites.prepare("INSERT INTO comic_default_reading_list (default_reading_list_id, comic_id, ordering) VALUES (1, :id, :id)");
 

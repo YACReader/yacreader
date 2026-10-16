@@ -577,10 +577,8 @@ void ComicManagementCoordinator::deleteComicsFromList(const QList<qulonglong> &c
         comicsModel->deleteComicsFromSpecialList(indexList, listId);
         break;
     case ReadingListModel::Label:
-        comicsModel->deleteComicsFromLabel(indexList, listId);
-        break;
     case ReadingListModel::ReadingList:
-        comicsModel->deleteComicsFromReadingList(indexList, listId);
+        comicsModel->deleteComicsFromLists(indexList);
         break;
     case ReadingListModel::Separator:
         break;

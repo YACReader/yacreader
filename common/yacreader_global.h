@@ -16,7 +16,8 @@ class QLibrary;
 
 // Used to check if the database needs to be updated, the version is stored in the database.
 // This value is only incremented when the database structure changes.
-#define DB_VERSION "9.16.0"
+// TODO: 9.17.0 is only for the feature branches; it must become 10.5.0, with a single migration path, before merging into develop.
+#define DB_VERSION "9.17.0"
 
 #define IMPORT_COMIC_INFO_XML_METADATA "IMPORT_COMIC_INFO_XML_METADATA"
 #define ORGANIZE_FILES_RELATIVE_TO_ROOT "ORGANIZE_FILES_RELATIVE_TO_ROOT"

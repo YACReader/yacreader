@@ -5,6 +5,7 @@
 #include "yacreader_global.h"
 
 #include <QDir>
+#include <QMimeData>
 #include <QSignalSpy>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -24,6 +25,12 @@ private slots:
     void init();
     void cleanup();
     void listRowsHaveTheirList();
+    void listShowsTheFirstFileOfEachComicInfo();
+    void removeFromAnAggregatedReadingListUsesTheOwningList();
+    void removeOneOccurrenceOfARepeatedComic();
+    void addAppendsTheComicInfoOfEachRow();
+    void reorderWritesTheEntryOrder();
+    void failedReorderShowsTheStoredOrder();
     void reloadUpdatesChangedRows();
     void reloadAddsAndRemovesRows();
     void readingReloadKeepsTheLastOpenedOrder();
@@ -37,7 +44,9 @@ private:
     QString dataPath;
 
     bool exec(const QString &sql);
+    QList<int> ints(const QString &sql);
     QList<int> rowsOfComicInfo(ComicModel &model, qulonglong comicInfoId);
+    QList<qulonglong> rowIds(ComicModel &model);
 };
 
 void ComicModelTest::init()
@@ -68,7 +77,8 @@ void ComicModelTest::init()
     // a second file with the same content shares comic_info 1
     QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES (5, 2, 1, 'c5.cbz', '/Series/c5.cbz')"));
     QVERIFY(exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')"));
-    QVERIFY(exec("INSERT INTO comic_reading_list (reading_list_id, comic_id, ordering) VALUES (1, 3, 0), (1, 1, 1)"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 0, 3), (1, 1, 1)"));
+    QVERIFY(exec("INSERT INTO label (id, name, color, ordering) VALUES (1, 'Tag', 'red', 0)"));
 }
 
 void ComicModelTest::cleanup()
@@ -92,6 +102,31 @@ bool ComicModelTest::exec(const QString &sql)
     return ok;
 }
 
+QList<int> ComicModelTest::ints(const QString &sql)
+{
+    QList<int> values;
+    QString name;
+    {
+        auto db = DataBaseManagement::loadDatabase(dataPath);
+        name = db.connectionName();
+        QSqlQuery query(db);
+        if (!query.exec(sql))
+            qWarning() << query.lastError().text() << sql;
+        while (query.next())
+            values.append(query.value(0).toInt());
+    }
+    QSqlDatabase::removeDatabase(name);
+    return values;
+}
+
+QList<qulonglong> ComicModelTest::rowIds(ComicModel &model)
+{
+    QList<qulonglong> ids;
+    for (int row = 0; row < model.rowCount(); row++)
+        ids.append(model.data(model.index(row, 0), ComicModel::IdRole).toULongLong());
+    return ids;
+}
+
 QList<int> ComicModelTest::rowsOfComicInfo(ComicModel &model, qulonglong comicInfoId)
 {
     QList<int> rows;
@@ -110,6 +145,86 @@ void ComicModelTest::listRowsHaveTheirList()
     QCOMPARE(model.data(model.index(0, 0), ComicModel::IdRole).toULongLong(), 3ULL);
     QCOMPARE(model.data(model.index(1, 0), ComicModel::IdRole).toULongLong(), 1ULL);
     QCOMPARE(model.columnCount(), int(ComicModel::Size) + 1);
+}
+
+void ComicModelTest::listShowsTheFirstFileOfEachComicInfo()
+{
+    // comic_info 1 has the files 1 and 5; comic_info 3 has no file after this
+    QVERIFY(exec("DELETE FROM comic WHERE id IN (1, 3)"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 5 }));
+}
+
+void ComicModelTest::removeFromAnAggregatedReadingListUsesTheOwningList()
+{
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name) VALUES (2, 1, 0, 'Child')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (2, 0, 4)"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1, 4 }));
+
+    model.deleteComicsFromLists({ model.index(2, 0) });
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1 }));
+    QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 3, 1 }));
+    QCOMPARE(ints("SELECT COUNT(*) FROM reading_list_entry WHERE reading_list_id = 2"), QList<int>({ 0 }));
+}
+
+void ComicModelTest::removeOneOccurrenceOfARepeatedComic()
+{
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 2, 3)"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1, 3 }));
+
+    // the same row twice is one removal
+    model.deleteComicsFromLists({ model.index(2, 0), model.index(2, 0) });
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1 }));
+    QCOMPARE(ints("SELECT ordering FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 0, 1 }));
+}
+
+void ComicModelTest::addAppendsTheComicInfoOfEachRow()
+{
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+
+    // comic 5 is a second file of comic_info 1
+    model.addComicsToReadingList(QList<qulonglong> { 5 }, 1);
+    model.addComicsToLabel(QList<qulonglong> { 5 }, 1);
+    model.addComicsToLabel(QList<qulonglong> { 1 }, 1);
+
+    QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 3, 1, 1 }));
+    QCOMPARE(ints("SELECT comic_info_id FROM label_entry WHERE label_id = 1 ORDER BY ordering"), QList<int>({ 1 }));
+}
+
+void ComicModelTest::reorderWritesTheEntryOrder()
+{
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    std::unique_ptr<QMimeData> data(model.mimeData({ model.index(1, 0) }));
+
+    QVERIFY(model.dropMimeData(data.get(), Qt::MoveAction, 0, 0, QModelIndex()));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 1, 3 }));
+    QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 1, 3 }));
+}
+
+void ComicModelTest::failedReorderShowsTheStoredOrder()
+{
+    // an entry of a comic_info without files is not shown, so the view does not have every entry
+    QVERIFY(exec("INSERT INTO comic_info (id, hash) VALUES (6, 'hash-6')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 2, 6)"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1 }));
+    std::unique_ptr<QMimeData> data(model.mimeData({ model.index(1, 0) }));
+
+    QVERIFY(!model.dropMimeData(data.get(), Qt::MoveAction, 0, 0, QModelIndex()));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1 }));
+    QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 3, 1, 6 }));
 }
 
 void ComicModelTest::reloadUpdatesChangedRows()

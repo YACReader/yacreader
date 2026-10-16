@@ -75,7 +75,7 @@ private:
     qulonglong _folderDestinationId;
     QSettings *settings;
     bool checkModifiedDatesOnUpdate;
-    void cleanup(QSqlDatabase &db, const QString &target);
+    QStringList cleanup(QSqlDatabase &db, const QString &target); // returns the hashes of the covers to remove after the commit
 
 signals:
     void coverExtracted(QString);

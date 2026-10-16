@@ -277,17 +277,22 @@ void LibraryCreator::run()
                 update(QDir(_source));
             }
 
+            QStringList unusedCoverHashes;
             if (!canceled) {
                 if (partialUpdate) {
                     auto folder = DBHelper::updateChildrenInfo(_folderDestinationId, _database);
                     DBHelper::propagateFolderUpdatesToParent(folder, _database);
                 } else {
                     DBHelper::updateChildrenInfo(_database);
-                    cleanup(_database, _target);
+                    unusedCoverHashes = cleanup(_database, _target);
                 }
             }
 
-            _database.commit();
+            if (_database.commit()) {
+                for (const auto &hash : std::as_const(unusedCoverHashes)) {
+                    QFile::remove(LibraryPaths::coverPathFromLibraryDataPath(_target, hash));
+                }
+            }
             _database.close();
         }
 
@@ -324,35 +329,15 @@ void LibraryCreator::cancel()
     stopRunning = true;
 }
 
-void LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
+QStringList LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
 {
     auto coversPath = LibraryPaths::libraryCoversPathFromLibraryDataPath(target);
     QDir coversDir(coversPath);
     if (!coversDir.exists()) {
-        return;
+        return { };
     }
 
-    // delete from comic_info all the comics that don't have a comic associated from the comic table
-    QSqlQuery infoToDeleteQuery(db);
-    infoToDeleteQuery.prepare("SELECT ci.id, ci.hash FROM comic_info ci WHERE ci.id NOT IN (SELECT c.comicInfoId FROM comic c)");
-
-    if (!infoToDeleteQuery.exec()) {
-        QLOG_ERROR() << "Error getting comics to delete";
-        return;
-    }
-
-    while (infoToDeleteQuery.next()) {
-        QString hash = infoToDeleteQuery.value(1).toString();
-        QString coverPath = LibraryPaths::coverPathFromLibraryDataPath(target, hash);
-        QFile::remove(coverPath);
-    }
-
-    QSqlQuery deleteQuery(db);
-    deleteQuery.prepare("DELETE FROM comic_info WHERE id NOT IN (SELECT comicInfoId FROM comic)");
-    if (!deleteQuery.exec()) {
-        QLOG_ERROR() << "Error purging info from comic_info";
-        return;
-    }
+    return DBHelper::removeUnusedComicInfo(db);
 }
 
 // retorna el id del ultimo de los folders

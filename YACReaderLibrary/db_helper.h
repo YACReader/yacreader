@@ -7,6 +7,7 @@ class QString;
 
 #include <QList>
 #include <QMap>
+#include <QStringList>
 #include <QUuid>
 #include <QVariantMap>
 
@@ -45,6 +46,8 @@ public:
     static QList<ComicDB> getReading(qulonglong libraryId);
     static QList<ReadingList> getReadingLists(qulonglong libraryId);
     static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId);
+    // the available comics of a list with their entries, in list order; binds :list_id
+    static const QString &listComicsQuery(ListKind listKind);
 
     // objects management
     // deletes
@@ -56,15 +59,14 @@ public:
     // logic deletes
     static void deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db);
-    static void deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
-    static void deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
     // entry functions reject an entry id of the other list kind and change nothing
     static bool removeLabelEntries(LabelId labelId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
     static bool removeReadingListEntries(ReadingListId readingListId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
     static bool reorderLabelEntries(LabelId labelId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
     static bool reorderReadingListEntries(ReadingListId readingListId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
-    static bool appendComicsToLabel(LabelId labelId, const QList<ComicId> &comicIds, QSqlDatabase &db);
-    static bool appendComicsToReadingList(ReadingListId readingListId, const QList<ComicId> &comicIds, QSqlDatabase &db);
+    // a label skips the comic_info it already has; a reading list adds it again
+    static bool appendComicsToLabel(LabelId labelId, const QList<ComicInfoId> &comicInfoIds, QSqlDatabase &db);
+    static bool appendComicsToReadingList(ReadingListId readingListId, const QList<ComicInfoId> &comicInfoIds, QSqlDatabase &db);
     // inserts
     static qulonglong insert(Folder *folder, QSqlDatabase &db);
     static qulonglong insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo);
@@ -72,8 +74,6 @@ public:
     static qulonglong insertReadingList(const QString &name, QSqlDatabase &db);
     static qulonglong insertReadingSubList(const QString &name, qulonglong parentId, int ordering, QSqlDatabase &db);
     static void insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
-    static void insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
-    static void insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
     // updates
     static void update(qulonglong libraryId, ComicInfo &comicInfo);
     static void update(ComicDB *comics, QSqlDatabase &db);
@@ -106,9 +106,9 @@ public:
     static void removeEmptyFolderRows(const QList<qulonglong> &folderIds, QSqlDatabase &db);
     static void reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db);
     static void reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase &db);
-    static void reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase &db);
-    static void reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase &db);
     static void updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath);
+    // returns the hashes of the removed rows, so their covers can be removed after the commit
+    static QStringList removeUnusedComicInfo(QSqlDatabase &db);
 
     static QList<Folder> getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db);

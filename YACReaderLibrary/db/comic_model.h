@@ -142,8 +142,7 @@ public:
     void deleteComicsFromFavorites(const QList<QModelIndex> &comicsList);
     void deleteComicsFromReading(const QList<QModelIndex> &comicsList);
     void deleteComicsFromSpecialList(const QList<QModelIndex> &comicsList, qulonglong specialListId);
-    void deleteComicsFromLabel(const QList<QModelIndex> &comicsList, qulonglong labelId);
-    void deleteComicsFromReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId);
+    void deleteComicsFromLists(const QList<QModelIndex> &comicsList);
 
     void deleteComicsFromModel(const QList<QModelIndex> &comicsList);
 
@@ -158,7 +157,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     static QList<ComicItem> createItems(QSqlQuery &query);
-    static QList<ComicItem> createItems(QSqlQuery &query, ListKind listKind, qulonglong listId);
+    static QList<ComicItem> createItems(QSqlQuery &query, ListKind listKind);
     static QList<ComicItem> sortedForFolder(QList<ComicItem> items);
 
 public slots:

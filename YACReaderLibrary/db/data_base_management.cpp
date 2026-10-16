@@ -545,6 +545,9 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
 
         // 8.0> tables
         success = success && DataBaseManagement::createV8Tables(database);
+
+        // 9.17.0> tables
+        success = success && DataBaseManagement::createV9_17Tables(database);
     }
 
     return success;
@@ -884,6 +887,56 @@ bool DataBaseManagement::createComicDeleteTrigger(QSqlDatabase &database)
                                         "UPDATE label_entry SET last_known_name = OLD.fileName, last_known_path = OLD.path "
                                         "WHERE comic_info_id = OLD.comicInfoId; "
                                         "END");
+}
+
+bool DataBaseManagement::createV9_17Tables(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        success = success && createPlaceholderTable(database);
+        success = success && createReadingListEntryTable(database);
+        success = success && createLabelEntryTable(database);
+
+        // Rows whose list, label, comic or comic_info no longer exists are not copied.
+        QSqlQuery copyReadingListEntries(database);
+        success = success && copyReadingListEntries.exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) "
+                                                         "SELECT crl.reading_list_id, "
+                                                         "ROW_NUMBER() OVER (PARTITION BY crl.reading_list_id ORDER BY crl.ordering IS NULL, crl.ordering, crl.rowid) - 1, "
+                                                         "c.comicInfoId "
+                                                         "FROM comic_reading_list crl "
+                                                         "INNER JOIN reading_list rl ON rl.id = crl.reading_list_id "
+                                                         "INNER JOIN comic c ON c.id = crl.comic_id "
+                                                         "INNER JOIN comic_info ci ON ci.id = c.comicInfoId "
+                                                         "ORDER BY crl.reading_list_id, crl.ordering IS NULL, crl.ordering, crl.rowid");
+
+        QSqlQuery copyLabelEntries(database);
+        success = success && copyLabelEntries.exec("INSERT INTO label_entry (label_id, ordering, comic_info_id) "
+                                                   "SELECT cl.label_id, "
+                                                   "ROW_NUMBER() OVER (PARTITION BY cl.label_id ORDER BY cl.ordering IS NULL, cl.ordering, cl.rowid) - 1, "
+                                                   "c.comicInfoId "
+                                                   "FROM comic_label cl "
+                                                   "INNER JOIN label l ON l.id = cl.label_id "
+                                                   "INNER JOIN comic c ON c.id = cl.comic_id "
+                                                   "INNER JOIN comic_info ci ON ci.id = c.comicInfoId "
+                                                   "ORDER BY cl.label_id, cl.ordering IS NULL, cl.ordering, cl.rowid");
+
+        QSqlQuery dropOldTables(database);
+        success = success && dropOldTables.exec("DROP TABLE comic_reading_list");
+        success = success && dropOldTables.exec("DROP TABLE comic_label");
+
+        QSqlQuery queryIndexComicInfoId(database);
+        success = success && queryIndexComicInfoId.exec("CREATE INDEX comic_comic_info_id_index ON comic (comicInfoId)");
+
+        success = success && createComicDeleteTrigger(database);
+
+        // Upgrades run with foreign keys off, so the new constraints are checked here.
+        QSqlQuery checkReadingListEntries(database);
+        success = success && checkReadingListEntries.exec("PRAGMA foreign_key_check(reading_list_entry)") && !checkReadingListEntries.next();
+
+        QSqlQuery checkLabelEntries(database);
+        success = success && checkLabelEntries.exec("PRAGMA foreign_key_check(label_entry)") && !checkLabelEntries.next();
+    }
+    return success;
 }
 
 void DataBaseManagement::exportComicsInfo(QString source, QString dest)
@@ -1422,6 +1475,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_13 = compareVersions(oldVersion, "9.13.0") < 0;
     const bool pre9_14 = compareVersions(oldVersion, "9.14.0") < 0;
     const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
+    const bool pre9_17 = compareVersions(oldVersion, "9.17.0") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1509,8 +1563,6 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                         selectQuery.prepare("SELECT id, hash FROM comic_info");
                         selectQuery.exec();
 
-                        db.transaction();
-
                         QSqlQuery updateCoverInfo(db);
                         updateCoverInfo.prepare("UPDATE comic_info SET coverSizeRatio = :coverSizeRatio WHERE id = :id");
 
@@ -1525,8 +1577,6 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
 
                             updateCoverInfo.exec();
                         }
-
-                        db.commit();
                     }
                 }
 
@@ -1636,6 +1686,11 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                         bool successAddingColumns = addColumns("comic_info", columnDefs, db);
                         returnValue = returnValue && successAddingColumns;
                     }
+                }
+
+                if (pre9_17) {
+                    bool successCreatingNewTables = createV9_17Tables(db);
+                    returnValue = returnValue && successCreatingNewTables;
                 }
 
                 if (returnValue) {

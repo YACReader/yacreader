@@ -54,6 +54,8 @@ add_library(db_helper STATIC
     db/data_base_management.cpp
     db/reading_list.h
     db/reading_list.cpp
+    db/list_entry.h
+    db/list_entry.cpp
     db/query_lexer.h
     db/query_lexer.cpp
     db/search_field_registry.h

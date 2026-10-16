@@ -31,8 +31,8 @@ private slots:
     void entryIdsAreNotReused_data();
     void entryIdsAreNotReused();
     void placeholderIdsAreNotReused();
-    void appendAddsComicInfoOnce_data();
-    void appendAddsComicInfoOnce();
+    void appendRepeatsOnlyInReadingLists_data();
+    void appendRepeatsOnlyInReadingLists();
     void appendIgnoresUnknownComics_data();
     void appendIgnoresUnknownComics();
     void appendUsesNextOrderingAfterRemoval_data();
@@ -51,6 +51,7 @@ private slots:
     void comicDeleteRecordsLastKnownFile();
     void folderDeleteRecordsLastKnownFile_data();
     void folderDeleteRecordsLastKnownFile();
+    void removeUnusedComicInfo();
 
 private:
     void addReadingListAndLabelRows();
@@ -59,7 +60,7 @@ private:
     bool exec(const QString &sql);
     int scalar(const QString &sql);
     QList<int> ints(const QString &sql);
-    bool append(qulonglong parentId, const QList<qulonglong> &comicIds);
+    bool append(qulonglong parentId, const QList<qulonglong> &comicInfoIds);
     bool remove(qulonglong parentId, const QList<qulonglong> &entryIds, std::optional<ListKind> kind = std::nullopt);
     bool reorder(qulonglong parentId, const QList<qulonglong> &entryIds, std::optional<ListKind> kind = std::nullopt);
     ListKind listKind() const;
@@ -80,10 +81,6 @@ void ReadingListAndLabelEntryTest::init()
 
     QVERIFY(exec("PRAGMA foreign_keys = ON"));
     QVERIFY(DataBaseManagement::createTables(db));
-    QVERIFY(DataBaseManagement::createPlaceholderTable(db));
-    QVERIFY(DataBaseManagement::createReadingListEntryTable(db));
-    QVERIFY(DataBaseManagement::createLabelEntryTable(db));
-    QVERIFY(DataBaseManagement::createComicDeleteTrigger(db));
 
     QVERIFY(exec("INSERT INTO folder (id, parentId, name, path) VALUES (1, 1, 'root', '/')"));
     QVERIFY(exec("INSERT INTO comic_info (id, hash) VALUES (10, 'hash10'), (11, 'hash11'), (12, 'hash12')"));
@@ -375,14 +372,14 @@ QList<ListItemId> ReadingListAndLabelEntryTest::entries(const QList<qulonglong> 
     return result;
 }
 
-bool ReadingListAndLabelEntryTest::append(qulonglong parentId, const QList<qulonglong> &comicIds)
+bool ReadingListAndLabelEntryTest::append(qulonglong parentId, const QList<qulonglong> &comicInfoIds)
 {
-    QList<ComicId> comics;
-    for (const auto id : comicIds) {
-        comics.append(ComicId(id));
+    QList<ComicInfoId> ids;
+    for (const auto id : comicInfoIds) {
+        ids.append(ComicInfoId(id));
     }
-    return table == "reading_list_entry" ? DBHelper::appendComicsToReadingList(ReadingListId(parentId), comics, db)
-                                         : DBHelper::appendComicsToLabel(LabelId(parentId), comics, db);
+    return table == "reading_list_entry" ? DBHelper::appendComicsToReadingList(ReadingListId(parentId), ids, db)
+                                         : DBHelper::appendComicsToLabel(LabelId(parentId), ids, db);
 }
 
 bool ReadingListAndLabelEntryTest::remove(qulonglong parentId, const QList<qulonglong> &entryIds, std::optional<ListKind> kind)
@@ -406,21 +403,35 @@ QList<qulonglong> ReadingListAndLabelEntryTest::entryIds(qulonglong parentId)
     return ids;
 }
 
-void ReadingListAndLabelEntryTest::appendAddsComicInfoOnce_data()
+void ReadingListAndLabelEntryTest::appendRepeatsOnlyInReadingLists_data()
 {
-    addReadingListAndLabelRows();
+    QTest::addColumn<QString>("table");
+    QTest::addColumn<QString>("parentColumn");
+    QTest::addColumn<QString>("parentTable");
+    QTest::addColumn<QList<int>>("comicInfoIds");
+    QTest::newRow("reading list") << "reading_list_entry"
+                                  << "reading_list_id"
+                                  << "reading_list" << QList<int>({ 10, 10, 11, 11, 10 });
+    QTest::newRow("label") << "label_entry"
+                           << "label_id"
+                           << "label" << QList<int>({ 10, 11 });
 }
 
-void ReadingListAndLabelEntryTest::appendAddsComicInfoOnce()
+void ReadingListAndLabelEntryTest::appendRepeatsOnlyInReadingLists()
 {
     fetchReadingListOrLabel();
+    QFETCH(QList<int>, comicInfoIds);
 
-    QVERIFY(append(1, { 100, 101, 110 }));
-    QVERIFY(append(1, { 110, 101 }));
-    QVERIFY(append(2, { 101 }));
+    QVERIFY(append(1, { 10, 10, 11 }));
+    QVERIFY(append(1, { 11, 10 }));
+    QVERIFY(append(2, { 10 }));
 
-    QCOMPARE(ints(QString("SELECT comic_info_id FROM %1 WHERE %2 = 1 ORDER BY ordering").arg(table, parentColumn)), QList<int>({ 10, 11 }));
-    QCOMPARE(ints(QString("SELECT ordering FROM %1 WHERE %2 = 1 ORDER BY ordering").arg(table, parentColumn)), QList<int>({ 0, 1 }));
+    QList<int> orderings;
+    for (int i = 0; i < comicInfoIds.size(); i++) {
+        orderings.append(i);
+    }
+    QCOMPARE(ints(QString("SELECT comic_info_id FROM %1 WHERE %2 = 1 ORDER BY ordering").arg(table, parentColumn)), comicInfoIds);
+    QCOMPARE(ints(QString("SELECT ordering FROM %1 WHERE %2 = 1 ORDER BY ordering").arg(table, parentColumn)), orderings);
     QCOMPARE(ints(QString("SELECT comic_info_id FROM %1 WHERE %2 = 2").arg(table, parentColumn)), QList<int>({ 10 }));
 }
 
@@ -433,7 +444,7 @@ void ReadingListAndLabelEntryTest::appendIgnoresUnknownComics()
 {
     fetchReadingListOrLabel();
 
-    QVERIFY(append(1, { 999, 110 }));
+    QVERIFY(append(1, { 999, 11 }));
     QCOMPARE(ints("SELECT comic_info_id FROM " + table), QList<int>({ 11 }));
 }
 
@@ -446,9 +457,9 @@ void ReadingListAndLabelEntryTest::appendUsesNextOrderingAfterRemoval()
 {
     fetchReadingListOrLabel();
 
-    QVERIFY(append(1, { 100, 110 }));
+    QVERIFY(append(1, { 10, 11 }));
     QVERIFY(remove(1, { entryIds(1).first() }));
-    QVERIFY(append(1, { 120, 100 }));
+    QVERIFY(append(1, { 12, 10 }));
 
     QCOMPARE(ints(QString("SELECT comic_info_id FROM %1 WHERE %2 = 1 ORDER BY ordering").arg(table, parentColumn)), QList<int>({ 11, 12, 10 }));
     QCOMPARE(ints(QString("SELECT ordering FROM %1 WHERE %2 = 1 ORDER BY ordering").arg(table, parentColumn)), QList<int>({ 1, 2, 3 }));
@@ -467,9 +478,9 @@ void ReadingListAndLabelEntryTest::appendRollsBackOnFailure()
                          "BEGIN SELECT RAISE(ABORT, 'test failure'); END")
                          .arg(table)));
 
-    QVERIFY(!append(1, { 100, 110 }));
+    QVERIFY(!append(1, { 10, 11 }));
     QCOMPARE(scalar("SELECT COUNT(*) FROM " + table), 0);
-    QVERIFY(!append(999, { 100 }));
+    QVERIFY(!append(999, { 10 }));
     QCOMPARE(scalar("SELECT COUNT(*) FROM " + table), 0);
 }
 
@@ -482,8 +493,8 @@ void ReadingListAndLabelEntryTest::removeOnlyAffectsOwnParent()
 {
     fetchReadingListOrLabel();
 
-    QVERIFY(append(1, { 100, 110 }));
-    QVERIFY(append(2, { 100 }));
+    QVERIFY(append(1, { 10, 11 }));
+    QVERIFY(append(2, { 10 }));
     const auto otherEntry = entryIds(2).first();
 
     QVERIFY(remove(1, { otherEntry, 999 }));
@@ -503,9 +514,9 @@ void ReadingListAndLabelEntryTest::reorderSetsOrdering()
 {
     fetchReadingListOrLabel();
 
-    QVERIFY(append(1, { 100, 110, 120 }));
+    QVERIFY(append(1, { 10, 11, 12 }));
     QVERIFY(remove(1, { entryIds(1).at(1) }));
-    QVERIFY(append(1, { 110 }));
+    QVERIFY(append(1, { 11 }));
     const auto ids = entryIds(1);
 
     const QList<qulonglong> newOrder = { ids.at(2), ids.at(0), ids.at(1) };
@@ -523,8 +534,8 @@ void ReadingListAndLabelEntryTest::reorderRejectsIncompleteLists()
 {
     fetchReadingListOrLabel();
 
-    QVERIFY(append(1, { 100, 110 }));
-    QVERIFY(append(2, { 120 }));
+    QVERIFY(append(1, { 10, 11 }));
+    QVERIFY(append(2, { 12 }));
     const auto ids = entryIds(1);
     const auto otherEntry = entryIds(2).first();
     const auto orderings = ints("SELECT ordering FROM " + table + " ORDER BY id");
@@ -546,7 +557,7 @@ void ReadingListAndLabelEntryTest::entryOfTheOtherKindIsRejected()
 {
     fetchReadingListOrLabel();
 
-    QVERIFY(append(1, { 100, 110 }));
+    QVERIFY(append(1, { 10, 11 }));
     const auto ids = entryIds(1);
     const auto otherKind = listKind() == ListKind::ReadingList ? ListKind::Label : ListKind::ReadingList;
 
@@ -564,7 +575,7 @@ void ReadingListAndLabelEntryTest::comicDeleteRecordsLastKnownFile()
 {
     fetchReadingListOrLabel();
 
-    QVERIFY(append(1, { 100, 110 }));
+    QVERIFY(append(1, { 10, 11 }));
     QVERIFY(insertEntry(1, QVariant(), 1));
 
     QVERIFY(exec("DELETE FROM comic WHERE id = 110"));
@@ -597,7 +608,7 @@ void ReadingListAndLabelEntryTest::folderDeleteRecordsLastKnownFile()
     QVERIFY(exec("INSERT INTO folder (id, parentId, name, path) VALUES (2, 1, 'Batman', '/Batman')"));
     QVERIFY(exec("INSERT INTO comic_info (id, hash) VALUES (13, 'hash13')"));
     QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES (130, 2, 13, '1.cbz', '/Batman/1.cbz')"));
-    QVERIFY(append(1, { 130 }));
+    QVERIFY(append(1, { 13 }));
 
     QVERIFY(exec("DELETE FROM folder WHERE id = 2"));
 
@@ -607,6 +618,22 @@ void ReadingListAndLabelEntryTest::folderDeleteRecordsLastKnownFile()
     QVERIFY(q.next());
     QCOMPARE(q.value(0).toString(), QString("1.cbz"));
     QCOMPARE(q.value(1).toString(), QString("/Batman/1.cbz"));
+}
+
+void ReadingListAndLabelEntryTest::removeUnusedComicInfo()
+{
+    QVERIFY(exec("INSERT INTO comic_info (id, hash) VALUES (13, 'hash13'), (14, 'hash14')"));
+    table = "reading_list_entry";
+    QVERIFY(append(1, { 11 }));
+    table = "label_entry";
+    QVERIFY(append(1, { 12 }));
+    QVERIFY(exec("DELETE FROM comic WHERE id IN (110, 120)"));
+
+    auto hashes = DBHelper::removeUnusedComicInfo(db);
+    hashes.sort();
+
+    QCOMPARE(hashes, QStringList({ "hash13", "hash14" }));
+    QCOMPARE(ints("SELECT id FROM comic_info ORDER BY id"), QList<int>({ 10, 11, 12 }));
 }
 
 QTEST_GUILESS_MAIN(ReadingListAndLabelEntryTest)

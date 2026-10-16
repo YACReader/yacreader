@@ -94,6 +94,7 @@ private slots:
     void updateMergesDiskAndLibrary();
     void folderContentLoadersReturnSortedValues();
     void replacementDecision();
+    void cleanupKeepsTheComicInfoOfEntries();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -291,6 +292,31 @@ void LibraryScanTest::replacementDecision()
     QCOMPARE(classifyReplaceComic(ComicInfoId(1), ComicInfoId(1), true), ReplaceComicResult::SameComicInfo);
     QCOMPARE(classifyReplaceComic(ComicInfoId(1), ComicInfoId(2), false), ReplaceComicResult::NewComicInfo);
     QCOMPARE(classifyReplaceComic(ComicInfoId(1), ComicInfoId(2), true), ReplaceComicResult::KnownComicInfo);
+}
+
+void LibraryScanTest::cleanupKeepsTheComicInfoOfEntries()
+{
+    const auto listedInfo = value("SELECT comicInfoId FROM comic WHERE path = '/z.cbz'");
+    const auto unlistedInfo = value("SELECT comicInfoId FROM comic WHERE path = '/a.cbz'");
+    const auto listedCover = LibraryPaths::coverPathFromLibraryDataPath(LibraryPaths::libraryDataPath(source), value("SELECT hash FROM comic_info WHERE id = " + listedInfo));
+    const auto unlistedCover = LibraryPaths::coverPathFromLibraryDataPath(LibraryPaths::libraryDataPath(source), value("SELECT hash FROM comic_info WHERE id = " + unlistedInfo));
+    QVERIFY(QFile::exists(listedCover));
+    QVERIFY(QFile::exists(unlistedCover));
+    QVERIFY(withDatabase([&](QSqlDatabase &db) {
+        QSqlQuery query(db);
+        return query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')") &&
+                DBHelper::appendComicsToReadingList(ReadingListId(1), { ComicInfoId(listedInfo.toULongLong()) }, db);
+    }));
+
+    QVERIFY(removePath("z.cbz"));
+    QVERIFY(removePath("a.cbz"));
+    QVERIFY(scan(false));
+
+    QCOMPARE(value("SELECT COUNT(*) FROM comic_info WHERE id = " + listedInfo), QString("1"));
+    QCOMPARE(value("SELECT last_known_path FROM reading_list_entry WHERE comic_info_id = " + listedInfo), QString("/z.cbz"));
+    QVERIFY(QFile::exists(listedCover));
+    QCOMPARE(value("SELECT COUNT(*) FROM comic_info WHERE id = " + unlistedInfo), QString("0"));
+    QVERIFY(!QFile::exists(unlistedCover));
 }
 
 QTEST_GUILESS_MAIN(LibraryScanTest)
