@@ -47,6 +47,10 @@ private slots:
     void reorderRejectsIncompleteLists();
     void entryOfTheOtherKindIsRejected_data();
     void entryOfTheOtherKindIsRejected();
+    void comicDeleteRecordsLastKnownFile_data();
+    void comicDeleteRecordsLastKnownFile();
+    void folderDeleteRecordsLastKnownFile_data();
+    void folderDeleteRecordsLastKnownFile();
 
 private:
     void addReadingListAndLabelRows();
@@ -79,6 +83,7 @@ void ReadingListAndLabelEntryTest::init()
     QVERIFY(DataBaseManagement::createPlaceholderTable(db));
     QVERIFY(DataBaseManagement::createReadingListEntryTable(db));
     QVERIFY(DataBaseManagement::createLabelEntryTable(db));
+    QVERIFY(DataBaseManagement::createComicDeleteTrigger(db));
 
     QVERIFY(exec("INSERT INTO folder (id, parentId, name, path) VALUES (1, 1, 'root', '/')"));
     QVERIFY(exec("INSERT INTO comic_info (id, hash) VALUES (10, 'hash10'), (11, 'hash11'), (12, 'hash12')"));
@@ -548,6 +553,60 @@ void ReadingListAndLabelEntryTest::entryOfTheOtherKindIsRejected()
     QVERIFY(!remove(1, { ids.first() }, otherKind));
     QVERIFY(!reorder(1, { ids.at(1), ids.at(0) }, otherKind));
     QCOMPARE(entryIds(1), ids);
+}
+
+void ReadingListAndLabelEntryTest::comicDeleteRecordsLastKnownFile_data()
+{
+    addReadingListAndLabelRows();
+}
+
+void ReadingListAndLabelEntryTest::comicDeleteRecordsLastKnownFile()
+{
+    fetchReadingListOrLabel();
+
+    QVERIFY(append(1, { 100, 110 }));
+    QVERIFY(insertEntry(1, QVariant(), 1));
+
+    QVERIFY(exec("DELETE FROM comic WHERE id = 110"));
+
+    QSqlQuery q(db);
+    QVERIFY(q.exec(QString("SELECT comic_info_id, last_known_name, last_known_path FROM %1 ORDER BY ordering").arg(table)));
+    QVERIFY(q.next());
+    QCOMPARE(q.value(0).toInt(), 10);
+    QVERIFY(q.value(1).isNull());
+    QVERIFY(q.value(2).isNull());
+    QVERIFY(q.next());
+    QCOMPARE(q.value(0).toInt(), 11);
+    QCOMPARE(q.value(1).toString(), QString("b.cbz"));
+    QCOMPARE(q.value(2).toString(), QString("/b.cbz"));
+    QVERIFY(q.next());
+    QVERIFY(q.value(0).isNull());
+    QVERIFY(q.value(1).isNull());
+    QVERIFY(q.value(2).isNull());
+}
+
+void ReadingListAndLabelEntryTest::folderDeleteRecordsLastKnownFile_data()
+{
+    addReadingListAndLabelRows();
+}
+
+void ReadingListAndLabelEntryTest::folderDeleteRecordsLastKnownFile()
+{
+    fetchReadingListOrLabel();
+
+    QVERIFY(exec("INSERT INTO folder (id, parentId, name, path) VALUES (2, 1, 'Batman', '/Batman')"));
+    QVERIFY(exec("INSERT INTO comic_info (id, hash) VALUES (13, 'hash13')"));
+    QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES (130, 2, 13, '1.cbz', '/Batman/1.cbz')"));
+    QVERIFY(append(1, { 130 }));
+
+    QVERIFY(exec("DELETE FROM folder WHERE id = 2"));
+
+    QCOMPARE(scalar("SELECT COUNT(*) FROM comic WHERE id = 130"), 0);
+    QSqlQuery q(db);
+    QVERIFY(q.exec(QString("SELECT last_known_name, last_known_path FROM %1 WHERE comic_info_id = 13").arg(table)));
+    QVERIFY(q.next());
+    QCOMPARE(q.value(0).toString(), QString("1.cbz"));
+    QCOMPARE(q.value(1).toString(), QString("/Batman/1.cbz"));
 }
 
 QTEST_GUILESS_MAIN(ReadingListAndLabelEntryTest)

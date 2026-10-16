@@ -874,6 +874,18 @@ bool DataBaseManagement::createLabelEntryTable(QSqlDatabase &database)
     return success;
 }
 
+bool DataBaseManagement::createComicDeleteTrigger(QSqlDatabase &database)
+{
+    QSqlQuery queryComicDeleteTrigger(database);
+    return queryComicDeleteTrigger.exec("CREATE TRIGGER comic_delete_last_known_file AFTER DELETE ON comic "
+                                        "BEGIN "
+                                        "UPDATE reading_list_entry SET last_known_name = OLD.fileName, last_known_path = OLD.path "
+                                        "WHERE comic_info_id = OLD.comicInfoId; "
+                                        "UPDATE label_entry SET last_known_name = OLD.fileName, last_known_path = OLD.path "
+                                        "WHERE comic_info_id = OLD.comicInfoId; "
+                                        "END");
+}
+
 void DataBaseManagement::exportComicsInfo(QString source, QString dest)
 {
     QString connectionName = "";

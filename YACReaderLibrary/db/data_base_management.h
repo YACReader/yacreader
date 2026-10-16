@@ -147,6 +147,7 @@ public:
     static bool createPlaceholderTable(QSqlDatabase &database);
     static bool createReadingListEntryTable(QSqlDatabase &database);
     static bool createLabelEntryTable(QSqlDatabase &database);
+    static bool createComicDeleteTrigger(QSqlDatabase &database);
 
     static void exportComicsInfo(QString source, QString dest);
     static bool importComicsInfo(QString source, QString dest);
