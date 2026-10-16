@@ -25,6 +25,7 @@ private slots:
     void init();
     void cleanup();
     void listRowsHaveTheirList();
+    void identityRolesFollowTheCase();
     void listShowsTheFirstFileOfEachComicInfo();
     void removeFromAnAggregatedReadingListUsesTheOwningList();
     void removeOneOccurrenceOfARepeatedComic();
@@ -145,6 +146,42 @@ void ComicModelTest::listRowsHaveTheirList()
     QCOMPARE(model.data(model.index(0, 0), ComicModel::IdRole).toULongLong(), 3ULL);
     QCOMPARE(model.data(model.index(1, 0), ComicModel::IdRole).toULongLong(), 1ULL);
     QCOMPARE(model.columnCount(), int(ComicModel::Size) + 1);
+}
+
+void ComicModelTest::identityRolesFollowTheCase()
+{
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name) VALUES (2, 1, 0, 'Child')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id) VALUES (40, 2, 0, 4)"));
+    const auto entryIds = ints("SELECT id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering");
+
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+    const auto folderRow = model.index(0, 0);
+    QCOMPARE(folderRow.data(ComicModel::KindRole).toString(), QString("Comic"));
+    QCOMPARE(folderRow.data(ComicModel::AvailableRole).toBool(), true);
+    QVERIFY(folderRow.data(ComicModel::LastKnownNameRole).isNull());
+    QVERIFY(folderRow.data(ComicModel::ListItemIdRole).isNull());
+    QVERIFY(folderRow.data(ComicModel::ListIdRole).isNull());
+
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(model.rowCount(), 3);
+    const QList<qulonglong> expectedEntries = { qulonglong(entryIds.at(0)), qulonglong(entryIds.at(1)), 40 };
+    const QList<qulonglong> expectedLists = { 1, 1, 2 };
+    for (int row = 0; row < model.rowCount(); row++) {
+        const auto index = model.index(row, 0);
+        QCOMPARE(index.data(ComicModel::KindRole).toString(), QString("ComicInList"));
+        QCOMPARE(index.data(ComicModel::AvailableRole).toBool(), true);
+        QVERIFY(index.data(ComicModel::LastKnownNameRole).isNull());
+        QCOMPARE(index.data(ComicModel::ListItemIdRole).toULongLong(), expectedEntries.at(row));
+        QCOMPARE(index.data(ComicModel::ListIdRole).toULongLong(), expectedLists.at(row));
+    }
+
+    const auto roles = model.roleNames();
+    QCOMPARE(roles.value(ComicModel::KindRole), QByteArray("kind"));
+    QCOMPARE(roles.value(ComicModel::AvailableRole), QByteArray("available"));
+    QCOMPARE(roles.value(ComicModel::LastKnownNameRole), QByteArray("last_known_name"));
+    QCOMPARE(roles.value(ComicModel::ListItemIdRole), QByteArray("list_item_id"));
+    QCOMPARE(roles.value(ComicModel::ListIdRole), QByteArray("list_id"));
 }
 
 void ComicModelTest::listShowsTheFirstFileOfEachComicInfo()

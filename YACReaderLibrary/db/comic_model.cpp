@@ -72,6 +72,36 @@ bool sameValues(const ComicItem &a, const ComicItem &b)
     return sameRow(a, b) && sameEntry(a, b) && rowComic(a).file == rowComic(b).file && rowComic(a).info.hasSameValues(rowComic(b).info);
 }
 
+// what kind of row this is and where it is; a role that the case does not have is nothing to show
+QVariant identityValue(const ComicItem &item, int role)
+{
+    return std::visit(overloaded {
+                              [role](const ComicItemCase::Comic &) -> QVariant {
+                                  switch (role) {
+                                  case ComicModel::KindRole:
+                                      return QStringLiteral("Comic");
+                                  case ComicModel::AvailableRole:
+                                      return true;
+                                  }
+                                  return { };
+                              },
+                              [role](const ComicItemCase::ComicInList &row) -> QVariant {
+                                  switch (role) {
+                                  case ComicModel::KindRole:
+                                      return QStringLiteral("ComicInList");
+                                  case ComicModel::AvailableRole:
+                                      return true;
+                                  case ComicModel::ListItemIdRole:
+                                      return row.entry.id.id;
+                                  case ComicModel::ListIdRole:
+                                      return row.entry.listId;
+                                  }
+                                  return { };
+                              },
+                      },
+                      item);
+}
+
 QVariant columnValue(const ComicDB &comic, int column)
 {
     switch (column) {
@@ -366,6 +396,11 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[SeriesRole] = "series";
     roles[VolumeRole] = "volume";
     roles[StoryArcRole] = "story_arc";
+    roles[KindRole] = "kind";
+    roles[AvailableRole] = "available";
+    roles[LastKnownNameRole] = "last_known_name";
+    roles[ListItemIdRole] = "list_item_id";
+    roles[ListIdRole] = "list_id";
 
     return roles;
 }
@@ -466,6 +501,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return value(Volume);
     else if (role == StoryArcRole)
         return value(StoryArc);
+    else if (role == KindRole || role == AvailableRole || role == LastKnownNameRole || role == ListItemIdRole || role == ListIdRole)
+        return identityValue(_data.at(index.row()), role);
 
     if (role != Qt::DisplayRole)
         return QVariant();

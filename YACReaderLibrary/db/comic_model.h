@@ -71,6 +71,11 @@ public:
         SeriesRole,
         VolumeRole,
         StoryArcRole,
+        KindRole,
+        AvailableRole,
+        LastKnownNameRole,
+        ListItemIdRole,
+        ListIdRole,
     };
 
     enum Mode {

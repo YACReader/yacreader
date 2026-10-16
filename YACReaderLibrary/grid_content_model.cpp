@@ -33,6 +33,7 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
             return sourceIndex.row();
         case TitleRole:
         case FileNameRole:
+        case ReadableTitleRole:
             return sourceIndex.data(FolderModel::FolderNameRole);
         case IdRole:
             return sourceIndex.data(FolderModel::IdRole);
@@ -101,6 +102,18 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
         return sourceIndex.data(ComicModel::ShowRecentRole);
     case RecentRangeRole:
         return sourceIndex.data(ComicModel::RecentRangeRole);
+    case ReadableTitleRole:
+        return sourceIndex.data(ComicModel::ReadableTitle);
+    case KindRole:
+        return sourceIndex.data(ComicModel::KindRole);
+    case AvailableRole:
+        return sourceIndex.data(ComicModel::AvailableRole);
+    case LastKnownNameRole:
+        return sourceIndex.data(ComicModel::LastKnownNameRole);
+    case ListItemIdRole:
+        return sourceIndex.data(ComicModel::ListItemIdRole);
+    case ListIdRole:
+        return sourceIndex.data(ComicModel::ListIdRole);
     default:
         return { };
     }
@@ -127,6 +140,12 @@ QHash<int, QByteArray> GridContentModel::roleNames() const
         { RecentRangeRole, "recent_range" },
         { UpdatedRole, "updated" },
         { FinishedRole, "is_finished" },
+        { ReadableTitleRole, "readable_title" },
+        { KindRole, "kind" },
+        { AvailableRole, "available" },
+        { LastKnownNameRole, "last_known_name" },
+        { ListItemIdRole, "list_item_id" },
+        { ListIdRole, "list_id" },
     };
 }
 

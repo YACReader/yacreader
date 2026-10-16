@@ -39,7 +39,13 @@ public:
         ShowRecentRole,
         RecentRangeRole,
         UpdatedRole,
-        FinishedRole
+        FinishedRole,
+        ReadableTitleRole,
+        KindRole,
+        AvailableRole,
+        LastKnownNameRole,
+        ListItemIdRole,
+        ListIdRole,
     };
 
     explicit GridContentModel(QObject *parent = nullptr);
