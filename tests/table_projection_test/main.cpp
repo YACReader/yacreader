@@ -267,7 +267,7 @@ void TableProjectionTest::folderReadsNullColumns()
     QCOMPARE(folder.path, QString("/Series"));
     QCOMPARE(folder.finished, false);
     QCOMPARE(folder.completed, true);
-    QVERIFY(!folder.numChildren.has_value());
+    QCOMPARE(folder.numChildren, 0);
     QVERIFY(folder.firstChildHash.isNull());
     QVERIFY(folder.customImage.isNull());
     QCOMPARE(folder.type, YACReader::FileType::Comic);
@@ -300,22 +300,12 @@ void TableProjectionTest::folderRoundTrip()
     QCOMPARE(read.path, QString("/Renamed"));
     QCOMPARE(read.finished, true);
     QCOMPARE(read.completed, false);
-    QCOMPARE(read.numChildren, std::optional<qint32>(3));
+    QCOMPARE(read.numChildren, 3);
     QCOMPARE(read.firstChildHash, QString("hash-3"));
     QCOMPARE(read.customImage, QString("cover.jpg"));
     QCOMPARE(read.type, YACReader::FileType::Manga);
     QCOMPARE(read.added, 10);
     QCOMPARE(read.updated, 20);
-
-    folder.numChildren.reset();
-    folder.bindTo(update);
-    update.bindValue(":id", folder.id.value());
-    QVERIFY2(update.exec(), qPrintable(update.lastError().text()));
-
-    QSqlQuery q(db);
-    QVERIFY(q.exec("SELECT numChildren IS NULL FROM folder WHERE id = 7"));
-    QVERIFY(q.next());
-    QVERIFY(q.value(0).toBool());
 }
 
 void TableProjectionTest::folderKeepsAStoredUnknownCount()
@@ -324,7 +314,7 @@ void TableProjectionTest::folderKeepsAStoredUnknownCount()
     QVERIFY(q.exec("UPDATE folder SET numChildren = -1 WHERE id = 7"));
 
     const auto folder = Folder::fromRecord(selectOne("folder", "f", Folder::columns(), 7), "f");
-    QCOMPARE(folder.numChildren, std::optional<qint32>(-1));
+    QCOMPARE(folder.numChildren, -1);
 }
 
 void TableProjectionTest::aliasesKeepJoinedTypesApart()

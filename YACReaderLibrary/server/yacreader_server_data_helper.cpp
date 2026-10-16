@@ -36,7 +36,7 @@ QString YACReaderServerDataHelper::folderToYSFormat(const qulonglong libraryId, 
             .arg(libraryId)
             .arg(folder.id.value())
             .arg(folder.name)
-            .arg(folder.numChildren.value_or(-1))
+            .arg(folder.numChildren)
             .arg(folder.firstChildHash);
 }
 
@@ -64,7 +64,7 @@ QJsonObject YACReaderServerDataHelper::folderToJSON(const qulonglong libraryId, 
         json["library_uuid"] = libraryUuid.toString();
     }
     json["folder_name"] = folder.name;
-    json["num_children"] = folder.numChildren.value_or(-1);
+    json["num_children"] = folder.numChildren;
     json["first_comic_hash"] = folder.firstChildHash;
     // 9.13
     json["finished"] = folder.finished;

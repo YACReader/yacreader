@@ -613,7 +613,7 @@ Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
                              "numChildren = :numChildren, "
                              "firstChildHash = :firstChildHash "
                              "WHERE id = :id ");
-    updateFolderInfo.bindValue(":numChildren", *folder.numChildren);
+    updateFolderInfo.bindValue(":numChildren", folder.numChildren);
     updateFolderInfo.bindValue(":firstChildHash", folder.firstChildHash);
     updateFolderInfo.bindValue(":id", folderId);
     updateFolderInfo.exec();

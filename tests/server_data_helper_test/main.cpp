@@ -12,7 +12,7 @@ private slots:
     void folderTextFormat();
 };
 
-static Folder sampleFolder(std::optional<qint32> numChildren)
+static Folder sampleFolder(qint32 numChildren)
 {
     Folder folder;
     folder.id = FolderId(7);
@@ -28,17 +28,17 @@ static Folder sampleFolder(std::optional<qint32> numChildren)
 
 void ServerDataHelperTest::folderJson_data()
 {
-    QTest::addColumn<std::optional<qint32>>("numChildren");
+    QTest::addColumn<qint32>("numChildren");
     QTest::addColumn<int>("sent");
 
-    QTest::newRow("known") << std::optional<qint32>(3) << 3;
-    QTest::newRow("unknown") << std::optional<qint32>() << -1;
-    QTest::newRow("stored unknown") << std::optional<qint32>(-1) << -1;
+    QTest::newRow("known") << qint32(3) << 3;
+    QTest::newRow("empty") << qint32(0) << 0;
+    QTest::newRow("stored unknown") << qint32(-1) << -1;
 }
 
 void ServerDataHelperTest::folderJson()
 {
-    QFETCH(std::optional<qint32>, numChildren);
+    QFETCH(qint32, numChildren);
     QFETCH(int, sent);
 
     const auto json = YACReaderServerDataHelper::folderToJSON(2, QUuid(), sampleFolder(numChildren));
@@ -60,7 +60,7 @@ void ServerDataHelperTest::folderTextFormat_data()
 
 void ServerDataHelperTest::folderTextFormat()
 {
-    QFETCH(std::optional<qint32>, numChildren);
+    QFETCH(qint32, numChildren);
     QFETCH(int, sent);
 
     const auto text = YACReaderServerDataHelper::folderToYSFormat(2, sampleFolder(numChildren));

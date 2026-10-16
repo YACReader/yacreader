@@ -80,7 +80,7 @@ void XMLInfoLibraryScanner::run()
 
                     QSqlQuery comicsInfo(database);
                     comicsInfo.prepare("SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId");
-                    comicsInfo.bindValue(":parentId", item->id);
+                    comicsInfo.bindValue(":parentId", item->folder.id.value());
                     comicsInfo.exec();
 
                     updateFromSQLQuery(database, comicsInfo);

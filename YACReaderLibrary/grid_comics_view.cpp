@@ -875,7 +875,7 @@ QVariantMap GridComicsView::makeFolderInfo(const Folder &folder, const QVariant 
         break;
     }
 
-    const QVariant itemCount = (!folder.numChildren || *folder.numChildren < 0) ? QVariant(tr("Unknown")) : QVariant(*folder.numChildren);
+    const QVariant itemCount = folder.numChildren < 0 ? QVariant(tr("Unknown")) : QVariant(folder.numChildren);
     return {
         { QStringLiteral("kind"), QStringLiteral("folder") },
         { QStringLiteral("name"), folder.name },

@@ -25,10 +25,7 @@ Folder readFolder(const Value &value)
     folder.path = value(3).toString();
     folder.finished = value(4).toBool();
     folder.completed = value(5).toBool();
-    const auto numChildren = value(6);
-    if (!numChildren.isNull()) {
-        folder.numChildren = numChildren.toInt();
-    }
+    folder.numChildren = value(6).toInt();
     folder.firstChildHash = value(7).toString();
     folder.customImage = value(8).toString();
     folder.type = value(9).template value<YACReader::FileType>();
@@ -62,7 +59,7 @@ void Folder::bindTo(QSqlQuery &query) const
     query.bindValue(":path", path);
     query.bindValue(":finished", finished);
     query.bindValue(":completed", completed);
-    query.bindValue(":numChildren", numChildren ? QVariant(*numChildren) : QVariant());
+    query.bindValue(":numChildren", numChildren);
     query.bindValue(":firstChildHash", firstChildHash);
     query.bindValue(":customImage", customImage);
     query.bindValue(":type", static_cast<int>(type));
