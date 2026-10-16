@@ -16,6 +16,20 @@
 #include <QThread>
 #include <QtCore>
 
+#include <optional>
+
+enum class ReplaceComicResult {
+    NotInserted, // the new file can't be read: keep the old comic
+    SameComicInfo, // same content, only the date changed
+    NewComicInfo, // new content: first time this hash is seen
+    KnownComicInfo, // the content already has a comic_info in the library
+};
+
+// newComicInfoId is empty when no comic was inserted for the new file.
+ReplaceComicResult classifyReplaceComic(ComicInfoId oldComicInfoId,
+                                        std::optional<ComicInfoId> newComicInfoId,
+                                        bool newComicInfoExisted);
+
 class LibraryCreator : public QThread
 {
     Q_OBJECT

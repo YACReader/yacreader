@@ -93,6 +93,7 @@ private slots:
     void createAddsFoldersAndComics();
     void updateMergesDiskAndLibrary();
     void folderContentLoadersReturnSortedValues();
+    void replacementDecision();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -282,6 +283,14 @@ void LibraryScanTest::folderContentLoadersReturnSortedValues()
         QVERIFY(!comic.info.hash.isEmpty());
     }
     QCOMPARE(comicNames, QStringList({ "b1.cbz", "b2.cbz" }));
+}
+
+void LibraryScanTest::replacementDecision()
+{
+    QCOMPARE(classifyReplaceComic(ComicInfoId(1), std::nullopt, false), ReplaceComicResult::NotInserted);
+    QCOMPARE(classifyReplaceComic(ComicInfoId(1), ComicInfoId(1), true), ReplaceComicResult::SameComicInfo);
+    QCOMPARE(classifyReplaceComic(ComicInfoId(1), ComicInfoId(2), false), ReplaceComicResult::NewComicInfo);
+    QCOMPARE(classifyReplaceComic(ComicInfoId(1), ComicInfoId(2), true), ReplaceComicResult::KnownComicInfo);
 }
 
 QTEST_GUILESS_MAIN(LibraryScanTest)

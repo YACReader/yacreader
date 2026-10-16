@@ -58,6 +58,13 @@ public:
     static void deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
     static void deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
+    // entry functions reject an entry id of the other list kind and change nothing
+    static bool removeLabelEntries(LabelId labelId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
+    static bool removeReadingListEntries(ReadingListId readingListId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
+    static bool reorderLabelEntries(LabelId labelId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
+    static bool reorderReadingListEntries(ReadingListId readingListId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
+    static bool appendComicsToLabel(LabelId labelId, const QList<ComicId> &comicIds, QSqlDatabase &db);
+    static bool appendComicsToReadingList(ReadingListId readingListId, const QList<ComicId> &comicIds, QSqlDatabase &db);
     // inserts
     static qulonglong insert(Folder *folder, QSqlDatabase &db);
     static qulonglong insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo);

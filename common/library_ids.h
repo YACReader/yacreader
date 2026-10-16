@@ -33,4 +33,18 @@ using ComicInfoId = TableId<struct ComicInfoIdTag>;
 using ReadingListId = TableId<struct ReadingListIdTag>;
 using LabelId = TableId<struct LabelIdTag>;
 
+enum class ListKind {
+    ReadingList,
+    Label,
+};
+
+// an entry id is unique only in its own table (reading_list_entry or label_entry)
+struct ListItemId {
+    ListKind listKind;
+    qulonglong id;
+
+    friend constexpr bool operator==(const ListItemId &, const ListItemId &) = default;
+    friend size_t qHash(const ListItemId &key, size_t seed = 0) noexcept { return qHashMulti(seed, static_cast<int>(key.listKind), key.id); }
+};
+
 #endif

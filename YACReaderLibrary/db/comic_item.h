@@ -7,11 +7,6 @@
 
 #include <variant>
 
-enum class ListKind {
-    ReadingList,
-    Label,
-};
-
 // `Comic` is also the class that reads comic files, so the cases live in their own namespace.
 namespace ComicItemCase {
 

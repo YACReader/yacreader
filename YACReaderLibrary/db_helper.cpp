@@ -19,6 +19,7 @@
 #include <QFileInfo>
 #include <QList>
 #include <QMap>
+#include <QSet>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -149,6 +150,141 @@ QList<ComicDB> comicsFromQuery(QSqlQuery &query)
     return comics;
 }
 
+}
+
+namespace {
+
+struct EntryTable {
+    const char *table;
+    const char *parentColumn;
+    ListKind listKind;
+};
+
+constexpr EntryTable readingListEntries { "reading_list_entry", "reading_list_id", ListKind::ReadingList };
+constexpr EntryTable labelEntries { "label_entry", "label_id", ListKind::Label };
+
+bool allOfKind(const QList<ListItemId> &entryIds, ListKind listKind)
+{
+    return std::all_of(entryIds.begin(), entryIds.end(), [listKind](const ListItemId &id) { return id.listKind == listKind; });
+}
+
+bool removeEntries(const EntryTable &entries, qulonglong parentId, const QList<ListItemId> &entryIds, QSqlDatabase &db)
+{
+    if (!allOfKind(entryIds, entries.listKind)) {
+        return false;
+    }
+
+    db.transaction();
+
+    QSqlQuery query(db);
+    query.prepare(QString("DELETE FROM %1 WHERE id = :id AND %2 = :parent_id").arg(entries.table, entries.parentColumn));
+
+    for (const auto &entryId : entryIds) {
+        query.bindValue(":id", entryId.id);
+        query.bindValue(":parent_id", parentId);
+        if (!query.exec()) {
+            QLOG_ERROR() << "Unable to remove entries from" << entries.table << ":" << query.lastError().text();
+            db.rollback();
+            return false;
+        }
+    }
+
+    return db.commit();
+}
+
+bool reorderEntries(const EntryTable &entries, qulonglong parentId, const QList<ListItemId> &entryIds, QSqlDatabase &db)
+{
+    if (!allOfKind(entryIds, entries.listKind) || QSet<ListItemId>(entryIds.begin(), entryIds.end()).size() != entryIds.size()) {
+        return false;
+    }
+
+    db.transaction();
+
+    QSqlQuery count(db);
+    count.prepare(QString("SELECT COUNT(*) FROM %1 WHERE %2 = :parent_id").arg(entries.table, entries.parentColumn));
+    count.bindValue(":parent_id", parentId);
+    const bool allEntriesGiven = count.exec() && count.next() && count.value(0).toLongLong() == entryIds.size();
+    count.finish();
+    if (!allEntriesGiven) {
+        db.rollback();
+        return false;
+    }
+
+    QSqlQuery query(db);
+    query.prepare(QString("UPDATE %1 SET ordering = :ordering WHERE id = :id AND %2 = :parent_id").arg(entries.table, entries.parentColumn));
+
+    int ordering = 0;
+    for (const auto &entryId : entryIds) {
+        query.bindValue(":ordering", ordering++);
+        query.bindValue(":id", entryId.id);
+        query.bindValue(":parent_id", parentId);
+        if (!query.exec() || query.numRowsAffected() != 1) {
+            QLOG_ERROR() << "Unable to reorder entries of" << entries.table << ":" << query.lastError().text();
+            db.rollback();
+            return false;
+        }
+    }
+
+    return db.commit();
+}
+
+bool appendComics(const EntryTable &entries, qulonglong parentId, const QList<ComicId> &comicIds, QSqlDatabase &db)
+{
+    db.transaction();
+
+    QSqlQuery query(db);
+    query.prepare(QString("INSERT INTO %1 (%2, ordering, comic_info_id) "
+                          "SELECT :parent_id, "
+                          "(SELECT COALESCE(MAX(ordering), -1) + 1 FROM %1 WHERE %2 = :parent_id), "
+                          "c.comicInfoId "
+                          "FROM comic c "
+                          "WHERE c.id = :comic_id "
+                          "AND NOT EXISTS (SELECT 1 FROM %1 WHERE %2 = :parent_id AND comic_info_id = c.comicInfoId)")
+                          .arg(entries.table, entries.parentColumn));
+
+    for (const auto comicId : comicIds) {
+        query.bindValue(":parent_id", parentId);
+        query.bindValue(":comic_id", comicId.value());
+        if (!query.exec()) {
+            QLOG_ERROR() << "Unable to append comics to" << entries.table << ":" << query.lastError().text();
+            db.rollback();
+            return false;
+        }
+    }
+
+    return db.commit();
+}
+
+}
+
+bool DBHelper::removeLabelEntries(LabelId labelId, const QList<ListItemId> &entryIds, QSqlDatabase &db)
+{
+    return removeEntries(labelEntries, labelId.value(), entryIds, db);
+}
+
+bool DBHelper::removeReadingListEntries(ReadingListId readingListId, const QList<ListItemId> &entryIds, QSqlDatabase &db)
+{
+    return removeEntries(readingListEntries, readingListId.value(), entryIds, db);
+}
+
+bool DBHelper::reorderLabelEntries(LabelId labelId, const QList<ListItemId> &entryIds, QSqlDatabase &db)
+{
+    return reorderEntries(labelEntries, labelId.value(), entryIds, db);
+}
+
+bool DBHelper::reorderReadingListEntries(ReadingListId readingListId, const QList<ListItemId> &entryIds, QSqlDatabase &db)
+{
+    return reorderEntries(readingListEntries, readingListId.value(), entryIds, db);
+}
+
+bool DBHelper::appendComicsToLabel(LabelId labelId, const QList<ComicId> &comicIds, QSqlDatabase &db)
+{
+    return appendComics(labelEntries, labelId.value(), comicIds, db);
+}
+
+bool DBHelper::appendComicsToReadingList(ReadingListId readingListId, const QList<ComicId> &comicIds, QSqlDatabase &db)
+{
+    return appendComics(readingListEntries, readingListId.value(), comicIds, db);
 }
 
 QString DBHelper::getLibraryName(int id)

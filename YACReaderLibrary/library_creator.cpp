@@ -480,6 +480,21 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
     }
 }
 
+ReplaceComicResult classifyReplaceComic(ComicInfoId oldComicInfoId,
+                                        std::optional<ComicInfoId> newComicInfoId,
+                                        bool newComicInfoExisted)
+{
+    if (!newComicInfoId) {
+        return ReplaceComicResult::NotInserted;
+    }
+
+    if (*newComicInfoId == oldComicInfoId) {
+        return ReplaceComicResult::SameComicInfo;
+    }
+
+    return newComicInfoExisted ? ReplaceComicResult::KnownComicInfo : ReplaceComicResult::NewComicInfo;
+}
+
 void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &fileInfo, ComicDB *comic)
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
