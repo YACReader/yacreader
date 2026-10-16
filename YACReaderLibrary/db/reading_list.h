@@ -21,6 +21,8 @@ struct ReadingList {
 
     static const QStringList &columns();
     static ReadingList fromRecord(const QSqlRecord &record, const QString &alias);
+    static QList<int> columnIndexes(const QSqlRecord &record, const QString &alias);
+    static ReadingList fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes);
     void bindTo(QSqlQuery &query) const;
 };
 
@@ -32,6 +34,8 @@ struct Label {
 
     static const QStringList &columns();
     static Label fromRecord(const QSqlRecord &record, const QString &alias);
+    static QList<int> columnIndexes(const QSqlRecord &record, const QString &alias);
+    static Label fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes);
     void bindTo(QSqlQuery &query) const;
 };
 

@@ -2,6 +2,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "descriptive_comic_metadata.h"
+#include "table_projection.h"
 #include "yacreader_global.h"
 
 #include <QMap>
@@ -21,11 +22,23 @@ private slots:
     void descriptiveRoundTripPreservesValuesAndComicState();
     void fullComicUpdateKeepsExistingBehavior();
     void comicInfoCopyKeepsDescriptiveFields();
-    void partialProjectionKeepsUnknownFieldsNull();
+    void comicInfoProjectionCoversTheTable();
 
 private:
     QSqlDatabase db;
+
+    ComicInfo loadInfo(qulonglong id);
 };
+
+ComicInfo DescriptiveMetadataTest::loadInfo(qulonglong id)
+{
+    QSqlQuery q(db);
+    q.prepare("SELECT " + TableProjection::selectList("ci", ComicInfo::columns()) + " FROM comic_info ci WHERE ci.id = :id");
+    q.bindValue(":id", id);
+    if (!q.exec() || !q.next())
+        return { };
+    return ComicInfo::fromRecord(q.record(), "ci");
+}
 
 void DescriptiveMetadataTest::init()
 {
@@ -91,8 +104,7 @@ void DescriptiveMetadataTest::descriptiveRoundTripPreservesValuesAndComicState()
     QVERIFY(q.exec("SELECT * FROM comic_info WHERE id=1"));
     QVERIFY(q.next());
     const auto after = q.record();
-    DescriptiveComicMetadata loaded;
-    loaded.loadFrom(after);
+    const DescriptiveComicMetadata loaded = loadInfo(1);
     for (const auto &column : DescriptiveComicMetadata::columns()) {
         const auto expected = metadata.*column.member;
         const auto actual = loaded.*column.member;
@@ -114,7 +126,7 @@ void DescriptiveMetadataTest::descriptiveRoundTripPreservesValuesAndComicState()
     QVERIFY(loaded.title.isNull());
     QVERIFY(!loaded.notes.isNull());
     QCOMPARE(loaded.notes.toString(), QString(""));
-    const auto comic = DBHelper::getComicInfoFromQuery(q);
+    const auto comic = loadInfo(1);
     const DescriptiveComicMetadata &comicMetadata = comic;
     for (const auto &column : DescriptiveComicMetadata::columns())
         QCOMPARE(comicMetadata.*column.member, loaded.*column.member);
@@ -126,19 +138,15 @@ void DescriptiveMetadataTest::descriptiveRoundTripPreservesValuesAndComicState()
 
 void DescriptiveMetadataTest::fullComicUpdateKeepsExistingBehavior()
 {
-    QSqlQuery q(db);
-    QVERIFY(q.exec("SELECT * FROM comic_info WHERE id=1"));
-    QVERIFY(q.next());
-    auto info = DBHelper::getComicInfoFromQuery(q);
+    auto info = loadInfo(1);
+    QCOMPARE(info.id, ComicInfoId(1));
     info.title = QString("");
     info.synopsis = QVariant();
     info.number = QString("001a");
     info.currentPage = 20;
     info.type = QVariant::fromValue(YACReader::FileType::WebComic);
     DBHelper::update(&info, db);
-    QVERIFY(q.exec("SELECT * FROM comic_info WHERE id=1"));
-    QVERIFY(q.next());
-    const auto loaded = DBHelper::getComicInfoFromQuery(q);
+    const auto loaded = loadInfo(1);
     QVERIFY(!loaded.title.isNull());
     QVERIFY(loaded.synopsis.isNull());
     QCOMPARE(loaded.number.toString(), QString("001a"));
@@ -180,16 +188,38 @@ void DescriptiveMetadataTest::comicInfoCopyKeepsDescriptiveFields()
     }
 }
 
-void DescriptiveMetadataTest::partialProjectionKeepsUnknownFieldsNull()
+void DescriptiveMetadataTest::comicInfoProjectionCoversTheTable()
 {
     QSqlQuery q(db);
-    QVERIFY(q.exec("SELECT id AS metadata_id,title FROM comic_info WHERE id=1"));
-    QVERIFY(q.next());
-    const auto info = DBHelper::getComicInfoFromQuery(q, "metadata_id");
+    QVERIFY(q.exec("PRAGMA table_info(comic_info)"));
+    QSet<QString> schema;
+    while (q.next())
+        schema.insert(q.value(1).toString());
+
+    QSet<QString> projected { "id", "manga" };
+    for (const auto &column : ComicInfo::columns()) {
+        QVERIFY2(!projected.contains(column), qPrintable(column));
+        projected.insert(column);
+    }
+    QCOMPARE(projected, schema);
+
+    const auto info = loadInfo(1);
     QCOMPARE(info.id, ComicInfoId(1));
+    QCOMPARE(info.hash, QString("real-stored-hash"));
     QCOMPARE(info.title.toString(), QString("Original"));
     QVERIFY(info.number.isNull());
     QVERIFY(info.comicVineID.isNull());
+    QCOMPARE(info.numPages.toInt(), 20);
+    QCOMPARE(info.currentPage, 7);
+    QCOMPARE(info.read, false);
+    QCOMPARE(info.hasBeenOpened, true);
+    QCOMPARE(info.rating, 4);
+    QCOMPARE(info.coverPage.toInt(), 3);
+    QCOMPARE(info.originalCoverSize.toString(), QString("600x800"));
+    QCOMPARE(info.type.toInt(), 1);
+    QCOMPARE(info.usesExternalCover.toBool(), true);
+    QCOMPARE(info.lastTimeCoverSet.toInt(), 123);
+    QCOMPARE(info.imageFiltersJson.toString(), QString("{}"));
 }
 
 QTEST_GUILESS_MAIN(DescriptiveMetadataTest)

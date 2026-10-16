@@ -44,9 +44,6 @@ class ComicInfoObject : public QObject
     Q_PROPERTY(QVariant letterer READ letterer CONSTANT)
     Q_PROPERTY(QVariant coverArtist READ coverArtist CONSTANT)
     Q_PROPERTY(QVariant date READ date CONSTANT)
-    Q_PROPERTY(QVariant day READ day CONSTANT)
-    Q_PROPERTY(QVariant month READ month CONSTANT)
-    Q_PROPERTY(QVariant year READ year CONSTANT)
     Q_PROPERTY(QVariant publisher READ publisher CONSTANT)
     Q_PROPERTY(QVariant format READ format CONSTANT)
     Q_PROPERTY(QVariant color READ color CONSTANT)
@@ -117,9 +114,6 @@ public:
     QVariant letterer() const;
     QVariant coverArtist() const;
     QVariant date() const;
-    QVariant day() const;
-    QVariant month() const;
-    QVariant year() const;
     QVariant publisher() const;
     QVariant format() const;
     QVariant color() const;

@@ -168,21 +168,6 @@ QVariant ComicInfoObject::date() const
     return comic.info.date;
 }
 
-QVariant ComicInfoObject::day() const
-{
-    return comic.info.day;
-}
-
-QVariant ComicInfoObject::month() const
-{
-    return comic.info.month;
-}
-
-QVariant ComicInfoObject::year() const
-{
-    return comic.info.year;
-}
-
 QVariant ComicInfoObject::publisher() const
 {
     return comic.info.publisher;

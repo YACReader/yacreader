@@ -21,9 +21,15 @@ QString TableProjection::selectList(const QString &alias, const QStringList &col
     return result.join(", ");
 }
 
-QVariant TableProjection::value(const QSqlRecord &record, const QString &alias, const QString &column)
+QList<int> TableProjection::columnIndexes(const QSqlRecord &record, const QString &alias, const QStringList &columns)
 {
-    return record.value(aliased(alias, column));
+    QList<int> indexes;
+    indexes.reserve(columns.size() + 1);
+    indexes.append(record.indexOf(aliased(alias, "id")));
+    for (const auto &column : columns) {
+        indexes.append(record.indexOf(aliased(alias, column)));
+    }
+    return indexes;
 }
 
 QString TableProjection::insertColumns(const QStringList &columns)

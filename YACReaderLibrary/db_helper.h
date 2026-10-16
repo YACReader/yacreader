@@ -44,7 +44,7 @@ public:
     static QList<ComicDB> getFavorites(qulonglong libraryId);
     static QList<ComicDB> getReading(qulonglong libraryId);
     static QList<ReadingList> getReadingLists(qulonglong libraryId);
-    static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId, bool getFullComicInfoFields = false);
+    static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId);
 
     // objects management
     // deletes
@@ -114,12 +114,13 @@ public:
     // load
     static std::optional<Folder> loadFolder(qulonglong id, QSqlDatabase &db);
     static std::optional<Folder> loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db);
-    // reads the next row; the query selects the Folder projection with alias "f"
+    // reads the next row of a query that selects the Folder projection with alias "f"; for one row, loops use Folder::fromQuery
     static std::optional<Folder> readFolderFromQuery(QSqlQuery &query);
     static ComicDB loadComic(qulonglong id, QSqlDatabase &db, bool &found);
+    // in the order of `ids`; a missing comic has only its id, as in loadComic
+    static QList<ComicDB> loadComics(const QList<qulonglong> &ids, QSqlDatabase &db);
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase &database);
     static std::optional<ComicInfo> loadComicInfo(QString hash, QSqlDatabase &db);
-    static ComicInfo getComicInfoFromQuery(QSqlQuery &query, const QString &idKey = "id");
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
 

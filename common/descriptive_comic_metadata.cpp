@@ -64,10 +64,3 @@ void DescriptiveComicMetadata::bindTo(QSqlQuery &query) const
         query.bindValue(":" + QString::fromLatin1(column.name), this->*column.member);
     }
 }
-
-void DescriptiveComicMetadata::loadFrom(const QSqlRecord &record)
-{
-    for (const auto &column : columns()) {
-        this->*column.member = record.value(QString::fromLatin1(column.name));
-    }
-}

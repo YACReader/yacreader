@@ -11,17 +11,32 @@ const QStringList &ComicFile::columns()
     return columns;
 }
 
+namespace {
+
+// `value(k)` is column k of {id} + ComicFile::columns()
+template<typename Value>
+ComicFile readComicFile(const Value &value)
+{
+    ComicFile file;
+    file.id = ComicId(value(0).toULongLong());
+    file.folderId = FolderId(value(1).toULongLong());
+    file.comicInfoId = ComicInfoId(value(2).toULongLong());
+    file.fileName = value(3).toString();
+    file.path = value(4).toString();
+    return file;
+}
+
+}
+
 ComicFile ComicFile::fromRecord(const QSqlRecord &record, const QString &alias)
 {
-    using TableProjection::value;
+    const auto indexes = TableProjection::columnIndexes(record, alias, columns());
+    return readComicFile([&](int column) { return record.value(indexes.at(column)); });
+}
 
-    ComicFile file;
-    file.id = ComicId(value(record, alias, "id").toULongLong());
-    file.folderId = FolderId(value(record, alias, "parentId").toULongLong());
-    file.comicInfoId = ComicInfoId(value(record, alias, "comicInfoId").toULongLong());
-    file.fileName = value(record, alias, "fileName").toString();
-    file.path = value(record, alias, "path").toString();
-    return file;
+ComicFile ComicFile::fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes)
+{
+    return readComicFile([&](int column) { return query.value(columnIndexes.at(column)); });
 }
 
 void ComicFile::bindTo(QSqlQuery &query) const

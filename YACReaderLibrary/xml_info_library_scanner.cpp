@@ -65,7 +65,7 @@ void XMLInfoLibraryScanner::run()
         database.transaction();
 
         if (!partialUpdate) {
-            QSqlQuery comicsInfo("SELECT * FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)", database);
+            QSqlQuery comicsInfo("SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)", database);
             comicsInfo.exec();
 
             updateFromSQLQuery(database, comicsInfo);
@@ -79,7 +79,7 @@ void XMLInfoLibraryScanner::run()
                     auto item = static_cast<FolderItem *>(idx.internalPointer());
 
                     QSqlQuery comicsInfo(database);
-                    comicsInfo.prepare("SELECT * FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId");
+                    comicsInfo.prepare("SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId");
                     comicsInfo.bindValue(":parentId", item->id);
                     comicsInfo.exec();
 
@@ -104,23 +104,17 @@ void XMLInfoLibraryScanner::stop()
 
 void XMLInfoLibraryScanner::updateFromSQLQuery(QSqlDatabase &db, QSqlQuery &query)
 {
-    QSqlRecord record = query.record();
-
-    int id = record.indexOf("id");
-    // int parentIdIndex = record.indexOf("parentId");
-    int fileNameIndex = record.indexOf("fileName");
-    int pathIndex = record.indexOf("path");
-
+    const auto indexes = ComicDB::columnIndexes(query.record(), "c", "ci");
     while (query.next()) {
         if (this->stopRunning) {
             break;
         }
-        auto fileName = query.value(fileNameIndex).toString();
-        auto path = query.value(pathIndex).toString();
+        const auto comic = ComicDB::fromQuery(query, indexes);
+        const auto &path = comic.file.path;
 
-        emit comicScanned(path, fileName);
+        emit comicScanned(path, comic.file.fileName);
 
-        auto info = DBHelper::getComicInfoFromQuery(query, "comicInfoId");
+        auto info = comic.info;
 
         InitialComicInfoExtractor ie(QDir::cleanPath(this->source + path), "None", info.coverPage.toInt(), true);
 

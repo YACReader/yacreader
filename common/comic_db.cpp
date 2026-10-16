@@ -1,8 +1,11 @@
 #include "comic_db.h"
 
+#include "table_projection.h"
 #include "yacreader_global.h"
 
 #include <QFileInfo>
+#include <QSqlQuery>
+#include <QSqlRecord>
 #include <QVariant>
 
 //-----------------------------------------------------------------------------
@@ -282,10 +285,6 @@ void ComicInfo::deleteMetadata()
 
     date = QVariant();
 
-    day = QVariant();
-    month = QVariant();
-    year = QVariant();
-
     publisher = QVariant();
     format = QVariant();
     color = QVariant();
@@ -479,6 +478,124 @@ QString ComicInfo::getAlternateSeriesString() const
 
     return alternateSeries.toString().length() > 0 ? alternateSeries.toString() : "";
 }
+
+QString ComicDB::selectList(const QString &fileAlias, const QString &infoAlias)
+{
+    return TableProjection::selectList(fileAlias, ComicFile::columns()) + ", " + TableProjection::selectList(infoAlias, ComicInfo::columns());
+}
+
+ComicDB::ColumnIndexes ComicDB::columnIndexes(const QSqlRecord &record, const QString &fileAlias, const QString &infoAlias)
+{
+    return { TableProjection::columnIndexes(record, fileAlias, ComicFile::columns()), TableProjection::columnIndexes(record, infoAlias, ComicInfo::columns()) };
+}
+
+ComicDB ComicDB::fromRecord(const QSqlRecord &record, const QString &fileAlias, const QString &infoAlias)
+{
+    ComicDB comic;
+    comic.file = ComicFile::fromRecord(record, fileAlias);
+    comic.info = ComicInfo::fromRecord(record, infoAlias);
+    return comic;
+}
+
+ComicDB ComicDB::fromQuery(const QSqlQuery &query, const ColumnIndexes &columnIndexes)
+{
+    ComicDB comic;
+    comic.file = ComicFile::fromQuery(query, columnIndexes.file);
+    comic.info = ComicInfo::fromQuery(query, columnIndexes.info);
+    return comic;
+}
+
+const QStringList &ComicInfo::columns()
+{
+    static const QStringList columns = [] {
+        QStringList result = { "hash", "edited", "read", "hasBeenOpened", "rating", "currentPage",
+                               "bookmark1", "bookmark2", "bookmark3", "brightness", "contrast", "gamma",
+                               "coverPage", "numPages", "lastTimeOpened", "coverSizeRatio", "originalCoverSize",
+                               "added", "type", "imageFiltersJson", "lastTimeImageFiltersSet", "lastTimeCoverSet",
+                               "usesExternalCover", "lastTimeMetadataSet" };
+        for (const auto &column : DescriptiveComicMetadata::columns())
+            result.append(QString::fromLatin1(column.name));
+        return result;
+    }();
+    return columns;
+}
+
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
+bool ComicInfo::hasSameValues(const ComicInfo &other) const
+{
+    for (const auto &column : DescriptiveComicMetadata::columns()) {
+        if (this->*column.member != other.*column.member)
+            return false;
+    }
+
+    return id == other.id && hash == other.hash && read == other.read && edited == other.edited &&
+            hasBeenOpened == other.hasBeenOpened && rating == other.rating && currentPage == other.currentPage &&
+            bookmark1 == other.bookmark1 && bookmark2 == other.bookmark2 && bookmark3 == other.bookmark3 &&
+            brightness == other.brightness && contrast == other.contrast && gamma == other.gamma &&
+            coverPage == other.coverPage && numPages == other.numPages && lastTimeOpened == other.lastTimeOpened &&
+            coverSizeRatio == other.coverSizeRatio && originalCoverSize == other.originalCoverSize &&
+            added == other.added && type == other.type && imageFiltersJson == other.imageFiltersJson &&
+            lastTimeImageFiltersSet == other.lastTimeImageFiltersSet && lastTimeCoverSet == other.lastTimeCoverSet &&
+            usesExternalCover == other.usesExternalCover && lastTimeMetadataSet == other.lastTimeMetadataSet;
+}
+
+namespace {
+
+// `value(k)` is column k of {id} + ComicInfo::columns()
+template<typename Value>
+ComicInfo readComicInfo(const Value &value)
+{
+    ComicInfo info;
+
+    info.id = ComicInfoId(value(0).toULongLong());
+    info.hash = value(1).toString();
+    info.edited = value(2).toBool();
+    info.read = value(3).toBool();
+    info.hasBeenOpened = value(4).toBool();
+    info.rating = value(5).toInt();
+    info.currentPage = value(6).toInt();
+    info.bookmark1 = value(7).toInt();
+    info.bookmark2 = value(8).toInt();
+    info.bookmark3 = value(9).toInt();
+    info.brightness = value(10).toInt();
+    info.contrast = value(11).toInt();
+    info.gamma = value(12).toInt();
+    info.coverPage = value(13);
+    info.numPages = value(14);
+    info.lastTimeOpened = value(15);
+    info.coverSizeRatio = value(16);
+    info.originalCoverSize = value(17);
+    info.added = value(18);
+    info.type = value(19);
+    info.imageFiltersJson = value(20);
+    info.lastTimeImageFiltersSet = value(21);
+    info.lastTimeCoverSet = value(22);
+    info.usesExternalCover = value(23).toBool();
+    info.lastTimeMetadataSet = value(24);
+
+    constexpr int firstDescriptiveColumn = 25;
+    int column = firstDescriptiveColumn;
+    for (const auto &descriptive : DescriptiveComicMetadata::columns()) {
+        info.*descriptive.member = value(column++);
+    }
+
+    return info;
+}
+
+}
+
+ComicInfo ComicInfo::fromRecord(const QSqlRecord &record, const QString &alias)
+{
+    const auto indexes = TableProjection::columnIndexes(record, alias, columns());
+    return readComicInfo([&](int column) { return record.value(indexes.at(column)); });
+}
+
+ComicInfo ComicInfo::fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes)
+{
+    return readComicInfo([&](int column) { return query.value(columnIndexes.at(column)); });
+}
+QT_WARNING_POP
 
 QDataStream &operator<<(QDataStream &stream, const ComicDB &comic)
 {

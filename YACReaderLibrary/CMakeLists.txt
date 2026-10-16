@@ -167,7 +167,6 @@ qt_add_executable(YACReaderLibrary WIN32
     db/comic_model.h
     db/comic_model.cpp
     db/comic_item.h
-    db/comic_item.cpp
     db/reading_list_model.h
     db/reading_list_model.cpp
     db/reading_list_item.h

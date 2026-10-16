@@ -50,7 +50,7 @@ void LibrarySearchCoordinator::search(const QString &filter)
     }
 }
 
-void LibrarySearchCoordinator::applyComicResults(QList<ComicItem *> *data, const QString &databasePath)
+void LibrarySearchCoordinator::applyComicResults(QList<ComicItem> *data, const QString &databasePath)
 {
     searching = true;
 

@@ -16,8 +16,11 @@ struct ComicFile {
     QString fileName;
     QString path;
 
+    friend bool operator==(const ComicFile &, const ComicFile &) = default;
+
     static const QStringList &columns();
     static ComicFile fromRecord(const QSqlRecord &record, const QString &alias);
+    static ComicFile fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes);
     void bindTo(QSqlQuery &query) const;
 };
 

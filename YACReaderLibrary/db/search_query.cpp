@@ -1,6 +1,7 @@
 
 #include "search_query.h"
 
+#include "comic_db.h"
 #include "folder.h"
 #include "query_parser.h"
 #include "table_projection.h"
@@ -31,7 +32,7 @@ QSqlQuery comicsSearchQuery(QSqlDatabase &db, const QString &filter)
     QueryParser parser;
     auto result = parser.parse(filter.toStdString());
 
-    std::string queryString(SEARCH_COMICS_QUERY);
+    std::string queryString = "SELECT " + ComicDB::selectList("c", "ci").toStdString() + " " SEARCH_COMICS_FROM;
     result.buildSqlString(queryString);
     queryString += " LIMIT :limit";
 

@@ -59,7 +59,6 @@ struct DescriptiveComicMetadata {
     static QStringList assignments();
 
     void bindTo(QSqlQuery &query) const;
-    void loadFrom(const QSqlRecord &record);
 };
 
 #endif

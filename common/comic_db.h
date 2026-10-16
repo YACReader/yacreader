@@ -21,6 +21,9 @@ public:
     bool operator==(const ComicInfo &other) const { return id == other.id; }
     bool operator!=(const ComicInfo &other) const { return id != other.id; }
 
+    // operator== compares only the id; this compares every column
+    bool hasSameValues(const ComicInfo &other) const;
+
     // mandatory fields
     ComicInfoId id;
     bool read;
@@ -43,10 +46,6 @@ public:
 
     QVariant coverPage; // int
     QVariant numPages; // int
-
-    QVariant day;
-    QVariant month;
-    QVariant year;
 
     QVariant lastTimeOpened; // integer/date
     QVariant coverSizeRatio; // h/w
@@ -84,6 +83,10 @@ public:
     QString getStoryArcInfoString() const;
     QString getAlternateSeriesString() const;
 
+    static const QStringList &columns();
+    static ComicInfo fromRecord(const QSqlRecord &record, const QString &alias);
+    static ComicInfo fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes);
+
     friend QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo);
 
     friend QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo);
@@ -113,6 +116,16 @@ public:
     QString toTXT() const;
 
     bool operator==(const ComicDB &other) const { return file.id == other.file.id; }
+
+    struct ColumnIndexes {
+        QList<int> file;
+        QList<int> info;
+    };
+
+    static QString selectList(const QString &fileAlias, const QString &infoAlias);
+    static ColumnIndexes columnIndexes(const QSqlRecord &record, const QString &fileAlias, const QString &infoAlias);
+    static ComicDB fromRecord(const QSqlRecord &record, const QString &fileAlias, const QString &infoAlias);
+    static ComicDB fromQuery(const QSqlQuery &query, const ColumnIndexes &columnIndexes);
 
     friend QDataStream &operator<<(QDataStream &, const ComicDB &);
     friend QDataStream &operator>>(QDataStream &, ComicDB &);

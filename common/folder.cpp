@@ -12,27 +12,47 @@ const QStringList &Folder::columns()
     return columns;
 }
 
-Folder Folder::fromRecord(const QSqlRecord &record, const QString &alias)
-{
-    using TableProjection::value;
+namespace {
 
+// `value(k)` is column k of {id} + Folder::columns()
+template<typename Value>
+Folder readFolder(const Value &value)
+{
     Folder folder;
-    folder.id = FolderId(value(record, alias, "id").toULongLong());
-    folder.parentId = FolderId(value(record, alias, "parentId").toULongLong());
-    folder.name = value(record, alias, "name").toString();
-    folder.path = value(record, alias, "path").toString();
-    folder.finished = value(record, alias, "finished").toBool();
-    folder.completed = value(record, alias, "completed").toBool();
-    const auto numChildren = value(record, alias, "numChildren");
+    folder.id = FolderId(value(0).toULongLong());
+    folder.parentId = FolderId(value(1).toULongLong());
+    folder.name = value(2).toString();
+    folder.path = value(3).toString();
+    folder.finished = value(4).toBool();
+    folder.completed = value(5).toBool();
+    const auto numChildren = value(6);
     if (!numChildren.isNull()) {
         folder.numChildren = numChildren.toInt();
     }
-    folder.firstChildHash = value(record, alias, "firstChildHash").toString();
-    folder.customImage = value(record, alias, "customImage").toString();
-    folder.type = value(record, alias, "type").value<YACReader::FileType>();
-    folder.added = value(record, alias, "added").toLongLong();
-    folder.updated = value(record, alias, "updated").toLongLong();
+    folder.firstChildHash = value(7).toString();
+    folder.customImage = value(8).toString();
+    folder.type = value(9).template value<YACReader::FileType>();
+    folder.added = value(10).toLongLong();
+    folder.updated = value(11).toLongLong();
     return folder;
+}
+
+}
+
+Folder Folder::fromRecord(const QSqlRecord &record, const QString &alias)
+{
+    const auto indexes = columnIndexes(record, alias);
+    return readFolder([&](int column) { return record.value(indexes.at(column)); });
+}
+
+QList<int> Folder::columnIndexes(const QSqlRecord &record, const QString &alias)
+{
+    return TableProjection::columnIndexes(record, alias, columns());
+}
+
+Folder Folder::fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes)
+{
+    return readFolder([&](int column) { return query.value(columnIndexes.at(column)); });
 }
 
 void Folder::bindTo(QSqlQuery &query) const

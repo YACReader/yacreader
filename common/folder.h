@@ -31,6 +31,8 @@ struct Folder {
 
     static const QStringList &columns();
     static Folder fromRecord(const QSqlRecord &record, const QString &alias);
+    static QList<int> columnIndexes(const QSqlRecord &record, const QString &alias);
+    static Folder fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes);
     void bindTo(QSqlQuery &query) const;
 };
 

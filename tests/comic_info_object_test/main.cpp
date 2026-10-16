@@ -59,7 +59,7 @@ void ComicInfoObjectTest::exposesTheQmlProperties()
         "title", "coverPage", "numPages", "number", "isBis", "count",
         "volume", "storyArc", "arcNumber", "arcCount", "genere",
         "writer", "penciller", "inker", "colorist", "letterer", "coverArtist",
-        "date", "day", "month", "year", "publisher", "format", "color", "ageRating",
+        "date", "publisher", "format", "color", "ageRating",
         "synopsis", "characters", "notes", "comicVineID", "lastTimeOpened",
         "coverSizeRatio", "originalCoverSize", "added", "type",
         "editor", "imprint", "teams", "locations", "series", "alternateSeries", "alternateNumber", "alternateCount",

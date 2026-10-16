@@ -232,7 +232,7 @@ void YACReaderClientConnectionWorker::getComicInfoFromReadingList(quint64 librar
 {
     QMutexLocker locker(&dbMutex);
     comic = loadRequestedComic(libraryId, comic.file.id.value());
-    siblings = DBHelper::getReadingListFullContent(libraryId, readingListId, true);
+    siblings = DBHelper::getReadingListFullContent(libraryId, readingListId);
 }
 
 void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB &comic)
