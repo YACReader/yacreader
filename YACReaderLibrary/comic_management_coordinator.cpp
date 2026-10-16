@@ -287,12 +287,12 @@ void ComicManagementCoordinator::resetSelectedComicRatings()
 
 void ComicManagementCoordinator::assignNumbers()
 {
-    const auto selectedIds = selectedComicIds();
+    const auto selectedIds = selectedRowIds();
     if (selectedIds.isEmpty())
         return;
 
     const auto source = currentSource();
-    const auto initialIndexes = indexesForComicIds(selectedIds, source);
+    const auto initialIndexes = indexesForRows(selectedIds, source);
     if (initialIndexes.isEmpty())
         return;
 
@@ -311,7 +311,7 @@ void ComicManagementCoordinator::assignNumbers()
             return;
     }
 
-    const auto indexList = indexesForComicIds(selectedIds, source);
+    const auto indexList = indexesForRows(selectedIds, source);
     if (indexList.isEmpty())
         return;
 
@@ -333,26 +333,26 @@ void ComicManagementCoordinator::deleteMetadataFromSelectedComics()
 
 void ComicManagementCoordinator::deleteSelectedComics()
 {
-    const auto comicIds = selectedComicIds();
-    if (comicIds.isEmpty())
+    const auto rowIds = selectedRowIds();
+    if (rowIds.isEmpty())
         return;
 
     const auto source = currentSource();
     const auto listIndex = currentListProvider();
     if (listIndex.isValid()) {
-        deleteComicsFromList(comicIds,
+        deleteComicsFromList(rowIds,
                              source,
                              listIndex.data(ReadingListModel::TypeListsRole).toInt(),
                              listIndex.data(ReadingListModel::IDRole).toULongLong());
     } else {
-        deleteComicsFromDisk(comicIds, source);
+        deleteComicsFromDisk(rowIds, source);
     }
 }
 
 void ComicManagementCoordinator::saveSelectedCoversTo()
 {
-    const auto comicIds = selectedComicIds();
-    if (comicIds.isEmpty())
+    const auto rowIds = selectedRowIds();
+    if (rowIds.isEmpty())
         return;
 
     const auto source = currentSource();
@@ -362,7 +362,7 @@ void ComicManagementCoordinator::saveSelectedCoversTo()
     if (destinationFolder.isEmpty())
         return;
 
-    const auto indexList = indexesForComicIds(comicIds, source);
+    const auto indexList = indexesForRows(rowIds, source);
     for (const auto &comic : indexList) {
         QString origin = comic.data(ComicModel::CoverPathRole).toString().remove("file:///").remove("file:");
         const auto destination = QDir(destinationFolder).filePath(comic.data(ComicModel::FileNameRole).toString() + ".jpg");
@@ -479,14 +479,14 @@ void ComicManagementCoordinator::processComicFiles(ComicFilesManager *comicFiles
     thread->start();
 }
 
-QList<qulonglong> ComicManagementCoordinator::selectedComicIds() const
+QList<ComicRowId> ComicManagementCoordinator::selectedRowIds() const
 {
-    QList<qulonglong> comicIds;
+    QList<ComicRowId> rowIds;
     const auto selection = selectionProvider();
-    comicIds.reserve(selection.size());
+    rowIds.reserve(selection.size());
     for (const auto &index : selection)
-        comicIds.append(index.data(ComicModel::IdRole).toULongLong());
-    return comicIds;
+        rowIds.append(comicsModel->rowId(index));
+    return rowIds;
 }
 
 ComicManagementCoordinator::SourceContext ComicManagementCoordinator::currentSource() const
@@ -494,12 +494,12 @@ ComicManagementCoordinator::SourceContext ComicManagementCoordinator::currentSou
     return { libraryPathProvider(), static_cast<int>(comicsModel->getMode()), comicsModel->getSourceId() };
 }
 
-QModelIndexList ComicManagementCoordinator::indexesForComicIds(const QList<qulonglong> &comicIds, const SourceContext &source) const
+QModelIndexList ComicManagementCoordinator::indexesForRows(const QList<ComicRowId> &rowIds, const SourceContext &source) const
 {
     if (!isCurrentSource(source))
         return { };
 
-    auto indexes = comicsModel->getIndexesFromIds(comicIds);
+    auto indexes = comicsModel->indexesOf(rowIds);
     if (std::any_of(indexes.cbegin(), indexes.cend(), [](const QModelIndex &index) { return !index.isValid(); }))
         return { };
 
@@ -514,7 +514,7 @@ bool ComicManagementCoordinator::isCurrentSource(const SourceContext &source) co
     return QDir::cleanPath(foldersModel->getDatabase()) == QDir::cleanPath(YACReader::LibraryPaths::libraryDataPath(source.libraryPath)) && static_cast<int>(comicsModel->getMode()) == source.mode && comicsModel->getSourceId() == source.sourceId;
 }
 
-void ComicManagementCoordinator::deleteComicsFromDisk(const QList<qulonglong> &comicIds, const SourceContext &source)
+void ComicManagementCoordinator::deleteComicsFromDisk(const QList<ComicRowId> &rowIds, const SourceContext &source)
 {
     const auto answer = QMessageBox::question(window,
                                               QCoreApplication::translate("LibraryWindow", "Delete comics"),
@@ -524,7 +524,7 @@ void ComicManagementCoordinator::deleteComicsFromDisk(const QList<qulonglong> &c
     if (answer != QMessageBox::Yes)
         return;
 
-    auto indexList = indexesForComicIds(comicIds, source);
+    auto indexList = indexesForRows(rowIds, source);
     auto comics = comicsModel->getComics(indexList);
     if (comics.isEmpty())
         return;
@@ -554,7 +554,7 @@ void ComicManagementCoordinator::deleteComicsFromDisk(const QList<qulonglong> &c
     thread->start();
 }
 
-void ComicManagementCoordinator::deleteComicsFromList(const QList<qulonglong> &comicIds, const SourceContext &source, int listType, qulonglong listId)
+void ComicManagementCoordinator::deleteComicsFromList(const QList<ComicRowId> &rowIds, const SourceContext &source, int listType, qulonglong listId)
 {
     const auto answer = QMessageBox::question(window,
                                               QCoreApplication::translate("LibraryWindow", "Remove comics"),
@@ -568,7 +568,7 @@ void ComicManagementCoordinator::deleteComicsFromList(const QList<qulonglong> &c
     if (!currentList.isValid() || currentList.data(ReadingListModel::TypeListsRole).toInt() != listType || currentList.data(ReadingListModel::IDRole).toULongLong() != listId)
         return;
 
-    const auto indexList = indexesForComicIds(comicIds, source);
+    const auto indexList = indexesForRows(rowIds, source);
     if (indexList.isEmpty())
         return;
 

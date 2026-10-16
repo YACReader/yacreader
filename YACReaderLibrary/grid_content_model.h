@@ -66,7 +66,6 @@ public:
     int visibleFolderCount() const;
     int sourceComicRow(int viewRow) const;
     int viewRowForComicRow(int sourceRow) const;
-    int viewRowForComicId(qulonglong id) const;
     int viewRowForFolderId(qulonglong id) const;
     QModelIndex sourceFolderIndex(int viewRow) const;
     Folder folderAt(int viewRow) const;

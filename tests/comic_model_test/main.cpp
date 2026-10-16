@@ -3,6 +3,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 #include <QDir>
 #include <QMimeData>
@@ -26,6 +27,9 @@ private slots:
     void cleanup();
     void listRowsHaveTheirList();
     void identityRolesFollowTheCase();
+    void rowIdsNameEachOccurrence();
+    void dragDataCarriesComicInfoAndEntries();
+    void reorderMovesTheDraggedOccurrence();
     void listShowsTheFirstFileOfEachComicInfo();
     void removeFromAnAggregatedReadingListUsesTheOwningList();
     void removeOneOccurrenceOfARepeatedComic();
@@ -184,6 +188,62 @@ void ComicModelTest::identityRolesFollowTheCase()
     QCOMPARE(roles.value(ComicModel::ListIdRole), QByteArray("list_id"));
 }
 
+void ComicModelTest::rowIdsNameEachOccurrence()
+{
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id) VALUES (30, 1, 2, 3)"));
+    const auto entryIds = ints("SELECT id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering");
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1, 3 }));
+    QVERIFY(model.rowId(model.index(2, 0)) == ComicRowId(ListItemId { ListKind::ReadingList, 30 }));
+
+    const auto indexes = model.indexesOf({ ListItemId { ListKind::ReadingList, 30 }, ListItemId { ListKind::ReadingList, qulonglong(entryIds.first()) }, ListItemId { ListKind::Label, 30 }, ComicId(3) });
+    QCOMPARE(indexes.size(), 4);
+    QCOMPARE(indexes.at(0).row(), 2);
+    QCOMPARE(indexes.at(1).row(), 0);
+    QVERIFY(!indexes.at(2).isValid());
+    QVERIFY(!indexes.at(3).isValid());
+    QCOMPARE(model.indexOf(ListItemId { ListKind::ReadingList, 30 }).row(), 2);
+
+    model.setupFolderModelData(2, dataPath);
+    QVERIFY(model.rowId(model.index(0, 0)) == ComicRowId(ComicId(model.index(0, 0).data(ComicModel::IdRole).toULongLong())));
+    QCOMPARE(model.indexOf(ComicId(4)).data(ComicModel::IdRole).toULongLong(), 4ULL);
+}
+
+void ComicModelTest::dragDataCarriesComicInfoAndEntries()
+{
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id) VALUES (30, 1, 2, 3)"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    std::unique_ptr<QMimeData> data(model.mimeData({ model.index(2, 0), model.index(1, 0) }));
+    QCOMPARE(YACReader::mimeDataToComicsIds(data.get()), QList<qulonglong>({ 3, 1 }));
+    QCOMPARE(YACReader::mimeDataToComicInfoIds(data.get()), QList<ComicInfoId>({ ComicInfoId(3), ComicInfoId(1) }));
+    const auto entries = YACReader::mimeDataToListEntries(data.get());
+    QCOMPARE(entries.size(), 2);
+    QVERIFY(entries.first() == (ListItemId { ListKind::ReadingList, 30 }));
+
+    model.setupFolderModelData(2, dataPath);
+    data.reset(model.mimeData({ model.index(0, 0) }));
+    QCOMPARE(YACReader::mimeDataToComicInfoIds(data.get()).size(), 1);
+    QVERIFY(YACReader::mimeDataToListEntries(data.get()).isEmpty());
+}
+
+void ComicModelTest::reorderMovesTheDraggedOccurrence()
+{
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id) VALUES (30, 1, 2, 3)"));
+    const auto entryIds = ints("SELECT id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering");
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    std::unique_ptr<QMimeData> data(model.mimeData({ model.index(2, 0) }));
+
+    QVERIFY(model.dropMimeData(data.get(), Qt::MoveAction, 1, 0, QModelIndex()));
+    QCOMPARE(ints("SELECT id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ entryIds.at(0), 30, entryIds.at(1) }));
+    QCOMPARE(model.rowId(model.index(1, 0)), ComicRowId(ListItemId { ListKind::ReadingList, 30 }));
+}
+
 void ComicModelTest::listShowsTheFirstFileOfEachComicInfo()
 {
     // comic_info 1 has the files 1 and 5; comic_info 3 has no file after this
@@ -229,9 +289,9 @@ void ComicModelTest::addAppendsTheComicInfoOfEachRow()
     model.setupFolderModelData(2, dataPath);
 
     // comic 5 is a second file of comic_info 1
-    model.addComicsToReadingList(QList<qulonglong> { 5 }, 1);
-    model.addComicsToLabel(QList<qulonglong> { 5 }, 1);
-    model.addComicsToLabel(QList<qulonglong> { 1 }, 1);
+    model.addComicsToReadingList(model.getIndexesFromIds({ 5 }), 1);
+    model.addComicsToLabel(model.getIndexesFromIds({ 5 }), 1);
+    model.addComicsToLabel(model.getIndexesFromIds({ 1 }), 1);
 
     QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 3, 1, 1 }));
     QCOMPARE(ints("SELECT comic_info_id FROM label_entry WHERE label_id = 1 ORDER BY ordering"), QList<int>({ 1 }));

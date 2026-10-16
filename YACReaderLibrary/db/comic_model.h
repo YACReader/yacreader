@@ -126,6 +126,10 @@ public:
     // from the rows, without a query: the rows are as fresh as the last load
     std::optional<ComicDB> firstUnreadComic() const;
     QModelIndex getIndexFromId(quint64 id);
+    ComicRowId rowId(const QModelIndex &index) const;
+    // an invalid index when the row is not in the model
+    QModelIndex indexOf(const ComicRowId &rowId) const;
+    QModelIndexList indexesOf(const QList<ComicRowId> &rowIds) const;
     QList<QModelIndex> getIndexesFromIds(const QList<qulonglong> &comicIds);
     QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read);
     void setComicsType(QList<QModelIndex> list, FileType type);
@@ -172,8 +176,8 @@ public slots:
     void updateRating(int rating, QModelIndex mi);
 
     void addComicsToFavorites(const QList<qulonglong> &comicIds);
-    void addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId);
-    void addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId);
+    void addComicsToLabel(const QList<ComicInfoId> &comicInfoIds, qulonglong labelId);
+    void addComicsToReadingList(const QList<ComicInfoId> &comicInfoIds, qulonglong readingListId);
 
     void setModelData(QList<ComicItem> *data, const QString &databasePath);
 

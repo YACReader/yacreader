@@ -235,15 +235,6 @@ int GridContentModel::viewRowForComicRow(int sourceRow) const
     return sourceRow < 0 ? -1 : visibleFolderCount() + spacerCount() + sourceRow;
 }
 
-int GridContentModel::viewRowForComicId(qulonglong id) const
-{
-    if (!comicModel)
-        return -1;
-
-    const auto sourceIndex = comicModel->getIndexFromId(id);
-    return sourceIndex.isValid() ? viewRowForComicRow(sourceIndex.row()) : -1;
-}
-
 int GridContentModel::viewRowForFolderId(qulonglong id) const
 {
     for (auto row = 0; row < visibleFolderCount(); ++row) {

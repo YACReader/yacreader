@@ -272,7 +272,7 @@ ContentViewState ClassicComicsView::captureViewState() const
     const auto topIndex = tableView->indexAt(QPoint(0, 0));
     if (topIndex.isValid()) {
         state.topItem.kind = ContentItemRef::Comic;
-        state.topItem.id = topIndex.data(ComicModel::IdRole).toULongLong();
+        state.topItem.comic = model->rowId(topIndex);
         state.fallbackComicRow = topIndex.row();
         state.offset = -tableView->visualRect(topIndex).top();
         state.itemExtent = tableView->rowHeight(topIndex.row());
@@ -281,7 +281,7 @@ ContentViewState ClassicComicsView::captureViewState() const
     const auto selectedIndex = tableView->currentIndex();
     if (selectedIndex.isValid()) {
         state.currentItem.kind = ContentItemRef::Comic;
-        state.currentItem.id = selectedIndex.data(ComicModel::IdRole).toULongLong();
+        state.currentItem.comic = model->rowId(selectedIndex);
     }
     return state;
 }
@@ -292,14 +292,14 @@ void ClassicComicsView::restoreViewState(const ContentViewState &state)
         return;
 
     if (state.currentItem.kind == ContentItemRef::Comic) {
-        const auto current = model->getIndexFromId(state.currentItem.id);
+        const auto current = model->indexOf(state.currentItem.comic);
         if (current.isValid()) {
             tableView->setCurrentIndex(current);
             comicFlow->setCenterIndexWithoutAnimation(current.row());
         }
     }
 
-    const auto topIndex = state.topItem.kind == ContentItemRef::Comic ? model->getIndexFromId(state.topItem.id) : QModelIndex();
+    const auto topIndex = state.topItem.kind == ContentItemRef::Comic ? model->indexOf(state.topItem.comic) : QModelIndex();
     const auto fallbackRow = qBound(0, state.fallbackComicRow, model->rowCount() - 1);
     const auto restoreIndex = topIndex.isValid() ? topIndex : model->index(fallbackRow, 0);
     if (restoreIndex.isValid()) {

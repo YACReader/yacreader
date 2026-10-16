@@ -4,6 +4,7 @@
 #include "comic_db.h"
 #include "list_entry.h"
 
+#include <QHashFunctions>
 #include <QList>
 
 #include <variant>
@@ -23,5 +24,13 @@ struct ComicInList {
 }
 
 using ComicItem = std::variant<ComicItemCase::Comic, ComicItemCase::ComicInList>;
+
+// which row this is: a comic in folders and special lists, an entry in reading lists and labels
+using ComicRowId = std::variant<ComicId, ListItemId>;
+
+inline size_t qHash(const ComicRowId &key, size_t seed = 0) noexcept
+{
+    return std::visit([&key, seed](const auto &id) { return qHashMulti(seed, key.index(), id); }, key);
+}
 
 #endif

@@ -683,16 +683,21 @@ ContentViewState GridComicsView::captureViewState() const
     } else if (viewRow >= 0 && viewRow < contentModel->rowCount()) {
         const auto index = contentModel->index(viewRow, 0);
         const auto kind = contentModel->data(index, GridContentModel::ItemKindRole).toInt();
-        state.topItem.kind = kind == GridContentModel::FolderItem ? ContentItemRef::Folder : ContentItemRef::Comic;
-        state.topItem.id = contentModel->data(index, GridContentModel::IdRole).toULongLong();
+        if (kind == GridContentModel::FolderItem) {
+            state.topItem.kind = ContentItemRef::Folder;
+            state.topItem.folderId = contentModel->data(index, GridContentModel::IdRole).toULongLong();
+        } else if (kind == GridContentModel::ComicItem) {
+            state.topItem.kind = ContentItemRef::Comic;
+            state.topItem.comic = model->rowId(model->index(contentModel->sourceComicRow(viewRow), 0));
+        }
     }
 
     if (focusedFolderIndex.isValid()) {
         state.currentItem.kind = ContentItemRef::Folder;
-        state.currentItem.id = focusedFolderIndex.data(FolderModel::IdRole).toULongLong();
+        state.currentItem.folderId = focusedFolderIndex.data(FolderModel::IdRole).toULongLong();
     } else if (const auto index = selectionHelper->currentIndex(); index.isValid()) {
         state.currentItem.kind = ContentItemRef::Comic;
-        state.currentItem.id = index.data(ComicModel::IdRole).toULongLong();
+        state.currentItem.comic = model->rowId(index);
     }
 
     return state;
@@ -980,9 +985,9 @@ int GridComicsView::viewRowForItem(const ContentItemRef &item) const
 {
     switch (item.kind) {
     case ContentItemRef::Comic:
-        return contentModel->viewRowForComicId(item.id);
+        return contentModel->viewRowForComicRow(model ? model->indexOf(item.comic).row() : -1);
     case ContentItemRef::Folder:
-        return contentModel->viewRowForFolderId(item.id);
+        return contentModel->viewRowForFolderId(item.folderId);
     case ContentItemRef::None:
     case ContentItemRef::Header:
         return -1;

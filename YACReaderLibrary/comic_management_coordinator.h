@@ -102,12 +102,13 @@ private:
                              const QModelIndex &destinationFolder,
                              const QString &libraryPath);
     void processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog);
-    QList<qulonglong> selectedComicIds() const;
+    QList<ComicRowId> selectedRowIds() const;
     SourceContext currentSource() const;
-    QModelIndexList indexesForComicIds(const QList<qulonglong> &comicIds, const SourceContext &source) const;
+    // empty when the source changed or a row is no longer in the model
+    QModelIndexList indexesForRows(const QList<ComicRowId> &rowIds, const SourceContext &source) const;
     bool isCurrentSource(const SourceContext &source) const;
-    void deleteComicsFromDisk(const QList<qulonglong> &comicIds, const SourceContext &source);
-    void deleteComicsFromList(const QList<qulonglong> &comicIds, const SourceContext &source, int listType, qulonglong listId);
+    void deleteComicsFromDisk(const QList<ComicRowId> &rowIds, const SourceContext &source);
+    void deleteComicsFromList(const QList<ComicRowId> &rowIds, const SourceContext &source, int listType, qulonglong listId);
     void finishComicDeletion();
 
     QWidget *window;
