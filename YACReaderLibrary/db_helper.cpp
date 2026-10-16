@@ -564,10 +564,10 @@ void DBHelper::update(qulonglong libraryId, ComicInfo &comicInfo)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
+bool DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
 {
     if (comicInfo == nullptr)
-        return;
+        return false;
 
     QSqlQuery updateComicInfo(db);
     updateComicInfo.prepare("UPDATE comic_info SET " + DescriptiveComicMetadata::assignments().join(",") + "," +
@@ -649,14 +649,16 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":usesExternalCover", comicInfo->usesExternalCover);
     updateComicInfo.bindValue(":lastTimeMetadataSet", comicInfo->lastTimeMetadataSet);
 
-    updateComicInfo.exec();
+    const bool success = updateComicInfo.exec();
 
     QLOG_INFO() << updateComicInfo.lastError().databaseText();
     QLOG_INFO() << updateComicInfo.lastError().text();
     QLOG_INFO() << updateComicInfo.lastQuery();
+
+    return success;
 }
 
-void DBHelper::updateAdded(ComicInfo *comicInfo, QSqlDatabase &db)
+bool DBHelper::updateAdded(ComicInfo *comicInfo, QSqlDatabase &db)
 {
     QSqlQuery updateComicInfo(db);
     updateComicInfo.prepare("UPDATE comic_info SET "
@@ -665,7 +667,7 @@ void DBHelper::updateAdded(ComicInfo *comicInfo, QSqlDatabase &db)
 
     updateComicInfo.bindValue(":added", comicInfo->added);
     updateComicInfo.bindValue(":id", comicInfo->id.value());
-    updateComicInfo.exec();
+    return updateComicInfo.exec();
 }
 
 void DBHelper::update(const Folder &folder, QSqlDatabase &db)
@@ -1108,6 +1110,25 @@ void DBHelper::reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlD
     }
 
     db.commit();
+}
+
+bool DBHelper::moveEntriesToComicInfo(ComicInfoId oldComicInfoId, ComicInfoId newComicInfoId, QSqlDatabase &db)
+{
+    for (const auto table : { "reading_list_entry", "label_entry" }) {
+        QSqlQuery move(db);
+        move.prepare(QString("UPDATE %1 SET comic_info_id = :new_comic_info_id "
+                             "WHERE comic_info_id = :old_comic_info_id "
+                             "AND NOT EXISTS (SELECT 1 FROM comic WHERE comicInfoId = :old_comic_info_id)")
+                             .arg(table));
+        move.bindValue(":new_comic_info_id", newComicInfoId.value());
+        move.bindValue(":old_comic_info_id", oldComicInfoId.value());
+        if (!move.exec()) {
+            QLOG_ERROR() << "Unable to move the entries of" << table << "to the new comic info:" << move.lastError().text();
+            return false;
+        }
+    }
+
+    return true;
 }
 
 QStringList DBHelper::removeUnusedComicInfo(QSqlDatabase &db)

@@ -51,6 +51,8 @@ private slots:
     void comicDeleteRecordsLastKnownFile();
     void folderDeleteRecordsLastKnownFile_data();
     void folderDeleteRecordsLastKnownFile();
+    void moveEntriesToComicInfo_data();
+    void moveEntriesToComicInfo();
     void removeUnusedComicInfo();
 
 private:
@@ -618,6 +620,36 @@ void ReadingListAndLabelEntryTest::folderDeleteRecordsLastKnownFile()
     QVERIFY(q.next());
     QCOMPARE(q.value(0).toString(), QString("1.cbz"));
     QCOMPARE(q.value(1).toString(), QString("/Batman/1.cbz"));
+}
+
+void ReadingListAndLabelEntryTest::moveEntriesToComicInfo_data()
+{
+    addReadingListAndLabelRows();
+}
+
+void ReadingListAndLabelEntryTest::moveEntriesToComicInfo()
+{
+    fetchReadingListOrLabel();
+
+    QVERIFY(append(1, { 10, 11 }));
+    QVERIFY(append(2, { 11 }));
+    QVERIFY(insertEntry(1, QVariant(), 1));
+    const auto ids = entryIds(1);
+    const auto otherIds = entryIds(2);
+
+    // comic 110 still uses comic_info 11
+    QVERIFY(DBHelper::moveEntriesToComicInfo(ComicInfoId(11), ComicInfoId(12), db));
+    QCOMPARE(scalar(QString("SELECT COUNT(*) FROM %1 WHERE comic_info_id = 11").arg(table)), 2);
+
+    QVERIFY(exec("DELETE FROM comic WHERE id = 110"));
+    QVERIFY(DBHelper::moveEntriesToComicInfo(ComicInfoId(11), ComicInfoId(12), db));
+
+    QCOMPARE(scalar(QString("SELECT COUNT(*) FROM %1 WHERE comic_info_id = 11").arg(table)), 0);
+    QCOMPARE(scalar(QString("SELECT COUNT(*) FROM %1 WHERE comic_info_id = 12").arg(table)), 2);
+    QCOMPARE(scalar(QString("SELECT COUNT(*) FROM %1 WHERE comic_info_id = 10").arg(table)), 1);
+    QCOMPARE(scalar(QString("SELECT COUNT(*) FROM %1 WHERE placeholder_id = 1").arg(table)), 1);
+    QCOMPARE(entryIds(1), ids);
+    QCOMPARE(entryIds(2), otherIds);
 }
 
 void ReadingListAndLabelEntryTest::removeUnusedComicInfo()

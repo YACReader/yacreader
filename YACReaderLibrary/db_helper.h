@@ -77,8 +77,8 @@ public:
     // updates
     static void update(qulonglong libraryId, ComicInfo &comicInfo);
     static void update(ComicDB *comics, QSqlDatabase &db);
-    static void update(ComicInfo *comicInfo, QSqlDatabase &db);
-    static void updateAdded(ComicInfo *comicInfo, QSqlDatabase &db);
+    static bool update(ComicInfo *comicInfo, QSqlDatabase &db);
+    static bool updateAdded(ComicInfo *comicInfo, QSqlDatabase &db);
     static void update(const Folder &folder, QSqlDatabase &db);
     static void propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db);
     static Folder updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
@@ -109,6 +109,8 @@ public:
     static void updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath);
     // returns the hashes of the removed rows, so their covers can be removed after the commit
     static QStringList removeUnusedComicInfo(QSqlDatabase &db);
+    // no transaction, the scanner calls it in its own; entries stay while another file still uses the old comic_info
+    static bool moveEntriesToComicInfo(ComicInfoId oldComicInfoId, ComicInfoId newComicInfoId, QSqlDatabase &db);
 
     static QList<Folder> getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db);

@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QFile>
 #include <QImage>
+#include <QRegularExpression>
 #include <QSettings>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -95,6 +96,10 @@ private slots:
     void folderContentLoadersReturnSortedValues();
     void replacementDecision();
     void cleanupKeepsTheComicInfoOfEntries();
+    void replacementMovesEntriesToTheNewComicInfo();
+    void replacementWithKnownContentKeepsThatComicInfo();
+    void unreadableReplacementKeepsTheComic();
+    void replacementKeepsEntriesWhileAnotherFileHasTheOldContent();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -106,6 +111,8 @@ private:
     bool withDatabase(const std::function<bool(QSqlDatabase &)> &function);
     QStringList rows(const QString &sql);
     QString value(const QString &sql);
+    bool addToListAndLabel(const QString &comicInfoId);
+    QStringList entries();
 };
 
 void LibraryScanTest::init()
@@ -208,6 +215,23 @@ QString LibraryScanTest::value(const QString &sql)
 {
     const auto result = rows(sql);
     return result.isEmpty() ? QString() : result.first();
+}
+
+bool LibraryScanTest::addToListAndLabel(const QString &comicInfoId)
+{
+    return withDatabase([&](QSqlDatabase &db) {
+        QSqlQuery query(db);
+        return query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')") &&
+                query.exec("INSERT INTO label (id, name, color, ordering) VALUES (1, 'Tag', 'red', 0)") &&
+                DBHelper::appendComicsToReadingList(ReadingListId(1), { ComicInfoId(comicInfoId.toULongLong()) }, db) &&
+                DBHelper::appendComicsToLabel(LabelId(1), { ComicInfoId(comicInfoId.toULongLong()) }, db);
+    });
+}
+
+// "table|id|comic_info_id" of every entry
+QStringList LibraryScanTest::entries()
+{
+    return rows("SELECT 'list', id, comic_info_id FROM reading_list_entry UNION ALL SELECT 'label', id, comic_info_id FROM label_entry ORDER BY 1, 2");
 }
 
 static const QString comicsWithFolders = "SELECT c.path, f.path FROM comic c INNER JOIN folder f ON c.parentId = f.id ORDER BY c.path";
@@ -317,6 +341,77 @@ void LibraryScanTest::cleanupKeepsTheComicInfoOfEntries()
     QVERIFY(QFile::exists(listedCover));
     QCOMPARE(value("SELECT COUNT(*) FROM comic_info WHERE id = " + unlistedInfo), QString("0"));
     QVERIFY(!QFile::exists(unlistedCover));
+}
+
+void LibraryScanTest::replacementMovesEntriesToTheNewComicInfo()
+{
+    const auto oldInfo = value("SELECT comicInfoId FROM comic WHERE path = '/a.cbz'");
+    QVERIFY(rows("UPDATE comic_info SET title = 'Kept title' WHERE id = " + oldInfo).isEmpty());
+    QVERIFY(addToListAndLabel(oldInfo));
+    const auto oldEntries = entries();
+
+    QVERIFY(writeComic("a.cbz", Qt::red, 4096));
+    QVERIFY(scan(false));
+
+    const auto newInfo = value("SELECT comicInfoId FROM comic WHERE path = '/a.cbz'");
+    QVERIFY(newInfo != oldInfo);
+    QCOMPARE(entries(), QStringList(oldEntries).replaceInStrings(QRegularExpression("\\|" + oldInfo + "$"), "|" + newInfo));
+    QCOMPARE(value("SELECT title FROM comic_info WHERE id = " + newInfo), QString("Kept title"));
+    QCOMPARE(value("SELECT COUNT(*) FROM comic_info WHERE id = " + oldInfo), QString("0"));
+}
+
+void LibraryScanTest::replacementWithKnownContentKeepsThatComicInfo()
+{
+    QVERIFY(writeComic("e.cbz", Qt::yellow, 100));
+    QVERIFY(scan(false));
+    const auto knownInfo = value("SELECT comicInfoId FROM comic WHERE path = '/e.cbz'");
+    const auto oldInfo = value("SELECT comicInfoId FROM comic WHERE path = '/a.cbz'");
+    QVERIFY(rows("UPDATE comic_info SET title = 'Known title' WHERE id = " + knownInfo).isEmpty());
+    QVERIFY(rows("UPDATE comic_info SET title = 'Old title' WHERE id = " + oldInfo).isEmpty());
+    QVERIFY(addToListAndLabel(oldInfo));
+    const auto oldEntries = entries();
+
+    QVERIFY(writeComic("a.cbz", Qt::yellow, 100));
+    QVERIFY(scan(false));
+
+    QCOMPARE(value("SELECT comicInfoId FROM comic WHERE path = '/a.cbz'"), knownInfo);
+    QCOMPARE(entries(), QStringList(oldEntries).replaceInStrings(QRegularExpression("\\|" + oldInfo + "$"), "|" + knownInfo));
+    QCOMPARE(value("SELECT title FROM comic_info WHERE id = " + knownInfo), QString("Known title"));
+}
+
+void LibraryScanTest::unreadableReplacementKeepsTheComic()
+{
+    const auto oldComic = value("SELECT id, comicInfoId FROM comic WHERE path = '/a.cbz'");
+    const auto oldInfo = value("SELECT comicInfoId FROM comic WHERE path = '/a.cbz'");
+    QVERIFY(addToListAndLabel(oldInfo));
+    const auto oldEntries = entries();
+
+    QFile file(source + "/a.cbz");
+    QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+    QVERIFY(file.write(QByteArray(4096, 'x')) > 0);
+    file.close();
+    QVERIFY(scan(false));
+
+    QCOMPARE(value("SELECT id, comicInfoId FROM comic WHERE path = '/a.cbz'"), oldComic);
+    QCOMPARE(entries(), oldEntries);
+    QCOMPARE(value("SELECT COUNT(*) FROM reading_list_entry WHERE last_known_path IS NOT NULL"), QString("0"));
+}
+
+void LibraryScanTest::replacementKeepsEntriesWhileAnotherFileHasTheOldContent()
+{
+    QVERIFY(writeComic("a copy.cbz", Qt::red));
+    QVERIFY(scan(false));
+    const auto oldInfo = value("SELECT comicInfoId FROM comic WHERE path = '/a.cbz'");
+    QCOMPARE(value("SELECT comicInfoId FROM comic WHERE path = '/a copy.cbz'"), oldInfo);
+    QVERIFY(addToListAndLabel(oldInfo));
+    const auto oldEntries = entries();
+
+    QVERIFY(writeComic("a.cbz", Qt::red, 4096));
+    QVERIFY(scan(false));
+
+    QVERIFY(value("SELECT comicInfoId FROM comic WHERE path = '/a.cbz'") != oldInfo);
+    QCOMPARE(entries(), oldEntries);
+    QCOMPARE(value("SELECT COUNT(*) FROM comic_info WHERE id = " + oldInfo), QString("1"));
 }
 
 QTEST_GUILESS_MAIN(LibraryScanTest)
