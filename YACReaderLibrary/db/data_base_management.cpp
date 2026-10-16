@@ -2,6 +2,7 @@
 
 #include "QsLog.h"
 #include "db_helper.h"
+#include "descriptive_comic_metadata.h"
 #include "initial_comic_info_extractor.h"
 
 #include <QImageReader>
@@ -803,6 +804,72 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
         success = success && queryInsertDefaultReadingList.exec("INSERT INTO default_reading_list (name) VALUES (\"Favorites\")");
 
         // Reading doesn't need its onw list
+    }
+    return success;
+}
+
+bool DataBaseManagement::createPlaceholderTable(QSqlDatabase &database)
+{
+    QStringList columns = { "id INTEGER PRIMARY KEY AUTOINCREMENT" };
+    for (const auto &column : DescriptiveComicMetadata::columns()) {
+        columns.append(QString::fromLatin1(column.name) + " " + QString::fromLatin1(column.sqlType));
+    }
+    columns.append("coverKey TEXT");
+
+    QSqlQuery queryPlaceholder(database);
+    return queryPlaceholder.exec("CREATE TABLE placeholder (" + columns.join(", ") + ")");
+}
+
+bool DataBaseManagement::createReadingListEntryTable(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        QSqlQuery queryReadingListEntry(database);
+        success = success && queryReadingListEntry.exec("CREATE TABLE reading_list_entry ("
+                                                        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                        "reading_list_id INTEGER NOT NULL, "
+                                                        "ordering INTEGER NOT NULL, "
+                                                        "comic_info_id INTEGER, "
+                                                        "placeholder_id INTEGER, "
+                                                        "last_known_name TEXT, "
+                                                        "last_known_path TEXT, "
+                                                        "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
+                                                        "FOREIGN KEY(comic_info_id) REFERENCES comic_info(id) ON DELETE RESTRICT, "
+                                                        "FOREIGN KEY(placeholder_id) REFERENCES placeholder(id) ON DELETE RESTRICT, "
+                                                        "CHECK ((comic_info_id IS NOT NULL AND placeholder_id IS NULL) "
+                                                        "OR (comic_info_id IS NULL AND placeholder_id IS NOT NULL)))");
+
+        QSqlQuery queryIndexReadingListEntry(database);
+        success = success && queryIndexReadingListEntry.exec("CREATE INDEX reading_list_entry_ordering_index ON reading_list_entry (reading_list_id, ordering)");
+        success = success && queryIndexReadingListEntry.exec("CREATE INDEX reading_list_entry_comic_info_index ON reading_list_entry (comic_info_id)");
+        success = success && queryIndexReadingListEntry.exec("CREATE INDEX reading_list_entry_placeholder_index ON reading_list_entry (placeholder_id)");
+    }
+    return success;
+}
+
+bool DataBaseManagement::createLabelEntryTable(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        QSqlQuery queryLabelEntry(database);
+        success = success && queryLabelEntry.exec("CREATE TABLE label_entry ("
+                                                  "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                  "label_id INTEGER NOT NULL, "
+                                                  "ordering INTEGER NOT NULL, "
+                                                  "comic_info_id INTEGER, "
+                                                  "placeholder_id INTEGER, "
+                                                  "last_known_name TEXT, "
+                                                  "last_known_path TEXT, "
+                                                  "FOREIGN KEY(label_id) REFERENCES label(id) ON DELETE CASCADE, "
+                                                  "FOREIGN KEY(comic_info_id) REFERENCES comic_info(id) ON DELETE RESTRICT, "
+                                                  "FOREIGN KEY(placeholder_id) REFERENCES placeholder(id) ON DELETE RESTRICT, "
+                                                  "CHECK ((comic_info_id IS NOT NULL AND placeholder_id IS NULL) "
+                                                  "OR (comic_info_id IS NULL AND placeholder_id IS NOT NULL)))");
+
+        QSqlQuery queryIndexLabelEntry(database);
+        success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_ordering_index ON label_entry (label_id, ordering)");
+        success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_comic_info_index ON label_entry (comic_info_id)");
+        success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_placeholder_index ON label_entry (placeholder_id)");
     }
     return success;
 }
