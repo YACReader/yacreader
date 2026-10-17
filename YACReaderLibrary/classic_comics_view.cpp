@@ -73,6 +73,10 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
             emit customComicCoverRequested(model->index(index, 0).data(ComicModel::IdRole).toULongLong(), imagePath);
     });
     connect(comicFlow, &ComicFlowWidget::selected, this, &ComicsView::selected);
+    connect(tableView->horizontalHeader(), &QHeaderView::sectionMoved, this, [this](int logicalIndex, int, int newVisualIndex) {
+        if (logicalIndex == ComicModel::State || newVisualIndex == 0)
+            updateStateColumn();
+    });
     connect(tableView->horizontalHeader(), &QHeaderView::sectionMoved, this, &ClassicComicsView::saveTableHeadersStatus);
     connect(tableView->horizontalHeader(), &QHeaderView::sectionResized, this, &ClassicComicsView::saveTableHeadersStatus);
     connect(comicFlow, &QWidget::customContextMenuRequested, this, &ClassicComicsView::requestedViewContextMenu);
@@ -186,11 +190,13 @@ void ClassicComicsView::setModel(ComicModel *model)
         tableView->horizontalHeader()->blockSignals(true);
 
         tableView->setModel(model);
+        connect(tableView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &ComicsView::comicSelectionChanged);
+        connect(tableView->selectionModel(), &QItemSelectionModel::currentChanged, this, &ComicsView::comicSelectionChanged);
         if (model->rowCount() > 0)
             tableView->setCurrentIndex(model->index(0, 0));
 
         QStringList paths = model->getPaths(model->getCurrentPath()); // TODO ComicsView: get currentpath from somewhere currentPath());
-        comicFlow->setImagePaths(paths);
+        comicFlow->setImagePaths(paths, model->getUnavailableList());
         comicFlow->setMarks(model->getReadList());
 
         bool loadDefaults = true;
@@ -224,7 +230,7 @@ void ClassicComicsView::setModel(ComicModel *model)
         // make sure that columns without title are hidden
         for (int i = 0; i < tableView->horizontalHeader()->count(); i++) {
             auto title = tableView->model()->headerData(i, Qt::Horizontal).toString();
-            if (title.isEmpty()) {
+            if (title.isEmpty() && i != ComicModel::State) {
                 tableView->horizontalHeader()->hideSection(i);
             }
         }
@@ -239,8 +245,28 @@ void ClassicComicsView::setModel(ComicModel *model)
             }
         }
 
+        updateStateColumn();
+        connect(model, &QAbstractItemModel::modelReset, this, &ClassicComicsView::updateStateColumn, Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::rowsInserted, this, &ClassicComicsView::updateStateColumn, Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::rowsRemoved, this, &ClassicComicsView::updateStateColumn, Qt::UniqueConnection);
+
         tableView->horizontalHeader()->blockSignals(false);
     }
+}
+
+// a saved layout from before the state column existed has it at the end
+void ClassicComicsView::updateStateColumn()
+{
+    auto *header = tableView->horizontalHeader();
+    if (header->count() <= ComicModel::State)
+        return;
+
+    const bool blocked = header->blockSignals(true);
+    header->moveSection(header->visualIndex(ComicModel::State), 0);
+    header->setSectionResizeMode(ComicModel::State, QHeaderView::Fixed);
+    header->resizeSection(ComicModel::State, 20);
+    header->setSectionHidden(ComicModel::State, model == nullptr || !model->hasUnavailableRows());
+    header->blockSignals(blocked);
 }
 
 void ClassicComicsView::setCurrentIndex(const QModelIndex &index)
@@ -466,11 +492,18 @@ void ClassicComicsView::applyModelChanges(const QModelIndex &topLeft, const QMod
         const auto centerIndex = comicFlow->centerIndex();
         for (auto row = topLeft.row(); row <= bottomRight.row(); ++row) {
             comicFlow->remove(row);
-            comicFlow->add(model->index(row, 0).data(ComicModel::CoverPathRole).toUrl().toLocalFile(), row);
+            comicFlow->add(flowCoverPath(model->index(row, 0)), row, !model->index(row, 0).data(ComicModel::AvailableRole).toBool());
         }
         comicFlow->setMarks(model->getReadList());
         comicFlow->setCenterIndexWithoutAnimation(centerIndex);
     }
+}
+
+// the flow loads files and resources, not URLs
+QString ClassicComicsView::flowCoverPath(const QModelIndex &index)
+{
+    const auto url = index.data(ComicModel::CoverPathRole).toUrl();
+    return url.scheme() == QStringLiteral("qrc") ? QStringLiteral(":") + url.path() : url.toLocalFile();
 }
 
 void ClassicComicsView::removeItemsFromFlow(const QModelIndex &parent, int from, int to)
@@ -484,8 +517,7 @@ void ClassicComicsView::addItemsToFlow(const QModelIndex &parent, int from, int 
 {
     Q_UNUSED(parent);
     for (int i = from; i <= to; i++) {
-        auto coverPath = model->index(i, 0).data(ComicModel::CoverPathRole).toUrl().toLocalFile();
-        comicFlow->add(coverPath, i);
+        comicFlow->add(flowCoverPath(model->index(i, 0)), i, !model->index(i, 0).data(ComicModel::AvailableRole).toBool());
     }
 }
 

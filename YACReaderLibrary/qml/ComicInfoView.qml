@@ -100,6 +100,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignTop
 
                     active: comicInfo ? comicInfo.isFavorite ?? false : false
+                    enabled: comicInfo ? comicInfo.available ?? true : true
 
                     onActiveChangedByUser: {
                         if(active)
@@ -156,6 +157,7 @@ Rectangle {
                         Layout.alignment: Qt.AlignTop
 
                         active: comicInfo ? comicInfo.isFavorite ?? false : false
+                        enabled: comicInfo ? comicInfo.available ?? true : true
 
                         onActiveChangedByUser: {
                             if(active)

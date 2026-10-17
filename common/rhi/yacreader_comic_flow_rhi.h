@@ -13,10 +13,11 @@ class YACReaderComicFlow3D : public YACReaderFlow3D
 {
 public:
     YACReaderComicFlow3D(struct Preset p = defaultYACReaderFlowConfig);
-    void setImagePaths(QStringList paths);
+    // grayscale has one entry for each path; a missing entry is false
+    void setImagePaths(QStringList paths, QList<bool> grayscale = { });
     void updateImageData() override;
     void remove(int item) override;
-    void add(const QString &path, int index);
+    void add(const QString &path, int index, bool grayscale = false);
     void resortCovers(QList<int> newOrder);
     friend class ImageLoader3D;
 
@@ -27,6 +28,7 @@ private:
 
 protected:
     QList<QString> paths;
+    QList<bool> grayscale;
 };
 
 class ImageLoader3D : public QThread
@@ -35,7 +37,7 @@ public:
     ImageLoader3D(YACReaderFlow3D *flow);
     ~ImageLoader3D();
     bool busy() const;
-    void generate(int index, const QString &fileName);
+    void generate(int index, const QString &fileName, bool grayscale);
     void reset()
     {
         idx = -1;
@@ -46,7 +48,7 @@ public:
     void unlock();
     QImage result();
     YACReaderFlow3D *flow;
-    QImage loadImage(const QString &fileName);
+    QImage loadImage(const QString &fileName, bool grayscale);
 
 protected:
     void run() override;
@@ -59,6 +61,7 @@ private:
     bool working;
     int idx;
     QString fileName;
+    bool grayscale = false;
     QImage img;
 };
 

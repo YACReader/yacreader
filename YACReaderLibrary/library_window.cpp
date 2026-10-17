@@ -1026,12 +1026,12 @@ void LibraryWindow::enableNeededActions()
 
 void LibraryWindow::setComicActionsDisabled(bool disabled)
 {
-    if (!disabled && librariesUpdateCoordinator->isRunning()) {
-        setComicActionsDisabled(true);
-        return;
-    }
+    if (librariesUpdateCoordinator->isRunning())
+        disabled = true;
 
     actions.setComicActionsDisabled(disabled);
+    if (!disabled)
+        contentViewsManager->applyComicSelectionActions();
     setComicToolbarEntriesVisible(comicsModel != nullptr && comicsModel->rowCount() > 0);
 }
 

@@ -53,6 +53,7 @@ public slots:
 
 signals:
     void selected(unsigned int);
+    void comicSelectionChanged();
     void openComic(const ComicDB &comic, const ComicModel::Mode mode);
     void comicRated(int, QModelIndex);
 

@@ -20,6 +20,7 @@ class ComicInfoObjectTest : public QObject
 private slots:
     void exposesTheQmlProperties();
     void readsTheComic();
+    void readsADeletedComic();
     void writablePropertiesNotifyOnce_data();
     void writablePropertiesNotifyOnce();
     void streamKeepsTheExistOnDbSlot_data();
@@ -65,7 +66,7 @@ void ComicInfoObjectTest::exposesTheQmlProperties()
         "editor", "imprint", "teams", "locations", "series", "alternateSeries", "alternateNumber", "alternateCount",
         "languageISO", "seriesGroup", "mainCharacterOrTeam", "review", "tags",
         "imageFiltersJson", "lastTimeImageFiltersSet", "lastTimeCoverSet", "usesExternalCover", "lastTimeMetadataSet",
-        "isFavorite"
+        "isFavorite", "available"
     };
 
     const auto *metaObject = &ComicInfoObject::staticMetaObject;
@@ -91,7 +92,7 @@ void ComicInfoObjectTest::exposesTheQmlProperties()
 void ComicInfoObjectTest::readsTheComic()
 {
     const auto comic = sampleComic();
-    ComicInfoObject object(comic, true);
+    ComicInfoObject object(ComicRecordCase::Comic { comic }, true);
 
     QCOMPARE(object.property("id").toULongLong(), 42ULL);
     QCOMPARE(object.property("hash").toString(), QString("hash-42"));
@@ -110,6 +111,27 @@ void ComicInfoObjectTest::readsTheComic()
     QCOMPARE(empty.property("id").toULongLong(), 0ULL);
 }
 
+void ComicInfoObjectTest::readsADeletedComic()
+{
+    auto comic = sampleComic();
+    ComicInfoObject available(ComicRecordCase::Comic { comic }, false);
+    QCOMPARE(available.property("available").toBool(), true);
+
+    comic.info.title = QVariant();
+    comic.info.number = QVariant();
+    comic.info.series = QVariant();
+    ComicInfoObject deleted(ComicRecordCase::DeletedComic { comic.info, LastKnownFile { "last.cbz", "/Series/last.cbz" } }, false);
+    QCOMPARE(deleted.property("available").toBool(), false);
+    QCOMPARE(deleted.property("id").toULongLong(), 42ULL);
+    QCOMPARE(deleted.property("rating").toInt(), 4);
+    QCOMPARE(deleted.getTitleOrFileName(), QString("last.cbz"));
+    QCOMPARE(deleted.getInfoTitle(), QString("last.cbz"));
+    QCOMPARE(deleted.getFileSize(), comic.getFileSize());
+
+    ComicInfoObject withoutName(ComicRecordCase::DeletedComic { comic.info, std::nullopt }, false);
+    QCOMPARE(withoutName.getTitleOrFileName(), QString());
+}
+
 void ComicInfoObjectTest::writablePropertiesNotifyOnce_data()
 {
     QTest::addColumn<QByteArray>("property");
@@ -125,7 +147,7 @@ void ComicInfoObjectTest::writablePropertiesNotifyOnce()
     QFETCH(QByteArray, property);
     QFETCH(QVariant, value);
 
-    ComicInfoObject object(sampleComic(), true);
+    ComicInfoObject object(ComicRecordCase::Comic { sampleComic() }, true);
     const auto metaProperty = object.metaObject()->property(object.metaObject()->indexOfProperty(property));
     QSignalSpy spy(&object, metaProperty.notifySignal());
 

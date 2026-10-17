@@ -584,6 +584,12 @@ Theme makeTheme(const ThemeParams &params)
                                                       QString::number(cvta.itemBorderTopWidth));
     theme.comicsViewTable.starRatingColor = cvta.starRatingColor;
     theme.comicsViewTable.starRatingSelectedColor = cvta.starRatingSelectedColor;
+    {
+        QIcon deletedComic;
+        deletedComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/deletedComic.svg", cvta.itemTextColor, params.meta.id), QSize(), QIcon::Normal, QIcon::Off);
+        deletedComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/deletedComic.svg", cvta.selectedTextColor, params.meta.id, { .suffix = "_selected" }), QSize(), QIcon::Selected, QIcon::Off);
+        theme.comicsViewTable.deletedComicIcon = deletedComic;
+    }
     // end ComicsViewTable
 
     // GridAndInfoView

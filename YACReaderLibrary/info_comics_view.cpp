@@ -31,6 +31,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     view->setSource(QUrl("qrc:/qml/InfoComicsView.qml"));
 
     selectionHelper = new YACReaderComicsSelectionHelper(this);
+    connect(selectionHelper, &YACReaderComicsSelectionHelper::selectionChanged, this, &ComicsView::comicSelectionChanged);
     comicInfoHelper = new YACReaderComicInfoHelper(this);
 
     auto l = new QVBoxLayout;

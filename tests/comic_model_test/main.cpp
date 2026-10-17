@@ -156,7 +156,7 @@ void ComicModelTest::listRowsHaveTheirList()
     QCOMPARE(model.rowCount(), 2);
     QCOMPARE(model.data(model.index(0, 0), ComicModel::IdRole).toULongLong(), 3ULL);
     QCOMPARE(model.data(model.index(1, 0), ComicModel::IdRole).toULongLong(), 1ULL);
-    QCOMPARE(model.columnCount(), int(ComicModel::Size) + 1);
+    QCOMPARE(model.columnCount(), int(ComicModel::State) + 1);
 }
 
 void ComicModelTest::identityRolesFollowTheCase()
@@ -373,7 +373,16 @@ void ComicModelTest::deletedComicRowsShowTheirInfoAndLastKnownFile()
     QCOMPARE(model.index(0, ComicModel::Hash).data().toString(), QString("hash-3"));
     QCOMPARE(model.getComicPath(deleted), QString());
     QVERIFY(!model.getComic(deleted).has_value());
+    const auto record = model.record(deleted);
+    QVERIFY(std::holds_alternative<ComicRecordCase::DeletedComic>(record));
+    QCOMPARE(std::get<ComicRecordCase::DeletedComic>(record).info.id, ComicInfoId(3));
+    QCOMPARE(std::get<ComicRecordCase::DeletedComic>(record).lastKnownFile->name, QString("c3.cbz"));
+    QVERIFY(std::holds_alternative<ComicRecordCase::Comic>(model.record(model.index(1, 0))));
     QVERIFY(model.getComics({ deleted, model.index(1, 0) }).size() == 1);
+
+    QVERIFY(model.hasUnavailableRows());
+    model.setupFolderModelData(2, dataPath);
+    QVERIFY(!model.hasUnavailableRows());
 }
 
 void ComicModelTest::deletedComicCoverIsTheHashCoverOrTheDefaultImage()
@@ -385,6 +394,9 @@ void ComicModelTest::deletedComicCoverIsTheHashCoverOrTheDefaultImage()
     QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
     // an available comic keeps the path of its hash
     QCOMPARE(model.index(1, 0).data(ComicModel::CoverPathRole).toUrl(), model.getCoverUrlPathForComicHash("hash-1"));
+    QCOMPARE(model.getUnavailableList(), QList<bool>({ true, false }));
+    const auto library = QFileInfo(dataPath).absolutePath();
+    QCOMPARE(model.getPaths(library), QStringList({ ":/images/unavailableCover.png", LibraryPaths::coverPath(library, "hash-1") }));
 
     const auto coverPath = LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-3");
     QVERIFY(QDir().mkpath(QFileInfo(coverPath).absolutePath()));
@@ -393,6 +405,7 @@ void ComicModelTest::deletedComicCoverIsTheHashCoverOrTheDefaultImage()
     cover.write("jpg");
     cover.close();
     QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), model.getCoverUrlPathForComicHash("hash-3"));
+    QCOMPARE(model.getPaths(library).first(), LibraryPaths::coverPath(library, "hash-3"));
 }
 
 void ComicModelTest::deletedComicsSupportOnlyComicInfoActions()

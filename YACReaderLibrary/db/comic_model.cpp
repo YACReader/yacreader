@@ -314,7 +314,7 @@ int ComicModel::columnCount(const QModelIndex &parent) const
     Q_UNUSED(parent)
     if (_data.isEmpty())
         return 0;
-    return ComicModel::Size + 1;
+    return ComicModel::State + 1;
 }
 
 bool ComicModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
@@ -797,10 +797,22 @@ QStringList ComicModel::getPaths(const QString &_source)
 {
     QStringList paths;
     for (const auto &item : std::as_const(_data)) {
-        paths << LibraryPaths::coverPath(_source, rowInfo(item).hash);
+        auto path = LibraryPaths::coverPath(_source, rowInfo(item).hash);
+        if (rowComic(item) == nullptr && !QFileInfo::exists(path))
+            path = QStringLiteral(":/images/unavailableCover.png");
+        paths << path;
     }
 
     return paths;
+}
+
+QList<bool> ComicModel::getUnavailableList() const
+{
+    QList<bool> unavailable;
+    unavailable.reserve(_data.size());
+    for (const auto &item : std::as_const(_data))
+        unavailable.append(rowComic(item) == nullptr);
+    return unavailable;
 }
 
 QList<ComicItem> ComicModel::createFolderModelData(unsigned long long folderId, const QString &databasePath) const
@@ -1280,6 +1292,21 @@ std::optional<ComicDB> ComicModel::firstUnreadComic() const
         }
     }
     return std::nullopt;
+}
+
+ComicRecord ComicModel::record(const QModelIndex &index) const
+{
+    return std::visit(overloaded {
+                              [](const ComicItemCase::Comic &row) -> ComicRecord { return ComicRecordCase::Comic { row.comic }; },
+                              [](const ComicItemCase::ComicInList &row) -> ComicRecord { return ComicRecordCase::Comic { row.comic }; },
+                              [](const ComicItemCase::DeletedComicInList &row) -> ComicRecord { return ComicRecordCase::DeletedComic { row.info, row.entry.lastKnownFile }; },
+                      },
+                      _data.at(index.row()));
+}
+
+bool ComicModel::hasUnavailableRows() const
+{
+    return std::any_of(_data.cbegin(), _data.cend(), [](const ComicItem &item) { return rowComic(item) == nullptr; });
 }
 
 bool ComicModel::supports(const QModelIndex &index, ComicAction action) const

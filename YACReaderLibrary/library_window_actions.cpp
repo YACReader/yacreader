@@ -804,6 +804,35 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(bool enabled)
     addToMenuAction->setEnabled(enabled);
     addToFavoritesAction->setEnabled(enabled);
 }
+void LibraryWindowActions::setComicSelectionActionsEnabled(const ComicModel &model, const QModelIndexList &selection, const QModelIndex &current)
+{
+    const auto anySupports = [&](ComicAction action) {
+        return std::any_of(selection.cbegin(), selection.cend(), [&](const QModelIndex &index) { return model.supports(index, action); });
+    };
+
+    openComicAction->setEnabled(model.supports(current, ComicAction::Open));
+    openContainingFolderComicAction->setEnabled(model.supports(current, ComicAction::OpenContainingFolder));
+    saveCoversToAction->setEnabled(anySupports(ComicAction::SaveCover));
+    editSelectedComicsAction->setEnabled(anySupports(ComicAction::EditMetadata));
+    asignOrderAction->setEnabled(anySupports(ComicAction::AssignNumbers));
+    setAsReadAction->setEnabled(anySupports(ComicAction::SetReadState));
+    setAsNonReadAction->setEnabled(anySupports(ComicAction::SetReadState));
+    resetComicRatingAction->setEnabled(anySupports(ComicAction::SetReadState));
+    const bool setType = anySupports(ComicAction::SetType);
+    setNormalAction->setEnabled(setType);
+    setMangaAction->setEnabled(setType);
+    setWebComicAction->setEnabled(setType);
+    setWesternMangaAction->setEnabled(setType);
+    setYonkomaAction->setEnabled(setType);
+    deleteMetadataAction->setEnabled(anySupports(ComicAction::DeleteMetadata));
+    deleteComicsAction->setEnabled(anySupports(ComicAction::RemoveFromList) || anySupports(ComicAction::ChangeFile));
+    renameComicsFilesAction->setEnabled(anySupports(ComicAction::ChangeFile));
+    organizeComicsFilesAction->setEnabled(anySupports(ComicAction::ChangeFile));
+    getInfoAction->setEnabled(anySupports(ComicAction::SearchComicVine));
+    addToMenuAction->setEnabled(anySupports(ComicAction::AddToList));
+    addToFavoritesAction->setEnabled(anySupports(ComicAction::AddToFavorites));
+}
+
 void LibraryWindowActions::disableLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);

@@ -120,6 +120,8 @@ QVariantMap YACReaderComicsSelectionHelper::selectionInfo() const
     qint64 totalSize = 0;
     QSet<QString> series;
     QVariantList covers;
+    QVariantList coversGrayscale;
+    int deletedCount = 0;
 
     for (const auto &index : std::as_const(rows)) {
         const bool read = index.data(ComicModel::ReadColumnRole).toBool();
@@ -133,16 +135,22 @@ QVariantMap YACReaderComicsSelectionHelper::selectionInfo() const
         else
             ++unknownPageCount;
 
+        const bool available = index.data(ComicModel::AvailableRole).toBool();
+        deletedCount += available ? 0 : 1;
+
         // The size in bytes is stored at the end of the hash, right after the 40
         // characters of the SHA1 digest.
-        totalSize += index.data(ComicModel::HashRole).toString().mid(40).toLongLong();
+        if (available)
+            totalSize += index.data(ComicModel::HashRole).toString().mid(40).toLongLong();
 
         const QString seriesName = index.data(ComicModel::SeriesRole).toString().trimmed();
         if (!seriesName.isEmpty())
             series.insert(seriesName);
 
-        if (covers.size() < 3)
+        if (covers.size() < 3) {
             covers.append(index.data(ComicModel::CoverPathRole));
+            coversGrayscale.append(!available);
+        }
     }
 
     info.insert(QStringLiteral("count"), rows.size());
@@ -156,6 +164,8 @@ QVariantMap YACReaderComicsSelectionHelper::selectionInfo() const
     if (series.size() == 1)
         info.insert(QStringLiteral("seriesName"), *series.cbegin());
     info.insert(QStringLiteral("covers"), covers);
+    info.insert(QStringLiteral("coversGrayscale"), coversGrayscale);
+    info.insert(QStringLiteral("deletedCount"), deletedCount);
     return info;
 }
 

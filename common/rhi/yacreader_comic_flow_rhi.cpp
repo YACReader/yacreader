@@ -12,7 +12,7 @@ YACReaderComicFlow3D::YACReaderComicFlow3D(struct Preset p)
     worker->flow = this;
 }
 
-void YACReaderComicFlow3D::setImagePaths(QStringList paths)
+void YACReaderComicFlow3D::setImagePaths(QStringList paths, QList<bool> grayscale)
 {
     worker->reset();
     reset();
@@ -25,6 +25,8 @@ void YACReaderComicFlow3D::setImagePaths(QStringList paths)
     }
 
     this->paths = paths;
+    grayscale.resize(paths.size(), false);
+    this->grayscale = grayscale;
     loadingWindowCenter = -1;
 }
 
@@ -94,7 +96,7 @@ void YACReaderComicFlow3D::updateImageData()
         if ((i >= 0) && (i < numObjects))
             if (!loaded[i] && !failedImageLoads.contains(i)) {
                 if (!paths.isEmpty())
-                    worker->generate(i, paths.at(i));
+                    worker->generate(i, paths.at(i), grayscale.at(i));
                 delete[] indexes;
                 return;
             }
@@ -110,16 +112,18 @@ void YACReaderComicFlow3D::remove(int item)
     YACReaderFlow3D::remove(item);
     if (item >= 0 && item < paths.size()) {
         paths.removeAt(item);
+        grayscale.removeAt(item);
     }
     loadingWindowCenter = -1;
     worker->unlock();
 }
 
-void YACReaderComicFlow3D::add(const QString &path, int index)
+void YACReaderComicFlow3D::add(const QString &path, int index, bool grayscale)
 {
     worker->lock();
     worker->reset();
     paths.insert(index, path);
+    this->grayscale.insert(index, grayscale);
     YACReaderFlow3D::add(index);
     loadingWindowCenter = -1;
     worker->unlock();
@@ -132,6 +136,7 @@ void YACReaderComicFlow3D::resortCovers(QList<int> newOrder)
     startAnimationTimer();
 
     QList<QString> pathsNew;
+    QList<bool> grayscaleNew;
     QVector<bool> loadedNew;
     QVector<YACReader::YACReaderComicReadStatus> marksNew;
     QVector<YACReader3DImageRHI> imagesNew;
@@ -143,6 +148,7 @@ void YACReaderComicFlow3D::resortCovers(QList<int> newOrder)
         }
 
         pathsNew << paths.at(i);
+        grayscaleNew << grayscale.at(i);
         loadedNew << loaded.at(i);
         marksNew << marks.at(i);
         imagesNew << images.at(i);
@@ -150,6 +156,7 @@ void YACReaderComicFlow3D::resortCovers(QList<int> newOrder)
     }
 
     paths = pathsNew;
+    grayscale = grayscaleNew;
     loaded = loadedNew;
     marks = marksNew;
     images = imagesNew;
@@ -158,7 +165,7 @@ void YACReaderComicFlow3D::resortCovers(QList<int> newOrder)
 }
 
 // ImageLoader3D implementation
-QImage ImageLoader3D::loadImage(const QString &fileName)
+QImage ImageLoader3D::loadImage(const QString &fileName, bool grayscale)
 {
     QImage image;
 
@@ -179,6 +186,9 @@ QImage ImageLoader3D::loadImage(const QString &fileName)
     case ultraHigh:
         break;
     }
+
+    if (grayscale)
+        image = image.convertToFormat(QImage::Format_Grayscale8);
 
     return image.convertToFormat(QImage::Format_RGBA8888);
 }
@@ -202,11 +212,12 @@ bool ImageLoader3D::busy() const
     return working;
 }
 
-void ImageLoader3D::generate(int index, const QString &fileName)
+void ImageLoader3D::generate(int index, const QString &fileName, bool grayscale)
 {
     mutex.lock();
     this->idx = index;
     this->fileName = fileName;
+    this->grayscale = grayscale;
     this->img = QImage();
     this->working = true;
     const bool shouldStart = !isRunning();
@@ -236,9 +247,10 @@ void ImageLoader3D::run()
         mutex.lock();
         this->working = true;
         QString fileName = this->fileName;
+        const bool grayscale = this->grayscale;
         mutex.unlock();
 
-        QImage image = loadImage(fileName);
+        QImage image = loadImage(fileName, grayscale);
 
         mutex.lock();
         this->working = false;

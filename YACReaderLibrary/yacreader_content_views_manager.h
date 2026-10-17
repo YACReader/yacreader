@@ -48,6 +48,7 @@ public:
     ComicsViewTransition *comicsViewTransition;
 
     void updateCurrentComicView();
+    void applyComicSelectionActions();
 
     void toFullscreen();
     void toNormal();

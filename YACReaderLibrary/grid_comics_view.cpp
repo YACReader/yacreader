@@ -57,6 +57,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     connect(selectionHelper, &YACReaderComicsSelectionHelper::selectionChanged, this, [this]() {
         emit comicSelectionStateChanged(selectionHelper->numItemsSelected() > 0);
+        emit comicSelectionChanged();
         emit selectedComicsInfoChanged();
     });
 
@@ -849,7 +850,7 @@ void GridComicsView::updateCurrentComicBanner()
 
 void GridComicsView::publishCurrentComic(QQmlContext *ctxt)
 {
-    auto previous = std::exchange(currentComicInfo, new ComicInfoObject(currentComic, false, this));
+    auto previous = std::exchange(currentComicInfo, new ComicInfoObject(ComicRecordCase::Comic { currentComic }, false, this));
     ctxt->setContextProperty("currentComic", currentComicInfo);
     ctxt->setContextProperty("currentComicInfo", currentComicInfo);
     delete previous;

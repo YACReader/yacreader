@@ -133,4 +133,9 @@ public:
 
 Q_DECLARE_METATYPE(ComicDB)
 
+// the titles of ComicDB, also for a comic without a file; fileName is the fallback when there is no title
+QString titleOrFileName(const ComicInfo &info, const QString &fileName);
+QString titleIncludingNumber(const ComicInfo &info, const QString &fileName);
+QString infoTitle(const ComicInfo &info, const QString &fileName);
+
 #endif

@@ -99,9 +99,7 @@ void ComicsView::updateInfoForIndex(int index)
     }
 
     const auto modelIndex = model->index(index, 0);
-    // a deleted comic has no ComicDB; the info panel shows it with ComicRecord in step 18b
-    const auto comic = model->getComic(modelIndex);
-    comicInfo = comic ? new ComicInfoObject(*comic, model->isFavorite(modelIndex)) : new ComicInfoObject();
+    comicInfo = new ComicInfoObject(model->record(modelIndex), model->isFavorite(modelIndex));
 
     ctxt->setContextProperty("comic", comicInfo);
     ctxt->setContextProperty("comicInfo", comicInfo);

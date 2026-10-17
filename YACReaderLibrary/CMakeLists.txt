@@ -169,6 +169,7 @@ qt_add_executable(YACReaderLibrary WIN32
     db/comic_model.h
     db/comic_model.cpp
     db/comic_item.h
+    db/comic_record.h
     db/reading_list_model.h
     db/reading_list_model.cpp
     db/reading_list_item.h
@@ -310,6 +311,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/noLibrariesLine.svg
     ${PROJECT_SOURCE_DIR}/images/notCover.png
     ${PROJECT_SOURCE_DIR}/images/unavailableCover.png
+    ${PROJECT_SOURCE_DIR}/images/comics_view_table/deletedComic.svg
     ${PROJECT_SOURCE_DIR}/images/library_dialogs/openLibrary.svg
     ${PROJECT_SOURCE_DIR}/images/metadata_dialog/previousCoverPage.svg
     ${PROJECT_SOURCE_DIR}/images/readingRibbon.svg

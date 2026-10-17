@@ -182,10 +182,7 @@ QString ComicDB::getFileName() const
 
 QString ComicDB::getTitleOrFileName() const
 {
-    if (!info.title.isNull() && !info.title.toString().isEmpty())
-        return info.title.toString();
-    else
-        return QFileInfo(file.path).fileName();
+    return titleOrFileName(info, QFileInfo(file.path).fileName());
 }
 
 QString ComicDB::getParentFolderName() const
@@ -205,14 +202,32 @@ qulonglong ComicDB::getFileSize() const
 
 QString ComicDB::getTitleIncludingNumber() const
 {
-    if (!info.number.isNull()) {
-        return "#" + info.number.toString() + " - " + getTitleOrFileName();
-    }
-
-    return getTitleOrFileName();
+    return titleIncludingNumber(info, QFileInfo(file.path).fileName());
 }
 
 QString ComicDB::getInfoTitle() const
+{
+    return infoTitle(info, QFileInfo(file.path).fileName());
+}
+
+QString titleOrFileName(const ComicInfo &info, const QString &fileName)
+{
+    if (!info.title.isNull() && !info.title.toString().isEmpty())
+        return info.title.toString();
+    else
+        return fileName;
+}
+
+QString titleIncludingNumber(const ComicInfo &info, const QString &fileName)
+{
+    if (!info.number.isNull()) {
+        return "#" + info.number.toString() + " - " + titleOrFileName(info, fileName);
+    }
+
+    return titleOrFileName(info, fileName);
+}
+
+QString infoTitle(const ComicInfo &info, const QString &fileName)
 {
     if (!info.number.isNull() && !info.title.isNull() && !info.series.isNull())
         return "#" + info.number.toString() + " - " + info.title.toString() + " (" + info.series.toString() + ")";
@@ -227,7 +242,7 @@ QString ComicDB::getInfoTitle() const
         return "#" + info.number.toString() + " - " + info.series.toString();
 
     if (!info.number.isNull())
-        return "#" + info.number.toString() + " - " + getTitleOrFileName();
+        return "#" + info.number.toString() + " - " + titleOrFileName(info, fileName);
 
     if (!info.title.isNull() && !info.series.isNull())
         return info.title.toString() + " (" + info.series.toString() + ")";
@@ -238,7 +253,7 @@ QString ComicDB::getInfoTitle() const
     if (!info.series.isNull())
         return info.series.toString();
 
-    return QFileInfo(file.path).fileName();
+    return fileName;
 }
 
 //-----------------------------------------------------------------------------

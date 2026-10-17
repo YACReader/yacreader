@@ -2,6 +2,7 @@
 #define TABLEMODEL_H
 
 #include "comic_item.h"
+#include "comic_record.h"
 #include "yacreader_global.h"
 
 #include <QAbstractItemModel>
@@ -45,6 +46,7 @@ public:
 
     enum CalculatedColumns {
         Size = Columns::StoryArc + 1,
+        State,
     };
 
     enum Roles {
@@ -116,15 +118,19 @@ public:
 
     // Métodos de conveniencia
     QStringList getPaths(const QString &_source);
+    QList<bool> getUnavailableList() const;
     QString getComicPath(QModelIndex mi); // empty for a row without a file
     QString getCurrentPath() { return QString(_databasePath).remove("/.yacreaderlibrary"); }
     // the comic of a row with a file, loaded again; nothing for a deleted comic
     std::optional<ComicDB> getComic(const QModelIndex &mi);
+    // from the row, without a query
+    ComicRecord record(const QModelIndex &index) const;
     QVector<YACReaderComicReadStatus> getReadList();
     // the comics of the rows that have a file, loaded again; rows without a file are skipped
     QList<ComicDB> getComics(QList<QModelIndex> list);
     QList<ComicDB> getAllComics();
     bool supports(const QModelIndex &index, ComicAction action) const;
+    bool hasUnavailableRows() const;
     QModelIndexList supportedIndexes(const QModelIndexList &indexes, ComicAction action) const;
     // each comic_info of the rows once, loaded again, in row order
     void deleteMetadata(const QModelIndexList &indexes);

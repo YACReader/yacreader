@@ -2,6 +2,7 @@
 #define COMIC_INFO_OBJECT_H
 
 #include "comic_db.h"
+#include "comic_record.h"
 
 #include <QObject>
 
@@ -77,10 +78,12 @@ class ComicInfoObject : public QObject
     Q_PROPERTY(QVariant lastTimeMetadataSet READ lastTimeMetadataSet CONSTANT)
 
     Q_PROPERTY(bool isFavorite READ isFavorite WRITE setFavorite NOTIFY favoriteChanged)
+    // false for a comic whose file is no longer in the library
+    Q_PROPERTY(bool available READ available CONSTANT)
 
 public:
     explicit ComicInfoObject(QObject *parent = nullptr);
-    ComicInfoObject(const ComicDB &comic, bool isFavorite, QObject *parent = nullptr);
+    ComicInfoObject(const ComicRecord &record, bool isFavorite, QObject *parent = nullptr);
 
     qulonglong id() const;
     bool read() const;
@@ -147,6 +150,7 @@ public:
     QVariant lastTimeMetadataSet() const;
 
     bool isFavorite() const;
+    bool available() const;
 
     void setRead(bool read);
     void setRating(int rating);
@@ -180,7 +184,10 @@ signals:
     void favoriteChanged();
 
 private:
-    ComicDB comic;
+    ComicInfo info;
+    // the title fallback: the file name, or the last known one of a deleted comic
+    QString fileName;
+    bool isAvailable = true;
     bool favorite;
 };
 
