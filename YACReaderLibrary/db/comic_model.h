@@ -128,7 +128,6 @@ public:
     QVector<YACReaderComicReadStatus> getReadList();
     // the comics of the rows that have a file, loaded again; rows without a file are skipped
     QList<ComicDB> getComics(QList<QModelIndex> list);
-    QList<ComicDB> getAllComics();
     bool supports(const QModelIndex &index, ComicAction action) const;
     bool hasUnavailableRows() const;
     QModelIndexList supportedIndexes(const QModelIndexList &indexes, ComicAction action) const;

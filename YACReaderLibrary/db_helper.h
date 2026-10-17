@@ -2,6 +2,7 @@
 #define DB_HELPER_H
 
 class QString;
+#include "comic_record.h"
 #include "library_item_types.h"
 #include "yacreader_global.h"
 
@@ -17,6 +18,7 @@ class ComicDB;
 struct Folder;
 struct Label;
 struct Placeholder;
+class DescriptiveMetadataPatch;
 class QSqlDatabase;
 class ComicInfo;
 class QSqlRecord;
@@ -88,6 +90,13 @@ public:
     static void update(ComicDB *comics, QSqlDatabase &db);
     static bool update(ComicInfo *comicInfo, QSqlDatabase &db);
     static bool updateAdded(ComicInfo *comicInfo, QSqlDatabase &db);
+    // writes only the fields in the patch, and marks the comic_info as edited
+    static bool updateComicInfoMetadata(ComicInfoId id, const DescriptiveMetadataPatch &patch, QSqlDatabase &db);
+    // a type set by the user, so the comic_info is marked as edited
+    static bool updateComicInfoType(ComicInfoId id, YACReader::FileType type, QSqlDatabase &db);
+    // writes the cover page, the cover size, and the custom-cover columns of `info`; a cover set by the user, so the
+    // comic_info is marked as edited
+    static bool updateComicInfoCover(const ComicInfo &info, QSqlDatabase &db);
     static void update(const Folder &folder, QSqlDatabase &db);
     static void propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db);
     static Folder updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
@@ -143,6 +152,8 @@ public:
     static std::optional<Placeholder> loadPlaceholder(PlaceholderId id, QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
+    // a comic with a file still has that file with the same comic_info; a deleted comic still has its comic_info
+    static bool recordExists(const ComicRecord &record, QSqlDatabase &db);
 
     // library
     static QVariantMap getLibraryInfoData(QUuid id);

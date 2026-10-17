@@ -793,6 +793,53 @@ bool DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     return success;
 }
 
+bool DBHelper::updateComicInfoMetadata(ComicInfoId id, const DescriptiveMetadataPatch &patch, QSqlDatabase &db)
+{
+    if (patch.isEmpty())
+        return true;
+
+    QSqlQuery query(db);
+    query.prepare("UPDATE comic_info SET " + patch.assignments().join(", ") + ", edited = 1 WHERE id = :id");
+    patch.bindTo(query);
+    query.bindValue(":id", id.value());
+    if (!query.exec()) {
+        QLOG_ERROR() << "Unable to update the metadata of a comic:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DBHelper::updateComicInfoType(ComicInfoId id, YACReader::FileType type, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("UPDATE comic_info SET type = :type, edited = 1 WHERE id = :id");
+    query.bindValue(":type", static_cast<int>(type));
+    query.bindValue(":id", id.value());
+    if (!query.exec()) {
+        QLOG_ERROR() << "Unable to update the type of a comic:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DBHelper::updateComicInfoCover(const ComicInfo &info, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("UPDATE comic_info SET coverPage = :coverPage, originalCoverSize = :originalCoverSize, coverSizeRatio = :coverSizeRatio, "
+                  "lastTimeCoverSet = :lastTimeCoverSet, usesExternalCover = :usesExternalCover, edited = 1 WHERE id = :id");
+    query.bindValue(":coverPage", info.coverPage);
+    query.bindValue(":originalCoverSize", info.originalCoverSize);
+    query.bindValue(":coverSizeRatio", info.coverSizeRatio);
+    query.bindValue(":lastTimeCoverSet", info.lastTimeCoverSet);
+    query.bindValue(":usesExternalCover", info.usesExternalCover);
+    query.bindValue(":id", info.id.value());
+    if (!query.exec()) {
+        QLOG_ERROR() << "Unable to update the cover of a comic:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
 bool DBHelper::updateAdded(ComicInfo *comicInfo, QSqlDatabase &db)
 {
     QSqlQuery updateComicInfo(db);
@@ -2041,6 +2088,19 @@ std::optional<ComicInfo> DBHelper::loadComicInfo(ComicInfoId id, QSqlDatabase &d
     }
 
     return std::nullopt;
+}
+
+bool DBHelper::recordExists(const ComicRecord &record, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    if (const auto *comic = recordComic(record)) {
+        query.prepare("SELECT 1 FROM comic WHERE id = :id AND comicInfoId = :comic_info_id");
+        query.bindValue(":id", comic->file.id.value());
+    } else {
+        query.prepare("SELECT 1 FROM comic_info WHERE id = :comic_info_id");
+    }
+    query.bindValue(":comic_info_id", recordInfo(record).id.value());
+    return query.exec() && query.next();
 }
 
 bool DBHelper::isFavoriteComic(qulonglong id, QSqlDatabase &db)

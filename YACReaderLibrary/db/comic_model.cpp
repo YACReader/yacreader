@@ -124,13 +124,13 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   case ComicAction::SaveCover:
                                   case ComicAction::SetReadState:
                                   case ComicAction::SetType:
+                                  case ComicAction::EditMetadata:
                                   case ComicAction::DeleteMetadata:
                                   case ComicAction::AssignNumbers:
                                   case ComicAction::AddToList:
                                   case ComicAction::RemoveFromList:
                                       return true;
-                                  // the dialogs and the custom covers take a comic with its file until they take ComicRecord
-                                  case ComicAction::EditMetadata:
+                                  // Comic Vine and the custom covers take a comic with its file until they take ComicRecord
                                   case ComicAction::SearchComicVine:
                                   case ComicAction::SetCustomCover:
                                   // Favorites is keyed by comic id
@@ -1239,28 +1239,6 @@ QVector<YACReaderComicReadStatus> ComicModel::getReadList()
     }
     return readList;
 }
-QList<ComicDB> ComicModel::getAllComics()
-{
-    QList<ComicDB> comics;
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-        QList<qulonglong> ids;
-        ids.reserve(_data.size());
-        for (const auto &item : std::as_const(_data)) {
-            if (const auto *comic = rowComic(item))
-                ids.append(comic->file.id.value());
-        }
-        comics = DBHelper::loadComics(ids, db);
-
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
-
-    return comics;
-}
-
 QList<ComicDB> ComicModel::getComics(QList<QModelIndex> list)
 {
     QList<ComicDB> comics;

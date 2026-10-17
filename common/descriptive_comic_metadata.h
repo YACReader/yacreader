@@ -5,6 +5,7 @@
 #include <QVariant>
 
 #include <array>
+#include <bitset>
 
 class QSqlQuery;
 class QSqlRecord;
@@ -59,6 +60,24 @@ struct DescriptiveComicMetadata {
     static QStringList assignments();
 
     void bindTo(QSqlQuery &query) const;
+};
+
+// the descriptive fields that an edit sets or clears; a field that is not in the patch keeps its stored value
+class DescriptiveMetadataPatch
+{
+public:
+    // a null value clears the field
+    void set(QVariant DescriptiveComicMetadata::*field, const QVariant &value);
+    bool contains(QVariant DescriptiveComicMetadata::*field) const;
+    bool isEmpty() const;
+
+    QStringList assignments() const;
+    void bindTo(QSqlQuery &query) const;
+    void applyTo(DescriptiveComicMetadata &metadata) const;
+
+private:
+    DescriptiveComicMetadata values;
+    std::bitset<37> fields;
 };
 
 #endif

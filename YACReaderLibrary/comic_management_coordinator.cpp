@@ -234,18 +234,22 @@ void ComicManagementCoordinator::moveAndImportComics(const QList<QPair<QString, 
 void ComicManagementCoordinator::showProperties()
 {
     const auto indexList = comicsModel->supportedIndexes(selectionProvider(), ComicAction::EditMetadata);
-    const auto comics = comicsModel->getComics(indexList);
-    if (comics.isEmpty())
+    if (indexList.isEmpty())
         return;
 
     propertiesDialog->databasePath = foldersModel->getDatabase();
     propertiesDialog->basePath = libraryPathProvider();
 
     if (indexList.length() > 1) {
-        propertiesDialog->setComics(comics);
+        QList<ComicRecord> records;
+        for (const auto &index : indexList)
+            records.append(comicsModel->record(index));
+        propertiesDialog->setComics(records);
     } else {
-        const auto allComics = comicsModel->getAllComics();
-        propertiesDialog->setComicsForSequentialEditing(allComics.indexOf(comics.constFirst()), allComics);
+        QList<ComicRecord> records;
+        for (int row = 0; row < comicsModel->rowCount(); row++)
+            records.append(comicsModel->record(comicsModel->index(row, 0)));
+        propertiesDialog->setComicsForSequentialEditing(indexList.constFirst().row(), records);
     }
 
     emit currentSourceRefreshStarted();

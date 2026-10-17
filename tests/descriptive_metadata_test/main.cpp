@@ -23,6 +23,9 @@ private slots:
     void fullComicUpdateKeepsExistingBehavior();
     void comicInfoCopyKeepsDescriptiveFields();
     void comicInfoProjectionCoversTheTable();
+    void patchWritesOnlyItsFields();
+    void emptyPatchWritesNothing();
+    void typeAndCoverWritesKeepOtherColumns();
 
 private:
     QSqlDatabase db;
@@ -220,6 +223,99 @@ void DescriptiveMetadataTest::comicInfoProjectionCoversTheTable()
     QCOMPARE(info.usesExternalCover.toBool(), true);
     QCOMPARE(info.lastTimeCoverSet.toInt(), 123);
     QCOMPARE(info.imageFiltersJson.toString(), QString("{}"));
+}
+
+void DescriptiveMetadataTest::patchWritesOnlyItsFields()
+{
+    QSqlQuery q(db);
+    QVERIFY(q.exec("UPDATE comic_info SET synopsis = 'Old synopsis', writer = 'Old writer', edited = 0 WHERE id = 1"));
+    QVERIFY(q.exec("SELECT * FROM comic_info WHERE id = 1"));
+    QVERIFY(q.next());
+    const auto before = q.record();
+
+    DescriptiveMetadataPatch patch;
+    patch.set(&DescriptiveComicMetadata::title, QString("New title"));
+    patch.set(&DescriptiveComicMetadata::synopsis, QVariant());
+    QVERIFY(patch.contains(&DescriptiveComicMetadata::title));
+    QVERIFY(patch.contains(&DescriptiveComicMetadata::synopsis));
+    QVERIFY(!patch.contains(&DescriptiveComicMetadata::writer));
+    QCOMPARE(patch.assignments(), QStringList({ "title = :title", "synopsis = :synopsis" }));
+
+    QVERIFY(DBHelper::updateComicInfoMetadata(ComicInfoId(1), patch, db));
+
+    QVERIFY(q.exec("SELECT * FROM comic_info WHERE id = 1"));
+    QVERIFY(q.next());
+    const auto after = q.record();
+    for (int i = 0; i < before.count(); ++i) {
+        const auto name = before.fieldName(i);
+        if (name == "title") {
+            QCOMPARE(after.value(i).toString(), QString("New title"));
+        } else if (name == "synopsis") {
+            QVERIFY(after.value(i).isNull());
+        } else if (name == "edited") {
+            QCOMPARE(after.value(i).toInt(), 1);
+        } else {
+            QVERIFY2(after.value(i) == before.value(i), qPrintable(name));
+        }
+    }
+
+    DescriptiveComicMetadata metadata;
+    metadata.writer = QString("Kept writer");
+    metadata.synopsis = QString("Replaced");
+    patch.applyTo(metadata);
+    QCOMPARE(metadata.title.toString(), QString("New title"));
+    QVERIFY(metadata.synopsis.isNull());
+    QCOMPARE(metadata.writer.toString(), QString("Kept writer"));
+}
+
+void DescriptiveMetadataTest::emptyPatchWritesNothing()
+{
+    QSqlQuery q(db);
+    QVERIFY(q.exec("UPDATE comic_info SET edited = 0 WHERE id = 1"));
+
+    const DescriptiveMetadataPatch patch;
+    QVERIFY(patch.isEmpty());
+    QVERIFY(DBHelper::updateComicInfoMetadata(ComicInfoId(1), patch, db));
+
+    QVERIFY(q.exec("SELECT edited FROM comic_info WHERE id = 1"));
+    QVERIFY(q.next());
+    QCOMPARE(q.value(0).toInt(), 0);
+}
+
+void DescriptiveMetadataTest::typeAndCoverWritesKeepOtherColumns()
+{
+    QSqlQuery q(db);
+    QVERIFY(q.exec("UPDATE comic_info SET edited = 0 WHERE id = 1"));
+
+    QVERIFY(DBHelper::updateComicInfoType(ComicInfoId(1), YACReader::FileType::Manga, db));
+    auto loaded = loadInfo(1);
+    QCOMPARE(loaded.type.toInt(), static_cast<int>(YACReader::FileType::Manga));
+    QVERIFY(loaded.edited);
+    QCOMPARE(loaded.title.toString(), QString("Original"));
+    QCOMPARE(loaded.currentPage, 7);
+
+    ComicInfo cover = loaded;
+    cover.coverPage = 5;
+    cover.originalCoverSize = QString("100x200");
+    cover.coverSizeRatio = 0.5;
+    cover.lastTimeCoverSet = 456;
+    cover.usesExternalCover = false;
+    cover.title = QString("Not written");
+    cover.currentPage = 1;
+    QVERIFY(q.exec("UPDATE comic_info SET edited = 0 WHERE id = 1"));
+    QVERIFY(DBHelper::updateComicInfoCover(cover, db));
+
+    loaded = loadInfo(1);
+    QVERIFY(loaded.edited);
+    QCOMPARE(loaded.coverPage.toInt(), 5);
+    QCOMPARE(loaded.originalCoverSize.toString(), QString("100x200"));
+    QCOMPARE(loaded.coverSizeRatio.toDouble(), 0.5);
+    QCOMPARE(loaded.lastTimeCoverSet.toInt(), 456);
+    QCOMPARE(loaded.usesExternalCover.toBool(), false);
+    QCOMPARE(loaded.title.toString(), QString("Original"));
+    QCOMPARE(loaded.currentPage, 7);
+    QCOMPARE(loaded.numPages.toInt(), 20);
+    QCOMPARE(loaded.hash, QString("real-stored-hash"));
 }
 
 QTEST_GUILESS_MAIN(DescriptiveMetadataTest)

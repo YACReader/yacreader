@@ -64,3 +64,64 @@ void DescriptiveComicMetadata::bindTo(QSqlQuery &query) const
         query.bindValue(":" + QString::fromLatin1(column.name), this->*column.member);
     }
 }
+
+namespace {
+
+std::size_t columnOf(QVariant DescriptiveComicMetadata::*field)
+{
+    const auto &columns = DescriptiveComicMetadata::columns();
+    for (std::size_t i = 0; i < columns.size(); ++i) {
+        if (columns[i].member == field)
+            return i;
+    }
+    Q_UNREACHABLE_RETURN(0);
+}
+
+}
+
+void DescriptiveMetadataPatch::set(QVariant DescriptiveComicMetadata::*field, const QVariant &value)
+{
+    values.*field = value;
+    fields.set(columnOf(field));
+}
+
+bool DescriptiveMetadataPatch::contains(QVariant DescriptiveComicMetadata::*field) const
+{
+    return fields.test(columnOf(field));
+}
+
+bool DescriptiveMetadataPatch::isEmpty() const
+{
+    return fields.none();
+}
+
+QStringList DescriptiveMetadataPatch::assignments() const
+{
+    QStringList result;
+    const auto &columns = DescriptiveComicMetadata::columns();
+    for (std::size_t i = 0; i < columns.size(); ++i) {
+        if (fields.test(i)) {
+            const auto name = QString::fromLatin1(columns[i].name);
+            result.append(name + " = :" + name);
+        }
+    }
+    return result;
+}
+
+void DescriptiveMetadataPatch::bindTo(QSqlQuery &query) const
+{
+    const auto &columns = DescriptiveComicMetadata::columns();
+    for (std::size_t i = 0; i < columns.size(); ++i) {
+        if (fields.test(i))
+            query.bindValue(":" + QString::fromLatin1(columns[i].name), values.*columns[i].member);
+    }
+}
+
+void DescriptiveMetadataPatch::applyTo(DescriptiveComicMetadata &metadata) const
+{
+    const auto &columns = DescriptiveComicMetadata::columns();
+    for (std::size_t i = 0; i < columns.size(); ++i) {
+        if (fields.test(i))
+            metadata.*columns[i].member = values.*columns[i].member;
+    }
+}

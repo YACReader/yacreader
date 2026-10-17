@@ -417,11 +417,11 @@ void ComicModelTest::deletedComicsSupportOnlyComicInfoActions()
     const auto deleted = model.index(0, 0);
     const auto available = model.index(1, 0);
 
-    for (const auto action : { ComicAction::SaveCover, ComicAction::SetReadState, ComicAction::SetType, ComicAction::DeleteMetadata, ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromList }) {
+    for (const auto action : { ComicAction::SaveCover, ComicAction::SetReadState, ComicAction::SetType, ComicAction::EditMetadata, ComicAction::DeleteMetadata, ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromList }) {
         QVERIFY(model.supports(deleted, action));
         QVERIFY(model.supports(available, action));
     }
-    for (const auto action : { ComicAction::Open, ComicAction::OpenContainingFolder, ComicAction::ChangeFile, ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover, ComicAction::AddToFavorites }) {
+    for (const auto action : { ComicAction::Open, ComicAction::OpenContainingFolder, ComicAction::ChangeFile, ComicAction::SearchComicVine, ComicAction::SetCustomCover, ComicAction::AddToFavorites }) {
         QVERIFY(!model.supports(deleted, action));
         QVERIFY(model.supports(available, action));
     }

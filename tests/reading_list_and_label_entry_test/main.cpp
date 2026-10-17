@@ -66,6 +66,7 @@ private slots:
     void deletingAListDeletesItsUnusedPlaceholders();
     void deletingAReadingListDeletesPlaceholdersOfChildLists();
     void removePlaceholderCovers();
+    void recordExists();
 
 private:
     void addReadingListAndLabelRows();
@@ -815,6 +816,32 @@ void ReadingListAndLabelEntryTest::removePlaceholderCovers()
 
     QVERIFY(!QFile::exists(removed));
     QVERIFY(QFile::exists(kept));
+}
+
+void ReadingListAndLabelEntryTest::recordExists()
+{
+    const auto comic = [](qulonglong fileId, qulonglong infoId) {
+        ComicDB comic;
+        comic.file.id = ComicId(fileId);
+        comic.info.id = ComicInfoId(infoId);
+        return ComicRecord(ComicRecordCase::Comic { comic });
+    };
+    const auto deleted = [](qulonglong infoId) {
+        ComicInfo info;
+        info.id = ComicInfoId(infoId);
+        return ComicRecord(ComicRecordCase::DeletedComic { info, std::nullopt });
+    };
+
+    QVERIFY(DBHelper::recordExists(comic(100, 10), db));
+    QVERIFY(DBHelper::recordExists(comic(101, 10), db));
+    QVERIFY(!DBHelper::recordExists(comic(100, 11), db));
+    QVERIFY(!DBHelper::recordExists(comic(999, 10), db));
+    QVERIFY(DBHelper::recordExists(deleted(11), db));
+    QVERIFY(!DBHelper::recordExists(deleted(99), db));
+
+    QVERIFY(exec("DELETE FROM comic WHERE id = 110"));
+    QVERIFY(!DBHelper::recordExists(comic(110, 11), db));
+    QVERIFY(DBHelper::recordExists(deleted(11), db));
 }
 
 QTEST_GUILESS_MAIN(ReadingListAndLabelEntryTest)
