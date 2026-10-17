@@ -64,7 +64,7 @@ signals:
     // Drops
     void copyComicsToCurrentFolder(QList<QPair<QString, QString>>);
     void moveComicsToCurrentFolder(QList<QPair<QString, QString>>);
-    void customComicCoverRequested(qulonglong comicId, const QString &imagePath);
+    void customComicCoverRequested(const ComicRowId &row, const QString &imagePath);
     void customFolderCoverRequested(qulonglong folderId, const QString &imagePath);
 
 protected:

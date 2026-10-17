@@ -17,6 +17,7 @@ class QCheckBox;
 class QComboBox;
 // class YACReaderBusyWidget;
 class QToolButton;
+class StagedCover;
 
 namespace YACReader {
 class CoverLabel;
@@ -151,7 +152,7 @@ private:
     DescriptiveMetadataPatch editedMetadata() const;
     std::optional<YACReader::FileType> editedType() const;
     std::optional<QVariant> editedDate(const ComicInfo &info) const;
-    bool applyCoverChange(ComicRecord &record);
+    bool applyCoverChange(ComicRecord &record, StagedCover &staged);
     bool showRecord(int index, int step);
     // false when the save was refused; the dialog then keeps the values
     bool updateComics();

@@ -66,11 +66,12 @@ ClassicComicsView::ClassicComicsView(QWidget *parent)
     connect(comicFlow, &ComicFlowWidget::centerIndexChanged, this, &ClassicComicsView::updateTableView);
     connect(tableView, &YACReaderTableView::comicRated, this, &ComicsView::comicRated);
     connect(tableView, &YACReaderTableView::customCoverDropped, this, [this](const QString &imagePath, const QModelIndex &index) {
-        emit customComicCoverRequested(index.data(ComicModel::IdRole).toULongLong(), imagePath);
+        if (model && index.isValid())
+            emit customComicCoverRequested(model->rowId(index), imagePath);
     });
     connect(comicFlow, &ComicFlowWidget::customCoverDropped, this, [this](const QString &imagePath, int index) {
         if (model && index >= 0 && index < model->rowCount())
-            emit customComicCoverRequested(model->index(index, 0).data(ComicModel::IdRole).toULongLong(), imagePath);
+            emit customComicCoverRequested(model->rowId(model->index(index, 0)), imagePath);
     });
     connect(comicFlow, &ComicFlowWidget::selected, this, &ComicsView::selected);
     connect(tableView->horizontalHeader(), &QHeaderView::sectionMoved, this, [this](int logicalIndex, int, int newVisualIndex) {

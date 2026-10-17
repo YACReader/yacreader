@@ -127,12 +127,12 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   case ComicAction::EditMetadata:
                                   case ComicAction::DeleteMetadata:
                                   case ComicAction::AssignNumbers:
+                                  case ComicAction::SetCustomCover:
                                   case ComicAction::AddToList:
                                   case ComicAction::RemoveFromList:
                                       return true;
-                                  // Comic Vine and the custom covers take a comic with its file until they take ComicRecord
+                                  // Comic Vine takes a comic with its file until it takes ComicRecord
                                   case ComicAction::SearchComicVine:
-                                  case ComicAction::SetCustomCover:
                                   // Favorites is keyed by comic id
                                   case ComicAction::AddToFavorites:
                                   case ComicAction::Open:

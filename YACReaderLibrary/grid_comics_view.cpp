@@ -1092,7 +1092,7 @@ void GridComicsView::droppedImageAt(const QList<QUrl> &urls, int viewRow)
     const auto comicRow = contentModel->sourceComicRow(viewRow);
     const auto comicIndex = model && comicRow >= 0 ? model->index(comicRow, 0) : QModelIndex();
     if (comicIndex.isValid())
-        emit customComicCoverRequested(comicIndex.data(ComicModel::IdRole).toULongLong(), imagePath);
+        emit customComicCoverRequested(model->rowId(comicIndex), imagePath);
 }
 
 void GridComicsView::droppedComicsForResortingAt(const QString &data, int index)

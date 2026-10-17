@@ -72,7 +72,7 @@ public slots:
     void deleteMetadataFromSelectedComics();
     void deleteSelectedComics();
     void saveSelectedCoversTo();
-    void setCustomCover(qulonglong comicId, const QString &imagePath);
+    void setCustomCover(const ComicRowId &row, const QString &imagePath);
     void resetSelectedCustomCovers();
 
     void setComicUnread(qulonglong libraryId, const ComicDB &comic);

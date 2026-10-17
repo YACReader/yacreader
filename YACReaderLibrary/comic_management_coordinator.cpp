@@ -5,12 +5,14 @@
 #include "comic_vine_dialog.h"
 #include "comics_remover.h"
 #include "cover_utils.h"
+#include "data_base_management.h"
 #include "db_helper.h"
 #include "folder_model.h"
 #include "initial_comic_info_extractor.h"
 #include "library_comic_opener.h"
 #include "properties_dialog.h"
 #include "reading_list_model.h"
+#include "staged_cover.h"
 #include "yacreader_global_gui.h"
 
 #include <QCoreApplication>
@@ -384,12 +386,12 @@ void ComicManagementCoordinator::saveSelectedCoversTo()
     }
 }
 
-void ComicManagementCoordinator::setCustomCover(qulonglong comicId, const QString &imagePath)
+void ComicManagementCoordinator::setCustomCover(const ComicRowId &row, const QString &imagePath)
 {
     if (!comicOpeningAllowedProvider())
         return;
 
-    const auto index = comicsModel->getIndexFromId(comicId);
+    const auto index = comicsModel->indexOf(row);
     if (!comicsModel->supports(index, ComicAction::SetCustomCover))
         return;
 
@@ -401,25 +403,43 @@ void ComicManagementCoordinator::setCustomCover(qulonglong comicId, const QStrin
         return;
     }
 
-    auto loaded = comicsModel->getComic(index);
-    if (!loaded)
-        return;
-    auto &comic = *loaded;
-    const auto coverPath = YACReader::LibraryPaths::coverPath(libraryPathProvider(), comic.info.hash);
-    if (!YACReader::saveCover(coverPath, cover)) {
+    const auto libraryPath = libraryPathProvider();
+    auto record = comicsModel->record(index);
+    auto &info = recordInfo(record);
+    info.coverPage = QVariant();
+    info.originalCoverSize = QStringLiteral("%1x%2").arg(cover.width()).arg(cover.height());
+    info.coverSizeRatio = static_cast<double>(cover.width()) / cover.height();
+    info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+    info.usesExternalCover = true;
+
+    // the previous cover stays when any step fails
+    StagedCover staged(YACReader::LibraryPaths::coverPath(libraryPath, info.hash));
+    bool saved = staged.stage(cover);
+    if (saved) {
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(YACReader::LibraryPaths::libraryDataPath(libraryPath));
+            db.transaction();
+            saved = DBHelper::loadRecord(record, db) && DBHelper::updateComicInfoCover(info, db) && staged.install() && db.commit();
+            if (saved) {
+                staged.finish();
+            } else {
+                db.rollback();
+                staged.restore();
+            }
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+    }
+
+    if (!saved) {
         QMessageBox::warning(window,
                              QCoreApplication::translate("LibraryWindow", "Error saving cover"),
                              QCoreApplication::translate("LibraryWindow", "There was an error saving the cover image."));
         return;
     }
 
-    comic.info.coverPage = QVariant();
-    comic.info.originalCoverSize = QStringLiteral("%1x%2").arg(cover.width()).arg(cover.height());
-    comic.info.coverSizeRatio = static_cast<double>(cover.width()) / cover.height();
-    comic.info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
-    comic.info.usesExternalCover = true;
-    DBHelper::update(libraryIdProvider(), comic.info);
-    comicsModel->notifyCoverChange(comic.info.id);
+    comicsModel->notifyCoverChange(info.id);
 }
 
 bool ComicManagementCoordinator::hasCustomCoverInSelection() const
@@ -430,6 +450,7 @@ bool ComicManagementCoordinator::hasCustomCoverInSelection() const
     });
 }
 
+// a deleted comic keeps its custom cover: the original cannot be extracted without the file
 void ComicManagementCoordinator::resetSelectedCustomCovers()
 {
     if (!comicOpeningAllowedProvider())

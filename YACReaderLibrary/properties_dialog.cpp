@@ -4,6 +4,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "initial_comic_info_extractor.h"
+#include "staged_cover.h"
 #include "yacreader_cover_label.h"
 #include "yacreader_field_edit.h"
 #include "yacreader_field_plain_text_edit.h"
@@ -877,13 +878,12 @@ std::optional<YACReader::FileType> PropertiesDialog::editedType() const
     return static_cast<YACReader::FileType>(index);
 }
 
-// writes the new cover file and sets the cover columns of the record; false when the change does not apply to it
-// (a cover page or a reset needs the file)
-bool PropertiesDialog::applyCoverChange(ComicRecord &record)
+// writes the new cover into `staged` and sets the cover columns of the record; false when the change does not apply
+// to it (a cover page or a reset needs the file) or the file could not be written
+bool PropertiesDialog::applyCoverChange(ComicRecord &record, StagedCover &staged)
 {
     auto &info = recordInfo(record);
     const auto *comic = recordComic(record);
-    const auto coverPath = LibraryPaths::coverPath(basePath, info.hash);
 
     if (customCover.isNull()) {
         if (comic == nullptr)
@@ -893,8 +893,10 @@ bool PropertiesDialog::applyCoverChange(ComicRecord &record)
         const int page = sequentialEditing ? coverPageNumberLabel->text().toInt() : 1;
         info.coverPage = sequentialEditing ? QVariant(page) : QVariant();
 
-        InitialComicInfoExtractor ie(basePath + comic->file.path, coverPath, page);
+        InitialComicInfoExtractor ie(basePath + comic->file.path, staged.stagedPath(), page);
         ie.extract();
+        if (!staged.isStaged())
+            return false;
 
         if (ie.getOriginalCoverSize().second > 0) {
             info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
@@ -903,8 +905,9 @@ bool PropertiesDialog::applyCoverChange(ComicRecord &record)
         info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
         info.usesExternalCover = false;
     } else {
+        if (!staged.stage(customCover))
+            return false;
         info.coverPage = QVariant();
-        YACReader::saveCover(coverPath, customCover);
 
         auto width = customCover.width();
         auto height = customCover.height();
@@ -924,6 +927,11 @@ bool PropertiesDialog::updateComics()
     const int end = sequentialEditing ? currentComicIndex + 1 : records.length();
 
     bool refused = false;
+    bool failed = false;
+    bool wrote = false;
+    // the records change only after the commit, so a failed save keeps them, the files, and the database as they were
+    QList<std::pair<int, ComicRecord>> savedRecords;
+    QList<StagedCover> stagedCovers;
     QList<ComicInfoId> changedCovers;
     QString connectionName = "";
     {
@@ -935,40 +943,58 @@ bool PropertiesDialog::updateComics()
         }
 
         if (!refused) {
+            bool written = true;
             // each comic_info is written once, also when several rows show it
-            QSet<ComicInfoId> written;
+            QSet<ComicInfoId> writtenIds;
             for (int i = begin; i < end; i++) {
-                auto &info = recordInfo(records[i]);
-                if (written.contains(info.id))
+                auto record = records[i];
+                auto &info = recordInfo(record);
+                if (writtenIds.contains(info.id))
                     continue;
-                written.insert(info.id);
+                writtenIds.insert(info.id);
 
                 auto patch = metadata;
                 if (const auto date = editedDate(info))
                     patch.set(&DescriptiveComicMetadata::date, *date);
 
                 if (!patch.isEmpty()) {
-                    DBHelper::updateComicInfoMetadata(info.id, patch, db);
+                    written = DBHelper::updateComicInfoMetadata(info.id, patch, db) && written;
                     patch.applyTo(info);
                     info.edited = true;
-                    updated = true;
+                    wrote = true;
                 }
 
                 if (type && info.type.toInt() != static_cast<int>(*type)) {
-                    DBHelper::updateComicInfoType(info.id, *type, db);
+                    written = DBHelper::updateComicInfoType(info.id, *type, db) && written;
                     info.type = QVariant::fromValue(*type);
                     info.edited = true;
-                    updated = true;
+                    wrote = true;
                 }
 
-                if (coverChanged && applyCoverChange(records[i])) {
-                    DBHelper::updateComicInfoCover(info, db);
-                    info.edited = true;
-                    changedCovers.append(info.id);
-                    updated = true;
+                if (coverChanged) {
+                    StagedCover staged(LibraryPaths::coverPath(basePath, info.hash));
+                    if (applyCoverChange(record, staged)) {
+                        written = DBHelper::updateComicInfoCover(info, db) && written;
+                        info.edited = true;
+                        stagedCovers.append(staged);
+                        changedCovers.append(info.id);
+                        wrote = true;
+                    }
                 }
+
+                savedRecords.append({ i, std::move(record) });
             }
-            db.commit();
+
+            written = written && std::all_of(stagedCovers.begin(), stagedCovers.end(), [](StagedCover &staged) { return staged.install(); });
+            if (written && db.commit()) {
+                for (auto &staged : stagedCovers)
+                    staged.finish();
+            } else {
+                db.rollback();
+                for (auto &staged : stagedCovers)
+                    staged.restore();
+                failed = true;
+            }
         } else {
             db.rollback();
         }
@@ -980,6 +1006,14 @@ bool PropertiesDialog::updateComics()
         QMessageBox::warning(this, tr("Changes not saved"), tr("A comic that you are editing was removed from the library or now has a different file. Your changes were not saved."));
         return false;
     }
+    if (failed) {
+        QMessageBox::warning(this, tr("Changes not saved"), tr("The changes could not be saved."));
+        return false;
+    }
+
+    for (auto &[index, record] : savedRecords)
+        records[index] = std::move(record);
+    updated = updated || wrote;
 
     for (const auto id : std::as_const(changedCovers))
         emit coverChangedSignal(id);

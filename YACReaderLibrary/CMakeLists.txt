@@ -24,6 +24,8 @@ add_library(library_common STATIC
     yacreader_libraries.cpp
     comic_files_manager.h
     comic_files_manager.cpp
+    staged_cover.h
+    staged_cover.cpp
     ip_config_helper.h
     ip_config_helper.cpp
     libraries_update_coordinator.h

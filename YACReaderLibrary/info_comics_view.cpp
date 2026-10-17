@@ -257,8 +257,8 @@ void InfoComicsView::droppedImage(const QList<QUrl> &urls)
 {
     const auto imagePath = YACReader::droppedImagePath(urls);
     const auto index = currentIndex();
-    if (!imagePath.isEmpty() && index.isValid())
-        emit customComicCoverRequested(index.data(ComicModel::IdRole).toULongLong(), imagePath);
+    if (!imagePath.isEmpty() && index.isValid() && model)
+        emit customComicCoverRequested(model->rowId(index), imagePath);
 }
 
 void InfoComicsView::requestedContextMenu(const QPoint &point)
