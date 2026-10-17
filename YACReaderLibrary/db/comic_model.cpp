@@ -1592,14 +1592,14 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
     updateRowsOf(id, [](ComicInfo &info) { info.rating = 0; }, 0, columnCount() - 1, { });
 }
 
-void ComicModel::notifyCoverChange(const ComicDB &comic)
+void ComicModel::notifyCoverChange(ComicInfoId id)
 {
     // Keep cover changes non-structural. Removing and reinserting the row makes
     // views adjust their selection and scroll position before the edit refresh can
     // capture them. Changing the URL also makes QML reload the image even though
     // the underlying cover file path is unchanged.
-    ++coverRevisions[comic.info.id.value()];
-    updateRowsOf(comic.info.id, [](ComicInfo &) { }, 0, columnCount() - 1, { CoverPathRole });
+    ++coverRevisions[id.value()];
+    updateRowsOf(id, [](ComicInfo &) { }, 0, columnCount() - 1, { CoverPathRole });
 }
 
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const

@@ -143,7 +143,6 @@ private:
 
     QList<ComicRecord> records;
     int currentComicIndex;
-    void closeEvent(QCloseEvent *e) override;
     void updateCoverPageNumberLabel(int n);
     void loadComic(const ComicRecord &record);
     QPixmap coverOf(const ComicRecord &record) const;
@@ -151,7 +150,9 @@ private:
     void updateButtons();
     DescriptiveMetadataPatch editedMetadata() const;
     std::optional<YACReader::FileType> editedType() const;
-    void applyCoverChange(ComicDB &comic);
+    std::optional<QVariant> editedDate(const ComicInfo &info) const;
+    bool applyCoverChange(ComicRecord &record);
+    bool showRecord(int index, int step);
     // false when the save was refused; the dialog then keeps the values
     bool updateComics();
 
@@ -174,10 +175,12 @@ public:
     // in our constructor. Will have to investigate and decide how to fix this.
     QSize sizeHint() const override;
     void paintEvent(QPaintEvent *event) override;
+    void done(int result) override;
 
 public slots:
     void setComics(QList<ComicRecord> records);
-    void setComicsForSequentialEditing(int currentComicIndex, QList<ComicRecord> records);
+    // false when no record from `currentComicIndex` on still exists
+    bool setComicsForSequentialEditing(int currentComicIndex, QList<ComicRecord> records);
     void saveAndOpenPrevious();
     void saveAndOpenNext();
     void saveAndClose();
@@ -193,11 +196,10 @@ public slots:
     void loadCustomCoverImage();
     void loadCustomCoverImageFromPath(const QString &path);
     void setCoverPage(int pageNumber);
-    bool close();
     void updateCoverBoxForMultipleComics();
     void updateCoverBoxForSingleComic();
 
 signals:
-    void coverChangedSignal(const ComicDB &comic);
+    void coverChangedSignal(ComicInfoId id);
 };
 #endif

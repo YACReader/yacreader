@@ -2090,17 +2090,21 @@ std::optional<ComicInfo> DBHelper::loadComicInfo(ComicInfoId id, QSqlDatabase &d
     return std::nullopt;
 }
 
-bool DBHelper::recordExists(const ComicRecord &record, QSqlDatabase &db)
+std::optional<ComicRecord> DBHelper::loadRecord(const ComicRecord &record, QSqlDatabase &db)
 {
-    QSqlQuery query(db);
     if (const auto *comic = recordComic(record)) {
-        query.prepare("SELECT 1 FROM comic WHERE id = :id AND comicInfoId = :comic_info_id");
-        query.bindValue(":id", comic->file.id.value());
-    } else {
-        query.prepare("SELECT 1 FROM comic_info WHERE id = :comic_info_id");
+        bool found = false;
+        auto loaded = loadComic(comic->file.id.value(), db, found);
+        if (!found || loaded.info.id != comic->info.id)
+            return std::nullopt;
+        return ComicRecordCase::Comic { std::move(loaded) };
     }
-    query.bindValue(":comic_info_id", recordInfo(record).id.value());
-    return query.exec() && query.next();
+
+    const auto &deleted = std::get<ComicRecordCase::DeletedComic>(record);
+    auto info = loadComicInfo(deleted.info.id, db);
+    if (!info)
+        return std::nullopt;
+    return ComicRecordCase::DeletedComic { std::move(*info), deleted.lastKnownFile };
 }
 
 bool DBHelper::isFavoriteComic(qulonglong id, QSqlDatabase &db)

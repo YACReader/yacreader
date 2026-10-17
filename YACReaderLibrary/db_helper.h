@@ -152,8 +152,9 @@ public:
     static std::optional<Placeholder> loadPlaceholder(PlaceholderId id, QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
-    // a comic with a file still has that file with the same comic_info; a deleted comic still has its comic_info
-    static bool recordExists(const ComicRecord &record, QSqlDatabase &db);
+    // the record as it is now; nothing when a comic with a file lost that file or the file has a different comic_info,
+    // or when the comic_info of a deleted comic no longer exists
+    static std::optional<ComicRecord> loadRecord(const ComicRecord &record, QSqlDatabase &db);
 
     // library
     static QVariantMap getLibraryInfoData(QUuid id);

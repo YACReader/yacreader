@@ -21,6 +21,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QSet>
 #include <QSizePolicy>
 #include <QTabWidget>
 #include <QToolButton>
@@ -481,7 +482,7 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
     showPreviousCoverPageButton->setEnabled(comic != nullptr);
     showNextCoverPageButton->setEnabled(comic != nullptr);
     resetCoverButton->setEnabled(comic != nullptr);
-    loadCustomCoverImageButton->setEnabled(comic != nullptr);
+    loadCustomCoverImageButton->setEnabled(true);
 
     if (!info.coverPage.isNull()) {
         coverPageEdit->setText(info.coverPage.toString());
@@ -634,10 +635,9 @@ void PropertiesDialog::setComics(QList<ComicRecord> records)
         updateCoverBoxForMultipleComics();
         deletedComicNote->hide();
 
-        // the cover changes apply to the comics with a file
-        const bool withFile = lastComicWithFile() != nullptr;
-        resetCoverButton->setEnabled(withFile);
-        loadCustomCoverImageButton->setEnabled(withFile);
+        // the reset needs the file, so it skips the deleted comics
+        resetCoverButton->setEnabled(lastComicWithFile() != nullptr);
+        loadCustomCoverImageButton->setEnabled(true);
 
         setDisableUniqueValues(true);
         this->setWindowTitle(tr("Edit selected comics information"));
@@ -659,7 +659,7 @@ void PropertiesDialog::setComics(QList<ComicRecord> records)
                 volumeEdit->clear();
             if (info.storyArc.isNull() || info.storyArc.toString() != storyArcEdit->text())
                 storyArcEdit->clear();
-            if (info.arcCount.isNull() || info.arcCount.toString() != storyArcEdit->text())
+            if (info.arcCount.isNull() || info.arcCount.toString() != arcCountEdit->text())
                 arcCountEdit->clear();
 
             if (info.alternateSeries.isNull() || info.alternateSeries.toString() != alternateSeriesEdit->text())
@@ -746,7 +746,7 @@ void PropertiesDialog::setComics(QList<ComicRecord> records)
     }
 }
 
-void PropertiesDialog::setComicsForSequentialEditing(int currentComicIndex, QList<ComicRecord> records)
+bool PropertiesDialog::setComicsForSequentialEditing(int currentComicIndex, QList<ComicRecord> records)
 {
     sequentialEditing = true;
 
@@ -757,9 +757,34 @@ void PropertiesDialog::setComicsForSequentialEditing(int currentComicIndex, QLis
     this->records = records;
     this->currentComicIndex = currentComicIndex;
 
-    loadComic(records[currentComicIndex]);
+    return showRecord(currentComicIndex, 1);
+}
 
-    updateButtons();
+// loads the record again, so a repeated comic shows the values saved at its first occurrence and changes made
+// elsewhere are seen; a record that no longer exists is skipped in the direction of `step`
+bool PropertiesDialog::showRecord(int index, int step)
+{
+    for (; index >= 0 && index < records.length(); index += step) {
+        std::optional<ComicRecord> loaded;
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+            loaded = DBHelper::loadRecord(records[index], db);
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+
+        if (loaded) {
+            records[index] = *loaded;
+            currentComicIndex = index;
+            loadComic(records[index]);
+            updateButtons();
+            return true;
+        }
+
+        QMessageBox::information(this, tr("Comic skipped"), tr("A comic was removed from the library or now has a different file, so it is skipped."));
+    }
+    return false;
 }
 
 // a cleared field is NULL; the values that only one comic can have are only edited in sequential editing
@@ -802,10 +827,6 @@ DescriptiveMetadataPatch PropertiesDialog::editedMetadata() const
     plain(editor, &M::editor);
     plain(imprint, &M::imprint);
 
-    if (dayEdit->isModified() || monthEdit->isModified() || yearEdit->isModified()) {
-        const auto date = dayEdit->text() + "/" + monthEdit->text() + "/" + yearEdit->text();
-        patch.set(&M::date, date == "//" ? QVariant() : QVariant(date));
-    }
     line(publisherEdit, &M::publisher);
     line(formatEdit, &M::format);
     if (colorCheck->checkState() != Qt::PartiallyChecked && colorCheck->checkState() != loadedColorState)
@@ -828,6 +849,26 @@ DescriptiveMetadataPatch PropertiesDialog::editedMetadata() const
     return patch;
 }
 
+// the changed parts of the date, with the other parts of `info`
+std::optional<QVariant> PropertiesDialog::editedDate(const ComicInfo &info) const
+{
+    if (!dayEdit->isModified() && !monthEdit->isModified() && !yearEdit->isModified())
+        return std::nullopt;
+
+    auto parts = info.date.toString().split("/");
+    if (parts.length() != 3)
+        parts = { QString(), QString(), QString() };
+    if (dayEdit->isModified())
+        parts[0] = dayEdit->text();
+    if (monthEdit->isModified())
+        parts[1] = monthEdit->text();
+    if (yearEdit->isModified())
+        parts[2] = yearEdit->text();
+
+    const auto date = parts.join("/");
+    return date == "//" ? QVariant() : QVariant(date);
+}
+
 std::optional<YACReader::FileType> PropertiesDialog::editedType() const
 {
     const auto index = typeCombo->currentIndex();
@@ -836,36 +877,43 @@ std::optional<YACReader::FileType> PropertiesDialog::editedType() const
     return static_cast<YACReader::FileType>(index);
 }
 
-// writes the new cover file and sets the cover columns of `comic`
-void PropertiesDialog::applyCoverChange(ComicDB &comic)
+// writes the new cover file and sets the cover columns of the record; false when the change does not apply to it
+// (a cover page or a reset needs the file)
+bool PropertiesDialog::applyCoverChange(ComicRecord &record)
 {
-    const auto coverPath = LibraryPaths::coverPath(basePath, comic.info.hash);
+    auto &info = recordInfo(record);
+    const auto *comic = recordComic(record);
+    const auto coverPath = LibraryPaths::coverPath(basePath, info.hash);
 
     if (customCover.isNull()) {
+        if (comic == nullptr)
+            return false;
+
         // sequential editing keeps the chosen page; the reset of several comics goes back to the first page
         const int page = sequentialEditing ? coverPageNumberLabel->text().toInt() : 1;
-        comic.info.coverPage = sequentialEditing ? QVariant(page) : QVariant();
+        info.coverPage = sequentialEditing ? QVariant(page) : QVariant();
 
-        InitialComicInfoExtractor ie(basePath + comic.file.path, coverPath, page);
+        InitialComicInfoExtractor ie(basePath + comic->file.path, coverPath, page);
         ie.extract();
 
         if (ie.getOriginalCoverSize().second > 0) {
-            comic.info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
-            comic.info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
+            info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
+            info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
         }
-        comic.info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
-        comic.info.usesExternalCover = false;
+        info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+        info.usesExternalCover = false;
     } else {
-        comic.info.coverPage = QVariant();
+        info.coverPage = QVariant();
         YACReader::saveCover(coverPath, customCover);
 
         auto width = customCover.width();
         auto height = customCover.height();
-        comic.info.originalCoverSize = QString("%1x%2").arg(width).arg(height);
-        comic.info.coverSizeRatio = static_cast<float>(width) / height;
-        comic.info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
-        comic.info.usesExternalCover = true;
+        info.originalCoverSize = QString("%1x%2").arg(width).arg(height);
+        info.coverSizeRatio = static_cast<float>(width) / height;
+        info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+        info.usesExternalCover = true;
     }
+    return true;
 }
 
 bool PropertiesDialog::updateComics()
@@ -876,23 +924,32 @@ bool PropertiesDialog::updateComics()
     const int end = sequentialEditing ? currentComicIndex + 1 : records.length();
 
     bool refused = false;
-    QList<ComicDB> changedCovers;
+    QList<ComicInfoId> changedCovers;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         db.transaction();
 
         for (int i = begin; i < end && !refused; i++) {
-            refused = !DBHelper::recordExists(records[i], db);
+            refused = !DBHelper::loadRecord(records[i], db);
         }
 
         if (!refused) {
+            // each comic_info is written once, also when several rows show it
+            QSet<ComicInfoId> written;
             for (int i = begin; i < end; i++) {
                 auto &info = recordInfo(records[i]);
+                if (written.contains(info.id))
+                    continue;
+                written.insert(info.id);
 
-                if (!metadata.isEmpty()) {
-                    DBHelper::updateComicInfoMetadata(info.id, metadata, db);
-                    metadata.applyTo(info);
+                auto patch = metadata;
+                if (const auto date = editedDate(info))
+                    patch.set(&DescriptiveComicMetadata::date, *date);
+
+                if (!patch.isEmpty()) {
+                    DBHelper::updateComicInfoMetadata(info.id, patch, db);
+                    patch.applyTo(info);
                     info.edited = true;
                     updated = true;
                 }
@@ -904,11 +961,10 @@ bool PropertiesDialog::updateComics()
                     updated = true;
                 }
 
-                if (auto *comic = recordComic(records[i]); comic != nullptr && coverChanged) {
-                    applyCoverChange(*comic);
-                    DBHelper::updateComicInfoCover(comic->info, db);
-                    comic->info.edited = true;
-                    changedCovers.append(*comic);
+                if (coverChanged && applyCoverChange(records[i])) {
+                    DBHelper::updateComicInfoCover(info, db);
+                    info.edited = true;
+                    changedCovers.append(info.id);
                     updated = true;
                 }
             }
@@ -925,8 +981,8 @@ bool PropertiesDialog::updateComics()
         return false;
     }
 
-    for (const auto &comic : std::as_const(changedCovers))
-        emit coverChangedSignal(comic);
+    for (const auto id : std::as_const(changedCovers))
+        emit coverChangedSignal(id);
     return true;
 }
 
@@ -962,34 +1018,27 @@ void PropertiesDialog::setSize(float sizeFloat)
     size->setText(QString::number(sizeFloat, 'f', 2) + " MB");
 }
 
+// a refused save shows its message, and the user can still move on
 void PropertiesDialog::saveAndOpenPrevious()
 {
-    if (!updateComics())
+    updateComics();
+
+    if (!showRecord(currentComicIndex - 1, -1)) {
+        close();
         return;
-
-    coverChanged = false;
-
-    currentComicIndex--;
-
-    loadComic(records[currentComicIndex]);
-
-    updateButtons();
+    }
 
     repaint();
 }
 
 void PropertiesDialog::saveAndOpenNext()
 {
-    if (!updateComics())
+    updateComics();
+
+    if (!showRecord(currentComicIndex + 1, 1)) {
+        close();
         return;
-
-    coverChanged = false;
-
-    currentComicIndex++;
-
-    loadComic(records[currentComicIndex]);
-
-    updateButtons();
+    }
 
     repaint();
 }
@@ -1014,9 +1063,9 @@ void PropertiesDialog::setDisableUniqueValues(bool disabled)
     alternateNumberEdit->clear();
 }
 
-void PropertiesDialog::closeEvent(QCloseEvent *e)
+// every way of closing the dialog (Close, Save, Escape, the window button) comes here
+void PropertiesDialog::done(int result)
 {
-
     title->clear();
     title->setModified(false);
     coverPageEdit->clear();
@@ -1066,7 +1115,12 @@ void PropertiesDialog::closeEvent(QCloseEvent *e)
 
     coverPageEdit->setFocus();
 
-    QDialog::closeEvent(e);
+    // the comics saved before (sequential editing) need a refresh of the views
+    if (updated && result != QDialog::Accepted)
+        emit accepted();
+    updated = false;
+
+    QDialog::done(result);
 }
 
 void PropertiesDialog::paintEvent(QPaintEvent *event)
@@ -1148,15 +1202,17 @@ void PropertiesDialog::loadCustomCoverImageFromPath(const QString &path)
         return;
     }
 
-    customCover = QImage(path);
-    coverChanged = true;
-
-    if (customCover.isNull()) {
+    const QImage image(path);
+    if (image.isNull()) {
         QMessageBox::warning(this, tr("Invalid cover"), tr("The image is invalid."));
         return;
     }
 
-    setCover(QPixmap::fromImage(customCover));
+    customCover = image;
+    coverChanged = true;
+
+    const bool deleted = (sequentialEditing || records.length() == 1) && recordComic(records[currentComicIndex]) == nullptr;
+    setCover(QPixmap::fromImage(deleted ? customCover.convertToFormat(QImage::Format_Grayscale8) : customCover));
 }
 
 void PropertiesDialog::setCoverPage(int pageNumber)
@@ -1172,15 +1228,6 @@ void PropertiesDialog::setCoverPage(int pageNumber)
     ie.extract();
     setCover(ie.getCover());
     repaint();
-}
-
-bool PropertiesDialog::close()
-{
-    if (updated) {
-        emit accepted();
-    }
-
-    return QDialog::close();
 }
 
 void PropertiesDialog::updateCoverBoxForMultipleComics()

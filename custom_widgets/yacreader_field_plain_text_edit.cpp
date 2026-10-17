@@ -15,7 +15,6 @@ YACReaderFieldPlainTextEdit::YACReaderFieldPlainTextEdit(QWidget *parent)
 void YACReaderFieldPlainTextEdit::focusInEvent(QFocusEvent *e)
 {
     if (e->reason() == Qt::MouseFocusReason || e->reason() == Qt::TabFocusReason) {
-        document()->setModified(true);
         if (toPlainText() == tr("Click to overwrite"))
             setPlainText("");
     }

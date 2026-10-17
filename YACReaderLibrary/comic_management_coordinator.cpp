@@ -249,7 +249,8 @@ void ComicManagementCoordinator::showProperties()
         QList<ComicRecord> records;
         for (int row = 0; row < comicsModel->rowCount(); row++)
             records.append(comicsModel->record(comicsModel->index(row, 0)));
-        propertiesDialog->setComicsForSequentialEditing(indexList.constFirst().row(), records);
+        if (!propertiesDialog->setComicsForSequentialEditing(indexList.constFirst().row(), records))
+            return;
     }
 
     emit currentSourceRefreshStarted();
@@ -418,7 +419,7 @@ void ComicManagementCoordinator::setCustomCover(qulonglong comicId, const QStrin
     comic.info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
     comic.info.usesExternalCover = true;
     DBHelper::update(libraryIdProvider(), comic.info);
-    comicsModel->notifyCoverChange(comic);
+    comicsModel->notifyCoverChange(comic.info.id);
 }
 
 bool ComicManagementCoordinator::hasCustomCoverInSelection() const
@@ -460,7 +461,7 @@ void ComicManagementCoordinator::resetSelectedCustomCovers()
         comic.info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
         comic.info.usesExternalCover = false;
         DBHelper::update(libraryId, comic.info);
-        comicsModel->notifyCoverChange(comic);
+        comicsModel->notifyCoverChange(comic.info.id);
     }
 }
 
