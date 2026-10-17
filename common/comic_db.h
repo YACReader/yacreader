@@ -105,7 +105,6 @@ public:
     QString getTitleOrFileName() const;
 
     // returns parent folder name
-    QString getParentFolderName() const;
 
     // return the size of the file in bytes
     qulonglong getFileSize() const;
@@ -137,5 +136,7 @@ Q_DECLARE_METATYPE(ComicDB)
 QString titleOrFileName(const ComicInfo &info, const QString &fileName);
 QString titleIncludingNumber(const ComicInfo &info, const QString &fileName);
 QString infoTitle(const ComicInfo &info, const QString &fileName);
+// the name of the folder that holds `path` (a path in the library, with '/')
+QString parentFolderName(const QString &path);
 
 #endif

@@ -5,6 +5,8 @@
 #include "list_entry.h"
 #include "overloaded.h"
 
+#include <QFileInfo>
+
 #include <optional>
 #include <utility>
 #include <variant>
@@ -50,6 +52,26 @@ inline ComicDB *recordComic(ComicRecord &record)
 {
     auto *value = std::get_if<ComicRecordCase::Comic>(&record);
     return value != nullptr ? &value->comic : nullptr;
+}
+
+// the file name, or the last known one of a deleted comic; only for display and searches
+inline QString recordFileName(const ComicRecord &record)
+{
+    return std::visit(overloaded {
+                              [](const ComicRecordCase::Comic &value) { return QFileInfo(value.comic.file.path).fileName(); },
+                              [](const ComicRecordCase::DeletedComic &value) { return value.lastKnownFile ? value.lastKnownFile->name : QString(); },
+                      },
+                      record);
+}
+
+// the path in the library, or the last known one of a deleted comic; only for display and searches
+inline QString recordPath(const ComicRecord &record)
+{
+    return std::visit(overloaded {
+                              [](const ComicRecordCase::Comic &value) { return value.comic.file.path; },
+                              [](const ComicRecordCase::DeletedComic &value) { return value.lastKnownFile ? value.lastKnownFile->path : QString(); },
+                      },
+                      record);
 }
 
 #endif

@@ -139,7 +139,7 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     initTheme(this);
 }
 
-void SortVolumeComics::setData(QList<ComicDB> &comics, const QString &json, const QString &vID)
+void SortVolumeComics::setData(const QList<ComicRecord> &comics, const QString &json, const QString &vID)
 {
     // set up models
     localComicsModel = new LocalComicListModel;
@@ -245,19 +245,19 @@ void SortVolumeComics::showRemovedComicsSelector()
 {
 }
 
-QList<QPair<ComicDB, QString>> SortVolumeComics::getMatchingInfo()
+QList<QPair<ComicRecord, QString>> SortVolumeComics::getMatchingInfo()
 {
     const auto comicList = localComicsModel->getData();
-    QList<QPair<ComicDB, QString>> l;
+    QList<QPair<ComicRecord, QString>> l;
 
     int index = 0;
 
     QString id;
     for (const auto &c : comicList) {
         id = volumeComicsModel->getComicId(index);
-        if (!c.getFileName().isEmpty() && !id.isEmpty()) // there is a valid comic, and valid comic ID
+        if (c && !id.isEmpty()) // there is a valid comic, and valid comic ID
         {
-            l.push_back(QPair<ComicDB, QString>(c, id));
+            l.push_back(QPair<ComicRecord, QString>(*c, id));
         }
         index++;
     }

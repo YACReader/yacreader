@@ -10,20 +10,8 @@ ComicInfoObject::ComicInfoObject(QObject *parent)
 }
 
 ComicInfoObject::ComicInfoObject(const ComicRecord &record, bool isFavorite, QObject *parent)
-    : QObject(parent), favorite(isFavorite)
+    : QObject(parent), info(recordInfo(record)), fileName(recordFileName(record)), isAvailable(recordComic(record) != nullptr), favorite(isFavorite)
 {
-    std::visit(overloaded {
-                       [this](const ComicRecordCase::Comic &comic) {
-                           info = comic.comic.info;
-                           fileName = QFileInfo(comic.comic.file.path).fileName();
-                       },
-                       [this](const ComicRecordCase::DeletedComic &comic) {
-                           info = comic.info;
-                           fileName = comic.lastKnownFile ? comic.lastKnownFile->name : QString();
-                           isAvailable = false;
-                       },
-               },
-               record);
 }
 
 qulonglong ComicInfoObject::id() const

@@ -189,7 +189,9 @@ void ComicManagementCoordinator::showComicVineScraper()
     if (!comicVineSettings.contains(COMIC_VINE_API_KEY))
         return;
 
-    const auto comics = comicsModel->getComics(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SearchComicVine));
+    QList<ComicRecord> comics;
+    for (const auto &index : comicsModel->supportedIndexes(selectionProvider(), ComicAction::SearchComicVine))
+        comics.append(comicsModel->record(index));
     if (comics.isEmpty())
         return;
 

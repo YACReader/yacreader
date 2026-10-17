@@ -185,15 +185,6 @@ QString ComicDB::getTitleOrFileName() const
     return titleOrFileName(info, QFileInfo(file.path).fileName());
 }
 
-QString ComicDB::getParentFolderName() const
-{
-    QStringList paths = file.path.split('/');
-    if (paths.length() < 2)
-        return "";
-    else
-        return paths[paths.length() - 2];
-}
-
 qulonglong ComicDB::getFileSize() const
 {
     // the size is encoded in the hash after the SHA-1
@@ -254,6 +245,15 @@ QString infoTitle(const ComicInfo &info, const QString &fileName)
         return info.series.toString();
 
     return fileName;
+}
+
+QString parentFolderName(const QString &path)
+{
+    QStringList paths = path.split('/');
+    if (paths.length() < 2)
+        return "";
+    else
+        return paths[paths.length() - 2];
 }
 
 //-----------------------------------------------------------------------------

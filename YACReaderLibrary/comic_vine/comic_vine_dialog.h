@@ -1,7 +1,8 @@
 #ifndef COMIC_VINE_DIALOG_H
 #define COMIC_VINE_DIALOG_H
 
-#include "comic_db.h"
+#include "comic_record.h"
+#include "descriptive_comic_metadata.h"
 #include "themable.h"
 #include "volume_search_query.h"
 
@@ -33,10 +34,10 @@ public:
     explicit ComicVineDialog(QWidget *parent = nullptr);
     QString databasePath;
     QString basePath;
-    void setComics(const QList<ComicDB> &comics);
+    void setComics(const QList<ComicRecord> &comics);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
-    void getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo);
+    void getComicsInfo(QList<QPair<ComicRecord, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo);
     void getComicInfo(const QString &comicId, const SelectedVolumeInfo &volumeInfo);
     void closeEvent(QCloseEvent *event) override;
 signals:
@@ -70,7 +71,9 @@ private:
     void clearState();
     void finishSuccessfully();
     void toggleSkipButton();
-    QString volumeSearchStringFromComic(const ComicDB &comic);
+    QString volumeSearchStringFromComic(const ComicRecord &comic);
+    // writes each patch to the comic_info of its record when the record still exists, each comic_info once
+    void saveMetadata(const QList<QPair<ComicRecord, DescriptiveMetadataPatch>> &matches);
 
     enum class ScraperMode {
         SingleComic, // the scraper has been opened for a single comic
@@ -117,7 +120,7 @@ private:
     void doLoading();
     void doConnections();
 
-    QList<ComicDB> comics;
+    QList<ComicRecord> comics;
 
     SeriesQuestion *seriesQuestionWidget;
     SearchSingleComic *searchSingleComicWidget;

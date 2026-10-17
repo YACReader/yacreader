@@ -8,7 +8,8 @@ struct SelectedVolumeInfo;
 
 namespace YACReader {
 
-ComicDB parseCVJSONComicInfo(ComicDB &comic, const QString &json, const SelectedVolumeInfo &volumeInfo);
+// the descriptive fields that Comic Vine returned; the other fields keep their values
+DescriptiveMetadataPatch parseCVJSONComicInfo(const QString &json, const SelectedVolumeInfo &volumeInfo);
 
 }
 

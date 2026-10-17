@@ -1,9 +1,11 @@
 #ifndef LOCAL_COMIC_LIST_MODEL_H
 #define LOCAL_COMIC_LIST_MODEL_H
 
-#include "comic_db.h"
+#include "comic_record.h"
 
 #include <QAbstractItemModel>
+
+#include <optional>
 
 class LocalComicListModel : public QAbstractItemModel
 {
@@ -11,7 +13,7 @@ class LocalComicListModel : public QAbstractItemModel
 public:
     explicit LocalComicListModel(QObject *parent = nullptr);
 
-    void load(QList<ComicDB> &comics);
+    void load(const QList<ComicRecord> &comics);
 
     // QAbstractItemModel methods
     QModelIndex parent(const QModelIndex &index) const override;
@@ -22,7 +24,8 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation,
                         int role = Qt::DisplayRole) const override;
     QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
-    QList<ComicDB> getData();
+    // a padding row (no comic) has no record
+    QList<std::optional<ComicRecord>> getData();
 
     void removeComics(const QList<QModelIndex> &selectedIndexes);
     void restoreAll();
@@ -35,8 +38,8 @@ public slots:
 
 private:
     int numExtraRows;
-    QList<ComicDB> _data;
-    QList<ComicDB> _removed;
+    QList<std::optional<ComicRecord>> _data;
+    QList<std::optional<ComicRecord>> _removed;
 };
 
 #endif // LOCAL_COMIC_LIST_MODEL_H

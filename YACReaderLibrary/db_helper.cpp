@@ -1339,23 +1339,6 @@ QStringList DBHelper::removeUnusedComicInfo(QSqlDatabase &db)
     return hashes;
 }
 
-void DBHelper::updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath)
-{
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        db.open();
-        db.transaction();
-        const auto &comicsRef = comics;
-        for (auto comic : comicsRef) {
-            DBHelper::update(&(comic.info), db);
-        }
-        db.commit();
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
-}
-
 bool DBHelper::renameFolder(qulonglong id, const QString &name, const QString &oldPath, const QString &newPath, QSqlDatabase &db, QString *error)
 {
     if (error != nullptr)

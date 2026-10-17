@@ -124,7 +124,6 @@ public:
     static void removeEmptyFolderRows(const QList<qulonglong> &folderIds, QSqlDatabase &db);
     static void reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db);
     static void reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase &db);
-    static void updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath);
     // returns the hashes of the removed rows, so their covers can be removed after the commit
     static QStringList removeUnusedComicInfo(QSqlDatabase &db);
     // no transaction, the scanner calls it in its own; entries stay while another file still uses the old comic_info
