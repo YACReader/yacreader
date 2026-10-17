@@ -71,7 +71,8 @@ Rectangle {
         Drag.active: mouseArea.drag.active
         Drag.hotSpot.x: 32
         Drag.hotSpot.y: 32
-        Drag.dragType: Drag.Automatic
+        // GridComicsView::startDrag runs the drag; an automatic drag would start a second one after it
+        Drag.dragType: Drag.None
         Drag.proposedAction: Qt.CopyAction
         Drag.onActiveChanged: {
             if (!dragging) {

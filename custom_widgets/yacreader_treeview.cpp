@@ -16,6 +16,9 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setAttribute(Qt::WA_MacShowFocusRect, false);
 
+    expandTimer.setSingleShot(true);
+    connect(&expandTimer, &QTimer::timeout, this, &YACReaderTreeView::expandCurrent);
+
     initTheme(this);
 }
 
@@ -70,8 +73,6 @@ void YACReaderTreeView::dragMoveEvent(QDragMoveEvent *event)
     QModelIndex underMouse = indexAt(point);
     if (underMouse.isValid()) {
         expandPos = point;
-        connect(&expandTimer, &QTimer::timeout, this, &YACReaderTreeView::expandCurrent);
-        expandTimer.setSingleShot(true);
         expandTimer.start(500);
     }
     // force mouse hover decoration, TODO why the event loop is not working here?
