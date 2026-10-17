@@ -175,6 +175,16 @@ struct LibraryPaths {
         return QDir(libraryCustomFoldersCoverPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(folderId));
     }
 
+    static QString libraryPlaceholdersCoverPathFromLibraryDataPath(const QString &libraryDataPath) // libraryDataPath + /covers/placeholders
+    {
+        return QDir(libraryCoversPathFromLibraryDataPath(libraryDataPath)).filePath("placeholders");
+    }
+
+    static QString placeholderCoverPathFromDataPath(const QString &libraryDataPath, const QString &coverKey) // libraryDataPath + /covers/placeholders/coverKey + .jpg
+    {
+        return QDir(libraryPlaceholdersCoverPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(coverKey));
+    }
+
     static QString coverPathFromLibraryDataPath(const QString &libraryDataPath, const QString &hash) // libraryDataPath + /covers/hash + .jpg
     {
         return QDir(libraryCoversPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(hash));

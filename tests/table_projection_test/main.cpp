@@ -3,6 +3,7 @@
 #include "folder.h"
 #include "library_ids.h"
 #include "list_entry.h"
+#include "placeholder.h"
 #include "reading_list.h"
 #include "table_projection.h"
 #include "yacreader_global.h"
@@ -120,6 +121,7 @@ void TableProjectionTest::columnsMatchSchema_data()
     QTest::newRow("folder") << "folder" << Folder::columns() << QStringList { "manga" };
     QTest::newRow("reading_list_entry") << "reading_list_entry" << ListEntry::columns(ListKind::ReadingList) << QStringList { "comic_info_id", "placeholder_id" };
     QTest::newRow("label_entry") << "label_entry" << ListEntry::columns(ListKind::Label) << QStringList { "comic_info_id", "placeholder_id" };
+    QTest::newRow("placeholder") << "placeholder" << Placeholder::columns() << QStringList();
 }
 
 void TableProjectionTest::columnsMatchSchema()

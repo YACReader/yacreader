@@ -1,9 +1,14 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "descriptive_comic_metadata.h"
+#include "placeholder.h"
+#include "yacreader_global.h"
 
+#include <QDir>
+#include <QFile>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QTemporaryDir>
 #include <QTest>
 
 #include <optional>
@@ -54,6 +59,13 @@ private slots:
     void moveEntriesToComicInfo_data();
     void moveEntriesToComicInfo();
     void removeUnusedComicInfo();
+    void placeholderRoundTrip();
+    void placeholderIsDeletedWithItsLastEntry_data();
+    void placeholderIsDeletedWithItsLastEntry();
+    void deletingAListDeletesItsUnusedPlaceholders_data();
+    void deletingAListDeletesItsUnusedPlaceholders();
+    void deletingAReadingListDeletesPlaceholdersOfChildLists();
+    void removePlaceholderCovers();
 
 private:
     void addReadingListAndLabelRows();
@@ -63,7 +75,8 @@ private:
     int scalar(const QString &sql);
     QList<int> ints(const QString &sql);
     bool append(qulonglong parentId, const QList<qulonglong> &comicInfoIds);
-    bool remove(qulonglong parentId, const QList<qulonglong> &entryIds, std::optional<ListKind> kind = std::nullopt);
+    std::optional<QStringList> remove(qulonglong parentId, const QList<qulonglong> &entryIds, std::optional<ListKind> kind = std::nullopt);
+    std::optional<QStringList> removeParent(qulonglong parentId);
     bool reorder(qulonglong parentId, const QList<qulonglong> &entryIds, std::optional<ListKind> kind = std::nullopt);
     ListKind listKind() const;
     QList<ListItemId> entries(const QList<qulonglong> &entryIds, std::optional<ListKind> kind) const;
@@ -384,10 +397,15 @@ bool ReadingListAndLabelEntryTest::append(qulonglong parentId, const QList<qulon
                                          : DBHelper::appendComicsToLabel(LabelId(parentId), ids, db);
 }
 
-bool ReadingListAndLabelEntryTest::remove(qulonglong parentId, const QList<qulonglong> &entryIds, std::optional<ListKind> kind)
+std::optional<QStringList> ReadingListAndLabelEntryTest::remove(qulonglong parentId, const QList<qulonglong> &entryIds, std::optional<ListKind> kind)
 {
     return table == "reading_list_entry" ? DBHelper::removeReadingListEntries(ReadingListId(parentId), entries(entryIds, kind), db)
                                          : DBHelper::removeLabelEntries(LabelId(parentId), entries(entryIds, kind), db);
+}
+
+std::optional<QStringList> ReadingListAndLabelEntryTest::removeParent(qulonglong parentId)
+{
+    return table == "reading_list_entry" ? DBHelper::removeListFromDB(parentId, db) : DBHelper::removeLabelFromDB(parentId, db);
 }
 
 bool ReadingListAndLabelEntryTest::reorder(qulonglong parentId, const QList<qulonglong> &entryIds, std::optional<ListKind> kind)
@@ -666,6 +684,137 @@ void ReadingListAndLabelEntryTest::removeUnusedComicInfo()
 
     QCOMPARE(hashes, QStringList({ "hash13", "hash14" }));
     QCOMPARE(ints("SELECT id FROM comic_info ORDER BY id"), QList<int>({ 10, 11, 12 }));
+}
+
+void ReadingListAndLabelEntryTest::placeholderRoundTrip()
+{
+    Placeholder placeholder;
+    placeholder.id = PlaceholderId(1);
+    for (const auto &column : DescriptiveComicMetadata::columns()) {
+        const auto type = QByteArray(column.sqlType);
+        placeholder.*column.member = type == "TEXT" ? QVariant(QString("value:%1").arg(column.name)) : QVariant(1);
+    }
+    placeholder.title = QVariant();
+    placeholder.notes = QString("");
+    placeholder.number = QString("-1.5AU");
+    placeholder.date = QString("//2024");
+    placeholder.color = false;
+    placeholder.coverKey = QString("6b0f1f7c-0d1e-4c43-9f0e-4c3a5f0c2a11");
+
+    const auto id = DBHelper::insertPlaceholder(placeholder, db);
+    QVERIFY(id);
+    QVERIFY(*id != PlaceholderId(1));
+
+    const auto loaded = DBHelper::loadPlaceholder(*id, db);
+    QVERIFY(loaded);
+    QCOMPARE(loaded->id, *id);
+    for (const auto &column : DescriptiveComicMetadata::columns()) {
+        const auto expected = placeholder.*column.member;
+        const auto actual = (*loaded).*column.member;
+        QVERIFY2(actual.isNull() == expected.isNull(), column.name);
+        if (QByteArray(column.sqlType) == "TEXT")
+            QCOMPARE(actual.toString(), expected.toString());
+        else
+            QCOMPARE(actual.toInt(), expected.toInt());
+    }
+    QVERIFY(!loaded->notes.isNull());
+    QVERIFY(loaded->coverKey == placeholder.coverKey);
+
+    const auto withoutCover = DBHelper::loadPlaceholder(PlaceholderId(1), db);
+    QVERIFY(withoutCover);
+    QCOMPARE(withoutCover->title.toString(), QString("Expected issue"));
+    QVERIFY(!withoutCover->coverKey);
+
+    QVERIFY(!DBHelper::loadPlaceholder(PlaceholderId(999), db));
+}
+
+void ReadingListAndLabelEntryTest::placeholderIsDeletedWithItsLastEntry_data()
+{
+    addReadingListAndLabelRows();
+}
+
+void ReadingListAndLabelEntryTest::placeholderIsDeletedWithItsLastEntry()
+{
+    fetchReadingListOrLabel();
+    const auto otherTable = table == "reading_list_entry" ? QString("label_entry") : QString("reading_list_entry");
+    const auto otherParentColumn = table == "reading_list_entry" ? QString("label_id") : QString("reading_list_id");
+
+    QVERIFY(exec("UPDATE placeholder SET coverKey = 'cover-1' WHERE id = 1"));
+    QVERIFY(insertEntry(1, QVariant(), 1));
+    QVERIFY(insertEntry(1, QVariant(), 1));
+    QVERIFY(insertEntry(2, QVariant(), 1));
+    QVERIFY(exec(QString("INSERT INTO %1 (%2, ordering, placeholder_id) VALUES (1, 0, 1)").arg(otherTable, otherParentColumn)));
+    const auto ids = entryIds(1);
+
+    QVERIFY(remove(1, { ids.first() }) == QStringList());
+    QVERIFY(remove(1, { ids.at(1) }) == QStringList());
+    QVERIFY(remove(2, entryIds(2)) == QStringList());
+    QCOMPARE(scalar("SELECT COUNT(*) FROM placeholder WHERE id = 1"), 1);
+
+    QVERIFY(exec("DELETE FROM " + otherTable));
+    QVERIFY(insertEntry(2, QVariant(), 1));
+    QVERIFY(remove(2, entryIds(2)) == QStringList({ "cover-1" }));
+    QCOMPARE(scalar("SELECT COUNT(*) FROM placeholder WHERE id = 1"), 0);
+}
+
+void ReadingListAndLabelEntryTest::deletingAListDeletesItsUnusedPlaceholders_data()
+{
+    addReadingListAndLabelRows();
+}
+
+void ReadingListAndLabelEntryTest::deletingAListDeletesItsUnusedPlaceholders()
+{
+    fetchReadingListOrLabel();
+
+    QVERIFY(exec("UPDATE placeholder SET coverKey = 'cover-1' WHERE id = 1"));
+    QVERIFY(exec("INSERT INTO placeholder (id, title, coverKey) VALUES (2, 'Shared', 'cover-2'), (3, 'Without entries', 'cover-3'), (4, 'Without cover', NULL)"));
+    QVERIFY(insertEntry(1, QVariant(), 1));
+    QVERIFY(insertEntry(1, QVariant(), 2));
+    QVERIFY(insertEntry(1, QVariant(), 4));
+    QVERIFY(insertEntry(1, 10, QVariant()));
+    QVERIFY(insertEntry(2, QVariant(), 2));
+
+    QVERIFY(removeParent(1) == QStringList({ "cover-1" }));
+    QCOMPARE(ints("SELECT id FROM placeholder ORDER BY id"), QList<int>({ 2, 3 }));
+    QCOMPARE(scalar(QString("SELECT COUNT(*) FROM %1 WHERE id = 1").arg(parentTable)), 0);
+    QCOMPARE(scalar("SELECT COUNT(*) FROM comic_info WHERE id = 10"), 1);
+}
+
+void ReadingListAndLabelEntryTest::deletingAReadingListDeletesPlaceholdersOfChildLists()
+{
+    table = "reading_list_entry";
+    parentColumn = "reading_list_id";
+
+    QVERIFY(exec("INSERT INTO reading_list (id, name, parentId) VALUES (3, 'Child', 1), (4, 'Grandchild', 3)"));
+    QVERIFY(exec("INSERT INTO placeholder (id, title, coverKey) VALUES (2, 'In grandchild', 'cover-2')"));
+    QVERIFY(insertEntry(3, QVariant(), 1));
+    QVERIFY(insertEntry(4, QVariant(), 2));
+
+    auto covers = DBHelper::removeListFromDB(1, db);
+    QVERIFY(covers);
+    QCOMPARE(*covers, QStringList({ "cover-2" }));
+    QCOMPARE(scalar("SELECT COUNT(*) FROM placeholder"), 0);
+    QCOMPARE(ints("SELECT id FROM reading_list ORDER BY id"), QList<int>({ 2 }));
+}
+
+void ReadingListAndLabelEntryTest::removePlaceholderCovers()
+{
+    QTemporaryDir dataPath;
+    QVERIFY(dataPath.isValid());
+    QVERIFY(QDir().mkpath(YACReader::LibraryPaths::libraryPlaceholdersCoverPathFromLibraryDataPath(dataPath.path())));
+
+    const auto removed = YACReader::LibraryPaths::placeholderCoverPathFromDataPath(dataPath.path(), "cover-1");
+    const auto kept = YACReader::LibraryPaths::placeholderCoverPathFromDataPath(dataPath.path(), "cover-2");
+    QCOMPARE(QDir(dataPath.path()).relativeFilePath(removed), QString("covers/placeholders/cover-1.jpg"));
+    for (const auto &path : { removed, kept }) {
+        QFile file(path);
+        QVERIFY(file.open(QIODevice::WriteOnly));
+    }
+
+    DBHelper::removePlaceholderCovers(dataPath.path(), { "cover-1", "missing" });
+
+    QVERIFY(!QFile::exists(removed));
+    QVERIFY(QFile::exists(kept));
 }
 
 QTEST_GUILESS_MAIN(ReadingListAndLabelEntryTest)

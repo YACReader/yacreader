@@ -32,6 +32,7 @@ using ComicId = TableId<struct ComicIdTag>;
 using ComicInfoId = TableId<struct ComicInfoIdTag>;
 using ReadingListId = TableId<struct ReadingListIdTag>;
 using LabelId = TableId<struct LabelIdTag>;
+using PlaceholderId = TableId<struct PlaceholderIdTag>;
 
 enum class ListKind {
     ReadingList,

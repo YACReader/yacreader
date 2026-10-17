@@ -518,6 +518,7 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
     if (isEditable(mi)) {
         QLOG_DEBUG() << "parent row :" << mi.parent().data() << "-" << mi.row();
         beginRemoveRows(mi.parent(), mi.row(), mi.row());
+        std::optional<QStringList> placeholderCovers;
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
@@ -529,7 +530,7 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
                 QLOG_DEBUG() << "num children : " << rli->parent->childCount();
                 rli->parent->removeChild(rli);
                 QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-                DBHelper::removeListFromDB(item->getId(), db);
+                placeholderCovers = DBHelper::removeListFromDB(item->getId(), db);
                 if (rli->parent->getId() != 0) {
                     reorderingChildren(rli->parent->children());
                 }
@@ -537,11 +538,13 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
             } else if (typeid(*item) == typeid(LabelItem)) {
                 auto li = static_cast<LabelItem *>(item);
                 labels.removeOne(li);
-                DBHelper::removeLabelFromDB(item->getId(), db);
+                placeholderCovers = DBHelper::removeLabelFromDB(item->getId(), db);
             }
             connectionName = db.connectionName();
         }
         QSqlDatabase::removeDatabase(connectionName);
+        if (placeholderCovers)
+            DBHelper::removePlaceholderCovers(_databasePath, *placeholderCovers);
 
         endRemoveRows();
     }

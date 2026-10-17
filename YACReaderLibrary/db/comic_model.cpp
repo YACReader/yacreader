@@ -1766,24 +1766,31 @@ void ComicModel::deleteComicsFromLists(const QList<QModelIndex> &comicsList)
     }
 
     bool removed = true;
+    QStringList placeholderCovers;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
         for (auto it = entryIdsByList.cbegin(); it != entryIdsByList.cend(); ++it) {
             const auto [listKind, listId] = it.key();
+            std::optional<QStringList> covers;
             switch (listKind) {
             case ListKind::ReadingList:
-                removed = DBHelper::removeReadingListEntries(ReadingListId(listId), it.value(), db) && removed;
+                covers = DBHelper::removeReadingListEntries(ReadingListId(listId), it.value(), db);
                 break;
             case ListKind::Label:
-                removed = DBHelper::removeLabelEntries(LabelId(listId), it.value(), db) && removed;
+                covers = DBHelper::removeLabelEntries(LabelId(listId), it.value(), db);
                 break;
             }
+            if (covers)
+                placeholderCovers.append(*covers);
+            else
+                removed = false;
         }
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+    DBHelper::removePlaceholderCovers(_databasePath, placeholderCovers);
 
     if (!removed) {
         reload();
