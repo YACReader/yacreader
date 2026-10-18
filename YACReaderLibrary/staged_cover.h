@@ -6,6 +6,7 @@
 
 // a new cover file that replaces the cover at `coverPath` only together with a database commit:
 // stage it, write the database, install() before the commit, then finish() after it, or restore() on any failure
+// the cover path is never empty, so a crash leaves only a staged file or a copy of the previous cover
 class StagedCover
 {
 public:
@@ -21,6 +22,9 @@ public:
     void finish();
     // the previous cover comes back and the staged file is removed
     void restore();
+
+    // removes what an interrupted StagedCover left in `coversPath`; a previous cover comes back if its cover is missing
+    static void removeLeftovers(const QString &coversPath);
 
 private:
     QString coverPath;

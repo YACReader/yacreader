@@ -1,0 +1,4 @@
+qt_add_executable(library_maintenance_test main.cpp)
+yacreader_apply_build_options(library_maintenance_test)
+target_link_libraries(library_maintenance_test PRIVATE Qt6::Gui Qt6::Sql Qt6::Test db_helper library_common)
+add_test(NAME library_maintenance_test COMMAND library_maintenance_test)

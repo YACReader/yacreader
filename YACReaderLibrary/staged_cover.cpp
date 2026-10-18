@@ -3,8 +3,27 @@
 #include "cover_utils.h"
 
 #include <QDir>
+#include <QDirIterator>
 #include <QFile>
 #include <QFileInfo>
+
+#include <filesystem>
+#include <system_error>
+
+namespace {
+
+constexpr auto stagedSuffix = ".new.jpg";
+constexpr auto backupSuffix = ".old";
+
+// QFile::rename refuses an existing target; this replaces it in one step
+bool replaceFile(const QString &source, const QString &target)
+{
+    std::error_code error;
+    std::filesystem::rename(QFileInfo(source).filesystemFilePath(), QFileInfo(target).filesystemFilePath(), error);
+    return !error;
+}
+
+}
 
 StagedCover::StagedCover(const QString &coverPath)
     : coverPath(coverPath)
@@ -13,7 +32,7 @@ StagedCover::StagedCover(const QString &coverPath)
 
 QString StagedCover::stagedPath() const
 {
-    return coverPath + ".new.jpg";
+    return coverPath + stagedSuffix;
 }
 
 bool StagedCover::stage(const QImage &image)
@@ -36,17 +55,18 @@ bool StagedCover::install()
         return false;
 
     if (QFile::exists(coverPath)) {
-        backupPath = coverPath + ".old";
+        backupPath = coverPath + backupSuffix;
         QFile::remove(backupPath);
-        if (!QFile::rename(coverPath, backupPath)) {
+        if (!QFile::copy(coverPath, backupPath)) {
+            QFile::remove(backupPath);
             backupPath.clear();
             return false;
         }
     }
 
-    if (!QFile::rename(stagedPath(), coverPath)) {
+    if (!replaceFile(stagedPath(), coverPath)) {
         if (!backupPath.isEmpty())
-            QFile::rename(backupPath, coverPath);
+            QFile::remove(backupPath);
         backupPath.clear();
         return false;
     }
@@ -66,11 +86,29 @@ void StagedCover::finish()
 void StagedCover::restore()
 {
     if (installed) {
-        QFile::remove(coverPath);
-        if (!backupPath.isEmpty())
-            QFile::rename(backupPath, coverPath);
+        if (backupPath.isEmpty())
+            QFile::remove(coverPath);
+        else
+            replaceFile(backupPath, coverPath);
     }
     QFile::remove(stagedPath());
     backupPath.clear();
     installed = false;
+}
+
+void StagedCover::removeLeftovers(const QString &coversPath)
+{
+    QDirIterator leftovers(coversPath, { QString("*") + stagedSuffix, QString("*") + backupSuffix }, QDir::Files);
+    while (leftovers.hasNext()) {
+        const auto path = leftovers.next();
+        if (path.endsWith(backupSuffix)) {
+            const auto cover = path.chopped(qstrlen(backupSuffix));
+            if (QFile::exists(cover))
+                QFile::remove(path);
+            else
+                QFile::rename(path, cover);
+        } else {
+            QFile::remove(path);
+        }
+    }
 }

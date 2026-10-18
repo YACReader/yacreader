@@ -17,6 +17,9 @@ private slots:
     void restoreBeforeInstallRemovesTheStagedFile();
     void restoreWithoutPreviousCoverLeavesNoCover();
     void installNeedsAStagedFile();
+    void installKeepsACopyOfThePreviousCover();
+    void removeLeftoversKeepsTheCover();
+    void removeLeftoversBringsBackAMissingCover();
 
 private:
     static QImage image(const QColor &color);
@@ -122,6 +125,55 @@ void StagedCoverTest::installNeedsAStagedFile()
     staged.restore();
 
     QVERIFY(isMostly(coverPath, Qt::red));
+}
+
+// until finish() or restore(), the cover path and the copy both have a file
+void StagedCoverTest::installKeepsACopyOfThePreviousCover()
+{
+    QVERIFY(QDir().mkpath(QFileInfo(coverPath).absolutePath()));
+    QVERIFY(image(Qt::red).save(coverPath));
+
+    StagedCover staged(coverPath);
+    QVERIFY(staged.stage(image(Qt::blue)));
+    QVERIFY(staged.install());
+
+    QVERIFY(isMostly(coverPath, Qt::blue));
+    QVERIFY(isMostly(coverPath + ".old", Qt::red));
+    QVERIFY(!staged.isStaged());
+    staged.finish();
+}
+
+// what a crash after install() leaves
+void StagedCoverTest::removeLeftoversKeepsTheCover()
+{
+    const auto coversPath = QFileInfo(coverPath).absolutePath();
+    QVERIFY(QDir().mkpath(coversPath));
+    QVERIFY(image(Qt::blue).save(coverPath));
+    QVERIFY(image(Qt::red).save(coverPath + ".old", "JPG"));
+    QVERIFY(image(Qt::red).save(coverPath + ".new.jpg"));
+    const auto other = QDir(coversPath).filePath("other.jpg");
+    QVERIFY(image(Qt::red).save(other));
+    const auto repairBackup = QDir(coversPath).filePath("other.jpg.repair-old");
+    QVERIFY(image(Qt::red).save(repairBackup, "JPG"));
+
+    StagedCover::removeLeftovers(coversPath);
+
+    QVERIFY(isMostly(coverPath, Qt::blue));
+    QVERIFY(!hasLeftovers());
+    QVERIFY(isMostly(other, Qt::red));
+    QVERIFY(QFile::exists(repairBackup));
+}
+
+void StagedCoverTest::removeLeftoversBringsBackAMissingCover()
+{
+    const auto coversPath = QFileInfo(coverPath).absolutePath();
+    QVERIFY(QDir().mkpath(coversPath));
+    QVERIFY(image(Qt::red).save(coverPath + ".old", "JPG"));
+
+    StagedCover::removeLeftovers(coversPath);
+
+    QVERIFY(isMostly(coverPath, Qt::red));
+    QVERIFY(!hasLeftovers());
 }
 
 QTEST_GUILESS_MAIN(StagedCoverTest)
