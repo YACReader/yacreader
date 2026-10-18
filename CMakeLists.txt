@@ -40,6 +40,7 @@ list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Compiler options (MSVC flags)
 include(cmake/CompilerOptions.cmake)
+include(cmake/SevenZipRuntime.cmake)
 
 # --- Build options ---
 

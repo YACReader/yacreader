@@ -160,13 +160,12 @@ void YACReader::iterate(const QModelIndex &index,
 QLibrary *YACReader::load7zLibrary()
 {
 #if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    auto yacreader7zPath = QString(LIBDIR) + "/yacreader/7z.so";
-    QFileInfo sevenzlibrary(yacreader7zPath);
-    if (sevenzlibrary.exists()) {
-        return new QLibrary(yacreader7zPath);
-    } else {
-        return new QLibrary(QString(LIBDIR) + "/7zip/7z.so");
+    // the installed library first; a build folder has the bundled one next to the executable
+    for (const auto &path : { QString(LIBDIR) + "/yacreader/7z.so", QString(LIBDIR) + "/7zip/7z.so" }) {
+        if (QFileInfo::exists(path))
+            return new QLibrary(path);
     }
+    return new QLibrary(QCoreApplication::applicationDirPath() + "/utils/7z.so");
 #else
     return new QLibrary(QCoreApplication::applicationDirPath() + "/utils/7z");
 #endif
