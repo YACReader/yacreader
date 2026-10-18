@@ -4,6 +4,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "initial_comic_info_extractor.h"
+#include "placeholder_cover.h"
 #include "staged_cover.h"
 #include "yacreader_cover_label.h"
 #include "yacreader_field_edit.h"
@@ -467,7 +468,8 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
 {
     customCover = QImage();
 
-    const auto &info = *recordInfo(record);
+    const auto &info = recordMetadata(record);
+    const auto *comicInfo = recordInfo(record);
     const auto *comic = recordComic(record);
 
     series->setText(info.series.isNull() ? QString() : info.series.toString());
@@ -485,12 +487,12 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
     resetCoverButton->setEnabled(comic != nullptr);
     loadCustomCoverImageButton->setEnabled(true);
 
-    if (!info.coverPage.isNull()) {
-        coverPageEdit->setText(info.coverPage.toString());
-        coverPageValidator.setRange(1, info.numPages.toInt());
+    if (comicInfo != nullptr && !comicInfo->coverPage.isNull()) {
+        coverPageEdit->setText(comicInfo->coverPage.toString());
+        coverPageValidator.setRange(1, comicInfo->numPages.toInt());
         coverPageEdit->setValidator(&coverPageValidator);
         //----------
-        int coverPage = info.coverPage.toInt();
+        int coverPage = comicInfo->coverPage.toInt();
         coverPageNumberLabel->setText(QString::number(coverPage));
         coverPageNumberLabel->adjustSize();
 
@@ -505,9 +507,9 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
         coverPageNumberLabel->setText("1");
     }
 
-    if (const auto *deleted = std::get_if<ComicRecordCase::DeletedComic>(&record)) {
+    if (comic == nullptr) {
         auto note = tr("The file of this comic is not in the library.");
-        if (deleted->lastKnownFile)
+        if (const auto *deleted = std::get_if<ComicRecordCase::DeletedComic>(&record); deleted != nullptr && deleted->lastKnownFile)
             note += "\n" + tr("Last known file: %1").arg(deleted->lastKnownFile->name);
         deletedComicNote->setText(note);
         deletedComicNote->show();
@@ -536,7 +538,10 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
     editor->setPlainText(info.editor.isNull() ? QString() : info.editor.toString());
     imprint->setPlainText(info.imprint.isNull() ? QString() : info.imprint.toString());
 
-    size->setText(QString::number(info.hash.right(info.hash.length() - 40).toInt() / 1024.0 / 1024.0, 'f', 2) + "Mb");
+    if (comicInfo != nullptr)
+        size->setText(QString::number(comicInfo->hash.right(comicInfo->hash.length() - 40).toInt() / 1024.0 / 1024.0, 'f', 2) + "Mb");
+    else
+        size->setText("-");
 
     if (!info.date.isNull()) {
         QStringList date = (info.date.toString()).split("/");
@@ -560,7 +565,9 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
     else
         colorCheck->setCheckState(Qt::PartiallyChecked);
 
-    typeCombo->setCurrentIndex(info.type.toInt());
+    // a placeholder has no type
+    typeCombo->setEnabled(comicInfo != nullptr);
+    typeCombo->setCurrentIndex(comicInfo != nullptr ? comicInfo->type.toInt() : -1);
 
     languageEdit->setText(info.languageISO.isNull() ? QString() : info.languageISO.toString());
     ageRatingEdit->setText(info.ageRating.isNull() ? QString() : info.ageRating.toString());
@@ -582,14 +589,19 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
     setCover(coverOf(record));
 }
 
-// a deleted comic shows its cover in grayscale, or the default image when the cover file is missing
+// a deleted comic or a placeholder shows its cover in grayscale, or the default image when there is no cover file
 QPixmap PropertiesDialog::coverOf(const ComicRecord &record) const
 {
-    const auto &info = *recordInfo(record);
-    if (recordComic(record) != nullptr)
-        return info.getCover(basePath);
+    if (const auto *comic = recordComic(record))
+        return comic->info.getCover(basePath);
 
-    QImage image(LibraryPaths::coverPath(basePath, info.hash));
+    QImage image;
+    if (const auto *placeholder = recordPlaceholder(record)) {
+        if (placeholder->coverKey)
+            image = QImage(LibraryPaths::placeholderCoverPathFromDataPath(databasePath, *placeholder->coverKey));
+    } else {
+        image = QImage(LibraryPaths::coverPath(basePath, recordInfo(record)->hash));
+    }
     if (image.isNull())
         image = QImage(":/images/unavailableCover.png");
     return QPixmap::fromImage(image.convertToFormat(QImage::Format_Grayscale8));
@@ -645,7 +657,7 @@ void PropertiesDialog::setComics(QList<ComicRecord> records)
         setMultipleCover();
 
         for (auto itr = ++records.cbegin(); itr != records.cend(); itr++) {
-            const auto &info = *recordInfo(*itr);
+            const auto &info = recordMetadata(*itr);
 
             if (info.series.isNull() || info.series.toString() != series->text())
                 series->clear();
@@ -711,12 +723,6 @@ void PropertiesDialog::setComics(QList<ComicRecord> records)
             if (info.color.isNull() || info.color.toBool() != colorCheck->isChecked())
                 colorCheck->setCheckState(Qt::PartiallyChecked);
 
-            if (info.type.toInt() != typeCombo->currentIndex()) {
-                typeCombo->setCurrentIndex(-1);
-            } else {
-                typeCombo->setCurrentIndex(info.type.toInt());
-            }
-
             if (info.languageISO.toString() != languageEdit->text())
                 languageEdit->clear();
 
@@ -741,6 +747,20 @@ void PropertiesDialog::setComics(QList<ComicRecord> records)
             if (info.tags.isNull() || info.tags.toString() != tags->toPlainText())
                 tags->clear();
         }
+
+        // the type of the comics, when they all have the same; placeholders have none
+        std::optional<int> type;
+        bool sameType = true;
+        for (const auto &record : std::as_const(records)) {
+            const auto *info = recordInfo(record);
+            if (info == nullptr)
+                continue;
+            if (type && *type != info->type.toInt())
+                sameType = false;
+            type = info->type.toInt();
+        }
+        typeCombo->setEnabled(type.has_value());
+        typeCombo->setCurrentIndex(type && sameType ? *type : -1);
 
         loadedColorState = colorCheck->checkState();
         loadedTypeIndex = typeCombo->currentIndex();
@@ -851,7 +871,7 @@ DescriptiveMetadataPatch PropertiesDialog::editedMetadata() const
 }
 
 // the changed parts of the date, with the other parts of `info`
-std::optional<QVariant> PropertiesDialog::editedDate(const ComicInfo &info) const
+std::optional<QVariant> PropertiesDialog::editedDate(const DescriptiveComicMetadata &info) const
 {
     if (!dayEdit->isModified() && !monthEdit->isModified() && !yearEdit->isModified())
         return std::nullopt;
@@ -933,21 +953,58 @@ bool PropertiesDialog::updateComics()
     QList<std::pair<int, ComicRecord>> savedRecords;
     QList<StagedCover> stagedCovers;
     QList<ComicInfoId> changedCovers;
+    // a placeholder's new cover is a new file; the old files go after the commit, the new ones on a failure
+    QHash<PlaceholderId, std::optional<QString>> storedPlaceholderCovers;
+    QList<std::pair<PlaceholderId, QString>> newPlaceholderCovers;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         db.transaction();
 
         for (int i = begin; i < end && !refused; i++) {
-            refused = !DBHelper::loadRecord(records[i], db);
+            const auto stored = DBHelper::loadRecord(records[i], db);
+            refused = !stored;
+            if (const auto *placeholder = stored ? recordPlaceholder(*stored) : nullptr)
+                storedPlaceholderCovers.insert(placeholder->id, placeholder->coverKey);
         }
 
         if (!refused) {
             bool written = true;
-            // each comic_info is written once, also when several rows show it
+            // each comic_info or placeholder is written once, also when several rows show it
             QSet<ComicInfoId> writtenIds;
+            QSet<PlaceholderId> writtenPlaceholders;
             for (int i = begin; i < end; i++) {
                 auto record = records[i];
+                if (auto *placeholderRecord = std::get_if<ComicRecordCase::Placeholder>(&record)) {
+                    auto &placeholder = placeholderRecord->placeholder;
+                    if (writtenPlaceholders.contains(placeholder.id))
+                        continue;
+                    writtenPlaceholders.insert(placeholder.id);
+
+                    auto patch = metadata;
+                    if (const auto date = editedDate(placeholder))
+                        patch.set(&DescriptiveComicMetadata::date, *date);
+                    if (!patch.isEmpty()) {
+                        written = DBHelper::updatePlaceholderMetadata(placeholder.id, patch, db) && written;
+                        patch.applyTo(placeholder);
+                        wrote = true;
+                    }
+
+                    // a cover page or a reset needs a file
+                    if (coverChanged && !customCover.isNull()) {
+                        const auto key = savePlaceholderCover(databasePath, customCover);
+                        written = key && DBHelper::updatePlaceholderCover(placeholder.id, key, db) && written;
+                        if (key) {
+                            newPlaceholderCovers.append({ placeholder.id, *key });
+                            placeholder.coverKey = key;
+                        }
+                        wrote = true;
+                    }
+
+                    savedRecords.append({ i, std::move(record) });
+                    continue;
+                }
+
                 auto &info = *recordInfo(record);
                 if (writtenIds.contains(info.id))
                     continue;
@@ -989,10 +1046,17 @@ bool PropertiesDialog::updateComics()
             if (written && db.commit()) {
                 for (auto &staged : stagedCovers)
                     staged.finish();
+                for (const auto &[id, key] : std::as_const(newPlaceholderCovers)) {
+                    if (const auto old = storedPlaceholderCovers.value(id))
+                        DBHelper::removePlaceholderCovers(databasePath, { *old });
+                }
             } else {
                 db.rollback();
                 for (auto &staged : stagedCovers)
                     staged.restore();
+                for (const auto &[id, key] : std::as_const(newPlaceholderCovers))
+                    DBHelper::removePlaceholderCovers(databasePath, { key });
+                newPlaceholderCovers.clear();
                 failed = true;
             }
         } else {
@@ -1017,6 +1081,8 @@ bool PropertiesDialog::updateComics()
 
     for (const auto id : std::as_const(changedCovers))
         emit coverChangedSignal(id);
+    for (const auto &[id, key] : std::as_const(newPlaceholderCovers))
+        emit placeholderCoverChanged(id, key);
     return true;
 }
 
@@ -1170,7 +1236,10 @@ void PropertiesDialog::updateCoverPageNumberLabel(int n)
 
 void PropertiesDialog::loadNextCover()
 {
-    const auto &info = *recordInfo(records[currentComicIndex]);
+    const auto *comic = recordComic(records[currentComicIndex]);
+    if (comic == nullptr)
+        return;
+    const auto &info = comic->info;
     int current = coverPageNumberLabel->text().toInt();
     int next;
 
@@ -1186,7 +1255,10 @@ void PropertiesDialog::loadNextCover()
 
 void PropertiesDialog::loadPreviousCover()
 {
-    const auto &info = *recordInfo(records[currentComicIndex]);
+    const auto *comic = recordComic(records[currentComicIndex]);
+    if (comic == nullptr)
+        return;
+    const auto &info = comic->info;
     int current = coverPageNumberLabel->text().toInt();
     int previous;
 

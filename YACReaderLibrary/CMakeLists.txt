@@ -26,6 +26,8 @@ add_library(library_common STATIC
     comic_files_manager.cpp
     staged_cover.h
     staged_cover.cpp
+    placeholder_cover.h
+    placeholder_cover.cpp
     cbl_reader.h
     cbl_reader.cpp
     cbl_matcher.h

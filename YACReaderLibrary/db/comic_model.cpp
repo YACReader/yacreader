@@ -164,6 +164,9 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   switch (action) {
                                   case ComicAction::SaveCover:
                                       return row.placeholder.coverKey.has_value();
+                                  case ComicAction::EditMetadata:
+                                  case ComicAction::SearchComicVine:
+                                  case ComicAction::SetCustomCover:
                                   case ComicAction::AssignNumbers:
                                   case ComicAction::AddToList:
                                   case ComicAction::RemoveFromList:
@@ -176,10 +179,6 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   case ComicAction::SetType:
                                   case ComicAction::DeleteMetadata:
                                   case ComicAction::AddToFavorites:
-                                  // the dialogs take placeholders in step 29b
-                                  case ComicAction::EditMetadata:
-                                  case ComicAction::SearchComicVine:
-                                  case ComicAction::SetCustomCover:
                                       return false;
                                   }
                                   return false;
@@ -1725,6 +1724,17 @@ void ComicModel::notifyCoverChange(ComicInfoId id)
     // the underlying cover file path is unchanged.
     ++coverRevisions[id.value()];
     updateRowsOf(id, [](ComicInfo &) { }, 0, columnCount() - 1, { CoverPathRole });
+}
+
+void ComicModel::notifyPlaceholderCoverChange(PlaceholderId id, const std::optional<QString> &coverKey)
+{
+    for (int row = 0; row < _data.size(); row++) {
+        auto *item = std::get_if<ComicItemCase::PlaceholderInList>(&_data[row]);
+        if (item == nullptr || item->placeholder.id != id)
+            continue;
+        item->placeholder.coverKey = coverKey;
+        emit dataChanged(index(row, 0), index(row, columnCount() - 1), { CoverPathRole });
+    }
 }
 
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const

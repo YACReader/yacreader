@@ -97,6 +97,8 @@ public:
     // writes only the fields in the patch, and marks the comic_info as edited
     static bool updateComicInfoMetadata(ComicInfoId id, const DescriptiveMetadataPatch &patch, QSqlDatabase &db);
     static bool updatePlaceholderMetadata(PlaceholderId id, const DescriptiveMetadataPatch &patch, QSqlDatabase &db);
+    // NULL when the placeholder has no cover; fails when the placeholder is gone
+    static bool updatePlaceholderCover(PlaceholderId id, const std::optional<QString> &coverKey, QSqlDatabase &db);
     // a type set by the user, so the comic_info is marked as edited
     static bool updateComicInfoType(ComicInfoId id, YACReader::FileType type, QSqlDatabase &db);
     // writes the cover page, the cover size, and the custom-cover columns of `info`; a cover set by the user, so the

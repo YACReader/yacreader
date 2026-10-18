@@ -63,7 +63,8 @@ private slots:
     void removeFromReadingUsesTheComicOfTheRow();
     void placeholderRowsShowTheirMetadata();
     void placeholderCoverIsItsFileOrTheDefaultImage();
-    void placeholdersSupportOnlyListActions();
+    void placeholdersSupportMetadataAndListActions();
+    void placeholderCoverChangeUpdatesEveryRow();
     void reorderAndRemoveAPlaceholder();
     void sharedPlaceholderShowsInEveryList();
     void assignNumbersOncePerComicOrPlaceholder();
@@ -845,7 +846,7 @@ void ComicModelTest::placeholderCoverIsItsFileOrTheDefaultImage()
     QCOMPARE(model.index(3, 0).data(ComicModel::CoverPathRole).toUrl(), defaultCover);
 }
 
-void ComicModelTest::placeholdersSupportOnlyListActions()
+void ComicModelTest::placeholdersSupportMetadataAndListActions()
 {
     QVERIFY(exec("INSERT INTO placeholder (id, title, coverKey) VALUES (1, 'With a cover', 'cover-1'), (2, 'Without a cover', NULL)"));
     QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1), (1, 3, 2)"));
@@ -855,15 +856,41 @@ void ComicModelTest::placeholdersSupportOnlyListActions()
     const auto withCover = model.index(2, 0);
     const auto withoutCover = model.index(3, 0);
 
-    for (const auto action : { ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromList }) {
+    for (const auto action : { ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover, ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromList }) {
         QVERIFY(model.supports(withCover, action));
         QVERIFY(model.supports(withoutCover, action));
     }
     QVERIFY(model.supports(withCover, ComicAction::SaveCover));
     QVERIFY(!model.supports(withoutCover, ComicAction::SaveCover));
     for (const auto action : { ComicAction::Open, ComicAction::OpenContainingFolder, ComicAction::ChangeFile, ComicAction::SetReadState, ComicAction::SetType,
-                               ComicAction::DeleteMetadata, ComicAction::AddToFavorites, ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover })
+                               ComicAction::DeleteMetadata, ComicAction::AddToFavorites })
         QVERIFY(!model.supports(withCover, action));
+}
+
+void ComicModelTest::placeholderCoverChangeUpdatesEveryRow()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, title) VALUES (1, 'Shared'), (2, 'Other')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1), (1, 3, 2), (1, 4, 1)"));
+    const auto coverPath = LibraryPaths::placeholderCoverPathFromDataPath(dataPath, "new-key");
+    QVERIFY(QDir().mkpath(QFileInfo(coverPath).absolutePath()));
+    QImage cover(10, 15, QImage::Format_RGB32);
+    cover.fill(Qt::red);
+    QVERIFY(cover.save(coverPath));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QSignalSpy changed(&model, &QAbstractItemModel::dataChanged);
+
+    model.notifyPlaceholderCoverChange(PlaceholderId(1), QString("new-key"));
+    QCOMPARE(changed.count(), 2);
+    QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl::fromLocalFile(coverPath));
+    QCOMPARE(model.index(4, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl::fromLocalFile(coverPath));
+    QCOMPARE(model.index(3, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
+    QVERIFY(model.supports(model.index(2, 0), ComicAction::SaveCover));
+
+    model.notifyPlaceholderCoverChange(PlaceholderId(1), std::nullopt);
+    QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
+    QVERIFY(!model.supports(model.index(2, 0), ComicAction::SaveCover));
 }
 
 void ComicModelTest::reorderAndRemoveAPlaceholder()

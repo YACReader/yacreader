@@ -18,6 +18,7 @@ class ComicVineDialog;
 class FolderModel;
 class FolderModelProxy;
 class PropertiesDialog;
+class QImage;
 class QProgressDialog;
 class QSettings;
 class QWidget;
@@ -96,6 +97,7 @@ private:
 
     // entryId: the reading list entry of the opened row, 0 if none
     void startReader(const ComicDB &comic, ComicModel::Mode mode, qulonglong entryId);
+    bool changePlaceholderCover(const Placeholder &placeholder, const QImage &cover);
     QProgressDialog *newProgressDialog(const QString &label, int maximum);
     void copyAndImportComics(const QList<QPair<QString, QString>> &comics,
                              const QModelIndex &destinationFolder,

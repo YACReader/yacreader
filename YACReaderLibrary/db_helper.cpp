@@ -894,6 +894,19 @@ bool DBHelper::updatePlaceholderMetadata(PlaceholderId id, const DescriptiveMeta
     return true;
 }
 
+bool DBHelper::updatePlaceholderCover(PlaceholderId id, const std::optional<QString> &coverKey, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("UPDATE placeholder SET coverKey = :coverKey WHERE id = :id");
+    query.bindValue(":coverKey", coverKey ? QVariant(*coverKey) : QVariant());
+    query.bindValue(":id", id.value());
+    if (!query.exec() || query.numRowsAffected() != 1) {
+        QLOG_ERROR() << "Unable to update the cover of a placeholder:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
 bool DBHelper::updateComicInfoType(ComicInfoId id, YACReader::FileType type, QSqlDatabase &db)
 {
     QSqlQuery query(db);

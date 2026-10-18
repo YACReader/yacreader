@@ -10,6 +10,7 @@
 #include "folder_model.h"
 #include "initial_comic_info_extractor.h"
 #include "library_comic_opener.h"
+#include "placeholder_cover.h"
 #include "properties_dialog.h"
 #include "reading_list_model.h"
 #include "staged_cover.h"
@@ -73,6 +74,7 @@ ComicManagementCoordinator::ComicManagementCoordinator(QWidget *window,
     : QObject(window), window(window), settings(settings), comicsModel(comicsModel), foldersModel(foldersModel), foldersModelProxy(foldersModelProxy), propertiesDialog(propertiesDialog), comicVineDialog(comicVineDialog), selectionProvider(std::move(selectionProvider)), currentListProvider(std::move(currentListProvider)), currentFolderProvider(std::move(currentFolderProvider)), currentComicProvider(std::move(currentComicProvider)), comicOpeningAllowedProvider(std::move(comicOpeningAllowedProvider)), libraryIdProvider(std::move(libraryIdProvider)), libraryPathProvider(std::move(libraryPathProvider))
 {
     connect(propertiesDialog, &PropertiesDialog::coverChangedSignal, comicsModel, &ComicModel::notifyCoverChange);
+    connect(propertiesDialog, &PropertiesDialog::placeholderCoverChanged, comicsModel, &ComicModel::notifyPlaceholderCoverChange);
     connect(propertiesDialog, &QDialog::accepted, this, &ComicManagementCoordinator::currentSourceRefreshAccepted);
     connect(propertiesDialog, &QDialog::rejected, this, &ComicManagementCoordinator::currentSourceRefreshCancelled);
     connect(comicVineDialog, &QDialog::accepted, this, &ComicManagementCoordinator::currentSourceRefreshAccepted, Qt::QueuedConnection);
@@ -425,7 +427,13 @@ void ComicManagementCoordinator::setCustomCover(const ComicRowId &row, const QSt
 
     const auto libraryPath = libraryPathProvider();
     auto record = comicsModel->record(index);
-    // SetCustomCover keeps placeholders out
+    if (const auto *placeholder = recordPlaceholder(record)) {
+        if (!changePlaceholderCover(*placeholder, cover))
+            QMessageBox::warning(window,
+                                 QCoreApplication::translate("LibraryWindow", "Error saving cover"),
+                                 QCoreApplication::translate("LibraryWindow", "There was an error saving the cover image."));
+        return;
+    }
     auto &info = *recordInfo(record);
     info.coverPage = QVariant();
     info.originalCoverSize = QStringLiteral("%1x%2").arg(cover.width()).arg(cover.height());
@@ -463,12 +471,61 @@ void ComicManagementCoordinator::setCustomCover(const ComicRowId &row, const QSt
     comicsModel->notifyCoverChange(info.id);
 }
 
+// a placeholder's cover is always its own image
 bool ComicManagementCoordinator::hasCustomCoverInSelection() const
 {
-    const auto comics = comicsModel->getComics(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetCustomCover));
+    const auto indexes = comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetCustomCover);
+    const auto hasPlaceholderCover = std::any_of(indexes.cbegin(), indexes.cend(), [this](const QModelIndex &index) {
+        const auto record = comicsModel->record(index);
+        const auto *placeholder = recordPlaceholder(record);
+        return placeholder != nullptr && placeholder->coverKey.has_value();
+    });
+    if (hasPlaceholderCover)
+        return true;
+
+    const auto comics = comicsModel->getComics(indexes);
     return std::any_of(comics.cbegin(), comics.cend(), [](const ComicDB &comic) {
         return comic.info.usesExternalCover.toBool();
     });
+}
+
+// a new image gets a new file; the old file is removed after the commit, the new one on a failure.
+// A null `cover` clears the cover of the placeholder.
+bool ComicManagementCoordinator::changePlaceholderCover(const Placeholder &placeholder, const QImage &cover)
+{
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPathProvider());
+    std::optional<QString> newKey;
+    if (!cover.isNull()) {
+        newKey = savePlaceholderCover(dataPath, cover);
+        if (!newKey)
+            return false;
+    }
+
+    std::optional<QString> oldKey;
+    bool saved = false;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+        db.transaction();
+        const auto stored = DBHelper::loadRecord(ComicRecordCase::Placeholder { placeholder }, db);
+        if (stored)
+            oldKey = recordPlaceholder(*stored)->coverKey;
+        saved = stored && DBHelper::updatePlaceholderCover(placeholder.id, newKey, db) && db.commit();
+        if (!saved)
+            db.rollback();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    if (!saved) {
+        if (newKey)
+            DBHelper::removePlaceholderCovers(dataPath, { *newKey });
+        return false;
+    }
+    if (oldKey)
+        DBHelper::removePlaceholderCovers(dataPath, { *oldKey });
+    comicsModel->notifyPlaceholderCoverChange(placeholder.id, newKey);
+    return true;
 }
 
 // a deleted comic keeps its custom cover: the original cannot be extracted without the file
@@ -480,7 +537,18 @@ void ComicManagementCoordinator::resetSelectedCustomCovers()
     const auto libraryPath = libraryPathProvider();
     const auto libraryId = libraryIdProvider();
     const auto indexes = comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetCustomCover);
+    QSet<PlaceholderId> clearedPlaceholders;
     for (const auto &index : indexes) {
+        // a placeholder goes back to no cover, which shows the default image
+        const auto record = comicsModel->record(index);
+        if (const auto *placeholder = recordPlaceholder(record)) {
+            if (placeholder->coverKey && !clearedPlaceholders.contains(placeholder->id)) {
+                clearedPlaceholders.insert(placeholder->id);
+                changePlaceholderCover(*placeholder, QImage());
+            }
+            continue;
+        }
+
         auto loaded = comicsModel->getComic(index);
         if (!loaded || !loaded->info.usesExternalCover.toBool())
             continue;

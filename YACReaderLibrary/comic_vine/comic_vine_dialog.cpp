@@ -525,8 +525,17 @@ void ComicVineDialog::saveMetadata(const QList<QPair<ComicRecord, DescriptiveMet
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
         db.transaction();
 
+        // each comic_info or placeholder is written once
         QSet<ComicInfoId> written;
+        QSet<PlaceholderId> writtenPlaceholders;
         for (const auto &[comic, patch] : matches) {
+            if (const auto *placeholder = recordPlaceholder(comic)) {
+                if (writtenPlaceholders.contains(placeholder->id) || !DBHelper::loadRecord(comic, db))
+                    continue;
+                writtenPlaceholders.insert(placeholder->id);
+                DBHelper::updatePlaceholderMetadata(placeholder->id, patch, db);
+                continue;
+            }
             const auto id = recordInfo(comic)->id;
             if (written.contains(id) || !DBHelper::loadRecord(comic, db))
                 continue;

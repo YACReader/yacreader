@@ -151,6 +151,8 @@ public:
     void reload(const ComicDB &comic);
     void resetComicRating(const QModelIndex &mi);
     void notifyCoverChange(ComicInfoId id);
+    // the rows of the placeholder show its new cover
+    void notifyPlaceholderCoverChange(PlaceholderId id, const std::optional<QString> &coverKey);
 
     Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString &hash) const;
 

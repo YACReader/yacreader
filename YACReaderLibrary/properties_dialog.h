@@ -151,7 +151,7 @@ private:
     void updateButtons();
     DescriptiveMetadataPatch editedMetadata() const;
     std::optional<YACReader::FileType> editedType() const;
-    std::optional<QVariant> editedDate(const ComicInfo &info) const;
+    std::optional<QVariant> editedDate(const DescriptiveComicMetadata &info) const;
     bool applyCoverChange(ComicRecord &record, StagedCover &staged);
     bool showRecord(int index, int step);
     // false when the save was refused; the dialog then keeps the values
@@ -202,5 +202,6 @@ public slots:
 
 signals:
     void coverChangedSignal(ComicInfoId id);
+    void placeholderCoverChanged(PlaceholderId id, const std::optional<QString> &coverKey);
 };
 #endif

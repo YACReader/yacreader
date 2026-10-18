@@ -2,10 +2,12 @@
 #include "db_helper.h"
 #include "descriptive_comic_metadata.h"
 #include "placeholder.h"
+#include "placeholder_cover.h"
 #include "yacreader_global.h"
 
 #include <QDir>
 #include <QFile>
+#include <QImage>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QTemporaryDir>
@@ -39,6 +41,7 @@ private slots:
     void appendRepeatsOnlyInReadingLists_data();
     void appendRepeatsOnlyInReadingLists();
     void appendRowsAddsWhatEachRowRefersTo();
+    void placeholderCoverAndMetadataUpdates();
     void appendIgnoresUnknownComics_data();
     void appendIgnoresUnknownComics();
     void appendUsesNextOrderingAfterRemoval_data();
@@ -875,6 +878,35 @@ void ReadingListAndLabelEntryTest::appendRowsAddsWhatEachRowRefersTo()
     QVERIFY(DBHelper::appendRowsToLabel(LabelId(1), { ComicId(100), ComicId(101), ListItemId { ListKind::ReadingList, 51 }, ListItemId { ListKind::ReadingList, 51 } }, db));
     QCOMPARE(ints("SELECT COALESCE(comic_info_id, 0) FROM label_entry WHERE label_id = 1 ORDER BY ordering"), QList<int>({ 10, 0 }));
     QCOMPARE(ints("SELECT COALESCE(placeholder_id, 0) FROM label_entry WHERE label_id = 1 ORDER BY ordering"), QList<int>({ 0, 1 }));
+}
+
+void ReadingListAndLabelEntryTest::placeholderCoverAndMetadataUpdates()
+{
+    QTemporaryDir directory;
+    QVERIFY(directory.isValid());
+    QImage image(10, 15, QImage::Format_RGB32);
+    image.fill(Qt::red);
+
+    // each image gets a new key and file
+    const auto first = savePlaceholderCover(directory.path(), image);
+    const auto second = savePlaceholderCover(directory.path(), image);
+    QVERIFY(first && second && *first != *second);
+    QVERIFY(QFile::exists(YACReader::LibraryPaths::placeholderCoverPathFromDataPath(directory.path(), *first)));
+    QVERIFY(!savePlaceholderCover(directory.path(), QImage()));
+
+    QVERIFY(DBHelper::updatePlaceholderCover(PlaceholderId(1), *first, db));
+    QCOMPARE(DBHelper::loadPlaceholder(PlaceholderId(1), db)->coverKey, first);
+    QVERIFY(DBHelper::updatePlaceholderCover(PlaceholderId(1), std::nullopt, db));
+    QVERIFY(!DBHelper::loadPlaceholder(PlaceholderId(1), db)->coverKey);
+    QVERIFY(!DBHelper::updatePlaceholderCover(PlaceholderId(99), *first, db));
+
+    DescriptiveMetadataPatch patch;
+    patch.set(&DescriptiveComicMetadata::series, QString("Patched"));
+    patch.set(&DescriptiveComicMetadata::title, QVariant());
+    QVERIFY(DBHelper::updatePlaceholderMetadata(PlaceholderId(1), patch, db));
+    const auto placeholder = DBHelper::loadPlaceholder(PlaceholderId(1), db);
+    QCOMPARE(placeholder->series.toString(), QString("Patched"));
+    QVERIFY(placeholder->title.isNull());
 }
 
 QTEST_GUILESS_MAIN(ReadingListAndLabelEntryTest)
