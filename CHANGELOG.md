@@ -2,6 +2,15 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.5.0
+
+### YACReaderLibrary
+* Reading lists and labels keep the comics whose files are removed from the library. These comics covers show in gray, with their metadata and the name of their last known file. You can still edit their metadata, get data from Comic Vine, set a custom cover, reorder them, and remove them from the list. When the same file comes back, at any path, the comic is available again.
+* Reading lists and labels keep a comic when its file is replaced, for example by a tool that writes ComicInfo.xml into the archive.
+* The metadata editor saves only the fields that you change, also when you edit several comics. Comic Vine changes only the fields that it returns.
+* Fix removing comics from a reading list that has child lists. A comic from a child list was not removed, and it showed again the next time you opened the list.
+* Fix the position of comics added to a reading list. After comics were removed from other reading lists, new comics could show at the start or in the middle of the list, not at the end.
+
 ## 10.4.0
 
 ### YACReader
