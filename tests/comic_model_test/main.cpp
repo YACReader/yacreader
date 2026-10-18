@@ -3,6 +3,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "search_query.h"
+#include "yacreader_comics_selection_helper.h"
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
@@ -10,6 +11,7 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QImage>
 #include <QMimeData>
 #include <QSet>
 #include <QSignalSpy>
@@ -33,7 +35,7 @@ private slots:
     void listRowsHaveTheirList();
     void identityRolesFollowTheCase();
     void rowIdsNameEachOccurrence();
-    void dragDataCarriesComicInfoAndEntries();
+    void dragDataCarriesComicsAndEntries();
     void reorderMovesTheDraggedOccurrence();
     void listShowsTheFirstFileOfEachComicInfo();
     void removeFromAnAggregatedReadingListUsesTheOwningList();
@@ -59,6 +61,14 @@ private slots:
     void sharedViewAfterAListHasNoDeletedRows();
     void favoritesUseTheFileOfTheRow();
     void removeFromReadingUsesTheComicOfTheRow();
+    void placeholderRowsShowTheirMetadata();
+    void placeholderCoverIsItsFileOrTheDefaultImage();
+    void placeholdersSupportOnlyListActions();
+    void reorderAndRemoveAPlaceholder();
+    void sharedPlaceholderShowsInEveryList();
+    void assignNumbersOncePerComicOrPlaceholder();
+    void addToAListAppendsWhatEachRowRefersTo();
+    void selectionSummaryCountsMissingComics();
 
 private:
     void loadSource(ComicModel &model, const QString &source);
@@ -228,7 +238,7 @@ void ComicModelTest::rowIdsNameEachOccurrence()
     QCOMPARE(model.indexOf(ComicId(4)).data(ComicModel::IdRole).toULongLong(), 4ULL);
 }
 
-void ComicModelTest::dragDataCarriesComicInfoAndEntries()
+void ComicModelTest::dragDataCarriesComicsAndEntries()
 {
     QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id) VALUES (30, 1, 2, 3)"));
 
@@ -236,15 +246,15 @@ void ComicModelTest::dragDataCarriesComicInfoAndEntries()
     model.setupReadingListModelData(1, dataPath);
     std::unique_ptr<QMimeData> data(model.mimeData({ model.index(2, 0), model.index(1, 0) }));
     QCOMPARE(YACReader::mimeDataToComicsIds(data.get()), QList<qulonglong>({ 3, 1 }));
-    QCOMPARE(YACReader::mimeDataToComicInfoIds(data.get()), QList<ComicInfoId>({ ComicInfoId(3), ComicInfoId(1) }));
     const auto entries = YACReader::mimeDataToListEntries(data.get());
     QCOMPARE(entries.size(), 2);
     QVERIFY(entries.first() == (ListItemId { ListKind::ReadingList, 30 }));
+    QVERIFY(YACReader::mimeDataToRows(data.get()) == QList<ComicRowId>({ entries.at(0), entries.at(1) }));
 
     model.setupFolderModelData(2, dataPath);
     data.reset(model.mimeData({ model.index(0, 0) }));
-    QCOMPARE(YACReader::mimeDataToComicInfoIds(data.get()).size(), 1);
     QVERIFY(YACReader::mimeDataToListEntries(data.get()).isEmpty());
+    QVERIFY(YACReader::mimeDataToRows(data.get()) == QList<ComicRowId>({ ComicId(model.index(0, 0).data(ComicModel::IdRole).toULongLong()) }));
 }
 
 void ComicModelTest::reorderMovesTheDraggedOccurrence()
@@ -329,17 +339,16 @@ void ComicModelTest::reorderWritesTheEntryOrder()
 
 void ComicModelTest::failedReorderShowsTheStoredOrder()
 {
-    // a placeholder entry is not shown yet, so the view does not have every entry
-    QVERIFY(exec("INSERT INTO placeholder (id, title) VALUES (1, 'Expected')"));
-    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1)"));
-
     ComicModel model;
     model.setupReadingListModelData(1, dataPath);
     QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1 }));
+
+    // an entry added after the view loaded: the view does not have every entry
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 2, 2)"));
     std::unique_ptr<QMimeData> data(model.mimeData({ model.index(1, 0) }));
 
     QVERIFY(!model.dropMimeData(data.get(), Qt::MoveAction, 0, 0, QModelIndex()));
-    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1 }));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1, 2 }));
     QCOMPARE(ints("SELECT ordering FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY id"), QList<int>({ 0, 1, 2 }));
 }
 
@@ -767,6 +776,203 @@ void ComicModelTest::removeFromReadingUsesTheComicOfTheRow()
     QCOMPARE(ints("SELECT hasBeenOpened FROM comic_info WHERE id = 2"), QList<int>({ 0 }));
     QCOMPARE(ints("SELECT hasBeenOpened FROM comic_info WHERE id = 3"), QList<int>({ 1 }));
     QCOMPARE(ints("SELECT rating FROM comic_info WHERE id = 2"), QList<int>({ 2 }));
+}
+
+void ComicModelTest::placeholderRowsShowTheirMetadata()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, series, number, volume, date) VALUES (1, 'Expected Series', '7', '2020', '01/02/2020')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, placeholder_id) VALUES (40, 1, 2, 1)"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(model.rowCount(), 3);
+    const auto index = model.index(2, 0);
+
+    QCOMPARE(index.data(ComicModel::KindRole).toString(), QString("PlaceholderInList"));
+    QCOMPARE(index.data(ComicModel::AvailableRole).toBool(), false);
+    QCOMPARE(index.data(ComicModel::ListItemIdRole).toULongLong(), 40ULL);
+    QCOMPARE(index.data(ComicModel::ListIdRole).toULongLong(), 1ULL);
+    QVERIFY(model.rowId(index) == ComicRowId(ListItemId { ListKind::ReadingList, 40 }));
+
+    // no file, comic id, or comic state
+    for (const int role : std::initializer_list<int> { ComicModel::IdRole, ComicModel::FileNameRole, ComicModel::LastKnownNameRole, ComicModel::HashRole, ComicModel::SizeRole, ComicModel::NumPagesRole })
+        QVERIFY2(index.data(role).isNull(), qPrintable(QString::number(role)));
+    for (const int column : std::initializer_list<int> { ComicModel::Id, ComicModel::Path, ComicModel::ReadColumn, ComicModel::Hash })
+        QVERIFY2(model.index(2, column).data(Qt::DisplayRole).isNull(), qPrintable(QString::number(column)));
+    // the table shows "-" for the values a placeholder does not have
+    for (const int column : std::initializer_list<int> { ComicModel::FileName, ComicModel::NumPages, ComicModel::CurrentPage, ComicModel::Size })
+        QCOMPARE(model.index(2, column).data(Qt::DisplayRole).toString(), QString("-"));
+    QVERIFY(!(model.flags(model.index(2, ComicModel::Rating)) & Qt::ItemIsEditable));
+
+    // the descriptive metadata, and the series when there is no title
+    QCOMPARE(index.data(ComicModel::NumberRole).toString(), QString("7"));
+    QCOMPARE(index.data(ComicModel::SeriesRole).toString(), QString("Expected Series"));
+    QCOMPARE(index.data(ComicModel::VolumeRole).toString(), QString("2020"));
+    QCOMPARE(index.data(ComicModel::TitleRole).toString(), QString("Expected Series"));
+    QCOMPARE(index.data(ComicModel::ReadableTitle).toString(), QString("#7 Expected Series"));
+
+    QVERIFY(model.hasUnavailableRows());
+    QCOMPARE(model.getUnavailableList(), QList<bool>({ false, false, true }));
+
+    const auto record = model.record(index);
+    QVERIFY(recordInfo(record) == nullptr);
+    QVERIFY(recordComic(record) == nullptr);
+    QCOMPARE(recordPlaceholder(record)->id, PlaceholderId(1));
+    QCOMPARE(recordMetadata(record).series.toString(), QString("Expected Series"));
+}
+
+void ComicModelTest::placeholderCoverIsItsFileOrTheDefaultImage()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, title, coverKey) VALUES (1, 'With a cover', 'cover-1'), (2, 'Without a cover', NULL)"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1), (1, 3, 2)"));
+    const auto library = QFileInfo(dataPath).absolutePath();
+    const auto coverPath = LibraryPaths::placeholderCoverPathFromDataPath(dataPath, "cover-1");
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    const QUrl defaultCover("qrc:/images/unavailableCover.png");
+    QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), defaultCover);
+    QCOMPARE(model.index(3, 0).data(ComicModel::CoverPathRole).toUrl(), defaultCover);
+    QCOMPARE(model.getPaths(library).mid(2), QStringList({ ":/images/unavailableCover.png", ":/images/unavailableCover.png" }));
+
+    QVERIFY(QDir().mkpath(QFileInfo(coverPath).absolutePath()));
+    QImage cover(10, 15, QImage::Format_RGB32);
+    cover.fill(Qt::red);
+    QVERIFY(cover.save(coverPath));
+
+    QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl::fromLocalFile(coverPath));
+    QCOMPARE(model.getPaths(library).at(2), coverPath);
+    QCOMPARE(model.index(3, 0).data(ComicModel::CoverPathRole).toUrl(), defaultCover);
+}
+
+void ComicModelTest::placeholdersSupportOnlyListActions()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, title, coverKey) VALUES (1, 'With a cover', 'cover-1'), (2, 'Without a cover', NULL)"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1), (1, 3, 2)"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    const auto withCover = model.index(2, 0);
+    const auto withoutCover = model.index(3, 0);
+
+    for (const auto action : { ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromList }) {
+        QVERIFY(model.supports(withCover, action));
+        QVERIFY(model.supports(withoutCover, action));
+    }
+    QVERIFY(model.supports(withCover, ComicAction::SaveCover));
+    QVERIFY(!model.supports(withoutCover, ComicAction::SaveCover));
+    for (const auto action : { ComicAction::Open, ComicAction::OpenContainingFolder, ComicAction::ChangeFile, ComicAction::SetReadState, ComicAction::SetType,
+                               ComicAction::DeleteMetadata, ComicAction::AddToFavorites, ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover })
+        QVERIFY(!model.supports(withCover, action));
+}
+
+void ComicModelTest::reorderAndRemoveAPlaceholder()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, title, coverKey) VALUES (1, 'Expected', 'cover-1')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, placeholder_id) VALUES (40, 1, 2, 1)"));
+    const auto coverPath = LibraryPaths::placeholderCoverPathFromDataPath(dataPath, "cover-1");
+    QVERIFY(QDir().mkpath(QFileInfo(coverPath).absolutePath()));
+    QImage cover(10, 15, QImage::Format_RGB32);
+    cover.fill(Qt::red);
+    QVERIFY(cover.save(coverPath));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    std::unique_ptr<QMimeData> data(model.mimeData({ model.index(2, 0) }));
+    QVERIFY(model.dropMimeData(data.get(), Qt::MoveAction, 0, 0, QModelIndex()));
+    QCOMPARE(model.index(0, 0).data(ComicModel::KindRole).toString(), QString("PlaceholderInList"));
+    QCOMPARE(ints("SELECT COALESCE(comic_info_id, 0) FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 0, 3, 1 }));
+
+    model.deleteComicsFromLists({ model.index(0, 0) });
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1 }));
+    QCOMPARE(ints("SELECT COUNT(*) FROM placeholder"), QList<int>({ 0 }));
+    QVERIFY(!QFile::exists(coverPath));
+}
+
+void ComicModelTest::sharedPlaceholderShowsInEveryList()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, title) VALUES (1, 'Shared')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1)"));
+    QVERIFY(exec("INSERT INTO label_entry (label_id, ordering, placeholder_id) VALUES (1, 0, 1)"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(model.index(2, 0).data(ComicModel::TitleRole).toString(), QString("Shared"));
+    model.setupLabelModelData(1, dataPath);
+    QCOMPARE(model.rowCount(), 1);
+    QCOMPARE(model.index(0, 0).data(ComicModel::KindRole).toString(), QString("PlaceholderInList"));
+    QCOMPARE(model.index(0, 0).data(ComicModel::TitleRole).toString(), QString("Shared"));
+}
+
+// each comic_info or placeholder gets one number, at its first appearance
+void ComicModelTest::assignNumbersOncePerComicOrPlaceholder()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, title) VALUES (1, 'Expected')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1)"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 3, 3)"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(model.rowCount(), 4);
+    model.asignNumbers({ model.index(0, 0), model.index(1, 0), model.index(2, 0), model.index(3, 0) }, 10);
+
+    QCOMPARE(ints("SELECT number FROM comic_info WHERE id IN (3, 1) ORDER BY id DESC"), QList<int>({ 10, 11 }));
+    QCOMPARE(ints("SELECT number FROM placeholder WHERE id = 1"), QList<int>({ 12 }));
+    QCOMPARE(ints("SELECT edited FROM comic_info WHERE id IN (3, 1)"), QList<int>({ 1, 1 }));
+}
+
+// in order, also placeholders and deleted comics; labels skip repeats
+void ComicModelTest::addToAListAppendsWhatEachRowRefersTo()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, title) VALUES (1, 'Expected')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1)"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 3, 4)"));
+    QVERIFY(exec("DELETE FROM comic WHERE id = 4"));
+    QVERIFY(exec("INSERT INTO reading_list (id, name) VALUES (2, 'Other')"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(model.rowCount(), 4);
+    const QList<QModelIndex> rows = { model.index(2, 0), model.index(0, 0), model.index(3, 0), model.index(1, 0) };
+
+    model.addComicsToLabel(rows, 1);
+    model.addComicsToLabel(rows, 1);
+    QCOMPARE(ints("SELECT COALESCE(comic_info_id, 0) FROM label_entry WHERE label_id = 1 ORDER BY ordering"), QList<int>({ 0, 3, 4, 1 }));
+    QCOMPARE(ints("SELECT COALESCE(placeholder_id, 0) FROM label_entry WHERE label_id = 1 ORDER BY ordering"), QList<int>({ 1, 0, 0, 0 }));
+
+    model.addComicsToReadingList(rows, 2);
+    model.addComicsToReadingList(rows, 2);
+    QCOMPARE(ints("SELECT COALESCE(comic_info_id, 0) FROM reading_list_entry WHERE reading_list_id = 2 ORDER BY ordering"), QList<int>({ 0, 3, 4, 1, 0, 3, 4, 1 }));
+
+    // a folder row is its comic, which adds its comic_info
+    model.setupFolderModelData(2, dataPath);
+    model.addComicsToReadingList({ model.indexOf(ComicId(5)) }, 2);
+    QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 2 ORDER BY ordering DESC LIMIT 1"), QList<int>({ 1 }));
+}
+
+// deleted comics and placeholders are both missing; a placeholder has no reading state or pages
+void ComicModelTest::selectionSummaryCountsMissingComics()
+{
+    QVERIFY(exec("UPDATE comic_info SET read = 1 WHERE id = 3"));
+    QVERIFY(exec("INSERT INTO placeholder (id, title) VALUES (1, 'Expected')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 1)"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 3, 4)"));
+    QVERIFY(exec("DELETE FROM comic WHERE id = 4"));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    YACReaderComicsSelectionHelper selection;
+    selection.setModel(&model);
+    selection.selectAll();
+
+    const auto info = selection.selectionInfo();
+    QCOMPARE(info.value("count").toInt(), 4);
+    QCOMPARE(info.value("readCount").toInt(), 1);
+    QCOMPARE(info.value("inProgressCount").toInt(), 2);
+    QCOMPARE(info.value("unreadCount").toInt(), 0);
+    QCOMPARE(info.value("pageCount").toInt(), 60);
+    QCOMPARE(info.value("unknownPageCount").toInt(), 0);
+    QCOMPARE(info.value("missingCount").toInt(), 2);
 }
 
 QTEST_MAIN(ComicModelTest)

@@ -260,10 +260,18 @@ void ComicManagementCoordinator::showProperties()
             records.append(comicsModel->record(index));
         propertiesDialog->setComics(records);
     } else {
+        // sequential editing goes through the rows that can be edited, in view order
         QList<ComicRecord> records;
-        for (int row = 0; row < comicsModel->rowCount(); row++)
-            records.append(comicsModel->record(comicsModel->index(row, 0)));
-        if (!propertiesDialog->setComicsForSequentialEditing(indexList.constFirst().row(), records))
+        int start = 0;
+        for (int row = 0; row < comicsModel->rowCount(); row++) {
+            const auto index = comicsModel->index(row, 0);
+            if (!comicsModel->supports(index, ComicAction::EditMetadata))
+                continue;
+            if (row == indexList.constFirst().row())
+                start = records.size();
+            records.append(comicsModel->record(index));
+        }
+        if (!propertiesDialog->setComicsForSequentialEditing(start, records))
             return;
     }
 
@@ -417,7 +425,8 @@ void ComicManagementCoordinator::setCustomCover(const ComicRowId &row, const QSt
 
     const auto libraryPath = libraryPathProvider();
     auto record = comicsModel->record(index);
-    auto &info = recordInfo(record);
+    // SetCustomCover keeps placeholders out
+    auto &info = *recordInfo(record);
     info.coverPage = QVariant();
     info.originalCoverSize = QStringLiteral("%1x%2").arg(cover.width()).arg(cover.height());
     info.coverSizeRatio = static_cast<double>(cover.width()) / cover.height();

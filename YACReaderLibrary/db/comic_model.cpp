@@ -30,24 +30,39 @@
 
 namespace {
 
-const ComicInfo &rowInfo(const ComicItem &item)
+// the descriptive metadata, which every case has
+const DescriptiveComicMetadata &rowMetadata(const ComicItem &item)
 {
     return std::visit(overloaded {
-                              [](const ComicItemCase::Comic &row) -> const ComicInfo & { return row.comic.info; },
-                              [](const ComicItemCase::ComicInList &row) -> const ComicInfo & { return row.comic.info; },
-                              [](const ComicItemCase::DeletedComicInList &row) -> const ComicInfo & { return row.info; },
+                              [](const ComicItemCase::Comic &row) -> const DescriptiveComicMetadata & { return row.comic.info; },
+                              [](const ComicItemCase::ComicInList &row) -> const DescriptiveComicMetadata & { return row.comic.info; },
+                              [](const ComicItemCase::DeletedComicInList &row) -> const DescriptiveComicMetadata & { return row.info; },
+                              [](const ComicItemCase::PlaceholderInList &row) -> const DescriptiveComicMetadata & { return row.placeholder; },
                       },
                       item);
 }
 
-ComicInfo &rowInfo(ComicItem &item)
+// nullptr for a placeholder, which has no comic_info
+const ComicInfo *rowInfo(const ComicItem &item)
 {
     return std::visit(overloaded {
-                              [](ComicItemCase::Comic &row) -> ComicInfo & { return row.comic.info; },
-                              [](ComicItemCase::ComicInList &row) -> ComicInfo & { return row.comic.info; },
-                              [](ComicItemCase::DeletedComicInList &row) -> ComicInfo & { return row.info; },
+                              [](const ComicItemCase::Comic &row) -> const ComicInfo * { return &row.comic.info; },
+                              [](const ComicItemCase::ComicInList &row) -> const ComicInfo * { return &row.comic.info; },
+                              [](const ComicItemCase::DeletedComicInList &row) -> const ComicInfo * { return &row.info; },
+                              [](const ComicItemCase::PlaceholderInList &) -> const ComicInfo * { return nullptr; },
                       },
                       item);
+}
+
+ComicInfo *rowInfo(ComicItem &item)
+{
+    return const_cast<ComicInfo *>(rowInfo(std::as_const(item)));
+}
+
+const Placeholder *rowPlaceholder(const ComicItem &item)
+{
+    const auto *row = std::get_if<ComicItemCase::PlaceholderInList>(&item);
+    return row != nullptr ? &row->placeholder : nullptr;
 }
 
 // the comic of a row with a file
@@ -57,6 +72,7 @@ const ComicDB *rowComic(const ComicItem &item)
                               [](const ComicItemCase::Comic &row) -> const ComicDB * { return &row.comic; },
                               [](const ComicItemCase::ComicInList &row) -> const ComicDB * { return &row.comic; },
                               [](const ComicItemCase::DeletedComicInList &) -> const ComicDB * { return nullptr; },
+                              [](const ComicItemCase::PlaceholderInList &) -> const ComicDB * { return nullptr; },
                       },
                       item);
 }
@@ -67,17 +83,19 @@ const ListEntry *rowEntry(const ComicItem &item)
                               [](const ComicItemCase::Comic &) -> const ListEntry * { return nullptr; },
                               [](const ComicItemCase::ComicInList &row) -> const ListEntry * { return &row.entry; },
                               [](const ComicItemCase::DeletedComicInList &row) -> const ListEntry * { return &row.entry; },
+                              [](const ComicItemCase::PlaceholderInList &row) -> const ListEntry * { return &row.entry; },
                       },
                       item);
 }
 
-// the file name of the row, or the last known one of a deleted comic
+// the file name of the row, or the last known one of a deleted comic; a placeholder has none
 QString rowFileName(const ComicItem &item)
 {
     return std::visit(overloaded {
                               [](const ComicItemCase::Comic &row) { return row.comic.file.fileName; },
                               [](const ComicItemCase::ComicInList &row) { return row.comic.file.fileName; },
                               [](const ComicItemCase::DeletedComicInList &row) { return row.entry.lastKnownFile ? row.entry.lastKnownFile->name : QString(); },
+                              [](const ComicItemCase::PlaceholderInList &) { return QString(); },
                       },
                       item);
 }
@@ -88,6 +106,7 @@ ComicRowId rowIdOf(const ComicItem &item)
                               [](const ComicItemCase::Comic &row) -> ComicRowId { return row.comic.file.id; },
                               [](const ComicItemCase::ComicInList &row) -> ComicRowId { return row.entry.id; },
                               [](const ComicItemCase::DeletedComicInList &row) -> ComicRowId { return row.entry.id; },
+                              [](const ComicItemCase::PlaceholderInList &row) -> ComicRowId { return row.entry.id; },
                       },
                       item);
 }
@@ -141,6 +160,30 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   }
                                   return false;
                               },
+                              [action](const ComicItemCase::PlaceholderInList &row) {
+                                  switch (action) {
+                                  case ComicAction::SaveCover:
+                                      return row.placeholder.coverKey.has_value();
+                                  case ComicAction::AssignNumbers:
+                                  case ComicAction::AddToList:
+                                  case ComicAction::RemoveFromList:
+                                      return true;
+                                  // no file, reading state, type, or rating
+                                  case ComicAction::Open:
+                                  case ComicAction::OpenContainingFolder:
+                                  case ComicAction::ChangeFile:
+                                  case ComicAction::SetReadState:
+                                  case ComicAction::SetType:
+                                  case ComicAction::DeleteMetadata:
+                                  case ComicAction::AddToFavorites:
+                                  // the dialogs take placeholders in step 29b
+                                  case ComicAction::EditMetadata:
+                                  case ComicAction::SearchComicVine:
+                                  case ComicAction::SetCustomCover:
+                                      return false;
+                                  }
+                                  return false;
+                              },
                       },
                       item);
 }
@@ -165,7 +208,9 @@ bool sameValues(const ComicItem &a, const ComicItem &b)
     if (comicA != nullptr && comicA->file != comicB->file)
         return false;
 
-    return rowInfo(a).hasSameValues(rowInfo(b));
+    if (const auto *placeholderA = rowPlaceholder(a))
+        return placeholderA->hasSameValues(*rowPlaceholder(b));
+    return rowInfo(a)->hasSameValues(*rowInfo(b));
 }
 
 // what kind of row this is and where it is; a role that the case does not have is nothing to show
@@ -209,6 +254,19 @@ QVariant identityValue(const ComicItem &item, int role)
                                   }
                                   return { };
                               },
+                              [role](const ComicItemCase::PlaceholderInList &row) -> QVariant {
+                                  switch (role) {
+                                  case ComicModel::KindRole:
+                                      return QStringLiteral("PlaceholderInList");
+                                  case ComicModel::AvailableRole:
+                                      return false;
+                                  case ComicModel::ListItemIdRole:
+                                      return row.entry.id.id;
+                                  case ComicModel::ListIdRole:
+                                      return row.entry.listId;
+                                  }
+                                  return { };
+                              },
                       },
                       item);
 }
@@ -244,23 +302,40 @@ QVariant fileColumnValue(const ComicItem &item, int column)
                                   }
                                   return { };
                               },
+                              [](const ComicItemCase::PlaceholderInList &) -> QVariant { return { }; },
                       },
                       item);
 }
 
+// a placeholder has the descriptive columns only
 QVariant columnValue(const ComicItem &item, int column)
 {
-    const auto &info = rowInfo(item);
+    const auto &metadata = rowMetadata(item);
     switch (column) {
     case ComicModel::Number:
-        return info.number;
+        return metadata.number;
     case ComicModel::Title:
-        return info.title;
+        return metadata.title;
+    case ComicModel::PublicationDate:
+        return metadata.date;
+    case ComicModel::Series:
+        return metadata.series;
+    case ComicModel::Volume:
+        return metadata.volume;
+    case ComicModel::StoryArc:
+        return metadata.storyArc;
     case ComicModel::FileName:
     case ComicModel::Id:
     case ComicModel::Parent_Id:
     case ComicModel::Path:
         return fileColumnValue(item, column);
+    }
+
+    const auto *infoOfRow = rowInfo(item);
+    if (infoOfRow == nullptr)
+        return { };
+    const auto &info = *infoOfRow;
+    switch (column) {
     case ComicModel::NumPages:
         return info.numPages;
     case ComicModel::Hash:
@@ -273,27 +348,19 @@ QVariant columnValue(const ComicItem &item, int column)
         return info.rating;
     case ComicModel::HasBeenOpened:
         return qlonglong(info.hasBeenOpened ? 1 : 0); // the views got the SQL integer
-    case ComicModel::PublicationDate:
-        return info.date;
     case ComicModel::Added:
         return info.added;
     case ComicModel::Type:
         return info.type;
     case ComicModel::LastTimeOpened:
         return info.lastTimeOpened;
-    case ComicModel::Series:
-        return info.series;
-    case ComicModel::Volume:
-        return info.volume;
-    case ComicModel::StoryArc:
-        return info.storyArc;
     }
     return QVariant();
 }
 
 bool defaultFolderContentSortFunction(const ComicItem &c1, const ComicItem &c2)
 {
-    return comicNumberLessThan(rowInfo(c1).number, rowFileName(c1), rowInfo(c2).number, rowFileName(c2));
+    return comicNumberLessThan(rowMetadata(c1).number, rowFileName(c1), rowMetadata(c2).number, rowFileName(c2));
 }
 
 }
@@ -431,6 +498,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
                            [&allComicIds](const ComicItemCase::Comic &row) { allComicIds << row.comic.file.id.value(); },
                            [&allEntryIds](const ComicItemCase::ComicInList &row) { allEntryIds << row.entry.id; },
                            [&allEntryIds](const ComicItemCase::DeletedComicInList &row) { allEntryIds << row.entry.id; },
+                           [&allEntryIds](const ComicItemCase::PlaceholderInList &row) { allEntryIds << row.entry.id; },
                    },
                    item);
     }
@@ -482,17 +550,15 @@ bool ComicModel::canBeResorted()
     return enableResorting;
 }
 
-// comic ids for Favorites and the drop checks, comic_info ids for other lists, and entry ids for the order of this list
+// comic ids for Favorites, file moves, and the drop checks, and the entries of a list; the rows of the drag are the entries, or else the comics
 QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
 {
     QList<qulonglong> ids;
-    QList<ComicInfoId> comicInfoIds;
     QList<ListItemId> entryIds;
     for (const auto &index : indexes) {
         const auto &item = _data.at(index.row());
         if (const auto *comic = rowComic(item))
             ids << comic->file.id.value();
-        comicInfoIds << rowInfo(item).id;
         if (const auto *entry = rowEntry(item))
             entryIds << entry->id;
     }
@@ -503,7 +569,6 @@ QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
 
     auto mimeData = new QMimeData();
     mimeData->setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, data);
-    YACReader::setComicInfoIdsMimeData(mimeData, comicInfoIds);
     if (!entryIds.isEmpty())
         YACReader::setListEntriesMimeData(mimeData, entryIds);
 
@@ -583,8 +648,10 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     // these roles will be used from QML/GridView
 
     const auto &item = _data.at(index.row());
-    const auto &info = rowInfo(item);
+    const auto *placeholder = rowPlaceholder(item);
     const auto value = [&item](int column) { return columnValue(item, column); };
+    // a placeholder without a title shows its series
+    const auto titleFallback = [&] { return placeholder != nullptr ? value(Series) : value(FileName); };
 
     auto sizeString = [=] {
         auto bytes = value(ComicModel::Hash).toString().right(value(ComicModel::Hash).toString().length() - 40).toULongLong();
@@ -604,22 +671,26 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     if (role == NumberRole)
         return value(Number);
     else if (role == TitleRole)
-        return value(Title).isNull() ? value(FileName) : value(Title);
+        return value(Title).isNull() ? titleFallback() : value(Title);
     else if (role == ReadableTitle) {
         QString title;
         if (!value(Number).isNull()) {
             title = title % "#" % value(Number).toString() % " ";
         }
-        return QVariant(title % (value(Title).isNull() ? value(FileName).toString() : value(Title).toString()));
+        return QVariant(title % (value(Title).isNull() ? titleFallback().toString() : value(Title).toString()));
     } else if (role == FileNameRole)
         return rowComic(item) ? value(FileName) : QVariant();
     else if (role == RatingRole)
         return value(Rating);
     else if (role == CoverPathRole) {
+        if (placeholder != nullptr) {
+            const auto coverPath = placeholder->coverKey ? LibraryPaths::placeholderCoverPathFromDataPath(_databasePath, *placeholder->coverKey) : QString();
+            return coverPath.isEmpty() || !QFileInfo::exists(coverPath) ? QUrl(QStringLiteral("qrc:/images/unavailableCover.png")) : QUrl::fromLocalFile(coverPath);
+        }
         auto coverUrl = getCoverUrlPathForComicHash(value(Hash).toString());
         if (!rowComic(item) && !QFileInfo::exists(coverUrl.toLocalFile()))
             return QUrl(QStringLiteral("qrc:/images/unavailableCover.png"));
-        const auto revision = coverRevisions.value(info.id.value());
+        const auto revision = coverRevisions.value(rowInfo(item)->id.value());
         if (revision > 0)
             coverUrl.setQuery(QStringLiteral("revision=%1").arg(revision));
         return coverUrl;
@@ -646,7 +717,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     else if (role == RecentRangeRole)
         return recentDays * 86400;
     else if (role == SizeRole)
-        return sizeString();
+        return placeholder != nullptr ? QVariant() : QVariant(sizeString());
     else if (role == SeriesRole)
         return value(Series);
     else if (role == VolumeRole)
@@ -660,7 +731,19 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     if (index.column() == ComicModel::Hash)
-        return value(ComicModel::Hash).toString();
+        return value(ComicModel::Hash);
+    // a placeholder shows "-" for the values it does not have
+    if (placeholder != nullptr) {
+        switch (index.column()) {
+        case ComicModel::FileName:
+        case ComicModel::NumPages:
+        case ComicModel::CurrentPage:
+        case ComicModel::Size:
+            return QStringLiteral("-");
+        case ComicModel::ReadColumn:
+            return QVariant();
+        }
+    }
     if (index.column() == ComicModel::Size)
         return sizeString();
     if (index.column() == ComicModel::ReadColumn)
@@ -682,7 +765,7 @@ Qt::ItemFlags ComicModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return { };
-    if (index.column() == ComicModel::Rating)
+    if (index.column() == ComicModel::Rating && supports(index, ComicAction::SetReadState))
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
 }
@@ -796,8 +879,12 @@ QStringList ComicModel::getPaths(const QString &_source)
 {
     QStringList paths;
     for (const auto &item : std::as_const(_data)) {
-        auto path = LibraryPaths::coverPath(_source, rowInfo(item).hash);
-        if (rowComic(item) == nullptr && !QFileInfo::exists(path))
+        QString path;
+        if (const auto *placeholder = rowPlaceholder(item))
+            path = placeholder->coverKey ? LibraryPaths::placeholderCoverPathFromDataPath(LibraryPaths::libraryDataPath(_source), *placeholder->coverKey) : QString();
+        else
+            path = LibraryPaths::coverPath(_source, rowInfo(item)->hash);
+        if (rowComic(item) == nullptr && (path.isEmpty() || !QFileInfo::exists(path)))
             path = QStringLiteral(":/images/unavailableCover.png");
         paths << path;
     }
@@ -1105,10 +1192,14 @@ QList<ComicItem> ComicModel::createItems(QSqlQuery &query, ListKind listKind)
     const auto record = query.record();
     const auto indexes = ComicDB::columnIndexes(record, "c", "ci");
     const auto entryIndexes = ListEntry::columnIndexes(record, "e", listKind);
+    const auto placeholderIndexes = Placeholder::columnIndexes(record, "p");
     const auto fileId = indexes.file.first();
+    const auto placeholderId = placeholderIndexes.first();
     while (query.next()) {
         auto entry = ListEntry::fromQuery(query, entryIndexes, listKind);
-        if (query.value(fileId).isNull())
+        if (!query.value(placeholderId).isNull())
+            items.append(ComicItemCase::PlaceholderInList { Placeholder::fromQuery(query, placeholderIndexes), std::move(entry) });
+        else if (query.value(fileId).isNull())
             items.append(ComicItemCase::DeletedComicInList { ComicInfo::fromQuery(query, indexes.info), std::move(entry) });
         else
             items.append(ComicItemCase::ComicInList { ComicDB::fromQuery(query, indexes), std::move(entry) });
@@ -1226,7 +1317,12 @@ QVector<YACReaderComicReadStatus> ComicModel::getReadList()
     int numComics = _data.count();
     QVector<YACReaderComicReadStatus> readList(numComics);
     for (int i = 0; i < numComics; i++) {
-        const auto &info = rowInfo(_data.at(i));
+        const auto *infoOfRow = rowInfo(_data.at(i));
+        if (infoOfRow == nullptr) {
+            readList[i] = YACReader::Unread;
+            continue;
+        }
+        const auto &info = *infoOfRow;
         if (info.read)
             readList[i] = YACReader::Read;
         else if (info.currentPage == info.numPages.toInt())
@@ -1277,6 +1373,7 @@ ComicRecord ComicModel::record(const QModelIndex &index) const
                               [](const ComicItemCase::Comic &row) -> ComicRecord { return ComicRecordCase::Comic { row.comic }; },
                               [](const ComicItemCase::ComicInList &row) -> ComicRecord { return ComicRecordCase::Comic { row.comic }; },
                               [](const ComicItemCase::DeletedComicInList &row) -> ComicRecord { return ComicRecordCase::DeletedComic { row.info, row.entry.lastKnownFile }; },
+                              [](const ComicItemCase::PlaceholderInList &row) -> ComicRecord { return ComicRecordCase::Placeholder { row.placeholder }; },
                       },
                       _data.at(index.row()));
 }
@@ -1314,7 +1411,10 @@ void ComicModel::deleteMetadata(const QModelIndexList &indexes)
         db.transaction();
         QSet<ComicInfoId> done;
         for (const auto &mi : indexes) {
-            const auto id = rowInfo(_data.at(mi.row())).id;
+            const auto *info = rowInfo(_data.at(mi.row()));
+            if (info == nullptr)
+                continue;
+            const auto id = info->id;
             if (done.contains(id))
                 continue;
             done.insert(id);
@@ -1340,7 +1440,10 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
         for (const auto &mi : comicIndexes) {
-            const auto id = rowInfo(_data.at(mi.row())).id;
+            const auto *rowComicInfo = rowInfo(_data.at(mi.row()));
+            if (rowComicInfo == nullptr)
+                continue;
+            const auto id = rowComicInfo->id;
             if (read == YACReader::Read) {
                 if (auto info = DBHelper::loadComicInfo(id, db)) {
                     info->read = true;
@@ -1385,7 +1488,10 @@ void ComicModel::setComicsType(QList<QModelIndex> list, FileType type)
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
         for (const auto &mi : comicIndexes) {
-            const auto id = rowInfo(_data.at(mi.row())).id;
+            const auto *rowComicInfo = rowInfo(_data.at(mi.row()));
+            if (rowComicInfo == nullptr)
+                continue;
+            const auto id = rowComicInfo->id;
             if (auto info = DBHelper::loadComicInfo(id, db)) {
                 info->type = QVariant::fromValue(type);
                 DBHelper::update(&*info, db);
@@ -1405,31 +1511,43 @@ void ComicModel::setComicsType(QList<QModelIndex> list, FileType type)
 void ComicModel::updateRowsOf(ComicInfoId id, const std::function<void(ComicInfo &)> &change, int firstColumn, int lastColumn, const QList<int> &roles)
 {
     for (int row = 0; row < _data.size(); row++) {
-        auto &info = rowInfo(_data[row]);
-        if (info.id != id)
+        auto *info = rowInfo(_data[row]);
+        if (info == nullptr || info->id != id)
             continue;
-        change(info);
+        change(*info);
         emit dataChanged(index(row, firstColumn), index(row, lastColumn), roles);
     }
 }
 
+// each comic_info or placeholder gets one number, at its first appearance in `list`
 ComicRowId ComicModel::asignNumbers(QList<QModelIndex> list, int startingNumber)
 {
     ComicRowId idFirst;
     QString connectionName = "";
-    const auto &comicIndexes = list;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
         idFirst = rowIdOf(_data.at(list[0].row()));
-        int i = 0;
-        for (const auto &mi : comicIndexes) {
-            if (auto info = DBHelper::loadComicInfo(rowInfo(_data.at(mi.row())).id, db)) {
-                info->number = startingNumber + i;
-                info->edited = true;
-                DBHelper::update(&*info, db);
+        QSet<ComicInfoId> numberedComics;
+        QSet<PlaceholderId> numberedPlaceholders;
+        auto number = startingNumber;
+        for (const auto &mi : std::as_const(list)) {
+            const auto &item = _data.at(mi.row());
+            DescriptiveMetadataPatch patch;
+            patch.set(&DescriptiveComicMetadata::number, QString::number(number));
+            if (const auto *placeholder = rowPlaceholder(item)) {
+                if (numberedPlaceholders.contains(placeholder->id))
+                    continue;
+                numberedPlaceholders.insert(placeholder->id);
+                DBHelper::updatePlaceholderMetadata(placeholder->id, patch, db);
+            } else {
+                const auto id = rowInfo(item)->id;
+                if (numberedComics.contains(id))
+                    continue;
+                numberedComics.insert(id);
+                DBHelper::updateComicInfoMetadata(id, patch, db);
             }
-            i++;
+            number++;
         }
         db.commit();
         connectionName = db.connectionName();
@@ -1544,12 +1662,12 @@ void ComicModel::reload()
         break;
     case Reading:
         takeUpdatedData(createReadingModelData(_databasePath), [](const ComicItem &c1, const ComicItem &c2) {
-            return rowInfo(c1).lastTimeOpened.toLongLong() > rowInfo(c2).lastTimeOpened.toLongLong();
+            return rowInfo(c1)->lastTimeOpened.toLongLong() > rowInfo(c2)->lastTimeOpened.toLongLong();
         });
         break;
     case Recent:
         takeUpdatedData(createRecentModelData(_databasePath), [](const ComicItem &c1, const ComicItem &c2) {
-            return rowInfo(c1).added.toLongLong() > rowInfo(c2).added.toLongLong();
+            return rowInfo(c1)->added.toLongLong() > rowInfo(c2)->added.toLongLong();
         });
         break;
     case Label:
@@ -1579,7 +1697,10 @@ void ComicModel::reload(const ComicDB &comic)
 
 void ComicModel::resetComicRating(const QModelIndex &mi)
 {
-    const auto id = rowInfo(_data.at(mi.row())).id;
+    const auto *info = rowInfo(_data.at(mi.row()));
+    if (info == nullptr)
+        return;
+    const auto id = info->id;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
@@ -1638,21 +1759,21 @@ void ComicModel::addComicsToFavorites(const QList<QModelIndex> &comicsList)
 
 void ComicModel::addComicsToLabel(const QList<QModelIndex> &comicsList, qulonglong labelId)
 {
-    QList<ComicInfoId> comicInfoIds;
-    comicInfoIds.reserve(comicsList.size());
+    QList<ComicRowId> rows;
+    rows.reserve(comicsList.size());
     for (const auto &index : comicsList)
-        comicInfoIds.append(rowInfo(_data.at(index.row())).id);
+        rows.append(rowIdOf(_data.at(index.row())));
 
-    addComicsToLabel(comicInfoIds, labelId);
+    addComicsToLabel(rows, labelId);
 }
 
-void ComicModel::addComicsToLabel(const QList<ComicInfoId> &comicInfoIds, qulonglong labelId)
+void ComicModel::addComicsToLabel(const QList<ComicRowId> &rows, qulonglong labelId)
 {
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-        DBHelper::appendComicsToLabel(LabelId(labelId), comicInfoIds, db);
+        DBHelper::appendRowsToLabel(LabelId(labelId), rows, db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1660,21 +1781,21 @@ void ComicModel::addComicsToLabel(const QList<ComicInfoId> &comicInfoIds, qulong
 
 void ComicModel::addComicsToReadingList(const QList<QModelIndex> &comicsList, qulonglong readingListId)
 {
-    QList<ComicInfoId> comicInfoIds;
-    comicInfoIds.reserve(comicsList.size());
+    QList<ComicRowId> rows;
+    rows.reserve(comicsList.size());
     for (const auto &index : comicsList)
-        comicInfoIds.append(rowInfo(_data.at(index.row())).id);
+        rows.append(rowIdOf(_data.at(index.row())));
 
-    addComicsToReadingList(comicInfoIds, readingListId);
+    addComicsToReadingList(rows, readingListId);
 }
 
-void ComicModel::addComicsToReadingList(const QList<ComicInfoId> &comicInfoIds, qulonglong readingListId)
+void ComicModel::addComicsToReadingList(const QList<ComicRowId> &rows, qulonglong readingListId)
 {
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-        DBHelper::appendComicsToReadingList(ReadingListId(readingListId), comicInfoIds, db);
+        DBHelper::appendRowsToReadingList(ReadingListId(readingListId), rows, db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1843,7 +1964,10 @@ void ComicModel::setRecentRange(int days)
 
 void ComicModel::updateRating(int rating, QModelIndex mi)
 {
-    const auto id = rowInfo(_data.at(mi.row())).id;
+    const auto *info = rowInfo(_data.at(mi.row()));
+    if (info == nullptr)
+        return;
+    const auto id = info->id;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);

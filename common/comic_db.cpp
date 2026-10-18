@@ -201,7 +201,7 @@ QString ComicDB::getInfoTitle() const
     return infoTitle(info, QFileInfo(file.path).fileName());
 }
 
-QString titleOrFileName(const ComicInfo &info, const QString &fileName)
+QString titleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
 {
     if (!info.title.isNull() && !info.title.toString().isEmpty())
         return info.title.toString();
@@ -209,7 +209,7 @@ QString titleOrFileName(const ComicInfo &info, const QString &fileName)
         return fileName;
 }
 
-QString titleIncludingNumber(const ComicInfo &info, const QString &fileName)
+QString titleIncludingNumber(const DescriptiveComicMetadata &info, const QString &fileName)
 {
     if (!info.number.isNull()) {
         return "#" + info.number.toString() + " - " + titleOrFileName(info, fileName);
@@ -218,7 +218,7 @@ QString titleIncludingNumber(const ComicInfo &info, const QString &fileName)
     return titleOrFileName(info, fileName);
 }
 
-QString infoTitle(const ComicInfo &info, const QString &fileName)
+QString infoTitle(const DescriptiveComicMetadata &info, const QString &fileName)
 {
     if (!info.number.isNull() && !info.title.isNull() && !info.series.isNull())
         return "#" + info.number.toString() + " - " + info.title.toString() + " (" + info.series.toString() + ")";
@@ -332,114 +332,6 @@ QPixmap ComicInfo::getCover(const QString &basePath) const
     return QPixmap(YACReader::LibraryPaths::coverPath(basePath, hash));
 }
 
-QStringList ComicInfo::getWriters() const
-{
-    if (writer.toString().length() > 0) {
-        return writer.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getPencillers() const
-{
-    if (penciller.toString().length() > 0) {
-        return penciller.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getInkers() const
-{
-    if (inker.toString().length() > 0) {
-        return inker.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getColorists() const
-{
-    if (colorist.toString().length() > 0) {
-        return colorist.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getLetterers() const
-{
-    if (letterer.toString().length() > 0) {
-        return letterer.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getCoverArtists() const
-{
-    if (coverArtist.toString().length() > 0) {
-        return coverArtist.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getEditors() const
-{
-    if (editor.toString().length() > 0) {
-        return editor.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getImprint() const
-{
-    if (imprint.toString().length() > 0) {
-        return imprint.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getCharacters() const
-{
-    if (characters.toString().length() > 0) {
-        return characters.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getTeams() const
-{
-    if (teams.toString().length() > 0) {
-        return teams.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getLocations() const
-{
-    if (locations.toString().length() > 0) {
-        return locations.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getTags() const
-{
-    if (tags.toString().length() > 0) {
-        return tags.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
 QString ComicInfo::getTypeString() const
 {
     if (type.isNull()) {
@@ -466,32 +358,6 @@ QString ComicInfo::getTypeString() const
 
     assert(false);
     return QStringLiteral("Unknown");
-}
-
-QString ComicInfo::getStoryArcInfoString() const
-{
-    if (arcNumber.toString().length() > 0 && arcCount.toString().length() > 0 && storyArc.toString().length() > 0) {
-        return "(" + arcNumber.toString() + "/" + arcCount.toString() + ") " + storyArc.toString();
-    }
-
-    if (arcNumber.toString().length() > 0 && storyArc.toString().length() > 0) {
-        return "(" + arcNumber.toString() + ") " + storyArc.toString();
-    }
-
-    return storyArc.toString().length() > 0 ? storyArc.toString() : "";
-}
-
-QString ComicInfo::getAlternateSeriesString() const
-{
-    if (alternateNumber.toString().length() > 0 && alternateCount.toString().length() > 0 && alternateSeries.toString().length() > 0) {
-        return "(" + alternateNumber.toString() + "/" + alternateCount.toString() + ") " + alternateSeries.toString();
-    }
-
-    if (alternateNumber.toString().length() > 0 && alternateSeries.toString().length() > 0) {
-        return "(" + alternateNumber.toString() + ") " + alternateSeries.toString();
-    }
-
-    return alternateSeries.toString().length() > 0 ? alternateSeries.toString() : "";
 }
 
 QString ComicDB::selectList(const QString &fileAlias, const QString &infoAlias)

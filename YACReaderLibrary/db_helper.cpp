@@ -179,12 +179,15 @@ QString listComicsQuery(const EntryTable &entries)
                     .arg(entries.table, entries.parentColumn);
 }
 
+// an entry refers to a comic_info (with or without a file) or to a placeholder
 QString listEntriesQuery(const EntryTable &entries)
 {
-    return "SELECT " + ComicDB::selectList("c", "ci") + ", " + TableProjection::selectList("e", ListEntry::columns(entries.listKind)) +
+    return "SELECT " + ComicDB::selectList("c", "ci") + ", " + TableProjection::selectList("e", ListEntry::columns(entries.listKind)) + ", " +
+            TableProjection::selectList("p", Placeholder::columns()) +
             QString(" FROM %1 e "
-                    "INNER JOIN comic_info ci ON (ci.id = e.comic_info_id) "
+                    "LEFT JOIN comic_info ci ON (ci.id = e.comic_info_id) "
                     "LEFT JOIN comic c ON (c.id = (SELECT MIN(id) FROM comic WHERE comicInfoId = e.comic_info_id)) "
+                    "LEFT JOIN placeholder p ON (p.id = e.placeholder_id) "
                     "WHERE e.%2 = :list_id "
                     "ORDER BY e.ordering, e.id")
                     .arg(entries.table, entries.parentColumn);
@@ -360,6 +363,53 @@ bool appendComics(const EntryTable &entries, qulonglong parentId, const QList<Co
     return db.commit();
 }
 
+// appends what each row refers to, in order: the comic_info of a comic, or the comic_info or placeholder of an entry
+bool appendRows(const EntryTable &entries, qulonglong parentId, const QList<ComicRowId> &rows, QSqlDatabase &db)
+{
+    const auto insert = [&entries](const QString &source) {
+        auto statement = QString("INSERT INTO %1 (%2, ordering, comic_info_id, placeholder_id) "
+                                 "SELECT :parent_id, "
+                                 "(SELECT COALESCE(MAX(ordering), -1) + 1 FROM %1 WHERE %2 = :parent_id), "
+                                 "s.comic_info_id, s.placeholder_id "
+                                 "FROM (%3) s")
+                                 .arg(entries.table, entries.parentColumn, source);
+        if (!entries.repeats)
+            statement += QString(" WHERE NOT EXISTS (SELECT 1 FROM %1 WHERE %2 = :parent_id AND comic_info_id IS s.comic_info_id AND placeholder_id IS s.placeholder_id)")
+                                 .arg(entries.table, entries.parentColumn);
+        return statement;
+    };
+
+    db.transaction();
+
+    QSqlQuery fromComic(db);
+    fromComic.prepare(insert("SELECT comicInfoId AS comic_info_id, NULL AS placeholder_id FROM comic WHERE id = :row_id"));
+    QSqlQuery fromReadingListEntry(db);
+    fromReadingListEntry.prepare(insert(QString("SELECT comic_info_id, placeholder_id FROM %1 WHERE id = :row_id").arg(readingListEntries.table)));
+    QSqlQuery fromLabelEntry(db);
+    fromLabelEntry.prepare(insert(QString("SELECT comic_info_id, placeholder_id FROM %1 WHERE id = :row_id").arg(labelEntries.table)));
+
+    for (const auto &row : rows) {
+        auto &query = std::visit(overloaded {
+                                         [&](const ComicId &) -> QSqlQuery & { return fromComic; },
+                                         [&](const ListItemId &entry) -> QSqlQuery & { return entry.listKind == ListKind::ReadingList ? fromReadingListEntry : fromLabelEntry; },
+                                 },
+                                 row);
+        query.bindValue(":parent_id", parentId);
+        query.bindValue(":row_id", std::visit(overloaded {
+                                                      [](const ComicId &comic) { return comic.value(); },
+                                                      [](const ListItemId &entry) { return entry.id; },
+                                              },
+                                              row));
+        if (!query.exec()) {
+            QLOG_ERROR() << "Unable to append rows to" << entries.table << ":" << query.lastError().text();
+            db.rollback();
+            return false;
+        }
+    }
+
+    return db.commit();
+}
+
 }
 
 std::optional<QStringList> DBHelper::removeLabelEntries(LabelId labelId, const QList<ListItemId> &entryIds, QSqlDatabase &db)
@@ -390,6 +440,16 @@ bool DBHelper::appendComicsToLabel(LabelId labelId, const QList<ComicInfoId> &co
 bool DBHelper::appendComicsToReadingList(ReadingListId readingListId, const QList<ComicInfoId> &comicInfoIds, QSqlDatabase &db)
 {
     return appendComics(readingListEntries, readingListId.value(), comicInfoIds, db);
+}
+
+bool DBHelper::appendRowsToLabel(LabelId labelId, const QList<ComicRowId> &rows, QSqlDatabase &db)
+{
+    return appendRows(labelEntries, labelId.value(), rows, db);
+}
+
+bool DBHelper::appendRowsToReadingList(ReadingListId readingListId, const QList<ComicRowId> &rows, QSqlDatabase &db)
+{
+    return appendRows(readingListEntries, readingListId.value(), rows, db);
 }
 
 const QString &DBHelper::listComicsQuery(ListKind listKind)
@@ -813,6 +873,22 @@ bool DBHelper::updateComicInfoMetadata(ComicInfoId id, const DescriptiveMetadata
     query.bindValue(":id", id.value());
     if (!query.exec()) {
         QLOG_ERROR() << "Unable to update the metadata of a comic:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DBHelper::updatePlaceholderMetadata(PlaceholderId id, const DescriptiveMetadataPatch &patch, QSqlDatabase &db)
+{
+    if (patch.isEmpty())
+        return true;
+
+    QSqlQuery query(db);
+    query.prepare("UPDATE placeholder SET " + patch.assignments().join(", ") + " WHERE id = :id");
+    patch.bindTo(query);
+    query.bindValue(":id", id.value());
+    if (!query.exec()) {
+        QLOG_ERROR() << "Unable to update the metadata of a placeholder:" << query.lastError().text();
         return false;
     }
     return true;
@@ -2090,6 +2166,13 @@ std::optional<ComicRecord> DBHelper::loadRecord(const ComicRecord &record, QSqlD
         if (!found || loaded.info.id != comic->info.id)
             return std::nullopt;
         return ComicRecordCase::Comic { std::move(loaded) };
+    }
+
+    if (const auto *placeholder = recordPlaceholder(record)) {
+        auto loaded = loadPlaceholder(placeholder->id, db);
+        if (!loaded)
+            return std::nullopt;
+        return ComicRecordCase::Placeholder { std::move(*loaded) };
     }
 
     const auto &deleted = std::get<ComicRecordCase::DeletedComic>(record);

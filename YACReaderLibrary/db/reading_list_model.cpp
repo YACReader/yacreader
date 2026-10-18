@@ -272,12 +272,12 @@ bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, 
     }
 
     if (rowIsLabel(dest.row(), parentDest)) {
-        emit addComicsToLabel(YACReader::mimeDataToComicInfoIds(data), dest.data(IDRole).toULongLong());
+        emit addComicsToLabel(YACReader::mimeDataToRows(data), dest.data(IDRole).toULongLong());
         return true;
     }
 
     if (rowIsReadingList(dest.row(), parentDest)) {
-        emit addComicsToReadingList(YACReader::mimeDataToComicInfoIds(data), dest.data(IDRole).toULongLong());
+        emit addComicsToReadingList(YACReader::mimeDataToRows(data), dest.data(IDRole).toULongLong());
         return true;
     }
 

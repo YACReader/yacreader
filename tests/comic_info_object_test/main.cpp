@@ -21,6 +21,7 @@ private slots:
     void exposesTheQmlProperties();
     void readsTheComic();
     void readsADeletedComic();
+    void readsAPlaceholder();
     void writablePropertiesNotifyOnce_data();
     void writablePropertiesNotifyOnce();
     void streamKeepsTheExistOnDbSlot_data();
@@ -66,7 +67,7 @@ void ComicInfoObjectTest::exposesTheQmlProperties()
         "editor", "imprint", "teams", "locations", "series", "alternateSeries", "alternateNumber", "alternateCount",
         "languageISO", "seriesGroup", "mainCharacterOrTeam", "review", "tags",
         "imageFiltersJson", "lastTimeImageFiltersSet", "lastTimeCoverSet", "usesExternalCover", "lastTimeMetadataSet",
-        "isFavorite", "available"
+        "isFavorite", "available", "canSetReadState"
     };
 
     const auto *metaObject = &ComicInfoObject::staticMetaObject;
@@ -130,6 +131,42 @@ void ComicInfoObjectTest::readsADeletedComic()
 
     ComicInfoObject withoutName(ComicRecordCase::DeletedComic { comic.info, std::nullopt }, false);
     QCOMPARE(withoutName.getTitleOrFileName(), QString());
+}
+
+// the descriptive metadata only; no comic state, and the read state and rating cannot be set
+void ComicInfoObjectTest::readsAPlaceholder()
+{
+    Placeholder placeholder;
+    placeholder.id = PlaceholderId(9);
+    placeholder.series = QString("Expected Series");
+    placeholder.number = QString("3");
+    placeholder.writer = QString("Writer A\nWriter B");
+    placeholder.storyArc = QString("Arc");
+    ComicInfoObject object(ComicRecordCase::Placeholder { placeholder }, false);
+
+    QCOMPARE(object.property("available").toBool(), false);
+    QCOMPARE(object.property("canSetReadState").toBool(), false);
+    QCOMPARE(object.property("series").toString(), QString("Expected Series"));
+    QCOMPARE(object.property("number").toString(), QString("3"));
+    QCOMPARE(object.getWriters(), QStringList({ "Writer A", "Writer B" }));
+    QCOMPARE(object.getStoryArcInfoString(), QString("Arc"));
+    QCOMPARE(object.getInfoTitle(), QString("#3 - Expected Series"));
+    QCOMPARE(object.property("id").toULongLong(), 0ULL);
+    QCOMPARE(object.property("read").toBool(), false);
+    QCOMPARE(object.property("rating").toInt(), 0);
+    QVERIFY(object.property("numPages").isNull());
+    QVERIFY(object.property("hash").toString().isEmpty());
+    QVERIFY(object.getTypeString().isEmpty());
+    QCOMPARE(object.getFileSize(), 0ULL);
+
+    QSignalSpy readChanged(&object, &ComicInfoObject::readChanged);
+    object.setRead(true);
+    object.setRating(5);
+    QCOMPARE(readChanged.count(), 0);
+    QCOMPARE(object.property("rating").toInt(), 0);
+
+    ComicInfoObject comic(ComicRecordCase::Comic { sampleComic() }, false);
+    QCOMPARE(comic.property("canSetReadState").toBool(), true);
 }
 
 void ComicInfoObjectTest::writablePropertiesNotifyOnce_data()

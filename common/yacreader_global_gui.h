@@ -99,7 +99,6 @@ namespace YACReader {
 
 static const QString YACReaderLibrarComiscSelectionMimeDataFormat = "application/yacreaderlibrary-comics-ids";
 static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/yacreaderlibrary-sublist-rows";
-static const QString YACReaderLibraryComicInfoIdsMimeDataFormat = "application/yacreaderlibrary-comic-info-ids";
 static const QString YACReaderLibraryListEntriesMimeDataFormat = "application/yacreaderlibrary-list-entries";
 
 enum FlowType {
@@ -127,9 +126,9 @@ QAction *createSeparator();
 QIcon noHighlightedIcon(const QString &path);
 void colorize(QImage &img, const QColor &col);
 QList<qulonglong> mimeDataToComicsIds(const QMimeData *data);
-QList<ComicInfoId> mimeDataToComicInfoIds(const QMimeData *data);
 QList<ListItemId> mimeDataToListEntries(const QMimeData *data);
-void setComicInfoIdsMimeData(QMimeData *data, const QList<ComicInfoId> &comicInfoIds);
+// the rows of a drag: the entries of a list, or else the comics
+QList<ComicRowId> mimeDataToRows(const QMimeData *data);
 void setListEntriesMimeData(QMimeData *data, const QList<ListItemId> &entryIds);
 QAction *wrappedToolbarAction(QAction *action);
 QPixmap hdpiPixmap(const QString &file, QSize size);

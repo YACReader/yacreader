@@ -227,14 +227,22 @@ void YACReaderComicStateDelegate::paint(QPainter *painter, const QStyleOptionVie
 {
     QStyledItemDelegate::paint(painter, option, index);
 
-    if (index.data(ComicModel::KindRole).toString() != QStringLiteral("DeletedComicInList"))
+    auto tableView = qobject_cast<YACReaderTableView *>(parent());
+    if (tableView == nullptr)
         return;
 
-    if (auto tableView = qobject_cast<YACReaderTableView *>(parent())) {
-        const int size = 12;
-        const QRect iconRect(option.rect.center() - QPoint(size / 2 - 1, size / 2 - 1), QSize(size, size));
-        tableView->deletedComicIcon().paint(painter, iconRect, Qt::AlignCenter, (option.state & QStyle::State_Selected) ? QIcon::Selected : QIcon::Normal);
-    }
+    const auto kind = index.data(ComicModel::KindRole).toString();
+    QIcon icon;
+    if (kind == QStringLiteral("DeletedComicInList"))
+        icon = tableView->deletedComicIcon();
+    else if (kind == QStringLiteral("PlaceholderInList"))
+        icon = tableView->placeholderComicIcon();
+    else
+        return;
+
+    const int size = 12;
+    const QRect iconRect(option.rect.center() - QPoint(size / 2 - 1, size / 2 - 1), QSize(size, size));
+    icon.paint(painter, iconRect, Qt::AlignCenter, (option.state & QStyle::State_Selected) ? QIcon::Selected : QIcon::Normal);
 }
 
 QSize YACReaderComicStateDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const

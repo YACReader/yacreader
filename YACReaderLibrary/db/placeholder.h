@@ -21,6 +21,8 @@ struct Placeholder : DescriptiveComicMetadata {
     static QList<int> columnIndexes(const QSqlRecord &record, const QString &alias);
     static Placeholder fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes);
     void bindTo(QSqlQuery &query) const;
+    // compares every column
+    bool hasSameValues(const Placeholder &other) const;
 };
 
 #endif

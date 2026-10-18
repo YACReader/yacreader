@@ -467,7 +467,7 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
 {
     customCover = QImage();
 
-    const auto &info = recordInfo(record);
+    const auto &info = *recordInfo(record);
     const auto *comic = recordComic(record);
 
     series->setText(info.series.isNull() ? QString() : info.series.toString());
@@ -585,7 +585,7 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
 // a deleted comic shows its cover in grayscale, or the default image when the cover file is missing
 QPixmap PropertiesDialog::coverOf(const ComicRecord &record) const
 {
-    const auto &info = recordInfo(record);
+    const auto &info = *recordInfo(record);
     if (recordComic(record) != nullptr)
         return info.getCover(basePath);
 
@@ -645,7 +645,7 @@ void PropertiesDialog::setComics(QList<ComicRecord> records)
         setMultipleCover();
 
         for (auto itr = ++records.cbegin(); itr != records.cend(); itr++) {
-            const auto &info = recordInfo(*itr);
+            const auto &info = *recordInfo(*itr);
 
             if (info.series.isNull() || info.series.toString() != series->text())
                 series->clear();
@@ -882,7 +882,7 @@ std::optional<YACReader::FileType> PropertiesDialog::editedType() const
 // to it (a cover page or a reset needs the file) or the file could not be written
 bool PropertiesDialog::applyCoverChange(ComicRecord &record, StagedCover &staged)
 {
-    auto &info = recordInfo(record);
+    auto &info = *recordInfo(record);
     const auto *comic = recordComic(record);
 
     if (customCover.isNull()) {
@@ -948,7 +948,7 @@ bool PropertiesDialog::updateComics()
             QSet<ComicInfoId> writtenIds;
             for (int i = begin; i < end; i++) {
                 auto record = records[i];
-                auto &info = recordInfo(record);
+                auto &info = *recordInfo(record);
                 if (writtenIds.contains(info.id))
                     continue;
                 writtenIds.insert(info.id);
@@ -1170,7 +1170,7 @@ void PropertiesDialog::updateCoverPageNumberLabel(int n)
 
 void PropertiesDialog::loadNextCover()
 {
-    const auto &info = recordInfo(records[currentComicIndex]);
+    const auto &info = *recordInfo(records[currentComicIndex]);
     int current = coverPageNumberLabel->text().toInt();
     int next;
 
@@ -1186,7 +1186,7 @@ void PropertiesDialog::loadNextCover()
 
 void PropertiesDialog::loadPreviousCover()
 {
-    const auto &info = recordInfo(records[currentComicIndex]);
+    const auto &info = *recordInfo(records[currentComicIndex]);
     int current = coverPageNumberLabel->text().toInt();
     int previous;
 

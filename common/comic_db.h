@@ -62,26 +62,7 @@ public:
 
     QPixmap getCover(const QString &basePath) const;
 
-    QStringList getWriters() const;
-    QStringList getPencillers() const;
-    QStringList getInkers() const;
-    QStringList getColorists() const;
-    QStringList getLetterers() const;
-    QStringList getCoverArtists() const;
-    QStringList getEditors() const;
-    QStringList getImprint() const;
-
-    QStringList getCharacters() const;
-
-    QStringList getTeams() const;
-    QStringList getLocations() const;
-
-    QStringList getTags() const;
-
     QString getTypeString() const;
-
-    QString getStoryArcInfoString() const;
-    QString getAlternateSeriesString() const;
 
     static const QStringList &columns();
     static ComicInfo fromRecord(const QSqlRecord &record, const QString &alias);
@@ -133,9 +114,9 @@ public:
 Q_DECLARE_METATYPE(ComicDB)
 
 // the titles of ComicDB, also for a comic without a file; fileName is the fallback when there is no title
-QString titleOrFileName(const ComicInfo &info, const QString &fileName);
-QString titleIncludingNumber(const ComicInfo &info, const QString &fileName);
-QString infoTitle(const ComicInfo &info, const QString &fileName);
+QString titleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName);
+QString titleIncludingNumber(const DescriptiveComicMetadata &info, const QString &fileName);
+QString infoTitle(const DescriptiveComicMetadata &info, const QString &fileName);
 // the name of the folder that holds `path` (a path in the library, with '/')
 QString parentFolderName(const QString &path);
 

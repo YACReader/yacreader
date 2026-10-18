@@ -49,6 +49,7 @@ Rectangle {
                     y: 5
 
                     read: comicInfo ? comicInfo.read ?? false : false
+                    enabled: comicInfo ? comicInfo.canSetReadState ?? true : true
 
                     onReadChangedByUser: {
                         comicInfo.read = read;
@@ -83,6 +84,7 @@ Rectangle {
                     Layout.topMargin: 5
 
                     read: comicInfo ? comicInfo.read ?? false : false
+                    enabled: comicInfo ? comicInfo.canSetReadState ?? true : true
 
                     onReadChangedByUser: {
                         comicInfo.read = read;
@@ -116,6 +118,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignTop
                     Layout.rightMargin: 30
                     rating: comicInfo ? comicInfo.rating ?? 0 : 0
+                    enabled: comicInfo ? comicInfo.canSetReadState ?? true : true
 
                     onRatingChangedByUser: {
                         comicInfo.rating = rating;
@@ -173,6 +176,7 @@ Rectangle {
                         Layout.alignment: Qt.AlignTop
                         Layout.rightMargin: 30
                         rating: comicInfo ? comicInfo.rating ?? 0 : 0
+                    enabled: comicInfo ? comicInfo.canSetReadState ?? true : true
 
                         onRatingChangedByUser: {
                             comicInfo.rating = rating;

@@ -16,6 +16,7 @@ public:
     QColor starRatingColor() const { return theme.comicsViewTable.starRatingColor; }
     QColor starRatingSelectedColor() const { return theme.comicsViewTable.starRatingSelectedColor; }
     QIcon deletedComicIcon() const { return theme.comicsViewTable.deletedComicIcon; }
+    QIcon placeholderComicIcon() const { return theme.comicsViewTable.placeholderComicIcon; }
 
 protected:
     void applyTheme(const Theme &theme) override;

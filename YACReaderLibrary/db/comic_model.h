@@ -186,8 +186,8 @@ public slots:
     void updateRating(int rating, QModelIndex mi);
 
     void addComicsToFavorites(const QList<qulonglong> &comicIds);
-    void addComicsToLabel(const QList<ComicInfoId> &comicInfoIds, qulonglong labelId);
-    void addComicsToReadingList(const QList<ComicInfoId> &comicInfoIds, qulonglong readingListId);
+    void addComicsToLabel(const QList<ComicRowId> &rows, qulonglong labelId);
+    void addComicsToReadingList(const QList<ComicRowId> &rows, qulonglong readingListId);
 
     void setModelData(QList<ComicItem> *data, const QString &databasePath);
 

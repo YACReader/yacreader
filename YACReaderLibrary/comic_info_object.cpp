@@ -10,321 +10,396 @@ ComicInfoObject::ComicInfoObject(QObject *parent)
 }
 
 ComicInfoObject::ComicInfoObject(const ComicRecord &record, bool isFavorite, QObject *parent)
-    : QObject(parent), info(recordInfo(record)), fileName(recordFileName(record)), isAvailable(recordComic(record) != nullptr), favorite(isFavorite)
+    : QObject(parent), record(record), fileName(recordFileName(record)), isAvailable(recordComic(record) != nullptr), favorite(isFavorite)
 {
 }
 
 qulonglong ComicInfoObject::id() const
 {
-    return info.id.value();
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->id.value();
 }
 
 bool ComicInfoObject::read() const
 {
-    return info.read;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->read;
 }
 
 bool ComicInfoObject::edited() const
 {
-    return info.edited;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->edited;
 }
 
 QString ComicInfoObject::hash() const
 {
-    return info.hash;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->hash;
 }
 
 int ComicInfoObject::rating() const
 {
-    return info.rating;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->rating;
 }
 
 bool ComicInfoObject::hasBeenOpened() const
 {
-    return info.hasBeenOpened;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->hasBeenOpened;
 }
 
 int ComicInfoObject::currentPage() const
 {
-    return info.currentPage;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->currentPage;
 }
 
 int ComicInfoObject::bookmark1() const
 {
-    return info.bookmark1;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->bookmark1;
 }
 
 int ComicInfoObject::bookmark2() const
 {
-    return info.bookmark2;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->bookmark2;
 }
 
 int ComicInfoObject::bookmark3() const
 {
-    return info.bookmark3;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->bookmark3;
 }
 
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 int ComicInfoObject::brightness() const
 {
-    return info.brightness;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->brightness;
 }
 
 int ComicInfoObject::contrast() const
 {
-    return info.contrast;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->contrast;
 }
 
 int ComicInfoObject::gamma() const
 {
-    return info.gamma;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->gamma;
 }
 QT_WARNING_POP
 
 QVariant ComicInfoObject::title() const
 {
-    return info.title;
+    return recordMetadata(record).title;
 }
 
 QVariant ComicInfoObject::coverPage() const
 {
-    return info.coverPage;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->coverPage;
 }
 
 QVariant ComicInfoObject::numPages() const
 {
-    return info.numPages;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->numPages;
 }
 
 QVariant ComicInfoObject::number() const
 {
-    return info.number;
+    return recordMetadata(record).number;
 }
 
 QVariant ComicInfoObject::isBis() const
 {
-    return info.isBis;
+    return recordMetadata(record).isBis;
 }
 
 QVariant ComicInfoObject::count() const
 {
-    return info.count;
+    return recordMetadata(record).count;
 }
 
 QVariant ComicInfoObject::volume() const
 {
-    return info.volume;
+    return recordMetadata(record).volume;
 }
 
 QVariant ComicInfoObject::storyArc() const
 {
-    return info.storyArc;
+    return recordMetadata(record).storyArc;
 }
 
 QVariant ComicInfoObject::arcNumber() const
 {
-    return info.arcNumber;
+    return recordMetadata(record).arcNumber;
 }
 
 QVariant ComicInfoObject::arcCount() const
 {
-    return info.arcCount;
+    return recordMetadata(record).arcCount;
 }
 
 QVariant ComicInfoObject::genere() const
 {
-    return info.genere;
+    return recordMetadata(record).genere;
 }
 
 QVariant ComicInfoObject::writer() const
 {
-    return info.writer;
+    return recordMetadata(record).writer;
 }
 
 QVariant ComicInfoObject::penciller() const
 {
-    return info.penciller;
+    return recordMetadata(record).penciller;
 }
 
 QVariant ComicInfoObject::inker() const
 {
-    return info.inker;
+    return recordMetadata(record).inker;
 }
 
 QVariant ComicInfoObject::colorist() const
 {
-    return info.colorist;
+    return recordMetadata(record).colorist;
 }
 
 QVariant ComicInfoObject::letterer() const
 {
-    return info.letterer;
+    return recordMetadata(record).letterer;
 }
 
 QVariant ComicInfoObject::coverArtist() const
 {
-    return info.coverArtist;
+    return recordMetadata(record).coverArtist;
 }
 
 QVariant ComicInfoObject::date() const
 {
-    return info.date;
+    return recordMetadata(record).date;
 }
 
 QVariant ComicInfoObject::publisher() const
 {
-    return info.publisher;
+    return recordMetadata(record).publisher;
 }
 
 QVariant ComicInfoObject::format() const
 {
-    return info.format;
+    return recordMetadata(record).format;
 }
 
 QVariant ComicInfoObject::color() const
 {
-    return info.color;
+    return recordMetadata(record).color;
 }
 
 QVariant ComicInfoObject::ageRating() const
 {
-    return info.ageRating;
+    return recordMetadata(record).ageRating;
 }
 
 QVariant ComicInfoObject::synopsis() const
 {
-    return info.synopsis;
+    return recordMetadata(record).synopsis;
 }
 
 QVariant ComicInfoObject::characters() const
 {
-    return info.characters;
+    return recordMetadata(record).characters;
 }
 
 QVariant ComicInfoObject::notes() const
 {
-    return info.notes;
+    return recordMetadata(record).notes;
 }
 
 QVariant ComicInfoObject::comicVineID() const
 {
-    return info.comicVineID;
+    return recordMetadata(record).comicVineID;
 }
 
 QVariant ComicInfoObject::lastTimeOpened() const
 {
-    return info.lastTimeOpened;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->lastTimeOpened;
 }
 
 QVariant ComicInfoObject::coverSizeRatio() const
 {
-    return info.coverSizeRatio;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->coverSizeRatio;
 }
 
 QVariant ComicInfoObject::originalCoverSize() const
 {
-    return info.originalCoverSize;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->originalCoverSize;
 }
 
 QVariant ComicInfoObject::added() const
 {
-    return info.added;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->added;
 }
 
 QVariant ComicInfoObject::type() const
 {
-    return info.type;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->type;
 }
 
 QVariant ComicInfoObject::editor() const
 {
-    return info.editor;
+    return recordMetadata(record).editor;
 }
 
 QVariant ComicInfoObject::imprint() const
 {
-    return info.imprint;
+    return recordMetadata(record).imprint;
 }
 
 QVariant ComicInfoObject::teams() const
 {
-    return info.teams;
+    return recordMetadata(record).teams;
 }
 
 QVariant ComicInfoObject::locations() const
 {
-    return info.locations;
+    return recordMetadata(record).locations;
 }
 
 QVariant ComicInfoObject::series() const
 {
-    return info.series;
+    return recordMetadata(record).series;
 }
 
 QVariant ComicInfoObject::alternateSeries() const
 {
-    return info.alternateSeries;
+    return recordMetadata(record).alternateSeries;
 }
 
 QVariant ComicInfoObject::alternateNumber() const
 {
-    return info.alternateNumber;
+    return recordMetadata(record).alternateNumber;
 }
 
 QVariant ComicInfoObject::alternateCount() const
 {
-    return info.alternateCount;
+    return recordMetadata(record).alternateCount;
 }
 
 QVariant ComicInfoObject::languageISO() const
 {
-    return info.languageISO;
+    return recordMetadata(record).languageISO;
 }
 
 QVariant ComicInfoObject::seriesGroup() const
 {
-    return info.seriesGroup;
+    return recordMetadata(record).seriesGroup;
 }
 
 QVariant ComicInfoObject::mainCharacterOrTeam() const
 {
-    return info.mainCharacterOrTeam;
+    return recordMetadata(record).mainCharacterOrTeam;
 }
 
 QVariant ComicInfoObject::review() const
 {
-    return info.review;
+    return recordMetadata(record).review;
 }
 
 QVariant ComicInfoObject::tags() const
 {
-    return info.tags;
+    return recordMetadata(record).tags;
 }
 
 QVariant ComicInfoObject::imageFiltersJson() const
 {
-    return info.imageFiltersJson;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->imageFiltersJson;
 }
 
 QVariant ComicInfoObject::lastTimeImageFiltersSet() const
 {
-    return info.lastTimeImageFiltersSet;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->lastTimeImageFiltersSet;
 }
 
 QVariant ComicInfoObject::lastTimeCoverSet() const
 {
-    return info.lastTimeCoverSet;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->lastTimeCoverSet;
 }
 
 QVariant ComicInfoObject::usesExternalCover() const
 {
-    return info.usesExternalCover;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->usesExternalCover;
 }
 
 QVariant ComicInfoObject::lastTimeMetadataSet() const
 {
-    return info.lastTimeMetadataSet;
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->lastTimeMetadataSet;
 }
 
 bool ComicInfoObject::isFavorite() const
@@ -334,16 +409,18 @@ bool ComicInfoObject::isFavorite() const
 
 void ComicInfoObject::setRead(bool read)
 {
-    if (read != info.read) {
-        info.read = read;
+    auto *info = recordInfo(record);
+    if (info != nullptr && read != info->read) {
+        info->read = read;
         emit readChanged();
     }
 }
 
 void ComicInfoObject::setRating(int rating)
 {
-    if (rating != info.rating) {
-        info.rating = rating;
+    auto *info = recordInfo(record);
+    if (info != nullptr && rating != info->rating) {
+        info->rating = rating;
         emit ratingChanged();
     }
 }
@@ -358,101 +435,112 @@ void ComicInfoObject::setFavorite(bool isFavorite)
 
 QStringList ComicInfoObject::getWriters() const
 {
-    return info.getWriters();
+    return recordMetadata(record).getWriters();
 }
 
 QStringList ComicInfoObject::getPencillers() const
 {
-    return info.getPencillers();
+    return recordMetadata(record).getPencillers();
 }
 
 QStringList ComicInfoObject::getInkers() const
 {
-    return info.getInkers();
+    return recordMetadata(record).getInkers();
 }
 
 QStringList ComicInfoObject::getColorists() const
 {
-    return info.getColorists();
+    return recordMetadata(record).getColorists();
 }
 
 QStringList ComicInfoObject::getLetterers() const
 {
-    return info.getLetterers();
+    return recordMetadata(record).getLetterers();
 }
 
 QStringList ComicInfoObject::getCoverArtists() const
 {
-    return info.getCoverArtists();
+    return recordMetadata(record).getCoverArtists();
 }
 
 QStringList ComicInfoObject::getEditors() const
 {
-    return info.getEditors();
+    return recordMetadata(record).getEditors();
 }
 
 QStringList ComicInfoObject::getImprint() const
 {
-    return info.getImprint();
+    return recordMetadata(record).getImprint();
 }
 
 QStringList ComicInfoObject::getCharacters() const
 {
-    return info.getCharacters();
+    return recordMetadata(record).getCharacters();
 }
 
 QStringList ComicInfoObject::getTeams() const
 {
-    return info.getTeams();
+    return recordMetadata(record).getTeams();
 }
 
 QStringList ComicInfoObject::getLocations() const
 {
-    return info.getLocations();
+    return recordMetadata(record).getLocations();
 }
 
 QStringList ComicInfoObject::getTags() const
 {
-    return info.getTags();
+    return recordMetadata(record).getTags();
 }
 
 QString ComicInfoObject::getTypeString() const
 {
-    return info.getTypeString();
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
+    return info->getTypeString();
 }
 
 QString ComicInfoObject::getStoryArcInfoString() const
 {
-    return info.getStoryArcInfoString();
+    return recordMetadata(record).getStoryArcInfoString();
 }
 
 QString ComicInfoObject::getAlternateSeriesString() const
 {
-    return info.getAlternateSeriesString();
+    return recordMetadata(record).getAlternateSeriesString();
 }
 
 QString ComicInfoObject::getTitleOrFileName() const
 {
-    return titleOrFileName(info, fileName);
+    return titleOrFileName(recordMetadata(record), fileName);
 }
 
 qulonglong ComicInfoObject::getFileSize() const
 {
+    const auto *info = recordInfo(record);
+    if (info == nullptr)
+        return { };
     // the size is encoded in the hash after the SHA-1
-    return info.hash.right(info.hash.length() - 40).toLongLong();
+    return info->hash.right(info->hash.length() - 40).toLongLong();
 }
 
 QString ComicInfoObject::getTitleIncludingNumber() const
 {
-    return titleIncludingNumber(info, fileName);
+    return titleIncludingNumber(recordMetadata(record), fileName);
 }
 
 QString ComicInfoObject::getInfoTitle() const
 {
-    return infoTitle(info, fileName);
+    return infoTitle(recordMetadata(record), fileName);
 }
 
 bool ComicInfoObject::available() const
 {
     return isAvailable;
+}
+
+bool ComicInfoObject::canSetReadState() const
+{
+    return recordInfo(record) != nullptr;
 }

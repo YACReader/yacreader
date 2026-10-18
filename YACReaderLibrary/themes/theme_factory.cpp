@@ -589,6 +589,11 @@ Theme makeTheme(const ThemeParams &params)
         deletedComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/deletedComic.svg", cvta.itemTextColor, params.meta.id), QSize(), QIcon::Normal, QIcon::Off);
         deletedComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/deletedComic.svg", cvta.selectedTextColor, params.meta.id, { .suffix = "_selected" }), QSize(), QIcon::Selected, QIcon::Off);
         theme.comicsViewTable.deletedComicIcon = deletedComic;
+
+        QIcon placeholderComic;
+        placeholderComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/placeholderComic.svg", cvta.itemTextColor, params.meta.id), QSize(), QIcon::Normal, QIcon::Off);
+        placeholderComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/placeholderComic.svg", cvta.selectedTextColor, params.meta.id, { .suffix = "_selected" }), QSize(), QIcon::Selected, QIcon::Off);
+        theme.comicsViewTable.placeholderComicIcon = placeholderComic;
     }
     // end ComicsViewTable
 

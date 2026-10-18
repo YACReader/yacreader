@@ -3,8 +3,8 @@
 
 #include "comic_db.h"
 #include "list_entry.h"
+#include "placeholder.h"
 
-#include <QHashFunctions>
 #include <QList>
 
 #include <variant>
@@ -27,9 +27,15 @@ struct DeletedComicInList {
     ListEntry entry;
 };
 
+// an entry of an expected issue that has no comic in the library
+struct PlaceholderInList {
+    Placeholder placeholder;
+    ListEntry entry;
+};
+
 }
 
-using ComicItem = std::variant<ComicItemCase::Comic, ComicItemCase::ComicInList, ComicItemCase::DeletedComicInList>;
+using ComicItem = std::variant<ComicItemCase::Comic, ComicItemCase::ComicInList, ComicItemCase::DeletedComicInList, ComicItemCase::PlaceholderInList>;
 
 // what can be done with a row; ComicModel::supports answers it for each case
 enum class ComicAction {
@@ -48,13 +54,5 @@ enum class ComicAction {
     AddToList,
     RemoveFromList,
 };
-
-// which row this is: a comic in folders and special lists, an entry in reading lists and labels
-using ComicRowId = std::variant<ComicId, ListItemId>;
-
-inline size_t qHash(const ComicRowId &key, size_t seed = 0) noexcept
-{
-    return std::visit([&key, seed](const auto &id) { return qHashMulti(seed, key.index(), id); }, key);
-}
 
 #endif

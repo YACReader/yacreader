@@ -38,6 +38,7 @@ private slots:
     void placeholderIdsAreNotReused();
     void appendRepeatsOnlyInReadingLists_data();
     void appendRepeatsOnlyInReadingLists();
+    void appendRowsAddsWhatEachRowRefersTo();
     void appendIgnoresUnknownComics_data();
     void appendIgnoresUnknownComics();
     void appendUsesNextOrderingAfterRemoval_data();
@@ -847,15 +848,33 @@ void ReadingListAndLabelEntryTest::loadRecord()
     const auto reloaded = DBHelper::loadRecord(comic(101, 10), db);
     QVERIFY(reloaded);
     QCOMPARE(recordComic(*reloaded)->file.fileName, QString("a copy.cbz"));
-    QCOMPARE(recordInfo(*reloaded).title.toString(), QString("Saved elsewhere"));
+    QCOMPARE(recordInfo(*reloaded)->title.toString(), QString("Saved elsewhere"));
 
     ComicInfo info;
     info.id = ComicInfoId(11);
     const auto reloadedDeleted = DBHelper::loadRecord(ComicRecordCase::DeletedComic { info, LastKnownFile { "b.cbz", "/b.cbz" } }, db);
     QVERIFY(reloadedDeleted);
     QVERIFY(!recordComic(*reloadedDeleted));
-    QCOMPARE(recordInfo(*reloadedDeleted).hash, QString("hash11"));
+    QCOMPARE(recordInfo(*reloadedDeleted)->hash, QString("hash11"));
     QVERIFY(std::get<ComicRecordCase::DeletedComic>(*reloadedDeleted).lastKnownFile == (LastKnownFile { "b.cbz", "/b.cbz" }));
+}
+
+// in order: a comic gives its comic_info, an entry its comic_info or placeholder; rows that are gone are skipped
+void ReadingListAndLabelEntryTest::appendRowsAddsWhatEachRowRefersTo()
+{
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id) VALUES (50, 2, 0, 11)"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, placeholder_id) VALUES (51, 2, 1, 1)"));
+    QVERIFY(exec("INSERT INTO label_entry (id, label_id, ordering, comic_info_id) VALUES (60, 2, 0, 12)"));
+
+    QVERIFY(DBHelper::appendRowsToReadingList(ReadingListId(1),
+                                              { ComicId(101), ListItemId { ListKind::ReadingList, 51 }, ListItemId { ListKind::Label, 60 }, ComicId(999), ListItemId { ListKind::ReadingList, 999 }, ListItemId { ListKind::ReadingList, 50 } },
+                                              db));
+    QCOMPARE(ints("SELECT COALESCE(comic_info_id, 0) FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 10, 0, 12, 11 }));
+    QCOMPARE(ints("SELECT COALESCE(placeholder_id, 0) FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 0, 1, 0, 0 }));
+
+    QVERIFY(DBHelper::appendRowsToLabel(LabelId(1), { ComicId(100), ComicId(101), ListItemId { ListKind::ReadingList, 51 }, ListItemId { ListKind::ReadingList, 51 } }, db));
+    QCOMPARE(ints("SELECT COALESCE(comic_info_id, 0) FROM label_entry WHERE label_id = 1 ORDER BY ordering"), QList<int>({ 10, 0 }));
+    QCOMPARE(ints("SELECT COALESCE(placeholder_id, 0) FROM label_entry WHERE label_id = 1 ORDER BY ordering"), QList<int>({ 0, 1 }));
 }
 
 QTEST_GUILESS_MAIN(ReadingListAndLabelEntryTest)

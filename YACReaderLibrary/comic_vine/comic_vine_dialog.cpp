@@ -127,7 +127,7 @@ void ComicVineDialog::goNext()
             status = ScraperStatus::AutoSearching;
             mode = ScraperMode::SingleComicInList;
             const auto &comic = comics[currentIndex];
-            QString title = titleOrFileName(recordInfo(comic), recordFileName(comic));
+            QString title = titleOrFileName(recordMetadata(comic), recordFileName(comic));
             titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
 
             showLoading(tr("Looking for volume..."));
@@ -240,7 +240,7 @@ void ComicVineDialog::show()
 
         const auto &singleComic = comics[0];
 
-        QString title = titleOrFileName(recordInfo(singleComic), recordFileName(singleComic));
+        QString title = titleOrFileName(recordMetadata(singleComic), recordFileName(singleComic));
         titleHeader->setSubTitle(title);
 
         showSearchSingleComic(volumeSearchStringFromComic(singleComic));
@@ -501,7 +501,7 @@ void ComicVineDialog::toggleSkipButton()
 
 QString ComicVineDialog::volumeSearchStringFromComic(const ComicRecord &comic)
 {
-    const auto &info = recordInfo(comic);
+    const auto &info = recordMetadata(comic);
     auto volume = info.volume.toString().trimmed();
     if (!volume.isEmpty())
         return volume;
@@ -527,7 +527,7 @@ void ComicVineDialog::saveMetadata(const QList<QPair<ComicRecord, DescriptiveMet
 
         QSet<ComicInfoId> written;
         for (const auto &[comic, patch] : matches) {
-            const auto id = recordInfo(comic).id;
+            const auto id = recordInfo(comic)->id;
             if (written.contains(id) || !DBHelper::loadRecord(comic, db))
                 continue;
             written.insert(id);
@@ -551,7 +551,7 @@ void ComicVineDialog::goToNextComic()
 
     const auto &comic = comics[currentIndex];
 
-    QString title = titleOrFileName(recordInfo(comic), recordFileName(comic));
+    QString title = titleOrFileName(recordMetadata(comic), recordFileName(comic));
     titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
 
     showSearchSingleComic(volumeSearchStringFromComic(comic));

@@ -5,6 +5,7 @@
 #include <QtGlobal>
 
 #include <compare>
+#include <variant>
 
 template<typename Tag>
 class TableId
@@ -47,5 +48,13 @@ struct ListItemId {
     friend constexpr bool operator==(const ListItemId &, const ListItemId &) = default;
     friend size_t qHash(const ListItemId &key, size_t seed = 0) noexcept { return qHashMulti(seed, static_cast<int>(key.listKind), key.id); }
 };
+
+// which row this is: a comic in folders and special lists, an entry in reading lists and labels
+using ComicRowId = std::variant<ComicId, ListItemId>;
+
+inline size_t qHash(const ComicRowId &key, size_t seed = 0) noexcept
+{
+    return std::visit([&key, seed](const auto &id) { return qHashMulti(seed, key.index(), id); }, key);
+}
 
 #endif

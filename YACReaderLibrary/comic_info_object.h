@@ -80,6 +80,8 @@ class ComicInfoObject : public QObject
     Q_PROPERTY(bool isFavorite READ isFavorite WRITE setFavorite NOTIFY favoriteChanged)
     // false for a comic whose file is no longer in the library
     Q_PROPERTY(bool available READ available CONSTANT)
+    // false for a placeholder, which has no read state or rating
+    Q_PROPERTY(bool canSetReadState READ canSetReadState CONSTANT)
 
 public:
     explicit ComicInfoObject(QObject *parent = nullptr);
@@ -151,6 +153,7 @@ public:
 
     bool isFavorite() const;
     bool available() const;
+    bool canSetReadState() const;
 
     void setRead(bool read);
     void setRating(int rating);
@@ -184,7 +187,7 @@ signals:
     void favoriteChanged();
 
 private:
-    ComicInfo info;
+    ComicRecord record;
     // the title fallback: the file name, or the last known one of a deleted comic
     QString fileName;
     bool isAvailable = true;
