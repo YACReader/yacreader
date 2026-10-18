@@ -28,6 +28,8 @@ add_library(library_common STATIC
     staged_cover.cpp
     cbl_reader.h
     cbl_reader.cpp
+    cbl_matcher.h
+    cbl_matcher.cpp
     ip_config_helper.h
     ip_config_helper.cpp
     libraries_update_coordinator.h
