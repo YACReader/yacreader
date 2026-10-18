@@ -195,6 +195,9 @@ private:
 
     ComicDB currentComicDB;
     QList<ComicDB> siblingComics;
+    // a reading list can have a comic more than once, so the current comic is tracked by position
+    qint32 currentSiblingIndex = -1;
+    void storeCurrentComicInSiblings();
     bool isClient;
     QString startComicPath;
     quint64 libraryId;

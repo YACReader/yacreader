@@ -28,9 +28,12 @@ private slots:
     void comicInfoWithSeveralFilesGivesItsFirstFile();
     void readerSiblingsLeaveOutDeletedComics();
     void outputIsTheSameWithoutTheDeletedEntries();
+    void readingListGivesTheEntryOfEachComic();
+    void repeatedComicsAreNavigatedAtTheirFirstOccurrence();
 
 private:
     bool exec(const QString &sql);
+    QList<qulonglong> entryIdsOf(const QString &sql);
     QJsonArray toJson(const QList<ComicDB> &comics) const;
     static QList<qulonglong> ids(const QList<ComicDB> &comics);
 
@@ -123,6 +126,23 @@ bool ServerV2ListsTest::exec(const QString &sql)
     return ok;
 }
 
+QList<qulonglong> ServerV2ListsTest::entryIdsOf(const QString &sql)
+{
+    QList<qulonglong> ids;
+    QString name;
+    {
+        auto db = DataBaseManagement::loadDatabase(YACReader::LibraryPaths::libraryDataPath(libraryPath));
+        name = db.connectionName();
+        QSqlQuery query(db);
+        if (query.exec(sql)) {
+            while (query.next())
+                ids.append(query.value(0).toULongLong());
+        }
+    }
+    QSqlDatabase::removeDatabase(name);
+    return ids;
+}
+
 QJsonArray ServerV2ListsTest::toJson(const QList<ComicDB> &comics) const
 {
     const auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
@@ -198,6 +218,34 @@ void ServerV2ListsTest::outputIsTheSameWithoutTheDeletedEntries()
 
     QCOMPARE(toJson(DBHelper::getReadingListFullContent(libraryId, 1)), readingList);
     QCOMPARE(toJson(DBHelper::getLabelComics(libraryId, 1)), label);
+}
+
+// the desktop reader finds the opened occurrence by its entry
+void ServerV2ListsTest::readingListGivesTheEntryOfEachComic()
+{
+    QList<ListItemId> entryIds;
+    const auto comics = DBHelper::getReadingListFullContent(libraryId, 1, &entryIds);
+    QCOMPARE(entryIds.size(), comics.size());
+
+    const auto expected = entryIdsOf("SELECT e.id FROM reading_list_entry e INNER JOIN comic c ON c.comicInfoId = e.comic_info_id "
+                                     "WHERE c.id = (SELECT MIN(id) FROM comic WHERE comicInfoId = e.comic_info_id) "
+                                     "ORDER BY e.reading_list_id, e.ordering, e.id");
+    QCOMPARE(entryIds.size(), expected.size());
+    for (int i = 0; i < entryIds.size(); i++) {
+        QCOMPARE(entryIds.at(i).listKind, ListKind::ReadingList);
+        QCOMPARE(entryIds.at(i).id, expected.at(i));
+        const auto comicInfoId = entryIdsOf(QString("SELECT comic_info_id FROM reading_list_entry WHERE id = %1").arg(expected.at(i)));
+        QCOMPARE(comics.at(i).info.id.value(), comicInfoId.value(0));
+    }
+}
+
+void ServerV2ListsTest::repeatedComicsAreNavigatedAtTheirFirstOccurrence()
+{
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 5, 2)"));
+
+    const auto comics = DBHelper::getReadingListFullContent(libraryId, 1);
+    QCOMPARE(ids(comics), QList<qulonglong>({ 2, 1, 3, 2, 5 }));
+    QCOMPARE(ids(YACReaderServerDataHelper::firstOccurrences(comics)), QList<qulonglong>({ 2, 1, 3, 5 }));
 }
 
 QTEST_GUILESS_MAIN(ServerV2ListsTest)

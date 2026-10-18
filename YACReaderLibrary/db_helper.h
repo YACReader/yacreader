@@ -48,7 +48,8 @@ public:
     static QList<ComicDB> getFavorites(qulonglong libraryId);
     static QList<ComicDB> getReading(qulonglong libraryId);
     static QList<ReadingList> getReadingLists(qulonglong libraryId);
-    static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId);
+    // the comics of the reading list and of its child lists; entryIds receives the entry of each comic, in the same order
+    static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId, QList<ListItemId> *entryIds = nullptr);
     // the available comics of a list with their entries, in list order; binds :list_id
     static const QString &listComicsQuery(ListKind listKind);
     // every entry of a list that refers to a comic_info, with its first file when it has one (c_id is NULL without a file); binds :list_id

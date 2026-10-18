@@ -122,11 +122,21 @@ void ComicManagementCoordinator::openCurrentComic()
     if (!comicsModel->supports(currentComic, ComicAction::Open))
         return;
 
-    if (const auto comic = comicsModel->getComic(currentComic))
-        openComic(*comic, comicsModel->getMode());
+    const auto comic = comicsModel->getComic(currentComic);
+    if (!comic)
+        return;
+
+    const auto rowId = comicsModel->rowId(currentComic);
+    const auto entry = std::get_if<ListItemId>(&rowId);
+    startReader(*comic, comicsModel->getMode(), entry != nullptr && entry->listKind == ListKind::ReadingList ? entry->id : 0);
 }
 
 void ComicManagementCoordinator::openComic(const ComicDB &comic, ComicModel::Mode mode)
+{
+    startReader(comic, mode, 0);
+}
+
+void ComicManagementCoordinator::startReader(const ComicDB &comic, ComicModel::Mode mode, qulonglong entryId)
 {
     const auto source = mode == ComicModel::ReadingList
             ? OpenComicSource::Source::ReadingList
@@ -135,7 +145,7 @@ void ComicManagementCoordinator::openComic(const ComicDB &comic, ComicModel::Mod
     const auto thirdPartyReaderCommand = settings->value(THIRD_PARTY_READER_COMMAND, "").toString();
 
     if (thirdPartyReaderCommand.isEmpty()) {
-        const auto yacreaderFound = YACReader::openComic(comic, libraryIdProvider(), libraryPath, OpenComicSource { source, comicsModel->getSourceId() });
+        const auto yacreaderFound = YACReader::openComic(comic, libraryIdProvider(), libraryPath, OpenComicSource { source, comicsModel->getSourceId(), mode == ComicModel::ReadingList ? entryId : 0 });
         if (!yacreaderFound) {
 #ifdef Q_OS_WIN
             QMessageBox::critical(window, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));

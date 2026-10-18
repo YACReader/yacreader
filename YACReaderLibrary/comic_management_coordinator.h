@@ -94,6 +94,8 @@ private:
         qulonglong sourceId;
     };
 
+    // entryId: the reading list entry of the opened row, 0 if none
+    void startReader(const ComicDB &comic, ComicModel::Mode mode, qulonglong entryId);
     QProgressDialog *newProgressDialog(const QString &label, int maximum);
     void copyAndImportComics(const QList<QPair<QString, QString>> &comics,
                              const QModelIndex &destinationFolder,

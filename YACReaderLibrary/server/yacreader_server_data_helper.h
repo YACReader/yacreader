@@ -21,6 +21,9 @@ public:
     static QJsonObject readingListToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ReadingList &readingList);
     static QJsonObject labelToJSON(const qulonglong libraryId, const QUuid libraryUuid, const Label &label);
 
+    // v2 clients send only the comic id, so a repeated comic is navigated at its first occurrence
+    static QList<ComicDB> firstOccurrences(const QList<ComicDB> &comics);
+
 private:
     YACReaderServerDataHelper();
 };

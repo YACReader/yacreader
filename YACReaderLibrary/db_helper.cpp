@@ -537,7 +537,7 @@ QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
     return list;
 }
 
-QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulonglong readingListId)
+QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulonglong readingListId, QList<ListItemId> *entryIds)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QList<ComicDB> list;
@@ -565,7 +565,16 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
             selectQuery.bindValue(":list_id", id);
             selectQuery.exec();
 
-            list.append(comicsFromQuery(selectQuery));
+            if (entryIds == nullptr) {
+                list.append(comicsFromQuery(selectQuery));
+                continue;
+            }
+            const auto comicIndexes = ComicDB::columnIndexes(selectQuery.record(), "c", "ci");
+            const auto entryIndexes = ListEntry::columnIndexes(selectQuery.record(), "e", ListKind::ReadingList);
+            while (selectQuery.next()) {
+                list.append(ComicDB::fromQuery(selectQuery, comicIndexes));
+                entryIds->append(ListEntry::fromQuery(selectQuery, entryIndexes, ListKind::ReadingList).id);
+            }
         }
         connectionName = db.connectionName();
     }

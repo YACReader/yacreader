@@ -107,6 +107,8 @@ struct OpenComicSource {
 
     Source source;
     qulonglong sourceId;
+    // the reading list entry that was opened, 0 if none; a reading list can have a comic more than once
+    qulonglong entryId = 0;
 };
 
 QDataStream &operator<<(QDataStream &stream, const OpenComicSource &source);
