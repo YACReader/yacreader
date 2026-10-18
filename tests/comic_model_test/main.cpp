@@ -2,13 +2,16 @@
 #include "comic_model.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "search_query.h"
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
+#include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QMimeData>
+#include <QSet>
 #include <QSignalSpy>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -50,8 +53,15 @@ private slots:
     void comicUpdateChangesEveryRowOfTheComicInfo();
     void setReadChangesEveryRowOfTheComicInfo();
     void ratingIsARole();
+    void sharedViewsShowComicsWithFiles_data();
+    void sharedViewsShowComicsWithFiles();
+    void sharedViewAfterAListHasNoDeletedRows_data();
+    void sharedViewAfterAListHasNoDeletedRows();
+    void favoritesUseTheFileOfTheRow();
+    void removeFromReadingUsesTheComicOfTheRow();
 
 private:
+    void loadSource(ComicModel &model, const QString &source);
     std::unique_ptr<QTemporaryDir> root;
     QString dataPath;
 
@@ -586,6 +596,177 @@ void ComicModelTest::ratingIsARole()
 
     model.updateRating(5, model.index(rows.first(), 0));
     QCOMPARE(model.data(model.index(rows.first(), ComicModel::Rating), ComicModel::RatingRole).toInt(), 5);
+}
+
+void ComicModelTest::loadSource(ComicModel &model, const QString &source)
+{
+    if (source == "folder") {
+        model.setupFolderModelData(2, dataPath);
+    } else if (source == "favorites") {
+        model.setupFavoritesModelData(dataPath);
+    } else if (source == "reading") {
+        model.setupReadingModelData(dataPath);
+    } else if (source == "recent") {
+        model.setupRecentModelData(dataPath);
+    } else if (source == "search") {
+        // the steps of ComicQueryResultProcessor, without its worker thread
+        QList<ComicItem> items;
+        QString name;
+        {
+            auto db = DataBaseManagement::loadDatabase(dataPath);
+            name = db.connectionName();
+            auto query = comicsSearchQuery(db, "Title");
+            items = ComicModel::sortedForFolder(ComicModel::createItems(query));
+        }
+        QSqlDatabase::removeDatabase(name);
+        model.setModelData(new QList<ComicItem>(items), dataPath);
+    } else {
+        QFAIL(qPrintable("unknown source " + source));
+    }
+}
+
+void ComicModelTest::sharedViewsShowComicsWithFiles_data()
+{
+    QTest::addColumn<QString>("source");
+    QTest::addColumn<QList<qulonglong>>("comicIds");
+    QTest::newRow("folder") << "folder" << QList<qulonglong>({ 1, 2, 3, 5 });
+    QTest::newRow("favorites") << "favorites" << QList<qulonglong>({ 1, 2, 5 });
+    QTest::newRow("reading") << "reading" << QList<qulonglong>({ 1, 2, 3, 5 });
+    QTest::newRow("recent") << "recent" << QList<qulonglong>({ 1, 2, 3, 5 });
+    QTest::newRow("search") << "search" << QList<qulonglong>({ 1, 2, 3, 5 });
+}
+
+// folders, search, Favorites, Reading, and Recent only have comics with a file, as before the entry tables
+void ComicModelTest::sharedViewsShowComicsWithFiles()
+{
+    QFETCH(QString, source);
+    QFETCH(QList<qulonglong>, comicIds);
+
+    // comic_info 4 loses its file but stays, because a list refers to it
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 2, 4)"));
+    QVERIFY(exec("DELETE FROM comic WHERE id = 4"));
+    QVERIFY(exec("INSERT INTO comic_default_reading_list (comic_id, default_reading_list_id, ordering) VALUES (1, 1, 0), (2, 1, 1), (5, 1, 2)"));
+    QVERIFY(exec(QString("UPDATE comic_info SET added = %1").arg(QDateTime::currentSecsSinceEpoch())));
+
+    ComicModel model;
+    loadSource(model, source);
+    if (QTest::currentTestFailed())
+        return;
+
+    const auto ids = rowIds(model);
+    QCOMPARE(QSet<qulonglong>(ids.cbegin(), ids.cend()), QSet<qulonglong>(comicIds.cbegin(), comicIds.cend()));
+    QCOMPARE(ids.size(), comicIds.size());
+
+    QVERIFY(!model.hasUnavailableRows());
+    QCOMPARE(model.getUnavailableList(), QList<bool>(model.rowCount(), false));
+
+    const auto library = QFileInfo(dataPath).absolutePath();
+    const auto paths = model.getPaths(library);
+    QModelIndexList all;
+    for (int row = 0; row < model.rowCount(); row++) {
+        const auto index = model.index(row, 0);
+        all.append(index);
+        const auto id = ids.at(row);
+
+        QCOMPARE(index.data(ComicModel::KindRole).toString(), QString("Comic"));
+        QVERIFY(index.data(ComicModel::AvailableRole).toBool());
+        QVERIFY(index.data(ComicModel::ListItemIdRole).isNull());
+        QVERIFY(model.index(row, ComicModel::State).data(Qt::DisplayRole).isNull());
+        QVERIFY(model.rowId(index) == ComicRowId(ComicId(id)));
+
+        const auto record = model.record(index);
+        QVERIFY(recordComic(record) != nullptr);
+        QCOMPARE(recordComic(record)->file.id, ComicId(id));
+
+        QCOMPARE(paths.at(row), LibraryPaths::coverPath(library, index.data(ComicModel::HashRole).toString()));
+
+        for (const auto action : { ComicAction::Open, ComicAction::OpenContainingFolder, ComicAction::ChangeFile, ComicAction::SaveCover,
+                                   ComicAction::SetReadState, ComicAction::SetType, ComicAction::EditMetadata, ComicAction::DeleteMetadata,
+                                   ComicAction::SearchComicVine, ComicAction::AssignNumbers, ComicAction::SetCustomCover,
+                                   ComicAction::AddToFavorites, ComicAction::AddToList })
+            QVERIFY(model.supports(index, action));
+        QVERIFY(!model.supports(index, ComicAction::RemoveFromList));
+    }
+
+    std::unique_ptr<QMimeData> data(model.mimeData(all));
+    QCOMPARE(YACReader::mimeDataToComicsIds(data.get()), ids);
+    QVERIFY(YACReader::mimeDataToListEntries(data.get()).isEmpty());
+}
+
+void ComicModelTest::sharedViewAfterAListHasNoDeletedRows_data()
+{
+    QTest::addColumn<QString>("source");
+    QTest::newRow("folder") << "folder";
+    QTest::newRow("favorites") << "favorites";
+    QTest::newRow("reading") << "reading";
+    QTest::newRow("recent") << "recent";
+    QTest::newRow("search") << "search";
+}
+
+// one model goes from a list with a deleted comic to a shared view and back
+void ComicModelTest::sharedViewAfterAListHasNoDeletedRows()
+{
+    QFETCH(QString, source);
+
+    QVERIFY(exec("DELETE FROM comic WHERE id = 3"));
+    QVERIFY(exec("INSERT INTO comic_default_reading_list (comic_id, default_reading_list_id, ordering) VALUES (1, 1, 0)"));
+    QVERIFY(exec(QString("UPDATE comic_info SET added = %1").arg(QDateTime::currentSecsSinceEpoch())));
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QVERIFY(model.hasUnavailableRows());
+
+    loadSource(model, source);
+    if (QTest::currentTestFailed())
+        return;
+    QVERIFY(model.rowCount() > 0);
+    QVERIFY(!model.hasUnavailableRows());
+    for (int row = 0; row < model.rowCount(); row++) {
+        QCOMPARE(model.index(row, 0).data(ComicModel::KindRole).toString(), QString("Comic"));
+        QVERIFY(model.index(row, 0).data(ComicModel::IdRole).toULongLong() != 3);
+    }
+
+    model.setupReadingListModelData(1, dataPath);
+    QVERIFY(model.hasUnavailableRows());
+    QCOMPARE(model.index(0, 0).data(ComicModel::KindRole).toString(), QString("DeletedComicInList"));
+}
+
+// Favorites keeps comic ids, so a copy of a file is added and removed on its own
+void ComicModelTest::favoritesUseTheFileOfTheRow()
+{
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+    const auto copy = model.indexOf(ComicRowId(ComicId(5)));
+    QVERIFY(copy.isValid());
+
+    QSignalSpy changed(&model, &ComicModel::favoritesChanged);
+    model.addComicsToFavorites(QList<QModelIndex> { copy });
+    QCOMPARE(ints("SELECT comic_id FROM comic_default_reading_list WHERE default_reading_list_id = 1"), QList<int>({ 5 }));
+    QCOMPARE(changed.size(), 1);
+    QCOMPARE(changed.first().first().value<QList<qulonglong>>(), QList<qulonglong>({ 5 }));
+
+    model.setupFavoritesModelData(dataPath);
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 5 }));
+
+    model.deleteComicsFromFavorites({ model.index(0, 0) });
+    QCOMPARE(ints("SELECT COUNT(*) FROM comic_default_reading_list"), QList<int>({ 0 }));
+    QCOMPARE(model.rowCount(), 0);
+}
+
+void ComicModelTest::removeFromReadingUsesTheComicOfTheRow()
+{
+    ComicModel model;
+    model.setupReadingModelData(dataPath);
+    const auto row = model.indexOf(ComicRowId(ComicId(2)));
+    QVERIFY(row.isValid());
+    const auto count = model.rowCount();
+
+    model.deleteComicsFromReading({ row });
+    QCOMPARE(model.rowCount(), count - 1);
+    QVERIFY(!model.indexOf(ComicRowId(ComicId(2))).isValid());
+    QCOMPARE(ints("SELECT hasBeenOpened FROM comic_info WHERE id = 2"), QList<int>({ 0 }));
+    QCOMPARE(ints("SELECT hasBeenOpened FROM comic_info WHERE id = 3"), QList<int>({ 1 }));
+    QCOMPARE(ints("SELECT rating FROM comic_info WHERE id = 2"), QList<int>({ 2 }));
 }
 
 QTEST_MAIN(ComicModelTest)
