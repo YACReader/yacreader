@@ -1149,7 +1149,7 @@
         <translation>A pasta selecionada e todo o seu conteúdo serão excluídos do disco. Tem certeza?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="630"/>
+        <location filename="comic_management_coordinator.cpp" line="643"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Não foi possível excluir</translation>
@@ -1481,7 +1481,7 @@ Pode restaurar uma cópia de segurança no menu Biblioteca ou recriar a bibliote
         <translation>Informações da biblioteca</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="631"/>
+        <location filename="comic_management_coordinator.cpp" line="644"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Ocorreu um problema ao tentar excluir os quadrinhos selecionados. Por favor, verifique as permissões de gravação nos arquivos selecionados ou na pasta que os contém.</translation>
     </message>
@@ -1530,12 +1530,22 @@ Pode restaurar uma cópia de segurança no menu Biblioteca ou recriar a bibliote
         <translation>Todos os quadrinhos selecionados serão excluídos do seu disco. Tem certeza?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="597"/>
+        <location filename="comic_management_coordinator.cpp" line="600"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="603"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="610"/>
         <source>Remove comics</source>
         <translation>Remover quadrinhos</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="598"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Os quadrinhos serão excluídos apenas do rótulo/lista atual. Tem certeza?</translation>
     </message>

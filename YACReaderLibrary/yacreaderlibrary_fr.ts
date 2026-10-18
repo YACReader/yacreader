@@ -1196,7 +1196,7 @@ YACReaderLibrary ne vous empêchera pas de créer plus de bibliothèques, mais v
         <translation>Le dossier sélectionné et tout son contenu seront supprimés de votre disque. Es-tu sûr?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="630"/>
+        <location filename="comic_management_coordinator.cpp" line="643"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Impossible de supprimer</translation>
@@ -1501,7 +1501,7 @@ Vous pouvez restaurer une sauvegarde depuis le menu Bibliothèque ou recréer la
         <translation>Informations sur la bibliothèque</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="631"/>
+        <location filename="comic_management_coordinator.cpp" line="644"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Un problème est survenu lors de la tentative de suppression des bandes dessinées sélectionnées. Veuillez vérifier les autorisations d&apos;écriture dans les fichiers sélectionnés ou le dossier contenant.</translation>
     </message>
@@ -1540,12 +1540,22 @@ Vous pouvez restaurer une sauvegarde depuis le menu Bibliothèque ou recréer la
         <translation>Une erreur s&apos;est produite lors de l&apos;enregistrement de l&apos;image de couverture.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="597"/>
+        <location filename="comic_management_coordinator.cpp" line="600"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="603"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="610"/>
         <source>Remove comics</source>
         <translation>Supprimer les bandes dessinées</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="598"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Les bandes dessinées seront uniquement supprimées du label/liste actuelle. Es-tu sûr?</translation>
     </message>

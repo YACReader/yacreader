@@ -685,7 +685,7 @@ void ComicModelTest::sharedViewsShowComicsWithFiles()
                                    ComicAction::SearchComicVine, ComicAction::AssignNumbers, ComicAction::SetCustomCover,
                                    ComicAction::AddToFavorites, ComicAction::AddToList })
             QVERIFY(model.supports(index, action));
-        QVERIFY(!model.supports(index, ComicAction::RemoveFromList));
+        QCOMPARE(model.supports(index, ComicAction::RemoveFromList), source == "favorites" || source == "reading");
     }
 
     std::unique_ptr<QMimeData> data(model.mimeData(all));

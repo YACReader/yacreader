@@ -1235,7 +1235,7 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
         <translation>從以下位置開始分配編號:</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="630"/>
+        <location filename="comic_management_coordinator.cpp" line="643"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>無法刪除</translation>
@@ -1494,7 +1494,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>移除並刪除中繼資料與備份</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="631"/>
+        <location filename="comic_management_coordinator.cpp" line="644"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>嘗試刪除所選漫畫時出現問題。 請檢查所選檔或包含檔夾中的寫入許可權。</translation>
     </message>
@@ -1533,12 +1533,22 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>所有選定的漫畫都將從您的磁片中刪除。你確定嗎?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="597"/>
+        <location filename="comic_management_coordinator.cpp" line="600"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="603"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="610"/>
         <source>Remove comics</source>
         <translation>移除漫畫</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="598"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>漫畫只會從當前標籤/列表中刪除。 你確定嗎?</translation>
     </message>

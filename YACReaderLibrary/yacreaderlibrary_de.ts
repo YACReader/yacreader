@@ -1074,7 +1074,7 @@
         <translation>Bibliothek nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="631"/>
+        <location filename="comic_management_coordinator.cpp" line="644"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Es gab ein Problem beim Löschen der ausgewählten Comics. Überprüfen Sie bitte die Schreibberechtigung für die ausgewählten Dateien oder Ordner.</translation>
     </message>
@@ -1119,7 +1119,7 @@
         <translation>Bibliothek nicht gefunden</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="630"/>
+        <location filename="comic_management_coordinator.cpp" line="643"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Löschen nicht möglich</translation>
@@ -1540,12 +1540,22 @@ Sie können über das Bibliotheksmenü eine Sicherung wiederherstellen oder die 
         <translation>Beim Speichern des Titelbildes ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="597"/>
+        <location filename="comic_management_coordinator.cpp" line="600"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="603"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="610"/>
         <source>Remove comics</source>
         <translation>Comics löschen</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="598"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Comics werden nur vom aktuellen Label/der aktuellen Liste gelöscht. Sind Sie sicher?</translation>
     </message>

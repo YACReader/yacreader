@@ -1183,7 +1183,7 @@
         <translation>De geselecteerde map en de volledige inhoud ervan worden van uw schijf verwijderd. Weet je het zeker?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="630"/>
+        <location filename="comic_management_coordinator.cpp" line="643"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Kan niet verwijderen</translation>
@@ -1501,7 +1501,7 @@ Je kunt een back-up herstellen via het menu Bibliotheek of de bibliotheek opnieu
         <translation>Bibliotheekinformatie</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="631"/>
+        <location filename="comic_management_coordinator.cpp" line="644"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Er is een probleem opgetreden bij het verwijderen van de geselecteerde strips. Controleer of er schrijfrechten zijn voor de geselecteerde bestanden of de map waarin deze zich bevinden.</translation>
     </message>
@@ -1540,12 +1540,22 @@ Je kunt een back-up herstellen via het menu Bibliotheek of de bibliotheek opnieu
         <translation>Er is een fout opgetreden bij het opslaan van de omslagafbeelding.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="597"/>
+        <location filename="comic_management_coordinator.cpp" line="600"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="603"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="610"/>
         <source>Remove comics</source>
         <translation>Verwijder strips</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="598"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Strips worden alleen verwijderd van het huidige label/de huidige lijst. Weet je het zeker?</translation>
     </message>

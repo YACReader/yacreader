@@ -593,9 +593,22 @@ void ComicManagementCoordinator::deleteComicsFromDisk(const QList<ComicRowId> &r
 
 void ComicManagementCoordinator::deleteComicsFromList(const QList<ComicRowId> &rowIds, const SourceContext &source, int listType, qulonglong listId)
 {
+    auto question = QCoreApplication::translate("LibraryWindow", "Comics will only be deleted from the current label/list. Are you sure?");
+    if (listType == ReadingListModel::SpecialList) {
+        switch (static_cast<ReadingListModel::TypeSpecialList>(listId)) {
+        case ReadingListModel::TypeSpecialList::Reading:
+            question = QCoreApplication::translate("LibraryWindow", "Remove the comics from Reading? Their reading progress will be reset.");
+            break;
+        case ReadingListModel::TypeSpecialList::Favorites:
+            question = QCoreApplication::translate("LibraryWindow", "The comics will be removed from Favorites. Are you sure?");
+            break;
+        case ReadingListModel::TypeSpecialList::Recent:
+            break;
+        }
+    }
     const auto answer = QMessageBox::question(window,
                                               QCoreApplication::translate("LibraryWindow", "Remove comics"),
-                                              QCoreApplication::translate("LibraryWindow", "Comics will only be deleted from the current label/list. Are you sure?"),
+                                              question,
                                               QMessageBox::Yes,
                                               QMessageBox::No);
     if (answer != QMessageBox::Yes)

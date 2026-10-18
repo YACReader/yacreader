@@ -1079,7 +1079,7 @@
         <translation>访问文件夹的路径时出错</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="598"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>漫画只会从当前标签/列表中删除。 你确定吗?</translation>
     </message>
@@ -1159,7 +1159,7 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <translation>库不可用</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="631"/>
+        <location filename="comic_management_coordinator.cpp" line="644"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>尝试删除所选漫画时出现问题。 请检查所选文件或包含文件夹中的写入权限。</translation>
     </message>
@@ -1528,7 +1528,17 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>所有选定的漫画都将从您的磁盘中删除。你确定吗?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="597"/>
+        <location filename="comic_management_coordinator.cpp" line="600"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="603"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="610"/>
         <source>Remove comics</source>
         <translation>移除漫画</translation>
     </message>
@@ -1538,7 +1548,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>未找到库</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="630"/>
+        <location filename="comic_management_coordinator.cpp" line="643"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>无法删除</translation>

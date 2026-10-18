@@ -1070,7 +1070,7 @@
         <translation>C&apos;è stato un errore nell&apos;accesso al percorso della cartella</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="598"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>I fumetti verranno cancellati dall&apos;etichetta/lista corrente. Sei sicuro?</translation>
     </message>
@@ -1150,7 +1150,7 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Libreria non disponibile</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="631"/>
+        <location filename="comic_management_coordinator.cpp" line="644"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>C&apos;è un problema nel cancellare i fumetti selezionati. Per favore controlla i tuoi permessi di scrittura sui file o sulla cartella.</translation>
     </message>
@@ -1241,7 +1241,17 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Tutti i fumetti selezionati saranno cancellati dal tuo disco. Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="597"/>
+        <location filename="comic_management_coordinator.cpp" line="600"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="603"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="610"/>
         <source>Remove comics</source>
         <translation>Rimuovi i fumetti</translation>
     </message>
@@ -1251,7 +1261,7 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Libreria non trovata</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="630"/>
+        <location filename="comic_management_coordinator.cpp" line="643"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Non posso cancellare</translation>

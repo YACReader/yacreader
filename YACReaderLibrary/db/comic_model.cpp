@@ -1288,7 +1288,12 @@ bool ComicModel::hasUnavailableRows() const
 
 bool ComicModel::supports(const QModelIndex &index, ComicAction action) const
 {
-    return index.isValid() && supportsAction(_data.at(index.row()), action);
+    if (!index.isValid())
+        return false;
+    // Favorites and Reading remove by comic; Recent is read only
+    if (action == ComicAction::RemoveFromList && (mode == Favorites || mode == Reading))
+        return true;
+    return supportsAction(_data.at(index.row()), action);
 }
 
 QModelIndexList ComicModel::supportedIndexes(const QModelIndexList &indexes, ComicAction action) const

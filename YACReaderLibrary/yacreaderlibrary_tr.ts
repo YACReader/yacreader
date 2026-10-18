@@ -1184,7 +1184,7 @@
         <translation>Seçilen klasör ve tüm içeriği diskinizden silinecek. Emin misin?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="630"/>
+        <location filename="comic_management_coordinator.cpp" line="643"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Silinemedi</translation>
@@ -1502,7 +1502,7 @@ Kitaplık menüsünden bir yedeği geri yükleyebilir veya kitaplığı yeniden 
         <translation>Kütüphane bilgisi</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="631"/>
+        <location filename="comic_management_coordinator.cpp" line="644"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>Seçilen çizgi romanlar silinmeye çalışılırken bir sorun oluştu. Lütfen seçilen dosyalarda veya klasörleri içeren yazma izinlerini kontrol edin.</translation>
     </message>
@@ -1541,12 +1541,22 @@ Kitaplık menüsünden bir yedeği geri yükleyebilir veya kitaplığı yeniden 
         <translation>Kapak resmi kaydedilirken bir hata oluştu.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="597"/>
+        <location filename="comic_management_coordinator.cpp" line="600"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="603"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="610"/>
         <source>Remove comics</source>
         <translation>Çizgi romanları kaldır</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="598"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Çizgi romanlar yalnızca mevcut etiketten/listeden silinecektir. Emin misin?</translation>
     </message>
