@@ -1,9 +1,11 @@
 #include "covercontroller_v2.h"
 
-#include "db_helper.h" //get libraries
+#include "db_helper.h"
+#include "missing_comic_server_helper.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 
+#include <QFileInfo>
 #include <QImage>
 
 using stefanfrings::HttpRequest;
@@ -31,6 +33,15 @@ void CoverControllerV2::service(HttpRequest &request, HttpResponse &response)
         img.save(&buffer, "JPG");
         response.write(ba, true);
     } else {
+        const auto hash = QFileInfo(fileName).completeBaseName();
+        const auto id = MissingComicServerHelper::idFromHash(hash);
+        if (id != 0) {
+            const auto comic = MissingComicServerHelper::resolve(pathElements.at(3).toULongLong(), id);
+            if (comic.info.existOnDb && comic.info.hash == hash) {
+                response.write(MissingComicServerHelper::cover(), true);
+                return;
+            }
+        }
         response.setStatus(404, "not found");
         response.write("404 not found", true);
     }

@@ -1,4 +1,4 @@
-﻿import QtQuick
+import QtQuick
 
 import QtQuick.Controls
 import QtQuick.Layouts
@@ -212,7 +212,7 @@ SplitView {
                             anchors.rightMargin: 15
                             horizontalAlignment: Image.AlignLeft
                             anchors {horizontalCenter: parent.horizontalCenter; top: parent.top; topMargin: 0}
-                            source: comicsList.comicCoverUrlForHash(currentComicInfo.hash.toString())
+                            source: currentComicInfo.id === 0 ? "qrc:/images/defaultCover.png" : comicsList.comicCoverUrlForHash(currentComicInfo.hash.toString())
                             fillMode: Image.PreserveAspectFit
                             smooth: true
                             mipmap: true
@@ -421,8 +421,8 @@ SplitView {
                                         font.pixelSize: 14
                                         wrapMode: Text.WordWrap
 
-                                        text: '<html><head><style>a { color: ' + themeLinkColorStr + '; text-decoration: none; }</style></head><body>' + (currentComicInfo.synopsis ?? "") + '</body></html>'
-                                        visible: currentComicInfo.synopsis ?? false
+                                        text: currentComicInfo.id === 0 ? qsTranslate("MissingComic", "This comic is missing from your collection.") : '<html><head><style>a { color: ' + themeLinkColorStr + '; text-decoration: none; }</style></head><body>' + (currentComicInfo.synopsis ?? "") + '</body></html>'
+                                        visible: currentComicInfo.id === 0 || (currentComicInfo.synopsis ?? false)
                                         textFormat: Text.RichText
                                     }
                                 }
@@ -469,6 +469,7 @@ SplitView {
                             containmentMask: null
                             text: "Read"
                             id: readButton
+                            enabled: currentComicInfo.id !== 0
                             x: currentCoverElement.anchors.rightMargin + currentCoverElement.paintedWidth + currentCoverElement.anchors.rightMargin
                             anchors.bottom: currentCoverElement.bottom
                             anchors.bottomMargin: 15

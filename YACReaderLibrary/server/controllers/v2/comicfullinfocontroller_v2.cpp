@@ -2,6 +2,7 @@
 
 #include "comic_db.h"
 #include "db_helper.h"
+#include "missing_comic_server_helper.h"
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
@@ -29,7 +30,7 @@ void ComicFullinfoController_v2::serviceContent(const int &libraryId, const qulo
 {
     auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(libraryId);
 
-    ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
+    ComicDB comic = MissingComicServerHelper::resolve(libraryId, comicId);
 
     if (!comic.info.existOnDb) {
         response.setStatus(404, "Not Found");

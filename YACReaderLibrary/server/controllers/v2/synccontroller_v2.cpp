@@ -3,6 +3,7 @@
 #include "QsLog.h"
 #include "comic_db.h"
 #include "db_helper.h"
+#include "missing_comic_server_helper.h"
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
 
@@ -96,7 +97,8 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                 if (!comics.contains(libraryId)) {
                     comics[libraryId] = QList<ComicInfo>();
                 }
-                comics[libraryId].push_back(info);
+                if (!MissingComicServerHelper::isPlaceholderId(info.id) && MissingComicServerHelper::idFromHash(info.hash) == 0)
+                    comics[libraryId].push_back(info);
             } else { // iOS
                 if (comicInfoProgress.length() < 6) {
                     continue;
@@ -134,7 +136,8 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                         clientSendsImageFilters = true;
                     }
 
-                    comics[libraryId].push_back(info);
+                    if (!MissingComicServerHelper::isPlaceholderId(info.id) && MissingComicServerHelper::idFromHash(info.hash) == 0)
+                        comics[libraryId].push_back(info);
 
                 } else {
                     hash = comicInfoProgress.at(2);
@@ -157,7 +160,8 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                         clientSendsImageFilters = true;
                     }
 
-                    comicsWithNoLibrary.push_back(info);
+                    if (MissingComicServerHelper::idFromHash(info.hash) == 0)
+                        comicsWithNoLibrary.push_back(info);
                 }
             }
         }

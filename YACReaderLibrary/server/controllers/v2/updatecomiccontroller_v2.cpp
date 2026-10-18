@@ -3,6 +3,7 @@
 #include "QsLog.h"
 #include "comic_db.h"
 #include "db_helper.h"
+#include "missing_comic_server_helper.h"
 
 #include <QUrl>
 
@@ -17,6 +18,13 @@ void UpdateComicControllerV2::service(HttpRequest &request, HttpResponse &respon
     QStringList pathElements = path.split('/');
     qulonglong libraryId = pathElements.at(3).toULongLong();
     qulonglong comicId = pathElements.at(5).toULongLong();
+
+    if (MissingComicServerHelper::isPlaceholderId(comicId)) {
+        // Placeholder progress must never update a real library comic.
+        error = true; // Suppress the real-comic update notification.
+        response.write("OK", true);
+        return;
+    }
 
     QString postData = QString::fromUtf8(request.getBody());
 
