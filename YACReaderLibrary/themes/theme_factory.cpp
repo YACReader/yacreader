@@ -319,6 +319,8 @@ struct ReadingListIconsParams {
     QColor listShadowSelectedColor; // shadow color when selected/hovered
     QColor listDetailColor; // detail/checkbox color (replaces #ff0)
     QColor listDetailSelectedColor; // detail/checkbox color when selected/hovered
+    QColor importedListAccentColor; // imported/CBL accent color (replaces #ff0)
+    QColor importedListAccentSelectedColor; // imported/CBL accent color when selected/hovered
 };
 
 struct DialogIconsParams {
@@ -900,6 +902,16 @@ Theme makeTheme(const ThemeParams &params)
         icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
         theme.readingListIcons.listIcon = icon;
     }
+
+    // Imported CBL list icon (3 colors)
+    {
+        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/imported.svg", rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/imported.svg", rli.listMainSelectedColor, rli.listShadowSelectedColor, rli.listDetailSelectedColor, params.meta.id, { .suffix = "_selected" });
+        QIcon icon;
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
+        theme.readingListIcons.importedListIcon = icon;
+    }
     // end ReadingListIcons
 
     // MenuIcons
@@ -1291,6 +1303,8 @@ Theme makeTheme(const QJsonObject &json)
         rli.listShadowSelectedColor = colorFromJson(o, "listShadowSelectedColor", rli.listShadowSelectedColor);
         rli.listDetailColor = colorFromJson(o, "listDetailColor", rli.listDetailColor);
         rli.listDetailSelectedColor = colorFromJson(o, "listDetailSelectedColor", rli.listDetailSelectedColor);
+        rli.importedListAccentColor = colorFromJson(o, "importedListAccentColor", rli.importedListAccentColor);
+        rli.importedListAccentSelectedColor = colorFromJson(o, "importedListAccentSelectedColor", rli.importedListAccentSelectedColor);
     }
 
     if (json.contains("dialogIcons")) {

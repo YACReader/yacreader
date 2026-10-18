@@ -130,6 +130,15 @@ public:
 
     // reading lists actions
     QAction *addReadingListAction;
+    QAction *addSmartListAction;
+    QAction *addReadingListFolderAction;
+    QAction *moveReadingListToFolderAction;
+    QAction *importCblReadingListAction;
+    QAction *updateCblReadingListAction;
+    QAction *exportReadingListAction;
+    QAction *showMissingComicsAction;
+    QAction *editSmartListAction;
+    QAction *editCblReadingListAction;
     QAction *deleteReadingListAction;
     QAction *addLabelAction;
     QAction *renameListAction;
