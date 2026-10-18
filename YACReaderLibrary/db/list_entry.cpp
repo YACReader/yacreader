@@ -7,7 +7,7 @@
 
 const QStringList &ListEntry::columns(ListKind listKind)
 {
-    static const QStringList readingListColumns = { "reading_list_id", "ordering", "last_known_name", "last_known_path" };
+    static const QStringList readingListColumns = { "reading_list_id", "ordering", "last_known_name", "last_known_path", "source", "source_format" };
     static const QStringList labelColumns = { "label_id", "ordering", "last_known_name", "last_known_path" };
 
     switch (listKind) {
@@ -37,5 +37,7 @@ ListEntry ListEntry::fromQuery(const QSqlQuery &query, const QList<int> &columnI
     if (!name.isNull() || !path.isNull()) {
         entry.lastKnownFile = LastKnownFile { name.toString(), path.toString() };
     }
+    if (listKind == ListKind::ReadingList && !value(5).isNull())
+        entry.source = EntrySource { value(5).toString(), value(6).toString() };
     return entry;
 }

@@ -9,13 +9,12 @@
 #include <QString>
 
 #include <optional>
+#include <variant>
 
 class QSqlDatabase;
 
-// a comic_info as matching sees it; deleted comics (no file) are included
-struct CblLibraryComic {
-    ComicInfoId id;
-    bool hasFile = false;
+// the fields matching reads, from a comic_info or a placeholder
+struct CblLibraryMetadata {
     QString series;
     QString number;
     QString volume;
@@ -23,10 +22,26 @@ struct CblLibraryComic {
     QString format;
     QString comicVineId;
 
+    friend bool operator==(const CblLibraryMetadata &, const CblLibraryMetadata &) = default;
+};
+
+// deleted comics (no file) are included
+struct CblLibraryComic : CblLibraryMetadata {
+    ComicInfoId id;
+    bool hasFile = false;
+
     friend bool operator==(const CblLibraryComic &, const CblLibraryComic &) = default;
 };
 
-// from the most to the least certain; the first level that finds a comic is used
+struct CblLibraryPlaceholder : CblLibraryMetadata {
+    PlaceholderId id;
+
+    friend bool operator==(const CblLibraryPlaceholder &, const CblLibraryPlaceholder &) = default;
+};
+
+using CblCandidate = std::variant<CblLibraryComic, CblLibraryPlaceholder>;
+
+// from the most to the least certain; the first level that finds a candidate is used
 enum class CblMatchLevel {
     ComicVineId,
     SameSeries,
@@ -36,28 +51,37 @@ enum class CblMatchLevel {
 };
 
 struct CblBookMatch {
-    // the comic the import uses without asking the user
-    std::optional<CblLibraryComic> accepted;
-    // the comics that fit the book at `level`, best first; the user chooses when nothing is accepted
-    QList<CblLibraryComic> candidates;
+    // what the import uses without asking the user
+    std::optional<CblCandidate> accepted;
+    // what fits the book at `level`, best first; the user chooses when nothing is accepted
+    QList<CblCandidate> candidates;
     std::optional<CblMatchLevel> level;
 };
 
+// a comic always wins: placeholders are candidates only when no comic fits the book
 class CblMatcher
 {
 public:
-    explicit CblMatcher(const QList<CblLibraryComic> &comics);
+    CblMatcher(const QList<CblLibraryComic> &comics, const QList<CblLibraryPlaceholder> &placeholders = { });
 
     CblBookMatch match(const CblBook &book) const;
 
     // every comic_info with a series or a Comic Vine id; nothing if the query fails
     static std::optional<QList<CblLibraryComic>> loadLibraryComics(QSqlDatabase &db);
+    // every placeholder with a series or a Comic Vine id; nothing if the query fails
+    static std::optional<QList<CblLibraryPlaceholder>> loadLibraryPlaceholders(QSqlDatabase &db);
+
+    struct Index {
+        QHash<QString, QList<qsizetype>> byComicVineId;
+        // per name level: series key and number -> positions
+        QHash<QString, QList<qsizetype>> byName[4];
+    };
 
 private:
     QList<CblLibraryComic> comics;
-    QHash<QString, QList<qsizetype>> byComicVineId;
-    // per name level: series key and number -> comics
-    QHash<QString, QList<qsizetype>> byName[4];
+    QList<CblLibraryPlaceholder> placeholders;
+    Index comicIndex;
+    Index placeholderIndex;
 };
 
 #endif

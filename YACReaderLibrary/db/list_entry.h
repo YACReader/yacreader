@@ -18,12 +18,23 @@ struct LastKnownFile {
     friend bool operator==(const LastKnownFile &, const LastKnownFile &) = default;
 };
 
+// the CBL book of a reading list entry that refers to a placeholder, as in the file
+struct EntrySource {
+    QString text;
+    // "xml" or "json"
+    QString format;
+
+    friend bool operator==(const EntrySource &, const EntrySource &) = default;
+};
+
 // a row of reading_list_entry or label_entry; what the entry refers to is the case of the row that holds it
 struct ListEntry {
     ListItemId id { };
     qulonglong listId = 0;
     int ordering = 0;
     std::optional<LastKnownFile> lastKnownFile;
+    // only reading list entries have one
+    std::optional<EntrySource> source;
 
     friend bool operator==(const ListEntry &, const ListEntry &) = default;
 

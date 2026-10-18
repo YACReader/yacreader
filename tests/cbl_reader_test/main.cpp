@@ -1,6 +1,10 @@
 #include "cbl_reader.h"
 
 #include <QBuffer>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QStringEncoder>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -27,6 +31,8 @@ private slots:
     void detectsTheFormatFromTheContent();
     void failsOnBrokenJson_data();
     void failsOnBrokenJson();
+    void booksKeepTheirSource();
+    void readsTheDeclaredEncoding();
 
 private:
     static CblReadResult read(const QByteArray &data);
@@ -423,6 +429,51 @@ void CblReaderTest::failsOnBrokenJson()
     QCOMPARE(int(error->kind), kind);
     QVERIFY(!error->detail.isEmpty());
     QCOMPARE(error->line, line);
+}
+
+void CblReaderTest::booksKeepTheirSource()
+{
+    const auto xml = read(R"(<ReadingList><Books>
+    <Book Series="A" Number="1" />
+    <Book Series="B &amp; C" Number="2">
+      <Database Name="cv" Series="1" Issue="2" />
+      <Unknown>kept</Unknown>
+    </Book>
+  </Books></ReadingList>)");
+    const auto xmlList = std::get_if<CblReadingList>(&xml);
+    QVERIFY(xmlList != nullptr);
+    QCOMPARE(xmlList->books.at(0).source, QString(R"(<Book Series="A" Number="1" />)"));
+    QCOMPARE(xmlList->books.at(1).source, QString(R"(<Book Series="B &amp; C" Number="2">
+      <Database Name="cv" Series="1" Issue="2" />
+      <Unknown>kept</Unknown>
+    </Book>)"));
+
+    const auto json = read(R"({ "issueList": [ { "seriesName": "A", "issueNumber": "1", "extra": { "kept": true }, "id": [ { "name": "metron", "series": "1", "issue": "2" } ] } ] })");
+    const auto jsonList = std::get_if<CblReadingList>(&json);
+    QVERIFY(jsonList != nullptr);
+    const auto source = QJsonDocument::fromJson(jsonList->books.at(0).source.toUtf8()).object();
+    QCOMPARE(source.value("extra").toObject().value("kept").toBool(), true);
+    QCOMPARE(source.value("id").toArray().at(0).toObject().value("name").toString(), QString("metron"));
+}
+
+void CblReaderTest::readsTheDeclaredEncoding()
+{
+    QByteArray latin1 = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><ReadingList><Name>";
+    latin1 += char(0xC9); // É
+    latin1 += "clair</Name><Books><Book Series=\"A\" Number=\"1\" /></Books></ReadingList>";
+    const auto result = read(latin1);
+    const auto list = std::get_if<CblReadingList>(&result);
+    QVERIFY(list != nullptr);
+    QCOMPARE(list->name, QString::fromUtf8("Éclair"));
+
+    QByteArray utf16;
+    {
+        QStringEncoder encoder(QStringConverter::Utf16LE, QStringConverter::Flag::WriteBom);
+        utf16 = encoder(QString::fromUtf8("<ReadingList><Name>Ñame</Name><Books /></ReadingList>"));
+    }
+    const auto fromUtf16 = read(utf16);
+    QVERIFY(std::get_if<CblReadingList>(&fromUtf16) != nullptr);
+    QCOMPARE(std::get<CblReadingList>(fromUtf16).name, QString::fromUtf8("Ñame"));
 }
 
 QTEST_GUILESS_MAIN(CblReaderTest)

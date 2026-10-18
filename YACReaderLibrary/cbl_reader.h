@@ -40,6 +40,8 @@ struct CblBook {
     QString id;
     QString fileName;
     QList<CblDatabaseIds> databases;
+    // the book as in the file: the <Book> element, or the JSON issue object (written again, with sorted keys)
+    QString source;
 
     friend bool operator==(const CblBook &, const CblBook &) = default;
 };

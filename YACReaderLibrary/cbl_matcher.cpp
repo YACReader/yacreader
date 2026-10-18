@@ -92,11 +92,11 @@ int bookYear(const CblBook &book)
 }
 
 // the volume, or the year in a "Series (Year)" name
-QString effectiveVolume(const CblLibraryComic &comic)
+QString effectiveVolume(const CblLibraryMetadata &metadata)
 {
-    if (!comic.volume.trimmed().isEmpty())
-        return comic.volume.trimmed();
-    const auto year = yearInName().match(comic.series);
+    if (!metadata.volume.trimmed().isEmpty())
+        return metadata.volume.trimmed();
+    const auto year = yearInName().match(metadata.series);
     return year.hasMatch() ? year.captured(2) : QString();
 }
 
@@ -137,112 +137,142 @@ bool isComicVine(const CblDatabaseIds &ids)
     return ids.name.compare(QLatin1StringView("cv"), Qt::CaseInsensitive) == 0 || ids.name.compare(QLatin1StringView("comicvine"), Qt::CaseInsensitive) == 0;
 }
 
-// keeps the comics that pass, unless none does
-void narrow(QList<CblLibraryComic> &comics, const std::function<bool(const CblLibraryComic &)> &passes)
+template<typename Item>
+CblMatcher::Index buildIndex(const QList<Item> &items)
 {
-    QList<CblLibraryComic> passing;
-    for (const auto &comic : std::as_const(comics)) {
-        if (passes(comic))
-            passing.append(comic);
+    CblMatcher::Index index;
+    for (qsizetype i = 0; i < items.size(); i++) {
+        const auto &item = items.at(i);
+        if (const auto id = item.comicVineId.trimmed(); !id.isEmpty())
+            index.byComicVineId[id].append(i);
+        if (item.series.trimmed().isEmpty())
+            continue;
+        for (int level = 0; level < 4; level++) {
+            for (const auto &seriesKey : seriesKeys(nameLevels[level], item.series, item.volume)) {
+                auto &positions = index.byName[level][key(seriesKey, item.number)];
+                if (!positions.contains(i))
+                    positions.append(i);
+            }
+        }
     }
-    if (!passing.isEmpty())
-        comics = passing;
+    return index;
 }
 
-void breakTies(const CblBook &book, QList<CblLibraryComic> &comics)
+// keeps the items that pass, unless none does
+template<typename Item>
+void narrow(QList<Item> &items, const std::function<bool(const Item &)> &passes)
+{
+    QList<Item> passing;
+    for (const auto &item : std::as_const(items)) {
+        if (passes(item))
+            passing.append(item);
+    }
+    if (!passing.isEmpty())
+        items = passing;
+}
+
+// a comic with a file wins over a deleted one
+void preferFiles(QList<CblLibraryComic> &comics)
+{
+    narrow<CblLibraryComic>(comics, [](const CblLibraryComic &comic) { return comic.hasFile; });
+}
+
+void preferFiles(QList<CblLibraryPlaceholder> &)
+{
+}
+
+template<typename Item>
+void breakTies(const CblBook &book, QList<Item> &items)
 {
     if (const auto volume = book.volume.trimmed().toCaseFolded(); !volume.isEmpty())
-        narrow(comics, [&](const CblLibraryComic &comic) { return effectiveVolume(comic).toCaseFolded() == volume; });
+        narrow<Item>(items, [&](const Item &item) { return effectiveVolume(item).toCaseFolded() == volume; });
     if (const auto year = bookYear(book); year > 0)
-        narrow(comics, [&](const CblLibraryComic &comic) { const auto comicYear = yearOfDate(comic.date); return comicYear > 0 && std::abs(comicYear - year) <= 1; });
+        narrow<Item>(items, [&](const Item &item) { const auto itemYear = yearOfDate(item.date); return itemYear > 0 && std::abs(itemYear - year) <= 1; });
     if (const auto format = book.format.trimmed(); !format.isEmpty())
-        narrow(comics, [&](const CblLibraryComic &comic) { return comic.format.trimmed().compare(format, Qt::CaseInsensitive) == 0; });
-    narrow(comics, [](const CblLibraryComic &comic) { return comic.hasFile; });
+        narrow<Item>(items, [&](const Item &item) { return item.format.trimmed().compare(format, Qt::CaseInsensitive) == 0; });
+    preferFiles(items);
 }
 
 // the volume is the same or the year is within one, and no known volume or year disagrees
-bool agrees(const CblBook &book, const CblLibraryComic &comic)
+bool agrees(const CblBook &book, const CblLibraryMetadata &metadata)
 {
     const auto bookVolume = book.volume.trimmed();
-    const auto comicVolume = effectiveVolume(comic);
-    const auto volumeKnown = !bookVolume.isEmpty() && !comicVolume.isEmpty();
-    const auto volumeSame = volumeKnown && bookVolume.compare(comicVolume, Qt::CaseInsensitive) == 0;
+    const auto itemVolume = effectiveVolume(metadata);
+    const auto volumeKnown = !bookVolume.isEmpty() && !itemVolume.isEmpty();
+    const auto volumeSame = volumeKnown && bookVolume.compare(itemVolume, Qt::CaseInsensitive) == 0;
 
     const auto year = bookYear(book);
-    const auto comicYear = yearOfDate(comic.date);
-    const auto yearKnown = year > 0 && comicYear > 0;
-    const auto yearClose = yearKnown && std::abs(year - comicYear) <= 1;
+    const auto itemYear = yearOfDate(metadata.date);
+    const auto yearKnown = year > 0 && itemYear > 0;
+    const auto yearClose = yearKnown && std::abs(year - itemYear) <= 1;
 
     return (volumeSame || yearClose) && (!volumeKnown || volumeSame) && (!yearKnown || yearClose);
 }
 
-}
-
-CblMatcher::CblMatcher(const QList<CblLibraryComic> &comics)
-    : comics(comics)
+// the match of `book` among `items`, or nothing when no item fits it
+template<typename Item>
+std::optional<CblBookMatch> matchIn(const CblBook &book, const QList<Item> &items, const CblMatcher::Index &index)
 {
-    for (qsizetype i = 0; i < this->comics.size(); i++) {
-        const auto &comic = this->comics.at(i);
-        if (const auto id = comic.comicVineId.trimmed(); !id.isEmpty())
-            byComicVineId[id].append(i);
-        if (comic.series.trimmed().isEmpty())
-            continue;
-        for (int level = 0; level < 4; level++) {
-            for (const auto &seriesKey : seriesKeys(nameLevels[level], comic.series, comic.volume)) {
-                auto &indexes = byName[level][key(seriesKey, comic.number)];
-                if (!indexes.contains(i))
-                    indexes.append(i);
-            }
-        }
-    }
-}
+    const auto result = [&](const QList<qsizetype> &found, CblMatchLevel level, bool needsAgreement) {
+        QList<Item> fitting;
+        for (const auto position : found)
+            fitting.append(items.at(position));
+        if (needsAgreement)
+            breakTies(book, fitting);
+        else
+            preferFiles(fitting);
 
-CblBookMatch CblMatcher::match(const CblBook &book) const
-{
-    CblBookMatch result;
+        CblBookMatch match;
+        match.level = level;
+        for (const auto &item : std::as_const(fitting))
+            match.candidates.append(item);
+        if (fitting.size() == 1 && (!needsAgreement || agrees(book, fitting.first())))
+            match.accepted = fitting.first();
+        return match;
+    };
 
     QList<qsizetype> found;
     for (const auto &ids : book.databases) {
         if (!isComicVine(ids) || ids.issueId.isEmpty())
             continue;
-        for (const auto index : byComicVineId.value(ids.issueId)) {
-            if (!found.contains(index))
-                found.append(index);
+        for (const auto position : index.byComicVineId.value(ids.issueId)) {
+            if (!found.contains(position))
+                found.append(position);
         }
     }
-    if (!found.isEmpty()) {
-        for (const auto index : found)
-            result.candidates.append(comics.at(index));
-        narrow(result.candidates, [](const CblLibraryComic &comic) { return comic.hasFile; });
-        result.level = CblMatchLevel::ComicVineId;
-        if (result.candidates.size() == 1)
-            result.accepted = result.candidates.first();
-        return result;
-    }
+    if (!found.isEmpty())
+        return result(found, CblMatchLevel::ComicVineId, false);
 
     if (book.series.trimmed().isEmpty())
-        return result;
+        return std::nullopt;
 
     for (int level = 0; level < 4; level++) {
         for (const auto &seriesKey : seriesKeys(nameLevels[level], book.series, book.volume)) {
-            for (const auto index : byName[level].value(key(seriesKey, book.number))) {
-                if (!found.contains(index))
-                    found.append(index);
+            for (const auto position : index.byName[level].value(key(seriesKey, book.number))) {
+                if (!found.contains(position))
+                    found.append(position);
             }
         }
-        if (found.isEmpty())
-            continue;
-
-        for (const auto index : found)
-            result.candidates.append(comics.at(index));
-        breakTies(book, result.candidates);
-        result.level = nameLevels[level];
-        if (result.candidates.size() == 1 && agrees(book, result.candidates.first()))
-            result.accepted = result.candidates.first();
-        return result;
+        if (!found.isEmpty())
+            return result(found, nameLevels[level], true);
     }
+    return std::nullopt;
+}
 
-    return result;
+}
+
+CblMatcher::CblMatcher(const QList<CblLibraryComic> &comics, const QList<CblLibraryPlaceholder> &placeholders)
+    : comics(comics), placeholders(placeholders), comicIndex(buildIndex(comics)), placeholderIndex(buildIndex(placeholders))
+{
+}
+
+CblBookMatch CblMatcher::match(const CblBook &book) const
+{
+    if (auto match = matchIn(book, comics, comicIndex))
+        return *match;
+    if (auto match = matchIn(book, placeholders, placeholderIndex))
+        return *match;
+    return { };
 }
 
 std::optional<QList<CblLibraryComic>> CblMatcher::loadLibraryComics(QSqlDatabase &db)
@@ -258,14 +288,42 @@ std::optional<QList<CblLibraryComic>> CblMatcher::loadLibraryComics(QSqlDatabase
 
     QList<CblLibraryComic> comics;
     while (query.next()) {
-        comics.append({ ComicInfoId(query.value(0).toULongLong()),
-                        query.value(1).toBool(),
-                        query.value(2).toString(),
-                        query.value(3).toString(),
-                        query.value(4).toString(),
-                        query.value(5).toString(),
-                        query.value(6).toString(),
-                        query.value(7).toString() });
+        CblLibraryComic comic;
+        comic.id = ComicInfoId(query.value(0).toULongLong());
+        comic.hasFile = query.value(1).toBool();
+        comic.series = query.value(2).toString();
+        comic.number = query.value(3).toString();
+        comic.volume = query.value(4).toString();
+        comic.date = query.value(5).toString();
+        comic.format = query.value(6).toString();
+        comic.comicVineId = query.value(7).toString();
+        comics.append(comic);
     }
     return comics;
+}
+
+std::optional<QList<CblLibraryPlaceholder>> CblMatcher::loadLibraryPlaceholders(QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    if (!query.exec("SELECT p.id, p.series, p.number, p.volume, p.date, p.format, p.comicVineID "
+                    "FROM placeholder p "
+                    "WHERE COALESCE(p.series, '') <> '' OR COALESCE(p.comicVineID, '') <> ''")) {
+        QLOG_ERROR() << "Unable to load placeholders for CBL matching:" << query.lastError().text();
+        return std::nullopt;
+    }
+
+    QList<CblLibraryPlaceholder> placeholders;
+    while (query.next()) {
+        CblLibraryPlaceholder placeholder;
+        placeholder.id = PlaceholderId(query.value(0).toULongLong());
+        placeholder.series = query.value(1).toString();
+        placeholder.number = query.value(2).toString();
+        placeholder.volume = query.value(3).toString();
+        placeholder.date = query.value(4).toString();
+        placeholder.format = query.value(5).toString();
+        placeholder.comicVineId = query.value(6).toString();
+        placeholders.append(placeholder);
+    }
+    return placeholders;
 }

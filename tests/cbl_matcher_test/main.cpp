@@ -31,11 +31,22 @@ private slots:
     void bookWithoutSeriesOrIdsHasNoMatch();
     void jsonCoverDateGivesTheYear();
     void loadsLibraryComics();
+    void placeholdersAreCandidatesWhenNoComicFits();
+    void aComicWinsOverAPlaceholder();
+    void placeholdersFollowTheSameRules();
+    void loadsLibraryPlaceholders();
 
 private:
     static CblLibraryComic comic(qulonglong id, const QString &series, const QString &number, const QString &volume = { }, const QString &date = { }, bool hasFile = true);
     static CblBook book(const QString &series, const QString &number, const QString &volume = { }, const QString &year = { });
 };
+
+// the comic_info of the accepted comic; 0 when nothing or a placeholder is accepted
+static qulonglong acceptedComic(const CblBookMatch &match)
+{
+    const auto *comic = match.accepted ? std::get_if<CblLibraryComic>(&*match.accepted) : nullptr;
+    return comic != nullptr ? comic->id.value() : 0;
+}
 
 CblLibraryComic CblMatcherTest::comic(qulonglong id, const QString &series, const QString &number, const QString &volume, const QString &date, bool hasFile)
 {
@@ -89,7 +100,7 @@ void CblMatcherTest::matchesByName()
     const auto match = matcher.match(book(bookSeries, "1", "2016", "2016"));
 
     QVERIFY(match.accepted);
-    QCOMPARE(match.accepted->id, ComicInfoId(1));
+    QCOMPARE(acceptedComic(match), qulonglong(1));
     QCOMPARE(int(*match.level), level);
 }
 
@@ -99,7 +110,7 @@ void CblMatcherTest::marksStayInOtherScripts()
 
     QVERIFY(matcher.match(book(QString::fromUtf8("ボール"), "1", "2000")).candidates.isEmpty());
     QVERIFY(matcher.match(book(QString::fromUtf8("Мои"), "1", "2000")).candidates.isEmpty());
-    QCOMPARE(matcher.match(book(QString::fromUtf8("ホール"), "1", "2000")).accepted->id, ComicInfoId(1));
+    QCOMPARE(acceptedComic(matcher.match(book(QString::fromUtf8("ホール"), "1", "2000"))), qulonglong(1));
 }
 
 // ComicRack's order: a later level is not used when an earlier one finds a comic
@@ -111,7 +122,7 @@ void CblMatcherTest::sameSeriesComesBeforeOtherLevels()
 
     QCOMPARE(*match.level, CblMatchLevel::SameSeries);
     QCOMPARE(match.candidates.size(), 1);
-    QCOMPARE(match.candidates.first().id, ComicInfoId(1));
+    QCOMPARE(std::get<CblLibraryComic>(match.candidates.first()).id, ComicInfoId(1));
     QVERIFY(!match.accepted);
 }
 
@@ -119,9 +130,9 @@ void CblMatcherTest::leadingZerosDoNotCount()
 {
     const CblMatcher matcher({ comic(1, "Batman", "001", "2016", "01/05/2016"), comic(2, "Hulk", "-01", "1999", "01/01/1999"), comic(3, "Hulk", "0", "1999", "01/01/1999") });
 
-    QCOMPARE(matcher.match(book("Batman", "1", "2016")).accepted->id, ComicInfoId(1));
-    QCOMPARE(matcher.match(book("Hulk", "-1", "1999")).accepted->id, ComicInfoId(2));
-    QCOMPARE(matcher.match(book("Hulk", "000", "1999")).accepted->id, ComicInfoId(3));
+    QCOMPARE(acceptedComic(matcher.match(book("Batman", "1", "2016"))), qulonglong(1));
+    QCOMPARE(acceptedComic(matcher.match(book("Hulk", "-1", "1999"))), qulonglong(2));
+    QCOMPARE(acceptedComic(matcher.match(book("Hulk", "000", "1999"))), qulonglong(3));
 }
 
 void CblMatcherTest::numbersAreText_data()
@@ -167,7 +178,7 @@ void CblMatcherTest::volumeChoosesBetweenComics()
     const auto match = matcher.match(book("Batman", "1", "2011", "2011"));
 
     QCOMPARE(match.candidates.size(), 1);
-    QCOMPARE(match.accepted->id, ComicInfoId(2));
+    QCOMPARE(acceptedComic(match), qulonglong(2));
 }
 
 void CblMatcherTest::yearWithinOneAgrees_data()
@@ -225,7 +236,7 @@ void CblMatcherTest::comicVineIdComesFirst()
     const auto match = matcher.match(request);
 
     QCOMPARE(*match.level, CblMatchLevel::ComicVineId);
-    QCOMPARE(match.accepted->id, ComicInfoId(1));
+    QCOMPARE(acceptedComic(match), qulonglong(1));
 }
 
 void CblMatcherTest::comicVineIdNamesAndProviders()
@@ -268,15 +279,15 @@ void CblMatcherTest::comicWithAFileWinsOverADeletedOne()
     const auto match = matcher.match(book("Batman", "1", "2016", "2016"));
 
     QCOMPARE(match.candidates.size(), 1);
-    QCOMPARE(match.accepted->id, ComicInfoId(2));
+    QCOMPARE(acceptedComic(match), qulonglong(2));
 }
 
 void CblMatcherTest::aDeletedComicAloneIsAccepted()
 {
     const auto match = CblMatcher({ comic(1, "Batman", "1", "2016", "01/06/2016", false) }).match(book("Batman", "1", "2016", "2016"));
 
-    QCOMPARE(match.accepted->id, ComicInfoId(1));
-    QVERIFY(!match.accepted->hasFile);
+    QCOMPARE(acceptedComic(match), qulonglong(1));
+    QVERIFY(!std::get<CblLibraryComic>(*match.accepted).hasFile);
 }
 
 void CblMatcherTest::bookTwiceMatchesTheSameComic()
@@ -284,8 +295,8 @@ void CblMatcherTest::bookTwiceMatchesTheSameComic()
     const CblMatcher matcher({ comic(1, "Batman", "1", "2016", "01/06/2016") });
     const auto request = book("Batman", "1", "2016", "2016");
 
-    QCOMPARE(matcher.match(request).accepted->id, ComicInfoId(1));
-    QCOMPARE(matcher.match(request).accepted->id, ComicInfoId(1));
+    QCOMPARE(acceptedComic(matcher.match(request)), qulonglong(1));
+    QCOMPARE(acceptedComic(matcher.match(request)), qulonglong(1));
 }
 
 void CblMatcherTest::bookWithoutSeriesOrIdsHasNoMatch()
@@ -338,6 +349,96 @@ void CblMatcherTest::loadsLibraryComics()
     db.close();
     db = QSqlDatabase();
     QSqlDatabase::removeDatabase("cbl_matcher_test");
+}
+
+static CblLibraryPlaceholder placeholder(qulonglong id, const QString &series, const QString &number, const QString &volume = { }, const QString &date = { })
+{
+    CblLibraryPlaceholder result;
+    result.id = PlaceholderId(id);
+    result.series = series;
+    result.number = number;
+    result.volume = volume;
+    result.date = date;
+    return result;
+}
+
+static qulonglong acceptedPlaceholder(const CblBookMatch &match)
+{
+    const auto *found = match.accepted ? std::get_if<CblLibraryPlaceholder>(&*match.accepted) : nullptr;
+    return found != nullptr ? found->id.value() : 0;
+}
+
+// overlapping lists share one placeholder per missing issue
+void CblMatcherTest::placeholdersAreCandidatesWhenNoComicFits()
+{
+    const CblMatcher matcher({ comic(1, "Batman", "1", "2016", "01/06/2016") }, { placeholder(7, "Batman", "2", "2016", "//2016") });
+
+    QCOMPARE(acceptedComic(matcher.match(book("Batman", "1", "2016"))), qulonglong(1));
+    const auto match = matcher.match(book("Batman", "2", "2016"));
+    QCOMPARE(acceptedPlaceholder(match), qulonglong(7));
+    QCOMPARE(*match.level, CblMatchLevel::SameSeries);
+    QVERIFY(matcher.match(book("Batman", "3", "2016")).candidates.isEmpty());
+}
+
+// a comic found at any level wins over a placeholder found at a better level
+void CblMatcherTest::aComicWinsOverAPlaceholder()
+{
+    auto byId = placeholder(7, "Flash", "1", "1987", "//1987");
+    byId.comicVineId = "555";
+    const CblMatcher matcher({ comic(1, "Flash", "1", "1987", "01/06/1987") }, { byId });
+
+    auto request = book("The Flash", "1", "1987");
+    request.databases = { { "cv", "1", "555" } };
+    const auto match = matcher.match(request);
+
+    QCOMPARE(acceptedComic(match), qulonglong(1));
+    QCOMPARE(*match.level, CblMatchLevel::LettersAndDigits);
+}
+
+void CblMatcherTest::placeholdersFollowTheSameRules()
+{
+    auto byId = placeholder(7, "Other name", "1");
+    byId.comicVineId = "555";
+    const CblMatcher matcher({ }, { byId, placeholder(8, "Saga", "1", { }, "//2013"), placeholder(9, "Saga", "1", { }, "//2013"), placeholder(10, "Hulk", "1", "1999", "//2005") });
+
+    auto request = book("Anything", "9");
+    request.databases = { { "comicvine", "1", "555" } };
+    QCOMPARE(acceptedPlaceholder(matcher.match(request)), qulonglong(7));
+
+    // two placeholders for the same issue: the user chooses
+    const auto twice = matcher.match(book("Saga", "1", "2012", "2012"));
+    QCOMPARE(twice.candidates.size(), 2);
+    QVERIFY(!twice.accepted);
+
+    // the year disagrees
+    const auto disagreeing = matcher.match(book("Hulk", "1", "1999", "1999"));
+    QCOMPARE(disagreeing.candidates.size(), 1);
+    QVERIFY(!disagreeing.accepted);
+}
+
+void CblMatcherTest::loadsLibraryPlaceholders()
+{
+    auto db = QSqlDatabase::addDatabase("QSQLITE", "cbl_matcher_placeholders");
+    db.setDatabaseName(":memory:");
+    QVERIFY(db.open());
+    QVERIFY(DataBaseManagement::createTables(db));
+
+    QSqlQuery query(db);
+    QVERIFY(query.exec("INSERT INTO placeholder (id, series, number, volume, date, format, comicVineID) VALUES "
+                       "(1, 'Batman', '2', '2016', '//2016', 'Annual', NULL), (2, NULL, '7', NULL, NULL, NULL, '555'), (3, NULL, '8', NULL, NULL, NULL, NULL)"));
+
+    const auto placeholders = CblMatcher::loadLibraryPlaceholders(db);
+    QVERIFY(placeholders);
+    auto first = placeholder(1, "Batman", "2", "2016", "//2016");
+    first.format = "Annual";
+    auto second = placeholder(2, { }, "7");
+    second.comicVineId = "555";
+    QCOMPARE(*placeholders, QList<CblLibraryPlaceholder>({ first, second }));
+
+    query = QSqlQuery();
+    db.close();
+    db = QSqlDatabase();
+    QSqlDatabase::removeDatabase("cbl_matcher_placeholders");
 }
 
 QTEST_GUILESS_MAIN(CblMatcherTest)

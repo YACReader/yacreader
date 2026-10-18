@@ -4,6 +4,8 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QRegularExpression>
+#include <QStringDecoder>
 #include <QXmlStreamReader>
 
 #include <cmath>
@@ -52,9 +54,25 @@ CblBook readXmlBook(QXmlStreamReader &xml)
     return book;
 }
 
-CblReadResult readXml(const QByteArray &data)
+// the text of an XML document, in the encoding of its byte order mark or declaration, else UTF-8
+QString xmlText(const QByteArray &data)
 {
-    QXmlStreamReader xml(data);
+    if (data.startsWith("\xFF\xFE") || data.startsWith("\xFE\xFF"))
+        return QStringDecoder(QStringConverter::Utf16)(data);
+
+    static const QRegularExpression declaration(R"(^\s*<\?xml[^>]*encoding\s*=\s*["']([^"']+)["'])");
+    const auto match = declaration.match(QString::fromLatin1(data.left(200)));
+    if (match.hasMatch()) {
+        QStringDecoder decoder(match.captured(1).toLatin1().constData());
+        if (decoder.isValid())
+            return decoder(data);
+    }
+    return QString::fromUtf8(data);
+}
+
+CblReadResult readXml(const QString &text)
+{
+    QXmlStreamReader xml(text);
     CblReadingList list;
     list.format = CblReadingList::Xml;
 
@@ -78,11 +96,17 @@ CblReadResult readXml(const QByteArray &data)
         } else if (name == QLatin1StringView("EndMonth")) {
             list.endMonth = toInt(xml.readElementText());
         } else if (name == QLatin1StringView("Books")) {
+            // the text from the end of the previous element to the end of a book is that book
+            auto start = xml.characterOffset();
             while (xml.readNextStartElement()) {
-                if (xml.name() == QLatin1StringView("Book"))
-                    list.books.append(readXmlBook(xml));
-                else
+                if (xml.name() == QLatin1StringView("Book")) {
+                    auto book = readXmlBook(xml);
+                    book.source = text.mid(start, xml.characterOffset() - start).trimmed();
+                    list.books.append(book);
+                } else {
                     xml.skipCurrentElement();
+                }
+                start = xml.characterOffset();
             }
         } else {
             xml.skipCurrentElement();
@@ -199,7 +223,9 @@ CblReadResult readJson(const QByteArray &data)
     for (qsizetype i = 0; i < issues.size(); i++) {
         if (!issues.at(i).isObject())
             return CblReadError { CblReadError::Malformed, QStringLiteral("issueList item %1 is not an object").arg(i) };
-        list.books.append(readJsonBook(issues.at(i).toObject()));
+        auto book = readJsonBook(issues.at(i).toObject());
+        book.source = QString::fromUtf8(QJsonDocument(issues.at(i).toObject()).toJson(QJsonDocument::Compact));
+        list.books.append(book);
     }
 
     return list;
@@ -216,7 +242,8 @@ CblReadResult readCbl(QIODevice &device)
     const auto first = std::find_if(data.cbegin(), data.cend(), [](char c) { return !QChar::isSpace(uchar(c)); });
     if (first != data.cend() && *first == '{')
         return readJson(data);
-    return readXml(data);
+    // the reader gets text, so the offsets of a book are positions in it
+    return readXml(xmlText(data));
 }
 
 CblReadResult readCbl(const QString &filePath)
