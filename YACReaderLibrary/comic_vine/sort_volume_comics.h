@@ -1,7 +1,7 @@
 #ifndef SORT_VOLUME_COMICS_H
 #define SORT_VOLUME_COMICS_H
 
-#include "comic_db.h"
+#include "comic_record.h"
 #include "scraper_results_paginator.h"
 #include "themable.h"
 
@@ -45,8 +45,8 @@ public:
     explicit SortVolumeComics(QWidget *parent = nullptr);
 
 public slots:
-    void setData(QList<ComicDB> &comics, const QString &json, const QString &vID);
-    QList<QPair<ComicDB, QString>> getMatchingInfo();
+    void setData(const QList<ComicRecord> &comics, const QString &json, const QString &vID);
+    QList<QPair<ComicRecord, QString>> getMatchingInfo();
 
 protected slots:
     void synchronizeScroll(int pos);

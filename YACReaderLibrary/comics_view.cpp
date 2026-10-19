@@ -99,7 +99,7 @@ void ComicsView::updateInfoForIndex(int index)
     }
 
     const auto modelIndex = model->index(index, 0);
-    comicInfo = new ComicInfoObject(model->getComic(modelIndex), model->isFavorite(modelIndex));
+    comicInfo = new ComicInfoObject(model->record(modelIndex), model->isFavorite(modelIndex));
 
     ctxt->setContextProperty("comic", comicInfo);
     ctxt->setContextProperty("comicInfo", comicInfo);

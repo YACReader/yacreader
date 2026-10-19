@@ -220,3 +220,16 @@ QJsonObject YACReaderServerDataHelper::labelToJSON(const qulonglong libraryId, c
 }
 
 YACReaderServerDataHelper::YACReaderServerDataHelper() { }
+
+QList<ComicDB> YACReaderServerDataHelper::firstOccurrences(const QList<ComicDB> &comics)
+{
+    QList<ComicDB> result;
+    QSet<ComicId> seen;
+    for (const auto &comic : comics) {
+        if (!seen.contains(comic.file.id)) {
+            seen.insert(comic.file.id);
+            result.append(comic);
+        }
+    }
+    return result;
+}

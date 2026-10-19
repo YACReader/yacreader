@@ -565,12 +565,12 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
         <translation>imposible cargar 7z lib de ./utils</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="149"/>
         <source>Select custom cover</source>
         <translation>Seleccionar portada personalizada</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="149"/>
         <source>Images (%1)</source>
         <translation>Imágenes (%1)</translation>
     </message>
@@ -1541,7 +1541,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="27"/>
         <source>Click to overwrite</source>
         <translation>Clic para sobrescribir</translation>
     </message>
@@ -1555,9 +1555,9 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="19"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="44"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="50"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="18"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="43"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="49"/>
         <source>Click to overwrite</source>
         <translation>Clic para sobrescribir</translation>
     </message>

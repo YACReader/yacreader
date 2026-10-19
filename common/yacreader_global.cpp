@@ -128,6 +128,7 @@ QDataStream &YACReader::operator<<(QDataStream &stream, const OpenComicSource &s
 {
     stream << (quint8)source.source;
     stream << source.sourceId;
+    stream << source.entryId;
     return stream;
 }
 
@@ -137,6 +138,7 @@ QDataStream &YACReader::operator>>(QDataStream &stream, OpenComicSource &source)
     stream >> sourceRaw;
     source.source = (OpenComicSource::Source)sourceRaw;
     stream >> source.sourceId;
+    stream >> source.entryId;
     return stream;
 }
 

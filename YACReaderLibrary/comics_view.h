@@ -53,6 +53,7 @@ public slots:
 
 signals:
     void selected(unsigned int);
+    void comicSelectionChanged();
     void openComic(const ComicDB &comic, const ComicModel::Mode mode);
     void comicRated(int, QModelIndex);
 
@@ -63,7 +64,7 @@ signals:
     // Drops
     void copyComicsToCurrentFolder(QList<QPair<QString, QString>>);
     void moveComicsToCurrentFolder(QList<QPair<QString, QString>>);
-    void customComicCoverRequested(qulonglong comicId, const QString &imagePath);
+    void customComicCoverRequested(const ComicRowId &row, const QString &imagePath);
     void customFolderCoverRequested(qulonglong folderId, const QString &imagePath);
 
 protected:

@@ -202,7 +202,7 @@
 <context>
     <name>ClassicComicsView</name>
     <message>
-        <location filename="classic_comics_view.cpp" line="100"/>
+        <location filename="classic_comics_view.cpp" line="105"/>
         <source>Hide comic flow</source>
         <translation>Nascondi Comic Flow</translation>
     </message>
@@ -221,82 +221,82 @@
 <context>
     <name>ComicInfoView</name>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="302"/>
+        <location filename="qml/ComicInfoView.qml" line="303"/>
         <source>Characters</source>
         <translation>Personaggi</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="334"/>
+        <location filename="qml/ComicInfoView.qml" line="335"/>
         <source>Main character or team</source>
         <translation>Personaggio principale o squadra</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="359"/>
+        <location filename="qml/ComicInfoView.qml" line="360"/>
         <source>Teams</source>
         <translation>Squadre</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="393"/>
+        <location filename="qml/ComicInfoView.qml" line="394"/>
         <source>Locations</source>
         <translation>Posizioni</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="425"/>
+        <location filename="qml/ComicInfoView.qml" line="426"/>
         <source>Authors</source>
         <translation>Autori</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="457"/>
+        <location filename="qml/ComicInfoView.qml" line="458"/>
         <source>writer</source>
         <translation>sceneggiatore</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="479"/>
+        <location filename="qml/ComicInfoView.qml" line="480"/>
         <source>penciller</source>
         <translation>disegnatore</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="501"/>
+        <location filename="qml/ComicInfoView.qml" line="502"/>
         <source>inker</source>
         <translation>inchiostratore</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="523"/>
+        <location filename="qml/ComicInfoView.qml" line="524"/>
         <source>colorist</source>
         <translation>colorista</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="545"/>
+        <location filename="qml/ComicInfoView.qml" line="546"/>
         <source>letterer</source>
         <translation>letterista</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="567"/>
+        <location filename="qml/ComicInfoView.qml" line="568"/>
         <source>cover artist</source>
         <translation>disegnatore di copertina</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="589"/>
+        <location filename="qml/ComicInfoView.qml" line="590"/>
         <source>editor</source>
         <translation>editor</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="611"/>
+        <location filename="qml/ComicInfoView.qml" line="612"/>
         <source>imprint</source>
         <translation>marchio editoriale</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="626"/>
+        <location filename="qml/ComicInfoView.qml" line="627"/>
         <source>Publisher</source>
         <translation>Editore</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="678"/>
+        <location filename="qml/ComicInfoView.qml" line="679"/>
         <source>color</source>
         <translation>colore</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="678"/>
+        <location filename="qml/ComicInfoView.qml" line="679"/>
         <source>b/w</source>
         <translation>b/n</translation>
     </message>
@@ -304,28 +304,28 @@
 <context>
     <name>ComicManagementCoordinator</name>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="138"/>
-        <location filename="comic_management_coordinator.cpp" line="140"/>
+        <location filename="comic_management_coordinator.cpp" line="141"/>
+        <location filename="comic_management_coordinator.cpp" line="143"/>
         <source>YACReader not found</source>
         <translation>YACReader non trovato</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="138"/>
+        <location filename="comic_management_coordinator.cpp" line="141"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>YACReader non trovato. YACReader deve essere installato nella stessa cartella di YACReaderLibrary.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="140"/>
+        <location filename="comic_management_coordinator.cpp" line="143"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>YACReader non trovato. Potrebbe esserci un problema con l&apos;installazione di YACReader.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="147"/>
+        <location filename="comic_management_coordinator.cpp" line="150"/>
         <source>Error</source>
         <translation>Errore</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="147"/>
+        <location filename="comic_management_coordinator.cpp" line="150"/>
         <source>Error opening comic with third party reader.</source>
         <translation>Errore nell&apos;apertura del fumetto con un lettore di terze parti.</translation>
     </message>
@@ -333,67 +333,67 @@
 <context>
     <name>ComicModel</name>
     <message>
-        <location filename="db/comic_model.cpp" line="382"/>
+        <location filename="db/comic_model.cpp" line="667"/>
         <source>no</source>
         <translation>No</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="382"/>
+        <location filename="db/comic_model.cpp" line="667"/>
         <source>yes</source>
         <translation>Si</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="421"/>
+        <location filename="db/comic_model.cpp" line="706"/>
         <source>Read</source>
         <translation>Leggi</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="429"/>
+        <location filename="db/comic_model.cpp" line="714"/>
         <source>Series</source>
         <translation>Serie</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="431"/>
+        <location filename="db/comic_model.cpp" line="716"/>
         <source>Volume</source>
         <translation>Tomo</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="433"/>
+        <location filename="db/comic_model.cpp" line="718"/>
         <source>Story Arc</source>
         <translation>Arco narrativo</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="419"/>
+        <location filename="db/comic_model.cpp" line="704"/>
         <source>Size</source>
         <translation>Dimensione</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="417"/>
+        <location filename="db/comic_model.cpp" line="702"/>
         <source>Pages</source>
         <translation>Pagine</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="413"/>
+        <location filename="db/comic_model.cpp" line="698"/>
         <source>Title</source>
         <translation>Titolo</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="423"/>
+        <location filename="db/comic_model.cpp" line="708"/>
         <source>Current Page</source>
         <translation>Pagina corrente</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="415"/>
+        <location filename="db/comic_model.cpp" line="700"/>
         <source>File Name</source>
         <translation>Nome file</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="425"/>
+        <location filename="db/comic_model.cpp" line="710"/>
         <source>Publication Date</source>
         <translation>Data di pubblicazione</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="427"/>
+        <location filename="db/comic_model.cpp" line="712"/>
         <source>Rating</source>
         <translation>Valutazione</translation>
     </message>
@@ -427,7 +427,7 @@
         <translation>Ricezione tag per: %1</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="647"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="658"/>
         <source>Looking for comic...</source>
         <translation>Sto cercando il fumetto...</translation>
     </message>
@@ -438,14 +438,14 @@
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="133"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="596"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="635"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="607"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="646"/>
         <source>Looking for volume...</source>
         <translation>Sto cercando il fumetto...</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="131"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="544"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="555"/>
         <source>comic %1 of %2 - %3</source>
         <translation>Fumetto %1 di %2 - %3</translation>
     </message>
@@ -460,7 +460,7 @@
         <translation>Errore durante la connessione a ComicVine</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="615"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="626"/>
         <source>Retrieving volume info...</source>
         <translation>Sto ricevendo le informazioni per l&apos;abum...</translation>
     </message>
@@ -519,7 +519,7 @@
 <context>
     <name>DBHelper</name>
     <message>
-        <location filename="db_helper.cpp" line="1451"/>
+        <location filename="db_helper.cpp" line="1364"/>
         <source>The folder entry could not be found in the library database.</source>
         <translation>La voce della cartella non è stata trovata nel database della libreria.</translation>
     </message>
@@ -788,7 +788,7 @@
 <context>
     <name>GridComicsView</name>
     <message>
-        <location filename="grid_comics_view.cpp" line="115"/>
+        <location filename="grid_comics_view.cpp" line="117"/>
         <source>Show info</source>
         <translation>Mostra informazioni</translation>
     </message>
@@ -809,32 +809,32 @@
         <translation type="obsolete">Aggiunti di recente</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="853"/>
+        <location filename="grid_comics_view.cpp" line="869"/>
         <source>Manga</source>
         <translation>Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="856"/>
+        <location filename="grid_comics_view.cpp" line="872"/>
         <source>Western manga</source>
         <translation>Manga occidentale</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="859"/>
+        <location filename="grid_comics_view.cpp" line="875"/>
         <source>Web comic</source>
         <translation>Fumetto web</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="862"/>
+        <location filename="grid_comics_view.cpp" line="878"/>
         <source>Yonkoma</source>
         <translation>Yonkoma</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="866"/>
+        <location filename="grid_comics_view.cpp" line="882"/>
         <source>Comic</source>
         <translation>Fumetto</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="870"/>
+        <location filename="grid_comics_view.cpp" line="886"/>
         <source>Unknown</source>
         <translation>Sconosciuto</translation>
     </message>
@@ -1070,7 +1070,7 @@
         <translation>C&apos;è stato un errore nell&apos;accesso al percorso della cartella</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="561"/>
+        <location filename="comic_management_coordinator.cpp" line="596"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>I fumetti verranno cancellati dall&apos;etichetta/lista corrente. Sei sicuro?</translation>
     </message>
@@ -1080,12 +1080,12 @@
         <translation>Questa libreria è stata creata con una verisone più recente di YACReaderLibrary. Scarico la versione aggiornata ora?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="224"/>
+        <location filename="comic_management_coordinator.cpp" line="232"/>
         <source>Moving comics...</source>
         <translation>Sto muovendo i fumetti...</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="208"/>
+        <location filename="comic_management_coordinator.cpp" line="216"/>
         <source>Copying comics...</source>
         <translation>Sto copiando i fumetti...</translation>
     </message>
@@ -1110,7 +1110,7 @@
         <translation>La libreria &apos;%1&apos; è stata creata con una versione precedente di YACREaderLibrary. Deve essere ricreata. Lo vuoi fare ora?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="360"/>
+        <location filename="comic_management_coordinator.cpp" line="369"/>
         <source>Save covers</source>
         <translation>Salva Copertine</translation>
     </message>
@@ -1133,7 +1133,7 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Informazioni sulla biblioteca</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="303"/>
+        <location filename="comic_management_coordinator.cpp" line="316"/>
         <source>Assign comics numbers</source>
         <translation>Assegna un numero ai fumetti</translation>
     </message>
@@ -1150,7 +1150,7 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Libreria non disponibile</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="596"/>
+        <location filename="comic_management_coordinator.cpp" line="644"/>
         <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
         <translation>C&apos;è un problema nel cancellare i fumetti selezionati. Per favore controlla i tuoi permessi di scrittura sui file o sulla cartella.</translation>
     </message>
@@ -1185,7 +1185,7 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Cancella Cartella</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="304"/>
+        <location filename="comic_management_coordinator.cpp" line="317"/>
         <source>Assign numbers starting in:</source>
         <translation>Assegna numeri partendo da:</translation>
     </message>
@@ -1200,31 +1200,31 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Rimuovi ed elimina metadati e backup</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="389"/>
+        <location filename="comic_management_coordinator.cpp" line="403"/>
         <location filename="folder_management_coordinator.cpp" line="339"/>
         <source>Invalid image</source>
         <translation>Immagine non valida</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="390"/>
+        <location filename="comic_management_coordinator.cpp" line="404"/>
         <location filename="folder_management_coordinator.cpp" line="340"/>
         <source>The selected file is not a valid image.</source>
         <translation>Il file selezionato non è un&apos;immagine valida.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="398"/>
+        <location filename="comic_management_coordinator.cpp" line="439"/>
         <location filename="folder_management_coordinator.cpp" line="347"/>
         <source>Error saving cover</source>
         <translation>Errore durante il salvataggio della copertina</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="399"/>
+        <location filename="comic_management_coordinator.cpp" line="440"/>
         <location filename="folder_management_coordinator.cpp" line="348"/>
         <source>There was an error saving the cover image.</source>
         <translation>Si è verificato un errore durante il salvataggio dell&apos;immagine di copertina.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="520"/>
+        <location filename="comic_management_coordinator.cpp" line="557"/>
         <source>Delete comics</source>
         <translation>Cancella i fumetti</translation>
     </message>
@@ -1236,12 +1236,22 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Nessuna cartella selezionata</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="521"/>
+        <location filename="comic_management_coordinator.cpp" line="558"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Tutti i fumetti selezionati saranno cancellati dal tuo disco. Sei sicuro?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="560"/>
+        <location filename="comic_management_coordinator.cpp" line="600"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="603"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="610"/>
         <source>Remove comics</source>
         <translation>Rimuovi i fumetti</translation>
     </message>
@@ -1251,7 +1261,7 @@ YACReader non ti fermerà dal creare altre librerie ma è meglio se terrai il nu
         <translation>Libreria non trovata</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="595"/>
+        <location filename="comic_management_coordinator.cpp" line="643"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Non posso cancellare</translation>
@@ -2060,7 +2070,7 @@ File mancanti: %3</translation>
         <translation>Aggiungi i fumetti selezionati alla lista dei favoriti</translation>
     </message>
     <message>
-        <location filename="qml/ComicGridDelegate.qml" line="300"/>
+        <location filename="qml/ComicGridDelegate.qml" line="314"/>
         <location filename="library_window_actions.cpp" line="330"/>
         <source>Reset rating</source>
         <translation>Reimposta valutazione</translation>
@@ -2215,7 +2225,7 @@ File mancanti: %3</translation>
 <context>
     <name>LocalComicListModel</name>
     <message>
-        <location filename="comic_vine/model/local_comic_list_model.cpp" line="72"/>
+        <location filename="comic_vine/model/local_comic_list_model.cpp" line="74"/>
         <source>file name</source>
         <translation>Nome file</translation>
     </message>
@@ -2531,58 +2541,58 @@ Per interrompere un aggiornamento automatico, tocca l&apos;indicatore di caricam
 <context>
     <name>OrganizeFilesCoordinator</name>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="143"/>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="175"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="137"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="169"/>
         <source>Organize files</source>
         <translation>Organizza i file</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="143"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="137"/>
         <source>This folder does not contain any comics.</source>
         <translation>Questa cartella non contiene fumetti.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="176"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="170"/>
         <source>This library is busy: %1</source>
         <translation>Questa libreria è occupata: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="219"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="213"/>
         <source>the library database could not be opened</source>
         <translation>non è stato possibile aprire il database della libreria</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="226"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="220"/>
         <source>the library database could not be locked for writing</source>
         <translation>non è stato possibile bloccare il database della libreria per la scrittura</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="235"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="229"/>
         <source>a folder entry could not be restored</source>
         <translation>non è stato possibile ripristinare una voce di cartella</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="246"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="240"/>
         <source>a comic entry could not be updated</source>
         <translation>non è stato possibile aggiornare una voce di fumetto</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="265"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="259"/>
         <source>the library database could not be saved: %1</source>
         <translation>non è stato possibile salvare il database della libreria: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="310"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="304"/>
         <source>the record of the last organize run could not be read</source>
         <translation>non è stato possibile leggere il registro dell&apos;ultima organizzazione</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="335"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="329"/>
         <source>the folder %1 could not be created</source>
         <translation>non è stato possibile creare la cartella %1</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_coordinator.cpp" line="383"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="377"/>
         <source>%n file(s) could not be moved back</source>
         <translation>
             <numerusform>non è stato possibile riportare indietro %n file</numerusform>
@@ -3158,274 +3168,310 @@ Per interrompere un aggiornamento automatico, tocca l&apos;indicatore di caricam
 <context>
     <name>PropertiesDialog</name>
     <message>
-        <location filename="properties_dialog.cpp" line="283"/>
+        <location filename="properties_dialog.cpp" line="290"/>
         <source>Day:</source>
         <translation>Giorno:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="90"/>
+        <location filename="properties_dialog.cpp" line="97"/>
         <source>Plot</source>
         <translation>Trama</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="209"/>
+        <location filename="properties_dialog.cpp" line="216"/>
         <source>Size:</source>
         <translation>Dimesioni:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="291"/>
+        <location filename="properties_dialog.cpp" line="298"/>
         <source>Year:</source>
         <translation>Anno:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="239"/>
+        <location filename="properties_dialog.cpp" line="246"/>
         <source>Inker(s):</source>
         <translation>Inchiostratore(i):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="92"/>
+        <location filename="properties_dialog.cpp" line="99"/>
         <source>Publishing</source>
         <translation>Pubblicazione</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="299"/>
+        <location filename="properties_dialog.cpp" line="306"/>
         <source>Publisher:</source>
         <translation>Editore:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="89"/>
+        <location filename="properties_dialog.cpp" line="96"/>
         <source>General info</source>
         <translation>Informazioni generali</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="301"/>
+        <location filename="properties_dialog.cpp" line="308"/>
         <source>Color/BW:</source>
         <translation>Colore o B/N:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="594"/>
+        <location filename="properties_dialog.cpp" line="644"/>
         <source>Edit selected comics information</source>
         <translation>Edita le informazioni del fumetto selezionato</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="232"/>
+        <location filename="properties_dialog.cpp" line="239"/>
         <source>Penciller(s):</source>
         <translation>Mine:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="242"/>
+        <location filename="properties_dialog.cpp" line="249"/>
         <source>Colorist(s):</source>
         <translation>Colorista(i):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="207"/>
+        <location filename="properties_dialog.cpp" line="214"/>
         <source>Genre:</source>
         <translation>Genere:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="93"/>
+        <location filename="properties_dialog.cpp" line="100"/>
         <source>Notes</source>
         <translation>Note</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="111"/>
+        <location filename="properties_dialog.cpp" line="118"/>
         <source>Load previous page as cover</source>
         <translation>Carica la pagina precedente come copertina</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="115"/>
+        <location filename="properties_dialog.cpp" line="122"/>
         <source>Load next page as cover</source>
         <translation>Carica la pagina successiva come copertina</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="120"/>
+        <location filename="properties_dialog.cpp" line="127"/>
         <source>Reset cover to the default image</source>
         <translation>Ripristina la copertina sull&apos;immagine predefinita</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="125"/>
+        <location filename="properties_dialog.cpp" line="132"/>
         <source>Load custom cover image</source>
         <translation>Carica l&apos;immagine di copertina personalizzata</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="169"/>
+        <location filename="properties_dialog.cpp" line="176"/>
         <source>Series:</source>
         <translation>Serie:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="179"/>
+        <location filename="properties_dialog.cpp" line="186"/>
         <source>Issue number:</source>
         <translation>Numeri emessi:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="197"/>
+        <location filename="properties_dialog.cpp" line="204"/>
         <source>alt. number:</source>
         <translation>alt. numero:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="203"/>
+        <location filename="properties_dialog.cpp" line="210"/>
         <source>Alternate series:</source>
         <translation>Serie alternative:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="205"/>
+        <location filename="properties_dialog.cpp" line="212"/>
         <source>Series Group:</source>
         <translation>Gruppo di serie:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="259"/>
+        <location filename="properties_dialog.cpp" line="266"/>
         <source>Editor(s):</source>
         <translation>Redattore(i):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="262"/>
+        <location filename="properties_dialog.cpp" line="269"/>
         <source>Imprint:</source>
         <translation>Impronta:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="287"/>
+        <location filename="properties_dialog.cpp" line="294"/>
         <source>Month:</source>
         <translation>Mese:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="303"/>
+        <location filename="properties_dialog.cpp" line="310"/>
         <source>Type:</source>
         <translation>Tipo:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="304"/>
+        <location filename="properties_dialog.cpp" line="311"/>
         <source>Language (ISO):</source>
         <translation>Lingua (ISO):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="335"/>
+        <location filename="properties_dialog.cpp" line="342"/>
         <source>Teams:</source>
         <translation>Squadre:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="341"/>
+        <location filename="properties_dialog.cpp" line="348"/>
         <source>Locations:</source>
         <translation>Posizioni:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="347"/>
+        <location filename="properties_dialog.cpp" line="354"/>
         <source>Main character or team:</source>
         <translation>Personaggio principale o squadra:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="369"/>
+        <location filename="properties_dialog.cpp" line="376"/>
         <source>Review:</source>
         <translation>Revisione:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="370"/>
+        <location filename="properties_dialog.cpp" line="377"/>
         <source>Notes:</source>
         <translation>Note:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="1219"/>
+        <location filename="properties_dialog.cpp" line="509"/>
+        <source>The file of this comic is not in the library.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="511"/>
+        <source>Last known file: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="786"/>
+        <source>Comic skipped</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="786"/>
+        <source>A comic was removed from the library or now has a different file, so it is skipped.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1006"/>
+        <location filename="properties_dialog.cpp" line="1010"/>
+        <source>Changes not saved</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1006"/>
+        <source>A comic that you are editing was removed from the library or now has a different file. Your changes were not saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1010"/>
+        <source>The changes could not be saved.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1241"/>
         <source>Invalid cover</source>
         <translation>Copertina non valida</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="1219"/>
+        <location filename="properties_dialog.cpp" line="1241"/>
         <source>The image is invalid.</source>
         <translation>L&apos;immagine non è valida.</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="325"/>
+        <location filename="properties_dialog.cpp" line="332"/>
         <source>Synopsis:</source>
         <translation>Sinossi:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="170"/>
+        <location filename="properties_dialog.cpp" line="177"/>
         <source>Title:</source>
         <translation>Titolo:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="488"/>
+        <location filename="properties_dialog.cpp" line="500"/>
         <source>Not found</source>
         <translation>Non trovato</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="332"/>
+        <location filename="properties_dialog.cpp" line="339"/>
         <source>Characters:</source>
         <translation>Personaggi:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="91"/>
+        <location filename="properties_dialog.cpp" line="98"/>
         <source>Authors</source>
         <translation>Autori</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="302"/>
+        <location filename="properties_dialog.cpp" line="309"/>
         <source>Age rating:</source>
         <translation>Valutazione età:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="192"/>
+        <location filename="properties_dialog.cpp" line="199"/>
         <source>Story arc:</source>
         <translation>Arco Narrativo:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="229"/>
+        <location filename="properties_dialog.cpp" line="236"/>
         <source>Writer(s):</source>
         <translation>Scrittore(i):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="371"/>
+        <location filename="properties_dialog.cpp" line="378"/>
         <source>Tags:</source>
         <translation>tag:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="488"/>
+        <location filename="properties_dialog.cpp" line="500"/>
         <source>Comic not found. You should update your library.</source>
         <translation>Fumetto non trovato, dovresti aggiornare la Libreria.</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="556"/>
+        <location filename="properties_dialog.cpp" line="581"/>
         <source>Edit comic information</source>
         <translation>Edita le informazioni del fumetto</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="102"/>
+        <location filename="properties_dialog.cpp" line="109"/>
         <source>Cover page</source>
         <translation>Pagina Copertina</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="252"/>
+        <location filename="properties_dialog.cpp" line="259"/>
         <source>Cover Artist(s):</source>
         <translation>Artista(i) copertina:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="468"/>
+        <location filename="properties_dialog.cpp" line="478"/>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
         <translation>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; Vai &lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="181"/>
+        <location filename="properties_dialog.cpp" line="188"/>
         <source>Volume:</source>
         <translation>Album:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="300"/>
+        <location filename="properties_dialog.cpp" line="307"/>
         <source>Format:</source>
         <translation>Formato:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="249"/>
+        <location filename="properties_dialog.cpp" line="256"/>
         <source>Letterer(s):</source>
         <translation>Letterista(i):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="174"/>
-        <location filename="properties_dialog.cpp" line="188"/>
-        <location filename="properties_dialog.cpp" line="199"/>
+        <location filename="properties_dialog.cpp" line="181"/>
+        <location filename="properties_dialog.cpp" line="195"/>
+        <location filename="properties_dialog.cpp" line="206"/>
         <source>of:</source>
         <translation>Di:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="186"/>
+        <location filename="properties_dialog.cpp" line="193"/>
         <source>Arc number:</source>
         <translation>Numero dell&apos;arco:</translation>
     </message>
@@ -3443,12 +3489,12 @@ Per interrompere un aggiornamento automatico, tocca l&apos;indicatore di caricam
         <translation>Impossibile caricare la libreria 7z da ./utils</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="149"/>
         <source>Select custom cover</source>
         <translation>Seleziona la copertina personalizzata</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="149"/>
         <source>Images (%1)</source>
         <translation>Immagini (%1)</translation>
     </message>
@@ -4239,38 +4285,43 @@ Use quotes to include spaces in a value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="58"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="59"/>
         <source>%1 comics selected</source>
         <oldsource>%n comic(s) selected</oldsource>
         <translation type="unfinished">Fumetto %1 selezionato</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="77"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="78"/>
         <source>Read</source>
         <translation type="unfinished">Leggi</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="80"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="81"/>
         <source>In progress</source>
         <translation type="unfinished">In corso</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="83"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="84"/>
         <source>Unread</source>
         <translation type="unfinished">Non letti</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="86"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="87"/>
         <source>Total pages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="89"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="90"/>
         <source>Total size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="74"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="93"/>
+        <source>Missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="75"/>
         <source>Series</source>
         <translation type="unfinished">Serie</translation>
     </message>
@@ -4808,7 +4859,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="27"/>
         <source>Click to overwrite</source>
         <translation>Clikka per sovrascrivere</translation>
     </message>
@@ -4822,9 +4873,9 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="19"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="44"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="50"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="18"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="43"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="49"/>
         <source>Click to overwrite</source>
         <translation>Clikka per sovrascrivere</translation>
     </message>

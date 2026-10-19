@@ -2,6 +2,8 @@
 #include "data_base_management.h"
 #include "folder.h"
 #include "library_ids.h"
+#include "list_entry.h"
+#include "placeholder.h"
 #include "reading_list.h"
 #include "table_projection.h"
 #include "yacreader_global.h"
@@ -35,6 +37,7 @@ private slots:
     void readingListRoundTrip();
     void readingListUpdate();
     void labelRoundTrip();
+    void listEntryReadsItsKindAndLastKnownFile();
     void folderReadsNullColumns();
     void folderRoundTrip();
     void folderKeepsAStoredUnknownCount();
@@ -116,6 +119,9 @@ void TableProjectionTest::columnsMatchSchema_data()
     QTest::newRow("reading_list") << "reading_list" << ReadingList::columns() << QStringList { "manga" };
     QTest::newRow("label") << "label" << Label::columns() << QStringList();
     QTest::newRow("folder") << "folder" << Folder::columns() << QStringList { "manga" };
+    QTest::newRow("reading_list_entry") << "reading_list_entry" << ListEntry::columns(ListKind::ReadingList) << QStringList { "comic_info_id", "placeholder_id" };
+    QTest::newRow("label_entry") << "label_entry" << ListEntry::columns(ListKind::Label) << QStringList { "comic_info_id", "placeholder_id" };
+    QTest::newRow("placeholder") << "placeholder" << Placeholder::columns() << QStringList();
 }
 
 void TableProjectionTest::columnsMatchSchema()
@@ -256,6 +262,29 @@ void TableProjectionTest::labelRoundTrip()
     QCOMPARE(read.name, QString("To read"));
     QCOMPARE(read.color, QString("green"));
     QCOMPARE(read.ordering, int(YACReader::YGreen));
+}
+
+void TableProjectionTest::listEntryReadsItsKindAndLastKnownFile()
+{
+    QSqlQuery q(db);
+    QVERIFY(q.exec("INSERT INTO label (id, name, color, ordering) VALUES (3, 'Tag', 'red', 0)"));
+    QVERIFY(q.exec("INSERT INTO label_entry (id, label_id, ordering, comic_info_id, last_known_name, last_known_path) "
+                   "VALUES (5, 3, 0, 42, NULL, NULL), (6, 3, 1, 42, 'a.cbz', '/Series/a.cbz')"));
+
+    QVERIFY(q.exec("SELECT " + TableProjection::selectList("e", ListEntry::columns(ListKind::Label)) + " FROM label_entry e ORDER BY e.ordering"));
+    const auto indexes = ListEntry::columnIndexes(q.record(), "e", ListKind::Label);
+    QList<ListEntry> entries;
+    while (q.next())
+        entries.append(ListEntry::fromQuery(q, indexes, ListKind::Label));
+
+    QCOMPARE(entries.size(), 2);
+    QVERIFY(entries.at(0).id == (ListItemId { ListKind::Label, 5 }));
+    QCOMPARE(entries.at(0).listId, 3ULL);
+    QCOMPARE(entries.at(0).ordering, 0);
+    QVERIFY(!entries.at(0).lastKnownFile.has_value());
+    QVERIFY(entries.at(1).id == (ListItemId { ListKind::Label, 6 }));
+    QCOMPARE(entries.at(1).ordering, 1);
+    QVERIFY(entries.at(1).lastKnownFile == (LastKnownFile { "a.cbz", "/Series/a.cbz" }));
 }
 
 void TableProjectionTest::folderReadsNullColumns()

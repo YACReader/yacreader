@@ -110,6 +110,7 @@ struct ComicsViewTableTheme {
     QString tableViewQSS;
     QColor starRatingColor;
     QColor starRatingSelectedColor;
+    QIcon deletedComicIcon;
 };
 
 struct EmptyContainerThemeTemplates {

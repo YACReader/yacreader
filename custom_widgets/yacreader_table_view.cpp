@@ -37,6 +37,7 @@ YACReaderTableView::YACReaderTableView(QWidget *parent)
     setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     setItemDelegateForColumn(ComicModel::Rating, new YACReaderRatingDelegate(this));
+    setItemDelegateForColumn(ComicModel::State, new YACReaderComicStateDelegate(this));
     setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     setMouseTracking(true);
@@ -217,6 +218,28 @@ void YACReaderTableView::commitData(QWidget *editor)
 void YACReaderTableView::resizeEvent(QResizeEvent *event)
 {
     QTableView::resizeEvent(event);
+}
+
+//------------------------------------------------------------------------------
+// YACReaderComicStateDelegate---------------------------------------------------
+//------------------------------------------------------------------------------
+void YACReaderComicStateDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QStyledItemDelegate::paint(painter, option, index);
+
+    if (index.data(ComicModel::KindRole).toString() != QStringLiteral("DeletedComicInList"))
+        return;
+
+    if (auto tableView = qobject_cast<YACReaderTableView *>(parent())) {
+        const int size = 12;
+        const QRect iconRect(option.rect.center() - QPoint(size / 2 - 1, size / 2 - 1), QSize(size, size));
+        tableView->deletedComicIcon().paint(painter, iconRect, Qt::AlignCenter, (option.state & QStyle::State_Selected) ? QIcon::Selected : QIcon::Normal);
+    }
+}
+
+QSize YACReaderComicStateDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    return { 20, QStyledItemDelegate::sizeHint(option, index).height() };
 }
 
 //------------------------------------------------------------------------------

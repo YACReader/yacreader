@@ -143,11 +143,12 @@ void YACReaderClientConnectionWorker::run()
         dataStream >> comic;
 
         QList<ComicDB> siblings;
+        qint32 position = -1;
 
         if (source.source == OpenComicSource::ReadingList) {
-            getComicInfoFromReadingList(libraryId, source.sourceId, comic, siblings);
+            getComicInfoFromReadingList(libraryId, source, comic, siblings, position);
         } else {
-            getComicInfo(libraryId, comic, siblings);
+            getComicInfo(libraryId, comic, siblings, position);
         }
 
         QByteArray block;
@@ -156,6 +157,7 @@ void YACReaderClientConnectionWorker::run()
         out << (quint32)0;
         out << comic;
         out << siblings;
+        out << position;
         out.device()->seek(0);
         out << (quint32)(block.size() - sizeof(quint32));
 
@@ -221,18 +223,31 @@ static ComicDB loadRequestedComic(quint64 libraryId, qulonglong id)
     return missing;
 }
 
-void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings)
+void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings, qint32 &position)
 {
     QMutexLocker locker(&dbMutex);
     comic = loadRequestedComic(libraryId, comic.file.id.value());
     siblings = DBHelper::getSiblings(libraryId, comic.file.folderId.value());
+    position = siblings.indexOf(comic);
 }
 
-void YACReaderClientConnectionWorker::getComicInfoFromReadingList(quint64 libraryId, unsigned long long readingListId, ComicDB &comic, QList<ComicDB> &siblings)
+void YACReaderClientConnectionWorker::getComicInfoFromReadingList(quint64 libraryId, const OpenComicSource &source, ComicDB &comic, QList<ComicDB> &siblings, qint32 &position)
 {
     QMutexLocker locker(&dbMutex);
     comic = loadRequestedComic(libraryId, comic.file.id.value());
-    siblings = DBHelper::getReadingListFullContent(libraryId, readingListId);
+    QList<ListItemId> entryIds;
+    siblings = DBHelper::getReadingListFullContent(libraryId, source.sourceId, &entryIds);
+
+    // the entry can be gone, or show another comic, since the library started the reader
+    position = -1;
+    for (qsizetype i = 0; i < entryIds.size(); i++) {
+        if (entryIds.at(i).id == source.entryId && siblings.at(i) == comic) {
+            position = i;
+            break;
+        }
+    }
+    if (position == -1)
+        position = siblings.indexOf(comic);
 }
 
 void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB &comic)

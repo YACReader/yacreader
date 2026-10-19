@@ -143,7 +143,7 @@ void OrganizeFilesCoordinator::runOnFolder(OrganizeFiles::Mode mode, const QMode
 
 void OrganizeFilesCoordinator::runOnSelectedComics(OrganizeFiles::Mode mode)
 {
-    const auto selection = selectionProvider();
+    const auto selection = comicsModel->supportedIndexes(selectionProvider(), ComicAction::ChangeFile);
     if (selection.isEmpty())
         return;
 

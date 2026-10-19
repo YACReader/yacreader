@@ -483,10 +483,10 @@ void LibraryWindow::setupCoordinators()
     connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshStarted, navigationController, &YACReaderNavigationController::beginCurrentSourceRefresh);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshAccepted, navigationController, &YACReaderNavigationController::refreshCurrentSource);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshCancelled, navigationController, &YACReaderNavigationController::cancelCurrentSourceRefresh);
-    connect(comicManagementCoordinator, &ComicManagementCoordinator::comicNumbersAssigned, this, [this](qint64 editedComicId) {
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::comicNumbersAssigned, this, [this](const ComicRowId &firstRow) {
         navigationController->loadFolderContent(foldersModelProxy->mapToSource(foldersView->currentIndex()));
 
-        const auto editedComic = comicsModel->getIndexFromId(editedComicId);
+        const auto editedComic = comicsModel->indexOf(firstRow);
         if (editedComic.isValid()) {
             contentViewsManager->comicsView->scrollTo(editedComic, QAbstractItemView::PositionAtCenter);
             contentViewsManager->comicsView->setCurrentIndex(editedComic);
@@ -1026,12 +1026,12 @@ void LibraryWindow::enableNeededActions()
 
 void LibraryWindow::setComicActionsDisabled(bool disabled)
 {
-    if (!disabled && librariesUpdateCoordinator->isRunning()) {
-        setComicActionsDisabled(true);
-        return;
-    }
+    if (librariesUpdateCoordinator->isRunning())
+        disabled = true;
 
     actions.setComicActionsDisabled(disabled);
+    if (!disabled)
+        contentViewsManager->applyComicSelectionActions();
     setComicToolbarEntriesVisible(comicsModel != nullptr && comicsModel->rowCount() > 0);
 }
 

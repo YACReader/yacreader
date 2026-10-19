@@ -1,6 +1,7 @@
 #ifndef READING_LIST_MODEL_H
 #define READING_LIST_MODEL_H
 
+#include "library_ids.h"
 #include "yacreader_global.h"
 
 #include <QAbstractItemModel>
@@ -78,8 +79,8 @@ public:
 signals:
 
     void addComicsToFavorites(const QList<qulonglong> &comicIds);
-    void addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId);
-    void addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId);
+    void addComicsToLabel(const QList<ComicInfoId> &comicInfoIds, qulonglong labelId);
+    void addComicsToReadingList(const QList<ComicInfoId> &comicInfoIds, qulonglong readingListId);
 
 private:
     void cleanAll();

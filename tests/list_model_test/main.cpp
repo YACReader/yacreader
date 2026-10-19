@@ -2,9 +2,12 @@
 #include "reading_list_item.h"
 #include "reading_list_model.h"
 #include "yacreader_global.h"
+#include "yacreader_global_gui.h"
 
 #include <QApplication>
+#include <QDataStream>
 #include <QDir>
+#include <QMimeData>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -26,6 +29,7 @@ private slots:
     void addedListsHaveTheirOrder();
     void renameChangesTheRowAndTheDatabase();
     void deleteRemovesTheSublist();
+    void droppedComicsGiveComicInfoToListsAndComicsToFavorites();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -180,6 +184,37 @@ void ListModelTest::deleteRemovesTheSublist()
     model.deleteItem(find(model, "First", events));
     QCOMPARE(model.rowCount(find(model, "Events")), 0);
     QCOMPARE(value("SELECT count(*) FROM reading_list WHERE id = 2"), QString("0"));
+}
+
+void ListModelTest::droppedComicsGiveComicInfoToListsAndComicsToFavorites()
+{
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+
+    QList<qulonglong> favorites;
+    QList<QPair<QList<ComicInfoId>, qulonglong>> labels;
+    QList<QPair<QList<ComicInfoId>, qulonglong>> lists;
+    connect(&model, &ReadingListModel::addComicsToFavorites, this, [&](const QList<qulonglong> &comicIds) { favorites = comicIds; });
+    connect(&model, &ReadingListModel::addComicsToLabel, this, [&](const QList<ComicInfoId> &ids, qulonglong id) { labels.append({ ids, id }); });
+    connect(&model, &ReadingListModel::addComicsToReadingList, this, [&](const QList<ComicInfoId> &ids, qulonglong id) { lists.append({ ids, id }); });
+
+    QMimeData data;
+    QByteArray comicIds;
+    QDataStream out(&comicIds, QIODevice::WriteOnly);
+    out << QList<qulonglong> { 9, 9 };
+    data.setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, comicIds);
+    YACReader::setComicInfoIdsMimeData(&data, { ComicInfoId(4), ComicInfoId(4) });
+
+    QVERIFY(model.dropMimeData(&data, Qt::CopyAction, -1, 0, find(model, "Alpha")));
+    QVERIFY(model.dropMimeData(&data, Qt::CopyAction, -1, 0, find(model, "Events")));
+    QVERIFY(model.dropMimeData(&data, Qt::CopyAction, -1, 0, model.index(0, 0)));
+
+    QCOMPARE(labels.size(), 1);
+    QCOMPARE(labels.first().first, QList<ComicInfoId>({ ComicInfoId(4), ComicInfoId(4) }));
+    QCOMPARE(labels.first().second, 2ULL);
+    QCOMPARE(lists.size(), 1);
+    QCOMPARE(lists.first().second, 1ULL);
+    QCOMPARE(favorites, QList<qulonglong>({ 9, 9 }));
 }
 
 QTEST_MAIN(ListModelTest)

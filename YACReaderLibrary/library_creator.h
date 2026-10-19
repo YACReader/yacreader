@@ -16,6 +16,20 @@
 #include <QThread>
 #include <QtCore>
 
+#include <optional>
+
+enum class ReplaceComicResult {
+    NotInserted, // the new file can't be read: keep the old comic
+    SameComicInfo, // same content, only the date changed
+    NewComicInfo, // new content: first time this hash is seen
+    KnownComicInfo, // the content already has a comic_info in the library
+};
+
+// newComicInfoId is empty when no comic was inserted for the new file.
+ReplaceComicResult classifyReplaceComic(ComicInfoId oldComicInfoId,
+                                        std::optional<ComicInfoId> newComicInfoId,
+                                        bool newComicInfoExisted);
+
 class LibraryCreator : public QThread
 {
     Q_OBJECT
@@ -49,8 +63,9 @@ private:
     void run() override;
     qulonglong insertFolders(); // devuelve el id del último folder añadido (último en la ruta)
     bool checkCover(const QString &hash);
-    void insertComic(const QString &relativePath, const QFileInfo &fileInfo);
+    bool insertComic(const QString &relativePath, const QFileInfo &fileInfo); // true when a comic row was inserted
     void replaceComic(const QString &relativePath, const QFileInfo &fileInfo, ComicDB *comic);
+    bool copyReplacedComicInfo(const ComicInfo &oldInfo, ComicInfo newInfo, const QFileInfo &fileInfo);
     // qulonglong insertFolder(qulonglong parentId,const Folder & folder);
     // qulonglong insertComic(const Comic & comic);
     bool stopRunning;
@@ -61,7 +76,7 @@ private:
     qulonglong _folderDestinationId;
     QSettings *settings;
     bool checkModifiedDatesOnUpdate;
-    void cleanup(QSqlDatabase &db, const QString &target);
+    QStringList cleanup(QSqlDatabase &db, const QString &target); // returns the hashes of the covers to remove after the commit
 
 signals:
     void coverExtracted(QString);

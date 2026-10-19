@@ -161,6 +161,17 @@ Rectangle {
                     mipmap: true
                     asynchronous : true
                     cache: false
+
+                    // a deleted comic keeps its cover in grayscale
+                    layer.enabled: model.available === false
+                    layer.effect: MultiEffect {
+                        saturation: -1.0
+                    }
+
+                    onStatusChanged: {
+                        if (status === Image.Error && model.available === false)
+                            source = "qrc:/images/unavailableCover.png"
+                    }
                 }
 
 

@@ -4,6 +4,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "initial_comic_info_extractor.h"
+#include "staged_cover.h"
 #include "yacreader_cover_label.h"
 #include "yacreader_field_edit.h"
 #include "yacreader_field_plain_text_edit.h"
@@ -21,6 +22,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QSet>
 #include <QSizePolicy>
 #include <QTabWidget>
 #include <QToolButton>
@@ -72,6 +74,11 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
     rootLayout->setContentsMargins(0, 0, 0, 0);
 
     rootLayout->addWidget(coverBox, 0, 0, Qt::AlignBottom);
+
+    deletedComicNote = new QLabel;
+    deletedComicNote->setWordWrap(true);
+    deletedComicNote->hide();
+    rootLayout->addWidget(deletedComicNote, 1, 0);
 
     setModal(true);
 
@@ -456,35 +463,40 @@ QImage blurred(const QImage &image, const QRect &rect, int radius, bool alphaOnl
     return result;
 }
 
-void PropertiesDialog::loadComic(ComicDB &comic)
+void PropertiesDialog::loadComic(const ComicRecord &record)
 {
     customCover = QImage();
 
-    series->setText(comic.info.series.isNull() ? QString() : comic.info.series.toString());
-    title->setText(comic.info.title.isNull() ? QString() : comic.info.title.toString());
+    const auto &info = recordInfo(record);
+    const auto *comic = recordComic(record);
 
-    if (!comic.info.comicVineID.isNull()) {
+    series->setText(info.series.isNull() ? QString() : info.series.toString());
+    title->setText(info.title.isNull() ? QString() : info.title.toString());
+
+    if (!info.comicVineID.isNull()) {
         comicVineLink->setHidden(false);
-        comicVineLink->setText(QString(tr("Comic Vine link: <a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href=\"http://www.comicvine.com/comic/4000-%1/\"> view </a>").arg(comic.info.comicVineID.toString())));
+        comicVineLink->setText(QString(tr("Comic Vine link: <a style='color: #FFCB00; text-decoration:none; font-weight:bold;' href=\"http://www.comicvine.com/comic/4000-%1/\"> view </a>").arg(info.comicVineID.toString())));
     } else
         comicVineLink->setHidden(true);
 
-    if (!comic.info.coverPage.isNull()) {
-        coverPageEdit->setText(comic.info.coverPage.toString());
-        coverPageValidator.setRange(1, comic.info.numPages.toInt());
+    coverChanged = false;
+    showPreviousCoverPageButton->setEnabled(comic != nullptr);
+    showNextCoverPageButton->setEnabled(comic != nullptr);
+    resetCoverButton->setEnabled(comic != nullptr);
+    loadCustomCoverImageButton->setEnabled(true);
+
+    if (!info.coverPage.isNull()) {
+        coverPageEdit->setText(info.coverPage.toString());
+        coverPageValidator.setRange(1, info.numPages.toInt());
         coverPageEdit->setValidator(&coverPageValidator);
         //----------
-        int coverPage = comic.info.coverPage.toInt();
+        int coverPage = info.coverPage.toInt();
         coverPageNumberLabel->setText(QString::number(coverPage));
         coverPageNumberLabel->adjustSize();
 
-        showPreviousCoverPageButton->setEnabled(true);
-        showNextCoverPageButton->setEnabled(true);
-
-        coverChanged = false;
         updateCoverBoxForSingleComic();
 
-        if (!QFileInfo(basePath + comic.file.path).exists()) {
+        if (comic != nullptr && !QFileInfo(basePath + comic->file.path).exists()) {
             QMessageBox::warning(this, tr("Not found"), tr("Comic not found. You should update your library."));
             showPreviousCoverPageButton->setDisabled(true);
             showNextCoverPageButton->setDisabled(true);
@@ -493,31 +505,41 @@ void PropertiesDialog::loadComic(ComicDB &comic)
         coverPageNumberLabel->setText("1");
     }
 
-    numberEdit->setText(comic.info.number.isNull() ? QString() : comic.info.number.toString());
-    countEdit->setText(comic.info.count.isNull() ? QString() : comic.info.count.toString());
-    volumeEdit->setText(comic.info.volume.isNull() ? QString() : comic.info.volume.toString());
-    storyArcEdit->setText(comic.info.storyArc.isNull() ? QString() : comic.info.storyArc.toString());
-    arcNumberEdit->setText(comic.info.arcNumber.isNull() ? QString() : comic.info.arcNumber.toString());
-    arcCountEdit->setText(comic.info.arcCount.isNull() ? QString() : comic.info.arcCount.toString());
-    alternateSeriesEdit->setText(comic.info.alternateSeries.isNull() ? QString() : comic.info.alternateSeries.toString());
-    alternateNumberEdit->setText(comic.info.alternateNumber.isNull() ? QString() : comic.info.alternateNumber.toString());
-    alternateCountEdit->setText(comic.info.alternateCount.isNull() ? QString() : comic.info.alternateCount.toString());
-    seriesGroupEdit->setText(comic.info.seriesGroup.isNull() ? QString() : comic.info.seriesGroup.toString());
-    genereEdit->setText(comic.info.genere.isNull() ? QString() : comic.info.genere.toString());
+    if (const auto *deleted = std::get_if<ComicRecordCase::DeletedComic>(&record)) {
+        auto note = tr("The file of this comic is not in the library.");
+        if (deleted->lastKnownFile)
+            note += "\n" + tr("Last known file: %1").arg(deleted->lastKnownFile->name);
+        deletedComicNote->setText(note);
+        deletedComicNote->show();
+    } else {
+        deletedComicNote->hide();
+    }
 
-    writer->setPlainText(comic.info.writer.isNull() ? QString() : comic.info.writer.toString());
-    penciller->setPlainText(comic.info.penciller.isNull() ? QString() : comic.info.penciller.toString());
-    inker->setPlainText(comic.info.inker.isNull() ? QString() : comic.info.inker.toString());
-    colorist->setPlainText(comic.info.colorist.isNull() ? QString() : comic.info.colorist.toString());
-    letterer->setPlainText(comic.info.letterer.isNull() ? QString() : comic.info.letterer.toString());
-    coverArtist->setPlainText(comic.info.coverArtist.isNull() ? QString() : comic.info.coverArtist.toString());
-    editor->setPlainText(comic.info.editor.isNull() ? QString() : comic.info.editor.toString());
-    imprint->setPlainText(comic.info.imprint.isNull() ? QString() : comic.info.imprint.toString());
+    numberEdit->setText(info.number.isNull() ? QString() : info.number.toString());
+    countEdit->setText(info.count.isNull() ? QString() : info.count.toString());
+    volumeEdit->setText(info.volume.isNull() ? QString() : info.volume.toString());
+    storyArcEdit->setText(info.storyArc.isNull() ? QString() : info.storyArc.toString());
+    arcNumberEdit->setText(info.arcNumber.isNull() ? QString() : info.arcNumber.toString());
+    arcCountEdit->setText(info.arcCount.isNull() ? QString() : info.arcCount.toString());
+    alternateSeriesEdit->setText(info.alternateSeries.isNull() ? QString() : info.alternateSeries.toString());
+    alternateNumberEdit->setText(info.alternateNumber.isNull() ? QString() : info.alternateNumber.toString());
+    alternateCountEdit->setText(info.alternateCount.isNull() ? QString() : info.alternateCount.toString());
+    seriesGroupEdit->setText(info.seriesGroup.isNull() ? QString() : info.seriesGroup.toString());
+    genereEdit->setText(info.genere.isNull() ? QString() : info.genere.toString());
 
-    size->setText(QString::number(comic.info.hash.right(comic.info.hash.length() - 40).toInt() / 1024.0 / 1024.0, 'f', 2) + "Mb");
+    writer->setPlainText(info.writer.isNull() ? QString() : info.writer.toString());
+    penciller->setPlainText(info.penciller.isNull() ? QString() : info.penciller.toString());
+    inker->setPlainText(info.inker.isNull() ? QString() : info.inker.toString());
+    colorist->setPlainText(info.colorist.isNull() ? QString() : info.colorist.toString());
+    letterer->setPlainText(info.letterer.isNull() ? QString() : info.letterer.toString());
+    coverArtist->setPlainText(info.coverArtist.isNull() ? QString() : info.coverArtist.toString());
+    editor->setPlainText(info.editor.isNull() ? QString() : info.editor.toString());
+    imprint->setPlainText(info.imprint.isNull() ? QString() : info.imprint.toString());
 
-    if (!comic.info.date.isNull()) {
-        QStringList date = (comic.info.date.toString()).split("/");
+    size->setText(QString::number(info.hash.right(info.hash.length() - 40).toInt() / 1024.0 / 1024.0, 'f', 2) + "Mb");
+
+    if (!info.date.isNull()) {
+        QStringList date = (info.date.toString()).split("/");
 
         if (date.length() == 3) {
             dayEdit->setText(date[0]);
@@ -530,38 +552,63 @@ void PropertiesDialog::loadComic(ComicDB &comic)
         yearEdit->setText(QString());
     }
 
-    publisherEdit->setText(comic.info.publisher.isNull() ? QString() : comic.info.publisher.toString());
-    formatEdit->setText(comic.info.format.isNull() ? QString() : comic.info.format.toString());
+    publisherEdit->setText(info.publisher.isNull() ? QString() : info.publisher.toString());
+    formatEdit->setText(info.format.isNull() ? QString() : info.format.toString());
 
-    if (!comic.info.color.isNull())
-        colorCheck->setChecked(comic.info.color.toBool());
+    if (!info.color.isNull())
+        colorCheck->setChecked(info.color.toBool());
     else
         colorCheck->setCheckState(Qt::PartiallyChecked);
 
-    typeCombo->setCurrentIndex(comic.info.type.toInt());
+    typeCombo->setCurrentIndex(info.type.toInt());
 
-    languageEdit->setText(comic.info.languageISO.isNull() ? QString() : comic.info.languageISO.toString());
-    ageRatingEdit->setText(comic.info.ageRating.isNull() ? QString() : comic.info.ageRating.toString());
+    languageEdit->setText(info.languageISO.isNull() ? QString() : info.languageISO.toString());
+    ageRatingEdit->setText(info.ageRating.isNull() ? QString() : info.ageRating.toString());
 
-    synopsis->setPlainText(comic.info.synopsis.isNull() ? QString() : comic.info.synopsis.toString());
-    characters->setPlainText(comic.info.characters.isNull() ? QString() : comic.info.characters.toString());
-    teams->setPlainText(comic.info.teams.isNull() ? QString() : comic.info.teams.toString());
-    locations->setPlainText(comic.info.locations.isNull() ? QString() : comic.info.locations.toString());
-    mainCharacterOrTeamEdit->setText(comic.info.mainCharacterOrTeam.isNull() ? QString() : comic.info.mainCharacterOrTeam.toString());
+    synopsis->setPlainText(info.synopsis.isNull() ? QString() : info.synopsis.toString());
+    characters->setPlainText(info.characters.isNull() ? QString() : info.characters.toString());
+    teams->setPlainText(info.teams.isNull() ? QString() : info.teams.toString());
+    locations->setPlainText(info.locations.isNull() ? QString() : info.locations.toString());
+    mainCharacterOrTeamEdit->setText(info.mainCharacterOrTeam.isNull() ? QString() : info.mainCharacterOrTeam.toString());
 
-    review->setPlainText(comic.info.review.isNull() ? QString() : comic.info.review.toString());
-    notes->setPlainText(comic.info.notes.isNull() ? QString() : comic.info.notes.toString());
-    tags->setPlainText(comic.info.tags.isNull() ? QString() : comic.info.tags.toString());
+    review->setPlainText(info.review.isNull() ? QString() : info.review.toString());
+    notes->setPlainText(info.notes.isNull() ? QString() : info.notes.toString());
+    tags->setPlainText(info.tags.isNull() ? QString() : info.tags.toString());
+
+    loadedColorState = colorCheck->checkState();
+    loadedTypeIndex = typeCombo->currentIndex();
 
     this->setWindowTitle(tr("Edit comic information"));
-    setCover(comic.info.getCover(basePath));
+    setCover(coverOf(record));
+}
+
+// a deleted comic shows its cover in grayscale, or the default image when the cover file is missing
+QPixmap PropertiesDialog::coverOf(const ComicRecord &record) const
+{
+    const auto &info = recordInfo(record);
+    if (recordComic(record) != nullptr)
+        return info.getCover(basePath);
+
+    QImage image(LibraryPaths::coverPath(basePath, info.hash));
+    if (image.isNull())
+        image = QImage(":/images/unavailableCover.png");
+    return QPixmap::fromImage(image.convertToFormat(QImage::Format_Grayscale8));
+}
+
+const ComicDB *PropertiesDialog::lastComicWithFile() const
+{
+    for (auto it = records.crbegin(); it != records.crend(); ++it) {
+        if (const auto *comic = recordComic(*it))
+            return comic;
+    }
+    return nullptr;
 }
 
 void PropertiesDialog::updateButtons()
 {
     if (sequentialEditing) {
         previousButton->setDisabled(currentComicIndex == 0);
-        nextButton->setDisabled(currentComicIndex == comics.length() - 1);
+        nextButton->setDisabled(currentComicIndex == records.length() - 1);
         previousButton->setHidden(false);
         nextButton->setHidden(false);
     } else {
@@ -570,7 +617,7 @@ void PropertiesDialog::updateButtons()
     }
 }
 
-void PropertiesDialog::setComics(QList<ComicDB> comics)
+void PropertiesDialog::setComics(QList<ComicRecord> records)
 {
     sequentialEditing = false;
 
@@ -579,72 +626,76 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
     coverChanged = false;
     customCover = QImage();
 
-    this->comics = comics;
+    this->records = records;
 
-    ComicDB comic = comics[0];
-
-    loadComic(comic);
+    loadComic(records[0]);
 
     updateButtons();
 
-    if (comics.length() > 1) {
+    if (records.length() > 1) {
         updateCoverBoxForMultipleComics();
+        deletedComicNote->hide();
+
+        // the reset needs the file, so it skips the deleted comics
+        resetCoverButton->setEnabled(lastComicWithFile() != nullptr);
+        loadCustomCoverImageButton->setEnabled(true);
 
         setDisableUniqueValues(true);
         this->setWindowTitle(tr("Edit selected comics information"));
         setMultipleCover();
 
-        QList<ComicDB>::iterator itr;
-        for (itr = ++comics.begin(); itr != comics.end(); itr++) {
-            if (itr->info.series.isNull() || itr->info.series.toString() != series->text())
+        for (auto itr = ++records.cbegin(); itr != records.cend(); itr++) {
+            const auto &info = recordInfo(*itr);
+
+            if (info.series.isNull() || info.series.toString() != series->text())
                 series->clear();
 
-            if (itr->info.title.isNull() || itr->info.title.toString() != title->text())
+            if (info.title.isNull() || info.title.toString() != title->text())
                 title->clear();
 
-            if (itr->info.count.isNull() || itr->info.count.toString() != countEdit->text())
+            if (info.count.isNull() || info.count.toString() != countEdit->text())
                 countEdit->clear();
 
-            if (itr->info.volume.isNull() || itr->info.volume.toString() != volumeEdit->text())
+            if (info.volume.isNull() || info.volume.toString() != volumeEdit->text())
                 volumeEdit->clear();
-            if (itr->info.storyArc.isNull() || itr->info.storyArc.toString() != storyArcEdit->text())
+            if (info.storyArc.isNull() || info.storyArc.toString() != storyArcEdit->text())
                 storyArcEdit->clear();
-            if (itr->info.arcCount.isNull() || itr->info.arcCount.toString() != storyArcEdit->text())
+            if (info.arcCount.isNull() || info.arcCount.toString() != arcCountEdit->text())
                 arcCountEdit->clear();
 
-            if (itr->info.alternateSeries.isNull() || itr->info.alternateSeries.toString() != alternateSeriesEdit->text())
+            if (info.alternateSeries.isNull() || info.alternateSeries.toString() != alternateSeriesEdit->text())
                 alternateSeriesEdit->clear();
-            if (itr->info.alternateCount.isNull() || itr->info.alternateCount.toString() != alternateCountEdit->text())
+            if (info.alternateCount.isNull() || info.alternateCount.toString() != alternateCountEdit->text())
                 alternateCountEdit->clear();
 
-            if (itr->info.genere.isNull() || itr->info.genere.toString() != genereEdit->text())
+            if (info.genere.isNull() || info.genere.toString() != genereEdit->text())
                 genereEdit->clear();
-            if (itr->info.seriesGroup.isNull() || itr->info.seriesGroup.toString() != seriesGroupEdit->text())
+            if (info.seriesGroup.isNull() || info.seriesGroup.toString() != seriesGroupEdit->text())
                 seriesGroupEdit->clear();
 
-            if (itr->info.writer.isNull() || itr->info.writer.toString() != writer->toPlainText())
+            if (info.writer.isNull() || info.writer.toString() != writer->toPlainText())
                 writer->clear();
-            if (itr->info.penciller.isNull() || itr->info.penciller.toString() != penciller->toPlainText())
+            if (info.penciller.isNull() || info.penciller.toString() != penciller->toPlainText())
                 penciller->clear();
-            if (itr->info.inker.isNull() || itr->info.inker.toString() != inker->toPlainText())
+            if (info.inker.isNull() || info.inker.toString() != inker->toPlainText())
                 inker->clear();
-            if (itr->info.colorist.isNull() || itr->info.colorist.toString() != colorist->toPlainText())
+            if (info.colorist.isNull() || info.colorist.toString() != colorist->toPlainText())
                 colorist->clear();
-            if (itr->info.letterer.isNull() || itr->info.letterer.toString() != letterer->toPlainText())
+            if (info.letterer.isNull() || info.letterer.toString() != letterer->toPlainText())
                 letterer->clear();
-            if (itr->info.coverArtist.isNull() || itr->info.coverArtist.toString() != coverArtist->toPlainText())
+            if (info.coverArtist.isNull() || info.coverArtist.toString() != coverArtist->toPlainText())
                 coverArtist->clear();
-            if (itr->info.editor.isNull() || itr->info.editor.toString() != editor->toPlainText())
+            if (info.editor.isNull() || info.editor.toString() != editor->toPlainText())
                 editor->clear();
-            if (itr->info.imprint.isNull() || itr->info.imprint.toString() != imprint->toPlainText())
+            if (info.imprint.isNull() || info.imprint.toString() != imprint->toPlainText())
                 imprint->clear();
 
-            if (itr->info.date.isNull()) {
+            if (info.date.isNull()) {
                 dayEdit->clear();
                 monthEdit->clear();
                 yearEdit->clear();
             } else {
-                QStringList date = itr->info.date.toString().split("/");
+                QStringList date = info.date.toString().split("/");
                 if (dayEdit->text() != date[0])
                     dayEdit->clear();
                 if (monthEdit->text() != date[1])
@@ -653,47 +704,50 @@ void PropertiesDialog::setComics(QList<ComicDB> comics)
                     yearEdit->clear();
             }
 
-            if (itr->info.publisher.isNull() || itr->info.publisher.toString() != publisherEdit->text())
+            if (info.publisher.isNull() || info.publisher.toString() != publisherEdit->text())
                 publisherEdit->clear();
-            if (itr->info.format.isNull() || itr->info.format.toString() != formatEdit->text())
+            if (info.format.isNull() || info.format.toString() != formatEdit->text())
                 formatEdit->clear();
-            if (itr->info.color.isNull() || itr->info.color.toBool() != colorCheck->isChecked())
+            if (info.color.isNull() || info.color.toBool() != colorCheck->isChecked())
                 colorCheck->setCheckState(Qt::PartiallyChecked);
 
-            if (itr->info.type.toInt() != typeCombo->currentIndex()) {
+            if (info.type.toInt() != typeCombo->currentIndex()) {
                 typeCombo->setCurrentIndex(-1);
             } else {
-                typeCombo->setCurrentIndex(itr->info.type.toInt());
+                typeCombo->setCurrentIndex(info.type.toInt());
             }
 
-            if (itr->info.languageISO.toString() != languageEdit->text())
+            if (info.languageISO.toString() != languageEdit->text())
                 languageEdit->clear();
 
-            if (itr->info.ageRating.isNull() || itr->info.ageRating.toString() != ageRatingEdit->text())
+            if (info.ageRating.isNull() || info.ageRating.toString() != ageRatingEdit->text())
                 ageRatingEdit->clear();
 
-            if (itr->info.synopsis.isNull() || itr->info.synopsis.toString() != synopsis->toPlainText())
+            if (info.synopsis.isNull() || info.synopsis.toString() != synopsis->toPlainText())
                 synopsis->clear();
-            if (itr->info.characters.isNull() || itr->info.characters.toString() != characters->toPlainText())
+            if (info.characters.isNull() || info.characters.toString() != characters->toPlainText())
                 characters->clear();
-            if (itr->info.teams.isNull() || itr->info.teams.toString() != teams->toPlainText())
+            if (info.teams.isNull() || info.teams.toString() != teams->toPlainText())
                 teams->clear();
-            if (itr->info.locations.isNull() || itr->info.locations.toString() != locations->toPlainText())
+            if (info.locations.isNull() || info.locations.toString() != locations->toPlainText())
                 locations->clear();
-            if (itr->info.mainCharacterOrTeam.isNull() || itr->info.mainCharacterOrTeam.toString() != mainCharacterOrTeamEdit->text())
+            if (info.mainCharacterOrTeam.isNull() || info.mainCharacterOrTeam.toString() != mainCharacterOrTeamEdit->text())
                 mainCharacterOrTeamEdit->clear();
 
-            if (itr->info.review.isNull() || itr->info.review.toString() != review->toPlainText())
+            if (info.review.isNull() || info.review.toString() != review->toPlainText())
                 review->clear();
-            if (itr->info.notes.isNull() || itr->info.notes.toString() != notes->toPlainText())
+            if (info.notes.isNull() || info.notes.toString() != notes->toPlainText())
                 notes->clear();
-            if (itr->info.tags.isNull() || itr->info.tags.toString() != tags->toPlainText())
+            if (info.tags.isNull() || info.tags.toString() != tags->toPlainText())
                 tags->clear();
         }
+
+        loadedColorState = colorCheck->checkState();
+        loadedTypeIndex = typeCombo->currentIndex();
     }
 }
 
-void PropertiesDialog::setComicsForSequentialEditing(int currentComicIndex, QList<ComicDB> comics)
+bool PropertiesDialog::setComicsForSequentialEditing(int currentComicIndex, QList<ComicRecord> records)
 {
     sequentialEditing = true;
 
@@ -701,78 +755,274 @@ void PropertiesDialog::setComicsForSequentialEditing(int currentComicIndex, QLis
     coverChanged = false;
     customCover = QImage();
 
-    this->comics = comics;
+    this->records = records;
     this->currentComicIndex = currentComicIndex;
 
-    loadComic(comics[currentComicIndex]);
-
-    updateButtons();
+    return showRecord(currentComicIndex, 1);
 }
 
-void PropertiesDialog::updateComics()
+// loads the record again, so a repeated comic shows the values saved at its first occurrence and changes made
+// elsewhere are seen; a record that no longer exists is skipped in the direction of `step`
+bool PropertiesDialog::showRecord(int index, int step)
 {
+    for (; index >= 0 && index < records.length(); index += step) {
+        std::optional<ComicRecord> loaded;
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+            loaded = DBHelper::loadRecord(records[index], db);
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+
+        if (loaded) {
+            records[index] = *loaded;
+            currentComicIndex = index;
+            loadComic(records[index]);
+            updateButtons();
+            return true;
+        }
+
+        QMessageBox::information(this, tr("Comic skipped"), tr("A comic was removed from the library or now has a different file, so it is skipped."));
+    }
+    return false;
+}
+
+// a cleared field is NULL; the values that only one comic can have are only edited in sequential editing
+DescriptiveMetadataPatch PropertiesDialog::editedMetadata() const
+{
+    using M = DescriptiveComicMetadata;
+    DescriptiveMetadataPatch patch;
+
+    const auto value = [](const QString &text) { return text.isEmpty() ? QVariant() : QVariant(text); };
+    const auto line = [&](YACReaderFieldEdit *edit, QVariant M::*field) {
+        if (edit->isModified())
+            patch.set(field, value(edit->text()));
+    };
+    const auto plain = [&](YACReaderFieldPlainTextEdit *edit, QVariant M::*field) {
+        if (edit->document()->isModified())
+            patch.set(field, value(edit->toPlainText()));
+    };
+
+    line(series, &M::series);
+    line(title, &M::title);
+    if (sequentialEditing) {
+        line(numberEdit, &M::number);
+        line(arcNumberEdit, &M::arcNumber);
+        line(alternateNumberEdit, &M::alternateNumber);
+    }
+    line(countEdit, &M::count);
+    line(volumeEdit, &M::volume);
+    line(storyArcEdit, &M::storyArc);
+    line(arcCountEdit, &M::arcCount);
+    line(alternateSeriesEdit, &M::alternateSeries);
+    line(alternateCountEdit, &M::alternateCount);
+    line(genereEdit, &M::genere);
+
+    plain(writer, &M::writer);
+    plain(penciller, &M::penciller);
+    plain(inker, &M::inker);
+    plain(colorist, &M::colorist);
+    plain(letterer, &M::letterer);
+    plain(coverArtist, &M::coverArtist);
+    plain(editor, &M::editor);
+    plain(imprint, &M::imprint);
+
+    line(publisherEdit, &M::publisher);
+    line(formatEdit, &M::format);
+    if (colorCheck->checkState() != Qt::PartiallyChecked && colorCheck->checkState() != loadedColorState)
+        patch.set(&M::color, colorCheck->isChecked());
+
+    line(languageEdit, &M::languageISO);
+    line(ageRatingEdit, &M::ageRating);
+
+    plain(synopsis, &M::synopsis);
+    plain(characters, &M::characters);
+    plain(locations, &M::locations);
+    plain(teams, &M::teams);
+    line(mainCharacterOrTeamEdit, &M::mainCharacterOrTeam);
+    line(seriesGroupEdit, &M::seriesGroup);
+
+    plain(review, &M::review);
+    plain(notes, &M::notes);
+    plain(tags, &M::tags);
+
+    return patch;
+}
+
+// the changed parts of the date, with the other parts of `info`
+std::optional<QVariant> PropertiesDialog::editedDate(const ComicInfo &info) const
+{
+    if (!dayEdit->isModified() && !monthEdit->isModified() && !yearEdit->isModified())
+        return std::nullopt;
+
+    auto parts = info.date.toString().split("/");
+    if (parts.length() != 3)
+        parts = { QString(), QString(), QString() };
+    if (dayEdit->isModified())
+        parts[0] = dayEdit->text();
+    if (monthEdit->isModified())
+        parts[1] = monthEdit->text();
+    if (yearEdit->isModified())
+        parts[2] = yearEdit->text();
+
+    const auto date = parts.join("/");
+    return date == "//" ? QVariant() : QVariant(date);
+}
+
+std::optional<YACReader::FileType> PropertiesDialog::editedType() const
+{
+    const auto index = typeCombo->currentIndex();
+    if (index == -1 || index == loadedTypeIndex)
+        return std::nullopt;
+    return static_cast<YACReader::FileType>(index);
+}
+
+// writes the new cover into `staged` and sets the cover columns of the record; false when the change does not apply
+// to it (a cover page or a reset needs the file) or the file could not be written
+bool PropertiesDialog::applyCoverChange(ComicRecord &record, StagedCover &staged)
+{
+    auto &info = recordInfo(record);
+    const auto *comic = recordComic(record);
+
+    if (customCover.isNull()) {
+        if (comic == nullptr)
+            return false;
+
+        // sequential editing keeps the chosen page; the reset of several comics goes back to the first page
+        const int page = sequentialEditing ? coverPageNumberLabel->text().toInt() : 1;
+        info.coverPage = sequentialEditing ? QVariant(page) : QVariant();
+
+        InitialComicInfoExtractor ie(basePath + comic->file.path, staged.stagedPath(), page);
+        ie.extract();
+        if (!staged.isStaged())
+            return false;
+
+        if (ie.getOriginalCoverSize().second > 0) {
+            info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
+            info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
+        }
+        info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+        info.usesExternalCover = false;
+    } else {
+        if (!staged.stage(customCover))
+            return false;
+        info.coverPage = QVariant();
+
+        auto width = customCover.width();
+        auto height = customCover.height();
+        info.originalCoverSize = QString("%1x%2").arg(width).arg(height);
+        info.coverSizeRatio = static_cast<float>(width) / height;
+        info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+        info.usesExternalCover = true;
+    }
+    return true;
+}
+
+bool PropertiesDialog::updateComics()
+{
+    const auto metadata = editedMetadata();
+    const auto type = editedType();
+    const int begin = sequentialEditing ? currentComicIndex : 0;
+    const int end = sequentialEditing ? currentComicIndex + 1 : records.length();
+
+    bool refused = false;
+    bool failed = false;
+    bool wrote = false;
+    // the records change only after the commit, so a failed save keeps them, the files, and the database as they were
+    QList<std::pair<int, ComicRecord>> savedRecords;
+    QList<StagedCover> stagedCovers;
+    QList<ComicInfoId> changedCovers;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        db.open();
         db.transaction();
-        QList<ComicDB>::iterator itr;
-        QList<ComicDB>::iterator begin = sequentialEditing ? comics.begin() + currentComicIndex : comics.begin();
-        QList<ComicDB>::iterator end = sequentialEditing ? comics.begin() + currentComicIndex + 1 : comics.end();
-        for (itr = begin; itr != end; itr++) {
-            if (itr->info.edited) {
-                DBHelper::update(&(itr->info), db);
-                updated = true;
-            }
 
-            if (!sequentialEditing && coverChanged) {
-                auto coverPath = LibraryPaths::coverPath(basePath, itr->info.hash);
-
-                if (customCover.isNull()) { // reseted, we need to restore the default cover
-                    itr->info.coverPage = QVariant();
-
-                    InitialComicInfoExtractor ie(basePath + itr->file.path, coverPath, 1);
-                    ie.extract();
-
-                    if (ie.getOriginalCoverSize().second > 0) {
-                        itr->info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
-                        itr->info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
-                    }
-                    itr->info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
-                    itr->info.usesExternalCover = false;
-
-                    emit coverChangedSignal(*itr);
-
-                    DBHelper::update(&(itr->info), db);
-                    updated = true;
-                } else {
-                    itr->info.coverPage = QVariant();
-                    YACReader::saveCover(coverPath, customCover);
-
-                    auto width = customCover.width();
-                    auto height = customCover.height();
-                    itr->info.originalCoverSize = QString("%1x%2").arg(width).arg(height);
-                    itr->info.coverSizeRatio = static_cast<float>(width) / height;
-                    itr->info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
-                    itr->info.usesExternalCover = true;
-
-                    DBHelper::update(&(itr->info), db);
-                    updated = true;
-
-                    emit coverChangedSignal(*itr);
-                }
-            }
+        for (int i = begin; i < end && !refused; i++) {
+            refused = !DBHelper::loadRecord(records[i], db);
         }
-        db.commit();
+
+        if (!refused) {
+            bool written = true;
+            // each comic_info is written once, also when several rows show it
+            QSet<ComicInfoId> writtenIds;
+            for (int i = begin; i < end; i++) {
+                auto record = records[i];
+                auto &info = recordInfo(record);
+                if (writtenIds.contains(info.id))
+                    continue;
+                writtenIds.insert(info.id);
+
+                auto patch = metadata;
+                if (const auto date = editedDate(info))
+                    patch.set(&DescriptiveComicMetadata::date, *date);
+
+                if (!patch.isEmpty()) {
+                    written = DBHelper::updateComicInfoMetadata(info.id, patch, db) && written;
+                    patch.applyTo(info);
+                    info.edited = true;
+                    wrote = true;
+                }
+
+                if (type && info.type.toInt() != static_cast<int>(*type)) {
+                    written = DBHelper::updateComicInfoType(info.id, *type, db) && written;
+                    info.type = QVariant::fromValue(*type);
+                    info.edited = true;
+                    wrote = true;
+                }
+
+                if (coverChanged) {
+                    StagedCover staged(LibraryPaths::coverPath(basePath, info.hash));
+                    if (applyCoverChange(record, staged)) {
+                        written = DBHelper::updateComicInfoCover(info, db) && written;
+                        info.edited = true;
+                        stagedCovers.append(staged);
+                        changedCovers.append(info.id);
+                        wrote = true;
+                    }
+                }
+
+                savedRecords.append({ i, std::move(record) });
+            }
+
+            written = written && std::all_of(stagedCovers.begin(), stagedCovers.end(), [](StagedCover &staged) { return staged.install(); });
+            if (written && db.commit()) {
+                for (auto &staged : stagedCovers)
+                    staged.finish();
+            } else {
+                db.rollback();
+                for (auto &staged : stagedCovers)
+                    staged.restore();
+                failed = true;
+            }
+        } else {
+            db.rollback();
+        }
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+
+    if (refused) {
+        QMessageBox::warning(this, tr("Changes not saved"), tr("A comic that you are editing was removed from the library or now has a different file. Your changes were not saved."));
+        return false;
+    }
+    if (failed) {
+        QMessageBox::warning(this, tr("Changes not saved"), tr("The changes could not be saved."));
+        return false;
+    }
+
+    for (auto &[index, record] : savedRecords)
+        records[index] = std::move(record);
+    updated = updated || wrote;
+
+    for (const auto id : std::as_const(changedCovers))
+        emit coverChangedSignal(id);
+    return true;
 }
 
 void PropertiesDialog::setMultipleCover()
 {
-    ComicDB lastComic = comics.last();
-    QPixmap last = lastComic.info.getCover(basePath);
+    QPixmap last = coverOf(records.last());
     last = last.scaledToHeight(575, Qt::SmoothTransformation);
 
     auto coverImage = QPixmap::fromImage(blurred(last.toImage(), QRect(0, 0, last.width(), last.height()), 15));
@@ -802,272 +1052,35 @@ void PropertiesDialog::setSize(float sizeFloat)
     size->setText(QString::number(sizeFloat, 'f', 2) + " MB");
 }
 
-void PropertiesDialog::save()
-{
-    QList<ComicDB>::iterator itr;
-    QList<ComicDB>::iterator begin = sequentialEditing ? comics.begin() + currentComicIndex : comics.begin();
-    QList<ComicDB>::iterator end = sequentialEditing ? comics.begin() + currentComicIndex + 1 : comics.end();
-    for (itr = begin; itr != end; itr++) {
-        bool edited = false;
-
-        if (series->isModified()) {
-            auto seriesString = series->text();
-            itr->info.series = seriesString.isEmpty() ? QVariant() : series->text();
-            edited = true;
-        }
-
-        if (title->isModified()) {
-            auto titleString = title->text();
-            itr->info.title = titleString.isEmpty() ? QVariant() : title->text();
-            edited = true;
-        }
-
-        if (sequentialEditing)
-            if (coverChanged) {
-                if (customCover.isNull()) {
-                    itr->info.coverPage = coverPageNumberLabel->text().toInt();
-                } else {
-                    itr->info.coverPage = QVariant();
-                }
-                edited = true;
-            }
-
-        if (sequentialEditing)
-            if (numberEdit->isModified()) {
-                if (numberEdit->text().isEmpty())
-                    itr->info.number = QVariant();
-                else
-                    itr->info.number = numberEdit->text();
-                edited = true;
-            }
-
-        if (countEdit->isModified()) {
-            itr->info.count = countEdit->text();
-            edited = true;
-        }
-
-        if (volumeEdit->isModified()) {
-            itr->info.volume = volumeEdit->text();
-            edited = true;
-        }
-        if (storyArcEdit->isModified()) {
-            itr->info.storyArc = storyArcEdit->text();
-            edited = true;
-        }
-        if (sequentialEditing)
-            if (arcNumberEdit->isModified() && !arcNumberEdit->text().isEmpty()) {
-                itr->info.arcNumber = arcNumberEdit->text();
-                edited = true;
-            }
-        if (arcCountEdit->isModified()) {
-            itr->info.arcCount = arcCountEdit->text();
-            edited = true;
-        }
-
-        if (alternateSeriesEdit->isModified()) {
-            itr->info.alternateSeries = alternateSeriesEdit->text();
-            edited = true;
-        }
-
-        if (sequentialEditing) {
-            if (alternateNumberEdit->isModified()) {
-                itr->info.alternateNumber = alternateNumberEdit->text();
-                edited = true;
-            }
-        }
-
-        if (alternateCountEdit->isModified()) {
-            itr->info.alternateCount = alternateCountEdit->text();
-            edited = true;
-        }
-
-        if (genereEdit->isModified()) {
-            itr->info.genere = genereEdit->text();
-            edited = true;
-        }
-
-        if (writer->document()->isModified()) {
-            itr->info.writer = writer->toPlainText();
-            edited = true;
-        }
-        if (penciller->document()->isModified()) {
-            itr->info.penciller = penciller->toPlainText();
-            edited = true;
-        }
-        if (inker->document()->isModified()) {
-            itr->info.inker = inker->toPlainText();
-            edited = true;
-        }
-        if (colorist->document()->isModified()) {
-            itr->info.colorist = colorist->toPlainText();
-            edited = true;
-        }
-        if (letterer->document()->isModified()) {
-            itr->info.letterer = letterer->toPlainText();
-            edited = true;
-        }
-        if (coverArtist->document()->isModified()) {
-            itr->info.coverArtist = coverArtist->toPlainText();
-            edited = true;
-        }
-        if (editor->document()->isModified()) {
-            itr->info.editor = editor->toPlainText();
-            edited = true;
-        }
-        if (imprint->document()->isModified()) {
-            itr->info.imprint = imprint->toPlainText();
-            edited = true;
-        }
-
-        if (dayEdit->isModified() || monthEdit->isModified() || yearEdit->isModified()) {
-            itr->info.date = dayEdit->text() + "/" + monthEdit->text() + "/" + yearEdit->text();
-            edited = true;
-        }
-        if (publisherEdit->isModified()) {
-            itr->info.publisher = publisherEdit->text();
-            edited = true;
-        }
-        if (formatEdit->isModified()) {
-            itr->info.format = formatEdit->text();
-            edited = true;
-        }
-        if (colorCheck->checkState() != Qt::PartiallyChecked) {
-            itr->info.color = colorCheck->isChecked();
-            edited = true;
-        }
-
-        if (typeCombo->currentIndex() != -1 && itr->info.type.toInt() != typeCombo->currentIndex()) {
-            itr->info.type = typeCombo->currentIndex();
-            edited = true;
-        }
-
-        if (languageEdit->isModified()) {
-            itr->info.languageISO = languageEdit->text();
-            edited = true;
-        }
-
-        if (ageRatingEdit->isModified()) {
-            itr->info.ageRating = ageRatingEdit->text();
-            edited = true;
-        }
-
-        if (synopsis->document()->isModified()) {
-            itr->info.synopsis = synopsis->toPlainText();
-            edited = true;
-        }
-
-        if (characters->document()->isModified()) {
-            itr->info.characters = characters->toPlainText();
-            edited = true;
-        }
-        if (locations->document()->isModified()) {
-            itr->info.locations = locations->toPlainText();
-            edited = true;
-        }
-        if (teams->document()->isModified()) {
-            itr->info.teams = teams->toPlainText();
-            edited = true;
-        }
-        if (mainCharacterOrTeamEdit->isModified()) {
-            itr->info.mainCharacterOrTeam = mainCharacterOrTeamEdit->text();
-            edited = true;
-        }
-        if (seriesGroupEdit->isModified()) {
-            itr->info.seriesGroup = seriesGroupEdit->text();
-            edited = true;
-        }
-
-        if (review->document()->isModified()) {
-            itr->info.review = review->toPlainText();
-            edited = true;
-        }
-        if (notes->document()->isModified()) {
-            itr->info.notes = notes->toPlainText();
-            edited = true;
-        }
-        if (tags->document()->isModified()) {
-            itr->info.tags = tags->toPlainText();
-            edited = true;
-        }
-
-        itr->info.edited = edited;
-    }
-
-    if (sequentialEditing) {
-        if (coverChanged) {
-            auto coverPath = LibraryPaths::coverPath(basePath, comics[currentComicIndex].info.hash);
-
-            if (customCover.isNull()) {
-                InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].file.path, coverPath, comics[currentComicIndex].info.coverPage.toInt());
-                ie.extract();
-
-                if (ie.getOriginalCoverSize().second > 0) {
-                    comics[currentComicIndex].info.originalCoverSize = QString("%1x%2").arg(ie.getOriginalCoverSize().first).arg(ie.getOriginalCoverSize().second);
-                    comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(ie.getOriginalCoverSize().first) / ie.getOriginalCoverSize().second;
-                }
-                comics[currentComicIndex].info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
-                comics[currentComicIndex].info.usesExternalCover = false;
-
-                comics[currentComicIndex].info.edited = true;
-
-                emit coverChangedSignal(comics[currentComicIndex]);
-            } else {
-                auto width = customCover.width();
-                auto height = customCover.height();
-
-                comics[currentComicIndex].info.originalCoverSize = QString("%1x%2").arg(width).arg(height);
-                comics[currentComicIndex].info.coverSizeRatio = static_cast<float>(width) / height;
-                comics[currentComicIndex].info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
-                comics[currentComicIndex].info.usesExternalCover = true;
-
-                comics[currentComicIndex].info.edited = true;
-
-                YACReader::saveCover(coverPath, customCover);
-                emit coverChangedSignal(comics[currentComicIndex]);
-            }
-        }
-    }
-}
-
+// a refused save shows its message, and the user can still move on
 void PropertiesDialog::saveAndOpenPrevious()
 {
-    save();
-
     updateComics();
 
-    coverChanged = false;
-
-    currentComicIndex--;
-
-    loadComic(comics[currentComicIndex]);
-
-    updateButtons();
+    if (!showRecord(currentComicIndex - 1, -1)) {
+        close();
+        return;
+    }
 
     repaint();
 }
 
 void PropertiesDialog::saveAndOpenNext()
 {
-    save();
-
     updateComics();
 
-    coverChanged = false;
-
-    currentComicIndex++;
-
-    loadComic(comics[currentComicIndex]);
-
-    updateButtons();
+    if (!showRecord(currentComicIndex + 1, 1)) {
+        close();
+        return;
+    }
 
     repaint();
 }
 
 void PropertiesDialog::saveAndClose()
 {
-    save();
-
-    updateComics();
+    if (!updateComics())
+        return;
 
     close();
 }
@@ -1084,9 +1097,9 @@ void PropertiesDialog::setDisableUniqueValues(bool disabled)
     alternateNumberEdit->clear();
 }
 
-void PropertiesDialog::closeEvent(QCloseEvent *e)
+// every way of closing the dialog (Close, Save, Escape, the window button) comes here
+void PropertiesDialog::done(int result)
 {
-
     title->clear();
     title->setModified(false);
     coverPageEdit->clear();
@@ -1136,7 +1149,12 @@ void PropertiesDialog::closeEvent(QCloseEvent *e)
 
     coverPageEdit->setFocus();
 
-    QDialog::closeEvent(e);
+    // the comics saved before (sequential editing) need a refresh of the views
+    if (updated && result != QDialog::Accepted)
+        emit accepted();
+    updated = false;
+
+    QDialog::done(result);
 }
 
 void PropertiesDialog::paintEvent(QPaintEvent *event)
@@ -1152,32 +1170,34 @@ void PropertiesDialog::updateCoverPageNumberLabel(int n)
 
 void PropertiesDialog::loadNextCover()
 {
+    const auto &info = recordInfo(records[currentComicIndex]);
     int current = coverPageNumberLabel->text().toInt();
     int next;
 
-    if (current == comics[currentComicIndex].info.numPages.toInt())
+    if (current == info.numPages.toInt())
         next = 1;
     else
         next = current + 1;
 
     setCoverPage(next);
 
-    coverChanged = next != comics[currentComicIndex].info.coverPage;
+    coverChanged = next != info.coverPage;
 }
 
 void PropertiesDialog::loadPreviousCover()
 {
+    const auto &info = recordInfo(records[currentComicIndex]);
     int current = coverPageNumberLabel->text().toInt();
     int previous;
 
     if (current == 1)
-        previous = comics[currentComicIndex].info.numPages.toInt();
+        previous = info.numPages.toInt();
     else
         previous = current - 1;
 
     setCoverPage(previous);
 
-    coverChanged = previous != comics[currentComicIndex].info.coverPage.toInt();
+    coverChanged = previous != info.coverPage.toInt();
 }
 
 void PropertiesDialog::resetCover()
@@ -1186,7 +1206,11 @@ void PropertiesDialog::resetCover()
         setCoverPage(1);
         coverChanged = true; // it could be that the cover is a custom cover, so we need to always update it
     } else {
-        InitialComicInfoExtractor ie(basePath + comics.last().file.path, "", 1);
+        const auto *comic = lastComicWithFile();
+        if (comic == nullptr)
+            return;
+
+        InitialComicInfoExtractor ie(basePath + comic->file.path, "", 1);
         ie.extract();
         auto cover = ie.getCover();
         cover = cover.scaledToHeight(575, Qt::SmoothTransformation);
@@ -1212,35 +1236,32 @@ void PropertiesDialog::loadCustomCoverImageFromPath(const QString &path)
         return;
     }
 
-    customCover = QImage(path);
-    coverChanged = true;
-
-    if (customCover.isNull()) {
+    const QImage image(path);
+    if (image.isNull()) {
         QMessageBox::warning(this, tr("Invalid cover"), tr("The image is invalid."));
         return;
     }
 
-    setCover(QPixmap::fromImage(customCover));
+    customCover = image;
+    coverChanged = true;
+
+    const bool deleted = (sequentialEditing || records.length() == 1) && recordComic(records[currentComicIndex]) == nullptr;
+    setCover(QPixmap::fromImage(deleted ? customCover.convertToFormat(QImage::Format_Grayscale8) : customCover));
 }
 
 void PropertiesDialog::setCoverPage(int pageNumber)
 {
+    const auto *comic = recordComic(records[currentComicIndex]);
+    if (comic == nullptr)
+        return;
+
     customCover = QImage();
 
     updateCoverPageNumberLabel(pageNumber);
-    InitialComicInfoExtractor ie(basePath + comics[currentComicIndex].file.path, "", pageNumber);
+    InitialComicInfoExtractor ie(basePath + comic->file.path, "", pageNumber);
     ie.extract();
     setCover(ie.getCover());
     repaint();
-}
-
-bool PropertiesDialog::close()
-{
-    if (updated) {
-        emit accepted();
-    }
-
-    return QDialog::close();
 }
 
 void PropertiesDialog::updateCoverBoxForMultipleComics()

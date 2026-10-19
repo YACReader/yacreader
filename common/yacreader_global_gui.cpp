@@ -53,6 +53,60 @@ QList<qulonglong> YACReader::mimeDataToComicsIds(const QMimeData *data)
     return comicIds;
 }
 
+QList<ComicInfoId> YACReader::mimeDataToComicInfoIds(const QMimeData *data)
+{
+    QList<qulonglong> ids;
+    QByteArray rawData = data->data(YACReader::YACReaderLibraryComicInfoIdsMimeDataFormat);
+    QDataStream in(&rawData, QIODevice::ReadOnly);
+    in >> ids;
+
+    QList<ComicInfoId> comicInfoIds;
+    comicInfoIds.reserve(ids.size());
+    for (const auto id : std::as_const(ids))
+        comicInfoIds.append(ComicInfoId(id));
+    return comicInfoIds;
+}
+
+QList<ListItemId> YACReader::mimeDataToListEntries(const QMimeData *data)
+{
+    QList<QPair<int, qulonglong>> entries;
+    QByteArray rawData = data->data(YACReader::YACReaderLibraryListEntriesMimeDataFormat);
+    QDataStream in(&rawData, QIODevice::ReadOnly);
+    in >> entries;
+
+    QList<ListItemId> entryIds;
+    entryIds.reserve(entries.size());
+    for (const auto &[listKind, id] : std::as_const(entries))
+        entryIds.append({ static_cast<ListKind>(listKind), id });
+    return entryIds;
+}
+
+void YACReader::setComicInfoIdsMimeData(QMimeData *data, const QList<ComicInfoId> &comicInfoIds)
+{
+    QList<qulonglong> ids;
+    ids.reserve(comicInfoIds.size());
+    for (const auto id : comicInfoIds)
+        ids.append(id.value());
+
+    QByteArray rawData;
+    QDataStream out(&rawData, QIODevice::WriteOnly);
+    out << ids;
+    data->setData(YACReader::YACReaderLibraryComicInfoIdsMimeDataFormat, rawData);
+}
+
+void YACReader::setListEntriesMimeData(QMimeData *data, const QList<ListItemId> &entryIds)
+{
+    QList<QPair<int, qulonglong>> entries;
+    entries.reserve(entryIds.size());
+    for (const auto &entryId : entryIds)
+        entries.append({ static_cast<int>(entryId.listKind), entryId.id });
+
+    QByteArray rawData;
+    QDataStream out(&rawData, QIODevice::WriteOnly);
+    out << entries;
+    data->setData(YACReader::YACReaderLibraryListEntriesMimeDataFormat, rawData);
+}
+
 QAction *YACReader::wrappedToolbarAction(QAction *action)
 {
     auto a = new QAction(action->text());

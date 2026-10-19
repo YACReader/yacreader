@@ -17,12 +17,17 @@ class QCheckBox;
 class QComboBox;
 // class YACReaderBusyWidget;
 class QToolButton;
+class StagedCover;
 
 namespace YACReader {
 class CoverLabel;
 }
 
-#include "comic_db.h"
+#include "comic_record.h"
+#include "descriptive_comic_metadata.h"
+#include "yacreader_global.h"
+
+#include <optional>
 
 class PropertiesDialog : public QDialog
 {
@@ -123,6 +128,8 @@ private:
     QToolButton *resetCoverButton;
     QToolButton *loadCustomCoverImageButton;
 
+    QLabel *deletedComicNote;
+
     void createTabBar();
     void createCoverBox();
     void createGeneralInfoBox();
@@ -135,17 +142,27 @@ private:
 
     void setDisableUniqueValues(bool disabled);
 
-    QList<ComicDB> comics;
+    QList<ComicRecord> records;
     int currentComicIndex;
-    void closeEvent(QCloseEvent *e) override;
     void updateCoverPageNumberLabel(int n);
-    void loadComic(ComicDB &comic);
+    void loadComic(const ComicRecord &record);
+    QPixmap coverOf(const ComicRecord &record) const;
+    const ComicDB *lastComicWithFile() const;
     void updateButtons();
+    DescriptiveMetadataPatch editedMetadata() const;
+    std::optional<YACReader::FileType> editedType() const;
+    std::optional<QVariant> editedDate(const ComicInfo &info) const;
+    bool applyCoverChange(ComicRecord &record, StagedCover &staged);
+    bool showRecord(int index, int step);
+    // false when the save was refused; the dialog then keeps the values
+    bool updateComics();
 
     bool sequentialEditing;
     bool coverChanged;
     float coverSizeRatio;
     bool updated;
+    Qt::CheckState loadedColorState;
+    int loadedTypeIndex;
     QString originalCoverSize;
 
     QImage customCover;
@@ -159,12 +176,12 @@ public:
     // in our constructor. Will have to investigate and decide how to fix this.
     QSize sizeHint() const override;
     void paintEvent(QPaintEvent *event) override;
+    void done(int result) override;
 
 public slots:
-    void setComics(QList<ComicDB> comics);
-    void setComicsForSequentialEditing(int currentComicIndex, QList<ComicDB> comics);
-    void updateComics();
-    void save();
+    void setComics(QList<ComicRecord> records);
+    // false when no record from `currentComicIndex` on still exists
+    bool setComicsForSequentialEditing(int currentComicIndex, QList<ComicRecord> records);
     void saveAndOpenPrevious();
     void saveAndOpenNext();
     void saveAndClose();
@@ -180,11 +197,10 @@ public slots:
     void loadCustomCoverImage();
     void loadCustomCoverImageFromPath(const QString &path);
     void setCoverPage(int pageNumber);
-    bool close();
     void updateCoverBoxForMultipleComics();
     void updateCoverBoxForSingleComic();
 
 signals:
-    void coverChangedSignal(const ComicDB &comic);
+    void coverChangedSignal(ComicInfoId id);
 };
 #endif

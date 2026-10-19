@@ -2,11 +2,13 @@
 #define DB_HELPER_H
 
 class QString;
+#include "comic_record.h"
 #include "library_item_types.h"
 #include "yacreader_global.h"
 
 #include <QList>
 #include <QMap>
+#include <QStringList>
 #include <QUuid>
 #include <QVariantMap>
 
@@ -15,6 +17,8 @@ class QString;
 class ComicDB;
 struct Folder;
 struct Label;
+struct Placeholder;
+class DescriptiveMetadataPatch;
 class QSqlDatabase;
 class ComicInfo;
 class QSqlRecord;
@@ -44,34 +48,56 @@ public:
     static QList<ComicDB> getFavorites(qulonglong libraryId);
     static QList<ComicDB> getReading(qulonglong libraryId);
     static QList<ReadingList> getReadingLists(qulonglong libraryId);
-    static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId);
+    // the comics of the reading list and of its child lists; entryIds receives the entry of each comic, in the same order
+    static QList<ComicDB> getReadingListFullContent(qulonglong libraryId, qulonglong readingListId, QList<ListItemId> *entryIds = nullptr);
+    // the available comics of a list with their entries, in list order; binds :list_id
+    static const QString &listComicsQuery(ListKind listKind);
+    // every entry of a list that refers to a comic_info, with its first file when it has one (c_id is NULL without a file); binds :list_id
+    static const QString &listEntriesQuery(ListKind listKind);
 
     // objects management
     // deletes
     static void removeFromDB(DiskItem &item, QSqlDatabase &db);
     static void removeFromDB(Folder *folder, QSqlDatabase &db);
     static void removeFromDB(ComicDB *comic, QSqlDatabase &db);
-    static void removeLabelFromDB(qulonglong id, QSqlDatabase &db);
-    static void removeListFromDB(qulonglong id, QSqlDatabase &db);
+    // removals of entries, lists, and labels also delete the placeholders that lose their last entry; on success they
+    // give the cover keys of those placeholders, and the caller deletes the files after the commit (removePlaceholderCovers)
+    static std::optional<QStringList> removeLabelFromDB(qulonglong id, QSqlDatabase &db);
+    // also removes the child lists
+    static std::optional<QStringList> removeListFromDB(qulonglong id, QSqlDatabase &db);
+    static void removePlaceholderCovers(const QString &libraryDataPath, const QStringList &coverKeys);
     // logic deletes
     static void deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db);
-    static void deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
-    static void deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
+    // entry functions reject an entry id of the other list kind and change nothing
+    static std::optional<QStringList> removeLabelEntries(LabelId labelId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
+    static std::optional<QStringList> removeReadingListEntries(ReadingListId readingListId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
+    static bool reorderLabelEntries(LabelId labelId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
+    static bool reorderReadingListEntries(ReadingListId readingListId, const QList<ListItemId> &entryIds, QSqlDatabase &db);
+    // a label skips the comic_info it already has; a reading list adds it again
+    static bool appendComicsToLabel(LabelId labelId, const QList<ComicInfoId> &comicInfoIds, QSqlDatabase &db);
+    static bool appendComicsToReadingList(ReadingListId readingListId, const QList<ComicInfoId> &comicInfoIds, QSqlDatabase &db);
     // inserts
     static qulonglong insert(Folder *folder, QSqlDatabase &db);
     static qulonglong insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo);
     static qulonglong insertLabel(const QString &name, YACReader::LabelColors color, QSqlDatabase &db);
+    // the placeholder gets a new id; `placeholder.id` is not used
+    static std::optional<PlaceholderId> insertPlaceholder(const Placeholder &placeholder, QSqlDatabase &db);
     static qulonglong insertReadingList(const QString &name, QSqlDatabase &db);
     static qulonglong insertReadingSubList(const QString &name, qulonglong parentId, int ordering, QSqlDatabase &db);
     static void insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
-    static void insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong labelId, QSqlDatabase &db);
-    static void insertComicsInReadingList(const QList<ComicDB> &comicsList, qulonglong readingListId, QSqlDatabase &db);
     // updates
     static void update(qulonglong libraryId, ComicInfo &comicInfo);
     static void update(ComicDB *comics, QSqlDatabase &db);
-    static void update(ComicInfo *comicInfo, QSqlDatabase &db);
-    static void updateAdded(ComicInfo *comicInfo, QSqlDatabase &db);
+    static bool update(ComicInfo *comicInfo, QSqlDatabase &db);
+    static bool updateAdded(ComicInfo *comicInfo, QSqlDatabase &db);
+    // writes only the fields in the patch, and marks the comic_info as edited
+    static bool updateComicInfoMetadata(ComicInfoId id, const DescriptiveMetadataPatch &patch, QSqlDatabase &db);
+    // a type set by the user, so the comic_info is marked as edited
+    static bool updateComicInfoType(ComicInfoId id, YACReader::FileType type, QSqlDatabase &db);
+    // writes the cover page, the cover size, and the custom-cover columns of `info`; a cover set by the user, so the
+    // comic_info is marked as edited
+    static bool updateComicInfoCover(const ComicInfo &info, QSqlDatabase &db);
     static void update(const Folder &folder, QSqlDatabase &db);
     static void propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db);
     static Folder updateChildrenInfo(qulonglong folderId, QSqlDatabase &db);
@@ -99,9 +125,10 @@ public:
     static void removeEmptyFolderRows(const QList<qulonglong> &folderIds, QSqlDatabase &db);
     static void reasignOrderToSublists(QList<qulonglong> ids, QSqlDatabase &db);
     static void reasignOrderToComicsInFavorites(QList<qulonglong> comicIds, QSqlDatabase &db);
-    static void reasignOrderToComicsInLabel(qulonglong labelId, QList<qulonglong> comicIds, QSqlDatabase &db);
-    static void reasignOrderToComicsInReadingList(qulonglong readingListId, QList<qulonglong> comicIds, QSqlDatabase &db);
-    static void updateComicsInfo(QList<ComicDB> &comics, const QString &databasePath);
+    // returns the hashes of the removed rows, so their covers can be removed after the commit
+    static QStringList removeUnusedComicInfo(QSqlDatabase &db);
+    // no transaction, the scanner calls it in its own; entries stay while another file still uses the old comic_info
+    static bool moveEntriesToComicInfo(ComicInfoId oldComicInfoId, ComicInfoId newComicInfoId, QSqlDatabase &db);
 
     static QList<Folder> getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db);
@@ -121,8 +148,13 @@ public:
     static QList<ComicDB> loadComics(const QList<qulonglong> &ids, QSqlDatabase &db);
     static ComicDB loadComic(QString cname, QString cpath, QString chash, QSqlDatabase &database);
     static std::optional<ComicInfo> loadComicInfo(QString hash, QSqlDatabase &db);
+    static std::optional<ComicInfo> loadComicInfo(ComicInfoId id, QSqlDatabase &db);
+    static std::optional<Placeholder> loadPlaceholder(PlaceholderId id, QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
+    // the record as it is now; nothing when a comic with a file lost that file or the file has a different comic_info,
+    // or when the comic_info of a deleted comic no longer exists
+    static std::optional<ComicRecord> loadRecord(const ComicRecord &record, QSqlDatabase &db);
 
     // library
     static QVariantMap getLibraryInfoData(QUuid id);

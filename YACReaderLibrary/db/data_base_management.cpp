@@ -2,6 +2,7 @@
 
 #include "QsLog.h"
 #include "db_helper.h"
+#include "descriptive_comic_metadata.h"
 #include "initial_comic_info_extractor.h"
 
 #include <QImageReader>
@@ -544,6 +545,9 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
 
         // 8.0> tables
         success = success && DataBaseManagement::createV8Tables(database);
+
+        // 9.17.0> tables
+        success = success && DataBaseManagement::createV9_17Tables(database);
     }
 
     return success;
@@ -803,6 +807,134 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
         success = success && queryInsertDefaultReadingList.exec("INSERT INTO default_reading_list (name) VALUES (\"Favorites\")");
 
         // Reading doesn't need its onw list
+    }
+    return success;
+}
+
+bool DataBaseManagement::createPlaceholderTable(QSqlDatabase &database)
+{
+    QStringList columns = { "id INTEGER PRIMARY KEY AUTOINCREMENT" };
+    for (const auto &column : DescriptiveComicMetadata::columns()) {
+        columns.append(QString::fromLatin1(column.name) + " " + QString::fromLatin1(column.sqlType));
+    }
+    columns.append("coverKey TEXT");
+
+    QSqlQuery queryPlaceholder(database);
+    return queryPlaceholder.exec("CREATE TABLE placeholder (" + columns.join(", ") + ")");
+}
+
+bool DataBaseManagement::createReadingListEntryTable(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        QSqlQuery queryReadingListEntry(database);
+        success = success && queryReadingListEntry.exec("CREATE TABLE reading_list_entry ("
+                                                        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                        "reading_list_id INTEGER NOT NULL, "
+                                                        "ordering INTEGER NOT NULL, "
+                                                        "comic_info_id INTEGER, "
+                                                        "placeholder_id INTEGER, "
+                                                        "last_known_name TEXT, "
+                                                        "last_known_path TEXT, "
+                                                        "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
+                                                        "FOREIGN KEY(comic_info_id) REFERENCES comic_info(id) ON DELETE RESTRICT, "
+                                                        "FOREIGN KEY(placeholder_id) REFERENCES placeholder(id) ON DELETE RESTRICT, "
+                                                        "CHECK ((comic_info_id IS NOT NULL AND placeholder_id IS NULL) "
+                                                        "OR (comic_info_id IS NULL AND placeholder_id IS NOT NULL)))");
+
+        QSqlQuery queryIndexReadingListEntry(database);
+        success = success && queryIndexReadingListEntry.exec("CREATE INDEX reading_list_entry_ordering_index ON reading_list_entry (reading_list_id, ordering)");
+        success = success && queryIndexReadingListEntry.exec("CREATE INDEX reading_list_entry_comic_info_index ON reading_list_entry (comic_info_id)");
+        success = success && queryIndexReadingListEntry.exec("CREATE INDEX reading_list_entry_placeholder_index ON reading_list_entry (placeholder_id)");
+    }
+    return success;
+}
+
+bool DataBaseManagement::createLabelEntryTable(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        QSqlQuery queryLabelEntry(database);
+        success = success && queryLabelEntry.exec("CREATE TABLE label_entry ("
+                                                  "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                  "label_id INTEGER NOT NULL, "
+                                                  "ordering INTEGER NOT NULL, "
+                                                  "comic_info_id INTEGER, "
+                                                  "placeholder_id INTEGER, "
+                                                  "last_known_name TEXT, "
+                                                  "last_known_path TEXT, "
+                                                  "FOREIGN KEY(label_id) REFERENCES label(id) ON DELETE CASCADE, "
+                                                  "FOREIGN KEY(comic_info_id) REFERENCES comic_info(id) ON DELETE RESTRICT, "
+                                                  "FOREIGN KEY(placeholder_id) REFERENCES placeholder(id) ON DELETE RESTRICT, "
+                                                  "CHECK ((comic_info_id IS NOT NULL AND placeholder_id IS NULL) "
+                                                  "OR (comic_info_id IS NULL AND placeholder_id IS NOT NULL)))");
+
+        QSqlQuery queryIndexLabelEntry(database);
+        success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_ordering_index ON label_entry (label_id, ordering)");
+        success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_comic_info_index ON label_entry (comic_info_id)");
+        success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_placeholder_index ON label_entry (placeholder_id)");
+    }
+    return success;
+}
+
+bool DataBaseManagement::createComicDeleteTrigger(QSqlDatabase &database)
+{
+    QSqlQuery queryComicDeleteTrigger(database);
+    return queryComicDeleteTrigger.exec("CREATE TRIGGER comic_delete_last_known_file AFTER DELETE ON comic "
+                                        "BEGIN "
+                                        "UPDATE reading_list_entry SET last_known_name = OLD.fileName, last_known_path = OLD.path "
+                                        "WHERE comic_info_id = OLD.comicInfoId; "
+                                        "UPDATE label_entry SET last_known_name = OLD.fileName, last_known_path = OLD.path "
+                                        "WHERE comic_info_id = OLD.comicInfoId; "
+                                        "END");
+}
+
+bool DataBaseManagement::createV9_17Tables(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        success = success && createPlaceholderTable(database);
+        success = success && createReadingListEntryTable(database);
+        success = success && createLabelEntryTable(database);
+
+        // Rows whose list, label, comic or comic_info no longer exists are not copied.
+        QSqlQuery copyReadingListEntries(database);
+        success = success && copyReadingListEntries.exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) "
+                                                         "SELECT crl.reading_list_id, "
+                                                         "ROW_NUMBER() OVER (PARTITION BY crl.reading_list_id ORDER BY crl.ordering IS NULL, crl.ordering, crl.rowid) - 1, "
+                                                         "c.comicInfoId "
+                                                         "FROM comic_reading_list crl "
+                                                         "INNER JOIN reading_list rl ON rl.id = crl.reading_list_id "
+                                                         "INNER JOIN comic c ON c.id = crl.comic_id "
+                                                         "INNER JOIN comic_info ci ON ci.id = c.comicInfoId "
+                                                         "ORDER BY crl.reading_list_id, crl.ordering IS NULL, crl.ordering, crl.rowid");
+
+        QSqlQuery copyLabelEntries(database);
+        success = success && copyLabelEntries.exec("INSERT INTO label_entry (label_id, ordering, comic_info_id) "
+                                                   "SELECT cl.label_id, "
+                                                   "ROW_NUMBER() OVER (PARTITION BY cl.label_id ORDER BY cl.ordering IS NULL, cl.ordering, cl.rowid) - 1, "
+                                                   "c.comicInfoId "
+                                                   "FROM comic_label cl "
+                                                   "INNER JOIN label l ON l.id = cl.label_id "
+                                                   "INNER JOIN comic c ON c.id = cl.comic_id "
+                                                   "INNER JOIN comic_info ci ON ci.id = c.comicInfoId "
+                                                   "ORDER BY cl.label_id, cl.ordering IS NULL, cl.ordering, cl.rowid");
+
+        QSqlQuery dropOldTables(database);
+        success = success && dropOldTables.exec("DROP TABLE comic_reading_list");
+        success = success && dropOldTables.exec("DROP TABLE comic_label");
+
+        QSqlQuery queryIndexComicInfoId(database);
+        success = success && queryIndexComicInfoId.exec("CREATE INDEX comic_comic_info_id_index ON comic (comicInfoId)");
+
+        success = success && createComicDeleteTrigger(database);
+
+        // Upgrades run with foreign keys off, so the new constraints are checked here.
+        QSqlQuery checkReadingListEntries(database);
+        success = success && checkReadingListEntries.exec("PRAGMA foreign_key_check(reading_list_entry)") && !checkReadingListEntries.next();
+
+        QSqlQuery checkLabelEntries(database);
+        success = success && checkLabelEntries.exec("PRAGMA foreign_key_check(label_entry)") && !checkLabelEntries.next();
     }
     return success;
 }
@@ -1343,6 +1475,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_13 = compareVersions(oldVersion, "9.13.0") < 0;
     const bool pre9_14 = compareVersions(oldVersion, "9.14.0") < 0;
     const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
+    const bool pre9_17 = compareVersions(oldVersion, "9.17.0") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1430,8 +1563,6 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                         selectQuery.prepare("SELECT id, hash FROM comic_info");
                         selectQuery.exec();
 
-                        db.transaction();
-
                         QSqlQuery updateCoverInfo(db);
                         updateCoverInfo.prepare("UPDATE comic_info SET coverSizeRatio = :coverSizeRatio WHERE id = :id");
 
@@ -1446,8 +1577,6 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
 
                             updateCoverInfo.exec();
                         }
-
-                        db.commit();
                     }
                 }
 
@@ -1557,6 +1686,11 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                         bool successAddingColumns = addColumns("comic_info", columnDefs, db);
                         returnValue = returnValue && successAddingColumns;
                     }
+                }
+
+                if (pre9_17) {
+                    bool successCreatingNewTables = createV9_17Tables(db);
+                    returnValue = returnValue && successCreatingNewTables;
                 }
 
                 if (returnValue) {

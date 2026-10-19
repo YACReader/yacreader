@@ -277,17 +277,22 @@ void LibraryCreator::run()
                 update(QDir(_source));
             }
 
+            QStringList unusedCoverHashes;
             if (!canceled) {
                 if (partialUpdate) {
                     auto folder = DBHelper::updateChildrenInfo(_folderDestinationId, _database);
                     DBHelper::propagateFolderUpdatesToParent(folder, _database);
                 } else {
                     DBHelper::updateChildrenInfo(_database);
-                    cleanup(_database, _target);
+                    unusedCoverHashes = cleanup(_database, _target);
                 }
             }
 
-            _database.commit();
+            if (_database.commit()) {
+                for (const auto &hash : std::as_const(unusedCoverHashes)) {
+                    QFile::remove(LibraryPaths::coverPathFromLibraryDataPath(_target, hash));
+                }
+            }
             _database.close();
         }
 
@@ -324,35 +329,15 @@ void LibraryCreator::cancel()
     stopRunning = true;
 }
 
-void LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
+QStringList LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
 {
     auto coversPath = LibraryPaths::libraryCoversPathFromLibraryDataPath(target);
     QDir coversDir(coversPath);
     if (!coversDir.exists()) {
-        return;
+        return { };
     }
 
-    // delete from comic_info all the comics that don't have a comic associated from the comic table
-    QSqlQuery infoToDeleteQuery(db);
-    infoToDeleteQuery.prepare("SELECT ci.id, ci.hash FROM comic_info ci WHERE ci.id NOT IN (SELECT c.comicInfoId FROM comic c)");
-
-    if (!infoToDeleteQuery.exec()) {
-        QLOG_ERROR() << "Error getting comics to delete";
-        return;
-    }
-
-    while (infoToDeleteQuery.next()) {
-        QString hash = infoToDeleteQuery.value(1).toString();
-        QString coverPath = LibraryPaths::coverPathFromLibraryDataPath(target, hash);
-        QFile::remove(coverPath);
-    }
-
-    QSqlQuery deleteQuery(db);
-    deleteQuery.prepare("DELETE FROM comic_info WHERE id NOT IN (SELECT comicInfoId FROM comic)");
-    if (!deleteQuery.exec()) {
-        QLOG_ERROR() << "Error purging info from comic_info";
-        return;
-    }
+    return DBHelper::removeUnusedComicInfo(db);
 }
 
 // retorna el id del ultimo de los folders
@@ -428,7 +413,7 @@ QString pseudoHash(const QFileInfo &fileInfo)
     return QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
 }
 
-void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo)
+bool LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo)
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
 
@@ -452,7 +437,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
             // Not a comic YACReader can show, so it does not belong to the library. It
             // leaves no cover behind either, otherwise the next scan would take that
             // cover as proof that the file had been imported before.
-            return;
+            return false;
         }
         numPages = ie.getNumPages();
         originalCoverSize = ie.getOriginalCoverSize();
@@ -476,44 +461,95 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
         comic.file.folderId = _currentPathFolders.last().folder.id;
         comic.info.type = QVariant::fromValue(_currentPathFolders.last().folder.type);
 
-        DBHelper::insert(&comic, _database, parsed);
+        return DBHelper::insert(&comic, _database, parsed) != 0;
     }
+
+    return false;
+}
+
+ReplaceComicResult classifyReplaceComic(ComicInfoId oldComicInfoId,
+                                        std::optional<ComicInfoId> newComicInfoId,
+                                        bool newComicInfoExisted)
+{
+    if (!newComicInfoId) {
+        return ReplaceComicResult::NotInserted;
+    }
+
+    if (*newComicInfoId == oldComicInfoId) {
+        return ReplaceComicResult::SameComicInfo;
+    }
+
+    return newComicInfoExisted ? ReplaceComicResult::KnownComicInfo : ReplaceComicResult::NewComicInfo;
 }
 
 void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &fileInfo, ComicDB *comic)
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
 
+    const auto oldComicInfoId = comic->info.id;
+    const auto hash = pseudoHash(fileInfo);
+    const bool newComicInfoExisted = DBHelper::loadComicInfo(hash, _database).has_value();
+
+    QSqlQuery savepoint(_database);
+    if (!savepoint.exec("SAVEPOINT replace_comic")) {
+        QLOG_ERROR() << "Unable to replace" << relativePath << ":" << savepoint.lastError().text();
+        return;
+    }
+
     DBHelper::removeFromDB(comic, _database);
-    insertComic(relativePath, fileInfo);
 
-    QString hash = pseudoHash(fileInfo);
-
-    ComicDB insertedComic = DBHelper::loadComic(fileInfo.fileName(), relativePath, hash, _database);
-
-    if (insertedComic.info.id == ComicInfoId()) {
-        return;
+    std::optional<ComicInfo> newInfo;
+    if (insertComic(relativePath, fileInfo)) {
+        newInfo = DBHelper::loadComicInfo(hash, _database);
     }
 
-    if (insertedComic.info.coverSizeRatio.isNull()) {
-        return;
+    bool keepChanges = true;
+    switch (classifyReplaceComic(oldComicInfoId, newInfo ? std::optional(newInfo->id) : std::nullopt, newComicInfoExisted)) {
+    case ReplaceComicResult::NotInserted:
+        keepChanges = false;
+        break;
+    case ReplaceComicResult::SameComicInfo:
+        comic->info.added = fileInfo.lastModified().toSecsSinceEpoch();
+        keepChanges = DBHelper::updateAdded(&comic->info, _database);
+        break;
+    case ReplaceComicResult::NewComicInfo:
+        keepChanges = copyReplacedComicInfo(comic->info, *newInfo, fileInfo) && DBHelper::moveEntriesToComicInfo(oldComicInfoId, newInfo->id, _database);
+        break;
+    case ReplaceComicResult::KnownComicInfo:
+        keepChanges = DBHelper::moveEntriesToComicInfo(oldComicInfoId, newInfo->id, _database);
+        break;
     }
 
-    auto numPages = insertedComic.info.numPages;
-    auto coverSize = insertedComic.info.originalCoverSize;
-    auto coverRatio = insertedComic.info.coverSizeRatio;
-    auto id = insertedComic.info.id;
+    if (!keepChanges) {
+        savepoint.exec("ROLLBACK TO replace_comic");
+    }
+    savepoint.exec("RELEASE replace_comic");
+}
 
-    insertedComic.info = comic->info;
+// the new comic_info takes the values of the old one, except what comes from the new file
+bool LibraryCreator::copyReplacedComicInfo(const ComicInfo &oldInfo, ComicInfo newInfo, const QFileInfo &fileInfo)
+{
+    if (newInfo.coverSizeRatio.isNull()) {
+        return true;
+    }
 
-    insertedComic.info.numPages = numPages;
-    insertedComic.info.originalCoverSize = coverSize;
-    insertedComic.info.coverSizeRatio = coverRatio;
-    insertedComic.info.id = id;
-    insertedComic.info.coverPage = 1;
-    insertedComic.info.added = fileInfo.lastModified().toSecsSinceEpoch();
+    auto _database = QSqlDatabase::database(_databaseConnection);
 
-    DBHelper::update(&(insertedComic.info), _database);
+    const auto numPages = newInfo.numPages;
+    const auto coverSize = newInfo.originalCoverSize;
+    const auto coverRatio = newInfo.coverSizeRatio;
+    const auto id = newInfo.id;
+
+    newInfo = oldInfo;
+
+    newInfo.numPages = numPages;
+    newInfo.originalCoverSize = coverSize;
+    newInfo.coverSizeRatio = coverRatio;
+    newInfo.id = id;
+    newInfo.coverPage = 1;
+    newInfo.added = fileInfo.lastModified().toSecsSinceEpoch();
+
+    return DBHelper::update(&newInfo, _database);
 }
 
 void LibraryCreator::update(QDir dirS)

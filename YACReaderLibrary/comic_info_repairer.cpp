@@ -6,6 +6,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "initial_comic_info_extractor.h"
+#include "staged_cover.h"
 #include "xml_info_parser.h"
 #include "yacreader_global.h"
 
@@ -487,6 +488,8 @@ void ComicInfoRepairer::run()
             while (leftovers.hasNext()) {
                 QFile::remove(leftovers.next());
             }
+
+            StagedCover::removeLeftovers(coversPath);
         }
 
         qulonglong afterId = 0;

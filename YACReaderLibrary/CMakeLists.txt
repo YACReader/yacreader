@@ -24,6 +24,8 @@ add_library(library_common STATIC
     yacreader_libraries.cpp
     comic_files_manager.h
     comic_files_manager.cpp
+    staged_cover.h
+    staged_cover.cpp
     ip_config_helper.h
     ip_config_helper.cpp
     libraries_update_coordinator.h
@@ -54,6 +56,10 @@ add_library(db_helper STATIC
     db/data_base_management.cpp
     db/reading_list.h
     db/reading_list.cpp
+    db/list_entry.h
+    db/list_entry.cpp
+    db/placeholder.h
+    db/placeholder.cpp
     db/query_lexer.h
     db/query_lexer.cpp
     db/search_field_registry.h
@@ -167,6 +173,7 @@ qt_add_executable(YACReaderLibrary WIN32
     db/comic_model.h
     db/comic_model.cpp
     db/comic_item.h
+    db/comic_record.h
     db/reading_list_model.h
     db/reading_list_model.cpp
     db/reading_list_item.h
@@ -307,6 +314,8 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/noLibrariesIcon.svg
     ${PROJECT_SOURCE_DIR}/images/noLibrariesLine.svg
     ${PROJECT_SOURCE_DIR}/images/notCover.png
+    ${PROJECT_SOURCE_DIR}/images/unavailableCover.png
+    ${PROJECT_SOURCE_DIR}/images/comics_view_table/deletedComic.svg
     ${PROJECT_SOURCE_DIR}/images/library_dialogs/openLibrary.svg
     ${PROJECT_SOURCE_DIR}/images/metadata_dialog/previousCoverPage.svg
     ${PROJECT_SOURCE_DIR}/images/readingRibbon.svg

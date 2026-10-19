@@ -18,8 +18,8 @@ ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dial
     : QObject(dialogParent), dialogParent(dialogParent), listsModel(listsModel), currentListProvider(std::move(currentListProvider))
 {
     connect(listsModel, &ReadingListModel::addComicsToFavorites, comicsModel, QOverload<const QList<qulonglong> &>::of(&ComicModel::addComicsToFavorites));
-    connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToLabel));
-    connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<qulonglong> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
+    connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<ComicInfoId> &, qulonglong>::of(&ComicModel::addComicsToLabel));
+    connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<ComicInfoId> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
 }
 
 void ReadingListManagementCoordinator::addReadingList()

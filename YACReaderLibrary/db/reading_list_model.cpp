@@ -272,14 +272,12 @@ bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, 
     }
 
     if (rowIsLabel(dest.row(), parentDest)) {
-        QLOG_DEBUG() << "+++++++++++addComicsToLabel : " << comicIds << " to " << dest.data(IDRole).toULongLong();
-        emit addComicsToLabel(comicIds, dest.data(IDRole).toULongLong());
+        emit addComicsToLabel(YACReader::mimeDataToComicInfoIds(data), dest.data(IDRole).toULongLong());
         return true;
     }
 
     if (rowIsReadingList(dest.row(), parentDest)) {
-        QLOG_DEBUG() << "///////////addComicsToReadingList : " << comicIds << " to " << dest.data(IDRole).toULongLong();
-        emit addComicsToReadingList(comicIds, dest.data(IDRole).toULongLong());
+        emit addComicsToReadingList(YACReader::mimeDataToComicInfoIds(data), dest.data(IDRole).toULongLong());
         return true;
     }
 
@@ -520,6 +518,7 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
     if (isEditable(mi)) {
         QLOG_DEBUG() << "parent row :" << mi.parent().data() << "-" << mi.row();
         beginRemoveRows(mi.parent(), mi.row(), mi.row());
+        std::optional<QStringList> placeholderCovers;
         QString connectionName = "";
         {
             QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
@@ -531,7 +530,7 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
                 QLOG_DEBUG() << "num children : " << rli->parent->childCount();
                 rli->parent->removeChild(rli);
                 QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-                DBHelper::removeListFromDB(item->getId(), db);
+                placeholderCovers = DBHelper::removeListFromDB(item->getId(), db);
                 if (rli->parent->getId() != 0) {
                     reorderingChildren(rli->parent->children());
                 }
@@ -539,11 +538,13 @@ void ReadingListModel::deleteItem(const QModelIndex &mi)
             } else if (typeid(*item) == typeid(LabelItem)) {
                 auto li = static_cast<LabelItem *>(item);
                 labels.removeOne(li);
-                DBHelper::removeLabelFromDB(item->getId(), db);
+                placeholderCovers = DBHelper::removeLabelFromDB(item->getId(), db);
             }
             connectionName = db.connectionName();
         }
         QSqlDatabase::removeDatabase(connectionName);
+        if (placeholderCovers)
+            DBHelper::removePlaceholderCovers(_databasePath, *placeholderCovers);
 
         endRemoveRows();
     }

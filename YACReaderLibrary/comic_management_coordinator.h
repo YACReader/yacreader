@@ -72,7 +72,7 @@ public slots:
     void deleteMetadataFromSelectedComics();
     void deleteSelectedComics();
     void saveSelectedCoversTo();
-    void setCustomCover(qulonglong comicId, const QString &imagePath);
+    void setCustomCover(const ComicRowId &row, const QString &imagePath);
     void resetSelectedCustomCovers();
 
     void setComicUnread(qulonglong libraryId, const ComicDB &comic);
@@ -83,7 +83,7 @@ signals:
     void currentSourceRefreshStarted();
     void currentSourceRefreshAccepted();
     void currentSourceRefreshCancelled();
-    void comicNumbersAssigned(qint64 editedComicId);
+    void comicNumbersAssigned(const ComicRowId &firstRow);
     void comicDeletionFinished();
     void rootContinueReadingReloadRequested();
 
@@ -94,6 +94,8 @@ private:
         qulonglong sourceId;
     };
 
+    // entryId: the reading list entry of the opened row, 0 if none
+    void startReader(const ComicDB &comic, ComicModel::Mode mode, qulonglong entryId);
     QProgressDialog *newProgressDialog(const QString &label, int maximum);
     void copyAndImportComics(const QList<QPair<QString, QString>> &comics,
                              const QModelIndex &destinationFolder,
@@ -102,12 +104,14 @@ private:
                              const QModelIndex &destinationFolder,
                              const QString &libraryPath);
     void processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog);
-    QList<qulonglong> selectedComicIds() const;
+    // the selected rows that support the action
+    QList<ComicRowId> selectedRowIds(ComicAction action) const;
     SourceContext currentSource() const;
-    QModelIndexList indexesForComicIds(const QList<qulonglong> &comicIds, const SourceContext &source) const;
+    // empty when the source changed or a row is no longer in the model
+    QModelIndexList indexesForRows(const QList<ComicRowId> &rowIds, const SourceContext &source) const;
     bool isCurrentSource(const SourceContext &source) const;
-    void deleteComicsFromDisk(const QList<qulonglong> &comicIds, const SourceContext &source);
-    void deleteComicsFromList(const QList<qulonglong> &comicIds, const SourceContext &source, int listType, qulonglong listId);
+    void deleteComicsFromDisk(const QList<ComicRowId> &rowIds, const SourceContext &source);
+    void deleteComicsFromList(const QList<ComicRowId> &rowIds, const SourceContext &source, int listType, qulonglong listId);
     void finishComicDeletion();
 
     QWidget *window;

@@ -116,9 +116,9 @@ void ComicFlowWidget::clear()
     flow->clear();
 }
 
-void ComicFlowWidget::setImagePaths(QStringList paths)
+void ComicFlowWidget::setImagePaths(QStringList paths, QList<bool> grayscale)
 {
-    flow->setImagePaths(paths);
+    flow->setImagePaths(paths, grayscale);
 }
 
 void ComicFlowWidget::setCenterIndex(int index)
@@ -328,9 +328,9 @@ void ComicFlowWidget::updateConfig(QSettings *settings)
     flow->setMaxAngle(settings->value(MAX_ANGLE).toInt());
 }
 
-void ComicFlowWidget::add(const QString &path, int index)
+void ComicFlowWidget::add(const QString &path, int index, bool grayscale)
 {
-    flow->add(path, index);
+    flow->add(path, index, grayscale);
 }
 
 void ComicFlowWidget::remove(int cover)

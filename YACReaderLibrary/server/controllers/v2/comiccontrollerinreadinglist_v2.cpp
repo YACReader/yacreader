@@ -7,6 +7,7 @@
 #include "db_helper.h"
 #include "yacreader_http_session.h"
 #include "yacreader_libraries.h"
+#include "yacreader_server_data_helper.h"
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
@@ -72,7 +73,8 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
         response.write(QString("library:%1\r\n").arg(libraryName).toUtf8());
         response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
 
-        QList<ComicDB> siblings = DBHelper::getReadingListFullContent(libraryId, readingListId);
+        // the later occurrences of a repeated comic are skipped, so previous and next never loop
+        const auto siblings = YACReaderServerDataHelper::firstOccurrences(DBHelper::getReadingListFullContent(libraryId, readingListId));
 
         bool found = false;
         int i;

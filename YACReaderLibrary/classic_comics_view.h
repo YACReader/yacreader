@@ -49,6 +49,7 @@ public slots:
     void centerComicFlow(const QModelIndex &mi);
     void updateTableView(int i);
     void saveTableHeadersStatus();
+    void updateStateColumn();
     void saveSplitterStatus();
     void applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
     void removeItemsFromFlow(const QModelIndex &parent, int from, int to);
@@ -85,6 +86,7 @@ private:
     void showSearchingIcon();
     void hideSearchingIcon();
     void updateSearchingIconPosition();
+    static QString flowCoverPath(const QModelIndex &index);
 
     QMutex settingsMutex;
 };
