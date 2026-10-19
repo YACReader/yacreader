@@ -19,3 +19,31 @@ target_link_libraries(cbl PUBLIC
     library_common
     QsLog
 )
+
+# The import dialog of YACReaderLibrary
+if(NOT BUILD_SERVER_STANDALONE)
+    add_library(cbl_gui STATIC
+        cbl_import_model.h
+        cbl_import_model.cpp
+        cbl_entry_detail.h
+        cbl_entry_detail.cpp
+        cbl_entries_view.h
+        cbl_entries_view.cpp
+        cbl_find_comic_page.h
+        cbl_find_comic_page.cpp
+        cbl_import_dialog.h
+        cbl_import_dialog.cpp
+    )
+    target_include_directories(cbl_gui PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+    yacreader_apply_build_options(cbl_gui)
+    target_link_libraries(cbl_gui PUBLIC
+        Qt6::Core
+        Qt6::Widgets
+        Qt6::Sql
+        cbl
+        naturalsort
+        QsLog
+    )
+endif()

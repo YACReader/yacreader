@@ -22,6 +22,7 @@
 #include "yacreader_navigation_controller.h"
 #include "yacreader_options_dialog.h"
 
+#include <QMenu>
 #include <QtCore>
 
 LibraryWindowActions::LibraryWindowActions()
@@ -403,10 +404,25 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     rescanXMLFromCurrentFolderAction->setData(SCAN_XML_FROM_CURRENT_FOLDER_ACTION_YL);
     rescanXMLFromCurrentFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SCAN_XML_FROM_CURRENT_FOLDER_ACTION_YL));
 
-    addReadingListAction = new QAction(tr("Add new reading list"), window);
+    addReadingListAction = new QAction(tr("New reading list"), window);
     addReadingListAction->setData(ADD_READING_LIST_ACTION_YL);
     addReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_READING_LIST_ACTION_YL));
     addReadingListAction->setToolTip(tr("Add a new reading list to the current library"));
+    addReadingListAction->setIconVisibleInMenu(false);
+    window->addAction(addReadingListAction);
+
+    importReadingListsAction = new QAction(tr("Import reading lists..."), window);
+    importReadingListsAction->setData(IMPORT_READING_LISTS_ACTION_YL);
+    importReadingListsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_READING_LISTS_ACTION_YL));
+    importReadingListsAction->setToolTip(tr("Import CBL reading lists into the current library"));
+    window->addAction(importReadingListsAction);
+
+    newListMenuAction = new QAction(tr("New"), window);
+    newListMenuAction->setToolTip(tr("Add or import reading lists"));
+    auto newListMenu = new QMenu(window);
+    newListMenu->addAction(addReadingListAction);
+    newListMenu->addAction(importReadingListsAction);
+    newListMenuAction->setMenu(newListMenu);
 
     deleteReadingListAction = new QAction(tr("Remove reading list"), window);
     deleteReadingListAction->setData(REMOVE_READING_LIST_ACTION_YL);
@@ -592,6 +608,7 @@ void LibraryWindowActions::createConnections(
 
     // lists
     QObject::connect(addReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addReadingList);
+    QObject::connect(importReadingListsAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::importReadingLists);
     QObject::connect(deleteReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::deleteCurrentList);
     QObject::connect(addLabelAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addLabel);
     QObject::connect(renameListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::renameCurrentList);
@@ -713,6 +730,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
     editShortcutsDialog->addActionsGroup("Lists", theme.shortcutsIcons.foldersIcon, // TODO change icon
                                          tmpList = QList<QAction *>()
                                                  << addReadingListAction
+                                                 << importReadingListsAction
                                                  << deleteReadingListAction
                                                  << addLabelAction
                                                  << renameListAction);
@@ -899,6 +917,7 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     setRootIndexAction->setIcon(sidebarIcons.setRootIcon);
     expandAllNodesAction->setIcon(sidebarIcons.expandIcon);
     colapseAllNodesAction->setIcon(sidebarIcons.colapseIcon);
+    newListMenuAction->setIcon(sidebarIcons.addNewIcon);
     addReadingListAction->setIcon(sidebarIcons.addNewIcon);
     deleteReadingListAction->setIcon(sidebarIcons.deleteIcon);
     addLabelAction->setIcon(sidebarIcons.addLabelIcon);

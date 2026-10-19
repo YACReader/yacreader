@@ -36,6 +36,7 @@ private slots:
     void placeholdersFollowTheSameRules();
     void loadsLibraryPlaceholders();
     void aComicThatDisagreesDoesNotHideAPlaceholder();
+    void closestSeriesUsesTheNameLevels();
 
 private:
     static CblLibraryComic comic(qulonglong id, const QString &series, const QString &number, const QString &volume = { }, const QString &date = { }, bool hasFile = true);
@@ -334,7 +335,7 @@ void CblMatcherTest::loadsLibraryComics()
                        "(3, 'h3', NULL, '7', NULL, NULL, NULL, '1003'), "
                        "(4, 'h4', NULL, '8', NULL, NULL, NULL, ''), "
                        "(5, 'h5', '', '9', NULL, NULL, NULL, NULL)"));
-    QVERIFY(query.exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES (10, 2, 1, 'a.cbz', '/S/a.cbz'), (11, 2, 3, 'b.cbz', '/S/b.cbz')"));
+    QVERIFY(query.exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES (10, 2, 1, 'a.cbz', '/S/a.cbz'), (9, 2, 1, 'a copy.cbz', '/S/a copy.cbz'), (11, 2, 3, 'b.cbz', '/S/b.cbz')"));
 
     const auto comics = CblMatcher::loadLibraryComics(db);
     QVERIFY(comics);
@@ -342,9 +343,15 @@ void CblMatcherTest::loadsLibraryComics()
     auto expectedFirst = comic(1, "Batman", "1", "2016", "01/06/2016", true);
     expectedFirst.format = "Main Series";
     expectedFirst.comicVineId = "1001";
+    expectedFirst.path = "/S/a copy.cbz";
+    expectedFirst.hash = "h1";
     auto expectedThird = comic(3, { }, "7", { }, { }, true);
     expectedThird.comicVineId = "1003";
-    QCOMPARE(*comics, QList<CblLibraryComic>({ expectedFirst, comic(2, "Batman", "2", "2016", { }, false), expectedThird }));
+    expectedThird.path = "/S/b.cbz";
+    expectedThird.hash = "h3";
+    auto expectedSecond = comic(2, "Batman", "2", "2016", { }, false);
+    expectedSecond.hash = "h2";
+    QCOMPARE(*comics, QList<CblLibraryComic>({ expectedFirst, expectedSecond, expectedThird }));
 
     query = QSqlQuery();
     db.close();
@@ -442,13 +449,14 @@ void CblMatcherTest::loadsLibraryPlaceholders()
     QVERIFY(DataBaseManagement::createTables(db));
 
     QSqlQuery query(db);
-    QVERIFY(query.exec("INSERT INTO placeholder (id, series, number, volume, date, format, comicVineID) VALUES "
-                       "(1, 'Batman', '2', '2016', '//2016', 'Annual', NULL), (2, NULL, '7', NULL, NULL, NULL, '555'), (3, NULL, '8', NULL, NULL, NULL, NULL)"));
+    QVERIFY(query.exec("INSERT INTO placeholder (id, series, number, volume, date, format, comicVineID, coverKey) VALUES "
+                       "(1, 'Batman', '2', '2016', '//2016', 'Annual', NULL, 'k1'), (2, NULL, '7', NULL, NULL, NULL, '555', NULL), (3, NULL, '8', NULL, NULL, NULL, NULL, NULL)"));
 
     const auto placeholders = CblMatcher::loadLibraryPlaceholders(db);
     QVERIFY(placeholders);
     auto first = placeholder(1, "Batman", "2", "2016", "//2016");
     first.format = "Annual";
+    first.coverKey = "k1";
     auto second = placeholder(2, { }, "7");
     second.comicVineId = "555";
     QCOMPARE(*placeholders, QList<CblLibraryPlaceholder>({ first, second }));
@@ -457,6 +465,29 @@ void CblMatcherTest::loadsLibraryPlaceholders()
     db.close();
     db = QSqlDatabase();
     QSqlDatabase::removeDatabase("cbl_matcher_placeholders");
+}
+
+void CblMatcherTest::closestSeriesUsesTheNameLevels()
+{
+    const CblMatcher matcher({ comic(1, "Annihilation: Conquest - Quasar", "1", "2007"),
+                               comic(2, "Annihilation: Conquest - Quasar", "3", "2007"),
+                               comic(3, "Nova", "1", "1976"),
+                               comic(4, "Nova", "1", "2007"),
+                               comic(5, "Nova", "2", "2007") });
+
+    const auto ids = [](const QList<CblLibraryComic> &comics) {
+        QList<qulonglong> result;
+        for (const auto &comic : comics)
+            result.append(comic.id.value());
+        return result;
+    };
+
+    QCOMPARE(ids(matcher.closestSeries(book("Annihilation: Conquest - Quasar", "2", "2007"))), QList<qulonglong>({ 1, 2 }));
+    QCOMPARE(ids(matcher.closestSeries(book("Annihilation Conquest Quasar", "2"))), QList<qulonglong>({ 1, 2 }));
+    QCOMPARE(ids(matcher.closestSeries(book("Nova", "9", "2007"))), QList<qulonglong>({ 4, 5 }));
+    QCOMPARE(ids(matcher.closestSeries(book("Nova", "9", "2020"))), QList<qulonglong>({ 3, 4, 5 }));
+    QVERIFY(matcher.closestSeries(book("Drax", "1")).isEmpty());
+    QVERIFY(matcher.closestSeries(book({ }, "1")).isEmpty());
 }
 
 QTEST_GUILESS_MAIN(CblMatcherTest)

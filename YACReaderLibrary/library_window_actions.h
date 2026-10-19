@@ -132,7 +132,9 @@ public:
     QAction *rescanXMLFromCurrentFolderAction;
 
     // reading lists actions
+    QAction *newListMenuAction;
     QAction *addReadingListAction;
+    QAction *importReadingListsAction;
     QAction *deleteReadingListAction;
     QAction *addLabelAction;
     QAction *renameListAction;

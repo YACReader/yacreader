@@ -526,6 +526,8 @@ qt_add_translations(YACReaderLibrary
         shortcuts_library
         comic_vine
         organize_files
+        cbl
+        cbl_gui
     # Keep extraction scoped to targets used by this app and add the QML files
     # directly so qsTr() strings in QML are collected too.
     TS_FILES
@@ -569,6 +571,7 @@ target_link_libraries(YACReaderLibrary PRIVATE
     server
     comic_vine
     organize_files
+    cbl_gui
     cbx_backend
     concurrent_queue
     worker

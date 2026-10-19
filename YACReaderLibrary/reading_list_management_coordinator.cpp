@@ -1,9 +1,11 @@
 #include "reading_list_management_coordinator.h"
 
 #include "add_label_dialog.h"
+#include "cbl_import_dialog.h"
 #include "comic_model.h"
 #include "reading_list_model.h"
 
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
@@ -14,8 +16,9 @@
 ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dialogParent,
                                                                    ReadingListModel *listsModel,
                                                                    ComicModel *comicsModel,
-                                                                   CurrentListProvider currentListProvider)
-    : QObject(dialogParent), dialogParent(dialogParent), listsModel(listsModel), currentListProvider(std::move(currentListProvider))
+                                                                   CurrentListProvider currentListProvider,
+                                                                   LibraryPathProvider libraryPathProvider)
+    : QObject(dialogParent), dialogParent(dialogParent), listsModel(listsModel), currentListProvider(std::move(currentListProvider)), libraryPathProvider(std::move(libraryPathProvider))
 {
     connect(listsModel, &ReadingListModel::addComicsToFavorites, comicsModel, QOverload<const QList<qulonglong> &>::of(&ComicModel::addComicsToFavorites));
     connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<ComicRowId> &, qulonglong>::of(&ComicModel::addComicsToLabel));
@@ -42,6 +45,20 @@ void ReadingListManagementCoordinator::addReadingList()
         listsModel->addReadingListAt(name, currentList);
     else
         listsModel->addReadingList(name);
+}
+
+void ReadingListManagementCoordinator::importReadingLists()
+{
+    const auto filePaths = QFileDialog::getOpenFileNames(dialogParent,
+                                                         tr("Import reading lists"),
+                                                         { },
+                                                         tr("Reading lists (*.cbl *.json);;All files (*)"));
+    if (filePaths.isEmpty())
+        return;
+
+    CblImportDialog dialog(filePaths, libraryPathProvider(), dialogParent);
+    connect(&dialog, &CblImportDialog::readingListImported, listsModel, &ReadingListModel::appendReadingList);
+    dialog.exec();
 }
 
 void ReadingListManagementCoordinator::deleteCurrentList()

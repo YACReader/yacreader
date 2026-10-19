@@ -16,14 +16,17 @@ class ReadingListManagementCoordinator : public QObject
 
 public:
     using CurrentListProvider = std::function<QModelIndex()>;
+    using LibraryPathProvider = std::function<QString()>;
 
     ReadingListManagementCoordinator(QWidget *dialogParent,
                                      ReadingListModel *listsModel,
                                      ComicModel *comicsModel,
-                                     CurrentListProvider currentListProvider);
+                                     CurrentListProvider currentListProvider,
+                                     LibraryPathProvider libraryPathProvider);
 
 public slots:
     void addReadingList();
+    void importReadingLists();
     void deleteCurrentList();
     void addLabel();
     void renameCurrentList();
@@ -35,6 +38,7 @@ private:
     QWidget *dialogParent;
     ReadingListModel *listsModel;
     CurrentListProvider currentListProvider;
+    LibraryPathProvider libraryPathProvider;
 };
 
 #endif // READING_LIST_MANAGEMENT_COORDINATOR_H

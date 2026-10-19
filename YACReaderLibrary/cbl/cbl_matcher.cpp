@@ -152,6 +152,8 @@ CblMatcher::Index buildIndex(const QList<Item> &items)
                 auto &positions = index.byName[level][key(seriesKey, item.number)];
                 if (!positions.contains(i))
                     positions.append(i);
+                if (level < 3)
+                    index.bySeries[level][seriesKey].append(i);
             }
         }
     }
@@ -266,6 +268,26 @@ CblMatcher::CblMatcher(const QList<CblLibraryComic> &comics, const QList<CblLibr
 {
 }
 
+QList<CblLibraryComic> CblMatcher::closestSeries(const CblBook &book) const
+{
+    if (book.series.trimmed().isEmpty())
+        return { };
+
+    for (int level = 0; level < 3; level++) {
+        QList<CblLibraryComic> found;
+        for (const auto &seriesKey : seriesKeys(nameLevels[level], book.series, book.volume)) {
+            for (const auto position : comicIndex.bySeries[level].value(seriesKey))
+                found.append(comics.at(position));
+        }
+        if (found.isEmpty())
+            continue;
+        if (const auto volume = book.volume.trimmed().toCaseFolded(); !volume.isEmpty())
+            narrow<CblLibraryComic>(found, [&](const CblLibraryComic &comic) { return effectiveVolume(comic).toCaseFolded() == volume; });
+        return found;
+    }
+    return { };
+}
+
 // an accepted comic wins; a comic that is only a candidate does not hide a placeholder of the same issue
 CblBookMatch CblMatcher::match(const CblBook &book) const
 {
@@ -292,7 +314,7 @@ std::optional<QList<CblLibraryComic>> CblMatcher::loadLibraryComics(QSqlDatabase
 {
     QSqlQuery query(db);
     query.setForwardOnly(true);
-    if (!query.exec("SELECT ci.id, ci.id IN (SELECT comicInfoId FROM comic), ci.series, ci.number, ci.volume, ci.date, ci.format, ci.comicVineID "
+    if (!query.exec("SELECT ci.id, (SELECT c.path FROM comic c WHERE c.comicInfoId = ci.id ORDER BY c.id LIMIT 1), ci.series, ci.number, ci.volume, ci.date, ci.format, ci.comicVineID, ci.hash "
                     "FROM comic_info ci "
                     "WHERE COALESCE(ci.series, '') <> '' OR COALESCE(ci.comicVineID, '') <> ''")) {
         QLOG_ERROR() << "Unable to load comics for CBL matching:" << query.lastError().text();
@@ -303,13 +325,15 @@ std::optional<QList<CblLibraryComic>> CblMatcher::loadLibraryComics(QSqlDatabase
     while (query.next()) {
         CblLibraryComic comic;
         comic.id = ComicInfoId(query.value(0).toULongLong());
-        comic.hasFile = query.value(1).toBool();
+        comic.hasFile = !query.value(1).isNull();
+        comic.path = query.value(1).toString();
         comic.series = query.value(2).toString();
         comic.number = query.value(3).toString();
         comic.volume = query.value(4).toString();
         comic.date = query.value(5).toString();
         comic.format = query.value(6).toString();
         comic.comicVineId = query.value(7).toString();
+        comic.hash = query.value(8).toString();
         comics.append(comic);
     }
     return comics;
@@ -319,7 +343,7 @@ std::optional<QList<CblLibraryPlaceholder>> CblMatcher::loadLibraryPlaceholders(
 {
     QSqlQuery query(db);
     query.setForwardOnly(true);
-    if (!query.exec("SELECT p.id, p.series, p.number, p.volume, p.date, p.format, p.comicVineID "
+    if (!query.exec("SELECT p.id, p.series, p.number, p.volume, p.date, p.format, p.comicVineID, p.coverKey "
                     "FROM placeholder p "
                     "WHERE COALESCE(p.series, '') <> '' OR COALESCE(p.comicVineID, '') <> ''")) {
         QLOG_ERROR() << "Unable to load placeholders for CBL matching:" << query.lastError().text();
@@ -336,7 +360,37 @@ std::optional<QList<CblLibraryPlaceholder>> CblMatcher::loadLibraryPlaceholders(
         placeholder.date = query.value(4).toString();
         placeholder.format = query.value(5).toString();
         placeholder.comicVineId = query.value(6).toString();
+        placeholder.coverKey = query.value(7).toString();
         placeholders.append(placeholder);
     }
     return placeholders;
+}
+
+QString cblComicVineIssueId(const CblBook &book)
+{
+    for (const auto &ids : book.databases) {
+        if (isComicVine(ids) && !ids.issueId.isEmpty())
+            return ids.issueId;
+    }
+    return { };
+}
+
+int cblBookYear(const CblBook &book)
+{
+    return bookYear(book);
+}
+
+int cblYearOfDate(const QString &date)
+{
+    return yearOfDate(date);
+}
+
+QString cblEffectiveVolume(const CblLibraryMetadata &metadata)
+{
+    return effectiveVolume(metadata);
+}
+
+bool cblSameNumber(const QString &a, const QString &b)
+{
+    return number(a) == number(b);
 }

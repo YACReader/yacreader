@@ -329,7 +329,7 @@ void LibraryWindow::doLayout()
     foldersTitle->addAction(actions.expandAllNodesAction);
     foldersTitle->addAction(actions.colapseAllNodesAction);
 
-    readingListsTitle->addAction(actions.addReadingListAction);
+    readingListsTitle->addAction(actions.newListMenuAction);
     // readingListsTitle->addSepartor();
     readingListsTitle->addAction(actions.addLabelAction);
     // readingListsTitle->addSepartor();
@@ -503,7 +503,8 @@ void LibraryWindow::setupCoordinators()
                     return QModelIndex();
                 const auto selectedLists = listsView->selectionModel()->selectedIndexes();
                 return selectedLists.isEmpty() ? QModelIndex() : listsModelProxy->mapToSource(selectedLists.constFirst());
-            });
+            },
+            [this] { return currentPath(); });
     connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::currentListReselectionRequested, navigationController, &YACReaderNavigationController::reselectCurrentList);
     folderManagementCoordinator = new FolderManagementCoordinator(
             foldersModel,
