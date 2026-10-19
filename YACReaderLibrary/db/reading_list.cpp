@@ -1,41 +1,99 @@
 #include "reading_list.h"
 
-ReadingList::ReadingList(const QString &name, qulonglong id, int ordering)
-    : name(name), id(id), ordering(ordering)
+#include "table_projection.h"
+
+#include <QSqlQuery>
+#include <QSqlRecord>
+
+const QStringList &ReadingList::columns()
 {
+    static const QStringList columns = { "parentId", "ordering", "name", "finished", "completed" };
+    return columns;
 }
 
-qulonglong ReadingList::getId() const
+namespace {
+
+// `value(k)` is column k of {id} + ReadingList::columns()
+template<typename Value>
+ReadingList readReadingList(const Value &value)
 {
-    return id;
+    ReadingList list;
+    list.id = ReadingListId(value(0).toULongLong());
+    const auto parentId = value(1);
+    if (!parentId.isNull()) {
+        list.parentId = ReadingListId(parentId.toULongLong());
+    }
+    list.ordering = value(2).toInt();
+    list.name = value(3).toString();
+    list.finished = value(4).toBool();
+    list.completed = value(5).toBool();
+    return list;
 }
 
-QString ReadingList::getName() const
+// `value(k)` is column k of {id} + Label::columns()
+template<typename Value>
+Label readLabel(const Value &value)
 {
-    return name;
+    Label label;
+    label.id = LabelId(value(0).toULongLong());
+    label.name = value(1).toString();
+    label.color = value(2).toString();
+    label.ordering = value(3).toInt();
+    return label;
 }
 
-int ReadingList::getOrdering() const
-{
-    return ordering;
 }
 
-Label::Label(const QString &name, qulonglong id, YACReader::LabelColors colorid)
-    : name(name), id(id), colorid(colorid)
+ReadingList ReadingList::fromRecord(const QSqlRecord &record, const QString &alias)
 {
+    const auto indexes = columnIndexes(record, alias);
+    return readReadingList([&](int column) { return record.value(indexes.at(column)); });
 }
 
-YACReader::LabelColors Label::getColorID() const
+QList<int> ReadingList::columnIndexes(const QSqlRecord &record, const QString &alias)
 {
-    return colorid;
+    return TableProjection::columnIndexes(record, alias, columns());
 }
 
-QString Label::getName() const
+ReadingList ReadingList::fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes)
 {
-    return name;
+    return readReadingList([&](int column) { return query.value(columnIndexes.at(column)); });
 }
 
-qulonglong Label::getId() const
+void ReadingList::bindTo(QSqlQuery &query) const
 {
-    return id;
+    query.bindValue(":parentId", parentId ? QVariant(parentId->value()) : QVariant());
+    query.bindValue(":ordering", ordering);
+    query.bindValue(":name", name);
+    query.bindValue(":finished", finished);
+    query.bindValue(":completed", completed);
+}
+
+const QStringList &Label::columns()
+{
+    static const QStringList columns = { "name", "color", "ordering" };
+    return columns;
+}
+
+Label Label::fromRecord(const QSqlRecord &record, const QString &alias)
+{
+    const auto indexes = columnIndexes(record, alias);
+    return readLabel([&](int column) { return record.value(indexes.at(column)); });
+}
+
+QList<int> Label::columnIndexes(const QSqlRecord &record, const QString &alias)
+{
+    return TableProjection::columnIndexes(record, alias, columns());
+}
+
+Label Label::fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes)
+{
+    return readLabel([&](int column) { return query.value(columnIndexes.at(column)); });
+}
+
+void Label::bindTo(QSqlQuery &query) const
+{
+    query.bindValue(":name", name);
+    query.bindValue(":color", color);
+    query.bindValue(":ordering", ordering);
 }

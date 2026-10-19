@@ -13,6 +13,7 @@ class QSplitter;
 class ComicFlowWidget;
 class QToolBar;
 class ComicModel;
+class ComicInfoObject;
 class QQuickView;
 
 class ComicsView : public QWidget
@@ -78,7 +79,7 @@ protected:
     QQuickView *view;
     QWidget *container;
 
-    ComicDB *comicDB;
+    ComicInfoObject *comicInfo;
 
 private:
 };

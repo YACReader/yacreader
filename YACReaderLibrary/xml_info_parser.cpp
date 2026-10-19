@@ -51,20 +51,26 @@ bool parseFieldNumber(QXmlStreamReader &reader, const QString &xmlName, QVariant
     return false;
 }
 
-void consolidateDate(ComicInfo &info)
+struct XmlDate {
+    QVariant day;
+    QVariant month;
+    QVariant year;
+};
+
+void consolidateDate(const XmlDate &date, ComicInfo &info)
 {
-    if (!info.year.isValid() && !info.month.isValid() && !info.day.isValid()) {
+    if (!date.year.isValid() && !date.month.isValid() && !date.day.isValid()) {
         return;
     }
 
-    auto year = info.year.isNull() ? 0 : info.year.toInt();
-    auto month = info.month.isNull() ? 1 : info.month.toInt();
-    auto day = info.day.isNull() ? 1 : info.day.toInt();
+    auto year = date.year.isNull() ? 0 : date.year.toInt();
+    auto month = date.month.isNull() ? 1 : date.month.toInt();
+    auto day = date.day.isNull() ? 1 : date.day.toInt();
 
     info.date = QString("%1/%2/%3").arg(day).arg(month).arg(year);
 }
 
-bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
+bool tryValues(QXmlStreamReader &reader, ComicInfo &info, XmlDate &date)
 {
     std::map<QString, QVariant &> stringValues = {
         { "Number", info.number },
@@ -91,9 +97,9 @@ bool tryValues(QXmlStreamReader &reader, ComicInfo &info)
     std::map<QString, QVariant &> forcedNumbers = {
         { "Count", info.count },
         { "AlternateCount", info.alternateCount },
-        { "Day", info.day },
-        { "Month", info.month },
-        { "Year", info.year },
+        { "Day", date.day },
+        { "Month", date.month },
+        { "Year", date.year },
     };
 
     std::map<QString, QVariant &> multiValuedStrings = {
@@ -218,9 +224,10 @@ bool YACReader::parseXMLIntoInfo(const QByteArray &xmlRawData, ComicInfo &info)
     QXmlStreamReader reader(xmlRawData);
 
     bool someDataWasParsed = false;
+    XmlDate date;
 
     while (reader.readNextStartElement()) {
-        if (tryValues(reader, info)) {
+        if (tryValues(reader, info, date)) {
             someDataWasParsed = true | someDataWasParsed;
         } else {
             if (reader.name() != QString("ComicInfo")) {
@@ -229,7 +236,7 @@ bool YACReader::parseXMLIntoInfo(const QByteArray &xmlRawData, ComicInfo &info)
         }
     }
 
-    consolidateDate(info);
+    consolidateDate(date, info);
 
     if (reader.error()) {
         return false;

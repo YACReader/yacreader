@@ -377,7 +377,7 @@ qulonglong YACReaderNavigationController::folderIdForIndex(const QModelIndex &fo
 
     auto folderItem = static_cast<FolderItem *>(folderIndex.internalPointer());
     if (folderItem != nullptr)
-        return folderItem->id;
+        return folderItem->folder.id.value();
 
     return FolderModel::RootFolderId;
 }

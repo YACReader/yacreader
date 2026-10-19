@@ -143,7 +143,7 @@ void ComicManagementCoordinator::openComic(const ComicDB &comic, ComicModel::Mod
         return;
     }
 
-    if (!YACReader::openComicInThirdPartyApp(thirdPartyReaderCommand, QDir::cleanPath(libraryPath + comic.path)))
+    if (!YACReader::openComicInThirdPartyApp(thirdPartyReaderCommand, QDir::cleanPath(libraryPath + comic.file.path)))
         QMessageBox::critical(window, tr("Error"), tr("Error opening comic with third party reader."));
 }
 
@@ -263,7 +263,7 @@ void ComicManagementCoordinator::setSelectedComicsUnread()
 void ComicManagementCoordinator::setComicUnread(qulonglong libraryId, const ComicDB &comic)
 {
     auto info = comic.info;
-    info.setRead(false);
+    info.read = false;
     info.currentPage = 1;
     info.hasBeenOpened = false;
     info.lastTimeOpened = QVariant();
@@ -430,7 +430,7 @@ void ComicManagementCoordinator::resetSelectedCustomCovers()
         if (!comic.info.usesExternalCover.toBool())
             continue;
 
-        YACReader::InitialComicInfoExtractor extractor(QDir::cleanPath(libraryPath + comic.path), QString(), 1);
+        YACReader::InitialComicInfoExtractor extractor(QDir::cleanPath(libraryPath + comic.file.path), QString(), 1);
         extractor.extract();
         if (!extractor.hasValidCover())
             continue;
@@ -532,13 +532,13 @@ void ComicManagementCoordinator::deleteComicsFromDisk(const QList<qulonglong> &c
     QList<QString> paths;
     paths.reserve(comics.size());
     for (const auto &comic : std::as_const(comics)) {
-        paths.append(source.libraryPath + comic.path);
-        QLOG_TRACE() << comic.path;
-        QLOG_TRACE() << comic.id;
-        QLOG_TRACE() << comic.parentId;
+        paths.append(source.libraryPath + comic.file.path);
+        QLOG_TRACE() << comic.file.path;
+        QLOG_TRACE() << comic.file.id.value();
+        QLOG_TRACE() << comic.file.folderId.value();
     }
 
-    auto remover = new ComicsRemover(indexList, paths, comics.constFirst().parentId);
+    auto remover = new ComicsRemover(indexList, paths, comics.constFirst().file.folderId.value());
     auto thread = new QThread(this);
     moveAndConnectRemoverToThread(remover, thread);
 

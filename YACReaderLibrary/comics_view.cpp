@@ -4,6 +4,7 @@
 #include "comic.h"
 #include "comic_db.h"
 #include "comic_files_manager.h"
+#include "comic_info_object.h"
 
 #include <QGuiApplication>
 #include <QQmlContext>
@@ -12,11 +13,10 @@
 #include <utility>
 
 ComicsView::ComicsView(QWidget *parent)
-    : QWidget(parent), model(nullptr), comicDB(nullptr)
+    : QWidget(parent), model(nullptr), comicInfo(nullptr)
 {
     qmlRegisterType<ComicModel>("com.yacreader.ComicModel", 1, 0, "ComicModel");
-    qmlRegisterType<ComicDB>("com.yacreader.ComicDB", 1, 0, "ComicDB");
-    qmlRegisterType<ComicInfo>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
+    qmlRegisterType<ComicInfoObject>("com.yacreader.ComicInfo", 1, 0, "ComicInfo");
 
     // QML renders into its own native window. A QQuickWidget would make Qt compose the whole
     // library window through RHI and copy its full backing store on every repaint (QTBUG-120565),
@@ -37,11 +37,10 @@ ComicsView::ComicsView(QWidget *parent)
     container->setFocusPolicy(Qt::StrongFocus);
     view->installEventFilter(this);
 
-    comicDB = new ComicDB();
-    auto comicInfo = &(comicDB->info);
+    comicInfo = new ComicInfoObject();
     QQmlContext *ctxt = view->rootContext();
 
-    ctxt->setContextProperty("comic", comicDB);
+    ctxt->setContextProperty("comic", comicInfo);
     ctxt->setContextProperty("comicInfo", comicInfo);
 
     ctxt->setContextProperty("comic_info_index", 0);
@@ -87,10 +86,10 @@ void ComicsView::updateInfoForIndex(int index)
 {
     QQmlContext *ctxt = view->rootContext();
 
-    // Clear the member before destroying the object. Deleting ComicDB notifies
+    // Clear the member before destroying the object. Deleting it notifies
     // QML and can re-enter this method; an invalid index must also not leave a
     // dangling pointer that is deleted again when the next comic is selected.
-    delete std::exchange(comicDB, nullptr);
+    delete std::exchange(comicInfo, nullptr);
 
     if ((index < 0) || (index >= model->rowCount())) {
         ctxt->setContextProperty("comic", nullptr);
@@ -99,11 +98,10 @@ void ComicsView::updateInfoForIndex(int index)
         return;
     }
 
-    comicDB = new ComicDB(model->getComic(this->model->index(index, 0)));
-    ComicInfo *comicInfo = &(comicDB->info);
-    comicInfo->isFavorite = model->isFavorite(model->index(index, 0));
+    const auto modelIndex = model->index(index, 0);
+    comicInfo = new ComicInfoObject(model->getComic(modelIndex), model->isFavorite(modelIndex));
 
-    ctxt->setContextProperty("comic", comicDB);
+    ctxt->setContextProperty("comic", comicInfo);
     ctxt->setContextProperty("comicInfo", comicInfo);
 
     ctxt->setContextProperty("comic_info_index", index);

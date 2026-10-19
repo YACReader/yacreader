@@ -210,18 +210,29 @@ void YACReaderClientConnectionWorker::run()
         }*/
 }
 
+static ComicDB loadRequestedComic(quint64 libraryId, qulonglong id)
+{
+    if (auto comic = DBHelper::getComicInfo(libraryId, id)) {
+        return *comic;
+    }
+
+    ComicDB missing;
+    missing.file.id = ComicId(id);
+    return missing;
+}
+
 void YACReaderClientConnectionWorker::getComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings)
 {
     QMutexLocker locker(&dbMutex);
-    comic = DBHelper::getComicInfo(libraryId, comic.id);
-    siblings = DBHelper::getSiblings(libraryId, comic.parentId);
+    comic = loadRequestedComic(libraryId, comic.file.id.value());
+    siblings = DBHelper::getSiblings(libraryId, comic.file.folderId.value());
 }
 
 void YACReaderClientConnectionWorker::getComicInfoFromReadingList(quint64 libraryId, unsigned long long readingListId, ComicDB &comic, QList<ComicDB> &siblings)
 {
     QMutexLocker locker(&dbMutex);
-    comic = DBHelper::getComicInfo(libraryId, comic.id);
-    siblings = DBHelper::getReadingListFullContent(libraryId, readingListId, true);
+    comic = loadRequestedComic(libraryId, comic.file.id.value());
+    siblings = DBHelper::getReadingListFullContent(libraryId, readingListId);
 }
 
 void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB &comic)
@@ -235,9 +246,7 @@ void YACReaderClientConnectionWorker::updateComic(quint64 libraryId, ComicDB &co
 {
     QMutexLocker locker(&dbMutex);
     DBHelper::update(libraryId, comic.info);
-    ComicInfo nextcomicinfo;
-    nextcomicinfo.id = nextComicId;
-    DBHelper::setComicAsReading(libraryId, nextcomicinfo);
+    DBHelper::setComicAsReading(libraryId, ComicId(nextComicId));
 
     emit comicUpdated(libraryId, comic);
 }

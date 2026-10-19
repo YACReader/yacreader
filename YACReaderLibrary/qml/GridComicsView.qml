@@ -8,7 +8,6 @@ import QtQuick.Effects
 import com.yacreader.ComicModel 1.0
 
 import com.yacreader.ComicInfo 1.0
-import com.yacreader.ComicDB 1.0
 import com.yacreader.GridContentModel 1.0
 
 import QtQuick.Controls.Basic

@@ -1,68 +1,56 @@
 #ifndef READING_LIST_ITEM_H
 #define READING_LIST_ITEM_H
 
+#include "reading_list.h"
 #include "reading_list_model.h"
 
 #include <QIcon>
-#include <QVariant>
-// TODO add propper constructors, using QList<QVariant> is not safe
+#include <QString>
+
+// Favorites (default_reading_list), Reading, and Recent: not rows of a table type
+struct SpecialList {
+    qulonglong id;
+    QString name;
+};
 
 class ListItem
 {
 public:
-    ListItem(const QList<QVariant> &data);
-    int columnCount();
     virtual QIcon getIcon() const = 0;
-    QVariant data(int column) const;
+    virtual QString name() const = 0;
     virtual qulonglong getId() const;
-    QList<QVariant> itemData;
     virtual ~ListItem() { }
 };
-
-//------------------------------------------------------
 
 class SpecialListItem : public ListItem
 {
 public:
-    SpecialListItem(const QList<QVariant> &data);
+    explicit SpecialListItem(const SpecialList &list);
     QIcon getIcon() const override;
+    QString name() const override;
     qulonglong getId() const override;
     ReadingListModel::TypeSpecialList getType() const;
 
-private:
-    enum DataIndexes {
-        Name,
-        Id
-    };
+    SpecialList list;
 };
-
-//------------------------------------------------------
 
 class LabelItem : public ListItem
 {
 public:
-    LabelItem(const QList<QVariant> &data);
+    explicit LabelItem(const Label &label);
     QIcon getIcon() const override;
     YACReader::LabelColors colorid() const;
-    QString name() const;
+    QString name() const override;
     void setName(const QString &name);
     qulonglong getId() const override;
 
-private:
-    enum DataIndexes {
-        Name,
-        Color,
-        Id,
-        Ordering
-    };
+    Label label;
 };
-
-//------------------------------------------------------
 
 class ReadingListItem : public ListItem
 {
 public:
-    ReadingListItem(const QList<QVariant> &data, ReadingListItem *parent = nullptr);
+    explicit ReadingListItem(const ReadingList &list, ReadingListItem *parent = nullptr);
     QIcon getIcon() const override;
     ReadingListItem *parent;
     int childCount() const;
@@ -72,31 +60,23 @@ public:
     void appendChild(ReadingListItem *item, int pos);
     void removeChild(ReadingListItem *item);
     qulonglong getId() const override;
-    QString name() const;
+    QString name() const override;
     void setName(const QString &name);
     int getOrdering() const;
     void setOrdering(const int ordering);
     QList<ReadingListItem *> children();
 
+    ReadingList list;
+
 private:
     QList<ReadingListItem *> childItems;
-
-    enum DataIndexes {
-        Name,
-        Id,
-        Finished,
-        Completed,
-        Ordering
-    };
 };
-
-//------------------------------------------------------
 
 class ReadingListSeparatorItem : public ListItem
 {
 public:
-    ReadingListSeparatorItem();
     QIcon getIcon() const override;
+    QString name() const override;
 };
 
 #endif // READING_LIST_ITEM_H

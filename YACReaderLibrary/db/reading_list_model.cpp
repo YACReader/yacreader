@@ -5,6 +5,7 @@
 #include "db_helper.h"
 #include "qnaturalsorting.h"
 #include "reading_list_item.h"
+#include "table_projection.h"
 #include "yacreader_global_gui.h"
 
 #include <QSqlRecord>
@@ -94,7 +95,7 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    return item->data(index.column());
+    return index.column() == 0 ? QVariant(item->name()) : QVariant();
 }
 
 Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
@@ -115,7 +116,7 @@ Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
 QVariant ReadingListModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
-        return rootItem->data(section);
+        return section == 0 ? QVariant(rootItem->name()) : QVariant();
 
     return QVariant();
 }
@@ -390,7 +391,7 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         qulonglong id = DBHelper::insertLabel(name, color, db);
 
-        int newPos = addLabelIntoList(new LabelItem(QList<QVariant>() << name << YACReader::colorToName(color) << id << color));
+        int newPos = addLabelIntoList(new LabelItem(::Label { LabelId(id), name, YACReader::colorToName(color), int(color) }));
         beginInsertRows(QModelIndex(), specialLists.count() + 1 + newPos + 1, specialLists.count() + 1 + newPos + 1);
 
         endInsertRows();
@@ -408,12 +409,10 @@ void ReadingListModel::addReadingList(const QString &name)
 
         qulonglong id = DBHelper::insertReadingList(name, db);
         ReadingListItem *newItem;
-        rootItem->appendChild(newItem = new ReadingListItem(QList<QVariant>()
-                                                            << name
-                                                            << id
-                                                            << false
-                                                            << true
-                                                            << 0));
+        ::ReadingList list;
+        list.id = ReadingListId(id);
+        list.name = name;
+        rootItem->appendChild(newItem = new ReadingListItem(list));
 
         items.insert(id, newItem);
 
@@ -435,12 +434,12 @@ void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &
         qulonglong id = DBHelper::insertReadingSubList(name, mi.data(IDRole).toULongLong(), readingListParent->childCount(), db);
         ReadingListItem *newItem;
 
-        readingListParent->appendChild(newItem = new ReadingListItem(QList<QVariant>()
-                                                                     << name
-                                                                     << id
-                                                                     << false
-                                                                     << true
-                                                                     << readingListParent->childCount()));
+        ::ReadingList list;
+        list.id = ReadingListId(id);
+        list.parentId = ReadingListId(readingListParent->getId());
+        list.name = name;
+        list.ordering = readingListParent->childCount();
+        readingListParent->appendChild(newItem = new ReadingListItem(list));
 
         items.insert(id, newItem);
         endInsertRows();
@@ -576,28 +575,15 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
 {
     items.insert(parent->getId(), parent);
 
-    QSqlRecord record = sqlquery.record();
-
-    int name = record.indexOf("name");
-    int id = record.indexOf("id");
-    int finished = record.indexOf("finished");
-    int completed = record.indexOf("completed");
-    int ordering = record.indexOf("ordering");
-    int parentId = record.indexOf("parentId");
-
+    const auto indexes = ::ReadingList::columnIndexes(sqlquery.record(), "rl");
     while (sqlquery.next()) {
-        ReadingListItem *rli = new ReadingListItem(QList<QVariant>()
-                                                   << sqlquery.value(name)
-                                                   << sqlquery.value(id)
-                                                   << sqlquery.value(finished)
-                                                   << sqlquery.value(completed)
-                                                   << sqlquery.value(ordering));
+        ReadingListItem *rli = new ReadingListItem(::ReadingList::fromQuery(sqlquery, indexes));
 
         ReadingListItem *currentParent;
-        if (sqlquery.value(parentId).isNull())
+        if (!rli->list.parentId)
             currentParent = rootItem;
         else
-            currentParent = items.value(sqlquery.value(parentId).toULongLong());
+            currentParent = items.value(rli->list.parentId->value());
 
         currentParent->appendChild(rli);
 
@@ -617,34 +603,22 @@ QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase &db)
     int id = record.indexOf("id");
 
     while (selectQuery.next()) {
-        list << new SpecialListItem(QList<QVariant>()
-                                    << selectQuery.value(name)
-                                    << selectQuery.value(id));
+        list << new SpecialListItem(::SpecialList { selectQuery.value(id).toULongLong(), selectQuery.value(name).toString() });
     }
 
-    list.insert(1, new SpecialListItem(QList<QVariant>() << "Reading" << 0));
-    list.insert(2, new SpecialListItem(QList<QVariant>() << "Recent" << 2));
+    list.insert(1, new SpecialListItem(::SpecialList { 0, "Reading" }));
+    list.insert(2, new SpecialListItem(::SpecialList { 2, "Recent" }));
 
     return list;
 }
 
 void ReadingListModel::setupLabels(QSqlDatabase &db)
 {
-    QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name", db);
+    QSqlQuery selectQuery("SELECT " + TableProjection::selectList("l", ::Label::columns()) + " FROM label l ORDER BY l.ordering, l.name", db);
 
-    QSqlRecord record = selectQuery.record();
-
-    int name = record.indexOf("name");
-    int color = record.indexOf("color");
-    int id = record.indexOf("id");
-    int ordering = record.indexOf("ordering");
-
+    const auto indexes = ::Label::columnIndexes(selectQuery.record(), "l");
     while (selectQuery.next()) {
-        addLabelIntoList(new LabelItem(QList<QVariant>()
-                                       << selectQuery.value(name)
-                                       << selectQuery.value(color)
-                                       << selectQuery.value(id)
-                                       << selectQuery.value(ordering)));
+        addLabelIntoList(new LabelItem(::Label::fromQuery(selectQuery, indexes)));
     }
 
     // TEST
@@ -666,9 +640,13 @@ void ReadingListModel::setupLabels(QSqlDatabase &db)
 void ReadingListModel::setupReadingLists(QSqlDatabase &db)
 {
     // setup root item
-    rootItem = new ReadingListItem(QList<QVariant>() << "ROOT" << 0 << true << false);
+    ::ReadingList root;
+    root.name = "ROOT";
+    root.finished = true;
+    root.completed = false;
+    rootItem = new ReadingListItem(root);
 
-    QSqlQuery selectQuery("select * from reading_list order by parentId IS NULL DESC", db);
+    QSqlQuery selectQuery("SELECT " + TableProjection::selectList("rl", ::ReadingList::columns()) + " FROM reading_list rl ORDER BY rl.parentId IS NULL DESC", db);
 
     // setup reading lists
     setupReadingListsData(selectQuery, rootItem);

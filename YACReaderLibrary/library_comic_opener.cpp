@@ -25,7 +25,7 @@ bool YACReader::openComic(const ComicDB &comic,
         QString yacreaderPath = QDir::cleanPath(ypath + "/YACReader.app");
         if (QFileInfo(yacreaderPath).exists()) {
             yacreaderFound = true;
-            QStringList parameters { "-n", yacreaderPath, "--args", path, QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId), labelParam };
+            QStringList parameters { "-n", yacreaderPath, "--args", path, QString("--comicId=%1").arg(comic.file.id.value()), QString("--libraryId=%1").arg(libraryId), labelParam };
             QProcess::startDetached("open", parameters);
             break;
         }
@@ -34,12 +34,12 @@ bool YACReader::openComic(const ComicDB &comic,
 
 #ifdef Q_OS_WIN
     QString executablePath = QDir::cleanPath(QCoreApplication::applicationDirPath() + "/YACReader.exe");
-    QStringList parameters { path, QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId), labelParam };
+    QStringList parameters { path, QString("--comicId=%1").arg(comic.file.id.value()), QString("--libraryId=%1").arg(libraryId), labelParam };
     yacreaderFound = QProcess::startDetached(executablePath, parameters, QCoreApplication::applicationDirPath());
 #endif
 
 #if defined Q_OS_UNIX && !defined Q_OS_MACOS
-    QStringList parameters { path, QString("--comicId=%1").arg(comic.id), QString("--libraryId=%1").arg(libraryId), labelParam };
+    QStringList parameters { path, QString("--comicId=%1").arg(comic.file.id.value()), QString("--libraryId=%1").arg(libraryId), labelParam };
     yacreaderFound = QProcess::startDetached(QStringLiteral("YACReader"), parameters);
 #endif
 

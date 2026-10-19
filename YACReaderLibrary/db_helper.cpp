@@ -3,10 +3,13 @@
 #include "QsLog.h"
 #include "comic_db.h"
 #include "data_base_management.h"
+#include "descriptive_comic_metadata.h"
 #include "folder.h"
-#include "library_item.h"
+#include "library_item_types.h"
+#include "overloaded.h"
 #include "qnaturalsorting.h"
 #include "reading_list.h"
+#include "table_projection.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 
@@ -37,11 +40,11 @@ YACReaderLibraries DBHelper::getLibraries()
     return libraries;
 }
 
-QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId)
+QList<Folder> DBHelper::getFolderSubfoldersFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QString connectionName = "";
-    QList<LibraryItem *> list;
+    QList<Folder> list;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
         list = DBHelper::getFoldersFromParent(folderId, db, false);
@@ -52,30 +55,27 @@ QList<LibraryItem *> DBHelper::getFolderSubfoldersFromLibrary(qulonglong library
     return list;
 }
 
-QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId)
+QList<ComicDB> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId)
 {
     return DBHelper::getFolderComicsFromLibrary(libraryId, folderId, false);
 }
 
-QList<LibraryItem *> DBHelper::getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId)
+QList<ComicDB> DBHelper::getFolderComicsFromLibraryForReading(qulonglong libraryId, qulonglong folderId)
 {
     auto list = DBHelper::getFolderComicsFromLibrary(libraryId, folderId, false);
 
-    std::sort(list.begin(), list.end(), [](LibraryItem *i1, LibraryItem *i2) {
-        auto c1 = static_cast<ComicDB *>(i1);
-        auto c2 = static_cast<ComicDB *>(i2);
-
-        return comicNumberLessThan(c1->info.number, c1->name, c2->info.number, c2->name);
+    std::sort(list.begin(), list.end(), [](const ComicDB &c1, const ComicDB &c2) {
+        return comicNumberLessThan(c1.info.number, c1.file.fileName, c2.info.number, c2.file.fileName);
     });
 
     return list;
 }
 
-QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort)
+QList<ComicDB> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, qulonglong folderId, bool sort)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QString connectionName = "";
-    QList<LibraryItem *> list;
+    QList<ComicDB> list;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
         list = DBHelper::getComicsFromParent(folderId, db, sort);
@@ -86,16 +86,19 @@ QList<LibraryItem *> DBHelper::getFolderComicsFromLibrary(qulonglong libraryId, 
     return list;
 }
 
-ComicDB DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
+std::optional<ComicDB> DBHelper::getComicInfo(qulonglong libraryId, qulonglong id)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QString connectionName = "";
-    ComicDB comic;
+    std::optional<ComicDB> comic;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
         bool found;
-        comic = DBHelper::loadComic(id, db, found);
+        auto loaded = DBHelper::loadComic(id, db, found);
+        if (found) {
+            comic = loaded;
+        }
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -117,54 +120,35 @@ QList<ComicDB> DBHelper::getSiblings(qulonglong libraryId, qulonglong parentId)
     return comics;
 }
 
-Folder DBHelper::getFolder(qulonglong libraryId, qulonglong id)
+std::optional<Folder> DBHelper::getFolder(qulonglong libraryId, qulonglong id)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
 
-    Folder folder;
+    std::optional<Folder> folder;
     QString connectionName = "";
 
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
-        QSqlQuery selectQuery(db); // TODO check
-        selectQuery.prepare("SELECT * FROM folder WHERE id = :id");
-        selectQuery.bindValue(":id", id);
-        selectQuery.exec();
-
-        auto record = selectQuery.record();
-
-        int name = record.indexOf("name");
-        int path = record.indexOf("path");
-        int finished = record.indexOf("finished");
-        int completed = record.indexOf("completed");
-        int id = record.indexOf("id");
-        int parentId = record.indexOf("parentId");
-        int numChildren = record.indexOf("numChildren");
-        int firstChildHash = record.indexOf("firstChildHash");
-        int customImage = record.indexOf("customImage");
-        int type = record.indexOf("type");
-        int added = record.indexOf("added");
-        int updated = record.indexOf("updated");
-
-        if (selectQuery.next()) {
-            folder = Folder(selectQuery.value(id).toULongLong(), selectQuery.value(parentId).toULongLong(), selectQuery.value(name).toString(), selectQuery.value(path).toString());
-
-            folder.finished = selectQuery.value(finished).toBool();
-            folder.completed = selectQuery.value(completed).toBool();
-            if (!selectQuery.value(numChildren).isNull() && selectQuery.value(numChildren).isValid()) {
-                folder.numChildren = selectQuery.value(numChildren).toInt();
-            }
-            folder.firstChildHash = selectQuery.value(firstChildHash).toString();
-            folder.customImage = selectQuery.value(customImage).toString();
-            folder.type = selectQuery.value(type).value<YACReader::FileType>();
-            folder.added = selectQuery.value(added).toLongLong();
-            folder.updated = selectQuery.value(updated).toLongLong();
-        }
+        folder = DBHelper::loadFolder(id, db);
         connectionName = db.connectionName();
     }
 
     QSqlDatabase::removeDatabase(connectionName);
     return folder;
+}
+
+namespace {
+
+QList<ComicDB> comicsFromQuery(QSqlQuery &query)
+{
+    QList<ComicDB> comics;
+    const auto indexes = ComicDB::columnIndexes(query.record(), "c", "ci");
+    while (query.next()) {
+        comics.append(ComicDB::fromQuery(query, indexes));
+    }
+    return comics;
+}
+
 }
 
 QString DBHelper::getLibraryName(int id)
@@ -182,41 +166,15 @@ QList<ComicDB> DBHelper::getLabelComics(qulonglong libraryId, qulonglong labelId
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio,ci.number "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
-                            "WHERE cl.label_id = :parentLabelId "
-                            "ORDER BY cl.ordering");
+        selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
+                                                                         "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                                                                         "INNER JOIN comic_label cl ON (c.id == cl.comic_id) "
+                                                                         "WHERE cl.label_id = :parentLabelId "
+                                                                         "ORDER BY cl.ordering");
         selectQuery.bindValue(":parentLabelId", labelId);
         selectQuery.exec();
 
-        auto record = selectQuery.record();
-        int id = record.indexOf("id");
-        int fileName = record.indexOf("fileName");
-        int title = record.indexOf("title");
-        int currentPage = record.indexOf("currentPage");
-        int numPages = record.indexOf("numPages");
-        int hash = record.indexOf("hash");
-        int read = record.indexOf("read");
-        int coverSizeRatio = record.indexOf("coverSizeRatio");
-        int number = record.indexOf("number");
-
-        while (selectQuery.next()) {
-            ComicDB comic;
-
-            comic.id = selectQuery.value(id).toULongLong();
-            comic.parentId = labelId;
-            comic.name = selectQuery.value(fileName).toString();
-            comic.info.title = selectQuery.value(title).toString();
-            comic.info.currentPage = selectQuery.value(currentPage).toInt();
-            comic.info.numPages = selectQuery.value(numPages).toInt();
-            comic.info.hash = selectQuery.value(hash).toString();
-            comic.info.read = selectQuery.value(read).toBool();
-            comic.info.coverSizeRatio = selectQuery.value(coverSizeRatio).toFloat();
-            comic.info.number = selectQuery.value(number);
-
-            list.append(comic);
-        }
+        list = comicsFromQuery(selectQuery);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -235,41 +193,15 @@ QList<ComicDB> DBHelper::getFavorites(qulonglong libraryId)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT c.id,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio,ci.number "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
-                            "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
-                            "ORDER BY cdrl.ordering");
+        selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
+                                                                         "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                                                                         "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
+                                                                         "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
+                                                                         "ORDER BY cdrl.ordering");
         selectQuery.bindValue(":parentDefaultListId", FAV_ID);
         selectQuery.exec();
 
-        auto record = selectQuery.record();
-        int id = record.indexOf("id");
-        int fileName = record.indexOf("fileName");
-        int title = record.indexOf("title");
-        int currentPage = record.indexOf("currentPage");
-        int numPages = record.indexOf("numPages");
-        int hash = record.indexOf("hash");
-        int read = record.indexOf("read");
-        int coverSizeRatio = record.indexOf("coverSizeRatio");
-        int number = record.indexOf("number");
-
-        while (selectQuery.next()) {
-            ComicDB comic;
-
-            comic.id = selectQuery.value(id).toULongLong();
-            comic.parentId = FAV_ID;
-            comic.name = selectQuery.value(fileName).toString();
-            comic.info.title = selectQuery.value(title).toString();
-            comic.info.currentPage = selectQuery.value(currentPage).toInt();
-            comic.info.numPages = selectQuery.value(numPages).toInt();
-            comic.info.hash = selectQuery.value(hash).toString();
-            comic.info.read = selectQuery.value(read).toBool();
-            comic.info.coverSizeRatio = selectQuery.value(coverSizeRatio).toFloat();
-            comic.info.number = selectQuery.value(number);
-
-            list.append(comic);
-        }
+        list = comicsFromQuery(selectQuery);
 
         connectionName = db.connectionName();
     }
@@ -288,41 +220,13 @@ QList<ComicDB> DBHelper::getReading(qulonglong libraryId)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
         QSqlQuery selectQuery(db);
-        selectQuery.prepare("SELECT c.id,c.parentId,c.fileName,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio,ci.number "
-                            "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                            "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
-                            "ORDER BY ci.lastTimeOpened DESC");
+        selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
+                                                                         "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                                                                         "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
+                                                                         "ORDER BY ci.lastTimeOpened DESC");
         selectQuery.exec();
 
-        auto record = selectQuery.record();
-        int id = record.indexOf("id");
-        int parentId = record.indexOf("parentId");
-        int fileName = record.indexOf("fileName");
-        int title = record.indexOf("title");
-        int currentPage = record.indexOf("currentPage");
-        int numPages = record.indexOf("numPages");
-        int hash = record.indexOf("hash");
-        int read = record.indexOf("read");
-        int coverSizeRatio = record.indexOf("coverSizeRatio");
-        int number = record.indexOf("number");
-
-        while (selectQuery.next()) {
-            ComicDB comic;
-
-            // TODO: use QVariant when possible to keep nulls
-            comic.id = selectQuery.value(id).toULongLong();
-            comic.parentId = selectQuery.value(parentId).toULongLong();
-            comic.name = selectQuery.value(fileName).toString();
-            comic.info.title = selectQuery.value(title).toString();
-            comic.info.currentPage = selectQuery.value(currentPage).toInt();
-            comic.info.numPages = selectQuery.value(numPages).toInt();
-            comic.info.hash = selectQuery.value(hash).toString();
-            comic.info.read = selectQuery.value(read).toBool();
-            comic.info.coverSizeRatio = selectQuery.value(coverSizeRatio).toFloat();
-            comic.info.number = selectQuery.value(number);
-
-            list.append(comic);
-        }
+        list = comicsFromQuery(selectQuery);
         connectionName = db.connectionName();
     }
     // TODO ?
@@ -340,24 +244,21 @@ QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
-        QSqlQuery selectQuery("SELECT * from reading_list WHERE parentId IS NULL ORDER BY name DESC", db);
+        QSqlQuery selectQuery("SELECT " + TableProjection::selectList("rl", ReadingList::columns()) +
+                                      " FROM reading_list rl WHERE rl.parentId IS NULL ORDER BY rl.name DESC",
+                              db);
 
         selectQuery.exec();
 
-        QSqlRecord record = selectQuery.record();
-
-        int name = record.indexOf("name");
-        int id = record.indexOf("id");
-        int ordering = record.indexOf("ordering");
-
+        const auto indexes = ReadingList::columnIndexes(selectQuery.record(), "rl");
         while (selectQuery.next()) {
-            ReadingList item(selectQuery.value(name).toString(), selectQuery.value(id).toLongLong(), selectQuery.value(ordering).toInt());
+            const auto item = ReadingList::fromQuery(selectQuery, indexes);
 
             if (list.isEmpty()) {
                 list.append(item);
             } else {
                 int i = 0;
-                while (i < list.length() && naturalSortLessThanCI(list.at(i).getName(), item.getName()))
+                while (i < list.length() && naturalSortLessThanCI(list.at(i).name, item.name))
                     i++;
                 list.insert(i, item);
             }
@@ -370,7 +271,7 @@ QList<ReadingList> DBHelper::getReadingLists(qulonglong libraryId)
     return list;
 }
 
-QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulonglong readingListId, bool getFullComicInfoFields)
+QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulonglong readingListId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QList<ComicDB> list;
@@ -394,63 +295,15 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
         const auto &subfolderIds = ids;
         for (const auto id : subfolderIds) {
             QSqlQuery selectQuery(db);
-
-            QString params;
-            if (getFullComicInfoFields) {
-                params = "*";
-            } else {
-                params = "c.id,c.parentId,c.fileName,c.path,ci.title,ci.currentPage,ci.numPages,ci.hash,ci.read,ci.coverSizeRatio,ci.number";
-            }
-
-            selectQuery.prepare("SELECT " + params + " "
-                                                     "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                                     "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
-                                                     "WHERE crl.reading_list_id = :parentReadingList "
-                                                     "ORDER BY crl.ordering");
+            selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
+                                                                             "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
+                                                                             "INNER JOIN comic_reading_list crl ON (c.id == crl.comic_id) "
+                                                                             "WHERE crl.reading_list_id = :parentReadingList "
+                                                                             "ORDER BY crl.ordering");
             selectQuery.bindValue(":parentReadingList", id);
             selectQuery.exec();
 
-            auto record = selectQuery.record();
-
-            int idComicIndex = record.indexOf("id");
-            int parentIdIndex = record.indexOf("parentId");
-            int fileName = record.indexOf("fileName");
-            int path = record.indexOf("path");
-            int title = record.indexOf("title");
-            int currentPage = record.indexOf("currentPage");
-            int numPages = record.indexOf("numPages");
-            int hash = record.indexOf("hash");
-            int read = record.indexOf("read");
-            int coverSizeRatio = record.indexOf("coverSizeRatio");
-            int number = record.indexOf("number");
-
-            while (selectQuery.next()) {
-                ComicDB comic;
-
-                if (getFullComicInfoFields) {
-                    comic.id = selectQuery.value(idComicIndex).toULongLong();
-                    comic.parentId = selectQuery.value(parentIdIndex).toULongLong();
-                    comic.name = selectQuery.value(fileName).toString();
-                    comic.path = selectQuery.value(path).toString();
-
-                    comic.info = getComicInfoFromQuery(selectQuery, "comicInfoId");
-                } else {
-                    comic.id = selectQuery.value(idComicIndex).toULongLong();
-                    comic.parentId = selectQuery.value(parentIdIndex).toULongLong();
-                    comic.name = selectQuery.value(fileName).toString();
-                    comic.path = selectQuery.value(path).toString();
-
-                    comic.info.title = selectQuery.value(title).toString();
-                    comic.info.currentPage = selectQuery.value(currentPage).toInt();
-                    comic.info.numPages = selectQuery.value(numPages).toInt();
-                    comic.info.hash = selectQuery.value(hash).toString();
-                    comic.info.read = selectQuery.value(read).toBool();
-                    comic.info.coverSizeRatio = selectQuery.value(coverSizeRatio).toFloat();
-                    comic.info.number = selectQuery.value(number);
-                }
-
-                list.append(comic);
-            }
+            list.append(comicsFromQuery(selectQuery));
         }
         connectionName = db.connectionName();
     }
@@ -463,25 +316,26 @@ QList<ComicDB> DBHelper::getReadingListFullContent(qulonglong libraryId, qulongl
 
 // objects management
 // deletes
-void DBHelper::removeFromDB(LibraryItem *item, QSqlDatabase &db)
+void DBHelper::removeFromDB(DiskItem &item, QSqlDatabase &db)
 {
-    if (item->isDir())
-        DBHelper::removeFromDB(dynamic_cast<Folder *>(item), db);
-    else
-        DBHelper::removeFromDB(dynamic_cast<ComicDB *>(item), db);
+    std::visit(overloaded {
+                       [&db](Folder &folder) { DBHelper::removeFromDB(&folder, db); },
+                       [&db](ComicDB &comic) { DBHelper::removeFromDB(&comic, db); },
+               },
+               item);
 }
 void DBHelper::removeFromDB(Folder *folder, QSqlDatabase &db)
 {
     QSqlQuery query(db);
     query.prepare("DELETE FROM folder WHERE id = :id");
-    query.bindValue(":id", folder->id);
+    query.bindValue(":id", folder->id.value());
     query.exec();
 }
 void DBHelper::removeFromDB(ComicDB *comic, QSqlDatabase &db)
 {
     QSqlQuery query(db);
     query.prepare("DELETE FROM comic WHERE id = :id");
-    query.bindValue(":id", comic->id);
+    query.bindValue(":id", comic->file.id.value());
     query.exec();
 }
 
@@ -510,7 +364,7 @@ void DBHelper::deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlD
     QSqlQuery query(db);
     query.prepare("DELETE FROM comic_default_reading_list WHERE comic_id = :comic_id AND default_reading_list_id = 1");
     for (const auto &comic : comicsList) {
-        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":comic_id", comic.file.id.value());
         query.exec();
     }
 
@@ -542,11 +396,11 @@ void DBHelper::deleteComicsFromLabel(const QList<ComicDB> &comicsList, qulonglon
     QSqlQuery query(db);
     query.prepare("DELETE FROM comic_label WHERE comic_id = :comic_id AND label_id = :label_id");
     for (const auto &comic : comicsList) {
-        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":comic_id", comic.file.id.value());
         query.bindValue(":label_id", labelId);
         query.exec();
 
-        QLOG_DEBUG() << "cid = " << comic.id << "lid = " << labelId;
+        QLOG_DEBUG() << "cid = " << comic.file.id.value() << "lid = " << labelId;
         QLOG_DEBUG() << query.lastError().databaseText() << "-" << query.lastError().driverText();
     }
 
@@ -562,7 +416,7 @@ void DBHelper::deleteComicsFromReadingList(const QList<ComicDB> &comicsList, qul
     QSqlQuery query(db);
     query.prepare("DELETE FROM comic_reading_list WHERE comic_id = :comic_id AND reading_list_id = :reading_list_id");
     for (const auto &comic : comicsList) {
-        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":comic_id", comic.file.id.value());
         query.bindValue(":reading_list_id", readingListId);
         query.exec();
     }
@@ -596,39 +450,9 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
         return;
 
     QSqlQuery updateComicInfo(db);
-    updateComicInfo.prepare("UPDATE comic_info SET "
-                            "title = :title,"
-
+    updateComicInfo.prepare("UPDATE comic_info SET " + DescriptiveComicMetadata::assignments().join(",") + "," +
                             "coverPage = :coverPage,"
                             "numPages = :numPages,"
-
-                            "number = :number,"
-                            "isBis = :isBis,"
-                            "count = :count,"
-
-                            "volume = :volume,"
-                            "storyArc = :storyArc,"
-                            "arcNumber = :arcNumber,"
-                            "arcCount = :arcCount,"
-
-                            "genere = :genere,"
-
-                            "writer = :writer,"
-                            "penciller = :penciller,"
-                            "inker = :inker,"
-                            "colorist = :colorist,"
-                            "letterer = :letterer,"
-                            "coverArtist = :coverArtist,"
-
-                            "date = :date,"
-                            "publisher = :publisher,"
-                            "format = :format,"
-                            "color = :color,"
-                            "ageRating = :ageRating,"
-
-                            "synopsis = :synopsis,"
-                            "characters = :characters,"
-                            "notes = :notes,"
 
                             "read = :read,"
                             "edited = :edited,"
@@ -644,9 +468,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             "gamma = :gamma,"
                             "rating = :rating,"
 
-                            // new 7.1 fields
-                            "comicVineID = :comicVineID,"
-
                             // new 9.5 fields
                             "lastTimeOpened = :lastTimeOpened,"
 
@@ -661,19 +482,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             // new 9.13 fields
                             "added = :added,"
                             "type = :type,"
-                            "editor = :editor,"
-                            "imprint = :imprint,"
-                            "teams = :teams,"
-                            "locations = :locations,"
-                            "series = :series,"
-                            "alternateSeries = :alternateSeries,"
-                            "alternateNumber = :alternateNumber,"
-                            "alternateCount = :alternateCount,"
-                            "languageISO = :languageISO,"
-                            "seriesGroup = :seriesGroup,"
-                            "mainCharacterOrTeam = :mainCharacterOrTeam,"
-                            "review = :review,"
-                            "tags = :tags,"
 
                             // new 9.16 fields
                             "imageFiltersJson = :imageFiltersJson,"
@@ -685,43 +493,15 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
                             //--
                             " WHERE id = :id");
 
-    updateComicInfo.bindValue(":title", comicInfo->title);
+    comicInfo->bindTo(updateComicInfo);
 
     updateComicInfo.bindValue(":coverPage", comicInfo->coverPage);
     updateComicInfo.bindValue(":numPages", comicInfo->numPages);
 
-    updateComicInfo.bindValue(":number", comicInfo->number);
-    updateComicInfo.bindValue(":isBis", comicInfo->isBis);
-    updateComicInfo.bindValue(":count", comicInfo->count);
-
-    updateComicInfo.bindValue(":volume", comicInfo->volume);
-    updateComicInfo.bindValue(":storyArc", comicInfo->storyArc);
-    updateComicInfo.bindValue(":arcNumber", comicInfo->arcNumber);
-    updateComicInfo.bindValue(":arcCount", comicInfo->arcCount);
-
-    updateComicInfo.bindValue(":genere", comicInfo->genere);
-
-    updateComicInfo.bindValue(":writer", comicInfo->writer);
-    updateComicInfo.bindValue(":penciller", comicInfo->penciller);
-    updateComicInfo.bindValue(":inker", comicInfo->inker);
-    updateComicInfo.bindValue(":colorist", comicInfo->colorist);
-    updateComicInfo.bindValue(":letterer", comicInfo->letterer);
-    updateComicInfo.bindValue(":coverArtist", comicInfo->coverArtist);
-
-    updateComicInfo.bindValue(":date", comicInfo->date);
-    updateComicInfo.bindValue(":publisher", comicInfo->publisher);
-    updateComicInfo.bindValue(":format", comicInfo->format);
-    updateComicInfo.bindValue(":color", comicInfo->color);
-    updateComicInfo.bindValue(":ageRating", comicInfo->ageRating);
-
-    updateComicInfo.bindValue(":synopsis", comicInfo->synopsis);
-    updateComicInfo.bindValue(":characters", comicInfo->characters);
-    updateComicInfo.bindValue(":notes", comicInfo->notes);
-
     bool read = comicInfo->read || comicInfo->currentPage == comicInfo->numPages.toInt(); // if current page is the las page, the comic is read(completed)
     comicInfo->read = read;
     updateComicInfo.bindValue(":read", read ? 1 : 0);
-    updateComicInfo.bindValue(":id", comicInfo->id);
+    updateComicInfo.bindValue(":id", comicInfo->id.value());
     updateComicInfo.bindValue(":edited", comicInfo->edited ? 1 : 0);
 
     updateComicInfo.bindValue(":hasBeenOpened", comicInfo->hasBeenOpened ? 1 : 0 || comicInfo->currentPage > 1);
@@ -734,8 +514,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":gamma", comicInfo->gamma);
     updateComicInfo.bindValue(":rating", comicInfo->rating);
 
-    updateComicInfo.bindValue(":comicVineID", comicInfo->comicVineID);
-
     updateComicInfo.bindValue(":lastTimeOpened", comicInfo->lastTimeOpened);
 
     updateComicInfo.bindValue(":coverSizeRatio", comicInfo->coverSizeRatio);
@@ -744,19 +522,6 @@ void DBHelper::update(ComicInfo *comicInfo, QSqlDatabase &db)
     updateComicInfo.bindValue(":added", comicInfo->added);
     auto intType = static_cast<int>(comicInfo->type.value<YACReader::FileType>());
     updateComicInfo.bindValue(":type", intType);
-    updateComicInfo.bindValue(":editor", comicInfo->editor);
-    updateComicInfo.bindValue(":imprint", comicInfo->imprint);
-    updateComicInfo.bindValue(":teams", comicInfo->teams);
-    updateComicInfo.bindValue(":locations", comicInfo->locations);
-    updateComicInfo.bindValue(":series", comicInfo->series);
-    updateComicInfo.bindValue(":alternateSeries", comicInfo->alternateSeries);
-    updateComicInfo.bindValue(":alternateNumber", comicInfo->alternateNumber);
-    updateComicInfo.bindValue(":alternateCount", comicInfo->alternateCount);
-    updateComicInfo.bindValue(":languageISO", comicInfo->languageISO);
-    updateComicInfo.bindValue(":seriesGroup", comicInfo->seriesGroup);
-    updateComicInfo.bindValue(":mainCharacterOrTeam", comicInfo->mainCharacterOrTeam);
-    updateComicInfo.bindValue(":review", comicInfo->review);
-    updateComicInfo.bindValue(":tags", comicInfo->tags);
 
     updateComicInfo.bindValue(":imageFiltersJson", comicInfo->imageFiltersJson);
     updateComicInfo.bindValue(":lastTimeImageFiltersSet", comicInfo->lastTimeImageFiltersSet);
@@ -779,7 +544,7 @@ void DBHelper::updateAdded(ComicInfo *comicInfo, QSqlDatabase &db)
                             " WHERE id = :id ");
 
     updateComicInfo.bindValue(":added", comicInfo->added);
-    updateComicInfo.bindValue(":id", comicInfo->id);
+    updateComicInfo.bindValue(":id", comicInfo->id.value());
     updateComicInfo.exec();
 }
 
@@ -787,71 +552,48 @@ void DBHelper::update(const Folder &folder, QSqlDatabase &db)
 {
     QSqlQuery updateFolderInfo(db);
 
-    updateFolderInfo.prepare("UPDATE folder SET "
-                             "parentId = :parentId, "
-                             "name = :name, "
-                             "path = :path, "
-                             "finished = :finished, "
-                             "completed = :completed, "
-                             "numChildren = :numChildren, "
-                             "firstChildHash = :firstChildHash, "
-                             "customImage = :customImage, "
-                             "type = :type, "
-                             "added = :added, "
-                             "updated = :updated "
-                             "WHERE id = :id");
+    updateFolderInfo.prepare("UPDATE folder SET " + TableProjection::assignments(Folder::columns()) + " WHERE id = :id");
 
-    updateFolderInfo.bindValue(":parentId", folder.parentId);
-    updateFolderInfo.bindValue(":name", folder.name);
-    updateFolderInfo.bindValue(":path", folder.path);
-    updateFolderInfo.bindValue(":finished", folder.finished ? 1 : 0);
-    updateFolderInfo.bindValue(":completed", folder.completed ? 1 : 0);
-    updateFolderInfo.bindValue(":numChildren", folder.numChildren);
-    updateFolderInfo.bindValue(":firstChildHash", folder.firstChildHash);
-    updateFolderInfo.bindValue(":customImage", folder.customImage);
-    updateFolderInfo.bindValue(":type", static_cast<int>(folder.type));
-    updateFolderInfo.bindValue(":added", folder.added);
-    updateFolderInfo.bindValue(":updated", folder.updated);
-    updateFolderInfo.bindValue(":id", folder.id);
+    folder.bindTo(updateFolderInfo);
+    updateFolderInfo.bindValue(":id", folder.id.value());
 
     updateFolderInfo.exec();
 }
 
 void DBHelper::propagateFolderUpdatesToParent(const Folder &folder, QSqlDatabase &db)
 {
-    auto currentParentId = folder.parentId;
-    auto currentId = folder.id;
+    auto currentParentId = folder.parentId.value();
+    auto currentId = folder.id.value();
     while (currentParentId != 1 && currentParentId != 0) { // currentParentId is 0 if `folder` is the root folder
-        auto f = loadFolder(currentParentId, db);
-        currentParentId = f.parentId;
-        currentId = f.id;
+        const auto f = loadFolder(currentParentId, db);
+        currentId = currentParentId;
+        currentParentId = f ? f->parentId.value() : 0;
     }
 
-    if (currentId != folder.id) {
+    if (currentId != folder.id.value()) {
         updateChildrenInfo(currentId, db);
     }
 }
 
 Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
 {
-    auto folder = loadFolder(folderId, db);
-    QList<LibraryItem *> subfolders = DBHelper::getFoldersFromParent(folderId, db, true);
-    QList<LibraryItem *> comics = DBHelper::getComicsFromParent(folderId, db, true);
+    auto folder = loadFolder(folderId, db).value_or(Folder());
+    folder.id = FolderId(folderId);
+    const auto subfolders = DBHelper::getFoldersFromParent(folderId, db, true);
+    const auto comics = DBHelper::getComicsFromParent(folderId, db, true);
 
-    QList<LibraryItem *> updatedSubfolders;
-    for (auto sf : subfolders) {
-        updatedSubfolders.append(new Folder(updateChildrenInfo(static_cast<Folder *>(sf)->id, db)));
+    QList<Folder> updatedSubfolders;
+    for (const auto &sf : subfolders) {
+        updatedSubfolders.append(updateChildrenInfo(sf.id.value(), db));
     }
 
     QString coverHash = "";
 
     if (!comics.isEmpty()) {
-        auto c = static_cast<ComicDB *>(comics[0]);
-        coverHash = c->info.hash;
+        coverHash = comics.first().info.hash;
     } else {
-        for (auto item : updatedSubfolders) {
-            auto f = static_cast<Folder *>(item);
-            auto firstChildHash = f->firstChildHash;
+        for (const auto &f : updatedSubfolders) {
+            auto firstChildHash = f.firstChildHash;
             if (!firstChildHash.isEmpty()) {
                 coverHash = firstChildHash;
                 break;
@@ -876,10 +618,6 @@ Folder DBHelper::updateChildrenInfo(qulonglong folderId, QSqlDatabase &db)
     updateFolderInfo.bindValue(":id", folderId);
     updateFolderInfo.exec();
 
-    qDeleteAll(subfolders);
-    qDeleteAll(updatedSubfolders);
-    qDeleteAll(comics);
-
     return folder;
 }
 
@@ -903,7 +641,7 @@ void DBHelper::updateChildrenInfo(QSqlDatabase &db)
     QLOG_INFO() << message;
 }
 
-void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
+void DBHelper::updateProgress(qulonglong libraryId, ComicId comicId, const ComicInfo &comicInfo)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QString connectionName = "";
@@ -911,7 +649,7 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
         bool found;
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
+        ComicDB comic = DBHelper::loadComic(comicId.value(), db, found);
         comic.info.currentPage = comicInfo.currentPage;
         comic.info.hasBeenOpened = comicInfo.currentPage > 0 || comic.info.hasBeenOpened;
         comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
@@ -924,7 +662,7 @@ void DBHelper::updateProgress(qulonglong libraryId, const ComicInfo &comicInfo)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-void DBHelper::updateImageFilters(qulonglong libraryId, const ComicInfo &comicInfo)
+void DBHelper::updateImageFilters(qulonglong libraryId, ComicId comicId, const ComicInfo &comicInfo)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QString connectionName = "";
@@ -932,7 +670,7 @@ void DBHelper::updateImageFilters(qulonglong libraryId, const ComicInfo &comicIn
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
         bool found;
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
+        ComicDB comic = DBHelper::loadComic(comicId.value(), db, found);
 
         if (found && comic.info.lastTimeImageFiltersSet.toULongLong() < comicInfo.lastTimeImageFiltersSet.toULongLong()) {
             QSqlQuery updateComicInfo(db);
@@ -943,11 +681,11 @@ void DBHelper::updateImageFilters(qulonglong libraryId, const ComicInfo &comicIn
 
             updateComicInfo.bindValue(":lastTimeImageFiltersSet", comicInfo.lastTimeImageFiltersSet.toULongLong());
             updateComicInfo.bindValue(":imageFiltersJson", comicInfo.imageFiltersJson);
-            updateComicInfo.bindValue(":id", comic.info.id);
+            updateComicInfo.bindValue(":id", comic.info.id.value());
 
             auto ret = updateComicInfo.exec();
             if (!ret) {
-                QLOG_ERROR() << "Error updating image filters for comic ID:" << comicInfo.id;
+                QLOG_ERROR() << "Error updating image filters for comic ID:" << comicId.value();
                 QLOG_ERROR() << updateComicInfo.lastError().databaseText();
                 QLOG_ERROR() << updateComicInfo.lastError().text();
             }
@@ -959,7 +697,7 @@ void DBHelper::updateImageFilters(qulonglong libraryId, const ComicInfo &comicIn
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-void DBHelper::setComicAsReading(qulonglong libraryId, const ComicInfo &comicInfo)
+void DBHelper::setComicAsReading(qulonglong libraryId, ComicId comicId)
 {
     QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
     QString connectionName = "";
@@ -967,7 +705,7 @@ void DBHelper::setComicAsReading(qulonglong libraryId, const ComicInfo &comicInf
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
         bool found;
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
+        ComicDB comic = DBHelper::loadComic(comicId.value(), db, found);
         comic.info.hasBeenOpened = true;
         comic.info.read = comic.info.read || comic.info.currentPage == comic.info.numPages;
 
@@ -992,48 +730,14 @@ void DBHelper::updateReadingRemoteProgress(const ComicInfo &comicInfo, QSqlDatab
     updateComicInfo.bindValue(":currentPage", comicInfo.currentPage);
     updateComicInfo.bindValue(":hasBeenOpened", comicInfo.hasBeenOpened ? 1 : 0);
     updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentSecsSinceEpoch());
-    updateComicInfo.bindValue(":id", comicInfo.id);
+    updateComicInfo.bindValue(":id", comicInfo.id.value());
     updateComicInfo.bindValue(":rating", comicInfo.rating);
     updateComicInfo.exec();
 
     updateComicInfo.clear();
 }
 
-// server v1
-void DBHelper::updateFromRemoteClient(qulonglong libraryId, const ComicInfo &comicInfo)
-{
-    QString libraryPath = DBHelper::getLibraries().getPath(libraryId);
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
-
-        bool found;
-        ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
-
-        if (comic.info.hash == comicInfo.hash) {
-            if (comicInfo.currentPage > 0) {
-                comic.info.currentPage = comicInfo.currentPage;
-
-                if (comic.info.currentPage == comic.info.numPages)
-                    comic.info.read = true;
-
-                comic.info.hasBeenOpened = true;
-
-                if (comic.info.lastTimeOpened.toULongLong() < comicInfo.lastTimeOpened.toULongLong())
-                    comic.info.lastTimeOpened = comicInfo.lastTimeOpened;
-            }
-
-            if (comicInfo.rating > 0)
-                comic.info.rating = comicInfo.rating;
-
-            DBHelper::updateReadingRemoteProgress(comic.info, db);
-        }
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
-}
-
-QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicInfo>> &comics, bool clientSendsHasBeenOpened, bool clientSendsImageFilters)
+QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qulonglong, QList<ComicProgressUpdate>> &comics, bool clientSendsHasBeenOpened, bool clientSendsImageFilters)
 {
     QMap<qulonglong, QList<ComicDB>> moreRecentComics;
 
@@ -1065,11 +769,11 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
                                     "lastTimeImageFiltersSet = :lastTimeImageFiltersSet "
                                     " WHERE id = :id ");
 
-            const auto &comicInfos = comics.constFind(libraryId).value();
-            for (const auto &comicInfo : comicInfos) {
+            const auto &updates = comics.constFind(libraryId).value();
+            for (const auto &update : updates) {
+                const auto &comicInfo = update.info;
                 bool found;
-                // TODO: sanitize this -> comicInfo.id contains comic id
-                ComicDB comic = DBHelper::loadComic(comicInfo.id, db, found);
+                ComicDB comic = DBHelper::loadComic(update.comicId.value(), db, found);
 
                 if (comic.info.hash == comicInfo.hash) {
                     bool isMoreRecent = false;
@@ -1123,7 +827,7 @@ QMap<qulonglong, QList<ComicDB>> DBHelper::updateFromRemoteClient(const QMap<qul
                     updateComicInfo.bindValue(":currentPage", comic.info.currentPage);
                     updateComicInfo.bindValue(":hasBeenOpened", comic.info.hasBeenOpened ? 1 : 0);
                     updateComicInfo.bindValue(":lastTimeOpened", comic.info.lastTimeOpened);
-                    updateComicInfo.bindValue(":id", comic.info.id);
+                    updateComicInfo.bindValue(":id", comic.info.id.value());
                     updateComicInfo.bindValue(":rating", comic.info.rating);
                     updateComicInfo.bindValue(":imageFiltersJson", comic.info.imageFiltersJson);
                     updateComicInfo.bindValue(":lastTimeImageFiltersSet", comic.info.lastTimeImageFiltersSet);
@@ -1179,11 +883,13 @@ QList<QUuid> DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &co
                                     " WHERE id = :id ");
 
             for (const auto &comicInfo : comics) {
-                ComicInfo info = loadComicInfo(comicInfo.hash, db);
+                const auto storedInfo = loadComicInfo(comicInfo.hash, db);
 
-                if (!info.existOnDb) {
+                if (!storedInfo) {
                     continue;
                 }
+
+                ComicInfo info = *storedInfo;
 
                 if (comicInfo.currentPage > 0) {
                     info.currentPage = comicInfo.currentPage;
@@ -1205,7 +911,7 @@ QList<QUuid> DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &co
                 updateComicInfo.bindValue(":currentPage", info.currentPage);
                 updateComicInfo.bindValue(":hasBeenOpened", info.hasBeenOpened ? 1 : 0);
                 updateComicInfo.bindValue(":lastTimeOpened", QDateTime::currentSecsSinceEpoch());
-                updateComicInfo.bindValue(":id", info.id);
+                updateComicInfo.bindValue(":id", info.id.value());
                 updateComicInfo.bindValue(":rating", info.rating);
                 updateComicInfo.exec();
                 libraryUpdated = true;
@@ -1399,21 +1105,23 @@ qulonglong DBHelper::ensureFolderPath(const QString &relativePath, QSqlDatabase 
     const auto segments = relativePath.split('/', Qt::SkipEmptyParts);
 
     qulonglong parentId = 1;
-    auto inheritedType = DBHelper::loadFolder(parentId, db).type;
+    auto inheritedType = DBHelper::loadFolder(parentId, db).value_or(Folder()).type;
     QString currentPath;
 
     for (const auto &segment : segments) {
         currentPath += '/' + segment;
 
         const auto existing = DBHelper::loadFolder(segment, parentId, db);
-        if (existing.knownId) {
-            parentId = existing.id;
-            inheritedType = existing.type;
+        if (existing) {
+            parentId = existing->id.value();
+            inheritedType = existing->type;
             continue;
         }
 
-        Folder folder(segment, currentPath);
-        folder.setFather(parentId);
+        Folder folder;
+        folder.name = segment;
+        folder.path = currentPath;
+        folder.parentId = FolderId(parentId);
         folder.type = inheritedType;
 
         parentId = DBHelper::insert(&folder, db);
@@ -1539,7 +1247,7 @@ qulonglong DBHelper::insert(Folder *folder, QSqlDatabase &db)
     QSqlQuery query(db);
     query.prepare("INSERT INTO folder (parentId, name, path, added, type) "
                   "VALUES (:parentId, :name, :path, :added, :type)");
-    query.bindValue(":parentId", folder->parentId);
+    query.bindValue(":parentId", folder->parentId.value());
     query.bindValue(":name", folder->name);
     query.bindValue(":path", folder->path);
     query.bindValue(":added", added);
@@ -1554,7 +1262,7 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
 {
     auto added = QDateTime::currentSecsSinceEpoch();
 
-    if (!comic->info.existOnDb) {
+    if (comic->info.id == ComicInfoId()) {
         QSqlQuery comicInfoInsert(db);
 
         comicInfoInsert.prepare("INSERT INTO comic_info (hash,numPages,coverSizeRatio,originalCoverSize,added,type) "
@@ -1567,23 +1275,21 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
         auto intType = static_cast<int>(comic->info.type.value<YACReader::FileType>());
         comicInfoInsert.bindValue(":type", intType);
         comicInfoInsert.exec();
-        comic->info.id = comicInfoInsert.lastInsertId().toULongLong();
+        comic->info.id = ComicInfoId(comicInfoInsert.lastInsertId().toULongLong());
         comic->info.added = added;
-        comic->_hasCover = false;
 
         if (insertAllInfo) {
             DBHelper::update(&(comic->info), db); // TODO use insert to insert all the info values, the common binding need to be extracted and shared between update and insert
         }
-    } else
-        comic->_hasCover = true;
+    }
 
     QSqlQuery query(db);
     query.prepare("INSERT INTO comic (parentId, comicInfoId, fileName, path) "
                   "VALUES (:parentId,:comicInfoId,:name, :path)");
-    query.bindValue(":parentId", comic->parentId);
-    query.bindValue(":comicInfoId", comic->info.id);
-    query.bindValue(":name", comic->name);
-    query.bindValue(":path", comic->path);
+    query.bindValue(":parentId", comic->file.folderId.value());
+    query.bindValue(":comicInfoId", comic->info.id.value());
+    query.bindValue(":name", comic->file.fileName);
+    query.bindValue(":path", comic->file.path);
     query.exec();
 
     // loop through parents and update their updated field
@@ -1592,14 +1298,14 @@ qulonglong DBHelper::insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo
     updateFolder.prepare("UPDATE folder SET "
                          "updated = :updated "
                          "WHERE id = :id ");
-    auto currentParentId = comic->parentId;
+    auto currentParentId = comic->file.folderId.value();
     while (currentParentId != 1 && currentParentId != 0) {
         updateFolder.bindValue(":updated", added);
         updateFolder.bindValue(":id", currentParentId);
         updateFolder.exec();
 
-        auto f = loadFolder(currentParentId, db);
-        currentParentId = f.parentId;
+        const auto f = loadFolder(currentParentId, db);
+        currentParentId = f ? f->parentId.value() : 0;
     }
     //----
 
@@ -1654,7 +1360,7 @@ void DBHelper::insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDat
                   "VALUES (1, :comic_id, :ordering)");
 
     for (const auto &comic : comicsList) {
-        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":comic_id", comic.file.id.value());
         query.bindValue(":ordering", numComics++);
         query.exec();
     }
@@ -1679,7 +1385,7 @@ void DBHelper::insertComicsInLabel(const QList<ComicDB> &comicsList, qulonglong 
 
     for (const auto &comic : comicsList) {
         query.bindValue(":label_id", labelId);
-        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":comic_id", comic.file.id.value());
         query.bindValue(":ordering", numComics++);
         query.exec();
     }
@@ -1704,7 +1410,7 @@ void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulon
 
     for (const auto &comic : comicsList) {
         query.bindValue(":reading_list_id", readingListId);
-        query.bindValue(":comic_id", comic.id);
+        query.bindValue(":comic_id", comic.file.id.value());
         query.bindValue(":ordering", numComics++);
         query.exec();
     }
@@ -1713,59 +1419,33 @@ void DBHelper::insertComicsInReadingList(const QList<ComicDB> &comicsList, qulon
 }
 
 // queries
-QList<LibraryItem *> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort)
+QList<Folder> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort)
 {
-    QList<LibraryItem *> list;
+    QList<Folder> list;
 
     QSqlQuery selectQuery(db); // TODO check
-    selectQuery.prepare("SELECT * FROM folder WHERE parentId = :parentId and id <> 1");
+    selectQuery.prepare("SELECT " + TableProjection::selectList("f", Folder::columns()) + " FROM folder f WHERE f.parentId = :parentId and f.id <> 1");
     selectQuery.bindValue(":parentId", parentId);
     selectQuery.exec();
 
-    QSqlRecord record = selectQuery.record();
-
-    int name = record.indexOf("name");
-    int path = record.indexOf("path");
-    int finished = record.indexOf("finished");
-    int completed = record.indexOf("completed");
-    int id = record.indexOf("id");
-    int numChildren = record.indexOf("numChildren");
-    int firstChildHash = record.indexOf("firstChildHash");
-    int customImage = record.indexOf("customImage");
-    int type = record.indexOf("type");
-    int added = record.indexOf("added");
-    int updated = record.indexOf("updated");
-
-    Folder *currentItem;
+    const auto indexes = Folder::columnIndexes(selectQuery.record(), "f");
     while (selectQuery.next()) {
         // TODO sort by sort indicator and name
-        currentItem = new Folder(selectQuery.value(id).toULongLong(), parentId, selectQuery.value(name).toString(), selectQuery.value(path).toString());
-
-        currentItem->finished = selectQuery.value(finished).toBool();
-        currentItem->completed = selectQuery.value(completed).toBool();
-        if (!selectQuery.value(numChildren).isNull() && selectQuery.value(numChildren).isValid()) {
-            currentItem->numChildren = selectQuery.value(numChildren).toInt();
-        }
-        currentItem->firstChildHash = selectQuery.value(firstChildHash).toString();
-        currentItem->customImage = selectQuery.value(customImage).toString();
-        currentItem->type = selectQuery.value(type).value<YACReader::FileType>();
-        currentItem->added = selectQuery.value(added).toLongLong();
-        currentItem->updated = selectQuery.value(updated).toLongLong();
+        const auto currentItem = Folder::fromQuery(selectQuery, indexes);
 
         int lessThan = 0;
 
         if (list.isEmpty() || !sort)
             list.append(currentItem);
         else {
-            auto last = static_cast<Folder *>(list.back());
-            QString nameLast = last->name;
-            QString nameCurrent = currentItem->name;
-            QList<LibraryItem *>::iterator i;
+            QString nameLast = list.back().name;
+            QString nameCurrent = currentItem.name;
+            QList<Folder>::iterator i;
             i = list.end();
             i--;
             while ((0 > (lessThan = naturalCompare(nameCurrent, nameLast, Qt::CaseInsensitive))) && i != list.begin()) {
                 i--;
-                nameLast = (*i)->name;
+                nameLast = i->name;
             }
             if (lessThan >= 0) // si se ha encontrado un elemento menor que current, se inserta justo después
                 list.insert(++i, currentItem);
@@ -1784,64 +1464,33 @@ QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlData
     QSqlQuery selectQuery(db);
 
     selectQuery.setForwardOnly(true);
-    selectQuery.prepare("select * from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+    selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId");
     selectQuery.bindValue(":parentId", parentId);
     selectQuery.exec();
 
-    QSqlRecord record = selectQuery.record();
-
-    int id = record.indexOf("id");
-    // int parentIdIndex = record.indexOf("parentId");
-    int fileName = record.indexOf("fileName");
-    int path = record.indexOf("path");
-
-    ComicDB currentItem;
-    while (selectQuery.next()) {
-        currentItem.id = selectQuery.value(id).toULongLong();
-        currentItem.parentId = parentId; // selectQuery.value(parentId).toULongLong();
-        currentItem.name = selectQuery.value(fileName).toString();
-        currentItem.path = selectQuery.value(path).toString();
-
-        currentItem.info = getComicInfoFromQuery(selectQuery, "comicInfoId");
-
-        list.append(currentItem);
-    }
+    list = comicsFromQuery(selectQuery);
 
     std::sort(list.begin(), list.end(), [](const ComicDB &c1, const ComicDB &c2) {
-        return comicNumberLessThan(c1.info.number, c1.name, c2.info.number, c2.name);
+        return comicNumberLessThan(c1.info.number, c1.file.fileName, c2.info.number, c2.file.fileName);
     });
 
     // selectQuery.finish();
     return list;
 }
-QList<LibraryItem *> DBHelper::getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort)
+QList<ComicDB> DBHelper::getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort)
 {
-    QList<LibraryItem *> list;
+    QList<ComicDB> list;
 
     QSqlQuery selectQuery(db);
-    selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.parentId = :parentId");
+    selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId");
     selectQuery.bindValue(":parentId", parentId);
     selectQuery.exec();
 
-    QSqlRecord record = selectQuery.record();
-
-    int id = record.indexOf("id");
-
-    ComicDB *currentItem;
-    while (selectQuery.next()) {
-        currentItem = new ComicDB();
-        currentItem->id = selectQuery.value(id).toULongLong();
-        currentItem->parentId = selectQuery.value(1).toULongLong();
-        currentItem->name = selectQuery.value(2).toString();
-        currentItem->path = selectQuery.value(3).toString();
-        currentItem->info = DBHelper::loadComicInfo(selectQuery.value(4).toString(), db);
-
-        list.append(currentItem);
-    }
+    list = comicsFromQuery(selectQuery);
 
     if (sort) {
-        std::sort(list.begin(), list.end(), [](const LibraryItem *c1, const LibraryItem *c2) {
-            return c1->name.localeAwareCompare(c2->name) < 0;
+        std::sort(list.begin(), list.end(), [](const ComicDB &c1, const ComicDB &c2) {
+            return c1.file.fileName.localeAwareCompare(c2.file.fileName) < 0;
         });
     }
 
@@ -1856,30 +1505,26 @@ QList<Label> DBHelper::getLabels(qulonglong libraryId)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
 
-        QSqlQuery selectQuery("SELECT * FROM label ORDER BY ordering,name", db); // TODO add some kind of
-        QSqlRecord record = selectQuery.record();
+        QSqlQuery selectQuery("SELECT " + TableProjection::selectList("l", Label::columns()) +
+                                      " FROM label l ORDER BY l.ordering, l.name",
+                              db); // TODO add some kind of
 
-        int name = record.indexOf("name");
-        int id = record.indexOf("id");
-        int ordering = record.indexOf("ordering");
-
+        const auto indexes = Label::columnIndexes(selectQuery.record(), "l");
         while (selectQuery.next()) {
-            Label item(selectQuery.value(name).toString(),
-                       selectQuery.value(id).toLongLong(),
-                       static_cast<YACReader::LabelColors>(selectQuery.value(ordering).toInt()));
+            const auto item = Label::fromQuery(selectQuery, indexes);
 
             if (labels.isEmpty()) {
                 labels << item;
             } else {
                 int i = 0;
 
-                while (i < labels.count() && (labels.at(i).getColorID() < item.getColorID()))
+                while (i < labels.count() && (labels.at(i).ordering < item.ordering))
                     i++;
 
                 if (i < labels.count()) {
-                    if (labels.at(i).getColorID() == item.getColorID()) // sort by name
+                    if (labels.at(i).ordering == item.ordering) // sort by name
                     {
-                        while (i < labels.count() && labels.at(i).getColorID() == item.getColorID() && naturalSortLessThanCI(labels.at(i).getName(), item.getName()))
+                        while (i < labels.count() && labels.at(i).ordering == item.ordering && naturalSortLessThanCI(labels.at(i).name, item.name))
                             i++;
                     }
                 }
@@ -2016,107 +1661,49 @@ void DBHelper::updateDBType(QSqlDatabase &db, YACReader::FileType type)
     updateComicInfo.exec();
 }
 
-Folder DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
+std::optional<Folder> DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)
 {
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM folder WHERE id = :id");
+    query.prepare("SELECT " + TableProjection::selectList("f", Folder::columns()) + " FROM folder f WHERE f.id = :id");
     query.bindValue(":id", id);
     query.exec();
 
-    Folder folder;
-
-    folder.id = id;
-    folder.parentId = 0;
-
-    DBHelper::readFolderFromQuery(folder, query);
-
-    return folder;
+    return DBHelper::readFolderFromQuery(query);
 }
 
-Folder DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db)
+std::optional<Folder> DBHelper::loadFolder(const QString &folderName, qulonglong parentId, QSqlDatabase &db)
 {
     QSqlQuery query(db);
-    query.prepare("SELECT * FROM folder WHERE parentId = :parentId AND name = :folderName");
+    query.prepare("SELECT " + TableProjection::selectList("f", Folder::columns()) + " FROM folder f WHERE f.parentId = :parentId AND f.name = :folderName");
     query.bindValue(":parentId", parentId);
     query.bindValue(":folderName", folderName);
     query.exec();
 
-    Folder folder;
-
-    folder.parentId = parentId;
-
-    DBHelper::readFolderFromQuery(folder, query);
-
-    return folder;
+    return DBHelper::readFolderFromQuery(query);
 }
 
-void DBHelper::readFolderFromQuery(Folder &folder, QSqlQuery &query)
+std::optional<Folder> DBHelper::readFolderFromQuery(QSqlQuery &query)
 {
-    QSqlRecord record = query.record();
-
-    int id = record.indexOf("id");
-    int parentId = record.indexOf("parentId");
-    int name = record.indexOf("name");
-    int path = record.indexOf("path");
-    int finished = record.indexOf("finished");
-    int completed = record.indexOf("completed");
-    int numChildren = record.indexOf("numChildren");
-    int firstChildHash = record.indexOf("firstChildHash");
-    int customImage = record.indexOf("customImage");
-    int type = record.indexOf("type");
-    int added = record.indexOf("added");
-    int updated = record.indexOf("updated");
-
     if (query.next()) {
-        folder.id = query.value(id).toULongLong();
-        folder.parentId = query.value(parentId).toULongLong();
-        folder.name = query.value(name).toString();
-        folder.path = query.value(path).toString();
-        folder.knownId = true;
-
-        // new 7.1
-        folder.finished = query.value(finished).toBool();
-        folder.completed = query.value(completed).toBool();
-
-        // new 9.5
-        if (!query.value(numChildren).isNull() && query.value(numChildren).isValid()) {
-            folder.numChildren = query.value(numChildren).toInt();
-        }
-        folder.firstChildHash = query.value(firstChildHash).toString();
-        folder.customImage = query.value(customImage).toString();
-
-        // new 9.8
-        // folder.manga = query.value(manga).toBool(); //removed in 9.13
-
-        // new 9.13
-        folder.type = query.value(type).value<YACReader::FileType>();
-        folder.added = query.value(added).toLongLong();
-        folder.updated = query.value(updated).toLongLong();
+        return Folder::fromRecord(query.record(), "f");
     }
+
+    return std::nullopt;
 }
 
 ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db, bool &found)
 {
     ComicDB comic;
 
+    static const QString sql = "SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.id = :id";
     QSqlQuery selectQuery(db);
-    selectQuery.prepare("select c.id,c.parentId,c.fileName,c.path,ci.hash from comic c inner join comic_info ci on (c.comicInfoId = ci.id) where c.id = :id");
+    selectQuery.prepare(sql);
     selectQuery.bindValue(":id", id);
     selectQuery.exec();
 
-    QSqlRecord record = selectQuery.record();
-
-    int parentId = record.indexOf("parentId");
-    int name = record.indexOf("fileName");
-    int path = record.indexOf("path");
-    int hash = record.indexOf("hash");
-
-    comic.id = id;
+    comic.file.id = ComicId(id);
     if (selectQuery.next()) {
-        comic.parentId = selectQuery.value(parentId).toULongLong();
-        comic.name = selectQuery.value(name).toString();
-        comic.path = selectQuery.value(path).toString();
-        comic.info = DBHelper::loadComicInfo(selectQuery.value(hash).toString(), db);
+        comic = ComicDB::fromRecord(selectQuery.record(), "c", "ci");
         found = true;
     } else {
         found = false;
@@ -2125,219 +1712,78 @@ ComicDB DBHelper::loadComic(qulonglong id, QSqlDatabase &db, bool &found)
     return comic;
 }
 
+QList<ComicDB> DBHelper::loadComics(const QList<qulonglong> &ids, QSqlDatabase &db)
+{
+    QList<ComicDB> comics;
+    if (ids.isEmpty()) {
+        return comics;
+    }
+
+    QStringList idList;
+    idList.reserve(ids.size());
+    for (const auto id : ids) {
+        idList.append(QString::number(id));
+    }
+
+    QSqlQuery selectQuery(db);
+    selectQuery.setForwardOnly(true);
+    selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.id IN (" + idList.join(',') + ")");
+    selectQuery.exec();
+
+    QHash<qulonglong, ComicDB> loaded;
+    loaded.reserve(ids.size());
+    const auto indexes = ComicDB::columnIndexes(selectQuery.record(), "c", "ci");
+    while (selectQuery.next()) {
+        auto comic = ComicDB::fromQuery(selectQuery, indexes);
+        loaded.insert(comic.file.id.value(), comic);
+    }
+
+    comics.reserve(ids.size());
+    for (const auto id : ids) {
+        const auto it = loaded.constFind(id);
+        if (it != loaded.constEnd()) {
+            comics.append(it.value());
+        } else {
+            ComicDB missing;
+            missing.file.id = ComicId(id);
+            comics.append(missing);
+        }
+    }
+
+    return comics;
+}
+
 ComicDB DBHelper::loadComic(QString cname, QString cpath, QString chash, QSqlDatabase &database)
 {
     ComicDB comic;
 
     // comic.parentId = cparentId;
-    comic.name = cname;
-    comic.path = cpath;
+    comic.file.fileName = cname;
+    comic.file.path = cpath;
 
-    comic.info = DBHelper::loadComicInfo(chash, database);
-
-    if (!comic.info.existOnDb) {
+    if (auto info = DBHelper::loadComicInfo(chash, database)) {
+        comic.info = *info;
+    } else {
         comic.info.hash = chash;
         comic.info.coverPage = 1;
-        comic._hasCover = false;
-    } else
-        comic._hasCover = true;
+    }
 
     return comic;
 }
 
-ComicInfo DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
+std::optional<ComicInfo> DBHelper::loadComicInfo(QString hash, QSqlDatabase &db)
 {
-    ComicInfo comicInfo;
-
+    static const QString sql = "SELECT " + TableProjection::selectList("ci", ComicInfo::columns()) + " FROM comic_info ci WHERE ci.hash = :hash";
     QSqlQuery findComicInfo(db);
-    findComicInfo.prepare("SELECT * FROM comic_info WHERE hash = :hash");
+    findComicInfo.prepare(sql);
     findComicInfo.bindValue(":hash", hash);
     findComicInfo.exec();
 
     if (findComicInfo.next()) {
-        comicInfo = getComicInfoFromQuery(findComicInfo);
-    } else
-        comicInfo.existOnDb = false;
+        return ComicInfo::fromRecord(findComicInfo.record(), "ci");
+    }
 
-    return comicInfo;
-}
-
-ComicInfo DBHelper::getComicInfoFromQuery(QSqlQuery &query, const QString &idKey)
-{
-    QSqlRecord record = query.record();
-
-    int hash = record.indexOf("hash");
-    int id = record.indexOf(idKey);
-    int read = record.indexOf("read");
-    int edited = record.indexOf("edited");
-
-    // new 7.0 fields
-    int hasBeenOpened = record.indexOf("hasBeenOpened");
-    int currentPage = record.indexOf("currentPage");
-    int bookmark1 = record.indexOf("bookmark1");
-    int bookmark2 = record.indexOf("bookmark2");
-    int bookmark3 = record.indexOf("bookmark3");
-    int brightness = record.indexOf("brightness");
-    int contrast = record.indexOf("contrast");
-    int gamma = record.indexOf("gamma");
-    int rating = record.indexOf("rating");
-    //--
-
-    int title = record.indexOf("title");
-    int numPages = record.indexOf("numPages");
-
-    int coverPage = record.indexOf("coverPage");
-
-    int number = record.indexOf("number");
-    int isBis = record.indexOf("isBis");
-    int count = record.indexOf("count");
-
-    int volume = record.indexOf("volume");
-    int storyArc = record.indexOf("storyArc");
-    int arcNumber = record.indexOf("arcNumber");
-    int arcCount = record.indexOf("arcCount");
-
-    int genere = record.indexOf("genere");
-
-    int writer = record.indexOf("writer");
-    int penciller = record.indexOf("penciller");
-    int inker = record.indexOf("inker");
-    int colorist = record.indexOf("colorist");
-    int letterer = record.indexOf("letterer");
-    int coverArtist = record.indexOf("coverArtist");
-
-    int date = record.indexOf("date");
-    int publisher = record.indexOf("publisher");
-    int format = record.indexOf("format");
-    int color = record.indexOf("color");
-    int ageRating = record.indexOf("ageRating");
-
-    int synopsis = record.indexOf("synopsis");
-    int characters = record.indexOf("characters");
-    int notes = record.indexOf("notes");
-
-    int comicVineID = record.indexOf("comicVineID");
-
-    int lastTimeOpened = record.indexOf("lastTimeOpened");
-
-    int coverSizeRatio = record.indexOf("coverSizeRatio");
-    int originalCoverSize = record.indexOf("originalCoverSize");
-
-    int added = record.indexOf("added");
-    int type = record.indexOf("type");
-    int editor = record.indexOf("editor");
-    int imprint = record.indexOf("imprint");
-    int teams = record.indexOf("teams");
-    int locations = record.indexOf("locations");
-    int series = record.indexOf("series");
-    int alternateSeries = record.indexOf("alternateSeries");
-    int alternateNumber = record.indexOf("alternateNumber");
-    int alternateCount = record.indexOf("alternateCount");
-    int languageISO = record.indexOf("languageISO");
-    int seriesGroup = record.indexOf("seriesGroup");
-    int mainCharacterOrTeam = record.indexOf("mainCharacterOrTeam");
-    int review = record.indexOf("review");
-    int tags = record.indexOf("tags");
-
-    int imageFiltersJson = record.indexOf("imageFiltersJson");
-    int lastTimeImageFiltersSet = record.indexOf("lastTimeImageFiltersSet");
-    int lastTimeCoverSet = record.indexOf("lastTimeCoverSet");
-    int usesExternalCover = record.indexOf("usesExternalCover");
-    int lastTimeMetadataSet = record.indexOf("lastTimeMetadataSet");
-
-    ComicInfo comicInfo;
-
-    comicInfo.hash = query.value(hash).toString();
-    comicInfo.id = query.value(id).toULongLong();
-    comicInfo.read = query.value(read).toBool();
-    comicInfo.edited = query.value(edited).toBool();
-
-    // new 7.0 fields
-    comicInfo.hasBeenOpened = query.value(hasBeenOpened).toBool();
-    comicInfo.currentPage = query.value(currentPage).toInt();
-    comicInfo.bookmark1 = query.value(bookmark1).toInt();
-    comicInfo.bookmark2 = query.value(bookmark2).toInt();
-    comicInfo.bookmark3 = query.value(bookmark3).toInt();
-    comicInfo.brightness = query.value(brightness).toInt();
-    comicInfo.contrast = query.value(contrast).toInt();
-    comicInfo.gamma = query.value(gamma).toInt();
-    comicInfo.rating = query.value(rating).toInt();
-    //--
-    comicInfo.title = query.value(title);
-    comicInfo.numPages = query.value(numPages);
-
-    comicInfo.coverPage = query.value(coverPage);
-
-    comicInfo.number = query.value(number);
-    comicInfo.isBis = query.value(isBis);
-    comicInfo.count = query.value(count);
-
-    comicInfo.volume = query.value(volume);
-    comicInfo.storyArc = query.value(storyArc);
-    comicInfo.arcNumber = query.value(arcNumber);
-    comicInfo.arcCount = query.value(arcCount);
-
-    comicInfo.genere = query.value(genere);
-
-    comicInfo.writer = query.value(writer);
-    comicInfo.penciller = query.value(penciller);
-    comicInfo.inker = query.value(inker);
-    comicInfo.colorist = query.value(colorist);
-    comicInfo.letterer = query.value(letterer);
-    comicInfo.coverArtist = query.value(coverArtist);
-
-    comicInfo.date = query.value(date);
-    comicInfo.publisher = query.value(publisher);
-    comicInfo.format = query.value(format);
-    comicInfo.color = query.value(color);
-    comicInfo.ageRating = query.value(ageRating);
-
-    comicInfo.synopsis = query.value(synopsis);
-    comicInfo.characters = query.value(characters);
-    comicInfo.notes = query.value(notes);
-
-    comicInfo.comicVineID = query.value(comicVineID);
-
-    // new 9.5 fields
-    comicInfo.lastTimeOpened = query.value(lastTimeOpened);
-
-    comicInfo.coverSizeRatio = query.value(coverSizeRatio);
-    comicInfo.originalCoverSize = query.value(originalCoverSize);
-    //--
-
-    // new 9.8 fields
-    // comicInfo.manga = query.value(manga); // removed in 9.13
-    //--
-
-    // new 9.13 fields
-    comicInfo.added = query.value(added);
-    comicInfo.type = query.value(type);
-    comicInfo.editor = query.value(editor);
-    comicInfo.imprint = query.value(imprint);
-    comicInfo.teams = query.value(teams);
-    comicInfo.locations = query.value(locations);
-    comicInfo.series = query.value(series);
-    comicInfo.alternateSeries = query.value(alternateSeries);
-    comicInfo.alternateNumber = query.value(alternateNumber);
-    comicInfo.alternateCount = query.value(alternateCount);
-    comicInfo.languageISO = query.value(languageISO);
-    comicInfo.seriesGroup = query.value(seriesGroup);
-    comicInfo.mainCharacterOrTeam = query.value(mainCharacterOrTeam);
-    comicInfo.review = query.value(review);
-    comicInfo.tags = query.value(tags);
-    //--
-
-    // new 9.16 fields
-    comicInfo.imageFiltersJson = query.value(imageFiltersJson);
-    comicInfo.lastTimeImageFiltersSet = query.value(lastTimeImageFiltersSet);
-    comicInfo.lastTimeCoverSet = query.value(lastTimeCoverSet);
-    comicInfo.usesExternalCover = query.value(usesExternalCover).toBool();
-    comicInfo.lastTimeMetadataSet = query.value(lastTimeMetadataSet);
-    //--
-
-    comicInfo.existOnDb = true;
-
-    return comicInfo;
+    return std::nullopt;
 }
 
 bool DBHelper::isFavoriteComic(qulonglong id, QSqlDatabase &db)

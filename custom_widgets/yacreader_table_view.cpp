@@ -1,7 +1,6 @@
 #include "yacreader_table_view.h"
 
 #include "QsLog.h"
-#include "comic_item.h"
 #include "comic_model.h"
 #include "cover_utils.h"
 #include "yacreader_global_gui.h"
@@ -226,7 +225,7 @@ void YACReaderTableView::resizeEvent(QResizeEvent *event)
 void YACReaderRatingDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const
 {
-    int rating = ((ComicItem *)index.internalPointer())->data(ComicModel::Rating).toInt();
+    int rating = index.data(ComicModel::RatingRole).toInt();
 
     StarRating starRating(rating);
 
@@ -254,7 +253,7 @@ QSize YACReaderRatingDelegate::sizeHint(const QStyleOptionViewItem &option,
                                         const QModelIndex &index) const
 {
     Q_UNUSED(option)
-    int rating = ((ComicItem *)index.internalPointer())->data(ComicModel::Rating).toInt();
+    int rating = index.data(ComicModel::RatingRole).toInt();
     StarRating starRating(rating);
     return starRating.sizeHint();
 }
@@ -276,7 +275,7 @@ QWidget *YACReaderRatingDelegate::createEditor(QWidget *parent,
 void YACReaderRatingDelegate::setEditorData(QWidget *editor,
                                             const QModelIndex &index) const
 {
-    int rating = ((ComicItem *)index.internalPointer())->data(ComicModel::Rating).toInt();
+    int rating = index.data(ComicModel::RatingRole).toInt();
 
     StarRating starRating(rating);
 

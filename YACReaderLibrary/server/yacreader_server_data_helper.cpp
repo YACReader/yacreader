@@ -34,7 +34,7 @@ QString YACReaderServerDataHelper::folderToYSFormat(const qulonglong libraryId, 
 {
     return QString("f\x1F\t%1\x1F\t%2\x1F\t%3\x1F\t%4\x1F\t%5\x1E\r\n")
             .arg(libraryId)
-            .arg(folder.id)
+            .arg(folder.id.value())
             .arg(folder.name)
             .arg(folder.numChildren)
             .arg(folder.firstChildHash);
@@ -44,7 +44,7 @@ QString YACReaderServerDataHelper::comicToYSFormat(const qulonglong libraryId, c
 {
     return QString("c\x1F\t%1\x1F\t%2\x1F\t%3\x1F\t%4\x1F\t%5\x1F\t%6\x1F\t%7\x1F\t%8\x1E\r\n")
             .arg(libraryId)
-            .arg(comic.id)
+            .arg(comic.file.id.value())
             .arg(comic.getFileName())
             .arg(comic.getFileSize())
             .arg(comic.info.hash)
@@ -58,7 +58,7 @@ QJsonObject YACReaderServerDataHelper::folderToJSON(const qulonglong libraryId, 
     QJsonObject json;
 
     json["type"] = "folder";
-    json["id"] = QString::number(folder.id);
+    json["id"] = QString::number(folder.id.value());
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
         json["library_uuid"] = libraryUuid.toString();
@@ -74,7 +74,7 @@ QJsonObject YACReaderServerDataHelper::folderToJSON(const qulonglong libraryId, 
     json["added"] = folder.added;
     json["updated"] = folder.updated;
     // 9.14
-    json["parent_id"] = QString::number(folder.parentId);
+    json["parent_id"] = QString::number(folder.parentId.value());
     json["path"] = folder.path;
 
     return json;
@@ -85,17 +85,17 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     QJsonObject json;
 
     json["type"] = "comic";
-    json["id"] = QString::number(comic.id);
-    json["comic_info_id"] = QString::number(comic.info.id);
-    json["parent_id"] = QString::number(comic.parentId); // 9.14
+    json["id"] = QString::number(comic.file.id.value());
+    json["comic_info_id"] = QString::number(comic.info.id.value());
+    json["parent_id"] = QString::number(comic.file.folderId.value()); // 9.14
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
         json["library_uuid"] = libraryUuid.toString();
     }
-    json["file_name"] = comic.name;
+    json["file_name"] = comic.file.fileName;
     json["file_size"] = QString::number(comic.getFileSize());
     json["hash"] = comic.info.hash;
-    json["path"] = comic.path; // 9.14
+    json["path"] = comic.file.path; // 9.14
 
     json["current_page"] = comic.info.currentPage;
     json["num_pages"] = comic.info.numPages.toInt();
@@ -186,12 +186,12 @@ QJsonObject YACReaderServerDataHelper::readingListToJSON(const qulonglong librar
     QJsonObject json;
 
     json["type"] = "reading_list";
-    json["id"] = QString::number(readingList.getId());
+    json["id"] = QString::number(readingList.id.value());
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
         json["library_uuid"] = libraryUuid.toString();
     }
-    json["reading_list_name"] = readingList.getName();
+    json["reading_list_name"] = readingList.name;
 
     // TODO
     // json["num_children"] = readingList.getNumChildren();
@@ -205,13 +205,13 @@ QJsonObject YACReaderServerDataHelper::labelToJSON(const qulonglong libraryId, c
     QJsonObject json;
 
     json["type"] = "label";
-    json["id"] = QString::number(label.getId());
+    json["id"] = QString::number(label.id.value());
     json["library_id"] = QString::number(libraryId);
     if (!libraryUuid.isNull()) {
         json["library_uuid"] = libraryUuid.toString();
     }
-    json["label_name"] = label.getName();
-    json["color_id"] = label.getColorID();
+    json["label_name"] = label.name;
+    json["color_id"] = label.ordering;
 
     // TODO
     // json["num_children"] = label.getNumChildren();

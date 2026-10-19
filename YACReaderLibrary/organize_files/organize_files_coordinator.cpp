@@ -31,17 +31,11 @@ namespace {
 
 void collectComicsRecursively(qulonglong libraryId, qulonglong folderId, QList<ComicDB> &out)
 {
-    const auto comics = DBHelper::getFolderComicsFromLibrary(libraryId, folderId);
-    for (auto *item : comics) {
-        if (auto *comic = static_cast<ComicDB *>(item))
-            out.append(*comic);
-    }
-    qDeleteAll(comics);
+    out.append(DBHelper::getFolderComicsFromLibrary(libraryId, folderId));
 
     const auto subfolders = DBHelper::getFolderSubfoldersFromLibrary(libraryId, folderId);
-    for (auto *item : subfolders)
-        collectComicsRecursively(libraryId, item->id, out);
-    qDeleteAll(subfolders);
+    for (const auto &folder : subfolders)
+        collectComicsRecursively(libraryId, folder.id.value(), out);
 }
 
 QList<ComicEntry> buildEntries(const QList<ComicDB> &comics, const QString &libraryRoot)
@@ -51,8 +45,8 @@ QList<ComicEntry> buildEntries(const QList<ComicDB> &comics, const QString &libr
 
     for (const ComicDB &comic : comics) {
         ComicEntry entry;
-        entry.comicId = comic.id;
-        entry.sourceAbsolute = QDir::cleanPath(libraryRoot + comic.path);
+        entry.comicId = comic.file.id.value();
+        entry.sourceAbsolute = QDir::cleanPath(libraryRoot + comic.file.path);
 
         const QFileInfo info(entry.sourceAbsolute);
         entry.missing = !info.exists();
@@ -136,7 +130,7 @@ void OrganizeFilesCoordinator::runOnFolder(OrganizeFiles::Mode mode, const QMode
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QList<ComicDB> comics;
-    collectComicsRecursively(library.id, folder.id, comics);
+    collectComicsRecursively(library.id, folder.id.value(), comics);
     QApplication::restoreOverrideCursor();
 
     if (comics.isEmpty()) {

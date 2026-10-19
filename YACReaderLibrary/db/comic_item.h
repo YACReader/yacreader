@@ -1,27 +1,32 @@
-#ifndef TABLEITEM_H
-#define TABLEITEM_H
+#ifndef COMIC_ITEM_H
+#define COMIC_ITEM_H
+
+#include "comic_db.h"
 
 #include <QList>
-#include <QVariant>
 
-//! [0]
-class ComicItem : public QObject
-{
-    Q_OBJECT
-public:
-    ComicItem(const QList<QVariant> &data);
-    ~ComicItem() override;
-    int columnCount() const;
-    QList<QVariant> getData() const;
-    void setData(const QList<QVariant> &data);
-    QVariant data(int column) const;
-    void setData(int column, const QVariant &value);
-    int row() const;
-    // unsigned long long int id; //TODO sustituir por una clase adecuada
-    // Comic comic;
-private:
-    QList<QVariant> itemData;
+#include <variant>
+
+enum class ListKind {
+    ReadingList,
+    Label,
 };
-//! [0]
+
+// `Comic` is also the class that reads comic files, so the cases live in their own namespace.
+namespace ComicItemCase {
+
+struct Comic {
+    ComicDB comic;
+};
+
+struct ComicInList {
+    ComicDB comic;
+    ListKind listKind;
+    qulonglong listId;
+};
+
+}
+
+using ComicItem = std::variant<ComicItemCase::Comic, ComicItemCase::ComicInList>;
 
 #endif

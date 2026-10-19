@@ -1,6 +1,7 @@
 #ifndef TABLEMODEL_H
 #define TABLEMODEL_H
 
+#include "comic_item.h"
 #include "yacreader_global.h"
 
 #include <QAbstractItemModel>
@@ -11,9 +12,7 @@
 #include <QUrl>
 #include <QVariant>
 
-class ComicDB;
-
-class ComicItem;
+#include <optional>
 
 using namespace YACReader;
 
@@ -119,6 +118,8 @@ public:
     QVector<YACReaderComicReadStatus> getReadList();
     QList<ComicDB> getComics(QList<QModelIndex> list); //--> recupera la información común a los comics seleccionados
     QList<ComicDB> getAllComics();
+    // from the rows, without a query: the rows are as fresh as the last load
+    std::optional<ComicDB> firstUnreadComic() const;
     QModelIndex getIndexFromId(quint64 id);
     QList<QModelIndex> getIndexesFromIds(const QList<qulonglong> &comicIds);
     QVector<YACReaderComicReadStatus> setComicsRead(QList<QModelIndex> list, YACReaderComicReadStatus read);
@@ -156,6 +157,10 @@ public:
 
     QHash<int, QByteArray> roleNames() const override;
 
+    static QList<ComicItem> createItems(QSqlQuery &query);
+    static QList<ComicItem> createItems(QSqlQuery &query, ListKind listKind, qulonglong listId);
+    static QList<ComicItem> sortedForFolder(QList<ComicItem> items);
+
 public slots:
     void remove(int row);
     void startTransaction();
@@ -166,25 +171,23 @@ public slots:
     void addComicsToLabel(const QList<qulonglong> &comicIds, qulonglong labelId);
     void addComicsToReadingList(const QList<qulonglong> &comicIds, qulonglong readingListId);
 
-    void setModelData(QList<ComicItem *> *data, const QString &databasePath);
+    void setModelData(QList<ComicItem> *data, const QString &databasePath);
 
 protected:
 private:
-    QHash<quint64, quint64> coverRevisions;
-    QList<ComicItem *> createModelData(QSqlQuery &sqlquery) const;
-    QList<ComicItem *> createModelDataForList(QSqlQuery &sqlquery) const;
+    QHash<quint64, quint64> coverRevisions; // by comic_info id
 
-    QList<ComicItem *> createFolderModelData(unsigned long long parentLabel, const QString &databasePath) const;
-    QList<ComicItem *> createLabelModelData(unsigned long long parentLabel, const QString &databasePath) const;
-    QList<ComicItem *> createReadingListData(unsigned long long parentReadingList, const QString &databasePath, bool &enableResorting) const;
-    QList<ComicItem *> createFavoritesModelData(const QString &databasePath) const;
-    QList<ComicItem *> createReadingModelData(const QString &databasePath) const;
-    QList<ComicItem *> createRecentModelData(const QString &databasePath) const;
+    QList<ComicItem> createFolderModelData(unsigned long long parentLabel, const QString &databasePath) const;
+    QList<ComicItem> createLabelModelData(unsigned long long parentLabel, const QString &databasePath) const;
+    QList<ComicItem> createReadingListData(unsigned long long parentReadingList, const QString &databasePath, bool &enableResorting) const;
+    QList<ComicItem> createFavoritesModelData(const QString &databasePath) const;
+    QList<ComicItem> createReadingModelData(const QString &databasePath) const;
+    QList<ComicItem> createRecentModelData(const QString &databasePath) const;
 
-    void takeData(const QList<ComicItem *> &data);
-    void takeUpdatedData(const QList<ComicItem *> &updatedData, std::function<bool(ComicItem *, ComicItem *)> comparator);
-    ComicDB _getComic(const QModelIndex &mi);
-    QList<ComicItem *> _data;
+    void takeData(const QList<ComicItem> &data);
+    void takeUpdatedData(const QList<ComicItem> &updatedData, std::function<bool(const ComicItem &, const ComicItem &)> comparator);
+    void updateRowsOf(ComicInfoId id, const std::function<void(ComicInfo &)> &change, int firstColumn, int lastColumn, const QList<int> &roles);
+    QList<ComicItem> _data;
 
     QString _databasePath;
     QString _databaseConnection;

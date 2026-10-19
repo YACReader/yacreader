@@ -1,6 +1,7 @@
 #include "folder_query_result_processor.h"
 
 #include "data_base_management.h"
+#include "db_helper.h"
 #include "folder_item.h"
 #include "folder_model.h"
 #include "search_query.h"
@@ -46,10 +47,10 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
     FolderItem *rootItem = 0;
 
     // inicializar el nodo ra�z
-    QList<QVariant> rootData;
-    rootData << "root";
-    rootItem = new FolderItem(rootData);
-    rootItem->id = ROOT;
+    Folder rootFolder;
+    rootFolder.id = FolderId(ROOT);
+    rootFolder.name = "root";
+    rootItem = new FolderItem(rootFolder);
     rootItem->parentItem = 0;
 
     FolderItem *parent = rootItem;
@@ -57,25 +58,22 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
     QMap<unsigned long long int, FolderItem *> *filteredItems = new QMap<unsigned long long int, FolderItem *>();
 
     // add tree root node
-    filteredItems->insert(parent->id, parent);
+    filteredItems->insert(parent->folder.id.value(), parent);
 
-    QSqlRecord record = sqlquery.record();
-
-    int parentIdIndex = record.indexOf("parentId");
-
+    const auto indexes = Folder::columnIndexes(sqlquery.record(), "f");
     while (sqlquery.next()) {
-        auto item = new FolderItem(QList<QVariant>()); // no need for data, we just need the ids of the folders in the search result
-        item->id = sqlquery.value(0).toULongLong();
+        const auto folder = Folder::fromQuery(sqlquery, indexes);
+        auto item = new FolderItem(folder);
 
         // id del padre
-        quint64 parentId = sqlquery.value(parentIdIndex).toULongLong();
+        quint64 parentId = folder.parentId.value();
 
         // se a�ade el item al map, de forma que se pueda encontrar como padre en siguientes iteraciones
-        if (!filteredItems->contains(item->id))
-            filteredItems->insert(item->id, item);
+        if (!filteredItems->contains(item->folder.id.value()))
+            filteredItems->insert(item->folder.id.value(), item);
 
         // es necesario conocer las coordenadas de origen para poder realizar scroll autom�tico en la vista
-        item->originalItem = model->items.value(item->id);
+        item->originalItem = model->items.value(item->folder.id.value());
 
         // si el padre ya existe en el modelo, el item se a�ade como hijo
         if (filteredItems->contains(parentId))
@@ -90,8 +88,7 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
                 // el padre no estaba en el modelo filtrado, as� que se rescata del modelo original
                 FolderItem *parentItem = model->items.value(parentId);
                 // se debe crear un nuevo nodo (para no compartir los hijos con el nodo original)
-                FolderItem *newparentItem = new FolderItem(parentItem->getData()); // padre que se a�adir� a la estructura de directorios filtrados
-                newparentItem->id = parentId;
+                FolderItem *newparentItem = new FolderItem(parentItem->folder); // padre que se a�adir� a la estructura de directorios filtrados
 
                 newparentItem->originalItem = parentItem;
 
@@ -103,13 +100,13 @@ void YACReader::FolderQueryResultProcessor::setupFilteredModelData(QSqlQuery &sq
                 // sino se registra el nodo para poder encontrarlo con posterioridad y se a�ade el item actual como hijo
                 else {
                     newparentItem->appendChild(item);
-                    filteredItems->insert(newparentItem->id, newparentItem);
+                    filteredItems->insert(newparentItem->folder.id.value(), newparentItem);
                     parentPreviousInserted = false;
                 }
 
                 // variables de control del bucle, se avanza hacia el nodo padre
                 item = newparentItem;
-                parentId = parentItem->parentItem->id;
+                parentId = parentItem->parentItem->folder.id.value();
             }
 
             // si el nodo es hijo de 1 y no hab�a sido previamente insertado como hijo, se a�ade como tal

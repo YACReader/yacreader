@@ -4,7 +4,6 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.12
 
 import com.yacreader.ComicInfo 1.0
-import com.yacreader.ComicDB 1.0
 
 
 Rectangle {

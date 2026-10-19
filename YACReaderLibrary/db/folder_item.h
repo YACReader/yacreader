@@ -41,6 +41,8 @@
 #ifndef TREEITEM_H
 #define TREEITEM_H
 
+#include "folder.h"
+
 #include <QList>
 #include <QModelIndex>
 #include <QVariant>
@@ -48,24 +50,18 @@
 class FolderItem
 {
 public:
-    FolderItem(const QList<QVariant> &data, FolderItem *parent = nullptr);
+    explicit FolderItem(const Folder &folder, FolderItem *parent = nullptr);
     ~FolderItem();
 
     void appendChild(FolderItem *child);
 
     FolderItem *child(int row);
     int childCount() const;
-    int columnCount() const;
-    QVariant data(int column) const;
-    QList<QVariant> getData() const;
     int row() const;
     FolderItem *parent();
     FolderItem *parentItem;
-    unsigned long long int id;
-    QList<QString> comicNames;
+    Folder folder;
     FolderItem *originalItem;
-    void setData(const QList<QVariant> &data);
-    void setData(int column, const QVariant &value);
     void addChild(FolderItem *child, int childIndex);
     void removeChild(FolderItem *child);
     void removeChild(int childIndex);
@@ -73,7 +69,6 @@ public:
 
 private:
     QList<FolderItem *> childItems;
-    QList<QVariant> itemData;
 };
 //! [0]
 

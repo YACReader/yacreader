@@ -1,12 +1,11 @@
 #ifndef COMIC_QUERY_RESULT_PROCESSOR_H
 #define COMIC_QUERY_RESULT_PROCESSOR_H
 
+#include "comic_item.h"
 #include "concurrent_queue.h"
 
 #include <QSqlQuery>
 #include <QtCore>
-
-class ComicItem;
 
 namespace YACReader {
 
@@ -19,12 +18,10 @@ public:
 public slots:
     void createModelData(const QString &filter, const QString &databasePath);
 signals:
-    void newData(QList<ComicItem *> *, const QString &);
+    void newData(QList<ComicItem> *, const QString &);
 
 private:
     ConcurrentQueue querySearchQueue;
-
-    static QList<ComicItem *> *modelData(QSqlQuery &sqlquery);
 };
 };
 
