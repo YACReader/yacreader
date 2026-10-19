@@ -58,7 +58,7 @@ struct CblBookMatch {
     std::optional<CblMatchLevel> level;
 };
 
-// a comic always wins: placeholders are candidates only when no comic fits the book
+// an accepted comic wins; else an accepted placeholder; the candidates list the comics, then the placeholders
 class CblMatcher
 {
 public:

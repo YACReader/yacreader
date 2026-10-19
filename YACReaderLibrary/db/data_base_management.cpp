@@ -836,7 +836,7 @@ bool DataBaseManagement::createReadingListEntryTable(QSqlDatabase &database)
                                                         "placeholder_id INTEGER, "
                                                         "last_known_name TEXT, "
                                                         "last_known_path TEXT, "
-                                                        // the CBL book of an entry that refers to a placeholder, as in the file, and its format (xml or json)
+                                                        // the CBL book of an imported entry, as in the file, and its format (xml or json)
                                                         "source TEXT, "
                                                         "source_format TEXT, "
                                                         "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "

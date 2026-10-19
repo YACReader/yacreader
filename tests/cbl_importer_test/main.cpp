@@ -23,7 +23,7 @@ private slots:
     void choicesMustMatchTheBooks();
     void listNameFallsBackToTheFileName();
     void readMatchAndImport();
-    void placeholderEntriesKeepTheBookSource();
+    void everyEntryKeepsTheBookSource();
 
 private:
     bool exec(const QString &sql);
@@ -252,8 +252,8 @@ void CblImporterTest::readMatchAndImport()
     QCOMPARE(rows("SELECT COUNT(*) FROM placeholder WHERE comicVineID = '4242'").first().first().toInt(), 1);
 }
 
-// only entries of a placeholder keep the book as in the file
-void CblImporterTest::placeholderEntriesKeepTheBookSource()
+// matched or not, an entry knows which book of the list it was
+void CblImporterTest::everyEntryKeepsTheBookSource()
 {
     QBuffer file;
     file.setData(R"(<?xml version="1.0" encoding="utf-8"?>
@@ -268,7 +268,7 @@ void CblImporterTest::placeholderEntriesKeepTheBookSource()
     const auto id = importCblReadingList("Sources", list, { comic(10), std::nullopt }, db);
     QVERIFY(id);
     const auto entries = rows(QString("SELECT source, source_format FROM reading_list_entry WHERE reading_list_id = %1 ORDER BY ordering").arg(id->value()));
-    QCOMPARE(entries.at(0), QVariantList({ QVariant(), QVariant() }));
+    QCOMPARE(entries.at(0), QVariantList({ R"(<Book Series="Batman" Number="1" />)", "xml" }));
     QCOMPARE(entries.at(1), QVariantList({ R"(<!-- not in the library -->
   <Book Series="Robin" Number="7" Volume="1993" Year="1994"><Database Name="metron" Series="9" Issue="99" /><Extra>kept</Extra></Book>)",
                                            "xml" }));

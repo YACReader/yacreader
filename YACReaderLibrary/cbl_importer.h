@@ -22,8 +22,8 @@ QString cblListName(const CblReadingList &list, const QString &filePath);
 
 // creates a top-level reading list `name` with one entry per book of `list`, in order, in one transaction; `choices[i]`
 // is what book i refers to. A book without a choice gets a new placeholder, which the books of this import that are the
-// same issue share (the same Comic Vine id, or else the same series, number, volume, and year). An entry of a
-// placeholder keeps the source of its book. Nothing is written when any step fails.
+// same issue share (the same Comic Vine id, or else the same series, number, volume, and year). Every entry keeps the
+// source of its book. Nothing is written when any step fails.
 std::optional<ReadingListId> importCblReadingList(const QString &name, const CblReadingList &list, const QList<std::optional<CblCandidate>> &choices, QSqlDatabase &db);
 
 #endif

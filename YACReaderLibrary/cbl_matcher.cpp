@@ -266,13 +266,26 @@ CblMatcher::CblMatcher(const QList<CblLibraryComic> &comics, const QList<CblLibr
 {
 }
 
+// an accepted comic wins; a comic that is only a candidate does not hide a placeholder of the same issue
 CblBookMatch CblMatcher::match(const CblBook &book) const
 {
-    if (auto match = matchIn(book, comics, comicIndex))
-        return *match;
-    if (auto match = matchIn(book, placeholders, placeholderIndex))
-        return *match;
-    return { };
+    const auto comicMatch = matchIn(book, comics, comicIndex);
+    if (comicMatch && comicMatch->accepted)
+        return *comicMatch;
+
+    const auto placeholderMatch = matchIn(book, placeholders, placeholderIndex);
+    if (!comicMatch)
+        return placeholderMatch.value_or(CblBookMatch { });
+    if (!placeholderMatch)
+        return *comicMatch;
+
+    auto result = *comicMatch;
+    result.candidates += placeholderMatch->candidates;
+    if (placeholderMatch->accepted) {
+        result.accepted = placeholderMatch->accepted;
+        result.level = placeholderMatch->level;
+    }
+    return result;
 }
 
 std::optional<QList<CblLibraryComic>> CblMatcher::loadLibraryComics(QSqlDatabase &db)

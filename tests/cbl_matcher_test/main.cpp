@@ -35,6 +35,7 @@ private slots:
     void aComicWinsOverAPlaceholder();
     void placeholdersFollowTheSameRules();
     void loadsLibraryPlaceholders();
+    void aComicThatDisagreesDoesNotHideAPlaceholder();
 
 private:
     static CblLibraryComic comic(qulonglong id, const QString &series, const QString &number, const QString &volume = { }, const QString &date = { }, bool hasFile = true);
@@ -414,6 +415,23 @@ void CblMatcherTest::placeholdersFollowTheSameRules()
     const auto disagreeing = matcher.match(book("Hulk", "1", "1999", "1999"));
     QCOMPARE(disagreeing.candidates.size(), 1);
     QVERIFY(!disagreeing.accepted);
+}
+
+// only an accepted comic wins over a placeholder of the same issue
+void CblMatcherTest::aComicThatDisagreesDoesNotHideAPlaceholder()
+{
+    const CblMatcher matcher({ comic(1, "Batman", "2", "1940", "01/04/1940") }, { placeholder(7, "Batman", "2", "2016", "//2016") });
+
+    const auto match = matcher.match(book("Batman", "2", "2016", "2016"));
+    QCOMPARE(acceptedPlaceholder(match), qulonglong(7));
+    QCOMPARE(match.candidates.size(), 2);
+    QVERIFY(std::holds_alternative<CblLibraryComic>(match.candidates.at(0)));
+    QVERIFY(std::holds_alternative<CblLibraryPlaceholder>(match.candidates.at(1)));
+
+    // nothing agrees: both are candidates and nothing is accepted
+    const auto neither = matcher.match(book("Batman", "2", "1990", "1990"));
+    QVERIFY(!neither.accepted);
+    QCOMPARE(neither.candidates.size(), 2);
 }
 
 void CblMatcherTest::loadsLibraryPlaceholders()

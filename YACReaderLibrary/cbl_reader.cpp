@@ -19,11 +19,49 @@ std::optional<int> toInt(const QString &text)
     return ok ? std::optional<int>(value) : std::nullopt;
 }
 
+// some generators escape text twice, so a value can hold "Infinity&#44; Inc." or "Batman &amp; Robin"
+QString decodeReferences(const QString &text)
+{
+    static const QRegularExpression reference(R"(&(#[0-9]+|#[xX][0-9a-fA-F]+|amp|lt|gt|quot|apos);)");
+    if (!text.contains('&'))
+        return text;
+
+    QString result;
+    qsizetype last = 0;
+    auto matches = reference.globalMatch(text);
+    while (matches.hasNext()) {
+        const auto match = matches.next();
+        const auto name = match.captured(1);
+        char32_t character = 0;
+        if (name.startsWith(QLatin1StringView("#x"), Qt::CaseInsensitive))
+            character = name.mid(2).toUInt(nullptr, 16);
+        else if (name.startsWith('#'))
+            character = name.mid(1).toUInt();
+        else
+            character = name == QLatin1StringView("amp") ? '&' : name == QLatin1StringView("lt") ? '<'
+                    : name == QLatin1StringView("gt")                                            ? '>'
+                    : name == QLatin1StringView("quot")                                          ? '"'
+                                                                                                 : '\'';
+        if (character == 0 || character > 0x10FFFF)
+            continue;
+        result += text.mid(last, match.capturedStart() - last);
+        result += QString::fromUcs4(&character, 1);
+        last = match.capturedEnd();
+    }
+    result += text.mid(last);
+    return result;
+}
+
 // XML
 
 QString attribute(const QXmlStreamAttributes &attributes, QLatin1StringView name)
 {
-    return attributes.value(name).toString().trimmed();
+    return decodeReferences(attributes.value(name).toString().trimmed());
+}
+
+QString elementText(QXmlStreamReader &xml)
+{
+    return decodeReferences(xml.readElementText().trimmed());
 }
 
 CblBook readXmlBook(QXmlStreamReader &xml)
@@ -44,9 +82,9 @@ CblBook readXmlBook(QXmlStreamReader &xml)
                                     attribute(databaseAttributes, QLatin1StringView("Issue")) });
             xml.skipCurrentElement();
         } else if (xml.name() == QLatin1StringView("Id")) {
-            book.id = xml.readElementText().trimmed();
+            book.id = elementText(xml);
         } else if (xml.name() == QLatin1StringView("FileName")) {
-            book.fileName = xml.readElementText().trimmed();
+            book.fileName = elementText(xml);
         } else {
             xml.skipCurrentElement();
         }
@@ -82,9 +120,9 @@ CblReadResult readXml(const QString &text)
     while (xml.readNextStartElement()) {
         const auto name = xml.name();
         if (name == QLatin1StringView("Name")) {
-            list.name = xml.readElementText().trimmed();
+            list.name = elementText(xml);
         } else if (name == QLatin1StringView("Summary")) {
-            list.description = xml.readElementText().trimmed();
+            list.description = elementText(xml);
         } else if (name == QLatin1StringView("NumIssues")) {
             list.sourceCount = toInt(xml.readElementText());
         } else if (name == QLatin1StringView("StartYear")) {
@@ -129,7 +167,7 @@ CblReadResult readXml(const QString &text)
 QString text(const QJsonValue &value)
 {
     if (value.isString())
-        return value.toString().trimmed();
+        return decodeReferences(value.toString().trimmed());
     if (value.isDouble()) {
         const auto number = value.toDouble();
         return number == std::floor(number) ? QString::number(static_cast<qint64>(number)) : QString::number(number);

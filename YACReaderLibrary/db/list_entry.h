@@ -18,7 +18,7 @@ struct LastKnownFile {
     friend bool operator==(const LastKnownFile &, const LastKnownFile &) = default;
 };
 
-// the CBL book of a reading list entry that refers to a placeholder, as in the file
+// the CBL book of an imported reading list entry, as in the file
 struct EntrySource {
     QString text;
     // "xml" or "json"

@@ -131,8 +131,7 @@ std::optional<ReadingListId> importCblReadingList(const QString &name, const Cbl
         entry.bindValue(":ordering", i);
         entry.bindValue(":comic_info_id", comicInfoId);
         entry.bindValue(":placeholder_id", placeholderId);
-        // only a placeholder needs the book to be matched later
-        const bool keepSource = !placeholderId.isNull() && !books.at(i).source.isEmpty();
+        const bool keepSource = !books.at(i).source.isEmpty();
         entry.bindValue(":source", keepSource ? QVariant(books.at(i).source) : QVariant());
         entry.bindValue(":source_format", keepSource ? QVariant(sourceFormat) : QVariant());
         if (!entry.exec())

@@ -33,6 +33,7 @@ private slots:
     void failsOnBrokenJson();
     void booksKeepTheirSource();
     void readsTheDeclaredEncoding();
+    void decodesCharacterReferences();
 
 private:
     static CblReadResult read(const QByteArray &data);
@@ -474,6 +475,25 @@ void CblReaderTest::readsTheDeclaredEncoding()
     const auto fromUtf16 = read(utf16);
     QVERIFY(std::get_if<CblReadingList>(&fromUtf16) != nullptr);
     QCOMPARE(std::get<CblReadingList>(fromUtf16).name, QString::fromUtf8("Ñame"));
+}
+
+// some generators escape the text twice; the source keeps it as written
+void CblReaderTest::decodesCharacterReferences()
+{
+    const auto xml = read(R"(<ReadingList><Name>A &amp;amp; B</Name><Books><Book Series="Infinity&amp;#44; Inc." Number="1" /><Book Series="Hex&amp;#x2C; Ref &amp;unknown;" Number="2" /></Books></ReadingList>)");
+    const auto xmlList = std::get_if<CblReadingList>(&xml);
+    QVERIFY(xmlList != nullptr);
+    QCOMPARE(xmlList->name, QString("A & B"));
+    QCOMPARE(xmlList->books.at(0).series, QString("Infinity, Inc."));
+    QCOMPARE(xmlList->books.at(1).series, QString("Hex, Ref &unknown;"));
+    QVERIFY(xmlList->books.at(0).source.contains("Infinity&amp;#44; Inc."));
+
+    const auto json = read(R"({ "listDetails": { "name": "Atlantis &amp; more" }, "issueList": [ { "seriesName": "Arion&#44; Lord of Atlantis", "issueNumber": "1" } ] })");
+    const auto jsonList = std::get_if<CblReadingList>(&json);
+    QVERIFY(jsonList != nullptr);
+    QCOMPARE(jsonList->name, QString("Atlantis & more"));
+    QCOMPARE(jsonList->books.at(0).series, QString("Arion, Lord of Atlantis"));
+    QVERIFY(jsonList->books.at(0).source.contains("Arion&#44; Lord of Atlantis"));
 }
 
 QTEST_GUILESS_MAIN(CblReaderTest)
