@@ -170,6 +170,7 @@ if(NOT BUILD_SERVER_STANDALONE)
 endif()
 
 add_subdirectory(YACReaderLibrary/server)
+add_subdirectory(YACReaderLibrary/cbl)
 
 if(NOT BUILD_SERVER_STANDALONE)
     add_subdirectory(YACReaderLibrary/comic_vine)
