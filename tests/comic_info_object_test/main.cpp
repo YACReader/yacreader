@@ -18,6 +18,8 @@ class ComicInfoObjectTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void titleFallback_data();
+    void titleFallback();
     void exposesTheQmlProperties();
     void readsTheComic();
     void readsADeletedComic();
@@ -130,7 +132,7 @@ void ComicInfoObjectTest::readsADeletedComic()
     QCOMPARE(deleted.getFileSize(), comic.getFileSize());
 
     ComicInfoObject withoutName(ComicRecordCase::DeletedComic { comic.info, std::nullopt }, false);
-    QCOMPARE(withoutName.getTitleOrFileName(), QString());
+    QCOMPARE(withoutName.getTitleOrFileName(), QString("Missing comic"));
 }
 
 // the descriptive metadata only; no comic state, and the read state and rating cannot be set
@@ -304,6 +306,41 @@ void ComicInfoObjectTest::comicStreamKeepsTheLayout()
     QCOMPARE(path, QString("/Series/Issue 1.cbz"));
     QCOMPARE(hasCover, loaded);
     QCOMPARE(info.id, loaded ? ComicInfoId(42) : ComicInfoId());
+}
+
+void ComicInfoObjectTest::titleFallback_data()
+{
+    QTest::addColumn<QVariant>("title");
+    QTest::addColumn<QVariant>("series");
+    QTest::addColumn<QVariant>("number");
+    QTest::addColumn<QString>("fileName");
+    QTest::addColumn<QString>("expected");
+    QTest::addColumn<QString>("expectedWithNumber");
+
+    QTest::newRow("title") << QVariant("The Long Night") << QVariant("Batman") << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night";
+    QTest::newRow("series and number") << QVariant() << QVariant("Batman") << QVariant("3") << "b.cbz" << "Batman #3" << "Batman #3";
+    QTest::newRow("empty title") << QVariant("") << QVariant("Batman") << QVariant("3") << "b.cbz" << "Batman #3" << "Batman #3";
+    QTest::newRow("series") << QVariant() << QVariant("Batman") << QVariant() << "b.cbz" << "Batman" << "Batman";
+    QTest::newRow("number") << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "#3" << "#3";
+    QTest::newRow("file name") << QVariant() << QVariant() << QVariant() << "b.cbz" << "b.cbz" << "b.cbz";
+    QTest::newRow("nothing") << QVariant() << QVariant() << QVariant() << "" << "" << "";
+}
+
+void ComicInfoObjectTest::titleFallback()
+{
+    QFETCH(QVariant, title);
+    QFETCH(QVariant, series);
+    QFETCH(QVariant, number);
+    QFETCH(QString, fileName);
+    QFETCH(QString, expected);
+    QFETCH(QString, expectedWithNumber);
+
+    DescriptiveComicMetadata info;
+    info.title = title;
+    info.series = series;
+    info.number = number;
+    QCOMPARE(titleOrFileName(info, fileName), expected);
+    QCOMPARE(titleIncludingNumber(info, fileName), expectedWithNumber);
 }
 
 QTEST_GUILESS_MAIN(ComicInfoObjectTest)

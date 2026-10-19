@@ -201,19 +201,29 @@ QString ComicDB::getInfoTitle() const
     return infoTitle(info, QFileInfo(file.path).fileName());
 }
 
+static bool hasText(const QVariant &value)
+{
+    return !value.isNull() && !value.toString().trimmed().isEmpty();
+}
+
 QString titleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
 {
-    if (!info.title.isNull() && !info.title.toString().isEmpty())
+    if (hasText(info.title))
         return info.title.toString();
-    else
-        return fileName;
+    if (hasText(info.series) && hasText(info.number))
+        return info.series.toString() + " #" + info.number.toString();
+    if (hasText(info.series))
+        return info.series.toString();
+    if (hasText(info.number))
+        return "#" + info.number.toString();
+    return fileName;
 }
 
 QString titleIncludingNumber(const DescriptiveComicMetadata &info, const QString &fileName)
 {
-    if (!info.number.isNull()) {
-        return "#" + info.number.toString() + " - " + titleOrFileName(info, fileName);
-    }
+    // without a title, the fallback already has the number
+    if (hasText(info.title) && hasText(info.number))
+        return "#" + info.number.toString() + " - " + info.title.toString();
 
     return titleOrFileName(info, fileName);
 }
@@ -232,19 +242,7 @@ QString infoTitle(const DescriptiveComicMetadata &info, const QString &fileName)
     if (!info.number.isNull() && !info.series.isNull())
         return "#" + info.number.toString() + " - " + info.series.toString();
 
-    if (!info.number.isNull())
-        return "#" + info.number.toString() + " - " + titleOrFileName(info, fileName);
-
-    if (!info.title.isNull() && !info.series.isNull())
-        return info.title.toString() + " (" + info.series.toString() + ")";
-
-    if (!info.title.isNull())
-        return info.title.toString();
-
-    if (!info.series.isNull())
-        return info.series.toString();
-
-    return fileName;
+    return titleOrFileName(info, fileName);
 }
 
 QString parentFolderName(const QString &path)

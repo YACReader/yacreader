@@ -187,8 +187,10 @@ signals:
     void favoriteChanged();
 
 private:
+    static QString orMissingComic(const QString &title);
+
     ComicRecord record;
-    // the title fallback: the file name, or the last known one of a deleted comic
+    // the last title fallback: the file name, or the last known one of a deleted comic
     QString fileName;
     bool isAvailable = true;
     bool favorite;

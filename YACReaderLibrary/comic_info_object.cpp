@@ -513,7 +513,7 @@ QString ComicInfoObject::getAlternateSeriesString() const
 
 QString ComicInfoObject::getTitleOrFileName() const
 {
-    return titleOrFileName(recordMetadata(record), fileName);
+    return orMissingComic(titleOrFileName(recordMetadata(record), fileName));
 }
 
 qulonglong ComicInfoObject::getFileSize() const
@@ -527,12 +527,18 @@ qulonglong ComicInfoObject::getFileSize() const
 
 QString ComicInfoObject::getTitleIncludingNumber() const
 {
-    return titleIncludingNumber(recordMetadata(record), fileName);
+    return orMissingComic(titleIncludingNumber(recordMetadata(record), fileName));
 }
 
 QString ComicInfoObject::getInfoTitle() const
 {
-    return infoTitle(recordMetadata(record), fileName);
+    return orMissingComic(infoTitle(recordMetadata(record), fileName));
+}
+
+// only a missing comic can have no title, series, number, or file name
+QString ComicInfoObject::orMissingComic(const QString &title)
+{
+    return title.isEmpty() ? tr("Missing comic") : title;
 }
 
 bool ComicInfoObject::available() const

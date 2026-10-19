@@ -805,12 +805,13 @@ void ComicModelTest::placeholderRowsShowTheirMetadata()
         QCOMPARE(model.index(2, column).data(Qt::DisplayRole).toString(), QString("-"));
     QVERIFY(!(model.flags(model.index(2, ComicModel::Rating)) & Qt::ItemIsEditable));
 
-    // the descriptive metadata, and the series when there is no title
+    // the descriptive metadata, and "Series #Number" when there is no title, also in the table
     QCOMPARE(index.data(ComicModel::NumberRole).toString(), QString("7"));
     QCOMPARE(index.data(ComicModel::SeriesRole).toString(), QString("Expected Series"));
     QCOMPARE(index.data(ComicModel::VolumeRole).toString(), QString("2020"));
-    QCOMPARE(index.data(ComicModel::TitleRole).toString(), QString("Expected Series"));
-    QCOMPARE(index.data(ComicModel::ReadableTitle).toString(), QString("#7 Expected Series"));
+    QCOMPARE(index.data(ComicModel::TitleRole).toString(), QString("Expected Series #7"));
+    QCOMPARE(index.data(ComicModel::ReadableTitle).toString(), QString("Expected Series #7"));
+    QCOMPARE(model.index(2, ComicModel::Title).data(Qt::DisplayRole).toString(), QString("Expected Series #7"));
 
     QVERIFY(model.hasUnavailableRows());
     QCOMPARE(model.getUnavailableList(), QList<bool>({ false, false, true }));
