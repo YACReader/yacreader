@@ -145,7 +145,7 @@
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>Aller à la dernière page</translation>
     </message>
 </context>
@@ -176,12 +176,12 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>Le raccourci &quot;%1&quot; est déjà affecté à une autre fonction</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>Pour modifier un raccourci, double-cliquez sur la combinaison de touches et tapez les nouvelles clés.</translation>
     </message>
 </context>
@@ -224,7 +224,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
+        <source>Total pages: </source>
         <translation>Nombre de pages :</translation>
     </message>
     <message>
@@ -234,7 +234,7 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>Feuille :</translation>
     </message>
 </context>
@@ -242,7 +242,7 @@
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>Feuille :</translation>
     </message>
 </context>
@@ -388,7 +388,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>Comportement de défilement</translation>
     </message>
     <message>
@@ -423,7 +423,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>Cliquez sur la moitié gauche ou droite de l&apos;écran pour tourner les pages.</translation>
     </message>
     <message>
@@ -792,7 +792,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
+        <source>Press &apos;O&apos; to open a comic.</source>
         <translation>Appuyez sur &quot;O&quot; pour ouvrir une bande dessinée.</translation>
     </message>
     <message>
@@ -827,7 +827,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
+        <source>Loading... please wait!</source>
         <translation>Chargement... Patientez</translation>
     </message>
 </context>
@@ -940,7 +940,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
         <translation>Utiliser VSync (Améliore la qualité d&apos;image en mode plein écran, ralentit la performance)</translation>
     </message>
     <message>
@@ -1168,7 +1168,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
+        <source>Go to page...</source>
         <translation>Aller à la page ...</translation>
     </message>
     <message>
@@ -1194,6 +1194,8 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1353"/>
+        <location filename="main_window_viewer.cpp" line="1419"/>
         <source>Magnifying glass</source>
         <translation>Loupe</translation>
     </message>
@@ -1361,12 +1363,6 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
         <translation>Réinitialiser la loupe</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1353"/>
-        <location filename="main_window_viewer.cpp" line="1419"/>
-        <source>Magnifiying glass</source>
-        <translation>Loupe</translation>
-    </message>
-    <message>
         <location filename="main_window_viewer.cpp" line="1426"/>
         <source>Toggle between fit to width and fit to height</source>
         <translation>Basculer entre adapter à la largeur et adapter à la hauteur</translation>
@@ -1374,7 +1370,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1354"/>
         <location filename="main_window_viewer.cpp" line="1430"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
         <translation>Ajustement de la page</translation>
     </message>
     <message>

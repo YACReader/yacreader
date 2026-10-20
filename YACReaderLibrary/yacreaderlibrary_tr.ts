@@ -51,12 +51,12 @@
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="16"/>
-        <source>Comics folder : </source>
+        <source>Comics folder: </source>
         <translation>Çizgi roman klasörü : </translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="21"/>
-        <source>Library name : </source>
+        <source>Library name: </source>
         <translation>Kütüphane adı : </translation>
     </message>
 </context>
@@ -69,7 +69,7 @@
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
         <translation>Comic Vine&apos;a bağlanmadan önce kendi API anahtarınıza ihtiyacınız var. Lütfen &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;buradan&lt;/a&gt; ücretsiz bir tane edinin</translation>
     </message>
     <message>
@@ -445,13 +445,13 @@
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="279"/>
-        <source>Error connecting to ComicVine</source>
-        <translation>ComicVine sitesine bağlanılırken hata</translation>
+        <source>Error connecting to Comic Vine</source>
+        <translation>Comic Vine sitesine bağlanılırken hata</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="459"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="484"/>
-        <source>Retrieving tags for : %1</source>
+        <source>Retrieving tags for: %1</source>
         <translation>%1 için etiketler alınıyor</translation>
     </message>
     <message>
@@ -492,7 +492,7 @@
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="57"/>
-        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
+        <source>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</source>
         <translation>Yeni kütüphanenin oluşturulması birkaç dakika sürecek.</translation>
     </message>
     <message>
@@ -502,12 +502,12 @@
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="21"/>
-        <source>Comics folder : </source>
+        <source>Comics folder: </source>
         <translation>Çizgi roman klasörü : </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="26"/>
-        <source>Library Name : </source>
+        <source>Library Name: </source>
         <translation>Kütüphane Adı : </translation>
     </message>
     <message>
@@ -533,7 +533,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>Bir kısayolu değiştirmek için tuş kombinasyonuna çift tıklayın ve yeni tuşları girin.</translation>
     </message>
     <message>
@@ -548,7 +548,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>&quot;%1&quot; kısayalou zaten başka bir işlev tarafından kullanılıyor</translation>
     </message>
 </context>
@@ -611,7 +611,7 @@
     <name>ExportComicsInfoDialog</name>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="14"/>
-        <source>Output file : </source>
+        <source>Output file: </source>
         <translation>Çıkış dosyası : </translation>
     </message>
     <message>
@@ -664,7 +664,7 @@
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="12"/>
-        <source>Output folder : </source>
+        <source>Output folder: </source>
         <translation>Çıktı klasörü : </translation>
     </message>
     <message>
@@ -876,7 +876,7 @@
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="16"/>
-        <source>Info database location : </source>
+        <source>Info database location: </source>
         <translation>Bilgi veritabanı konumu : </translation>
     </message>
     <message>
@@ -894,7 +894,7 @@
     <name>ImportLibraryDialog</name>
     <message>
         <location filename="import_library_dialog.cpp" line="26"/>
-        <source>Destination folder : </source>
+        <source>Destination folder: </source>
         <translation>Hedef klasör : </translation>
     </message>
     <message>
@@ -909,17 +909,17 @@
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="115"/>
-        <source>Compresed library covers (*.clc)</source>
+        <source>Compressed library covers (*.clc)</source>
         <translation>Sıkıştırılmış kütüphane kapakları (*.clc)</translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="22"/>
-        <source>Package location : </source>
+        <source>Package location: </source>
         <translation>Paket konumu : </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="17"/>
-        <source>Library Name : </source>
+        <source>Library Name: </source>
         <translation>Kütüphane Adı : </translation>
     </message>
     <message>
@@ -942,7 +942,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="319"/>
-        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
+        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Creating a library could take several minutes. You can stop the process and update the library later to complete the task.&lt;/p&gt;</source>
         <translation>&lt;p&gt;YACReaderKütüphane şu anda yeni bir kütüphane oluşturuyor&lt;/p&gt;&lt;p&gt;Kütüphanenin oluşturulması birkaç dakika alacak.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -957,7 +957,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="331"/>
-        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being updated. For faster updates, please update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Kütüphane güncelleniyor&lt;/p&gt;&lt;p&gt;Güncellemeyi daha sonra iptal edebilirsin.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -977,7 +977,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="355"/>
-        <source>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Geçerli kitaplık, eski XML meta veri bilgileri için taranıyor.&lt;/p&gt;&lt;p&gt;Bu yalnızca bir kez gereklidir ve yalnızca kitaplığın YACReaderLibrary 9.8.2 veya daha eski bir sürümle oluşturulmuş olması durumunda gereklidir.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -1061,8 +1061,8 @@
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="400"/>
-        <source>Do you want remove </source>
-        <translation>Kaldırmak ister misin</translation>
+        <source>Do you want to remove the library &apos;%1&apos;?</source>
+        <translation>Şu kütüphaneyi kaldırmak ister misiniz: &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="186"/>
@@ -1115,11 +1115,6 @@
         <translation>Kütüphane bulunamadı</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="400"/>
-        <source> library?</source>
-        <translation> kütüphane?</translation>
-    </message>
-    <message>
         <location filename="library_management_coordinator.cpp" line="399"/>
         <source>Are you sure?</source>
         <translation>Emin misin?</translation>
@@ -1165,7 +1160,7 @@
         <location filename="folder_management_coordinator.cpp" line="134"/>
         <location filename="folder_management_coordinator.cpp" line="146"/>
         <location filename="folder_management_coordinator.cpp" line="200"/>
-        <source>Please, select a folder first</source>
+        <source>Please select a folder first</source>
         <translation>Lütfen, önce bir klasör seçiniz</translation>
     </message>
     <message>
@@ -1191,7 +1186,7 @@
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="251"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <source>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
         <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
         <translation>Seçili klasörleri silmeye çalışırken bir sorun oluştu. Lütfen yazma izinlerini kontrol edin ve hiçbir uygulamanın bu klasörleri veya içerdikleri dosyaları kullanmadığından emin olun.</translation>
     </message>
@@ -1330,9 +1325,9 @@ Klasör: %1</translation>
         <location filename="library_management_coordinator.cpp" line="446"/>
         <source>You are adding too many libraries.
 
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
 
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</source>
         <translation>Çok fazla kütüphane ekliyorsunuz.
 
 Muhtemelen üst düzey çizgi roman klasörünüzde yalnızca bir kütüphaneye ihtiyacınız vardır, sol kenar çubuğundaki klasörler bölümünü kullanarak herhangi bir alt klasöre göz atabilirsiniz.
@@ -1503,7 +1498,7 @@ Kitaplık menüsünden bir yedeği geri yükleyebilir veya kitaplığı yeniden 
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="596"/>
-        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
+        <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
         <translation>Seçilen çizgi romanlar silinmeye çalışılırken bir sorun oluştu. Lütfen seçilen dosyalarda veya klasörleri içeren yazma izinlerini kontrol edin.</translation>
     </message>
     <message>
@@ -1513,7 +1508,7 @@ Kitaplık menüsünden bir yedeği geri yükleyebilir veya kitaplığı yeniden 
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="304"/>
-        <source>Assign numbers starting in:</source>
+        <source>Assign numbers starting at:</source>
         <translation>Şunlardan başlayarak numaralar ata:</translation>
     </message>
     <message>
@@ -1672,7 +1667,7 @@ Eksik dosyalar: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="106"/>
-        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
+        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files.</source>
         <translation>Komik dosyalara gömülü XML bilgilerini bulmaya çalışır. Bunu yalnızca kitaplık 9.8.2 veya önceki sürümlerle oluşturulmuşsa veya XML bilgilerini dosyalara eklemek için üçüncü taraf yazılım kullanıyorsanız yapmanız gerekir.</translation>
     </message>
     <message>
@@ -1702,7 +1697,7 @@ Eksik dosyalar: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="121"/>
-        <source>Open current comic on YACReader</source>
+        <source>Open current comic in YACReader</source>
         <translation>YACReader&apos;ı geçerli çizgi roman okuyucsu seç</translation>
     </message>
     <message>
@@ -2091,7 +2086,7 @@ Eksik dosyalar: %3</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="42"/>
-        <source>4koma (top to botom)</source>
+        <source>4koma (top to bottom)</source>
         <translation>4koma (yukarıdan aşağıya)</translation>
     </message>
     <message>
@@ -2235,7 +2230,7 @@ Eksik dosyalar: %3</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a standalone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Yeni bir kütüphane oluşturabilmeniçin kütüphane&lt;/p&gt;&lt;p&gt;No olvides que puedes usar YACReader como una aplicación independiente para leer los cómics en tu ordenador.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -2291,7 +2286,7 @@ Eksik dosyalar: %3</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="195"/>
-        <source>Start into the system tray</source>
+        <source>Start in the system tray</source>
         <translation>Sistem tepsisinde başlat</translation>
     </message>
     <message>
@@ -2402,10 +2397,10 @@ Eksik dosyalar: %3</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="338"/>
-        <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
-During automatic updates the app will block some of the actions until the update is finished.
-To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
+        <source>WARNING! During library updates, writes to the database are disabled!
+Don&apos;t schedule updates while you may be actively using the app.
+During automatic updates, the app will block some of the actions until the update is finished.
+To stop an automatic update, tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
 Don&apos;t schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
@@ -2446,7 +2441,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     </message>
     <message>
         <location filename="options_dialog.cpp" line="403"/>
-        <source>Restore defautls</source>
+        <source>Restore defaults</source>
         <translation>Varsayılanları geri yükle</translation>
     </message>
     <message>
@@ -3511,7 +3506,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     </message>
     <message>
         <location filename="rename_library_dialog.cpp" line="15"/>
-        <source>New Library Name : </source>
+        <source>New Library Name: </source>
         <translation>Yeni Kütüphane Adı : </translation>
     </message>
 </context>
@@ -3519,7 +3514,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <name>ScraperResultsPaginator</name>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="20"/>
-        <source>Number of volumes found : %1</source>
+        <source>Number of volumes found: %1</source>
         <translation>Bulunan bölüm sayısı: %1</translation>
     </message>
     <message>
@@ -3530,7 +3525,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="44"/>
-        <source>Number of %1 found : %2</source>
+        <source>Number of %1 found: %2</source>
         <translation>Sayı %1, bulunan : %2</translation>
     </message>
 </context>
@@ -4143,7 +4138,7 @@ Use quotes to include spaces in a value.</source>
     <name>SelectComic</name>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="16"/>
-        <source>Please, select the right comic info.</source>
+        <source>Please select the right comic info.</source>
         <translation>Lütfen, doğru çizgi roman bilgisini seçin.</translation>
     </message>
     <message>
@@ -4171,7 +4166,7 @@ Use quotes to include spaces in a value.</source>
     <name>SelectVolume</name>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="31"/>
-        <source>Please, select the right series for your comic.</source>
+        <source>Please select the right series for your comic.</source>
         <translation>Çizgi romanınız için doğru seriyi seçin.</translation>
     </message>
     <message>
@@ -4274,7 +4269,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="comic_vine/series_question.cpp" line="12"/>
-        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
+        <source>You are trying to get information for various comics at once. Are they part of the same series?</source>
         <translation>Aynı anda çeşitli çizgi romanlar için bilgi almaya çalışıyorsunuz, bunlar aynı serinin parçası mı?</translation>
     </message>
 </context>
@@ -4362,7 +4357,7 @@ Use quotes to include spaces in a value.</source>
     <name>SortVolumeComics</name>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please sort the list of comics on the left until it matches the comics&apos; information.</source>
         <translation>Lütfen, çizgi romanların bilgileriyle eşleşene kadar soldaki çizgi roman listesini sıralayın.</translation>
     </message>
     <message>
@@ -4605,7 +4600,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="165"/>
-        <source>Updating....</source>
+        <source>Updating...</source>
         <translation>Güncelleniyor...</translation>
     </message>
 </context>
@@ -4744,7 +4739,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
         <translation>VSync kullan</translation>
     </message>
     <message>

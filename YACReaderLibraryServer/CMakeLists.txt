@@ -40,6 +40,23 @@ qt_add_translations(YACReaderLibraryServer
         yacreaderlibraryserver_zh_TW.ts
         yacreaderlibraryserver_zh_HK.ts
         yacreaderlibraryserver_ko.ts
+        yacreaderlibraryserver_bg.ts
+        yacreaderlibraryserver_cs.ts
+        yacreaderlibraryserver_da.ts
+        yacreaderlibraryserver_el.ts
+        yacreaderlibraryserver_et.ts
+        yacreaderlibraryserver_fi.ts
+        yacreaderlibraryserver_ga.ts
+        yacreaderlibraryserver_hr.ts
+        yacreaderlibraryserver_hu.ts
+        yacreaderlibraryserver_lt.ts
+        yacreaderlibraryserver_lv.ts
+        yacreaderlibraryserver_mt.ts
+        yacreaderlibraryserver_pl.ts
+        yacreaderlibraryserver_ro.ts
+        yacreaderlibraryserver_sk.ts
+        yacreaderlibraryserver_sl.ts
+        yacreaderlibraryserver_sv.ts
         yacreaderlibraryserver_source.ts
 )
 

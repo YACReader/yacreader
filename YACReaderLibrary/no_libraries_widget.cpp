@@ -17,7 +17,7 @@ NoLibrariesWidget::NoLibrariesWidget(QWidget *parent)
 
     text = new QLabel(tr("You don't have any libraries yet"));
     text->setStyleSheet("QLabel {font-size:25px;font-weight:bold;}");
-    textDescription = new QLabel(tr("<p>You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.</p><p>Don't forget that you can use YACReader as a stand alone application for reading the comics on your computer.</p>"));
+    textDescription = new QLabel(tr("<p>You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.</p><p>Don't forget that you can use YACReader as a standalone application for reading the comics on your computer.</p>"));
     textDescription->setWordWrap(true);
     textDescription->setMaximumWidth(330);
 

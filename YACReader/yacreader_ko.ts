@@ -129,7 +129,7 @@
     <name>BookmarksDialog</name>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>마지막 페이지</translation>
     </message>
     <message>
@@ -166,7 +166,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>단축키를 바꾸려면 키 조합을 더블 클릭하고 새 키를 입력하세요.</translation>
     </message>
     <message>
@@ -181,7 +181,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>&quot;%1&quot; 단축키는 이미 다른 기능이 사용 중입니다</translation>
     </message>
 </context>
@@ -213,7 +213,7 @@
     <name>GoToDialog</name>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>페이지: </translation>
     </message>
     <message>
@@ -229,7 +229,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
+        <source>Total pages: </source>
         <translation>전체 페이지: </translation>
     </message>
     <message>
@@ -242,7 +242,7 @@
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>페이지: </translation>
     </message>
 </context>
@@ -358,7 +358,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>스크롤 동작</translation>
     </message>
     <message>
@@ -393,7 +393,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>화면 왼쪽 또는 오른쪽 절반을 클릭하여 페이지 넘김.</translation>
     </message>
     <message>
@@ -787,7 +787,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
+        <source>Press &apos;O&apos; to open a comic.</source>
         <translation>&apos;O&apos;를 눌러 만화를 열어보세요.</translation>
     </message>
     <message>
@@ -812,7 +812,7 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
+        <source>Loading... please wait!</source>
         <translation>불러오는 중... 잠시 기다려주세요!</translation>
     </message>
     <message>
@@ -940,7 +940,7 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
         <translation>수직 동기화 사용 (전체화면 결의 이미지 품질 향상, 성능 저하)</translation>
     </message>
     <message>
@@ -1168,7 +1168,7 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
+        <source>Go to page...</source>
         <translation>페이지로 이동...</translation>
     </message>
     <message>
@@ -1194,6 +1194,8 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1353"/>
+        <location filename="main_window_viewer.cpp" line="1419"/>
         <source>Magnifying glass</source>
         <translation>돋보기</translation>
     </message>
@@ -1371,15 +1373,9 @@ If none is active, Escape does nothing.</source>
         <translation>일반</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1353"/>
-        <location filename="main_window_viewer.cpp" line="1419"/>
-        <source>Magnifiying glass</source>
-        <translation>돋보기</translation>
-    </message>
-    <message>
         <location filename="main_window_viewer.cpp" line="1354"/>
         <location filename="main_window_viewer.cpp" line="1430"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
         <translation>페이지 조정</translation>
     </message>
     <message>

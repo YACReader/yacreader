@@ -9,7 +9,7 @@ SeriesQuestion::SeriesQuestion(QWidget *parent)
 {
     auto l = new QVBoxLayout;
 
-    questionLabel = new QLabel(tr("You are trying to get information for various comics at once, are they part of the same series?"));
+    questionLabel = new QLabel(tr("You are trying to get information for various comics at once. Are they part of the same series?"));
     yes = new QRadioButton(tr("yes"));
     no = new QRadioButton(tr("no"));
 

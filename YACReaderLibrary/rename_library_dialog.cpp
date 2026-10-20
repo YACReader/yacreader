@@ -12,7 +12,7 @@ RenameLibraryDialog::RenameLibraryDialog(QWidget *parent)
 
 void RenameLibraryDialog::setupUI()
 {
-    newNameLabel = new QLabel(tr("New Library Name : "));
+    newNameLabel = new QLabel(tr("New Library Name: "));
     newNameEdit = new QLineEdit;
     newNameLabel->setBuddy(newNameEdit);
     connect(newNameEdit, &QLineEdit::textChanged, this, &RenameLibraryDialog::nameSetted);

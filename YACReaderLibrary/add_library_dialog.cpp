@@ -13,12 +13,12 @@ AddLibraryDialog::AddLibraryDialog(QWidget *parent)
 
 void AddLibraryDialog::setupUI()
 {
-    textLabel = new QLabel(tr("Comics folder : "));
+    textLabel = new QLabel(tr("Comics folder: "));
     path = new QLineEdit;
     textLabel->setBuddy(path);
     connect(path, &QLineEdit::textChanged, this, &AddLibraryDialog::pathSetted);
 
-    nameLabel = new QLabel(tr("Library name : "));
+    nameLabel = new QLabel(tr("Library name: "));
     nameEdit = new QLineEdit;
     nameLabel->setBuddy(nameEdit);
     connect(nameEdit, &QLineEdit::textChanged, this, &AddLibraryDialog::nameSetted);
