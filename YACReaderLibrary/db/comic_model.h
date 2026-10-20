@@ -87,7 +87,8 @@ public:
         Recent,
         Label,
         ReadingList,
-        SearchResult
+        SearchResult,
+        SmartList
     };
 
 public:
@@ -112,6 +113,9 @@ public:
     void setupFolderModelData(unsigned long long int parentFolder, const QString &databasePath);
     void setupLabelModelData(unsigned long long int parentLabel, const QString &databasePath);
     void setupReadingListModelData(unsigned long long int parentReadingList, const QString &databasePath);
+    void setupSmartListModelData(unsigned long long int smartListId, const QString &databasePath);
+    // false when the search text of the smart list cannot be read; it then has no rows
+    bool isSmartListReadable() const { return smartListReadable; }
     void setupFavoritesModelData(const QString &databasePath);
     void setupReadingModelData(const QString &databasePath);
     void setupRecentModelData(const QString &databasePath);
@@ -207,6 +211,7 @@ private:
     QList<ComicItem> createFavoritesModelData(const QString &databasePath) const;
     QList<ComicItem> createReadingModelData(const QString &databasePath) const;
     QList<ComicItem> createRecentModelData(const QString &databasePath) const;
+    QList<ComicItem> createSmartListModelData(unsigned long long smartListId, const QString &databasePath, bool &readable) const;
 
     void takeData(const QList<ComicItem> &data);
     void takeUpdatedData(const QList<ComicItem> &updatedData, std::function<bool(const ComicItem &, const ComicItem &)> comparator);
@@ -223,6 +228,7 @@ private:
 
     bool showRecent;
     qlonglong recentDays;
+    bool smartListReadable = true;
 
 signals:
     void isEmpty();

@@ -9,6 +9,8 @@
 #include "overloaded.h"
 #include "qnaturalsorting.h"
 #include "reading_list_model.h"
+#include "search_query.h"
+#include "smart_list.h"
 #include "yacreader_global_gui.h"
 
 #include <QMap>
@@ -552,6 +554,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         case Reading:
         case Recent:
         case SearchResult:
+        case SmartList:
             break;
         }
         connectionName = db.connectionName();
@@ -1062,6 +1065,46 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
     _databasePath = databasePath;
 
     takeData(createReadingListData(parentReadingList, databasePath, enableResorting));
+
+    endResetModel();
+}
+
+// a smart list that no longer exists has no rows
+QList<ComicItem> ComicModel::createSmartListModelData(unsigned long long smartListId, const QString &databasePath, bool &readable) const
+{
+    QList<ComicItem> modelData;
+    readable = true;
+
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        if (const auto list = DBHelper::loadSmartList(SmartListId(smartListId), db)) {
+            try {
+                auto query = allComicsSearchQuery(db, list->query);
+                modelData = sortedForSearch(createItems(query));
+            } catch (const std::exception &) {
+                readable = false;
+            }
+        }
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return modelData;
+}
+
+void ComicModel::setupSmartListModelData(unsigned long long smartListId, const QString &databasePath)
+{
+    enableResorting = false;
+    mode = SmartList;
+    sourceId = smartListId;
+
+    beginResetModel();
+    _data.clear();
+
+    _databasePath = databasePath;
+
+    takeData(createSmartListModelData(smartListId, databasePath, smartListReadable));
 
     endResetModel();
 }
@@ -1725,6 +1768,9 @@ void ComicModel::reload()
         break;
     case SearchResult:
         // TODO: reload search results, we don't have a way to recreate the query in this class
+        break;
+    case SmartList:
+        takeUpdatedData(createSmartListModelData(sourceId, _databasePath, smartListReadable), searchResultLessThan);
         break;
     }
 }
