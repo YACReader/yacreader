@@ -36,12 +36,12 @@
     <name>AddLibraryDialog</name>
     <message>
         <location filename="add_library_dialog.cpp" line="16"/>
-        <source>Comics folder : </source>
+        <source>Comics folder: </source>
         <translation>漫畫檔夾: </translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="21"/>
-        <source>Library name : </source>
+        <source>Library name: </source>
         <oldsource>Library Name : </oldsource>
         <translation>庫名: </translation>
     </message>
@@ -65,7 +65,7 @@
     <name>ApiKeyDialog</name>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
         <translation>你需要擁有自己的API密鑰才能夠連接Comic Vine. 你可以通過這個鏈接獲得一個免費的&lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;API&lt;/a&gt;密鑰</translation>
     </message>
     <message>
@@ -446,13 +446,13 @@
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="279"/>
-        <source>Error connecting to ComicVine</source>
-        <translation>ComicVine 連接時出錯</translation>
+        <source>Error connecting to Comic Vine</source>
+        <translation>Comic Vine 連接時出錯</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="459"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="484"/>
-        <source>Retrieving tags for : %1</source>
+        <source>Retrieving tags for: %1</source>
         <translation>正在檢索標籤: %1</translation>
     </message>
     <message>
@@ -478,12 +478,12 @@
     <name>CreateLibraryDialog</name>
     <message>
         <location filename="create_library_dialog.cpp" line="21"/>
-        <source>Comics folder : </source>
+        <source>Comics folder: </source>
         <translation>漫畫檔夾: </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="26"/>
-        <source>Library Name : </source>
+        <source>Library Name: </source>
         <translation>庫名: </translation>
     </message>
     <message>
@@ -498,7 +498,7 @@
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="57"/>
-        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
+        <source>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</source>
         <translation>創建一個新的庫可能需要幾分鐘時間，您可以先停止該進程，稍後可以通過更新庫選項來更新數據。</translation>
     </message>
     <message>
@@ -534,7 +534,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>更改快捷鍵: 雙擊按鍵組合並輸入新的映射.</translation>
     </message>
     <message>
@@ -549,7 +549,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>快捷鍵 &quot;%1&quot; 已被映射至其他功能</translation>
     </message>
 </context>
@@ -613,7 +613,7 @@
     <name>ExportComicsInfoDialog</name>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="14"/>
-        <source>Output file : </source>
+        <source>Output file: </source>
         <translation>輸出檔: </translation>
     </message>
     <message>
@@ -651,7 +651,7 @@
     <name>ExportLibraryDialog</name>
     <message>
         <location filename="export_library_dialog.cpp" line="12"/>
-        <source>Output folder : </source>
+        <source>Output folder: </source>
         <translation>輸出檔夾: </translation>
     </message>
     <message>
@@ -873,7 +873,7 @@
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="16"/>
-        <source>Info database location : </source>
+        <source>Info database location: </source>
         <translation>資料庫地址: </translation>
     </message>
     <message>
@@ -896,17 +896,17 @@
     <name>ImportLibraryDialog</name>
     <message>
         <location filename="import_library_dialog.cpp" line="17"/>
-        <source>Library Name : </source>
+        <source>Library Name: </source>
         <translation>庫名: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="22"/>
-        <source>Package location : </source>
+        <source>Package location: </source>
         <translation>打包地址: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="26"/>
-        <source>Destination folder : </source>
+        <source>Destination folder: </source>
         <translation>目標檔夾: </translation>
     </message>
     <message>
@@ -926,7 +926,7 @@
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="115"/>
-        <source>Compresed library covers (*.clc)</source>
+        <source>Compressed library covers (*.clc)</source>
         <translation>已壓縮的庫封面 (*.clc)</translation>
     </message>
 </context>
@@ -949,7 +949,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="319"/>
-        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
+        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Creating a library could take several minutes. You can stop the process and update the library later to complete the task.&lt;/p&gt;</source>
         <translation>&lt;p&gt;YACReaderLibrary現在正在創建一個新庫。&lt;/p&gt;&lt;p&gt;這可能需要幾分鐘時間，您可以先停止該進程，稍後可以通過更新庫選項來更新數據。&lt;/p&gt;</translation>
     </message>
     <message>
@@ -959,7 +959,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="331"/>
-        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being updated. For faster updates, please update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
         <translation>&lt;p&gt;正在更新當前庫。要獲得更快的更新，請經常更新您的庫。&lt;/p&gt;&lt;p&gt;您可以停止該進程，稍後繼續更新操作。&lt;/p&gt;</translation>
     </message>
     <message>
@@ -979,7 +979,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="355"/>
-        <source>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
         <translation>&lt;p&gt;正在掃描當前庫的舊版 XML metadata 資訊。&lt;/p&gt;&lt;p&gt;這只需要執行一次，且只有當創建庫的 YACReaderLibrary 版本低於 9.8.2 時。&lt;/p&gt;</translation>
     </message>
     <message>
@@ -1143,7 +1143,7 @@
         <location filename="folder_management_coordinator.cpp" line="134"/>
         <location filename="folder_management_coordinator.cpp" line="146"/>
         <location filename="folder_management_coordinator.cpp" line="200"/>
-        <source>Please, select a folder first</source>
+        <source>Please select a folder first</source>
         <translation>請先選擇一個檔夾</translation>
     </message>
     <message>
@@ -1163,7 +1163,7 @@
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="251"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <source>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
         <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
         <translation>嘗試刪除所選檔夾時出現問題。 請檢查寫入許可權，並確保沒有其他應用程式在使用這些檔夾或檔。</translation>
     </message>
@@ -1181,9 +1181,9 @@
         <location filename="library_management_coordinator.cpp" line="446"/>
         <source>You are adding too many libraries.
 
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
 
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</source>
         <translation>您添加的庫太多了。
 
 一般情況只需要一個頂級的庫，您可以使用左側邊欄中的檔夾功能來進行分類管理。
@@ -1207,13 +1207,8 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="400"/>
-        <source>Do you want remove </source>
-        <translation>你想要刪除 </translation>
-    </message>
-    <message>
-        <location filename="library_management_coordinator.cpp" line="400"/>
-        <source> library?</source>
-        <translation> 庫?</translation>
+        <source>Do you want to remove the library &apos;%1&apos;?</source>
+        <translation>你想要刪除 &apos;%1&apos; 庫?</translation>
     </message>
     <message>
         <source>Remove and delete metadata</source>
@@ -1231,7 +1226,7 @@ YACReaderLibrary不會阻止您創建更多的庫，但是您應該保持較低�
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="304"/>
-        <source>Assign numbers starting in:</source>
+        <source>Assign numbers starting at:</source>
         <translation>從以下位置開始分配編號:</translation>
     </message>
     <message>
@@ -1495,7 +1490,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="596"/>
-        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
+        <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
         <translation>嘗試刪除所選漫畫時出現問題。 請檢查所選檔或包含檔夾中的寫入許可權。</translation>
     </message>
     <message>
@@ -1674,7 +1669,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="106"/>
-        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
+        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files.</source>
         <translation>嘗試查找漫畫檔內嵌的 XML 資訊。只有當創建庫的 YACReaderLibrary 版本低於 9.8.2 或者使用第三方軟體嵌入 XML 資訊時，才需要執行該操作。</translation>
     </message>
     <message>
@@ -1704,7 +1699,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="121"/>
-        <source>Open current comic on YACReader</source>
+        <source>Open current comic in YACReader</source>
         <translation>用YACReader打開漫畫</translation>
     </message>
     <message>
@@ -2093,7 +2088,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="42"/>
-        <source>4koma (top to botom)</source>
+        <source>4koma (top to bottom)</source>
         <translation>4koma（由上至下）</translation>
     </message>
     <message>
@@ -2232,7 +2227,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a standalone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation>&lt;p&gt;您可以在任何檔夾中創建庫，YACReaderLibrary將導入此檔夾中的所有漫畫和文件夾。如果已有庫，則可以打開它們。&lt;/p&gt;&lt;p&gt;您可以把YACReader當成獨立應用來閱讀電腦上的漫畫。&lt;/p&gt;</translation>
     </message>
     <message>
@@ -2283,7 +2278,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="195"/>
-        <source>Start into the system tray</source>
+        <source>Start in the system tray</source>
         <translation>啟動至系統託盤</translation>
     </message>
     <message>
@@ -2394,10 +2389,10 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="338"/>
-        <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
-During automatic updates the app will block some of the actions until the update is finished.
-To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
+        <source>WARNING! During library updates, writes to the database are disabled!
+Don&apos;t schedule updates while you may be actively using the app.
+During automatic updates, the app will block some of the actions until the update is finished.
+To stop an automatic update, tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
 Don&apos;t schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
@@ -2438,7 +2433,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="options_dialog.cpp" line="403"/>
-        <source>Restore defautls</source>
+        <source>Restore defaults</source>
         <translation>恢復默認值</translation>
     </message>
     <message>
@@ -3499,7 +3494,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <name>RenameLibraryDialog</name>
     <message>
         <location filename="rename_library_dialog.cpp" line="15"/>
-        <source>New Library Name : </source>
+        <source>New Library Name: </source>
         <translation>新庫名: </translation>
     </message>
     <message>
@@ -3522,7 +3517,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <name>ScraperResultsPaginator</name>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="20"/>
-        <source>Number of volumes found : %1</source>
+        <source>Number of volumes found: %1</source>
         <translation>搜索結果: %1</translation>
     </message>
     <message>
@@ -3533,7 +3528,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="44"/>
-        <source>Number of %1 found : %2</source>
+        <source>Number of %1 found: %2</source>
         <translation>第 %1 頁 共: %2 條</translation>
     </message>
 </context>
@@ -4146,7 +4141,7 @@ Use quotes to include spaces in a value.</source>
     <name>SelectComic</name>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="16"/>
-        <source>Please, select the right comic info.</source>
+        <source>Please select the right comic info.</source>
         <translation>請正確選擇漫畫資訊.</translation>
     </message>
     <message>
@@ -4174,7 +4169,7 @@ Use quotes to include spaces in a value.</source>
     <name>SelectVolume</name>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="31"/>
-        <source>Please, select the right series for your comic.</source>
+        <source>Please select the right series for your comic.</source>
         <translation>請選擇正確的漫畫系列。</translation>
     </message>
     <message>
@@ -4267,7 +4262,7 @@ Use quotes to include spaces in a value.</source>
     <name>SeriesQuestion</name>
     <message>
         <location filename="comic_vine/series_question.cpp" line="12"/>
-        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
+        <source>You are trying to get information for various comics at once. Are they part of the same series?</source>
         <translation>您正在嘗試同時獲取各種漫畫的資訊,它們是同一系列的嗎?</translation>
     </message>
     <message>
@@ -4365,7 +4360,7 @@ Use quotes to include spaces in a value.</source>
     <name>SortVolumeComics</name>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please sort the list of comics on the left until it matches the comics&apos; information.</source>
         <translation>請在左側對漫畫列表進行排序，直到它與漫畫的資訊相符。</translation>
     </message>
     <message>
@@ -4598,7 +4593,7 @@ Use quotes to include spaces in a value.</source>
     <name>UpdateLibraryDialog</name>
     <message>
         <location filename="create_library_dialog.cpp" line="165"/>
-        <source>Updating....</source>
+        <source>Updating...</source>
         <translation>更新中...</translation>
     </message>
     <message>
@@ -4747,7 +4742,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
         <translation>使用VSync (在全屏模式下提高圖像品質, 性能更差)</translation>
     </message>
     <message>

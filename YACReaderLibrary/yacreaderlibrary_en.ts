@@ -51,13 +51,13 @@
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="16"/>
-        <source>Comics folder : </source>
-        <translation>Comics folder : </translation>
+        <source>Comics folder: </source>
+        <translation>Comics folder: </translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="21"/>
-        <source>Library name : </source>
-        <translation>Library name : </translation>
+        <source>Library name: </source>
+        <translation>Library name: </translation>
     </message>
 </context>
 <context>
@@ -69,8 +69,8 @@
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</translation>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <translation>Before you can connect to Comic Vine, you need your own API key. Please get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="25"/>
@@ -445,14 +445,14 @@
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="279"/>
-        <source>Error connecting to ComicVine</source>
-        <translation>Error connecting to ComicVine</translation>
+        <source>Error connecting to Comic Vine</source>
+        <translation>Error connecting to Comic Vine</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="459"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="484"/>
-        <source>Retrieving tags for : %1</source>
-        <translation>Retrieving tags for : %1</translation>
+        <source>Retrieving tags for: %1</source>
+        <translation>Retrieving tags for: %1</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="615"/>
@@ -492,18 +492,18 @@
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="21"/>
-        <source>Comics folder : </source>
-        <translation>Comics folder : </translation>
+        <source>Comics folder: </source>
+        <translation>Comics folder: </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="26"/>
-        <source>Library Name : </source>
-        <translation>Library Name : </translation>
+        <source>Library Name: </source>
+        <translation>Library Name: </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="57"/>
-        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
-        <translation>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</translation>
+        <source>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</source>
+        <translation>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="105"/>
@@ -533,8 +533,8 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>To change a shortcut, double click in the key combination and type the new keys.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>To change a shortcut, double-click the key combination and type the new keys.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="67"/>
@@ -548,8 +548,8 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>The shortcut &quot;%1&quot; is already assigned to other function</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>The shortcut &quot;%1&quot; is already assigned to another function</translation>
     </message>
 </context>
 <context>
@@ -621,8 +621,8 @@
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="14"/>
-        <source>Output file : </source>
-        <translation>Output file : </translation>
+        <source>Output file: </source>
+        <translation>Output file: </translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="55"/>
@@ -659,8 +659,8 @@
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="12"/>
-        <source>Output folder : </source>
-        <translation>Output folder : </translation>
+        <source>Output folder: </source>
+        <translation>Output folder: </translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="59"/>
@@ -876,8 +876,8 @@
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="16"/>
-        <source>Info database location : </source>
-        <translation>Info database location : </translation>
+        <source>Info database location: </source>
+        <translation>Info database location: </translation>
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="20"/>
@@ -894,8 +894,8 @@
     <name>ImportLibraryDialog</name>
     <message>
         <location filename="import_library_dialog.cpp" line="26"/>
-        <source>Destination folder : </source>
-        <translation>Destination folder : </translation>
+        <source>Destination folder: </source>
+        <translation>Destination folder: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="34"/>
@@ -909,18 +909,18 @@
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="115"/>
-        <source>Compresed library covers (*.clc)</source>
-        <translation>Compresed library covers (*.clc)</translation>
+        <source>Compressed library covers (*.clc)</source>
+        <translation>Compressed library covers (*.clc)</translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="22"/>
-        <source>Package location : </source>
-        <translation>Package location : </translation>
+        <source>Package location: </source>
+        <translation>Package location: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="17"/>
-        <source>Library Name : </source>
-        <translation>Library Name : </translation>
+        <source>Library Name: </source>
+        <translation>Library Name: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="85"/>
@@ -947,8 +947,8 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="319"/>
-        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Creating a library could take several minutes. You can stop the process and update the library later to complete the task.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Creating a library could take several minutes. You can stop the process and update the library later to complete the task.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="330"/>
@@ -957,8 +957,8 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="331"/>
-        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;The current library is being updated. For faster updates, please update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;The current library is being updated. For faster updates, please update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="342"/>
@@ -977,8 +977,8 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="355"/>
-        <source>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;The current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;The current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="367"/>
@@ -1031,8 +1031,8 @@
     <name>LibraryWindow</name>
     <message>
         <location filename="library_management_coordinator.cpp" line="400"/>
-        <source>Do you want remove </source>
-        <translation>Do you want remove </translation>
+        <source>Do you want to remove the library &apos;%1&apos;?</source>
+        <translation>Do you want to remove the library &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="239"/>
@@ -1130,8 +1130,8 @@
         <location filename="folder_management_coordinator.cpp" line="134"/>
         <location filename="folder_management_coordinator.cpp" line="146"/>
         <location filename="folder_management_coordinator.cpp" line="200"/>
-        <source>Please, select a folder first</source>
-        <translation>Please, select a folder first</translation>
+        <source>Please select a folder first</source>
+        <translation>Please select a folder first</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="209"/>
@@ -1156,9 +1156,9 @@
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="251"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <source>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
         <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
-        <translation>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</translation>
+        <translation>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="746"/>
@@ -1290,14 +1290,14 @@ Folder: %1</translation>
         <location filename="library_management_coordinator.cpp" line="446"/>
         <source>You are adding too many libraries.
 
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
 
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</source>
         <translation>You are adding too many libraries.
 
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
 
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</translation>
+YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="327"/>
@@ -1462,11 +1462,6 @@ You can restore a backup from the Library menu or recreate the library.</source>
 You can restore a backup from the Library menu or recreate the library.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="400"/>
-        <source> library?</source>
-        <translation> library?</translation>
-    </message>
-    <message>
         <location filename="library_management_coordinator.cpp" line="403"/>
         <source>Remove and delete metadata and backups</source>
         <translation>Remove and delete metadata and backups</translation>
@@ -1478,8 +1473,8 @@ You can restore a backup from the Library menu or recreate the library.</transla
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="596"/>
-        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
-        <translation>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</translation>
+        <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
+        <translation>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="303"/>
@@ -1488,8 +1483,8 @@ You can restore a backup from the Library menu or recreate the library.</transla
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="304"/>
-        <source>Assign numbers starting in:</source>
-        <translation>Assign numbers starting in:</translation>
+        <source>Assign numbers starting at:</source>
+        <translation>Assign numbers starting at:</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="389"/>
@@ -1667,8 +1662,8 @@ Missing files: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="106"/>
-        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
-        <translation>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</translation>
+        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files.</source>
+        <translation>Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files.</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="110"/>
@@ -1697,8 +1692,8 @@ Missing files: %3</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="121"/>
-        <source>Open current comic on YACReader</source>
-        <translation>Open current comic on YACReader</translation>
+        <source>Open current comic in YACReader</source>
+        <translation>Open current comic in YACReader</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="125"/>
@@ -2086,8 +2081,8 @@ Missing files: %3</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="42"/>
-        <source>4koma (top to botom)</source>
-        <translation>4koma (top to botom)</translation>
+        <source>4koma (top to bottom)</source>
+        <translation>4koma (top to bottom)</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="135"/>
@@ -2225,8 +2220,8 @@ Missing files: %3</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a standalone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a standalone application for reading the comics on your computer.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="24"/>
@@ -2276,8 +2271,8 @@ Missing files: %3</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="195"/>
-        <source>Start into the system tray</source>
-        <translation>Start into the system tray</translation>
+        <source>Start in the system tray</source>
+        <translation>Start in the system tray</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="213"/>
@@ -2387,17 +2382,17 @@ Missing files: %3</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="338"/>
-        <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
-During automatic updates the app will block some of the actions until the update is finished.
-To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
+        <source>WARNING! During library updates, writes to the database are disabled!
+Don&apos;t schedule updates while you may be actively using the app.
+During automatic updates, the app will block some of the actions until the update is finished.
+To stop an automatic update, tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
 Don&apos;t schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
-        <translation>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
-During automatic updates the app will block some of the actions until the update is finished.
-To stop an automatic update tap on the loading indicator next to the Libraries title.</translation>
+        <translation>WARNING! During library updates, writes to the database are disabled!
+Don&apos;t schedule updates while you may be actively using the app.
+During automatic updates, the app will block some of the actions until the update is finished.
+To stop an automatic update, tap on the loading indicator next to the Libraries title.</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="348"/>
@@ -2431,8 +2426,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="options_dialog.cpp" line="403"/>
-        <source>Restore defautls</source>
-        <translation>Restore defautls</translation>
+        <source>Restore defaults</source>
+        <translation>Restore defaults</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="414"/>
@@ -3522,16 +3517,16 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="rename_library_dialog.cpp" line="15"/>
-        <source>New Library Name : </source>
-        <translation>New Library Name : </translation>
+        <source>New Library Name: </source>
+        <translation>New Library Name: </translation>
     </message>
 </context>
 <context>
     <name>ScraperResultsPaginator</name>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="20"/>
-        <source>Number of volumes found : %1</source>
-        <translation>Number of volumes found : %1</translation>
+        <source>Number of volumes found: %1</source>
+        <translation>Number of volumes found: %1</translation>
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="21"/>
@@ -3541,8 +3536,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="44"/>
-        <source>Number of %1 found : %2</source>
-        <translation>Number of %1 found : %2</translation>
+        <source>Number of %1 found: %2</source>
+        <translation>Number of %1 found: %2</translation>
     </message>
 </context>
 <context>
@@ -4154,8 +4149,8 @@ Use quotes to include spaces in a value.</source>
     <name>SelectComic</name>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="16"/>
-        <source>Please, select the right comic info.</source>
-        <translation>Please, select the right comic info.</translation>
+        <source>Please select the right comic info.</source>
+        <translation>Please select the right comic info.</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="37"/>
@@ -4182,8 +4177,8 @@ Use quotes to include spaces in a value.</source>
     <name>SelectVolume</name>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="31"/>
-        <source>Please, select the right series for your comic.</source>
-        <translation>Please, select the right series for your comic.</translation>
+        <source>Please select the right series for your comic.</source>
+        <translation>Please select the right series for your comic.</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="50"/>
@@ -4275,8 +4270,8 @@ Use quotes to include spaces in a value.</source>
     <name>SeriesQuestion</name>
     <message>
         <location filename="comic_vine/series_question.cpp" line="12"/>
-        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
-        <translation>You are trying to get information for various comics at once, are they part of the same series?</translation>
+        <source>You are trying to get information for various comics at once. Are they part of the same series?</source>
+        <translation>You are trying to get information for various comics at once. Are they part of the same series?</translation>
     </message>
     <message>
         <location filename="comic_vine/series_question.cpp" line="13"/>
@@ -4373,8 +4368,8 @@ Use quotes to include spaces in a value.</source>
     <name>SortVolumeComics</name>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
-        <translation>Please, sort the list of comics on the left until it matches the comics&apos; information.</translation>
+        <source>Please sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <translation>Please sort the list of comics on the left until it matches the comics&apos; information.</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="61"/>
@@ -4611,8 +4606,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="165"/>
-        <source>Updating....</source>
-        <translation>Updating....</translation>
+        <source>Updating...</source>
+        <translation>Updating...</translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="190"/>
@@ -4755,8 +4750,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Use VSync (improve the image quality in fullscreen mode, worse performance)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>Use VSync (improves image quality in fullscreen mode, but reduces performance)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
