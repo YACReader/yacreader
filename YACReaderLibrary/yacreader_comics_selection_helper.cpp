@@ -115,28 +115,34 @@ QVariantMap YACReaderComicsSelectionHelper::selectionInfo() const
 
     int readCount = 0;
     int inProgressCount = 0;
+    int unreadCount = 0;
     int pageCount = 0;
     int unknownPageCount = 0;
     qint64 totalSize = 0;
     QSet<QString> series;
     QVariantList covers;
     QVariantList coversGrayscale;
-    int deletedCount = 0;
+    // deleted comics and placeholders
+    int missingCount = 0;
 
     for (const auto &index : std::as_const(rows)) {
-        const bool read = index.data(ComicModel::ReadColumnRole).toBool();
-        const bool inProgress = !read && index.data(ComicModel::HasBeenOpenedRole).toBool() && index.data(ComicModel::CurrentPageRole).toInt() > 0;
-        readCount += read ? 1 : 0;
-        inProgressCount += inProgress ? 1 : 0;
+        // a placeholder has no reading state or pages
+        if (model->supports(index, ComicAction::SetReadState)) {
+            const bool read = index.data(ComicModel::ReadColumnRole).toBool();
+            const bool inProgress = !read && index.data(ComicModel::HasBeenOpenedRole).toBool() && index.data(ComicModel::CurrentPageRole).toInt() > 0;
+            readCount += read ? 1 : 0;
+            inProgressCount += inProgress ? 1 : 0;
+            unreadCount += read || inProgress ? 0 : 1;
 
-        const auto pages = index.data(ComicModel::NumPagesRole);
-        if (pages.isValid() && pages.toInt() > 0)
-            pageCount += pages.toInt();
-        else
-            ++unknownPageCount;
+            const auto pages = index.data(ComicModel::NumPagesRole);
+            if (pages.isValid() && pages.toInt() > 0)
+                pageCount += pages.toInt();
+            else
+                ++unknownPageCount;
+        }
 
         const bool available = index.data(ComicModel::AvailableRole).toBool();
-        deletedCount += available ? 0 : 1;
+        missingCount += available ? 0 : 1;
 
         // The size in bytes is stored at the end of the hash, right after the 40
         // characters of the SHA1 digest.
@@ -156,7 +162,7 @@ QVariantMap YACReaderComicsSelectionHelper::selectionInfo() const
     info.insert(QStringLiteral("count"), rows.size());
     info.insert(QStringLiteral("readCount"), readCount);
     info.insert(QStringLiteral("inProgressCount"), inProgressCount);
-    info.insert(QStringLiteral("unreadCount"), rows.size() - readCount - inProgressCount);
+    info.insert(QStringLiteral("unreadCount"), unreadCount);
     info.insert(QStringLiteral("pageCount"), pageCount);
     info.insert(QStringLiteral("unknownPageCount"), unknownPageCount);
     info.insert(QStringLiteral("size"), QLocale().formattedDataSize(totalSize, 2, QLocale::DataSizeTraditionalFormat));
@@ -165,7 +171,7 @@ QVariantMap YACReaderComicsSelectionHelper::selectionInfo() const
         info.insert(QStringLiteral("seriesName"), *series.cbegin());
     info.insert(QStringLiteral("covers"), covers);
     info.insert(QStringLiteral("coversGrayscale"), coversGrayscale);
-    info.insert(QStringLiteral("deletedCount"), deletedCount);
+    info.insert(QStringLiteral("missingCount"), missingCount);
     return info;
 }
 

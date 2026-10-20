@@ -1,9 +1,12 @@
 #include "reading_list_management_coordinator.h"
 
 #include "add_label_dialog.h"
+#include "cbl_import_dialog.h"
 #include "comic_model.h"
 #include "reading_list_model.h"
+#include "yacreader_global.h"
 
+#include <QFileDialog>
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
@@ -14,12 +17,13 @@
 ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dialogParent,
                                                                    ReadingListModel *listsModel,
                                                                    ComicModel *comicsModel,
-                                                                   CurrentListProvider currentListProvider)
-    : QObject(dialogParent), dialogParent(dialogParent), listsModel(listsModel), currentListProvider(std::move(currentListProvider))
+                                                                   CurrentListProvider currentListProvider,
+                                                                   LibraryPathProvider libraryPathProvider)
+    : QObject(dialogParent), dialogParent(dialogParent), listsModel(listsModel), currentListProvider(std::move(currentListProvider)), libraryPathProvider(std::move(libraryPathProvider))
 {
     connect(listsModel, &ReadingListModel::addComicsToFavorites, comicsModel, QOverload<const QList<qulonglong> &>::of(&ComicModel::addComicsToFavorites));
-    connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<ComicInfoId> &, qulonglong>::of(&ComicModel::addComicsToLabel));
-    connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<ComicInfoId> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
+    connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<ComicRowId> &, qulonglong>::of(&ComicModel::addComicsToLabel));
+    connect(listsModel, &ReadingListModel::addComicsToReadingList, comicsModel, QOverload<const QList<ComicRowId> &, qulonglong>::of(&ComicModel::addComicsToReadingList));
 }
 
 void ReadingListManagementCoordinator::addReadingList()
@@ -42,6 +46,41 @@ void ReadingListManagementCoordinator::addReadingList()
         listsModel->addReadingListAt(name, currentList);
     else
         listsModel->addReadingList(name);
+}
+
+void ReadingListManagementCoordinator::importReadingLists()
+{
+    const auto filePaths = QFileDialog::getOpenFileNames(dialogParent,
+                                                         tr("Import reading lists"),
+                                                         { },
+                                                         tr("Reading lists (*.cbl *.json);;All files (*)"));
+    if (filePaths.isEmpty())
+        return;
+
+    CblImportDialog dialog(filePaths, libraryPathProvider(), dialogParent);
+    connect(&dialog, &CblImportDialog::readingListImported, listsModel, &ReadingListModel::appendReadingList);
+    dialog.exec();
+}
+
+void ReadingListManagementCoordinator::matchListToLibraryComics(ListKind listKind, qulonglong listId, const QString &name)
+{
+    const auto libraryPath = libraryPathProvider();
+    ComicModel listModel;
+    if (listKind == ListKind::Label)
+        listModel.setupLabelModelData(listId, YACReader::LibraryPaths::libraryDataPath(libraryPath));
+    else
+        listModel.setupReadingListModelData(listId, YACReader::LibraryPaths::libraryDataPath(libraryPath));
+
+    QList<CblListEntry> entries;
+    for (int row = 0; row < listModel.rowCount(); ++row) {
+        const auto index = listModel.index(row, 0);
+        if (const auto entry = listModel.listEntry(index))
+            entries.append(cblListEntry(listModel.record(index), *entry));
+    }
+
+    CblImportDialog dialog(name, entries, libraryPath, dialogParent);
+    connect(&dialog, &CblImportDialog::listEntriesChanged, this, &ReadingListManagementCoordinator::listEntriesChanged);
+    dialog.exec();
 }
 
 void ReadingListManagementCoordinator::deleteCurrentList()

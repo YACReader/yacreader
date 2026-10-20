@@ -329,7 +329,7 @@ void LibraryWindow::doLayout()
     foldersTitle->addAction(actions.expandAllNodesAction);
     foldersTitle->addAction(actions.colapseAllNodesAction);
 
-    readingListsTitle->addAction(actions.addReadingListAction);
+    readingListsTitle->addAction(actions.newListMenuAction);
     // readingListsTitle->addSepartor();
     readingListsTitle->addAction(actions.addLabelAction);
     // readingListsTitle->addSepartor();
@@ -503,8 +503,26 @@ void LibraryWindow::setupCoordinators()
                     return QModelIndex();
                 const auto selectedLists = listsView->selectionModel()->selectedIndexes();
                 return selectedLists.isEmpty() ? QModelIndex() : listsModelProxy->mapToSource(selectedLists.constFirst());
-            });
+            },
+            [this] { return currentPath(); });
     connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::currentListReselectionRequested, navigationController, &YACReaderNavigationController::reselectCurrentList);
+    connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::listEntriesChanged, navigationController, &YACReaderNavigationController::refreshCurrentSource);
+    listsView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(listsView, &QWidget::customContextMenuRequested, this, [this](const QPoint &point) {
+        const auto index = listsModelProxy->mapToSource(listsView->indexAt(point));
+        const auto type = index.data(ReadingListModel::TypeListsRole).toInt();
+        if (!index.isValid() || (type != ReadingListModel::Label && type != ReadingListModel::ReadingList))
+            return;
+
+        const auto listKind = type == ReadingListModel::Label ? ListKind::Label : ListKind::ReadingList;
+        const auto listId = index.data(ReadingListModel::IDRole).toULongLong();
+        const auto name = index.data(Qt::DisplayRole).toString();
+        QMenu menu;
+        auto matchAction = menu.addAction(tr("Match to library comics..."));
+        // the dialog runs its own event loop, so the menu is gone first
+        connect(matchAction, &QAction::triggered, readingListManagementCoordinator, [this, listKind, listId, name] { readingListManagementCoordinator->matchListToLibraryComics(listKind, listId, name); }, Qt::QueuedConnection);
+        menu.exec(listsView->viewport()->mapToGlobal(point));
+    });
     folderManagementCoordinator = new FolderManagementCoordinator(
             foldersModel,
             this,

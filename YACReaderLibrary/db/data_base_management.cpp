@@ -836,6 +836,9 @@ bool DataBaseManagement::createReadingListEntryTable(QSqlDatabase &database)
                                                         "placeholder_id INTEGER, "
                                                         "last_known_name TEXT, "
                                                         "last_known_path TEXT, "
+                                                        // the CBL book of an imported entry, as in the file, and its format (xml or json)
+                                                        "source TEXT, "
+                                                        "source_format TEXT, "
                                                         "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
                                                         "FOREIGN KEY(comic_info_id) REFERENCES comic_info(id) ON DELETE RESTRICT, "
                                                         "FOREIGN KEY(placeholder_id) REFERENCES placeholder(id) ON DELETE RESTRICT, "
@@ -1476,6 +1479,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_14 = compareVersions(oldVersion, "9.14.0") < 0;
     const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
     const bool pre9_17 = compareVersions(oldVersion, "9.17.0") < 0;
+    const bool pre9_18 = compareVersions(oldVersion, "9.18.0") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1691,6 +1695,10 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                 if (pre9_17) {
                     bool successCreatingNewTables = createV9_17Tables(db);
                     returnValue = returnValue && successCreatingNewTables;
+                } else if (pre9_18) {
+                    // createV9_17Tables has these columns already
+                    bool successAddingColumns = addColumns("reading_list_entry", { "source TEXT", "source_format TEXT" }, db);
+                    returnValue = returnValue && successAddingColumns;
                 }
 
                 if (returnValue) {

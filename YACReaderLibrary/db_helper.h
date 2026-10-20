@@ -77,6 +77,9 @@ public:
     // a label skips the comic_info it already has; a reading list adds it again
     static bool appendComicsToLabel(LabelId labelId, const QList<ComicInfoId> &comicInfoIds, QSqlDatabase &db);
     static bool appendComicsToReadingList(ReadingListId readingListId, const QList<ComicInfoId> &comicInfoIds, QSqlDatabase &db);
+    // appends, in order, what each row refers to (the comic_info of a comic, the comic_info or placeholder of an entry); labels skip repeats
+    static bool appendRowsToLabel(LabelId labelId, const QList<ComicRowId> &rows, QSqlDatabase &db);
+    static bool appendRowsToReadingList(ReadingListId readingListId, const QList<ComicRowId> &rows, QSqlDatabase &db);
     // inserts
     static qulonglong insert(Folder *folder, QSqlDatabase &db);
     static qulonglong insert(ComicDB *comic, QSqlDatabase &db, bool insertAllInfo);
@@ -93,6 +96,9 @@ public:
     static bool updateAdded(ComicInfo *comicInfo, QSqlDatabase &db);
     // writes only the fields in the patch, and marks the comic_info as edited
     static bool updateComicInfoMetadata(ComicInfoId id, const DescriptiveMetadataPatch &patch, QSqlDatabase &db);
+    static bool updatePlaceholderMetadata(PlaceholderId id, const DescriptiveMetadataPatch &patch, QSqlDatabase &db);
+    // NULL when the placeholder has no cover; fails when the placeholder is gone
+    static bool updatePlaceholderCover(PlaceholderId id, const std::optional<QString> &coverKey, QSqlDatabase &db);
     // a type set by the user, so the comic_info is marked as edited
     static bool updateComicInfoType(ComicInfoId id, YACReader::FileType type, QSqlDatabase &db);
     // writes the cover page, the cover size, and the custom-cover columns of `info`; a cover set by the user, so the

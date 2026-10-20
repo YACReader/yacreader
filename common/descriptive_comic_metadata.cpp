@@ -125,3 +125,137 @@ void DescriptiveMetadataPatch::applyTo(DescriptiveComicMetadata &metadata) const
             metadata.*columns[i].member = values.*columns[i].member;
     }
 }
+
+QStringList DescriptiveComicMetadata::getWriters() const
+{
+    if (writer.toString().length() > 0) {
+        return writer.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getPencillers() const
+{
+    if (penciller.toString().length() > 0) {
+        return penciller.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getInkers() const
+{
+    if (inker.toString().length() > 0) {
+        return inker.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getColorists() const
+{
+    if (colorist.toString().length() > 0) {
+        return colorist.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getLetterers() const
+{
+    if (letterer.toString().length() > 0) {
+        return letterer.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getCoverArtists() const
+{
+    if (coverArtist.toString().length() > 0) {
+        return coverArtist.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getEditors() const
+{
+    if (editor.toString().length() > 0) {
+        return editor.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getImprint() const
+{
+    if (imprint.toString().length() > 0) {
+        return imprint.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getCharacters() const
+{
+    if (characters.toString().length() > 0) {
+        return characters.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getTeams() const
+{
+    if (teams.toString().length() > 0) {
+        return teams.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getLocations() const
+{
+    if (locations.toString().length() > 0) {
+        return locations.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QStringList DescriptiveComicMetadata::getTags() const
+{
+    if (tags.toString().length() > 0) {
+        return tags.toString().split("\n");
+    }
+
+    return QStringList();
+}
+
+QString DescriptiveComicMetadata::getStoryArcInfoString() const
+{
+    if (arcNumber.toString().length() > 0 && arcCount.toString().length() > 0 && storyArc.toString().length() > 0) {
+        return "(" + arcNumber.toString() + "/" + arcCount.toString() + ") " + storyArc.toString();
+    }
+
+    if (arcNumber.toString().length() > 0 && storyArc.toString().length() > 0) {
+        return "(" + arcNumber.toString() + ") " + storyArc.toString();
+    }
+
+    return storyArc.toString().length() > 0 ? storyArc.toString() : "";
+}
+
+QString DescriptiveComicMetadata::getAlternateSeriesString() const
+{
+    if (alternateNumber.toString().length() > 0 && alternateCount.toString().length() > 0 && alternateSeries.toString().length() > 0) {
+        return "(" + alternateNumber.toString() + "/" + alternateCount.toString() + ") " + alternateSeries.toString();
+    }
+
+    if (alternateNumber.toString().length() > 0 && alternateSeries.toString().length() > 0) {
+        return "(" + alternateNumber.toString() + ") " + alternateSeries.toString();
+    }
+
+    return alternateSeries.toString().length() > 0 ? alternateSeries.toString() : "";
+}

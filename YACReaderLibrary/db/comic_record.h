@@ -4,6 +4,7 @@
 #include "comic_db.h"
 #include "list_entry.h"
 #include "overloaded.h"
+#include "placeholder.h"
 
 #include <QFileInfo>
 
@@ -23,22 +24,45 @@ struct DeletedComic {
     std::optional<LastKnownFile> lastKnownFile;
 };
 
+struct Placeholder {
+    ::Placeholder placeholder;
+};
+
 }
 
-using ComicRecord = std::variant<ComicRecordCase::Comic, ComicRecordCase::DeletedComic>;
+using ComicRecord = std::variant<ComicRecordCase::Comic, ComicRecordCase::DeletedComic, ComicRecordCase::Placeholder>;
 
-inline const ComicInfo &recordInfo(const ComicRecord &record)
+// the descriptive metadata, which every case has
+inline const DescriptiveComicMetadata &recordMetadata(const ComicRecord &record)
 {
     return std::visit(overloaded {
-                              [](const ComicRecordCase::Comic &value) -> const ComicInfo & { return value.comic.info; },
-                              [](const ComicRecordCase::DeletedComic &value) -> const ComicInfo & { return value.info; },
+                              [](const ComicRecordCase::Comic &value) -> const DescriptiveComicMetadata & { return value.comic.info; },
+                              [](const ComicRecordCase::DeletedComic &value) -> const DescriptiveComicMetadata & { return value.info; },
+                              [](const ComicRecordCase::Placeholder &value) -> const DescriptiveComicMetadata & { return value.placeholder; },
                       },
                       record);
 }
 
-inline ComicInfo &recordInfo(ComicRecord &record)
+// nullptr for a placeholder, which has no comic_info
+inline const ComicInfo *recordInfo(const ComicRecord &record)
 {
-    return const_cast<ComicInfo &>(recordInfo(std::as_const(record)));
+    return std::visit(overloaded {
+                              [](const ComicRecordCase::Comic &value) -> const ComicInfo * { return &value.comic.info; },
+                              [](const ComicRecordCase::DeletedComic &value) -> const ComicInfo * { return &value.info; },
+                              [](const ComicRecordCase::Placeholder &) -> const ComicInfo * { return nullptr; },
+                      },
+                      record);
+}
+
+inline ComicInfo *recordInfo(ComicRecord &record)
+{
+    return const_cast<ComicInfo *>(recordInfo(std::as_const(record)));
+}
+
+inline const Placeholder *recordPlaceholder(const ComicRecord &record)
+{
+    const auto *value = std::get_if<ComicRecordCase::Placeholder>(&record);
+    return value != nullptr ? &value->placeholder : nullptr;
 }
 
 // nullptr when the comic has no file
@@ -60,6 +84,7 @@ inline QString recordFileName(const ComicRecord &record)
     return std::visit(overloaded {
                               [](const ComicRecordCase::Comic &value) { return QFileInfo(value.comic.file.path).fileName(); },
                               [](const ComicRecordCase::DeletedComic &value) { return value.lastKnownFile ? value.lastKnownFile->name : QString(); },
+                              [](const ComicRecordCase::Placeholder &) { return QString(); },
                       },
                       record);
 }
@@ -70,6 +95,7 @@ inline QString recordPath(const ComicRecord &record)
     return std::visit(overloaded {
                               [](const ComicRecordCase::Comic &value) { return value.comic.file.path; },
                               [](const ComicRecordCase::DeletedComic &value) { return value.lastKnownFile ? value.lastKnownFile->path : QString(); },
+                              [](const ComicRecordCase::Placeholder &) { return QString(); },
                       },
                       record);
 }

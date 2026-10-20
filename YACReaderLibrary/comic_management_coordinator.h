@@ -18,6 +18,7 @@ class ComicVineDialog;
 class FolderModel;
 class FolderModelProxy;
 class PropertiesDialog;
+class QImage;
 class QProgressDialog;
 class QSettings;
 class QWidget;
@@ -51,6 +52,8 @@ public:
                                         LibraryPathProvider libraryPathProvider);
 
     bool hasCustomCoverInSelection() const;
+    // one missing entry or deleted comic, or several entries of a list
+    bool canMatchSelectionToLibraryComic() const;
 
 public slots:
     void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
@@ -74,6 +77,7 @@ public slots:
     void saveSelectedCoversTo();
     void setCustomCover(const ComicRowId &row, const QString &imagePath);
     void resetSelectedCustomCovers();
+    void matchSelectedToLibraryComic();
 
     void setComicUnread(qulonglong libraryId, const ComicDB &comic);
 
@@ -96,6 +100,8 @@ private:
 
     // entryId: the reading list entry of the opened row, 0 if none
     void startReader(const ComicDB &comic, ComicModel::Mode mode, qulonglong entryId);
+    bool changePlaceholderCover(const Placeholder &placeholder, const QImage &cover);
+    void matchSelectedEntriesToLibraryComics(const QModelIndexList &selection);
     QProgressDialog *newProgressDialog(const QString &label, int maximum);
     void copyAndImportComics(const QList<QPair<QString, QString>> &comics,
                              const QModelIndex &destinationFolder,

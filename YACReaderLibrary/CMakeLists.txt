@@ -26,6 +26,10 @@ add_library(library_common STATIC
     comic_files_manager.cpp
     staged_cover.h
     staged_cover.cpp
+    placeholder_cover.h
+    placeholder_cover.cpp
+    library_comic_match.h
+    library_comic_match.cpp
     ip_config_helper.h
     ip_config_helper.cpp
     libraries_update_coordinator.h
@@ -316,6 +320,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/notCover.png
     ${PROJECT_SOURCE_DIR}/images/unavailableCover.png
     ${PROJECT_SOURCE_DIR}/images/comics_view_table/deletedComic.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_table/placeholderComic.svg
     ${PROJECT_SOURCE_DIR}/images/library_dialogs/openLibrary.svg
     ${PROJECT_SOURCE_DIR}/images/metadata_dialog/previousCoverPage.svg
     ${PROJECT_SOURCE_DIR}/images/readingRibbon.svg
@@ -523,6 +528,8 @@ qt_add_translations(YACReaderLibrary
         shortcuts_library
         comic_vine
         organize_files
+        cbl
+        cbl_gui
     # Keep extraction scoped to targets used by this app and add the QML files
     # directly so qsTr() strings in QML are collected too.
     TS_FILES
@@ -566,6 +573,7 @@ target_link_libraries(YACReaderLibrary PRIVATE
     server
     comic_vine
     organize_files
+    cbl_gui
     cbx_backend
     concurrent_queue
     worker

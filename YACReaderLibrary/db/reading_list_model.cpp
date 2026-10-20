@@ -272,12 +272,12 @@ bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, 
     }
 
     if (rowIsLabel(dest.row(), parentDest)) {
-        emit addComicsToLabel(YACReader::mimeDataToComicInfoIds(data), dest.data(IDRole).toULongLong());
+        emit addComicsToLabel(YACReader::mimeDataToRows(data), dest.data(IDRole).toULongLong());
         return true;
     }
 
     if (rowIsReadingList(dest.row(), parentDest)) {
-        emit addComicsToReadingList(YACReader::mimeDataToComicInfoIds(data), dest.data(IDRole).toULongLong());
+        emit addComicsToReadingList(YACReader::mimeDataToRows(data), dest.data(IDRole).toULongLong());
         return true;
     }
 
@@ -403,21 +403,25 @@ void ReadingListModel::addReadingList(const QString &name)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        beginInsertRows(QModelIndex(), 0, 0); // TODO calculate the right coordinates before inserting
-
-        qulonglong id = DBHelper::insertReadingList(name, db);
-        ReadingListItem *newItem;
-        ::ReadingList list;
-        list.id = ReadingListId(id);
-        list.name = name;
-        rootItem->appendChild(newItem = new ReadingListItem(list));
-
-        items.insert(id, newItem);
-
-        endInsertRows();
+        appendReadingList(ReadingListId(DBHelper::insertReadingList(name, db)), name);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+}
+
+void ReadingListModel::appendReadingList(ReadingListId id, const QString &name)
+{
+    const int row = rowCount();
+    beginInsertRows(QModelIndex(), row, row);
+
+    ::ReadingList list;
+    list.id = id;
+    list.name = name;
+    auto newItem = new ReadingListItem(list);
+    rootItem->appendChild(newItem);
+    items.insert(id.value(), newItem);
+
+    endInsertRows();
 }
 
 void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &mi)

@@ -1,6 +1,7 @@
 qt_add_executable(comic_model_test
     main.cpp
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary/db/comic_model.cpp
+    ${PROJECT_SOURCE_DIR}/YACReaderLibrary/yacreader_comics_selection_helper.cpp
 )
 yacreader_apply_build_options(comic_model_test)
 target_include_directories(comic_model_test PRIVATE

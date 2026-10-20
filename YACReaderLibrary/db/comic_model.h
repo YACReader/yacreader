@@ -125,6 +125,8 @@ public:
     std::optional<ComicDB> getComic(const QModelIndex &mi);
     // from the row, without a query
     ComicRecord record(const QModelIndex &index) const;
+    // nothing for a row that is not in a list
+    std::optional<ListEntry> listEntry(const QModelIndex &index) const;
     QVector<YACReaderComicReadStatus> getReadList();
     // the comics of the rows that have a file, loaded again; rows without a file are skipped
     QList<ComicDB> getComics(QList<QModelIndex> list);
@@ -151,6 +153,8 @@ public:
     void reload(const ComicDB &comic);
     void resetComicRating(const QModelIndex &mi);
     void notifyCoverChange(ComicInfoId id);
+    // the rows of the placeholder show its new cover
+    void notifyPlaceholderCoverChange(PlaceholderId id, const std::optional<QString> &coverKey);
 
     Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString &hash) const;
 
@@ -186,8 +190,8 @@ public slots:
     void updateRating(int rating, QModelIndex mi);
 
     void addComicsToFavorites(const QList<qulonglong> &comicIds);
-    void addComicsToLabel(const QList<ComicInfoId> &comicInfoIds, qulonglong labelId);
-    void addComicsToReadingList(const QList<ComicInfoId> &comicInfoIds, qulonglong readingListId);
+    void addComicsToLabel(const QList<ComicRowId> &rows, qulonglong labelId);
+    void addComicsToReadingList(const QList<ComicRowId> &rows, qulonglong readingListId);
 
     void setModelData(QList<ComicItem> *data, const QString &databasePath);
 

@@ -47,6 +47,8 @@ public:
     void setupReadingListsData(QString path);
     void addNewLabel(const QString &name, YACReader::LabelColors color);
     void addReadingList(const QString &name); // top level reading list
+    // a top level reading list that is already in the database
+    void appendReadingList(ReadingListId id, const QString &name);
     void addReadingListAt(const QString &name, const QModelIndex &mi);
     bool isEditable(const QModelIndex &mi);
     bool isReadingList(const QModelIndex &mi);
@@ -79,8 +81,8 @@ public:
 signals:
 
     void addComicsToFavorites(const QList<qulonglong> &comicIds);
-    void addComicsToLabel(const QList<ComicInfoId> &comicInfoIds, qulonglong labelId);
-    void addComicsToReadingList(const QList<ComicInfoId> &comicInfoIds, qulonglong readingListId);
+    void addComicsToLabel(const QList<ComicRowId> &rows, qulonglong labelId);
+    void addComicsToReadingList(const QList<ComicRowId> &rows, qulonglong readingListId);
 
 private:
     void cleanAll();

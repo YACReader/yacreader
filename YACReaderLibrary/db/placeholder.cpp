@@ -42,6 +42,15 @@ Placeholder Placeholder::fromQuery(const QSqlQuery &query, const QList<int> &col
     return placeholder;
 }
 
+bool Placeholder::hasSameValues(const Placeholder &other) const
+{
+    for (const auto &column : DescriptiveComicMetadata::columns()) {
+        if (this->*column.member != other.*column.member)
+            return false;
+    }
+    return id == other.id && coverKey == other.coverKey;
+}
+
 void Placeholder::bindTo(QSqlQuery &query) const
 {
     DescriptiveComicMetadata::bindTo(query);

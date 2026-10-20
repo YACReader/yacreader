@@ -18,9 +18,12 @@ class ComicInfoObjectTest : public QObject
 {
     Q_OBJECT
 private slots:
+    void titleFallback_data();
+    void titleFallback();
     void exposesTheQmlProperties();
     void readsTheComic();
     void readsADeletedComic();
+    void readsAPlaceholder();
     void writablePropertiesNotifyOnce_data();
     void writablePropertiesNotifyOnce();
     void streamKeepsTheExistOnDbSlot_data();
@@ -66,7 +69,7 @@ void ComicInfoObjectTest::exposesTheQmlProperties()
         "editor", "imprint", "teams", "locations", "series", "alternateSeries", "alternateNumber", "alternateCount",
         "languageISO", "seriesGroup", "mainCharacterOrTeam", "review", "tags",
         "imageFiltersJson", "lastTimeImageFiltersSet", "lastTimeCoverSet", "usesExternalCover", "lastTimeMetadataSet",
-        "isFavorite", "available"
+        "isFavorite", "available", "canSetReadState"
     };
 
     const auto *metaObject = &ComicInfoObject::staticMetaObject;
@@ -129,7 +132,43 @@ void ComicInfoObjectTest::readsADeletedComic()
     QCOMPARE(deleted.getFileSize(), comic.getFileSize());
 
     ComicInfoObject withoutName(ComicRecordCase::DeletedComic { comic.info, std::nullopt }, false);
-    QCOMPARE(withoutName.getTitleOrFileName(), QString());
+    QCOMPARE(withoutName.getTitleOrFileName(), QString("Missing comic"));
+}
+
+// the descriptive metadata only; no comic state, and the read state and rating cannot be set
+void ComicInfoObjectTest::readsAPlaceholder()
+{
+    Placeholder placeholder;
+    placeholder.id = PlaceholderId(9);
+    placeholder.series = QString("Expected Series");
+    placeholder.number = QString("3");
+    placeholder.writer = QString("Writer A\nWriter B");
+    placeholder.storyArc = QString("Arc");
+    ComicInfoObject object(ComicRecordCase::Placeholder { placeholder }, false);
+
+    QCOMPARE(object.property("available").toBool(), false);
+    QCOMPARE(object.property("canSetReadState").toBool(), false);
+    QCOMPARE(object.property("series").toString(), QString("Expected Series"));
+    QCOMPARE(object.property("number").toString(), QString("3"));
+    QCOMPARE(object.getWriters(), QStringList({ "Writer A", "Writer B" }));
+    QCOMPARE(object.getStoryArcInfoString(), QString("Arc"));
+    QCOMPARE(object.getInfoTitle(), QString("#3 - Expected Series"));
+    QCOMPARE(object.property("id").toULongLong(), 0ULL);
+    QCOMPARE(object.property("read").toBool(), false);
+    QCOMPARE(object.property("rating").toInt(), 0);
+    QVERIFY(object.property("numPages").isNull());
+    QVERIFY(object.property("hash").toString().isEmpty());
+    QVERIFY(object.getTypeString().isEmpty());
+    QCOMPARE(object.getFileSize(), 0ULL);
+
+    QSignalSpy readChanged(&object, &ComicInfoObject::readChanged);
+    object.setRead(true);
+    object.setRating(5);
+    QCOMPARE(readChanged.count(), 0);
+    QCOMPARE(object.property("rating").toInt(), 0);
+
+    ComicInfoObject comic(ComicRecordCase::Comic { sampleComic() }, false);
+    QCOMPARE(comic.property("canSetReadState").toBool(), true);
 }
 
 void ComicInfoObjectTest::writablePropertiesNotifyOnce_data()
@@ -267,6 +306,41 @@ void ComicInfoObjectTest::comicStreamKeepsTheLayout()
     QCOMPARE(path, QString("/Series/Issue 1.cbz"));
     QCOMPARE(hasCover, loaded);
     QCOMPARE(info.id, loaded ? ComicInfoId(42) : ComicInfoId());
+}
+
+void ComicInfoObjectTest::titleFallback_data()
+{
+    QTest::addColumn<QVariant>("title");
+    QTest::addColumn<QVariant>("series");
+    QTest::addColumn<QVariant>("number");
+    QTest::addColumn<QString>("fileName");
+    QTest::addColumn<QString>("expected");
+    QTest::addColumn<QString>("expectedWithNumber");
+
+    QTest::newRow("title") << QVariant("The Long Night") << QVariant("Batman") << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night";
+    QTest::newRow("series and number") << QVariant() << QVariant("Batman") << QVariant("3") << "b.cbz" << "Batman #3" << "Batman #3";
+    QTest::newRow("empty title") << QVariant("") << QVariant("Batman") << QVariant("3") << "b.cbz" << "Batman #3" << "Batman #3";
+    QTest::newRow("series") << QVariant() << QVariant("Batman") << QVariant() << "b.cbz" << "Batman" << "Batman";
+    QTest::newRow("number") << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "#3" << "#3";
+    QTest::newRow("file name") << QVariant() << QVariant() << QVariant() << "b.cbz" << "b.cbz" << "b.cbz";
+    QTest::newRow("nothing") << QVariant() << QVariant() << QVariant() << "" << "" << "";
+}
+
+void ComicInfoObjectTest::titleFallback()
+{
+    QFETCH(QVariant, title);
+    QFETCH(QVariant, series);
+    QFETCH(QVariant, number);
+    QFETCH(QString, fileName);
+    QFETCH(QString, expected);
+    QFETCH(QString, expectedWithNumber);
+
+    DescriptiveComicMetadata info;
+    info.title = title;
+    info.series = series;
+    info.number = number;
+    QCOMPARE(titleOrFileName(info, fileName), expected);
+    QCOMPARE(titleIncludingNumber(info, fileName), expectedWithNumber);
 }
 
 QTEST_GUILESS_MAIN(ComicInfoObjectTest)

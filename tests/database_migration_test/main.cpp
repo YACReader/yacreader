@@ -17,6 +17,7 @@ private slots:
     void failedMigrationRollsBack();
     void failedOlderUpgradeRollsBack();
     void newLibraryUsesEntryTables();
+    void upgradeFrom9_17AddsTheEntrySource();
 
 private:
     static bool createOldLibrary(const QString &libraryPath, const QString &version, const QStringList &extraStatements = { });
@@ -125,6 +126,7 @@ void DatabaseMigrationTest::migratesReadingListsAndLabels()
     QVERIFY(!tables.contains("comic_label"));
     QVERIFY(strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'index'").contains("comic_comic_info_id_index"));
     QCOMPARE(strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'trigger'"), QStringList({ "comic_delete_last_known_file" }));
+    QVERIFY(strings(library.path(), "SELECT name FROM pragma_table_info('reading_list_entry')").contains("source"));
 }
 
 void DatabaseMigrationTest::failedMigrationRollsBack()
@@ -181,6 +183,40 @@ void DatabaseMigrationTest::newLibraryUsesEntryTables()
     QVERIFY(!tables.contains("comic_reading_list"));
     QVERIFY(!tables.contains("comic_label"));
     QCOMPARE(strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'trigger'"), QStringList({ "comic_delete_last_known_file" }));
+    const auto columns = strings(library.path(), "SELECT name FROM pragma_table_info('reading_list_entry')");
+    QVERIFY(columns.contains("source"));
+    QVERIFY(columns.contains("source_format"));
+}
+
+// a 9.17.0 library (a development version) gets the source columns and keeps its entries
+void DatabaseMigrationTest::upgradeFrom9_17AddsTheEntrySource()
+{
+    QTemporaryDir library;
+    QVERIFY(library.isValid());
+    QDir().mkpath(LibraryPaths::libraryDataPath(library.path()));
+
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(library.path()));
+        connectionName = db.connectionName();
+        QSqlQuery query(db);
+        QVERIFY(query.exec("ALTER TABLE reading_list_entry DROP COLUMN source"));
+        QVERIFY(query.exec("ALTER TABLE reading_list_entry DROP COLUMN source_format"));
+        QVERIFY(query.exec("UPDATE db_info SET version = '9.17.0'"));
+        QVERIFY(query.exec("INSERT INTO comic_info (id, hash) VALUES (10, 'hash10')"));
+        QVERIFY(query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')"));
+        QVERIFY(query.exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 0, 10)"));
+        db.close();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    QVERIFY(DataBaseManagement::updateToCurrentVersion(library.path()));
+
+    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
+    QCOMPARE(ints(library.path(), "SELECT comic_info_id FROM reading_list_entry"), QList<int>({ 10 }));
+    const auto columns = strings(library.path(), "SELECT name FROM pragma_table_info('reading_list_entry')");
+    QVERIFY(columns.contains("source"));
+    QVERIFY(columns.contains("source_format"));
 }
 
 QTEST_GUILESS_MAIN(DatabaseMigrationTest)

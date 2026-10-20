@@ -49,6 +49,23 @@ struct DescriptiveComicMetadata {
     QVariant review; // string
     QVariant tags; // string/list
 
+    // the people and names of a multi-line field, one per line
+    QStringList getWriters() const;
+    QStringList getPencillers() const;
+    QStringList getInkers() const;
+    QStringList getColorists() const;
+    QStringList getLetterers() const;
+    QStringList getCoverArtists() const;
+    QStringList getEditors() const;
+    QStringList getImprint() const;
+    QStringList getCharacters() const;
+    QStringList getTeams() const;
+    QStringList getLocations() const;
+    QStringList getTags() const;
+
+    QString getStoryArcInfoString() const;
+    QString getAlternateSeriesString() const;
+
     struct Column {
         const char *name;
         const char *sqlType;
