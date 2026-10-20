@@ -18,6 +18,7 @@ private slots:
     void failedOlderUpgradeRollsBack();
     void newLibraryUsesEntryTables();
     void upgradeFrom9_17AddsTheEntrySource();
+    void upgradeFrom9_18AddsSmartLists();
 
 private:
     static bool createOldLibrary(const QString &libraryPath, const QString &version, const QStringList &extraStatements = { });
@@ -178,6 +179,7 @@ void DatabaseMigrationTest::newLibraryUsesEntryTables()
     QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
     const auto tables = strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'table'");
     QVERIFY(tables.contains("placeholder"));
+    QVERIFY(tables.contains("smart_list"));
     QVERIFY(tables.contains("reading_list_entry"));
     QVERIFY(tables.contains("label_entry"));
     QVERIFY(!tables.contains("comic_reading_list"));
@@ -202,6 +204,7 @@ void DatabaseMigrationTest::upgradeFrom9_17AddsTheEntrySource()
         QSqlQuery query(db);
         QVERIFY(query.exec("ALTER TABLE reading_list_entry DROP COLUMN source"));
         QVERIFY(query.exec("ALTER TABLE reading_list_entry DROP COLUMN source_format"));
+        QVERIFY(query.exec("DROP TABLE smart_list"));
         QVERIFY(query.exec("UPDATE db_info SET version = '9.17.0'"));
         QVERIFY(query.exec("INSERT INTO comic_info (id, hash) VALUES (10, 'hash10')"));
         QVERIFY(query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')"));
@@ -217,6 +220,33 @@ void DatabaseMigrationTest::upgradeFrom9_17AddsTheEntrySource()
     const auto columns = strings(library.path(), "SELECT name FROM pragma_table_info('reading_list_entry')");
     QVERIFY(columns.contains("source"));
     QVERIFY(columns.contains("source_format"));
+    QVERIFY(strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'table'").contains("smart_list"));
+}
+
+void DatabaseMigrationTest::upgradeFrom9_18AddsSmartLists()
+{
+    QTemporaryDir library;
+    QVERIFY(library.isValid());
+    QDir().mkpath(LibraryPaths::libraryDataPath(library.path()));
+
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(library.path()));
+        connectionName = db.connectionName();
+        QSqlQuery query(db);
+        QVERIFY(query.exec("DROP TABLE smart_list"));
+        QVERIFY(query.exec("UPDATE db_info SET version = '9.18.0'"));
+        QVERIFY(query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')"));
+        db.close();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    QVERIFY(DataBaseManagement::updateToCurrentVersion(library.path()));
+
+    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
+    QCOMPARE(strings(library.path(), "SELECT name FROM reading_list"), QStringList({ "List" }));
+    QCOMPARE(strings(library.path(), "SELECT name FROM pragma_table_info('smart_list') ORDER BY cid"),
+             QStringList({ "id", "name", "query", "ordering" }));
 }
 
 QTEST_GUILESS_MAIN(DatabaseMigrationTest)

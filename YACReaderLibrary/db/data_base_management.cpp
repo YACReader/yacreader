@@ -548,6 +548,9 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
 
         // 9.17.0> tables
         success = success && DataBaseManagement::createV9_17Tables(database);
+
+        // 9.19.0> tables
+        success = success && DataBaseManagement::createSmartListTable(database);
     }
 
     return success;
@@ -878,6 +881,16 @@ bool DataBaseManagement::createLabelEntryTable(QSqlDatabase &database)
         success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_placeholder_index ON label_entry (placeholder_id)");
     }
     return success;
+}
+
+bool DataBaseManagement::createSmartListTable(QSqlDatabase &database)
+{
+    QSqlQuery query(database);
+    return query.exec("CREATE TABLE smart_list ("
+                      "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                      "name TEXT NOT NULL, "
+                      "query TEXT NOT NULL, "
+                      "ordering INTEGER NOT NULL)");
 }
 
 bool DataBaseManagement::createComicDeleteTrigger(QSqlDatabase &database)
@@ -1480,6 +1493,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
     const bool pre9_17 = compareVersions(oldVersion, "9.17.0") < 0;
     const bool pre9_18 = compareVersions(oldVersion, "9.18.0") < 0;
+    const bool pre9_19 = compareVersions(oldVersion, "9.19.0") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1699,6 +1713,11 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                     // createV9_17Tables has these columns already
                     bool successAddingColumns = addColumns("reading_list_entry", { "source TEXT", "source_format TEXT" }, db);
                     returnValue = returnValue && successAddingColumns;
+                }
+
+                if (pre9_19) {
+                    bool successCreatingSmartLists = createSmartListTable(db);
+                    returnValue = returnValue && successCreatingSmartLists;
                 }
 
                 if (returnValue) {

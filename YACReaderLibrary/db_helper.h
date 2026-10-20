@@ -18,6 +18,7 @@ class ComicDB;
 struct Folder;
 struct Label;
 struct Placeholder;
+struct SmartList;
 class DescriptiveMetadataPatch;
 class QSqlDatabase;
 class ComicInfo;
@@ -87,6 +88,8 @@ public:
     // the placeholder gets a new id; `placeholder.id` is not used
     static std::optional<PlaceholderId> insertPlaceholder(const Placeholder &placeholder, QSqlDatabase &db);
     static qulonglong insertReadingList(const QString &name, QSqlDatabase &db);
+    // at the end of the order
+    static std::optional<SmartListId> insertSmartList(const QString &name, const QString &query, QSqlDatabase &db);
     static qulonglong insertReadingSubList(const QString &name, qulonglong parentId, int ordering, QSqlDatabase &db);
     static void insertComicsInFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     // updates
@@ -121,6 +124,9 @@ public:
     // returns the libraries where at least one comic was updated
     static QList<QUuid> updateFromRemoteClientWithHash(const QList<ComicInfo> &comics);
     static void renameLabel(qulonglong id, const QString &name, QSqlDatabase &db);
+    // fails when the smart list is gone
+    static bool updateSmartList(SmartListId id, const QString &name, const QString &query, QSqlDatabase &db);
+    static bool removeSmartList(SmartListId id, QSqlDatabase &db);
     static void renameList(qulonglong id, const QString &name, QSqlDatabase &db);
     static bool renameFolder(qulonglong id, const QString &name, const QString &oldPath, const QString &newPath, QSqlDatabase &db, QString *error = nullptr);
     static bool moveComic(qulonglong comicId, qulonglong newParentId, const QString &newFileName, const QString &newRelativePath, QSqlDatabase &db);
@@ -156,6 +162,9 @@ public:
     static std::optional<ComicInfo> loadComicInfo(QString hash, QSqlDatabase &db);
     static std::optional<ComicInfo> loadComicInfo(ComicInfoId id, QSqlDatabase &db);
     static std::optional<Placeholder> loadPlaceholder(PlaceholderId id, QSqlDatabase &db);
+    static std::optional<SmartList> loadSmartList(SmartListId id, QSqlDatabase &db);
+    // in their order; nothing if the query fails
+    static std::optional<QList<SmartList>> loadSmartLists(QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
     // the record as it is now; nothing when a comic with a file lost that file or the file has a different comic_info,
