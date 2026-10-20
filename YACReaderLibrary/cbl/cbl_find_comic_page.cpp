@@ -4,6 +4,7 @@
 #include "cbl_entry_detail.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "qnaturalsorting.h"
 #include "search_query.h"
 #include "yacreader_global.h"
 
@@ -14,12 +15,15 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QSplitter>
+#include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QStandardItemModel>
 #include <QTimer>
 #include <QTreeView>
 #include <QVBoxLayout>
+
+#include <algorithm>
 
 namespace {
 
@@ -57,8 +61,8 @@ bool different(const QString &a, const QString &b)
 
 }
 
-CblFindComicPage::CblFindComicPage(const QString &libraryPath, QWidget *parent)
-    : QWidget(parent), libraryPath(libraryPath)
+CblFindComicPage::CblFindComicPage(const QString &libraryPath, Mode mode, QWidget *parent)
+    : QWidget(parent), libraryPath(libraryPath), mode(mode)
 {
     auto backButton = new QPushButton(tr("‹ All entries"));
     connect(backButton, &QPushButton::clicked, this, &CblFindComicPage::backRequested);
@@ -164,6 +168,14 @@ CblFindComicPage::CblFindComicPage(const QString &libraryPath, QWidget *parent)
     auto bottom = new QHBoxLayout;
     bottom->addWidget(nextProblemCheck);
     bottom->addStretch();
+    if (mode == Mode::OneEntry) {
+        for (QWidget *widget : std::initializer_list<QWidget *> { backButton, previousButton, problemCountLabel, nextButton, nextProblemCheck })
+            widget->hide();
+        auto cancelButton = new QPushButton(tr("Cancel"));
+        cancelButton->setAutoDefault(false);
+        connect(cancelButton, &QPushButton::clicked, this, &CblFindComicPage::backRequested);
+        bottom->addWidget(cancelButton);
+    }
     bottom->addWidget(useButton);
 
     auto layout = new QVBoxLayout(this);
@@ -171,6 +183,41 @@ CblFindComicPage::CblFindComicPage(const QString &libraryPath, QWidget *parent)
     layout->addLayout(header);
     layout->addWidget(splitter, 1);
     layout->addLayout(bottom);
+}
+
+std::optional<QList<CblLibraryFolder>> CblFindComicPage::loadFolders(QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    if (!query.exec("SELECT id, parentId, name, path FROM folder WHERE id <> 1")) {
+        QLOG_ERROR() << "Unable to load the folders:" << query.lastError().text();
+        return std::nullopt;
+    }
+
+    QList<CblLibraryFolder> folders;
+    while (query.next())
+        folders.append({ query.value(0).toULongLong(), query.value(1).toULongLong(), query.value(2).toString(), query.value(3).toString() });
+    std::sort(folders.begin(), folders.end(), [](const CblLibraryFolder &a, const CblLibraryFolder &b) { return naturalSortLessThanCI(a.name, b.name); });
+    return folders;
+}
+
+QString CblFindComicPage::startFolderPath(const CblImportEntry &entry, const CblMatcher &matcher)
+{
+    QString comicPath;
+    const auto pathOf = [](const CblCandidate &candidate) {
+        const auto *comic = std::get_if<CblLibraryComic>(&candidate);
+        return comic != nullptr ? comic->path : QString();
+    };
+    if (entry.choice)
+        comicPath = pathOf(*entry.choice);
+    for (int i = 0; comicPath.isEmpty() && i < entry.match.candidates.size(); ++i)
+        comicPath = pathOf(entry.match.candidates.at(i));
+    if (comicPath.isEmpty()) {
+        const auto closest = matcher.closestSeries(entry.book);
+        for (int i = 0; comicPath.isEmpty() && i < closest.size(); ++i)
+            comicPath = closest.at(i).path;
+    }
+    return comicPath.section('/', 0, -2);
 }
 
 void CblFindComicPage::setFolders(const QList<CblLibraryFolder> &folders)
@@ -206,11 +253,15 @@ void CblFindComicPage::showEntry(const CblImportEntry &shownEntry, int row, int 
     entry = shownEntry;
 
     const auto details = cblBookDetails(entry.book);
-    auto text = tr("Entry %1 of %2").arg(row + 1).arg(entryCount) + QStringLiteral(" · <b>") + CblImportModel::bookTitle(entry.book).toHtmlEscaped() + QStringLiteral("</b>");
+    auto text = QStringLiteral("<b>") + CblImportModel::bookTitle(entry.book).toHtmlEscaped() + QStringLiteral("</b>");
+    if (mode == Mode::ImportEntries)
+        text = tr("Entry %1 of %2").arg(row + 1).arg(entryCount) + QStringLiteral(" · ") + text;
     if (!details.isEmpty())
         text += QStringLiteral(" (") + details.toHtmlEscaped() + QStringLiteral(")");
     entryLabel->setText(text);
 
+    if (mode == Mode::OneEntry)
+        status = CblImportStatus::Missing;
     switch (status) {
     case CblImportStatus::Missing:
         problemLabel->setText(tr("Missing: no comic found. Browse or search the library."));

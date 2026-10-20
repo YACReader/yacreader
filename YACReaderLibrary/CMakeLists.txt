@@ -28,6 +28,8 @@ add_library(library_common STATIC
     staged_cover.cpp
     placeholder_cover.h
     placeholder_cover.cpp
+    library_comic_match.h
+    library_comic_match.cpp
     ip_config_helper.h
     ip_config_helper.cpp
     libraries_update_coordinator.h

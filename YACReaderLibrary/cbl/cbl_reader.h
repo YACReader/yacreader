@@ -115,5 +115,7 @@ using CblReadResult = std::variant<CblReadingList, CblReadError>;
 // the format is found from the content: '{' starts JSON, anything else is read as XML
 CblReadResult readCbl(QIODevice &device);
 CblReadResult readCbl(const QString &filePath);
+// one book from its source, as an entry keeps it (`format` is "xml" or "json"); nothing when it cannot be read
+std::optional<CblBook> readCblBook(const QString &source, const QString &format);
 
 #endif

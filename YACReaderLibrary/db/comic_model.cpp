@@ -130,6 +130,7 @@ bool supportsAction(const ComicItem &item, ComicAction action)
         case ComicAction::AddToList:
             return true;
         case ComicAction::RemoveFromList:
+        case ComicAction::MatchToLibraryComic:
             return false;
         }
         return false;
@@ -150,6 +151,7 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   case ComicAction::SetCustomCover:
                                   case ComicAction::AddToList:
                                   case ComicAction::RemoveFromList:
+                                  case ComicAction::MatchToLibraryComic:
                                       return true;
                                   // Favorites is keyed by comic id
                                   case ComicAction::AddToFavorites:
@@ -170,6 +172,7 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   case ComicAction::AssignNumbers:
                                   case ComicAction::AddToList:
                                   case ComicAction::RemoveFromList:
+                                  case ComicAction::MatchToLibraryComic:
                                       return true;
                                   // no file, reading state, type, or rating
                                   case ComicAction::Open:
@@ -1378,6 +1381,12 @@ ComicRecord ComicModel::record(const QModelIndex &index) const
                               [](const ComicItemCase::PlaceholderInList &row) -> ComicRecord { return ComicRecordCase::Placeholder { row.placeholder }; },
                       },
                       _data.at(index.row()));
+}
+
+std::optional<ListEntry> ComicModel::listEntry(const QModelIndex &index) const
+{
+    const auto *entry = index.isValid() ? rowEntry(_data.at(index.row())) : nullptr;
+    return entry != nullptr ? std::optional(*entry) : std::nullopt;
 }
 
 bool ComicModel::hasUnavailableRows() const

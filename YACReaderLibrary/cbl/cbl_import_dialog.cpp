@@ -6,7 +6,7 @@
 #include "cbl_find_comic_page.h"
 #include "cbl_importer.h"
 #include "data_base_management.h"
-#include "qnaturalsorting.h"
+#include "library_comic_match.h"
 #include "yacreader_global.h"
 
 #include <QButtonGroup>
@@ -18,6 +18,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QSet>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -27,6 +28,7 @@
 #include <QVBoxLayout>
 
 #include <algorithm>
+#include <iterator>
 
 struct CblImportFile {
     QString filePath;
@@ -59,23 +61,6 @@ std::optional<QStringList> loadTopLevelReadingListNames(QSqlDatabase &db)
     return names;
 }
 
-// every folder but the root, sorted by name
-std::optional<QList<CblLibraryFolder>> loadFolders(QSqlDatabase &db)
-{
-    QSqlQuery query(db);
-    query.setForwardOnly(true);
-    if (!query.exec("SELECT id, parentId, name, path FROM folder WHERE id <> 1")) {
-        QLOG_ERROR() << "Unable to load the folders:" << query.lastError().text();
-        return std::nullopt;
-    }
-
-    QList<CblLibraryFolder> folders;
-    while (query.next())
-        folders.append({ query.value(0).toULongLong(), query.value(1).toULongLong(), query.value(2).toString(), query.value(3).toString() });
-    std::sort(folders.begin(), folders.end(), [](const CblLibraryFolder &a, const CblLibraryFolder &b) { return naturalSortLessThanCI(a.name, b.name); });
-    return folders;
-}
-
 CblImportFile loadCblImportFile(const QString &filePath, const QString &libraryPath)
 {
     CblImportFile result;
@@ -97,7 +82,7 @@ CblImportFile loadCblImportFile(const QString &filePath, const QString &libraryP
         const auto comics = db.isOpen() ? CblMatcher::loadLibraryComics(db) : std::nullopt;
         const auto placeholders = db.isOpen() ? CblMatcher::loadLibraryPlaceholders(db) : std::nullopt;
         const auto names = db.isOpen() ? loadTopLevelReadingListNames(db) : std::nullopt;
-        const auto folders = db.isOpen() ? loadFolders(db) : std::nullopt;
+        const auto folders = db.isOpen() ? CblFindComicPage::loadFolders(db) : std::nullopt;
         if (!comics || !placeholders || !names || !folders) {
             result.libraryError = true;
         } else {
@@ -109,6 +94,47 @@ CblImportFile loadCblImportFile(const QString &filePath, const QString &libraryP
                 CblImportEntry entry;
                 entry.book = book;
                 entry.match = result.matcher->match(book);
+                entry.choice = entry.match.accepted;
+                result.entries.append(entry);
+            }
+        }
+    }
+    if (!connectionName.isEmpty())
+        QSqlDatabase::removeDatabase(connectionName);
+    return result;
+}
+
+// the comics of a list entry are comics with a file: an entry that has one keeps it as its match
+CblImportFile loadCblListEntries(const QList<CblListEntry> &listEntries, const QString &libraryPath)
+{
+    CblImportFile result;
+
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::loadDatabase(YACReader::LibraryPaths::libraryDataPath(libraryPath));
+        connectionName = db.connectionName();
+
+        const auto comics = db.isOpen() ? CblMatcher::loadLibraryComics(db) : std::nullopt;
+        const auto folders = db.isOpen() ? CblFindComicPage::loadFolders(db) : std::nullopt;
+        if (!comics || !folders) {
+            result.libraryError = true;
+        } else {
+            result.folders = *folders;
+            QList<CblLibraryComic> withFile;
+            std::copy_if(comics->cbegin(), comics->cend(), std::back_inserter(withFile), [](const CblLibraryComic &comic) { return comic.hasFile; });
+            result.matcher = std::make_shared<const CblMatcher>(withFile);
+            result.entries.reserve(listEntries.size());
+            for (const auto &listEntry : listEntries) {
+                CblImportEntry entry;
+                entry.book = listEntry.book;
+                entry.current = listEntry.current;
+                const auto *comic = std::get_if<CblLibraryComic>(&listEntry.current);
+                if (comic != nullptr && comic->hasFile) {
+                    entry.match.accepted = listEntry.current;
+                    entry.match.candidates = { listEntry.current };
+                } else {
+                    entry.match = result.matcher->match(listEntry.book);
+                }
                 entry.choice = entry.match.accepted;
                 result.entries.append(entry);
             }
@@ -141,7 +167,27 @@ QString filterButtonsStyleSheet()
 }
 
 CblImportDialog::CblImportDialog(const QStringList &filePaths, const QString &libraryPath, QWidget *parent)
-    : QDialog(parent), filePaths(filePaths), libraryPath(libraryPath)
+    : CblImportDialog(libraryPath, parent)
+{
+    this->filePaths = filePaths;
+    loadCurrentFile();
+}
+
+CblImportDialog::CblImportDialog(const QString &listName, const QList<CblListEntry> &entries, const QString &libraryPath, QWidget *parent)
+    : CblImportDialog(libraryPath, parent)
+{
+    listEntries = entries;
+    this->listName = listName;
+    setWindowTitle(tr("Match to library comics — %1").arg(listName));
+    nameRow->hide();
+    nameConflictLabel->hide();
+    skipButton->hide();
+    importButton->setText(tr("Apply"));
+    loadListEntries();
+}
+
+CblImportDialog::CblImportDialog(const QString &libraryPath, QWidget *parent)
+    : QDialog(parent), libraryPath(libraryPath)
 {
     model = new CblImportModel(this);
     filterModel = new CblImportFilterModel(this);
@@ -173,7 +219,12 @@ CblImportDialog::CblImportDialog(const QStringList &filePaths, const QString &li
         button->setAutoDefault(false);
     connect(closeButton, &QPushButton::clicked, this, &QDialog::reject);
     connect(skipButton, &QPushButton::clicked, this, &CblImportDialog::nextFile);
-    connect(importButton, &QPushButton::clicked, this, &CblImportDialog::importCurrentFile);
+    connect(importButton, &QPushButton::clicked, this, [this] {
+        if (listEntries)
+            applyListChanges();
+        else
+            importCurrentFile();
+    });
 
     bottomBar = new QWidget;
     auto buttons = new QHBoxLayout(bottomBar);
@@ -189,7 +240,6 @@ CblImportDialog::CblImportDialog(const QStringList &filePaths, const QString &li
     layout->addWidget(bottomBar);
 
     resize(1000, 700);
-    loadCurrentFile();
 }
 
 CblImportDialog::~CblImportDialog() = default;
@@ -219,9 +269,11 @@ QWidget *CblImportDialog::createEntriesPage()
     nameLabel->setBuddy(nameEdit);
     nameConflictLabel = new QLabel(tr("A reading list with this name already exists. Import creates another one."));
 
-    auto nameRow = new QHBoxLayout;
-    nameRow->addWidget(nameLabel);
-    nameRow->addWidget(nameEdit, 1);
+    nameRow = new QWidget;
+    auto nameLayout = new QHBoxLayout(nameRow);
+    nameLayout->setContentsMargins(0, 0, 0, 0);
+    nameLayout->addWidget(nameLabel);
+    nameLayout->addWidget(nameEdit, 1);
 
     filterButtons = new QButtonGroup(this);
     auto filterButtonsWidget = new QWidget;
@@ -290,7 +342,7 @@ QWidget *CblImportDialog::createEntriesPage()
                 } }, Qt::QueuedConnection);
     });
 
-    layout->addLayout(nameRow);
+    layout->addWidget(nameRow);
     layout->addWidget(nameConflictLabel);
     layout->addLayout(filterRow);
     layout->addWidget(entriesView, 1);
@@ -313,6 +365,98 @@ void CblImportDialog::loadCurrentFile()
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
     connect(thread, &QThread::finished, this, [this, result] { showFile(*result); });
     thread->start();
+}
+
+void CblImportDialog::loadListEntries()
+{
+    showMessage(tr("Matching the entries of %1 with your library...").arg(listName));
+
+    auto result = std::make_shared<CblImportFile>();
+    auto thread = QThread::create([result, entries = *listEntries, libraryPath = libraryPath] {
+        *result = loadCblListEntries(entries, libraryPath);
+    });
+    connect(thread, &QThread::finished, thread, &QObject::deleteLater);
+    connect(thread, &QThread::finished, this, [this, result] { showFile(*result); });
+    thread->start();
+}
+
+void CblImportDialog::applyListChanges()
+{
+    if (!file || !listEntries)
+        return;
+
+    QList<CblListChange> changes;
+    QList<MissingComic> matched;
+    QSet<qulonglong> listIds;
+    auto listKind = ListKind::ReadingList;
+    for (int row = 0; row < model->rowCount(); ++row) {
+        const auto &entry = model->entries().at(row);
+        const auto &listEntry = listEntries->at(row);
+        listIds.insert(listEntry.listId);
+        listKind = listEntry.id.listKind;
+
+        const auto *chosen = entry.choice ? std::get_if<CblLibraryComic>(&*entry.choice) : nullptr;
+        const auto *currentComic = std::get_if<CblLibraryComic>(&listEntry.current);
+        if (chosen != nullptr && chosen->hasFile) {
+            if (currentComic != nullptr && currentComic->id == chosen->id)
+                continue;
+            changes.append({ listEntry.id, chosen->id });
+            if (const auto *placeholder = std::get_if<CblLibraryPlaceholder>(&listEntry.current))
+                matched.append(placeholder->id);
+            else if (!currentComic->hasFile)
+                matched.append(currentComic->id);
+        } else if (!entry.choice && currentComic != nullptr && currentComic->hasFile) {
+            changes.append({ listEntry.id, std::nullopt });
+        }
+    }
+    if (changes.isEmpty()) {
+        accept();
+        return;
+    }
+
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
+    std::optional<QStringList> otherLists;
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::loadDatabase(dataPath);
+        connectionName = db.connectionName();
+        if (db.isOpen())
+            otherLists = otherListsWithEntriesOf(matched, listKind, listIds, db);
+    }
+    if (!connectionName.isEmpty())
+        QSqlDatabase::removeDatabase(connectionName);
+
+    if (otherLists && !otherLists->isEmpty()) {
+        const auto answer = QMessageBox::question(this,
+                                                  tr("Match to library comics"),
+                                                  tr("This also gives comics to entries in %n other list(s): %1", "", otherLists->size()).arg(otherLists->join(QStringLiteral(", "))),
+                                                  QMessageBox::Apply | QMessageBox::Cancel,
+                                                  QMessageBox::Apply);
+        if (answer != QMessageBox::Apply)
+            return;
+    }
+
+    bool applied = false;
+    if (otherLists) {
+        ComicMatchFiles files;
+        {
+            auto db = DataBaseManagement::loadDatabase(dataPath);
+            connectionName = db.connectionName();
+            db.transaction();
+            applied = applyCblListChanges(changes, dataPath, db, files) && db.commit();
+            if (!applied)
+                db.rollback();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+        finishComicMatchFiles(dataPath, files, applied);
+    }
+
+    if (!applied) {
+        QMessageBox::critical(this, tr("Match to library comics"), tr("The changes could not be applied. Nothing was changed."));
+        return;
+    }
+    emit listEntriesChanged();
+    accept();
 }
 
 void CblImportDialog::showFile(const CblImportFile &loaded)
@@ -345,9 +489,11 @@ void CblImportDialog::showFile(const CblImportFile &loaded)
     model->setEntries(file->entries);
     filterEdit->clear();
     filterButtons->button(AllEntriesFilter)->click();
-    nameEdit->setText(cblListName(file->list, file->filePath));
     updateCounts();
-    updateNameConflict();
+    if (!listEntries) {
+        nameEdit->setText(cblListName(file->list, file->filePath));
+        updateNameConflict();
+    }
 
     showEntries();
     importButton->setEnabled(true);
@@ -380,23 +526,7 @@ void CblImportDialog::showFind(int row)
     const bool hasPrevious = !problems.isEmpty() && problems.constFirst() < row;
     const bool hasNext = !problems.isEmpty() && problems.constLast() > row;
 
-    // the folder of the comic it refers to, else of its first possible comic, else of the closest series
-    QString comicPath;
-    const auto pathOf = [](const CblCandidate &candidate) {
-        const auto *comic = std::get_if<CblLibraryComic>(&candidate);
-        return comic != nullptr ? comic->path : QString();
-    };
-    if (entry.choice)
-        comicPath = pathOf(*entry.choice);
-    for (int i = 0; comicPath.isEmpty() && i < entry.match.candidates.size(); ++i)
-        comicPath = pathOf(entry.match.candidates.at(i));
-    if (comicPath.isEmpty()) {
-        const auto closest = file->matcher->closestSeries(entry.book);
-        for (int i = 0; comicPath.isEmpty() && i < closest.size(); ++i)
-            comicPath = closest.at(i).path;
-    }
-
-    findPage->showEntry(entry, row, model->rowCount(), model->status(row), comicPath.section('/', 0, -2), problem, problems.size(), hasPrevious, hasNext);
+    findPage->showEntry(entry, row, model->rowCount(), model->status(row), CblFindComicPage::startFolderPath(entry, *file->matcher), problem, problems.size(), hasPrevious, hasNext);
     pages->setCurrentWidget(findPage);
     bottomBar->setVisible(false);
 }
@@ -546,7 +676,7 @@ void CblImportDialog::showEntriesMenu(const QPoint &position)
     auto original = menu.addAction(tr("Use the original match"));
     original->setEnabled(anyChanged);
     connect(original, &QAction::triggered, this, [this, rows] { model->useOriginalMatch(rows); });
-    auto missing = menu.addAction(tr("Import as missing"));
+    auto missing = menu.addAction(listEntries ? tr("Make missing") : tr("Import as missing"));
     missing->setEnabled(anyCanBeMissing);
     connect(missing, &QAction::triggered, this, [this, rows] { model->importAsMissing(rows); });
     menu.exec(entriesView->viewport()->mapToGlobal(position));
@@ -562,6 +692,5 @@ QList<int> CblImportDialog::selectedRows() const
 
 QColor CblImportDialog::warningColor() const
 {
-    const bool dark = palette().color(QPalette::Base).lightness() < 128;
-    return dark ? QColor(0xE0, 0xA0, 0x30) : QColor(0xB2, 0x6B, 0x00);
+    return cblWarningColor(palette());
 }

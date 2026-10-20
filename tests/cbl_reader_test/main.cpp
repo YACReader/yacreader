@@ -34,6 +34,7 @@ private slots:
     void booksKeepTheirSource();
     void readsTheDeclaredEncoding();
     void decodesCharacterReferences();
+    void readsOneBookFromItsSource();
 
 private:
     static CblReadResult read(const QByteArray &data);
@@ -494,6 +495,36 @@ void CblReaderTest::decodesCharacterReferences()
     QCOMPARE(jsonList->name, QString("Atlantis & more"));
     QCOMPARE(jsonList->books.at(0).series, QString("Arion, Lord of Atlantis"));
     QVERIFY(jsonList->books.at(0).source.contains("Arion&#44; Lord of Atlantis"));
+}
+
+void CblReaderTest::readsOneBookFromItsSource()
+{
+    const auto list = read(R"(<ReadingList><Books>
+<Book Series="Infinity&#44; Inc." Number="1" Volume="1984" Year="1984">
+<Database Name="cv" Series="1" Issue="42" />
+</Book>
+</Books></ReadingList>)");
+    const auto *xmlList = std::get_if<CblReadingList>(&list);
+    QVERIFY(xmlList != nullptr);
+    const auto xmlBook = readCblBook(xmlList->books.constFirst().source, "xml");
+    QVERIFY(xmlBook);
+    QCOMPARE(*xmlBook, xmlList->books.constFirst());
+
+    const auto jsonList = read(R"({"issueList": [{"seriesName": "Nova", "issueNumber": "2", "seriesStartYear": "2007", "issueCoverDate": "2007-06-01"}]})");
+    const auto *json = std::get_if<CblReadingList>(&jsonList);
+    QVERIFY(json != nullptr);
+    const auto jsonBook = readCblBook(json->books.constFirst().source, "json");
+    QVERIFY(jsonBook);
+    QCOMPARE(*jsonBook, json->books.constFirst());
+
+    // a book with the xsi namespace of ComicRack files
+    const auto nil = readCblBook(R"(<Book Series="Nova" Number="3"><Id xsi:nil="true" /></Book>)", "xml");
+    QVERIFY(nil);
+    QCOMPARE(nil->series, QString("Nova"));
+
+    QVERIFY(!readCblBook("<Book", "xml"));
+    QVERIFY(!readCblBook("<Book Series=\"A\"/><Book Series=\"B\"/>", "xml"));
+    QVERIFY(!readCblBook("{}", "yaml"));
 }
 
 QTEST_GUILESS_MAIN(CblReaderTest)

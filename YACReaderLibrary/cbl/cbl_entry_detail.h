@@ -29,5 +29,7 @@ private:
 // what the UI says about matching
 QString cblMatchLevelText(CblMatchLevel level);
 QString cblBookDetails(const CblBook &book);
+// amber, for problems and values that are different
+QColor cblWarningColor(const QPalette &palette);
 
 #endif

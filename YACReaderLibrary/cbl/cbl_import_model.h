@@ -17,6 +17,8 @@ struct CblImportEntry {
     // what the import uses; it starts as the accepted match
     std::optional<CblCandidate> choice;
     bool changed = false;
+    // in a list: what the entry refers to when the view opens
+    std::optional<CblCandidate> current;
 };
 
 enum class CblImportStatus {

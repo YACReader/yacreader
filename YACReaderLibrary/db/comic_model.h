@@ -125,6 +125,8 @@ public:
     std::optional<ComicDB> getComic(const QModelIndex &mi);
     // from the row, without a query
     ComicRecord record(const QModelIndex &index) const;
+    // nothing for a row that is not in a list
+    std::optional<ListEntry> listEntry(const QModelIndex &index) const;
     QVector<YACReaderComicReadStatus> getReadList();
     // the comics of the rows that have a file, loaded again; rows without a file are skipped
     QList<ComicDB> getComics(QList<QModelIndex> list);

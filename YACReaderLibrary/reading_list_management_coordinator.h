@@ -1,6 +1,8 @@
 #ifndef READING_LIST_MANAGEMENT_COORDINATOR_H
 #define READING_LIST_MANAGEMENT_COORDINATOR_H
 
+#include "library_ids.h"
+
 #include <QModelIndex>
 #include <QObject>
 
@@ -30,9 +32,13 @@ public slots:
     void deleteCurrentList();
     void addLabel();
     void renameCurrentList();
+    // every entry of the reading list (with its child lists) or label
+    void matchListToLibraryComics(ListKind listKind, qulonglong listId, const QString &name);
 
 signals:
     void currentListReselectionRequested();
+    // the entries of lists changed, maybe also the ones on screen
+    void listEntriesChanged();
 
 private:
     QWidget *dialogParent;

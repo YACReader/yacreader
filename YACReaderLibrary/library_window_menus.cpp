@@ -247,6 +247,11 @@ void LibraryWindowMenus::showComicsContextMenu(const QPoint &point, bool showFul
     menu->addSeparator();
     menu->addAction(actions.editSelectedComicsAction);
     menu->addAction(actions.getInfoAction);
+    if (comicManagementCoordinator->canMatchSelectionToLibraryComic()) {
+        auto matchAction = menu->addAction(tr("Match to library comic..."));
+        // the dialog runs its own event loop, so the menu is gone first
+        connect(matchAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::matchSelectedToLibraryComic, Qt::QueuedConnection);
+    }
     menu->addAction(actions.asignOrderAction);
     if (YACReader::FeatureFlags::organizeFiles) {
         menu->addSeparator();

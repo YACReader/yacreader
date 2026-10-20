@@ -446,6 +446,8 @@ void ComicModelTest::deletedComicsSupportOnlyComicInfoActions()
         QVERIFY(model.supports(available, action));
     }
     QCOMPARE(model.supportedIndexes({ deleted, available }, ComicAction::Open), QModelIndexList({ available }));
+    QVERIFY(model.supports(deleted, ComicAction::MatchToLibraryComic));
+    QVERIFY(!model.supports(available, ComicAction::MatchToLibraryComic));
 
     model.setupFolderModelData(2, dataPath);
     QVERIFY(!model.supports(model.index(0, 0), ComicAction::RemoveFromList));
@@ -696,6 +698,7 @@ void ComicModelTest::sharedViewsShowComicsWithFiles()
                                    ComicAction::AddToFavorites, ComicAction::AddToList })
             QVERIFY(model.supports(index, action));
         QCOMPARE(model.supports(index, ComicAction::RemoveFromList), source == "favorites" || source == "reading");
+        QVERIFY(!model.supports(index, ComicAction::MatchToLibraryComic));
     }
 
     std::unique_ptr<QMimeData> data(model.mimeData(all));
@@ -857,7 +860,8 @@ void ComicModelTest::placeholdersSupportMetadataAndListActions()
     const auto withCover = model.index(2, 0);
     const auto withoutCover = model.index(3, 0);
 
-    for (const auto action : { ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover, ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromList }) {
+    for (const auto action : { ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover, ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromList,
+                               ComicAction::MatchToLibraryComic }) {
         QVERIFY(model.supports(withCover, action));
         QVERIFY(model.supports(withoutCover, action));
     }

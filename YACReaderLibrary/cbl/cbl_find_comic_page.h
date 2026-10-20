@@ -6,9 +6,11 @@
 
 #include <QWidget>
 
+class CblMatcher;
 class QCheckBox;
 class QLabel;
 class QLineEdit;
+class QSqlDatabase;
 class QPushButton;
 class QStandardItem;
 class QStandardItemModel;
@@ -28,7 +30,18 @@ class CblFindComicPage : public QWidget
     Q_OBJECT
 
 public:
-    CblFindComicPage(const QString &libraryPath, QWidget *parent = nullptr);
+    // OneEntry has no entry list to go back to and no other problems; backRequested is its Cancel
+    enum class Mode {
+        ImportEntries,
+        OneEntry,
+    };
+
+    CblFindComicPage(const QString &libraryPath, Mode mode = Mode::ImportEntries, QWidget *parent = nullptr);
+
+    // every folder but the root, sorted by name
+    static std::optional<QList<CblLibraryFolder>> loadFolders(QSqlDatabase &db);
+    // the folder of the comic the entry refers to, else of its first possible comic, else of the closest series
+    static QString startFolderPath(const CblImportEntry &entry, const CblMatcher &matcher);
 
     void setFolders(const QList<CblLibraryFolder> &folders);
     void setWarningColor(const QColor &color);
@@ -49,6 +62,7 @@ private:
     QString breadcrumb(QStandardItem *folder) const;
 
     QString libraryPath;
+    Mode mode;
     CblImportEntry entry;
     QColor warningColor;
     QList<ComicDB> comics;

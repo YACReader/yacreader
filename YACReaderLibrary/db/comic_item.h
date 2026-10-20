@@ -53,6 +53,7 @@ enum class ComicAction {
     AddToFavorites,
     AddToList,
     RemoveFromList,
+    MatchToLibraryComic, // a missing entry or a deleted comic gets a comic with a file
 };
 
 #endif

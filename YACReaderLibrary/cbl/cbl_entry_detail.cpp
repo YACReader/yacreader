@@ -157,6 +157,12 @@ QString cblMatchLevelText(CblMatchLevel level)
     return { };
 }
 
+QColor cblWarningColor(const QPalette &palette)
+{
+    const bool dark = palette.color(QPalette::Base).lightness() < 128;
+    return dark ? QColor(0xE0, 0xA0, 0x30) : QColor(0xB2, 0x6B, 0x00);
+}
+
 QString cblBookDetails(const CblBook &book)
 {
     QStringList parts;
@@ -196,6 +202,8 @@ CblEntryDetail::CblEntryDetail(const CblImportEntry &entry, int row, int entryCo
         subjects.last().candidate.reset();
         if (entry.changed)
             footer = tr("Changed by you.");
+        else if (entry.current == entry.choice)
+            footer = tr("The entry has this comic.");
         else if (hasFile(*entry.choice))
             footer = tr("Matched by %1.").arg(cblMatchLevelText(entry.match.level.value_or(CblMatchLevel::SameSeries)));
         else

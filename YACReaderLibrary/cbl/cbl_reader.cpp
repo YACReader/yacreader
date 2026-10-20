@@ -292,3 +292,21 @@ CblReadResult readCbl(const QString &filePath)
 
     return readCbl(file);
 }
+
+std::optional<CblBook> readCblBook(const QString &source, const QString &format)
+{
+    CblReadResult result = CblReadError { CblReadError::NotAReadingList, format };
+    if (format == QLatin1StringView("xml"))
+        // ComicRack writes these namespaces on the root, and a book can use them
+        result = readXml(QStringLiteral("<ReadingList xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"><Books>") +
+                         source + QStringLiteral("</Books></ReadingList>"));
+    else if (format == QLatin1StringView("json"))
+        result = readJson(QByteArrayLiteral("{\"issueList\":[") + source.toUtf8() + QByteArrayLiteral("]}"));
+
+    const auto *list = std::get_if<CblReadingList>(&result);
+    if (list == nullptr || list->books.size() != 1)
+        return std::nullopt;
+    auto book = list->books.constFirst();
+    book.source = source;
+    return book;
+}

@@ -1,6 +1,8 @@
 #include "comic_management_coordinator.h"
 
 #include "api_key_dialog.h"
+#include "cbl_import_dialog.h"
+#include "cbl_match_comic_dialog.h"
 #include "comic_files_manager.h"
 #include "comic_vine_dialog.h"
 #include "comics_remover.h"
@@ -9,6 +11,7 @@
 #include "db_helper.h"
 #include "folder_model.h"
 #include "initial_comic_info_extractor.h"
+#include "library_comic_match.h"
 #include "library_comic_opener.h"
 #include "placeholder_cover.h"
 #include "properties_dialog.h"
@@ -487,6 +490,118 @@ bool ComicManagementCoordinator::hasCustomCoverInSelection() const
     return std::any_of(comics.cbegin(), comics.cend(), [](const ComicDB &comic) {
         return comic.info.usesExternalCover.toBool();
     });
+}
+
+bool ComicManagementCoordinator::canMatchSelectionToLibraryComic() const
+{
+    const auto selection = selectionProvider();
+    if (selection.size() == 1)
+        return comicsModel->supports(selection.constFirst(), ComicAction::MatchToLibraryComic);
+    return selection.size() > 1 && std::all_of(selection.cbegin(), selection.cend(), [this](const QModelIndex &index) { return comicsModel->listEntry(index).has_value(); });
+}
+
+// the comic is given to the entries of the missing comic in every list
+void ComicManagementCoordinator::matchSelectedToLibraryComic()
+{
+    if (!comicOpeningAllowedProvider() || !canMatchSelectionToLibraryComic())
+        return;
+
+    const auto selection = selectionProvider();
+    if (selection.size() > 1) {
+        matchSelectedEntriesToLibraryComics(selection);
+        return;
+    }
+
+    const auto index = selection.constFirst();
+    const auto record = comicsModel->record(index);
+    const auto entry = comicsModel->listEntry(index);
+    if (!entry)
+        return;
+    MissingComic missing;
+    if (const auto *placeholder = recordPlaceholder(record))
+        missing = placeholder->id;
+    else if (const auto *info = recordInfo(record))
+        missing = info->id;
+    const auto source = currentSource();
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(source.libraryPath);
+
+    emit currentSourceRefreshStarted();
+    CblMatchComicDialog dialog(recordMetadata(record), source.libraryPath, window);
+    if (dialog.exec() != QDialog::Accepted || !dialog.chosenComic() || !isCurrentSource(source)) {
+        emit currentSourceRefreshCancelled();
+        return;
+    }
+    const auto comicInfoId = dialog.chosenComic()->id;
+
+    std::optional<QStringList> otherLists;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+        otherLists = otherListsWithEntriesOf({ missing }, entry->id.listKind, { entry->listId }, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    if (otherLists && !otherLists->isEmpty()) {
+        const auto answer = QMessageBox::question(window,
+                                                  QCoreApplication::translate("LibraryWindow", "Match to library comic"),
+                                                  QCoreApplication::translate("LibraryWindow", "This also gives the comic to entries in %n other list(s): %1", "", otherLists->size()).arg(otherLists->join(QStringLiteral(", "))),
+                                                  QMessageBox::Apply | QMessageBox::Cancel,
+                                                  QMessageBox::Apply);
+        if (answer != QMessageBox::Apply) {
+            emit currentSourceRefreshCancelled();
+            return;
+        }
+    }
+
+    bool matched = false;
+    ComicMatchFiles files;
+    if (otherLists) {
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+            db.transaction();
+            matched = std::visit(overloaded {
+                                         [&](PlaceholderId id) { return matchPlaceholderToComic(id, comicInfoId, dataPath, db, files); },
+                                         [&](ComicInfoId id) { return matchDeletedComicToComic(id, comicInfoId, db, files); },
+                                 },
+                                 missing) &&
+                    db.commit();
+            if (!matched)
+                db.rollback();
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+        finishComicMatchFiles(dataPath, files, matched);
+    }
+
+    if (!matched) {
+        emit currentSourceRefreshCancelled();
+        QMessageBox::warning(window,
+                             QCoreApplication::translate("LibraryWindow", "Match to library comic"),
+                             QCoreApplication::translate("LibraryWindow", "The comic could not be matched. Nothing was changed."));
+        return;
+    }
+    emit currentSourceRefreshAccepted();
+}
+
+void ComicManagementCoordinator::matchSelectedEntriesToLibraryComics(const QModelIndexList &selection)
+{
+    QList<CblListEntry> entries;
+    for (const auto &index : selection) {
+        if (const auto entry = comicsModel->listEntry(index))
+            entries.append(cblListEntry(comicsModel->record(index), *entry));
+    }
+    const auto source = currentSource();
+
+    emit currentSourceRefreshStarted();
+    CblImportDialog dialog(currentListProvider().data().toString(), entries, source.libraryPath, window);
+    bool changed = false;
+    connect(&dialog, &CblImportDialog::listEntriesChanged, this, [&changed] { changed = true; });
+    dialog.exec();
+    if (changed)
+        emit currentSourceRefreshAccepted();
+    else
+        emit currentSourceRefreshCancelled();
 }
 
 // a new image gets a new file; the old file is removed after the commit, the new one on a failure.

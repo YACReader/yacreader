@@ -7,6 +7,8 @@ add_library(cbl STATIC
     cbl_matcher.cpp
     cbl_importer.h
     cbl_importer.cpp
+    cbl_list_match.h
+    cbl_list_match.cpp
 )
 target_include_directories(cbl PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -33,6 +35,8 @@ if(NOT BUILD_SERVER_STANDALONE)
         cbl_find_comic_page.cpp
         cbl_import_dialog.h
         cbl_import_dialog.cpp
+        cbl_match_comic_dialog.h
+        cbl_match_comic_dialog.cpp
     )
     target_include_directories(cbl_gui PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
