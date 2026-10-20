@@ -17,7 +17,7 @@ EditShortcutsDialog::EditShortcutsDialog(QWidget *parent)
     : QDialog(parent)
 {
     QPushButton *resetButton = new QPushButton(tr("Restore defaults"), this);
-    QLabel *infoLabel = new QLabel(tr("To change a shortcut, double click in the key combination and type the new keys."));
+    QLabel *infoLabel = new QLabel(tr("To change a shortcut, double-click the key combination and type the new keys."));
     QVBoxLayout *layout = new QVBoxLayout(this);
     QSplitter *splitter = new QSplitter(this);
     actionsGroupsListView = new QListView(this);
@@ -115,5 +115,5 @@ void EditShortcutsDialog::loadShortcuts(const QModelIndex &mi, const QModelIndex
 
 void EditShortcutsDialog::processConflict(const QString &shortcutInConflict)
 {
-    QMessageBox::warning(this, tr("Shortcut in use"), QString(tr("The shortcut \"%1\" is already assigned to other function")).arg(shortcutInConflict));
+    QMessageBox::warning(this, tr("Shortcut in use"), QString(tr("The shortcut \"%1\" is already assigned to another function")).arg(shortcutInConflict));
 }

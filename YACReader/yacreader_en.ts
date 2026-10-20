@@ -129,8 +129,8 @@
     <name>BookmarksDialog</name>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
-        <translation>Lastest Page</translation>
+        <source>Latest Page</source>
+        <translation>Latest Page</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="77"/>
@@ -166,8 +166,8 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>To change a shortcut, double click in the key combination and type the new keys.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>To change a shortcut, double-click the key combination and type the new keys.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="67"/>
@@ -181,8 +181,8 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>The shortcut &quot;%1&quot; is already assigned to other function</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>The shortcut &quot;%1&quot; is already assigned to another function</translation>
     </message>
 </context>
 <context>
@@ -213,8 +213,8 @@
     <name>GoToDialog</name>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
-        <translation>Page : </translation>
+        <source>Page: </source>
+        <translation>Page: </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="24"/>
@@ -229,8 +229,8 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
-        <translation>Total pages : </translation>
+        <source>Total pages: </source>
+        <translation>Total pages: </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="52"/>
@@ -242,8 +242,8 @@
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
-        <translation>Page : </translation>
+        <source>Page: </source>
+        <translation>Page: </translation>
     </message>
 </context>
 <context>
@@ -266,7 +266,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>Changelog</translation>
     </message>
 </context>
 <context>
@@ -339,17 +339,17 @@
     <message>
         <location filename="options_dialog.cpp" line="45"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Language</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="47"/>
         <source>Application language</source>
-        <translation type="unfinished"></translation>
+        <translation>Application language</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="49"/>
         <source>System default</source>
-        <translation type="unfinished"></translation>
+        <translation>System default</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="58"/>
@@ -383,8 +383,8 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
-        <translation>Scroll behaviour</translation>
+        <source>Scroll behavior</source>
+        <translation>Scroll behavior</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="111"/>
@@ -418,8 +418,8 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
-        <translation>Click left or right half of the screen to turn pages.</translation>
+        <source>Click the left or right half of the screen to turn pages.</source>
+        <translation>Click the left or right half of the screen to turn pages.</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="134"/>
@@ -787,8 +787,8 @@ If none is active, Escape does nothing.</translation>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Press &apos;O&apos; to open comic.</translation>
+        <source>Press &apos;O&apos; to open a comic.</source>
+        <translation>Press &apos;O&apos; to open a comic.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="372"/>
@@ -812,8 +812,8 @@ If none is active, Escape does nothing.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
-        <translation>Loading...please wait!</translation>
+        <source>Loading... please wait!</source>
+        <translation>Loading... please wait!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1843"/>
@@ -940,8 +940,8 @@ If none is active, Escape does nothing.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Use VSync (improve the image quality in fullscreen mode, worse performance)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>Use VSync (improves image quality in fullscreen mode, but reduces performance)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
@@ -1016,12 +1016,12 @@ If none is active, Escape does nothing.</translation>
         <location filename="main_window_viewer.cpp" line="1149"/>
         <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Extract page(s)</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>Extract page(s) from the original source</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
@@ -1168,8 +1168,8 @@ If none is active, Escape does nothing.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
-        <translation>Go to page ...</translation>
+        <source>Go to page...</source>
+        <translation>Go to page...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="527"/>
@@ -1194,6 +1194,8 @@ If none is active, Escape does nothing.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1353"/>
+        <location filename="main_window_viewer.cpp" line="1419"/>
         <source>Magnifying glass</source>
         <translation>Magnifying glass</translation>
     </message>
@@ -1361,12 +1363,6 @@ If none is active, Escape does nothing.</translation>
         <translation>Reset magnifying glass</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1353"/>
-        <location filename="main_window_viewer.cpp" line="1419"/>
-        <source>Magnifiying glass</source>
-        <translation>Magnifiying glass</translation>
-    </message>
-    <message>
         <location filename="main_window_viewer.cpp" line="1426"/>
         <source>Toggle between fit to width and fit to height</source>
         <translation>Toggle between fit to width and fit to height</translation>
@@ -1374,8 +1370,8 @@ If none is active, Escape does nothing.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1354"/>
         <location filename="main_window_viewer.cpp" line="1430"/>
-        <source>Page adjustement</source>
-        <translation>Page adjustement</translation>
+        <source>Page adjustment</source>
+        <translation>Page adjustment</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1108"/>
@@ -1385,12 +1381,12 @@ If none is active, Escape does nothing.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1113"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Overwrite file?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1113"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>The file already exists. Do you want to overwrite it?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1119"/>
@@ -1405,22 +1401,22 @@ If none is active, Escape does nothing.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1149"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>The current page could not be extracted.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>Overwrite files?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Some files already exist. Do you want to overwrite them?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Some pages could not be extracted.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1448"/>
@@ -1524,12 +1520,12 @@ If none is active, Escape does nothing.</translation>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Release notes are not available.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>Previous versions</translation>
     </message>
 </context>
 <context>

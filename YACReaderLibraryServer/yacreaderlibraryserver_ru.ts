@@ -30,15 +30,15 @@
     <message>
         <location filename="main.cpp" line="83"/>
         <source>
-YACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary.
+YACReaderLibraryServer is the headless (no GUI) version of YACReaderLibrary.
 
-This appplication supports persistent settings, to set them up edit this file %1
-To learn about the available settings please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</source>
+This application supports persistent settings. To set them up, edit this file: %1
+To learn about the available settings, please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</source>
         <translation>
-YACReaderLibraryServer — это безголовая (без графического интерфейса) версия YACReaderLibrary.
+YACReaderLibraryServer — это версия headless (без графического интерфейса) YACReaderLibrary.
 
-Это приложение поддерживает постоянные настройки. Чтобы настроить их, отредактируйте этот файл %1.
-Чтобы узнать о доступных настройках, ознакомьтесь с документацией по адресу https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md.</translation>
+Это приложение поддерживает постоянные настройки. Чтобы настроить их, отредактируйте этот файл: %1
+Чтобы узнать о доступных настройках, ознакомьтесь с документацией по адресу https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</translation>
     </message>
 </context>
 </TS>

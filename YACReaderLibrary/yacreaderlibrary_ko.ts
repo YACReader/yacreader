@@ -51,12 +51,12 @@
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="16"/>
-        <source>Comics folder : </source>
+        <source>Comics folder: </source>
         <translation>만화 폴더: </translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="21"/>
-        <source>Library name : </source>
+        <source>Library name: </source>
         <translation>라이브러리 이름: </translation>
     </message>
 </context>
@@ -69,8 +69,8 @@
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>Comic Vine에 연결하려면 본인의 API 키가 필요합니다. &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;여기&lt;/a&gt;에서 무료로 발급받으세요.</translation>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <translation>Comic Vine에 연결하려면 본인의 API 키가 필요합니다. &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;여기&lt;/a&gt;에서 무료로 발급받으세요</translation>
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="25"/>
@@ -118,7 +118,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
         <source>Remove this user-imported theme</source>
-        <translation>사용자 가져온 이 테마 제거</translation>
+        <translation>사용자가 가져온 이 테마 제거</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
@@ -204,7 +204,7 @@
     <message>
         <location filename="classic_comics_view.cpp" line="100"/>
         <source>Hide comic flow</source>
-        <translation>만화 흐름 숨기기</translation>
+        <translation>Comic Flow 숨기기</translation>
     </message>
 </context>
 <context>
@@ -445,14 +445,14 @@
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="279"/>
-        <source>Error connecting to ComicVine</source>
+        <source>Error connecting to Comic Vine</source>
         <translation>Comic Vine 연결 오류</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="459"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="484"/>
-        <source>Retrieving tags for : %1</source>
-        <translation>태그 가져오는 중 : %1</translation>
+        <source>Retrieving tags for: %1</source>
+        <translation>태그 가져오는 중: %1</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="615"/>
@@ -492,17 +492,17 @@
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="21"/>
-        <source>Comics folder : </source>
+        <source>Comics folder: </source>
         <translation>만화 폴더: </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="26"/>
-        <source>Library Name : </source>
+        <source>Library Name: </source>
         <translation>라이브러리 이름: </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="57"/>
-        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
+        <source>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</source>
         <translation>라이브러리 생성은 몇 분 걸릴 수 있습니다. 작업을 중지하고 나중에 라이브러리를 업데이트하여 완료할 수 있습니다.</translation>
     </message>
     <message>
@@ -533,8 +533,8 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>단축키를 바꾸려면 키 조합을 더블 클릭하고 새 키를 입력하세요.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>단축키를 바꾸려면 키 조합을 두 번 클릭하고 새 키를 입력하세요.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="67"/>
@@ -548,7 +548,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>&quot;%1&quot; 단축키는 이미 다른 기능이 사용 중입니다</translation>
     </message>
 </context>
@@ -604,7 +604,7 @@
     <message>
         <location filename="empty_special_list.cpp" line="27"/>
         <source>There are no recent comics!</source>
-        <translation>최근 본 만화가 없습니다!</translation>
+        <translation>최근 추가된 만화가 없습니다!</translation>
     </message>
 </context>
 <context>
@@ -621,7 +621,7 @@
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="14"/>
-        <source>Output file : </source>
+        <source>Output file: </source>
         <translation>출력 파일: </translation>
     </message>
     <message>
@@ -659,7 +659,7 @@
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="12"/>
-        <source>Output folder : </source>
+        <source>Output folder: </source>
         <translation>출력 폴더: </translation>
     </message>
     <message>
@@ -816,7 +816,7 @@
     <message>
         <location filename="grid_comics_view.cpp" line="856"/>
         <source>Western manga</source>
-        <translation>서양식 망가</translation>
+        <translation>서양 만화</translation>
     </message>
     <message>
         <location filename="grid_comics_view.cpp" line="859"/>
@@ -876,7 +876,7 @@
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="16"/>
-        <source>Info database location : </source>
+        <source>Info database location: </source>
         <translation>정보 데이터베이스 경로: </translation>
     </message>
     <message>
@@ -894,7 +894,7 @@
     <name>ImportLibraryDialog</name>
     <message>
         <location filename="import_library_dialog.cpp" line="26"/>
-        <source>Destination folder : </source>
+        <source>Destination folder: </source>
         <translation>대상 폴더: </translation>
     </message>
     <message>
@@ -909,17 +909,17 @@
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="115"/>
-        <source>Compresed library covers (*.clc)</source>
+        <source>Compressed library covers (*.clc)</source>
         <translation>압축된 라이브러리 표지 (*.clc)</translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="22"/>
-        <source>Package location : </source>
+        <source>Package location: </source>
         <translation>패키지 경로: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="17"/>
-        <source>Library Name : </source>
+        <source>Library Name: </source>
         <translation>라이브러리 이름: </translation>
     </message>
     <message>
@@ -947,7 +947,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="319"/>
-        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
+        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Creating a library could take several minutes. You can stop the process and update the library later to complete the task.&lt;/p&gt;</source>
         <translation>&lt;p&gt;YACReaderLibrary가 새 라이브러리를 만들고 있습니다.&lt;/p&gt;&lt;p&gt;라이브러리 생성은 몇 분 걸릴 수 있습니다. 작업을 중지하고 나중에 라이브러리를 업데이트하여 작업을 완료할 수 있습니다.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -957,7 +957,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="331"/>
-        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being updated. For faster updates, please update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
         <translation>&lt;p&gt;현재 라이브러리를 업데이트하고 있습니다. 더 빠른 업데이트를 위해 라이브러리를 자주 업데이트하세요.&lt;/p&gt;&lt;p&gt;작업을 중지하고 나중에 이 라이브러리 업데이트를 계속할 수 있습니다.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -977,7 +977,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="355"/>
-        <source>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
         <translation>&lt;p&gt;현재 라이브러리에서 레거시 XML 메타데이터 정보를 스캔하고 있습니다.&lt;/p&gt;&lt;p&gt;이 작업은 한 번만 필요하며, 라이브러리가 YACReaderLibrary 9.8.2 또는 이전 버전으로 만들어진 경우에만 해당됩니다.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -1031,8 +1031,8 @@
     <name>LibraryWindow</name>
     <message>
         <location filename="library_management_coordinator.cpp" line="400"/>
-        <source>Do you want remove </source>
-        <translation>다음을 제거하시겠습니까: </translation>
+        <source>Do you want to remove the library &apos;%1&apos;?</source>
+        <translation>&apos;%1&apos; 라이브러리를 제거하시겠습니까?</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="239"/>
@@ -1130,7 +1130,7 @@
         <location filename="folder_management_coordinator.cpp" line="134"/>
         <location filename="folder_management_coordinator.cpp" line="146"/>
         <location filename="folder_management_coordinator.cpp" line="200"/>
-        <source>Please, select a folder first</source>
+        <source>Please select a folder first</source>
         <translation>먼저 폴더를 선택하세요</translation>
     </message>
     <message>
@@ -1156,7 +1156,7 @@
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="251"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <source>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
         <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
         <translation>선택한 폴더를 삭제하는 중 문제가 발생했습니다. 쓰기 권한을 확인하고, 다른 응용 프로그램이 이 폴더나 안의 파일을 사용하고 있지 않은지 확인하세요.</translation>
     </message>
@@ -1290,9 +1290,9 @@ Folder: %1</source>
         <location filename="library_management_coordinator.cpp" line="446"/>
         <source>You are adding too many libraries.
 
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
 
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</source>
         <translation>라이브러리를 너무 많이 추가하고 있습니다.
 
 최상위 만화 폴더에 라이브러리 하나만 있으면 충분합니다. 좌측 사이드바의 폴더 섹션으로 하위 폴더를 탐색할 수 있습니다.
@@ -1462,11 +1462,6 @@ You can restore a backup from the Library menu or recreate the library.</source>
 라이브러리 메뉴에서 백업을 복원하거나 라이브러리를 다시 만들 수 있습니다.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="400"/>
-        <source> library?</source>
-        <translation>라이브러리?</translation>
-    </message>
-    <message>
         <location filename="library_management_coordinator.cpp" line="403"/>
         <source>Remove and delete metadata and backups</source>
         <translation>메타데이터 및 백업 제거 후 삭제</translation>
@@ -1482,7 +1477,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="596"/>
-        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
+        <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
         <translation>선택한 만화를 삭제하는 중 문제가 발생했습니다. 선택한 파일이나 포함된 폴더의 쓰기 권한을 확인하세요.</translation>
     </message>
     <message>
@@ -1492,7 +1487,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="304"/>
-        <source>Assign numbers starting in:</source>
+        <source>Assign numbers starting at:</source>
         <translation>다음 번호부터 부여:</translation>
     </message>
     <message>
@@ -1667,11 +1662,11 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="105"/>
         <source>Rescan library for XML info</source>
-        <translation>XML 정보로 라이브러리 재검색</translation>
+        <translation>라이브러리에서 XML 정보 다시 검색</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="106"/>
-        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
+        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files.</source>
         <translation>만화 파일에 포함된 XML 정보를 찾으려고 시도합니다. 9.8.2 이하 버전으로 만든 라이브러리이거나 타사 소프트웨어로 파일에 XML 정보를 포함한 경우에만 필요합니다.</translation>
     </message>
     <message>
@@ -1701,7 +1696,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="121"/>
-        <source>Open current comic on YACReader</source>
+        <source>Open current comic in YACReader</source>
         <translation>YACReader에서 현재 만화 열기</translation>
     </message>
     <message>
@@ -1803,18 +1798,18 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="174"/>
         <source>Show/Hide recent indicator</source>
-        <translation>신규 표시 표시/숨김</translation>
+        <translation>최근 추가 표시 보이기/숨기기</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="175"/>
         <source>Show or hide recent indicator</source>
-        <translation>신규 표시를 표시하거나 숨김</translation>
+        <translation>최근 추가 표시를 보이거나 숨김</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="182"/>
         <location filename="library_window_actions.cpp" line="183"/>
         <source>Fullscreen mode on/off</source>
-        <translation>전체화면 모드 켜기/끄기</translation>
+        <translation>전체 화면 모드 켜기/끄기</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="188"/>
@@ -1928,7 +1923,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="313"/>
         <source>Open containing folder...</source>
-        <translation>포함된 폴더 열기...</translation>
+        <translation>상위 폴더 열기...</translation>
     </message>
     <message>
         <source>Reset comic rating</source>
@@ -2090,7 +2085,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="42"/>
-        <source>4koma (top to botom)</source>
+        <source>4koma (top to bottom)</source>
         <translation>4컷 (위 → 아래)</translation>
     </message>
     <message>
@@ -2144,7 +2139,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_menus.cpp" line="307"/>
         <source>Rescan library for XML info</source>
-        <translation>XML 정보로 라이브러리 재검색</translation>
+        <translation>라이브러리에서 XML 정보 다시 검색</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="308"/>
@@ -2229,7 +2224,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a standalone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation>&lt;p&gt;아무 폴더에 라이브러리를 만들 수 있고, YACReaderLibrary가 그 폴더의 모든 만화와 하위 폴더를 가져옵니다. 이전에 만든 라이브러리가 있으면 열 수 있습니다.&lt;/p&gt;&lt;p&gt;YACReader는 단독 응용 프로그램으로 컴퓨터의 만화를 보는 데도 쓸 수 있습니다.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -2276,11 +2271,11 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="194"/>
         <source>Close to tray</source>
-        <translation>트레이로 최소화</translation>
+        <translation>닫기 시 트레이로 이동</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="195"/>
-        <source>Start into the system tray</source>
+        <source>Start in the system tray</source>
         <translation>시스템 트레이에서 시작</translation>
     </message>
     <message>
@@ -2391,10 +2386,10 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="338"/>
-        <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
-During automatic updates the app will block some of the actions until the update is finished.
-To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
+        <source>WARNING! During library updates, writes to the database are disabled!
+Don&apos;t schedule updates while you may be actively using the app.
+During automatic updates, the app will block some of the actions until the update is finished.
+To stop an automatic update, tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
 Don&apos;t schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
@@ -2435,7 +2430,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="options_dialog.cpp" line="403"/>
-        <source>Restore defautls</source>
+        <source>Restore defaults</source>
         <translation>기본값으로 복원</translation>
     </message>
     <message>
@@ -2476,7 +2471,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="options_dialog.cpp" line="35"/>
         <source>Comic Flow</source>
-        <translation>코믹 플로우</translation>
+        <translation>Comic Flow</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="34"/>
@@ -2644,7 +2639,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="265"/>
         <source>Optional part &lt; &gt;</source>
-        <translation>선택 부분 &lt; &gt;</translation>
+        <translation>선택적 부분 &lt; &gt;</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="266"/>
@@ -3095,7 +3090,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="1435"/>
         <source>Optional parts</source>
-        <translation>선택 부분</translation>
+        <translation>선택적 부분</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="1436"/>
@@ -3211,7 +3206,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="179"/>
         <source>Issue number:</source>
-        <translation>이슈 번호:</translation>
+        <translation>호 번호:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="181"/>
@@ -3291,7 +3286,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="262"/>
         <source>Imprint:</source>
-        <translation>임프린트:</translation>
+        <translation>출판 브랜드:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="283"/>
@@ -3510,7 +3505,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="rename_library_dialog.cpp" line="15"/>
-        <source>New Library Name : </source>
+        <source>New Library Name: </source>
         <translation>새 라이브러리 이름: </translation>
     </message>
 </context>
@@ -3518,8 +3513,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <name>ScraperResultsPaginator</name>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="20"/>
-        <source>Number of volumes found : %1</source>
-        <translation>검색된 볼륨 수 : %1</translation>
+        <source>Number of volumes found: %1</source>
+        <translation>검색된 볼륨 수: %1</translation>
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="21"/>
@@ -3529,8 +3524,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="44"/>
-        <source>Number of %1 found : %2</source>
-        <translation>검색된 %1 수 : %2</translation>
+        <source>Number of %1 found: %2</source>
+        <translation>검색된 %1 수: %2</translation>
     </message>
 </context>
 <context>
@@ -3578,7 +3573,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="db/search_field_registry.cpp" line="103"/>
         <source>Volume identifier</source>
-        <translation>권 식별자</translation>
+        <translation>볼륨 식별자</translation>
     </message>
     <message>
         <location filename="db/search_field_registry.cpp" line="104"/>
@@ -3603,7 +3598,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="db/search_field_registry.cpp" line="109"/>
         <source>Penciller credit</source>
-        <translation>연필화 작가 크레딧</translation>
+        <translation>밑그림 작가 크레딧</translation>
     </message>
     <message>
         <location filename="db/search_field_registry.cpp" line="110"/>
@@ -3618,7 +3613,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="db/search_field_registry.cpp" line="112"/>
         <source>Letterer credit</source>
-        <translation>레터링 작가 크레딧</translation>
+        <translation>식자 작가 크레딧</translation>
     </message>
     <message>
         <location filename="db/search_field_registry.cpp" line="113"/>
@@ -3648,7 +3643,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="db/search_field_registry.cpp" line="119"/>
         <source>Characters appearing in the comic</source>
-        <translation>만화에 등장하는 캐릭터</translation>
+        <translation>만화에 등장하는 등장인물</translation>
     </message>
     <message>
         <location filename="db/search_field_registry.cpp" line="120"/>
@@ -3663,7 +3658,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="db/search_field_registry.cpp" line="122"/>
         <source>Primary character or team</source>
-        <translation>주요 캐릭터 또는 팀</translation>
+        <translation>주요 등장인물 또는 팀</translation>
     </message>
     <message>
         <location filename="db/search_field_registry.cpp" line="123"/>
@@ -3987,7 +3982,9 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <source>Tips:
 Spaces act like AND, and searches are not case-sensitive.
 Use quotes to include spaces in a value.</source>
-        <translation>팁: 공백은 AND처럼 작동하며 검색은 대소문자를 구분하지 않습니다. 값에 공백을 포함하려면 따옴표를 사용하세요.</translation>
+        <translation>팁:
+공백은 AND처럼 작동하며 검색은 대소문자를 구분하지 않습니다.
+값에 공백을 포함하려면 따옴표를 사용하세요.</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="251"/>
@@ -4142,7 +4139,7 @@ Use quotes to include spaces in a value.</source>
     <name>SelectComic</name>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="16"/>
-        <source>Please, select the right comic info.</source>
+        <source>Please select the right comic info.</source>
         <translation>맞는 만화 정보를 선택하세요.</translation>
     </message>
     <message>
@@ -4170,7 +4167,7 @@ Use quotes to include spaces in a value.</source>
     <name>SelectVolume</name>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="31"/>
-        <source>Please, select the right series for your comic.</source>
+        <source>Please select the right series for your comic.</source>
         <translation>만화에 맞는 시리즈를 선택하세요.</translation>
     </message>
     <message>
@@ -4209,61 +4206,61 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="26"/>
         <source>Unknown</source>
-        <translation type="unfinished">알 수 없음</translation>
+        <translation>알 수 없음</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="28"/>
         <source>%1 (%2 unknown)</source>
         <oldsource>%1 (%n unknown)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2 알 수 없음)</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="36"/>
         <source>%1 series</source>
-        <translation type="unfinished"></translation>
+        <translation>시리즈 %1개</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="58"/>
         <source>%1 comics selected</source>
         <oldsource>%n comic(s) selected</oldsource>
-        <translation type="unfinished">만화 %1개 선택됨</translation>
+        <translation>만화 %1개 선택됨</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="77"/>
         <source>Read</source>
-        <translation type="unfinished">읽음</translation>
+        <translation>읽음</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="80"/>
         <source>In progress</source>
-        <translation type="unfinished">읽는 중</translation>
+        <translation>읽는 중</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="83"/>
         <source>Unread</source>
-        <translation type="unfinished">읽지 않음</translation>
+        <translation>읽지 않음</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="86"/>
         <source>Total pages</source>
-        <translation type="unfinished"></translation>
+        <translation>전체 페이지</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="89"/>
         <source>Total size</source>
-        <translation type="unfinished"></translation>
+        <translation>전체 크기</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="74"/>
         <source>Series</source>
-        <translation type="unfinished">시리즈</translation>
+        <translation>시리즈</translation>
     </message>
 </context>
 <context>
     <name>SeriesQuestion</name>
     <message>
         <location filename="comic_vine/series_question.cpp" line="12"/>
-        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
+        <source>You are trying to get information for various comics at once. Are they part of the same series?</source>
         <translation>여러 만화의 정보를 한 번에 가져오려고 합니다. 같은 시리즈에 속하는 만화입니까?</translation>
     </message>
     <message>
@@ -4361,7 +4358,7 @@ Use quotes to include spaces in a value.</source>
     <name>SortVolumeComics</name>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please sort the list of comics on the left until it matches the comics&apos; information.</source>
         <translation>왼쪽의 만화 목록을 만화 정보와 일치할 때까지 정렬하세요.</translation>
     </message>
     <message>
@@ -4372,7 +4369,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="98"/>
         <source>issues</source>
-        <translation>이슈</translation>
+        <translation>호</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="126"/>
@@ -4599,7 +4596,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="165"/>
-        <source>Updating....</source>
+        <source>Updating...</source>
         <translation>업데이트 중...</translation>
     </message>
     <message>
@@ -4626,7 +4623,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="120"/>
         <source>issues</source>
-        <translation>이슈</translation>
+        <translation>호</translation>
     </message>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="122"/>
@@ -4699,7 +4696,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>확대/축소</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -4743,8 +4740,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>수직 동기화 사용 (전체화면 결의 이미지 품질 향상, 성능 저하)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>VSync 사용 (전체 화면 모드에서 이미지 품질 향상, 성능 저하)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>

@@ -6,7 +6,7 @@
     <message>
         <location filename="../shortcuts_management/actions_shortcuts_model.cpp" line="74"/>
         <source>None</source>
-        <translation>Rien</translation>
+        <translation>Aucun</translation>
     </message>
 </context>
 <context>
@@ -24,7 +24,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>Lumière</translation>
+        <translation>Clair</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
@@ -34,7 +34,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Custom</source>
-        <translation>Coutume</translation>
+        <translation>Personnalisé</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
@@ -49,17 +49,17 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>Lumière:</translation>
+        <translation>Clair&#xa0;:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Dark:</source>
-        <translation>Sombre:</translation>
+        <translation>Sombre&#xa0;:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Custom:</source>
-        <translation>Personnalisation:</translation>
+        <translation>Personnalisé&#xa0;:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
@@ -89,7 +89,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="185"/>
         <source>The current theme JSON could not be loaded.</source>
-        <translation>Le thème actuel JSON n&apos;a pas pu être chargé.</translation>
+        <translation>Le JSON du thème actuel n&apos;a pas pu être chargé.</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
@@ -145,8 +145,8 @@
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
-        <translation>Aller à la dernière page</translation>
+        <source>Latest Page</source>
+        <translation>Dernière page</translation>
     </message>
 </context>
 <context>
@@ -176,13 +176,13 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>Le raccourci &quot;%1&quot; est déjà affecté à une autre fonction</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>Le raccourci «&#xa0;%1&#xa0;» est déjà affecté à une autre fonction</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>Pour modifier un raccourci, double-cliquez sur la combinaison de touches et tapez les nouvelles clés.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>Pour modifier un raccourci, double-cliquez sur la combinaison de touches et saisissez les nouvelles touches.</translation>
     </message>
 </context>
 <context>
@@ -206,7 +206,7 @@
     <message>
         <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>Erreur CRC sur la page (%1): certaines pages ne s&apos;afficheront pas correctement</translation>
+        <translation>Erreur CRC sur la page (%1)&#xa0;: certaines pages ne s&apos;afficheront pas correctement</translation>
     </message>
 </context>
 <context>
@@ -224,8 +224,8 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
-        <translation>Nombre de pages :</translation>
+        <source>Total pages: </source>
+        <translation>Nombre de pages&#xa0;: </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="26"/>
@@ -234,16 +234,16 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
-        <translation>Feuille :</translation>
+        <source>Page: </source>
+        <translation>Page&#xa0;: </translation>
     </message>
 </context>
 <context>
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
-        <translation>Feuille :</translation>
+        <source>Page: </source>
+        <translation>Page&#xa0;: </translation>
     </message>
 </context>
 <context>
@@ -261,12 +261,12 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>Journal des modifications</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
         <source>About</source>
-        <translation>A propos</translation>
+        <translation>À propos</translation>
     </message>
 </context>
 <context>
@@ -274,12 +274,12 @@
     <message>
         <location filename="options_dialog.cpp" line="225"/>
         <source>Gamma</source>
-        <translation>Valeur gamma</translation>
+        <translation>Gamma</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="229"/>
         <source>Reset</source>
-        <translation>Remise à zéro</translation>
+        <translation>Réinitialiser</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="38"/>
@@ -294,7 +294,7 @@
     <message>
         <location filename="options_dialog.cpp" line="78"/>
         <source>&quot;Go to flow&quot; size</source>
-        <translation>Taille de &quot;Aller à Comic Flow&quot;</translation>
+        <translation>Taille de «&#xa0;Aller à Comic Flow&#xa0;»</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="99"/>
@@ -304,7 +304,7 @@
     <message>
         <location filename="options_dialog.cpp" line="234"/>
         <source>Image options</source>
-        <translation>Option de l&apos;image</translation>
+        <translation>Options de l&apos;image</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="224"/>
@@ -319,7 +319,7 @@
     <message>
         <location filename="options_dialog.cpp" line="326"/>
         <source>Options</source>
-        <translation>Possibilités</translation>
+        <translation>Options</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="45"/>
@@ -339,12 +339,12 @@
     <message>
         <location filename="options_dialog.cpp" line="100"/>
         <source>Clear</source>
-        <translation>Clair</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="342"/>
         <source>Comics directory</source>
-        <translation>Répertoire des bandes dessinées</translation>
+        <translation>Dossier des bandes dessinées</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="180"/>
@@ -354,7 +354,7 @@
     <message>
         <location filename="options_dialog.cpp" line="58"/>
         <source>Display</source>
-        <translation>Afficher</translation>
+        <translation>Affichage</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="60"/>
@@ -384,11 +384,11 @@
     <message>
         <location filename="options_dialog.cpp" line="96"/>
         <source>Background color</source>
-        <translation>Couleur d&apos;arrière plan</translation>
+        <translation>Couleur d&apos;arrière-plan</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>Comportement de défilement</translation>
     </message>
     <message>
@@ -399,12 +399,12 @@
     <message>
         <location filename="options_dialog.cpp" line="112"/>
         <source>Do not turn page using scroll</source>
-        <translation>Ne tournez pas la page en utilisant le défilement</translation>
+        <translation>Ne pas tourner la page avec le défilement</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="113"/>
         <source>Use single scroll step to turn page</source>
-        <translation>Utilisez une seule étape de défilement pour tourner la page</translation>
+        <translation>Utiliser une seule étape de défilement pour tourner la page</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="121"/>
@@ -414,7 +414,7 @@
     <message>
         <location filename="options_dialog.cpp" line="124"/>
         <source>Only Back/Forward buttons can turn pages</source>
-        <translation>Seuls les boutons Précédent/Avant peuvent tourner les pages</translation>
+        <translation>Seuls les boutons Précédent/Suivant peuvent tourner les pages</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="125"/>
@@ -423,7 +423,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>Cliquez sur la moitié gauche ou droite de l&apos;écran pour tourner les pages.</translation>
     </message>
     <message>
@@ -444,7 +444,7 @@
     <message>
         <location filename="options_dialog.cpp" line="140"/>
         <source>Escape closes the reader, even while a mode is active.</source>
-        <translation>La touche Échap ferme le lecteur, même lorsqu’un mode est actif.</translation>
+        <translation>La touche Échap ferme le lecteur, même lorsqu&apos;un mode est actif.</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="145"/>
@@ -457,19 +457,19 @@
 
 If none is active, Escape does nothing.</source>
         <extracomment>Tooltip listing the order in which modes are cancelled. Only the first active mode in the list is cancelled per Escape keypress.</extracomment>
-        <translation>La touche Échap annule le premier des modes actifs suivants :
+        <translation>La touche Échap annule le premier des modes actifs suivants&#xa0;:
 
 1. Loupe
 2. Dictionnaire
 3. Barre Aller à la page
 4. Plein écran
 
-Si aucun n’est actif, la touche Échap ne fait rien.</translation>
+Si aucun n&apos;est actif, la touche Échap ne fait rien.</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="176"/>
         <source>Use software-rendered &quot;go to flow&quot; (requires restart)</source>
-        <translation>Utiliser &quot;Aller à Comic Flow&quot; avec rendu logiciel (redémarrage requis)</translation>
+        <translation>Utiliser «&#xa0;Aller à Comic Flow&#xa0;» avec rendu logiciel (redémarrage requis)</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="177"/>
@@ -479,12 +479,12 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="options_dialog.cpp" line="181"/>
         <source>Disable mouse over activation</source>
-        <translation>Désactiver la souris sur l&apos;activation</translation>
+        <translation>Désactiver l&apos;activation au survol de la souris</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="259"/>
         <source>Show book fold shadow</source>
-        <translation>Afficher l’ombre du pli du livre</translation>
+        <translation>Afficher l&apos;ombre du pli du livre</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="271"/>
@@ -557,12 +557,12 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>7z lib not found</source>
-        <translation>lib 7z introuvable</translation>
+        <translation>Bibliothèque 7z introuvable</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>impossible de charger 7z depuis ./utils</translation>
+        <translation>impossible de charger la bibliothèque 7z depuis ./utils</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="95"/>
@@ -572,7 +572,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="95"/>
         <source>Images (%1)</source>
-        <translation>Illustrations (%1)</translation>
+        <translation>Images (%1)</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_repository.cpp" line="152"/>
@@ -605,7 +605,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>je</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -620,7 +620,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>Maintenez enfoncé pour faire clignoter la valeur sélectionnée dans l&apos;interface utilisateur (magenta / basculé / 0↔10). Les versions restaurent l&apos;original.</translation>
+        <translation>Maintenez enfoncé pour faire clignoter la valeur sélectionnée dans l&apos;interface (magenta / basculé / 0↔10). Le relâchement restaure l&apos;original.</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
@@ -630,7 +630,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>Lumière</translation>
+        <translation>Clair</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
@@ -640,7 +640,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>ID:</source>
-        <translation>IDENTIFIANT:</translation>
+        <translation>ID&#xa0;:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
@@ -650,7 +650,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
         <source>Variant:</source>
-        <translation>Variante:</translation>
+        <translation>Variante&#xa0;:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
@@ -670,7 +670,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="149"/>
         <source>Save and apply</source>
-        <translation>Enregistrer et postuler</translation>
+        <translation>Enregistrer et appliquer</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="150"/>
@@ -700,7 +700,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>vrai</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -708,7 +708,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>FAUX</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
@@ -779,7 +779,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="431"/>
         <source>Expected a JSON object.</source>
-        <translation>Attendu un objet JSON.</translation>
+        <translation>Un objet JSON était attendu.</translation>
     </message>
 </context>
 <context>
@@ -787,13 +787,13 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="viewer.cpp" line="1843"/>
         <source>Page not available!</source>
-        <translation>Page non disponible !</translation>
+        <translation>Page non disponible&#xa0;!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Appuyez sur &quot;O&quot; pour ouvrir une bande dessinée.</translation>
+        <source>Press &apos;O&apos; to open a comic.</source>
+        <translation>Appuyez sur «&#xa0;O&#xa0;» pour ouvrir une bande dessinée.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="378"/>
@@ -803,7 +803,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="viewer.cpp" line="2181"/>
         <source>Cover!</source>
-        <translation>Couverture!</translation>
+        <translation>Couverture&#xa0;!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="384"/>
@@ -823,12 +823,12 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="viewer.cpp" line="2195"/>
         <source>Last page!</source>
-        <translation>Dernière page!</translation>
+        <translation>Dernière page&#xa0;!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
-        <translation>Chargement... Patientez</translation>
+        <source>Loading... please wait!</source>
+        <translation>Chargement... Veuillez patienter&#xa0;!</translation>
     </message>
 </context>
 <context>
@@ -836,7 +836,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="19"/>
         <source>Presets:</source>
-        <translation>Réglages:</translation>
+        <translation>Réglages&#xa0;:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="21"/>
@@ -871,7 +871,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation>Personnalisation:</translation>
+        <translation>Personnalisé&#xa0;:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="89"/>
@@ -896,17 +896,17 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Agrandissement</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
         <source>Y offset</source>
-        <translation>Axe Y</translation>
+        <translation>Décalage Y</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="125"/>
         <source>Z offset</source>
-        <translation>Axe Z</translation>
+        <translation>Décalage Z</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="131"/>
@@ -926,7 +926,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="149"/>
         <source>Max angle</source>
-        <translation>Angle Maximum</translation>
+        <translation>Angle maximum</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="181"/>
@@ -940,13 +940,13 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Utiliser VSync (Améliore la qualité d&apos;image en mode plein écran, ralentit la performance)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>Utiliser VSync (améliore la qualité d&apos;image en plein écran, diminue les performances)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
         <source>Performance:</source>
-        <translation>Performance :</translation>
+        <translation>Performance&#xa0;:</translation>
     </message>
 </context>
 <context>
@@ -989,7 +989,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="372"/>
         <source>Clear</source>
-        <translation>Clair</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="373"/>
@@ -999,7 +999,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="376"/>
         <source>Save</source>
-        <translation>Sauvegarder</translation>
+        <translation>Enregistrer</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="377"/>
@@ -1007,7 +1007,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
         <location filename="main_window_viewer.cpp" line="1108"/>
         <location filename="main_window_viewer.cpp" line="1119"/>
         <source>Save current page</source>
-        <translation>Sauvegarder la page actuelle</translation>
+        <translation>Enregistrer la page actuelle</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="382"/>
@@ -1016,12 +1016,12 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
         <location filename="main_window_viewer.cpp" line="1149"/>
         <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Extraire la ou les pages</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>Extraire la ou les pages depuis la source d&apos;origine</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
@@ -1033,7 +1033,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
         <location filename="main_window_viewer.cpp" line="1915"/>
         <location filename="main_window_viewer.cpp" line="1919"/>
         <source>Open previous comic</source>
-        <translation>Ouvrir la bande dessiné précédente</translation>
+        <translation>Ouvrir la bande dessinée précédente</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="394"/>
@@ -1094,7 +1094,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="428"/>
         <source>Show full size</source>
-        <translation>Plein écran</translation>
+        <translation>Afficher en taille réelle</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="435"/>
@@ -1124,12 +1124,12 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>Agrandir</translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>R?duire</translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="493"/>
@@ -1159,7 +1159,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="513"/>
         <source>Reverse reading order in double page mode</source>
-        <translation>Ordre de lecture inversée en mode double page</translation>
+        <translation>Ordre de lecture inversé en mode double page</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="521"/>
@@ -1168,13 +1168,13 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
-        <translation>Aller à la page ...</translation>
+        <source>Go to page...</source>
+        <translation>Aller à la page...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="527"/>
         <source>Options</source>
-        <translation>Possibilités</translation>
+        <translation>Options</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="528"/>
@@ -1190,17 +1190,19 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="535"/>
         <source>Help, About YACReader</source>
-        <translation>Aide, à propos de YACReader</translation>
+        <translation>Aide, À propos de YACReader</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1353"/>
+        <location filename="main_window_viewer.cpp" line="1419"/>
         <source>Magnifying glass</source>
         <translation>Loupe</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="541"/>
         <source>Switch Magnifying glass</source>
-        <translation>Utiliser la loupe</translation>
+        <translation>Activer/désactiver la loupe</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="547"/>
@@ -1240,7 +1242,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="578"/>
         <source>Escape key: quit, or cancel the active mode</source>
-        <translation>Touche Échap : quitter ou annuler le mode actif</translation>
+        <translation>Touche Échap&#xa0;: quitter ou annuler le mode actif</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="583"/>
@@ -1255,7 +1257,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="592"/>
         <source>Show go to flow</source>
-        <translation>Afficher &quot;Aller à Comic Flow&quot;</translation>
+        <translation>Afficher «&#xa0;Aller à Comic Flow&#xa0;»</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="597"/>
@@ -1271,7 +1273,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
         <location filename="main_window_viewer.cpp" line="633"/>
         <location filename="main_window_viewer.cpp" line="795"/>
         <source>Open recent</source>
-        <translation>Ouvrir récent</translation>
+        <translation>Récemment ouverts</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="783"/>
@@ -1281,7 +1283,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="805"/>
         <source>Edit</source>
-        <translation>Editer</translation>
+        <translation>Modifier</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="809"/>
@@ -1306,12 +1308,12 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="950"/>
         <source>Comic files</source>
-        <translation>Bande dessinée</translation>
+        <translation>Fichiers de bandes dessinées</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1038"/>
         <source>Open folder</source>
-        <translation>Ouvirir le dossier</translation>
+        <translation>Ouvrir le dossier</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1351"/>
@@ -1348,23 +1350,17 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1406"/>
         <source>Zoom in magnifying glass</source>
-        <translation>Zoomer</translation>
+        <translation>Augmenter le zoom de la loupe</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1409"/>
         <source>Zoom out magnifying glass</source>
-        <translation>Dézoomer</translation>
+        <translation>Diminuer le zoom de la loupe</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1412"/>
         <source>Reset magnifying glass</source>
         <translation>Réinitialiser la loupe</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1353"/>
-        <location filename="main_window_viewer.cpp" line="1419"/>
-        <source>Magnifiying glass</source>
-        <translation>Loupe</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1426"/>
@@ -1374,28 +1370,28 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1354"/>
         <location filename="main_window_viewer.cpp" line="1430"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
         <translation>Ajustement de la page</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1108"/>
         <source>The current page is not ready. Please try again later.</source>
-        <translation>La page actuelle n’est pas encore prête. Veuillez réessayer plus tard.</translation>
+        <translation>La page actuelle n&apos;est pas encore prête. Veuillez réessayer plus tard.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1113"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Écraser le fichier&#xa0;?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1113"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier existe déjà. Voulez-vous l&apos;écraser&#xa0;?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1119"/>
         <source>The current page could not be saved.</source>
-        <translation>La page actuelle n’a pas pu être enregistrée.</translation>
+        <translation>La page actuelle n&apos;a pas pu être enregistrée.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1138"/>
@@ -1405,22 +1401,22 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1149"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>La page actuelle n&apos;a pas pu être extraite.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>Écraser les fichiers&#xa0;?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Certains fichiers existent déjà. Voulez-vous les écraser&#xa0;?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Certaines pages n&apos;ont pas pu être extraites.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1448"/>
@@ -1435,22 +1431,22 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1454"/>
         <source>Autoscroll forward, horizontal first</source>
-        <translation>Défilement automatique en avant, horizontal</translation>
+        <translation>Défilement automatique en avant, horizontal en premier</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1458"/>
         <source>Autoscroll backward, horizontal first</source>
-        <translation>Défilement automatique en arrière horizontal</translation>
+        <translation>Défilement automatique en arrière, horizontal en premier</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1462"/>
         <source>Autoscroll forward, vertical first</source>
-        <translation>Défilement automatique en avant, vertical</translation>
+        <translation>Défilement automatique en avant, vertical en premier</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1466"/>
         <source>Autoscroll backward, vertical first</source>
-        <translation>Défilement automatique en arrière, verticak</translation>
+        <translation>Défilement automatique en arrière, vertical en premier</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1470"/>
@@ -1506,7 +1502,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1558"/>
         <source>Do you want to download the new version?</source>
-        <translation>Voulez-vous télécharger la nouvelle version?</translation>
+        <translation>Voulez-vous télécharger la nouvelle version&#xa0;?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1561"/>
@@ -1524,12 +1520,12 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les notes de version ne sont pas disponibles.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>Versions précédentes</translation>
     </message>
 </context>
 <context>
@@ -1567,7 +1563,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
-        <translation>Sauvegarder</translation>
+        <translation>Enregistrer</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
@@ -1587,7 +1583,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
         <source>Customize the keyboard shortcuts used by the application.</source>
-        <translation>Personnalisez les raccourcis clavier utilisés par l’application.</translation>
+        <translation>Personnalisez les raccourcis clavier utilisés par l&apos;application.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
@@ -1600,7 +1596,7 @@ Si aucun n’est actif, la touche Échap ne fait rien.</translation>
     <message>
         <location filename="width_slider.cpp" line="52"/>
         <source>Reset</source>
-        <translation>Remise à zéro</translation>
+        <translation>Réinitialiser</translation>
     </message>
 </context>
 <context>

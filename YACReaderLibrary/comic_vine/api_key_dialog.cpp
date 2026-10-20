@@ -18,7 +18,7 @@ ApiKeyDialog::ApiKeyDialog(QWidget *parent)
     settings = new QSettings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat); // TODO unificar la creación del fichero de config con el servidor
     settings->beginGroup("ComicVine");
 
-    QLabel *info = new QLabel(tr("Before you can connect to Comic Vine, you need your own API key. Please, get one free <a href=\"http://www.comicvine.com/api/\">here</a>"));
+    QLabel *info = new QLabel(tr("Before you can connect to Comic Vine, you need your own API key. Please get one free <a href=\"http://www.comicvine.com/api/\">here</a>"));
     info->setWordWrap(true);
     info->setOpenExternalLinks(true);
     edit = new QLineEdit();

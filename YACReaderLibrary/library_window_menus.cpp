@@ -39,7 +39,7 @@ TypeActions addTypeActions(QMenu *menu)
         new QAction(LibraryWindowMenus::tr("manga"), menu),
         new QAction(LibraryWindowMenus::tr("western manga (left to right)"), menu),
         new QAction(LibraryWindowMenus::tr("web comic"), menu),
-        new QAction(LibraryWindowMenus::tr("4koma (top to botom)"), menu)
+        new QAction(LibraryWindowMenus::tr("4koma (top to bottom)"), menu)
     };
 
     const QList<QAction *> actions { typeActions.comic, typeActions.manga, typeActions.westernManga, typeActions.webComic, typeActions.yonkoma };

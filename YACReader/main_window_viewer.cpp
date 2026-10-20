@@ -519,7 +519,7 @@ void MainWindowViewer::createActions()
     connect(doubleMangaPageAction, &QAction::triggered, this, &MainWindowViewer::doubleMangaPageSwitch);
 
     goToPageAction = new QAction(tr("Go To"), this);
-    goToPageAction->setToolTip(tr("Go to page ..."));
+    goToPageAction->setToolTip(tr("Go to page..."));
     goToPageAction->setData(GO_TO_PAGE_ACTION_Y);
     goToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_PAGE_ACTION_Y));
     connect(goToPageAction, &QAction::triggered, viewer, &Viewer::showGoToDialog);
@@ -1350,8 +1350,8 @@ void MainWindowViewer::setUpShortcutsManagement()
     QMap<QString, std::function<QIcon(const Theme &)>> iconMapping;
     iconMapping[tr("Comics")] = [](const Theme &t) { return t.shortcutsIcons.comicsIcon; };
     iconMapping[tr("General")] = [](const Theme &t) { return t.shortcutsIcons.generalIcon; };
-    iconMapping[tr("Magnifiying glass")] = [](const Theme &t) { return t.shortcutsIcons.magnifyingGlassIcon; };
-    iconMapping[tr("Page adjustement")] = [](const Theme &t) { return t.shortcutsIcons.pageIcon; };
+    iconMapping[tr("Magnifying glass")] = [](const Theme &t) { return t.shortcutsIcons.magnifyingGlassIcon; };
+    iconMapping[tr("Page adjustment")] = [](const Theme &t) { return t.shortcutsIcons.pageIcon; };
     iconMapping[tr("Reading")] = [](const Theme &t) { return t.shortcutsIcons.readingIcon; };
     editShortcutsDialog->setGroupIconMapping(iconMapping);
 
@@ -1416,7 +1416,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                       zoomInMglassAction, zoomOutMglassAction,
                       resetMglassAction };
 
-    editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"), theme.shortcutsIcons.magnifyingGlassIcon,
+    editShortcutsDialog->addActionsGroup(tr("Magnifying glass"), theme.shortcutsIcons.magnifyingGlassIcon,
                                          tmpList = QList<QAction *>()
                                                  << showMagnifyingGlassAction
                                                  << mglassActions);
@@ -1427,7 +1427,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                                 CHANGE_FIT_ACTION_Y);
     connect(toggleFitToScreenAction, &QAction::triggered, this, &MainWindowViewer::toggleWidthHeight);
 
-    editShortcutsDialog->addActionsGroup(tr("Page adjustement"), theme.shortcutsIcons.pageIcon,
+    editShortcutsDialog->addActionsGroup(tr("Page adjustment"), theme.shortcutsIcons.pageIcon,
                                          tmpList = QList<QAction *>()
                                                  << adjustHeightAction
                                                  << adjustWidthAction

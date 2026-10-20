@@ -16,7 +16,7 @@
     <message>
         <location filename="../common/comic.cpp" line="604"/>
         <source>7z not found</source>
-        <translation>7Z Archiefbestand niet gevonden</translation>
+        <translation>7z niet gevonden</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="610"/>
@@ -30,10 +30,10 @@
     <message>
         <location filename="main.cpp" line="83"/>
         <source>
-YACReaderLibraryServer is the headless (no gui) version of YACReaderLibrary.
+YACReaderLibraryServer is the headless (no GUI) version of YACReaderLibrary.
 
-This appplication supports persistent settings, to set them up edit this file %1
-To learn about the available settings please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</source>
+This application supports persistent settings. To set them up, edit this file: %1
+To learn about the available settings, please check the documentation at https://raw.githubusercontent.com/YACReader/yacreader/develop/YACReaderLibraryServer/SETTINGS_README.md</source>
         <translation>
 YACReaderLibraryServer is de headless (geen gui) versie van YACReaderLibrary.
 

@@ -276,7 +276,7 @@ void ComicVineDialog::processClientResults(const QString &string)
     p.loadJSONResponse(string);
     // QMessageBox::information(0,"Result", QString("Number of results : %1").arg(p.getNumResults()));
     if (p.responseError()) {
-        QMessageBox::critical(0, tr("Error connecting to ComicVine"), p.errorDescription());
+        QMessageBox::critical(0, tr("Error connecting to Comic Vine"), p.errorDescription());
         goBack();
     } else {
 
@@ -456,7 +456,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo,
         comic.info.comicVineID = match.second;
         comics.push_back(comic);
 
-        setLoadingMessage(tr("Retrieving tags for : %1").arg(match.first.getFileName()));
+        setLoadingMessage(tr("Retrieving tags for: %1").arg(match.first.getFileName()));
     }
 
     DBHelper::updateComicsInfo(comics, databasePath);
@@ -481,7 +481,7 @@ void ComicVineDialog::getComicInfo(const QString &comicId, const SelectedVolumeI
 
     ComicDB comic = YACReader::parseCVJSONComicInfo(comics[currentIndex], result, volumeInfo); // TODO check result error
     comic.info.comicVineID = comicId;
-    setLoadingMessage(tr("Retrieving tags for : %1").arg(comics[currentIndex].getFileName()));
+    setLoadingMessage(tr("Retrieving tags for: %1").arg(comics[currentIndex].getFileName()));
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);

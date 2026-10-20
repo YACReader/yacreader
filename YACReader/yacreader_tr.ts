@@ -24,22 +24,22 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>Işık</translation>
+        <translation>Açık</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Dark</source>
-        <translation>Karanlık</translation>
+        <translation>Koyu</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Custom</source>
-        <translation>Gelenek</translation>
+        <translation>Özel</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
         <source>Remove</source>
-        <translation>Kaldırmak</translation>
+        <translation>Kaldır</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
@@ -49,17 +49,17 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>Işık:</translation>
+        <translation>Açık:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Dark:</source>
-        <translation>Karanlık:</translation>
+        <translation>Koyu:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Custom:</source>
-        <translation>Kişisel:</translation>
+        <translation>Özel:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
@@ -89,7 +89,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="185"/>
         <source>The current theme JSON could not be loaded.</source>
-        <translation>Geçerli tema JSON yüklenemedi.</translation>
+        <translation>Geçerli temanın JSON verisi yüklenemedi.</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
@@ -141,11 +141,11 @@
     <message>
         <location filename="bookmarks_dialog.cpp" line="87"/>
         <source>Click on any image to go to the bookmark</source>
-        <translation>Yer imine git</translation>
+        <translation>Yer imine gitmek için herhangi bir resme tıklayın</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>Son Sayfa</translation>
     </message>
 </context>
@@ -162,17 +162,17 @@
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="19"/>
         <source>Restore defaults</source>
-        <translation>Varsayılarları geri yükle</translation>
+        <translation>Varsayılanları geri yükle</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>Bir kısayolu değiştirmek için tuş kombinasyonuna çift tıklayın ve yeni tuşları girin.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="67"/>
         <source>Shortcuts settings</source>
-        <translation>Kısayol oyarları</translation>
+        <translation>Kısayol ayarları</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
@@ -181,8 +181,8 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>&quot;%1&quot; kısayolu bir başka işleve zaten atanmış</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>&quot;%1&quot; kısayolu zaten başka bir işleve atanmış</translation>
     </message>
 </context>
 <context>
@@ -195,7 +195,7 @@
     <message>
         <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>(%1). sayfada CRC hatası : bazı sayfalar düzgün görüntülenmeyecek</translation>
+        <translation>(%1). sayfada CRC hatası: bazı sayfalar düzgün görüntülenmeyecek</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="497"/>
@@ -224,7 +224,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
+        <source>Total pages: </source>
         <translation>Toplam sayfa: </translation>
     </message>
     <message>
@@ -234,16 +234,16 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
-        <translation>Sayfa : </translation>
+        <source>Page: </source>
+        <translation>Sayfa: </translation>
     </message>
 </context>
 <context>
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
-        <translation>Sayfa : </translation>
+        <source>Page: </source>
+        <translation>Sayfa: </translation>
     </message>
 </context>
 <context>
@@ -261,7 +261,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>Değişiklik günlüğü</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
@@ -279,12 +279,12 @@
     <message>
         <location filename="options_dialog.cpp" line="229"/>
         <source>Reset</source>
-        <translation>Yeniden başlat</translation>
+        <translation>Sıfırla</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="38"/>
         <source>My comics path</source>
-        <translation>Çizgi Romanlarım</translation>
+        <translation>Çizgi romanlarımın yolu</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="259"/>
@@ -309,7 +309,7 @@
     <message>
         <location filename="options_dialog.cpp" line="276"/>
         <source>Bilinear</source>
-        <translation>Çift doğrusal</translation>
+        <translation>Bilinear</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="277"/>
@@ -334,7 +334,7 @@
     <message>
         <location filename="options_dialog.cpp" line="234"/>
         <source>Image options</source>
-        <translation>Sayfa ayarları</translation>
+        <translation>Resim seçenekleri</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="224"/>
@@ -404,12 +404,12 @@
     <message>
         <location filename="options_dialog.cpp" line="180"/>
         <source>Quick Navigation Mode</source>
-        <translation>Hızlı Gezinti Kipi</translation>
+        <translation>Hızlı Gezinti Modu</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="58"/>
         <source>Display</source>
-        <translation>Görüntülemek</translation>
+        <translation>Görüntü</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="60"/>
@@ -438,23 +438,23 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>Kaydırma davranışı</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="111"/>
         <source>Disable scroll animations and smooth scrolling</source>
-        <translation>Kaydırma animasyonlarını ve düzgün kaydırmayı devre dışı bırakın</translation>
+        <translation>Kaydırma animasyonlarını ve düzgün kaydırmayı devre dışı bırak</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="112"/>
         <source>Do not turn page using scroll</source>
-        <translation>Kaydırmayı kullanarak sayfayı çevirmeyin</translation>
+        <translation>Kaydırmayı kullanarak sayfayı çevirme</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="113"/>
         <source>Use single scroll step to turn page</source>
-        <translation>Sayfayı çevirmek için tek kaydırma adımını kullanın</translation>
+        <translation>Sayfayı çevirmek için tek kaydırma adımını kullan</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="121"/>
@@ -473,7 +473,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>Sayfaları çevirmek için ekranın sol veya sağ yarısına tıklayın.</translation>
     </message>
     <message>
@@ -529,7 +529,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="options_dialog.cpp" line="181"/>
         <source>Disable mouse over activation</source>
-        <translation>Etkinleştirme üzerinde fareyi devre dışı bırak</translation>
+        <translation>Fare üzerine gelince etkinleştirmeyi devre dışı bırak</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="238"/>
@@ -539,7 +539,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="options_dialog.cpp" line="240"/>
         <source>Enlarge images to fit width/height</source>
-        <translation>Genişliğe/yüksekliği sığmaları için resimleri genişlet</translation>
+        <translation>Resimleri genişliğe/yüksekliğe sığacak şekilde büyüt</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="251"/>
@@ -557,12 +557,12 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>7z lib not found</source>
-        <translation>7z lib bulunamadı</translation>
+        <translation>7z kütüphanesi bulunamadı</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>./utils içinden 7z lib yüklenemedi</translation>
+        <translation>./utils içinden 7z kütüphanesi yüklenemedi</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="95"/>
@@ -605,7 +605,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>Ben</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -620,32 +620,32 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>Kullanıcı arayüzünde seçilen değeri (macenta / geçişli / 0↔10) yanıp sönmek için basılı tutun. Sürümler orijinali geri yükler.</translation>
+        <translation>Kullanıcı arayüzünde seçilen değeri (macenta / geçişli / 0↔10) yanıp söndürmek için basılı tutun. Bırakıldığında orijinal değer geri yüklenir.</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
         <source>Search…</source>
-        <translation>Aramak…</translation>
+        <translation>Ara…</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>Işık</translation>
+        <translation>Açık</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
         <source>Dark</source>
-        <translation>Karanlık</translation>
+        <translation>Koyu</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>ID:</source>
-        <translation>İD:</translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
         <source>Display name:</source>
-        <translation>Ekran adı:</translation>
+        <translation>Görünen ad:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
@@ -700,7 +700,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>doğru</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -708,7 +708,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>YANLIŞ</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
@@ -787,8 +787,8 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>&apos;O&apos;ya basarak aç.</translation>
+        <source>Press &apos;O&apos; to open a comic.</source>
+        <translation>Çizgi romanı açmak için &apos;O&apos; tuşuna basın.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="2181"/>
@@ -812,7 +812,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
+        <source>Loading... please wait!</source>
         <translation>Yükleniyor... lütfen bekleyin!</translation>
     </message>
     <message>
@@ -836,7 +836,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="19"/>
         <source>Presets:</source>
-        <translation>Hazırlayan:</translation>
+        <translation>Ön ayarlar:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="21"/>
@@ -866,12 +866,12 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="77"/>
         <source>Show advanced settings</source>
-        <translation>Daha fazla ayar göster</translation>
+        <translation>Gelişmiş ayarları göster</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation>Kişisel:</translation>
+        <translation>Özel:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="89"/>
@@ -891,22 +891,22 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="107"/>
         <source>Central gap</source>
-        <translation>Boş merkaz</translation>
+        <translation>Merkez boşluğu</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Yakınlaş</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
         <source>Y offset</source>
-        <translation>Y dengesi</translation>
+        <translation>Y ofseti</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="125"/>
         <source>Z offset</source>
-        <translation>Z dengesi</translation>
+        <translation>Z ofseti</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="131"/>
@@ -916,7 +916,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="137"/>
         <source>Visibility</source>
-        <translation>Görünülebilirlik</translation>
+        <translation>Görünürlük</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="143"/>
@@ -940,8 +940,8 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>VSync kullan</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>VSync kullan (tam ekran modunda görüntü kalitesini artırır, performansı düşürür)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
@@ -969,12 +969,12 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="353"/>
         <source>Open Folder</source>
-        <translation>Dosyayı Aç</translation>
+        <translation>Klasörü Aç</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="354"/>
         <source>Open image folder</source>
-        <translation>Resim dosyasınıaç</translation>
+        <translation>Resim klasörünü aç</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="359"/>
@@ -1016,17 +1016,17 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
         <location filename="main_window_viewer.cpp" line="1149"/>
         <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayfa(ları) çıkar</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>Sayfa(ları) özgün kaynaktan çıkar</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
         <source>Previous Comic</source>
-        <translation>Önce ki çizgi roman</translation>
+        <translation>Önceki çizgi roman</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="389"/>
@@ -1038,7 +1038,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="394"/>
         <source>Next Comic</source>
-        <translation>Sırada ki çizgi roman</translation>
+        <translation>Sıradaki çizgi roman</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="395"/>
@@ -1069,7 +1069,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
         <location filename="main_window_viewer.cpp" line="1916"/>
         <location filename="main_window_viewer.cpp" line="1922"/>
         <source>Go to next page</source>
-        <translation>Sonra ki sayfaya geç</translation>
+        <translation>Sonraki sayfaya geç</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="414"/>
@@ -1079,22 +1079,22 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="415"/>
         <source>Fit image to height</source>
-        <translation>Uygun yüksekliğe getir</translation>
+        <translation>Resmi yüksekliğe sığdır</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="421"/>
         <source>Fit Width</source>
-        <translation>Uygun Genişlik</translation>
+        <translation>Genişliğe Sığdır</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="422"/>
         <source>Fit image to width</source>
-        <translation>Görüntüyü sığdır</translation>
+        <translation>Resmi genişliğe sığdır</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="428"/>
         <source>Show full size</source>
-        <translation>Tam erken</translation>
+        <translation>Gerçek boyutu göster</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="435"/>
@@ -1114,32 +1114,32 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="476"/>
         <source>Reset zoom</source>
-        <translation>Yakınlaştırmayı sıfırla</translation>
+        <translation>Zoom&apos;u sıfırla</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="481"/>
         <source>Show zoom slider</source>
-        <translation>Yakınlaştırma çubuğunu göster</translation>
+        <translation>Zoom çubuğunu göster</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>Yakınlaştır</translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>Uzaklaştır</translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="493"/>
         <source>Rotate image to the left</source>
-        <translation>Sayfayı sola yatır</translation>
+        <translation>Resmi sola döndür</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="498"/>
         <source>Rotate image to the right</source>
-        <translation>Sayfayı sağa yator</translation>
+        <translation>Resmi sağa döndür</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="503"/>
@@ -1154,12 +1154,12 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="512"/>
         <source>Double page manga mode</source>
-        <translation>Çift sayfa manga kipi</translation>
+        <translation>Çift sayfa manga modu</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="513"/>
         <source>Reverse reading order in double page mode</source>
-        <translation>Çift sayfa kipinde ters okuma sırası</translation>
+        <translation>Çift sayfa modunda ters okuma sırası</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="521"/>
@@ -1168,8 +1168,8 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
-        <translation>Sayfata git...</translation>
+        <source>Go to page...</source>
+        <translation>Sayfaya git...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="527"/>
@@ -1190,17 +1190,19 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="535"/>
         <source>Help, About YACReader</source>
-        <translation>YACReader hakkında yardım ve bilgi</translation>
+        <translation>Yardım, YACReader Hakkında</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1353"/>
+        <location filename="main_window_viewer.cpp" line="1419"/>
         <source>Magnifying glass</source>
         <translation>Büyüteç</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="541"/>
         <source>Switch Magnifying glass</source>
-        <translation>Büyüteç</translation>
+        <translation>Büyüteci aç/kapat</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="547"/>
@@ -1311,18 +1313,18 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1038"/>
         <source>Open folder</source>
-        <translation>Dosyayı aç</translation>
+        <translation>Klasörü aç</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1351"/>
         <location filename="main_window_viewer.cpp" line="1364"/>
         <source>Comics</source>
-        <translation>Çizgi Roman</translation>
+        <translation>Çizgi Romanlar</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1375"/>
         <source>Toggle fullscreen mode</source>
-        <translation>Tam ekran kipini aç/kapat</translation>
+        <translation>Tam ekran modunu aç/kapat</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1378"/>
@@ -1348,23 +1350,17 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1406"/>
         <source>Zoom in magnifying glass</source>
-        <translation>Büyüteci yakınlaştır</translation>
+        <translation>Büyüteç zoom&apos;unu artır</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1409"/>
         <source>Zoom out magnifying glass</source>
-        <translation>Büyüteci uzaklaştır</translation>
+        <translation>Büyüteç zoom&apos;unu azalt</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1412"/>
         <source>Reset magnifying glass</source>
         <translation>Büyüteci sıfırla</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1353"/>
-        <location filename="main_window_viewer.cpp" line="1419"/>
-        <source>Magnifiying glass</source>
-        <translation>Büyüteç</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1426"/>
@@ -1374,7 +1370,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1354"/>
         <location filename="main_window_viewer.cpp" line="1430"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
         <translation>Sayfa ayarı</translation>
     </message>
     <message>
@@ -1385,12 +1381,12 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1113"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyanın üzerine yazılsın mı?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1113"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya zaten var. Üzerine yazmak istiyor musunuz?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1119"/>
@@ -1405,22 +1401,22 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1149"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli sayfa çıkarılamadı.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyaların üzerine yazılsın mı?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1154"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Bazı dosyalar zaten var. Üzerlerine yazmak istiyor musunuz?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1167"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bazı sayfalar çıkarılamadı.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1448"/>
@@ -1501,12 +1497,12 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1557"/>
         <source>There is a new version available</source>
-        <translation>Yeni versiyon mevcut</translation>
+        <translation>Yeni sürüm mevcut</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1558"/>
         <source>Do you want to download the new version?</source>
-        <translation>Yeni versiyonu indirmek ister misin ?</translation>
+        <translation>Yeni sürümü indirmek ister misiniz?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1561"/>
@@ -1524,12 +1520,12 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sürüm notları kullanılamıyor.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>Önceki sürümler</translation>
     </message>
 </context>
 <context>
@@ -1600,7 +1596,7 @@ Hiçbiri etkin değilse Escape tuşu hiçbir şey yapmaz.</translation>
     <message>
         <location filename="width_slider.cpp" line="52"/>
         <source>Reset</source>
-        <translation>Yeniden başlat</translation>
+        <translation>Sıfırla</translation>
     </message>
 </context>
 <context>
