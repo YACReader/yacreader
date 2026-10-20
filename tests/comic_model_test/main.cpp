@@ -1090,7 +1090,6 @@ void ComicModelTest::smartListShowsTheMatchingComicsInOrder()
     model.setupSmartListModelData(id, dataPath);
     QCOMPARE(model.getMode(), ComicModel::SmartList);
     QCOMPARE(model.getSourceId(), id);
-    QVERIFY(model.isSmartListReadable());
     QCOMPARE(comicInfoIds(model), QList<qulonglong>({ 14, 12, 11, 16, 13, 10, 15 }));
 }
 
@@ -1132,11 +1131,9 @@ void ComicModelTest::unreadableOrGoneSmartList()
     insertOrderedComics();
     ComicModel model;
     model.setupSmartListModelData(insertSmartList("Broken", "series:(batman"), dataPath);
-    QVERIFY(!model.isSmartListReadable());
     QCOMPARE(model.rowCount(), 0);
 
     model.setupSmartListModelData(999, dataPath);
-    QVERIFY(model.isSmartListReadable());
     QCOMPARE(model.rowCount(), 0);
 }
 

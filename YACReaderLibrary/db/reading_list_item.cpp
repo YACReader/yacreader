@@ -207,6 +207,28 @@ int ReadingListItem::row() const
     return 0;
 }
 
+SmartListItem::SmartListItem(const ::SmartList &list)
+    : list(list)
+{
+}
+
+QIcon SmartListItem::getIcon() const
+{
+    return ThemeManager::instance().getCurrentTheme().readingListIcons.smartListIcon;
+}
+
+QString SmartListItem::name() const
+{
+    return list.name;
+}
+
+qulonglong SmartListItem::getId() const
+{
+    return list.id.value();
+}
+
+//------------------------------------------------------
+
 QIcon ReadingListSeparatorItem::getIcon() const
 {
     return QIcon();

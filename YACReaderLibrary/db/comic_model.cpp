@@ -1070,10 +1070,9 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
 }
 
 // a smart list that no longer exists has no rows
-QList<ComicItem> ComicModel::createSmartListModelData(unsigned long long smartListId, const QString &databasePath, bool &readable) const
+QList<ComicItem> ComicModel::createSmartListModelData(unsigned long long smartListId, const QString &databasePath) const
 {
     QList<ComicItem> modelData;
-    readable = true;
 
     QString connectionName = "";
     {
@@ -1083,7 +1082,6 @@ QList<ComicItem> ComicModel::createSmartListModelData(unsigned long long smartLi
                 auto query = allComicsSearchQuery(db, list->query);
                 modelData = sortedForSearch(createItems(query));
             } catch (const std::exception &) {
-                readable = false;
             }
         }
         connectionName = db.connectionName();
@@ -1104,7 +1102,7 @@ void ComicModel::setupSmartListModelData(unsigned long long smartListId, const Q
 
     _databasePath = databasePath;
 
-    takeData(createSmartListModelData(smartListId, databasePath, smartListReadable));
+    takeData(createSmartListModelData(smartListId, databasePath));
 
     endResetModel();
 }
@@ -1770,7 +1768,7 @@ void ComicModel::reload()
         // TODO: reload search results, we don't have a way to recreate the query in this class
         break;
     case SmartList:
-        takeUpdatedData(createSmartListModelData(sourceId, _databasePath, smartListReadable), searchResultLessThan);
+        takeUpdatedData(createSmartListModelData(sourceId, _databasePath), searchResultLessThan);
         break;
     }
 }

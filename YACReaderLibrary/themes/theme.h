@@ -361,6 +361,8 @@ struct ReadingListIconsTheme {
 
     // Reading list icon
     QIcon listIcon;
+    // Smart list icon, in the colors of the reading list icon
+    QIcon smartListIcon;
 };
 
 struct DialogIconsTheme {

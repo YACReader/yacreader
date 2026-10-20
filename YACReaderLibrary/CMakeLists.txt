@@ -363,6 +363,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/lists/default_2.svg
     ${PROJECT_SOURCE_DIR}/images/lists/label_template.svg
     ${PROJECT_SOURCE_DIR}/images/lists/list.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/smart_list.svg
     ${PROJECT_SOURCE_DIR}/images/clearSearchNew.svg
     ${PROJECT_SOURCE_DIR}/images/iconSearchNew.svg
 )
