@@ -365,6 +365,36 @@ bool defaultFolderContentSortFunction(const ComicItem &c1, const ComicItem &c2)
     return comicNumberLessThan(rowMetadata(c1).number, rowFileName(c1), rowMetadata(c2).number, rowFileName(c2));
 }
 
+// -1, 0, or 1 in natural order without case; an empty text is first when `emptyFirst`, else last
+int compareNatural(const QString &a, const QString &b, bool emptyFirst)
+{
+    if (a.isEmpty() != b.isEmpty())
+        return a.isEmpty() == emptyFirst ? -1 : 1;
+    if (naturalSortLessThanCI(a, b))
+        return -1;
+    return naturalSortLessThanCI(b, a) ? 1 : 0;
+}
+
+// search results and smart lists: each series stays together, in volume and number order
+bool searchResultLessThan(const ComicItem &c1, const ComicItem &c2)
+{
+    const auto &a = rowMetadata(c1);
+    const auto &b = rowMetadata(c2);
+    if (const auto order = compareNatural(a.series.toString().trimmed(), b.series.toString().trimmed(), false); order != 0)
+        return order < 0;
+    if (const auto order = compareNatural(a.volume.toString().trimmed(), b.volume.toString().trimmed(), true); order != 0)
+        return order < 0;
+    if (comicNumberLessThan(a.number, QString(), b.number, QString()))
+        return true;
+    if (comicNumberLessThan(b.number, QString(), a.number, QString()))
+        return false;
+    if (const auto order = compareNatural(rowFileName(c1), rowFileName(c2), true); order != 0)
+        return order < 0;
+    const auto *comic1 = rowComic(c1);
+    const auto *comic2 = rowComic(c2);
+    return compareNatural(comic1 != nullptr ? comic1->file.path : QString(), comic2 != nullptr ? comic2->file.path : QString(), true) < 0;
+}
+
 }
 
 ComicModel::ComicModel(QObject *parent)
@@ -1215,6 +1245,12 @@ QList<ComicItem> ComicModel::createItems(QSqlQuery &query, ListKind listKind)
 QList<ComicItem> ComicModel::sortedForFolder(QList<ComicItem> items)
 {
     std::sort(items.begin(), items.end(), defaultFolderContentSortFunction);
+    return items;
+}
+
+QList<ComicItem> ComicModel::sortedForSearch(QList<ComicItem> items)
+{
+    std::stable_sort(items.begin(), items.end(), searchResultLessThan);
     return items;
 }
 

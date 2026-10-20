@@ -34,6 +34,10 @@ QSqlQuery comicsSearchQuery(QSqlDatabase &db, const QString &filter)
 
     std::string queryString = "SELECT " + ComicDB::selectList("c", "ci").toStdString() + " " SEARCH_COMICS_FROM;
     result.buildSqlString(queryString);
+    // near the order of the search results (numbers by value, text without case), so the limit always keeps the same comics
+    queryString += " ORDER BY (ci.series IS NULL OR TRIM(ci.series) = ''), TRIM(ci.series) COLLATE NOCASE, "
+                   "(ci.volume IS NOT NULL AND TRIM(ci.volume) <> ''), TRIM(ci.volume) COLLATE NOCASE, "
+                   "ci.number IS NULL, CAST(ci.number AS REAL), ci.number COLLATE NOCASE, c.fileName COLLATE NOCASE, c.path";
     queryString += " LIMIT :limit";
 
     QSqlQuery selectQuery(db);

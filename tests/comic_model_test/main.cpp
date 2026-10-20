@@ -70,8 +70,11 @@ private slots:
     void assignNumbersOncePerComicOrPlaceholder();
     void addToAListAppendsWhatEachRowRefersTo();
     void selectionSummaryCountsMissingComics();
+    void searchResultsKeepEachSeriesTogether();
+    void searchLimitKeepsTheFirstSeries();
 
 private:
+    QList<qulonglong> searchComicInfoIds(const QString &text);
     void loadSource(ComicModel &model, const QString &source);
     std::unique_ptr<QTemporaryDir> root;
     QString dataPath;
@@ -628,7 +631,7 @@ void ComicModelTest::loadSource(ComicModel &model, const QString &source)
             auto db = DataBaseManagement::loadDatabase(dataPath);
             name = db.connectionName();
             auto query = comicsSearchQuery(db, "Title");
-            items = ComicModel::sortedForFolder(ComicModel::createItems(query));
+            items = ComicModel::sortedForSearch(ComicModel::createItems(query));
         }
         QSqlDatabase::removeDatabase(name);
         model.setModelData(new QList<ComicItem>(items), dataPath);
@@ -1005,6 +1008,62 @@ void ComicModelTest::selectionSummaryCountsMissingComics()
     QCOMPARE(info.value("pageCount").toInt(), 60);
     QCOMPARE(info.value("unknownPageCount").toInt(), 0);
     QCOMPARE(info.value("missingCount").toInt(), 2);
+}
+
+QList<qulonglong> ComicModelTest::searchComicInfoIds(const QString &text)
+{
+    QList<ComicItem> items;
+    QString name;
+    {
+        auto db = DataBaseManagement::loadDatabase(dataPath);
+        name = db.connectionName();
+        auto query = comicsSearchQuery(db, text);
+        items = ComicModel::sortedForSearch(ComicModel::createItems(query));
+    }
+    QSqlDatabase::removeDatabase(name);
+
+    ComicModel model;
+    model.setModelData(new QList<ComicItem>(items), dataPath);
+    QList<qulonglong> ids;
+    for (int row = 0; row < model.rowCount(); ++row)
+        ids.append(recordInfo(model.record(model.index(row, 0)))->id.value());
+    return ids;
+}
+
+void ComicModelTest::searchResultsKeepEachSeriesTogether()
+{
+    QVERIFY(exec("INSERT INTO comic_info (id, hash, title, series, volume, number) VALUES "
+                 "(10, 'h10', 'Ordered', 'Robin', NULL, '2'), "
+                 "(11, 'h11', 'Ordered', 'Batman', '2011', '10'), "
+                 "(12, 'h12', 'Ordered', 'Batman', '2011', '2'), "
+                 "(13, 'h13', 'Ordered', 'batman', '2016', '1'), "
+                 "(14, 'h14', 'Ordered', 'Batman', NULL, '5'), "
+                 "(15, 'h15', 'Ordered', NULL, NULL, '1'), "
+                 "(16, 'h16', 'Ordered', 'Batman', '2011', NULL)"));
+    QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES "
+                 "(10, 2, 10, 'o10.cbz', '/Series/o10.cbz'), (11, 2, 11, 'o11.cbz', '/Series/o11.cbz'), (12, 2, 12, 'o12.cbz', '/Series/o12.cbz'), "
+                 "(13, 2, 13, 'o13.cbz', '/Series/o13.cbz'), (14, 2, 14, 'o14.cbz', '/Series/o14.cbz'), (15, 2, 15, 'o15.cbz', '/Series/o15.cbz'), "
+                 "(16, 2, 16, 'o16.cbz', '/Series/o16.cbz')"));
+
+    QCOMPARE(searchComicInfoIds("Ordered"), QList<qulonglong>({ 14, 12, 11, 16, 13, 10, 15 }));
+}
+
+void ComicModelTest::searchLimitKeepsTheFirstSeries()
+{
+    // the scan order puts "Alpha" last, after more than the limit of "Zeta" comics
+    QVERIFY(exec("WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x + 1 FROM n WHERE x < 510) "
+                 "INSERT INTO comic_info (id, hash, title, series, number) SELECT 1000 + x, 'bulk-' || x, 'Bulk', 'Zeta', x FROM n"));
+    QVERIFY(exec("WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x + 1 FROM n WHERE x < 510) "
+                 "INSERT INTO comic (id, parentId, comicInfoId, fileName, path) SELECT 1000 + x, 2, 1000 + x, 'z' || x || '.cbz', '/Series/z' || x || '.cbz' FROM n"));
+    QVERIFY(exec("INSERT INTO comic_info (id, hash, title, series, number) VALUES (2000, 'alpha', 'Bulk', 'Alpha', '1')"));
+    QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES (2000, 2, 2000, 'alpha.cbz', '/Series/alpha.cbz')"));
+
+    const auto ids = searchComicInfoIds("Bulk");
+    QCOMPARE(ids.size(), 500);
+    QCOMPARE(ids.constFirst(), qulonglong(2000));
+    QCOMPARE(ids.at(1), qulonglong(1001));
+    QCOMPARE(ids.at(2), qulonglong(1002));
+    QCOMPARE(ids.constLast(), qulonglong(1499));
 }
 
 QTEST_MAIN(ComicModelTest)
