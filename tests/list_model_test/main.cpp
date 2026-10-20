@@ -32,6 +32,7 @@ private slots:
     void droppedComicsGiveComicInfoToListsAndComicsToFavorites();
     void smartListsComeAfterTheLabels();
     void comicsCannotBeDroppedOnASmartList();
+    void smartListsCanBeAddedEditedAndDeleted();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -269,7 +270,7 @@ void ListModelTest::smartListsComeAfterTheLabels()
     QVERIFY(!model.data(first, Qt::DecorationRole).isNull());
     QCOMPARE(model.flags(first), Qt::ItemIsEnabled | Qt::ItemIsSelectable);
     QCOMPARE(model.rowCount(first), 0);
-    QVERIFY(!model.isEditable(first));
+    QVERIFY(model.isEditable(first));
     QVERIFY(model.isEditable(find(model, "Events")));
     QVERIFY(model.isEditable(find(model, "Alpha")));
 
@@ -296,6 +297,47 @@ void ListModelTest::comicsCannotBeDroppedOnASmartList()
     const auto smartList = find(model, "Unread");
     QVERIFY(!model.canDropMimeData(&data, Qt::CopyAction, smartList.row(), 0, QModelIndex()));
     QVERIFY(model.canDropMimeData(&data, Qt::CopyAction, find(model, "Events").row(), 0, QModelIndex()));
+}
+
+void ListModelTest::smartListsCanBeAddedEditedAndDeleted()
+{
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+    const auto rows = model.rowCount();
+
+    // the first one also brings its separator
+    const auto unread = model.addSmartList("Unread", "read:false");
+    QVERIFY(unread.isValid());
+    QCOMPARE(model.rowCount(), rows + 2);
+    QCOMPARE(model.data(unread, Qt::DisplayRole).toString(), QString("Unread"));
+    QCOMPARE(model.smartList(unread)->query, QString("read:false"));
+    QCOMPARE(value("SELECT query FROM smart_list WHERE name = 'Unread'"), QString("read:false"));
+
+    const auto rated = model.addSmartList("Rated", "rating>=4");
+    QCOMPARE(model.rowCount(), rows + 3);
+    QCOMPARE(rated.row(), unread.row() + 1);
+    QCOMPARE(value("SELECT ordering FROM smart_list WHERE name = 'Rated'"), QString("1"));
+    QVERIFY(!model.smartList(find(model, "Events")));
+
+    QVERIFY(model.updateSmartList(rated, "Highly rated", "rating>=5"));
+    QCOMPARE(model.data(rated, Qt::DisplayRole).toString(), QString("Highly rated"));
+    QCOMPARE(value("SELECT query FROM smart_list WHERE name = 'Highly rated'"), QString("rating>=5"));
+    QVERIFY(!model.updateSmartList(find(model, "Events"), "Not smart", "read:true"));
+
+    model.deleteItem(find(model, "Unread"));
+    QCOMPARE(model.rowCount(), rows + 2);
+    // the last one also takes its separator
+    model.deleteItem(find(model, "Highly rated"));
+    QCOMPARE(model.rowCount(), rows);
+    QCOMPARE(value("SELECT count(*) FROM smart_list"), QString("0"));
+    QVERIFY(find(model, "Events").isValid());
+
+    // a new model reads the same order
+    model.addSmartList("B", "read:true");
+    model.addSmartList("A", "read:false");
+    ReadingListModel reloaded;
+    reloaded.setupReadingListsData(dataPath);
+    QCOMPARE(names(reloaded).mid(rows - 1, 2), QStringList({ "B", "A" }));
 }
 
 QTEST_MAIN(ListModelTest)

@@ -2,6 +2,7 @@
 #define READING_LIST_MODEL_H
 
 #include "library_ids.h"
+#include "smart_list.h"
 #include "yacreader_global.h"
 
 #include <QAbstractItemModel>
@@ -54,6 +55,11 @@ public:
     bool isEditable(const QModelIndex &mi);
     bool isReadingList(const QModelIndex &mi);
     bool isReadingSubList(const QModelIndex &mi);
+    // at the end of the smart lists; the index of its row, invalid when it cannot be stored
+    QModelIndex addSmartList(const QString &name, const QString &query);
+    // nothing when the row is not a smart list
+    std::optional<::SmartList> smartList(const QModelIndex &mi) const;
+    bool updateSmartList(const QModelIndex &mi, const QString &name, const QString &query);
     QString name(const QModelIndex &mi);
     void rename(const QModelIndex &mi, const QString &name);
     void deleteItem(const QModelIndex &mi);

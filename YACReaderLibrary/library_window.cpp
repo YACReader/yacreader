@@ -35,7 +35,7 @@
 #include "reading_list_model.h"
 #include "recent_visibility_coordinator.h"
 #include "rename_library_dialog.h"
-#include "search_syntax_dialog.h"
+#include "search_filters_menu.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
 #include "static.h"
@@ -504,13 +504,25 @@ void LibraryWindow::setupCoordinators()
                 const auto selectedLists = listsView->selectionModel()->selectedIndexes();
                 return selectedLists.isEmpty() ? QModelIndex() : listsModelProxy->mapToSource(selectedLists.constFirst());
             },
-            [this] { return currentPath(); });
+            [this] { return currentPath(); },
+            settings);
     connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::currentListReselectionRequested, navigationController, &YACReaderNavigationController::reselectCurrentList);
     connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::listEntriesChanged, navigationController, &YACReaderNavigationController::refreshCurrentSource);
     listsView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(listsView, &QWidget::customContextMenuRequested, this, [this](const QPoint &point) {
         const auto index = listsModelProxy->mapToSource(listsView->indexAt(point));
         const auto type = index.data(ReadingListModel::TypeListsRole).toInt();
+        if (index.isValid() && type == ReadingListModel::SmartList) {
+            const QPersistentModelIndex smartList(index);
+            QMenu menu;
+            auto editAction = menu.addAction(tr("Edit smart list..."));
+            auto deleteAction = menu.addAction(tr("Delete smart list"));
+            // the dialogs run their own event loop, so the menu is gone first
+            connect(editAction, &QAction::triggered, readingListManagementCoordinator, [this, smartList] { readingListManagementCoordinator->editSmartList(smartList); }, Qt::QueuedConnection);
+            connect(deleteAction, &QAction::triggered, readingListManagementCoordinator, [this, smartList] { readingListManagementCoordinator->deleteList(smartList); }, Qt::QueuedConnection);
+            menu.exec(listsView->viewport()->mapToGlobal(point));
+            return;
+        }
         if (!index.isValid() || (type != ReadingListModel::Label && type != ReadingListModel::ReadingList))
             return;
 
@@ -802,31 +814,11 @@ void LibraryWindow::createToolBars()
 
 QMenu *LibraryWindow::createSearchMenu()
 {
-    auto *menu = new QMenu(tr("Search filters"), this);
-    menu->setMinimumWidth(190);
+    auto *menu = createSearchFiltersMenu(this, settings, [this](const QString &query) { applySearchQuery(query); });
 
-    auto addFilter = [this, menu](const QString &label, const QString &query) {
-        auto *action = menu->addAction(label);
-        connect(action, &QAction::triggered, this, [this, query] {
-            applySearchQuery(query);
-        });
-    };
-
-    addFilter(tr("Unread"), QStringLiteral("read:false"));
-    addFilter(
-            tr("In progress"),
-            QStringLiteral("hasBeenOpened:true AND read:false"));
-    addFilter(tr("Highly rated"), QStringLiteral("rating>=4"));
-
-    auto *recentlyAdded = menu->addAction(tr("Recently added"));
-    connect(recentlyAdded, &QAction::triggered, this, [this] {
-        const int days = settings->value(NUM_DAYS_TO_CONSIDER_RECENT, 1).toInt();
-        applySearchQuery(QStringLiteral("added>%1").arg(days));
-    });
-
-    menu->addSeparator();
-    auto *syntaxAction = menu->addAction(tr("Search syntax…"));
-    connect(syntaxAction, &QAction::triggered, this, &LibraryWindow::showSearchSyntax);
+    // the macOS search field copies the menu once, so this item is always enabled
+    auto *saveAction = menu->addAction(tr("Save as smart list…"));
+    connect(saveAction, &QAction::triggered, this, [this] { readingListManagementCoordinator->addSmartList(searchText().trimmed()); });
 
     return menu;
 }
@@ -881,12 +873,6 @@ QString LibraryWindow::searchText() const
 #endif
 }
 
-void LibraryWindow::showSearchSyntax()
-{
-    auto *dialog = new SearchSyntaxDialog(this);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
-    dialog->open();
-}
 void LibraryWindow::createConnections()
 {
     actions.createConnections(
@@ -942,6 +928,9 @@ void LibraryWindow::createConnections()
     connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
 #endif
     connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, librarySearchCoordinator, &LibrarySearchCoordinator::search);
+    // a smart list dialog searches like the search field, and gives the search back to it when it closes
+    connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::searchRequested, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
+    connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::searchFinished, searchDebouncer, [this, searchDebouncer] { searchDebouncer->throttle(searchText()); });
 }
 
 void LibraryWindow::setCurrentLibraryAs(FileType fileType)

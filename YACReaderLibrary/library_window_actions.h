@@ -135,6 +135,7 @@ public:
     QAction *newListMenuAction;
     QAction *addReadingListAction;
     QAction *importReadingListsAction;
+    QAction *addSmartListAction;
     QAction *deleteReadingListAction;
     QAction *addLabelAction;
     QAction *renameListAction;

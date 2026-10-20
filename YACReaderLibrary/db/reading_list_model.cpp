@@ -470,7 +470,68 @@ bool ReadingListModel::isEditable(const QModelIndex &mi)
     if (!mi.isValid())
         return false;
     auto item = static_cast<ListItem *>(mi.internalPointer());
-    return typeid(*item) == typeid(LabelItem) || typeid(*item) == typeid(ReadingListItem);
+    return typeid(*item) == typeid(LabelItem) || typeid(*item) == typeid(ReadingListItem) || typeid(*item) == typeid(SmartListItem);
+}
+
+QModelIndex ReadingListModel::addSmartList(const QString &name, const QString &query)
+{
+    std::optional<SmartListId> id;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        id = DBHelper::insertSmartList(name, query, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!id)
+        return { };
+
+    ::SmartList list;
+    list.id = *id;
+    list.name = name;
+    list.query = query;
+    list.ordering = smartLists.isEmpty() ? 0 : smartLists.constLast()->list.ordering + 1;
+
+    // the first smart list also brings the separator before the reading lists
+    const int row = smartListsStart() + smartLists.count();
+    beginInsertRows(QModelIndex(), row, smartLists.isEmpty() ? row + 1 : row);
+    smartLists.append(new SmartListItem(list));
+    endInsertRows();
+
+    return index(row, 0);
+}
+
+std::optional<::SmartList> ReadingListModel::smartList(const QModelIndex &mi) const
+{
+    if (!mi.isValid())
+        return std::nullopt;
+    auto item = static_cast<ListItem *>(mi.internalPointer());
+    if (typeid(*item) != typeid(SmartListItem))
+        return std::nullopt;
+    return static_cast<SmartListItem *>(item)->list;
+}
+
+bool ReadingListModel::updateSmartList(const QModelIndex &mi, const QString &name, const QString &query)
+{
+    if (!smartList(mi))
+        return false;
+
+    auto item = static_cast<SmartListItem *>(mi.internalPointer());
+    bool updated = false;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        updated = DBHelper::updateSmartList(item->list.id, name, query, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!updated)
+        return false;
+
+    item->list.name = name;
+    item->list.query = query;
+    emit dataChanged(mi, mi);
+    return true;
 }
 
 bool ReadingListModel::isReadingList(const QModelIndex &mi)
@@ -534,6 +595,21 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
 
 void ReadingListModel::deleteItem(const QModelIndex &mi)
 {
+    if (const auto list = smartList(mi)) {
+        // the last smart list also takes the separator before the reading lists
+        beginRemoveRows(QModelIndex(), mi.row(), smartLists.count() == 1 ? mi.row() + 1 : mi.row());
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+            DBHelper::removeSmartList(list->id, db);
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+        delete smartLists.takeAt(mi.row() - smartListsStart());
+        endRemoveRows();
+        return;
+    }
+
     if (isEditable(mi)) {
         QLOG_DEBUG() << "parent row :" << mi.parent().data() << "-" << mi.row();
         beginRemoveRows(mi.parent(), mi.row(), mi.row());

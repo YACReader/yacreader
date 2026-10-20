@@ -176,7 +176,6 @@ public:
     void setSearchInputEnabled(bool enabled);
     void clearSearchInput(bool notify);
     void focusSearchInput();
-    void showSearchSyntax();
 
     QString currentPath();
 

@@ -127,6 +127,10 @@ qt_add_executable(YACReaderLibrary WIN32
     options_dialog.cpp
     search_syntax_dialog.h
     search_syntax_dialog.cpp
+    search_filters_menu.h
+    search_filters_menu.cpp
+    smart_list_dialog.h
+    smart_list_dialog.cpp
     export_library_dialog.h
     export_library_dialog.cpp
     import_library_dialog.h
