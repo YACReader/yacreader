@@ -367,7 +367,11 @@ void ComicManagementCoordinator::deleteSelectedComics()
 {
     // a smart list has no entries, so its comics are deleted from the disk like the comics of a folder
     const auto listIndex = currentListProvider();
-    const bool fromList = listIndex.isValid() && listIndex.data(ReadingListModel::TypeListsRole).toInt() != ReadingListModel::SmartList;
+    const auto listType = listIndex.data(ReadingListModel::TypeListsRole).toInt();
+    // a folder of lists shows no comics
+    if (listIndex.isValid() && (listType == ReadingListModel::ReadingListFolder || listType == ReadingListModel::SmartListFolder))
+        return;
+    const bool fromList = listIndex.isValid() && listType != ReadingListModel::SmartList;
     const auto rowIds = selectedRowIds(fromList ? ComicAction::RemoveFromList : ComicAction::ChangeFile);
     if (rowIds.isEmpty())
         return;
@@ -836,6 +840,8 @@ void ComicManagementCoordinator::deleteComicsFromList(const QList<ComicRowId> &r
         break;
     case ReadingListModel::Separator:
     case ReadingListModel::SmartList:
+    case ReadingListModel::ReadingListFolder:
+    case ReadingListModel::SmartListFolder:
         break;
     }
 }

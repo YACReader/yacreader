@@ -133,6 +133,10 @@ qt_add_executable(YACReaderLibrary WIN32
     search_filters_menu.cpp
     smart_list_dialog.h
     smart_list_dialog.cpp
+    new_list_folder_dialog.h
+    new_list_folder_dialog.cpp
+    empty_list_folder_widget.h
+    empty_list_folder_widget.cpp
     export_library_dialog.h
     export_library_dialog.cpp
     import_library_dialog.h

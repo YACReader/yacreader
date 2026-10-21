@@ -1,9 +1,11 @@
 #include "data_base_management.h"
+#include "db_helper.h"
 #include "reading_list_item.h"
 #include "reading_list_model.h"
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
+#include <QAbstractItemModelTester>
 #include <QApplication>
 #include <QDataStream>
 #include <QDir>
@@ -34,6 +36,10 @@ private slots:
     void comicsCannotBeDroppedOnASmartList();
     void smartListsCanBeAddedEditedAndDeleted();
     void childListsHaveTheListIcon();
+    void foldersFormATreeInEachSection();
+    void listsAndFoldersAreAddedInsideFolders();
+    void deletingAFolderRemovesItsRows();
+    void foldersAreRenamedAndTakeNoComics();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -246,6 +252,12 @@ QStringList typesOfRows(ReadingListModel &model)
         case ReadingListModel::SmartList:
             types.append("smart");
             break;
+        case ReadingListModel::ReadingListFolder:
+            types.append("reading folder");
+            break;
+        case ReadingListModel::SmartListFolder:
+            types.append("smart folder");
+            break;
         }
     }
     return types;
@@ -352,6 +364,134 @@ void ListModelTest::childListsHaveTheListIcon()
     const auto listIcon = model.data(events, Qt::DecorationRole).value<QIcon>();
     const auto childIcon = model.data(first, Qt::DecorationRole).value<QIcon>();
     QCOMPARE(childIcon.cacheKey(), listIcon.cacheKey());
+}
+
+void ListModelTest::foldersFormATreeInEachSection()
+{
+    // DC > Crisis > (Final Crisis); DC > (Events); Unread (smart folder) > (Unread Batman)
+    QVERIFY(exec("INSERT INTO reading_list_folder (id, parent_id, name, ordering) VALUES (1, NULL, 'DC', 0), (2, 1, 'Crisis', 0)"));
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name, folder_id) VALUES (3, NULL, 0, 'Final Crisis', 2)"));
+    QVERIFY(exec("UPDATE reading_list SET folder_id = 1 WHERE id = 1"));
+    QVERIFY(exec("INSERT INTO smart_list_folder (id, parent_id, name, ordering) VALUES (1, NULL, 'Unread', 0)"));
+    QVERIFY(exec("INSERT INTO smart_list (id, name, query, ordering, folder_id) VALUES (1, 'Unread Batman', 'read:false', 0, 1), (2, 'Rated', 'rating>=4', 1, NULL)"));
+
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+
+    QCOMPARE(typesOfRows(model), QStringList({ "special", "special", "special", "-", "label", "label", "label", "-", "smart folder", "smart", "-", "reading folder" }));
+
+    const auto unread = find(model, "Unread");
+    QCOMPARE(model.listFolder(unread), std::optional<ListFolderId>(ListFolderId { ListFolderKind::SmartList, 1 }));
+    QCOMPARE(model.section(unread), std::optional<ListFolderKind>(ListFolderKind::SmartList));
+    QCOMPARE(names(model, unread), QStringList({ "Unread Batman" }));
+    QCOMPARE(model.parent(find(model, "Unread Batman", unread)), unread);
+
+    // in a folder, its folders first, then its lists
+    const auto dc = find(model, "DC");
+    QCOMPARE(model.data(dc, ReadingListModel::TypeListsRole).toInt(), int(ReadingListModel::ReadingListFolder));
+    QCOMPARE(names(model, dc), QStringList({ "Crisis", "Events" }));
+    const auto crisis = find(model, "Crisis", dc);
+    QCOMPARE(model.parent(crisis), dc);
+    const auto finalCrisis = find(model, "Final Crisis", crisis);
+    QCOMPARE(model.parent(finalCrisis), crisis);
+    QCOMPARE(model.section(finalCrisis), std::optional<ListFolderKind>(ListFolderKind::ReadingList));
+
+    // a child list of a list in a folder
+    const auto events = find(model, "Events", dc);
+    const auto first = find(model, "First", events);
+    QVERIFY(first.isValid());
+    QCOMPARE(model.parent(first), events);
+    QVERIFY(model.isReadingSubList(first));
+    QVERIFY(!model.isReadingSubList(events));
+    QCOMPARE(model.section(find(model, "Alpha")), std::nullopt);
+}
+
+void ListModelTest::listsAndFoldersAreAddedInsideFolders()
+{
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+    const auto rows = model.rowCount();
+
+    const auto dc = model.addListFolder(ListFolderKind::ReadingList, QModelIndex(), "DC");
+    QVERIFY(dc.isValid());
+    QCOMPARE(model.rowCount(), rows + 1);
+    // the folders of a section come before its lists
+    QCOMPARE(names(model).mid(rows - 1), QStringList({ "DC", "Events" }));
+
+    const auto crisis = model.addListFolder(ListFolderKind::ReadingList, dc, "Crisis");
+    QCOMPARE(model.parent(crisis), find(model, "DC"));
+    QCOMPARE(value("SELECT parent_id FROM reading_list_folder WHERE name = 'Crisis'"), value("SELECT id FROM reading_list_folder WHERE name = 'DC'"));
+
+    // reading lists in a folder are sorted by name, after its folders
+    model.addReadingList("Zero Hour", find(model, "DC"));
+    model.addReadingList("Blackest Night", find(model, "DC"));
+    QCOMPARE(names(model, find(model, "DC")), QStringList({ "Crisis", "Blackest Night", "Zero Hour" }));
+    QCOMPARE(value("SELECT folder_id FROM reading_list WHERE name = 'Zero Hour'"), value("SELECT id FROM reading_list_folder WHERE name = 'DC'"));
+
+    // a folder of the other section is ignored
+    const auto smartFolder = model.addListFolder(ListFolderKind::SmartList, QModelIndex(), "Unread");
+    QVERIFY(smartFolder.isValid());
+    QCOMPARE(typesOfRows(model).mid(8, 2), QStringList({ "smart folder", "-" }));
+    model.addReadingList("Top", find(model, "Unread"));
+    QCOMPARE(value("SELECT folder_id IS NULL FROM reading_list WHERE name = 'Top'"), QString("1"));
+
+    const auto batman = model.addSmartList("Unread Batman", "read:false", find(model, "Unread"));
+    QVERIFY(batman.isValid());
+    QCOMPARE(model.parent(batman), find(model, "Unread"));
+    QCOMPARE(model.smartList(batman)->folderId, std::optional<qulonglong>(model.listFolder(find(model, "Unread"))->id));
+    model.addSmartList("Rated", "rating>=4");
+    QCOMPARE(names(model).mid(8, 2), QStringList({ "Unread", "Rated" }));
+}
+
+void ListModelTest::deletingAFolderRemovesItsRows()
+{
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+    const auto rows = model.rowCount();
+
+    const auto unread = model.addListFolder(ListFolderKind::SmartList, QModelIndex(), "Unread");
+    model.addSmartList("Unread Batman", "read:false", unread);
+    const auto dc = model.addListFolder(ListFolderKind::ReadingList, QModelIndex(), "DC");
+    model.addListFolder(ListFolderKind::ReadingList, dc, "Crisis");
+    model.addReadingList("Infinite Crisis", find(model, "DC"));
+    QCOMPARE(model.rowCount(), rows + 3);
+
+    model.deleteItem(find(model, "DC"));
+    QCOMPARE(model.rowCount(), rows + 2);
+    QCOMPARE(value("SELECT count(*) FROM reading_list_folder"), QString("0"));
+    QCOMPARE(value("SELECT count(*) FROM reading_list WHERE name = 'Infinite Crisis'"), QString("0"));
+
+    // the last row of the smart lists section takes its separator
+    model.deleteItem(find(model, "Unread"));
+    QCOMPARE(model.rowCount(), rows);
+    QCOMPARE(value("SELECT count(*) FROM smart_list"), QString("0"));
+    QVERIFY(find(model, "Events").isValid());
+}
+
+void ListModelTest::foldersAreRenamedAndTakeNoComics()
+{
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+
+    const auto dc = model.addListFolder(ListFolderKind::ReadingList, QModelIndex(), "DC");
+    QVERIFY(model.isEditable(dc));
+    model.rename(dc, "DC Comics");
+    QCOMPARE(model.data(find(model, "DC Comics"), Qt::DisplayRole).toString(), QString("DC Comics"));
+    QCOMPARE(value("SELECT name FROM reading_list_folder"), QString("DC Comics"));
+
+    QMimeData data;
+    QByteArray comicIds;
+    QDataStream out(&comicIds, QIODevice::WriteOnly);
+    out << QList<qulonglong> { 9 };
+    data.setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, comicIds);
+    const auto folder = find(model, "DC Comics");
+    QVERIFY(!model.canDropMimeData(&data, Qt::CopyAction, folder.row(), 0, QModelIndex()));
+    QVERIFY(!model.dropMimeData(&data, Qt::CopyAction, -1, 0, folder));
+    QCOMPARE(model.flags(folder), Qt::ItemIsEnabled | Qt::ItemIsSelectable);
 }
 
 QTEST_MAIN(ListModelTest)

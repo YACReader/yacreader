@@ -125,6 +125,11 @@ void YACReaderNavigationController::loadListContent(const QModelIndex &listIndex
     case ReadingListModel::SmartList:
         loadSmartListContent(listIndex);
         break;
+
+    case ReadingListModel::ReadingListFolder:
+    case ReadingListModel::SmartListFolder:
+        loadListFolderContent(listIndex);
+        break;
     }
     contentViewsManager->gridView()->setCurrentList(listIndex);
     // if a list is selected, foldersView selection must be cleared
@@ -176,6 +181,14 @@ void YACReaderNavigationController::loadLabelContent(const QModelIndex &listInde
         contentViewsManager->showEmptyLabel(static_cast<YACReader::LabelColors>(listIndex.data(ReadingListModel::LabelColorRole).toInt()));
         libraryWindow->setComicActionsDisabled(true);
     }
+}
+
+// a folder of lists has no comics
+void YACReaderNavigationController::loadListFolderContent(const QModelIndex &listIndex)
+{
+    Q_UNUSED(listIndex);
+    contentViewsManager->showEmptyListFolder();
+    libraryWindow->setComicActionsDisabled(true);
 }
 
 // an empty smart list is a search with no results

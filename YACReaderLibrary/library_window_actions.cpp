@@ -417,6 +417,12 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     addSmartListAction->setToolTip(tr("Add a saved search to the current library"));
     window->addAction(addSmartListAction);
 
+    addListFolderAction = new QAction(tr("New folder..."), window);
+    addListFolderAction->setData(ADD_LIST_FOLDER_ACTION_YL);
+    addListFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_LIST_FOLDER_ACTION_YL));
+    addListFolderAction->setToolTip(tr("Add a folder for reading lists or smart lists"));
+    window->addAction(addListFolderAction);
+
     importReadingListsAction = new QAction(tr("Import reading lists..."), window);
     importReadingListsAction->setData(IMPORT_READING_LISTS_ACTION_YL);
     importReadingListsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_READING_LISTS_ACTION_YL));
@@ -428,6 +434,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     auto newListMenu = new QMenu(window);
     newListMenu->addAction(addReadingListAction);
     newListMenu->addAction(addSmartListAction);
+    newListMenu->addAction(addListFolderAction);
     newListMenu->addSeparator();
     newListMenu->addAction(importReadingListsAction);
     newListMenuAction->setMenu(newListMenu);
@@ -618,6 +625,7 @@ void LibraryWindowActions::createConnections(
     QObject::connect(addReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addReadingList);
     QObject::connect(importReadingListsAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::importReadingLists);
     QObject::connect(addSmartListAction, &QAction::triggered, readingListManagementCoordinator, [readingListManagementCoordinator] { readingListManagementCoordinator->addSmartList(); });
+    QObject::connect(addListFolderAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addListFolder);
     QObject::connect(deleteReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::deleteCurrentList);
     QObject::connect(addLabelAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addLabel);
     QObject::connect(renameListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::renameCurrentList);
@@ -740,6 +748,7 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                          tmpList = QList<QAction *>()
                                                  << addReadingListAction
                                                  << addSmartListAction
+                                                 << addListFolderAction
                                                  << importReadingListsAction
                                                  << deleteReadingListAction
                                                  << addLabelAction

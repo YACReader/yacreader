@@ -560,6 +560,10 @@ void GridComicsView::setCurrentList(const QModelIndex &listIndex)
     case ReadingListModel::SmartList:
         kind = QStringLiteral("smartList");
         break;
+    case ReadingListModel::ReadingListFolder:
+    case ReadingListModel::SmartListFolder:
+        kind = QStringLiteral("listFolder");
+        break;
     case ReadingListModel::Separator:
         return;
     }
@@ -593,6 +597,8 @@ void GridComicsView::updateCurrentListIcon()
         icon = theme.emptyContainer.emptyReadingListIcon;
     else if (kind == QStringLiteral("smartList"))
         icon = theme.emptyContainer.noSearchResultsIcon;
+    else if (kind == QStringLiteral("listFolder"))
+        icon = theme.emptyContainer.emptyFolderIcon;
     else
         return;
 

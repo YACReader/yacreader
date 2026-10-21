@@ -4,6 +4,8 @@
 #include "qnaturalsorting.h"
 #include "theme_manager.h"
 
+#include <QFileIconProvider>
+
 qulonglong ListItem::getId() const
 {
     return 0;
@@ -218,6 +220,99 @@ QString SmartListItem::name() const
 qulonglong SmartListItem::getId() const
 {
     return list.id.value();
+}
+
+//------------------------------------------------------
+
+ListFolderItem::ListFolderItem(const ListFolder &folder)
+    : folder(folder)
+{
+}
+
+ListFolderItem::~ListFolderItem()
+{
+    qDeleteAll(folders);
+    qDeleteAll(lists);
+}
+
+// the icon of the folders of the library tree
+QIcon ListFolderItem::getIcon() const
+{
+    const auto &theme = ThemeManager::instance().getCurrentTheme();
+    if (theme.sidebarIcons.useSystemFolderIcons)
+        return QFileIconProvider().icon(QFileIconProvider::Folder);
+    return theme.navigationTree.folderIcon;
+}
+
+QString ListFolderItem::name() const
+{
+    return folder.name;
+}
+
+qulonglong ListFolderItem::getId() const
+{
+    return folder.id.id;
+}
+
+int ListFolderItem::childCount() const
+{
+    return folders.count() + lists.count();
+}
+
+ListItem *ListFolderItem::child(int row) const
+{
+    if (row < folders.count())
+        return folders.at(row);
+    return lists.at(row - folders.count());
+}
+
+int ListFolderItem::rowOf(const ListItem *child) const
+{
+    for (int i = 0; i < folders.count(); ++i) {
+        if (folders.at(i) == child)
+            return i;
+    }
+    const auto list = lists.indexOf(const_cast<ListItem *>(child));
+    return list < 0 ? -1 : folders.count() + list;
+}
+
+int ListFolderItem::appendFolder(ListFolderItem *item)
+{
+    item->container = this;
+    folders.append(item);
+    return folders.count() - 1;
+}
+
+int ListFolderItem::appendList(ListItem *item)
+{
+    lists.append(item);
+    return childCount() - 1;
+}
+
+int ListFolderItem::insertListByName(ListItem *item)
+{
+    const auto row = rowForListName(item->name());
+    lists.insert(row - folders.count(), item);
+    return row;
+}
+
+int ListFolderItem::rowForListName(const QString &name) const
+{
+    int i = 0;
+    while (i < lists.count() && naturalSortLessThanCI(lists.at(i)->name(), name))
+        i++;
+    return folders.count() + i;
+}
+
+void ListFolderItem::removeChild(ListItem *item)
+{
+    for (int i = 0; i < folders.count(); ++i) {
+        if (folders.at(i) == item) {
+            folders.removeAt(i);
+            return;
+        }
+    }
+    lists.removeOne(item);
 }
 
 //------------------------------------------------------
