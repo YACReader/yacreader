@@ -4,8 +4,6 @@
 #include "qnaturalsorting.h"
 #include "theme_manager.h"
 
-#include <QFileIconProvider>
-
 qulonglong ListItem::getId() const
 {
     return 0;
@@ -99,15 +97,10 @@ ReadingListItem::ReadingListItem(const ReadingList &list, ReadingListItem *p)
 {
 }
 
+// a child list is a list too; folders of lists have their own icon
 QIcon ReadingListItem::getIcon() const
 {
-    const auto &theme = ThemeManager::instance().getCurrentTheme();
-    if (parent->getId() == 0)
-        return theme.readingListIcons.listIcon; // top level list
-    else if (theme.sidebarIcons.useSystemFolderIcons)
-        return QFileIconProvider().icon(QFileIconProvider::Folder);
-    else
-        return theme.navigationTree.folderIcon; // sublist
+    return ThemeManager::instance().getCurrentTheme().readingListIcons.listIcon;
 }
 
 int ReadingListItem::childCount() const

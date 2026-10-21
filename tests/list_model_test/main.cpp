@@ -33,6 +33,7 @@ private slots:
     void smartListsComeAfterTheLabels();
     void comicsCannotBeDroppedOnASmartList();
     void smartListsCanBeAddedEditedAndDeleted();
+    void childListsHaveTheListIcon();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -338,6 +339,19 @@ void ListModelTest::smartListsCanBeAddedEditedAndDeleted()
     ReadingListModel reloaded;
     reloaded.setupReadingListsData(dataPath);
     QCOMPARE(names(reloaded).mid(rows - 1, 2), QStringList({ "B", "A" }));
+}
+
+void ListModelTest::childListsHaveTheListIcon()
+{
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+
+    const auto events = find(model, "Events");
+    const auto first = find(model, "First", events);
+    QVERIFY(first.isValid());
+    const auto listIcon = model.data(events, Qt::DecorationRole).value<QIcon>();
+    const auto childIcon = model.data(first, Qt::DecorationRole).value<QIcon>();
+    QCOMPARE(childIcon.cacheKey(), listIcon.cacheKey());
 }
 
 QTEST_MAIN(ListModelTest)
