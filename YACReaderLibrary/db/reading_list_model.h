@@ -76,6 +76,8 @@ public:
     std::optional<ListFolderId> listFolder(const QModelIndex &mi) const;
     // the section of a list or a folder of lists: reading lists or smart lists; nothing for the other rows
     std::optional<ListFolderKind> section(const QModelIndex &mi) const;
+    // the row of a list or a folder of lists (`type` is a TypeList); invalid when there is none
+    QModelIndex indexOf(int type, qulonglong id) const;
     QString name(const QModelIndex &mi);
     void rename(const QModelIndex &mi, const QString &name);
     void deleteItem(const QModelIndex &mi);

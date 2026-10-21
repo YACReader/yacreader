@@ -501,6 +501,8 @@ Theme makeTheme(const ThemeParams &params)
         theme.emptyContainer.emptyCurrentReadingsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_current_readings.svg", ec.iconColor, params.meta.id), 167, 214, dpr);
         theme.emptyContainer.emptyRecentIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainColor, rli.specialListShadowColor, rli.currentlyReadingOuterColor, params.meta.id), 167, dpr);
         theme.emptyContainer.emptyReadingListIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.iconColor, params.meta.id), 248, 187, dpr);
+        theme.emptyContainer.readingListArtUrl = QUrl::fromLocalFile(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.iconColor, params.meta.id));
+        theme.emptyContainer.smartListArtUrl = QUrl::fromLocalFile(recoloredSvgToThemeFile(":/images/empty_container/smart_list_card.svg", ec.iconColor, params.meta.id));
 
         // Generate empty label icons for each label color
         for (int c = YACReader::YRed; c <= YACReader::YDark; ++c) {

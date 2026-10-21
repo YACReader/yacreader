@@ -279,11 +279,11 @@ void GridComicsView::setModel(ComicModel *model)
             updateInfoForIndex(index.row());
     });
 
-    updateCurrentComicBanner();
-
     selectionHelper->setModel(model);
     comicInfoHelper->setModel(model);
     contentModel->setComicModel(model);
+
+    updateCurrentComicBanner();
 
     if (model->getMode() != ComicModel::Folder)
         clearFolderModel();
@@ -477,6 +477,10 @@ void GridComicsView::rate(int index, int rating)
 
 void GridComicsView::requestItemContextMenu(const QPoint &point, int viewRow)
 {
+    // the cards of a folder of lists have no context menu
+    if (contentModel->isListCardRow(viewRow))
+        return;
+
     if (contentModel->isFolderRow(viewRow)) {
         emit openFolderContextMenu(point, contentModel->folderAt(viewRow));
         return;
@@ -638,6 +642,8 @@ bool GridComicsView::isCurrentComicBannerVisible() const
 
 int GridComicsView::focusedFolderRow() const
 {
+    if (focusedListCardRow >= 0)
+        return focusedListCardRow;
     return focusedFolderIndex.isValid() ? focusedFolderIndex.row() : -1;
 }
 
@@ -753,10 +759,33 @@ void GridComicsView::openFolder(int viewRow)
     });
 }
 
+void GridComicsView::openListCard(int viewRow)
+{
+    if (!contentModel->isListCardRow(viewRow))
+        return;
+
+    // selecting the list resets the model that owns the QML delegate
+    const auto card = contentModel->listCardAt(viewRow);
+    QTimer::singleShot(0, this, [this, card]() { emit listCardOpened(card.listType, card.id); });
+}
+
+void GridComicsView::setListCards(const QList<GridListCard> &cards)
+{
+    clearFocusedFolder();
+    contentModel->setListCards(cards);
+    updateCurrentComicBanner();
+}
+
 void GridComicsView::focusItem(int viewRow)
 {
     if (contentModel->isSpacerRow(viewRow))
         return;
+
+    if (contentModel->isListCardRow(viewRow)) {
+        selectionHelper->clear();
+        setFocusedFolder(viewRow);
+        return;
+    }
 
     if (contentModel->isFolderRow(viewRow)) {
         selectionHelper->clear();
@@ -849,6 +878,7 @@ void GridComicsView::updateCurrentComicBanner()
 
     const bool showCurrentComic = found &&
             filterEnabled == false &&
+            !contentModel->hasListCards() &&
             (mode == ComicModel::Mode::Folder || mode == ComicModel::Mode::ReadingList) &&
             settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool();
 
@@ -911,6 +941,16 @@ QVariantMap GridComicsView::makeFolderInfo(const Folder &folder, const QVariant 
 
 void GridComicsView::setFocusedFolder(int viewRow)
 {
+    // a card is shown as focused like a folder; it has no folder info
+    if (contentModel->isListCardRow(viewRow)) {
+        focusedFolderIndex = QModelIndex();
+        focusedFolderInfo.clear();
+        focusedListCardRow = viewRow;
+        emit focusedFolderChanged();
+        return;
+    }
+    focusedListCardRow = -1;
+
     if (!contentModel->isFolderRow(viewRow)) {
         clearFocusedFolder();
         return;
@@ -929,9 +969,10 @@ void GridComicsView::setFocusedFolder(int viewRow)
 
 void GridComicsView::clearFocusedFolder()
 {
-    if (!focusedFolderIndex.isValid() && focusedFolderInfo.isEmpty())
+    if (!focusedFolderIndex.isValid() && focusedFolderInfo.isEmpty() && focusedListCardRow < 0)
         return;
 
+    focusedListCardRow = -1;
     focusedFolderIndex = QModelIndex();
     focusedFolderInfo.clear();
     emit focusedFolderChanged();
@@ -1092,7 +1133,7 @@ void GridComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action
 void GridComicsView::droppedImageAt(const QList<QUrl> &urls, int viewRow)
 {
     const auto imagePath = YACReader::droppedImagePath(urls);
-    if (imagePath.isEmpty() || viewRow < 0 || viewRow >= contentModel->rowCount())
+    if (imagePath.isEmpty() || viewRow < 0 || viewRow >= contentModel->rowCount() || contentModel->isListCardRow(viewRow))
         return;
 
     if (contentModel->isFolderRow(viewRow)) {
@@ -1118,6 +1159,11 @@ void GridComicsView::activateItem(int viewRow)
 {
     if (viewRow < 0 || viewRow >= contentModel->rowCount() || contentModel->isSpacerRow(viewRow))
         return;
+
+    if (contentModel->isListCardRow(viewRow)) {
+        openListCard(viewRow);
+        return;
+    }
 
     if (contentModel->isFolderRow(viewRow)) {
         openFolder(viewRow);

@@ -937,6 +937,22 @@ bool ReadingListModel::rowIsLabel(int row, const QModelIndex &parent) const
     return row >= labelsStart() && row < labelsStart() + labels.count();
 }
 
+QModelIndex ReadingListModel::indexOf(int type, qulonglong id) const
+{
+    // depth first over the rows, child lists included
+    std::function<QModelIndex(const QModelIndex &)> find = [&](const QModelIndex &parent) -> QModelIndex {
+        for (int row = 0; row < rowCount(parent); ++row) {
+            const auto child = index(row, 0, parent);
+            if (data(child, TypeListsRole).toInt() == type && data(child, IDRole).toULongLong() == id)
+                return child;
+            if (const auto found = find(child); found.isValid())
+                return found;
+        }
+        return QModelIndex();
+    };
+    return find(QModelIndex());
+}
+
 ListFolderItem *ReadingListModel::containerOf(ListItem *item) const
 {
     if (typeid(*item) == typeid(ListFolderItem))

@@ -22,6 +22,7 @@ class YACReaderToolBarStretch;
 class YACReaderComicsSelectionHelper;
 class YACReaderComicInfoHelper;
 class GridContentModel;
+struct GridListCard;
 class FolderModel;
 struct Folder;
 class ComicInfoObject;
@@ -77,6 +78,8 @@ public:
 
     Q_INVOKABLE void requestOpenLibraryFolder();
     Q_INVOKABLE void openFolder(int viewRow);
+    Q_INVOKABLE void openListCard(int viewRow);
+    void setListCards(const QList<GridListCard> &cards);
     Q_INVOKABLE void focusItem(int viewRow);
     Q_INVOKABLE void clearFolderFocus();
     Q_INVOKABLE void selectComicRange(int from, int to);
@@ -150,6 +153,8 @@ signals:
     void onScrollToOrigin();
     void folderSelected(const QModelIndex &index);
     void openFolderContextMenu(const QPoint &point, const Folder &folder);
+    // a card of the grid of a folder of lists; `listType` is the ReadingListModel::TypeList of its row
+    void listCardOpened(int listType, qulonglong id);
     void openContinueReadingComicContextMenu(const QPoint &point, const ComicDB &comic);
     void comicSelectionStateChanged(bool hasSelection);
     void selectedComicsInfoChanged();
@@ -182,6 +187,8 @@ private:
     bool currentComicBannerVisible = false;
     QPersistentModelIndex focusedFolderIndex;
     QVariantMap focusedFolderInfo;
+    // the focused card of a folder of lists, else -1
+    int focusedListCardRow = -1;
     QVariantMap currentLocationInfo;
     QTimer *viewStateTimer;
     std::optional<ContentViewState> pendingViewState;

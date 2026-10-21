@@ -14,6 +14,8 @@ int GridContentModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
+    if (showsListCards)
+        return listCards.count();
 
     const auto comics = comicModel ? comicModel->rowCount() : 0;
     return visibleFolderCount() + spacerCount() + comics;
@@ -23,6 +25,38 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid() || index.row() < 0 || index.row() >= rowCount())
         return { };
+
+    if (showsListCards) {
+        const auto &card = listCards.at(index.row());
+        switch (role) {
+        case ItemKindRole:
+            return ListCardItem;
+        case SourceIndexRole:
+            return index.row();
+        case TitleRole:
+        case FileNameRole:
+        case ReadableTitleRole:
+            return card.name;
+        case IdRole:
+            return card.id;
+        case CoverPathRole:
+            return card.cover;
+        case IconPathRole:
+            return card.icon;
+        case CardKindRole:
+            switch (card.kind) {
+            case GridListCard::Folder:
+                return QStringLiteral("folder");
+            case GridListCard::ReadingList:
+                return QStringLiteral("readingList");
+            case GridListCard::SmartList:
+                return QStringLiteral("smartList");
+            }
+            return { };
+        default:
+            return { };
+        }
+    }
 
     if (isFolderRow(index.row())) {
         const auto sourceIndex = sourceFolderIndex(index.row());
@@ -146,16 +180,20 @@ QHash<int, QByteArray> GridContentModel::roleNames() const
         { LastKnownNameRole, "last_known_name" },
         { ListItemIdRole, "list_item_id" },
         { ListIdRole, "list_id" },
+        { CardKindRole, "card_kind" },
+        { IconPathRole, "icon_path" },
     };
 }
 
 void GridContentModel::setComicModel(ComicModel *model)
 {
-    if (comicModel == model)
+    if (comicModel == model && !showsListCards)
         return;
 
     beginResetModel();
     comicModel = model;
+    showsListCards = false;
+    listCards.clear();
     endResetModel();
     reconnectModels();
 }
@@ -166,8 +204,37 @@ void GridContentModel::setFolderModel(FolderModel *model, const QModelIndex &fol
     folderModel = model;
     selectedFolderIndex = folderIndex;
     selectedFolderIsRoot = model && !folderIndex.isValid();
+    showsListCards = false;
+    listCards.clear();
     endResetModel();
     reconnectModels();
+}
+
+void GridContentModel::setListCards(const QList<GridListCard> &cards)
+{
+    beginResetModel();
+    folderModel = nullptr;
+    selectedFolderIndex = QModelIndex();
+    selectedFolderIsRoot = false;
+    showsListCards = true;
+    listCards = cards;
+    endResetModel();
+    reconnectModels();
+}
+
+bool GridContentModel::hasListCards() const
+{
+    return showsListCards;
+}
+
+bool GridContentModel::isListCardRow(int viewRow) const
+{
+    return showsListCards && viewRow >= 0 && viewRow < listCards.count();
+}
+
+GridListCard GridContentModel::listCardAt(int viewRow) const
+{
+    return isListCardRow(viewRow) ? listCards.at(viewRow) : GridListCard();
 }
 
 void GridContentModel::clearFolderModel()
@@ -209,12 +276,12 @@ void GridContentModel::setGridColumnCount(int columns)
 
 bool GridContentModel::isFolderRow(int viewRow) const
 {
-    return viewRow >= 0 && viewRow < visibleFolderCount();
+    return !showsListCards && viewRow >= 0 && viewRow < visibleFolderCount();
 }
 
 bool GridContentModel::isSpacerRow(int viewRow) const
 {
-    return viewRow >= visibleFolderCount() && viewRow < visibleFolderCount() + spacerCount();
+    return !showsListCards && viewRow >= visibleFolderCount() && viewRow < visibleFolderCount() + spacerCount();
 }
 
 int GridContentModel::visibleFolderCount() const
@@ -270,6 +337,10 @@ void GridContentModel::reconnectModels()
     for (const auto &connection : std::as_const(sourceConnections))
         disconnect(connection);
     sourceConnections.clear();
+
+    // the cards do not follow the folder and comic models
+    if (showsListCards)
+        return;
 
     if (folderModel) {
         sourceConnections << connect(folderModel, &QAbstractItemModel::modelReset, this, &GridContentModel::resetFromSource);

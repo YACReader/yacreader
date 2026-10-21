@@ -22,6 +22,7 @@ private slots:
     void kindsCannotBeMixed();
     void removingAFolderRemovesEverythingInIt();
     void removingASmartListFolderRemovesItsSmartLists();
+    void readingListCoversAreTheirFirstComic();
 
 private:
     bool exec(const QString &sql);
@@ -212,6 +213,28 @@ void ListFolderTest::removingASmartListFolderRemovesItsSmartLists()
     QCOMPARE(DBHelper::removeListFolder({ ListFolderKind::SmartList, unread }, db), std::optional<QStringList>(QStringList()));
     QVERIFY(DBHelper::loadListFolders(ListFolderKind::SmartList, db)->isEmpty());
     QCOMPARE(rows("SELECT name FROM smart_list"), QList<QVariantList>({ { "Rated" } }));
+}
+
+void ListFolderTest::readingListCoversAreTheirFirstComic()
+{
+    QVERIFY(exec("INSERT INTO comic_info (id, hash) VALUES (10, 'h10'), (11, 'h11'), (12, 'h12')"));
+    QVERIFY(exec("INSERT INTO placeholder (id, series) VALUES (5, 'Missing')"));
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name) VALUES "
+                 "(1, NULL, 0, 'Own entries'), (2, NULL, 0, 'Only child lists'), (3, 2, 1, 'Second child'), (4, 2, 0, 'First child'), "
+                 "(5, NULL, 0, 'Only missing'), (6, NULL, 0, 'Empty')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id, placeholder_id) VALUES "
+                 "(1, 1, 11, NULL), (1, 0, NULL, 5), (1, 2, 10, NULL), "
+                 "(3, 0, 12, NULL), (4, 0, 10, NULL), "
+                 "(5, 0, NULL, 5)"));
+
+    const auto hashes = DBHelper::readingListCoverHashes({ ReadingListId(1), ReadingListId(2), ReadingListId(5), ReadingListId(6) }, db);
+    QVERIFY(hashes);
+    QCOMPARE(hashes->size(), 2);
+    // the first comic of its entries; a missing entry has no cover
+    QCOMPARE(hashes->value(1), QString("h11"));
+    // the first comic of its child lists, in their order
+    QCOMPARE(hashes->value(2), QString("h10"));
+    QVERIFY(DBHelper::readingListCoverHashes({ }, db)->isEmpty());
 }
 
 QTEST_GUILESS_MAIN(ListFolderTest)

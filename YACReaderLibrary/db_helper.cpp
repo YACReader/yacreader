@@ -2414,6 +2414,35 @@ std::optional<QList<ListFolder>> DBHelper::loadListFolders(ListFolderKind kind, 
     return folders;
 }
 
+std::optional<QHash<qulonglong, QString>> DBHelper::readingListCoverHashes(const QList<ReadingListId> &ids, QSqlDatabase &db)
+{
+    QHash<qulonglong, QString> hashes;
+    if (ids.isEmpty())
+        return hashes;
+
+    QStringList idTexts;
+    for (const auto &id : ids)
+        idTexts.append(QString::number(id.value()));
+
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    if (!query.exec(QString("SELECT rl.id, (SELECT ci.hash FROM reading_list_entry e "
+                            "INNER JOIN comic_info ci ON (ci.id = e.comic_info_id) "
+                            "INNER JOIN reading_list l ON (l.id = e.reading_list_id) "
+                            "WHERE l.id = rl.id OR l.parentId = rl.id "
+                            "ORDER BY l.parentId IS NOT NULL, l.ordering, e.ordering, e.id LIMIT 1) "
+                            "FROM reading_list rl WHERE rl.id IN (%1)")
+                            .arg(idTexts.join(',')))) {
+        QLOG_ERROR() << "Unable to load the covers of reading lists:" << query.lastError().text();
+        return std::nullopt;
+    }
+    while (query.next()) {
+        if (!query.value(1).isNull())
+            hashes.insert(query.value(0).toULongLong(), query.value(1).toString());
+    }
+    return hashes;
+}
+
 std::optional<ComicInfo> DBHelper::loadComicInfo(ComicInfoId id, QSqlDatabase &db)
 {
     static const QString sql = "SELECT " + TableProjection::selectList("ci", ComicInfo::columns()) + " FROM comic_info ci WHERE ci.id = :id";

@@ -374,6 +374,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/lists/label_template.svg
     ${PROJECT_SOURCE_DIR}/images/lists/list.svg
     ${PROJECT_SOURCE_DIR}/images/lists/smart_list.svg
+    ${PROJECT_SOURCE_DIR}/images/empty_container/smart_list_card.svg
     ${PROJECT_SOURCE_DIR}/images/clearSearchNew.svg
     ${PROJECT_SOURCE_DIR}/images/iconSearchNew.svg
 )
@@ -399,6 +400,7 @@ set(yacreaderlibrary_qml_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/SelectedComicsInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml
@@ -429,6 +431,7 @@ set(yacreaderlibrary_qml_translation_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/SelectedComicsInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml

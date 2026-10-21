@@ -180,6 +180,9 @@ public:
     static std::optional<QList<SmartList>> loadSmartLists(QSqlDatabase &db);
     // in their order (ordering, then id); nothing if the query fails
     static std::optional<QList<ListFolder>> loadListFolders(ListFolderKind kind, QSqlDatabase &db);
+    // the hash of the first comic of each list, as its view shows it (its own entries, then its child lists); a list
+    // without comics has none; nothing if the query fails
+    static std::optional<QHash<qulonglong, QString>> readingListCoverHashes(const QList<ReadingListId> &ids, QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
     // the record as it is now; nothing when a comic with a file lost that file or the file has a different comic_info,

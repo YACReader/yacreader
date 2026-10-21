@@ -40,6 +40,7 @@ private slots:
     void listsAndFoldersAreAddedInsideFolders();
     void deletingAFolderRemovesItsRows();
     void foldersAreRenamedAndTakeNoComics();
+    void rowsAreFoundByTypeAndId();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -492,6 +493,24 @@ void ListModelTest::foldersAreRenamedAndTakeNoComics()
     QVERIFY(!model.canDropMimeData(&data, Qt::CopyAction, folder.row(), 0, QModelIndex()));
     QVERIFY(!model.dropMimeData(&data, Qt::CopyAction, -1, 0, folder));
     QCOMPARE(model.flags(folder), Qt::ItemIsEnabled | Qt::ItemIsSelectable);
+}
+
+void ListModelTest::rowsAreFoundByTypeAndId()
+{
+    QVERIFY(exec("INSERT INTO reading_list_folder (id, parent_id, name, ordering) VALUES (1, NULL, 'DC', 0), (2, 1, 'Crisis', 0)"));
+    QVERIFY(exec("UPDATE reading_list SET folder_id = 2 WHERE id = 1"));
+    QVERIFY(exec("INSERT INTO smart_list_folder (id, parent_id, name, ordering) VALUES (2, NULL, 'Unread', 0)"));
+
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+
+    const auto crisis = model.indexOf(ReadingListModel::ReadingListFolder, 2);
+    QCOMPARE(model.data(crisis, Qt::DisplayRole).toString(), QString("Crisis"));
+    QCOMPARE(model.data(model.indexOf(ReadingListModel::ReadingList, 1), Qt::DisplayRole).toString(), QString("Events"));
+    QCOMPARE(model.data(model.indexOf(ReadingListModel::ReadingList, 2), Qt::DisplayRole).toString(), QString("First"));
+    // the same id in the other section is another row
+    QCOMPARE(model.data(model.indexOf(ReadingListModel::SmartListFolder, 2), Qt::DisplayRole).toString(), QString("Unread"));
+    QVERIFY(!model.indexOf(ReadingListModel::SmartListFolder, 1).isValid());
 }
 
 QTEST_MAIN(ListModelTest)

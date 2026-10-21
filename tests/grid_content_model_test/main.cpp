@@ -4,6 +4,7 @@
 #include "grid_content_model.h"
 #include "yacreader_global.h"
 
+#include <QAbstractItemModelTester>
 #include <QApplication>
 #include <QDir>
 #include <QSqlDatabase>
@@ -25,6 +26,7 @@ private slots:
     void comicRowsForwardTheComicRoles();
     void folderRowsHaveOnlyTheirTitle();
     void roleNames();
+    void listCardsReplaceTheOtherRows();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -150,6 +152,65 @@ void GridContentModelTest::roleNames()
     QCOMPARE(names.value(GridContentModel::ListItemIdRole), QByteArray("list_item_id"));
     QCOMPARE(names.value(GridContentModel::ListIdRole), QByteArray("list_id"));
     QCOMPARE(names.value(GridContentModel::ItemKindRole), QByteArray("item_kind"));
+}
+
+void GridContentModelTest::listCardsReplaceTheOtherRows()
+{
+    FolderModel folders;
+    folders.setupModelData(dataPath);
+    ComicModel comics;
+    comics.setupFolderModelData(2, dataPath);
+    GridContentModel grid;
+    grid.setComicModel(&comics);
+    grid.setFolderModel(&folders, folders.index(qulonglong(2)));
+    QAbstractItemModelTester tester(&grid, QAbstractItemModelTester::FailureReportingMode::QtTest);
+
+    GridListCard folder;
+    folder.kind = GridListCard::Folder;
+    folder.listType = 5;
+    folder.id = 3;
+    folder.name = "Crisis";
+    GridListCard list;
+    list.kind = GridListCard::ReadingList;
+    list.listType = 2;
+    list.id = 1;
+    list.name = "Infinite Crisis";
+    list.cover = QUrl::fromLocalFile("/covers/hash-1.jpg");
+    GridListCard smart;
+    smart.kind = GridListCard::SmartList;
+    smart.listType = 4;
+    smart.id = 9;
+    smart.name = "Unread";
+    smart.icon = QUrl::fromLocalFile("/icons/smart.svg");
+    grid.setListCards({ folder, list, smart });
+
+    QCOMPARE(grid.rowCount(), 3);
+    QVERIFY(grid.isListCardRow(0));
+    QVERIFY(!grid.isFolderRow(0));
+    QVERIFY(!grid.isSpacerRow(0));
+    QCOMPARE(grid.index(0, 0).data(GridContentModel::ItemKindRole).toInt(), int(GridContentModel::ListCardItem));
+    QCOMPARE(grid.index(0, 0).data(GridContentModel::CardKindRole).toString(), QString("folder"));
+    QCOMPARE(grid.index(1, 0).data(GridContentModel::CardKindRole).toString(), QString("readingList"));
+    QCOMPARE(grid.index(1, 0).data(GridContentModel::TitleRole).toString(), QString("Infinite Crisis"));
+    QCOMPARE(grid.index(1, 0).data(GridContentModel::CoverPathRole).toUrl(), list.cover);
+    QCOMPARE(grid.index(2, 0).data(GridContentModel::CardKindRole).toString(), QString("smartList"));
+    QCOMPARE(grid.index(2, 0).data(GridContentModel::IconPathRole).toUrl(), smart.icon);
+    QCOMPARE(grid.listCardAt(2).listType, 4);
+    QCOMPARE(grid.listCardAt(2).id, 9ULL);
+
+    // the comic model does not reach the cards
+    comics.setupFolderModelData(3, dataPath);
+    comics.setupFolderModelData(2, dataPath);
+    QCOMPARE(grid.rowCount(), 3);
+
+    // a folder model or a comic model ends the cards
+    grid.setFolderModel(&folders, folders.index(qulonglong(2)));
+    QVERIFY(!grid.isListCardRow(0));
+    QCOMPARE(grid.rowCount(), 3);
+    grid.setListCards({ folder });
+    grid.setComicModel(&comics);
+    QCOMPARE(grid.rowCount(), 2);
+    QCOMPARE(grid.index(0, 0).data(GridContentModel::ItemKindRole).toInt(), int(GridContentModel::ComicItem));
 }
 
 QTEST_MAIN(GridContentModelTest)
