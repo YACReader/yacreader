@@ -183,6 +183,6 @@ void CblWriterTest::metadataGivesTheCoverDate()
     QCOMPARE(cblBookOf(metadata).year, QString("2016"));
 }
 
-QTEST_MAIN(CblWriterTest)
+QTEST_GUILESS_MAIN(CblWriterTest)
 
 #include "main.moc"
