@@ -23,7 +23,7 @@ void YACReader::ComicQueryResultProcessor::createModelData(const QString &filter
             try {
                 auto query = comicsSearchQuery(db, filter);
 
-                auto data = new QList<ComicItem>(ComicModel::sortedForFolder(ComicModel::createItems(query)));
+                auto data = new QList<ComicItem>(ComicModel::sortedForSearch(ComicModel::createItems(query)));
 
                 emit newData(data, databasePath);
             } catch (const std::exception &e) {

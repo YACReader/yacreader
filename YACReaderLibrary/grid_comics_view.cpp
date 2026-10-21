@@ -557,6 +557,9 @@ void GridComicsView::setCurrentList(const QModelIndex &listIndex)
         sublistCount = listIndex.model()->rowCount(listIndex);
         break;
     }
+    case ReadingListModel::SmartList:
+        kind = QStringLiteral("smartList");
+        break;
     case ReadingListModel::Separator:
         return;
     }
@@ -588,6 +591,8 @@ void GridComicsView::updateCurrentListIcon()
         icon = theme.emptyContainer.emptyLabelIcons.value(currentLocationInfo.value(QStringLiteral("labelColor")).toInt());
     else if (kind == QStringLiteral("readingList"))
         icon = theme.emptyContainer.emptyReadingListIcon;
+    else if (kind == QStringLiteral("smartList"))
+        icon = theme.emptyContainer.noSearchResultsIcon;
     else
         return;
 

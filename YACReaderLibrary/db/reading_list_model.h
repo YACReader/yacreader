@@ -2,6 +2,7 @@
 #define READING_LIST_MODEL_H
 
 #include "library_ids.h"
+#include "smart_list.h"
 #include "yacreader_global.h"
 
 #include <QAbstractItemModel>
@@ -12,6 +13,7 @@
 #include <QVariant>
 
 class LabelItem;
+class SmartListItem;
 class SpecialListItem;
 class ReadingListItem;
 class ReadingListSeparatorItem;
@@ -53,6 +55,11 @@ public:
     bool isEditable(const QModelIndex &mi);
     bool isReadingList(const QModelIndex &mi);
     bool isReadingSubList(const QModelIndex &mi);
+    // at the end of the smart lists; the index of its row, invalid when it cannot be stored
+    QModelIndex addSmartList(const QString &name, const QString &query);
+    // nothing when the row is not a smart list
+    std::optional<::SmartList> smartList(const QModelIndex &mi) const;
+    bool updateSmartList(const QModelIndex &mi, const QString &name, const QString &query);
     QString name(const QModelIndex &mi);
     void rename(const QModelIndex &mi, const QString &name);
     void deleteItem(const QModelIndex &mi);
@@ -69,7 +76,8 @@ public:
         SpecialList,
         Label,
         ReadingList,
-        Separator
+        Separator,
+        SmartList
     };
 
     enum class TypeSpecialList : int {
@@ -89,12 +97,19 @@ private:
     void setupReadingListsData(QSqlQuery &sqlquery, ReadingListItem *parent);
     QList<SpecialListItem *> setupSpecialLists(QSqlDatabase &db);
     void setupLabels(QSqlDatabase &db);
+    void setupSmartLists(QSqlDatabase &db);
     void setupReadingLists(QSqlDatabase &db);
     int addLabelIntoList(LabelItem *item);
     void reorderingChildren(QList<ReadingListItem *> children);
 
+    // top level rows: special lists, a separator, labels, a separator, smart lists and a separator when there are
+    // any, reading lists
+    int labelsStart() const;
+    int smartListsStart() const;
+    int readingListsStart() const;
     bool rowIsSpecialList(int row, const QModelIndex &parent = QModelIndex()) const;
     bool rowIsLabel(int row, const QModelIndex &parent = QModelIndex()) const;
+    bool rowIsSmartList(int row, const QModelIndex &parent = QModelIndex()) const;
     bool rowIsReadingList(int row, const QModelIndex &parent = QModelIndex()) const;
     bool rowIsSeparator(int row, const QModelIndex &parent = QModelIndex()) const;
 
@@ -106,6 +121,8 @@ private:
     // Label
     QList<LabelItem *> labels;
 
+    QList<SmartListItem *> smartLists;
+
     // Reading lists
     ReadingListItem *rootItem; //
     QMap<unsigned long long int, ReadingListItem *> items; // lists relationship
@@ -113,6 +130,7 @@ private:
     // separators
     ReadingListSeparatorItem *separator1;
     ReadingListSeparatorItem *separator2;
+    ReadingListSeparatorItem *separator3;
 
     QString _databasePath;
 };

@@ -9,6 +9,8 @@
 #include <QSqlQuery>
 #include <QtCore>
 
+#include <optional>
+
 QSqlQuery foldersSearchQuery(QSqlDatabase &db, const QString &filter)
 {
     QueryParser parser;
@@ -27,21 +29,41 @@ QSqlQuery foldersSearchQuery(QSqlDatabase &db, const QString &filter)
     return selectQuery;
 }
 
-QSqlQuery comicsSearchQuery(QSqlDatabase &db, const QString &filter)
+namespace {
+
+QSqlQuery comicsQuery(QSqlDatabase &db, const QString &filter, std::optional<int> limit)
 {
     QueryParser parser;
     auto result = parser.parse(filter.toStdString());
 
     std::string queryString = "SELECT " + ComicDB::selectList("c", "ci").toStdString() + " " SEARCH_COMICS_FROM;
     result.buildSqlString(queryString);
-    queryString += " LIMIT :limit";
+    // near the order of the search results (numbers by value, text without case), so the limit always keeps the same comics
+    queryString += " ORDER BY (ci.series IS NULL OR TRIM(ci.series) = ''), TRIM(ci.series) COLLATE NOCASE, "
+                   "(ci.volume IS NOT NULL AND TRIM(ci.volume) <> ''), TRIM(ci.volume) COLLATE NOCASE, "
+                   "ci.number IS NULL, CAST(ci.number AS REAL), ci.number COLLATE NOCASE, c.fileName COLLATE NOCASE, c.path";
+    if (limit)
+        queryString += " LIMIT :limit";
 
     QSqlQuery selectQuery(db);
     selectQuery.prepare(queryString.c_str());
-    selectQuery.bindValue(":limit", 500); // TODO, load this value from settings
+    if (limit)
+        selectQuery.bindValue(":limit", *limit);
     result.bindValues(selectQuery);
 
     selectQuery.exec();
 
     return selectQuery;
+}
+
+}
+
+QSqlQuery comicsSearchQuery(QSqlDatabase &db, const QString &filter)
+{
+    return comicsQuery(db, filter, 500); // TODO, load this value from settings
+}
+
+QSqlQuery allComicsSearchQuery(QSqlDatabase &db, const QString &filter)
+{
+    return comicsQuery(db, filter, std::nullopt);
 }

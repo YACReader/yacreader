@@ -5,6 +5,7 @@
 #include "db_helper.h"
 #include "qnaturalsorting.h"
 #include "reading_list_item.h"
+#include "smart_list.h"
 #include "table_projection.h"
 #include "yacreader_global_gui.h"
 
@@ -15,14 +16,14 @@ ReadingListModel::ReadingListModel(QObject *parent)
 {
     separator1 = new ReadingListSeparatorItem;
     separator2 = new ReadingListSeparatorItem;
+    separator3 = new ReadingListSeparatorItem;
 }
 
 int ReadingListModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) // TOP
     {
-        int separatorsCount = 2; // labels.isEmpty()?1:2;
-        return specialLists.count() + labels.count() + rootItem->childCount() + separatorsCount;
+        return readingListsStart() + rootItem->childCount();
     } else {
         auto item = static_cast<ListItem *>(parent.internalPointer());
 
@@ -65,6 +66,9 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
 
         if (typeid(*item) == typeid(ReadingListItem))
             return QVariant(ReadingListModel::ReadingList);
+
+        if (typeid(*item) == typeid(SmartListItem))
+            return QVariant(ReadingListModel::SmartList);
 
         if (typeid(*item) == typeid(ReadingListSeparatorItem))
             return QVariant(ReadingListModel::Separator);
@@ -110,6 +114,10 @@ Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
     if (typeid(*item) == typeid(ReadingListItem) && static_cast<ReadingListItem *>(item)->parent->getId() != 0)
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled; // only sublists are dragable
 
+    // the comics of a smart list come from its search
+    if (typeid(*item) == typeid(SmartListItem))
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 }
 
@@ -127,8 +135,6 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
         return QModelIndex();
 
     if (!parent.isValid()) {
-        int separatorsCount = 2; // labels.isEmpty()?1:2;
-
         if (rowIsSpecialList(row, parent))
             return createIndex(row, column, specialLists.at(row));
 
@@ -136,14 +142,19 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
             return createIndex(row, column, separator1);
 
         if (rowIsLabel(row, parent))
-            return createIndex(row, column, labels.at(row - specialLists.count() - 1));
+            return createIndex(row, column, labels.at(row - labelsStart()));
 
-        if (separatorsCount == 2)
-            if (row == specialLists.count() + labels.count() + 1)
-                return createIndex(row, column, separator2);
+        if (row == labelsStart() + labels.count())
+            return createIndex(row, column, separator2);
+
+        if (rowIsSmartList(row, parent))
+            return createIndex(row, column, smartLists.at(row - smartListsStart()));
+
+        if (!smartLists.isEmpty() && row == smartListsStart() + smartLists.count())
+            return createIndex(row, column, separator3);
 
         if (rowIsReadingList(row, parent))
-            return createIndex(row, column, rootItem->child(row - (specialLists.count() + labels.count() + separatorsCount)));
+            return createIndex(row, column, rootItem->child(row - readingListsStart()));
 
     } else // sublist
     {
@@ -176,7 +187,7 @@ QModelIndex ReadingListModel::parent(const QModelIndex &index) const
         auto childItem = static_cast<ReadingListItem *>(index.internalPointer());
         ReadingListItem *parent = childItem->parent;
         if (parent->getId() != 0)
-            return createIndex(parent->row() + specialLists.count() + labels.count() + 2, 0, parent);
+            return createIndex(parent->row() + readingListsStart(), 0, parent);
     }
 
     return QModelIndex();
@@ -202,7 +213,7 @@ bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction act
         if (row == 2) // recent is just a smart list
             return false;
 
-        if (rowIsSeparator(row, parent))
+        if (rowIsSeparator(row, parent) || rowIsSmartList(row, parent))
             return false;
     }
 
@@ -372,6 +383,10 @@ void ReadingListModel::setupReadingListsData(QString path)
 
         // separator--------------------------------------------
 
+        setupSmartLists(db);
+
+        // separator, when there are smart lists----------------
+
         // setup reading list
         setupReadingLists(db);
 
@@ -455,7 +470,68 @@ bool ReadingListModel::isEditable(const QModelIndex &mi)
     if (!mi.isValid())
         return false;
     auto item = static_cast<ListItem *>(mi.internalPointer());
-    return typeid(*item) != typeid(SpecialListItem);
+    return typeid(*item) == typeid(LabelItem) || typeid(*item) == typeid(ReadingListItem) || typeid(*item) == typeid(SmartListItem);
+}
+
+QModelIndex ReadingListModel::addSmartList(const QString &name, const QString &query)
+{
+    std::optional<SmartListId> id;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        id = DBHelper::insertSmartList(name, query, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!id)
+        return { };
+
+    ::SmartList list;
+    list.id = *id;
+    list.name = name;
+    list.query = query;
+    list.ordering = smartLists.isEmpty() ? 0 : smartLists.constLast()->list.ordering + 1;
+
+    // the first smart list also brings the separator before the reading lists
+    const int row = smartListsStart() + smartLists.count();
+    beginInsertRows(QModelIndex(), row, smartLists.isEmpty() ? row + 1 : row);
+    smartLists.append(new SmartListItem(list));
+    endInsertRows();
+
+    return index(row, 0);
+}
+
+std::optional<::SmartList> ReadingListModel::smartList(const QModelIndex &mi) const
+{
+    if (!mi.isValid())
+        return std::nullopt;
+    auto item = static_cast<ListItem *>(mi.internalPointer());
+    if (typeid(*item) != typeid(SmartListItem))
+        return std::nullopt;
+    return static_cast<SmartListItem *>(item)->list;
+}
+
+bool ReadingListModel::updateSmartList(const QModelIndex &mi, const QString &name, const QString &query)
+{
+    if (!smartList(mi))
+        return false;
+
+    auto item = static_cast<SmartListItem *>(mi.internalPointer());
+    bool updated = false;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        updated = DBHelper::updateSmartList(item->list.id, name, query, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!updated)
+        return false;
+
+    item->list.name = name;
+    item->list.query = query;
+    emit dataChanged(mi, mi);
+    return true;
 }
 
 bool ReadingListModel::isReadingList(const QModelIndex &mi)
@@ -519,6 +595,21 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
 
 void ReadingListModel::deleteItem(const QModelIndex &mi)
 {
+    if (const auto list = smartList(mi)) {
+        // the last smart list also takes the separator before the reading lists
+        beginRemoveRows(QModelIndex(), mi.row(), smartLists.count() == 1 ? mi.row() + 1 : mi.row());
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+            DBHelper::removeSmartList(list->id, db);
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+        delete smartLists.takeAt(mi.row() - smartListsStart());
+        endRemoveRows();
+        return;
+    }
+
     if (isEditable(mi)) {
         QLOG_DEBUG() << "parent row :" << mi.parent().data() << "-" << mi.row();
         beginRemoveRows(mi.parent(), mi.row(), mi.row());
@@ -566,9 +657,11 @@ void ReadingListModel::cleanAll()
 
         qDeleteAll(specialLists);
         qDeleteAll(labels);
+        qDeleteAll(smartLists);
 
         specialLists.clear();
         labels.clear();
+        smartLists.clear();
 
         items.clear();
     }
@@ -642,6 +735,14 @@ void ReadingListModel::setupLabels(QSqlDatabase &db)
     //    INSERT INTO label (name, color, ordering) VALUES ("put a smile on my face", "dark", 12);
 }
 
+void ReadingListModel::setupSmartLists(QSqlDatabase &db)
+{
+    if (const auto lists = DBHelper::loadSmartLists(db)) {
+        for (const auto &list : *lists)
+            smartLists.append(new SmartListItem(list));
+    }
+}
+
 void ReadingListModel::setupReadingLists(QSqlDatabase &db)
 {
     // setup root item
@@ -713,6 +814,21 @@ void ReadingListModel::reorderingChildren(QList<ReadingListItem *> children)
     QSqlDatabase::removeDatabase(connectionName);
 }
 
+int ReadingListModel::labelsStart() const
+{
+    return specialLists.count() + 1;
+}
+
+int ReadingListModel::smartListsStart() const
+{
+    return labelsStart() + labels.count() + 1;
+}
+
+int ReadingListModel::readingListsStart() const
+{
+    return smartListsStart() + smartLists.count() + (smartLists.isEmpty() ? 0 : 1);
+}
+
 bool ReadingListModel::rowIsSpecialList(int row, const QModelIndex &parent) const
 {
     if (parent.isValid())
@@ -729,10 +845,15 @@ bool ReadingListModel::rowIsLabel(int row, const QModelIndex &parent) const
     if (parent.isValid())
         return false; // by now no sublists in labels
 
-    if (row > specialLists.count() && row <= specialLists.count() + labels.count())
-        return true;
+    return row >= labelsStart() && row < labelsStart() + labels.count();
+}
 
-    return false;
+bool ReadingListModel::rowIsSmartList(int row, const QModelIndex &parent) const
+{
+    if (parent.isValid())
+        return false;
+
+    return row >= smartListsStart() && row < smartListsStart() + smartLists.count();
 }
 
 bool ReadingListModel::rowIsReadingList(int row, const QModelIndex &parent) const
@@ -740,12 +861,7 @@ bool ReadingListModel::rowIsReadingList(int row, const QModelIndex &parent) cons
     if (parent.isValid())
         return true; // only lists with sublists
 
-    int separatorsCount = labels.isEmpty() ? 1 : 2;
-
-    if (row >= specialLists.count() + labels.count() + separatorsCount)
-        return true;
-
-    return false;
+    return row >= readingListsStart();
 }
 
 bool ReadingListModel::rowIsSeparator(int row, const QModelIndex &parent) const
@@ -753,14 +869,8 @@ bool ReadingListModel::rowIsSeparator(int row, const QModelIndex &parent) const
     if (parent.isValid())
         return false; // only separators at top level
 
-    if (row == specialLists.count())
-        return true;
-
-    int separatorsCount = labels.isEmpty() ? 1 : 2;
-    if (separatorsCount == 2 && row == specialLists.count() + labels.count() + 1)
-        return true;
-
-    return false;
+    return row == specialLists.count() || row == labelsStart() + labels.count() ||
+            (!smartLists.isEmpty() && row == smartListsStart() + smartLists.count());
 }
 
 ReadingListModelProxy::ReadingListModelProxy(QObject *parent)

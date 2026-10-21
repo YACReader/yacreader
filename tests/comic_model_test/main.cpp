@@ -70,8 +70,18 @@ private slots:
     void assignNumbersOncePerComicOrPlaceholder();
     void addToAListAppendsWhatEachRowRefersTo();
     void selectionSummaryCountsMissingComics();
+    void searchResultsKeepEachSeriesTogether();
+    void searchLimitKeepsTheFirstSeries();
+    void smartListShowsTheMatchingComicsInOrder();
+    void smartListReloads();
+    void smartListComicsHaveFolderActions();
+    void unreadableOrGoneSmartList();
 
 private:
+    QList<qulonglong> searchComicInfoIds(const QString &text);
+    void insertOrderedComics();
+    qulonglong insertSmartList(const QString &name, const QString &query);
+    static QList<qulonglong> comicInfoIds(ComicModel &model);
     void loadSource(ComicModel &model, const QString &source);
     std::unique_ptr<QTemporaryDir> root;
     QString dataPath;
@@ -628,7 +638,7 @@ void ComicModelTest::loadSource(ComicModel &model, const QString &source)
             auto db = DataBaseManagement::loadDatabase(dataPath);
             name = db.connectionName();
             auto query = comicsSearchQuery(db, "Title");
-            items = ComicModel::sortedForFolder(ComicModel::createItems(query));
+            items = ComicModel::sortedForSearch(ComicModel::createItems(query));
         }
         QSqlDatabase::removeDatabase(name);
         model.setModelData(new QList<ComicItem>(items), dataPath);
@@ -1005,6 +1015,144 @@ void ComicModelTest::selectionSummaryCountsMissingComics()
     QCOMPARE(info.value("pageCount").toInt(), 60);
     QCOMPARE(info.value("unknownPageCount").toInt(), 0);
     QCOMPARE(info.value("missingCount").toInt(), 2);
+}
+
+QList<qulonglong> ComicModelTest::searchComicInfoIds(const QString &text)
+{
+    QList<ComicItem> items;
+    QString name;
+    {
+        auto db = DataBaseManagement::loadDatabase(dataPath);
+        name = db.connectionName();
+        auto query = comicsSearchQuery(db, text);
+        items = ComicModel::sortedForSearch(ComicModel::createItems(query));
+    }
+    QSqlDatabase::removeDatabase(name);
+
+    ComicModel model;
+    model.setModelData(new QList<ComicItem>(items), dataPath);
+    QList<qulonglong> ids;
+    for (int row = 0; row < model.rowCount(); ++row)
+        ids.append(recordInfo(model.record(model.index(row, 0)))->id.value());
+    return ids;
+}
+
+void ComicModelTest::insertOrderedComics()
+{
+    QVERIFY(exec("INSERT INTO comic_info (id, hash, title, series, volume, number) VALUES "
+                 "(10, 'h10', 'Ordered', 'Robin', NULL, '2'), "
+                 "(11, 'h11', 'Ordered', 'Batman', '2011', '10'), "
+                 "(12, 'h12', 'Ordered', 'Batman', '2011', '2'), "
+                 "(13, 'h13', 'Ordered', 'batman', '2016', '1'), "
+                 "(14, 'h14', 'Ordered', 'Batman', NULL, '5'), "
+                 "(15, 'h15', 'Ordered', NULL, NULL, '1'), "
+                 "(16, 'h16', 'Ordered', 'Batman', '2011', NULL)"));
+    QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES "
+                 "(10, 2, 10, 'o10.cbz', '/Series/o10.cbz'), (11, 2, 11, 'o11.cbz', '/Series/o11.cbz'), (12, 2, 12, 'o12.cbz', '/Series/o12.cbz'), "
+                 "(13, 2, 13, 'o13.cbz', '/Series/o13.cbz'), (14, 2, 14, 'o14.cbz', '/Series/o14.cbz'), (15, 2, 15, 'o15.cbz', '/Series/o15.cbz'), "
+                 "(16, 2, 16, 'o16.cbz', '/Series/o16.cbz')"));
+}
+
+void ComicModelTest::searchResultsKeepEachSeriesTogether()
+{
+    insertOrderedComics();
+    QCOMPARE(searchComicInfoIds("Ordered"), QList<qulonglong>({ 14, 12, 11, 16, 13, 10, 15 }));
+}
+
+qulonglong ComicModelTest::insertSmartList(const QString &name, const QString &query)
+{
+    std::optional<SmartListId> id;
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::loadDatabase(dataPath);
+        connectionName = db.connectionName();
+        id = DBHelper::insertSmartList(name, query, db);
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    return id ? id->value() : 0;
+}
+
+QList<qulonglong> ComicModelTest::comicInfoIds(ComicModel &model)
+{
+    QList<qulonglong> ids;
+    for (int row = 0; row < model.rowCount(); ++row)
+        ids.append(recordInfo(model.record(model.index(row, 0)))->id.value());
+    return ids;
+}
+
+void ComicModelTest::smartListShowsTheMatchingComicsInOrder()
+{
+    insertOrderedComics();
+    const auto id = insertSmartList("Ordered", "Ordered");
+    QVERIFY(id != 0);
+
+    ComicModel model;
+    model.setupSmartListModelData(id, dataPath);
+    QCOMPARE(model.getMode(), ComicModel::SmartList);
+    QCOMPARE(model.getSourceId(), id);
+    QCOMPARE(comicInfoIds(model), QList<qulonglong>({ 14, 12, 11, 16, 13, 10, 15 }));
+}
+
+void ComicModelTest::smartListReloads()
+{
+    const auto id = insertSmartList("Batman", "series:batman");
+    ComicModel model;
+    model.setupSmartListModelData(id, dataPath);
+    QCOMPARE(model.rowCount(), 0);
+
+    insertOrderedComics();
+    model.reload();
+    QCOMPARE(comicInfoIds(model), QList<qulonglong>({ 14, 12, 11, 16, 13 }));
+
+    QVERIFY(exec(QString("UPDATE smart_list SET query = 'series:robin' WHERE id = %1").arg(id)));
+    model.reload();
+    QCOMPARE(comicInfoIds(model), QList<qulonglong>({ 10 }));
+}
+
+void ComicModelTest::smartListComicsHaveFolderActions()
+{
+    insertOrderedComics();
+    ComicModel model;
+    model.setupSmartListModelData(insertSmartList("Ordered", "Ordered"), dataPath);
+    const auto index = model.index(0, 0);
+
+    for (const auto action : { ComicAction::Open, ComicAction::OpenContainingFolder, ComicAction::ChangeFile, ComicAction::SetReadState,
+                               ComicAction::EditMetadata, ComicAction::AddToFavorites, ComicAction::AddToList })
+        QVERIFY(model.supports(index, action));
+    QVERIFY(!model.supports(index, ComicAction::RemoveFromList));
+    QVERIFY(!model.supports(index, ComicAction::MatchToLibraryComic));
+
+    std::unique_ptr<QMimeData> data(model.mimeData({ index }));
+    QVERIFY(!model.canDropMimeData(data.get(), Qt::MoveAction, 0, 0, QModelIndex()));
+}
+
+void ComicModelTest::unreadableOrGoneSmartList()
+{
+    insertOrderedComics();
+    ComicModel model;
+    model.setupSmartListModelData(insertSmartList("Broken", "series:(batman"), dataPath);
+    QCOMPARE(model.rowCount(), 0);
+
+    model.setupSmartListModelData(999, dataPath);
+    QCOMPARE(model.rowCount(), 0);
+}
+
+void ComicModelTest::searchLimitKeepsTheFirstSeries()
+{
+    // the scan order puts "Alpha" last, after more than the limit of "Zeta" comics
+    QVERIFY(exec("WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x + 1 FROM n WHERE x < 510) "
+                 "INSERT INTO comic_info (id, hash, title, series, number) SELECT 1000 + x, 'bulk-' || x, 'Bulk', 'Zeta', x FROM n"));
+    QVERIFY(exec("WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x + 1 FROM n WHERE x < 510) "
+                 "INSERT INTO comic (id, parentId, comicInfoId, fileName, path) SELECT 1000 + x, 2, 1000 + x, 'z' || x || '.cbz', '/Series/z' || x || '.cbz' FROM n"));
+    QVERIFY(exec("INSERT INTO comic_info (id, hash, title, series, number) VALUES (2000, 'alpha', 'Bulk', 'Alpha', '1')"));
+    QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES (2000, 2, 2000, 'alpha.cbz', '/Series/alpha.cbz')"));
+
+    const auto ids = searchComicInfoIds("Bulk");
+    QCOMPARE(ids.size(), 500);
+    QCOMPARE(ids.constFirst(), qulonglong(2000));
+    QCOMPARE(ids.at(1), qulonglong(1001));
+    QCOMPARE(ids.at(2), qulonglong(1002));
+    QCOMPARE(ids.constLast(), qulonglong(1499));
 }
 
 QTEST_MAIN(ComicModelTest)

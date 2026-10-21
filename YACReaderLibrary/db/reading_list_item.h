@@ -3,6 +3,7 @@
 
 #include "reading_list.h"
 #include "reading_list_model.h"
+#include "smart_list.h"
 
 #include <QIcon>
 #include <QString>
@@ -70,6 +71,17 @@ public:
 
 private:
     QList<ReadingListItem *> childItems;
+};
+
+class SmartListItem : public ListItem
+{
+public:
+    explicit SmartListItem(const ::SmartList &list);
+    QIcon getIcon() const override;
+    QString name() const override;
+    qulonglong getId() const override;
+
+    ::SmartList list;
 };
 
 class ReadingListSeparatorItem : public ListItem

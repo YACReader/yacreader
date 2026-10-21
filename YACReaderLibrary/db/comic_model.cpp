@@ -9,6 +9,8 @@
 #include "overloaded.h"
 #include "qnaturalsorting.h"
 #include "reading_list_model.h"
+#include "search_query.h"
+#include "smart_list.h"
 #include "yacreader_global_gui.h"
 
 #include <QMap>
@@ -365,6 +367,36 @@ bool defaultFolderContentSortFunction(const ComicItem &c1, const ComicItem &c2)
     return comicNumberLessThan(rowMetadata(c1).number, rowFileName(c1), rowMetadata(c2).number, rowFileName(c2));
 }
 
+// -1, 0, or 1 in natural order without case; an empty text is first when `emptyFirst`, else last
+int compareNatural(const QString &a, const QString &b, bool emptyFirst)
+{
+    if (a.isEmpty() != b.isEmpty())
+        return a.isEmpty() == emptyFirst ? -1 : 1;
+    if (naturalSortLessThanCI(a, b))
+        return -1;
+    return naturalSortLessThanCI(b, a) ? 1 : 0;
+}
+
+// search results and smart lists: each series stays together, in volume and number order
+bool searchResultLessThan(const ComicItem &c1, const ComicItem &c2)
+{
+    const auto &a = rowMetadata(c1);
+    const auto &b = rowMetadata(c2);
+    if (const auto order = compareNatural(a.series.toString().trimmed(), b.series.toString().trimmed(), false); order != 0)
+        return order < 0;
+    if (const auto order = compareNatural(a.volume.toString().trimmed(), b.volume.toString().trimmed(), true); order != 0)
+        return order < 0;
+    if (comicNumberLessThan(a.number, QString(), b.number, QString()))
+        return true;
+    if (comicNumberLessThan(b.number, QString(), a.number, QString()))
+        return false;
+    if (const auto order = compareNatural(rowFileName(c1), rowFileName(c2), true); order != 0)
+        return order < 0;
+    const auto *comic1 = rowComic(c1);
+    const auto *comic2 = rowComic(c2);
+    return compareNatural(comic1 != nullptr ? comic1->file.path : QString(), comic2 != nullptr ? comic2->file.path : QString(), true) < 0;
+}
+
 }
 
 ComicModel::ComicModel(QObject *parent)
@@ -522,6 +554,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         case Reading:
         case Recent:
         case SearchResult:
+        case SmartList:
             break;
         }
         connectionName = db.connectionName();
@@ -1036,6 +1069,44 @@ void ComicModel::setupReadingListModelData(unsigned long long parentReadingList,
     endResetModel();
 }
 
+// a smart list that no longer exists has no rows
+QList<ComicItem> ComicModel::createSmartListModelData(unsigned long long smartListId, const QString &databasePath) const
+{
+    QList<ComicItem> modelData;
+
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        if (const auto list = DBHelper::loadSmartList(SmartListId(smartListId), db)) {
+            try {
+                auto query = allComicsSearchQuery(db, list->query);
+                modelData = sortedForSearch(createItems(query));
+            } catch (const std::exception &) {
+            }
+        }
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    return modelData;
+}
+
+void ComicModel::setupSmartListModelData(unsigned long long smartListId, const QString &databasePath)
+{
+    enableResorting = false;
+    mode = SmartList;
+    sourceId = smartListId;
+
+    beginResetModel();
+    _data.clear();
+
+    _databasePath = databasePath;
+
+    takeData(createSmartListModelData(smartListId, databasePath));
+
+    endResetModel();
+}
+
 QList<ComicItem> ComicModel::createFavoritesModelData(const QString &databasePath) const
 {
     QList<ComicItem> modelData;
@@ -1215,6 +1286,12 @@ QList<ComicItem> ComicModel::createItems(QSqlQuery &query, ListKind listKind)
 QList<ComicItem> ComicModel::sortedForFolder(QList<ComicItem> items)
 {
     std::sort(items.begin(), items.end(), defaultFolderContentSortFunction);
+    return items;
+}
+
+QList<ComicItem> ComicModel::sortedForSearch(QList<ComicItem> items)
+{
+    std::stable_sort(items.begin(), items.end(), searchResultLessThan);
     return items;
 }
 
@@ -1689,6 +1766,9 @@ void ComicModel::reload()
         break;
     case SearchResult:
         // TODO: reload search results, we don't have a way to recreate the query in this class
+        break;
+    case SmartList:
+        takeUpdatedData(createSmartListModelData(sourceId, _databasePath), searchResultLessThan);
         break;
     }
 }

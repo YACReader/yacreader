@@ -64,6 +64,8 @@ add_library(db_helper STATIC
     db/list_entry.cpp
     db/placeholder.h
     db/placeholder.cpp
+    db/smart_list.h
+    db/smart_list.cpp
     db/query_lexer.h
     db/query_lexer.cpp
     db/search_field_registry.h
@@ -125,6 +127,10 @@ qt_add_executable(YACReaderLibrary WIN32
     options_dialog.cpp
     search_syntax_dialog.h
     search_syntax_dialog.cpp
+    search_filters_menu.h
+    search_filters_menu.cpp
+    smart_list_dialog.h
+    smart_list_dialog.cpp
     export_library_dialog.h
     export_library_dialog.cpp
     import_library_dialog.h
@@ -361,6 +367,7 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/lists/default_2.svg
     ${PROJECT_SOURCE_DIR}/images/lists/label_template.svg
     ${PROJECT_SOURCE_DIR}/images/lists/list.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/smart_list.svg
     ${PROJECT_SOURCE_DIR}/images/clearSearchNew.svg
     ${PROJECT_SOURCE_DIR}/images/iconSearchNew.svg
 )

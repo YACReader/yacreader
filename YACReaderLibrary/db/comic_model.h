@@ -87,7 +87,8 @@ public:
         Recent,
         Label,
         ReadingList,
-        SearchResult
+        SearchResult,
+        SmartList
     };
 
 public:
@@ -112,6 +113,8 @@ public:
     void setupFolderModelData(unsigned long long int parentFolder, const QString &databasePath);
     void setupLabelModelData(unsigned long long int parentLabel, const QString &databasePath);
     void setupReadingListModelData(unsigned long long int parentReadingList, const QString &databasePath);
+    // a search text that cannot be read gives no rows
+    void setupSmartListModelData(unsigned long long int smartListId, const QString &databasePath);
     void setupFavoritesModelData(const QString &databasePath);
     void setupReadingModelData(const QString &databasePath);
     void setupRecentModelData(const QString &databasePath);
@@ -182,6 +185,8 @@ public:
     static QList<ComicItem> createItems(QSqlQuery &query);
     static QList<ComicItem> createItems(QSqlQuery &query, ListKind listKind);
     static QList<ComicItem> sortedForFolder(QList<ComicItem> items);
+    // by series, volume, number, file name, and path, in natural order
+    static QList<ComicItem> sortedForSearch(QList<ComicItem> items);
 
 public slots:
     void remove(int row);
@@ -205,6 +210,7 @@ private:
     QList<ComicItem> createFavoritesModelData(const QString &databasePath) const;
     QList<ComicItem> createReadingModelData(const QString &databasePath) const;
     QList<ComicItem> createRecentModelData(const QString &databasePath) const;
+    QList<ComicItem> createSmartListModelData(unsigned long long smartListId, const QString &databasePath) const;
 
     void takeData(const QList<ComicItem> &data);
     void takeUpdatedData(const QList<ComicItem> &updatedData, std::function<bool(const ComicItem &, const ComicItem &)> comparator);

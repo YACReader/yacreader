@@ -11,6 +11,7 @@
 #include "placeholder.h"
 #include "qnaturalsorting.h"
 #include "reading_list.h"
+#include "smart_list.h"
 #include "table_projection.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
@@ -1332,6 +1333,32 @@ QList<QUuid> DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &co
     return updatedLibraries;
 }
 
+bool DBHelper::updateSmartList(SmartListId id, const QString &name, const QString &query, QSqlDatabase &db)
+{
+    QSqlQuery update(db);
+    update.prepare("UPDATE smart_list SET name = :name, query = :query WHERE id = :id");
+    update.bindValue(":name", name);
+    update.bindValue(":query", query);
+    update.bindValue(":id", id.value());
+    if (!update.exec() || update.numRowsAffected() != 1) {
+        QLOG_ERROR() << "Unable to update a smart list:" << update.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DBHelper::removeSmartList(SmartListId id, QSqlDatabase &db)
+{
+    QSqlQuery remove(db);
+    remove.prepare("DELETE FROM smart_list WHERE id = :id");
+    remove.bindValue(":id", id.value());
+    if (!remove.exec() || remove.numRowsAffected() != 1) {
+        QLOG_ERROR() << "Unable to remove a smart list:" << remove.lastError().text();
+        return false;
+    }
+    return true;
+}
+
 void DBHelper::renameLabel(qulonglong id, const QString &name, QSqlDatabase &db)
 {
     QSqlQuery renameLabelQuery(db);
@@ -1735,6 +1762,20 @@ qulonglong DBHelper::insertReadingList(const QString &name, QSqlDatabase &db)
     query.bindValue(":name", name);
     query.exec();
     return query.lastInsertId().toULongLong();
+}
+
+std::optional<SmartListId> DBHelper::insertSmartList(const QString &name, const QString &query, QSqlDatabase &db)
+{
+    QSqlQuery insert(db);
+    insert.prepare("INSERT INTO smart_list (name, query, ordering) "
+                   "VALUES (:name, :query, (SELECT COALESCE(MAX(ordering) + 1, 0) FROM smart_list))");
+    insert.bindValue(":name", name);
+    insert.bindValue(":query", query);
+    if (!insert.exec()) {
+        QLOG_ERROR() << "Unable to insert a smart list:" << insert.lastError().text();
+        return std::nullopt;
+    }
+    return SmartListId(insert.lastInsertId().toULongLong());
 }
 
 qulonglong DBHelper::insertReadingSubList(const QString &name, qulonglong parentId, int ordering, QSqlDatabase &db)
@@ -2154,6 +2195,34 @@ std::optional<Placeholder> DBHelper::loadPlaceholder(PlaceholderId id, QSqlDatab
     }
 
     return std::nullopt;
+}
+
+std::optional<SmartList> DBHelper::loadSmartList(SmartListId id, QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + TableProjection::selectList("s", SmartList::columns()) + " FROM smart_list s WHERE s.id = :id";
+    QSqlQuery query(db);
+    query.prepare(sql);
+    query.bindValue(":id", id.value());
+    if (query.exec() && query.next())
+        return SmartList::fromQuery(query, SmartList::columnIndexes(query.record(), "s"));
+    return std::nullopt;
+}
+
+std::optional<QList<SmartList>> DBHelper::loadSmartLists(QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + TableProjection::selectList("s", SmartList::columns()) + " FROM smart_list s ORDER BY s.ordering, s.id";
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    if (!query.exec(sql)) {
+        QLOG_ERROR() << "Unable to load the smart lists:" << query.lastError().text();
+        return std::nullopt;
+    }
+
+    QList<SmartList> lists;
+    const auto indexes = SmartList::columnIndexes(query.record(), "s");
+    while (query.next())
+        lists.append(SmartList::fromQuery(query, indexes));
+    return lists;
 }
 
 std::optional<ComicInfo> DBHelper::loadComicInfo(ComicInfoId id, QSqlDatabase &db)

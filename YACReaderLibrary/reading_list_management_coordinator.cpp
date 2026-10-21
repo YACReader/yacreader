@@ -4,6 +4,7 @@
 #include "cbl_import_dialog.h"
 #include "comic_model.h"
 #include "reading_list_model.h"
+#include "smart_list_dialog.h"
 #include "yacreader_global.h"
 
 #include <QFileDialog>
@@ -18,8 +19,9 @@ ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dial
                                                                    ReadingListModel *listsModel,
                                                                    ComicModel *comicsModel,
                                                                    CurrentListProvider currentListProvider,
-                                                                   LibraryPathProvider libraryPathProvider)
-    : QObject(dialogParent), dialogParent(dialogParent), listsModel(listsModel), currentListProvider(std::move(currentListProvider)), libraryPathProvider(std::move(libraryPathProvider))
+                                                                   LibraryPathProvider libraryPathProvider,
+                                                                   QSettings *settings)
+    : QObject(dialogParent), dialogParent(dialogParent), listsModel(listsModel), currentListProvider(std::move(currentListProvider)), libraryPathProvider(std::move(libraryPathProvider)), settings(settings)
 {
     connect(listsModel, &ReadingListModel::addComicsToFavorites, comicsModel, QOverload<const QList<qulonglong> &>::of(&ComicModel::addComicsToFavorites));
     connect(listsModel, &ReadingListModel::addComicsToLabel, comicsModel, QOverload<const QList<ComicRowId> &, qulonglong>::of(&ComicModel::addComicsToLabel));
@@ -83,9 +85,48 @@ void ReadingListManagementCoordinator::matchListToLibraryComics(ListKind listKin
     dialog.exec();
 }
 
+void ReadingListManagementCoordinator::addSmartList(const QString &query)
+{
+    SmartListDialog dialog(settings, QString(), query, dialogParent);
+    connect(&dialog, &SmartListDialog::searchChanged, this, &ReadingListManagementCoordinator::searchRequested);
+    if (!query.isEmpty())
+        emit searchRequested(query);
+    const auto accepted = dialog.exec() == QDialog::Accepted;
+    emit searchFinished();
+    if (!accepted)
+        return;
+    if (!listsModel->addSmartList(dialog.name(), dialog.query()).isValid())
+        QMessageBox::critical(dialogParent, tr("New smart list"), tr("The smart list could not be saved."));
+}
+
+void ReadingListManagementCoordinator::editSmartList(const QModelIndex &list)
+{
+    const auto smartList = listsModel->smartList(list);
+    if (!smartList)
+        return;
+
+    const QPersistentModelIndex index(list);
+    SmartListDialog dialog(settings, smartList->name, smartList->query, dialogParent);
+    connect(&dialog, &SmartListDialog::searchChanged, this, &ReadingListManagementCoordinator::searchRequested);
+    emit searchRequested(smartList->query);
+    const auto accepted = dialog.exec() == QDialog::Accepted;
+    emit searchFinished();
+    if (!accepted || !index.isValid())
+        return;
+    if (!listsModel->updateSmartList(index, dialog.name(), dialog.query())) {
+        QMessageBox::critical(dialogParent, tr("Edit smart list"), tr("The smart list could not be saved."));
+        return;
+    }
+    emit listEntriesChanged();
+}
+
 void ReadingListManagementCoordinator::deleteCurrentList()
 {
-    const auto currentList = currentListProvider();
+    deleteList(currentListProvider());
+}
+
+void ReadingListManagementCoordinator::deleteList(const QModelIndex &currentList)
+{
     if (!currentList.isValid() || !listsModel->isEditable(currentList))
         return;
 
@@ -113,6 +154,11 @@ void ReadingListManagementCoordinator::renameCurrentList()
     const auto currentList = currentListProvider();
     if (!currentList.isValid() || !listsModel->isEditable(currentList))
         return;
+    // the name and the search of a smart list change together
+    if (listsModel->smartList(currentList)) {
+        editSmartList(currentList);
+        return;
+    }
 
     bool accepted = false;
     const auto name = QInputDialog::getText(dialogParent,

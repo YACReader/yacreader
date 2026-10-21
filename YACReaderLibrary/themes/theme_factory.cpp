@@ -902,15 +902,17 @@ Theme makeTheme(const ThemeParams &params)
         theme.readingListIcons.currentlyReadingIcon = icon;
     }
 
-    // List icon (3 colors)
-    {
-        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.meta.id);
-        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainSelectedColor, rli.listShadowSelectedColor, rli.listDetailSelectedColor, params.meta.id, { .suffix = "_selected" });
+    // List and smart list icons (3 colors)
+    auto makeListIcon = [&](const QString &basePath) {
+        const QString normalPath = recoloredSvgToThemeFile(basePath, rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(basePath, rli.listMainSelectedColor, rli.listShadowSelectedColor, rli.listDetailSelectedColor, params.meta.id, { .suffix = "_selected" });
         QIcon icon;
         icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
-        theme.readingListIcons.listIcon = icon;
-    }
+        return icon;
+    };
+    theme.readingListIcons.listIcon = makeListIcon(":/images/lists/list.svg");
+    theme.readingListIcons.smartListIcon = makeListIcon(":/images/lists/smart_list.svg");
     // end ReadingListIcons
 
     // MenuIcons
