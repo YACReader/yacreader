@@ -19,6 +19,7 @@ struct Folder;
 struct Label;
 struct Placeholder;
 struct SmartList;
+struct ListFolder;
 class DescriptiveMetadataPatch;
 class QSqlDatabase;
 class ComicInfo;
@@ -127,6 +128,18 @@ public:
     // fails when the smart list is gone
     static bool updateSmartList(SmartListId id, const QString &name, const QString &query, QSqlDatabase &db);
     static bool removeSmartList(SmartListId id, QSqlDatabase &db);
+
+    // list folders: one function for both kinds; a folder only holds lists and folders of its own kind
+    // at the end of the folders of its parent; nothing as parent is the top level
+    static std::optional<ListFolderId> insertListFolder(ListFolderKind kind, const std::optional<qulonglong> &parentId, const QString &name, QSqlDatabase &db);
+    static bool renameListFolder(const ListFolderId &id, const QString &name, QSqlDatabase &db);
+    // refuses the folder itself and the folders below it as the new parent
+    static bool moveListFolder(const ListFolderId &id, const std::optional<qulonglong> &parentId, QSqlDatabase &db);
+    // a child reading list is never in a folder
+    static bool moveReadingListToFolder(ReadingListId id, const std::optional<qulonglong> &folderId, QSqlDatabase &db);
+    static bool moveSmartListToFolder(SmartListId id, const std::optional<qulonglong> &folderId, QSqlDatabase &db);
+    // with everything in it; on success the cover keys of the placeholders that lost their last entry
+    static std::optional<QStringList> removeListFolder(const ListFolderId &id, QSqlDatabase &db);
     static void renameList(qulonglong id, const QString &name, QSqlDatabase &db);
     static bool renameFolder(qulonglong id, const QString &name, const QString &oldPath, const QString &newPath, QSqlDatabase &db, QString *error = nullptr);
     static bool moveComic(qulonglong comicId, qulonglong newParentId, const QString &newFileName, const QString &newRelativePath, QSqlDatabase &db);
@@ -165,6 +178,8 @@ public:
     static std::optional<SmartList> loadSmartList(SmartListId id, QSqlDatabase &db);
     // in their order; nothing if the query fails
     static std::optional<QList<SmartList>> loadSmartLists(QSqlDatabase &db);
+    // in their order (ordering, then id); nothing if the query fails
+    static std::optional<QList<ListFolder>> loadListFolders(ListFolderKind kind, QSqlDatabase &db);
     // queries
     static bool isFavoriteComic(qulonglong id, QSqlDatabase &db);
     // the record as it is now; nothing when a comic with a file lost that file or the file has a different comic_info,

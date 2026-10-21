@@ -66,6 +66,8 @@ add_library(db_helper STATIC
     db/placeholder.cpp
     db/smart_list.h
     db/smart_list.cpp
+    db/list_folder.h
+    db/list_folder.cpp
     db/query_lexer.h
     db/query_lexer.cpp
     db/search_field_registry.h

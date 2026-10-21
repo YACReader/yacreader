@@ -7,7 +7,7 @@
 
 const QStringList &SmartList::columns()
 {
-    static const QStringList columns = { "name", "query", "ordering" };
+    static const QStringList columns = { "name", "query", "ordering", "folder_id" };
     return columns;
 }
 
@@ -24,5 +24,8 @@ SmartList SmartList::fromQuery(const QSqlQuery &query, const QList<int> &columnI
     list.name = query.value(columnIndexes.at(1)).toString();
     list.query = query.value(columnIndexes.at(2)).toString();
     list.ordering = query.value(columnIndexes.at(3)).toInt();
+    const auto folderId = query.value(columnIndexes.at(4));
+    if (!folderId.isNull())
+        list.folderId = folderId.toULongLong();
     return list;
 }

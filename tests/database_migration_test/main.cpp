@@ -19,12 +19,39 @@ private slots:
     void newLibraryUsesEntryTables();
     void upgradeFrom9_17AddsTheEntrySource();
     void upgradeFrom9_18AddsSmartLists();
+    void upgradeFrom9_19AddsListFolders();
 
 private:
     static bool createOldLibrary(const QString &libraryPath, const QString &version, const QStringList &extraStatements = { });
     static QList<int> ints(const QString &libraryPath, const QString &sql);
     static QStringList strings(const QString &libraryPath, const QString &sql);
+    // a new library back without list folders (and without smart lists): reading_list is rebuilt, because a column
+    // with a foreign key cannot be dropped
+    static bool removeListFolders(QSqlQuery &query);
 };
+
+bool DatabaseMigrationTest::removeListFolders(QSqlQuery &query)
+{
+    const QStringList statements = {
+        "PRAGMA foreign_keys = OFF",
+        "DROP TABLE smart_list",
+        "DROP TABLE smart_list_folder",
+        "DROP INDEX reading_list_folder_index",
+        "CREATE TABLE reading_list_old (id INTEGER PRIMARY KEY, parentId INTEGER, ordering INTEGER DEFAULT 0, name TEXT NOT NULL, finished BOOLEAN DEFAULT 0, completed BOOLEAN DEFAULT 1, manga BOOLEAN DEFAULT 0, FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)",
+        "INSERT INTO reading_list_old SELECT id, parentId, ordering, name, finished, completed, manga FROM reading_list",
+        "DROP TABLE reading_list",
+        "ALTER TABLE reading_list_old RENAME TO reading_list",
+        "DROP TABLE reading_list_folder",
+        "PRAGMA foreign_keys = ON",
+    };
+    for (const auto &statement : statements) {
+        if (!query.exec(statement)) {
+            qWarning() << query.lastError().text() << statement;
+            return false;
+        }
+    }
+    return true;
+}
 
 bool DatabaseMigrationTest::createOldLibrary(const QString &libraryPath, const QString &version, const QStringList &extraStatements)
 {
@@ -180,6 +207,8 @@ void DatabaseMigrationTest::newLibraryUsesEntryTables()
     const auto tables = strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'table'");
     QVERIFY(tables.contains("placeholder"));
     QVERIFY(tables.contains("smart_list"));
+    QVERIFY(tables.contains("reading_list_folder"));
+    QVERIFY(tables.contains("smart_list_folder"));
     QVERIFY(tables.contains("reading_list_entry"));
     QVERIFY(tables.contains("label_entry"));
     QVERIFY(!tables.contains("comic_reading_list"));
@@ -204,7 +233,7 @@ void DatabaseMigrationTest::upgradeFrom9_17AddsTheEntrySource()
         QSqlQuery query(db);
         QVERIFY(query.exec("ALTER TABLE reading_list_entry DROP COLUMN source"));
         QVERIFY(query.exec("ALTER TABLE reading_list_entry DROP COLUMN source_format"));
-        QVERIFY(query.exec("DROP TABLE smart_list"));
+        QVERIFY(removeListFolders(query));
         QVERIFY(query.exec("UPDATE db_info SET version = '9.17.0'"));
         QVERIFY(query.exec("INSERT INTO comic_info (id, hash) VALUES (10, 'hash10')"));
         QVERIFY(query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')"));
@@ -234,7 +263,7 @@ void DatabaseMigrationTest::upgradeFrom9_18AddsSmartLists()
         auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(library.path()));
         connectionName = db.connectionName();
         QSqlQuery query(db);
-        QVERIFY(query.exec("DROP TABLE smart_list"));
+        QVERIFY(removeListFolders(query));
         QVERIFY(query.exec("UPDATE db_info SET version = '9.18.0'"));
         QVERIFY(query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')"));
         db.close();
@@ -246,7 +275,41 @@ void DatabaseMigrationTest::upgradeFrom9_18AddsSmartLists()
     QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
     QCOMPARE(strings(library.path(), "SELECT name FROM reading_list"), QStringList({ "List" }));
     QCOMPARE(strings(library.path(), "SELECT name FROM pragma_table_info('smart_list') ORDER BY cid"),
-             QStringList({ "id", "name", "query", "ordering" }));
+             QStringList({ "id", "name", "query", "ordering", "folder_id" }));
+}
+
+void DatabaseMigrationTest::upgradeFrom9_19AddsListFolders()
+{
+    QTemporaryDir library;
+    QVERIFY(library.isValid());
+    QDir().mkpath(LibraryPaths::libraryDataPath(library.path()));
+
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(library.path()));
+        connectionName = db.connectionName();
+        QSqlQuery query(db);
+        QVERIFY(removeListFolders(query));
+        QVERIFY(DataBaseManagement::createSmartListTable(db));
+        QVERIFY(query.exec("UPDATE db_info SET version = '9.19.0'"));
+        QVERIFY(query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List'), (2, 'Child')"));
+        QVERIFY(query.exec("UPDATE reading_list SET parentId = 1 WHERE id = 2"));
+        QVERIFY(query.exec("INSERT INTO smart_list (id, name, query, ordering) VALUES (1, 'Unread', 'read:false', 0)"));
+        db.close();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    QVERIFY(DataBaseManagement::updateToCurrentVersion(library.path()));
+
+    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
+    QCOMPARE(strings(library.path(), "SELECT name FROM reading_list ORDER BY id"), QStringList({ "List", "Child" }));
+    QCOMPARE(strings(library.path(), "SELECT name FROM smart_list"), QStringList({ "Unread" }));
+    QCOMPARE(ints(library.path(), "SELECT COUNT(*) FROM reading_list WHERE folder_id IS NULL"), QList<int>({ 2 }));
+    const auto tables = strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'table'");
+    QVERIFY(tables.contains("reading_list_folder"));
+    QVERIFY(tables.contains("smart_list_folder"));
+    QVERIFY(strings(library.path(), "SELECT name FROM pragma_table_info('reading_list')").contains("folder_id"));
+    QCOMPARE(strings(library.path(), "SELECT \"table\" FROM pragma_foreign_key_list('smart_list')"), QStringList({ "smart_list_folder" }));
 }
 
 QTEST_GUILESS_MAIN(DatabaseMigrationTest)
