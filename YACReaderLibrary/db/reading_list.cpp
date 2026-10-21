@@ -7,7 +7,7 @@
 
 const QStringList &ReadingList::columns()
 {
-    static const QStringList columns = { "parentId", "ordering", "name", "finished", "completed" };
+    static const QStringList columns = { "parentId", "ordering", "name", "finished", "completed", "folder_id" };
     return columns;
 }
 
@@ -27,6 +27,10 @@ ReadingList readReadingList(const Value &value)
     list.name = value(3).toString();
     list.finished = value(4).toBool();
     list.completed = value(5).toBool();
+    const auto folderId = value(6);
+    if (!folderId.isNull()) {
+        list.folderId = folderId.toULongLong();
+    }
     return list;
 }
 
@@ -67,6 +71,7 @@ void ReadingList::bindTo(QSqlQuery &query) const
     query.bindValue(":name", name);
     query.bindValue(":finished", finished);
     query.bindValue(":completed", completed);
+    query.bindValue(":folder_id", folderId ? QVariant(*folderId) : QVariant());
 }
 
 const QStringList &Label::columns()

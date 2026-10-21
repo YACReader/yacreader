@@ -6,6 +6,8 @@
 
 #include <QFileIconProvider>
 
+#include <algorithm>
+
 qulonglong ListItem::getId() const
 {
     return 0;
@@ -99,15 +101,10 @@ ReadingListItem::ReadingListItem(const ReadingList &list, ReadingListItem *p)
 {
 }
 
+// a child list is a list too; folders of lists have their own icon
 QIcon ReadingListItem::getIcon() const
 {
-    const auto &theme = ThemeManager::instance().getCurrentTheme();
-    if (parent->getId() == 0)
-        return theme.readingListIcons.listIcon; // top level list
-    else if (theme.sidebarIcons.useSystemFolderIcons)
-        return QFileIconProvider().icon(QFileIconProvider::Folder);
-    else
-        return theme.navigationTree.folderIcon; // sublist
+    return ThemeManager::instance().getCurrentTheme().readingListIcons.listIcon;
 }
 
 int ReadingListItem::childCount() const
@@ -225,6 +222,100 @@ QString SmartListItem::name() const
 qulonglong SmartListItem::getId() const
 {
     return list.id.value();
+}
+
+//------------------------------------------------------
+
+ListFolderItem::ListFolderItem(const ListFolder &folder)
+    : folder(folder)
+{
+}
+
+ListFolderItem::~ListFolderItem()
+{
+    qDeleteAll(folders);
+    qDeleteAll(lists);
+}
+
+// the icon of the folders of the library tree
+QIcon ListFolderItem::getIcon() const
+{
+    const auto &theme = ThemeManager::instance().getCurrentTheme();
+    if (theme.sidebarIcons.useSystemFolderIcons)
+        return QFileIconProvider().icon(QFileIconProvider::Folder);
+    return theme.navigationTree.folderIcon;
+}
+
+QString ListFolderItem::name() const
+{
+    return folder.name;
+}
+
+qulonglong ListFolderItem::getId() const
+{
+    return folder.id.id;
+}
+
+int ListFolderItem::childCount() const
+{
+    return folders.count() + lists.count();
+}
+
+ListItem *ListFolderItem::child(int row) const
+{
+    if (row < folders.count())
+        return folders.at(row);
+    return lists.at(row - folders.count());
+}
+
+int ListFolderItem::rowOf(const ListItem *child) const
+{
+    for (int i = 0; i < folders.count(); ++i) {
+        if (folders.at(i) == child)
+            return i;
+    }
+    const auto list = lists.indexOf(const_cast<ListItem *>(child));
+    return list < 0 ? -1 : folders.count() + list;
+}
+
+int ListFolderItem::insertFolderByName(ListFolderItem *item)
+{
+    item->container = this;
+    const auto row = rowForFolderName(item->name());
+    folders.insert(row, item);
+    return row;
+}
+
+int ListFolderItem::insertListByName(ListItem *item)
+{
+    const auto row = rowForListName(item->name());
+    lists.insert(row - folders.count(), item);
+    return row;
+}
+
+int ListFolderItem::rowForFolderName(const QString &name, const ListItem *ignored) const
+{
+    return std::count_if(folders.cbegin(), folders.cend(), [&](const ListFolderItem *folder) {
+        return folder != ignored && naturalSortLessThanCI(folder->name(), name);
+    });
+}
+
+int ListFolderItem::rowForListName(const QString &name, const ListItem *ignored) const
+{
+    return folders.count() + std::count_if(lists.cbegin(), lists.cend(), [&](const ListItem *list) {
+               return list != ignored && naturalSortLessThanCI(list->name(), name);
+           });
+}
+
+void ListFolderItem::removeChild(ListItem *item)
+{
+    for (int i = 0; i < folders.count(); ++i) {
+        if (folders.at(i) == item) {
+            folders.removeAt(i);
+            return;
+        }
+    }
+    lists.removeOne(item);
 }
 
 //------------------------------------------------------

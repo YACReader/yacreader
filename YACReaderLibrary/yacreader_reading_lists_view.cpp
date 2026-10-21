@@ -1,6 +1,7 @@
 #include "yacreader_reading_lists_view.h"
 
 #include "reading_list_model.h"
+#include "yacreader_global_gui.h"
 
 YACReaderReadingListsView::YACReaderReadingListsView(QWidget *parent)
     : YACReaderTreeView(parent)
@@ -24,6 +25,10 @@ void YACReaderReadingListsView::dragEnterEvent(QDragEnterEvent *event)
 void YACReaderReadingListsView::dragMoveEvent(QDragMoveEvent *event)
 {
     YACReaderTreeView::dragMoveEvent(event);
+    // a dragged row: the view asks the model with the drop position (onto a row, between rows, or empty space)
+    if (event->mimeData()->hasFormat(YACReader::YACReaderLibraryListRowMimeDataFormat))
+        return;
+
     QModelIndex destinationIndex = indexAt(event->position().toPoint());
     if (model()->canDropMimeData(event->mimeData(), event->proposedAction(), destinationIndex.row(), destinationIndex.column(), destinationIndex.parent()))
         event->acceptProposedAction();

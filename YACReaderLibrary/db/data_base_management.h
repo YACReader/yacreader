@@ -150,6 +150,8 @@ public:
     static bool createLabelEntryTable(QSqlDatabase &database);
     static bool createComicDeleteTrigger(QSqlDatabase &database);
     static bool createSmartListTable(QSqlDatabase &database);
+    // the folder tables and the folder_id columns of reading_list and smart_list
+    static bool createListFolderTables(QSqlDatabase &database);
 
     static void exportComicsInfo(QString source, QString dest);
     static bool importComicsInfo(QString source, QString dest);

@@ -6,6 +6,8 @@
 #include <QString>
 #include <QStringList>
 
+#include <optional>
+
 class QSqlQuery;
 class QSqlRecord;
 
@@ -16,6 +18,8 @@ struct SmartList {
     // in the search syntax of the database version; a change of the syntax rewrites it in the database update
     QString query;
     int ordering = 0;
+    // a smart list folder; nothing at the top level
+    std::optional<qulonglong> folderId;
 
     static const QStringList &columns();
     static QList<int> columnIndexes(const QSqlRecord &record, const QString &alias);

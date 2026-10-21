@@ -7,6 +7,7 @@
 #include "folder.h"
 #include "library_item_types.h"
 #include "list_entry.h"
+#include "list_folder.h"
 #include "overloaded.h"
 #include "placeholder.h"
 #include "qnaturalsorting.h"
@@ -671,6 +672,68 @@ void DBHelper::removeFromDB(ComicDB *comic, QSqlDatabase &db)
     query.exec();
 }
 
+namespace {
+
+// the tables of one kind of list folders
+struct FolderTable {
+    const char *table;
+    const char *listTable;
+};
+
+FolderTable folderTable(ListFolderKind kind)
+{
+    switch (kind) {
+    case ListFolderKind::ReadingList:
+        return { "reading_list_folder", "reading_list" };
+    case ListFolderKind::SmartList:
+        return { "smart_list_folder", "smart_list" };
+    }
+    return { "reading_list_folder", "reading_list" };
+}
+
+bool rowExists(const QString &table, qulonglong id, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare(QString("SELECT 1 FROM %1 WHERE id = :id").arg(table));
+    query.bindValue(":id", id);
+    return query.exec() && query.next();
+}
+
+// a top level reading list or a smart list goes to the end of `folderId` (nothing: the top level)
+bool moveListToFolder(ListFolderKind kind, qulonglong listId, const std::optional<qulonglong> &folderId, QSqlDatabase &db)
+{
+    const auto tables = folderTable(kind);
+    const QString topLevelOnly = kind == ListFolderKind::ReadingList ? " AND parentId IS NULL" : "";
+    const QVariant folder = folderId ? QVariant(*folderId) : QVariant();
+
+    db.transaction();
+    QSqlQuery list(db);
+    list.prepare(QString("SELECT 1 FROM %1 WHERE id = :id%2").arg(tables.listTable, topLevelOnly));
+    list.bindValue(":id", listId);
+    bool moved = list.exec() && list.next() && (!folderId || rowExists(tables.table, *folderId, db));
+    list.finish();
+
+    if (moved) {
+        QSqlQuery move(db);
+        move.prepare(QString("UPDATE %1 SET folder_id = :folder_id, "
+                             "ordering = (SELECT COALESCE(MAX(ordering) + 1, 0) FROM %1 WHERE folder_id IS :folder_id AND id <> :id%2) "
+                             "WHERE id = :id")
+                             .arg(tables.listTable, topLevelOnly));
+        move.bindValue(":folder_id", folder);
+        move.bindValue(":id", listId);
+        moved = move.exec() && move.numRowsAffected() == 1;
+        if (!moved)
+            QLOG_ERROR() << "Unable to move a list to a folder:" << move.lastError().text();
+    }
+
+    if (moved && db.commit())
+        return true;
+    db.rollback();
+    return false;
+}
+
+}
+
 std::optional<QStringList> DBHelper::removeLabelFromDB(qulonglong id, QSqlDatabase &db)
 {
     QSqlQuery placeholderIds(db);
@@ -1331,6 +1394,116 @@ QList<QUuid> DBHelper::updateFromRemoteClientWithHash(const QList<ComicInfo> &co
     }
 
     return updatedLibraries;
+}
+
+std::optional<ListFolderId> DBHelper::insertListFolder(ListFolderKind kind, const std::optional<qulonglong> &parentId, const QString &name, QSqlDatabase &db)
+{
+    const auto tables = folderTable(kind);
+    if (parentId && !rowExists(tables.table, *parentId, db))
+        return std::nullopt;
+
+    QSqlQuery insert(db);
+    insert.prepare(QString("INSERT INTO %1 (parent_id, name, ordering) "
+                           "VALUES (:parent_id, :name, (SELECT COALESCE(MAX(ordering) + 1, 0) FROM %1 WHERE parent_id IS :parent_id))")
+                           .arg(tables.table));
+    insert.bindValue(":parent_id", parentId ? QVariant(*parentId) : QVariant());
+    insert.bindValue(":name", name);
+    if (!insert.exec()) {
+        QLOG_ERROR() << "Unable to insert a list folder:" << insert.lastError().text();
+        return std::nullopt;
+    }
+    return ListFolderId { kind, insert.lastInsertId().toULongLong() };
+}
+
+bool DBHelper::renameListFolder(const ListFolderId &id, const QString &name, QSqlDatabase &db)
+{
+    QSqlQuery update(db);
+    update.prepare(QString("UPDATE %1 SET name = :name WHERE id = :id").arg(folderTable(id.kind).table));
+    update.bindValue(":name", name);
+    update.bindValue(":id", id.id);
+    if (!update.exec() || update.numRowsAffected() != 1) {
+        QLOG_ERROR() << "Unable to rename a list folder:" << update.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DBHelper::moveListFolder(const ListFolderId &id, const std::optional<qulonglong> &parentId, QSqlDatabase &db)
+{
+    const auto tables = folderTable(id.kind);
+    const QVariant parent = parentId ? QVariant(*parentId) : QVariant();
+
+    db.transaction();
+    bool moved = rowExists(tables.table, id.id, db) && (!parentId || rowExists(tables.table, *parentId, db));
+    if (moved && parentId) {
+        // the new parent cannot be the folder or one of the folders below it; the driver binds qulonglong as text, and
+        // the columns of a CTE have no type to convert it
+        QSqlQuery below(db);
+        below.prepare(QString("WITH RECURSIVE subtree(id) AS (SELECT CAST(:id AS INTEGER) UNION ALL SELECT f.id FROM %1 f INNER JOIN subtree s ON f.parent_id = s.id) "
+                              "SELECT 1 FROM subtree WHERE id = CAST(:parent_id AS INTEGER)")
+                              .arg(tables.table));
+        below.bindValue(":id", id.id);
+        below.bindValue(":parent_id", *parentId);
+        moved = below.exec() && !below.next();
+    }
+
+    if (moved) {
+        QSqlQuery move(db);
+        move.prepare(QString("UPDATE %1 SET parent_id = :parent_id, "
+                             "ordering = (SELECT COALESCE(MAX(ordering) + 1, 0) FROM %1 WHERE parent_id IS :parent_id AND id <> :id) "
+                             "WHERE id = :id")
+                             .arg(tables.table));
+        move.bindValue(":parent_id", parent);
+        move.bindValue(":id", id.id);
+        moved = move.exec() && move.numRowsAffected() == 1;
+        if (!moved)
+            QLOG_ERROR() << "Unable to move a list folder:" << move.lastError().text();
+    }
+
+    if (moved && db.commit())
+        return true;
+    db.rollback();
+    return false;
+}
+
+bool DBHelper::moveReadingListToFolder(ReadingListId id, const std::optional<qulonglong> &folderId, QSqlDatabase &db)
+{
+    return moveListToFolder(ListFolderKind::ReadingList, id.value(), folderId, db);
+}
+
+bool DBHelper::moveSmartListToFolder(SmartListId id, const std::optional<qulonglong> &folderId, QSqlDatabase &db)
+{
+    return moveListToFolder(ListFolderKind::SmartList, id.value(), folderId, db);
+}
+
+std::optional<QStringList> DBHelper::removeListFolder(const ListFolderId &id, QSqlDatabase &db)
+{
+    const auto tables = folderTable(id.kind);
+
+    // the placeholders of the entries of every reading list below the folder, child lists included
+    QSqlQuery placeholderIds(db);
+    if (id.kind == ListFolderKind::ReadingList) {
+        placeholderIds.prepare("WITH RECURSIVE folders(id) AS (SELECT CAST(:id AS INTEGER) UNION ALL SELECT f.id FROM reading_list_folder f INNER JOIN folders s ON f.parent_id = s.id), "
+                               "lists(id) AS (SELECT r.id FROM reading_list r WHERE r.folder_id IN (SELECT id FROM folders) "
+                               "UNION ALL SELECT r.id FROM reading_list r INNER JOIN lists l ON r.parentId = l.id) "
+                               "SELECT DISTINCT placeholder_id FROM reading_list_entry WHERE placeholder_id IS NOT NULL AND reading_list_id IN (SELECT id FROM lists)");
+        placeholderIds.bindValue(":id", id.id);
+    } else {
+        placeholderIds.prepare("SELECT NULL WHERE 0");
+    }
+
+    // the foreign keys delete the folders, lists, child lists, and entries below it
+    const auto removal = [&] {
+        QSqlQuery query(db);
+        query.prepare(QString("DELETE FROM %1 WHERE id = :id").arg(tables.table));
+        query.bindValue(":id", id.id);
+        if (!query.exec() || query.numRowsAffected() != 1) {
+            QLOG_ERROR() << "Unable to remove a list folder:" << query.lastError().text();
+            return false;
+        }
+        return true;
+    };
+    return removeWithPlaceholders(placeholderIds, removal, db);
 }
 
 bool DBHelper::updateSmartList(SmartListId id, const QString &name, const QString &query, QSqlDatabase &db)
@@ -2223,6 +2396,51 @@ std::optional<QList<SmartList>> DBHelper::loadSmartLists(QSqlDatabase &db)
     while (query.next())
         lists.append(SmartList::fromQuery(query, indexes));
     return lists;
+}
+
+std::optional<QList<ListFolder>> DBHelper::loadListFolders(ListFolderKind kind, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    if (!query.exec("SELECT " + TableProjection::selectList("f", ListFolder::columns()) + QString(" FROM %1 f ORDER BY f.ordering, f.id").arg(folderTable(kind).table))) {
+        QLOG_ERROR() << "Unable to load the list folders:" << query.lastError().text();
+        return std::nullopt;
+    }
+
+    QList<ListFolder> folders;
+    const auto indexes = ListFolder::columnIndexes(query.record(), "f");
+    while (query.next())
+        folders.append(ListFolder::fromQuery(query, indexes, kind));
+    return folders;
+}
+
+std::optional<QHash<qulonglong, QString>> DBHelper::readingListCoverHashes(const QList<ReadingListId> &ids, QSqlDatabase &db)
+{
+    QHash<qulonglong, QString> hashes;
+    if (ids.isEmpty())
+        return hashes;
+
+    QStringList idTexts;
+    for (const auto &id : ids)
+        idTexts.append(QString::number(id.value()));
+
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    if (!query.exec(QString("SELECT rl.id, (SELECT ci.hash FROM reading_list_entry e "
+                            "INNER JOIN comic_info ci ON (ci.id = e.comic_info_id) "
+                            "INNER JOIN reading_list l ON (l.id = e.reading_list_id) "
+                            "WHERE l.id = rl.id OR l.parentId = rl.id "
+                            "ORDER BY l.parentId IS NOT NULL, l.ordering, e.ordering, e.id LIMIT 1) "
+                            "FROM reading_list rl WHERE rl.id IN (%1)")
+                            .arg(idTexts.join(',')))) {
+        QLOG_ERROR() << "Unable to load the covers of reading lists:" << query.lastError().text();
+        return std::nullopt;
+    }
+    while (query.next()) {
+        if (!query.value(1).isNull())
+            hashes.insert(query.value(0).toULongLong(), query.value(1).toString());
+    }
+    return hashes;
 }
 
 std::optional<ComicInfo> DBHelper::loadComicInfo(ComicInfoId id, QSqlDatabase &db)

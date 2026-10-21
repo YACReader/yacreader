@@ -50,6 +50,20 @@ struct ListItemId {
     friend size_t qHash(const ListItemId &key, size_t seed = 0) noexcept { return qHashMulti(seed, static_cast<int>(key.listKind), key.id); }
 };
 
+enum class ListFolderKind {
+    ReadingList,
+    SmartList,
+};
+
+// a folder id is unique only in its own table (reading_list_folder or smart_list_folder)
+struct ListFolderId {
+    ListFolderKind kind;
+    qulonglong id;
+
+    friend constexpr bool operator==(const ListFolderId &, const ListFolderId &) = default;
+    friend size_t qHash(const ListFolderId &key, size_t seed = 0) noexcept { return qHashMulti(seed, static_cast<int>(key.kind), key.id); }
+};
+
 // which row this is: a comic in folders and special lists, an entry in reading lists and labels
 using ComicRowId = std::variant<ComicId, ListItemId>;
 

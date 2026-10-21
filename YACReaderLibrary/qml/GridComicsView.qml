@@ -83,6 +83,22 @@ SplitView {
             }
 
             DelegateChoice {
+                roleValue: GridContentModel.ListCardItem
+
+                ListGridDelegate {
+                    width: grid.cellWidth
+                    height: grid.cellHeight
+                    selected: currentIndexHelper.focusedFolderRow === index
+
+                    onFocusRequested: {
+                        comicsSelectionHelper.clear()
+                        grid.focusItemFromPointer(index)
+                    }
+                    onOpenRequested: currentIndexHelper.openListCard(index)
+                }
+            }
+
+            DelegateChoice {
                 roleValue: GridContentModel.ComicItem
 
                 ComicGridDelegate {

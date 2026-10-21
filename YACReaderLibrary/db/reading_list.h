@@ -18,6 +18,8 @@ struct ReadingList {
     QString name;
     bool finished = false;
     bool completed = true;
+    // a reading list folder; only top level lists (no parentId) can be in one
+    std::optional<qulonglong> folderId;
 
     static const QStringList &columns();
     static ReadingList fromRecord(const QSqlRecord &record, const QString &alias);

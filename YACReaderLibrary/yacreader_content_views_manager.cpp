@@ -5,6 +5,7 @@
 #include "comics_view_transition.h"
 #include "empty_folder_widget.h"
 #include "empty_label_widget.h"
+#include "empty_list_folder_widget.h"
 #include "empty_reading_list_widget.h"
 #include "empty_special_list.h"
 #include "grid_comics_view.h"
@@ -50,6 +51,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
     comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
     comicsViewStack->addWidget(emptySpecialList = new EmptySpecialListWidget());
     comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());
+    comicsViewStack->addWidget(emptyListFolder = new EmptyListFolderWidget());
     comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
     comicsViewStack->addWidget(noSearchResultsWidget = new NoSearchResultsWidget());
 
@@ -211,6 +213,11 @@ void YACReaderContentViewsManager::showEmptySpecialList(ReadingListModel::TypeSp
 void YACReaderContentViewsManager::showEmptyReadingList()
 {
     showStackWidget(emptyReadingList, true);
+}
+
+void YACReaderContentViewsManager::showEmptyListFolder()
+{
+    showStackWidget(emptyListFolder, true);
 }
 
 void YACReaderContentViewsManager::showEmptyFolder()

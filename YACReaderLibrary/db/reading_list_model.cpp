@@ -3,6 +3,7 @@
 #include "QsLog.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "list_folder.h"
 #include "qnaturalsorting.h"
 #include "reading_list_item.h"
 #include "smart_list.h"
@@ -10,6 +11,8 @@
 #include "yacreader_global_gui.h"
 
 #include <QSqlRecord>
+
+#include <functional>
 
 ReadingListModel::ReadingListModel(QObject *parent)
     : QAbstractItemModel(parent), rootItem(0)
@@ -19,11 +22,19 @@ ReadingListModel::ReadingListModel(QObject *parent)
     separator3 = new ReadingListSeparatorItem;
 }
 
+ReadingListModel::~ReadingListModel()
+{
+    cleanAll();
+    delete separator1;
+    delete separator2;
+    delete separator3;
+}
+
 int ReadingListModel::rowCount(const QModelIndex &parent) const
 {
     if (!parent.isValid()) // TOP
     {
-        return readingListsStart() + rootItem->childCount();
+        return readingListsRoot == nullptr ? 0 : readingListsStart() + readingListsRoot->childCount();
     } else {
         auto item = static_cast<ListItem *>(parent.internalPointer());
 
@@ -31,6 +42,9 @@ int ReadingListModel::rowCount(const QModelIndex &parent) const
             auto item = static_cast<ReadingListItem *>(parent.internalPointer());
             return item->childCount();
         }
+
+        if (typeid(*item) == typeid(ListFolderItem))
+            return static_cast<ListFolderItem *>(item)->childCount();
     }
 
     return 0;
@@ -70,6 +84,9 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
         if (typeid(*item) == typeid(SmartListItem))
             return QVariant(ReadingListModel::SmartList);
 
+        if (typeid(*item) == typeid(ListFolderItem))
+            return QVariant(static_cast<ListFolderItem *>(item)->folder.id.kind == ListFolderKind::ReadingList ? ReadingListModel::ReadingListFolder : ReadingListModel::SmartListFolder);
+
         if (typeid(*item) == typeid(ReadingListSeparatorItem))
             return QVariant(ReadingListModel::Separator);
     }
@@ -104,19 +121,24 @@ QVariant ReadingListModel::data(const QModelIndex &index, int role) const
 
 Qt::ItemFlags ReadingListModel::flags(const QModelIndex &index) const
 {
+    // the view takes a dragged row between top level rows and on empty space only when the root takes drops
     if (!index.isValid())
-        return { };
+        return Qt::ItemIsDropEnabled;
 
     auto item = static_cast<ListItem *>(index.internalPointer());
     if (typeid(*item) == typeid(ReadingListSeparatorItem))
         return { };
 
-    if (typeid(*item) == typeid(ReadingListItem) && static_cast<ReadingListItem *>(item)->parent->getId() != 0)
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled; // only sublists are dragable
+    if (typeid(*item) == typeid(ReadingListItem))
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
 
     // the comics of a smart list come from its search
     if (typeid(*item) == typeid(SmartListItem))
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+
+    // a folder takes folders and lists, not comics
+    if (typeid(*item) == typeid(ListFolderItem))
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 }
@@ -147,48 +169,41 @@ QModelIndex ReadingListModel::index(int row, int column, const QModelIndex &pare
         if (row == labelsStart() + labels.count())
             return createIndex(row, column, separator2);
 
-        if (rowIsSmartList(row, parent))
-            return createIndex(row, column, smartLists.at(row - smartListsStart()));
+        if (row >= smartListsStart() && row < smartListsStart() + smartListsRoot->childCount())
+            return createIndex(row, column, smartListsRoot->child(row - smartListsStart()));
 
-        if (!smartLists.isEmpty() && row == smartListsStart() + smartLists.count())
+        if (smartListsRoot->childCount() > 0 && row == smartListsStart() + smartListsRoot->childCount())
             return createIndex(row, column, separator3);
 
-        if (rowIsReadingList(row, parent))
-            return createIndex(row, column, rootItem->child(row - readingListsStart()));
+        if (row >= readingListsStart())
+            return createIndex(row, column, readingListsRoot->child(row - readingListsStart()));
 
-    } else // sublist
-    {
-        ReadingListItem *parentItem;
-
-        if (!parent.isValid())
-            parentItem = rootItem; // this should be impossible
-        else
-            parentItem = static_cast<ReadingListItem *>(parent.internalPointer());
-
-        ReadingListItem *childItem = parentItem->child(row);
-        return createIndex(row, column, childItem);
+        return QModelIndex();
     }
-    /*FolderItem *childItem = parentItem->child(row);
-    if (childItem)
-        return createIndex(row, column, childItem);
-    else*/
-    return QModelIndex();
+
+    auto parentItem = static_cast<ListItem *>(parent.internalPointer());
+    if (typeid(*parentItem) == typeid(ListFolderItem))
+        return createIndex(row, column, static_cast<ListFolderItem *>(parentItem)->child(row));
+
+    // sublist
+    return createIndex(row, column, static_cast<ReadingListItem *>(parentItem)->child(row));
 }
 
 QModelIndex ReadingListModel::parent(const QModelIndex &index) const
 {
-
     if (!index.isValid())
         return QModelIndex();
 
     auto item = static_cast<ListItem *>(index.internalPointer());
 
     if (typeid(*item) == typeid(ReadingListItem)) {
-        auto childItem = static_cast<ReadingListItem *>(index.internalPointer());
-        ReadingListItem *parent = childItem->parent;
-        if (parent->getId() != 0)
-            return createIndex(parent->row() + readingListsStart(), 0, parent);
+        auto childItem = static_cast<ReadingListItem *>(item);
+        if (childItem->parent != rootItem)
+            return indexOfItem(childItem->parent);
     }
+
+    if (auto *container = containerOf(item); container != nullptr && container->container != nullptr)
+        return indexOfItem(container);
 
     return QModelIndex();
 }
@@ -196,48 +211,32 @@ QModelIndex ReadingListModel::parent(const QModelIndex &index) const
 bool ReadingListModel::canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const
 {
     Q_UNUSED(action);
+    Q_UNUSED(column);
 
     QLOG_DEBUG() << "trying to drop into row = " << row << "column column = " << column << "parent" << parent;
+
+    if (data->formats().contains(YACReader::YACReaderLibraryListRowMimeDataFormat)) {
+        auto *dragged = draggedItem(data);
+        if (dragged == nullptr)
+            return false;
+        if (isChildList(dragged))
+            return childListDropTarget(static_cast<ReadingListItem *>(dragged), row, parent) != nullptr;
+        return dropContainer(dragged, row, parent) != nullptr;
+    }
 
     if (row == -1)
         return false;
 
-    if (!parent.isValid()) // top level items
-    {
-        if (row == -1) // no list
-            return false;
+    const auto target = index(row, 0, parent);
+    if (!target.isValid())
+        return false;
+    auto item = static_cast<ListItem *>(target.internalPointer());
 
-        if (row == 1) // reading is just a smart list
-            return false;
-
-        if (row == 2) // recent is just a smart list
-            return false;
-
-        if (rowIsSeparator(row, parent) || rowIsSmartList(row, parent))
-            return false;
-    }
-
-    if (data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
-        return true;
-
-    if (rowIsReadingList(row, parent)) // TODO avoid droping in a different parent
-    {
-        if (!parent.isValid())
-            return false;
-        else {
-            QList<QPair<int, int>> sublistsRows;
-            QByteArray rawData = data->data(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
-            QDataStream in(&rawData, QIODevice::ReadOnly);
-            in >> sublistsRows; // deserialize the list of indentifiers
-
-            if (sublistsRows.isEmpty())
-                return false;
-
-            if (parent.row() != sublistsRows.at(0).second)
-                return false;
-
-            return data->formats().contains(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
-        }
+    if (data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat)) {
+        // Reading and Recent are filled by the library
+        if (typeid(*item) == typeid(SpecialListItem))
+            return static_cast<SpecialListItem *>(item)->getType() == TypeSpecialList::Favorites;
+        return typeid(*item) == typeid(LabelItem) || typeid(*item) == typeid(ReadingListItem);
     }
 
     return false;
@@ -249,8 +248,17 @@ bool ReadingListModel::dropMimeData(const QMimeData *data, Qt::DropAction action
     if (data->formats().contains(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat))
         return dropComics(data, action, row, column, parent);
 
-    if (data->formats().contains(YACReader::YACReaderLibrarSubReadingListMimeDataFormat))
-        return dropSublist(data, action, row, column, parent);
+    if (data->formats().contains(YACReader::YACReaderLibraryListRowMimeDataFormat)) {
+        auto *dragged = draggedItem(data);
+        if (dragged == nullptr)
+            return false;
+        if (isChildList(dragged)) {
+            auto *destination = childListDropTarget(static_cast<ReadingListItem *>(dragged), row, parent);
+            return destination != nullptr && dropSublist(static_cast<ReadingListItem *>(dragged), destination);
+        }
+        auto *to = dropContainer(dragged, row, parent);
+        return to != nullptr && moveItem(dragged, to);
+    }
 
     return false;
 }
@@ -263,31 +271,23 @@ bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, 
 
     QLOG_DEBUG() << "dropped : " << comicIds;
 
-    QModelIndex dest;
-    QModelIndex parentDest;
+    const auto dest = row == -1 ? parent : index(row, column, parent);
+    if (!dest.isValid())
+        return false;
+    auto item = static_cast<ListItem *>(dest.internalPointer());
 
-    if (row == -1) {
-        dest = parent;
-    } else
-        dest = index(row, column, parent);
-
-    parentDest = dest.parent();
-
-    if (rowIsSpecialList(dest.row(), parentDest)) {
-        if (dest.row() == 0) // add to favorites
-        {
-            QLOG_DEBUG() << "-------addComicsToFavorites : " << comicIds << " to " << dest.data(IDRole).toULongLong();
-            emit addComicsToFavorites(comicIds);
-            return true;
-        }
+    if (typeid(*item) == typeid(SpecialListItem) && static_cast<SpecialListItem *>(item)->getType() == TypeSpecialList::Favorites) {
+        QLOG_DEBUG() << "-------addComicsToFavorites : " << comicIds << " to " << dest.data(IDRole).toULongLong();
+        emit addComicsToFavorites(comicIds);
+        return true;
     }
 
-    if (rowIsLabel(dest.row(), parentDest)) {
+    if (typeid(*item) == typeid(LabelItem)) {
         emit addComicsToLabel(YACReader::mimeDataToRows(data), dest.data(IDRole).toULongLong());
         return true;
     }
 
-    if (rowIsReadingList(dest.row(), parentDest)) {
+    if (typeid(*item) == typeid(ReadingListItem)) {
         emit addComicsToReadingList(YACReader::mimeDataToRows(data), dest.data(IDRole).toULongLong());
         return true;
     }
@@ -295,70 +295,34 @@ bool ReadingListModel::dropComics(const QMimeData *data, Qt::DropAction action, 
     return false;
 }
 
-bool ReadingListModel::dropSublist(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent)
+bool ReadingListModel::dropSublist(ReadingListItem *item, ReadingListItem *destination)
 {
-    Q_UNUSED(action);
-    Q_UNUSED(column);
-
-    QList<QPair<int, int>> sublistsRows;
-    QByteArray rawData = data->data(YACReader::YACReaderLibrarSubReadingListMimeDataFormat);
-    QDataStream in(&rawData, QIODevice::ReadOnly);
-    in >> sublistsRows; // deserialize the list of indentifiers
-
-    QLOG_DEBUG() << "dropped : " << sublistsRows;
-
-    int sourceRow = sublistsRows.at(0).first;
-    int destRow = row;
-    QModelIndex destParent = parent;
-    if (row == -1) {
-        QLOG_DEBUG() << "droping inside parent";
-        destRow = parent.row();
-        destParent = parent.parent();
-    }
-    QLOG_DEBUG() << "move " << sourceRow << "-" << destRow;
-
-    if (sourceRow == destRow)
-        return false;
-
-    // beginMoveRows(destParent,sourceRow,sourceRow,destParent,destRow);
-
-    auto parentItem = static_cast<ReadingListItem *>(destParent.internalPointer());
-    ReadingListItem *child = parentItem->child(sourceRow);
-    parentItem->removeChild(child);
-    parentItem->appendChild(child, destRow);
+    auto *parentItem = item->parent;
+    const auto parentIndex = indexOfItem(parentItem);
+    const auto sourceRow = item->row();
+    const auto destinationRow = destination->row();
+    beginMoveRows(parentIndex, sourceRow, sourceRow, parentIndex, destinationRow > sourceRow ? destinationRow + 1 : destinationRow);
+    parentItem->removeChild(item);
+    parentItem->appendChild(item, destinationRow);
+    endMoveRows();
 
     reorderingChildren(parentItem->children());
-    // endMoveRows();
-
     return true;
 }
 
 QMimeData *ReadingListModel::mimeData(const QModelIndexList &indexes) const
 {
-    QLOG_DEBUG() << "mimeData requested" << indexes;
+    if (indexes.isEmpty())
+        return nullptr;
 
-    if (indexes.length() == 0) {
-        QLOG_ERROR() << "mimeData requested: indexes is empty";
-        return new QMimeData(); // TODO what happens if 0 is returned?
-    }
-
-    if (indexes.length() > 1) {
-        QLOG_DEBUG() << "mimeData requested for more than one index, this shouldn't be possible";
-    }
-
-    QModelIndex modelIndex = indexes.at(0);
-
-    QList<QPair<int, int>> rows;
-    rows << QPair<int, int>(modelIndex.row(), modelIndex.parent().row());
-    QLOG_DEBUG() << "mimeData requested for row : " << modelIndex.row();
-
+    // one row at a time: the view selects one row
+    const auto &mi = indexes.constFirst();
     QByteArray data;
     QDataStream out(&data, QIODevice::WriteOnly);
-    out << rows; // serialize the list of identifiers
+    out << mi.data(TypeListsRole).toInt() << mi.data(IDRole).toULongLong();
 
     auto mimeData = new QMimeData();
-    mimeData->setData(YACReader::YACReaderLibrarSubReadingListMimeDataFormat, data);
-
+    mimeData->setData(YACReader::YACReaderLibraryListRowMimeDataFormat, data);
     return mimeData;
 }
 
@@ -413,30 +377,40 @@ void ReadingListModel::addNewLabel(const QString &name, YACReader::LabelColors c
     QSqlDatabase::removeDatabase(connectionName);
 }
 
-void ReadingListModel::addReadingList(const QString &name)
+void ReadingListModel::addReadingList(const QString &name, const QModelIndex &folder)
 {
+    auto *container = containerFor(ListFolderKind::ReadingList, folder);
+    std::optional<ReadingListId> id;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        appendReadingList(ReadingListId(DBHelper::insertReadingList(name, db)), name);
+        id = ReadingListId(DBHelper::insertReadingList(name, db));
+        if (container != readingListsRoot && !DBHelper::moveReadingListToFolder(*id, container->getId(), db))
+            container = readingListsRoot;
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+
+    ::ReadingList list;
+    list.id = *id;
+    list.name = name;
+    if (container != readingListsRoot)
+        list.folderId = container->getId();
+    auto newItem = new ReadingListItem(list, rootItem);
+    newItem->container = container;
+    insertChild(container, container->rowForListName(name), [container, newItem] { container->insertListByName(newItem); });
+    items.insert(id->value(), newItem);
 }
 
 void ReadingListModel::appendReadingList(ReadingListId id, const QString &name)
 {
-    const int row = rowCount();
-    beginInsertRows(QModelIndex(), row, row);
-
     ::ReadingList list;
     list.id = id;
     list.name = name;
-    auto newItem = new ReadingListItem(list);
-    rootItem->appendChild(newItem);
+    auto newItem = new ReadingListItem(list, rootItem);
+    newItem->container = readingListsRoot;
+    insertChild(readingListsRoot, readingListsRoot->rowForListName(name), [this, newItem] { readingListsRoot->insertListByName(newItem); });
     items.insert(id.value(), newItem);
-
-    endInsertRows();
 }
 
 void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &mi)
@@ -445,9 +419,10 @@ void ReadingListModel::addReadingListAt(const QString &name, const QModelIndex &
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
 
-        beginInsertRows(mi, 0, 0); // TODO calculate the right coordinates before inserting
-
         auto readingListParent = static_cast<ReadingListItem *>(mi.internalPointer());
+        // a new child list goes at the end of its parent
+        beginInsertRows(mi, readingListParent->childCount(), readingListParent->childCount());
+
         qulonglong id = DBHelper::insertReadingSubList(name, mi.data(IDRole).toULongLong(), readingListParent->childCount(), db);
         ReadingListItem *newItem;
 
@@ -470,16 +445,20 @@ bool ReadingListModel::isEditable(const QModelIndex &mi)
     if (!mi.isValid())
         return false;
     auto item = static_cast<ListItem *>(mi.internalPointer());
-    return typeid(*item) == typeid(LabelItem) || typeid(*item) == typeid(ReadingListItem) || typeid(*item) == typeid(SmartListItem);
+    return typeid(*item) == typeid(LabelItem) || typeid(*item) == typeid(ReadingListItem) || typeid(*item) == typeid(SmartListItem) ||
+            typeid(*item) == typeid(ListFolderItem);
 }
 
-QModelIndex ReadingListModel::addSmartList(const QString &name, const QString &query)
+QModelIndex ReadingListModel::addSmartList(const QString &name, const QString &query, const QModelIndex &folder)
 {
+    auto *container = containerFor(ListFolderKind::SmartList, folder);
     std::optional<SmartListId> id;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         id = DBHelper::insertSmartList(name, query, db);
+        if (id && container != smartListsRoot && !DBHelper::moveSmartListToFolder(*id, container->getId(), db))
+            container = smartListsRoot;
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -490,15 +469,61 @@ QModelIndex ReadingListModel::addSmartList(const QString &name, const QString &q
     list.id = *id;
     list.name = name;
     list.query = query;
-    list.ordering = smartLists.isEmpty() ? 0 : smartLists.constLast()->list.ordering + 1;
+    if (container != smartListsRoot)
+        list.folderId = container->getId();
+    auto newItem = new SmartListItem(list);
+    newItem->container = container;
+    insertChild(container, container->rowForListName(name), [container, newItem] { container->insertListByName(newItem); });
+    return indexOfItem(newItem);
+}
 
-    // the first smart list also brings the separator before the reading lists
-    const int row = smartListsStart() + smartLists.count();
-    beginInsertRows(QModelIndex(), row, smartLists.isEmpty() ? row + 1 : row);
-    smartLists.append(new SmartListItem(list));
-    endInsertRows();
+QModelIndex ReadingListModel::addListFolder(ListFolderKind kind, const QModelIndex &parentFolder, const QString &name)
+{
+    auto *container = containerFor(kind, parentFolder);
+    const auto root = kind == ListFolderKind::ReadingList ? readingListsRoot : smartListsRoot;
+    std::optional<ListFolderId> id;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        id = DBHelper::insertListFolder(kind, container == root ? std::nullopt : std::optional(container->getId()), name, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!id)
+        return { };
 
-    return index(row, 0);
+    ListFolder folder;
+    folder.id = *id;
+    if (container != root)
+        folder.parentId = container->getId();
+    folder.name = name;
+    auto newItem = new ListFolderItem(folder);
+    insertChild(container, container->rowForFolderName(name), [container, newItem] { container->insertFolderByName(newItem); });
+    return indexOfItem(newItem);
+}
+
+std::optional<ListFolderId> ReadingListModel::listFolder(const QModelIndex &mi) const
+{
+    if (!mi.isValid())
+        return std::nullopt;
+    auto item = static_cast<ListItem *>(mi.internalPointer());
+    if (typeid(*item) != typeid(ListFolderItem))
+        return std::nullopt;
+    return static_cast<ListFolderItem *>(item)->folder.id;
+}
+
+std::optional<ListFolderKind> ReadingListModel::section(const QModelIndex &mi) const
+{
+    if (!mi.isValid())
+        return std::nullopt;
+    auto item = static_cast<ListItem *>(mi.internalPointer());
+    if (typeid(*item) == typeid(ReadingListItem))
+        return ListFolderKind::ReadingList;
+    if (typeid(*item) == typeid(SmartListItem))
+        return ListFolderKind::SmartList;
+    if (typeid(*item) == typeid(ListFolderItem))
+        return static_cast<ListFolderItem *>(item)->folder.id.kind;
+    return std::nullopt;
 }
 
 std::optional<::SmartList> ReadingListModel::smartList(const QModelIndex &mi) const
@@ -530,7 +555,7 @@ bool ReadingListModel::updateSmartList(const QModelIndex &mi, const QString &nam
 
     item->list.name = name;
     item->list.query = query;
-    emit dataChanged(mi, mi);
+    moveChild(item, item->container);
     return true;
 }
 
@@ -577,16 +602,22 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
             rli->setName(name);
             DBHelper::renameList(item->getId(), name, db);
 
-            if (rli->parent->getId() != 0) {
-                // TODO
-                // move row depending on the name
-            } else
-                emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
+            // child lists keep their order: it is the reading order of their parent
+            if (isChildList(rli))
+                emit dataChanged(mi, mi);
+            else
+                moveChild(rli, rli->container);
         } else if (typeid(*item) == typeid(LabelItem)) {
             auto li = static_cast<LabelItem *>(item);
             li->setName(name);
             DBHelper::renameLabel(item->getId(), name, db);
             emit dataChanged(index(mi.row(), 0), index(mi.row(), 0));
+        } else if (typeid(*item) == typeid(ListFolderItem)) {
+            auto folder = static_cast<ListFolderItem *>(item);
+            if (DBHelper::renameListFolder(folder->folder.id, name, db)) {
+                folder->folder.name = name;
+                moveChild(folder, folder->container);
+            }
         }
         connectionName = db.connectionName();
     }
@@ -595,54 +626,55 @@ void ReadingListModel::rename(const QModelIndex &mi, const QString &name)
 
 void ReadingListModel::deleteItem(const QModelIndex &mi)
 {
-    if (const auto list = smartList(mi)) {
-        // the last smart list also takes the separator before the reading lists
-        beginRemoveRows(QModelIndex(), mi.row(), smartLists.count() == 1 ? mi.row() + 1 : mi.row());
-        QString connectionName = "";
-        {
-            QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-            DBHelper::removeSmartList(list->id, db);
-            connectionName = db.connectionName();
+    if (!isEditable(mi))
+        return;
+
+    auto item = static_cast<ListItem *>(mi.internalPointer());
+    std::optional<QStringList> placeholderCovers;
+    bool removed = false;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        if (typeid(*item) == typeid(SmartListItem)) {
+            removed = DBHelper::removeSmartList(static_cast<SmartListItem *>(item)->list.id, db);
+        } else if (typeid(*item) == typeid(ListFolderItem)) {
+            placeholderCovers = DBHelper::removeListFolder(static_cast<ListFolderItem *>(item)->folder.id, db);
+            removed = placeholderCovers.has_value();
+        } else if (typeid(*item) == typeid(ReadingListItem)) {
+            placeholderCovers = DBHelper::removeListFromDB(item->getId(), db);
+            removed = placeholderCovers.has_value();
+        } else if (typeid(*item) == typeid(LabelItem)) {
+            placeholderCovers = DBHelper::removeLabelFromDB(item->getId(), db);
+            removed = placeholderCovers.has_value();
         }
-        QSqlDatabase::removeDatabase(connectionName);
-        delete smartLists.takeAt(mi.row() - smartListsStart());
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (placeholderCovers)
+        DBHelper::removePlaceholderCovers(_databasePath, *placeholderCovers);
+    if (!removed)
+        return;
+
+    if (typeid(*item) == typeid(LabelItem)) {
+        beginRemoveRows(mi.parent(), mi.row(), mi.row());
+        labels.removeOne(static_cast<LabelItem *>(item));
         endRemoveRows();
+        delete item;
         return;
     }
 
-    if (isEditable(mi)) {
-        QLOG_DEBUG() << "parent row :" << mi.parent().data() << "-" << mi.row();
-        beginRemoveRows(mi.parent(), mi.row(), mi.row());
-        std::optional<QStringList> placeholderCovers;
-        QString connectionName = "";
-        {
-            QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-
-            auto item = static_cast<ListItem *>(mi.internalPointer());
-
-            if (typeid(*item) == typeid(ReadingListItem)) {
-                auto rli = static_cast<ReadingListItem *>(item);
-                QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-                rli->parent->removeChild(rli);
-                QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-                placeholderCovers = DBHelper::removeListFromDB(item->getId(), db);
-                if (rli->parent->getId() != 0) {
-                    reorderingChildren(rli->parent->children());
-                }
-                QLOG_DEBUG() << "num children : " << rli->parent->childCount();
-            } else if (typeid(*item) == typeid(LabelItem)) {
-                auto li = static_cast<LabelItem *>(item);
-                labels.removeOne(li);
-                placeholderCovers = DBHelper::removeLabelFromDB(item->getId(), db);
-            }
-            connectionName = db.connectionName();
+    if (typeid(*item) == typeid(ReadingListItem)) {
+        auto rli = static_cast<ReadingListItem *>(item);
+        if (rli->parent != rootItem) {
+            beginRemoveRows(mi.parent(), mi.row(), mi.row());
+            rli->parent->removeChild(rli);
+            reorderingChildren(rli->parent->children());
+            endRemoveRows();
+            return;
         }
-        QSqlDatabase::removeDatabase(connectionName);
-        if (placeholderCovers)
-            DBHelper::removePlaceholderCovers(_databasePath, *placeholderCovers);
-
-        endRemoveRows();
     }
+
+    removeChild(item);
 }
 
 const QList<LabelItem *> ReadingListModel::getLabels()
@@ -654,22 +686,24 @@ void ReadingListModel::cleanAll()
 {
     if (rootItem != 0) {
         delete rootItem;
+        delete smartListsRoot;
+        delete readingListsRoot;
 
         qDeleteAll(specialLists);
         qDeleteAll(labels);
-        qDeleteAll(smartLists);
 
         specialLists.clear();
         labels.clear();
-        smartLists.clear();
 
         items.clear();
     }
 
     rootItem = 0;
+    smartListsRoot = nullptr;
+    readingListsRoot = nullptr;
 }
 
-void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListItem *parent)
+void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListItem *parent, const QHash<qulonglong, ListFolderItem *> &folders)
 {
     items.insert(parent->getId(), parent);
 
@@ -677,13 +711,14 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
     while (sqlquery.next()) {
         ReadingListItem *rli = new ReadingListItem(::ReadingList::fromQuery(sqlquery, indexes));
 
-        ReadingListItem *currentParent;
-        if (!rli->list.parentId)
-            currentParent = rootItem;
-        else
-            currentParent = items.value(rli->list.parentId->value());
-
-        currentParent->appendChild(rli);
+        if (!rli->list.parentId) {
+            // a top level list is in its folder, or at the top level of the section
+            rli->parent = rootItem;
+            rli->container = rli->list.folderId ? folders.value(*rli->list.folderId, readingListsRoot) : readingListsRoot;
+            rli->container->insertListByName(rli);
+        } else {
+            items.value(rli->list.parentId->value())->appendChild(rli);
+        }
 
         items.insert(rli->getId(), rli);
     }
@@ -737,10 +772,33 @@ void ReadingListModel::setupLabels(QSqlDatabase &db)
 
 void ReadingListModel::setupSmartLists(QSqlDatabase &db)
 {
+    smartListsRoot = new ListFolderItem(ListFolder { { ListFolderKind::SmartList, 0 }, std::nullopt, QString(), 0 });
+    const auto folders = setupListFolders(ListFolderKind::SmartList, smartListsRoot, db);
+
     if (const auto lists = DBHelper::loadSmartLists(db)) {
-        for (const auto &list : *lists)
-            smartLists.append(new SmartListItem(list));
+        for (const auto &list : *lists) {
+            auto item = new SmartListItem(list);
+            item->container = list.folderId ? folders.value(*list.folderId, smartListsRoot) : smartListsRoot;
+            item->container->insertListByName(item);
+        }
     }
+}
+
+QHash<qulonglong, ListFolderItem *> ReadingListModel::setupListFolders(ListFolderKind kind, ListFolderItem *root, QSqlDatabase &db)
+{
+    QHash<qulonglong, ListFolderItem *> folders;
+    const auto loaded = DBHelper::loadListFolders(kind, db);
+    if (!loaded)
+        return folders;
+
+    // every folder first, so each one finds its parent
+    for (const auto &folder : *loaded)
+        folders.insert(folder.id.id, new ListFolderItem(folder));
+    for (const auto &folder : *loaded) {
+        auto *container = folder.parentId ? folders.value(*folder.parentId, root) : root;
+        container->insertFolderByName(folders.value(folder.id.id));
+    }
+    return folders;
 }
 
 void ReadingListModel::setupReadingLists(QSqlDatabase &db)
@@ -751,11 +809,13 @@ void ReadingListModel::setupReadingLists(QSqlDatabase &db)
     root.finished = true;
     root.completed = false;
     rootItem = new ReadingListItem(root);
+    readingListsRoot = new ListFolderItem(ListFolder { { ListFolderKind::ReadingList, 0 }, std::nullopt, QString(), 0 });
+    const auto folders = setupListFolders(ListFolderKind::ReadingList, readingListsRoot, db);
 
     QSqlQuery selectQuery("SELECT " + TableProjection::selectList("rl", ::ReadingList::columns()) + " FROM reading_list rl ORDER BY rl.parentId IS NULL DESC", db);
 
     // setup reading lists
-    setupReadingListsData(selectQuery, rootItem);
+    setupReadingListsData(selectQuery, rootItem, folders);
 
     // TEST
     //     ReadingListItem * node1;
@@ -826,7 +886,8 @@ int ReadingListModel::smartListsStart() const
 
 int ReadingListModel::readingListsStart() const
 {
-    return smartListsStart() + smartLists.count() + (smartLists.isEmpty() ? 0 : 1);
+    const auto smartRows = smartListsRoot->childCount();
+    return smartListsStart() + smartRows + (smartRows > 0 ? 1 : 0);
 }
 
 bool ReadingListModel::rowIsSpecialList(int row, const QModelIndex &parent) const
@@ -848,29 +909,249 @@ bool ReadingListModel::rowIsLabel(int row, const QModelIndex &parent) const
     return row >= labelsStart() && row < labelsStart() + labels.count();
 }
 
-bool ReadingListModel::rowIsSmartList(int row, const QModelIndex &parent) const
+QModelIndex ReadingListModel::indexOf(int type, qulonglong id) const
 {
-    if (parent.isValid())
+    // depth first over the rows, child lists included
+    std::function<QModelIndex(const QModelIndex &)> find = [&](const QModelIndex &parent) -> QModelIndex {
+        for (int row = 0; row < rowCount(parent); ++row) {
+            const auto child = index(row, 0, parent);
+            if (data(child, TypeListsRole).toInt() == type && data(child, IDRole).toULongLong() == id)
+                return child;
+            if (const auto found = find(child); found.isValid())
+                return found;
+        }
+        return QModelIndex();
+    };
+    return find(QModelIndex());
+}
+
+ListFolderItem *ReadingListModel::containerOf(ListItem *item) const
+{
+    if (typeid(*item) == typeid(ListFolderItem))
+        return static_cast<ListFolderItem *>(item)->container;
+    if (typeid(*item) == typeid(SmartListItem))
+        return static_cast<SmartListItem *>(item)->container;
+    if (typeid(*item) == typeid(ReadingListItem))
+        return static_cast<ReadingListItem *>(item)->container;
+    return nullptr;
+}
+
+QModelIndex ReadingListModel::indexOfItem(ListItem *item) const
+{
+    if (typeid(*item) == typeid(ReadingListItem)) {
+        auto rli = static_cast<ReadingListItem *>(item);
+        if (rli->parent != rootItem)
+            return createIndex(rli->parent->children().indexOf(rli), 0, rli);
+    }
+
+    auto *container = containerOf(item);
+    return createIndex(firstRow(container) + container->rowOf(item), 0, item);
+}
+
+QModelIndex ReadingListModel::containerIndex(ListFolderItem *container) const
+{
+    return container->container == nullptr ? QModelIndex() : indexOfItem(container);
+}
+
+int ReadingListModel::firstRow(ListFolderItem *container) const
+{
+    if (container == smartListsRoot)
+        return smartListsStart();
+    if (container == readingListsRoot)
+        return readingListsStart();
+    return 0;
+}
+
+ListFolderItem *ReadingListModel::containerFor(ListFolderKind kind, const QModelIndex &folder) const
+{
+    const auto id = listFolder(folder);
+    if (id && id->kind == kind)
+        return static_cast<ListFolderItem *>(folder.internalPointer());
+    return kind == ListFolderKind::ReadingList ? readingListsRoot : smartListsRoot;
+}
+
+// the first row of the smart lists section also brings the separator before the reading lists
+void ReadingListModel::insertChild(ListFolderItem *container, int childRow, const std::function<void()> &insert)
+{
+    const auto row = firstRow(container) + childRow;
+    const bool withSeparator = container == smartListsRoot && container->childCount() == 0;
+    beginInsertRows(containerIndex(container), row, withSeparator ? row + 1 : row);
+    insert();
+    endInsertRows();
+}
+
+void ReadingListModel::removeChild(ListItem *item)
+{
+    auto *container = containerOf(item);
+    const auto parent = containerIndex(container);
+    const auto row = firstRow(container) + container->rowOf(item);
+    const bool withSeparator = container == smartListsRoot && container->childCount() == 1;
+    beginRemoveRows(parent, row, withSeparator ? row + 1 : row);
+    container->removeChild(item);
+    endRemoveRows();
+    delete item;
+}
+
+// a move stays in its section, so the smart lists section never gains or loses its first row (and its separator) here
+void ReadingListModel::moveChild(ListItem *item, ListFolderItem *to)
+{
+    auto *from = containerOf(item);
+    const bool folder = typeid(*item) == typeid(ListFolderItem);
+    const auto fromRow = firstRow(from) + from->rowOf(item);
+    // the rows of `to` without the item
+    const auto toRow = firstRow(to) + (folder ? to->rowForFolderName(item->name(), item) : to->rowForListName(item->name(), item));
+
+    if (from != to || toRow != fromRow) {
+        // in the same parent a row that goes down is announced before the row that follows its new place
+        beginMoveRows(containerIndex(from), fromRow, fromRow, containerIndex(to), from == to && toRow > fromRow ? toRow + 1 : toRow);
+        from->removeChild(item);
+        const auto folderId = to->container == nullptr ? std::nullopt : std::optional(to->getId());
+        if (folder) {
+            static_cast<ListFolderItem *>(item)->folder.parentId = folderId;
+            to->insertFolderByName(static_cast<ListFolderItem *>(item));
+        } else if (typeid(*item) == typeid(SmartListItem)) {
+            static_cast<SmartListItem *>(item)->list.folderId = folderId;
+            static_cast<SmartListItem *>(item)->container = to;
+            to->insertListByName(item);
+        } else {
+            static_cast<ReadingListItem *>(item)->list.folderId = folderId;
+            static_cast<ReadingListItem *>(item)->container = to;
+            to->insertListByName(item);
+        }
+        endMoveRows();
+    }
+
+    const auto mi = indexOfItem(item);
+    emit dataChanged(mi, mi);
+}
+
+bool ReadingListModel::canMove(ListItem *item, ListFolderItem *to) const
+{
+    auto *from = containerOf(item);
+    if (from == nullptr || to == nullptr || from == to || from->folder.id.kind != to->folder.id.kind)
+        return false;
+    for (auto *folder = to; folder != nullptr; folder = folder->container) {
+        if (folder == item)
+            return false;
+    }
+    return true;
+}
+
+bool ReadingListModel::moveItem(ListItem *item, ListFolderItem *to)
+{
+    if (!canMove(item, to))
         return false;
 
-    return row >= smartListsStart() && row < smartListsStart() + smartLists.count();
+    const auto folderId = to->container == nullptr ? std::nullopt : std::optional(to->getId());
+    bool moved = false;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        if (typeid(*item) == typeid(ListFolderItem))
+            moved = DBHelper::moveListFolder(static_cast<ListFolderItem *>(item)->folder.id, folderId, db);
+        else if (typeid(*item) == typeid(SmartListItem))
+            moved = DBHelper::moveSmartListToFolder(static_cast<SmartListItem *>(item)->list.id, folderId, db);
+        else
+            moved = DBHelper::moveReadingListToFolder(static_cast<ReadingListItem *>(item)->list.id, folderId, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!moved)
+        return false;
+
+    moveChild(item, to);
+    return true;
 }
 
-bool ReadingListModel::rowIsReadingList(int row, const QModelIndex &parent) const
+bool ReadingListModel::canMoveToFolder(const QModelIndex &mi, const QModelIndex &folder) const
 {
-    if (parent.isValid())
-        return true; // only lists with sublists
-
-    return row >= readingListsStart();
+    const auto kind = section(mi);
+    if (!kind)
+        return false;
+    if (folder.isValid()) {
+        const auto id = listFolder(folder);
+        if (!id || id->kind != *kind)
+            return false;
+    }
+    return canMove(static_cast<ListItem *>(mi.internalPointer()), containerFor(*kind, folder));
 }
 
-bool ReadingListModel::rowIsSeparator(int row, const QModelIndex &parent) const
+bool ReadingListModel::moveToFolder(const QModelIndex &mi, const QModelIndex &folder)
 {
-    if (parent.isValid())
-        return false; // only separators at top level
+    if (!canMoveToFolder(mi, folder))
+        return false;
+    return moveItem(static_cast<ListItem *>(mi.internalPointer()), containerFor(*section(mi), folder));
+}
 
-    return row == specialLists.count() || row == labelsStart() + labels.count() ||
-            (!smartLists.isEmpty() && row == smartListsStart() + smartLists.count());
+bool ReadingListModel::isChildList(const ListItem *item) const
+{
+    return typeid(*item) == typeid(ReadingListItem) && static_cast<const ReadingListItem *>(item)->parent != rootItem;
+}
+
+ListItem *ReadingListModel::draggedItem(const QMimeData *data) const
+{
+    QByteArray rawData = data->data(YACReader::YACReaderLibraryListRowMimeDataFormat);
+    QDataStream in(&rawData, QIODevice::ReadOnly);
+    int type = -1;
+    qulonglong id = 0;
+    in >> type >> id;
+    if (in.status() != QDataStream::Ok)
+        return nullptr;
+
+    const auto mi = indexOf(type, id);
+    return mi.isValid() ? static_cast<ListItem *>(mi.internalPointer()) : nullptr;
+}
+
+// onto a row, or between rows: the row after the gap, else the row before it
+QModelIndexList ReadingListModel::dropTargets(int row, const QModelIndex &parent) const
+{
+    if (row == -1)
+        return { parent };
+    return { index(row, 0, parent), index(row - 1, 0, parent) };
+}
+
+ListFolderItem *ReadingListModel::dropContainer(ListItem *item, int row, const QModelIndex &parent) const
+{
+    auto *from = containerOf(item);
+    if (from == nullptr)
+        return nullptr;
+
+    if (row == -1 && !parent.isValid()) {
+        auto *root = from->folder.id.kind == ListFolderKind::ReadingList ? readingListsRoot : smartListsRoot;
+        return canMove(item, root) ? root : nullptr;
+    }
+
+    for (const auto &target : dropTargets(row, parent)) {
+        if (!target.isValid())
+            continue;
+        auto *targetItem = static_cast<ListItem *>(target.internalPointer());
+        ListFolderItem *to = nullptr;
+        if (row == -1 && typeid(*targetItem) == typeid(ListFolderItem))
+            to = static_cast<ListFolderItem *>(targetItem);
+        else if (typeid(*targetItem) == typeid(ListFolderItem) || typeid(*targetItem) == typeid(SmartListItem) || typeid(*targetItem) == typeid(ReadingListItem))
+            to = containerOf(targetItem); // nothing for a child list
+        if (canMove(item, to))
+            return to;
+    }
+    return nullptr;
+}
+
+ReadingListItem *ReadingListModel::childListDropTarget(ReadingListItem *item, int row, const QModelIndex &parent) const
+{
+    for (const auto &target : dropTargets(row, parent)) {
+        if (!target.isValid())
+            continue;
+        auto *targetItem = static_cast<ListItem *>(target.internalPointer());
+        if (targetItem != item && typeid(*targetItem) == typeid(ReadingListItem) && static_cast<ReadingListItem *>(targetItem)->parent == item->parent)
+            return static_cast<ReadingListItem *>(targetItem);
+    }
+    return nullptr;
+}
+
+// a dragged row is dropped by the base view only when the model names its format
+QStringList ReadingListModel::mimeTypes() const
+{
+    return { YACReader::YACReaderLibraryListRowMimeDataFormat };
 }
 
 ReadingListModelProxy::ReadingListModelProxy(QObject *parent)

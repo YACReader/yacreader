@@ -34,6 +34,13 @@ public slots:
     void deleteCurrentList();
     void addLabel();
     void renameCurrentList();
+    void renameList(const QModelIndex &list);
+    // in the folder or section of the current list, else asks the section
+    void addListFolder();
+    // inside `list` when it is a folder, else at the top level of its section
+    void addListFolderAt(const QModelIndex &list);
+    // a folder or a list (not a child list) into a folder of its section, or to its top level
+    void moveToFolder(const QModelIndex &list);
     // the dialog starts with `query`, for example the current search
     void addSmartList(const QString &query = QString());
     void editSmartList(const QModelIndex &list);

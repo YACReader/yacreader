@@ -3,15 +3,18 @@
 #include "QsLog.h"
 #include "comic_model.h"
 #include "comics_view.h"
+#include "data_base_management.h"
 #include "db_helper.h"
 #include "empty_label_widget.h"
 #include "empty_special_list.h"
 #include "folder_item.h"
 #include "folder_model.h"
 #include "grid_comics_view.h"
+#include "grid_content_model.h"
 #include "library_search_coordinator.h"
 #include "library_window.h"
 #include "reading_list_model.h"
+#include "theme_manager.h"
 #include "yacreader_content_views_manager.h"
 #include "yacreader_folders_view.h"
 #include "yacreader_global.h"
@@ -20,6 +23,7 @@
 #include "yacreader_reading_lists_view.h"
 
 #include <QModelIndex>
+#include <QSqlDatabase>
 
 #include <memory>
 
@@ -125,6 +129,11 @@ void YACReaderNavigationController::loadListContent(const QModelIndex &listIndex
     case ReadingListModel::SmartList:
         loadSmartListContent(listIndex);
         break;
+
+    case ReadingListModel::ReadingListFolder:
+    case ReadingListModel::SmartListFolder:
+        loadListFolderContent(listIndex);
+        break;
     }
     contentViewsManager->gridView()->setCurrentList(listIndex);
     // if a list is selected, foldersView selection must be cleared
@@ -176,6 +185,75 @@ void YACReaderNavigationController::loadLabelContent(const QModelIndex &listInde
         contentViewsManager->showEmptyLabel(static_cast<YACReader::LabelColors>(listIndex.data(ReadingListModel::LabelColorRole).toInt()));
         libraryWindow->setComicActionsDisabled(true);
     }
+}
+
+// a folder of lists has no comics: it shows its folders and lists as cards
+void YACReaderNavigationController::loadListFolderContent(const QModelIndex &listIndex)
+{
+    libraryWindow->setComicActionsDisabled(true);
+    const auto *model = listIndex.model();
+    if (model->rowCount(listIndex) == 0) {
+        contentViewsManager->showEmptyListFolder();
+        return;
+    }
+
+    QList<GridListCard> cards;
+    QList<ReadingListId> readingLists;
+    const auto &art = ThemeManager::instance().getCurrentTheme().emptyContainer;
+    for (int row = 0; row < model->rowCount(listIndex); ++row) {
+        const auto child = model->index(row, 0, listIndex);
+        GridListCard card;
+        card.listType = child.data(ReadingListModel::TypeListsRole).toInt();
+        card.id = child.data(ReadingListModel::IDRole).toULongLong();
+        card.name = child.data(Qt::DisplayRole).toString();
+        switch (card.listType) {
+        case ReadingListModel::ReadingList:
+            card.kind = GridListCard::ReadingList;
+            card.icon = art.readingListArtUrl;
+            readingLists.append(ReadingListId(card.id));
+            break;
+        case ReadingListModel::SmartList:
+            card.kind = GridListCard::SmartList;
+            card.icon = art.smartListArtUrl;
+            break;
+        default:
+            card.kind = GridListCard::Folder;
+            break;
+        }
+        cards.append(card);
+    }
+
+    const auto dataPath = libraryWindow->foldersModel->getDatabase();
+    std::optional<QHash<qulonglong, QString>> hashes;
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::loadDatabase(dataPath);
+        connectionName = db.connectionName();
+        hashes = DBHelper::readingListCoverHashes(readingLists, db);
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    for (auto &card : cards) {
+        if (card.kind == GridListCard::ReadingList && hashes && hashes->contains(card.id))
+            card.cover = QUrl::fromLocalFile(YACReader::LibraryPaths::coverPathFromLibraryDataPath(dataPath, hashes->value(card.id)));
+    }
+
+    contentViewsManager->gridView()->setListCards(cards);
+    contentViewsManager->showFoldersOnlyGrid();
+}
+
+// opening a card selects its row in the sidebar, inside its folders
+void YACReaderNavigationController::openListCard(int listType, qulonglong id)
+{
+    const auto sourceIndex = libraryWindow->listsModel->indexOf(listType, id);
+    if (!sourceIndex.isValid())
+        return;
+
+    const auto proxyIndex = libraryWindow->listsModelProxy->mapFromSource(sourceIndex);
+    for (auto parent = proxyIndex.parent(); parent.isValid(); parent = parent.parent())
+        libraryWindow->listsView->expand(parent);
+    libraryWindow->listsView->scrollTo(proxyIndex);
+    libraryWindow->listsView->setCurrentIndex(proxyIndex);
+    selectedList(proxyIndex);
 }
 
 // an empty smart list is a search with no results
@@ -380,6 +458,17 @@ void YACReaderNavigationController::setupConnections()
     connect(libraryWindow->foldersView, &YACReaderTreeView::currentIndexChanged, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->foldersView, &YACReaderTreeView::clicked, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->listsView, &QAbstractItemView::clicked, this, &YACReaderNavigationController::selectedList);
+    connect(contentViewsManager->gridView(), &GridComicsView::listCardOpened, this, &YACReaderNavigationController::openListCard);
+    // the cards of the folder on screen follow the moves and renames of what it holds
+    const auto refreshListFolder = [this] {
+        const auto *selection = libraryWindow->listsView->selectionModel();
+        if (selection == nullptr || selection->selectedRows().isEmpty())
+            return;
+        if (libraryWindow->listsModel->listFolder(libraryWindow->listsModelProxy->mapToSource(libraryWindow->listsView->currentIndex())))
+            refreshCurrentSource();
+    };
+    connect(libraryWindow->listsModel, &QAbstractItemModel::rowsMoved, this, refreshListFolder);
+    connect(libraryWindow->listsModel, &QAbstractItemModel::dataChanged, this, refreshListFolder);
     connect(libraryWindow->historyController, &YACReaderHistoryController::modelIndexSelected, this, &YACReaderNavigationController::selectedIndexFromHistory);
     connect(gridView, &GridComicsView::folderSelected, this, &YACReaderNavigationController::navigateToFolder);
     connect(libraryWindow->comicsModel, &ComicModel::isEmpty, this, &YACReaderNavigationController::reselectCurrentSource);

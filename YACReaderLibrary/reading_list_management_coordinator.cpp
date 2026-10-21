@@ -3,6 +3,8 @@
 #include "add_label_dialog.h"
 #include "cbl_import_dialog.h"
 #include "comic_model.h"
+#include "move_to_folder_dialog.h"
+#include "new_list_folder_dialog.h"
 #include "reading_list_model.h"
 #include "smart_list_dialog.h"
 #include "yacreader_global.h"
@@ -47,7 +49,7 @@ void ReadingListManagementCoordinator::addReadingList()
     if (currentList.isValid() && listsModel->isReadingList(currentList))
         listsModel->addReadingListAt(name, currentList);
     else
-        listsModel->addReadingList(name);
+        listsModel->addReadingList(name, currentList);
 }
 
 void ReadingListManagementCoordinator::importReadingLists()
@@ -87,6 +89,7 @@ void ReadingListManagementCoordinator::matchListToLibraryComics(ListKind listKin
 
 void ReadingListManagementCoordinator::addSmartList(const QString &query)
 {
+    const QPersistentModelIndex currentList(currentListProvider());
     SmartListDialog dialog(settings, QString(), query, dialogParent);
     connect(&dialog, &SmartListDialog::searchChanged, this, &ReadingListManagementCoordinator::searchRequested);
     if (!query.isEmpty())
@@ -95,7 +98,7 @@ void ReadingListManagementCoordinator::addSmartList(const QString &query)
     emit searchFinished();
     if (!accepted)
         return;
-    if (!listsModel->addSmartList(dialog.name(), dialog.query()).isValid())
+    if (!listsModel->addSmartList(dialog.name(), dialog.query(), currentList).isValid())
         QMessageBox::critical(dialogParent, tr("New smart list"), tr("The smart list could not be saved."));
 }
 
@@ -130,11 +133,17 @@ void ReadingListManagementCoordinator::deleteList(const QModelIndex &currentList
     if (!currentList.isValid() || !listsModel->isEditable(currentList))
         return;
 
-    const auto answer = QMessageBox::question(dialogParent,
-                                              tr("Delete list/label"),
-                                              tr("The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?"),
-                                              QMessageBox::Yes,
-                                              QMessageBox::No);
+    const auto answer = listsModel->listFolder(currentList)
+            ? QMessageBox::question(dialogParent,
+                                    tr("Delete folder"),
+                                    tr("Delete the folder \"%1\" and everything in it? Its folders and lists are deleted; your comic files are not.").arg(listsModel->name(currentList)),
+                                    QMessageBox::Yes,
+                                    QMessageBox::No)
+            : QMessageBox::question(dialogParent,
+                                    tr("Delete list/label"),
+                                    tr("The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?"),
+                                    QMessageBox::Yes,
+                                    QMessageBox::No);
     if (answer != QMessageBox::Yes)
         return;
 
@@ -151,7 +160,11 @@ void ReadingListManagementCoordinator::addLabel()
 
 void ReadingListManagementCoordinator::renameCurrentList()
 {
-    const auto currentList = currentListProvider();
+    renameList(currentListProvider());
+}
+
+void ReadingListManagementCoordinator::renameList(const QModelIndex &currentList)
+{
     if (!currentList.isValid() || !listsModel->isEditable(currentList))
         return;
     // the name and the search of a smart list change together
@@ -160,13 +173,57 @@ void ReadingListManagementCoordinator::renameCurrentList()
         return;
     }
 
+    const bool folder = listsModel->listFolder(currentList).has_value();
+    const QPersistentModelIndex list(currentList);
     bool accepted = false;
     const auto name = QInputDialog::getText(dialogParent,
-                                            tr("Rename list name"),
-                                            tr("List name:"),
+                                            folder ? tr("Rename folder") : tr("Rename list name"),
+                                            folder ? tr("Folder name:") : tr("List name:"),
                                             QLineEdit::Normal,
                                             listsModel->name(currentList),
                                             &accepted);
-    if (accepted)
-        listsModel->rename(currentList, name);
+    if (accepted && list.isValid())
+        listsModel->rename(list, name);
+}
+
+void ReadingListManagementCoordinator::addListFolder()
+{
+    const auto currentList = currentListProvider();
+    if (listsModel->section(currentList)) {
+        addListFolderAt(currentList);
+        return;
+    }
+
+    NewListFolderDialog dialog(dialogParent);
+    if (dialog.exec() == QDialog::Accepted && !listsModel->addListFolder(dialog.section(), QModelIndex(), dialog.name()).isValid())
+        QMessageBox::critical(dialogParent, tr("New folder"), tr("The folder could not be created."));
+}
+
+void ReadingListManagementCoordinator::addListFolderAt(const QModelIndex &list)
+{
+    const auto section = listsModel->section(list);
+    if (!section)
+        return;
+
+    // inside a folder only when the folder itself is chosen
+    const QPersistentModelIndex parentFolder(listsModel->listFolder(list) ? list : QModelIndex());
+    bool accepted = false;
+    const auto name = QInputDialog::getText(dialogParent, tr("New folder"), tr("Folder name:"), QLineEdit::Normal, { }, &accepted).trimmed();
+    if (!accepted || name.isEmpty())
+        return;
+    if (!listsModel->addListFolder(*section, parentFolder, name).isValid())
+        QMessageBox::critical(dialogParent, tr("New folder"), tr("The folder could not be created."));
+}
+
+void ReadingListManagementCoordinator::moveToFolder(const QModelIndex &list)
+{
+    if (!listsModel->section(list) || listsModel->isReadingSubList(list))
+        return;
+
+    const QPersistentModelIndex item(list);
+    MoveToFolderDialog dialog(listsModel, list, dialogParent);
+    if (dialog.exec() != QDialog::Accepted || !item.isValid())
+        return;
+    if (!listsModel->moveToFolder(item, dialog.folder()))
+        QMessageBox::critical(dialogParent, tr("Move to folder"), tr("\"%1\" could not be moved.").arg(listsModel->name(item)));
 }

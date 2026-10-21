@@ -98,7 +98,8 @@
 namespace YACReader {
 
 static const QString YACReaderLibrarComiscSelectionMimeDataFormat = "application/yacreaderlibrary-comics-ids";
-static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/yacreaderlibrary-sublist-rows";
+// a row of the lists sidebar: its type (ReadingListModel::TypeList) and its id
+static const QString YACReaderLibraryListRowMimeDataFormat = "application/yacreaderlibrary-list-row";
 static const QString YACReaderLibraryListEntriesMimeDataFormat = "application/yacreaderlibrary-list-entries";
 
 enum FlowType {

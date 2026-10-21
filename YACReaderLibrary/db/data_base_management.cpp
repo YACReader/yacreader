@@ -551,6 +551,9 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
 
         // 9.19.0> tables
         success = success && DataBaseManagement::createSmartListTable(database);
+
+        // 9.20.0> tables
+        success = success && DataBaseManagement::createListFolderTables(database);
     }
 
     return success;
@@ -891,6 +894,26 @@ bool DataBaseManagement::createSmartListTable(QSqlDatabase &database)
                       "name TEXT NOT NULL, "
                       "query TEXT NOT NULL, "
                       "ordering INTEGER NOT NULL)");
+}
+
+// deleting a folder deletes its folders and lists, and so the child lists and entries of its reading lists
+bool DataBaseManagement::createListFolderTables(QSqlDatabase &database)
+{
+    bool success = true;
+    for (const auto &[folderTable, listTable] : { std::pair { "reading_list_folder", "reading_list" }, std::pair { "smart_list_folder", "smart_list" } }) {
+        QSqlQuery query(database);
+        success = success && query.exec(QString("CREATE TABLE %1 ("
+                                                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                "parent_id INTEGER, "
+                                                "name TEXT NOT NULL, "
+                                                "ordering INTEGER NOT NULL DEFAULT 0, "
+                                                "FOREIGN KEY(parent_id) REFERENCES %1(id) ON DELETE CASCADE)")
+                                                .arg(folderTable));
+        success = success && query.exec(QString("CREATE INDEX %1_parent_index ON %1 (parent_id)").arg(folderTable));
+        success = success && addColumns(listTable, { QString("folder_id INTEGER REFERENCES %1(id) ON DELETE CASCADE").arg(folderTable) }, database);
+        success = success && query.exec(QString("CREATE INDEX %1_folder_index ON %1 (folder_id)").arg(listTable));
+    }
+    return success;
 }
 
 bool DataBaseManagement::createComicDeleteTrigger(QSqlDatabase &database)
@@ -1494,6 +1517,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_17 = compareVersions(oldVersion, "9.17.0") < 0;
     const bool pre9_18 = compareVersions(oldVersion, "9.18.0") < 0;
     const bool pre9_19 = compareVersions(oldVersion, "9.19.0") < 0;
+    const bool pre9_20 = compareVersions(oldVersion, "9.20.0") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1718,6 +1742,11 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                 if (pre9_19) {
                     bool successCreatingSmartLists = createSmartListTable(db);
                     returnValue = returnValue && successCreatingSmartLists;
+                }
+
+                if (pre9_20) {
+                    bool successCreatingListFolders = createListFolderTables(db);
+                    returnValue = returnValue && successCreatingListFolders;
                 }
 
                 if (returnValue) {

@@ -511,28 +511,48 @@ void LibraryWindow::setupCoordinators()
     listsView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(listsView, &QWidget::customContextMenuRequested, this, [this](const QPoint &point) {
         const auto index = listsModelProxy->mapToSource(listsView->indexAt(point));
+        if (!index.isValid())
+            return;
         const auto type = index.data(ReadingListModel::TypeListsRole).toInt();
-        if (index.isValid() && type == ReadingListModel::SmartList) {
-            const QPersistentModelIndex smartList(index);
-            QMenu menu;
-            auto editAction = menu.addAction(tr("Edit smart list..."));
-            auto deleteAction = menu.addAction(tr("Delete smart list"));
-            // the dialogs run their own event loop, so the menu is gone first
-            connect(editAction, &QAction::triggered, readingListManagementCoordinator, [this, smartList] { readingListManagementCoordinator->editSmartList(smartList); }, Qt::QueuedConnection);
-            connect(deleteAction, &QAction::triggered, readingListManagementCoordinator, [this, smartList] { readingListManagementCoordinator->deleteList(smartList); }, Qt::QueuedConnection);
-            menu.exec(listsView->viewport()->mapToGlobal(point));
+        const QPersistentModelIndex list(index);
+        QMenu menu;
+        // the dialogs run their own event loop, so the actions run after the menu is gone
+        const auto addAction = [&](const QString &text, std::function<void()> action) {
+            connect(menu.addAction(text), &QAction::triggered, readingListManagementCoordinator, std::move(action), Qt::QueuedConnection);
+        };
+
+        switch (type) {
+        case ReadingListModel::SmartList:
+            addAction(tr("Edit smart list..."), [this, list] { readingListManagementCoordinator->editSmartList(list); });
+            addAction(tr("Delete smart list"), [this, list] { readingListManagementCoordinator->deleteList(list); });
+            menu.addSeparator();
+            addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
+            addAction(tr("Move to folder..."), [this, list] { readingListManagementCoordinator->moveToFolder(list); });
+            break;
+        case ReadingListModel::ReadingListFolder:
+        case ReadingListModel::SmartListFolder:
+            addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
+            addAction(tr("Rename folder..."), [this, list] { readingListManagementCoordinator->renameList(list); });
+            addAction(tr("Move to folder..."), [this, list] { readingListManagementCoordinator->moveToFolder(list); });
+            addAction(tr("Delete folder"), [this, list] { readingListManagementCoordinator->deleteList(list); });
+            break;
+        case ReadingListModel::ReadingList:
+        case ReadingListModel::Label: {
+            const auto listKind = type == ReadingListModel::Label ? ListKind::Label : ListKind::ReadingList;
+            const auto listId = index.data(ReadingListModel::IDRole).toULongLong();
+            const auto name = index.data(Qt::DisplayRole).toString();
+            addAction(tr("Match to library comics..."), [this, listKind, listId, name] { readingListManagementCoordinator->matchListToLibraryComics(listKind, listId, name); });
+            if (type == ReadingListModel::ReadingList) {
+                menu.addSeparator();
+                addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
+                if (!listsModel->isReadingSubList(index))
+                    addAction(tr("Move to folder..."), [this, list] { readingListManagementCoordinator->moveToFolder(list); });
+            }
+            break;
+        }
+        default:
             return;
         }
-        if (!index.isValid() || (type != ReadingListModel::Label && type != ReadingListModel::ReadingList))
-            return;
-
-        const auto listKind = type == ReadingListModel::Label ? ListKind::Label : ListKind::ReadingList;
-        const auto listId = index.data(ReadingListModel::IDRole).toULongLong();
-        const auto name = index.data(Qt::DisplayRole).toString();
-        QMenu menu;
-        auto matchAction = menu.addAction(tr("Match to library comics..."));
-        // the dialog runs its own event loop, so the menu is gone first
-        connect(matchAction, &QAction::triggered, readingListManagementCoordinator, [this, listKind, listId, name] { readingListManagementCoordinator->matchListToLibraryComics(listKind, listId, name); }, Qt::QueuedConnection);
         menu.exec(listsView->viewport()->mapToGlobal(point));
     });
     folderManagementCoordinator = new FolderManagementCoordinator(
