@@ -543,6 +543,7 @@ void LibraryWindow::setupCoordinators()
             const auto name = index.data(Qt::DisplayRole).toString();
             addAction(tr("Match to library comics..."), [this, listKind, listId, name] { readingListManagementCoordinator->matchListToLibraryComics(listKind, listId, name); });
             if (type == ReadingListModel::ReadingList) {
+                addAction(tr("Export reading list..."), [this, list] { readingListManagementCoordinator->exportReadingList(list); });
                 menu.addSeparator();
                 addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
                 if (!listsModel->isReadingSubList(index))

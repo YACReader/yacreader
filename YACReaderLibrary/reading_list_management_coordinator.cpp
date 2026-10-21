@@ -2,6 +2,7 @@
 
 #include "add_label_dialog.h"
 #include "cbl_import_dialog.h"
+#include "cbl_list_match.h"
 #include "comic_model.h"
 #include "move_to_folder_dialog.h"
 #include "new_list_folder_dialog.h"
@@ -9,10 +10,16 @@
 #include "smart_list_dialog.h"
 #include "yacreader_global.h"
 
+#include <QDir>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QRegularExpression>
+#include <QSaveFile>
+#include <QStandardPaths>
+#include <QUuid>
 #include <QWidget>
 
 #include <utility>
@@ -213,6 +220,50 @@ void ReadingListManagementCoordinator::addListFolderAt(const QModelIndex &list)
         return;
     if (!listsModel->addListFolder(*section, parentFolder, name).isValid())
         QMessageBox::critical(dialogParent, tr("New folder"), tr("The folder could not be created."));
+}
+
+void ReadingListManagementCoordinator::exportReadingList(const QModelIndex &list)
+{
+    if (!listsModel->isReadingList(list))
+        return;
+
+    const auto listId = list.data(ReadingListModel::IDRole).toULongLong();
+    const auto name = listsModel->name(list);
+    auto fileName = name;
+    // characters a file name cannot have on Windows
+    fileName.replace(QRegularExpression(QStringLiteral(R"([<>:"/\\|?*])")), QStringLiteral("_"));
+    if (fileName.trimmed().isEmpty())
+        fileName = tr("Reading list");
+
+    const auto xmlFilter = tr("CBL reading list (*.cbl)");
+    const auto jsonFilter = tr("JSON reading list (*.json)");
+    QString selectedFilter = xmlFilter;
+    auto path = QFileDialog::getSaveFileName(dialogParent,
+                                             tr("Export reading list"),
+                                             QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).filePath(fileName + ".cbl"),
+                                             xmlFilter + ";;" + jsonFilter,
+                                             &selectedFilter);
+    if (path.isEmpty())
+        return;
+
+    const auto suffix = QFileInfo(path).suffix().toLower();
+    const auto format = suffix == QLatin1StringView("json") || (suffix != QLatin1StringView("cbl") && selectedFilter == jsonFilter) ? CblReadingList::Json : CblReadingList::Xml;
+    if (suffix != QLatin1StringView("json") && suffix != QLatin1StringView("cbl"))
+        path += format == CblReadingList::Json ? ".json" : ".cbl";
+
+    // the rows the list shows: its entries, then the entries of its child lists
+    ComicModel listModel;
+    listModel.setupReadingListModelData(listId, YACReader::LibraryPaths::libraryDataPath(libraryPathProvider()));
+    QList<CblExportBook> books;
+    for (int row = 0; row < listModel.rowCount(); ++row) {
+        const auto index = listModel.index(row, 0);
+        if (const auto entry = listModel.listEntry(index))
+            books.append(cblExportBook(listModel.record(index), *entry));
+    }
+
+    QSaveFile file(path);
+    if (!file.open(QIODevice::WriteOnly) || file.write(writeCbl(name, books, format, QUuid::createUuid().toString(QUuid::WithoutBraces))) < 0 || !file.commit())
+        QMessageBox::critical(dialogParent, tr("Export reading list"), tr("The file could not be written."));
 }
 
 void ReadingListManagementCoordinator::moveToFolder(const QModelIndex &list)
