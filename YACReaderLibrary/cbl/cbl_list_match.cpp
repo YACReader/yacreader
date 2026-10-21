@@ -4,6 +4,7 @@
 #include "cbl_importer.h"
 #include "db_helper.h"
 
+#include <QDate>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -102,6 +103,17 @@ CblListEntry cblListEntry(const ComicRecord &record, const ListEntry &entry)
     return result;
 }
 
+CblExportBook cblExportBook(const ComicRecord &record, const ListEntry &entry)
+{
+    CblExportBook result;
+    result.book = cblListEntry(record, entry).book;
+    if (entry.source) {
+        result.source = entry.source->text;
+        result.sourceFormat = entry.source->format;
+    }
+    return result;
+}
+
 CblBook cblBookOf(const DescriptiveComicMetadata &metadata)
 {
     CblBook book;
@@ -111,6 +123,11 @@ CblBook cblBookOf(const DescriptiveComicMetadata &metadata)
     book.format = metadata.format.toString();
     if (const auto year = cblYearOfDate(metadata.date.toString()); year > 0)
         book.year = QString::number(year);
+    // a full d/m/yyyy date as yyyy-mm-dd
+    if (const auto parts = metadata.date.toString().split('/'); parts.size() == 3) {
+        if (const QDate date(parts[2].toInt(), parts[1].toInt(), parts[0].toInt()); date.isValid())
+            book.coverDate = date.toString(Qt::ISODate);
+    }
     if (const auto issueId = metadata.comicVineID.toString().trimmed(); !issueId.isEmpty())
         book.databases.append({ QStringLiteral("cv"), QString(), issueId });
     return book;

@@ -2,19 +2,28 @@
 
 #include "add_label_dialog.h"
 #include "cbl_import_dialog.h"
+#include "cbl_list_match.h"
 #include "comic_model.h"
 #include "move_to_folder_dialog.h"
 #include "new_list_folder_dialog.h"
 #include "reading_list_model.h"
+#include "reading_list_page.h"
 #include "smart_list_dialog.h"
 #include "yacreader_global.h"
 
+#include <QDir>
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QRegularExpression>
+#include <QSaveFile>
+#include <QStandardPaths>
+#include <QUuid>
 #include <QWidget>
 
+#include <algorithm>
 #include <utility>
 
 ReadingListManagementCoordinator::ReadingListManagementCoordinator(QWidget *dialogParent,
@@ -213,6 +222,79 @@ void ReadingListManagementCoordinator::addListFolderAt(const QModelIndex &list)
         return;
     if (!listsModel->addListFolder(*section, parentFolder, name).isValid())
         QMessageBox::critical(dialogParent, tr("New folder"), tr("The folder could not be created."));
+}
+
+void ReadingListManagementCoordinator::exportReadingList(const QModelIndex &list)
+{
+    if (!listsModel->isReadingList(list))
+        return;
+
+    const auto listId = list.data(ReadingListModel::IDRole).toULongLong();
+    const auto name = listsModel->name(list);
+    auto fileName = name;
+    // characters a file name cannot have on Windows
+    fileName.replace(QRegularExpression(QStringLiteral(R"([<>:"/\\|?*])")), QStringLiteral("_"));
+    if (fileName.trimmed().isEmpty())
+        fileName = tr("Reading list");
+
+    // the file types, with their suffixes
+    const QList<std::pair<QString, QStringList>> types {
+        { tr("CBL reading list (*.cbl)"), { "cbl" } },
+        { tr("JSON reading list (*.json)"), { "json" } },
+        { tr("Web page (*.html)"), { "html", "htm" } },
+    };
+    QStringList filters;
+    for (const auto &type : types)
+        filters.append(type.first);
+    QString selectedFilter = filters.first();
+    auto path = QFileDialog::getSaveFileName(dialogParent,
+                                             tr("Export reading list"),
+                                             QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).filePath(fileName + ".cbl"),
+                                             filters.join(";;"),
+                                             &selectedFilter);
+    if (path.isEmpty())
+        return;
+
+    // the suffix gives the type, else the chosen filter (and its suffix is added)
+    const auto suffix = QFileInfo(path).suffix().toLower();
+    auto type = std::find_if(types.cbegin(), types.cend(), [&](const auto &type) { return type.second.contains(suffix); });
+    if (type == types.cend()) {
+        type = std::find_if(types.cbegin(), types.cend(), [&](const auto &type) { return type.first == selectedFilter; });
+        if (type == types.cend())
+            type = types.cbegin();
+        path += "." + type->second.first();
+    }
+
+    // the rows the list shows: its entries, then the entries of its child lists
+    ComicModel listModel;
+    listModel.setupReadingListModelData(listId, YACReader::LibraryPaths::libraryDataPath(libraryPathProvider()));
+    QByteArray content;
+    if (type->second.first() == QLatin1StringView("html")) {
+        QList<ReadingListPageEntry> entries;
+        for (int row = 0; row < listModel.rowCount(); ++row) {
+            const auto index = listModel.index(row, 0);
+            const auto &metadata = recordMetadata(listModel.record(index));
+            const auto cover = index.data(ComicModel::CoverPathRole).toUrl();
+            entries.append({ index.data(ComicModel::TitleRole).toString(),
+                             readingListPageDetails(metadata.series.toString(), metadata.number.toString(), metadata.volume.toString(), metadata.date.toString()),
+                             cover.isLocalFile() ? readingListPageCover(cover.toLocalFile()) : QByteArray(),
+                             !index.data(ComicModel::AvailableRole).toBool() });
+        }
+        content = writeReadingListPage(name, entries, QDate::currentDate());
+    } else {
+        QList<CblExportBook> books;
+        for (int row = 0; row < listModel.rowCount(); ++row) {
+            const auto index = listModel.index(row, 0);
+            if (const auto entry = listModel.listEntry(index))
+                books.append(cblExportBook(listModel.record(index), *entry));
+        }
+        const auto format = type->second.first() == QLatin1StringView("json") ? CblReadingList::Json : CblReadingList::Xml;
+        content = writeCbl(name, books, format, QUuid::createUuid().toString(QUuid::WithoutBraces));
+    }
+
+    QSaveFile file(path);
+    if (!file.open(QIODevice::WriteOnly) || file.write(content) < 0 || !file.commit())
+        QMessageBox::critical(dialogParent, tr("Export reading list"), tr("The file could not be written."));
 }
 
 void ReadingListManagementCoordinator::moveToFolder(const QModelIndex &list)

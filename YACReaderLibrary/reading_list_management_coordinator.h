@@ -41,6 +41,9 @@ public slots:
     void addListFolderAt(const QModelIndex &list);
     // a folder or a list (not a child list) into a folder of its section, or to its top level
     void moveToFolder(const QModelIndex &list);
+    // a reading list, in its reading order (child lists included), as a CBL file or a web page; the chosen file type
+    // gives the format
+    void exportReadingList(const QModelIndex &list);
     // the dialog starts with `query`, for example the current search
     void addSmartList(const QString &query = QString());
     void editSmartList(const QModelIndex &list);

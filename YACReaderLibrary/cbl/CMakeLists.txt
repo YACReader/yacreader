@@ -9,6 +9,8 @@ add_library(cbl STATIC
     cbl_importer.cpp
     cbl_list_match.h
     cbl_list_match.cpp
+    cbl_writer.h
+    cbl_writer.cpp
 )
 target_include_directories(cbl PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}

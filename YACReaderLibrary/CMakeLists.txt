@@ -137,6 +137,8 @@ qt_add_executable(YACReaderLibrary WIN32
     new_list_folder_dialog.cpp
     move_to_folder_dialog.h
     move_to_folder_dialog.cpp
+    reading_list_page.h
+    reading_list_page.cpp
     empty_list_folder_widget.h
     empty_list_folder_widget.cpp
     export_library_dialog.h

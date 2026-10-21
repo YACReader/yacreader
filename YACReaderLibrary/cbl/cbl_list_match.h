@@ -3,6 +3,7 @@
 
 #include "cbl_matcher.h"
 #include "cbl_reader.h"
+#include "cbl_writer.h"
 #include "comic_record.h"
 #include "library_comic_match.h"
 
@@ -23,6 +24,8 @@ struct CblListEntry {
 };
 
 CblListEntry cblListEntry(const ComicRecord &record, const ListEntry &entry);
+// an entry of a reading list in an export: its book and its source
+CblExportBook cblExportBook(const ComicRecord &record, const ListEntry &entry);
 // the values of a comic or missing entry as a book, for matching and the views
 CblBook cblBookOf(const DescriptiveComicMetadata &metadata);
 CblLibraryMetadata cblLibraryMetadata(const DescriptiveComicMetadata &metadata);
