@@ -275,6 +275,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     scalingMethodCombo->addItem(tr("Nearest (fast, low quality)"));
     scalingMethodCombo->addItem(tr("Bilinear"));
     scalingMethodCombo->addItem(tr("Lanczos (better quality)"));
+    scalingMethodCombo->addItem(tr("Bicubic"));
     connect(scalingMethodCombo, &QComboBox::currentIndexChanged, this, [this](int index) {
         Configuration::getConfiguration().setScalingMethod(static_cast<ScaleMethod>(index));
         emit changedImageOptions();
