@@ -527,11 +527,13 @@ void LibraryWindow::setupCoordinators()
             addAction(tr("Delete smart list"), [this, list] { readingListManagementCoordinator->deleteList(list); });
             menu.addSeparator();
             addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
+            addAction(tr("Move to folder..."), [this, list] { readingListManagementCoordinator->moveToFolder(list); });
             break;
         case ReadingListModel::ReadingListFolder:
         case ReadingListModel::SmartListFolder:
             addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
             addAction(tr("Rename folder..."), [this, list] { readingListManagementCoordinator->renameList(list); });
+            addAction(tr("Move to folder..."), [this, list] { readingListManagementCoordinator->moveToFolder(list); });
             addAction(tr("Delete folder"), [this, list] { readingListManagementCoordinator->deleteList(list); });
             break;
         case ReadingListModel::ReadingList:
@@ -543,6 +545,8 @@ void LibraryWindow::setupCoordinators()
             if (type == ReadingListModel::ReadingList) {
                 menu.addSeparator();
                 addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
+                if (!listsModel->isReadingSubList(index))
+                    addAction(tr("Move to folder..."), [this, list] { readingListManagementCoordinator->moveToFolder(list); });
             }
             break;
         }

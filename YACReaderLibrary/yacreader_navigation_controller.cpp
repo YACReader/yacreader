@@ -459,6 +459,16 @@ void YACReaderNavigationController::setupConnections()
     connect(libraryWindow->foldersView, &YACReaderTreeView::clicked, this, &YACReaderNavigationController::selectedFolder);
     connect(libraryWindow->listsView, &QAbstractItemView::clicked, this, &YACReaderNavigationController::selectedList);
     connect(contentViewsManager->gridView(), &GridComicsView::listCardOpened, this, &YACReaderNavigationController::openListCard);
+    // the cards of the folder on screen follow the moves and renames of what it holds
+    const auto refreshListFolder = [this] {
+        const auto *selection = libraryWindow->listsView->selectionModel();
+        if (selection == nullptr || selection->selectedRows().isEmpty())
+            return;
+        if (libraryWindow->listsModel->listFolder(libraryWindow->listsModelProxy->mapToSource(libraryWindow->listsView->currentIndex())))
+            refreshCurrentSource();
+    };
+    connect(libraryWindow->listsModel, &QAbstractItemModel::rowsMoved, this, refreshListFolder);
+    connect(libraryWindow->listsModel, &QAbstractItemModel::dataChanged, this, refreshListFolder);
     connect(libraryWindow->historyController, &YACReaderHistoryController::modelIndexSelected, this, &YACReaderNavigationController::selectedIndexFromHistory);
     connect(gridView, &GridComicsView::folderSelected, this, &YACReaderNavigationController::navigateToFolder);
     connect(libraryWindow->comicsModel, &ComicModel::isEmpty, this, &YACReaderNavigationController::reselectCurrentSource);

@@ -51,6 +51,7 @@ public:
     bool canDropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) const override;
     bool dropMimeData(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent) override;
     QMimeData *mimeData(const QModelIndexList &indexes) const override;
+    QStringList mimeTypes() const override;
 
     // Convenience methods
     void setupReadingListsData(QString path);
@@ -63,15 +64,19 @@ public:
     bool isEditable(const QModelIndex &mi);
     bool isReadingList(const QModelIndex &mi);
     bool isReadingSubList(const QModelIndex &mi);
-    // at the end of the smart lists of `folder` when it is a smart list folder, else of the top level; the index of
-    // its row, invalid when it cannot be stored
+    // in `folder` when it is a smart list folder, else at the top level; the index of its row, invalid when it cannot be
+    // stored
     QModelIndex addSmartList(const QString &name, const QString &query, const QModelIndex &folder = QModelIndex());
     // nothing when the row is not a smart list
     std::optional<::SmartList> smartList(const QModelIndex &mi) const;
     bool updateSmartList(const QModelIndex &mi, const QString &name, const QString &query);
-    // at the end of the folders of `parentFolder` (a folder of `kind`), else of the top level of the section; the
-    // index of its row, invalid when it cannot be stored
+    // in `parentFolder` (a folder of `kind`), else at the top level of the section; the index of its row, invalid when
+    // it cannot be stored
     QModelIndex addListFolder(ListFolderKind kind, const QModelIndex &parentFolder, const QString &name);
+    // a folder or a list (not a child list) into `folder`, a folder of its section, or to the top level of its section
+    // when `folder` is invalid; never into its current place, nor a folder into itself or a folder below it
+    bool canMoveToFolder(const QModelIndex &mi, const QModelIndex &folder) const;
+    bool moveToFolder(const QModelIndex &mi, const QModelIndex &folder);
     // nothing when the row is not a folder of lists
     std::optional<ListFolderId> listFolder(const QModelIndex &mi) const;
     // the section of a list or a folder of lists: reading lists or smart lists; nothing for the other rows
@@ -143,9 +148,24 @@ private:
     // `insert` puts the item at `childRow` of the container; the rows are announced around it
     void insertChild(ListFolderItem *container, int childRow, const std::function<void()> &insert);
     void removeChild(ListItem *item);
+    // the row of `item` goes to its place by name in `to`, a container of its section (its own container after a rename)
+    void moveChild(ListItem *item, ListFolderItem *to);
+    bool canMove(ListItem *item, ListFolderItem *to) const;
+    // in the database, then in the rows
+    bool moveItem(ListItem *item, ListFolderItem *to);
 
+    bool isChildList(const ListItem *item) const;
+    // the row a drag of rows carries; nullptr when it is gone
+    ListItem *draggedItem(const QMimeData *data) const;
+    // `row` -1 drops onto `parent` (empty space when it is invalid), else between the rows of `parent`
+    QModelIndexList dropTargets(int row, const QModelIndex &parent) const;
+    // where a dropped folder or list goes: onto a folder, inside it; onto a list or between rows, next to that row; on
+    // empty space, the top level of its section; nullptr when it cannot go there
+    ListFolderItem *dropContainer(ListItem *item, int row, const QModelIndex &parent) const;
+    // another child list of the same parent, whose row a dropped child list takes; nullptr when there is none
+    ReadingListItem *childListDropTarget(ReadingListItem *item, int row, const QModelIndex &parent) const;
     bool dropComics(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
-    bool dropSublist(const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent);
+    bool dropSublist(ReadingListItem *item, ReadingListItem *destination);
     // Special lists
     QList<SpecialListItem *> specialLists;
 

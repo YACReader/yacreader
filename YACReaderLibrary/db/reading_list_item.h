@@ -106,13 +106,12 @@ public:
     ListItem *child(int row) const;
     // -1 when it is not a child
     int rowOf(const ListItem *child) const;
-    // at the end of the folders; gives its row
-    int appendFolder(ListFolderItem *item);
-    // at the end of the lists, or among them by name; gives its row
-    int appendList(ListItem *item);
+    // among its folders, or among its lists, by name; gives its row
+    int insertFolderByName(ListFolderItem *item);
     int insertListByName(ListItem *item);
-    // the row a list with that name gets with insertListByName
-    int rowForListName(const QString &name) const;
+    // the row a folder or a list with that name gets, with `ignored` left out
+    int rowForFolderName(const QString &name, const ListItem *ignored = nullptr) const;
+    int rowForListName(const QString &name, const ListItem *ignored = nullptr) const;
     void removeChild(ListItem *item);
 
     ListFolder folder;

@@ -3,6 +3,7 @@
 #include "add_label_dialog.h"
 #include "cbl_import_dialog.h"
 #include "comic_model.h"
+#include "move_to_folder_dialog.h"
 #include "new_list_folder_dialog.h"
 #include "reading_list_model.h"
 #include "smart_list_dialog.h"
@@ -212,4 +213,17 @@ void ReadingListManagementCoordinator::addListFolderAt(const QModelIndex &list)
         return;
     if (!listsModel->addListFolder(*section, parentFolder, name).isValid())
         QMessageBox::critical(dialogParent, tr("New folder"), tr("The folder could not be created."));
+}
+
+void ReadingListManagementCoordinator::moveToFolder(const QModelIndex &list)
+{
+    if (!listsModel->section(list) || listsModel->isReadingSubList(list))
+        return;
+
+    const QPersistentModelIndex item(list);
+    MoveToFolderDialog dialog(listsModel, list, dialogParent);
+    if (dialog.exec() != QDialog::Accepted || !item.isValid())
+        return;
+    if (!listsModel->moveToFolder(item, dialog.folder()))
+        QMessageBox::critical(dialogParent, tr("Move to folder"), tr("\"%1\" could not be moved.").arg(listsModel->name(item)));
 }

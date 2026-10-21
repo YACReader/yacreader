@@ -6,6 +6,8 @@
 
 #include <QFileIconProvider>
 
+#include <algorithm>
+
 qulonglong ListItem::getId() const
 {
     return 0;
@@ -276,17 +278,12 @@ int ListFolderItem::rowOf(const ListItem *child) const
     return list < 0 ? -1 : folders.count() + list;
 }
 
-int ListFolderItem::appendFolder(ListFolderItem *item)
+int ListFolderItem::insertFolderByName(ListFolderItem *item)
 {
     item->container = this;
-    folders.append(item);
-    return folders.count() - 1;
-}
-
-int ListFolderItem::appendList(ListItem *item)
-{
-    lists.append(item);
-    return childCount() - 1;
+    const auto row = rowForFolderName(item->name());
+    folders.insert(row, item);
+    return row;
 }
 
 int ListFolderItem::insertListByName(ListItem *item)
@@ -296,12 +293,18 @@ int ListFolderItem::insertListByName(ListItem *item)
     return row;
 }
 
-int ListFolderItem::rowForListName(const QString &name) const
+int ListFolderItem::rowForFolderName(const QString &name, const ListItem *ignored) const
 {
-    int i = 0;
-    while (i < lists.count() && naturalSortLessThanCI(lists.at(i)->name(), name))
-        i++;
-    return folders.count() + i;
+    return std::count_if(folders.cbegin(), folders.cend(), [&](const ListFolderItem *folder) {
+        return folder != ignored && naturalSortLessThanCI(folder->name(), name);
+    });
+}
+
+int ListFolderItem::rowForListName(const QString &name, const ListItem *ignored) const
+{
+    return folders.count() + std::count_if(lists.cbegin(), lists.cend(), [&](const ListItem *list) {
+               return list != ignored && naturalSortLessThanCI(list->name(), name);
+           });
 }
 
 void ListFolderItem::removeChild(ListItem *item)

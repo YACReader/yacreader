@@ -39,6 +39,8 @@ public slots:
     void addListFolder();
     // inside `list` when it is a folder, else at the top level of its section
     void addListFolderAt(const QModelIndex &list);
+    // a folder or a list (not a child list) into a folder of its section, or to its top level
+    void moveToFolder(const QModelIndex &list);
     // the dialog starts with `query`, for example the current search
     void addSmartList(const QString &query = QString());
     void editSmartList(const QModelIndex &list);
