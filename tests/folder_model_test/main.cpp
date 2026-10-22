@@ -5,6 +5,8 @@
 
 #include <QApplication>
 #include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QSignalSpy>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -28,6 +30,7 @@ private slots:
     void renameUpdatesThePathOfTheSubtree();
     void addedFolderStartsEmpty();
     void nullNumberOfChildrenIsZero();
+    void deleteFolderDeletesItsUnusedMissingComics();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -141,6 +144,25 @@ void FolderModelTest::typeChangesTheWholeSubtree()
     QCOMPARE(model.data(indexOf(model, 2), FolderModel::TypeRole).value<YACReader::FileType>(), YACReader::FileType::Manga);
     QCOMPARE(model.data(indexOf(model, 3), FolderModel::TypeRole).value<YACReader::FileType>(), YACReader::FileType::Manga);
     QCOMPARE(value("SELECT type FROM folder WHERE id = 3"), QString::number(int(YACReader::FileType::Manga)));
+}
+
+void FolderModelTest::deleteFolderDeletesItsUnusedMissingComics()
+{
+    const auto cover = LibraryPaths::placeholderCoverPathFromDataPath(dataPath, "key");
+    QVERIFY(QDir().mkpath(QFileInfo(cover).absolutePath()));
+    QFile file(cover);
+    QVERIFY(file.open(QIODevice::WriteOnly) && file.write("cover") > 0);
+    file.close();
+    QVERIFY(exec("INSERT INTO placeholder (id, series, coverKey) VALUES (5, 'Leaf', 'key'), (6, 'Unknown', NULL)"));
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (5, 5), (4, 6)"));
+
+    FolderModel model;
+    model.setupModelData(dataPath);
+    model.deleteFolder(indexOf(model, 3));
+
+    QCOMPARE(value("SELECT group_concat(id) FROM placeholder"), QString("6"));
+    QCOMPARE(value("SELECT group_concat(folder_id) FROM folder_placeholder"), QString("4"));
+    QVERIFY(!QFile::exists(cover));
 }
 
 void FolderModelTest::renameUpdatesThePathOfTheSubtree()

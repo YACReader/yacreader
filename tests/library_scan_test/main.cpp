@@ -100,6 +100,8 @@ private slots:
     void replacementWithKnownContentKeepsThatComicInfo();
     void unreadableReplacementKeepsTheComic();
     void replacementKeepsEntriesWhileAnotherFileHasTheOldContent();
+    void updateDeletesTheMissingComicsOfRemovedFolders();
+    void folderUpdateDeletesTheMissingComicsOfRemovedFolders();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -108,6 +110,9 @@ private:
     bool writeComic(const QString &relativePath, const QColor &color, int padding = 0);
     bool removePath(const QString &relativePath);
     bool scan(bool create);
+    bool scanFolder(const QString &relativePath);
+    // the placeholders 5 (cover key5, in /c/d), 6 (in /c/d and /b), and 7 (cover key7, in /c/d and a reading list)
+    bool addMissingComics();
     bool withDatabase(const std::function<bool(QSqlDatabase &)> &function);
     QStringList rows(const QString &sql);
     QString value(const QString &sql);
@@ -173,6 +178,43 @@ bool LibraryScanTest::scan(bool create)
     }
     creator.start();
     return creator.wait(120000) && !failed;
+}
+
+bool LibraryScanTest::scanFolder(const QString &relativePath)
+{
+    QSettings settings(root->filePath("settings.ini"), QSettings::IniFormat);
+    settings.setValue(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false);
+    settings.sync();
+
+    LibraryCreator creator(&settings);
+    bool failed = false;
+    connect(&creator, &LibraryCreator::failedOpeningDB, this, [&failed](const QString &error) { qWarning() << error; failed = true; }, Qt::DirectConnection);
+
+    const auto folderId = value(QString("SELECT id FROM folder WHERE path = '/%1'").arg(relativePath)).toULongLong();
+    creator.updateFolder(source, LibraryPaths::libraryDataPath(source), source + "/" + relativePath, folderId);
+    creator.start();
+    return folderId != 0 && creator.wait(120000) && !failed;
+}
+
+bool LibraryScanTest::addMissingComics()
+{
+    for (const auto key : { "key5", "key7" }) {
+        const auto path = LibraryPaths::placeholderCoverPathFromDataPath(LibraryPaths::libraryDataPath(source), key);
+        QDir().mkpath(QFileInfo(path).absolutePath());
+        QFile file(path);
+        if (!file.open(QIODevice::WriteOnly) || file.write(png(Qt::gray)) <= 0)
+            return false;
+    }
+
+    return withDatabase([&](QSqlDatabase &db) {
+        QSqlQuery query(db);
+        return query.exec("INSERT INTO placeholder (id, series, number, coverKey) VALUES (5, 'D', '2', 'key5'), (6, 'D', '3', NULL), (7, 'D', '4', 'key7')") &&
+                query.exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) "
+                           "SELECT id, 5 FROM folder WHERE path = '/c/d' UNION ALL SELECT id, 6 FROM folder WHERE path IN ('/c/d', '/b') "
+                           "UNION ALL SELECT id, 7 FROM folder WHERE path = '/c/d'") &&
+                query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')") &&
+                query.exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 0, 7)");
+    });
 }
 
 bool LibraryScanTest::withDatabase(const std::function<bool(QSqlDatabase &)> &function)
@@ -412,6 +454,35 @@ void LibraryScanTest::replacementKeepsEntriesWhileAnotherFileHasTheOldContent()
     QVERIFY(value("SELECT comicInfoId FROM comic WHERE path = '/a.cbz'") != oldInfo);
     QCOMPARE(entries(), oldEntries);
     QCOMPARE(value("SELECT COUNT(*) FROM comic_info WHERE id = " + oldInfo), QString("1"));
+}
+
+void LibraryScanTest::updateDeletesTheMissingComicsOfRemovedFolders()
+{
+    QVERIFY(addMissingComics());
+    const auto cover5 = LibraryPaths::placeholderCoverPathFromDataPath(LibraryPaths::libraryDataPath(source), "key5");
+    const auto cover7 = LibraryPaths::placeholderCoverPathFromDataPath(LibraryPaths::libraryDataPath(source), "key7");
+
+    QVERIFY(removePath("c"));
+    QVERIFY(scan(false));
+
+    QCOMPARE(rows("SELECT f.path, fp.placeholder_id FROM folder_placeholder fp INNER JOIN folder f ON f.id = fp.folder_id"), QStringList({ "/b|6" }));
+    QCOMPARE(rows("SELECT id FROM placeholder ORDER BY id"), QStringList({ "6", "7" }));
+    QVERIFY(!QFile::exists(cover5));
+    QVERIFY(QFile::exists(cover7));
+}
+
+void LibraryScanTest::folderUpdateDeletesTheMissingComicsOfRemovedFolders()
+{
+    QVERIFY(addMissingComics());
+    const auto cover5 = LibraryPaths::placeholderCoverPathFromDataPath(LibraryPaths::libraryDataPath(source), "key5");
+
+    QVERIFY(removePath("c/d"));
+    QVERIFY(scanFolder("c"));
+
+    QCOMPARE(rows("SELECT path FROM folder WHERE path LIKE '/c%' ORDER BY path"), QStringList({ "/c" }));
+    QCOMPARE(rows("SELECT f.path, fp.placeholder_id FROM folder_placeholder fp INNER JOIN folder f ON f.id = fp.folder_id"), QStringList({ "/b|6" }));
+    QCOMPARE(rows("SELECT id FROM placeholder ORDER BY id"), QStringList({ "6", "7" }));
+    QVERIFY(!QFile::exists(cover5));
 }
 
 QTEST_GUILESS_MAIN(LibraryScanTest)

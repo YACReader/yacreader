@@ -62,12 +62,18 @@ public:
     static void removeFromDB(DiskItem &item, QSqlDatabase &db);
     static void removeFromDB(Folder *folder, QSqlDatabase &db);
     static void removeFromDB(ComicDB *comic, QSqlDatabase &db);
-    // removals of entries, lists, and labels also delete the placeholders that lose their last entry; on success they
-    // give the cover keys of those placeholders, and the caller deletes the files after the commit (removePlaceholderCovers)
+    // removals of entries, lists, labels, and folder placements also delete the placeholders that nothing uses any more
+    // (no entry and no placement); on success they give the cover keys of those placeholders, and the caller deletes the
+    // files after the commit (removePlaceholderCovers)
     static std::optional<QStringList> removeLabelFromDB(qulonglong id, QSqlDatabase &db);
     // also removes the child lists
     static std::optional<QStringList> removeListFromDB(qulonglong id, QSqlDatabase &db);
     static void removePlaceholderCovers(const QString &libraryDataPath, const QStringList &coverKeys);
+    // no transaction; for removals that cascade to folder placements (folder deletes)
+    static std::optional<QStringList> removeUnusedPlaceholders(QSqlDatabase &db);
+    // placing a placeholder again in the same folder changes nothing
+    static bool placePlaceholderInFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db);
+    static std::optional<QStringList> removePlaceholderFromFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db);
     // logic deletes
     static void deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db);
@@ -138,7 +144,7 @@ public:
     // a child reading list is never in a folder
     static bool moveReadingListToFolder(ReadingListId id, const std::optional<qulonglong> &folderId, QSqlDatabase &db);
     static bool moveSmartListToFolder(SmartListId id, const std::optional<qulonglong> &folderId, QSqlDatabase &db);
-    // with everything in it; on success the cover keys of the placeholders that lost their last entry
+    // with everything in it; on success the cover keys of the placeholders that nothing uses any more
     static std::optional<QStringList> removeListFolder(const ListFolderId &id, QSqlDatabase &db);
     static void renameList(qulonglong id, const QString &name, QSqlDatabase &db);
     static bool renameFolder(qulonglong id, const QString &name, const QString &oldPath, const QString &newPath, QSqlDatabase &db, QString *error = nullptr);
@@ -175,6 +181,8 @@ public:
     static std::optional<ComicInfo> loadComicInfo(QString hash, QSqlDatabase &db);
     static std::optional<ComicInfo> loadComicInfo(ComicInfoId id, QSqlDatabase &db);
     static std::optional<Placeholder> loadPlaceholder(PlaceholderId id, QSqlDatabase &db);
+    // nothing if the query fails
+    static std::optional<QList<Placeholder>> loadFolderPlaceholders(FolderId folderId, QSqlDatabase &db);
     static std::optional<SmartList> loadSmartList(SmartListId id, QSqlDatabase &db);
     // in their order; nothing if the query fails
     static std::optional<QList<SmartList>> loadSmartLists(QSqlDatabase &db);

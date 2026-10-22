@@ -200,14 +200,20 @@ bool allOfKind(const QList<ListItemId> &entryIds, ListKind listKind)
     return std::all_of(entryIds.begin(), entryIds.end(), [listKind](const ListItemId &id) { return id.listKind == listKind; });
 }
 
-// deletes the placeholders of `placeholderIds` that no entry refers to; gives their cover keys
-std::optional<QStringList> deletePlaceholdersWithoutEntries(const QSet<qulonglong> &placeholderIds, QSqlDatabase &db)
+// a placeholder lives while an entry or a folder placement uses it
+QString placeholderUnused()
+{
+    return QString("NOT EXISTS (SELECT 1 FROM %1 WHERE placeholder_id = p.id) "
+                   "AND NOT EXISTS (SELECT 1 FROM %2 WHERE placeholder_id = p.id) "
+                   "AND NOT EXISTS (SELECT 1 FROM folder_placeholder WHERE placeholder_id = p.id)")
+            .arg(readingListEntries.table, labelEntries.table);
+}
+
+// deletes the placeholders of `placeholderIds` that nothing uses; gives their cover keys
+std::optional<QStringList> deleteUnusedPlaceholders(const QSet<qulonglong> &placeholderIds, QSqlDatabase &db)
 {
     QSqlQuery select(db);
-    select.prepare(QString("SELECT p.coverKey FROM placeholder p WHERE p.id = :id "
-                           "AND NOT EXISTS (SELECT 1 FROM %1 WHERE placeholder_id = p.id) "
-                           "AND NOT EXISTS (SELECT 1 FROM %2 WHERE placeholder_id = p.id)")
-                           .arg(readingListEntries.table, labelEntries.table));
+    select.prepare("SELECT p.coverKey FROM placeholder p WHERE p.id = :id AND " + placeholderUnused());
     QSqlQuery remove(db);
     remove.prepare("DELETE FROM placeholder WHERE id = :id");
 
@@ -236,7 +242,7 @@ std::optional<QStringList> deletePlaceholdersWithoutEntries(const QSet<qulonglon
     return coverKeys;
 }
 
-// runs `removal` in a transaction and then deletes the placeholders of `placeholderIds` that lost their last entry
+// runs `removal` in a transaction and then deletes the placeholders of `placeholderIds` that nothing uses any more
 std::optional<QStringList> removeWithPlaceholders(QSqlQuery &placeholderIds, const std::function<bool()> &removal, QSqlDatabase &db)
 {
     db.transaction();
@@ -257,7 +263,7 @@ std::optional<QStringList> removeWithPlaceholders(QSqlQuery &placeholderIds, con
         return std::nullopt;
     }
 
-    auto coverKeys = deletePlaceholdersWithoutEntries(ids, db);
+    auto coverKeys = deleteUnusedPlaceholders(ids, db);
     if (!coverKeys) {
         db.rollback();
         return std::nullopt;
@@ -778,6 +784,56 @@ void DBHelper::removePlaceholderCovers(const QString &libraryDataPath, const QSt
     for (const auto &coverKey : coverKeys) {
         QFile::remove(LibraryPaths::placeholderCoverPathFromDataPath(libraryDataPath, coverKey));
     }
+}
+
+std::optional<QStringList> DBHelper::removeUnusedPlaceholders(QSqlDatabase &db)
+{
+    QSqlQuery select(db);
+    select.setForwardOnly(true);
+    if (!select.exec("SELECT p.id FROM placeholder p WHERE " + placeholderUnused())) {
+        QLOG_ERROR() << "Unable to find unused placeholders:" << select.lastError().text();
+        return std::nullopt;
+    }
+    QSet<qulonglong> ids;
+    while (select.next()) {
+        ids.insert(select.value(0).toULongLong());
+    }
+    select.finish();
+    return deleteUnusedPlaceholders(ids, db);
+}
+
+bool DBHelper::placePlaceholderInFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("INSERT OR IGNORE INTO folder_placeholder (folder_id, placeholder_id) VALUES (:folder_id, :placeholder_id)");
+    query.bindValue(":folder_id", folderId.value());
+    query.bindValue(":placeholder_id", placeholderId.value());
+    if (!query.exec()) {
+        QLOG_ERROR() << "Unable to place a placeholder in a folder:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+std::optional<QStringList> DBHelper::removePlaceholderFromFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db)
+{
+    QSqlQuery placeholderIds(db);
+    placeholderIds.prepare("SELECT placeholder_id FROM folder_placeholder WHERE folder_id = :folder_id AND placeholder_id = :placeholder_id");
+    placeholderIds.bindValue(":folder_id", folderId.value());
+    placeholderIds.bindValue(":placeholder_id", placeholderId.value());
+
+    const auto removal = [&] {
+        QSqlQuery query(db);
+        query.prepare("DELETE FROM folder_placeholder WHERE folder_id = :folder_id AND placeholder_id = :placeholder_id");
+        query.bindValue(":folder_id", folderId.value());
+        query.bindValue(":placeholder_id", placeholderId.value());
+        if (!query.exec()) {
+            QLOG_ERROR() << "Unable to remove a placeholder from a folder:" << query.lastError().text();
+            return false;
+        }
+        return true;
+    };
+    return removeWithPlaceholders(placeholderIds, removal, db);
 }
 
 void DBHelper::deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db)
@@ -2368,6 +2424,27 @@ std::optional<Placeholder> DBHelper::loadPlaceholder(PlaceholderId id, QSqlDatab
     }
 
     return std::nullopt;
+}
+
+std::optional<QList<Placeholder>> DBHelper::loadFolderPlaceholders(FolderId folderId, QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + TableProjection::selectList("p", Placeholder::columns()) +
+            " FROM folder_placeholder fp INNER JOIN placeholder p ON p.id = fp.placeholder_id WHERE fp.folder_id = :folder_id ORDER BY p.id";
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    query.prepare(sql);
+    query.bindValue(":folder_id", folderId.value());
+    if (!query.exec()) {
+        QLOG_ERROR() << "Unable to load the placeholders of a folder:" << query.lastError().text();
+        return std::nullopt;
+    }
+
+    QList<Placeholder> placeholders;
+    const auto columns = Placeholder::columnIndexes(query.record(), "p");
+    while (query.next()) {
+        placeholders.append(Placeholder::fromQuery(query, columns));
+    }
+    return placeholders;
 }
 
 std::optional<SmartList> DBHelper::loadSmartList(SmartListId id, QSqlDatabase &db)

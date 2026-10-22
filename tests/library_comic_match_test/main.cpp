@@ -26,6 +26,8 @@ private slots:
     void comicWithoutACoverTakesThePlaceholderCover();
     void comicKeepsItsCover();
     void placeholderNeedsAComicWithAFile();
+    void matchResolvesOnlyThePlacementsOfTheComicFolders();
+    void matchDeletesThePlaceholderWhenNoPlacementIsLeft();
     void deletedComicGivesItsComicToEveryEntry();
     void deletedComicGivesReadStateOnlyWhenTheComicHasNone();
     void deletedComicMustStillBeDeleted();
@@ -193,6 +195,34 @@ void LibraryComicMatchTest::placeholderNeedsAComicWithAFile()
     QCOMPARE(rows("SELECT COUNT(*) FROM placeholder"), QList<QVariantList>({ { 1 } }));
     QCOMPARE(rows("SELECT COUNT(*) FROM reading_list_entry WHERE placeholder_id = 5"), QList<QVariantList>({ { 2 } }));
     QCOMPARE(rows("SELECT title FROM comic_info WHERE id = 10"), QList<QVariantList>({ { QVariant() } }));
+}
+
+void LibraryComicMatchTest::matchResolvesOnlyThePlacementsOfTheComicFolders()
+{
+    const auto placeholderCover = LibraryPaths::placeholderCoverPathFromDataPath(dataPath(), "key");
+    writeImage(placeholderCover, Qt::red);
+    QVERIFY(exec("UPDATE placeholder SET coverKey = 'key' WHERE id = 5"));
+    QVERIFY(exec("INSERT INTO folder (id, parentId, name, path) VALUES (2, 1, 'Other', '/Other')"));
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (1, 5), (2, 5)"));
+
+    ComicMatchFiles files;
+    QVERIFY(matchPlaceholder(5, 10, files));
+
+    QCOMPARE(rows("SELECT COUNT(*) FROM reading_list_entry WHERE placeholder_id = 5"), QList<QVariantList>({ { 0 } }));
+    QCOMPARE(rows("SELECT folder_id FROM folder_placeholder WHERE placeholder_id = 5"), QList<QVariantList>({ { 2 } }));
+    QCOMPARE(rows("SELECT coverKey FROM placeholder WHERE id = 5"), QList<QVariantList>({ { "key" } }));
+    QVERIFY(QFile::exists(placeholderCover));
+}
+
+void LibraryComicMatchTest::matchDeletesThePlaceholderWhenNoPlacementIsLeft()
+{
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (1, 5)"));
+
+    ComicMatchFiles files;
+    QVERIFY(matchPlaceholder(5, 10, files));
+
+    QCOMPARE(rows("SELECT COUNT(*) FROM folder_placeholder"), QList<QVariantList>({ { 0 } }));
+    QCOMPARE(rows("SELECT COUNT(*) FROM placeholder"), QList<QVariantList>({ { 0 } }));
 }
 
 void LibraryComicMatchTest::deletedComicGivesItsComicToEveryEntry()

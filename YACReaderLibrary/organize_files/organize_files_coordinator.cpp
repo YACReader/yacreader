@@ -254,6 +254,7 @@ bool OrganizeFilesCoordinator::applyToDatabase(const QList<FileMove> &moves,
             DBHelper::removeEmptyFolderRows(createdFolderIdsToRemove, db);
             DBHelper::syncFolderAddedFromContents(createdFolders, db);
             DBHelper::updateChildrenInfo(db);
+            const auto placeholderCoverKeys = DBHelper::removeUnusedPlaceholders(db).value_or(QStringList());
 
             if (!db.commit()) {
                 *error = tr("the library database could not be saved: %1").arg(db.lastError().text());
@@ -261,6 +262,8 @@ bool OrganizeFilesCoordinator::applyToDatabase(const QList<FileMove> &moves,
                 removedFolders.clear();
                 createdFolders.clear();
                 success = false;
+            } else {
+                DBHelper::removePlaceholderCovers(YACReader::LibraryPaths::libraryDataPath(libraryRoot), placeholderCoverKeys);
             }
         } else {
             db.rollback();

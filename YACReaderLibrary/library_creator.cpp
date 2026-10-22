@@ -278,6 +278,7 @@ void LibraryCreator::run()
             }
 
             QStringList unusedCoverHashes;
+            QStringList unusedPlaceholderCoverKeys;
             if (!canceled) {
                 if (partialUpdate) {
                     auto folder = DBHelper::updateChildrenInfo(_folderDestinationId, _database);
@@ -286,12 +287,15 @@ void LibraryCreator::run()
                     DBHelper::updateChildrenInfo(_database);
                     unusedCoverHashes = cleanup(_database, _target);
                 }
+                // removed folders took their placements with them
+                unusedPlaceholderCoverKeys = DBHelper::removeUnusedPlaceholders(_database).value_or(QStringList());
             }
 
             if (_database.commit()) {
                 for (const auto &hash : std::as_const(unusedCoverHashes)) {
                     QFile::remove(LibraryPaths::coverPathFromLibraryDataPath(_target, hash));
                 }
+                DBHelper::removePlaceholderCovers(_target, unusedPlaceholderCoverKeys);
             }
             _database.close();
         }

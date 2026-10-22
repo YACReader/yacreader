@@ -906,6 +906,8 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         DBHelper::removeFromDB(&f, db);
+        if (const auto coverKeys = DBHelper::removeUnusedPlaceholders(db))
+            DBHelper::removePlaceholderCovers(_databasePath, *coverKeys);
         auto folder = DBHelper::updateChildrenInfo(item->parent()->folder.id.value(), db);
         DBHelper::propagateFolderUpdatesToParent(folder, db);
         connectionName = db.connectionName();

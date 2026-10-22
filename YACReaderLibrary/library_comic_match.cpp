@@ -113,7 +113,6 @@ bool matchPlaceholderToComic(PlaceholderId placeholderId, ComicInfoId comicInfoI
         if (!QFile::exists(LibraryPaths::coverPathFromLibraryDataPath(libraryDataPath, info->hash)) &&
             !copyPlaceholderCover(*placeholder->coverKey, *info, libraryDataPath, db, files))
             return false;
-        files.placeholderCoverKeys.append(*placeholder->coverKey);
     }
 
     if (!removeLabelRepeats("placeholder_id", placeholderId.value(), comicInfoId, db))
@@ -127,10 +126,23 @@ bool matchPlaceholderToComic(PlaceholderId placeholderId, ComicInfoId comicInfoI
             return false;
     }
 
+    // a placement is resolved only by a file in its folder
+    QSqlQuery resolve(db);
+    resolve.prepare("DELETE FROM folder_placeholder WHERE placeholder_id = :placeholder_id "
+                    "AND folder_id IN (SELECT parentId FROM comic WHERE comicInfoId = :comic_info_id)");
+    resolve.bindValue(":placeholder_id", placeholderId.value());
+    resolve.bindValue(":comic_info_id", comicInfoId.value());
+    if (!exec(resolve, "remove the placements of a matched placeholder"))
+        return false;
+
     QSqlQuery remove(db);
-    remove.prepare("DELETE FROM placeholder WHERE id = :id");
+    remove.prepare("DELETE FROM placeholder WHERE id = :id AND NOT EXISTS (SELECT 1 FROM folder_placeholder WHERE placeholder_id = :id)");
     remove.bindValue(":id", placeholderId.value());
-    return exec(remove, "delete a matched placeholder") && remove.numRowsAffected() == 1;
+    if (!exec(remove, "delete a matched placeholder"))
+        return false;
+    if (remove.numRowsAffected() == 1 && placeholder->coverKey)
+        files.placeholderCoverKeys.append(*placeholder->coverKey);
+    return true;
 }
 
 bool matchDeletedComicToComic(ComicInfoId deletedComicInfoId, ComicInfoId comicInfoId, QSqlDatabase &db, ComicMatchFiles &files)
