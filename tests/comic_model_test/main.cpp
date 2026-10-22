@@ -69,6 +69,10 @@ private slots:
     void sharedPlaceholderShowsInEveryList();
     void assignNumbersOncePerComicOrPlaceholder();
     void addToAListAppendsWhatEachRowRefersTo();
+    void folderShowsItsMissingComicsInNumberOrder();
+    void missingComicsInFoldersSupportMetadataAndDelete();
+    void missingComicsInFoldersAreDraggedAndAddedToLists();
+    void removingMissingComicsFromAFolderKeepsTheComics();
     void selectionSummaryCountsMissingComics();
     void searchResultsKeepEachSeriesTogether();
     void searchLimitKeepsTheFirstSeries();
@@ -257,14 +261,11 @@ void ComicModelTest::dragDataCarriesComicsAndEntries()
     model.setupReadingListModelData(1, dataPath);
     std::unique_ptr<QMimeData> data(model.mimeData({ model.index(2, 0), model.index(1, 0) }));
     QCOMPARE(YACReader::mimeDataToComicsIds(data.get()), QList<qulonglong>({ 3, 1 }));
-    const auto entries = YACReader::mimeDataToListEntries(data.get());
-    QCOMPARE(entries.size(), 2);
-    QVERIFY(entries.first() == (ListItemId { ListKind::ReadingList, 30 }));
-    QVERIFY(YACReader::mimeDataToRows(data.get()) == QList<ComicRowId>({ entries.at(0), entries.at(1) }));
+    QVERIFY(YACReader::mimeDataToRows(data.get()) == QList<ComicRowId>({ model.rowId(model.index(2, 0)), model.rowId(model.index(1, 0)) }));
+    QVERIFY(YACReader::mimeDataToRows(data.get()).first() == ComicRowId(ListItemId { ListKind::ReadingList, 30 }));
 
     model.setupFolderModelData(2, dataPath);
     data.reset(model.mimeData({ model.index(0, 0) }));
-    QVERIFY(YACReader::mimeDataToListEntries(data.get()).isEmpty());
     QVERIFY(YACReader::mimeDataToRows(data.get()) == QList<ComicRowId>({ ComicId(model.index(0, 0).data(ComicModel::IdRole).toULongLong()) }));
 }
 
@@ -713,7 +714,10 @@ void ComicModelTest::sharedViewsShowComicsWithFiles()
 
     std::unique_ptr<QMimeData> data(model.mimeData(all));
     QCOMPARE(YACReader::mimeDataToComicsIds(data.get()), ids);
-    QVERIFY(YACReader::mimeDataToListEntries(data.get()).isEmpty());
+    QList<ComicRowId> rows;
+    for (const auto id : ids)
+        rows.append(ComicId(id));
+    QVERIFY(YACReader::mimeDataToRows(data.get()) == rows);
 }
 
 void ComicModelTest::sharedViewAfterAListHasNoDeletedRows_data()
@@ -990,6 +994,105 @@ void ComicModelTest::addToAListAppendsWhatEachRowRefersTo()
     model.setupFolderModelData(2, dataPath);
     model.addComicsToReadingList({ model.indexOf(ComicId(5)) }, 2);
     QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 2 ORDER BY ordering DESC LIMIT 1"), QList<int>({ 1 }));
+}
+
+void ComicModelTest::folderShowsItsMissingComicsInNumberOrder()
+{
+    QVERIFY(exec("INSERT INTO folder (id, parentId, name, path) VALUES (3, 1, 'Other', '/Other')"));
+    QVERIFY(exec("INSERT INTO placeholder (id, series, number) VALUES (1, 'Series', '6'), (2, 'Series', '0'), (3, 'Other', '9')"));
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (2, 1), (2, 2), (3, 3)"));
+
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+    QCOMPARE(model.rowCount(), 7);
+    QStringList kinds;
+    QStringList numbers;
+    for (int row = 0; row < model.rowCount(); row++) {
+        kinds.append(model.index(row, 0).data(ComicModel::KindRole).toString());
+        numbers.append(model.index(row, 0).data(ComicModel::NumberRole).toString());
+    }
+    QCOMPARE(kinds, QStringList({ "PlaceholderInFolder", "Comic", "Comic", "Comic", "Comic", "Comic", "PlaceholderInFolder" }));
+    QCOMPARE(numbers, QStringList({ "0", "1", "1", "2", "3", "4", "6" }));
+
+    const auto missing = model.index(6, 0);
+    QCOMPARE(missing.data(ComicModel::AvailableRole).toBool(), false);
+    QCOMPARE(missing.data(ComicModel::TitleRole).toString(), QString("Series #6"));
+    QVERIFY(missing.data(ComicModel::IdRole).isNull());
+    QVERIFY(missing.data(ComicModel::ListItemIdRole).isNull());
+    QCOMPARE(model.index(6, ComicModel::FileName).data(Qt::DisplayRole).toString(), QString("-"));
+    QVERIFY(model.rowId(missing) == ComicRowId(PlaceholderId(1)));
+    QCOMPARE(model.indexOf(PlaceholderId(2)).row(), 0);
+    QCOMPARE(recordPlaceholder(model.record(missing))->id, PlaceholderId(1));
+    QVERIFY(!model.listEntry(missing));
+    QCOMPARE(model.getUnavailableList(), QList<bool>({ true, false, false, false, false, false, true }));
+}
+
+void ComicModelTest::missingComicsInFoldersSupportMetadataAndDelete()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, number, coverKey) VALUES (1, '6', 'cover-1'), (2, '7', NULL)"));
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (2, 1), (2, 2)"));
+
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+    const auto withCover = model.indexOf(PlaceholderId(1));
+    const auto withoutCover = model.indexOf(PlaceholderId(2));
+
+    for (const auto action : { ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover, ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromFolder }) {
+        QVERIFY(model.supports(withCover, action));
+        QVERIFY(model.supports(withoutCover, action));
+    }
+    QVERIFY(model.supports(withCover, ComicAction::SaveCover));
+    QVERIFY(!model.supports(withoutCover, ComicAction::SaveCover));
+    for (const auto action : { ComicAction::Open, ComicAction::OpenContainingFolder, ComicAction::ChangeFile, ComicAction::SetReadState, ComicAction::SetType,
+                               ComicAction::DeleteMetadata, ComicAction::AddToFavorites, ComicAction::RemoveFromList, ComicAction::MatchToLibraryComic })
+        QVERIFY(!model.supports(withCover, action));
+    QVERIFY(!model.supports(model.indexOf(ComicId(1)), ComicAction::RemoveFromFolder));
+}
+
+void ComicModelTest::missingComicsInFoldersAreDraggedAndAddedToLists()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, number) VALUES (1, '6')"));
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (2, 1)"));
+    QVERIFY(exec("INSERT INTO reading_list (id, name) VALUES (2, 'Other')"));
+
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+    const QList<QModelIndex> rows = { model.indexOf(PlaceholderId(1)), model.indexOf(ComicId(2)) };
+    std::unique_ptr<QMimeData> data(model.mimeData(rows));
+    QCOMPARE(YACReader::mimeDataToComicsIds(data.get()), QList<qulonglong>({ 2 }));
+    QVERIFY(YACReader::mimeDataToRows(data.get()) == QList<ComicRowId>({ PlaceholderId(1), ComicId(2) }));
+
+    model.addComicsToReadingList(rows, 2);
+    model.addComicsToLabel(rows, 1);
+    QCOMPARE(ints("SELECT COALESCE(placeholder_id, 0) FROM reading_list_entry WHERE reading_list_id = 2 ORDER BY ordering"), QList<int>({ 1, 0 }));
+    QCOMPARE(ints("SELECT COALESCE(comic_info_id, 0) FROM reading_list_entry WHERE reading_list_id = 2 ORDER BY ordering"), QList<int>({ 0, 2 }));
+    QCOMPARE(ints("SELECT COALESCE(placeholder_id, 0) FROM label_entry WHERE label_id = 1 ORDER BY ordering"), QList<int>({ 1, 0 }));
+}
+
+void ComicModelTest::removingMissingComicsFromAFolderKeepsTheComics()
+{
+    const auto coverPath = LibraryPaths::placeholderCoverPathFromDataPath(dataPath, "cover-1");
+    QVERIFY(QDir().mkpath(QFileInfo(coverPath).absolutePath()));
+    QImage cover(10, 15, QImage::Format_RGB32);
+    cover.fill(Qt::red);
+    QVERIFY(cover.save(coverPath));
+    QVERIFY(exec("INSERT INTO placeholder (id, number, coverKey) VALUES (1, '6', 'cover-1'), (2, '7', NULL)"));
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (2, 1), (2, 2)"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 2, 2)"));
+
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+    QCOMPARE(model.rowCount(), 7);
+    model.removeMissingComicsFromFolder({ model.indexOf(PlaceholderId(1)), model.indexOf(ComicId(1)), model.indexOf(PlaceholderId(2)) });
+
+    QCOMPARE(model.rowCount(), 5);
+    QVERIFY(!model.indexOf(PlaceholderId(1)).isValid());
+    QVERIFY(model.indexOf(ComicId(1)).isValid());
+    QCOMPARE(ints("SELECT COUNT(*) FROM folder_placeholder"), QList<int>({ 0 }));
+    // the reading list still uses placeholder 2
+    QCOMPARE(ints("SELECT id FROM placeholder"), QList<int>({ 2 }));
+    QVERIFY(!QFile::exists(coverPath));
+    QCOMPARE(ints("SELECT COUNT(*) FROM comic WHERE parentId = 2"), QList<int>({ 5 }));
 }
 
 // deleted comics and placeholders are both missing; a placeholder has no reading state or pages

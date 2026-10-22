@@ -1,5 +1,7 @@
 #include "yacreader_global_gui.h"
 
+#include "overloaded.h"
+
 #include <QAction>
 #include <QFileDialog>
 #include <QImageReader>
@@ -53,44 +55,63 @@ QList<qulonglong> YACReader::mimeDataToComicsIds(const QMimeData *data)
     return comicIds;
 }
 
-QList<ListItemId> YACReader::mimeDataToListEntries(const QMimeData *data)
-{
-    QList<QPair<int, qulonglong>> entries;
-    QByteArray rawData = data->data(YACReader::YACReaderLibraryListEntriesMimeDataFormat);
-    QDataStream in(&rawData, QIODevice::ReadOnly);
-    in >> entries;
+namespace {
 
-    QList<ListItemId> entryIds;
-    entryIds.reserve(entries.size());
-    for (const auto &[listKind, id] : std::as_const(entries))
-        entryIds.append({ static_cast<ListKind>(listKind), id });
-    return entryIds;
+// the kind of each row in the rows format
+enum class RowKind {
+    Comic,
+    ReadingListEntry,
+    LabelEntry,
+    Placeholder,
+};
+
 }
 
 QList<ComicRowId> YACReader::mimeDataToRows(const QMimeData *data)
 {
+    QList<QPair<int, qulonglong>> values;
+    QByteArray rawData = data->data(YACReader::YACReaderLibraryComicRowsMimeDataFormat);
+    QDataStream in(&rawData, QIODevice::ReadOnly);
+    in >> values;
+
     QList<ComicRowId> rows;
-    if (const auto entryIds = mimeDataToListEntries(data); !entryIds.isEmpty()) {
-        for (const auto &entryId : entryIds)
-            rows.append(entryId);
-        return rows;
+    rows.reserve(values.size());
+    for (const auto &[kind, id] : std::as_const(values)) {
+        switch (static_cast<RowKind>(kind)) {
+        case RowKind::Comic:
+            rows.append(ComicId(id));
+            break;
+        case RowKind::ReadingListEntry:
+            rows.append(ListItemId { ListKind::ReadingList, id });
+            break;
+        case RowKind::LabelEntry:
+            rows.append(ListItemId { ListKind::Label, id });
+            break;
+        case RowKind::Placeholder:
+            rows.append(PlaceholderId(id));
+            break;
+        }
     }
-    for (const auto id : mimeDataToComicsIds(data))
-        rows.append(ComicId(id));
     return rows;
 }
 
-void YACReader::setListEntriesMimeData(QMimeData *data, const QList<ListItemId> &entryIds)
+void YACReader::setRowsMimeData(QMimeData *data, const QList<ComicRowId> &rows)
 {
-    QList<QPair<int, qulonglong>> entries;
-    entries.reserve(entryIds.size());
-    for (const auto &entryId : entryIds)
-        entries.append({ static_cast<int>(entryId.listKind), entryId.id });
+    QList<QPair<int, qulonglong>> values;
+    values.reserve(rows.size());
+    for (const auto &row : rows) {
+        values.append(std::visit(overloaded {
+                                         [](const ComicId &comic) { return QPair<int, qulonglong>(int(RowKind::Comic), comic.value()); },
+                                         [](const ListItemId &entry) { return QPair<int, qulonglong>(int(entry.listKind == ListKind::ReadingList ? RowKind::ReadingListEntry : RowKind::LabelEntry), entry.id); },
+                                         [](const PlaceholderId &placeholder) { return QPair<int, qulonglong>(int(RowKind::Placeholder), placeholder.value()); },
+                                 },
+                                 row));
+    }
 
     QByteArray rawData;
     QDataStream out(&rawData, QIODevice::WriteOnly);
-    out << entries;
-    data->setData(YACReader::YACReaderLibraryListEntriesMimeDataFormat, rawData);
+    out << values;
+    data->setData(YACReader::YACReaderLibraryComicRowsMimeDataFormat, rawData);
 }
 
 QAction *YACReader::wrappedToolbarAction(QAction *action)

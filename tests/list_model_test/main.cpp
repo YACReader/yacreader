@@ -227,6 +227,7 @@ void ListModelTest::droppedComicsGiveComicInfoToListsAndComicsToFavorites()
     QDataStream out(&comicIds, QIODevice::WriteOnly);
     out << QList<qulonglong> { 9, 9 };
     data.setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, comicIds);
+    YACReader::setRowsMimeData(&data, { ComicId(9), ComicId(9) });
 
     QVERIFY(model.dropMimeData(&data, Qt::CopyAction, -1, 0, find(model, "Alpha")));
     QVERIFY(model.dropMimeData(&data, Qt::CopyAction, -1, 0, find(model, "Events")));
@@ -238,11 +239,11 @@ void ListModelTest::droppedComicsGiveComicInfoToListsAndComicsToFavorites()
     QCOMPARE(lists.size(), 1);
     QCOMPARE(lists.first().second, 1ULL);
 
-    // a drag from a list names its entries, so a placeholder or a deleted comic can be added too
-    YACReader::setListEntriesMimeData(&data, { { ListKind::ReadingList, 7 }, { ListKind::Label, 3 } });
+    // a drag names its rows, so a placeholder or a deleted comic can be added too
+    YACReader::setRowsMimeData(&data, { ListItemId { ListKind::ReadingList, 7 }, PlaceholderId(4), ListItemId { ListKind::Label, 3 } });
     QVERIFY(model.dropMimeData(&data, Qt::CopyAction, -1, 0, find(model, "Events")));
     QCOMPARE(lists.size(), 2);
-    QVERIFY(lists.last().first == QList<ComicRowId>({ ListItemId { ListKind::ReadingList, 7 }, ListItemId { ListKind::Label, 3 } }));
+    QVERIFY(lists.last().first == QList<ComicRowId>({ ListItemId { ListKind::ReadingList, 7 }, PlaceholderId(4), ListItemId { ListKind::Label, 3 } }));
     QCOMPARE(favorites, QList<qulonglong>({ 9, 9 }));
 }
 

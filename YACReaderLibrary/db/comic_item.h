@@ -33,9 +33,15 @@ struct PlaceholderInList {
     ListEntry entry;
 };
 
+// an issue that is expected in a folder and has no comic there
+struct PlaceholderInFolder {
+    Placeholder placeholder;
+    FolderId folderId;
+};
+
 }
 
-using ComicItem = std::variant<ComicItemCase::Comic, ComicItemCase::ComicInList, ComicItemCase::DeletedComicInList, ComicItemCase::PlaceholderInList>;
+using ComicItem = std::variant<ComicItemCase::Comic, ComicItemCase::ComicInList, ComicItemCase::DeletedComicInList, ComicItemCase::PlaceholderInList, ComicItemCase::PlaceholderInFolder>;
 
 // what can be done with a row; ComicModel::supports answers it for each case
 enum class ComicAction {
@@ -53,6 +59,7 @@ enum class ComicAction {
     AddToFavorites,
     AddToList,
     RemoveFromList,
+    RemoveFromFolder, // a missing comic of a folder
     MatchToLibraryComic, // a missing entry or a deleted comic gets a comic with a file
 };
 

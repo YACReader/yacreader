@@ -862,7 +862,7 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(const ComicModel &mod
     setWesternMangaAction->setEnabled(setType);
     setYonkomaAction->setEnabled(setType);
     deleteMetadataAction->setEnabled(anySupports(ComicAction::DeleteMetadata));
-    deleteComicsAction->setEnabled(anySupports(ComicAction::RemoveFromList) || anySupports(ComicAction::ChangeFile));
+    deleteComicsAction->setEnabled(anySupports(ComicAction::RemoveFromList) || anySupports(ComicAction::ChangeFile) || anySupports(ComicAction::RemoveFromFolder));
     renameComicsFilesAction->setEnabled(anySupports(ComicAction::ChangeFile));
     organizeComicsFilesAction->setEnabled(anySupports(ComicAction::ChangeFile));
     getInfoAction->setEnabled(anySupports(ComicAction::SearchComicVine));

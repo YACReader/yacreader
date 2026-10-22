@@ -371,7 +371,8 @@ bool appendComics(const EntryTable &entries, qulonglong parentId, const QList<Co
     return db.commit();
 }
 
-// appends what each row refers to, in order: the comic_info of a comic, or the comic_info or placeholder of an entry
+// appends what each row refers to, in order: the comic_info of a comic, the comic_info or placeholder of an entry, or
+// a placeholder of a folder
 bool appendRows(const EntryTable &entries, qulonglong parentId, const QList<ComicRowId> &rows, QSqlDatabase &db)
 {
     const auto insert = [&entries](const QString &source) {
@@ -395,17 +396,21 @@ bool appendRows(const EntryTable &entries, qulonglong parentId, const QList<Comi
     fromReadingListEntry.prepare(insert(QString("SELECT comic_info_id, placeholder_id FROM %1 WHERE id = :row_id").arg(readingListEntries.table)));
     QSqlQuery fromLabelEntry(db);
     fromLabelEntry.prepare(insert(QString("SELECT comic_info_id, placeholder_id FROM %1 WHERE id = :row_id").arg(labelEntries.table)));
+    QSqlQuery fromPlaceholder(db);
+    fromPlaceholder.prepare(insert("SELECT NULL AS comic_info_id, id AS placeholder_id FROM placeholder WHERE id = :row_id"));
 
     for (const auto &row : rows) {
         auto &query = std::visit(overloaded {
                                          [&](const ComicId &) -> QSqlQuery & { return fromComic; },
                                          [&](const ListItemId &entry) -> QSqlQuery & { return entry.listKind == ListKind::ReadingList ? fromReadingListEntry : fromLabelEntry; },
+                                         [&](const PlaceholderId &) -> QSqlQuery & { return fromPlaceholder; },
                                  },
                                  row);
         query.bindValue(":parent_id", parentId);
         query.bindValue(":row_id", std::visit(overloaded {
                                                       [](const ComicId &comic) { return comic.value(); },
                                                       [](const ListItemId &entry) { return entry.id; },
+                                                      [](const PlaceholderId &placeholder) { return placeholder.value(); },
                                               },
                                               row));
         if (!query.exec()) {

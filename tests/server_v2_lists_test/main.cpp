@@ -14,7 +14,8 @@
 #include <algorithm>
 #include <memory>
 
-// the v2 list routes read DBHelper::getReadingListFullContent and DBHelper::getLabelComics
+// the v2 list routes read DBHelper::getReadingListFullContent and DBHelper::getLabelComics; the folder routes read
+// DBHelper::getFolderComicsFromLibrary
 class ServerV2ListsTest : public QObject
 {
     Q_OBJECT
@@ -30,6 +31,7 @@ private slots:
     void outputIsTheSameWithoutTheDeletedEntries();
     void readingListGivesTheEntryOfEachComic();
     void repeatedComicsAreNavigatedAtTheirFirstOccurrence();
+    void folderLeavesOutMissingComics();
 
 private:
     bool exec(const QString &sql);
@@ -237,6 +239,19 @@ void ServerV2ListsTest::readingListGivesTheEntryOfEachComic()
         const auto comicInfoId = entryIdsOf(QString("SELECT comic_info_id FROM reading_list_entry WHERE id = %1").arg(expected.at(i)));
         QCOMPARE(comics.at(i).info.id.value(), comicInfoId.value(0));
     }
+}
+
+// FolderContentControllerV2 and FolderInfoControllerV2 read the comics of a folder; the reader reads its siblings
+void ServerV2ListsTest::folderLeavesOutMissingComics()
+{
+    const auto folder = toJson(DBHelper::getFolderComicsFromLibrary(libraryId, 2));
+    const auto reading = toJson(DBHelper::getFolderComicsFromLibraryForReading(libraryId, 2));
+
+    QVERIFY(exec("INSERT INTO placeholder (id, series, number, title) VALUES (1, 'Series', '0', 'Missing')"));
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (2, 1)"));
+
+    QCOMPARE(toJson(DBHelper::getFolderComicsFromLibrary(libraryId, 2)), folder);
+    QCOMPARE(toJson(DBHelper::getFolderComicsFromLibraryForReading(libraryId, 2)), reading);
 }
 
 void ServerV2ListsTest::repeatedComicsAreNavigatedAtTheirFirstOccurrence()
