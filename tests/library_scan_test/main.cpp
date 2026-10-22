@@ -102,6 +102,8 @@ private slots:
     void replacementKeepsEntriesWhileAnotherFileHasTheOldContent();
     void updateDeletesTheMissingComicsOfRemovedFolders();
     void folderUpdateDeletesTheMissingComicsOfRemovedFolders();
+    void updateGivesANewFileItsMissingComic();
+    void folderUpdateGivesANewFileItsMissingComic();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -483,6 +485,48 @@ void LibraryScanTest::folderUpdateDeletesTheMissingComicsOfRemovedFolders()
     QCOMPARE(rows("SELECT f.path, fp.placeholder_id FROM folder_placeholder fp INNER JOIN folder f ON f.id = fp.folder_id"), QStringList({ "/b|6" }));
     QCOMPARE(rows("SELECT id FROM placeholder ORDER BY id"), QStringList({ "6", "7" }));
     QVERIFY(!QFile::exists(cover5));
+}
+
+void LibraryScanTest::updateGivesANewFileItsMissingComic()
+{
+    const auto cover = LibraryPaths::placeholderCoverPathFromDataPath(LibraryPaths::libraryDataPath(source), "key3");
+    QDir().mkpath(QFileInfo(cover).absolutePath());
+    QFile file(cover);
+    QVERIFY(file.open(QIODevice::WriteOnly) && file.write(png(Qt::gray)) > 0);
+    file.close();
+    QVERIFY(withDatabase([](QSqlDatabase &db) {
+        QSqlQuery query(db);
+        return query.exec("INSERT INTO placeholder (id, series, number, title, coverKey) VALUES (3, 'Bee', '3', 'The third', 'key3'), (4, 'Bee', '4', NULL, NULL)") &&
+                query.exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) SELECT id, 3 FROM folder WHERE path = '/b' UNION ALL SELECT id, 4 FROM folder WHERE path = '/b'") &&
+                query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')") &&
+                query.exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 0, 3)");
+    }));
+
+    QVERIFY(writeComic("b/Bee 003.cbz", Qt::darkRed));
+    QVERIFY(scan(false));
+
+    const auto comicInfo = value("SELECT comicInfoId FROM comic WHERE path = '/b/Bee 003.cbz'");
+    QVERIFY(!comicInfo.isEmpty());
+    QCOMPARE(value("SELECT series || '|' || number || '|' || title FROM comic_info WHERE id = " + comicInfo), QString("Bee|3|The third"));
+    QCOMPARE(value("SELECT comic_info_id FROM reading_list_entry"), comicInfo);
+    QCOMPARE(rows("SELECT placeholder_id FROM folder_placeholder"), QStringList({ "4" }));
+    QCOMPARE(rows("SELECT id FROM placeholder"), QStringList({ "4" }));
+    QVERIFY(!QFile::exists(cover));
+}
+
+void LibraryScanTest::folderUpdateGivesANewFileItsMissingComic()
+{
+    QVERIFY(withDatabase([](QSqlDatabase &db) {
+        QSqlQuery query(db);
+        return query.exec("INSERT INTO placeholder (id, series, number) VALUES (2, 'Dee', '2')") &&
+                query.exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) SELECT id, 2 FROM folder WHERE path = '/c/d'");
+    }));
+
+    QVERIFY(writeComic("c/d/Dee #2.cbz", Qt::darkBlue));
+    QVERIFY(scanFolder("c/d"));
+
+    QCOMPARE(value("SELECT ci.number FROM comic c INNER JOIN comic_info ci ON ci.id = c.comicInfoId WHERE c.path = '/c/d/Dee #2.cbz'"), QString("2"));
+    QCOMPARE(rows("SELECT COUNT(*) FROM placeholder"), QStringList({ "0" }));
 }
 
 QTEST_GUILESS_MAIN(LibraryScanTest)
