@@ -997,8 +997,10 @@ QList<ComicItem> ComicModel::createFolderModelData(unsigned long long folderId, 
         selectQuery.exec();
 
         modelData = createItems(selectQuery);
-        for (auto &placeholder : DBHelper::loadFolderPlaceholders(FolderId(folderId), db).value_or(QList<Placeholder>()))
-            modelData.append(ComicItemCase::PlaceholderInFolder { std::move(placeholder), FolderId(folderId) });
+        if (db.isOpen()) {
+            for (auto &placeholder : DBHelper::loadFolderPlaceholders(FolderId(folderId), db).value_or(QList<Placeholder>()))
+                modelData.append(ComicItemCase::PlaceholderInFolder { std::move(placeholder), FolderId(folderId) });
+        }
         std::sort(modelData.begin(), modelData.end(), defaultFolderContentSortFunction);
 
         connectionName = db.connectionName();

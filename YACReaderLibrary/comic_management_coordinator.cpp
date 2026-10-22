@@ -212,6 +212,7 @@ void ComicManagementCoordinator::showComicVineScraper()
 
     comicVineDialog->databasePath = foldersModel->getDatabase();
     comicVineDialog->basePath = libraryPathProvider();
+    comicVineDialog->folderId = comicsModel->getMode() == ComicModel::Folder ? std::optional(FolderId(comicsModel->getSourceId())) : std::nullopt;
     comicVineDialog->setComics(comics);
 
     emit currentSourceRefreshStarted();

@@ -3,10 +3,14 @@
 
 #include "comic_record.h"
 #include "descriptive_comic_metadata.h"
+#include "library_ids.h"
 #include "themable.h"
 #include "volume_search_query.h"
 
 #include <QDialog>
+
+#include <atomic>
+#include <optional>
 
 class QPushButton;
 class QStackedWidget;
@@ -34,12 +38,15 @@ public:
     explicit ComicVineDialog(QWidget *parent = nullptr);
     QString databasePath;
     QString basePath;
+    // the folder of the comics; only then the other issues of a volume can be added as missing comics
+    std::optional<FolderId> folderId;
     void setComics(const QList<ComicRecord> &comics);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
-    void getComicsInfo(QList<QPair<ComicRecord, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo);
+    void getComicsInfo(QList<QPair<ComicRecord, QString>> matchingInfo, const QStringList &missingIssues, const SelectedVolumeInfo &volumeInfo, int runId);
     void getComicInfo(const QString &comicId, const SelectedVolumeInfo &volumeInfo);
     void closeEvent(QCloseEvent *event) override;
+    void done(int result) override;
 signals:
 
 public slots:
@@ -72,8 +79,18 @@ private:
     void finishSuccessfully();
     void toggleSkipButton();
     QString volumeSearchStringFromComic(const ComicRecord &comic);
-    // writes each patch to the comic_info of its record when the record still exists, each comic_info once
-    void saveMetadata(const QList<QPair<ComicRecord, DescriptiveMetadataPatch>> &matches);
+    // an issue of the volume that becomes a missing comic of the folder
+    struct MissingIssue {
+        QString comicVineId;
+        DescriptiveMetadataPatch patch;
+        std::optional<QString> coverKey;
+    };
+
+    // writes each patch to the comic_info of its record when the record still exists, each comic_info once, and the
+    // missing issues to the folder, in one transaction
+    void saveMetadata(const QList<QPair<ComicRecord, DescriptiveMetadataPatch>> &matches, const QList<MissingIssue> &missingIssues = { });
+    MissingIssue missingIssue(const QString &issueJson, const SelectedVolumeInfo &volumeInfo);
+    void removeCovers(const QList<MissingIssue> &missingIssues);
 
     enum class ScraperMode {
         SingleComic, // the scraper has been opened for a single comic
@@ -131,6 +148,8 @@ private:
 
     VolumeSearchQuery currentVolumeSearchQuery;
     QString currentVolumeId;
+    // a closed or reopened dialog changes it, so the work of the previous run writes nothing
+    std::atomic_int run { 0 };
 
 protected:
     void applyTheme(const Theme &theme) override;

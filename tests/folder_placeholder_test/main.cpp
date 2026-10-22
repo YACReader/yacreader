@@ -21,6 +21,9 @@ private slots:
     void removingTheLastEntryKeepsAPlacedPlaceholder();
     void aPlacedPlaceholderCannotBeDeleted();
     void deletingAFolderRemovesThePlacementsBelowIt();
+    void anIssueGetsANewPlaceholderInTheFolder();
+    void anIssueReusesItsPlaceholder();
+    void anIssueWithAComicInTheFolderIsNotPlaced();
 
 private:
     bool exec(const QString &sql);
@@ -155,6 +158,63 @@ void FolderPlaceholderTest::deletingAFolderRemovesThePlacementsBelowIt()
 
     QCOMPARE(DBHelper::removeUnusedPlaceholders(db), std::optional<QStringList>({ "key7" }));
     QCOMPARE(rows("SELECT id FROM placeholder ORDER BY id"), QList<QVariantList>({ { 5 }, { 6 } }));
+}
+
+void FolderPlaceholderTest::anIssueGetsANewPlaceholderInTheFolder()
+{
+    DescriptiveMetadataPatch patch;
+    patch.set(&DescriptiveComicMetadata::series, "Batman");
+    patch.set(&DescriptiveComicMetadata::number, "12");
+    patch.set(&DescriptiveComicMetadata::comicVineID, "4012");
+
+    bool coverUsed = false;
+    QVERIFY(DBHelper::placeIssueInFolder("4012", patch, QString("new"), FolderId(2), db, coverUsed));
+    QVERIFY(coverUsed);
+    QCOMPARE(rows("SELECT p.series, p.number, p.comicVineID, p.coverKey, fp.folder_id FROM placeholder p INNER JOIN folder_placeholder fp ON fp.placeholder_id = p.id"),
+             QList<QVariantList>({ { "Batman", "12", "4012", "new", 2 } }));
+
+    // the same issue in the same folder again changes nothing but the metadata
+    QVERIFY(DBHelper::placeIssueInFolder("4012", patch, QString("other"), FolderId(2), db, coverUsed));
+    QVERIFY(!coverUsed);
+    QCOMPARE(rows("SELECT COUNT(*) FROM folder_placeholder"), QList<QVariantList>({ { 1 } }));
+    QCOMPARE(rows("SELECT COUNT(*) FROM placeholder WHERE comicVineID = '4012'"), QList<QVariantList>({ { 1 } }));
+}
+
+void FolderPlaceholderTest::anIssueReusesItsPlaceholder()
+{
+    QVERIFY(exec("UPDATE placeholder SET comicVineID = '4005' WHERE id = 5"));
+    QVERIFY(exec("UPDATE placeholder SET comicVineID = '4006' WHERE id = 6"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 0, 5)"));
+    DescriptiveMetadataPatch patch;
+    patch.set(&DescriptiveComicMetadata::title, "Tagged");
+
+    bool coverUsed = false;
+    QVERIFY(DBHelper::placeIssueInFolder("4005", patch, QString("new"), FolderId(4), db, coverUsed));
+    QVERIFY(!coverUsed);
+    QVERIFY(DBHelper::placeIssueInFolder("4006", patch, QString("new6"), FolderId(4), db, coverUsed));
+    QVERIFY(coverUsed);
+
+    QCOMPARE(rows("SELECT placeholder_id FROM folder_placeholder WHERE folder_id = 4 ORDER BY placeholder_id"), QList<QVariantList>({ { 5 }, { 6 } }));
+    QCOMPARE(rows("SELECT id, title, coverKey FROM placeholder WHERE id IN (5, 6) ORDER BY id"), QList<QVariantList>({ { 5, "Tagged", "key5" }, { 6, "Tagged", "new6" } }));
+    QCOMPARE(rows("SELECT COUNT(*) FROM placeholder"), QList<QVariantList>({ { 3 } }));
+}
+
+void FolderPlaceholderTest::anIssueWithAComicInTheFolderIsNotPlaced()
+{
+    QVERIFY(exec("INSERT INTO comic_info (id, hash, comicVineID) VALUES (1, 'h1', '4001')"));
+    QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES (1, 2, 1, 'a.cbz', '/Batman/a.cbz')"));
+    DescriptiveMetadataPatch patch;
+    patch.set(&DescriptiveComicMetadata::comicVineID, "4001");
+
+    bool coverUsed = true;
+    QVERIFY(DBHelper::placeIssueInFolder("4001", patch, QString("new"), FolderId(2), db, coverUsed));
+    QVERIFY(!coverUsed);
+    QCOMPARE(rows("SELECT COUNT(*) FROM folder_placeholder"), QList<QVariantList>({ { 0 } }));
+    QCOMPARE(rows("SELECT COUNT(*) FROM placeholder"), QList<QVariantList>({ { 3 } }));
+
+    // another folder does not have it
+    QVERIFY(DBHelper::placeIssueInFolder("4001", patch, std::nullopt, FolderId(4), db, coverUsed));
+    QCOMPARE(rows("SELECT folder_id FROM folder_placeholder"), QList<QVariantList>({ { 4 } }));
 }
 
 QTEST_GUILESS_MAIN(FolderPlaceholderTest)

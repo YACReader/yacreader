@@ -820,6 +820,51 @@ bool DBHelper::placePlaceholderInFolder(PlaceholderId placeholderId, FolderId fo
     return true;
 }
 
+bool DBHelper::placeIssueInFolder(const QString &comicVineId, const DescriptiveMetadataPatch &patch, const std::optional<QString> &coverKey, FolderId folderId, QSqlDatabase &db, bool &coverUsed)
+{
+    coverUsed = false;
+    if (comicVineId.trimmed().isEmpty())
+        return false;
+
+    QSqlQuery inFolder(db);
+    inFolder.prepare("SELECT 1 FROM comic c INNER JOIN comic_info ci ON ci.id = c.comicInfoId WHERE c.parentId = :folder_id AND ci.comicVineID = :comic_vine_id");
+    inFolder.bindValue(":folder_id", folderId.value());
+    inFolder.bindValue(":comic_vine_id", comicVineId);
+    if (!inFolder.exec()) {
+        QLOG_ERROR() << "Unable to find the comics of an issue in a folder:" << inFolder.lastError().text();
+        return false;
+    }
+    if (inFolder.next())
+        return true;
+
+    QSqlQuery existing(db);
+    existing.prepare("SELECT id, coverKey FROM placeholder WHERE comicVineID = :comic_vine_id ORDER BY id LIMIT 1");
+    existing.bindValue(":comic_vine_id", comicVineId);
+    if (!existing.exec()) {
+        QLOG_ERROR() << "Unable to find the placeholder of an issue:" << existing.lastError().text();
+        return false;
+    }
+
+    std::optional<PlaceholderId> placeholderId;
+    bool hasCover = false;
+    if (existing.next()) {
+        placeholderId = PlaceholderId(existing.value(0).toULongLong());
+        hasCover = !existing.value(1).isNull();
+    } else {
+        placeholderId = insertPlaceholder(Placeholder(), db);
+    }
+    existing.finish();
+
+    if (!placeholderId || !updatePlaceholderMetadata(*placeholderId, patch, db))
+        return false;
+    if (coverKey && !hasCover) {
+        if (!updatePlaceholderCover(*placeholderId, coverKey, db))
+            return false;
+        coverUsed = true;
+    }
+    return placePlaceholderInFolder(*placeholderId, folderId, db);
+}
+
 std::optional<QStringList> DBHelper::removePlaceholderFromFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db)
 {
     QSqlQuery placeholderIds(db);
