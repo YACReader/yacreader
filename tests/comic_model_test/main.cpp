@@ -1037,14 +1037,15 @@ void ComicModelTest::missingComicsInFoldersSupportMetadataAndDelete()
     const auto withCover = model.indexOf(PlaceholderId(1));
     const auto withoutCover = model.indexOf(PlaceholderId(2));
 
-    for (const auto action : { ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover, ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromFolder }) {
+    for (const auto action : { ComicAction::EditMetadata, ComicAction::SearchComicVine, ComicAction::SetCustomCover, ComicAction::AssignNumbers, ComicAction::AddToList, ComicAction::RemoveFromFolder,
+                               ComicAction::MatchToLibraryComic }) {
         QVERIFY(model.supports(withCover, action));
         QVERIFY(model.supports(withoutCover, action));
     }
     QVERIFY(model.supports(withCover, ComicAction::SaveCover));
     QVERIFY(!model.supports(withoutCover, ComicAction::SaveCover));
     for (const auto action : { ComicAction::Open, ComicAction::OpenContainingFolder, ComicAction::ChangeFile, ComicAction::SetReadState, ComicAction::SetType,
-                               ComicAction::DeleteMetadata, ComicAction::AddToFavorites, ComicAction::RemoveFromList, ComicAction::MatchToLibraryComic })
+                               ComicAction::DeleteMetadata, ComicAction::AddToFavorites, ComicAction::RemoveFromList })
         QVERIFY(!model.supports(withCover, action));
     QVERIFY(!model.supports(model.indexOf(ComicId(1)), ComicAction::RemoveFromFolder));
 }

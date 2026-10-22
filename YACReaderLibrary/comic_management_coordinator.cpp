@@ -523,7 +523,10 @@ void ComicManagementCoordinator::matchSelectedToLibraryComic()
     const auto index = selection.constFirst();
     const auto record = comicsModel->record(index);
     const auto entry = comicsModel->listEntry(index);
-    if (!entry)
+    // a missing comic of a folder is matched to a comic of that folder
+    const auto rowId = comicsModel->rowId(index);
+    const auto folderId = std::holds_alternative<PlaceholderId>(rowId) ? std::optional(comicsModel->getSourceId()) : std::nullopt;
+    if (!entry && !folderId)
         return;
     MissingComic missing;
     if (const auto *placeholder = recordPlaceholder(record))
@@ -534,7 +537,7 @@ void ComicManagementCoordinator::matchSelectedToLibraryComic()
     const auto dataPath = YACReader::LibraryPaths::libraryDataPath(source.libraryPath);
 
     emit currentSourceRefreshStarted();
-    CblMatchComicDialog dialog(recordMetadata(record), source.libraryPath, window);
+    CblMatchComicDialog dialog(recordMetadata(record), source.libraryPath, folderId, window);
     if (dialog.exec() != QDialog::Accepted || !dialog.chosenComic() || !isCurrentSource(source)) {
         emit currentSourceRefreshCancelled();
         return;
@@ -545,7 +548,8 @@ void ComicManagementCoordinator::matchSelectedToLibraryComic()
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
-        otherLists = otherListsWithEntriesOf({ missing }, entry->id.listKind, { entry->listId }, db);
+        otherLists = entry ? otherListsWithEntriesOf({ missing }, entry->id.listKind, { entry->listId }, db)
+                           : otherListsWithEntriesOf({ missing }, ListKind::ReadingList, { }, db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);

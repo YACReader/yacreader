@@ -215,6 +215,7 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   case ComicAction::AssignNumbers:
                                   case ComicAction::AddToList:
                                   case ComicAction::RemoveFromFolder:
+                                  case ComicAction::MatchToLibraryComic:
                                       return true;
                                   case ComicAction::Open:
                                   case ComicAction::OpenContainingFolder:
@@ -224,7 +225,6 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   case ComicAction::DeleteMetadata:
                                   case ComicAction::AddToFavorites:
                                   case ComicAction::RemoveFromList:
-                                  case ComicAction::MatchToLibraryComic:
                                       return false;
                                   }
                                   return false;
