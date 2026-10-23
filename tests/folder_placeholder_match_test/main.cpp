@@ -31,6 +31,7 @@ private slots:
     void fileNameMatchesWithKavitaRulesWithoutAPattern();
     void twoCandidatesAreNotMatched();
     void onlyMissingComicsOfTheFolderAreCandidates();
+    void oneMatcherLearnsTheScanAsItGoes();
 
 private:
     bool exec(const QString &sql);
@@ -114,7 +115,7 @@ ComicDB FolderPlaceholderMatchTest::newComic(qulonglong folderId, const QString 
 std::optional<PlaceholderId> FolderPlaceholderMatchTest::match(const ComicDB &comic)
 {
     ComicMatchFiles files;
-    return matchNewComicToMissingComic(comic, root->path(), db, files);
+    return MissingComicMatcher().match(comic, root->path(), db, files);
 }
 
 void FolderPlaceholderMatchTest::numbersCompareByValue()
@@ -255,6 +256,24 @@ void FolderPlaceholderMatchTest::onlyMissingComicsOfTheFolderAreCandidates()
 {
     QVERIFY(!match(newComic(3, "52 #40.cbz", "comicVineID = '1040'")));
     QCOMPARE(rows("SELECT COUNT(*) FROM folder_placeholder"), QList<QVariantList>({ { 3 } }));
+}
+
+void FolderPlaceholderMatchTest::oneMatcherLearnsTheScanAsItGoes()
+{
+    for (const auto number : { 5, 6 })
+        newComic(2, QString("52 - Semana %1.cbr").arg(number, 2, 10, QChar('0')), QString("number = '%1'").arg(number));
+
+    MissingComicMatcher matcher;
+    ComicMatchFiles files;
+    // two comics of the folder do not make a pattern yet
+    QVERIFY(!matcher.match(newComic(2, "Extra.cbr"), root->path(), db, files));
+    // a new comic of the scan is the third one
+    QVERIFY(!matcher.match(newComic(2, "52 - Semana 07.cbr", "number = '7'"), root->path(), db, files));
+    // Kavita's rules would read 41, but the folder now has a pattern
+    QVERIFY(!matcher.match(newComic(2, "Countdown 41.cbr"), root->path(), db, files));
+    QCOMPARE(matcher.match(newComic(2, "52 - Semana 40.cbr"), root->path(), db, files), std::optional(PlaceholderId(40)));
+    // a matched missing comic is not a candidate again
+    QVERIFY(!matcher.match(newComic(2, "x.cbz", "series = '52', number = '40'"), root->path(), db, files));
 }
 
 QTEST_GUILESS_MAIN(FolderPlaceholderMatchTest)

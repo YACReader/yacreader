@@ -126,17 +126,21 @@ std::optional<QString> issueNumberInFileName(const QString &fileName)
 
 FileNamePattern::FileNamePattern(const QList<QPair<QString, QString>> &numberedFiles)
 {
-    for (const auto &[fileName, number] : numberedFiles) {
-        const auto name = cleanName(fileName);
-        auto numbers = numberInName().globalMatch(name);
-        while (numbers.hasNext()) {
-            const auto found = numbers.next();
-            auto &observations = prefixes[prefixBefore(name, found.capturedStart())];
-            if (sameIssueNumber(found.captured(), number))
-                observations.agree++;
-            else
-                observations.disagree++;
-        }
+    for (const auto &[fileName, number] : numberedFiles)
+        add(fileName, number);
+}
+
+void FileNamePattern::add(const QString &fileName, const QString &number)
+{
+    const auto name = cleanName(fileName);
+    auto numbers = numberInName().globalMatch(name);
+    while (numbers.hasNext()) {
+        const auto found = numbers.next();
+        auto &observations = prefixes[prefixBefore(name, found.capturedStart())];
+        if (sameIssueNumber(found.captured(), number))
+            observations.agree++;
+        else
+            observations.disagree++;
     }
 }
 
@@ -148,8 +152,11 @@ bool FileNamePattern::isTrusted(const QString &prefix) const
 
 bool FileNamePattern::isLearned() const
 {
-    const auto keys = prefixes.keys();
-    return std::any_of(keys.cbegin(), keys.cend(), [this](const QString &prefix) { return isTrusted(prefix); });
+    for (auto it = prefixes.cbegin(); it != prefixes.cend(); ++it) {
+        if (isTrusted(it.key()))
+            return true;
+    }
+    return false;
 }
 
 std::optional<QString> FileNamePattern::issueNumber(const QString &fileName) const
@@ -203,8 +210,11 @@ QList<QPair<QString, QString>> numberedFilesOf(FolderId folderId, ComicId exclud
     return files;
 }
 
-std::optional<Placeholder> missingComicOf(const ComicDB &comic, const QList<Placeholder> &placeholders, QSqlDatabase &db)
+}
+
+std::optional<Placeholder> MissingComicMatcher::missingComicOf(const ComicDB &comic, FolderState &folder, QSqlDatabase &db)
 {
+    const auto &placeholders = folder.placeholders;
     const auto &info = comic.info;
     if (const auto comicVineId = comicVineIdOf(info); !comicVineId.isEmpty()) {
         if (auto found = single(placeholders, [&](const Placeholder &p) { return comicVineIdOf(p) == comicVineId; }))
@@ -221,24 +231,39 @@ std::optional<Placeholder> missingComicOf(const ComicDB &comic, const QList<Plac
         });
     }
 
-    const FileNamePattern pattern(numberedFilesOf(comic.file.folderId, comic.file.id, db));
-    const auto fileNumber = pattern.isLearned() ? pattern.issueNumber(comic.file.fileName) : issueNumberInFileName(comic.file.fileName);
+    // the comics added later in the scan are learned as they come (match)
+    if (!folder.pattern)
+        folder.pattern = FileNamePattern(numberedFilesOf(comic.file.folderId, comic.file.id, db));
+    const auto fileNumber = folder.pattern->isLearned() ? folder.pattern->issueNumber(comic.file.fileName) : issueNumberInFileName(comic.file.fileName);
     if (!fileNumber)
         return std::nullopt;
     return single(placeholders, [&](const Placeholder &p) { return sameIssueNumber(p.number.toString(), *fileNumber); });
 }
 
-}
-
-std::optional<PlaceholderId> matchNewComicToMissingComic(const ComicDB &comic, const QString &libraryDataPath, QSqlDatabase &db, ComicMatchFiles &files)
+std::optional<PlaceholderId> MissingComicMatcher::match(const ComicDB &comic, const QString &libraryDataPath, QSqlDatabase &db, ComicMatchFiles &files)
 {
-    const auto placeholders = DBHelper::loadFolderPlaceholders(comic.file.folderId, db);
-    if (!placeholders || placeholders->isEmpty())
+    auto folder = folders.find(comic.file.folderId);
+    if (folder == folders.end()) {
+        const auto placeholders = DBHelper::loadFolderPlaceholders(comic.file.folderId, db);
+        if (!placeholders)
+            return std::nullopt;
+        folder = folders.insert(comic.file.folderId, FolderState { *placeholders, std::nullopt });
+    }
+    if (folder->placeholders.isEmpty())
         return std::nullopt;
 
-    const auto missing = missingComicOf(comic, *placeholders, db);
-    if (!missing)
+    // the number the comic has after the match, as the pattern would read it from the database
+    const auto learn = [&folder, &comic](const QString &number) {
+        if (folder->pattern && !number.trimmed().isEmpty())
+            folder->pattern->add(comic.file.fileName, number);
+    };
+
+    const auto ownNumber = comic.info.number.toString();
+    const auto missing = missingComicOf(comic, *folder, db);
+    if (!missing) {
+        learn(ownNumber);
         return std::nullopt;
+    }
 
     // a failed match leaves nothing in the caller's transaction
     QSqlQuery savepoint(db);
@@ -251,8 +276,11 @@ std::optional<PlaceholderId> matchNewComicToMissingComic(const ComicDB &comic, c
     savepoint.exec("RELEASE missing_comic_match");
     if (!matched) {
         finishComicMatchFiles(libraryDataPath, matchFiles, false);
+        learn(ownNumber);
         return std::nullopt;
     }
+    folder->placeholders.removeIf([&missing](const Placeholder &placeholder) { return placeholder.id == missing->id; });
+    learn(ownNumber.trimmed().isEmpty() ? missing->number.toString() : ownNumber);
     files.writtenCoverPaths.append(matchFiles.writtenCoverPaths);
     files.placeholderCoverKeys.append(matchFiles.placeholderCoverKeys);
     files.comicCoverHashes.append(matchFiles.comicCoverHashes);

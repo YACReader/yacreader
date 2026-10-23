@@ -2,6 +2,7 @@
 #define FOLDER_PLACEHOLDER_MATCH_H
 
 #include "library_ids.h"
+#include "placeholder.h"
 
 #include <QHash>
 #include <QString>
@@ -31,6 +32,7 @@ class FileNamePattern
 public:
     // file name and issue number of each comic
     explicit FileNamePattern(const QList<QPair<QString, QString>> &numberedFiles);
+    void add(const QString &fileName, const QString &number);
 
     // there is at least one trusted prefix
     bool isLearned() const;
@@ -47,10 +49,25 @@ private:
     bool isTrusted(const QString &prefix) const;
 };
 
-// No transaction. When `comic` (a new file of its folder) is exactly one of the missing comics placed in its folder,
-// the comic gets it (matchPlaceholderToComic) and its id is given back. Rules in order: the Comic Vine id, the series
-// and number of the metadata, and when the metadata has no number, the number in the file name (the folder's
-// pattern, or Kavita's rules when the folder has none).
-std::optional<PlaceholderId> matchNewComicToMissingComic(const ComicDB &comic, const QString &libraryDataPath, QSqlDatabase &db, ComicMatchFiles &files);
+// The missing comics of the folders of one scan: each folder's missing comics are read once, and its file name
+// pattern is learned once from its comics with a number, then from each new comic.
+class MissingComicMatcher
+{
+public:
+    // No transaction. When `comic` (a new file of its folder) is exactly one of the missing comics placed in its
+    // folder, the comic gets it (matchPlaceholderToComic) and its id is given back. Rules in order: the Comic Vine id,
+    // the series and number of the metadata, and when the metadata has no number, the number in the file name (the
+    // folder's pattern, or Kavita's rules when the folder has none).
+    std::optional<PlaceholderId> match(const ComicDB &comic, const QString &libraryDataPath, QSqlDatabase &db, ComicMatchFiles &files);
+
+private:
+    struct FolderState {
+        QList<Placeholder> placeholders;
+        std::optional<FileNamePattern> pattern;
+    };
+    QHash<FolderId, FolderState> folders;
+
+    std::optional<Placeholder> missingComicOf(const ComicDB &comic, FolderState &folder, QSqlDatabase &db);
+};
 
 #endif

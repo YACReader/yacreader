@@ -3,6 +3,7 @@
 
 #include "comic_db.h"
 #include "folder.h"
+#include "folder_placeholder_match.h"
 #include "library_comic_match.h"
 
 #include <QByteArray>
@@ -80,6 +81,7 @@ private:
     bool checkModifiedDatesOnUpdate;
     QStringList cleanup(QSqlDatabase &db, const QString &target); // returns the hashes of the covers to remove after the commit
     ComicMatchFiles missingComicMatchFiles;
+    MissingComicMatcher missingComicMatcher;
 
 signals:
     void coverExtracted(QString);

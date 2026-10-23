@@ -4,7 +4,6 @@
 #include "comic.h"
 #include "data_base_management.h"
 #include "db_helper.h"
-#include "folder_placeholder_match.h"
 #include "initial_comic_info_extractor.h"
 #include "library_comic_match.h"
 #include "library_item_types.h"
@@ -273,6 +272,7 @@ void LibraryCreator::run()
             pragma.exec();
             _database.transaction();
             missingComicMatchFiles = { };
+            missingComicMatcher = { };
 
             if (partialUpdate) {
                 update(QDir(_sourceFolder));
@@ -475,7 +475,7 @@ bool LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
             return false;
         if (matchMissingComics) {
             comic.file.id = ComicId(comicId);
-            matchNewComicToMissingComic(comic, _target, _database, missingComicMatchFiles);
+            missingComicMatcher.match(comic, _target, _database, missingComicMatchFiles);
         }
         return true;
     }
