@@ -796,16 +796,22 @@ std::optional<QStringList> DBHelper::removeUnusedPlaceholders(QSqlDatabase &db)
 {
     QSqlQuery select(db);
     select.setForwardOnly(true);
-    if (!select.exec("SELECT p.id FROM placeholder p WHERE " + placeholderUnused())) {
+    if (!select.exec("SELECT p.coverKey FROM placeholder p WHERE p.coverKey IS NOT NULL AND " + placeholderUnused())) {
         QLOG_ERROR() << "Unable to find unused placeholders:" << select.lastError().text();
         return std::nullopt;
     }
-    QSet<qulonglong> ids;
+    QStringList coverKeys;
     while (select.next()) {
-        ids.insert(select.value(0).toULongLong());
+        coverKeys.append(select.value(0).toString());
     }
     select.finish();
-    return deleteUnusedPlaceholders(ids, db);
+
+    QSqlQuery remove(db);
+    if (!remove.exec("DELETE FROM placeholder WHERE id IN (SELECT p.id FROM placeholder p WHERE " + placeholderUnused() + ")")) {
+        QLOG_ERROR() << "Unable to delete unused placeholders:" << remove.lastError().text();
+        return std::nullopt;
+    }
+    return coverKeys;
 }
 
 bool DBHelper::placePlaceholderInFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db)

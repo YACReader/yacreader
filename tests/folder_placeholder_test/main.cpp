@@ -155,6 +155,8 @@ void FolderPlaceholderTest::deletingAFolderRemovesThePlacementsBelowIt()
     DBHelper::removeFromDB(&folder, db);
     QCOMPARE(rows("SELECT folder_id, placeholder_id FROM folder_placeholder"), QList<QVariantList>({ { 4, 6 } }));
 
+    // an unused placeholder without a cover goes too
+    QVERIFY(exec("INSERT INTO placeholder (id, series) VALUES (8, 'Robin')"));
     QCOMPARE(DBHelper::removeUnusedPlaceholders(db), std::optional<QStringList>({ "key7" }));
     QCOMPARE(rows("SELECT id FROM placeholder ORDER BY id"), QList<QVariantList>({ { 5 }, { 6 } }));
 }
