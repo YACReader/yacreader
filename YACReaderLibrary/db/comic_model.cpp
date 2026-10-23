@@ -497,54 +497,39 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
         row = _data.count();
 
     QList<int> currentIndexes;
-    int i;
-    for (const auto &rowId : std::as_const(rowIds)) {
-        const auto current = indexOf(rowId);
+    for (const auto &current : indexesOf(rowIds)) {
         if (!current.isValid())
             return false;
         currentIndexes << current.row();
     }
 
     std::sort(currentIndexes.begin(), currentIndexes.end());
+    const QSet<int> draggedRows(currentIndexes.cbegin(), currentIndexes.cend());
 
-    if (currentIndexes.contains(row)) // no resorting
+    if (draggedRows.contains(row)) // no resorting
         return false;
 
     const int destinationRow = (row == -1 || row >= _data.length()) ? -1 : row;
 
     QList<int> newSorting;
-
-    const auto &currentIndexList = currentIndexes;
-    {
-        for (i = 0; i < _data.length(); i++) {
-            if (!currentIndexes.contains(i)) {
-
-                if (i == destinationRow) {
-                    for (const auto index : currentIndexList) {
-                        newSorting << index;
-                    }
-                }
-
-                newSorting << i;
-            }
-        }
+    newSorting.reserve(_data.size());
+    for (int i = 0; i < _data.length(); i++) {
+        if (draggedRows.contains(i))
+            continue;
+        if (i == destinationRow)
+            newSorting << currentIndexes;
+        newSorting << i;
     }
-
-    if (destinationRow == -1) {
-        for (const auto index : currentIndexList) {
-            newSorting << index;
-        }
-    }
+    if (destinationRow == -1)
+        newSorting << currentIndexes;
 
     QLOG_TRACE() << newSorting;
 
     int tempRow = row;
 
     for (const auto &rowId : std::as_const(rowIds)) {
-        int i = 0;
-        const auto dataSnapshot = _data;
-        for (const auto &item : dataSnapshot) {
-            if (rowIdOf(item) == rowId) {
+        for (int i = 0; i < _data.size(); i++) {
+            if (rowIdOf(_data.at(i)) == rowId) {
                 const bool skipElement = i == tempRow || i + 1 == tempRow;
 
                 if (!skipElement) {
@@ -564,7 +549,6 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
 
                 break;
             }
-            i++;
         }
     }
 

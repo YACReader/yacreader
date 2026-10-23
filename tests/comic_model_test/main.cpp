@@ -43,6 +43,7 @@ private slots:
     void removeOneOccurrenceOfARepeatedComic();
     void addAppendsTheComicInfoOfEachRow();
     void reorderWritesTheEntryOrder();
+    void reorderMovesSeveralRows();
     void failedReorderShowsTheStoredOrder();
     void reorderMovesADeletedComic();
     void deletedComicRowsShowTheirInfoAndLastKnownFile();
@@ -350,6 +351,38 @@ void ComicModelTest::reorderWritesTheEntryOrder()
     QVERIFY(model.dropMimeData(data.get(), Qt::MoveAction, 0, 0, QModelIndex()));
     QCOMPARE(rowIds(model), QList<qulonglong>({ 1, 3 }));
     QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 1, 3 }));
+}
+
+void ComicModelTest::reorderMovesSeveralRows()
+{
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 2, 2), (1, 3, 4)"));
+    const auto storedOrder = [this] { return ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"); };
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1, 2, 4 }));
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+
+    QSignalSpy resorted(&model, &ComicModel::resortedIndexes);
+
+    // the dragged rows go to the drop row in the drag order
+    std::unique_ptr<QMimeData> down(model.mimeData({ model.index(0, 0), model.index(2, 0) }));
+    QVERIFY(model.dropMimeData(down.get(), Qt::MoveAction, 4, 0, QModelIndex()));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 1, 4, 3, 2 }));
+    QCOMPARE(storedOrder(), QList<int>({ 1, 4, 3, 2 }));
+    // the old row of each new row, for the flow
+    QCOMPARE(resorted.count(), 1);
+    QCOMPARE(resorted.at(0).at(0).value<QList<int>>(), QList<int>({ 1, 3, 0, 2 }));
+
+    std::unique_ptr<QMimeData> up(model.mimeData({ model.index(3, 0), model.index(1, 0) }));
+    QVERIFY(model.dropMimeData(up.get(), Qt::MoveAction, 0, 0, QModelIndex()));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 2, 4, 1, 3 }));
+    QCOMPARE(storedOrder(), QList<int>({ 2, 4, 1, 3 }));
+
+    // a drop on a dragged row does nothing
+    std::unique_ptr<QMimeData> onItself(model.mimeData({ model.index(0, 0), model.index(1, 0) }));
+    QVERIFY(!model.dropMimeData(onItself.get(), Qt::MoveAction, 1, 0, QModelIndex()));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 2, 4, 1, 3 }));
 }
 
 void ComicModelTest::failedReorderShowsTheStoredOrder()
