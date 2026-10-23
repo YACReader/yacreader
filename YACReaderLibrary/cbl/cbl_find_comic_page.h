@@ -6,6 +6,8 @@
 
 #include <QWidget>
 
+#include <optional>
+
 class CblMatcher;
 class QCheckBox;
 class QLabel;
@@ -44,6 +46,8 @@ public:
     static QString startFolderPath(const CblImportEntry &entry, const CblMatcher &matcher);
 
     void setFolders(const QList<CblLibraryFolder> &folders);
+    // only the comics of the folder are shown and searched, without the folder tree; after setFolders
+    void limitToFolder(qulonglong folderId);
     void setWarningColor(const QColor &color);
     // `problem` is the position of the entry among the problems, or -1 when it is not one
     void showEntry(const CblImportEntry &entry, int row, int entryCount, CblImportStatus status, const QString &folderPath, int problem, int problemCount, bool hasPrevious, bool hasNext);
@@ -63,6 +67,7 @@ private:
 
     QString libraryPath;
     Mode mode;
+    std::optional<qulonglong> onlyFolderId;
     CblImportEntry entry;
     QColor warningColor;
     QList<ComicDB> comics;

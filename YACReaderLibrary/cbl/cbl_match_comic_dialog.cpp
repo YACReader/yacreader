@@ -56,7 +56,7 @@ LoadedLibrary loadLibrary(const CblBook &book, const QString &libraryPath)
 
 }
 
-CblMatchComicDialog::CblMatchComicDialog(const DescriptiveComicMetadata &metadata, const QString &libraryPath, QWidget *parent)
+CblMatchComicDialog::CblMatchComicDialog(const DescriptiveComicMetadata &metadata, const QString &libraryPath, std::optional<qulonglong> folderId, QWidget *parent)
     : QDialog(parent)
 {
     setWindowTitle(tr("Match to library comic"));
@@ -85,7 +85,7 @@ CblMatchComicDialog::CblMatchComicDialog(const DescriptiveComicMetadata &metadat
     auto result = std::make_shared<LoadedLibrary>();
     auto thread = QThread::create([result, book, libraryPath] { *result = loadLibrary(book, libraryPath); });
     connect(thread, &QThread::finished, thread, &QObject::deleteLater);
-    connect(thread, &QThread::finished, this, [this, result, book] {
+    connect(thread, &QThread::finished, this, [this, result, book, folderId] {
         if (result->error) {
             messageLabel->setText(tr("The library cannot be read."));
             return;
@@ -93,6 +93,8 @@ CblMatchComicDialog::CblMatchComicDialog(const DescriptiveComicMetadata &metadat
         CblImportEntry entry;
         entry.book = book;
         findPage->setFolders(result->folders);
+        if (folderId)
+            findPage->limitToFolder(*folderId);
         findPage->showEntry(entry, 0, 1, CblImportStatus::Missing, result->startFolderPath, -1, 0, false, false);
         pages->setCurrentWidget(findPage);
     });

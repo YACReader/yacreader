@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QIntValidator>
+#include <QSet>
 
 class QGridLayout;
 class QTabWidget;
@@ -16,6 +17,7 @@ class QDialogButtonBox;
 class QCheckBox;
 class QComboBox;
 // class YACReaderBusyWidget;
+class QLineEdit;
 class QToolButton;
 class StagedCover;
 
@@ -25,6 +27,7 @@ class CoverLabel;
 
 #include "comic_record.h"
 #include "descriptive_comic_metadata.h"
+#include "library_ids.h"
 #include "yacreader_global.h"
 
 #include <optional>
@@ -56,6 +59,10 @@ private:
 
     YACReaderFieldEdit *numberEdit;
     QIntValidator numberValidator;
+    // track mode: the issues to track, and what will happen
+    QLineEdit *issuesEdit;
+    QLabel *numberLabel;
+    QLabel *issuesSummary;
     YACReaderFieldEdit *countEdit;
     QIntValidator countValidator;
 
@@ -157,6 +164,19 @@ private:
     // false when the save was refused; the dialog then keeps the values
     bool updateComics();
 
+    // track mode: the dialog creates missing comics in a folder instead of editing comics
+    std::optional<FolderId> trackedFolderId;
+    QSet<QString> trackedFolderNumberKeys;
+    QString saveButtonText;
+    // one issue to track: its own fields and cover are enabled
+    bool trackingOneIssue = false;
+    void setTrackMode(bool track);
+    void setTrackingOneIssue(bool one);
+    void updateIssuesSummary();
+    // the run fields that are not empty; they apply to every tracked issue
+    DescriptiveMetadataPatch trackedMetadata() const;
+    bool trackIssues();
+
     bool sequentialEditing;
     bool coverChanged;
     float coverSizeRatio;
@@ -180,6 +200,9 @@ public:
 
 public slots:
     void setComics(QList<ComicRecord> records);
+    // track missing issues in the folder; `run` gives the series, volume, and publisher, `folderNumbers` the numbers
+    // the folder already has
+    void setTrackMissingIssues(FolderId folderId, const QString &folderName, const DescriptiveComicMetadata &run, const QStringList &folderNumbers);
     // false when no record from `currentComicIndex` on still exists
     bool setComicsForSequentialEditing(int currentComicIndex, QList<ComicRecord> records);
     void saveAndOpenPrevious();

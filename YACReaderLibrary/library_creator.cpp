@@ -5,6 +5,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "initial_comic_info_extractor.h"
+#include "library_comic_match.h"
 #include "library_item_types.h"
 #include "overloaded.h"
 #include "pdf_comic.h"
@@ -270,6 +271,8 @@ void LibraryCreator::run()
             QSqlQuery pragma("PRAGMA foreign_keys = ON", _database);
             pragma.exec();
             _database.transaction();
+            missingComicMatchFiles = { };
+            missingComicMatcher = { };
 
             if (partialUpdate) {
                 update(QDir(_sourceFolder));
@@ -278,6 +281,7 @@ void LibraryCreator::run()
             }
 
             QStringList unusedCoverHashes;
+            QStringList unusedPlaceholderCoverKeys;
             if (!canceled) {
                 if (partialUpdate) {
                     auto folder = DBHelper::updateChildrenInfo(_folderDestinationId, _database);
@@ -286,13 +290,18 @@ void LibraryCreator::run()
                     DBHelper::updateChildrenInfo(_database);
                     unusedCoverHashes = cleanup(_database, _target);
                 }
+                // removed folders took their placements with them
+                unusedPlaceholderCoverKeys = DBHelper::removeUnusedPlaceholders(_database).value_or(QStringList());
             }
 
-            if (_database.commit()) {
+            const bool committed = _database.commit();
+            if (committed) {
                 for (const auto &hash : std::as_const(unusedCoverHashes)) {
                     QFile::remove(LibraryPaths::coverPathFromLibraryDataPath(_target, hash));
                 }
+                DBHelper::removePlaceholderCovers(_target, unusedPlaceholderCoverKeys);
             }
+            finishComicMatchFiles(_target, missingComicMatchFiles, committed);
             _database.close();
         }
 
@@ -413,7 +422,7 @@ QString pseudoHash(const QFileInfo &fileInfo)
     return QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
 }
 
-bool LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo)
+bool LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo, bool matchMissingComics)
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
 
@@ -461,7 +470,14 @@ bool LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
         comic.file.folderId = _currentPathFolders.last().folder.id;
         comic.info.type = QVariant::fromValue(_currentPathFolders.last().folder.type);
 
-        return DBHelper::insert(&comic, _database, parsed) != 0;
+        const auto comicId = DBHelper::insert(&comic, _database, parsed);
+        if (comicId == 0)
+            return false;
+        if (matchMissingComics) {
+            comic.file.id = ComicId(comicId);
+            missingComicMatcher.match(comic, _target, _database, missingComicMatchFiles);
+        }
+        return true;
     }
 
     return false;
@@ -664,7 +680,7 @@ void LibraryCreator::update(QDir dirS)
 
                     QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                    insertComic(path, fileInfoS);
+                    insertComic(path, fileInfoS, true);
                 }
             }
             updated = true;
@@ -762,7 +778,7 @@ void LibraryCreator::update(QDir dirS)
 #else
                         QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                        insertComic(path, fileInfoS);
+                        insertComic(path, fileInfoS, true);
                         i++;
                     } else {
                         if (comparation > 0) // delete thumbnail

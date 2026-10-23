@@ -23,6 +23,10 @@ public:
     QString getComicId(const QModelIndex &index) const;
     QString getComicId(int row) const;
     QString getCoverURL(const QModelIndex &index) const;
+    // without the extra rows
+    int issueCount() const;
+    // the issue as Comic Vine gave it in the list of the volume
+    QString getIssueJson(int row) const;
 signals:
 
 public slots:
@@ -36,7 +40,8 @@ private:
         ISSUE = 0,
         TITLE,
         COVER_URL,
-        ID
+        ID,
+        ISSUE_JSON
     };
 };
 

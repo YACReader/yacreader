@@ -2,11 +2,16 @@
 #define COMIC_VINE_DIALOG_H
 
 #include "comic_record.h"
+#include "db_helper.h"
 #include "descriptive_comic_metadata.h"
+#include "library_ids.h"
 #include "themable.h"
 #include "volume_search_query.h"
 
 #include <QDialog>
+
+#include <atomic>
+#include <optional>
 
 class QPushButton;
 class QStackedWidget;
@@ -34,12 +39,15 @@ public:
     explicit ComicVineDialog(QWidget *parent = nullptr);
     QString databasePath;
     QString basePath;
+    // the folder of the comics; only then the other issues of a volume can be added as missing comics
+    std::optional<FolderId> folderId;
     void setComics(const QList<ComicRecord> &comics);
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
-    void getComicsInfo(QList<QPair<ComicRecord, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo);
+    void getComicsInfo(QList<QPair<ComicRecord, QString>> matchingInfo, const QStringList &missingIssues, const SelectedVolumeInfo &volumeInfo, int runId);
     void getComicInfo(const QString &comicId, const SelectedVolumeInfo &volumeInfo);
     void closeEvent(QCloseEvent *event) override;
+    void done(int result) override;
 signals:
 
 public slots:
@@ -72,8 +80,11 @@ private:
     void finishSuccessfully();
     void toggleSkipButton();
     QString volumeSearchStringFromComic(const ComicRecord &comic);
-    // writes each patch to the comic_info of its record when the record still exists, each comic_info once
-    void saveMetadata(const QList<QPair<ComicRecord, DescriptiveMetadataPatch>> &matches);
+    // writes each patch to the comic_info of its record when the record still exists, each comic_info once, and the
+    // missing issues to the folder, in one transaction
+    void saveMetadata(const QList<QPair<ComicRecord, DescriptiveMetadataPatch>> &matches, const QList<MissingIssue> &missingIssues = { });
+    MissingIssue missingIssue(const QString &issueJson, const SelectedVolumeInfo &volumeInfo);
+    void removeCovers(const QList<MissingIssue> &missingIssues);
 
     enum class ScraperMode {
         SingleComic, // the scraper has been opened for a single comic
@@ -131,6 +142,17 @@ private:
 
     VolumeSearchQuery currentVolumeSearchQuery;
     QString currentVolumeId;
+    // a closed or reopened dialog changes it, so the work of the previous run writes nothing
+    std::atomic_int run { 0 };
+
+    // what failed in this run, for the report at the end; after a limit answer no more details are asked
+    std::atomic_int failedComics { 0 };
+    std::atomic_int basicMissingIssues { 0 };
+    std::atomic_int missingIssuesWithoutCover { 0 };
+    std::atomic_bool limitReached { false };
+    // false when the detail request failed; also notes a limit answer
+    bool detailAnswered(bool error, bool timeout, const QByteArray &detail);
+    void showFailures();
 
 protected:
     void applyTheme(const Theme &theme) override;

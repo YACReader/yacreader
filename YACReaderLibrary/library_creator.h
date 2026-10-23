@@ -3,6 +3,8 @@
 
 #include "comic_db.h"
 #include "folder.h"
+#include "folder_placeholder_match.h"
+#include "library_comic_match.h"
 
 #include <QByteArray>
 #include <QDir>
@@ -63,7 +65,8 @@ private:
     void run() override;
     qulonglong insertFolders(); // devuelve el id del último folder añadido (último en la ruta)
     bool checkCover(const QString &hash);
-    bool insertComic(const QString &relativePath, const QFileInfo &fileInfo); // true when a comic row was inserted
+    // true when a comic row was inserted; a new file of an existing folder can be one of its missing comics
+    bool insertComic(const QString &relativePath, const QFileInfo &fileInfo, bool matchMissingComics = false);
     void replaceComic(const QString &relativePath, const QFileInfo &fileInfo, ComicDB *comic);
     bool copyReplacedComicInfo(const ComicInfo &oldInfo, ComicInfo newInfo, const QFileInfo &fileInfo);
     // qulonglong insertFolder(qulonglong parentId,const Folder & folder);
@@ -77,6 +80,8 @@ private:
     QSettings *settings;
     bool checkModifiedDatesOnUpdate;
     QStringList cleanup(QSqlDatabase &db, const QString &target); // returns the hashes of the covers to remove after the commit
+    ComicMatchFiles missingComicMatchFiles;
+    MissingComicMatcher missingComicMatcher;
 
 signals:
     void coverExtracted(QString);

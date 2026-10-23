@@ -9,6 +9,7 @@
 #include "cover_utils.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "folder.h"
 #include "folder_model.h"
 #include "initial_comic_info_extractor.h"
 #include "library_comic_match.h"
@@ -17,6 +18,7 @@
 #include "properties_dialog.h"
 #include "reading_list_model.h"
 #include "staged_cover.h"
+#include "tracked_issues.h"
 #include "yacreader_global_gui.h"
 
 #include <QCoreApplication>
@@ -212,6 +214,7 @@ void ComicManagementCoordinator::showComicVineScraper()
 
     comicVineDialog->databasePath = foldersModel->getDatabase();
     comicVineDialog->basePath = libraryPathProvider();
+    comicVineDialog->folderId = comicsModel->getMode() == ComicModel::Folder ? std::optional(FolderId(comicsModel->getSourceId())) : std::nullopt;
     comicVineDialog->setComics(comics);
 
     emit currentSourceRefreshStarted();
@@ -279,6 +282,39 @@ void ComicManagementCoordinator::showProperties()
         if (!propertiesDialog->setComicsForSequentialEditing(start, records))
             return;
     }
+
+    emit currentSourceRefreshStarted();
+    propertiesDialog->show();
+}
+
+std::optional<qulonglong> ComicManagementCoordinator::shownFolderId() const
+{
+    if (comicsModel->getMode() != ComicModel::Folder)
+        return std::nullopt;
+    return comicsModel->getSourceId();
+}
+
+void ComicManagementCoordinator::trackMissingIssues(qulonglong folderId)
+{
+    const auto dataPath = foldersModel->getDatabase();
+    std::optional<Folder> folder;
+    std::optional<QStringList> numbers;
+    DescriptiveComicMetadata run;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+        folder = DBHelper::loadFolder(folderId, db);
+        numbers = folderIssueNumbers(FolderId(folderId), db);
+        run = folderRunMetadata(FolderId(folderId), db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!folder || !numbers)
+        return;
+
+    propertiesDialog->databasePath = dataPath;
+    propertiesDialog->basePath = libraryPathProvider();
+    propertiesDialog->setTrackMissingIssues(FolderId(folderId), folder->name, run, *numbers);
 
     emit currentSourceRefreshStarted();
     propertiesDialog->show();
@@ -372,19 +408,21 @@ void ComicManagementCoordinator::deleteSelectedComics()
     if (listIndex.isValid() && (listType == ReadingListModel::ReadingListFolder || listType == ReadingListModel::SmartListFolder))
         return;
     const bool fromList = listIndex.isValid() && listType != ReadingListModel::SmartList;
-    const auto rowIds = selectedRowIds(fromList ? ComicAction::RemoveFromList : ComicAction::ChangeFile);
-    if (rowIds.isEmpty())
-        return;
-
     const auto source = currentSource();
     if (fromList) {
-        deleteComicsFromList(rowIds,
-                             source,
-                             listIndex.data(ReadingListModel::TypeListsRole).toInt(),
-                             listIndex.data(ReadingListModel::IDRole).toULongLong());
-    } else {
-        deleteComicsFromDisk(rowIds, source);
+        const auto rowIds = selectedRowIds(ComicAction::RemoveFromList);
+        if (!rowIds.isEmpty())
+            deleteComicsFromList(rowIds,
+                                 source,
+                                 listIndex.data(ReadingListModel::TypeListsRole).toInt(),
+                                 listIndex.data(ReadingListModel::IDRole).toULongLong());
+        return;
     }
+
+    const auto fileRowIds = selectedRowIds(ComicAction::ChangeFile);
+    const auto missingRowIds = selectedRowIds(ComicAction::RemoveFromFolder);
+    if (!fileRowIds.isEmpty() || !missingRowIds.isEmpty())
+        deleteComicsFromDisk(fileRowIds, missingRowIds, source);
 }
 
 void ComicManagementCoordinator::saveSelectedCoversTo()
@@ -521,7 +559,10 @@ void ComicManagementCoordinator::matchSelectedToLibraryComic()
     const auto index = selection.constFirst();
     const auto record = comicsModel->record(index);
     const auto entry = comicsModel->listEntry(index);
-    if (!entry)
+    // a missing comic of a folder is matched to a comic of that folder
+    const auto rowId = comicsModel->rowId(index);
+    const auto folderId = std::holds_alternative<PlaceholderId>(rowId) ? std::optional(comicsModel->getSourceId()) : std::nullopt;
+    if (!entry && !folderId)
         return;
     MissingComic missing;
     if (const auto *placeholder = recordPlaceholder(record))
@@ -532,7 +573,7 @@ void ComicManagementCoordinator::matchSelectedToLibraryComic()
     const auto dataPath = YACReader::LibraryPaths::libraryDataPath(source.libraryPath);
 
     emit currentSourceRefreshStarted();
-    CblMatchComicDialog dialog(recordMetadata(record), source.libraryPath, window);
+    CblMatchComicDialog dialog(recordMetadata(record), source.libraryPath, folderId, window);
     if (dialog.exec() != QDialog::Accepted || !dialog.chosenComic() || !isCurrentSource(source)) {
         emit currentSourceRefreshCancelled();
         return;
@@ -543,7 +584,8 @@ void ComicManagementCoordinator::matchSelectedToLibraryComic()
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
-        otherLists = otherListsWithEntriesOf({ missing }, entry->id.listKind, { entry->listId }, db);
+        otherLists = entry ? otherListsWithEntriesOf({ missing }, entry->id.listKind, { entry->listId }, db)
+                           : otherListsWithEntriesOf({ missing }, ListKind::ReadingList, { }, db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -759,14 +801,29 @@ bool ComicManagementCoordinator::isCurrentSource(const SourceContext &source) co
     return QDir::cleanPath(foldersModel->getDatabase()) == QDir::cleanPath(YACReader::LibraryPaths::libraryDataPath(source.libraryPath)) && static_cast<int>(comicsModel->getMode()) == source.mode && comicsModel->getSourceId() == source.sourceId;
 }
 
-void ComicManagementCoordinator::deleteComicsFromDisk(const QList<ComicRowId> &rowIds, const SourceContext &source)
+void ComicManagementCoordinator::deleteComicsFromDisk(const QList<ComicRowId> &rowIds, const QList<ComicRowId> &missingRowIds, const SourceContext &source)
 {
+    QString question;
+    if (missingRowIds.isEmpty())
+        question = QCoreApplication::translate("LibraryWindow", "All the selected comics will be deleted from your disk. Are you sure?");
+    else if (rowIds.isEmpty())
+        question = QCoreApplication::translate("LibraryWindow", "The selected missing comics will be removed from this folder. Are you sure?");
+    else
+        question = QCoreApplication::translate("LibraryWindow", "The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?");
     const auto answer = QMessageBox::question(window,
                                               QCoreApplication::translate("LibraryWindow", "Delete comics"),
-                                              QCoreApplication::translate("LibraryWindow", "All the selected comics will be deleted from your disk. Are you sure?"),
+                                              question,
                                               QMessageBox::Yes,
                                               QMessageBox::No);
     if (answer != QMessageBox::Yes)
+        return;
+
+    if (!missingRowIds.isEmpty()) {
+        const auto missingIndexes = indexesForRows(missingRowIds, source);
+        if (!missingIndexes.isEmpty())
+            comicsModel->removeMissingComicsFromFolder(missingIndexes);
+    }
+    if (rowIds.isEmpty())
         return;
 
     auto indexList = indexesForRows(rowIds, source);

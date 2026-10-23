@@ -1,6 +1,7 @@
 #include "cbl_matcher.h"
 
 #include "QsLog.h"
+#include "folder_placeholder_match.h"
 
 #include <QRegularExpression>
 #include <QSet>
@@ -392,5 +393,5 @@ QString cblEffectiveVolume(const CblLibraryMetadata &metadata)
 
 bool cblSameNumber(const QString &a, const QString &b)
 {
-    return number(a) == number(b);
+    return sameIssueNumber(a, b);
 }

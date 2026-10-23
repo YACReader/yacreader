@@ -64,8 +64,9 @@ struct ListFolderId {
     friend size_t qHash(const ListFolderId &key, size_t seed = 0) noexcept { return qHashMulti(seed, static_cast<int>(key.kind), key.id); }
 };
 
-// which row this is: a comic in folders and special lists, an entry in reading lists and labels
-using ComicRowId = std::variant<ComicId, ListItemId>;
+// which row this is: a comic in folders and special lists, an entry in reading lists and labels, a placeholder in
+// folders (a folder has it once)
+using ComicRowId = std::variant<ComicId, ListItemId, PlaceholderId>;
 
 inline size_t qHash(const ComicRowId &key, size_t seed = 0) noexcept
 {

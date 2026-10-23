@@ -54,6 +54,8 @@ public:
     bool hasCustomCoverInSelection() const;
     // one missing entry or deleted comic, or several entries of a list
     bool canMatchSelectionToLibraryComic() const;
+    // the folder the comics view shows, if it shows one
+    std::optional<qulonglong> shownFolderId() const;
 
 public slots:
     void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
@@ -66,6 +68,7 @@ public slots:
     void openComic(const ComicDB &comic, ComicModel::Mode mode);
     void openContainingFolderOfCurrentComic();
     void showComicVineScraper();
+    void trackMissingIssues(qulonglong folderId);
     void showProperties();
     void setSelectedComicsRead();
     void setSelectedComicsUnread();
@@ -116,7 +119,8 @@ private:
     // empty when the source changed or a row is no longer in the model
     QModelIndexList indexesForRows(const QList<ComicRowId> &rowIds, const SourceContext &source) const;
     bool isCurrentSource(const SourceContext &source) const;
-    void deleteComicsFromDisk(const QList<ComicRowId> &rowIds, const SourceContext &source);
+    // the files of `rowIds` are deleted from the disk; the missing comics of `missingRowIds` are removed from the folder
+    void deleteComicsFromDisk(const QList<ComicRowId> &rowIds, const QList<ComicRowId> &missingRowIds, const SourceContext &source);
     void deleteComicsFromList(const QList<ComicRowId> &rowIds, const SourceContext &source, int listType, qulonglong listId);
     void finishComicDeletion();
 

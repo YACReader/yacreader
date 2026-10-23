@@ -5,6 +5,7 @@
 #include "selected_volume_info.h"
 
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QJsonParseError>
 
 QString getCharacters(const QVariant &json_characters);
@@ -12,6 +13,16 @@ QMultiMap<QString, QString> getAuthors(const QVariant &json_authors);
 QPair<QString, QString> getFirstStoryArcIdAndName(const QVariant &json_story_arcs);
 QPair<QString, QString> getArcNumberAndArcCount(const QString &storyArcId, const QString &comicId);
 QList<QString> getNamesFromList(const QVariant &json_list);
+
+YACReader::ComicVineAnswer YACReader::comicVineAnswer(bool error, bool timeout, const QByteArray &body)
+{
+    const auto status = QJsonDocument::fromJson(body).object().value("status_code").toInt();
+    if (status == 107)
+        return ComicVineAnswer::LimitReached;
+    if (error || timeout || status != 1)
+        return ComicVineAnswer::Failed;
+    return ComicVineAnswer::Answered;
+}
 
 DescriptiveMetadataPatch YACReader::parseCVJSONComicInfo(const QString &json, const SelectedVolumeInfo &volumeInfo)
 {

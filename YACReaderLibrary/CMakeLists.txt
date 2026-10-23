@@ -30,6 +30,10 @@ add_library(library_common STATIC
     placeholder_cover.cpp
     library_comic_match.h
     library_comic_match.cpp
+    folder_placeholder_match.h
+    folder_placeholder_match.cpp
+    tracked_issues.h
+    tracked_issues.cpp
     ip_config_helper.h
     ip_config_helper.cpp
     libraries_update_coordinator.h

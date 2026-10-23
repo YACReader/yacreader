@@ -3,9 +3,11 @@
 #include "cover_utils.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "folder_placeholder_match.h"
 #include "initial_comic_info_extractor.h"
 #include "placeholder_cover.h"
 #include "staged_cover.h"
+#include "tracked_issues.h"
 #include "yacreader_cover_label.h"
 #include "yacreader_field_edit.h"
 #include "yacreader_field_plain_text_edit.h"
@@ -27,8 +29,22 @@
 #include <QSizePolicy>
 #include <QTabWidget>
 #include <QToolButton>
+#include <QValidator>
 
 using namespace YACReader;
+
+namespace {
+// a key press or a paste that asks for too many issues does not change the text
+class TrackedIssuesValidator : public QValidator
+{
+public:
+    using QValidator::QValidator;
+    State validate(QString &input, int &) const override
+    {
+        return tooManyTrackedIssues(input) ? Invalid : Acceptable;
+    }
+};
+}
 
 PropertiesDialog::PropertiesDialog(QWidget *parent)
     : QDialog(parent), updated(false)
@@ -179,12 +195,22 @@ void PropertiesDialog::createGeneralInfoBox()
 
     auto number = new QHBoxLayout;
     number->addWidget(numberEdit = new YACReaderFieldEdit());
+    number->addWidget(issuesEdit = new QLineEdit(), 1);
+    issuesEdit->setPlaceholderText(tr("e.g. 1-5, 8, 0.5, Annual 1"));
+    issuesEdit->setValidator(new TrackedIssuesValidator(issuesEdit));
+    issuesEdit->hide();
+    connect(issuesEdit, &QLineEdit::textChanged, this, &PropertiesDialog::updateIssuesSummary);
     number->addWidget(new QLabel(tr("of:")));
     number->addWidget(countEdit = new YACReaderFieldEdit());
     countValidator.setBottom(0);
     countEdit->setValidator(&countValidator);
     number->addStretch(1);
-    generalInfoLayout->addRow(tr("Issue number:"), number);
+    auto numberAndSummary = new QVBoxLayout;
+    numberAndSummary->addLayout(number);
+    numberAndSummary->addWidget(issuesSummary = new QLabel());
+    issuesSummary->setWordWrap(true);
+    issuesSummary->hide();
+    generalInfoLayout->addRow(numberLabel = new QLabel(tr("Issue number:")), numberAndSummary);
 
     generalInfoLayout->addRow(tr("Volume:"), volumeEdit = new YACReaderFieldEdit());
 
@@ -389,6 +415,8 @@ void PropertiesDialog::createButtonBox()
     saveButton = buttonBox->addButton(QDialogButtonBox::Save);
     previousButton = buttonBox->addButton("<", QDialogButtonBox::ButtonRole::NoRole);
     nextButton = buttonBox->addButton(">", QDialogButtonBox::ButtonRole::NoRole);
+
+    saveButtonText = saveButton->text();
 
     connect(closeButton, &QAbstractButton::clicked, this, &PropertiesDialog::close);
     connect(saveButton, &QAbstractButton::clicked, this, &PropertiesDialog::saveAndClose);
@@ -765,6 +793,188 @@ void PropertiesDialog::setComics(QList<ComicRecord> records)
         loadedColorState = colorCheck->checkState();
         loadedTypeIndex = typeCombo->currentIndex();
     }
+}
+
+void PropertiesDialog::setTrackMissingIssues(FolderId folderId, const QString &folderName, const DescriptiveComicMetadata &run, const QStringList &folderNumbers)
+{
+    sequentialEditing = false;
+    updated = false;
+    coverChanged = false;
+    customCover = QImage();
+    records.clear();
+    trackedFolderId = folderId;
+    trackedFolderNumberKeys.clear();
+    for (const auto &number : folderNumbers)
+        trackedFolderNumberKeys.insert(issueNumberKey(number));
+
+    setTrackMode(true);
+    setWindowTitle(tr("Track missing issues in \"%1\"").arg(folderName));
+    series->setText(run.series.toString());
+    volumeEdit->setText(run.volume.toString());
+    publisherEdit->setText(run.publisher.toString());
+    issuesEdit->setText(missingIssueRanges(folderNumbers));
+    updateIssuesSummary();
+}
+
+// the per-issue fields are disabled; per-issue data comes later with Comic Vine or Edit metadata
+void PropertiesDialog::setTrackMode(bool track)
+{
+    numberEdit->setHidden(track);
+    numberLabel->setText(track ? tr("Issues:") : tr("Issue number:"));
+    issuesEdit->setVisible(track);
+    issuesSummary->setVisible(track);
+    coverBox->setHidden(track);
+    comicVineLink->setHidden(track);
+    deletedComicNote->hide();
+    previousButton->hide();
+    nextButton->hide();
+
+    typeCombo->setDisabled(track);
+    trackingOneIssue = !track;
+    setTrackingOneIssue(!track);
+
+    saveButton->setText(track ? tr("Track") : saveButtonText);
+    saveButton->setEnabled(true);
+
+    if (!track)
+        return;
+    typeCombo->setCurrentIndex(-1);
+    size->setText("-");
+    setCover(QPixmap::fromImage(QImage(":/images/unavailableCover.png").convertToFormat(QImage::Format_Grayscale8)));
+    // the fields start empty: no "Click to overwrite"
+    for (auto *edit : std::initializer_list<YACReaderFieldEdit *> { series, title, countEdit, volumeEdit, storyArcEdit, arcNumberEdit, arcCountEdit, alternateSeriesEdit, alternateNumberEdit, alternateCountEdit, seriesGroupEdit, genereEdit,
+                                                                    dayEdit, monthEdit, yearEdit, publisherEdit, formatEdit, languageEdit, ageRatingEdit, mainCharacterOrTeamEdit })
+        edit->setPlaceholderText(QString());
+    for (auto *edit : std::initializer_list<YACReaderFieldPlainTextEdit *> { writer, penciller, inker, colorist, letterer, coverArtist, editor, imprint, synopsis, characters, teams, locations, review, notes, tags })
+        edit->setPlainText(QString());
+}
+
+// with several issues the values of one issue stay, unused, until there is one issue again
+void PropertiesDialog::setTrackingOneIssue(bool one)
+{
+    // YACReaderFieldEdit::setDisabled also hides its hint
+    for (auto *edit : std::initializer_list<YACReaderFieldEdit *> { title, arcNumberEdit, alternateNumberEdit, dayEdit, monthEdit, yearEdit })
+        edit->setDisabled(!one);
+    tabBar->setTabEnabled(tabBar->indexOf(plotBox), one);
+    tabBar->setTabEnabled(tabBar->indexOf(notesBox), one);
+    if (!trackedFolderId)
+        return;
+
+    trackingOneIssue = one;
+    coverBox->setVisible(one);
+    showPreviousCoverPageButton->hide();
+    showNextCoverPageButton->hide();
+    coverPageNumberLabel->hide();
+    resetCoverButton->setEnabled(false);
+    loadCustomCoverImageButton->setEnabled(one);
+    const auto shown = one && !customCover.isNull() ? customCover : QImage(":/images/unavailableCover.png");
+    setCover(QPixmap::fromImage(shown.convertToFormat(QImage::Format_Grayscale8)));
+}
+
+void PropertiesDialog::updateIssuesSummary()
+{
+    if (!trackedFolderId)
+        return;
+
+    const auto issues = parseTrackedIssues(issuesEdit->text());
+    QStringList newNumbers;
+    int inFolder = 0;
+    for (const auto &number : issues.numbers) {
+        if (trackedFolderNumberKeys.contains(issueNumberKey(number)))
+            inFolder++;
+        else
+            newNumbers.append(number);
+    }
+
+    QString summary;
+    if (issues.tooMany) {
+        summary = tr("At most %1 issues can be tracked at once.").arg(maxTrackedIssues);
+    } else if (!issues.valid) {
+        summary = tr("Check the issues: a range must go up, and a part between commas cannot be empty.");
+    } else if (newNumbers.isEmpty()) {
+        summary = tr("No new issues to track.");
+    } else {
+        summary = tr("%n issue(s) will be tracked: %1.", "", newNumbers.size()).arg(compactIssues(newNumbers));
+        if (newNumbers.size() > 1000)
+            summary += QStringLiteral(" ") + tr("That is a lot of issues; check the numbers.");
+    }
+    if (inFolder > 0)
+        summary += QStringLiteral(" ") + tr("%n issue(s) already in the folder.", "", inFolder);
+    if (issues.repeated > 0)
+        summary += QStringLiteral(" ") + tr("%n repeated issue(s).", "", issues.repeated);
+
+    issuesSummary->setText(summary);
+    saveButton->setEnabled(issues.valid && !newNumbers.isEmpty());
+
+    const bool one = issues.valid && newNumbers.size() == 1;
+    if (one != trackingOneIssue)
+        setTrackingOneIssue(one);
+}
+
+DescriptiveMetadataPatch PropertiesDialog::trackedMetadata() const
+{
+    using M = DescriptiveComicMetadata;
+    DescriptiveMetadataPatch patch;
+    const auto set = [&patch](QVariant M::*field, const QString &text) {
+        if (!text.trimmed().isEmpty())
+            patch.set(field, text.trimmed());
+    };
+
+    const std::initializer_list<std::pair<YACReaderFieldEdit *, QVariant M::*>> lines = {
+        { series, &M::series }, { countEdit, &M::count }, { volumeEdit, &M::volume }, { storyArcEdit, &M::storyArc }, { arcCountEdit, &M::arcCount }, { alternateSeriesEdit, &M::alternateSeries }, { alternateCountEdit, &M::alternateCount }, { seriesGroupEdit, &M::seriesGroup }, { genereEdit, &M::genere }, { publisherEdit, &M::publisher }, { formatEdit, &M::format }, { languageEdit, &M::languageISO }, { ageRatingEdit, &M::ageRating }
+    };
+    for (const auto &[edit, field] : lines)
+        set(field, edit->text());
+
+    const std::initializer_list<std::pair<YACReaderFieldPlainTextEdit *, QVariant M::*>> plains = {
+        { writer, &M::writer }, { penciller, &M::penciller }, { inker, &M::inker }, { colorist, &M::colorist }, { letterer, &M::letterer }, { coverArtist, &M::coverArtist }, { editor, &M::editor }, { imprint, &M::imprint }
+    };
+    for (const auto &[edit, field] : plains) {
+        if (edit->toPlainText() != YACReaderFieldPlainTextEdit::tr("Click to overwrite"))
+            set(field, edit->toPlainText());
+    }
+
+    if (colorCheck->checkState() != Qt::PartiallyChecked)
+        patch.set(&M::color, colorCheck->isChecked());
+
+    if (!trackingOneIssue)
+        return patch;
+    for (const auto &[edit, field] : std::initializer_list<std::pair<YACReaderFieldEdit *, QVariant M::*>> {
+                 { title, &M::title }, { arcNumberEdit, &M::arcNumber }, { alternateNumberEdit, &M::alternateNumber }, { mainCharacterOrTeamEdit, &M::mainCharacterOrTeam } })
+        set(field, edit->text());
+    for (const auto &[edit, field] : std::initializer_list<std::pair<YACReaderFieldPlainTextEdit *, QVariant M::*>> {
+                 { synopsis, &M::synopsis }, { characters, &M::characters }, { teams, &M::teams }, { locations, &M::locations }, { review, &M::review }, { notes, &M::notes }, { tags, &M::tags } }) {
+        if (edit->toPlainText() != YACReaderFieldPlainTextEdit::tr("Click to overwrite"))
+            set(field, edit->toPlainText());
+    }
+    if (const auto date = editedDate(DescriptiveComicMetadata()))
+        patch.set(&M::date, *date);
+    return patch;
+}
+
+bool PropertiesDialog::trackIssues()
+{
+    const auto issues = parseTrackedIssues(issuesEdit->text());
+    std::optional<QString> coverKey;
+    if (trackingOneIssue && !customCover.isNull())
+        coverKey = savePlaceholderCover(databasePath, customCover);
+    std::optional<int> tracked;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        tracked = trackIssuesInFolder(*trackedFolderId, issues.numbers, trackedMetadata(), coverKey, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (coverKey && tracked.value_or(0) == 0)
+        DBHelper::removePlaceholderCovers(databasePath, { *coverKey });
+
+    if (!tracked) {
+        QMessageBox::warning(this, tr("Issues not tracked"), tr("The missing issues could not be tracked."));
+        return false;
+    }
+    updated = updated || *tracked > 0;
+    return true;
 }
 
 bool PropertiesDialog::setComicsForSequentialEditing(int currentComicIndex, QList<ComicRecord> records)
@@ -1145,7 +1355,7 @@ void PropertiesDialog::saveAndOpenNext()
 
 void PropertiesDialog::saveAndClose()
 {
-    if (!updateComics())
+    if (!(trackedFolderId ? trackIssues() : updateComics()))
         return;
 
     close();
@@ -1166,6 +1376,13 @@ void PropertiesDialog::setDisableUniqueValues(bool disabled)
 // every way of closing the dialog (Close, Save, Escape, the window button) comes here
 void PropertiesDialog::done(int result)
 {
+    if (trackedFolderId) {
+        trackedFolderId.reset();
+        trackedFolderNumberKeys.clear();
+        issuesEdit->clear();
+        issuesSummary->clear();
+        setTrackMode(false);
+    }
     title->clear();
     title->setModified(false);
     coverPageEdit->clear();
@@ -1311,6 +1528,14 @@ void PropertiesDialog::loadCustomCoverImageFromPath(const QString &path)
     const QImage image(path);
     if (image.isNull()) {
         QMessageBox::warning(this, tr("Invalid cover"), tr("The image is invalid."));
+        return;
+    }
+
+    if (trackedFolderId) {
+        if (!trackingOneIssue)
+            return;
+        customCover = image;
+        setCover(QPixmap::fromImage(customCover.convertToFormat(QImage::Format_Grayscale8)));
         return;
     }
 

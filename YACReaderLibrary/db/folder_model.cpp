@@ -902,15 +902,23 @@ void FolderModel::deleteFolder(const QModelIndex &mi)
     Folder f;
     f.id = item->folder.id;
 
+    QStringList placeholderCoverKeys;
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        db.transaction();
         DBHelper::removeFromDB(&f, db);
+        placeholderCoverKeys = DBHelper::removeUnusedPlaceholders(db).value_or(QStringList());
         auto folder = DBHelper::updateChildrenInfo(item->parent()->folder.id.value(), db);
         DBHelper::propagateFolderUpdatesToParent(folder, db);
+        if (!db.commit()) {
+            db.rollback();
+            placeholderCoverKeys.clear();
+        }
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
+    DBHelper::removePlaceholderCovers(_databasePath, placeholderCoverKeys);
 
     endRemoveRows();
 }

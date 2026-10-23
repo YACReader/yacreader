@@ -169,6 +169,8 @@ public:
     void deleteComicsFromReading(const QList<QModelIndex> &comicsList);
     void deleteComicsFromSpecialList(const QList<QModelIndex> &comicsList, qulonglong specialListId);
     void deleteComicsFromLists(const QList<QModelIndex> &comicsList);
+    // the missing comics of the folder; the others are skipped
+    void removeMissingComicsFromFolder(const QList<QModelIndex> &comicsList);
 
     void deleteComicsFromModel(const QList<QModelIndex> &comicsList);
 

@@ -22,8 +22,9 @@ struct ComicMatchFiles {
 // what a missing entry refers to
 using MissingComic = std::variant<PlaceholderId, ComicInfoId>;
 
-// Gives the comic_info of a comic with a file to every entry of the placeholder, in every list, and deletes the
-// placeholder. A label holds a comic once, so an entry of a label that already has the comic is removed. The comic
+// Gives the comic_info of a comic with a file to every entry of the placeholder, in every list, and removes its
+// placements in the folders that have a file of the comic; the placeholder is deleted when no placement is left.
+// A label holds a comic once, so an entry of a label that already has the comic is removed. The comic
 // keeps its values and fills its empty ones from the placeholder; it takes the placeholder's cover only when it has
 // none. No transaction: the caller runs it in its own. False when the placeholder or the comic is gone, or a write
 // fails.

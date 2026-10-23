@@ -21,6 +21,7 @@
 #include <QDateTime>
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
 #include <QList>
 #include <QMap>
 #include <QSet>
@@ -200,14 +201,20 @@ bool allOfKind(const QList<ListItemId> &entryIds, ListKind listKind)
     return std::all_of(entryIds.begin(), entryIds.end(), [listKind](const ListItemId &id) { return id.listKind == listKind; });
 }
 
-// deletes the placeholders of `placeholderIds` that no entry refers to; gives their cover keys
-std::optional<QStringList> deletePlaceholdersWithoutEntries(const QSet<qulonglong> &placeholderIds, QSqlDatabase &db)
+// a placeholder lives while an entry or a folder placement uses it
+QString placeholderUnused()
+{
+    return QString("NOT EXISTS (SELECT 1 FROM %1 WHERE placeholder_id = p.id) "
+                   "AND NOT EXISTS (SELECT 1 FROM %2 WHERE placeholder_id = p.id) "
+                   "AND NOT EXISTS (SELECT 1 FROM folder_placeholder WHERE placeholder_id = p.id)")
+            .arg(readingListEntries.table, labelEntries.table);
+}
+
+// deletes the placeholders of `placeholderIds` that nothing uses; gives their cover keys
+std::optional<QStringList> deleteUnusedPlaceholders(const QSet<qulonglong> &placeholderIds, QSqlDatabase &db)
 {
     QSqlQuery select(db);
-    select.prepare(QString("SELECT p.coverKey FROM placeholder p WHERE p.id = :id "
-                           "AND NOT EXISTS (SELECT 1 FROM %1 WHERE placeholder_id = p.id) "
-                           "AND NOT EXISTS (SELECT 1 FROM %2 WHERE placeholder_id = p.id)")
-                           .arg(readingListEntries.table, labelEntries.table));
+    select.prepare("SELECT p.coverKey FROM placeholder p WHERE p.id = :id AND " + placeholderUnused());
     QSqlQuery remove(db);
     remove.prepare("DELETE FROM placeholder WHERE id = :id");
 
@@ -236,7 +243,7 @@ std::optional<QStringList> deletePlaceholdersWithoutEntries(const QSet<qulonglon
     return coverKeys;
 }
 
-// runs `removal` in a transaction and then deletes the placeholders of `placeholderIds` that lost their last entry
+// runs `removal` in a transaction and then deletes the placeholders of `placeholderIds` that nothing uses any more
 std::optional<QStringList> removeWithPlaceholders(QSqlQuery &placeholderIds, const std::function<bool()> &removal, QSqlDatabase &db)
 {
     db.transaction();
@@ -257,7 +264,7 @@ std::optional<QStringList> removeWithPlaceholders(QSqlQuery &placeholderIds, con
         return std::nullopt;
     }
 
-    auto coverKeys = deletePlaceholdersWithoutEntries(ids, db);
+    auto coverKeys = deleteUnusedPlaceholders(ids, db);
     if (!coverKeys) {
         db.rollback();
         return std::nullopt;
@@ -365,7 +372,8 @@ bool appendComics(const EntryTable &entries, qulonglong parentId, const QList<Co
     return db.commit();
 }
 
-// appends what each row refers to, in order: the comic_info of a comic, or the comic_info or placeholder of an entry
+// appends what each row refers to, in order: the comic_info of a comic, the comic_info or placeholder of an entry, or
+// a placeholder of a folder
 bool appendRows(const EntryTable &entries, qulonglong parentId, const QList<ComicRowId> &rows, QSqlDatabase &db)
 {
     const auto insert = [&entries](const QString &source) {
@@ -389,17 +397,21 @@ bool appendRows(const EntryTable &entries, qulonglong parentId, const QList<Comi
     fromReadingListEntry.prepare(insert(QString("SELECT comic_info_id, placeholder_id FROM %1 WHERE id = :row_id").arg(readingListEntries.table)));
     QSqlQuery fromLabelEntry(db);
     fromLabelEntry.prepare(insert(QString("SELECT comic_info_id, placeholder_id FROM %1 WHERE id = :row_id").arg(labelEntries.table)));
+    QSqlQuery fromPlaceholder(db);
+    fromPlaceholder.prepare(insert("SELECT NULL AS comic_info_id, id AS placeholder_id FROM placeholder WHERE id = :row_id"));
 
     for (const auto &row : rows) {
         auto &query = std::visit(overloaded {
                                          [&](const ComicId &) -> QSqlQuery & { return fromComic; },
                                          [&](const ListItemId &entry) -> QSqlQuery & { return entry.listKind == ListKind::ReadingList ? fromReadingListEntry : fromLabelEntry; },
+                                         [&](const PlaceholderId &) -> QSqlQuery & { return fromPlaceholder; },
                                  },
                                  row);
         query.bindValue(":parent_id", parentId);
         query.bindValue(":row_id", std::visit(overloaded {
                                                       [](const ComicId &comic) { return comic.value(); },
                                                       [](const ListItemId &entry) { return entry.id; },
+                                                      [](const PlaceholderId &placeholder) { return placeholder.value(); },
                                               },
                                               row));
         if (!query.exec()) {
@@ -778,6 +790,167 @@ void DBHelper::removePlaceholderCovers(const QString &libraryDataPath, const QSt
     for (const auto &coverKey : coverKeys) {
         QFile::remove(LibraryPaths::placeholderCoverPathFromDataPath(libraryDataPath, coverKey));
     }
+}
+
+std::optional<QStringList> DBHelper::removeUnusedPlaceholders(QSqlDatabase &db)
+{
+    QSqlQuery select(db);
+    select.setForwardOnly(true);
+    if (!select.exec("SELECT p.coverKey FROM placeholder p WHERE p.coverKey IS NOT NULL AND " + placeholderUnused())) {
+        QLOG_ERROR() << "Unable to find unused placeholders:" << select.lastError().text();
+        return std::nullopt;
+    }
+    QStringList coverKeys;
+    while (select.next()) {
+        coverKeys.append(select.value(0).toString());
+    }
+    select.finish();
+
+    QSqlQuery remove(db);
+    if (!remove.exec("DELETE FROM placeholder WHERE id IN (SELECT p.id FROM placeholder p WHERE " + placeholderUnused() + ")")) {
+        QLOG_ERROR() << "Unable to delete unused placeholders:" << remove.lastError().text();
+        return std::nullopt;
+    }
+    return coverKeys;
+}
+
+bool DBHelper::placePlaceholderInFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("INSERT OR IGNORE INTO folder_placeholder (folder_id, placeholder_id) VALUES (:folder_id, :placeholder_id)");
+    query.bindValue(":folder_id", folderId.value());
+    query.bindValue(":placeholder_id", placeholderId.value());
+    if (!query.exec()) {
+        QLOG_ERROR() << "Unable to place a placeholder in a folder:" << query.lastError().text();
+        return false;
+    }
+    return true;
+}
+
+bool DBHelper::insertPlaceholdersInFolder(const QList<Placeholder> &placeholders, FolderId folderId, QSqlDatabase &db)
+{
+    QSqlQuery insert(db);
+    insert.prepare("INSERT INTO placeholder (" + TableProjection::insertColumns(Placeholder::columns()) + ") VALUES (" + TableProjection::insertValues(Placeholder::columns()) + ")");
+    QSqlQuery place(db);
+    place.prepare("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (:folder_id, :placeholder_id)");
+
+    for (const auto &placeholder : placeholders) {
+        placeholder.bindTo(insert);
+        if (!insert.exec()) {
+            QLOG_ERROR() << "Unable to insert a placeholder:" << insert.lastError().text();
+            return false;
+        }
+        place.bindValue(":folder_id", folderId.value());
+        place.bindValue(":placeholder_id", insert.lastInsertId());
+        if (!place.exec()) {
+            QLOG_ERROR() << "Unable to place a placeholder in a folder:" << place.lastError().text();
+            return false;
+        }
+    }
+    return true;
+}
+
+std::optional<QStringList> DBHelper::placeIssuesInFolder(const QList<MissingIssue> &issues, FolderId folderId, QSqlDatabase &db)
+{
+    QStringList unusedCovers;
+    if (issues.isEmpty())
+        return unusedCovers;
+
+    QStringList parameters;
+    for (qsizetype i = 0; i < issues.size(); i++) {
+        if (issues.at(i).comicVineId.trimmed().isEmpty())
+            return std::nullopt;
+        parameters.append(QString(":id%1").arg(i));
+    }
+
+    QSqlQuery inFolder(db);
+    inFolder.setForwardOnly(true);
+    inFolder.prepare("SELECT ci.comicVineID FROM comic c INNER JOIN comic_info ci ON ci.id = c.comicInfoId WHERE c.parentId = :folder_id AND ci.comicVineID IS NOT NULL");
+    inFolder.bindValue(":folder_id", folderId.value());
+    if (!inFolder.exec()) {
+        QLOG_ERROR() << "Unable to find the Comic Vine ids of the comics of a folder:" << inFolder.lastError().text();
+        return std::nullopt;
+    }
+    QSet<QString> comicsInFolder;
+    while (inFolder.next())
+        comicsInFolder.insert(inFolder.value(0).toString());
+
+    // the placeholder of each issue is the one with the lowest id
+    QSqlQuery existing(db);
+    existing.setForwardOnly(true);
+    existing.prepare("SELECT comicVineID, id, coverKey FROM placeholder WHERE comicVineID IN (" + parameters.join(", ") + ") ORDER BY id");
+    for (qsizetype i = 0; i < issues.size(); i++)
+        existing.bindValue(parameters.at(i), issues.at(i).comicVineId);
+    if (!existing.exec()) {
+        QLOG_ERROR() << "Unable to find the placeholders of the issues:" << existing.lastError().text();
+        return std::nullopt;
+    }
+    struct Found {
+        PlaceholderId id;
+        bool hasCover;
+    };
+    QHash<QString, Found> placeholders;
+    while (existing.next()) {
+        const auto comicVineId = existing.value(0).toString();
+        if (!placeholders.contains(comicVineId))
+            placeholders.insert(comicVineId, { PlaceholderId(existing.value(1).toULongLong()), !existing.value(2).isNull() });
+    }
+
+    for (const auto &issue : issues) {
+        if (comicsInFolder.contains(issue.comicVineId)) {
+            if (issue.coverKey)
+                unusedCovers.append(*issue.coverKey);
+            continue;
+        }
+
+        auto found = placeholders.find(issue.comicVineId);
+        if (found == placeholders.end()) {
+            const auto inserted = insertPlaceholder(Placeholder(), db);
+            if (!inserted)
+                return std::nullopt;
+            found = placeholders.insert(issue.comicVineId, { *inserted, false });
+        }
+
+        if (!updatePlaceholderMetadata(found->id, issue.patch, db))
+            return std::nullopt;
+        if (issue.coverKey && !found->hasCover) {
+            if (!updatePlaceholderCover(found->id, issue.coverKey, db))
+                return std::nullopt;
+            found->hasCover = true;
+        } else if (issue.coverKey) {
+            unusedCovers.append(*issue.coverKey);
+        }
+        if (!placePlaceholderInFolder(found->id, folderId, db))
+            return std::nullopt;
+    }
+    return unusedCovers;
+}
+
+std::optional<QStringList> DBHelper::removePlaceholdersFromFolder(const QList<PlaceholderId> &placeholderIds, FolderId folderId, QSqlDatabase &db)
+{
+    QStringList ids;
+    for (const auto &placeholderId : placeholderIds) {
+        ids.append(QString::number(placeholderId.value()));
+    }
+
+    QSqlQuery placed(db);
+    placed.prepare(QString("SELECT placeholder_id FROM folder_placeholder WHERE folder_id = :folder_id AND placeholder_id IN (%1)").arg(ids.join(",")));
+    placed.bindValue(":folder_id", folderId.value());
+
+    const auto removal = [&] {
+        QSqlQuery query(db);
+        query.prepare("DELETE FROM folder_placeholder WHERE folder_id = :folder_id AND placeholder_id = :placeholder_id");
+        for (const auto &placeholderId : placeholderIds) {
+            query.bindValue(":folder_id", folderId.value());
+            query.bindValue(":placeholder_id", placeholderId.value());
+            if (!query.exec()) {
+                QLOG_ERROR() << "Unable to remove placeholders from a folder:" << query.lastError().text();
+                return false;
+            }
+        }
+        return true;
+    };
+    return removeWithPlaceholders(placed, removal, db);
 }
 
 void DBHelper::deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db)
@@ -2368,6 +2541,27 @@ std::optional<Placeholder> DBHelper::loadPlaceholder(PlaceholderId id, QSqlDatab
     }
 
     return std::nullopt;
+}
+
+std::optional<QList<Placeholder>> DBHelper::loadFolderPlaceholders(FolderId folderId, QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + TableProjection::selectList("p", Placeholder::columns()) +
+            " FROM folder_placeholder fp INNER JOIN placeholder p ON p.id = fp.placeholder_id WHERE fp.folder_id = :folder_id ORDER BY p.id";
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    query.prepare(sql);
+    query.bindValue(":folder_id", folderId.value());
+    if (!query.exec()) {
+        QLOG_ERROR() << "Unable to load the placeholders of a folder:" << query.lastError().text();
+        return std::nullopt;
+    }
+
+    QList<Placeholder> placeholders;
+    const auto columns = Placeholder::columnIndexes(query.record(), "p");
+    while (query.next()) {
+        placeholders.append(Placeholder::fromQuery(query, columns));
+    }
+    return placeholders;
 }
 
 std::optional<SmartList> DBHelper::loadSmartList(SmartListId id, QSqlDatabase &db)

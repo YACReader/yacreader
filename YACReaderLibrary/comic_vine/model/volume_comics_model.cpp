@@ -38,7 +38,7 @@ void VolumeComicsModel::load(const QString &json)
         QString coverURL = resultsValue.value("image").toMap().value("medium_url").toString();
         QString id = resultsValue.value("id").toString();
         QStringList l;
-        l << issueNumber << name << coverURL << id;
+        l << issueNumber << name << coverURL << id << QString::fromUtf8(QJsonDocument::fromVariant(resultsValue).toJson(QJsonDocument::Compact));
         _data.push_back(l);
     }
 
@@ -156,6 +156,18 @@ QString VolumeComicsModel::getComicId(int row) const
     if (row >= _data.count())
         return "";
     return _data[row][ID];
+}
+
+int VolumeComicsModel::issueCount() const
+{
+    return _data.count();
+}
+
+QString VolumeComicsModel::getIssueJson(int row) const
+{
+    if (row >= _data.count())
+        return "";
+    return _data[row][ISSUE_JSON];
 }
 
 QString VolumeComicsModel::getCoverURL(const QModelIndex &index) const

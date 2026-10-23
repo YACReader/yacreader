@@ -40,6 +40,7 @@ const DescriptiveComicMetadata &rowMetadata(const ComicItem &item)
                               [](const ComicItemCase::ComicInList &row) -> const DescriptiveComicMetadata & { return row.comic.info; },
                               [](const ComicItemCase::DeletedComicInList &row) -> const DescriptiveComicMetadata & { return row.info; },
                               [](const ComicItemCase::PlaceholderInList &row) -> const DescriptiveComicMetadata & { return row.placeholder; },
+                              [](const ComicItemCase::PlaceholderInFolder &row) -> const DescriptiveComicMetadata & { return row.placeholder; },
                       },
                       item);
 }
@@ -52,6 +53,7 @@ const ComicInfo *rowInfo(const ComicItem &item)
                               [](const ComicItemCase::ComicInList &row) -> const ComicInfo * { return &row.comic.info; },
                               [](const ComicItemCase::DeletedComicInList &row) -> const ComicInfo * { return &row.info; },
                               [](const ComicItemCase::PlaceholderInList &) -> const ComicInfo * { return nullptr; },
+                              [](const ComicItemCase::PlaceholderInFolder &) -> const ComicInfo * { return nullptr; },
                       },
                       item);
 }
@@ -63,8 +65,16 @@ ComicInfo *rowInfo(ComicItem &item)
 
 const Placeholder *rowPlaceholder(const ComicItem &item)
 {
-    const auto *row = std::get_if<ComicItemCase::PlaceholderInList>(&item);
-    return row != nullptr ? &row->placeholder : nullptr;
+    if (const auto *row = std::get_if<ComicItemCase::PlaceholderInList>(&item))
+        return &row->placeholder;
+    if (const auto *row = std::get_if<ComicItemCase::PlaceholderInFolder>(&item))
+        return &row->placeholder;
+    return nullptr;
+}
+
+Placeholder *rowPlaceholder(ComicItem &item)
+{
+    return const_cast<Placeholder *>(rowPlaceholder(std::as_const(item)));
 }
 
 // the comic of a row with a file
@@ -75,6 +85,7 @@ const ComicDB *rowComic(const ComicItem &item)
                               [](const ComicItemCase::ComicInList &row) -> const ComicDB * { return &row.comic; },
                               [](const ComicItemCase::DeletedComicInList &) -> const ComicDB * { return nullptr; },
                               [](const ComicItemCase::PlaceholderInList &) -> const ComicDB * { return nullptr; },
+                              [](const ComicItemCase::PlaceholderInFolder &) -> const ComicDB * { return nullptr; },
                       },
                       item);
 }
@@ -86,6 +97,7 @@ const ListEntry *rowEntry(const ComicItem &item)
                               [](const ComicItemCase::ComicInList &row) -> const ListEntry * { return &row.entry; },
                               [](const ComicItemCase::DeletedComicInList &row) -> const ListEntry * { return &row.entry; },
                               [](const ComicItemCase::PlaceholderInList &row) -> const ListEntry * { return &row.entry; },
+                              [](const ComicItemCase::PlaceholderInFolder &) -> const ListEntry * { return nullptr; },
                       },
                       item);
 }
@@ -98,6 +110,7 @@ QString rowFileName(const ComicItem &item)
                               [](const ComicItemCase::ComicInList &row) { return row.comic.file.fileName; },
                               [](const ComicItemCase::DeletedComicInList &row) { return row.entry.lastKnownFile ? row.entry.lastKnownFile->name : QString(); },
                               [](const ComicItemCase::PlaceholderInList &) { return QString(); },
+                              [](const ComicItemCase::PlaceholderInFolder &) { return QString(); },
                       },
                       item);
 }
@@ -109,6 +122,7 @@ ComicRowId rowIdOf(const ComicItem &item)
                               [](const ComicItemCase::ComicInList &row) -> ComicRowId { return row.entry.id; },
                               [](const ComicItemCase::DeletedComicInList &row) -> ComicRowId { return row.entry.id; },
                               [](const ComicItemCase::PlaceholderInList &row) -> ComicRowId { return row.entry.id; },
+                              [](const ComicItemCase::PlaceholderInFolder &row) -> ComicRowId { return row.placeholder.id; },
                       },
                       item);
 }
@@ -132,6 +146,7 @@ bool supportsAction(const ComicItem &item, ComicAction action)
         case ComicAction::AddToList:
             return true;
         case ComicAction::RemoveFromList:
+        case ComicAction::RemoveFromFolder:
         case ComicAction::MatchToLibraryComic:
             return false;
         }
@@ -160,6 +175,7 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   case ComicAction::Open:
                                   case ComicAction::OpenContainingFolder:
                                   case ComicAction::ChangeFile:
+                                  case ComicAction::RemoveFromFolder:
                                       return false;
                                   }
                                   return false;
@@ -184,6 +200,31 @@ bool supportsAction(const ComicItem &item, ComicAction action)
                                   case ComicAction::SetType:
                                   case ComicAction::DeleteMetadata:
                                   case ComicAction::AddToFavorites:
+                                  case ComicAction::RemoveFromFolder:
+                                      return false;
+                                  }
+                                  return false;
+                              },
+                              [action](const ComicItemCase::PlaceholderInFolder &row) {
+                                  switch (action) {
+                                  case ComicAction::SaveCover:
+                                      return row.placeholder.coverKey.has_value();
+                                  case ComicAction::EditMetadata:
+                                  case ComicAction::SearchComicVine:
+                                  case ComicAction::SetCustomCover:
+                                  case ComicAction::AssignNumbers:
+                                  case ComicAction::AddToList:
+                                  case ComicAction::RemoveFromFolder:
+                                  case ComicAction::MatchToLibraryComic:
+                                      return true;
+                                  case ComicAction::Open:
+                                  case ComicAction::OpenContainingFolder:
+                                  case ComicAction::ChangeFile:
+                                  case ComicAction::SetReadState:
+                                  case ComicAction::SetType:
+                                  case ComicAction::DeleteMetadata:
+                                  case ComicAction::AddToFavorites:
+                                  case ComicAction::RemoveFromList:
                                       return false;
                                   }
                                   return false;
@@ -271,6 +312,15 @@ QVariant identityValue(const ComicItem &item, int role)
                                   }
                                   return { };
                               },
+                              [role](const ComicItemCase::PlaceholderInFolder &) -> QVariant {
+                                  switch (role) {
+                                  case ComicModel::KindRole:
+                                      return QStringLiteral("PlaceholderInFolder");
+                                  case ComicModel::AvailableRole:
+                                      return false;
+                                  }
+                                  return { };
+                              },
                       },
                       item);
 }
@@ -307,6 +357,7 @@ QVariant fileColumnValue(const ComicItem &item, int column)
                                   return { };
                               },
                               [](const ComicItemCase::PlaceholderInList &) -> QVariant { return { }; },
+                              [](const ComicItemCase::PlaceholderInFolder &) -> QVariant { return { }; },
                       },
                       item);
 }
@@ -437,15 +488,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
     if (!canDropMimeData(data, action, row, column, parent))
         return false;
 
-    // inside a list the drag names its entries; Favorites rows are comics
-    QList<ComicRowId> rowIds;
-    if (const auto entryIds = YACReader::mimeDataToListEntries(data); !entryIds.isEmpty()) {
-        for (const auto &entryId : entryIds)
-            rowIds.append(entryId);
-    } else {
-        for (const auto id : YACReader::mimeDataToComicsIds(data))
-            rowIds.append(ComicId(id));
-    }
+    const auto rowIds = YACReader::mimeDataToRows(data);
     if (rowIds.isEmpty())
         return false;
 
@@ -533,6 +576,7 @@ bool ComicModel::dropMimeData(const QMimeData *data, Qt::DropAction action, int 
                            [&allEntryIds](const ComicItemCase::ComicInList &row) { allEntryIds << row.entry.id; },
                            [&allEntryIds](const ComicItemCase::DeletedComicInList &row) { allEntryIds << row.entry.id; },
                            [&allEntryIds](const ComicItemCase::PlaceholderInList &row) { allEntryIds << row.entry.id; },
+                           [](const ComicItemCase::PlaceholderInFolder &) { },
                    },
                    item);
     }
@@ -585,17 +629,16 @@ bool ComicModel::canBeResorted()
     return enableResorting;
 }
 
-// comic ids for Favorites, file moves, and the drop checks, and the entries of a list; the rows of the drag are the entries, or else the comics
+// comic ids for Favorites, file moves, and the drop checks, and the rows in order
 QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
 {
     QList<qulonglong> ids;
-    QList<ListItemId> entryIds;
+    QList<ComicRowId> rows;
     for (const auto &index : indexes) {
         const auto &item = _data.at(index.row());
         if (const auto *comic = rowComic(item))
             ids << comic->file.id.value();
-        if (const auto *entry = rowEntry(item))
-            entryIds << entry->id;
+        rows << rowIdOf(item);
     }
 
     QByteArray data;
@@ -604,8 +647,7 @@ QMimeData *ComicModel::mimeData(const QModelIndexList &indexes) const
 
     auto mimeData = new QMimeData();
     mimeData->setData(YACReader::YACReaderLibrarComiscSelectionMimeDataFormat, data);
-    if (!entryIds.isEmpty())
-        YACReader::setListEntriesMimeData(mimeData, entryIds);
+    YACReader::setRowsMimeData(mimeData, rows);
 
     return mimeData;
 }
@@ -955,6 +997,10 @@ QList<ComicItem> ComicModel::createFolderModelData(unsigned long long folderId, 
         selectQuery.exec();
 
         modelData = createItems(selectQuery);
+        if (db.isOpen()) {
+            for (auto &placeholder : DBHelper::loadFolderPlaceholders(FolderId(folderId), db).value_or(QList<Placeholder>()))
+                modelData.append(ComicItemCase::PlaceholderInFolder { std::move(placeholder), FolderId(folderId) });
+        }
         std::sort(modelData.begin(), modelData.end(), defaultFolderContentSortFunction);
 
         connectionName = db.connectionName();
@@ -1456,6 +1502,7 @@ ComicRecord ComicModel::record(const QModelIndex &index) const
                               [](const ComicItemCase::ComicInList &row) -> ComicRecord { return ComicRecordCase::Comic { row.comic }; },
                               [](const ComicItemCase::DeletedComicInList &row) -> ComicRecord { return ComicRecordCase::DeletedComic { row.info, row.entry.lastKnownFile }; },
                               [](const ComicItemCase::PlaceholderInList &row) -> ComicRecord { return ComicRecordCase::Placeholder { row.placeholder }; },
+                              [](const ComicItemCase::PlaceholderInFolder &row) -> ComicRecord { return ComicRecordCase::Placeholder { row.placeholder }; },
                       },
                       _data.at(index.row()));
 }
@@ -1821,10 +1868,10 @@ void ComicModel::notifyCoverChange(ComicInfoId id)
 void ComicModel::notifyPlaceholderCoverChange(PlaceholderId id, const std::optional<QString> &coverKey)
 {
     for (int row = 0; row < _data.size(); row++) {
-        auto *item = std::get_if<ComicItemCase::PlaceholderInList>(&_data[row]);
-        if (item == nullptr || item->placeholder.id != id)
+        auto *placeholder = rowPlaceholder(_data[row]);
+        if (placeholder == nullptr || placeholder->id != id)
             continue;
-        item->placeholder.coverKey = coverKey;
+        placeholder->coverKey = coverKey;
         emit dataChanged(index(row, 0), index(row, columnCount() - 1), { CoverPathRole });
     }
 }
@@ -2010,15 +2057,64 @@ void ComicModel::deleteComicsFromLists(const QList<QModelIndex> &comicsList)
     deleteComicsFromModel(removedRows);
 }
 
+void ComicModel::removeMissingComicsFromFolder(const QList<QModelIndex> &comicsList)
+{
+    QSet<int> rows;
+    QMap<FolderId, QList<PlaceholderId>> placeholderIdsByFolder;
+    for (const auto &index : comicsList) {
+        if (const auto *row = std::get_if<ComicItemCase::PlaceholderInFolder>(&_data.at(index.row())); row != nullptr && !rows.contains(index.row())) {
+            rows.insert(index.row());
+            placeholderIdsByFolder[row->folderId].append(row->placeholder.id);
+        }
+    }
+
+    bool removed = true;
+    QStringList placeholderCovers;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
+        for (auto it = placeholderIdsByFolder.cbegin(); it != placeholderIdsByFolder.cend(); ++it) {
+            if (const auto covers = DBHelper::removePlaceholdersFromFolder(it.value(), it.key(), db))
+                placeholderCovers.append(*covers);
+            else
+                removed = false;
+        }
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    DBHelper::removePlaceholderCovers(_databasePath, placeholderCovers);
+
+    if (!removed) {
+        reload();
+        return;
+    }
+
+    QList<int> sortedRows(rows.begin(), rows.end());
+    std::sort(sortedRows.begin(), sortedRows.end());
+    QList<QModelIndex> removedRows;
+    for (const auto row : std::as_const(sortedRows))
+        removedRows.append(index(row, 0));
+    deleteComicsFromModel(removedRows);
+}
+
+// one removal for each run of consecutive rows, from the last run to the first
 void ComicModel::deleteComicsFromModel(const QList<QModelIndex> &comicsList)
 {
-    QListIterator<QModelIndex> it(comicsList);
-    it.toBack();
-    while (it.hasPrevious()) {
-        int row = it.previous().row();
-        beginRemoveRows(QModelIndex(), row, row);
-        _data.removeAt(row);
+    QList<int> rows;
+    rows.reserve(comicsList.size());
+    for (const auto &index : comicsList)
+        rows.append(index.row());
+    std::sort(rows.begin(), rows.end());
+    rows.erase(std::unique(rows.begin(), rows.end()), rows.end());
+
+    for (auto last = rows.size() - 1; last >= 0;) {
+        auto first = last;
+        while (first > 0 && rows.at(first - 1) == rows.at(first) - 1)
+            first--;
+        beginRemoveRows(QModelIndex(), rows.at(first), rows.at(last));
+        _data.remove(rows.at(first), rows.at(last) - rows.at(first) + 1);
         endRemoveRows();
+        last = first - 1;
     }
 
     if (_data.isEmpty())

@@ -118,7 +118,11 @@ CblFindComicPage::CblFindComicPage(const QString &libraryPath, Mode mode, QWidge
     connect(searchTimer, &QTimer::timeout, this, &CblFindComicPage::search);
     connect(searchEdit, &QLineEdit::textEdited, searchTimer, qOverload<>(&QTimer::start));
     connect(searchEdit, &QLineEdit::textChanged, this, [this](const QString &text) {
-        if (text.isEmpty() && foldersView->currentIndex().isValid())
+        if (!text.isEmpty())
+            return;
+        if (onlyFolderId)
+            showFolder(*onlyFolderId);
+        else if (foldersView->currentIndex().isValid())
             showFolder(foldersView->currentIndex().data(FolderIdRole).toULongLong());
     });
 
@@ -242,6 +246,14 @@ void CblFindComicPage::setFolders(const QList<CblLibraryFolder> &folders)
     }
 }
 
+void CblFindComicPage::limitToFolder(qulonglong folderId)
+{
+    onlyFolderId = folderId;
+    foldersView->hide();
+    problemLabel->hide();
+    searchEdit->setPlaceholderText(tr("Search in this folder"));
+}
+
 void CblFindComicPage::setWarningColor(const QColor &color)
 {
     warningColor = color;
@@ -280,6 +292,10 @@ void CblFindComicPage::showEntry(const CblImportEntry &shownEntry, int row, int 
     nextButton->setEnabled(hasNext);
 
     searchEdit->clear();
+    if (onlyFolderId) {
+        showFolder(*onlyFolderId);
+        return;
+    }
     const auto folderId = folderIdsByPath.value(folderPath);
     if (auto *item = folderItems.value(folderId)) {
         const auto index = item->index();
@@ -326,7 +342,7 @@ void CblFindComicPage::search()
         connectionName = db.connectionName();
         if (db.isOpen()) {
             try {
-                auto query = comicsSearchQuery(db, text);
+                auto query = onlyFolderId ? comicsSearchQuery(db, text, *onlyFolderId) : comicsSearchQuery(db, text);
                 const auto indexes = ComicDB::columnIndexes(query.record(), "c", "ci");
                 while (query.next())
                     found.append(ComicDB::fromQuery(query, indexes));

@@ -554,6 +554,9 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
 
         // 9.20.0> tables
         success = success && DataBaseManagement::createListFolderTables(database);
+
+        // 9.21.0> tables
+        success = success && DataBaseManagement::createFolderPlaceholderTable(database);
     }
 
     return success;
@@ -914,6 +917,18 @@ bool DataBaseManagement::createListFolderTables(QSqlDatabase &database)
         success = success && query.exec(QString("CREATE INDEX %1_folder_index ON %1 (folder_id)").arg(listTable));
     }
     return success;
+}
+
+bool DataBaseManagement::createFolderPlaceholderTable(QSqlDatabase &database)
+{
+    QSqlQuery query(database);
+    return query.exec("CREATE TABLE folder_placeholder ("
+                      "folder_id INTEGER NOT NULL, "
+                      "placeholder_id INTEGER NOT NULL, "
+                      "FOREIGN KEY(folder_id) REFERENCES folder(id) ON DELETE CASCADE, "
+                      "FOREIGN KEY(placeholder_id) REFERENCES placeholder(id) ON DELETE RESTRICT, "
+                      "PRIMARY KEY(folder_id, placeholder_id))") &&
+            query.exec("CREATE INDEX folder_placeholder_placeholder_index ON folder_placeholder (placeholder_id)");
 }
 
 bool DataBaseManagement::createComicDeleteTrigger(QSqlDatabase &database)
@@ -1518,6 +1533,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_18 = compareVersions(oldVersion, "9.18.0") < 0;
     const bool pre9_19 = compareVersions(oldVersion, "9.19.0") < 0;
     const bool pre9_20 = compareVersions(oldVersion, "9.20.0") < 0;
+    const bool pre9_21 = compareVersions(oldVersion, "9.21.0") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1747,6 +1763,11 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                 if (pre9_20) {
                     bool successCreatingListFolders = createListFolderTables(db);
                     returnValue = returnValue && successCreatingListFolders;
+                }
+
+                if (pre9_21) {
+                    bool successCreatingFolderPlaceholders = createFolderPlaceholderTable(db);
+                    returnValue = returnValue && successCreatingFolderPlaceholders;
                 }
 
                 if (returnValue) {

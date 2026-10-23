@@ -20,13 +20,14 @@ private slots:
     void upgradeFrom9_17AddsTheEntrySource();
     void upgradeFrom9_18AddsSmartLists();
     void upgradeFrom9_19AddsListFolders();
+    void upgradeFrom9_20AddsFolderPlaceholders();
 
 private:
     static bool createOldLibrary(const QString &libraryPath, const QString &version, const QStringList &extraStatements = { });
     static QList<int> ints(const QString &libraryPath, const QString &sql);
     static QStringList strings(const QString &libraryPath, const QString &sql);
-    // a new library back without list folders (and without smart lists): reading_list is rebuilt, because a column
-    // with a foreign key cannot be dropped
+    // a new library back without list folders (and without smart lists and folder placeholders): reading_list is
+    // rebuilt, because a column with a foreign key cannot be dropped
     static bool removeListFolders(QSqlQuery &query);
 };
 
@@ -34,6 +35,7 @@ bool DatabaseMigrationTest::removeListFolders(QSqlQuery &query)
 {
     const QStringList statements = {
         "PRAGMA foreign_keys = OFF",
+        "DROP TABLE folder_placeholder",
         "DROP TABLE smart_list",
         "DROP TABLE smart_list_folder",
         "DROP INDEX reading_list_folder_index",
@@ -209,6 +211,7 @@ void DatabaseMigrationTest::newLibraryUsesEntryTables()
     QVERIFY(tables.contains("smart_list"));
     QVERIFY(tables.contains("reading_list_folder"));
     QVERIFY(tables.contains("smart_list_folder"));
+    QVERIFY(tables.contains("folder_placeholder"));
     QVERIFY(tables.contains("reading_list_entry"));
     QVERIFY(tables.contains("label_entry"));
     QVERIFY(!tables.contains("comic_reading_list"));
@@ -310,6 +313,35 @@ void DatabaseMigrationTest::upgradeFrom9_19AddsListFolders()
     QVERIFY(tables.contains("smart_list_folder"));
     QVERIFY(strings(library.path(), "SELECT name FROM pragma_table_info('reading_list')").contains("folder_id"));
     QCOMPARE(strings(library.path(), "SELECT \"table\" FROM pragma_foreign_key_list('smart_list')"), QStringList({ "smart_list_folder" }));
+    QVERIFY(tables.contains("folder_placeholder"));
+}
+
+void DatabaseMigrationTest::upgradeFrom9_20AddsFolderPlaceholders()
+{
+    QTemporaryDir library;
+    QVERIFY(library.isValid());
+    QDir().mkpath(LibraryPaths::libraryDataPath(library.path()));
+
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(library.path()));
+        connectionName = db.connectionName();
+        QSqlQuery query(db);
+        QVERIFY(query.exec("DROP TABLE folder_placeholder"));
+        QVERIFY(query.exec("UPDATE db_info SET version = '9.20.0'"));
+        QVERIFY(query.exec("INSERT INTO placeholder (id, series) VALUES (1, 'Batman')"));
+        db.close();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    QVERIFY(DataBaseManagement::updateToCurrentVersion(library.path()));
+
+    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
+    QCOMPARE(strings(library.path(), "SELECT series FROM placeholder"), QStringList({ "Batman" }));
+    QCOMPARE(strings(library.path(), "SELECT name FROM pragma_table_info('folder_placeholder') ORDER BY cid"), QStringList({ "folder_id", "placeholder_id" }));
+    QCOMPARE(strings(library.path(), "SELECT \"table\" || ':' || on_delete FROM pragma_foreign_key_list('folder_placeholder') ORDER BY \"table\""),
+             QStringList({ "folder:CASCADE", "placeholder:RESTRICT" }));
+    QVERIFY(strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'index'").contains("folder_placeholder_placeholder_index"));
 }
 
 QTEST_GUILESS_MAIN(DatabaseMigrationTest)
