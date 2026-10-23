@@ -248,8 +248,10 @@ void ClassicComicsView::setModel(ComicModel *model)
 
         updateStateColumn();
         connect(model, &QAbstractItemModel::modelReset, this, &ClassicComicsView::updateStateColumn, Qt::UniqueConnection);
-        connect(model, &QAbstractItemModel::rowsInserted, this, &ClassicComicsView::updateStateColumn, Qt::UniqueConnection);
-        connect(model, &QAbstractItemModel::rowsRemoved, this, &ClassicComicsView::updateStateColumn, Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::rowsInserted, this, &ClassicComicsView::scheduleStateColumnUpdate, Qt::UniqueConnection);
+        connect(model, &QAbstractItemModel::rowsRemoved, this, &ClassicComicsView::scheduleStateColumnUpdate, Qt::UniqueConnection);
+        // a reload changes a row in place when its comic is deleted or found again
+        connect(model, &QAbstractItemModel::dataChanged, this, &ClassicComicsView::scheduleStateColumnUpdate, Qt::UniqueConnection);
 
         tableView->horizontalHeader()->blockSignals(false);
     }
@@ -268,6 +270,16 @@ void ClassicComicsView::updateStateColumn()
     header->resizeSection(ComicModel::State, 20);
     header->setSectionHidden(ComicModel::State, model == nullptr || !model->hasUnavailableRows());
     header->blockSignals(blocked);
+}
+
+void ClassicComicsView::scheduleStateColumnUpdate()
+{
+    if (stateColumnUpdateScheduled)
+        return;
+    stateColumnUpdateScheduled = true;
+    QMetaObject::invokeMethod(this, [this] {
+        stateColumnUpdateScheduled = false;
+        updateStateColumn(); }, Qt::QueuedConnection);
 }
 
 void ClassicComicsView::setCurrentIndex(const QModelIndex &index)
