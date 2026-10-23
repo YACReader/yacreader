@@ -821,6 +821,29 @@ bool DBHelper::placePlaceholderInFolder(PlaceholderId placeholderId, FolderId fo
     return true;
 }
 
+bool DBHelper::insertPlaceholdersInFolder(const QList<Placeholder> &placeholders, FolderId folderId, QSqlDatabase &db)
+{
+    QSqlQuery insert(db);
+    insert.prepare("INSERT INTO placeholder (" + TableProjection::insertColumns(Placeholder::columns()) + ") VALUES (" + TableProjection::insertValues(Placeholder::columns()) + ")");
+    QSqlQuery place(db);
+    place.prepare("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (:folder_id, :placeholder_id)");
+
+    for (const auto &placeholder : placeholders) {
+        placeholder.bindTo(insert);
+        if (!insert.exec()) {
+            QLOG_ERROR() << "Unable to insert a placeholder:" << insert.lastError().text();
+            return false;
+        }
+        place.bindValue(":folder_id", folderId.value());
+        place.bindValue(":placeholder_id", insert.lastInsertId());
+        if (!place.exec()) {
+            QLOG_ERROR() << "Unable to place a placeholder in a folder:" << place.lastError().text();
+            return false;
+        }
+    }
+    return true;
+}
+
 std::optional<QStringList> DBHelper::placeIssuesInFolder(const QList<MissingIssue> &issues, FolderId folderId, QSqlDatabase &db)
 {
     QStringList unusedCovers;

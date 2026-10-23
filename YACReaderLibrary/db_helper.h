@@ -81,6 +81,8 @@ public:
     static std::optional<QStringList> removeUnusedPlaceholders(QSqlDatabase &db);
     // placing a placeholder again in the same folder changes nothing
     static bool placePlaceholderInFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db);
+    // No transaction. Inserts each placeholder and places it in the folder.
+    static bool insertPlaceholdersInFolder(const QList<Placeholder> &placeholders, FolderId folderId, QSqlDatabase &db);
     static std::optional<QStringList> removePlaceholdersFromFolder(const QList<PlaceholderId> &placeholderIds, FolderId folderId, QSqlDatabase &db);
     // No transaction. Each issue is expected in the folder: the placeholder of that issue is reused, else a new one is
     // made, and the patch is written to it; nothing when a comic of the folder is that issue. A cover key becomes the

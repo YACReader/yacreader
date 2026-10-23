@@ -202,23 +202,23 @@ std::optional<int> trackIssuesInFolder(FolderId folderId, const QStringList &num
     for (const auto &number : std::as_const(*existing))
         existingKeys.insert(issueNumberKey(number));
 
-    int tracked = 0;
+    QList<Placeholder> placeholders;
     for (const auto &number : numbers) {
         if (existingKeys.contains(issueNumberKey(number)))
             continue;
 
-        auto issuePatch = patch;
-        issuePatch.set(&DescriptiveComicMetadata::number, number);
-        const auto id = DBHelper::insertPlaceholder(Placeholder(), db);
-        if (!id || !DBHelper::updatePlaceholderMetadata(*id, issuePatch, db) || (coverKey && !DBHelper::updatePlaceholderCover(*id, coverKey, db)) ||
-            !DBHelper::placePlaceholderInFolder(*id, folderId, db)) {
-            db.rollback();
-            return std::nullopt;
-        }
-        tracked++;
+        Placeholder placeholder;
+        patch.applyTo(placeholder);
+        placeholder.number = number;
+        placeholder.coverKey = coverKey;
+        placeholders.append(placeholder);
     }
 
+    if (!DBHelper::insertPlaceholdersInFolder(placeholders, folderId, db)) {
+        db.rollback();
+        return std::nullopt;
+    }
     if (!db.commit())
         return std::nullopt;
-    return tracked;
+    return int(placeholders.size());
 }
