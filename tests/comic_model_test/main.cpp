@@ -7,6 +7,7 @@
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
+#include <QAbstractItemModelTester>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
@@ -73,6 +74,7 @@ private slots:
     void missingComicsInFoldersSupportMetadataAndDelete();
     void missingComicsInFoldersAreDraggedAndAddedToLists();
     void removingMissingComicsFromAFolderKeepsTheComics();
+    void rowsAreRemovedInRuns();
     void selectionSummaryCountsMissingComics();
     void searchResultsKeepEachSeriesTogether();
     void searchLimitKeepsTheFirstSeries();
@@ -1084,9 +1086,15 @@ void ComicModelTest::removingMissingComicsFromAFolderKeepsTheComics()
     ComicModel model;
     model.setupFolderModelData(2, dataPath);
     QCOMPARE(model.rowCount(), 7);
-    model.removeMissingComicsFromFolder({ model.indexOf(PlaceholderId(1)), model.indexOf(ComicId(1)), model.indexOf(PlaceholderId(2)) });
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+    QSignalSpy removed(&model, &ComicModel::rowsRemoved);
+    model.removeMissingComicsFromFolder({ model.indexOf(PlaceholderId(2)), model.indexOf(ComicId(1)), model.indexOf(PlaceholderId(1)) });
 
     QCOMPARE(model.rowCount(), 5);
+    // the two missing comics are the last rows, so they go in one removal
+    QCOMPARE(removed.count(), 1);
+    QCOMPARE(removed.at(0).at(1).toInt(), 5);
+    QCOMPARE(removed.at(0).at(2).toInt(), 6);
     QVERIFY(!model.indexOf(PlaceholderId(1)).isValid());
     QVERIFY(model.indexOf(ComicId(1)).isValid());
     QCOMPARE(ints("SELECT COUNT(*) FROM folder_placeholder"), QList<int>({ 0 }));
@@ -1257,6 +1265,25 @@ void ComicModelTest::searchLimitKeepsTheFirstSeries()
     QCOMPARE(ids.at(1), qulonglong(1001));
     QCOMPARE(ids.at(2), qulonglong(1002));
     QCOMPARE(ids.constLast(), qulonglong(1499));
+}
+
+void ComicModelTest::rowsAreRemovedInRuns()
+{
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 1, 5, 2, 3, 4 }));
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+    QSignalSpy removed(&model, &ComicModel::rowsRemoved);
+
+    // in selection order, with a repeated row
+    model.deleteComicsFromModel({ model.index(3, 0), model.index(0, 0), model.index(2, 0), model.index(3, 0) });
+
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 5, 4 }));
+    QCOMPARE(removed.count(), 2);
+    QCOMPARE(removed.at(0).at(1).toInt(), 2);
+    QCOMPARE(removed.at(0).at(2).toInt(), 3);
+    QCOMPARE(removed.at(1).at(1).toInt(), 0);
+    QCOMPARE(removed.at(1).at(2).toInt(), 0);
 }
 
 QTEST_MAIN(ComicModelTest)

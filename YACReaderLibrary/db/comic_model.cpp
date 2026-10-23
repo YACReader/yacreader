@@ -2097,15 +2097,24 @@ void ComicModel::removeMissingComicsFromFolder(const QList<QModelIndex> &comicsL
     deleteComicsFromModel(removedRows);
 }
 
+// one removal for each run of consecutive rows, from the last run to the first
 void ComicModel::deleteComicsFromModel(const QList<QModelIndex> &comicsList)
 {
-    QListIterator<QModelIndex> it(comicsList);
-    it.toBack();
-    while (it.hasPrevious()) {
-        int row = it.previous().row();
-        beginRemoveRows(QModelIndex(), row, row);
-        _data.removeAt(row);
+    QList<int> rows;
+    rows.reserve(comicsList.size());
+    for (const auto &index : comicsList)
+        rows.append(index.row());
+    std::sort(rows.begin(), rows.end());
+    rows.erase(std::unique(rows.begin(), rows.end()), rows.end());
+
+    for (auto last = rows.size() - 1; last >= 0;) {
+        auto first = last;
+        while (first > 0 && rows.at(first - 1) == rows.at(first) - 1)
+            first--;
+        beginRemoveRows(QModelIndex(), rows.at(first), rows.at(last));
+        _data.remove(rows.at(first), rows.at(last) - rows.at(first) + 1);
         endRemoveRows();
+        last = first - 1;
     }
 
     if (_data.isEmpty())
