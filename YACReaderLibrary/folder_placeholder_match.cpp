@@ -62,7 +62,8 @@ QString issueNumberKey(const QString &number)
 {
     static const QRegularExpression leadingZeros(R"(^(-?)0+(?=\d))");
     auto key = number.trimmed().toCaseFolded();
-    key.replace(leadingZeros, QStringLiteral("\\1"));
+    if (key.startsWith('0') || key.startsWith(QLatin1StringView("-0")))
+        key.replace(leadingZeros, QStringLiteral("\\1"));
     return key;
 }
 

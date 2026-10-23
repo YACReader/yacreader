@@ -109,11 +109,13 @@ void TrackedIssuesTest::tooManyIssues()
 {
     QCOMPARE(parseTrackedIssues("1-3000").numbers.size(), 3000);
     QVERIFY(!parseTrackedIssues("1-3000").tooMany);
+    QVERIFY(!tooManyTrackedIssues("1-3000, , 7-5"));
     for (const auto *text : { "1-3001", "1-9999", "1-2000, 2001-3001", "1-3000, Annual 1", "1-99999999999999999999" }) {
         const auto issues = parseTrackedIssues(text);
         QVERIFY2(issues.tooMany, text);
         QVERIFY(!issues.valid);
         QVERIFY(issues.numbers.isEmpty());
+        QVERIFY2(tooManyTrackedIssues(text), text);
     }
 }
 

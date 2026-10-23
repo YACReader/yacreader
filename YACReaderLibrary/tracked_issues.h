@@ -25,6 +25,8 @@ struct TrackedIssues {
     bool tooMany = false;
 };
 TrackedIssues parseTrackedIssues(const QString &text);
+// the same count as parseTrackedIssues, without building the numbers
+bool tooManyTrackedIssues(const QString &text);
 
 // the numbers for a summary: whole numbers in a row as "40-52", the others as written, at most `parts` parts
 QString compactIssues(const QStringList &numbers, int parts = 8);

@@ -41,7 +41,7 @@ public:
     using QValidator::QValidator;
     State validate(QString &input, int &) const override
     {
-        return parseTrackedIssues(input).tooMany ? Invalid : Acceptable;
+        return tooManyTrackedIssues(input) ? Invalid : Acceptable;
     }
 };
 }

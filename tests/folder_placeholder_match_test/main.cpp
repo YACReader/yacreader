@@ -123,6 +123,8 @@ void FolderPlaceholderMatchTest::numbersCompareByValue()
     QVERIFY(sameIssueNumber("012", "12"));
     QVERIFY(sameIssueNumber(" 7 ", "007"));
     QVERIFY(sameIssueNumber("0", "000"));
+    QVERIFY(sameIssueNumber("-007", "-7"));
+    QVERIFY(!sameIssueNumber("-7", "7"));
     QVERIFY(sameIssueNumber("12a", "12A"));
     QVERIFY(!sameIssueNumber("12", "120"));
     QVERIFY(!sameIssueNumber("1", "1.5"));

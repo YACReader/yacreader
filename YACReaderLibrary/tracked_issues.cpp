@@ -13,30 +13,29 @@
 
 #include <algorithm>
 
-TrackedIssues parseTrackedIssues(const QString &text)
+namespace {
+
+struct Part {
+    QString issue;
+    qlonglong first = 0;
+    qlonglong last = -1;
+};
+
+struct Parts {
+    QList<Part> parts;
+    bool valid = true;
+    bool tooMany = false;
+};
+
+// the parts of an Issues text; the issues are counted from the range sizes, so a range is never expanded here
+Parts readParts(const QString &text)
 {
     static const QRegularExpression range(R"(^(\d+)\s*-\s*(\d+)$)");
 
-    TrackedIssues result;
-    QSet<QString> seen;
-    const auto add = [&](const QString &number) {
-        if (seen.contains(issueNumberKey(number))) {
-            result.repeated++;
-            return;
-        }
-        seen.insert(issueNumberKey(number));
-        result.numbers.append(number);
-    };
-
+    Parts result;
     if (text.trimmed().isEmpty())
         return result;
 
-    struct Part {
-        QString issue;
-        qlonglong first = 0;
-        qlonglong last = -1;
-    };
-    QList<Part> parts;
     qlonglong count = 0;
     for (const auto &part : text.split(',')) {
         const auto issue = part.trimmed();
@@ -46,7 +45,7 @@ TrackedIssues parseTrackedIssues(const QString &text)
         }
         const auto match = range.match(issue);
         if (!match.hasMatch()) {
-            parts.append({ issue });
+            result.parts.append({ issue });
             count++;
         } else {
             bool firstIsNumber = false;
@@ -61,7 +60,7 @@ TrackedIssues parseTrackedIssues(const QString &text)
                 result.valid = false;
                 continue;
             }
-            parts.append({ QString(), first, last });
+            result.parts.append({ QString(), first, last });
             count += last - first + 1;
         }
         if (count > maxTrackedIssues) {
@@ -69,12 +68,36 @@ TrackedIssues parseTrackedIssues(const QString &text)
             break;
         }
     }
-    if (result.tooMany) {
-        result.valid = false;
-        return result;
-    }
+    return result;
+}
 
-    for (const auto &part : std::as_const(parts)) {
+}
+
+bool tooManyTrackedIssues(const QString &text)
+{
+    return readParts(text).tooMany;
+}
+
+TrackedIssues parseTrackedIssues(const QString &text)
+{
+    const auto parts = readParts(text);
+    TrackedIssues result;
+    result.valid = parts.valid && !parts.tooMany;
+    result.tooMany = parts.tooMany;
+    if (parts.tooMany)
+        return result;
+
+    QSet<QString> seen;
+    const auto add = [&](const QString &number) {
+        const auto key = issueNumberKey(number);
+        if (seen.contains(key)) {
+            result.repeated++;
+            return;
+        }
+        seen.insert(key);
+        result.numbers.append(number);
+    };
+    for (const auto &part : parts.parts) {
         if (!part.issue.isEmpty())
             add(part.issue);
         for (auto number = part.first; number <= part.last; number++)
