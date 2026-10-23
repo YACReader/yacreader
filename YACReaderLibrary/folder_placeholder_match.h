@@ -14,7 +14,8 @@ class QSqlDatabase;
 struct ComicMatchFiles;
 struct DescriptiveComicMetadata;
 
-// the numbers of two issues are the same: by value, without leading zeros or case
+// an issue number without leading zeros or case; two issues are the same when their keys are
+QString issueNumberKey(const QString &number);
 bool sameIssueNumber(const QString &a, const QString &b);
 
 // the comicVineID, or the id that ComicTagger writes in the notes ("ComicVine [CVDB<id>]")

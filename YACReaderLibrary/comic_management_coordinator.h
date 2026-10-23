@@ -54,6 +54,8 @@ public:
     bool hasCustomCoverInSelection() const;
     // one missing entry or deleted comic, or several entries of a list
     bool canMatchSelectionToLibraryComic() const;
+    // the folder the comics view shows, if it shows one
+    std::optional<qulonglong> shownFolderId() const;
 
 public slots:
     void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
@@ -66,6 +68,7 @@ public slots:
     void openComic(const ComicDB &comic, ComicModel::Mode mode);
     void openContainingFolderOfCurrentComic();
     void showComicVineScraper();
+    void trackMissingIssues(qulonglong folderId);
     void showProperties();
     void setSelectedComicsRead();
     void setSelectedComicsUnread();

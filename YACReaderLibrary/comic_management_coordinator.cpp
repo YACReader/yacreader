@@ -9,6 +9,7 @@
 #include "cover_utils.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "folder.h"
 #include "folder_model.h"
 #include "initial_comic_info_extractor.h"
 #include "library_comic_match.h"
@@ -17,6 +18,7 @@
 #include "properties_dialog.h"
 #include "reading_list_model.h"
 #include "staged_cover.h"
+#include "tracked_issues.h"
 #include "yacreader_global_gui.h"
 
 #include <QCoreApplication>
@@ -280,6 +282,39 @@ void ComicManagementCoordinator::showProperties()
         if (!propertiesDialog->setComicsForSequentialEditing(start, records))
             return;
     }
+
+    emit currentSourceRefreshStarted();
+    propertiesDialog->show();
+}
+
+std::optional<qulonglong> ComicManagementCoordinator::shownFolderId() const
+{
+    if (comicsModel->getMode() != ComicModel::Folder)
+        return std::nullopt;
+    return comicsModel->getSourceId();
+}
+
+void ComicManagementCoordinator::trackMissingIssues(qulonglong folderId)
+{
+    const auto dataPath = foldersModel->getDatabase();
+    std::optional<Folder> folder;
+    std::optional<QStringList> numbers;
+    DescriptiveComicMetadata run;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+        folder = DBHelper::loadFolder(folderId, db);
+        numbers = folderIssueNumbers(FolderId(folderId), db);
+        run = folderRunMetadata(FolderId(folderId), db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!folder || !numbers)
+        return;
+
+    propertiesDialog->databasePath = dataPath;
+    propertiesDialog->basePath = libraryPathProvider();
+    propertiesDialog->setTrackMissingIssues(FolderId(folderId), folder->name, run, *numbers);
 
     emit currentSourceRefreshStarted();
     propertiesDialog->show();

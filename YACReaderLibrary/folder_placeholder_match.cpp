@@ -18,14 +18,6 @@ namespace {
 
 constexpr int trustedPrefixMinimum = 3;
 
-QString normalizedNumber(const QString &number)
-{
-    static const QRegularExpression leadingZeros(R"(^(-?)0+(?=\d))");
-    auto result = number.trimmed().toCaseFolded();
-    result.replace(leadingZeros, QStringLiteral("\\1"));
-    return result;
-}
-
 QString withoutExtension(const QString &fileName)
 {
     const auto dot = fileName.lastIndexOf('.');
@@ -66,9 +58,17 @@ bool isSpecial(const QString &fileName)
 
 }
 
+QString issueNumberKey(const QString &number)
+{
+    static const QRegularExpression leadingZeros(R"(^(-?)0+(?=\d))");
+    auto key = number.trimmed().toCaseFolded();
+    key.replace(leadingZeros, QStringLiteral("\\1"));
+    return key;
+}
+
 bool sameIssueNumber(const QString &a, const QString &b)
 {
-    return normalizedNumber(a) == normalizedNumber(b);
+    return issueNumberKey(a) == issueNumberKey(b);
 }
 
 QString comicVineIdOf(const DescriptiveComicMetadata &metadata)
