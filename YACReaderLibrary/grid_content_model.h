@@ -100,6 +100,7 @@ public:
 private:
     void reconnectModels();
     void resetFromSource();
+    void updateSourceIndexesFrom(int sourceRow);
     int sourceFolderCount() const;
     int spacerCount() const;
     bool forwardsFolderRowsDirectly() const;

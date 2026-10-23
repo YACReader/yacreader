@@ -7,6 +7,7 @@
 #include <QAbstractItemModelTester>
 #include <QApplication>
 #include <QDir>
+#include <QSignalSpy>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
@@ -27,6 +28,7 @@ private slots:
     void folderRowsHaveOnlyTheirTitle();
     void roleNames();
     void listCardsReplaceTheOtherRows();
+    void removedRowsUpdateTheSourceIndexOfTheNextRows();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -211,6 +213,31 @@ void GridContentModelTest::listCardsReplaceTheOtherRows()
     grid.setComicModel(&comics);
     QCOMPARE(grid.rowCount(), 2);
     QCOMPARE(grid.index(0, 0).data(GridContentModel::ItemKindRole).toInt(), int(GridContentModel::ComicItem));
+}
+
+void GridContentModelTest::removedRowsUpdateTheSourceIndexOfTheNextRows()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, number) VALUES (1, '0')"));
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (2, 1)"));
+    FolderModel folders;
+    folders.setupModelData(dataPath);
+    ComicModel comics;
+    comics.setupFolderModelData(2, dataPath);
+    GridContentModel grid;
+    grid.setComicModel(&comics);
+    grid.setFolderModel(&folders, folders.index(qulonglong(2)));
+    QAbstractItemModelTester tester(&grid, QAbstractItemModelTester::FailureReportingMode::QtTest);
+    QCOMPARE(grid.rowCount(), 4);
+
+    QSignalSpy changed(&grid, &QAbstractItemModel::dataChanged);
+    comics.removeMissingComicsFromFolder({ comics.indexOf(PlaceholderId(1)) });
+    QCOMPARE(grid.rowCount(), 3);
+    QCOMPARE(changed.count(), 1);
+    QCOMPARE(changed.at(0).at(0).toModelIndex().row(), 1);
+    QCOMPARE(changed.at(0).at(1).toModelIndex().row(), 2);
+    QCOMPARE(changed.at(0).at(2).value<QList<int>>(), QList<int>({ GridContentModel::SourceIndexRole }));
+    for (int row = 1; row < grid.rowCount(); row++)
+        QCOMPARE(grid.index(row, 0).data(GridContentModel::SourceIndexRole).toInt(), row - 1);
 }
 
 QTEST_MAIN(GridContentModelTest)
