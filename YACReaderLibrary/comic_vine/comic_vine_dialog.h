@@ -145,6 +145,15 @@ private:
     // a closed or reopened dialog changes it, so the work of the previous run writes nothing
     std::atomic_int run { 0 };
 
+    // what failed in this run, for the report at the end; after a limit answer no more details are asked
+    std::atomic_int failedComics { 0 };
+    std::atomic_int basicMissingIssues { 0 };
+    std::atomic_int missingIssuesWithoutCover { 0 };
+    std::atomic_bool limitReached { false };
+    // false when the detail request failed; also notes a limit answer
+    bool detailAnswered(bool error, bool timeout, const QByteArray &detail);
+    void showFailures();
+
 protected:
     void applyTheme(const Theme &theme) override;
 };

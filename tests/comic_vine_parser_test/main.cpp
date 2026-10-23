@@ -10,6 +10,7 @@ private slots:
     void patchHasOnlyTheReturnedFields();
     void unreadableOrEmptyResultsGiveAnEmptyPatch_data();
     void unreadableOrEmptyResultsGiveAnEmptyPatch();
+    void answers();
 };
 
 void ComicVineParserTest::patchHasOnlyTheReturnedFields()
@@ -70,6 +71,19 @@ void ComicVineParserTest::unreadableOrEmptyResultsGiveAnEmptyPatch()
 {
     QFETCH(QString, json);
     QVERIFY(YACReader::parseCVJSONComicInfo(json, { "1", 1, "A publisher", QString() }).isEmpty());
+}
+
+void ComicVineParserTest::answers()
+{
+    using YACReader::ComicVineAnswer;
+    const QByteArray ok = R"({ "status_code": 1, "number_of_total_results": 1, "results": { } })";
+    QCOMPARE(YACReader::comicVineAnswer(false, false, ok), ComicVineAnswer::Answered);
+    QCOMPARE(YACReader::comicVineAnswer(true, false, ok), ComicVineAnswer::Failed);
+    QCOMPARE(YACReader::comicVineAnswer(false, true, QByteArray()), ComicVineAnswer::Failed);
+    QCOMPARE(YACReader::comicVineAnswer(false, false, R"({ "status_code": 101, "error": "Object Not Found" })"), ComicVineAnswer::Failed);
+    QCOMPARE(YACReader::comicVineAnswer(false, false, "not json"), ComicVineAnswer::Failed);
+    // the limit answer can come with an HTTP error
+    QCOMPARE(YACReader::comicVineAnswer(true, false, R"({ "status_code": 107, "error": "Rate limit exceeded" })"), ComicVineAnswer::LimitReached);
 }
 
 QTEST_GUILESS_MAIN(ComicVineParserTest)
