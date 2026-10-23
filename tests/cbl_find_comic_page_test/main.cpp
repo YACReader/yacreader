@@ -47,10 +47,10 @@ void CblFindComicPageTest::init()
     QSqlDatabase::removeDatabase(name);
 
     QVERIFY(exec("INSERT INTO folder (id, parentId, name, path) VALUES (2, 1, 'Batman', '/Batman'), (3, 1, 'Robin', '/Robin')"));
-    QVERIFY(exec("INSERT INTO comic_info (id, hash, series, number) VALUES (1, 'h1', 'Batman', '11'), (2, 'h2', 'Batman', '12'), (3, 'h3', 'Batman', '13')"));
+    QVERIFY(exec("INSERT INTO comic_info (id, hash, series, number) VALUES (1, 'h1', 'Batman', '11'), (2, 'h2', 'Batman', '12'), (3, 'h3', 'Batman', '13'), (4, 'h4', 'Robin', '1')"));
     QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES "
                  "(1, 2, 1, 'Batman 011.cbz', '/Batman/Batman 011.cbz'), (2, 2, 2, 'Batman 012.cbz', '/Batman/Batman 012.cbz'), "
-                 "(3, 3, 3, 'Batman 013.cbz', '/Robin/Batman 013.cbz')"));
+                 "(3, 3, 3, 'Batman 013.cbz', '/Robin/Batman 013.cbz'), (4, 2, 4, 'Robin 001.cbz', '/Batman/Robin 001.cbz')"));
 }
 
 void CblFindComicPageTest::cleanup()
@@ -108,16 +108,21 @@ void CblFindComicPageTest::aFolderLimitShowsAndSearchesOnlyThatFolder()
             names.append(comicsView->model()->index(row, 0).data().toString());
         return names;
     };
-    QCOMPARE(fileNames(), QStringList({ "Batman 011.cbz", "Batman 012.cbz" }));
+    QCOMPARE(fileNames(), QStringList({ "Batman 011.cbz", "Batman 012.cbz", "Robin 001.cbz" }));
+
+    // more matches than the search limit in another folder, before the folder's comics in the order of the results
+    QVERIFY(exec("WITH RECURSIVE n(i) AS (SELECT 100 UNION ALL SELECT i + 1 FROM n WHERE i < 699) "
+                 "INSERT INTO comic_info (id, hash, series, number) SELECT i, 'x' || i, 'Batman', '1' FROM n"));
+    QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) SELECT id, 3, id, 'Batman 001.cbz', '/Robin/Batman 001.cbz' FROM comic_info WHERE id >= 100"));
 
     auto *search = page.findChild<QLineEdit *>();
     QCOMPARE(search->placeholderText(), QString("Search in this folder"));
-    QTest::keyClicks(search, "Batman");
+    QTest::keyClicks(search, "series:Batman");
     QTRY_COMPARE(comicsView->model()->rowCount(), 2);
     QTest::keyClicks(search, " 013");
     QTRY_COMPARE(comicsView->model()->rowCount(), 0);
     search->clear();
-    QCOMPARE(fileNames(), QStringList({ "Batman 011.cbz", "Batman 012.cbz" }));
+    QCOMPARE(fileNames(), QStringList({ "Batman 011.cbz", "Batman 012.cbz", "Robin 001.cbz" }));
 
     QList<ComicInfoId> chosen;
     connect(&page, &CblFindComicPage::comicChosen, this, [&chosen](const CblLibraryComic &comic) { chosen.append(comic.id); });

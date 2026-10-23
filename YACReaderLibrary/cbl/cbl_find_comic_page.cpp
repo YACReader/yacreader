@@ -342,13 +342,10 @@ void CblFindComicPage::search()
         connectionName = db.connectionName();
         if (db.isOpen()) {
             try {
-                auto query = comicsSearchQuery(db, text);
+                auto query = onlyFolderId ? comicsSearchQuery(db, text, *onlyFolderId) : comicsSearchQuery(db, text);
                 const auto indexes = ComicDB::columnIndexes(query.record(), "c", "ci");
-                while (query.next()) {
-                    auto comic = ComicDB::fromQuery(query, indexes);
-                    if (!onlyFolderId || comic.file.folderId == FolderId(*onlyFolderId))
-                        found.append(std::move(comic));
-                }
+                while (query.next())
+                    found.append(ComicDB::fromQuery(query, indexes));
             } catch (const std::exception &) {
                 parsed = false;
             }

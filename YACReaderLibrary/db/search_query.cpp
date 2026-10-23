@@ -31,13 +31,15 @@ QSqlQuery foldersSearchQuery(QSqlDatabase &db, const QString &filter)
 
 namespace {
 
-QSqlQuery comicsQuery(QSqlDatabase &db, const QString &filter, std::optional<int> limit)
+QSqlQuery comicsQuery(QSqlDatabase &db, const QString &filter, std::optional<int> limit, std::optional<qulonglong> folderId = std::nullopt)
 {
     QueryParser parser;
     auto result = parser.parse(filter.toStdString());
 
     std::string queryString = "SELECT " + ComicDB::selectList("c", "ci").toStdString() + " " SEARCH_COMICS_FROM;
     result.buildSqlString(queryString);
+    if (folderId)
+        queryString += " AND c.parentId = :folder_id";
     // near the order of the search results (numbers by value, text without case), so the limit always keeps the same comics
     queryString += " ORDER BY (ci.series IS NULL OR TRIM(ci.series) = ''), TRIM(ci.series) COLLATE NOCASE, "
                    "(ci.volume IS NOT NULL AND TRIM(ci.volume) <> ''), TRIM(ci.volume) COLLATE NOCASE, "
@@ -49,6 +51,8 @@ QSqlQuery comicsQuery(QSqlDatabase &db, const QString &filter, std::optional<int
     selectQuery.prepare(queryString.c_str());
     if (limit)
         selectQuery.bindValue(":limit", *limit);
+    if (folderId)
+        selectQuery.bindValue(":folder_id", *folderId);
     result.bindValues(selectQuery);
 
     selectQuery.exec();
@@ -61,6 +65,11 @@ QSqlQuery comicsQuery(QSqlDatabase &db, const QString &filter, std::optional<int
 QSqlQuery comicsSearchQuery(QSqlDatabase &db, const QString &filter)
 {
     return comicsQuery(db, filter, 500); // TODO, load this value from settings
+}
+
+QSqlQuery comicsSearchQuery(QSqlDatabase &db, const QString &filter, qulonglong folderId)
+{
+    return comicsQuery(db, filter, 500, folderId);
 }
 
 QSqlQuery allComicsSearchQuery(QSqlDatabase &db, const QString &filter)
