@@ -4,6 +4,7 @@
 #include "cbl_import_dialog.h"
 #include "cbl_list_match.h"
 #include "comic_model.h"
+#include "delayed_progress_dialog.h"
 #include "move_to_folder_dialog.h"
 #include "new_list_folder_dialog.h"
 #include "reading_list_model.h"
@@ -14,6 +15,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QFutureWatcher>
 #include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
@@ -268,30 +270,56 @@ void ReadingListManagementCoordinator::exportReadingList(const QModelIndex &list
     // the rows the list shows: its entries, then the entries of its child lists
     ComicModel listModel;
     listModel.setupReadingListModelData(listId, YACReader::LibraryPaths::libraryDataPath(libraryPathProvider()));
-    QByteArray content;
     if (type->second.first() == QLatin1StringView("html")) {
         QList<ReadingListPageEntry> entries;
+        QStringList coverPaths;
         for (int row = 0; row < listModel.rowCount(); ++row) {
             const auto index = listModel.index(row, 0);
             const auto &metadata = recordMetadata(listModel.record(index));
             const auto cover = index.data(ComicModel::CoverPathRole).toUrl();
             entries.append({ index.data(ComicModel::TitleRole).toString(),
                              readingListPageDetails(metadata.series.toString(), metadata.number.toString(), metadata.volume.toString(), metadata.date.toString()),
-                             cover.isLocalFile() ? readingListPageCover(cover.toLocalFile()) : QByteArray(),
+                             QByteArray(),
                              !index.data(ComicModel::AvailableRole).toBool() });
+            coverPaths.append(cover.isLocalFile() ? cover.toLocalFile() : QString());
         }
-        content = writeReadingListPage(name, entries, QDate::currentDate());
-    } else {
-        QList<CblExportBook> books;
-        for (int row = 0; row < listModel.rowCount(); ++row) {
-            const auto index = listModel.index(row, 0);
-            if (const auto entry = listModel.listEntry(index))
-                books.append(cblExportBook(listModel.record(index), *entry));
-        }
-        const auto format = type->second.first() == QLatin1StringView("json") ? CblReadingList::Json : CblReadingList::Xml;
-        content = writeCbl(name, books, format, QUuid::createUuid().toString(QUuid::WithoutBraces));
+        exportReadingListPage(path, name, entries, coverPaths);
+        return;
     }
 
+    QList<CblExportBook> books;
+    for (int row = 0; row < listModel.rowCount(); ++row) {
+        const auto index = listModel.index(row, 0);
+        if (const auto entry = listModel.listEntry(index))
+            books.append(cblExportBook(listModel.record(index), *entry));
+    }
+    const auto format = type->second.first() == QLatin1StringView("json") ? CblReadingList::Json : CblReadingList::Xml;
+    writeExportFile(path, writeCbl(name, books, format, QUuid::createUuid().toString(QUuid::WithoutBraces)));
+}
+
+void ReadingListManagementCoordinator::exportReadingListPage(const QString &path, const QString &name, const QList<ReadingListPageEntry> &entries, const QStringList &coverPaths)
+{
+    auto covers = std::make_shared<ReadingListPageCovers>(coverPaths);
+    auto *progress = new DelayedProgressDialog(tr("Exporting reading list..."), covers->count(), dialogParent);
+    auto *watcher = new QFutureWatcher<QByteArray>(progress);
+    connect(watcher, &QFutureWatcher<QByteArray>::progressValueChanged, progress, &DelayedProgressDialog::setValue);
+    connect(progress, &DelayedProgressDialog::canceled, watcher, &QFutureWatcher<QByteArray>::cancel);
+    connect(watcher, &QFutureWatcher<QByteArray>::finished, this, [this, covers, progress, watcher, path, name, entries, coverPaths] {
+        const auto canceled = watcher->isCanceled();
+        progress->finish([this, covers, canceled, path, name, entries, coverPaths] {
+            if (canceled)
+                return;
+            auto pageEntries = entries;
+            for (qsizetype i = 0; i < pageEntries.size(); ++i)
+                pageEntries[i].cover = covers->cover(coverPaths.at(i));
+            writeExportFile(path, writeReadingListPage(name, pageEntries, QDate::currentDate()));
+        });
+    });
+    watcher->setFuture(covers->start());
+}
+
+void ReadingListManagementCoordinator::writeExportFile(const QString &path, const QByteArray &content)
+{
     QSaveFile file(path);
     if (!file.open(QIODevice::WriteOnly) || file.write(content) < 0 || !file.commit())
         QMessageBox::critical(dialogParent, tr("Export reading list"), tr("The file could not be written."));

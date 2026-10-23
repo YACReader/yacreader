@@ -143,6 +143,8 @@ qt_add_executable(YACReaderLibrary WIN32
     move_to_folder_dialog.cpp
     reading_list_page.h
     reading_list_page.cpp
+    delayed_progress_dialog.h
+    delayed_progress_dialog.cpp
     empty_list_folder_widget.h
     empty_list_folder_widget.cpp
     export_library_dialog.h
@@ -576,6 +578,7 @@ qt_add_translations(YACReaderLibrary
 )
 
 target_link_libraries(YACReaderLibrary PRIVATE
+    Qt6::Concurrent
     Qt6::Core
     Qt6::Gui
     Qt6::GuiPrivate

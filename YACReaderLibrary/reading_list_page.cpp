@@ -4,6 +4,7 @@
 #include <QCoreApplication>
 #include <QImage>
 #include <QLocale>
+#include <QtConcurrent/QtConcurrentMap>
 
 #include <algorithm>
 
@@ -151,6 +152,35 @@ QByteArray readingListPageCover(const QString &path)
     buffer.open(QIODevice::WriteOnly);
     image.save(&buffer, "JPG", 82);
     return jpeg;
+}
+
+ReadingListPageCovers::ReadingListPageCovers(const QStringList &paths)
+{
+    for (const auto &path : paths) {
+        if (!path.isEmpty() && !indexes.contains(path)) {
+            indexes.insert(path, int(this->paths.size()));
+            this->paths.append(path);
+        }
+    }
+}
+
+QFuture<QByteArray> ReadingListPageCovers::start()
+{
+    future = QtConcurrent::mapped(paths, readingListPageCover);
+    return future;
+}
+
+int ReadingListPageCovers::count() const
+{
+    return int(paths.size());
+}
+
+QByteArray ReadingListPageCovers::cover(const QString &path) const
+{
+    const auto i = indexes.constFind(path);
+    if (i == indexes.cend() || !future.isFinished() || future.isCanceled())
+        return { };
+    return future.resultAt(*i);
 }
 
 QString readingListPageDetails(const QString &series, const QString &number, const QString &volume, const QString &date)

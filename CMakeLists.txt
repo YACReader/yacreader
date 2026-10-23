@@ -128,6 +128,7 @@ if(BUILD_SERVER_STANDALONE)
     )
 else()
     find_package(Qt6 6.9 REQUIRED COMPONENTS
+        Concurrent
         Core
         Core5Compat
         Gui

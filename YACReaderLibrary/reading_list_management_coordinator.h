@@ -5,10 +5,12 @@
 
 #include <QModelIndex>
 #include <QObject>
+#include <QStringList>
 
 #include <functional>
 
 class ComicModel;
+struct ReadingListPageEntry;
 class QSettings;
 class ReadingListModel;
 class QWidget;
@@ -61,6 +63,10 @@ signals:
     void searchFinished();
 
 private:
+    // the covers are encoded in the background; nothing is written when the user cancels
+    void exportReadingListPage(const QString &path, const QString &name, const QList<ReadingListPageEntry> &entries, const QStringList &coverPaths);
+    void writeExportFile(const QString &path, const QByteArray &content);
+
     QWidget *dialogParent;
     ReadingListModel *listsModel;
     CurrentListProvider currentListProvider;
