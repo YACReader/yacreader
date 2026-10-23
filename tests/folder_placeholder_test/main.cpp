@@ -166,15 +166,12 @@ void FolderPlaceholderTest::anIssueGetsANewPlaceholderInTheFolder()
     patch.set(&DescriptiveComicMetadata::number, "12");
     patch.set(&DescriptiveComicMetadata::comicVineID, "4012");
 
-    bool coverUsed = false;
-    QVERIFY(DBHelper::placeIssueInFolder("4012", patch, QString("new"), FolderId(2), db, coverUsed));
-    QVERIFY(coverUsed);
+    QCOMPARE(DBHelper::placeIssuesInFolder({ { "4012", patch, QString("new") } }, FolderId(2), db), std::optional(QStringList()));
     QCOMPARE(rows("SELECT p.series, p.number, p.comicVineID, p.coverKey, fp.folder_id FROM placeholder p INNER JOIN folder_placeholder fp ON fp.placeholder_id = p.id"),
              QList<QVariantList>({ { "Batman", "12", "4012", "new", 2 } }));
 
     // the same issue in the same folder again changes nothing but the metadata
-    QVERIFY(DBHelper::placeIssueInFolder("4012", patch, QString("other"), FolderId(2), db, coverUsed));
-    QVERIFY(!coverUsed);
+    QCOMPARE(DBHelper::placeIssuesInFolder({ { "4012", patch, QString("other") } }, FolderId(2), db), std::optional(QStringList({ "other" })));
     QCOMPARE(rows("SELECT COUNT(*) FROM folder_placeholder"), QList<QVariantList>({ { 1 } }));
     QCOMPARE(rows("SELECT COUNT(*) FROM placeholder WHERE comicVineID = '4012'"), QList<QVariantList>({ { 1 } }));
 }
@@ -187,15 +184,16 @@ void FolderPlaceholderTest::anIssueReusesItsPlaceholder()
     DescriptiveMetadataPatch patch;
     patch.set(&DescriptiveComicMetadata::title, "Tagged");
 
-    bool coverUsed = false;
-    QVERIFY(DBHelper::placeIssueInFolder("4005", patch, QString("new"), FolderId(4), db, coverUsed));
-    QVERIFY(!coverUsed);
-    QVERIFY(DBHelper::placeIssueInFolder("4006", patch, QString("new6"), FolderId(4), db, coverUsed));
-    QVERIFY(coverUsed);
+    // one call for several issues, as the Comic Vine dialog does
+    QCOMPARE(DBHelper::placeIssuesInFolder({ { "4005", patch, QString("new") }, { "4006", patch, QString("new6") }, { "4007", patch, std::nullopt } }, FolderId(4), db),
+             std::optional(QStringList({ "new" })));
 
-    QCOMPARE(rows("SELECT placeholder_id FROM folder_placeholder WHERE folder_id = 4 ORDER BY placeholder_id"), QList<QVariantList>({ { 5 }, { 6 } }));
+    QCOMPARE(rows("SELECT placeholder_id FROM folder_placeholder WHERE folder_id = 4 AND placeholder_id IN (5, 6) ORDER BY placeholder_id"), QList<QVariantList>({ { 5 }, { 6 } }));
     QCOMPARE(rows("SELECT id, title, coverKey FROM placeholder WHERE id IN (5, 6) ORDER BY id"), QList<QVariantList>({ { 5, "Tagged", "key5" }, { 6, "Tagged", "new6" } }));
-    QCOMPARE(rows("SELECT COUNT(*) FROM placeholder"), QList<QVariantList>({ { 3 } }));
+    QCOMPARE(rows("SELECT p.title FROM placeholder p INNER JOIN folder_placeholder fp ON fp.placeholder_id = p.id WHERE fp.folder_id = 4 AND p.id NOT IN (5, 6)"),
+             QList<QVariantList>({ { "Tagged" } }));
+    QCOMPARE(rows("SELECT COUNT(*) FROM placeholder"), QList<QVariantList>({ { 4 } }));
+    QVERIFY(!DBHelper::placeIssuesInFolder({ { " ", patch, std::nullopt } }, FolderId(4), db));
 }
 
 void FolderPlaceholderTest::anIssueWithAComicInTheFolderIsNotPlaced()
@@ -205,14 +203,12 @@ void FolderPlaceholderTest::anIssueWithAComicInTheFolderIsNotPlaced()
     DescriptiveMetadataPatch patch;
     patch.set(&DescriptiveComicMetadata::comicVineID, "4001");
 
-    bool coverUsed = true;
-    QVERIFY(DBHelper::placeIssueInFolder("4001", patch, QString("new"), FolderId(2), db, coverUsed));
-    QVERIFY(!coverUsed);
+    QCOMPARE(DBHelper::placeIssuesInFolder({ { "4001", patch, QString("new") } }, FolderId(2), db), std::optional(QStringList({ "new" })));
     QCOMPARE(rows("SELECT COUNT(*) FROM folder_placeholder"), QList<QVariantList>({ { 0 } }));
     QCOMPARE(rows("SELECT COUNT(*) FROM placeholder"), QList<QVariantList>({ { 3 } }));
 
     // another folder does not have it
-    QVERIFY(DBHelper::placeIssueInFolder("4001", patch, std::nullopt, FolderId(4), db, coverUsed));
+    QCOMPARE(DBHelper::placeIssuesInFolder({ { "4001", patch, std::nullopt } }, FolderId(4), db), std::optional(QStringList()));
     QCOMPARE(rows("SELECT folder_id FROM folder_placeholder"), QList<QVariantList>({ { 4 } }));
 }
 

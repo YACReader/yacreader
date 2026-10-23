@@ -2,6 +2,7 @@
 #define COMIC_VINE_DIALOG_H
 
 #include "comic_record.h"
+#include "db_helper.h"
 #include "descriptive_comic_metadata.h"
 #include "library_ids.h"
 #include "themable.h"
@@ -79,13 +80,6 @@ private:
     void finishSuccessfully();
     void toggleSkipButton();
     QString volumeSearchStringFromComic(const ComicRecord &comic);
-    // an issue of the volume that becomes a missing comic of the folder
-    struct MissingIssue {
-        QString comicVineId;
-        DescriptiveMetadataPatch patch;
-        std::optional<QString> coverKey;
-    };
-
     // writes each patch to the comic_info of its record when the record still exists, each comic_info once, and the
     // missing issues to the folder, in one transaction
     void saveMetadata(const QList<QPair<ComicRecord, DescriptiveMetadataPatch>> &matches, const QList<MissingIssue> &missingIssues = { });

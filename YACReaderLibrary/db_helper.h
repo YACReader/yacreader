@@ -3,6 +3,7 @@
 
 class QString;
 #include "comic_record.h"
+#include "descriptive_comic_metadata.h"
 #include "library_item_types.h"
 #include "yacreader_global.h"
 
@@ -27,6 +28,13 @@ class QSqlRecord;
 class QSqlQuery;
 class YACReaderLibraries;
 struct ReadingList;
+
+// a Comic Vine issue of a volume that becomes a missing comic of a folder
+struct MissingIssue {
+    QString comicVineId;
+    DescriptiveMetadataPatch patch;
+    std::optional<QString> coverKey;
+};
 
 struct ComicProgressUpdate {
     ComicId comicId;
@@ -74,10 +82,11 @@ public:
     // placing a placeholder again in the same folder changes nothing
     static bool placePlaceholderInFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db);
     static std::optional<QStringList> removePlaceholdersFromFolder(const QList<PlaceholderId> &placeholderIds, FolderId folderId, QSqlDatabase &db);
-    // No transaction. The Comic Vine issue is expected in the folder: the placeholder of that issue is reused, else a
-    // new one is made, and the patch is written to it; nothing when a comic of the folder is that issue. `coverKey`
-    // becomes its cover when it has none; `coverUsed` tells whether it did.
-    static bool placeIssueInFolder(const QString &comicVineId, const DescriptiveMetadataPatch &patch, const std::optional<QString> &coverKey, FolderId folderId, QSqlDatabase &db, bool &coverUsed);
+    // No transaction. Each issue is expected in the folder: the placeholder of that issue is reused, else a new one is
+    // made, and the patch is written to it; nothing when a comic of the folder is that issue. A cover key becomes the
+    // cover of a placeholder that has none. Gives the cover keys that no placeholder took; nothing when a write fails
+    // or an issue has no Comic Vine id.
+    static std::optional<QStringList> placeIssuesInFolder(const QList<MissingIssue> &issues, FolderId folderId, QSqlDatabase &db);
     // logic deletes
     static void deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db);
     static void deleteComicsFromReading(const QList<ComicDB> &comicsList, QSqlDatabase &db);

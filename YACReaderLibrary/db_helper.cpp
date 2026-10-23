@@ -21,6 +21,7 @@
 #include <QDateTime>
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
 #include <QList>
 #include <QMap>
 #include <QSet>
@@ -820,49 +821,80 @@ bool DBHelper::placePlaceholderInFolder(PlaceholderId placeholderId, FolderId fo
     return true;
 }
 
-bool DBHelper::placeIssueInFolder(const QString &comicVineId, const DescriptiveMetadataPatch &patch, const std::optional<QString> &coverKey, FolderId folderId, QSqlDatabase &db, bool &coverUsed)
+std::optional<QStringList> DBHelper::placeIssuesInFolder(const QList<MissingIssue> &issues, FolderId folderId, QSqlDatabase &db)
 {
-    coverUsed = false;
-    if (comicVineId.trimmed().isEmpty())
-        return false;
+    QStringList unusedCovers;
+    if (issues.isEmpty())
+        return unusedCovers;
+
+    QStringList parameters;
+    for (qsizetype i = 0; i < issues.size(); i++) {
+        if (issues.at(i).comicVineId.trimmed().isEmpty())
+            return std::nullopt;
+        parameters.append(QString(":id%1").arg(i));
+    }
 
     QSqlQuery inFolder(db);
-    inFolder.prepare("SELECT 1 FROM comic c INNER JOIN comic_info ci ON ci.id = c.comicInfoId WHERE c.parentId = :folder_id AND ci.comicVineID = :comic_vine_id");
+    inFolder.setForwardOnly(true);
+    inFolder.prepare("SELECT ci.comicVineID FROM comic c INNER JOIN comic_info ci ON ci.id = c.comicInfoId WHERE c.parentId = :folder_id AND ci.comicVineID IS NOT NULL");
     inFolder.bindValue(":folder_id", folderId.value());
-    inFolder.bindValue(":comic_vine_id", comicVineId);
     if (!inFolder.exec()) {
-        QLOG_ERROR() << "Unable to find the comics of an issue in a folder:" << inFolder.lastError().text();
-        return false;
+        QLOG_ERROR() << "Unable to find the Comic Vine ids of the comics of a folder:" << inFolder.lastError().text();
+        return std::nullopt;
     }
-    if (inFolder.next())
-        return true;
+    QSet<QString> comicsInFolder;
+    while (inFolder.next())
+        comicsInFolder.insert(inFolder.value(0).toString());
 
+    // the placeholder of each issue is the one with the lowest id
     QSqlQuery existing(db);
-    existing.prepare("SELECT id, coverKey FROM placeholder WHERE comicVineID = :comic_vine_id ORDER BY id LIMIT 1");
-    existing.bindValue(":comic_vine_id", comicVineId);
+    existing.setForwardOnly(true);
+    existing.prepare("SELECT comicVineID, id, coverKey FROM placeholder WHERE comicVineID IN (" + parameters.join(", ") + ") ORDER BY id");
+    for (qsizetype i = 0; i < issues.size(); i++)
+        existing.bindValue(parameters.at(i), issues.at(i).comicVineId);
     if (!existing.exec()) {
-        QLOG_ERROR() << "Unable to find the placeholder of an issue:" << existing.lastError().text();
-        return false;
+        QLOG_ERROR() << "Unable to find the placeholders of the issues:" << existing.lastError().text();
+        return std::nullopt;
+    }
+    struct Found {
+        PlaceholderId id;
+        bool hasCover;
+    };
+    QHash<QString, Found> placeholders;
+    while (existing.next()) {
+        const auto comicVineId = existing.value(0).toString();
+        if (!placeholders.contains(comicVineId))
+            placeholders.insert(comicVineId, { PlaceholderId(existing.value(1).toULongLong()), !existing.value(2).isNull() });
     }
 
-    std::optional<PlaceholderId> placeholderId;
-    bool hasCover = false;
-    if (existing.next()) {
-        placeholderId = PlaceholderId(existing.value(0).toULongLong());
-        hasCover = !existing.value(1).isNull();
-    } else {
-        placeholderId = insertPlaceholder(Placeholder(), db);
-    }
-    existing.finish();
+    for (const auto &issue : issues) {
+        if (comicsInFolder.contains(issue.comicVineId)) {
+            if (issue.coverKey)
+                unusedCovers.append(*issue.coverKey);
+            continue;
+        }
 
-    if (!placeholderId || !updatePlaceholderMetadata(*placeholderId, patch, db))
-        return false;
-    if (coverKey && !hasCover) {
-        if (!updatePlaceholderCover(*placeholderId, coverKey, db))
-            return false;
-        coverUsed = true;
+        auto found = placeholders.find(issue.comicVineId);
+        if (found == placeholders.end()) {
+            const auto inserted = insertPlaceholder(Placeholder(), db);
+            if (!inserted)
+                return std::nullopt;
+            found = placeholders.insert(issue.comicVineId, { *inserted, false });
+        }
+
+        if (!updatePlaceholderMetadata(found->id, issue.patch, db))
+            return std::nullopt;
+        if (issue.coverKey && !found->hasCover) {
+            if (!updatePlaceholderCover(found->id, issue.coverKey, db))
+                return std::nullopt;
+            found->hasCover = true;
+        } else if (issue.coverKey) {
+            unusedCovers.append(*issue.coverKey);
+        }
+        if (!placePlaceholderInFolder(found->id, folderId, db))
+            return std::nullopt;
     }
-    return placePlaceholderInFolder(*placeholderId, folderId, db);
+    return unusedCovers;
 }
 
 std::optional<QStringList> DBHelper::removePlaceholdersFromFolder(const QList<PlaceholderId> &placeholderIds, FolderId folderId, QSqlDatabase &db)

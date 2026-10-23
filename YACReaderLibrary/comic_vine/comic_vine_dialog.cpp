@@ -495,7 +495,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicRecord, QString>> matchingI
 }
 
 // the full tags of the issue, or the values of the volume's list when they cannot be read; and its cover
-ComicVineDialog::MissingIssue ComicVineDialog::missingIssue(const QString &issueJson, const SelectedVolumeInfo &volumeInfo)
+MissingIssue ComicVineDialog::missingIssue(const QString &issueJson, const SelectedVolumeInfo &volumeInfo)
 {
     const auto issue = QJsonDocument::fromJson(issueJson.toUtf8()).object();
     MissingIssue result;
@@ -618,17 +618,12 @@ void ComicVineDialog::saveMetadata(const QList<QPair<ComicRecord, DescriptiveMet
             DBHelper::updateComicInfoMetadata(id, patch, db);
         }
 
-        bool placed = true;
-        QStringList unusedCovers;
-        for (const auto &issue : missingIssues) {
-            bool coverUsed = false;
-            placed = placed && folderId && DBHelper::placeIssueInFolder(issue.comicVineId, issue.patch, issue.coverKey, *folderId, db, coverUsed);
-            if (issue.coverKey && !coverUsed)
-                unusedCovers.append(*issue.coverKey);
-        }
+        std::optional<QStringList> unusedCovers = QStringList();
+        if (!missingIssues.isEmpty())
+            unusedCovers = folderId ? DBHelper::placeIssuesInFolder(missingIssues, *folderId, db) : std::nullopt;
 
-        if (placed && db.commit()) {
-            DBHelper::removePlaceholderCovers(databasePath, unusedCovers);
+        if (unusedCovers && db.commit()) {
+            DBHelper::removePlaceholderCovers(databasePath, *unusedCovers);
         } else {
             db.rollback();
             removeCovers(missingIssues);
