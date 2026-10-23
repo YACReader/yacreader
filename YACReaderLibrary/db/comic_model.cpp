@@ -1570,7 +1570,7 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
 {
     QString connectionName = "";
     const auto &comicIndexes = list;
-    QList<ComicInfoId> changed;
+    QSet<ComicInfoId> changed;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
@@ -1595,21 +1595,19 @@ QVector<YACReaderComicReadStatus> ComicModel::setComicsRead(QList<QModelIndex> l
                 }
             }
             if (read == YACReader::Read || read == YACReader::Unread)
-                changed.append(id);
+                changed.insert(id);
         }
         db.commit();
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    for (const auto id : std::as_const(changed)) {
-        updateRowsOf(id, [read](ComicInfo &info) {
-            info.read = read == YACReader::Read;
-            if (read == YACReader::Unread) {
-                info.currentPage = 1;
-                info.hasBeenOpened = false;
-            } }, ComicModel::ReadColumn, ComicModel::HasBeenOpened, { ReadColumnRole, CurrentPageRole, HasBeenOpenedRole });
-    }
+    updateRowsOf(changed, [read](ComicInfo &info) {
+        info.read = read == YACReader::Read;
+        if (read == YACReader::Unread) {
+            info.currentPage = 1;
+            info.hasBeenOpened = false;
+        } }, ComicModel::ReadColumn, ComicModel::HasBeenOpened, { ReadColumnRole, CurrentPageRole, HasBeenOpenedRole });
 
     return getReadList();
 }
@@ -1618,7 +1616,7 @@ void ComicModel::setComicsType(QList<QModelIndex> list, FileType type)
 {
     QString connectionName = "";
     const auto &comicIndexes = list;
-    QList<ComicInfoId> changed;
+    QSet<ComicInfoId> changed;
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
         db.transaction();
@@ -1631,26 +1629,39 @@ void ComicModel::setComicsType(QList<QModelIndex> list, FileType type)
                 info->type = QVariant::fromValue(type);
                 DBHelper::update(&*info, db);
             }
-            changed.append(id);
+            changed.insert(id);
         }
         db.commit();
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    for (const auto id : std::as_const(changed)) {
-        updateRowsOf(id, [type](ComicInfo &info) { info.type = QVariant::fromValue(type); }, ComicModel::Type, ComicModel::Type, { TypeRole });
-    }
+    updateRowsOf(changed, [type](ComicInfo &info) { info.type = QVariant::fromValue(type); }, ComicModel::Type, ComicModel::Type, { TypeRole });
 }
 
-void ComicModel::updateRowsOf(ComicInfoId id, const std::function<void(ComicInfo &)> &change, int firstColumn, int lastColumn, const QList<int> &roles)
+void ComicModel::updateRowsOf(const QSet<ComicInfoId> &ids, const std::function<void(ComicInfo &)> &change, int firstColumn, int lastColumn, const QList<int> &roles)
 {
+    if (ids.isEmpty())
+        return;
+    QList<int> rows;
     for (int row = 0; row < _data.size(); row++) {
         auto *info = rowInfo(_data[row]);
-        if (info == nullptr || info->id != id)
+        if (info == nullptr || !ids.contains(info->id))
             continue;
         change(*info);
-        emit dataChanged(index(row, firstColumn), index(row, lastColumn), roles);
+        rows.append(row);
+    }
+    emitRowRuns(rows, firstColumn, lastColumn, roles);
+}
+
+void ComicModel::emitRowRuns(const QList<int> &rows, int firstColumn, int lastColumn, const QList<int> &roles)
+{
+    for (qsizetype first = 0; first < rows.size();) {
+        auto last = first;
+        while (last + 1 < rows.size() && rows[last + 1] == rows[last] + 1)
+            last++;
+        emit dataChanged(index(rows[first], firstColumn), index(rows[last], lastColumn), roles);
+        first = last + 1;
     }
 }
 
@@ -1827,7 +1838,7 @@ void ComicModel::remove(int row)
 
 void ComicModel::reload(const ComicDB &comic)
 {
-    updateRowsOf(comic.info.id, [&comic](ComicInfo &info) {
+    updateRowsOf({ comic.info.id }, [&comic](ComicInfo &info) {
         info.read = comic.info.read;
         info.currentPage = comic.info.currentPage;
         info.hasBeenOpened = true; }, ReadColumn, HasBeenOpened, { ReadColumnRole, CurrentPageRole, HasBeenOpenedRole });
@@ -1852,28 +1863,36 @@ void ComicModel::resetComicRating(const QModelIndex &mi)
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    updateRowsOf(id, [](ComicInfo &info) { info.rating = 0; }, 0, columnCount() - 1, { });
+    updateRowsOf({ id }, [](ComicInfo &info) { info.rating = 0; }, 0, columnCount() - 1, { });
 }
 
-void ComicModel::notifyCoverChange(ComicInfoId id)
+void ComicModel::notifyCoverChange(const QList<ComicInfoId> &ids)
 {
     // Keep cover changes non-structural. Removing and reinserting the row makes
     // views adjust their selection and scroll position before the edit refresh can
     // capture them. Changing the URL also makes QML reload the image even though
     // the underlying cover file path is unchanged.
-    ++coverRevisions[id.value()];
-    updateRowsOf(id, [](ComicInfo &) { }, 0, columnCount() - 1, { CoverPathRole });
+    for (const auto id : ids)
+        ++coverRevisions[id.value()];
+    updateRowsOf(QSet<ComicInfoId>(ids.cbegin(), ids.cend()), [](ComicInfo &) { }, 0, columnCount() - 1, { CoverPathRole });
 }
 
-void ComicModel::notifyPlaceholderCoverChange(PlaceholderId id, const std::optional<QString> &coverKey)
+void ComicModel::notifyPlaceholderCoverChange(const QHash<PlaceholderId, std::optional<QString>> &coverKeys)
 {
+    if (coverKeys.isEmpty())
+        return;
+    QList<int> rows;
     for (int row = 0; row < _data.size(); row++) {
         auto *placeholder = rowPlaceholder(_data[row]);
-        if (placeholder == nullptr || placeholder->id != id)
+        if (placeholder == nullptr)
             continue;
-        placeholder->coverKey = coverKey;
-        emit dataChanged(index(row, 0), index(row, columnCount() - 1), { CoverPathRole });
+        const auto key = coverKeys.constFind(placeholder->id);
+        if (key == coverKeys.cend())
+            continue;
+        placeholder->coverKey = *key;
+        rows.append(row);
     }
+    emitRowRuns(rows, 0, columnCount() - 1, { CoverPathRole });
 }
 
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
@@ -2180,7 +2199,7 @@ void ComicModel::updateRating(int rating, QModelIndex mi)
     }
     QSqlDatabase::removeDatabase(connectionName);
 
-    updateRowsOf(id, [rating](ComicInfo &info) { info.rating = rating; }, 0, columnCount() - 1, { });
+    updateRowsOf({ id }, [rating](ComicInfo &info) { info.rating = rating; }, 0, columnCount() - 1, { });
 }
 
 QString ComicModel::localizedDate(const QString &dbDate) const

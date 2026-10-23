@@ -1289,10 +1289,14 @@ bool PropertiesDialog::updateComics()
         records[index] = std::move(record);
     updated = updated || wrote;
 
-    for (const auto id : std::as_const(changedCovers))
-        emit coverChangedSignal(id);
-    for (const auto &[id, key] : std::as_const(newPlaceholderCovers))
-        emit placeholderCoverChanged(id, key);
+    if (!changedCovers.isEmpty())
+        emit coverChangedSignal(changedCovers);
+    if (!newPlaceholderCovers.isEmpty()) {
+        QHash<PlaceholderId, std::optional<QString>> coverKeys;
+        for (const auto &[id, key] : std::as_const(newPlaceholderCovers))
+            coverKeys.insert(id, key);
+        emit placeholderCoverChanged(coverKeys);
+    }
     return true;
 }
 

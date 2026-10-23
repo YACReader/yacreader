@@ -75,6 +75,7 @@ private slots:
     void missingComicsInFoldersAreDraggedAndAddedToLists();
     void removingMissingComicsFromAFolderKeepsTheComics();
     void rowsAreRemovedInRuns();
+    void updatesAreSentForRunsOfRows();
     void selectionSummaryCountsMissingComics();
     void searchResultsKeepEachSeriesTogether();
     void searchLimitKeepsTheFirstSeries();
@@ -585,7 +586,10 @@ void ComicModelTest::comicUpdateChangesEveryRowOfTheComicInfo()
 
     QSignalSpy changed(&model, &ComicModel::dataChanged);
     model.reload(comic);
-    QCOMPARE(changed.count(), 2);
+    // the two rows are consecutive, so one signal covers them
+    QCOMPARE(changed.count(), 1);
+    QCOMPARE(changed.at(0).at(0).toModelIndex().row(), rows.first());
+    QCOMPARE(changed.at(0).at(1).toModelIndex().row(), rows.last());
     for (const auto row : rows) {
         QCOMPARE(model.data(model.index(row, 0), ComicModel::ReadColumnRole).toBool(), true);
         QCOMPARE(model.data(model.index(row, 0), ComicModel::CurrentPageRole).toInt(), 20);
@@ -902,14 +906,14 @@ void ComicModelTest::placeholderCoverChangeUpdatesEveryRow()
     model.setupReadingListModelData(1, dataPath);
     QSignalSpy changed(&model, &QAbstractItemModel::dataChanged);
 
-    model.notifyPlaceholderCoverChange(PlaceholderId(1), QString("new-key"));
+    model.notifyPlaceholderCoverChange({ { PlaceholderId(1), QString("new-key") } });
     QCOMPARE(changed.count(), 2);
     QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl::fromLocalFile(coverPath));
     QCOMPARE(model.index(4, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl::fromLocalFile(coverPath));
     QCOMPARE(model.index(3, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
     QVERIFY(model.supports(model.index(2, 0), ComicAction::SaveCover));
 
-    model.notifyPlaceholderCoverChange(PlaceholderId(1), std::nullopt);
+    model.notifyPlaceholderCoverChange({ { PlaceholderId(1), std::nullopt } });
     QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
     QVERIFY(!model.supports(model.index(2, 0), ComicAction::SaveCover));
 }
@@ -1284,6 +1288,33 @@ void ComicModelTest::rowsAreRemovedInRuns()
     QCOMPARE(removed.at(0).at(2).toInt(), 3);
     QCOMPARE(removed.at(1).at(1).toInt(), 0);
     QCOMPARE(removed.at(1).at(2).toInt(), 0);
+}
+
+void ComicModelTest::updatesAreSentForRunsOfRows()
+{
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+    // comic_info of each row: 1, 1, 2, 3, 4
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 1, 5, 2, 3, 4 }));
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+    QSignalSpy changed(&model, &ComicModel::dataChanged);
+    const auto rowsOf = [&changed](int signal) {
+        return std::pair { changed.at(signal).at(0).toModelIndex().row(), changed.at(signal).at(1).toModelIndex().row() };
+    };
+
+    model.setComicsRead({ model.index(4, 0), model.index(0, 0), model.index(3, 0) }, YACReader::Read);
+    QCOMPARE(changed.count(), 2);
+    QCOMPARE(rowsOf(0), std::pair(0, 1));
+    QCOMPARE(rowsOf(1), std::pair(3, 4));
+    for (const auto row : { 0, 1, 3, 4 })
+        QCOMPARE(model.data(model.index(row, 0), ComicModel::ReadColumnRole).toBool(), true);
+    QCOMPARE(model.data(model.index(2, 0), ComicModel::ReadColumnRole).toBool(), false);
+
+    changed.clear();
+    model.notifyCoverChange({ ComicInfoId(2), ComicInfoId(3) });
+    QCOMPARE(changed.count(), 1);
+    QCOMPARE(rowsOf(0), std::pair(2, 3));
+    QCOMPARE(changed.at(0).at(2).value<QList<int>>(), QList<int>({ ComicModel::CoverPathRole }));
 }
 
 QTEST_MAIN(ComicModelTest)
