@@ -205,6 +205,9 @@ public slots:
 protected:
 private:
     QHash<quint64, quint64> coverRevisions; // by comic_info id
+    // the cover of a row without a file may be gone; checked once per path, cleared when the rows or a cover change
+    bool coverFileExists(const QString &path) const;
+    mutable QHash<QString, bool> coverFileExistence;
 
     QList<ComicItem> createFolderModelData(unsigned long long parentLabel, const QString &databasePath) const;
     QList<ComicItem> createLabelModelData(unsigned long long parentLabel, const QString &databasePath) const;

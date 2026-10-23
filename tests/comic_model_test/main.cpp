@@ -438,7 +438,14 @@ void ComicModelTest::deletedComicCoverIsTheHashCoverOrTheDefaultImage()
     QVERIFY(cover.open(QIODevice::WriteOnly));
     cover.write("jpg");
     cover.close();
-    QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), model.getCoverUrlPathForComicHash("hash-3"));
+    // the file is checked once, until a cover or the rows change
+    QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
+    QCOMPARE(model.getPaths(library).first(), ":/images/unavailableCover.png");
+
+    model.notifyCoverChange({ ComicInfoId(3) });
+    auto hashCover = model.getCoverUrlPathForComicHash("hash-3");
+    hashCover.setQuery("revision=1");
+    QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), hashCover);
     QCOMPARE(model.getPaths(library).first(), LibraryPaths::coverPath(library, "hash-3"));
 }
 
@@ -864,7 +871,10 @@ void ComicModelTest::placeholderCoverIsItsFileOrTheDefaultImage()
     QImage cover(10, 15, QImage::Format_RGB32);
     cover.fill(Qt::red);
     QVERIFY(cover.save(coverPath));
+    // the file is checked once, until a cover or the rows change
+    QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), defaultCover);
 
+    model.setupReadingListModelData(1, dataPath);
     QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl::fromLocalFile(coverPath));
     QCOMPARE(model.getPaths(library).at(2), coverPath);
     QCOMPARE(model.index(3, 0).data(ComicModel::CoverPathRole).toUrl(), defaultCover);

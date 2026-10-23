@@ -454,6 +454,7 @@ ComicModel::ComicModel(QObject *parent)
     : QAbstractItemModel(parent), showRecent(false), recentDays(1)
 
 {
+    connect(this, &QAbstractItemModel::modelAboutToBeReset, this, [this] { coverFileExistence.clear(); });
 }
 
 ComicModel::~ComicModel()
@@ -763,10 +764,10 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     else if (role == CoverPathRole) {
         if (placeholder != nullptr) {
             const auto coverPath = placeholder->coverKey ? LibraryPaths::placeholderCoverPathFromDataPath(_databasePath, *placeholder->coverKey) : QString();
-            return coverPath.isEmpty() || !QFileInfo::exists(coverPath) ? QUrl(QStringLiteral("qrc:/images/unavailableCover.png")) : QUrl::fromLocalFile(coverPath);
+            return coverPath.isEmpty() || !coverFileExists(coverPath) ? QUrl(QStringLiteral("qrc:/images/unavailableCover.png")) : QUrl::fromLocalFile(coverPath);
         }
         auto coverUrl = getCoverUrlPathForComicHash(value(Hash).toString());
-        if (!rowComic(item) && !QFileInfo::exists(coverUrl.toLocalFile()))
+        if (!rowComic(item) && !coverFileExists(coverUrl.toLocalFile()))
             return QUrl(QStringLiteral("qrc:/images/unavailableCover.png"));
         const auto revision = coverRevisions.value(rowInfo(item)->id.value());
         if (revision > 0)
@@ -964,7 +965,7 @@ QStringList ComicModel::getPaths(const QString &_source)
             path = placeholder->coverKey ? LibraryPaths::placeholderCoverPathFromDataPath(LibraryPaths::libraryDataPath(_source), *placeholder->coverKey) : QString();
         else
             path = LibraryPaths::coverPath(_source, rowInfo(item)->hash);
-        if (rowComic(item) == nullptr && (path.isEmpty() || !QFileInfo::exists(path)))
+        if (rowComic(item) == nullptr && (path.isEmpty() || !coverFileExists(path)))
             path = QStringLiteral(":/images/unavailableCover.png");
         paths << path;
     }
@@ -1348,6 +1349,7 @@ void ComicModel::takeData(const QList<ComicItem> &data)
 
 void ComicModel::takeUpdatedData(const QList<ComicItem> &updatedData, std::function<bool(const ComicItem &, const ComicItem &)> comparator)
 {
+    coverFileExistence.clear();
     int length = _data.size();
     int lengthUpdated = updatedData.size();
 
@@ -1872,6 +1874,7 @@ void ComicModel::notifyCoverChange(const QList<ComicInfoId> &ids)
     // views adjust their selection and scroll position before the edit refresh can
     // capture them. Changing the URL also makes QML reload the image even though
     // the underlying cover file path is unchanged.
+    coverFileExistence.clear();
     for (const auto id : ids)
         ++coverRevisions[id.value()];
     updateRowsOf(QSet<ComicInfoId>(ids.cbegin(), ids.cend()), [](ComicInfo &) { }, 0, columnCount() - 1, { CoverPathRole });
@@ -1881,6 +1884,7 @@ void ComicModel::notifyPlaceholderCoverChange(const QHash<PlaceholderId, std::op
 {
     if (coverKeys.isEmpty())
         return;
+    coverFileExistence.clear();
     QList<int> rows;
     for (int row = 0; row < _data.size(); row++) {
         auto *placeholder = rowPlaceholder(_data[row]);
@@ -1893,6 +1897,14 @@ void ComicModel::notifyPlaceholderCoverChange(const QHash<PlaceholderId, std::op
         rows.append(row);
     }
     emitRowRuns(rows, 0, columnCount() - 1, { CoverPathRole });
+}
+
+bool ComicModel::coverFileExists(const QString &path) const
+{
+    auto known = coverFileExistence.constFind(path);
+    if (known == coverFileExistence.cend())
+        known = coverFileExistence.insert(path, QFileInfo::exists(path));
+    return *known;
 }
 
 QUrl ComicModel::getCoverUrlPathForComicHash(const QString &hash) const
