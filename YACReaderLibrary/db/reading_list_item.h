@@ -109,6 +109,10 @@ public:
     // among its folders, or among its lists, by name; gives its row
     int insertFolderByName(ListFolderItem *item);
     int insertListByName(ListItem *item);
+    // a load adds every child at the end and sorts once: the order of adding them one by one by name
+    void appendFolder(ListFolderItem *item);
+    void appendList(ListItem *item);
+    void sortByName();
     // the row a folder or a list with that name gets, with `ignored` left out
     int rowForFolderName(const QString &name, const ListItem *ignored = nullptr) const;
     int rowForListName(const QString &name, const ListItem *ignored = nullptr) const;

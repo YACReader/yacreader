@@ -1,7 +1,12 @@
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "list_folder.h"
+#include "qnaturalsorting.h"
+#include "reading_list.h"
 #include "reading_list_item.h"
 #include "reading_list_model.h"
+#include "smart_list.h"
+#include "table_projection.h"
 #include "yacreader_global.h"
 #include "yacreader_global_gui.h"
 
@@ -10,9 +15,11 @@
 #include <QDataStream>
 #include <QDir>
 #include <QMimeData>
+#include <QRandomGenerator>
 #include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QTemporaryDir>
 #include <QTest>
 
@@ -42,6 +49,7 @@ private slots:
     void foldersAreRenamedAndTakeNoComics();
     void rowsAreFoundByTypeAndId();
     void foldersAndListsAreSortedByName();
+    void loadedFoldersHaveTheOrderOfAddingByName();
     void renamingMovesTheRowToItsName();
     void foldersAndListsMoveToFolders();
     void movesStayInTheirSectionAndOutOfThemselves();
@@ -552,6 +560,123 @@ void ListModelTest::foldersAndListsAreSortedByName()
     model.addSmartList("Big", "rating>=4", find(model, "Unread"));
     QCOMPARE(names(model, find(model, "Marvel")), QStringList({ "Avengers", "Daredevil", "X-Men", "Civil War", "Secret Wars" }));
     QCOMPARE(names(model, find(model, "Unread")), QStringList({ "Batman", "Big", "Later" }));
+}
+
+namespace {
+
+// a folder of the sidebar as the first load built it: each child inserted by name, one by one, in the load order
+struct ReferenceFolder {
+    QList<std::pair<QString, QString>> folders; // key, name
+    QList<std::pair<QString, QString>> lists;
+
+    static void insert(QList<std::pair<QString, QString>> &children, const QString &key, const QString &name)
+    {
+        const auto row = std::count_if(children.cbegin(), children.cend(), [&name](const auto &child) { return naturalSortLessThanCI(child.second, name); });
+        children.insert(row, { key, name });
+    }
+    QStringList keys() const
+    {
+        QStringList result;
+        for (const auto &child : folders)
+            result.append(child.first);
+        for (const auto &child : lists)
+            result.append(child.first);
+        return result;
+    }
+};
+
+void readModelFolders(ReadingListModel &model, const QModelIndex &parent, const QString &key, QHash<QString, QStringList> &result)
+{
+    for (int row = 0; row < model.rowCount(parent); row++) {
+        const auto index = model.index(row, 0, parent);
+        const auto type = model.data(index, ReadingListModel::TypeListsRole).toInt();
+        const auto id = model.data(index, ReadingListModel::IDRole).toString();
+        switch (type) {
+        case ReadingListModel::ReadingListFolder:
+            result[key + "R"].append("F" + id);
+            readModelFolders(model, index, "R" + id, result);
+            break;
+        case ReadingListModel::SmartListFolder:
+            result[key + "S"].append("F" + id);
+            readModelFolders(model, index, "S" + id, result);
+            break;
+        case ReadingListModel::ReadingList:
+            result[key + "R"].append("L" + id);
+            break;
+        case ReadingListModel::SmartList:
+            result[key + "S"].append("L" + id);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+}
+
+void ListModelTest::loadedFoldersHaveTheOrderOfAddingByName()
+{
+    QVERIFY(exec("DELETE FROM reading_list"));
+    // equal names without case keep the order of the first load
+    const QStringList names = { "Batman", "batman", "BATMAN", "List 2", "List 10", "list 2", "Été", "ete", "X", "x-men", "X-Men" };
+    QRandomGenerator random(20261023);
+    const auto pick = [&] { return names.at(random.bounded(int(names.size()))); };
+
+    for (const auto &kind : { QString("reading_list_folder"), QString("smart_list_folder") }) {
+        for (int id = 1; id <= 30; id++) {
+            const auto parent = id > 3 && random.bounded(2) == 0 ? QString::number(random.bounded(id - 1) + 1) : QString("NULL");
+            QVERIFY(exec(QString("INSERT INTO %1 (id, parent_id, name, ordering) VALUES (%2, %3, '%4', %5)").arg(kind).arg(id).arg(parent, pick()).arg(random.bounded(3))));
+        }
+    }
+    // ids in a random order, so the load order is not the id order
+    QList<int> ids;
+    for (int id = 1; id <= 150; id++)
+        ids.insert(random.bounded(int(ids.size()) + 1), id);
+    for (const auto id : std::as_const(ids)) {
+        const auto folder = random.bounded(3) == 0 ? QString("NULL") : QString::number(random.bounded(30) + 1);
+        QVERIFY(exec(QString("INSERT INTO reading_list (id, parentId, ordering, name, folder_id) VALUES (%1, NULL, %2, '%3', %4)").arg(id).arg(random.bounded(3)).arg(pick(), folder)));
+        QVERIFY(exec(QString("INSERT INTO smart_list (id, name, query, ordering, folder_id) VALUES (%1, '%2', 'read:true', %3, %4)").arg(id).arg(pick()).arg(random.bounded(3)).arg(folder)));
+    }
+    // child lists stay in their parent
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name) VALUES (500, 7, 0, 'Child'), (501, 7, 1, 'batman')"));
+
+    // the reference: the same load queries, then the insert by name of each one
+    QHash<QString, ReferenceFolder> reference;
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::loadDatabase(dataPath);
+        connectionName = db.connectionName();
+        for (const auto &[kind, prefix] : { std::pair(ListFolderKind::ReadingList, QString("R")), std::pair(ListFolderKind::SmartList, QString("S")) }) {
+            const auto folders = DBHelper::loadListFolders(kind, db);
+            QVERIFY(folders);
+            for (const auto &folder : *folders)
+                ReferenceFolder::insert(reference[(folder.parentId ? prefix + QString::number(*folder.parentId) : QString()) + prefix].folders, "F" + QString::number(folder.id.id), folder.name);
+        }
+        const auto smartLists = DBHelper::loadSmartLists(db);
+        QVERIFY(smartLists);
+        for (const auto &list : *smartLists)
+            ReferenceFolder::insert(reference[(list.folderId ? "S" + QString::number(*list.folderId) : QString()) + "S"].lists, "L" + QString::number(list.id.value()), list.name);
+        QSqlQuery query("SELECT " + TableProjection::selectList("rl", ::ReadingList::columns()) + " FROM reading_list rl ORDER BY rl.parentId IS NULL DESC", db);
+        const auto indexes = ::ReadingList::columnIndexes(query.record(), "rl");
+        while (query.next()) {
+            const auto list = ::ReadingList::fromQuery(query, indexes);
+            if (!list.parentId)
+                ReferenceFolder::insert(reference[(list.folderId ? "R" + QString::number(*list.folderId) : QString()) + "R"].lists, "L" + QString::number(list.id.value()), list.name);
+        }
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+    QHash<QString, QStringList> loaded;
+    readModelFolders(model, QModelIndex(), QString(), loaded);
+
+    QHash<QString, QStringList> expected;
+    for (auto folder = reference.cbegin(); folder != reference.cend(); ++folder)
+        expected.insert(folder.key(), folder.value().keys());
+    QVERIFY(expected.size() > 20);
+    QCOMPARE(loaded, expected);
 }
 
 void ListModelTest::renamingMovesTheRowToItsName()
