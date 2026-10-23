@@ -2059,12 +2059,12 @@ void ComicModel::deleteComicsFromLists(const QList<QModelIndex> &comicsList)
 
 void ComicModel::removeMissingComicsFromFolder(const QList<QModelIndex> &comicsList)
 {
-    QList<int> rows;
-    QList<const ComicItemCase::PlaceholderInFolder *> placements;
+    QSet<int> rows;
+    QMap<FolderId, QList<PlaceholderId>> placeholderIdsByFolder;
     for (const auto &index : comicsList) {
         if (const auto *row = std::get_if<ComicItemCase::PlaceholderInFolder>(&_data.at(index.row())); row != nullptr && !rows.contains(index.row())) {
-            rows.append(index.row());
-            placements.append(row);
+            rows.insert(index.row());
+            placeholderIdsByFolder[row->folderId].append(row->placeholder.id);
         }
     }
 
@@ -2073,8 +2073,8 @@ void ComicModel::removeMissingComicsFromFolder(const QList<QModelIndex> &comicsL
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(_databasePath);
-        for (const auto *placement : std::as_const(placements)) {
-            if (const auto covers = DBHelper::removePlaceholderFromFolder(placement->placeholder.id, placement->folderId, db))
+        for (auto it = placeholderIdsByFolder.cbegin(); it != placeholderIdsByFolder.cend(); ++it) {
+            if (const auto covers = DBHelper::removePlaceholdersFromFolder(it.value(), it.key(), db))
                 placeholderCovers.append(*covers);
             else
                 removed = false;
@@ -2089,9 +2089,10 @@ void ComicModel::removeMissingComicsFromFolder(const QList<QModelIndex> &comicsL
         return;
     }
 
-    std::sort(rows.begin(), rows.end());
+    QList<int> sortedRows(rows.begin(), rows.end());
+    std::sort(sortedRows.begin(), sortedRows.end());
     QList<QModelIndex> removedRows;
-    for (const auto row : std::as_const(rows))
+    for (const auto row : std::as_const(sortedRows))
         removedRows.append(index(row, 0));
     deleteComicsFromModel(removedRows);
 }

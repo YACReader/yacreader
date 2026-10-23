@@ -865,25 +865,31 @@ bool DBHelper::placeIssueInFolder(const QString &comicVineId, const DescriptiveM
     return placePlaceholderInFolder(*placeholderId, folderId, db);
 }
 
-std::optional<QStringList> DBHelper::removePlaceholderFromFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db)
+std::optional<QStringList> DBHelper::removePlaceholdersFromFolder(const QList<PlaceholderId> &placeholderIds, FolderId folderId, QSqlDatabase &db)
 {
-    QSqlQuery placeholderIds(db);
-    placeholderIds.prepare("SELECT placeholder_id FROM folder_placeholder WHERE folder_id = :folder_id AND placeholder_id = :placeholder_id");
-    placeholderIds.bindValue(":folder_id", folderId.value());
-    placeholderIds.bindValue(":placeholder_id", placeholderId.value());
+    QStringList ids;
+    for (const auto &placeholderId : placeholderIds) {
+        ids.append(QString::number(placeholderId.value()));
+    }
+
+    QSqlQuery placed(db);
+    placed.prepare(QString("SELECT placeholder_id FROM folder_placeholder WHERE folder_id = :folder_id AND placeholder_id IN (%1)").arg(ids.join(",")));
+    placed.bindValue(":folder_id", folderId.value());
 
     const auto removal = [&] {
         QSqlQuery query(db);
         query.prepare("DELETE FROM folder_placeholder WHERE folder_id = :folder_id AND placeholder_id = :placeholder_id");
-        query.bindValue(":folder_id", folderId.value());
-        query.bindValue(":placeholder_id", placeholderId.value());
-        if (!query.exec()) {
-            QLOG_ERROR() << "Unable to remove a placeholder from a folder:" << query.lastError().text();
-            return false;
+        for (const auto &placeholderId : placeholderIds) {
+            query.bindValue(":folder_id", folderId.value());
+            query.bindValue(":placeholder_id", placeholderId.value());
+            if (!query.exec()) {
+                QLOG_ERROR() << "Unable to remove placeholders from a folder:" << query.lastError().text();
+                return false;
+            }
         }
         return true;
     };
-    return removeWithPlaceholders(placeholderIds, removal, db);
+    return removeWithPlaceholders(placed, removal, db);
 }
 
 void DBHelper::deleteComicsFromFavorites(const QList<ComicDB> &comicsList, QSqlDatabase &db)

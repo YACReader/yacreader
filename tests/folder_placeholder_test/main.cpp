@@ -105,7 +105,7 @@ void FolderPlaceholderTest::removingThePlacementDeletesAnUnusedPlaceholder()
 {
     QVERIFY(DBHelper::placePlaceholderInFolder(PlaceholderId(5), FolderId(2), db));
 
-    QCOMPARE(DBHelper::removePlaceholderFromFolder(PlaceholderId(5), FolderId(2), db), std::optional<QStringList>({ "key5" }));
+    QCOMPARE(DBHelper::removePlaceholdersFromFolder({ PlaceholderId(5) }, FolderId(2), db), std::optional<QStringList>({ "key5" }));
     QCOMPARE(rows("SELECT COUNT(*) FROM folder_placeholder"), QList<QVariantList>({ { 0 } }));
     QCOMPARE(rows("SELECT id FROM placeholder ORDER BY id"), QList<QVariantList>({ { 6 }, { 7 } }));
 }
@@ -117,8 +117,7 @@ void FolderPlaceholderTest::removingThePlacementKeepsAUsedPlaceholder()
     QVERIFY(DBHelper::placePlaceholderInFolder(PlaceholderId(6), FolderId(2), db));
     QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) VALUES (1, 0, 6)"));
 
-    QCOMPARE(DBHelper::removePlaceholderFromFolder(PlaceholderId(5), FolderId(2), db), std::optional<QStringList>(QStringList()));
-    QCOMPARE(DBHelper::removePlaceholderFromFolder(PlaceholderId(6), FolderId(2), db), std::optional<QStringList>(QStringList()));
+    QCOMPARE(DBHelper::removePlaceholdersFromFolder({ PlaceholderId(5), PlaceholderId(6) }, FolderId(2), db), std::optional<QStringList>(QStringList()));
 
     QCOMPARE(rows("SELECT folder_id, placeholder_id FROM folder_placeholder"), QList<QVariantList>({ { 4, 5 } }));
     QCOMPARE(rows("SELECT id FROM placeholder ORDER BY id"), QList<QVariantList>({ { 5 }, { 6 }, { 7 } }));

@@ -73,7 +73,7 @@ public:
     static std::optional<QStringList> removeUnusedPlaceholders(QSqlDatabase &db);
     // placing a placeholder again in the same folder changes nothing
     static bool placePlaceholderInFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db);
-    static std::optional<QStringList> removePlaceholderFromFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db);
+    static std::optional<QStringList> removePlaceholdersFromFolder(const QList<PlaceholderId> &placeholderIds, FolderId folderId, QSqlDatabase &db);
     // No transaction. The Comic Vine issue is expected in the folder: the placeholder of that issue is reused, else a
     // new one is made, and the patch is written to it; nothing when a comic of the folder is that issue. `coverKey`
     // becomes its cover when it has none; `coverUsed` tells whether it did.
