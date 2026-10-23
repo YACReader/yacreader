@@ -21,6 +21,8 @@
 #include <QtGui>
 
 #include <algorithm>
+#include <numeric>
+#include <optional>
 #include <utility>
 
 #ifdef use_unarr
@@ -418,34 +420,67 @@ bool defaultFolderContentSortFunction(const ComicItem &c1, const ComicItem &c2)
     return comicNumberLessThan(rowMetadata(c1).number, rowFileName(c1), rowMetadata(c2).number, rowFileName(c2));
 }
 
+int sign(int order)
+{
+    return order < 0 ? -1 : (order > 0 ? 1 : 0);
+}
+
 // -1, 0, or 1 in natural order without case; an empty text is first when `emptyFirst`, else last
 int compareNatural(const QString &a, const QString &b, bool emptyFirst)
 {
     if (a.isEmpty() != b.isEmpty())
         return a.isEmpty() == emptyFirst ? -1 : 1;
-    if (naturalSortLessThanCI(a, b))
-        return -1;
-    return naturalSortLessThanCI(b, a) ? 1 : 0;
+    return sign(naturalCompare(a, b, Qt::CaseInsensitive));
+}
+
+// the order of comicNumberLessThan for two numbers without file names: numbered first
+int compareNumbers(const std::optional<QString> &a, const std::optional<QString> &b)
+{
+    if (a && b)
+        return sign(naturalCompare(*a, *b, Qt::CaseInsensitive));
+    if (a.has_value() == b.has_value())
+        return 0;
+    return a ? -1 : 1;
+}
+
+struct SearchSortKey {
+    QString series;
+    QString volume;
+    std::optional<QString> number;
+    QString fileName;
+    QString path;
+};
+
+SearchSortKey searchSortKey(const ComicItem &item)
+{
+    const auto &metadata = rowMetadata(item);
+    const auto *comic = rowComic(item);
+    return {
+        metadata.series.toString().trimmed(),
+        metadata.volume.toString().trimmed(),
+        metadata.number.isNull() ? std::nullopt : std::optional(metadata.number.toString()),
+        rowFileName(item),
+        comic != nullptr ? comic->file.path : QString(),
+    };
 }
 
 // search results and smart lists: each series stays together, in volume and number order
+int compareSearchSortKeys(const SearchSortKey &a, const SearchSortKey &b)
+{
+    if (const auto order = compareNatural(a.series, b.series, false); order != 0)
+        return order;
+    if (const auto order = compareNatural(a.volume, b.volume, true); order != 0)
+        return order;
+    if (const auto order = compareNumbers(a.number, b.number); order != 0)
+        return order;
+    if (const auto order = compareNatural(a.fileName, b.fileName, true); order != 0)
+        return order;
+    return compareNatural(a.path, b.path, true);
+}
+
 bool searchResultLessThan(const ComicItem &c1, const ComicItem &c2)
 {
-    const auto &a = rowMetadata(c1);
-    const auto &b = rowMetadata(c2);
-    if (const auto order = compareNatural(a.series.toString().trimmed(), b.series.toString().trimmed(), false); order != 0)
-        return order < 0;
-    if (const auto order = compareNatural(a.volume.toString().trimmed(), b.volume.toString().trimmed(), true); order != 0)
-        return order < 0;
-    if (comicNumberLessThan(a.number, QString(), b.number, QString()))
-        return true;
-    if (comicNumberLessThan(b.number, QString(), a.number, QString()))
-        return false;
-    if (const auto order = compareNatural(rowFileName(c1), rowFileName(c2), true); order != 0)
-        return order < 0;
-    const auto *comic1 = rowComic(c1);
-    const auto *comic2 = rowComic(c2);
-    return compareNatural(comic1 != nullptr ? comic1->file.path : QString(), comic2 != nullptr ? comic2->file.path : QString(), true) < 0;
+    return compareSearchSortKeys(searchSortKey(c1), searchSortKey(c2)) < 0;
 }
 
 }
@@ -1322,8 +1357,20 @@ QList<ComicItem> ComicModel::sortedForFolder(QList<ComicItem> items)
 
 QList<ComicItem> ComicModel::sortedForSearch(QList<ComicItem> items)
 {
-    std::stable_sort(items.begin(), items.end(), searchResultLessThan);
-    return items;
+    QList<SearchSortKey> keys;
+    keys.reserve(items.size());
+    for (const auto &item : std::as_const(items))
+        keys.append(searchSortKey(item));
+
+    QList<qsizetype> order(items.size());
+    std::iota(order.begin(), order.end(), 0);
+    std::stable_sort(order.begin(), order.end(), [&keys](qsizetype a, qsizetype b) { return compareSearchSortKeys(keys.at(a), keys.at(b)) < 0; });
+
+    QList<ComicItem> sorted;
+    sorted.reserve(items.size());
+    for (const auto row : std::as_const(order))
+        sorted.append(std::move(items[row]));
+    return sorted;
 }
 
 void ComicModel::takeData(const QList<ComicItem> &data)

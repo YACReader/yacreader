@@ -2,6 +2,7 @@
 #include "comic_model.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "qnaturalsorting.h"
 #include "search_query.h"
 #include "yacreader_comics_selection_helper.h"
 #include "yacreader_global.h"
@@ -14,6 +15,7 @@
 #include <QFileInfo>
 #include <QImage>
 #include <QMimeData>
+#include <QRandomGenerator>
 #include <QSet>
 #include <QSignalSpy>
 #include <QSqlDatabase>
@@ -80,6 +82,7 @@ private slots:
     void selectionSummaryCountsMissingComics();
     void searchResultsKeepEachSeriesTogether();
     void searchLimitKeepsTheFirstSeries();
+    void searchOrderIsTheOrderOfTheFirstComparison();
     void smartListShowsTheMatchingComicsInOrder();
     void smartListReloads();
     void smartListComicsHaveFolderActions();
@@ -1358,6 +1361,135 @@ void ComicModelTest::updatesAreSentForRunsOfRows()
     QCOMPARE(changed.count(), 1);
     QCOMPARE(rowsOf(0), std::pair(2, 3));
     QCOMPARE(changed.at(0).at(2).value<QList<int>>(), QList<int>({ ComicModel::CoverPathRole }));
+}
+
+namespace {
+
+struct SortFields {
+    QVariant series;
+    QVariant volume;
+    QVariant number;
+    QString fileName;
+    QString path; // only rows with a file
+};
+
+// the comparison of search results before the sort keys, as it was
+int referenceCompareNatural(const QString &a, const QString &b, bool emptyFirst)
+{
+    if (a.isEmpty() != b.isEmpty())
+        return a.isEmpty() == emptyFirst ? -1 : 1;
+    if (naturalSortLessThanCI(a, b))
+        return -1;
+    return naturalSortLessThanCI(b, a) ? 1 : 0;
+}
+
+bool referenceLessThan(const SortFields &a, const SortFields &b)
+{
+    if (const auto order = referenceCompareNatural(a.series.toString().trimmed(), b.series.toString().trimmed(), false); order != 0)
+        return order < 0;
+    if (const auto order = referenceCompareNatural(a.volume.toString().trimmed(), b.volume.toString().trimmed(), true); order != 0)
+        return order < 0;
+    if (comicNumberLessThan(a.number, QString(), b.number, QString()))
+        return true;
+    if (comicNumberLessThan(b.number, QString(), a.number, QString()))
+        return false;
+    if (const auto order = referenceCompareNatural(a.fileName, b.fileName, true); order != 0)
+        return order < 0;
+    return referenceCompareNatural(a.path, b.path, true) < 0;
+}
+
+}
+
+void ComicModelTest::searchOrderIsTheOrderOfTheFirstComparison()
+{
+    const QList<QVariant> series = { QVariant(), QString(), QString(" "), QString("Batman"), QString("batman"), QString(" Batman "), QString("Batman 2"), QString("Batman 10"), QString("Robin"), QString("ä") };
+    const QList<QVariant> volumes = { QVariant(), QString(), QString("1"), QString("01"), QString("2"), QString("10"), QString("Vol. 2") };
+    const QList<QVariant> numbers = { QVariant(), QString(), QString("1"), QString("001"), QString("2"), QString("10"), QString("1.5"), QString("-1"), QString("Annual 1"), QString("a") };
+    const QList<QString> names = { QString(), QString("a.cbz"), QString("A.cbz"), QString("a2.cbz"), QString("a10.cbz"), QString("b.cbz") };
+
+    // one call of the three-way comparison answers what the two "less than" calls answered, with and without ICU
+    QStringList texts;
+    for (const auto &values : { series, volumes, numbers })
+        for (const auto &value : values)
+            texts.append(value.toString());
+    texts.append(names);
+    for (const auto &a : std::as_const(texts)) {
+        for (const auto &b : std::as_const(texts)) {
+            const auto twoCalls = naturalSortLessThanCI(a, b) ? -1 : (naturalSortLessThanCI(b, a) ? 1 : 0);
+            const auto oneCall = naturalCompare(a, b, Qt::CaseInsensitive);
+            QCOMPARE(oneCall < 0 ? -1 : (oneCall > 0 ? 1 : 0), twoCalls);
+            const auto fallback = naturalCompareFallback(a, b, Qt::CaseInsensitive);
+            const auto reversed = naturalCompareFallback(b, a, Qt::CaseInsensitive);
+            QCOMPARE(fallback < 0 ? -1 : (fallback > 0 ? 1 : 0), reversed < 0 ? 1 : (reversed > 0 ? -1 : 0));
+        }
+    }
+
+    for (const auto seed : { 20261023u, 1u, 2u, 3u, 4u }) {
+        QRandomGenerator random(seed);
+        const auto pick = [&random](const auto &values) { return values.at(random.bounded(int(values.size()))); };
+
+        QList<ComicItem> items;
+        QHash<QString, SortFields> fields; // by title
+        for (int i = 0; i < 600; i++) {
+            SortFields row { pick(series), pick(volumes), pick(numbers), pick(names), QString() };
+            const auto title = QString("row %1").arg(i);
+            const auto kind = random.bounded(3);
+            if (kind == 0) {
+                ComicDB comic;
+                comic.info.id = ComicInfoId(i + 1);
+                comic.file.fileName = row.fileName;
+                comic.file.path = row.fileName.isEmpty() ? QString() : QString("/%1/%2").arg(pick(names), row.fileName);
+                row.path = comic.file.path;
+                comic.info.title = title;
+                comic.info.series = row.series;
+                comic.info.volume = row.volume;
+                comic.info.number = row.number;
+                items.append(ComicItemCase::Comic { comic });
+            } else if (kind == 1) {
+                ComicInfo info;
+                info.id = ComicInfoId(i + 1);
+                info.title = title;
+                info.series = row.series;
+                info.volume = row.volume;
+                info.number = row.number;
+                ListEntry entry;
+                if (!row.fileName.isEmpty())
+                    entry.lastKnownFile = LastKnownFile { row.fileName, QString("/x/") + row.fileName };
+                items.append(ComicItemCase::DeletedComicInList { info, entry });
+            } else {
+                Placeholder placeholder;
+                placeholder.id = PlaceholderId(i + 1);
+                placeholder.title = title;
+                placeholder.series = row.series;
+                placeholder.volume = row.volume;
+                placeholder.number = row.number;
+                row.fileName.clear();
+                items.append(ComicItemCase::PlaceholderInList { placeholder, ListEntry { } });
+            }
+            fields.insert(title, row);
+        }
+
+        const auto titles = [](const QList<ComicItem> &rows) {
+            QStringList values;
+            for (const auto &row : rows)
+                values.append(std::visit([](const auto &item) {
+                    if constexpr (requires { item.comic; })
+                        return item.comic.info.title.toString();
+                    else if constexpr (requires { item.info; })
+                        return item.info.title.toString();
+                    else
+                        return item.placeholder.title.toString();
+                },
+                                         row));
+            return values;
+        };
+
+        auto expected = items;
+        std::stable_sort(expected.begin(), expected.end(), [&fields, &titles](const ComicItem &a, const ComicItem &b) {
+            return referenceLessThan(fields.value(titles({ a }).first()), fields.value(titles({ b }).first()));
+        });
+        QCOMPARE(titles(ComicModel::sortedForSearch(items)), titles(expected));
+    }
 }
 
 QTEST_MAIN(ComicModelTest)
