@@ -2620,13 +2620,15 @@ std::optional<QHash<qulonglong, QString>> DBHelper::readingListCoverHashes(const
 
     QSqlQuery query(db);
     query.setForwardOnly(true);
-    if (!query.exec(QString("SELECT rl.id, (SELECT ci.hash FROM reading_list_entry e "
-                            "INNER JOIN comic_info ci ON (ci.id = e.comic_info_id) "
-                            "INNER JOIN reading_list l ON (l.id = e.reading_list_id) "
-                            "WHERE l.id = rl.id OR l.parentId = rl.id "
-                            "ORDER BY l.parentId IS NOT NULL, l.ordering, e.ordering, e.id LIMIT 1) "
-                            "FROM reading_list rl WHERE rl.id IN (%1)")
-                            .arg(idTexts.join(',')))) {
+    // the list and its child lists are two branches: with `l.id = rl.id OR l.parentId = rl.id` SQLite reads
+    // every entry of the library for each list
+    static const QString branch = "SELECT ci.hash AS hash, l.parentId IS NOT NULL AS child, l.ordering AS listOrdering, e.ordering AS entryOrdering, e.id AS entryId "
+                                  "FROM reading_list l CROSS JOIN reading_list_entry e ON (e.reading_list_id = l.id) "
+                                  "CROSS JOIN comic_info ci ON (ci.id = e.comic_info_id) WHERE %1";
+    if (!query.exec(QString("SELECT rl.id, (SELECT hash FROM (%1 UNION ALL %2) "
+                            "ORDER BY child, listOrdering, entryOrdering, entryId LIMIT 1) "
+                            "FROM reading_list rl WHERE rl.id IN (%3)")
+                            .arg(branch.arg("l.id = rl.id"), branch.arg("l.parentId = rl.id"), idTexts.join(',')))) {
         QLOG_ERROR() << "Unable to load the covers of reading lists:" << query.lastError().text();
         return std::nullopt;
     }
