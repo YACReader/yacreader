@@ -1340,8 +1340,7 @@ void MainWindowViewer::checkNewVersion()
 void MainWindowViewer::processReset()
 {
     disableActions();
-    if (!isClient || siblingComics.size() <= 1)
-        disablePreviousNextComicActions();
+    updatePrevNextActions();
 }
 
 void MainWindowViewer::setUpShortcutsManagement()
@@ -1520,6 +1519,11 @@ void MainWindowViewer::setUpShortcutsManagement()
 }
 
 void MainWindowViewer::doubleMangaPageSwitch()
+{
+    updatePrevNextActions();
+}
+
+void MainWindowViewer::updatePrevNextActions()
 {
     if (isClient) {
         int index = siblingComics.indexOf(currentComicDB);
