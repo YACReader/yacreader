@@ -918,6 +918,8 @@ void MainWindowViewer::openComicFromRecentAction(QAction *action)
             openFolderFromPath(action->data().toString());
         }
     } else {
+        // these neighbours belong to the comic shown before, so the reset must not use them
+        previousComicPath = nextComicPath = "";
         viewer->resetContent();
         viewer->showMessageErrorOpening();
     }
