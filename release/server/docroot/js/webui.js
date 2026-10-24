@@ -753,7 +753,7 @@
       return "/v2/library/" + encodeURIComponent(libraryId) + "/search";
     }
 
-    // PATCH these to change fields of an item (see YACReaderLibrary/server/API.md)
+    // PATCH these to change fields of an item
     function comicApi(comicId) {
       return "/v2/library/" + encodeURIComponent(libraryId) + "/comic/" + encodeURIComponent(comicId);
     }

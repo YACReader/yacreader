@@ -110,7 +110,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     QRegExp readingListContent("/v2/library/.+/reading_list/[0-9]+/content/?");
     QRegExp readingListInfo("/v2/library/.+/reading_list/[0-9]+/info/?");
     QRegExp search("/v2/library/.+/search/?");
-    QRegExp itemUpdate("/v2/library/[0-9]+/(comic|folder)/[0-9]+/?"); // PATCH: change fields of a comic or a folder (see server/API.md)
+    QRegExp itemUpdate("/v2/library/[0-9]+/(comic|folder)/[0-9]+/?"); // PATCH: change fields of a comic or a folder
 
     QRegExp sync("/v2/sync");
 
