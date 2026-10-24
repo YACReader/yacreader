@@ -715,7 +715,7 @@ void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListIte
             // a top level list is in its folder, or at the top level of the section
             rli->parent = rootItem;
             rli->container = rli->list.folderId ? folders.value(*rli->list.folderId, readingListsRoot) : readingListsRoot;
-            rli->container->insertListByName(rli);
+            rli->container->appendList(rli);
         } else {
             items.value(rli->list.parentId->value())->appendChild(rli);
         }
@@ -779,9 +779,17 @@ void ReadingListModel::setupSmartLists(QSqlDatabase &db)
         for (const auto &list : *lists) {
             auto item = new SmartListItem(list);
             item->container = list.folderId ? folders.value(*list.folderId, smartListsRoot) : smartListsRoot;
-            item->container->insertListByName(item);
+            item->container->appendList(item);
         }
     }
+    sortByName(smartListsRoot, folders);
+}
+
+void ReadingListModel::sortByName(ListFolderItem *root, const QHash<qulonglong, ListFolderItem *> &folders)
+{
+    root->sortByName();
+    for (auto *folder : folders)
+        folder->sortByName();
 }
 
 QHash<qulonglong, ListFolderItem *> ReadingListModel::setupListFolders(ListFolderKind kind, ListFolderItem *root, QSqlDatabase &db)
@@ -796,7 +804,7 @@ QHash<qulonglong, ListFolderItem *> ReadingListModel::setupListFolders(ListFolde
         folders.insert(folder.id.id, new ListFolderItem(folder));
     for (const auto &folder : *loaded) {
         auto *container = folder.parentId ? folders.value(*folder.parentId, root) : root;
-        container->insertFolderByName(folders.value(folder.id.id));
+        container->appendFolder(folders.value(folder.id.id));
     }
     return folders;
 }
@@ -816,6 +824,7 @@ void ReadingListModel::setupReadingLists(QSqlDatabase &db)
 
     // setup reading lists
     setupReadingListsData(selectQuery, rootItem, folders);
+    sortByName(readingListsRoot, folders);
 
     // TEST
     //     ReadingListItem * node1;

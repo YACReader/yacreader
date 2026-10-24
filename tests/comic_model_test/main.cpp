@@ -2,6 +2,7 @@
 #include "comic_model.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "qnaturalsorting.h"
 #include "search_query.h"
 #include "yacreader_comics_selection_helper.h"
 #include "yacreader_global.h"
@@ -14,6 +15,7 @@
 #include <QFileInfo>
 #include <QImage>
 #include <QMimeData>
+#include <QRandomGenerator>
 #include <QSet>
 #include <QSignalSpy>
 #include <QSqlDatabase>
@@ -43,6 +45,7 @@ private slots:
     void removeOneOccurrenceOfARepeatedComic();
     void addAppendsTheComicInfoOfEachRow();
     void reorderWritesTheEntryOrder();
+    void reorderMovesSeveralRows();
     void failedReorderShowsTheStoredOrder();
     void reorderMovesADeletedComic();
     void deletedComicRowsShowTheirInfoAndLastKnownFile();
@@ -75,9 +78,11 @@ private slots:
     void missingComicsInFoldersAreDraggedAndAddedToLists();
     void removingMissingComicsFromAFolderKeepsTheComics();
     void rowsAreRemovedInRuns();
+    void updatesAreSentForRunsOfRows();
     void selectionSummaryCountsMissingComics();
     void searchResultsKeepEachSeriesTogether();
     void searchLimitKeepsTheFirstSeries();
+    void searchOrderIsTheOrderOfTheFirstComparison();
     void smartListShowsTheMatchingComicsInOrder();
     void smartListReloads();
     void smartListComicsHaveFolderActions();
@@ -351,6 +356,38 @@ void ComicModelTest::reorderWritesTheEntryOrder()
     QCOMPARE(ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"), QList<int>({ 1, 3 }));
 }
 
+void ComicModelTest::reorderMovesSeveralRows()
+{
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 2, 2), (1, 3, 4)"));
+    const auto storedOrder = [this] { return ints("SELECT comic_info_id FROM reading_list_entry WHERE reading_list_id = 1 ORDER BY ordering"); };
+
+    ComicModel model;
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 3, 1, 2, 4 }));
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+
+    QSignalSpy resorted(&model, &ComicModel::resortedIndexes);
+
+    // the dragged rows go to the drop row in the drag order
+    std::unique_ptr<QMimeData> down(model.mimeData({ model.index(0, 0), model.index(2, 0) }));
+    QVERIFY(model.dropMimeData(down.get(), Qt::MoveAction, 4, 0, QModelIndex()));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 1, 4, 3, 2 }));
+    QCOMPARE(storedOrder(), QList<int>({ 1, 4, 3, 2 }));
+    // the old row of each new row, for the flow
+    QCOMPARE(resorted.count(), 1);
+    QCOMPARE(resorted.at(0).at(0).value<QList<int>>(), QList<int>({ 1, 3, 0, 2 }));
+
+    std::unique_ptr<QMimeData> up(model.mimeData({ model.index(3, 0), model.index(1, 0) }));
+    QVERIFY(model.dropMimeData(up.get(), Qt::MoveAction, 0, 0, QModelIndex()));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 2, 4, 1, 3 }));
+    QCOMPARE(storedOrder(), QList<int>({ 2, 4, 1, 3 }));
+
+    // a drop on a dragged row does nothing
+    std::unique_ptr<QMimeData> onItself(model.mimeData({ model.index(0, 0), model.index(1, 0) }));
+    QVERIFY(!model.dropMimeData(onItself.get(), Qt::MoveAction, 1, 0, QModelIndex()));
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 2, 4, 1, 3 }));
+}
+
 void ComicModelTest::failedReorderShowsTheStoredOrder()
 {
     ComicModel model;
@@ -437,7 +474,14 @@ void ComicModelTest::deletedComicCoverIsTheHashCoverOrTheDefaultImage()
     QVERIFY(cover.open(QIODevice::WriteOnly));
     cover.write("jpg");
     cover.close();
-    QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), model.getCoverUrlPathForComicHash("hash-3"));
+    // the file is checked once, until a cover or the rows change
+    QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
+    QCOMPARE(model.getPaths(library).first(), ":/images/unavailableCover.png");
+
+    model.notifyCoverChange({ ComicInfoId(3) });
+    auto hashCover = model.getCoverUrlPathForComicHash("hash-3");
+    hashCover.setQuery("revision=1");
+    QCOMPARE(model.index(0, 0).data(ComicModel::CoverPathRole).toUrl(), hashCover);
     QCOMPARE(model.getPaths(library).first(), LibraryPaths::coverPath(library, "hash-3"));
 }
 
@@ -585,7 +629,10 @@ void ComicModelTest::comicUpdateChangesEveryRowOfTheComicInfo()
 
     QSignalSpy changed(&model, &ComicModel::dataChanged);
     model.reload(comic);
-    QCOMPARE(changed.count(), 2);
+    // the two rows are consecutive, so one signal covers them
+    QCOMPARE(changed.count(), 1);
+    QCOMPARE(changed.at(0).at(0).toModelIndex().row(), rows.first());
+    QCOMPARE(changed.at(0).at(1).toModelIndex().row(), rows.last());
     for (const auto row : rows) {
         QCOMPARE(model.data(model.index(row, 0), ComicModel::ReadColumnRole).toBool(), true);
         QCOMPARE(model.data(model.index(row, 0), ComicModel::CurrentPageRole).toInt(), 20);
@@ -860,7 +907,10 @@ void ComicModelTest::placeholderCoverIsItsFileOrTheDefaultImage()
     QImage cover(10, 15, QImage::Format_RGB32);
     cover.fill(Qt::red);
     QVERIFY(cover.save(coverPath));
+    // the file is checked once, until a cover or the rows change
+    QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), defaultCover);
 
+    model.setupReadingListModelData(1, dataPath);
     QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl::fromLocalFile(coverPath));
     QCOMPARE(model.getPaths(library).at(2), coverPath);
     QCOMPARE(model.index(3, 0).data(ComicModel::CoverPathRole).toUrl(), defaultCover);
@@ -902,14 +952,14 @@ void ComicModelTest::placeholderCoverChangeUpdatesEveryRow()
     model.setupReadingListModelData(1, dataPath);
     QSignalSpy changed(&model, &QAbstractItemModel::dataChanged);
 
-    model.notifyPlaceholderCoverChange(PlaceholderId(1), QString("new-key"));
+    model.notifyPlaceholderCoverChange({ { PlaceholderId(1), QString("new-key") } });
     QCOMPARE(changed.count(), 2);
     QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl::fromLocalFile(coverPath));
     QCOMPARE(model.index(4, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl::fromLocalFile(coverPath));
     QCOMPARE(model.index(3, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
     QVERIFY(model.supports(model.index(2, 0), ComicAction::SaveCover));
 
-    model.notifyPlaceholderCoverChange(PlaceholderId(1), std::nullopt);
+    model.notifyPlaceholderCoverChange({ { PlaceholderId(1), std::nullopt } });
     QCOMPARE(model.index(2, 0).data(ComicModel::CoverPathRole).toUrl(), QUrl("qrc:/images/unavailableCover.png"));
     QVERIFY(!model.supports(model.index(2, 0), ComicAction::SaveCover));
 }
@@ -1284,6 +1334,162 @@ void ComicModelTest::rowsAreRemovedInRuns()
     QCOMPARE(removed.at(0).at(2).toInt(), 3);
     QCOMPARE(removed.at(1).at(1).toInt(), 0);
     QCOMPARE(removed.at(1).at(2).toInt(), 0);
+}
+
+void ComicModelTest::updatesAreSentForRunsOfRows()
+{
+    ComicModel model;
+    model.setupFolderModelData(2, dataPath);
+    // comic_info of each row: 1, 1, 2, 3, 4
+    QCOMPARE(rowIds(model), QList<qulonglong>({ 1, 5, 2, 3, 4 }));
+    QAbstractItemModelTester tester(&model, QAbstractItemModelTester::FailureReportingMode::QtTest);
+    QSignalSpy changed(&model, &ComicModel::dataChanged);
+    const auto rowsOf = [&changed](int signal) {
+        return std::pair { changed.at(signal).at(0).toModelIndex().row(), changed.at(signal).at(1).toModelIndex().row() };
+    };
+
+    model.setComicsRead({ model.index(4, 0), model.index(0, 0), model.index(3, 0) }, YACReader::Read);
+    QCOMPARE(changed.count(), 2);
+    QCOMPARE(rowsOf(0), std::pair(0, 1));
+    QCOMPARE(rowsOf(1), std::pair(3, 4));
+    for (const auto row : { 0, 1, 3, 4 })
+        QCOMPARE(model.data(model.index(row, 0), ComicModel::ReadColumnRole).toBool(), true);
+    QCOMPARE(model.data(model.index(2, 0), ComicModel::ReadColumnRole).toBool(), false);
+
+    changed.clear();
+    model.notifyCoverChange({ ComicInfoId(2), ComicInfoId(3) });
+    QCOMPARE(changed.count(), 1);
+    QCOMPARE(rowsOf(0), std::pair(2, 3));
+    QCOMPARE(changed.at(0).at(2).value<QList<int>>(), QList<int>({ ComicModel::CoverPathRole }));
+}
+
+namespace {
+
+struct SortFields {
+    QVariant series;
+    QVariant volume;
+    QVariant number;
+    QString fileName;
+    QString path; // only rows with a file
+};
+
+// the comparison of search results before the sort keys, as it was
+int referenceCompareNatural(const QString &a, const QString &b, bool emptyFirst)
+{
+    if (a.isEmpty() != b.isEmpty())
+        return a.isEmpty() == emptyFirst ? -1 : 1;
+    if (naturalSortLessThanCI(a, b))
+        return -1;
+    return naturalSortLessThanCI(b, a) ? 1 : 0;
+}
+
+bool referenceLessThan(const SortFields &a, const SortFields &b)
+{
+    if (const auto order = referenceCompareNatural(a.series.toString().trimmed(), b.series.toString().trimmed(), false); order != 0)
+        return order < 0;
+    if (const auto order = referenceCompareNatural(a.volume.toString().trimmed(), b.volume.toString().trimmed(), true); order != 0)
+        return order < 0;
+    if (comicNumberLessThan(a.number, QString(), b.number, QString()))
+        return true;
+    if (comicNumberLessThan(b.number, QString(), a.number, QString()))
+        return false;
+    if (const auto order = referenceCompareNatural(a.fileName, b.fileName, true); order != 0)
+        return order < 0;
+    return referenceCompareNatural(a.path, b.path, true) < 0;
+}
+
+}
+
+void ComicModelTest::searchOrderIsTheOrderOfTheFirstComparison()
+{
+    const QList<QVariant> series = { QVariant(), QString(), QString(" "), QString("Batman"), QString("batman"), QString(" Batman "), QString("Batman 2"), QString("Batman 10"), QString("Robin"), QString("ä") };
+    const QList<QVariant> volumes = { QVariant(), QString(), QString("1"), QString("01"), QString("2"), QString("10"), QString("Vol. 2") };
+    const QList<QVariant> numbers = { QVariant(), QString(), QString("1"), QString("001"), QString("2"), QString("10"), QString("1.5"), QString("-1"), QString("Annual 1"), QString("a") };
+    const QList<QString> names = { QString(), QString("a.cbz"), QString("A.cbz"), QString("a2.cbz"), QString("a10.cbz"), QString("b.cbz") };
+
+    // one call of the three-way comparison answers what the two "less than" calls answered, with and without ICU
+    QStringList texts;
+    for (const auto &values : { series, volumes, numbers })
+        for (const auto &value : values)
+            texts.append(value.toString());
+    texts.append(names);
+    for (const auto &a : std::as_const(texts)) {
+        for (const auto &b : std::as_const(texts)) {
+            const auto twoCalls = naturalSortLessThanCI(a, b) ? -1 : (naturalSortLessThanCI(b, a) ? 1 : 0);
+            const auto oneCall = naturalCompare(a, b, Qt::CaseInsensitive);
+            QCOMPARE(oneCall < 0 ? -1 : (oneCall > 0 ? 1 : 0), twoCalls);
+            const auto fallback = naturalCompareFallback(a, b, Qt::CaseInsensitive);
+            const auto reversed = naturalCompareFallback(b, a, Qt::CaseInsensitive);
+            QCOMPARE(fallback < 0 ? -1 : (fallback > 0 ? 1 : 0), reversed < 0 ? 1 : (reversed > 0 ? -1 : 0));
+        }
+    }
+
+    for (const auto seed : { 20261023u, 1u, 2u, 3u, 4u }) {
+        QRandomGenerator random(seed);
+        const auto pick = [&random](const auto &values) { return values.at(random.bounded(int(values.size()))); };
+
+        QList<ComicItem> items;
+        QHash<QString, SortFields> fields; // by title
+        for (int i = 0; i < 600; i++) {
+            SortFields row { pick(series), pick(volumes), pick(numbers), pick(names), QString() };
+            const auto title = QString("row %1").arg(i);
+            const auto kind = random.bounded(3);
+            if (kind == 0) {
+                ComicDB comic;
+                comic.info.id = ComicInfoId(i + 1);
+                comic.file.fileName = row.fileName;
+                comic.file.path = row.fileName.isEmpty() ? QString() : QString("/%1/%2").arg(pick(names), row.fileName);
+                row.path = comic.file.path;
+                comic.info.title = title;
+                comic.info.series = row.series;
+                comic.info.volume = row.volume;
+                comic.info.number = row.number;
+                items.append(ComicItemCase::Comic { comic });
+            } else if (kind == 1) {
+                ComicInfo info;
+                info.id = ComicInfoId(i + 1);
+                info.title = title;
+                info.series = row.series;
+                info.volume = row.volume;
+                info.number = row.number;
+                ListEntry entry;
+                if (!row.fileName.isEmpty())
+                    entry.lastKnownFile = LastKnownFile { row.fileName, QString("/x/") + row.fileName };
+                items.append(ComicItemCase::DeletedComicInList { info, entry });
+            } else {
+                Placeholder placeholder;
+                placeholder.id = PlaceholderId(i + 1);
+                placeholder.title = title;
+                placeholder.series = row.series;
+                placeholder.volume = row.volume;
+                placeholder.number = row.number;
+                row.fileName.clear();
+                items.append(ComicItemCase::PlaceholderInList { placeholder, ListEntry { } });
+            }
+            fields.insert(title, row);
+        }
+
+        const auto titles = [](const QList<ComicItem> &rows) {
+            QStringList values;
+            for (const auto &row : rows)
+                values.append(std::visit([](const auto &item) {
+                    if constexpr (requires { item.comic; })
+                        return item.comic.info.title.toString();
+                    else if constexpr (requires { item.info; })
+                        return item.info.title.toString();
+                    else
+                        return item.placeholder.title.toString();
+                },
+                                         row));
+            return values;
+        };
+
+        auto expected = items;
+        std::stable_sort(expected.begin(), expected.end(), [&fields, &titles](const ComicItem &a, const ComicItem &b) {
+            return referenceLessThan(fields.value(titles({ a }).first()), fields.value(titles({ b }).first()));
+        });
+        QCOMPARE(titles(ComicModel::sortedForSearch(items)), titles(expected));
+    }
 }
 
 QTEST_MAIN(ComicModelTest)

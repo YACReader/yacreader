@@ -126,6 +126,8 @@ private:
     void setupReadingLists(QSqlDatabase &db);
     // the root of the section with its folders; the folders by id
     QHash<qulonglong, ListFolderItem *> setupListFolders(ListFolderKind kind, ListFolderItem *root, QSqlDatabase &db);
+    // after a load, each folder of a section once
+    static void sortByName(ListFolderItem *root, const QHash<qulonglong, ListFolderItem *> &folders);
     int addLabelIntoList(LabelItem *item);
     void reorderingChildren(QList<ReadingListItem *> children);
 

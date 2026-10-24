@@ -384,13 +384,15 @@ void GridContentModel::reconnectModels()
             const auto offset = visibleFolderCount();
             beginInsertRows({ }, offset + first, offset + last);
         });
-        sourceConnections << connect(comicModel, &QAbstractItemModel::rowsInserted, this, [this](const QModelIndex &parent) {
+        sourceConnections << connect(comicModel, &QAbstractItemModel::rowsInserted, this, [this](const QModelIndex &parent, int first) {
             if (parent.isValid())
                 return;
-            if (forwardsComicRowsDirectly())
+            if (forwardsComicRowsDirectly()) {
                 endInsertRows();
-            else
+                updateSourceIndexesFrom(first);
+            } else {
                 resetFromSource();
+            }
         });
         sourceConnections << connect(comicModel, &QAbstractItemModel::rowsAboutToBeRemoved, this, [this](const QModelIndex &parent, int first, int last) {
             if (parent.isValid())
@@ -400,13 +402,15 @@ void GridContentModel::reconnectModels()
             const auto offset = visibleFolderCount();
             beginRemoveRows({ }, offset + first, offset + last);
         });
-        sourceConnections << connect(comicModel, &QAbstractItemModel::rowsRemoved, this, [this](const QModelIndex &parent) {
+        sourceConnections << connect(comicModel, &QAbstractItemModel::rowsRemoved, this, [this](const QModelIndex &parent, int first) {
             if (parent.isValid())
                 return;
-            if (forwardsComicRowsDirectly())
+            if (forwardsComicRowsDirectly()) {
                 endRemoveRows();
-            else
+                updateSourceIndexesFrom(first);
+            } else {
                 resetFromSource();
+            }
         });
         sourceConnections << connect(comicModel, &QAbstractItemModel::rowsAboutToBeMoved, this, [this](const QModelIndex &sourceParent, int first, int last, const QModelIndex &destinationParent, int destination) {
             if (sourceParent.isValid() || destinationParent.isValid())
@@ -416,13 +420,15 @@ void GridContentModel::reconnectModels()
             const auto offset = visibleFolderCount();
             beginMoveRows({ }, offset + first, offset + last, { }, offset + destination);
         });
-        sourceConnections << connect(comicModel, &QAbstractItemModel::rowsMoved, this, [this](const QModelIndex &sourceParent, int, int, const QModelIndex &destinationParent) {
+        sourceConnections << connect(comicModel, &QAbstractItemModel::rowsMoved, this, [this](const QModelIndex &sourceParent, int first, int, const QModelIndex &destinationParent, int destination) {
             if (sourceParent.isValid() || destinationParent.isValid())
                 return;
-            if (forwardsComicRowsDirectly())
+            if (forwardsComicRowsDirectly()) {
                 endMoveRows();
-            else
+                updateSourceIndexesFrom(qMin(first, destination));
+            } else {
                 resetFromSource();
+            }
         });
         sourceConnections << connect(comicModel, &QAbstractItemModel::dataChanged, this, [this](const QModelIndex &topLeft, const QModelIndex &bottomRight) {
             if (topLeft.parent().isValid() || bottomRight.parent().isValid())
@@ -436,6 +442,15 @@ void GridContentModel::resetFromSource()
 {
     beginResetModel();
     endResetModel();
+}
+
+// the delegates keep the source row they were created with
+void GridContentModel::updateSourceIndexesFrom(int sourceRow)
+{
+    const auto first = viewRowForComicRow(sourceRow);
+    const auto last = rowCount() - 1;
+    if (first >= 0 && first <= last)
+        emit dataChanged(index(first), index(last), { SourceIndexRole });
 }
 
 int GridContentModel::sourceFolderCount() const

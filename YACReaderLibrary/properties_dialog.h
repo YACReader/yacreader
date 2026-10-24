@@ -224,7 +224,7 @@ public slots:
     void updateCoverBoxForSingleComic();
 
 signals:
-    void coverChangedSignal(ComicInfoId id);
-    void placeholderCoverChanged(PlaceholderId id, const std::optional<QString> &coverKey);
+    void coverChangedSignal(const QList<ComicInfoId> &ids);
+    void placeholderCoverChanged(const QHash<PlaceholderId, std::optional<QString>> &coverKeys);
 };
 #endif

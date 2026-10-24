@@ -4,10 +4,13 @@
 #include "reading_list.h"
 #include "smart_list.h"
 
+#include <QRandomGenerator>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QTest>
+
+#include <functional>
 
 class ListFolderTest : public QObject
 {
@@ -23,6 +26,8 @@ private slots:
     void removingAFolderRemovesEverythingInIt();
     void removingASmartListFolderRemovesItsSmartLists();
     void readingListCoversAreTheirFirstComic();
+    void readingListCoversAreTheOnesOfTheFirstQuery();
+    void helpersDoNotRunInsideATransactionOfTheCaller();
 
 private:
     bool exec(const QString &sql);
@@ -235,6 +240,91 @@ void ListFolderTest::readingListCoversAreTheirFirstComic()
     // the first comic of its child lists, in their order
     QCOMPARE(hashes->value(2), QString("h10"));
     QVERIFY(DBHelper::readingListCoverHashes({ }, db)->isEmpty());
+}
+
+void ListFolderTest::readingListCoversAreTheOnesOfTheFirstQuery()
+{
+    QVERIFY(exec("INSERT INTO placeholder (id, series) VALUES (1, 'Missing')"));
+    QSqlQuery insert(db);
+    for (int i = 1; i <= 50; i++)
+        QVERIFY(insert.exec(QString("INSERT INTO comic_info (id, hash) VALUES (%1, 'h%1')").arg(i)));
+
+    // top lists with child lists and lists inside child lists, equal orderings, missing entries, and empty lists
+    QRandomGenerator random(20261023);
+    QList<int> topLists;
+    QList<ReadingListId> allLists;
+    int listId = 0;
+    int entryOrdering = 0;
+    const std::function<void(QVariant, int)> addList = [&](QVariant parent, int depth) {
+        const auto id = ++listId;
+        allLists.append(ReadingListId(id));
+        if (parent.isNull())
+            topLists.append(id);
+        QVERIFY(insert.exec(QString("INSERT INTO reading_list (id, parentId, ordering, name) VALUES (%1, %2, %3, 'List')")
+                                    .arg(id)
+                                    .arg(parent.isNull() ? QString("NULL") : parent.toString())
+                                    .arg(random.bounded(3))));
+        const auto entries = random.bounded(4);
+        for (int e = 0; e < entries; e++) {
+            const auto missing = random.bounded(3) == 0;
+            QVERIFY(insert.exec(QString("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id, placeholder_id) VALUES (%1, %2, %3, %4)")
+                                        .arg(id)
+                                        .arg(random.bounded(2) == 0 ? entryOrdering++ : 0)
+                                        .arg(missing ? QString("NULL") : QString::number(random.bounded(50) + 1))
+                                        .arg(missing ? QString("1") : QString("NULL"))));
+        }
+        if (depth < 2) {
+            const auto children = random.bounded(3);
+            for (int c = 0; c < children; c++)
+                addList(id, depth + 1);
+        }
+    };
+    for (int l = 0; l < 60; l++)
+        addList(QVariant(), 0);
+
+    QStringList idTexts;
+    for (const auto &id : allLists)
+        idTexts.append(QString::number(id.value()));
+    QSqlQuery reference(db);
+    QVERIFY(reference.exec(QString("SELECT rl.id, (SELECT ci.hash FROM reading_list_entry e "
+                                   "INNER JOIN comic_info ci ON (ci.id = e.comic_info_id) "
+                                   "INNER JOIN reading_list l ON (l.id = e.reading_list_id) "
+                                   "WHERE l.id = rl.id OR l.parentId = rl.id "
+                                   "ORDER BY l.parentId IS NOT NULL, l.ordering, e.ordering, e.id LIMIT 1) "
+                                   "FROM reading_list rl WHERE rl.id IN (%1)")
+                                   .arg(idTexts.join(','))));
+    QHash<qulonglong, QString> expected;
+    while (reference.next()) {
+        if (!reference.value(1).isNull())
+            expected.insert(reference.value(0).toULongLong(), reference.value(1).toString());
+    }
+    QVERIFY(expected.size() > 20);
+    QVERIFY(expected.size() < allLists.size());
+
+    const auto hashes = DBHelper::readingListCoverHashes(allLists, db);
+    QVERIFY(hashes);
+    QCOMPARE(*hashes, expected);
+}
+
+void ListFolderTest::helpersDoNotRunInsideATransactionOfTheCaller()
+{
+    QVERIFY(exec("INSERT INTO reading_list_folder (id, parent_id, name, ordering) VALUES (1, NULL, 'Folder', 0)"));
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name) VALUES (1, NULL, 0, 'One'), (2, NULL, 1, 'Two')"));
+    QVERIFY(exec("INSERT INTO placeholder (id, series) VALUES (5, 'Missing')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, placeholder_id) VALUES (1, 1, 0, 5)"));
+
+    QVERIFY(db.transaction());
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name) VALUES (9, NULL, 2, 'Caller')"));
+
+    QVERIFY(!DBHelper::moveReadingListToFolder(ReadingListId(1), 1, db));
+    QVERIFY(!DBHelper::appendRowsToReadingList(ReadingListId(1), { ComicRowId(PlaceholderId(5)) }, db));
+    QVERIFY(!DBHelper::reorderReadingListEntries(ReadingListId(1), { ListItemId { ListKind::ReadingList, 1 } }, db));
+    QVERIFY(!DBHelper::removeListFromDB(2, db));
+
+    // the work of the caller was not committed by them
+    QVERIFY(db.rollback());
+    QCOMPARE(rows("SELECT id, folder_id FROM reading_list ORDER BY id"), QList<QVariantList>({ { 1, QVariant() }, { 2, QVariant() } }));
+    QCOMPARE(rows("SELECT COUNT(*) FROM reading_list_entry"), QList<QVariantList>({ { 1 } }));
 }
 
 QTEST_GUILESS_MAIN(ListFolderTest)

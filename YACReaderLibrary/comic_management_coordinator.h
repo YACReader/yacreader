@@ -103,7 +103,8 @@ private:
 
     // entryId: the reading list entry of the opened row, 0 if none
     void startReader(const ComicDB &comic, ComicModel::Mode mode, qulonglong entryId);
-    bool changePlaceholderCover(const Placeholder &placeholder, const QImage &cover);
+    // on success, adds the new cover key of the placeholder to `changedCovers`
+    bool changePlaceholderCover(const Placeholder &placeholder, const QImage &cover, QHash<PlaceholderId, std::optional<QString>> &changedCovers);
     void matchSelectedEntriesToLibraryComics(const QModelIndexList &selection);
     QProgressDialog *newProgressDialog(const QString &label, int maximum);
     void copyAndImportComics(const QList<QPair<QString, QString>> &comics,

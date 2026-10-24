@@ -155,9 +155,9 @@ public:
     void reload();
     void reload(const ComicDB &comic);
     void resetComicRating(const QModelIndex &mi);
-    void notifyCoverChange(ComicInfoId id);
-    // the rows of the placeholder show its new cover
-    void notifyPlaceholderCoverChange(PlaceholderId id, const std::optional<QString> &coverKey);
+    void notifyCoverChange(const QList<ComicInfoId> &ids);
+    // the rows of each placeholder show its new cover
+    void notifyPlaceholderCoverChange(const QHash<PlaceholderId, std::optional<QString>> &coverKeys);
 
     Q_INVOKABLE QUrl getCoverUrlPathForComicHash(const QString &hash) const;
 
@@ -205,6 +205,9 @@ public slots:
 protected:
 private:
     QHash<quint64, quint64> coverRevisions; // by comic_info id
+    // the cover of a row without a file may be gone; checked once per path, cleared when the rows or a cover change
+    bool coverFileExists(const QString &path) const;
+    mutable QHash<QString, bool> coverFileExistence;
 
     QList<ComicItem> createFolderModelData(unsigned long long parentLabel, const QString &databasePath) const;
     QList<ComicItem> createLabelModelData(unsigned long long parentLabel, const QString &databasePath) const;
@@ -216,7 +219,9 @@ private:
 
     void takeData(const QList<ComicItem> &data);
     void takeUpdatedData(const QList<ComicItem> &updatedData, std::function<bool(const ComicItem &, const ComicItem &)> comparator);
-    void updateRowsOf(ComicInfoId id, const std::function<void(ComicInfo &)> &change, int firstColumn, int lastColumn, const QList<int> &roles);
+    void updateRowsOf(const QSet<ComicInfoId> &ids, const std::function<void(ComicInfo &)> &change, int firstColumn, int lastColumn, const QList<int> &roles);
+    // one dataChanged for each run of consecutive rows; `rows` is ascending
+    void emitRowRuns(const QList<int> &rows, int firstColumn, int lastColumn, const QList<int> &roles);
     QList<ComicItem> _data;
 
     QString _databasePath;

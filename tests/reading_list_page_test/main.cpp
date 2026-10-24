@@ -16,6 +16,8 @@ private slots:
     void coversAreInsideThePage();
     void textIsEscaped();
     void coversAreScaledJpegs();
+    void coversAreEncodedOncePerFile();
+    void canceledCoversAreEmpty();
     void details_data();
     void details();
 };
@@ -93,6 +95,57 @@ void ReadingListPageTest::coversAreScaledJpegs()
     QCOMPARE(QImage::fromData(readingListPageCover(path)).size(), QSize(50, 75));
 
     QVERIFY(readingListPageCover(dir.filePath("none.jpg")).isEmpty());
+}
+
+void ReadingListPageTest::coversAreEncodedOncePerFile()
+{
+    QTemporaryDir dir;
+    QStringList files;
+    for (const auto color : { Qt::red, Qt::green, Qt::blue }) {
+        QImage image(200, 300, QImage::Format_RGB32);
+        image.fill(color);
+        files.append(dir.filePath(QString("cover-%1.png").arg(files.size())));
+        QVERIFY(image.save(files.last()));
+    }
+    const auto unreadable = dir.filePath("none.jpg");
+
+    // the rows of a list: repeated comics, rows without a cover file, and a file that cannot be read
+    ReadingListPageCovers covers({ files[0], files[1], QString(), files[0], unreadable, files[2], files[1], QString() });
+    QCOMPARE(covers.count(), 4);
+    auto future = covers.start();
+    future.waitForFinished();
+    QCOMPARE(future.resultCount(), 4);
+
+    for (const auto &file : files)
+        QCOMPARE(covers.cover(file), readingListPageCover(file));
+    QVERIFY(covers.cover(unreadable).isEmpty());
+    QVERIFY(covers.cover(QString()).isEmpty());
+}
+
+void ReadingListPageTest::canceledCoversAreEmpty()
+{
+    QTemporaryDir dir;
+    QImage image(400, 600, QImage::Format_RGB32);
+    image.fill(Qt::red);
+    QStringList paths;
+    for (int i = 0; i < 200; i++) {
+        paths.append(dir.filePath(QString("cover-%1.png").arg(i)));
+        QVERIFY(image.save(paths.last()));
+    }
+
+    ReadingListPageCovers covers(paths);
+    auto future = covers.start();
+    future.cancel();
+    future.waitForFinished();
+    QVERIFY(future.isCanceled());
+    QVERIFY(covers.cover(paths.first()).isEmpty());
+
+    // a page without cover files ends at once
+    ReadingListPageCovers none({ QString() });
+    QCOMPARE(none.count(), 0);
+    auto empty = none.start();
+    empty.waitForFinished();
+    QVERIFY(empty.isFinished());
 }
 
 void ReadingListPageTest::details_data()
