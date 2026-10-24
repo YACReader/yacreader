@@ -1336,8 +1336,7 @@ void MainWindowViewer::checkNewVersion()
 void MainWindowViewer::processReset()
 {
     disableActions();
-    if (!isClient || siblingComics.size() <= 1)
-        disablePreviousNextComicActions();
+    updatePrevNextActions();
 }
 
 void MainWindowViewer::setUpShortcutsManagement()
@@ -1516,6 +1515,11 @@ void MainWindowViewer::setUpShortcutsManagement()
 }
 
 void MainWindowViewer::doubleMangaPageSwitch()
+{
+    updatePrevNextActions();
+}
+
+void MainWindowViewer::updatePrevNextActions()
 {
     if (isClient) {
         updatePrevNextActions(currentSiblingIndex > 0, currentSiblingIndex >= 0 && currentSiblingIndex + 1 < siblingComics.size());

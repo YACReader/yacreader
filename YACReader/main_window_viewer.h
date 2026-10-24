@@ -207,6 +207,7 @@ protected:
     void closeEvent(QCloseEvent *event) override;
     void sendComic();
     void updatePrevNextActions(bool thereIsPrevious, bool thereIsNext);
+    void updatePrevNextActions();
     void afterLaunchTasks();
     void applyTheme(const Theme &theme) override;
 
