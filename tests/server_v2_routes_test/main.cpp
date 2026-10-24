@@ -1,23 +1,12 @@
-#include "data_base_management.h"
-#include "httplistener.h"
-#include "requestmapper.h"
-#include "static.h"
-#include "staticfilecontroller.h"
+#include "test_http_server.h"
 #include "yacreader_global.h"
-#include "yacreader_http_session_store.h"
 #include "yacreader_libraries.h"
 
 #include <QDir>
-#include <QEventLoop>
 #include <QFile>
 #include <QImage>
 #include <QJsonDocument>
 #include <QJsonObject>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include <QSettings>
-#include <QSqlQuery>
 #include <QStandardPaths>
 #include <QTemporaryDir>
 #include <QTest>
@@ -44,10 +33,7 @@ private:
     QString libraryPath;
     int libraryId = -1;
     QString libraryUuid;
-    std::unique_ptr<QSettings> listenerSettings;
-    std::unique_ptr<QSettings> docrootSettings;
-    std::unique_ptr<stefanfrings::HttpListener> listener;
-    QNetworkAccessManager network;
+    std::unique_ptr<TestHttpServer> server;
 };
 
 static const QString libraryName = "Server routes";
@@ -58,25 +44,13 @@ void ServerV2RoutesTest::initTestCase()
     root = std::make_unique<QTemporaryDir>();
     QVERIFY(root->isValid());
     createLibrary();
-
-    QVERIFY(QDir().mkpath(root->filePath("docroot")));
-    docrootSettings = std::make_unique<QSettings>(root->filePath("docroot.ini"), QSettings::IniFormat);
-    docrootSettings->setValue("path", root->filePath("docroot"));
-    Static::staticFileController = new stefanfrings::StaticFileController(docrootSettings.get(), this);
-    Static::yacreaderSessionStore = new YACReaderHttpSessionStore(this);
-
-    listenerSettings = std::make_unique<QSettings>(root->filePath("listener.ini"), QSettings::IniFormat);
-    listenerSettings->setValue("host", "127.0.0.1");
-    listenerSettings->setValue("port", 0);
-    listenerSettings->setValue("minThreads", 1);
-    listenerSettings->setValue("maxThreads", 4);
-    listener = std::make_unique<stefanfrings::HttpListener>(listenerSettings.get(), new RequestMapper(this), this);
-    QVERIFY(listener->isListening());
+    server = std::make_unique<TestHttpServer>(root->path());
+    QVERIFY(server->isListening());
 }
 
 void ServerV2RoutesTest::cleanupTestCase()
 {
-    listener.reset();
+    server.reset();
     YACReaderLibraries libraries;
     libraries.load();
     libraries.remove(libraryName);
@@ -86,18 +60,7 @@ void ServerV2RoutesTest::cleanupTestCase()
 
 bool ServerV2RoutesTest::exec(const QString &sql)
 {
-    QString name;
-    bool ok = false;
-    {
-        auto db = DataBaseManagement::loadDatabase(YACReader::LibraryPaths::libraryDataPath(libraryPath));
-        name = db.connectionName();
-        QSqlQuery query(db);
-        ok = query.exec(sql);
-        if (!ok)
-            qWarning() << sql;
-    }
-    QSqlDatabase::removeDatabase(name);
-    return ok;
+    return execInLibrary(libraryPath, sql);
 }
 
 void ServerV2RoutesTest::saveCover(const QString &path, const QSize &size)
@@ -113,22 +76,10 @@ void ServerV2RoutesTest::saveCover(const QString &path, const QSize &size)
 void ServerV2RoutesTest::createLibrary()
 {
     libraryPath = QDir::cleanPath(root->filePath("library"));
-    QVERIFY(QDir().mkpath(YACReader::LibraryPaths::libraryDataPath(libraryPath)));
-    QString name;
-    {
-        auto db = DataBaseManagement::createDatabase(YACReader::LibraryPaths::libraryDatabasePath(libraryPath));
-        name = db.connectionName();
-        db.close();
-    }
-    QSqlDatabase::removeDatabase(name);
-
+    libraryId = createTestLibrary(libraryName, libraryPath);
+    QVERIFY(libraryId >= 0);
     YACReaderLibraries libraries;
     libraries.load();
-    for (const auto &oldName : libraries.getNames())
-        libraries.remove(oldName);
-    libraries.addLibrary(libraryName, libraryPath);
-    QVERIFY(libraries.save());
-    libraryId = libraries.getId(libraryName);
     libraryUuid = libraries.getLibraryIdFromLegacyId(libraryId).toString();
 
     QVERIFY(exec("INSERT INTO folder (id, parentId, name, path, numChildren, firstChildHash, added, updated) VALUES "
@@ -181,28 +132,18 @@ void ServerV2RoutesTest::createLibrary()
 
 QJsonObject ServerV2RoutesTest::request(const QByteArray &method, const QString &path, const QByteArray &body)
 {
-    QNetworkRequest networkRequest(QUrl(QString("http://127.0.0.1:%1%2").arg(listener->serverPort()).arg(path)));
-    if (!body.isEmpty())
-        networkRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    auto reply = network.sendCustomRequest(networkRequest, method, body);
-    QEventLoop loop;
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    loop.exec();
-
-    QJsonObject answer;
-    answer["status"] = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
-    const auto contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
-    answer["content_type"] = contentType;
-    const auto data = reply->readAll();
+    const auto answer = server->request(method, path, body);
+    QJsonObject result;
+    result["status"] = answer.status;
+    result["content_type"] = answer.contentType;
     // the encoder can change between Qt versions, the image cannot
-    if (contentType == "image/jpeg" && answer["status"].toInt() == 200) {
-        const auto image = QImage::fromData(data, "JPG");
-        answer["body"] = QString("image %1x%2").arg(image.width()).arg(image.height());
+    if (answer.contentType == "image/jpeg" && answer.status == 200) {
+        const auto image = QImage::fromData(answer.body, "JPG");
+        result["body"] = QString("image %1x%2").arg(image.width()).arg(image.height());
     } else {
-        answer["body"] = QString::fromUtf8(data).replace(libraryUuid, "{library_uuid}");
+        result["body"] = QString::fromUtf8(answer.body).replace(libraryUuid, "{library_uuid}");
     }
-    reply->deleteLater();
-    return answer;
+    return result;
 }
 
 void ServerV2RoutesTest::answersDoNotChange()
