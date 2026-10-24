@@ -34,7 +34,7 @@ protected:
     bool _loaded;
 
     // open the comic at this point
-    int _firstPage;
+    int _firstPage = -1;
 
     bool _isPDF;
 
@@ -42,7 +42,7 @@ protected:
 
     bool _errorOpening;
 
-    void resolveStartPage();
+    void resolveFirstPage();
 
 public:
     static const QStringList imageExtensions;

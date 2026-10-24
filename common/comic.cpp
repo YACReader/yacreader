@@ -287,7 +287,7 @@ void Comic::invalidate()
     emit invalidated();
 }
 //-----------------------------------------------------------------------------
-void Comic::resolveStartPage()
+void Comic::resolveFirstPage()
 {
     if (_firstPage == -1) {
         _firstPage = bm->getLastPage();
@@ -425,10 +425,11 @@ bool FileComic::load(const QString &path, const ComicDB &comic)
     if (fi.exists()) {
         QList<int> bookmarkIndexes;
         bookmarkIndexes << comic.info.bookmark1 << comic.info.bookmark2 << comic.info.bookmark3;
-        if (bm->load(bookmarkIndexes, comic.info.currentPage - 1)) {
+        const int lastReadPage = std::max(comic.info.currentPage - 1, 0);
+        if (bm->load(bookmarkIndexes, lastReadPage)) {
             emit bookmarksUpdated();
         }
-        _firstPage = comic.info.currentPage - 1;
+        _firstPage = lastReadPage;
         _path = QDir::cleanPath(path);
         return true;
     } else {
@@ -668,7 +669,7 @@ void FileComic::process()
         _archiveIndexToPages[_pageArchiveIndexes.at(page)].append(page);
     }
 
-    resolveStartPage();
+    resolveFirstPage();
 
     _index = _firstPage;
     emit openAt(_index);
@@ -748,7 +749,7 @@ void FolderComic::process()
         moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
     } else {
-        resolveStartPage();
+        resolveFirstPage();
 
         _index = _firstPage;
 
@@ -830,10 +831,11 @@ bool PDFComic::load(const QString &path, const ComicDB &comic)
     if (fi.exists()) {
         QList<int> bookmarkIndexes;
         bookmarkIndexes << comic.info.bookmark1 << comic.info.bookmark2 << comic.info.bookmark3;
-        if (bm->load(bookmarkIndexes, comic.info.currentPage - 1)) {
+        const int lastReadPage = std::max(comic.info.currentPage - 1, 0);
+        if (bm->load(bookmarkIndexes, lastReadPage)) {
             emit bookmarksUpdated();
         }
-        _firstPage = comic.info.currentPage - 1;
+        _firstPage = lastReadPage;
         _path = QDir::cleanPath(path);
         return true;
     } else {
@@ -886,7 +888,7 @@ void PDFComic::process()
     _pages.resize(nPages);
     _loadedPages = QVector<bool>(nPages, false);
 
-    resolveStartPage();
+    resolveFirstPage();
 
     _index = _firstPage;
     emit openAt(_index);
