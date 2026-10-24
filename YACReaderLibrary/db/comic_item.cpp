@@ -161,6 +161,47 @@ QList<ComicItem> loadFolder(FolderId folderId, QSqlDatabase &db)
     return items;
 }
 
+QList<ComicItem> loadLabel(LabelId labelId, QSqlDatabase &db)
+{
+    QSqlQuery selectQuery(db);
+    selectQuery.setForwardOnly(true);
+    selectQuery.prepare(DBHelper::listEntriesQuery(ListKind::Label));
+    selectQuery.bindValue(":list_id", labelId.value());
+    selectQuery.exec();
+    return fromQuery(selectQuery, ListKind::Label);
+}
+
+QList<ComicItem> loadReadingList(ReadingListId readingListId, QSqlDatabase &db, bool *hasChildLists)
+{
+    QList<qulonglong> ids;
+    ids << readingListId.value();
+
+    QSqlQuery subfolders(db);
+    subfolders.prepare("SELECT id "
+                       "FROM reading_list "
+                       "WHERE parentId = :parentId "
+                       "ORDER BY ordering ASC");
+    subfolders.bindValue(":parentId", readingListId.value());
+    subfolders.exec();
+    while (subfolders.next())
+        ids << subfolders.record().value(0).toULongLong();
+
+    if (hasChildLists != nullptr)
+        *hasChildLists = ids.length() > 1;
+
+    QList<ComicItem> items;
+    QSqlQuery selectQuery(db);
+    selectQuery.setForwardOnly(true);
+    selectQuery.prepare(DBHelper::listEntriesQuery(ListKind::ReadingList));
+    for (const auto id : std::as_const(ids)) {
+        selectQuery.bindValue(":list_id", id);
+        selectQuery.exec();
+
+        items << fromQuery(selectQuery, ListKind::ReadingList);
+    }
+    return items;
+}
+
 bool folderLessThan(const ComicItem &c1, const ComicItem &c2)
 {
     return comicNumberLessThan(rowMetadata(c1).number, rowFileName(c1), rowMetadata(c2).number, rowFileName(c2));

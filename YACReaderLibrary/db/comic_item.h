@@ -61,6 +61,10 @@ QList<ComicItem> fromQuery(QSqlQuery &query);
 QList<ComicItem> fromQuery(QSqlQuery &query, ListKind listKind);
 // the comics and placeholders of a folder, in the folder order
 QList<ComicItem> loadFolder(FolderId folderId, QSqlDatabase &db);
+// the entries of a label, in their order
+QList<ComicItem> loadLabel(LabelId labelId, QSqlDatabase &db);
+// the entries of a reading list, then the entries of each of its child lists, in their order
+QList<ComicItem> loadReadingList(ReadingListId readingListId, QSqlDatabase &db, bool *hasChildLists = nullptr);
 
 bool folderLessThan(const ComicItem &c1, const ComicItem &c2);
 // search results and smart lists: each series stays together, in volume and number order
