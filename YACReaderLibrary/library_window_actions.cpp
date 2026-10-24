@@ -852,9 +852,10 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(const ComicModel &mod
     saveCoversToAction->setEnabled(anySupports(ComicAction::SaveCover));
     editSelectedComicsAction->setEnabled(anySupports(ComicAction::EditMetadata));
     asignOrderAction->setEnabled(anySupports(ComicAction::AssignNumbers));
-    setAsReadAction->setEnabled(anySupports(ComicAction::SetReadState));
-    setAsNonReadAction->setEnabled(anySupports(ComicAction::SetReadState));
-    resetComicRatingAction->setEnabled(anySupports(ComicAction::SetReadState));
+    const bool setReadState = anySupports(ComicAction::SetReadState);
+    setAsReadAction->setEnabled(setReadState);
+    setAsNonReadAction->setEnabled(setReadState);
+    resetComicRatingAction->setEnabled(setReadState);
     const bool setType = anySupports(ComicAction::SetType);
     setNormalAction->setEnabled(setType);
     setMangaAction->setEnabled(setType);
@@ -862,9 +863,10 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(const ComicModel &mod
     setWesternMangaAction->setEnabled(setType);
     setYonkomaAction->setEnabled(setType);
     deleteMetadataAction->setEnabled(anySupports(ComicAction::DeleteMetadata));
-    deleteComicsAction->setEnabled(anySupports(ComicAction::RemoveFromList) || anySupports(ComicAction::ChangeFile) || anySupports(ComicAction::RemoveFromFolder));
-    renameComicsFilesAction->setEnabled(anySupports(ComicAction::ChangeFile));
-    organizeComicsFilesAction->setEnabled(anySupports(ComicAction::ChangeFile));
+    const bool changeFile = anySupports(ComicAction::ChangeFile);
+    deleteComicsAction->setEnabled(anySupports(ComicAction::RemoveFromList) || changeFile || anySupports(ComicAction::RemoveFromFolder));
+    renameComicsFilesAction->setEnabled(changeFile);
+    organizeComicsFilesAction->setEnabled(changeFile);
     getInfoAction->setEnabled(anySupports(ComicAction::SearchComicVine));
     addToMenuAction->setEnabled(anySupports(ComicAction::AddToList));
     addToFavoritesAction->setEnabled(anySupports(ComicAction::AddToFavorites));

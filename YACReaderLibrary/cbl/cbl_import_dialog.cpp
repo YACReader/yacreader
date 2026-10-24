@@ -485,6 +485,7 @@ void CblImportDialog::showFile(const CblImportFile &loaded)
     file = std::make_unique<CblImportFile>(loaded);
     model->setWarningColor(warningColor());
     findPage->setWarningColor(warningColor());
+    nameConflictLabel->setStyleSheet(QStringLiteral("color: %1;").arg(warningColor().name()));
     findPage->setFolders(file->folders);
     model->setEntries(file->entries);
     filterEdit->clear();
@@ -652,7 +653,6 @@ void CblImportDialog::updateCounts()
 void CblImportDialog::updateNameConflict()
 {
     const bool exists = file && file->readingListNames.contains(nameEdit->text().trimmed(), Qt::CaseInsensitive);
-    nameConflictLabel->setStyleSheet(QStringLiteral("color: %1;").arg(warningColor().name()));
     nameConflictLabel->setVisible(exists);
 }
 
