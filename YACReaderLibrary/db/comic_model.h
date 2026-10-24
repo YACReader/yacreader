@@ -184,12 +184,6 @@ public:
 
     QHash<int, QByteArray> roleNames() const override;
 
-    static QList<ComicItem> createItems(QSqlQuery &query);
-    static QList<ComicItem> createItems(QSqlQuery &query, ListKind listKind);
-    static QList<ComicItem> sortedForFolder(QList<ComicItem> items);
-    // by series, volume, number, file name, and path, in natural order
-    static QList<ComicItem> sortedForSearch(QList<ComicItem> items);
-
 public slots:
     void remove(int row);
     void startTransaction();

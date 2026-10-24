@@ -68,6 +68,8 @@ add_library(db_helper STATIC
     db/list_entry.cpp
     db/placeholder.h
     db/placeholder.cpp
+    db/comic_item.h
+    db/comic_item.cpp
     db/smart_list.h
     db/smart_list.cpp
     db/list_folder.h
@@ -198,7 +200,6 @@ qt_add_executable(YACReaderLibrary WIN32
     db/folder_model.cpp
     db/comic_model.h
     db/comic_model.cpp
-    db/comic_item.h
     db/comic_record.h
     db/reading_list_model.h
     db/reading_list_model.cpp

@@ -21,7 +21,6 @@
 #include <QtGui>
 
 #include <algorithm>
-#include <numeric>
 #include <optional>
 #include <utility>
 
@@ -33,19 +32,6 @@
 #include "QsLog.h"
 
 namespace {
-
-// the descriptive metadata, which every case has
-const DescriptiveComicMetadata &rowMetadata(const ComicItem &item)
-{
-    return std::visit(overloaded {
-                              [](const ComicItemCase::Comic &row) -> const DescriptiveComicMetadata & { return row.comic.info; },
-                              [](const ComicItemCase::ComicInList &row) -> const DescriptiveComicMetadata & { return row.comic.info; },
-                              [](const ComicItemCase::DeletedComicInList &row) -> const DescriptiveComicMetadata & { return row.info; },
-                              [](const ComicItemCase::PlaceholderInList &row) -> const DescriptiveComicMetadata & { return row.placeholder; },
-                              [](const ComicItemCase::PlaceholderInFolder &row) -> const DescriptiveComicMetadata & { return row.placeholder; },
-                      },
-                      item);
-}
 
 // nullptr for a placeholder, which has no comic_info
 const ComicInfo *rowInfo(const ComicItem &item)
@@ -79,19 +65,6 @@ Placeholder *rowPlaceholder(ComicItem &item)
     return const_cast<Placeholder *>(rowPlaceholder(std::as_const(item)));
 }
 
-// the comic of a row with a file
-const ComicDB *rowComic(const ComicItem &item)
-{
-    return std::visit(overloaded {
-                              [](const ComicItemCase::Comic &row) -> const ComicDB * { return &row.comic; },
-                              [](const ComicItemCase::ComicInList &row) -> const ComicDB * { return &row.comic; },
-                              [](const ComicItemCase::DeletedComicInList &) -> const ComicDB * { return nullptr; },
-                              [](const ComicItemCase::PlaceholderInList &) -> const ComicDB * { return nullptr; },
-                              [](const ComicItemCase::PlaceholderInFolder &) -> const ComicDB * { return nullptr; },
-                      },
-                      item);
-}
-
 const ListEntry *rowEntry(const ComicItem &item)
 {
     return std::visit(overloaded {
@@ -100,19 +73,6 @@ const ListEntry *rowEntry(const ComicItem &item)
                               [](const ComicItemCase::DeletedComicInList &row) -> const ListEntry * { return &row.entry; },
                               [](const ComicItemCase::PlaceholderInList &row) -> const ListEntry * { return &row.entry; },
                               [](const ComicItemCase::PlaceholderInFolder &) -> const ListEntry * { return nullptr; },
-                      },
-                      item);
-}
-
-// the file name of the row, or the last known one of a deleted comic; a placeholder has none
-QString rowFileName(const ComicItem &item)
-{
-    return std::visit(overloaded {
-                              [](const ComicItemCase::Comic &row) { return row.comic.file.fileName; },
-                              [](const ComicItemCase::ComicInList &row) { return row.comic.file.fileName; },
-                              [](const ComicItemCase::DeletedComicInList &row) { return row.entry.lastKnownFile ? row.entry.lastKnownFile->name : QString(); },
-                              [](const ComicItemCase::PlaceholderInList &) { return QString(); },
-                              [](const ComicItemCase::PlaceholderInFolder &) { return QString(); },
                       },
                       item);
 }
@@ -413,74 +373,6 @@ QVariant columnValue(const ComicItem &item, int column)
         return info.lastTimeOpened;
     }
     return QVariant();
-}
-
-bool defaultFolderContentSortFunction(const ComicItem &c1, const ComicItem &c2)
-{
-    return comicNumberLessThan(rowMetadata(c1).number, rowFileName(c1), rowMetadata(c2).number, rowFileName(c2));
-}
-
-int sign(int order)
-{
-    return order < 0 ? -1 : (order > 0 ? 1 : 0);
-}
-
-// -1, 0, or 1 in natural order without case; an empty text is first when `emptyFirst`, else last
-int compareNatural(const QString &a, const QString &b, bool emptyFirst)
-{
-    if (a.isEmpty() != b.isEmpty())
-        return a.isEmpty() == emptyFirst ? -1 : 1;
-    return sign(naturalCompare(a, b, Qt::CaseInsensitive));
-}
-
-// the order of comicNumberLessThan for two numbers without file names: numbered first
-int compareNumbers(const std::optional<QString> &a, const std::optional<QString> &b)
-{
-    if (a && b)
-        return sign(naturalCompare(*a, *b, Qt::CaseInsensitive));
-    if (a.has_value() == b.has_value())
-        return 0;
-    return a ? -1 : 1;
-}
-
-struct SearchSortKey {
-    QString series;
-    QString volume;
-    std::optional<QString> number;
-    QString fileName;
-    QString path;
-};
-
-SearchSortKey searchSortKey(const ComicItem &item)
-{
-    const auto &metadata = rowMetadata(item);
-    const auto *comic = rowComic(item);
-    return {
-        metadata.series.toString().trimmed(),
-        metadata.volume.toString().trimmed(),
-        metadata.number.isNull() ? std::nullopt : std::optional(metadata.number.toString()),
-        rowFileName(item),
-        comic != nullptr ? comic->file.path : QString(),
-    };
-}
-
-// search results and smart lists: each series stays together, in volume and number order
-int compareSearchSortKeys(const SearchSortKey &a, const SearchSortKey &b)
-{
-    if (const auto order = compareNatural(a.series, b.series, false); order != 0)
-        return order;
-    if (const auto order = compareNatural(a.volume, b.volume, true); order != 0)
-        return order;
-    if (const auto order = compareNumbers(a.number, b.number); order != 0)
-        return order;
-    if (const auto order = compareNatural(a.fileName, b.fileName, true); order != 0)
-        return order;
-    return compareNatural(a.path, b.path, true);
-}
-
-bool searchResultLessThan(const ComicItem &c1, const ComicItem &c2)
-{
-    return compareSearchSortKeys(searchSortKey(c1), searchSortKey(c2)) < 0;
 }
 
 }
@@ -1008,20 +900,7 @@ QList<ComicItem> ComicModel::createFolderModelData(unsigned long long folderId, 
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
-        selectQuery.setForwardOnly(true);
-        selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
-                                                                         "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                                                         "WHERE c.parentId = :parentId");
-        selectQuery.bindValue(":parentId", folderId);
-        selectQuery.exec();
-
-        modelData = createItems(selectQuery);
-        if (db.isOpen()) {
-            for (auto &placeholder : DBHelper::loadFolderPlaceholders(FolderId(folderId), db).value_or(QList<Placeholder>()))
-                modelData.append(ComicItemCase::PlaceholderInFolder { std::move(placeholder), FolderId(folderId) });
-        }
-        std::sort(modelData.begin(), modelData.end(), defaultFolderContentSortFunction);
+        modelData = ComicItems::loadFolder(FolderId(folderId), db);
 
         connectionName = db.connectionName();
     }
@@ -1058,7 +937,7 @@ QList<ComicItem> ComicModel::createLabelModelData(unsigned long long parentLabel
         selectQuery.prepare(DBHelper::listEntriesQuery(ListKind::Label));
         selectQuery.bindValue(":list_id", parentLabel);
         selectQuery.exec();
-        modelData = createItems(selectQuery, ListKind::Label);
+        modelData = ComicItems::fromQuery(selectQuery, ListKind::Label);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1111,7 +990,7 @@ QList<ComicItem> ComicModel::createReadingListData(unsigned long long parentRead
             selectQuery.bindValue(":list_id", id);
             selectQuery.exec();
 
-            modelData << createItems(selectQuery, ListKind::ReadingList);
+            modelData << ComicItems::fromQuery(selectQuery, ListKind::ReadingList);
         }
         connectionName = db.connectionName();
     }
@@ -1146,7 +1025,7 @@ QList<ComicItem> ComicModel::createSmartListModelData(unsigned long long smartLi
         if (const auto list = DBHelper::loadSmartList(SmartListId(smartListId), db)) {
             try {
                 auto query = allComicsSearchQuery(db, list->query);
-                modelData = sortedForSearch(createItems(query));
+                modelData = ComicItems::sortedForSearch(ComicItems::fromQuery(query));
             } catch (const std::exception &) {
             }
         }
@@ -1189,7 +1068,7 @@ QList<ComicItem> ComicModel::createFavoritesModelData(const QString &databasePat
                                                                          "ORDER BY cdrl.ordering");
         selectQuery.bindValue(":parentDefaultListId", 1);
         selectQuery.exec();
-        modelData = createItems(selectQuery);
+        modelData = ComicItems::fromQuery(selectQuery);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1228,7 +1107,7 @@ QList<ComicItem> ComicModel::createReadingModelData(const QString &databasePath)
                                                                          "ORDER BY ci.lastTimeOpened DESC");
         selectQuery.exec();
 
-        modelData = createItems(selectQuery);
+        modelData = ComicItems::fromQuery(selectQuery);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1268,7 +1147,7 @@ QList<ComicItem> ComicModel::createRecentModelData(const QString &databasePath) 
         selectQuery.bindValue(":limit", QDateTime::currentDateTime().addDays(-recentDays).toSecsSinceEpoch());
         selectQuery.exec();
 
-        modelData = createItems(selectQuery);
+        modelData = ComicItems::fromQuery(selectQuery);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1315,62 +1194,6 @@ QString ComicModel::getComicPath(QModelIndex mi)
         if (const auto *comic = rowComic(_data.at(mi.row())))
             return comic->file.path;
     return "";
-}
-
-QList<ComicItem> ComicModel::createItems(QSqlQuery &query)
-{
-    QList<ComicItem> items;
-    const auto indexes = ComicDB::columnIndexes(query.record(), "c", "ci");
-    while (query.next()) {
-        items.append(ComicItemCase::Comic { ComicDB::fromQuery(query, indexes) });
-    }
-    return items;
-}
-
-// the sorting of lists is done in the sql query
-QList<ComicItem> ComicModel::createItems(QSqlQuery &query, ListKind listKind)
-{
-    QList<ComicItem> items;
-    const auto record = query.record();
-    const auto indexes = ComicDB::columnIndexes(record, "c", "ci");
-    const auto entryIndexes = ListEntry::columnIndexes(record, "e", listKind);
-    const auto placeholderIndexes = Placeholder::columnIndexes(record, "p");
-    const auto fileId = indexes.file.first();
-    const auto placeholderId = placeholderIndexes.first();
-    while (query.next()) {
-        auto entry = ListEntry::fromQuery(query, entryIndexes, listKind);
-        if (!query.value(placeholderId).isNull())
-            items.append(ComicItemCase::PlaceholderInList { Placeholder::fromQuery(query, placeholderIndexes), std::move(entry) });
-        else if (query.value(fileId).isNull())
-            items.append(ComicItemCase::DeletedComicInList { ComicInfo::fromQuery(query, indexes.info), std::move(entry) });
-        else
-            items.append(ComicItemCase::ComicInList { ComicDB::fromQuery(query, indexes), std::move(entry) });
-    }
-    return items;
-}
-
-QList<ComicItem> ComicModel::sortedForFolder(QList<ComicItem> items)
-{
-    std::sort(items.begin(), items.end(), defaultFolderContentSortFunction);
-    return items;
-}
-
-QList<ComicItem> ComicModel::sortedForSearch(QList<ComicItem> items)
-{
-    QList<SearchSortKey> keys;
-    keys.reserve(items.size());
-    for (const auto &item : std::as_const(items))
-        keys.append(searchSortKey(item));
-
-    QList<qsizetype> order(items.size());
-    std::iota(order.begin(), order.end(), 0);
-    std::stable_sort(order.begin(), order.end(), [&keys](qsizetype a, qsizetype b) { return compareSearchSortKeys(keys.at(a), keys.at(b)) < 0; });
-
-    QList<ComicItem> sorted;
-    sorted.reserve(items.size());
-    for (const auto row : std::as_const(order))
-        sorted.append(std::move(items[row]));
-    return sorted;
 }
 
 void ComicModel::takeData(const QList<ComicItem> &data)
@@ -1834,7 +1657,7 @@ void ComicModel::reload()
 {
     switch (mode) {
     case Folder:
-        takeUpdatedData(createFolderModelData(sourceId, _databasePath), defaultFolderContentSortFunction);
+        takeUpdatedData(createFolderModelData(sourceId, _databasePath), ComicItems::folderLessThan);
         break;
     case Favorites:
         setupFavoritesModelData(_databasePath); // TODO we need a comparator
@@ -1859,7 +1682,7 @@ void ComicModel::reload()
         // TODO: reload search results, we don't have a way to recreate the query in this class
         break;
     case SmartList:
-        takeUpdatedData(createSmartListModelData(sourceId, _databasePath), searchResultLessThan);
+        takeUpdatedData(createSmartListModelData(sourceId, _databasePath), ComicItems::searchLessThan);
         break;
     }
 }

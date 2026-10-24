@@ -688,7 +688,7 @@ void ComicModelTest::loadSource(ComicModel &model, const QString &source)
             auto db = DataBaseManagement::loadDatabase(dataPath);
             name = db.connectionName();
             auto query = comicsSearchQuery(db, "Title");
-            items = ComicModel::sortedForSearch(ComicModel::createItems(query));
+            items = ComicItems::sortedForSearch(ComicItems::fromQuery(query));
         }
         QSqlDatabase::removeDatabase(name);
         model.setModelData(new QList<ComicItem>(items), dataPath);
@@ -1187,7 +1187,7 @@ QList<qulonglong> ComicModelTest::searchComicInfoIds(const QString &text)
         auto db = DataBaseManagement::loadDatabase(dataPath);
         name = db.connectionName();
         auto query = comicsSearchQuery(db, text);
-        items = ComicModel::sortedForSearch(ComicModel::createItems(query));
+        items = ComicItems::sortedForSearch(ComicItems::fromQuery(query));
     }
     QSqlDatabase::removeDatabase(name);
 
@@ -1488,7 +1488,7 @@ void ComicModelTest::searchOrderIsTheOrderOfTheFirstComparison()
         std::stable_sort(expected.begin(), expected.end(), [&fields, &titles](const ComicItem &a, const ComicItem &b) {
             return referenceLessThan(fields.value(titles({ a }).first()), fields.value(titles({ b }).first()));
         });
-        QCOMPARE(titles(ComicModel::sortedForSearch(items)), titles(expected));
+        QCOMPARE(titles(ComicItems::sortedForSearch(items)), titles(expected));
     }
 }
 
