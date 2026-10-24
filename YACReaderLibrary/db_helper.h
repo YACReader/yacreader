@@ -177,6 +177,8 @@ public:
     static bool moveEntriesToComicInfo(ComicInfoId oldComicInfoId, ComicInfoId newComicInfoId, QSqlDatabase &db);
 
     static QList<Folder> getFoldersFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
+    // in the order of the folders tree
+    static std::optional<QList<Folder>> loadSubfolders(FolderId parentId, QSqlDatabase &db);
     static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db);
     static QList<ComicDB> getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);
     static QList<Label> getLabels(qulonglong libraryId);

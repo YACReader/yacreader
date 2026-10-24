@@ -2212,6 +2212,24 @@ QList<Folder> DBHelper::getFoldersFromParent(qulonglong parentId, QSqlDatabase &
     return list;
 }
 
+std::optional<QList<Folder>> DBHelper::loadSubfolders(FolderId parentId, QSqlDatabase &db)
+{
+    QSqlQuery selectQuery(db);
+    selectQuery.setForwardOnly(true);
+    selectQuery.prepare("SELECT " + TableProjection::selectList("f", Folder::columns()) + " FROM folder f WHERE f.parentId = :parentId AND f.id <> 1 ORDER BY f.name");
+    selectQuery.bindValue(":parentId", parentId.value());
+    if (!selectQuery.exec())
+        return std::nullopt;
+
+    QList<Folder> folders;
+    const auto indexes = Folder::columnIndexes(selectQuery.record(), "f");
+    while (selectQuery.next())
+        folders.append(Folder::fromQuery(selectQuery, indexes));
+    // FolderItem::appendChild inserts each child by name in the same way
+    std::stable_sort(folders.begin(), folders.end(), [](const Folder &a, const Folder &b) { return naturalSortLessThanCI(a.name, b.name); });
+    return folders;
+}
+
 QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db)
 {
     QList<ComicDB> list;

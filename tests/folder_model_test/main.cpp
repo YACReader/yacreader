@@ -7,6 +7,8 @@
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
+#include <QHash>
+#include <QRandomGenerator>
 #include <QSignalSpy>
 #include <QSqlDatabase>
 #include <QSqlError>
@@ -31,6 +33,7 @@ private slots:
     void addedFolderStartsEmpty();
     void nullNumberOfChildrenIsZero();
     void deleteFolderDeletesItsUnusedMissingComics();
+    void subfoldersHaveTheOrderOfTheFoldersTree();
 
 private:
     std::unique_ptr<QTemporaryDir> root;
@@ -201,6 +204,49 @@ void FolderModelTest::nullNumberOfChildrenIsZero()
     model.setupModelData(dataPath);
     QCOMPARE(model.getFolder(indexOf(model, 4)).numChildren, 0);
     QCOMPARE(model.getFolder(indexOf(model, 2)).numChildren, 1);
+}
+
+// the server sends the subfolders of a folder in the order of the desktop tree
+void FolderModelTest::subfoldersHaveTheOrderOfTheFoldersTree()
+{
+    QVERIFY(exec("DELETE FROM folder WHERE id <> 1"));
+    const QStringList names = { "Batman", "batman", "BATMAN", "Vol 2", "Vol 10", "vol 2", "Été", "ete", "X", "x-men", "X-Men", "10", "9" };
+    QRandomGenerator random(20261024);
+    // as the scanner writes them: a parent has a lower id than its folders, and the names in one folder are different
+    QList<int> added = { 1 };
+    QHash<int, QStringList> namesIn;
+    for (int id = 2; id <= 120; id++) {
+        const auto parent = added.at(random.bounded(int(added.size())));
+        auto &used = namesIn[parent];
+        auto name = names.at(random.bounded(int(names.size())));
+        if (used.contains(name))
+            name += QString(" %1").arg(id);
+        used.append(name);
+        QVERIFY(exec(QString("INSERT INTO folder (id, parentId, name, path) VALUES (%1, %2, '%3', '/%1')").arg(id).arg(parent).arg(name)));
+        added.append(id);
+    }
+
+    FolderModel model;
+    model.setupModelData(dataPath);
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::loadDatabase(dataPath);
+        connectionName = db.connectionName();
+        for (const auto parent : std::as_const(added)) {
+            const auto parentIndex = parent == 1 ? QModelIndex() : indexOf(model, parent);
+            QList<qulonglong> tree;
+            for (int row = 0; row < model.rowCount(parentIndex); row++)
+                tree.append(model.data(model.index(row, 0, parentIndex), FolderModel::IdRole).toULongLong());
+
+            const auto subfolders = DBHelper::loadSubfolders(FolderId(parent), db);
+            QVERIFY(subfolders);
+            QList<qulonglong> loaded;
+            for (const auto &folder : *subfolders)
+                loaded.append(folder.id.value());
+            QCOMPARE(loaded, tree);
+        }
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 QTEST_MAIN(FolderModelTest)

@@ -1,0 +1,33 @@
+#include "v3_response.h"
+
+#include <QJsonDocument>
+
+using stefanfrings::HttpResponse;
+
+namespace V3Response {
+
+void json(HttpResponse &response, const QJsonArray &items)
+{
+    response.setHeader("Content-Type", "application/json");
+    response.write(QJsonDocument(items).toJson(QJsonDocument::Compact), true);
+}
+
+void notFound(HttpResponse &response)
+{
+    response.setStatus(404, "not found");
+    response.write("404 not found", true);
+}
+
+void methodNotAllowed(HttpResponse &response)
+{
+    response.setStatus(405, "Method Not Allowed");
+    response.write("405 method not allowed", true);
+}
+
+void serverError(HttpResponse &response)
+{
+    response.setStatus(500, "Internal Server Error");
+    response.write("500 internal server error", true);
+}
+
+}

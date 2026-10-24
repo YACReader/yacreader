@@ -2,6 +2,7 @@
 #define YACREADERSERVERDATAHELPER_H
 
 #include "comic_db.h"
+#include "comic_item.h"
 #include "folder.h"
 #include "reading_list.h"
 
@@ -20,6 +21,11 @@ public:
     static QJsonObject fullComicToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicDB &comic);
     static QJsonObject readingListToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ReadingList &readingList);
     static QJsonObject labelToJSON(const qulonglong libraryId, const QUuid libraryUuid, const Label &label);
+
+    static QJsonObject deletedComicToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicInfo &info);
+    static QJsonObject placeholderToJSON(const qulonglong libraryId, const QUuid libraryUuid, const Placeholder &placeholder);
+    // v3 content: comics, deleted comics, and placeholders, with their entry in lists
+    static QJsonObject comicItemToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicItem &item);
 
     // v2 clients send only the comic id, so a repeated comic is navigated at its first occurrence
     static QList<ComicDB> firstOccurrences(const QList<ComicDB> &comics);

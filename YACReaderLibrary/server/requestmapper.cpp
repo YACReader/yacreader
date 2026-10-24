@@ -24,6 +24,8 @@
 #include "controllers/v2/tagscontroller_v2.h"
 #include "controllers/v2/updatecomiccontroller_v2.h"
 #include "controllers/v2/updatelibrariescontroller_v2.h"
+#include "controllers/v3/foldercontentcontroller_v3.h"
+#include "controllers/v3/v3_response.h"
 #include "controllers/versioncontroller.h"
 #include "controllers/webui/webuicontroller.h"
 #include "db_helper.h"
@@ -33,6 +35,9 @@
 #include "yacreader_libraries.h"
 
 #include <QRegExp>
+
+#include <memory>
+#include <optional>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpRequestHandler;
@@ -223,16 +228,23 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     const QByteArray path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 
     QRegExp serverVersion("/v3/version/?");
+    QRegExp folderContent("/v3/library/([0-9]+)/folder/([0-9]+)/content/?");
 
     loadSession(request, response);
 
-    if (!serverVersion.exactMatch(path)) {
-        response.setStatus(404, "not found");
-        response.write("404 not found", true);
-    } else if (request.getMethod() != "GET") {
-        response.setStatus(405, "Method Not Allowed");
-        response.write("405 method not allowed", true);
-    } else {
-        VersionController(SERVER_V3_VERSION_NUMBER).service(request, response);
+    std::unique_ptr<HttpRequestHandler> controller;
+    std::optional<int> libraryId;
+    if (serverVersion.exactMatch(path)) {
+        controller = std::make_unique<VersionController>(SERVER_V3_VERSION_NUMBER);
+    } else if (folderContent.exactMatch(path)) {
+        libraryId = folderContent.cap(1).toInt();
+        controller = std::make_unique<FolderContentControllerV3>(*libraryId, FolderId(folderContent.cap(2).toULongLong()));
     }
+
+    if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId)))
+        V3Response::notFound(response);
+    else if (request.getMethod() != "GET")
+        V3Response::methodNotAllowed(response);
+    else
+        controller->service(request, response);
 }

@@ -1,5 +1,8 @@
 #include "yacreader_server_data_helper.h"
 
+#include "overloaded.h"
+#include "yacreader_global.h"
+
 void variantToJson(const QString &name, QMetaType::Type type, const QVariant &value, QJsonObject &json)
 {
     if (value.isNull() || !value.isValid()) {
@@ -217,6 +220,100 @@ QJsonObject YACReaderServerDataHelper::labelToJSON(const qulonglong libraryId, c
     // json["num_children"] = label.getNumChildren();
 
     return json;
+}
+
+QJsonObject YACReaderServerDataHelper::deletedComicToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicInfo &info)
+{
+    QJsonObject json;
+
+    json["type"] = "deleted_comic";
+    json["comic_info_id"] = QString::number(info.id.value());
+    json["library_id"] = QString::number(libraryId);
+    if (!libraryUuid.isNull()) {
+        json["library_uuid"] = libraryUuid.toString();
+    }
+    json["hash"] = info.hash;
+
+    json["current_page"] = info.currentPage;
+    json["num_pages"] = info.numPages.toInt();
+    json["read"] = info.read;
+    json["has_been_opened"] = info.hasBeenOpened;
+    variantToJson("last_time_opened", QMetaType::LongLong, info.lastTimeOpened, json);
+    json["file_type"] = info.type.toInt();
+    json["cover_size_ratio"] = info.coverSizeRatio.toFloat();
+
+    variantToJson("title", QMetaType::QString, info.title, json);
+    variantToJson("series", QMetaType::QString, info.series, json);
+    variantToJson("volume", QMetaType::QString, info.volume, json);
+    variantToJson("universal_number", QMetaType::QString, info.number, json);
+
+    return json;
+}
+
+QJsonObject YACReaderServerDataHelper::placeholderToJSON(const qulonglong libraryId, const QUuid libraryUuid, const Placeholder &placeholder)
+{
+    QJsonObject json;
+
+    json["type"] = "placeholder";
+    json["placeholder_id"] = QString::number(placeholder.id.value());
+    json["library_id"] = QString::number(libraryId);
+    if (!libraryUuid.isNull()) {
+        json["library_uuid"] = libraryUuid.toString();
+    }
+
+    variantToJson("title", QMetaType::QString, placeholder.title, json);
+    variantToJson("series", QMetaType::QString, placeholder.series, json);
+    variantToJson("volume", QMetaType::QString, placeholder.volume, json);
+    variantToJson("universal_number", QMetaType::QString, placeholder.number, json);
+    // a path under the covers folder, as the custom_image of a folder
+    if (placeholder.coverKey) {
+        json["cover"] = "/placeholders/" + YACReader::LibraryPaths::coverFileName(*placeholder.coverKey);
+    }
+
+    return json;
+}
+
+namespace {
+
+void addEntry(const ListEntry &entry, QJsonObject &json)
+{
+    json["entry_id"] = QString::number(entry.id.id);
+    if (entry.id.listKind == ListKind::ReadingList) {
+        json["reading_list_id"] = QString::number(entry.listId);
+    }
+}
+
+}
+
+QJsonObject YACReaderServerDataHelper::comicItemToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicItem &item)
+{
+    return std::visit(overloaded {
+                              [&](const ComicItemCase::Comic &row) { return comicToJSON(libraryId, libraryUuid, row.comic); },
+                              [&](const ComicItemCase::ComicInList &row) {
+                                  auto json = comicToJSON(libraryId, libraryUuid, row.comic);
+                                  addEntry(row.entry, json);
+                                  return json;
+                              },
+                              [&](const ComicItemCase::DeletedComicInList &row) {
+                                  auto json = deletedComicToJSON(libraryId, libraryUuid, row.info);
+                                  addEntry(row.entry, json);
+                                  if (row.entry.lastKnownFile) {
+                                      json["last_known_name"] = row.entry.lastKnownFile->name;
+                                  }
+                                  return json;
+                              },
+                              [&](const ComicItemCase::PlaceholderInList &row) {
+                                  auto json = placeholderToJSON(libraryId, libraryUuid, row.placeholder);
+                                  addEntry(row.entry, json);
+                                  return json;
+                              },
+                              [&](const ComicItemCase::PlaceholderInFolder &row) {
+                                  auto json = placeholderToJSON(libraryId, libraryUuid, row.placeholder);
+                                  json["parent_id"] = QString::number(row.folderId.value());
+                                  return json;
+                              },
+                      },
+                      item);
 }
 
 YACReaderServerDataHelper::YACReaderServerDataHelper() { }

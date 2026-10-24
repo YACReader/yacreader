@@ -63,6 +63,10 @@ add_library(server STATIC
     controllers/v2/searchcontroller_v2.cpp
     controllers/v2/itemupdatecontroller_v2.h
     controllers/v2/itemupdatecontroller_v2.cpp
+    controllers/v3/v3_response.h
+    controllers/v3/v3_response.cpp
+    controllers/v3/foldercontentcontroller_v3.h
+    controllers/v3/foldercontentcontroller_v3.cpp
     controllers/webui/webuicontroller.h
     controllers/webui/webuicontroller.cpp
 )
@@ -70,6 +74,7 @@ target_include_directories(server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers/v2
+    ${CMAKE_CURRENT_SOURCE_DIR}/controllers/v3
 )
 yacreader_apply_build_options(server)
 target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.3" SERVER_V3_VERSION_NUMBER="3.0")
