@@ -244,9 +244,19 @@ std::optional<QStringList> deleteUnusedPlaceholders(const QSet<qulonglong> &plac
 }
 
 // runs `removal` in a transaction and then deletes the placeholders of `placeholderIds` that nothing uses any more
+// inside a transaction of the caller the BEGIN fails, and the commit here would commit the caller's work early
+bool beginTransaction(QSqlDatabase &db)
+{
+    if (db.transaction())
+        return true;
+    QLOG_ERROR() << "Unable to begin a transaction:" << db.lastError().text();
+    return false;
+}
+
 std::optional<QStringList> removeWithPlaceholders(QSqlQuery &placeholderIds, const std::function<bool()> &removal, QSqlDatabase &db)
 {
-    db.transaction();
+    if (!beginTransaction(db))
+        return std::nullopt;
 
     QSet<qulonglong> ids;
     if (!placeholderIds.exec()) {
@@ -315,7 +325,8 @@ bool reorderEntries(const EntryTable &entries, qulonglong parentId, const QList<
         return false;
     }
 
-    db.transaction();
+    if (!beginTransaction(db))
+        return false;
 
     QSqlQuery count(db);
     count.prepare(QString("SELECT COUNT(*) FROM %1 WHERE %2 = :parent_id").arg(entries.table, entries.parentColumn));
@@ -389,7 +400,8 @@ bool appendRows(const EntryTable &entries, qulonglong parentId, const QList<Comi
         return statement;
     };
 
-    db.transaction();
+    if (!beginTransaction(db))
+        return false;
 
     QSqlQuery fromComic(db);
     fromComic.prepare(insert("SELECT comicInfoId AS comic_info_id, NULL AS placeholder_id FROM comic WHERE id = :row_id"));
@@ -718,7 +730,8 @@ bool moveListToFolder(ListFolderKind kind, qulonglong listId, const std::optiona
     const QString topLevelOnly = kind == ListFolderKind::ReadingList ? " AND parentId IS NULL" : "";
     const QVariant folder = folderId ? QVariant(*folderId) : QVariant();
 
-    db.transaction();
+    if (!beginTransaction(db))
+        return false;
     QSqlQuery list(db);
     list.prepare(QString("SELECT 1 FROM %1 WHERE id = :id%2").arg(tables.listTable, topLevelOnly));
     list.bindValue(":id", listId);

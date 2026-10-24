@@ -27,6 +27,7 @@ private slots:
     void removingASmartListFolderRemovesItsSmartLists();
     void readingListCoversAreTheirFirstComic();
     void readingListCoversAreTheOnesOfTheFirstQuery();
+    void helpersDoNotRunInsideATransactionOfTheCaller();
 
 private:
     bool exec(const QString &sql);
@@ -303,6 +304,27 @@ void ListFolderTest::readingListCoversAreTheOnesOfTheFirstQuery()
     const auto hashes = DBHelper::readingListCoverHashes(allLists, db);
     QVERIFY(hashes);
     QCOMPARE(*hashes, expected);
+}
+
+void ListFolderTest::helpersDoNotRunInsideATransactionOfTheCaller()
+{
+    QVERIFY(exec("INSERT INTO reading_list_folder (id, parent_id, name, ordering) VALUES (1, NULL, 'Folder', 0)"));
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name) VALUES (1, NULL, 0, 'One'), (2, NULL, 1, 'Two')"));
+    QVERIFY(exec("INSERT INTO placeholder (id, series) VALUES (5, 'Missing')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, placeholder_id) VALUES (1, 1, 0, 5)"));
+
+    QVERIFY(db.transaction());
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name) VALUES (9, NULL, 2, 'Caller')"));
+
+    QVERIFY(!DBHelper::moveReadingListToFolder(ReadingListId(1), 1, db));
+    QVERIFY(!DBHelper::appendRowsToReadingList(ReadingListId(1), { ComicRowId(PlaceholderId(5)) }, db));
+    QVERIFY(!DBHelper::reorderReadingListEntries(ReadingListId(1), { ListItemId { ListKind::ReadingList, 1 } }, db));
+    QVERIFY(!DBHelper::removeListFromDB(2, db));
+
+    // the work of the caller was not committed by them
+    QVERIFY(db.rollback());
+    QCOMPARE(rows("SELECT id, folder_id FROM reading_list ORDER BY id"), QList<QVariantList>({ { 1, QVariant() }, { 2, QVariant() } }));
+    QCOMPARE(rows("SELECT COUNT(*) FROM reading_list_entry"), QList<QVariantList>({ { 1 } }));
 }
 
 QTEST_GUILESS_MAIN(ListFolderTest)
