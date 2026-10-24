@@ -180,7 +180,7 @@ void MainWindowViewer::syncModeActions(bool manga, bool continuousScroll)
         }
     }
 
-    doubleMangaPageSwitch();
+    refreshPrevNextActions();
 }
 
 MainWindowViewer::~MainWindowViewer()
@@ -516,7 +516,7 @@ void MainWindowViewer::createActions()
     doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
     doubleMangaPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_MANGA_PAGE_ACTION_Y));
     connect(doubleMangaPageAction, &QAction::triggered, viewer, &Viewer::doubleMangaPageSwitch);
-    connect(doubleMangaPageAction, &QAction::triggered, this, &MainWindowViewer::doubleMangaPageSwitch);
+    connect(doubleMangaPageAction, &QAction::triggered, this, &MainWindowViewer::refreshPrevNextActions);
 
     goToPageAction = new QAction(tr("Go To"), this);
     goToPageAction->setToolTip(tr("Go to page..."));
@@ -1336,7 +1336,7 @@ void MainWindowViewer::checkNewVersion()
 void MainWindowViewer::processReset()
 {
     disableActions();
-    updatePrevNextActions();
+    refreshPrevNextActions();
 }
 
 void MainWindowViewer::setUpShortcutsManagement()
@@ -1514,12 +1514,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     ShortcutsManager::getShortcutsManager().registerActions(allActions);
 }
 
-void MainWindowViewer::doubleMangaPageSwitch()
-{
-    updatePrevNextActions();
-}
-
-void MainWindowViewer::updatePrevNextActions()
+void MainWindowViewer::refreshPrevNextActions()
 {
     if (isClient) {
         updatePrevNextActions(currentSiblingIndex > 0, currentSiblingIndex >= 0 && currentSiblingIndex + 1 < siblingComics.size());
