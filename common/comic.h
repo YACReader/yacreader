@@ -42,6 +42,8 @@ protected:
 
     bool _errorOpening;
 
+    void resolveStartPage();
+
 public:
     static const QStringList imageExtensions;
     static const QStringList literalImageExtensions;

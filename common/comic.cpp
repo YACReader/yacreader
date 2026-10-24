@@ -287,6 +287,17 @@ void Comic::invalidate()
     emit invalidated();
 }
 //-----------------------------------------------------------------------------
+void Comic::resolveStartPage()
+{
+    if (_firstPage == -1) {
+        _firstPage = bm->getLastPage();
+    }
+
+    if (_firstPage < 0 || _firstPage >= _pages.size()) {
+        _firstPage = 0;
+    }
+}
+//-----------------------------------------------------------------------------
 QByteArray Comic::getRawPage(int page) const
 {
     if (page < 0 || page >= _pages.size()) {
@@ -657,13 +668,7 @@ void FileComic::process()
         _archiveIndexToPages[_pageArchiveIndexes.at(page)].append(page);
     }
 
-    if (_firstPage == -1) {
-        _firstPage = bm->getLastPage();
-    }
-
-    if (_firstPage >= _pages.length()) {
-        _firstPage = 0;
-    }
+    resolveStartPage();
 
     _index = _firstPage;
     emit openAt(_index);
@@ -743,13 +748,7 @@ void FolderComic::process()
         moveToThread(QCoreApplication::instance()->thread());
         emit errorOpening();
     } else {
-        if (_firstPage == -1) {
-            _firstPage = bm->getLastPage();
-        }
-
-        if (_firstPage >= _pages.length()) {
-            _firstPage = 0;
-        }
+        resolveStartPage();
 
         _index = _firstPage;
 
@@ -887,13 +886,7 @@ void PDFComic::process()
     _pages.resize(nPages);
     _loadedPages = QVector<bool>(nPages, false);
 
-    if (_firstPage == -1) {
-        _firstPage = bm->getLastPage();
-    }
-
-    if (_firstPage >= _pages.length()) {
-        _firstPage = 0;
-    }
+    resolveStartPage();
 
     _index = _firstPage;
     emit openAt(_index);
