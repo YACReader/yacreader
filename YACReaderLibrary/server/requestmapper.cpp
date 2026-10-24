@@ -43,7 +43,7 @@ QMutex RequestMapper::mutex;
 RequestMapper::RequestMapper(QObject *parent)
     : HttpRequestHandler(parent) { }
 
-void RequestMapper::loadSessionV2(HttpRequest &request, HttpResponse & /* response */)
+void RequestMapper::loadSession(HttpRequest &request, HttpResponse & /* response */)
 {
     QMutexLocker locker(&mutex);
 
@@ -72,6 +72,8 @@ void RequestMapper::service(HttpRequest &request, HttpResponse &response)
 
     if (path.startsWith("/v2")) {
         serviceV2(request, response);
+    } else if (path.startsWith("/v3")) {
+        serviceV3(request, response);
     } else if (path == "/" || path.startsWith("/webui")) {
         serviceWebUI(request, response);
     } else {
@@ -125,7 +127,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     path = QUrl::fromPercentEncoding(path).toUtf8();
 
     if (!sync.exactMatch(path)) // no session is needed for syncback info, until security will be added
-        loadSessionV2(request, response);
+        loadSession(request, response);
 
     // primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
     if (path == "/v2/libraries") // Don't send data to the server using '/' !!!!
@@ -133,7 +135,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
         LibrariesControllerV2().service(request, response);
     } else {
         if (serverVersion.exactMatch(path)) {
-            VersionController().service(request, response);
+            VersionController(SERVER_VERSION_NUMBER).service(request, response);
         } else if (sync.exactMatch(path)) {
             SyncControllerV2 syncController;
             syncController.service(request, response);
@@ -212,5 +214,25 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
                 Static::staticFileController->service(request, response);
             }
         }
+    }
+}
+
+// v3 has only the routes whose content changed; a v3 client uses v2 for the rest, with the same session
+void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
+{
+    const QByteArray path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
+
+    QRegExp serverVersion("/v3/version/?");
+
+    loadSession(request, response);
+
+    if (!serverVersion.exactMatch(path)) {
+        response.setStatus(404, "not found");
+        response.write("404 not found", true);
+    } else if (request.getMethod() != "GET") {
+        response.setStatus(405, "Method Not Allowed");
+        response.write("405 method not allowed", true);
+    } else {
+        VersionController(SERVER_V3_VERSION_NUMBER).service(request, response);
     }
 }

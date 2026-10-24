@@ -13,11 +13,13 @@ class VersionController : public stefanfrings::HttpRequestHandler
     Q_DISABLE_COPY(VersionController);
 
 public:
-    /** Constructor */
-    VersionController();
+    explicit VersionController(const QByteArray &version);
 
     /** Generates the response */
     void service(stefanfrings::HttpRequest &request, stefanfrings::HttpResponse &response) override;
+
+private:
+    QByteArray version;
 };
 
 #endif // VERSIONCONTROLLER_H
