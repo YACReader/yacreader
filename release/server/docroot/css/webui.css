@@ -1485,6 +1485,11 @@ input[type="time"]:focus-visible {
   object-fit: cover;
 }
 
+/* deleted comics and placeholders, as in the desktop */
+.missing-comic-cover .browser-cover-image {
+  filter: grayscale(1);
+}
+
 .cover-placeholder {
   display: grid;
   overflow: hidden;
@@ -1789,6 +1794,11 @@ input[type="time"]:focus-visible {
   color: var(--text-muted);
   font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
   font-size: 11.5px;
+}
+
+.missing-comic-note {
+  margin: 10px 0 0;
+  color: var(--text-muted);
 }
 
 .comic-facts {

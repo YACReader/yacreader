@@ -721,8 +721,13 @@
       return comicUrl(comicId) + "/read";
     }
 
+    // a missing comic is shown inside the content that has it: its key is the placeholder id in a folder
+    function missingComicUrl(folderId, key) {
+      return libraryUrl() + "/folder/" + encodeURIComponent(folderId) + "/missing/" + encodeURIComponent(key);
+    }
+
     function folderContentApi(folderId) {
-      return "/v2/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId) + "/content";
+      return "/v3/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId) + "/content";
     }
 
     function continueReadingApi() {
@@ -794,8 +799,10 @@
 
     function coverUrl(item) {
       var filePath = "";
-      if (item.type === "comic" && item.hash) {
+      if ((item.type === "comic" || item.type === "deleted_comic") && item.hash) {
         filePath = encodeURIComponent(item.hash) + ".jpg";
+      } else if (item.type === "placeholder") {
+        filePath = safeCoverPath(item.cover);
       } else if (item.type === "folder") {
         if (item.custom_image) {
           filePath = safeCoverPath(item.custom_image);
@@ -808,7 +815,34 @@
         return "";
       }
 
-      return "/v2/library/" + encodeURIComponent(libraryId) + "/cover/" + filePath;
+      return "/v3/library/" + encodeURIComponent(libraryId) + "/cover/" + filePath;
+    }
+
+    function isMissingComic(item) {
+      return item.type === "deleted_comic" || item.type === "placeholder";
+    }
+
+    // the fallbacks of the desktop (the title, the series and the number, the file name), written as comic cards
+    function missingComicTitle(item) {
+      var hasText = function (value) {
+        return value !== undefined && value !== null && String(value).trim() !== "";
+      };
+      if (hasText(item.title) && hasText(item.universal_number)) {
+        return "#" + item.universal_number + " — " + item.title;
+      }
+      if (hasText(item.title)) {
+        return String(item.title);
+      }
+      if (hasText(item.series) && hasText(item.universal_number)) {
+        return item.series + " #" + item.universal_number;
+      }
+      if (hasText(item.series)) {
+        return String(item.series);
+      }
+      if (hasText(item.universal_number)) {
+        return "#" + item.universal_number;
+      }
+      return item.last_known_name || "Missing comic";
     }
 
     function readableComicTitle(comic) {
@@ -1486,6 +1520,51 @@
       });
     }
 
+    // in grayscale, as in the desktop; the default cover when there is no cover file
+    function missingComicCover(item, className) {
+      var cover = element("div", className + " missing-comic-cover");
+      var fallback = element("img", "browser-cover-image");
+      fallback.alt = "";
+      fallback.src = "/images/webui/unavailableCover.png";
+      cover.appendChild(fallback);
+      var url = coverUrl(item);
+      if (url) {
+        var image = element("img", "browser-cover-image");
+        image.alt = "";
+        image.loading = "lazy";
+        image.src = url;
+        image.addEventListener("error", function () {
+          image.remove();
+        });
+        cover.appendChild(image);
+      }
+      return cover;
+    }
+
+    function missingComicCard(item, folderId) {
+      var key = String(item.placeholder_id);
+      var card = element("a", "browser-card comic-card");
+      card.href = missingComicUrl(folderId, key);
+      card.dataset.browserHistoryKey = "missing:" + key;
+      card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
+        event.preventDefault();
+        showMissingComic(folderId, key, true, item, card);
+      });
+
+      var copy = element("div", "browser-card-copy");
+      copy.appendChild(element("div", "browser-card-title", missingComicTitle(item)));
+      var numPages = Number(item.num_pages) || 0;
+      copy.appendChild(element("div", "browser-card-meta", numPages ? (numPages === 1 ? "1 page" : numPages + " pages") : ""));
+
+      card.append(missingComicCover(item, "browser-cover comic-cover"), copy);
+      var shell = element("div", "browser-card-shell");
+      shell.appendChild(card);
+      return shell;
+    }
+
     function continueReadingShelf(comics) {
       var shelf = element("section", "continue-reading-shelf");
       shelf.setAttribute("aria-labelledby", "continue-reading-title");
@@ -1753,12 +1832,12 @@
           return;
         }
 
-        var items = sortBrowserItems(results[0]);
+        var items = results[0];
         var trail = results[1];
         var continueReading = results[2].filter(function (item) { return item.type === "comic"; });
         var folderName = trail.length ? trail[trail.length - 1].name : libraryName;
         var folders = items.filter(function (item) { return item.type === "folder"; });
-        var comics = items.filter(function (item) { return item.type === "comic"; });
+        var comics = items.filter(function (item) { return item.type === "comic" || isMissingComic(item); });
         var parentFolderId = folderId === "1"
           ? null
           : trail.length > 1
@@ -1810,6 +1889,8 @@
               grid.appendChild(folderCard(item, folderId));
             } else if (item.type === "comic") {
               grid.appendChild(comicCard(item));
+            } else if (item.type === "placeholder") {
+              grid.appendChild(missingComicCard(item, folderId));
             }
           });
           browserRoot.appendChild(grid);
@@ -2675,19 +2756,123 @@
       });
     }
 
+    // what the item has, from the content that has it; there is no file to read
+    function showMissingComic(folderId, key, pushHistory, existingItem, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      showNavigationLoading();
+
+      Promise.all([
+        existingItem
+          ? Promise.resolve(existingItem)
+          : fetchJson(folderContentApi(folderId)).then(function (items) {
+            var found = items.filter(function (item) {
+              return item.type === "placeholder" && String(item.placeholder_id) === key;
+            })[0];
+            if (!found) {
+              throw new Error("missing comic not found");
+            }
+            return found;
+          }),
+        folderTrail(folderId)
+      ]).then(function (results) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var item = results[0];
+        var trail = results[1];
+        var title = missingComicTitle(item);
+
+        setPageHeading(title);
+        setBrowserBack(folderId);
+        renderBreadcrumbs(browserBreadcrumbParts(trail, title));
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+
+        var detail = element("article", "comic-detail");
+        var coverColumn = element("div", "comic-detail-cover-column");
+        coverColumn.appendChild(missingComicCover(item, "comic-detail-cover"));
+
+        var copy = element("div", "comic-detail-copy");
+        copy.appendChild(element("div", "section-title", "Comic information"));
+        var titleRow = element("div", "comic-detail-title-row");
+        titleRow.appendChild(element("h2", "", title));
+        copy.appendChild(titleRow);
+        if (item.last_known_name && item.last_known_name !== title) {
+          copy.appendChild(element("p", "comic-file-name", item.last_known_name));
+        }
+        copy.appendChild(element("p", "missing-comic-note", "This comic is missing from your library."));
+
+        var facts = element("div", "comic-facts");
+        var numPages = Number(item.num_pages) || 0;
+        if (numPages) {
+          facts.appendChild(element("span", "comic-fact", numPages === 1 ? "1 page" : numPages + " pages"));
+        }
+        if (item.read) {
+          facts.appendChild(element("span", "comic-fact success", "Read"));
+        } else if (Number(item.current_page) > 1) {
+          facts.appendChild(element("span", "comic-fact accent", "Page " + item.current_page));
+        }
+        var fileType = item.type === "deleted_comic" ? fileTypeName(item.file_type) : "";
+        if (fileType) {
+          facts.appendChild(element("span", "comic-fact", fileType));
+        }
+        if (facts.childNodes.length) {
+          copy.appendChild(facts);
+        }
+
+        var metadata = [
+          ["Series", item.series],
+          ["Issue", item.universal_number],
+          ["Volume", item.volume]
+        ].filter(function (entry) {
+          return hasValue(entry[1]);
+        });
+        if (metadata.length) {
+          var metadataSection = element("section", "comic-copy-section");
+          metadataSection.appendChild(element("h3", "", "Metadata"));
+          var metadataList = element("dl", "comic-metadata-grid");
+          metadata.forEach(function (entry) {
+            metadataList.appendChild(detailField(entry[0], entry[1]));
+          });
+          metadataSection.appendChild(metadataList);
+          copy.appendChild(metadataSection);
+        }
+
+        detail.append(coverColumn, copy);
+        browserRoot.appendChild(detail);
+
+        var state = { view: "missing", itemId: folderId, missingKey: key };
+        finishHistoryNavigation(state, missingComicUrl(folderId, key), pushHistory, version);
+      }).catch(function () {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showMissingComic(folderId, key, false);
+        });
+      });
+    }
+
     function routeFromLocation() {
       var query = new URL(window.location.href).searchParams.get("q");
       if (query && query.trim()) {
         return { view: "search", query: query.trim() };
       }
       var escapedLibraryId = libraryId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId + "(?:/(folder|comic)/([0-9]+)(?:/(read))?)?/?$"));
+      var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId + "(?:/(folder|comic)/([0-9]+)(?:/read|/missing/([0-9]+))?)?/?$"));
       if (!match) {
         return { view: "folder", itemId: "1" };
       }
+      var reader = /\/read\/?$/.test(window.location.pathname);
       return {
-        view: match[3] ? "reader" : match[1] || "folder",
-        itemId: match[2] || "1"
+        view: match[3] ? "missing" : reader ? "reader" : match[1] || "folder",
+        itemId: match[2] || "1",
+        missingKey: match[3]
       };
     }
 
@@ -2698,6 +2883,8 @@
         showReader(route.itemId, false);
       } else if (route.view === "comic") {
         showComic(route.itemId, false);
+      } else if (route.view === "missing") {
+        showMissingComic(route.itemId, route.missingKey, false);
       } else {
         showFolder(route.itemId, false);
       }
@@ -2734,6 +2921,8 @@
       showReader(initialItemId, false);
     } else if (initialView === "comic") {
       showComic(initialItemId, false);
+    } else if (initialView === "missing") {
+      showMissingComic(initialItemId, initialRoute.missingKey, false);
     } else {
       showFolder(initialItemId, false);
     }
