@@ -13,6 +13,8 @@ add_library(server STATIC
     yacreader_http_session_store.cpp
     yacreader_server_data_helper.h
     yacreader_server_data_helper.cpp
+    cover_request.h
+    cover_request.cpp
     controllers/versioncontroller.h
     controllers/versioncontroller.cpp
     controllers/v2/comiccontroller_v2.h
@@ -71,6 +73,8 @@ add_library(server STATIC
     controllers/v3/listcontentcontroller_v3.cpp
     controllers/v3/listsectioncontroller_v3.h
     controllers/v3/listsectioncontroller_v3.cpp
+    controllers/v3/covercontroller_v3.h
+    controllers/v3/covercontroller_v3.cpp
     controllers/webui/webuicontroller.h
     controllers/webui/webuicontroller.cpp
 )

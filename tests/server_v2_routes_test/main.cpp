@@ -22,6 +22,7 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
     void answersDoNotChange();
+    void coversOutsideTheCoversFolderAreNotFound();
 
 private:
     bool exec(const QString &sql);
@@ -202,6 +203,20 @@ void ServerV2RoutesTest::answersDoNotChange()
         if (answers.value(key) != expected.value(key))
             qWarning().noquote() << key << "\nexpected:" << QJsonDocument(expected.value(key).toObject()).toJson() << "\nactual:" << QJsonDocument(answers.value(key).toObject()).toJson();
         QCOMPARE(answers.value(key), expected.value(key));
+    }
+}
+
+void ServerV2RoutesTest::coversOutsideTheCoversFolderAreNotFound()
+{
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
+    saveCover(QDir(dataPath).filePath("outside.jpg"), { 20, 20 });
+    saveCover(QDir(libraryPath).filePath("outside.jpg"), { 20, 20 });
+    const auto library = QString("/v2/library/%1").arg(libraryId);
+    for (const auto &path : { QString("/cover/..%2Foutside.jpg"), QString("/cover/..%2F..%2Foutside.jpg"), QString("/cover/folders%2F..%2F..%2Foutside.jpg"),
+                              QString("/cover/..%5Coutside.jpg"), QString("/cover/") + QDir(dataPath).filePath("outside.jpg") }) {
+        const auto answer = server->request("GET", library + path);
+        QCOMPARE(answer.status, 404);
+        QCOMPARE(answer.body, QByteArray("404 not found"));
     }
 }
 

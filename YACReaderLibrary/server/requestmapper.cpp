@@ -24,6 +24,7 @@
 #include "controllers/v2/tagscontroller_v2.h"
 #include "controllers/v2/updatecomiccontroller_v2.h"
 #include "controllers/v2/updatelibrariescontroller_v2.h"
+#include "controllers/v3/covercontroller_v3.h"
 #include "controllers/v3/foldercontentcontroller_v3.h"
 #include "controllers/v3/listcontentcontroller_v3.h"
 #include "controllers/v3/listsectioncontroller_v3.h"
@@ -238,6 +239,7 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     QRegExp smartLists("/v3/library/([0-9]+)/smart_lists/?");
     QRegExp smartListFolderContent("/v3/library/([0-9]+)/smart_list_folder/([0-9]+)/content/?");
     QRegExp smartListContent("/v3/library/([0-9]+)/smart_list/([0-9]+)/content/?");
+    QRegExp cover("/v3/library/([0-9]+)/cover/(.+)");
 
     loadSession(request, response);
 
@@ -269,6 +271,9 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     } else if (smartListContent.exactMatch(path)) {
         libraryId = smartListContent.cap(1).toInt();
         controller = std::make_unique<ListContentControllerV3>(*libraryId, SmartListId(smartListContent.cap(2).toULongLong()));
+    } else if (cover.exactMatch(path)) {
+        libraryId = cover.cap(1).toInt();
+        controller = std::make_unique<CoverControllerV3>(*libraryId, cover.cap(2));
     }
 
     if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId)))

@@ -197,11 +197,6 @@ struct LibraryPaths {
         return id + ".jpg";
     }
 
-    static QString coverPathWithFileName(const QString &libraryPath, const QString &fileName) // libraryPath + /.yacreaderlibrary/covers/hash + fileName
-    {
-        return QDir(libraryCoversFolderPath(libraryPath)).filePath(fileName);
-    }
-
     static QString idPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/id
     {
         return QDir(libraryDataPath(libraryPath)).filePath("id");

@@ -1,9 +1,11 @@
 #include "static.h"
 #include "test_http_server.h"
+#include "yacreader_global.h"
 #include "yacreader_http_session_store.h"
 #include "yacreader_libraries.h"
 
 #include <QDir>
+#include <QImage>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -32,9 +34,12 @@ private slots:
     void smartListsSectionHasTheOrderOfTheSidebar();
     void contentOfAMissingListFolderIsNotFound();
     void smartListContentHasTheSearchOrder();
+    void coverServesComicFolderAndPlaceholderCovers();
+    void coversOutsideTheCoversFolderAreNotFound();
 
 private:
     bool exec(const QString &sql);
+    void saveCover(const QString &path, const QSize &size);
     QJsonArray items(const QString &path);
     std::unique_ptr<QTemporaryDir> root;
     QString libraryPath;
@@ -74,6 +79,12 @@ void ServerV3RoutesTest::initTestCase()
     QVERIFY(exec("INSERT INTO smart_list (id, name, query, ordering, folder_id) VALUES (1, 'Unread', 'read:false', 0, NULL), (2, 'rated', 'rating>=4', 0, 1), (3, 'Broken', 'series:(batman', 0, NULL)"));
     QVERIFY(exec("INSERT INTO label (id, name, color, ordering) VALUES (1, 'Tag', 'red', 0), (2, 'Empty', 'blue', 1)"));
     QVERIFY(exec("INSERT INTO label_entry (id, label_id, ordering, comic_info_id, placeholder_id) VALUES (1, 1, 0, 4, NULL), (2, 1, 1, NULL, 1), (3, 1, 2, 1, NULL)"));
+
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
+    saveCover(YACReader::LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-2"), { 60, 80 });
+    saveCover(YACReader::LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-4"), { 64, 96 });
+    saveCover(YACReader::LibraryPaths::customFolderCoverPathFromDataPath(dataPath, "3"), { 50, 50 });
+    saveCover(YACReader::LibraryPaths::placeholderCoverPathFromDataPath(dataPath, "key-1"), { 30, 40 });
 
     server = std::make_unique<TestHttpServer>(root->path());
     QVERIFY(server->isListening());
@@ -132,6 +143,14 @@ void ServerV3RoutesTest::v3UsesTheSessionOfV2()
 bool ServerV3RoutesTest::exec(const QString &sql)
 {
     return execInLibrary(libraryPath, sql);
+}
+
+void ServerV3RoutesTest::saveCover(const QString &path, const QSize &size)
+{
+    QVERIFY(QDir().mkpath(QFileInfo(path).absolutePath()));
+    QImage image(size, QImage::Format_RGB32);
+    image.fill(Qt::darkCyan);
+    QVERIFY(image.save(path, "JPG"));
 }
 
 QJsonArray ServerV3RoutesTest::items(const QString &path)
@@ -281,6 +300,42 @@ void ServerV3RoutesTest::smartListContentHasTheSearchOrder()
     QCOMPARE(broken.status, 200);
     QCOMPARE(broken.body, QByteArray("[]"));
     QCOMPARE(server->request("POST", library + "/smart_list/1/content").status, 405);
+}
+
+static QSize imageSize(const HttpAnswer &answer)
+{
+    return answer.status == 200 && answer.contentType == "image/jpeg" ? QImage::fromData(answer.body, "JPG").size() : QSize();
+}
+
+// the clients put the cover of a placeholder, as the custom_image of a folder, after "cover"
+void ServerV3RoutesTest::coverServesComicFolderAndPlaceholderCovers()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(imageSize(server->request("GET", library + "/cover/hash-2.jpg")), QSize(60, 80));
+    QCOMPARE(imageSize(server->request("GET", library + "/cover/hash-4.jpg")), QSize(64, 96));
+    QCOMPARE(imageSize(server->request("GET", library + "/cover/folders/3.jpg")), QSize(50, 50));
+    const auto placeholder = items(library + "/folder/2/content").at(4).toObject();
+    QCOMPARE(imageSize(server->request("GET", library + "/cover" + placeholder.value("cover").toString())), QSize(30, 40));
+
+    const auto missing = server->request("GET", library + "/cover/hash-3.jpg");
+    QCOMPARE(missing.status, 404);
+    QCOMPARE(missing.body, QByteArray("404 not found"));
+    QCOMPARE(server->request("GET", "/v3/library/77/cover/hash-2.jpg").status, 404);
+    QCOMPARE(server->request("POST", library + "/cover/hash-2.jpg").status, 405);
+}
+
+void ServerV3RoutesTest::coversOutsideTheCoversFolderAreNotFound()
+{
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
+    saveCover(QDir(dataPath).filePath("outside.jpg"), { 20, 20 });
+    saveCover(QDir(libraryPath).filePath("outside.jpg"), { 20, 20 });
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    for (const auto &path : { QString("/cover/..%2Foutside.jpg"), QString("/cover/..%2F..%2Foutside.jpg"), QString("/cover/folders%2F..%2F..%2Foutside.jpg"),
+                              QString("/cover/..%5Coutside.jpg"), QString("/cover/") + QDir(dataPath).filePath("outside.jpg") }) {
+        const auto answer = server->request("GET", library + path);
+        QCOMPARE(answer.status, 404);
+        QCOMPARE(answer.body, QByteArray("404 not found"));
+    }
 }
 
 QTEST_GUILESS_MAIN(ServerV3RoutesTest)
