@@ -9,8 +9,6 @@
 #include "overloaded.h"
 #include "qnaturalsorting.h"
 #include "reading_list_model.h"
-#include "search_query.h"
-#include "smart_list.h"
 #include "yacreader_global_gui.h"
 
 #include <QMap>
@@ -996,13 +994,7 @@ QList<ComicItem> ComicModel::createSmartListModelData(unsigned long long smartLi
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        if (const auto list = DBHelper::loadSmartList(SmartListId(smartListId), db)) {
-            try {
-                auto query = allComicsSearchQuery(db, list->query);
-                modelData = ComicItems::sortedForSearch(ComicItems::fromQuery(query));
-            } catch (const std::exception &) {
-            }
-        }
+        modelData = ComicItems::loadSmartList(SmartListId(smartListId), db).value_or(QList<ComicItem>());
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);

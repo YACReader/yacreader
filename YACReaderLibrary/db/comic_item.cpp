@@ -3,6 +3,8 @@
 #include "db_helper.h"
 #include "overloaded.h"
 #include "qnaturalsorting.h"
+#include "search_query.h"
+#include "smart_list.h"
 
 #include <QSqlQuery>
 #include <QSqlRecord>
@@ -200,6 +202,19 @@ QList<ComicItem> loadReadingList(ReadingListId readingListId, QSqlDatabase &db, 
         items << fromQuery(selectQuery, ListKind::ReadingList);
     }
     return items;
+}
+
+std::optional<QList<ComicItem>> loadSmartList(SmartListId smartListId, QSqlDatabase &db)
+{
+    const auto list = DBHelper::loadSmartList(smartListId, db);
+    if (!list)
+        return std::nullopt;
+    try {
+        auto query = allComicsSearchQuery(db, list->query);
+        return sortedForSearch(fromQuery(query));
+    } catch (const std::exception &) {
+        return QList<ComicItem>();
+    }
 }
 
 bool folderLessThan(const ComicItem &c1, const ComicItem &c2)
