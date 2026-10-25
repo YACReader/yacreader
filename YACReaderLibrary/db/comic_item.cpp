@@ -6,6 +6,7 @@
 #include "search_query.h"
 #include "smart_list.h"
 
+#include <QDateTime>
 #include <QSqlQuery>
 #include <QSqlRecord>
 
@@ -215,6 +216,17 @@ std::optional<QList<ComicItem>> loadSmartList(SmartListId smartListId, QSqlDatab
     } catch (const std::exception &) {
         return QList<ComicItem>();
     }
+}
+
+QList<ComicItem> loadRecent(qint64 days, QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE ci.added > :limit ORDER BY ci.added DESC";
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    query.prepare(sql);
+    query.bindValue(":limit", QDateTime::currentDateTime().addDays(-days).toSecsSinceEpoch());
+    query.exec();
+    return fromQuery(query);
 }
 
 bool folderLessThan(const ComicItem &c1, const ComicItem &c2)
