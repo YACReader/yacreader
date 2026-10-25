@@ -180,6 +180,7 @@ public:
     // in the order of the folders tree
     static std::optional<QList<Folder>> loadSubfolders(FolderId parentId, QSqlDatabase &db);
     static bool readingListExists(ReadingListId id, QSqlDatabase &db);
+    static bool listFolderExists(const ListFolderId &id, QSqlDatabase &db);
     static bool labelExists(LabelId id, QSqlDatabase &db);
     static QList<ComicDB> getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db);
     static QList<ComicDB> getComicsFromParent(qulonglong parentId, QSqlDatabase &db, bool sort = true);

@@ -316,6 +316,54 @@ QJsonObject YACReaderServerDataHelper::comicItemToJSON(const qulonglong libraryI
                       item);
 }
 
+namespace {
+
+QJsonObject sectionItem(const char *type, qulonglong id, const qulonglong libraryId, const QUuid libraryUuid)
+{
+    QJsonObject json;
+    json["type"] = type;
+    json["id"] = QString::number(id);
+    json["library_id"] = QString::number(libraryId);
+    if (!libraryUuid.isNull()) {
+        json["library_uuid"] = libraryUuid.toString();
+    }
+    return json;
+}
+
+}
+
+QJsonObject YACReaderServerDataHelper::listFolderToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ListFolder &folder)
+{
+    auto json = sectionItem(folder.id.kind == ListFolderKind::ReadingList ? "reading_list_folder" : "smart_list_folder", folder.id.id, libraryId, libraryUuid);
+    json["folder_name"] = folder.name;
+    if (folder.parentId) {
+        json["parent_id"] = QString::number(*folder.parentId);
+    }
+    return json;
+}
+
+QJsonObject YACReaderServerDataHelper::sectionReadingListToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ReadingList &readingList, const QString &firstComicHash)
+{
+    auto json = readingListToJSON(libraryId, libraryUuid, readingList);
+    if (readingList.folderId) {
+        json["folder_id"] = QString::number(*readingList.folderId);
+    }
+    if (!firstComicHash.isEmpty()) {
+        json["first_comic_hash"] = firstComicHash;
+    }
+    return json;
+}
+
+QJsonObject YACReaderServerDataHelper::smartListToJSON(const qulonglong libraryId, const QUuid libraryUuid, const SmartList &smartList)
+{
+    auto json = sectionItem("smart_list", smartList.id.value(), libraryId, libraryUuid);
+    json["smart_list_name"] = smartList.name;
+    if (smartList.folderId) {
+        json["folder_id"] = QString::number(*smartList.folderId);
+    }
+    return json;
+}
+
 YACReaderServerDataHelper::YACReaderServerDataHelper() { }
 
 QList<ComicDB> YACReaderServerDataHelper::firstOccurrences(const QList<ComicDB> &comics)

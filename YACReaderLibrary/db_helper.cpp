@@ -2235,6 +2235,11 @@ bool DBHelper::readingListExists(ReadingListId id, QSqlDatabase &db)
     return rowExists("reading_list", id.value(), db);
 }
 
+bool DBHelper::listFolderExists(const ListFolderId &id, QSqlDatabase &db)
+{
+    return rowExists(folderTable(id.kind).table, id.id, db);
+}
+
 bool DBHelper::labelExists(LabelId id, QSqlDatabase &db)
 {
     return rowExists("label", id.value(), db);

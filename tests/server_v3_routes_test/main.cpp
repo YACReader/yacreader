@@ -28,6 +28,9 @@ private slots:
     void readingListContentHasEveryEntryOfTheListAndItsChildLists();
     void labelContentHasEveryEntry();
     void contentOfAMissingListIsNotFound();
+    void readingListsSectionHasTheOrderOfTheSidebar();
+    void smartListsSectionHasTheOrderOfTheSidebar();
+    void contentOfAMissingListFolderIsNotFound();
 
 private:
     bool exec(const QString &sql);
@@ -62,6 +65,12 @@ void ServerV3RoutesTest::initTestCase()
     QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id, placeholder_id, last_known_name, last_known_path) VALUES "
                  "(1, 1, 0, 2, NULL, NULL, NULL), (2, 1, 1, NULL, 1, NULL, NULL), (3, 1, 2, 4, NULL, 'c4.cbz', '/Series/c4.cbz'), (4, 1, 3, 1, NULL, NULL, NULL), "
                  "(5, 1, 4, 2, NULL, NULL, NULL), (6, 2, 0, NULL, 2, NULL, NULL), (7, 3, 0, 3, NULL, NULL, NULL)"));
+    QVERIFY(exec("INSERT INTO reading_list_folder (id, parent_id, name, ordering) VALUES (1, NULL, 'Marvel', 0), (2, NULL, 'dc', 1), (3, 1, 'Events', 0)"));
+    // equal names without case: the last one loaded comes first, as in the sidebar
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name, folder_id) VALUES (4, NULL, 0, 'Zeta', NULL), (5, NULL, 0, 'alpha', 1), (6, NULL, 0, 'batman', NULL), (7, NULL, 0, 'Batman', NULL)"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id) VALUES (8, 5, 0, 4)"));
+    QVERIFY(exec("INSERT INTO smart_list_folder (id, parent_id, name, ordering) VALUES (1, NULL, 'Saved', 0)"));
+    QVERIFY(exec("INSERT INTO smart_list (id, name, query, ordering, folder_id) VALUES (1, 'Unread', 'read:false', 0, NULL), (2, 'rated', 'rating>=4', 0, 1)"));
     QVERIFY(exec("INSERT INTO label (id, name, color, ordering) VALUES (1, 'Tag', 'red', 0), (2, 'Empty', 'blue', 1)"));
     QVERIFY(exec("INSERT INTO label_entry (id, label_id, ordering, comic_info_id, placeholder_id) VALUES (1, 1, 0, 4, NULL), (2, 1, 1, NULL, 1), (3, 1, 2, 1, NULL)"));
 
@@ -204,6 +213,56 @@ void ServerV3RoutesTest::contentOfAMissingListIsNotFound()
     QCOMPARE(server->request("GET", library + "/reading_list/99/content").status, 404);
     QCOMPARE(server->request("GET", library + "/tag/99/content").status, 404);
     QCOMPARE(server->request("GET", "/v3/library/77/reading_list/1/content").status, 404);
+}
+
+// the folders, then the top level lists, each group by name; child lists are only in the content of their parent
+void ServerV3RoutesTest::readingListsSectionHasTheOrderOfTheSidebar()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto top = items(library + "/reading_lists");
+    QCOMPARE(itemKeys(top), QStringList({ "reading_list_folder 2", "reading_list_folder 1", "reading_list 7", "reading_list 6", "reading_list 1", "reading_list 4" }));
+    QCOMPARE(top.at(0).toObject().value("folder_name").toString(), QString("dc"));
+    QVERIFY(!top.at(0).toObject().contains("parent_id"));
+    const auto list = top.at(4).toObject();
+    QCOMPARE(list.value("reading_list_name").toString(), QString("List"));
+    QCOMPARE(list.value("first_comic_hash").toString(), QString("hash-2"));
+    QCOMPARE(list.value("library_id").toString(), QString::number(libraryId));
+    QVERIFY(!list.contains("folder_id"));
+    QVERIFY(!top.at(5).toObject().contains("first_comic_hash"));
+    QCOMPARE(items(library + "/reading_lists/"), top);
+
+    const auto marvel = items(library + "/reading_list_folder/1/content");
+    QCOMPARE(itemKeys(marvel), QStringList({ "reading_list_folder 3", "reading_list 5" }));
+    QCOMPARE(marvel.at(0).toObject().value("parent_id").toString(), QString("1"));
+    QCOMPARE(marvel.at(1).toObject().value("folder_id").toString(), QString("1"));
+    QCOMPARE(marvel.at(1).toObject().value("first_comic_hash").toString(), QString("hash-4"));
+    QCOMPARE(itemKeys(items(library + "/reading_list_folder/3/content")), QStringList());
+    QCOMPARE(server->request("POST", library + "/reading_lists").status, 405);
+}
+
+void ServerV3RoutesTest::smartListsSectionHasTheOrderOfTheSidebar()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto top = items(library + "/smart_lists");
+    QCOMPARE(itemKeys(top), QStringList({ "smart_list_folder 1", "smart_list 1" }));
+    QCOMPARE(top.at(0).toObject().value("folder_name").toString(), QString("Saved"));
+    QCOMPARE(top.at(1).toObject().value("smart_list_name").toString(), QString("Unread"));
+    QVERIFY(!top.at(1).toObject().contains("folder_id"));
+
+    const auto saved = items(library + "/smart_list_folder/1/content");
+    QCOMPARE(itemKeys(saved), QStringList({ "smart_list 2" }));
+    QCOMPARE(saved.at(0).toObject().value("folder_id").toString(), QString("1"));
+    QCOMPARE(server->request("POST", library + "/smart_list_folder/1/content").status, 405);
+}
+
+void ServerV3RoutesTest::contentOfAMissingListFolderIsNotFound()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(server->request("GET", library + "/reading_list_folder/99/content").status, 404);
+    // the ids of the two kinds of folders are in two tables
+    QCOMPARE(server->request("GET", library + "/smart_list_folder/3/content").status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/reading_lists").status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/smart_list_folder/1/content").status, 404);
 }
 
 QTEST_GUILESS_MAIN(ServerV3RoutesTest)

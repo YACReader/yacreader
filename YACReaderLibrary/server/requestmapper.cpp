@@ -26,6 +26,7 @@
 #include "controllers/v2/updatelibrariescontroller_v2.h"
 #include "controllers/v3/foldercontentcontroller_v3.h"
 #include "controllers/v3/listcontentcontroller_v3.h"
+#include "controllers/v3/listsectioncontroller_v3.h"
 #include "controllers/v3/v3_response.h"
 #include "controllers/versioncontroller.h"
 #include "controllers/webui/webuicontroller.h"
@@ -232,6 +233,10 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     QRegExp folderContent("/v3/library/([0-9]+)/folder/([0-9]+)/content/?");
     QRegExp readingListContent("/v3/library/([0-9]+)/reading_list/([0-9]+)/content/?");
     QRegExp labelContent("/v3/library/([0-9]+)/tag/([0-9]+)/content/?");
+    QRegExp readingLists("/v3/library/([0-9]+)/reading_lists/?");
+    QRegExp readingListFolderContent("/v3/library/([0-9]+)/reading_list_folder/([0-9]+)/content/?");
+    QRegExp smartLists("/v3/library/([0-9]+)/smart_lists/?");
+    QRegExp smartListFolderContent("/v3/library/([0-9]+)/smart_list_folder/([0-9]+)/content/?");
 
     loadSession(request, response);
 
@@ -248,6 +253,18 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     } else if (labelContent.exactMatch(path)) {
         libraryId = labelContent.cap(1).toInt();
         controller = std::make_unique<ListContentControllerV3>(*libraryId, ListKind::Label, labelContent.cap(2).toULongLong());
+    } else if (readingLists.exactMatch(path)) {
+        libraryId = readingLists.cap(1).toInt();
+        controller = std::make_unique<ListSectionControllerV3>(*libraryId, ListFolderKind::ReadingList, std::nullopt);
+    } else if (readingListFolderContent.exactMatch(path)) {
+        libraryId = readingListFolderContent.cap(1).toInt();
+        controller = std::make_unique<ListSectionControllerV3>(*libraryId, ListFolderKind::ReadingList, readingListFolderContent.cap(2).toULongLong());
+    } else if (smartLists.exactMatch(path)) {
+        libraryId = smartLists.cap(1).toInt();
+        controller = std::make_unique<ListSectionControllerV3>(*libraryId, ListFolderKind::SmartList, std::nullopt);
+    } else if (smartListFolderContent.exactMatch(path)) {
+        libraryId = smartListFolderContent.cap(1).toInt();
+        controller = std::make_unique<ListSectionControllerV3>(*libraryId, ListFolderKind::SmartList, smartListFolderContent.cap(2).toULongLong());
     }
 
     if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId)))
