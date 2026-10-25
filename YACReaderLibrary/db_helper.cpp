@@ -2633,6 +2633,23 @@ std::optional<QList<SmartList>> DBHelper::loadSmartLists(QSqlDatabase &db)
     return lists;
 }
 
+std::optional<QList<ReadingList>> DBHelper::loadReadingLists(QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + TableProjection::selectList("rl", ReadingList::columns()) + " FROM reading_list rl ORDER BY rl.parentId IS NULL DESC, rl.id";
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    if (!query.exec(sql)) {
+        QLOG_ERROR() << "Unable to load the reading lists:" << query.lastError().text();
+        return std::nullopt;
+    }
+
+    QList<ReadingList> lists;
+    const auto indexes = ReadingList::columnIndexes(query.record(), "rl");
+    while (query.next())
+        lists.append(ReadingList::fromQuery(query, indexes));
+    return lists;
+}
+
 std::optional<QList<ListFolder>> DBHelper::loadListFolders(ListFolderKind kind, QSqlDatabase &db)
 {
     QSqlQuery query(db);

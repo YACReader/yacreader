@@ -23,6 +23,7 @@ class SmartListItem;
 class SpecialListItem;
 class ReadingListItem;
 class ReadingListSeparatorItem;
+struct ReadingList;
 
 class ReadingListModelProxy : public QSortFilterProxyModel
 {
@@ -119,7 +120,7 @@ signals:
 
 private:
     void cleanAll();
-    void setupReadingListsData(QSqlQuery &sqlquery, ReadingListItem *parent, const QHash<qulonglong, ListFolderItem *> &folders);
+    void setupReadingListsData(const QList<::ReadingList> &lists, ReadingListItem *parent, const QHash<qulonglong, ListFolderItem *> &folders);
     QList<SpecialListItem *> setupSpecialLists(QSqlDatabase &db);
     void setupLabels(QSqlDatabase &db);
     void setupSmartLists(QSqlDatabase &db);

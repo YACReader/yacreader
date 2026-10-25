@@ -703,13 +703,12 @@ void ReadingListModel::cleanAll()
     readingListsRoot = nullptr;
 }
 
-void ReadingListModel::setupReadingListsData(QSqlQuery &sqlquery, ReadingListItem *parent, const QHash<qulonglong, ListFolderItem *> &folders)
+void ReadingListModel::setupReadingListsData(const QList<::ReadingList> &lists, ReadingListItem *parent, const QHash<qulonglong, ListFolderItem *> &folders)
 {
     items.insert(parent->getId(), parent);
 
-    const auto indexes = ::ReadingList::columnIndexes(sqlquery.record(), "rl");
-    while (sqlquery.next()) {
-        ReadingListItem *rli = new ReadingListItem(::ReadingList::fromQuery(sqlquery, indexes));
+    for (const auto &list : lists) {
+        ReadingListItem *rli = new ReadingListItem(list);
 
         if (!rli->list.parentId) {
             // a top level list is in its folder, or at the top level of the section
@@ -820,10 +819,8 @@ void ReadingListModel::setupReadingLists(QSqlDatabase &db)
     readingListsRoot = new ListFolderItem(ListFolder { { ListFolderKind::ReadingList, 0 }, std::nullopt, QString(), 0 });
     const auto folders = setupListFolders(ListFolderKind::ReadingList, readingListsRoot, db);
 
-    QSqlQuery selectQuery("SELECT " + TableProjection::selectList("rl", ::ReadingList::columns()) + " FROM reading_list rl ORDER BY rl.parentId IS NULL DESC", db);
-
     // setup reading lists
-    setupReadingListsData(selectQuery, rootItem, folders);
+    setupReadingListsData(DBHelper::loadReadingLists(db).value_or(QList<::ReadingList>()), rootItem, folders);
     sortByName(readingListsRoot, folders);
 
     // TEST

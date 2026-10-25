@@ -304,20 +304,11 @@ void ListFolderItem::appendList(ListItem *item)
     lists.append(item);
 }
 
-namespace {
-// the insert by name puts an item before the ones with an equal name, so the last one added comes first
-template<typename Item>
-void sortAsInsertedByName(QList<Item *> &items)
-{
-    std::reverse(items.begin(), items.end());
-    std::stable_sort(items.begin(), items.end(), [](const Item *a, const Item *b) { return naturalSortLessThanCI(a->name(), b->name()); });
-}
-}
-
 void ListFolderItem::sortByName()
 {
-    sortAsInsertedByName(folders);
-    sortAsInsertedByName(lists);
+    const auto name = [](const ListItem *item) { return item->name(); };
+    sortListSectionItems(folders, name);
+    sortListSectionItems(lists, name);
 }
 
 int ListFolderItem::rowForFolderName(const QString &name, const ListItem *ignored) const

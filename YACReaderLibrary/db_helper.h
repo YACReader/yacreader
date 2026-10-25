@@ -205,6 +205,8 @@ public:
     static std::optional<SmartList> loadSmartList(SmartListId id, QSqlDatabase &db);
     // in their order; nothing if the query fails
     static std::optional<QList<SmartList>> loadSmartLists(QSqlDatabase &db);
+    // every reading list, the top level ones first, then by id; nothing if the query fails
+    static std::optional<QList<ReadingList>> loadReadingLists(QSqlDatabase &db);
     // in their order (ordering, then id); nothing if the query fails
     static std::optional<QList<ListFolder>> loadListFolders(ListFolderKind kind, QSqlDatabase &db);
     // the hash of the first comic of each list, as its view shows it (its own entries, then its child lists); a list
