@@ -2638,6 +2638,30 @@ std::optional<QList<SmartList>> DBHelper::loadSmartLists(QSqlDatabase &db)
     return lists;
 }
 
+std::optional<QList<Label>> DBHelper::loadLabels(QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + TableProjection::selectList("l", Label::columns()) + " FROM label l ORDER BY l.ordering, l.name";
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    if (!query.exec(sql)) {
+        QLOG_ERROR() << "Unable to load the labels:" << query.lastError().text();
+        return std::nullopt;
+    }
+
+    QList<Label> labels;
+    const auto indexes = Label::columnIndexes(query.record(), "l");
+    while (query.next())
+        labels.append(Label::fromQuery(query, indexes));
+    // the insert by color and name puts a label before the ones with an equal name, so the last one loaded comes first
+    std::reverse(labels.begin(), labels.end());
+    std::stable_sort(labels.begin(), labels.end(), [](const Label &a, const Label &b) {
+        if (a.ordering != b.ordering)
+            return a.ordering < b.ordering;
+        return naturalSortLessThanCI(a.name, b.name);
+    });
+    return labels;
+}
+
 std::optional<QList<ReadingList>> DBHelper::loadReadingLists(QSqlDatabase &db)
 {
     static const QString sql = "SELECT " + TableProjection::selectList("rl", ReadingList::columns()) + " FROM reading_list rl ORDER BY rl.parentId IS NULL DESC, rl.id";

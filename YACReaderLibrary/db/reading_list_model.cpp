@@ -7,7 +7,6 @@
 #include "qnaturalsorting.h"
 #include "reading_list_item.h"
 #include "smart_list.h"
-#include "table_projection.h"
 #include "yacreader_global_gui.h"
 
 #include <QSqlRecord>
@@ -746,12 +745,8 @@ QList<SpecialListItem *> ReadingListModel::setupSpecialLists(QSqlDatabase &db)
 
 void ReadingListModel::setupLabels(QSqlDatabase &db)
 {
-    QSqlQuery selectQuery("SELECT " + TableProjection::selectList("l", ::Label::columns()) + " FROM label l ORDER BY l.ordering, l.name", db);
-
-    const auto indexes = ::Label::columnIndexes(selectQuery.record(), "l");
-    while (selectQuery.next()) {
-        addLabelIntoList(new LabelItem(::Label::fromQuery(selectQuery, indexes)));
-    }
+    for (const auto &label : DBHelper::loadLabels(db).value_or(QList<::Label>()))
+        labels.append(new LabelItem(label));
 
     // TEST
 

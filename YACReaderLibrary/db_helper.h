@@ -206,6 +206,8 @@ public:
     static std::optional<SmartList> loadSmartList(SmartListId id, QSqlDatabase &db);
     // in their order; nothing if the query fails
     static std::optional<QList<SmartList>> loadSmartLists(QSqlDatabase &db);
+    // in the order of the sidebar: by color, then by name; nothing if the query fails
+    static std::optional<QList<Label>> loadLabels(QSqlDatabase &db);
     // every reading list, the top level ones first, then by id; nothing if the query fails
     static std::optional<QList<ReadingList>> loadReadingLists(QSqlDatabase &db);
     // in their order (ordering, then id); nothing if the query fails

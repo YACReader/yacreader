@@ -35,6 +35,7 @@ private slots:
     void cleanup();
     void labelsAreSortedByColorAndName();
     void addedLabelHasItsColorAndId();
+    void loadedLabelsHaveTheOrderOfAddingByColorAndName();
     void addedListsHaveTheirOrder();
     void renameChangesTheRowAndTheDatabase();
     void deleteRemovesTheSublist();
@@ -173,6 +174,52 @@ void ListModelTest::addedLabelHasItsColorAndId()
     for (const auto *label : model.getLabels())
         labels.append(label->name());
     QCOMPARE(labels, QStringList({ "Alpha", "Beta", "Zed", "Cyan one" }));
+}
+
+void ListModelTest::loadedLabelsHaveTheOrderOfAddingByColorAndName()
+{
+    QVERIFY(exec("DELETE FROM label"));
+    // equal names without case keep the order of the first load
+    const QStringList names = { "Batman", "batman", "BATMAN", "List 2", "List 10", "list 2", "Été", "ete", "X", "x-men", "X-Men", "Zeta" };
+    QRandomGenerator random(20261025);
+    QList<int> ids;
+    for (int id = 1; id <= 80; id++)
+        ids.insert(random.bounded(int(ids.size()) + 1), id);
+    for (const auto id : std::as_const(ids)) {
+        const auto color = random.bounded(4) + 1;
+        QVERIFY(exec(QString("INSERT INTO label (id, name, color, ordering) VALUES (%1, '%2', 'red', %3)").arg(id).arg(names.at(random.bounded(int(names.size()))), QString::number(color))));
+    }
+
+    // the reference: the old load query, then the insert by color and name of each label
+    QList<std::tuple<int, QString, QString>> reference; // color, name, id
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::loadDatabase(dataPath);
+        connectionName = db.connectionName();
+        QSqlQuery query("SELECT id, name, ordering FROM label ORDER BY ordering, name", db);
+        while (query.next()) {
+            const auto color = query.value(2).toInt();
+            const auto name = query.value(1).toString();
+            int row = 0;
+            while (row < reference.size() && std::get<0>(reference.at(row)) < color)
+                row++;
+            while (row < reference.size() && std::get<0>(reference.at(row)) == color && naturalSortLessThanCI(std::get<1>(reference.at(row)), name))
+                row++;
+            reference.insert(row, { color, name, query.value(0).toString() });
+        }
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    QStringList expected;
+    for (const auto &label : std::as_const(reference))
+        expected.append(std::get<2>(label));
+
+    ReadingListModel model;
+    model.setupReadingListsData(dataPath);
+    QStringList loaded;
+    for (const auto *label : model.getLabels())
+        loaded.append(QString::number(label->getId()));
+    QCOMPARE(loaded, expected);
 }
 
 void ListModelTest::addedListsHaveTheirOrder()
