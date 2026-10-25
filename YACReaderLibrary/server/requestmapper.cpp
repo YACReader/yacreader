@@ -28,6 +28,7 @@
 #include "controllers/v3/foldercontentcontroller_v3.h"
 #include "controllers/v3/listcontentcontroller_v3.h"
 #include "controllers/v3/listsectioncontroller_v3.h"
+#include "controllers/v3/tagscontroller_v3.h"
 #include "controllers/v3/v3_response.h"
 #include "controllers/versioncontroller.h"
 #include "controllers/webui/webuicontroller.h"
@@ -240,6 +241,7 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     QRegExp smartListFolderContent("/v3/library/([0-9]+)/smart_list_folder/([0-9]+)/content/?");
     QRegExp smartListContent("/v3/library/([0-9]+)/smart_list/([0-9]+)/content/?");
     QRegExp cover("/v3/library/([0-9]+)/cover/(.+)");
+    QRegExp tags("/v3/library/([0-9]+)/tags/?");
 
     loadSession(request, response);
 
@@ -274,6 +276,9 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     } else if (cover.exactMatch(path)) {
         libraryId = cover.cap(1).toInt();
         controller = std::make_unique<CoverControllerV3>(*libraryId, cover.cap(2));
+    } else if (tags.exactMatch(path)) {
+        libraryId = tags.cap(1).toInt();
+        controller = std::make_unique<TagsControllerV3>(*libraryId);
     }
 
     if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId)))

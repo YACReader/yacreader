@@ -35,6 +35,7 @@ private slots:
     void contentOfAMissingListFolderIsNotFound();
     void smartListContentHasTheSearchOrder();
     void coverServesComicFolderAndPlaceholderCovers();
+    void tagsHaveTheOrderOfTheSidebar();
     void coversOutsideTheCoversFolderAreNotFound();
 
 private:
@@ -77,7 +78,7 @@ void ServerV3RoutesTest::initTestCase()
     QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id) VALUES (8, 5, 0, 4)"));
     QVERIFY(exec("INSERT INTO smart_list_folder (id, parent_id, name, ordering) VALUES (1, NULL, 'Saved', 0)"));
     QVERIFY(exec("INSERT INTO smart_list (id, name, query, ordering, folder_id) VALUES (1, 'Unread', 'read:false', 0, NULL), (2, 'rated', 'rating>=4', 0, 1), (3, 'Broken', 'series:(batman', 0, NULL)"));
-    QVERIFY(exec("INSERT INTO label (id, name, color, ordering) VALUES (1, 'Tag', 'red', 0), (2, 'Empty', 'blue', 1)"));
+    QVERIFY(exec("INSERT INTO label (id, name, color, ordering) VALUES (1, 'Tag', 'red', 0), (2, 'Empty', 'blue', 1), (3, 'apple', 'red', 0)"));
     QVERIFY(exec("INSERT INTO label_entry (id, label_id, ordering, comic_info_id, placeholder_id) VALUES (1, 1, 0, 4, NULL), (2, 1, 1, NULL, 1), (3, 1, 2, 1, NULL)"));
 
     const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
@@ -300,6 +301,19 @@ void ServerV3RoutesTest::smartListContentHasTheSearchOrder()
     QCOMPARE(broken.status, 200);
     QCOMPARE(broken.body, QByteArray("[]"));
     QCOMPARE(server->request("POST", library + "/smart_list/1/content").status, 405);
+}
+
+// by color, then by name in natural order without case; v2 sorts by name with SQL ("Tag" before "apple")
+void ServerV3RoutesTest::tagsHaveTheOrderOfTheSidebar()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto tags = items(library + "/tags");
+    QCOMPARE(itemKeys(tags), QStringList({ "label 3", "label 1", "label 2" }));
+    QCOMPARE(tags.at(0).toObject().value("label_name").toString(), QString("apple"));
+    QCOMPARE(tags.at(2).toObject().value("color_id").toInt(), 1);
+    QCOMPARE(items(library + "/tags/"), tags);
+    QCOMPARE(server->request("GET", "/v3/library/77/tags").status, 404);
+    QCOMPARE(server->request("POST", library + "/tags").status, 405);
 }
 
 static QSize imageSize(const HttpAnswer &answer)

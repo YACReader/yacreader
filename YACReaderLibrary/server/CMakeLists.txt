@@ -75,6 +75,8 @@ add_library(server STATIC
     controllers/v3/listsectioncontroller_v3.cpp
     controllers/v3/covercontroller_v3.h
     controllers/v3/covercontroller_v3.cpp
+    controllers/v3/tagscontroller_v3.h
+    controllers/v3/tagscontroller_v3.cpp
     controllers/webui/webuicontroller.h
     controllers/webui/webuicontroller.cpp
 )
