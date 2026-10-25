@@ -1826,6 +1826,20 @@ input[type="time"]:focus-visible {
   content: "";
 }
 
+/* the art of the list in its color, as on its card */
+.list-state-icon {
+  background: var(--surface-subtle);
+  background: color-mix(in srgb, var(--label-color, var(--text-muted)) 16%, transparent);
+}
+
+.list-state-icon::before {
+  width: 28px;
+  height: 28px;
+  content: "";
+  -webkit-mask: var(--list-art) center / contain no-repeat;
+  mask: var(--list-art) center / contain no-repeat;
+}
+
 .browser-state h2 {
   margin: 0 0 8px;
   color: var(--text);

@@ -2991,6 +2991,7 @@
         return listFolderTrail(section, list.folder_id).then(function (trail) {
           return trail.concat([{
             name: list[section.nameField] || "Untitled list",
+            list: list,
             href: listUrl(section, listId),
             action: function () {
               showList(section, listId, true);
@@ -3116,9 +3117,9 @@
       return header;
     }
 
-    function emptyState(title, description) {
+    function emptyState(title, description, iconClass) {
       var empty = element("div", "browser-state compact");
-      empty.appendChild(element("div", "browser-state-icon folder-state-icon"));
+      empty.appendChild(element("div", "browser-state-icon " + (iconClass || "folder-state-icon")));
       empty.appendChild(element("h2", "", title));
       empty.appendChild(element("p", "", description));
       return empty;
@@ -3229,7 +3230,9 @@
         browserRoot.appendChild(pageHeader(section.listTitle, name, countLabel(items.length, "comic", "comics")));
 
         if (!items.length) {
-          browserRoot.appendChild(emptyState(section.emptyList[0], section.emptyList[1]));
+          var list = trail[trail.length - 1].list;
+          browserRoot.appendChild(emptyState(section.emptyList[0], section.emptyList[1],
+            section.artClassFor ? "list-state-icon " + section.artClassFor(list) : ""));
         } else {
           var grid = element("div", "browser-grid");
           items.forEach(function (item) {
