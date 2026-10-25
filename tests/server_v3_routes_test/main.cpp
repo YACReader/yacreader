@@ -4,6 +4,7 @@
 #include "yacreader_http_session_store.h"
 #include "yacreader_libraries.h"
 
+#include <QDateTime>
 #include <QDir>
 #include <QImage>
 #include <QJsonArray>
@@ -36,6 +37,7 @@ private slots:
     void smartListContentHasTheSearchOrder();
     void coverServesComicFolderAndPlaceholderCovers();
     void tagsHaveTheOrderOfTheSidebar();
+    void recentHasTheComicsAddedInTheLastDays();
     void coversOutsideTheCoversFolderAreNotFound();
 
 private:
@@ -314,6 +316,24 @@ void ServerV3RoutesTest::tagsHaveTheOrderOfTheSidebar()
     QCOMPARE(items(library + "/tags/"), tags);
     QCOMPARE(server->request("GET", "/v3/library/77/tags").status, 404);
     QCOMPARE(server->request("POST", library + "/tags").status, 405);
+}
+
+// comics with a file only, the newest first
+void ServerV3RoutesTest::recentHasTheComicsAddedInTheLastDays()
+{
+    const auto now = QDateTime::currentSecsSinceEpoch();
+    QVERIFY(exec(QString("UPDATE comic_info SET added = CASE id WHEN 1 THEN %1 WHEN 2 THEN %2 WHEN 3 THEN %3 ELSE %4 END").arg(now - 2 * 86400).arg(now - 10 * 86400).arg(now - 3600).arg(now)));
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(itemKeys(items(library + "/recent")), QStringList({ "comic 3", "comic 1" }));
+    QCOMPARE(itemKeys(items(library + "/recent/?days=30")), QStringList({ "comic 3", "comic 1", "comic 2" }));
+    QCOMPARE(itemKeys(items(library + "/recent?days=1")), QStringList({ "comic 3" }));
+    for (const auto &days : { QString("0"), QString("-1"), QString("abc"), QString(""), QString("99999999999") }) {
+        const auto answer = server->request("GET", library + "/recent?days=" + days);
+        QCOMPARE(answer.status, 400);
+        QCOMPARE(answer.body, QByteArray("400 bad request"));
+    }
+    QCOMPARE(server->request("GET", "/v3/library/77/recent").status, 404);
+    QCOMPARE(server->request("POST", library + "/recent").status, 405);
 }
 
 static QSize imageSize(const HttpAnswer &answer)

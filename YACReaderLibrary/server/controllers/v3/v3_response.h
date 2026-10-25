@@ -8,6 +8,7 @@
 namespace V3Response {
 
 void json(stefanfrings::HttpResponse &response, const QJsonArray &items);
+void badRequest(stefanfrings::HttpResponse &response);
 void notFound(stefanfrings::HttpResponse &response);
 void methodNotAllowed(stefanfrings::HttpResponse &response);
 void serverError(stefanfrings::HttpResponse &response);

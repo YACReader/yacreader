@@ -12,6 +12,12 @@ void json(HttpResponse &response, const QJsonArray &items)
     response.write(QJsonDocument(items).toJson(QJsonDocument::Compact), true);
 }
 
+void badRequest(HttpResponse &response)
+{
+    response.setStatus(400, "Bad Request");
+    response.write("400 bad request", true);
+}
+
 void notFound(HttpResponse &response)
 {
     response.setStatus(404, "not found");
