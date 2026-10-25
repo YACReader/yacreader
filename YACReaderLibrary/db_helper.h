@@ -204,6 +204,8 @@ public:
     // nothing if the query fails
     static std::optional<QList<Placeholder>> loadFolderPlaceholders(FolderId folderId, QSqlDatabase &db);
     static std::optional<SmartList> loadSmartList(SmartListId id, QSqlDatabase &db);
+    static std::optional<ReadingList> loadReadingList(ReadingListId id, QSqlDatabase &db);
+    static std::optional<ListFolder> loadListFolder(const ListFolderId &id, QSqlDatabase &db);
     // in their order; nothing if the query fails
     static std::optional<QList<SmartList>> loadSmartLists(QSqlDatabase &db);
     // in the order of the sidebar: by color, then by name; nothing if the query fails

@@ -2610,6 +2610,27 @@ std::optional<QList<Placeholder>> DBHelper::loadFolderPlaceholders(FolderId fold
     return placeholders;
 }
 
+std::optional<ReadingList> DBHelper::loadReadingList(ReadingListId id, QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + TableProjection::selectList("rl", ReadingList::columns()) + " FROM reading_list rl WHERE rl.id = :id";
+    QSqlQuery query(db);
+    query.prepare(sql);
+    query.bindValue(":id", id.value());
+    if (query.exec() && query.next())
+        return ReadingList::fromQuery(query, ReadingList::columnIndexes(query.record(), "rl"));
+    return std::nullopt;
+}
+
+std::optional<ListFolder> DBHelper::loadListFolder(const ListFolderId &id, QSqlDatabase &db)
+{
+    QSqlQuery query(db);
+    query.prepare("SELECT " + TableProjection::selectList("f", ListFolder::columns()) + QString(" FROM %1 f WHERE f.id = :id").arg(folderTable(id.kind).table));
+    query.bindValue(":id", id.id);
+    if (query.exec() && query.next())
+        return ListFolder::fromQuery(query, ListFolder::columnIndexes(query.record(), "f"), id.kind);
+    return std::nullopt;
+}
+
 std::optional<SmartList> DBHelper::loadSmartList(SmartListId id, QSqlDatabase &db)
 {
     static const QString sql = "SELECT " + TableProjection::selectList("s", SmartList::columns()) + " FROM smart_list s WHERE s.id = :id";

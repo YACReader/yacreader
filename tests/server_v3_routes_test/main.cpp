@@ -38,6 +38,7 @@ private slots:
     void coverServesComicFolderAndPlaceholderCovers();
     void tagsHaveTheOrderOfTheSidebar();
     void recentHasTheComicsAddedInTheLastDays();
+    void listItemsAreTheItemsOfTheSections();
     void coversOutsideTheCoversFolderAreNotFound();
 
 private:
@@ -334,6 +335,40 @@ void ServerV3RoutesTest::recentHasTheComicsAddedInTheLastDays()
     }
     QCOMPARE(server->request("GET", "/v3/library/77/recent").status, 404);
     QCOMPARE(server->request("POST", library + "/recent").status, 405);
+}
+
+static QJsonObject itemObject(TestHttpServer &server, const QString &path)
+{
+    const auto answer = server.request("GET", path);
+    if (answer.status != 200 || answer.contentType != "application/json")
+        qWarning() << path << answer.status << answer.contentType;
+    return QJsonDocument::fromJson(answer.body).object();
+}
+
+// the same objects as in the sections, so a page with a URL can show its name and walk up its folders
+void ServerV3RoutesTest::listItemsAreTheItemsOfTheSections()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto readingLists = items(library + "/reading_lists");
+    QCOMPARE(itemObject(*server, library + "/reading_list/1"), readingLists.at(4).toObject());
+    QCOMPARE(itemObject(*server, library + "/reading_list_folder/2/"), readingLists.at(0).toObject());
+    const auto marvel = items(library + "/reading_list_folder/1/content");
+    QCOMPARE(itemObject(*server, library + "/reading_list_folder/3"), marvel.at(0).toObject());
+    QCOMPARE(itemObject(*server, library + "/reading_list/5"), marvel.at(1).toObject());
+    const auto saved = items(library + "/smart_list_folder/1/content");
+    QCOMPARE(itemObject(*server, library + "/smart_list/2"), saved.at(0).toObject());
+    QCOMPARE(itemObject(*server, library + "/smart_list_folder/1"), items(library + "/smart_lists").at(0).toObject());
+
+    // a child list is only in the content of its parent, but it has a page too
+    const auto child = itemObject(*server, library + "/reading_list/3");
+    QCOMPARE(child.value("reading_list_name").toString(), QString("First child"));
+    QCOMPARE(child.value("first_comic_hash").toString(), QString("hash-3"));
+    QVERIFY(!child.contains("parent_id"));
+
+    for (const auto &path : { QString("/reading_list/99"), QString("/reading_list_folder/99"), QString("/smart_list/99"), QString("/smart_list_folder/3") })
+        QCOMPARE(server->request("GET", library + path).status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/reading_list/1").status, 404);
+    QCOMPARE(server->request("PATCH", library + "/reading_list/1").status, 405);
 }
 
 static QSize imageSize(const HttpAnswer &answer)
