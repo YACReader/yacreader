@@ -1512,6 +1512,10 @@ input[type="time"]:focus-visible {
   --list-art: url("/images/webui/empty_reading_list.svg");
 }
 
+.smart-list-art {
+  --list-art: url("/images/webui/smart_list_card.svg");
+}
+
 .list-cover .browser-cover-image {
   border-radius: 10px;
 }

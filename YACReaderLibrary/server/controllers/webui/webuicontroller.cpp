@@ -92,7 +92,7 @@ void WebUIController::service(HttpRequest &request, HttpResponse &response)
     }
 
     const QRegularExpression libraryBrowserPath(
-            QStringLiteral(R"(^/webui/library/([0-9]+)(?:/(folder|comic|reading_list_folder|reading_list)/([0-9]+)(?:/(read)|/(missing)/[0-9]+)?|/(reading_lists))?/?$)"));
+            QStringLiteral(R"(^/webui/library/([0-9]+)(?:/(folder|comic|reading_list_folder|reading_list|smart_list_folder|smart_list)/([0-9]+)(?:/(read)|/(missing)/[0-9]+)?|/(reading_lists|smart_lists))?/?$)"));
     const QRegularExpressionMatch libraryBrowserMatch = libraryBrowserPath.match(QString::fromUtf8(path));
     if (libraryBrowserMatch.hasMatch()) {
         if (method != "GET") {
