@@ -436,7 +436,8 @@
       if (left.view === "search") {
         return left.query === right.query;
       }
-      return String(left.itemId || "") === String(right.itemId || "");
+      return String(left.itemId || "") === String(right.itemId || "")
+        && String(left.missingKey || "") === String(right.missingKey || "");
     }
 
     function browserViewportTop() {
@@ -721,9 +722,39 @@
       return comicUrl(comicId) + "/read";
     }
 
-    // a missing comic is shown inside the content that has it: its key is the placeholder id in a folder
-    function missingComicUrl(folderId, key) {
-      return libraryUrl() + "/folder/" + encodeURIComponent(folderId) + "/missing/" + encodeURIComponent(key);
+    function readingListsUrl() {
+      return libraryUrl() + "/reading_lists";
+    }
+
+    function readingListFolderUrl(folderId) {
+      return libraryUrl() + "/reading_list_folder/" + encodeURIComponent(folderId);
+    }
+
+    function readingListUrl(listId) {
+      return libraryUrl() + "/reading_list/" + encodeURIComponent(listId);
+    }
+
+    // a missing comic is shown inside the content that has it ({ kind: "folder" or "reading_list", id }); its key
+    // is the placeholder id in a folder and the entry id in a list
+    function missingComicUrl(container, key) {
+      var containerUrl = container.kind === "folder"
+        ? libraryUrl() + "/folder/" + encodeURIComponent(container.id)
+        : readingListUrl(container.id);
+      return containerUrl + "/missing/" + encodeURIComponent(key);
+    }
+
+    function missingComicKey(item, container) {
+      return String(container.kind === "folder" ? item.placeholder_id : item.entry_id);
+    }
+
+    function v3Api(path) {
+      return "/v3/library/" + encodeURIComponent(libraryId) + path;
+    }
+
+    function containerContentApi(container) {
+      return container.kind === "folder"
+        ? folderContentApi(container.id)
+        : v3Api("/reading_list/" + encodeURIComponent(container.id) + "/content");
     }
 
     function folderContentApi(folderId) {
@@ -803,6 +834,8 @@
         filePath = encodeURIComponent(item.hash) + ".jpg";
       } else if (item.type === "placeholder") {
         filePath = safeCoverPath(item.cover);
+      } else if (item.type === "reading_list" && item.first_comic_hash) {
+        filePath = encodeURIComponent(item.first_comic_hash) + ".jpg";
       } else if (item.type === "folder") {
         if (item.custom_image) {
           filePath = safeCoverPath(item.custom_image);
@@ -1289,13 +1322,13 @@
       }
     }
 
-    function actionMenuButton(className, label, entriesProvider) {
+    function actionMenuButton(className, label, entriesProvider, iconMarkup) {
       var button = element("button", className);
       button.type = "button";
       button.setAttribute("aria-haspopup", "menu");
       button.setAttribute("aria-expanded", "false");
       button.setAttribute("aria-label", label);
-      button.appendChild(svgIcon("action-menu-button-icon", '<circle cx="5" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.7" fill="currentColor" stroke="none"/>'));
+      button.appendChild(svgIcon("action-menu-button-icon", iconMarkup || '<circle cx="5" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.7" fill="currentColor" stroke="none"/>'));
       button.addEventListener("click", function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -1541,17 +1574,17 @@
       return cover;
     }
 
-    function missingComicCard(item, folderId) {
-      var key = String(item.placeholder_id);
+    function missingComicCard(item, container) {
+      var key = missingComicKey(item, container);
       var card = element("a", "browser-card comic-card");
-      card.href = missingComicUrl(folderId, key);
+      card.href = missingComicUrl(container, key);
       card.dataset.browserHistoryKey = "missing:" + key;
       card.addEventListener("click", function (event) {
         if (!shouldHandleInAppLink(event)) {
           return;
         }
         event.preventDefault();
-        showMissingComic(folderId, key, true, item, card);
+        showMissingComic(container, key, true, item, card);
       });
 
       var copy = element("div", "browser-card-copy");
@@ -1856,6 +1889,9 @@
         var titleRow = element("div", "browser-library-title-row");
         titleRow.appendChild(element("h2", "", folderName));
         var currentFolder = folderMetadataCache[folderId];
+        if (folderId === "1") {
+          titleRow.appendChild(actionMenuButton("icon-button browser-header-menu-button", "Lists", libraryMenuEntries, '<path d="M4 7h16M4 12h16M4 17h16"/>'));
+        }
         if (folderId !== "1" && currentFolder) {
           titleRow.appendChild(actionMenuButton("icon-button browser-header-menu-button", "Actions for " + folderName, function () {
             return folderMenuEntries(currentFolder);
@@ -1890,7 +1926,7 @@
             } else if (item.type === "comic") {
               grid.appendChild(comicCard(item));
             } else if (item.type === "placeholder") {
-              grid.appendChild(missingComicCard(item, folderId));
+              grid.appendChild(missingComicCard(item, { kind: "folder", id: folderId }));
             }
           });
           browserRoot.appendChild(grid);
@@ -2756,8 +2792,326 @@
       });
     }
 
+    // the lists of the library, as in the apps
+    function libraryMenuEntries() {
+      return [
+        {
+          label: "Reading lists",
+          run: function () {
+            showReadingListSection(null, true);
+          }
+        }
+      ];
+    }
+
+    function setBrowserBackTo(show) {
+      if (!browserBack) {
+        return;
+      }
+      browserBack.hidden = false;
+      browserBackAction = show;
+    }
+
+    var listFolderCache = {};
+
+    // the list folders from the top of the section down to folderId
+    function readingListFolderTrail(folderId) {
+      var trail = [];
+      var visited = {};
+
+      function load(currentId) {
+        if (!currentId || visited[currentId]) {
+          return Promise.resolve(trail);
+        }
+        visited[currentId] = true;
+
+        var cached = listFolderCache[currentId];
+        return (cached ? Promise.resolve(cached) : fetchJson(v3Api("/reading_list_folder/" + encodeURIComponent(currentId)))).then(function (folder) {
+          listFolderCache[currentId] = folder;
+          trail.unshift({
+            name: folder.folder_name || "Untitled folder",
+            href: readingListFolderUrl(currentId),
+            action: function () {
+              showReadingListSection(currentId, true);
+            }
+          });
+          return load(folder.parent_id ? String(folder.parent_id) : "");
+        });
+      }
+
+      return load(folderId ? String(folderId) : "");
+    }
+
+    // the folders of the list, then the list
+    function readingListTrail(listId) {
+      return fetchJson(v3Api("/reading_list/" + encodeURIComponent(listId))).then(function (list) {
+        return readingListFolderTrail(list.folder_id).then(function (trail) {
+          return trail.concat([{
+            name: list.reading_list_name || "Untitled list",
+            href: readingListUrl(listId),
+            action: function () {
+              showReadingList(listId, true);
+            }
+          }]);
+        });
+      });
+    }
+
+    function listBreadcrumbParts(trail, finalLabel) {
+      var parts = [{
+        label: "Libraries",
+        href: "/webui#libraries"
+      }, {
+        label: libraryName,
+        href: libraryUrl(),
+        action: function () {
+          showFolder("1", true);
+        }
+      }];
+
+      if (trail.length === 0 && !finalLabel) {
+        parts.push({ label: "Reading lists" });
+        return parts;
+      }
+
+      parts.push({
+        label: "Reading lists",
+        href: readingListsUrl(),
+        action: function () {
+          showReadingListSection(null, true);
+        }
+      });
+      trail.forEach(function (entry, index) {
+        var isLast = index === trail.length - 1 && !finalLabel;
+        parts.push({
+          label: entry.name,
+          href: isLast ? "" : entry.href,
+          action: isLast ? null : entry.action
+        });
+      });
+      if (finalLabel) {
+        parts.push({ label: finalLabel });
+      }
+      return parts;
+    }
+
+    // the folder shape of the desktop, with no image
+    function listFolderCard(folder) {
+      var folderId = String(folder.id);
+      var card = element("a", "browser-card folder-card");
+      card.href = readingListFolderUrl(folderId);
+      card.dataset.browserHistoryKey = "reading_list_folder:" + folderId;
+      card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
+        event.preventDefault();
+        showReadingListSection(folderId, true, card);
+      });
+
+      var cover = element("div", "browser-cover folder-cover");
+      cover.appendChild(element("div", "folder-cover-back"));
+      cover.appendChild(element("div", "folder-cover-middle"));
+      var front = element("div", "folder-cover-front");
+      front.appendChild(folderPlaceholder());
+      cover.appendChild(front);
+
+      var copy = element("div", "browser-card-copy");
+      copy.appendChild(element("div", "browser-card-title", folder.folder_name || "Untitled folder"));
+      card.append(cover, copy);
+      var shell = element("div", "browser-card-shell");
+      shell.appendChild(card);
+      return shell;
+    }
+
+    // the cover of its first comic, else the art of the desktop
+    function readingListCard(list) {
+      var listId = String(list.id);
+      var card = element("a", "browser-card list-card");
+      card.href = readingListUrl(listId);
+      card.dataset.browserHistoryKey = "reading_list:" + listId;
+      card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
+        event.preventDefault();
+        showReadingList(listId, true, card);
+      });
+
+      var cover = element("div", "browser-cover list-cover");
+      var art = element("div", "list-art reading-list-art");
+      cover.appendChild(art);
+      var url = coverUrl(list);
+      if (url) {
+        art.hidden = true;
+        var image = element("img", "browser-cover-image");
+        image.alt = "";
+        image.loading = "lazy";
+        image.src = url;
+        image.addEventListener("error", function () {
+          image.remove();
+          art.hidden = false;
+        });
+        cover.appendChild(image);
+      }
+
+      var copy = element("div", "browser-card-copy");
+      copy.appendChild(element("div", "browser-card-title", list.reading_list_name || "Untitled list"));
+      card.append(cover, copy);
+      var shell = element("div", "browser-card-shell");
+      shell.appendChild(card);
+      return shell;
+    }
+
+    function pageHeader(sectionTitle, title, summary) {
+      var header = element("section", "browser-library-header");
+      header.appendChild(element("div", "section-title", sectionTitle));
+      var titleRow = element("div", "browser-library-title-row");
+      titleRow.appendChild(element("h2", "", title));
+      header.appendChild(titleRow);
+      header.appendChild(element("p", "", summary));
+      return header;
+    }
+
+    function emptyState(title, description) {
+      var empty = element("div", "browser-state compact");
+      empty.appendChild(element("div", "browser-state-icon folder-state-icon"));
+      empty.appendChild(element("h2", "", title));
+      empty.appendChild(element("p", "", description));
+      return empty;
+    }
+
+    function countLabel(count, singular, plural) {
+      return count === 1 ? "1 " + singular : count + " " + plural;
+    }
+
+    // the reading lists section (folderId: nothing) or one of its folders: its folders, then its lists
+    function showReadingListSection(folderId, pushHistory, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      showNavigationLoading();
+
+      Promise.all([
+        fetchJson(folderId ? v3Api("/reading_list_folder/" + encodeURIComponent(folderId) + "/content") : v3Api("/reading_lists")),
+        readingListFolderTrail(folderId)
+      ]).then(function (results) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var items = results[0];
+        var trail = results[1];
+        var name = trail.length ? trail[trail.length - 1].name : "Reading lists";
+        var folders = items.filter(function (item) { return item.type === "reading_list_folder"; });
+        var lists = items.filter(function (item) { return item.type === "reading_list"; });
+
+        setPageHeading(name);
+        setBrowserBackTo(trail.length > 1
+          ? trail[trail.length - 2].action
+          : folderId
+            ? function () { showReadingListSection(null, true); }
+            : function () { showFolder("1", true); });
+        renderBreadcrumbs(listBreadcrumbParts(trail));
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+
+        var summaryParts = [];
+        if (folders.length) {
+          summaryParts.push(countLabel(folders.length, "folder", "folders"));
+        }
+        if (lists.length) {
+          summaryParts.push(countLabel(lists.length, "list", "lists"));
+        }
+        browserRoot.appendChild(pageHeader(folderId ? "Folder" : "Library", name, summaryParts.join(" · ") || "No items"));
+
+        if (!items.length) {
+          browserRoot.appendChild(folderId
+            ? emptyState("This folder is empty", "There are no reading lists here yet.")
+            : emptyState("No reading lists", "There are no reading lists in this library yet."));
+        } else {
+          var grid = element("div", "browser-grid");
+          folders.forEach(function (folder) {
+            grid.appendChild(listFolderCard(folder));
+          });
+          lists.forEach(function (list) {
+            grid.appendChild(readingListCard(list));
+          });
+          browserRoot.appendChild(grid);
+        }
+
+        var state = { view: folderId ? "reading_list_folder" : "reading_lists", itemId: folderId || "" };
+        finishHistoryNavigation(state, folderId ? readingListFolderUrl(folderId) : readingListsUrl(), pushHistory, version);
+      }).catch(function () {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showReadingListSection(folderId, false);
+        });
+      });
+    }
+
+    // its entries, then the entries of its child lists, in their order
+    function showReadingList(listId, pushHistory, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      showNavigationLoading();
+
+      Promise.all([
+        fetchJson(v3Api("/reading_list/" + encodeURIComponent(listId) + "/content")),
+        readingListTrail(listId)
+      ]).then(function (results) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var items = results[0];
+        var trail = results[1];
+        var name = trail[trail.length - 1].name;
+        var container = { kind: "reading_list", id: listId };
+
+        setPageHeading(name);
+        setBrowserBackTo(trail.length > 1
+          ? trail[trail.length - 2].action
+          : function () { showReadingListSection(null, true); });
+        renderBreadcrumbs(listBreadcrumbParts(trail));
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+        browserRoot.appendChild(pageHeader("Reading list", name, countLabel(items.length, "comic", "comics")));
+
+        if (!items.length) {
+          browserRoot.appendChild(emptyState("This reading list is empty", "There are no comics in this list yet."));
+        } else {
+          var grid = element("div", "browser-grid");
+          items.forEach(function (item) {
+            if (item.type === "comic") {
+              grid.appendChild(comicCard(item));
+            } else if (isMissingComic(item)) {
+              grid.appendChild(missingComicCard(item, container));
+            }
+          });
+          browserRoot.appendChild(grid);
+        }
+
+        finishHistoryNavigation({ view: "reading_list", itemId: listId }, readingListUrl(listId), pushHistory, version);
+      }).catch(function () {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showReadingList(listId, false);
+        });
+      });
+    }
+
     // what the item has, from the content that has it; there is no file to read
-    function showMissingComic(folderId, key, pushHistory, existingItem, returnToCard) {
+    function showMissingComic(container, key, pushHistory, existingItem, returnToCard) {
       startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
       setSearchVisible(false);
@@ -2767,16 +3121,16 @@
       Promise.all([
         existingItem
           ? Promise.resolve(existingItem)
-          : fetchJson(folderContentApi(folderId)).then(function (items) {
+          : fetchJson(containerContentApi(container)).then(function (items) {
             var found = items.filter(function (item) {
-              return item.type === "placeholder" && String(item.placeholder_id) === key;
+              return isMissingComic(item) && missingComicKey(item, container) === key;
             })[0];
             if (!found) {
               throw new Error("missing comic not found");
             }
             return found;
           }),
-        folderTrail(folderId)
+        container.kind === "folder" ? folderTrail(container.id) : readingListTrail(container.id)
       ]).then(function (results) {
         if (version !== navigationVersion) {
           return;
@@ -2787,8 +3141,15 @@
         var title = missingComicTitle(item);
 
         setPageHeading(title);
-        setBrowserBack(folderId);
-        renderBreadcrumbs(browserBreadcrumbParts(trail, title));
+        if (container.kind === "folder") {
+          setBrowserBack(container.id);
+          renderBreadcrumbs(browserBreadcrumbParts(trail, title));
+        } else {
+          setBrowserBackTo(function () {
+            showReadingList(container.id, true);
+          });
+          renderBreadcrumbs(listBreadcrumbParts(trail, title));
+        }
 
         browserRoot.removeAttribute("aria-busy");
         browserRoot.replaceChildren();
@@ -2846,14 +3207,14 @@
         detail.append(coverColumn, copy);
         browserRoot.appendChild(detail);
 
-        var state = { view: "missing", itemId: folderId, missingKey: key };
-        finishHistoryNavigation(state, missingComicUrl(folderId, key), pushHistory, version);
+        var state = { view: "missing", itemId: container.kind + ":" + container.id, missingKey: key };
+        finishHistoryNavigation(state, missingComicUrl(container, key), pushHistory, version);
       }).catch(function () {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
-          showMissingComic(folderId, key, false);
+          showMissingComic(container, key, false);
         });
       });
     }
@@ -2864,15 +3225,21 @@
         return { view: "search", query: query.trim() };
       }
       var escapedLibraryId = libraryId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId + "(?:/(folder|comic)/([0-9]+)(?:/read|/missing/([0-9]+))?)?/?$"));
+      var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId
+        + "(?:/(folder|comic|reading_list_folder|reading_list)/([0-9]+)(?:/read|/missing/([0-9]+))?|/(reading_lists))?/?$"));
       if (!match) {
         return { view: "folder", itemId: "1" };
       }
+      if (match[4]) {
+        return { view: match[4], itemId: "" };
+      }
+      if (match[3]) {
+        return { view: "missing", itemId: match[1] + ":" + match[2], missingKey: match[3] };
+      }
       var reader = /\/read\/?$/.test(window.location.pathname);
       return {
-        view: match[3] ? "missing" : reader ? "reader" : match[1] || "folder",
-        itemId: match[2] || "1",
-        missingKey: match[3]
+        view: reader ? "reader" : match[1] || "folder",
+        itemId: match[2] || "1"
       };
     }
 
@@ -2884,7 +3251,14 @@
       } else if (route.view === "comic") {
         showComic(route.itemId, false);
       } else if (route.view === "missing") {
-        showMissingComic(route.itemId, route.missingKey, false);
+        var separator = route.itemId.indexOf(":");
+        showMissingComic({ kind: route.itemId.slice(0, separator), id: route.itemId.slice(separator + 1) }, route.missingKey, false);
+      } else if (route.view === "reading_lists") {
+        showReadingListSection(null, false);
+      } else if (route.view === "reading_list_folder") {
+        showReadingListSection(route.itemId, false);
+      } else if (route.view === "reading_list") {
+        showReadingList(route.itemId, false);
       } else {
         showFolder(route.itemId, false);
       }
@@ -2921,10 +3295,10 @@
       showReader(initialItemId, false);
     } else if (initialView === "comic") {
       showComic(initialItemId, false);
-    } else if (initialView === "missing") {
-      showMissingComic(initialItemId, initialRoute.missingKey, false);
-    } else {
+    } else if (initialView === "folder") {
       showFolder(initialItemId, false);
+    } else {
+      showRoute(initialRoute);
     }
   }
 

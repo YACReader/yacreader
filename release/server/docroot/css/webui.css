@@ -1490,6 +1490,32 @@ input[type="time"]:focus-visible {
   filter: grayscale(1);
 }
 
+/* a list without a cover: the art of its type on the card, as in the desktop */
+.list-art {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: linear-gradient(145deg, var(--surface-subtle), var(--surface));
+}
+
+.list-art::before {
+  position: absolute;
+  inset: 0;
+  background-color: var(--text-muted);
+  content: "";
+  -webkit-mask: var(--list-art) center / 60% auto no-repeat;
+  mask: var(--list-art) center / 60% auto no-repeat;
+}
+
+.reading-list-art {
+  --list-art: url("/images/webui/empty_reading_list.svg");
+}
+
+.list-cover .browser-cover-image {
+  border-radius: 10px;
+}
+
 .cover-placeholder {
   display: grid;
   overflow: hidden;
