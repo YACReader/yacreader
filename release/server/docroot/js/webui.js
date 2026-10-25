@@ -722,10 +722,13 @@
       return comicUrl(comicId) + "/read";
     }
 
-    // the reading lists and the smart lists sections have the same pages, with the routes and the words of each kind
+    // the reading lists, smart lists, and tags sections have the same pages, with the routes and the words of each
+    // kind; tags have no folders
     var listSections = {
       reading_list: {
         kind: "reading_list",
+        itemType: "reading_list",
+        itemWords: ["list", "lists"],
         title: "Reading lists",
         listTitle: "Reading list",
         nameField: "reading_list_name",
@@ -736,6 +739,8 @@
       },
       smart_list: {
         kind: "smart_list",
+        itemType: "smart_list",
+        itemWords: ["list", "lists"],
         title: "Smart lists",
         listTitle: "Smart list",
         nameField: "smart_list_name",
@@ -743,6 +748,22 @@
         emptySection: ["No smart lists", "There are no smart lists in this library yet."],
         emptyFolder: "There are no smart lists here yet.",
         emptyList: ["No comics", "No comics match the search of this list."]
+      },
+      tag: {
+        kind: "tag",
+        itemType: "label",
+        itemWords: ["tag", "tags"],
+        title: "Tags",
+        listTitle: "Tag",
+        nameField: "label_name",
+        // the label art of the desktop in the color of the tag
+        artClass: "label-art",
+        artClassFor: function (label) {
+          return "label-art label-color-" + Number(label.color_id);
+        },
+        emptySection: ["No tags", "There are no tags in this library yet."],
+        emptyFolder: "",
+        emptyList: ["This tag is empty", "There are no comics with this tag yet."]
       }
     };
 
@@ -2830,6 +2851,12 @@
           run: function () {
             showListSection(listSections.smart_list, null, true);
           }
+        },
+        {
+          label: "Tags",
+          run: function () {
+            showListSection(listSections.tag, null, true);
+          }
         }
       ];
     }
@@ -2875,7 +2902,16 @@
 
     // the folders of the list, then the list
     function listTrail(section, listId) {
-      return fetchJson(v3Api("/" + section.kind + "/" + encodeURIComponent(listId))).then(function (list) {
+      var loadList = section.kind === "tag"
+        ? fetchJson(v3Api("/tags")).then(function (labels) {
+          var label = labels.filter(function (item) { return String(item.id) === String(listId); })[0];
+          if (!label) {
+            throw new Error("tag not found");
+          }
+          return label;
+        })
+        : fetchJson(v3Api("/" + section.kind + "/" + encodeURIComponent(listId)));
+      return loadList.then(function (list) {
         return listFolderTrail(section, list.folder_id).then(function (trail) {
           return trail.concat([{
             name: list[section.nameField] || "Untitled list",
@@ -2970,7 +3006,7 @@
       });
 
       var cover = element("div", "browser-cover list-cover");
-      var art = element("div", "list-art " + section.artClass);
+      var art = element("div", "list-art " + (section.artClassFor ? section.artClassFor(list) : section.artClass));
       cover.appendChild(art);
       var url = coverUrl(list);
       if (url) {
@@ -3036,7 +3072,7 @@
         var trail = results[1];
         var name = trail.length ? trail[trail.length - 1].name : section.title;
         var folders = items.filter(function (item) { return item.type === section.kind + "_folder"; });
-        var lists = items.filter(function (item) { return item.type === section.kind; });
+        var lists = items.filter(function (item) { return item.type === section.itemType; });
 
         setPageHeading(name);
         setBrowserBackTo(trail.length > 1
@@ -3054,7 +3090,7 @@
           summaryParts.push(countLabel(folders.length, "folder", "folders"));
         }
         if (lists.length) {
-          summaryParts.push(countLabel(lists.length, "list", "lists"));
+          summaryParts.push(countLabel(lists.length, section.itemWords[0], section.itemWords[1]));
         }
         browserRoot.appendChild(pageHeader(folderId ? "Folder" : "Library", name, summaryParts.join(" · ") || "No items"));
 
@@ -3258,7 +3294,7 @@
       }
       var escapedLibraryId = libraryId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId
-        + "(?:/(folder|comic|reading_list_folder|reading_list|smart_list_folder|smart_list)/([0-9]+)(?:/read|/missing/([0-9]+))?|/(reading_lists|smart_lists))?/?$"));
+        + "(?:/(folder|comic|reading_list_folder|reading_list|smart_list_folder|smart_list|tag)/([0-9]+)(?:/read|/missing/([0-9]+))?|/(reading_lists|smart_lists|tags))?/?$"));
       if (!match) {
         return { view: "folder", itemId: "1" };
       }
@@ -3285,11 +3321,11 @@
       } else if (route.view === "missing") {
         var separator = route.itemId.indexOf(":");
         showMissingComic({ kind: route.itemId.slice(0, separator), id: route.itemId.slice(separator + 1) }, route.missingKey, false);
-      } else if (route.view === "reading_lists" || route.view === "smart_lists") {
+      } else if (route.view === "reading_lists" || route.view === "smart_lists" || route.view === "tags") {
         showListSection(listSections[route.view.slice(0, -1)], null, false);
       } else if (route.view === "reading_list_folder" || route.view === "smart_list_folder") {
         showListSection(listSections[route.view.slice(0, -"_folder".length)], route.itemId, false);
-      } else if (route.view === "reading_list" || route.view === "smart_list") {
+      } else if (route.view === "reading_list" || route.view === "smart_list" || route.view === "tag") {
         showList(listSections[route.view], route.itemId, false);
       } else {
         showFolder(route.itemId, false);

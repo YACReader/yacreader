@@ -1516,6 +1516,71 @@ input[type="time"]:focus-visible {
   --list-art: url("/images/webui/smart_list_card.svg");
 }
 
+.label-art {
+  --list-art: url("/images/webui/empty_label.svg");
+}
+
+.label-art::before {
+  background-color: var(--label-color, var(--text-muted));
+}
+
+/* the label colors of the desktop themes */
+.label-color-1 {
+  --label-color: #F67A7B;
+}
+
+.label-color-2 {
+  --label-color: #F5C240;
+}
+
+.label-color-3 {
+  --label-color: #F2E446;
+}
+
+.label-color-4 {
+  --label-color: #ADE738;
+}
+
+.label-color-5 {
+  --label-color: #A0FDDB;
+}
+
+.label-color-6 {
+  --label-color: #82C7FF;
+}
+
+.label-color-7 {
+  --label-color: #8F95FF;
+}
+
+.label-color-8 {
+  --label-color: #D692FC;
+}
+
+.label-color-9 {
+  --label-color: #FD9CDA;
+}
+
+.label-color-10 {
+  --label-color: #FCFCFC;
+}
+
+.label-color-11 {
+  --label-color: #CBCBCB;
+}
+
+.label-color-12 {
+  --label-color: #B7B7B7;
+}
+
+:root[data-theme="dark"] .label-color-11 {
+  --label-color: #AFAFAF;
+}
+
+:root[data-theme="dark"] .label-color-12 {
+  --label-color: #7C7C7C;
+}
+
 .list-cover .browser-cover-image {
   border-radius: 10px;
 }

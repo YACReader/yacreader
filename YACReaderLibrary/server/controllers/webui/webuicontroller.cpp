@@ -92,7 +92,7 @@ void WebUIController::service(HttpRequest &request, HttpResponse &response)
     }
 
     const QRegularExpression libraryBrowserPath(
-            QStringLiteral(R"(^/webui/library/([0-9]+)(?:/(folder|comic|reading_list_folder|reading_list|smart_list_folder|smart_list)/([0-9]+)(?:/(read)|/(missing)/[0-9]+)?|/(reading_lists|smart_lists))?/?$)"));
+            QStringLiteral(R"(^/webui/library/([0-9]+)(?:/(folder|comic|reading_list_folder|reading_list|smart_list_folder|smart_list|tag)/([0-9]+)(?:/(read)|/(missing)/[0-9]+)?|/(reading_lists|smart_lists|tags))?/?$)"));
     const QRegularExpressionMatch libraryBrowserMatch = libraryBrowserPath.match(QString::fromUtf8(path));
     if (libraryBrowserMatch.hasMatch()) {
         if (method != "GET") {
@@ -116,7 +116,7 @@ void WebUIController::service(HttpRequest &request, HttpResponse &response)
             response.write("404 invalid reader path", true);
             return;
         }
-        if (!libraryBrowserMatch.captured(5).isEmpty() && libraryBrowserMatch.captured(2) != QStringLiteral("folder") && libraryBrowserMatch.captured(2) != QStringLiteral("reading_list")) {
+        if (!libraryBrowserMatch.captured(5).isEmpty() && libraryBrowserMatch.captured(2) != QStringLiteral("folder") && libraryBrowserMatch.captured(2) != QStringLiteral("reading_list") && libraryBrowserMatch.captured(2) != QStringLiteral("tag")) {
             response.setStatus(404, "Not Found");
             response.setHeader("Content-Type", "text/plain; charset=utf-8");
             response.write("404 invalid missing comic path", true);
