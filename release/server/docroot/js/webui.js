@@ -15,6 +15,40 @@
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
+  var recentDaysKey = "yacreader-webui-recent-days";
+
+  // the days of Recent, 1 to 30 as in the apps
+  function recentDays() {
+    try {
+      var days = Number(localStorage.getItem(recentDaysKey));
+      if (Number.isInteger(days) && days >= 1 && days <= 30) {
+        return days;
+      }
+    } catch (error) {
+    }
+    return 7;
+  }
+
+  function initRecentDaysSetting() {
+    var select = document.querySelector("[data-recent-days]");
+    if (!select) {
+      return;
+    }
+    for (var days = 1; days <= 30; days++) {
+      var option = document.createElement("option");
+      option.value = String(days);
+      option.textContent = days === 1 ? "1 day" : days + " days";
+      select.appendChild(option);
+    }
+    select.value = String(recentDays());
+    select.addEventListener("change", function () {
+      try {
+        localStorage.setItem(recentDaysKey, select.value);
+      } catch (error) {
+      }
+    });
+  }
+
   function applyTheme(theme) {
     root.dataset.theme = theme;
 
@@ -764,6 +798,36 @@
         emptySection: ["No tags", "There are no tags in this library yet."],
         emptyFolder: "",
         emptyList: ["This tag is empty", "There are no comics with this tag yet."]
+      }
+    };
+
+    // Favorites and Recent are one list of comics each, with no folders
+    var comicLists = {
+      favorites: {
+        view: "favorites",
+        title: "Favorites",
+        api: function () {
+          return "/v2/library/" + encodeURIComponent(libraryId) + "/favs";
+        },
+        summary: function (count) {
+          return countLabel(count, "comic", "comics");
+        },
+        emptyList: function () {
+          return ["No favorites", "There are no comics in Favorites yet."];
+        }
+      },
+      recent: {
+        view: "recent",
+        title: "Recent",
+        api: function () {
+          return v3Api("/recent?days=" + recentDays());
+        },
+        summary: function (count) {
+          return countLabel(count, "comic", "comics") + " · added in the last " + countLabel(recentDays(), "day", "days");
+        },
+        emptyList: function () {
+          return ["No recent comics", "No comics were added in the last " + countLabel(recentDays(), "day", "days") + "."];
+        }
       }
     };
 
@@ -2853,9 +2917,21 @@
           }
         },
         {
+          label: "Favorites",
+          run: function () {
+            showComicList(comicLists.favorites, true);
+          }
+        },
+        {
           label: "Tags",
           run: function () {
             showListSection(listSections.tag, null, true);
+          }
+        },
+        {
+          label: "Recent",
+          run: function () {
+            showComicList(comicLists.recent, true);
           }
         }
       ];
@@ -3177,6 +3253,50 @@
       });
     }
 
+    function showComicList(list, pushHistory, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      showNavigationLoading();
+
+      fetchJson(list.api()).then(function (items) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var comics = items.filter(function (item) { return item.type === "comic"; });
+
+        setPageHeading(list.title);
+        setBrowserBackTo(function () { showFolder("1", true); });
+        renderBreadcrumbs(listBreadcrumbParts(list, []));
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+        browserRoot.appendChild(pageHeader("Library", list.title, list.summary(comics.length)));
+
+        if (!comics.length) {
+          var empty = list.emptyList();
+          browserRoot.appendChild(emptyState(empty[0], empty[1]));
+        } else {
+          var grid = element("div", "browser-grid");
+          comics.forEach(function (comic) {
+            grid.appendChild(comicCard(comic));
+          });
+          browserRoot.appendChild(grid);
+        }
+
+        finishHistoryNavigation({ view: list.view, itemId: "" }, libraryUrl() + "/" + list.view, pushHistory, version);
+      }).catch(function () {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showComicList(list, false);
+        });
+      });
+    }
+
     // what the item has, from the content that has it; there is no file to read
     function showMissingComic(container, key, pushHistory, existingItem, returnToCard) {
       startHistoryNavigation(pushHistory, returnToCard);
@@ -3294,7 +3414,7 @@
       }
       var escapedLibraryId = libraryId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId
-        + "(?:/(folder|comic|reading_list_folder|reading_list|smart_list_folder|smart_list|tag)/([0-9]+)(?:/read|/missing/([0-9]+))?|/(reading_lists|smart_lists|tags))?/?$"));
+        + "(?:/(folder|comic|reading_list_folder|reading_list|smart_list_folder|smart_list|tag)/([0-9]+)(?:/read|/missing/([0-9]+))?|/(reading_lists|smart_lists|tags|favorites|recent))?/?$"));
       if (!match) {
         return { view: "folder", itemId: "1" };
       }
@@ -3321,6 +3441,8 @@
       } else if (route.view === "missing") {
         var separator = route.itemId.indexOf(":");
         showMissingComic({ kind: route.itemId.slice(0, separator), id: route.itemId.slice(separator + 1) }, route.missingKey, false);
+      } else if (comicLists[route.view]) {
+        showComicList(comicLists[route.view], false);
       } else if (route.view === "reading_lists" || route.view === "smart_lists" || route.view === "tags") {
         showListSection(listSections[route.view.slice(0, -1)], null, false);
       } else if (route.view === "reading_list_folder" || route.view === "smart_list_folder") {
@@ -3588,6 +3710,7 @@
       updateControl();
     });
 
+    initRecentDaysSetting();
     initLibraryBrowser();
     var libraryMenus = initLibraryMenus();
     initUpdateLibraries(libraryMenus);

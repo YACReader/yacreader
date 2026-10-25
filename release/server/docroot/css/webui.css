@@ -2425,6 +2425,10 @@ input[type="time"]:focus-visible {
   overflow: hidden;
 }
 
+.browser-settings-card {
+  margin-top: 18px;
+}
+
 .settings-card-heading {
   display: flex;
   align-items: center;
