@@ -31,6 +31,7 @@ private slots:
     void readingListsSectionHasTheOrderOfTheSidebar();
     void smartListsSectionHasTheOrderOfTheSidebar();
     void contentOfAMissingListFolderIsNotFound();
+    void smartListContentHasTheSearchOrder();
 
 private:
     bool exec(const QString &sql);
@@ -54,8 +55,8 @@ void ServerV3RoutesTest::initTestCase()
 
     QVERIFY(exec("INSERT INTO folder (id, parentId, name, path) VALUES (2, 1, 'Series', '/Series'), "
                  "(3, 2, 'A sub', '/Series/A sub'), (4, 2, 'b sub', '/Series/b sub'), (5, 2, 'a sub', '/Series/a sub')"));
-    QVERIFY(exec("INSERT INTO comic_info (id, hash, number, title, numPages) VALUES "
-                 "(1, 'hash-1', '10', 'Ten', 20), (2, 'hash-2', '2', 'Two', 20), (3, 'hash-3', NULL, NULL, 20), (4, 'hash-4', '1', 'Deleted', 20)"));
+    QVERIFY(exec("INSERT INTO comic_info (id, hash, number, title, series, numPages) VALUES "
+                 "(1, 'hash-1', '10', 'Ten', 'Beta', 20), (2, 'hash-2', '2', 'Two', 'Beta', 20), (3, 'hash-3', NULL, NULL, 'Alpha', 20), (4, 'hash-4', '1', 'Deleted', NULL, 20)"));
     QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES "
                  "(1, 2, 1, 'c1.cbz', '/Series/c1.cbz'), (2, 2, 2, 'c2.cbz', '/Series/c2.cbz'), (3, 2, 3, 'c3.cbz', '/Series/c3.cbz')"));
     QVERIFY(exec("INSERT INTO placeholder (id, series, number, coverKey) VALUES (1, 'Series', '3', 'key-1'), (2, 'Series', NULL, NULL)"));
@@ -70,7 +71,7 @@ void ServerV3RoutesTest::initTestCase()
     QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name, folder_id) VALUES (4, NULL, 0, 'Zeta', NULL), (5, NULL, 0, 'alpha', 1), (6, NULL, 0, 'batman', NULL), (7, NULL, 0, 'Batman', NULL)"));
     QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id) VALUES (8, 5, 0, 4)"));
     QVERIFY(exec("INSERT INTO smart_list_folder (id, parent_id, name, ordering) VALUES (1, NULL, 'Saved', 0)"));
-    QVERIFY(exec("INSERT INTO smart_list (id, name, query, ordering, folder_id) VALUES (1, 'Unread', 'read:false', 0, NULL), (2, 'rated', 'rating>=4', 0, 1)"));
+    QVERIFY(exec("INSERT INTO smart_list (id, name, query, ordering, folder_id) VALUES (1, 'Unread', 'read:false', 0, NULL), (2, 'rated', 'rating>=4', 0, 1), (3, 'Broken', 'series:(batman', 0, NULL)"));
     QVERIFY(exec("INSERT INTO label (id, name, color, ordering) VALUES (1, 'Tag', 'red', 0), (2, 'Empty', 'blue', 1)"));
     QVERIFY(exec("INSERT INTO label_entry (id, label_id, ordering, comic_info_id, placeholder_id) VALUES (1, 1, 0, 4, NULL), (2, 1, 1, NULL, 1), (3, 1, 2, 1, NULL)"));
 
@@ -213,6 +214,8 @@ void ServerV3RoutesTest::contentOfAMissingListIsNotFound()
     QCOMPARE(server->request("GET", library + "/reading_list/99/content").status, 404);
     QCOMPARE(server->request("GET", library + "/tag/99/content").status, 404);
     QCOMPARE(server->request("GET", "/v3/library/77/reading_list/1/content").status, 404);
+    QCOMPARE(server->request("GET", library + "/smart_list/99/content").status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/smart_list/1/content").status, 404);
 }
 
 // the folders, then the top level lists, each group by name; child lists are only in the content of their parent
@@ -244,10 +247,10 @@ void ServerV3RoutesTest::smartListsSectionHasTheOrderOfTheSidebar()
 {
     const auto library = QString("/v3/library/%1").arg(libraryId);
     const auto top = items(library + "/smart_lists");
-    QCOMPARE(itemKeys(top), QStringList({ "smart_list_folder 1", "smart_list 1" }));
+    QCOMPARE(itemKeys(top), QStringList({ "smart_list_folder 1", "smart_list 3", "smart_list 1" }));
     QCOMPARE(top.at(0).toObject().value("folder_name").toString(), QString("Saved"));
-    QCOMPARE(top.at(1).toObject().value("smart_list_name").toString(), QString("Unread"));
-    QVERIFY(!top.at(1).toObject().contains("folder_id"));
+    QCOMPARE(top.at(2).toObject().value("smart_list_name").toString(), QString("Unread"));
+    QVERIFY(!top.at(2).toObject().contains("folder_id"));
 
     const auto saved = items(library + "/smart_list_folder/1/content");
     QCOMPARE(itemKeys(saved), QStringList({ "smart_list 2" }));
@@ -263,6 +266,21 @@ void ServerV3RoutesTest::contentOfAMissingListFolderIsNotFound()
     QCOMPARE(server->request("GET", library + "/smart_list_folder/3/content").status, 404);
     QCOMPARE(server->request("GET", "/v3/library/77/reading_lists").status, 404);
     QCOMPARE(server->request("GET", "/v3/library/77/smart_list_folder/1/content").status, 404);
+}
+
+// comics with a file only, by series, volume, number, and file name; the folder order has no series
+void ServerV3RoutesTest::smartListContentHasTheSearchOrder()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto content = items(library + "/smart_list/1/content");
+    QCOMPARE(itemKeys(content), QStringList({ "comic 3", "comic 2", "comic 1" }));
+    QCOMPARE(content.at(1).toObject().value("file_name").toString(), QString("c2.cbz"));
+    QCOMPARE(itemKeys(items(library + "/smart_list/2/content")), QStringList());
+    // a query that cannot be parsed has no comics, as in the desktop
+    const auto broken = server->request("GET", library + "/smart_list/3/content");
+    QCOMPARE(broken.status, 200);
+    QCOMPARE(broken.body, QByteArray("[]"));
+    QCOMPARE(server->request("POST", library + "/smart_list/1/content").status, 405);
 }
 
 QTEST_GUILESS_MAIN(ServerV3RoutesTest)
