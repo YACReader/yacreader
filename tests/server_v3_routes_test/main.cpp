@@ -25,6 +25,9 @@ private slots:
     void v3UsesTheSessionOfV2();
     void folderContentHasTheOrderOfTheDesktop();
     void folderContentOfAMissingFolderIsNotFound();
+    void readingListContentHasEveryEntryOfTheListAndItsChildLists();
+    void labelContentHasEveryEntry();
+    void contentOfAMissingListIsNotFound();
 
 private:
     bool exec(const QString &sql);
@@ -54,6 +57,13 @@ void ServerV3RoutesTest::initTestCase()
                  "(1, 2, 1, 'c1.cbz', '/Series/c1.cbz'), (2, 2, 2, 'c2.cbz', '/Series/c2.cbz'), (3, 2, 3, 'c3.cbz', '/Series/c3.cbz')"));
     QVERIFY(exec("INSERT INTO placeholder (id, series, number, coverKey) VALUES (1, 'Series', '3', 'key-1'), (2, 'Series', NULL, NULL)"));
     QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (2, 1), (2, 2)"));
+    // child lists in their manual order: 3, then 2
+    QVERIFY(exec("INSERT INTO reading_list (id, parentId, ordering, name) VALUES (1, NULL, 0, 'List'), (2, 1, 1, 'Second child'), (3, 1, 0, 'First child')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (id, reading_list_id, ordering, comic_info_id, placeholder_id, last_known_name, last_known_path) VALUES "
+                 "(1, 1, 0, 2, NULL, NULL, NULL), (2, 1, 1, NULL, 1, NULL, NULL), (3, 1, 2, 4, NULL, 'c4.cbz', '/Series/c4.cbz'), (4, 1, 3, 1, NULL, NULL, NULL), "
+                 "(5, 1, 4, 2, NULL, NULL, NULL), (6, 2, 0, NULL, 2, NULL, NULL), (7, 3, 0, 3, NULL, NULL, NULL)"));
+    QVERIFY(exec("INSERT INTO label (id, name, color, ordering) VALUES (1, 'Tag', 'red', 0), (2, 'Empty', 'blue', 1)"));
+    QVERIFY(exec("INSERT INTO label_entry (id, label_id, ordering, comic_info_id, placeholder_id) VALUES (1, 1, 0, 4, NULL), (2, 1, 1, NULL, 1), (3, 1, 2, 1, NULL)"));
 
     server = std::make_unique<TestHttpServer>(root->path());
     QVERIFY(server->isListening());
@@ -128,7 +138,13 @@ static QStringList itemKeys(const QJsonArray &items)
     for (const auto &item : items) {
         const auto object = item.toObject();
         const auto type = object.value("type").toString();
-        keys.append(type + " " + object.value(type == "placeholder" ? "placeholder_id" : "id").toString());
+        const auto id = type == "placeholder" ? "placeholder_id" : (type == "deleted_comic" ? "comic_info_id" : "id");
+        auto key = type + " " + object.value(id).toString();
+        if (object.contains("entry_id"))
+            key += " entry " + object.value("entry_id").toString();
+        if (object.contains("reading_list_id"))
+            key += " list " + object.value("reading_list_id").toString();
+        keys.append(key);
     }
     return keys;
 }
@@ -156,6 +172,38 @@ void ServerV3RoutesTest::folderContentOfAMissingFolderIsNotFound()
 {
     QCOMPARE(server->request("GET", QString("/v3/library/%1/folder/99/content").arg(libraryId)).status, 404);
     QCOMPARE(server->request("GET", "/v3/library/77/folder/2/content").status, 404);
+}
+
+// a repeated comic is one item for each entry; the child lists follow in their order, flat
+void ServerV3RoutesTest::readingListContentHasEveryEntryOfTheListAndItsChildLists()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto content = items(library + "/reading_list/1/content");
+    QCOMPARE(itemKeys(content), QStringList({ "comic 2 entry 1 list 1", "placeholder 1 entry 2 list 1", "deleted_comic 4 entry 3 list 1", "comic 1 entry 4 list 1", "comic 2 entry 5 list 1", "comic 3 entry 7 list 3", "placeholder 2 entry 6 list 2" }));
+    const auto deleted = content.at(2).toObject();
+    QCOMPARE(deleted.value("last_known_name").toString(), QString("c4.cbz"));
+    QCOMPARE(deleted.value("hash").toString(), QString("hash-4"));
+    QCOMPARE(deleted.value("title").toString(), QString("Deleted"));
+    QVERIFY(!deleted.contains("id"));
+    QCOMPARE(content.at(1).toObject().value("cover").toString(), QString("/placeholders/key-1.jpg"));
+
+    QCOMPARE(itemKeys(items(library + "/reading_list/2/content")), QStringList({ "placeholder 2 entry 6 list 2" }));
+    QCOMPARE(server->request("POST", library + "/reading_list/1/content").status, 405);
+}
+
+void ServerV3RoutesTest::labelContentHasEveryEntry()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(itemKeys(items(library + "/tag/1/content")), QStringList({ "deleted_comic 4 entry 1", "placeholder 1 entry 2", "comic 1 entry 3" }));
+    QCOMPARE(itemKeys(items(library + "/tag/2/content")), QStringList());
+}
+
+void ServerV3RoutesTest::contentOfAMissingListIsNotFound()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(server->request("GET", library + "/reading_list/99/content").status, 404);
+    QCOMPARE(server->request("GET", library + "/tag/99/content").status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/reading_list/1/content").status, 404);
 }
 
 QTEST_GUILESS_MAIN(ServerV3RoutesTest)

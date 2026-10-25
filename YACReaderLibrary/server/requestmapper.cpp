@@ -25,6 +25,7 @@
 #include "controllers/v2/updatecomiccontroller_v2.h"
 #include "controllers/v2/updatelibrariescontroller_v2.h"
 #include "controllers/v3/foldercontentcontroller_v3.h"
+#include "controllers/v3/listcontentcontroller_v3.h"
 #include "controllers/v3/v3_response.h"
 #include "controllers/versioncontroller.h"
 #include "controllers/webui/webuicontroller.h"
@@ -229,6 +230,8 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
 
     QRegExp serverVersion("/v3/version/?");
     QRegExp folderContent("/v3/library/([0-9]+)/folder/([0-9]+)/content/?");
+    QRegExp readingListContent("/v3/library/([0-9]+)/reading_list/([0-9]+)/content/?");
+    QRegExp labelContent("/v3/library/([0-9]+)/tag/([0-9]+)/content/?");
 
     loadSession(request, response);
 
@@ -239,6 +242,12 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     } else if (folderContent.exactMatch(path)) {
         libraryId = folderContent.cap(1).toInt();
         controller = std::make_unique<FolderContentControllerV3>(*libraryId, FolderId(folderContent.cap(2).toULongLong()));
+    } else if (readingListContent.exactMatch(path)) {
+        libraryId = readingListContent.cap(1).toInt();
+        controller = std::make_unique<ListContentControllerV3>(*libraryId, ListKind::ReadingList, readingListContent.cap(2).toULongLong());
+    } else if (labelContent.exactMatch(path)) {
+        libraryId = labelContent.cap(1).toInt();
+        controller = std::make_unique<ListContentControllerV3>(*libraryId, ListKind::Label, labelContent.cap(2).toULongLong());
     }
 
     if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId)))

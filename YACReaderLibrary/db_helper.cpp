@@ -2230,6 +2230,16 @@ std::optional<QList<Folder>> DBHelper::loadSubfolders(FolderId parentId, QSqlDat
     return folders;
 }
 
+bool DBHelper::readingListExists(ReadingListId id, QSqlDatabase &db)
+{
+    return rowExists("reading_list", id.value(), db);
+}
+
+bool DBHelper::labelExists(LabelId id, QSqlDatabase &db)
+{
+    return rowExists("label", id.value(), db);
+}
+
 QList<ComicDB> DBHelper::getSortedComicsFromParent(qulonglong parentId, QSqlDatabase &db)
 {
     QList<ComicDB> list;
