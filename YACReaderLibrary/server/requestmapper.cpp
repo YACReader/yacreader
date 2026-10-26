@@ -26,6 +26,7 @@
 #include "controllers/v2/updatelibrariescontroller_v2.h"
 #include "controllers/v3/covercontroller_v3.h"
 #include "controllers/v3/foldercontentcontroller_v3.h"
+#include "controllers/v3/folderinfocontroller_v3.h"
 #include "controllers/v3/listcontentcontroller_v3.h"
 #include "controllers/v3/listitemcontroller_v3.h"
 #include "controllers/v3/listsectioncontroller_v3.h"
@@ -235,6 +236,7 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
 
     QRegExp serverVersion("/v3/version/?");
     QRegExp folderContent("/v3/library/([0-9]+)/folder/([0-9]+)/content/?");
+    QRegExp folderInfo("/v3/library/([0-9]+)/folder/([0-9]+)/info/?");
     QRegExp readingListContent("/v3/library/([0-9]+)/reading_list/([0-9]+)/content/?");
     QRegExp labelContent("/v3/library/([0-9]+)/tag/([0-9]+)/content/?");
     QRegExp readingLists("/v3/library/([0-9]+)/reading_lists/?");
@@ -259,6 +261,9 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     } else if (folderContent.exactMatch(path)) {
         libraryId = folderContent.cap(1).toInt();
         controller = std::make_unique<FolderContentControllerV3>(*libraryId, FolderId(folderContent.cap(2).toULongLong()));
+    } else if (folderInfo.exactMatch(path)) {
+        libraryId = folderInfo.cap(1).toInt();
+        controller = std::make_unique<FolderInfoControllerV3>(*libraryId, FolderId(folderInfo.cap(2).toULongLong()));
     } else if (readingListContent.exactMatch(path)) {
         libraryId = readingListContent.cap(1).toInt();
         controller = std::make_unique<ListContentControllerV3>(*libraryId, ReadingListId(readingListContent.cap(2).toULongLong()));

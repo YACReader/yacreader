@@ -40,6 +40,7 @@ private slots:
     void recentHasTheComicsAddedInTheLastDays();
     void listItemsAreTheItemsOfTheSections();
     void coversOutsideTheCoversFolderAreNotFound();
+    void folderInfoHasTheComicsAndPlaceholdersOfTheWholeTree();
 
 private:
     bool exec(const QString &sql);
@@ -405,6 +406,35 @@ void ServerV3RoutesTest::coversOutsideTheCoversFolderAreNotFound()
         QCOMPARE(answer.status, 404);
         QCOMPARE(answer.body, QByteArray("404 not found"));
     }
+}
+
+// adds comics and placeholders to the subfolders, so it runs last
+void ServerV3RoutesTest::folderInfoHasTheComicsAndPlaceholdersOfTheWholeTree()
+{
+    QVERIFY(exec("INSERT INTO folder (id, parentId, name, path) VALUES (6, 5, 'Inner', '/Series/a sub/Inner')"));
+    QVERIFY(exec("INSERT INTO comic_info (id, hash, number, numPages) VALUES (5, 'hash-5', '1', 20), (6, 'hash-6', '2', 20)"));
+    QVERIFY(exec("INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES "
+                 "(5, 5, 5, 'c5.cbz', '/Series/a sub/c5.cbz'), (6, 6, 6, 'c6.cbz', '/Series/a sub/Inner/c6.cbz')"));
+    QVERIFY(exec("INSERT INTO placeholder (id, series, number) VALUES (3, 'Sub', '1')"));
+    QVERIFY(exec("INSERT INTO folder_placeholder (folder_id, placeholder_id) VALUES (3, 3)"));
+
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto info = items(library + "/folder/2/info");
+    // the folder in the order of its content, then its subfolders by name ("A sub", "a sub" with "Inner", "b sub")
+    QCOMPARE(itemKeys(info), QStringList({ "comic 2", "placeholder 1", "comic 1", "placeholder 2", "comic 3", "placeholder 3", "comic 5", "comic 6" }));
+    QStringList parents;
+    for (const auto &item : info)
+        parents.append(item.toObject().value("parent_id").toString());
+    QCOMPARE(parents, QStringList({ "2", "2", "2", "2", "2", "3", "5", "6" }));
+    const auto content = items(library + "/folder/2/content");
+    QCOMPARE(info.at(0).toObject(), content.at(3).toObject());
+    QCOMPARE(info.at(1).toObject(), content.at(4).toObject());
+
+    QCOMPARE(itemKeys(items(library + "/folder/5/info/")), QStringList({ "comic 5", "comic 6" }));
+    QCOMPARE(itemKeys(items(library + "/folder/4/info")), QStringList());
+    QCOMPARE(server->request("GET", library + "/folder/99/info").status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/folder/2/info").status, 404);
+    QCOMPARE(server->request("POST", library + "/folder/2/info").status, 405);
 }
 
 QTEST_GUILESS_MAIN(ServerV3RoutesTest)
