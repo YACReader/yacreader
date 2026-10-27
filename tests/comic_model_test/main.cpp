@@ -434,7 +434,7 @@ void ComicModelTest::deletedComicRowsShowTheirInfoAndLastKnownFile()
     QVERIFY(deleted.data(ComicModel::IdRole).isNull());
     QVERIFY(deleted.data(ComicModel::FileNameRole).isNull());
     QCOMPARE(deleted.data(ComicModel::TitleRole).toString(), QString("Title 3"));
-    QCOMPARE(deleted.data(ComicModel::ReadableTitle).toString(), QString("#3 Title 3"));
+    QCOMPARE(deleted.data(ComicModel::ReadableTitle).toString(), QString("#3 - Title 3"));
     QCOMPARE(deleted.data(ComicModel::RatingRole).toInt(), 3);
     QCOMPARE(model.index(0, ComicModel::FileName).data().toString(), QString("c3.cbz"));
     QCOMPARE(model.index(0, ComicModel::Path).data().toString(), QString("/Series/c3.cbz"));
@@ -871,13 +871,13 @@ void ComicModelTest::placeholderRowsShowTheirMetadata()
         QCOMPARE(model.index(2, column).data(Qt::DisplayRole).toString(), QString("-"));
     QVERIFY(!(model.flags(model.index(2, ComicModel::Rating)) & Qt::ItemIsEditable));
 
-    // the descriptive metadata, and "Series #Number" when there is no title, also in the table
+    // Grid captions have fallbacks; the table Title column shows only title metadata.
     QCOMPARE(index.data(ComicModel::NumberRole).toString(), QString("7"));
     QCOMPARE(index.data(ComicModel::SeriesRole).toString(), QString("Expected Series"));
     QCOMPARE(index.data(ComicModel::VolumeRole).toString(), QString("2020"));
-    QCOMPARE(index.data(ComicModel::TitleRole).toString(), QString("Expected Series #7"));
+    QCOMPARE(index.data(ComicModel::TitleRole).toString(), QString("Expected Series"));
     QCOMPARE(index.data(ComicModel::ReadableTitle).toString(), QString("Expected Series #7"));
-    QCOMPARE(model.index(2, ComicModel::Title).data(Qt::DisplayRole).toString(), QString("Expected Series #7"));
+    QVERIFY(model.index(2, ComicModel::Title).data(Qt::DisplayRole).isNull());
 
     QVERIFY(model.hasUnavailableRows());
     QCOMPARE(model.getUnavailableList(), QList<bool>({ false, false, true }));
@@ -887,6 +887,26 @@ void ComicModelTest::placeholderRowsShowTheirMetadata()
     QVERIFY(recordComic(record) == nullptr);
     QCOMPARE(recordPlaceholder(record)->id, PlaceholderId(1));
     QCOMPARE(recordMetadata(record).series.toString(), QString("Expected Series"));
+
+    // Volume identifies the grid/standalone caption, without becoming a table title.
+    QVERIFY(exec("UPDATE placeholder SET series = NULL, volume = 'The Red Mother' WHERE id = 1"));
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(index.data(ComicModel::TitleRole).toString(), QString("The Red Mother"));
+    QCOMPARE(index.data(ComicModel::ReadableTitle).toString(), QString("#7 - The Red Mother"));
+    QVERIFY(model.index(2, ComicModel::Title).data(Qt::DisplayRole).isNull());
+    QCOMPARE(index.data(ComicModel::NumberRole).toString(), QString("7"));
+    QVERIFY(exec("UPDATE placeholder SET volume = NULL WHERE id = 1"));
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(index.data(ComicModel::TitleRole).toString(), QString("-"));
+    QCOMPARE(index.data(ComicModel::ReadableTitle).toString(), QString("#7"));
+    QVERIFY(exec("UPDATE placeholder SET number = NULL WHERE id = 1"));
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(index.data(ComicModel::TitleRole).toString(), QString("-"));
+    QCOMPARE(index.data(ComicModel::ReadableTitle).toString(), QString("-"));
+    QVERIFY(model.index(2, ComicModel::Title).data(Qt::DisplayRole).isNull());
+    QVERIFY(exec("UPDATE placeholder SET title = 'Actual title' WHERE id = 1"));
+    model.setupReadingListModelData(1, dataPath);
+    QCOMPARE(model.index(2, ComicModel::Title).data(Qt::DisplayRole).toString(), QString("Actual title"));
 }
 
 void ComicModelTest::placeholderCoverIsItsFileOrTheDefaultImage()
@@ -1068,7 +1088,7 @@ void ComicModelTest::folderShowsItsMissingComicsInNumberOrder()
 
     const auto missing = model.index(6, 0);
     QCOMPARE(missing.data(ComicModel::AvailableRole).toBool(), false);
-    QCOMPARE(missing.data(ComicModel::TitleRole).toString(), QString("Series #6"));
+    QCOMPARE(missing.data(ComicModel::TitleRole).toString(), QString("Series"));
     QVERIFY(missing.data(ComicModel::IdRole).isNull());
     QVERIFY(missing.data(ComicModel::ListItemIdRole).isNull());
     QCOMPARE(model.index(6, ComicModel::FileName).data(Qt::DisplayRole).toString(), QString("-"));

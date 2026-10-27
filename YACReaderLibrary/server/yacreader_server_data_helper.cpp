@@ -287,10 +287,18 @@ void addEntry(const ListEntry &entry, QJsonObject &json)
 
 QJsonObject YACReaderServerDataHelper::comicItemToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicItem &item)
 {
+    const auto browserComic = [&](const ComicDB &comic) {
+        auto json = comicToJSON(libraryId, libraryUuid, comic);
+        // V3 cards need raw fallback fields for the same labels as full details.
+        // Keep the frozen v2 summary serializer unchanged.
+        variantToJson("series", QMetaType::QString, comic.info.series, json);
+        variantToJson("volume", QMetaType::QString, comic.info.volume, json);
+        return json;
+    };
     return std::visit(overloaded {
-                              [&](const ComicItemCase::Comic &row) { return comicToJSON(libraryId, libraryUuid, row.comic); },
+                              [&](const ComicItemCase::Comic &row) { return browserComic(row.comic); },
                               [&](const ComicItemCase::ComicInList &row) {
-                                  auto json = comicToJSON(libraryId, libraryUuid, row.comic);
+                                  auto json = browserComic(row.comic);
                                   addEntry(row.entry, json);
                                   return json;
                               },

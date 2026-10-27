@@ -637,9 +637,9 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     const auto &item = _data.at(index.row());
     const auto *placeholder = rowPlaceholder(item);
     const auto value = [&item](int column) { return columnValue(item, column); };
-    // only a missing comic can have no title, series, number, or file name
-    const auto orMissingComic = [this](const QString &title) { return title.isEmpty() ? tr("Missing comic") : title; };
-    const auto title = [&] { return orMissingComic(titleOrFileName(rowMetadata(item), rowFileName(item))); };
+    // Display fallback only; the metadata and API keep their original values.
+    const auto orDash = [](const QString &title) { return title.isEmpty() ? QStringLiteral("-") : title; };
+    const auto title = [&] { return orDash(titleOrFileName(rowMetadata(item), rowFileName(item))); };
 
     auto sizeString = [=] {
         auto bytes = value(ComicModel::Hash).toString().right(value(ComicModel::Hash).toString().length() - 40).toULongLong();
@@ -662,10 +662,8 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
         return title();
     else if (role == ReadableTitle) {
         const auto &metadata = rowMetadata(item);
-        // without a title, the fallback already has the number
-        if (!metadata.title.toString().trimmed().isEmpty() && !metadata.number.toString().trimmed().isEmpty())
-            return QString(QStringLiteral("#") % metadata.number.toString() % QStringLiteral(" ") % metadata.title.toString());
-        return title();
+        // Continue-reading cards and action labels have no separate number field.
+        return orDash(titleIncludingNumber(metadata, rowFileName(item)));
     } else if (role == FileNameRole)
         return rowComic(item) ? value(FileName) : QVariant();
     else if (role == RatingRole)
@@ -721,7 +719,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     if (index.column() == ComicModel::Hash)
         return value(ComicModel::Hash);
     if (index.column() == ComicModel::Title)
-        return title();
+        return value(ComicModel::Title);
     // a placeholder shows "-" for the values it does not have
     if (placeholder != nullptr) {
         switch (index.column()) {

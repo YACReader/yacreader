@@ -187,7 +187,7 @@ signals:
     void favoriteChanged();
 
 private:
-    static QString orMissingComic(const QString &title);
+    static QString orDash(const QString &title);
 
     ComicRecord record;
     // the last title fallback: the file name, or the last known one of a deleted comic

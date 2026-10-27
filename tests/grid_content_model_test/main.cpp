@@ -120,7 +120,7 @@ void GridContentModelTest::comicRowsForwardTheComicRoles()
     QCOMPARE(grid.index(0, 0).data(GridContentModel::KindRole).toString(), QString("ComicInList"));
     QCOMPARE(grid.index(0, 0).data(GridContentModel::ListItemIdRole).toULongLong(), 7ULL);
     QCOMPARE(grid.index(1, 0).data(GridContentModel::ListIdRole).toULongLong(), 1ULL);
-    QCOMPARE(grid.index(0, 0).data(GridContentModel::ReadableTitleRole).toString(), QString("#2 Title 2"));
+    QCOMPARE(grid.index(0, 0).data(GridContentModel::ReadableTitleRole).toString(), QString("#2 - Title 2"));
 }
 
 void GridContentModelTest::folderRowsHaveOnlyTheirTitle()

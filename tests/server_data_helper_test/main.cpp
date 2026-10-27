@@ -13,6 +13,7 @@ private slots:
     void deletedComicJson();
     void placeholderJson();
     void comicItemJson();
+    void browserMetadataStaysRaw();
 };
 
 static Folder sampleFolder(qint32 numChildren)
@@ -153,10 +154,13 @@ void ServerDataHelperTest::comicItemJson()
     comic.info = sampleInfo();
 
     auto json = YACReaderServerDataHelper::comicItemToJSON(2, QUuid(), ComicItemCase::Comic { comic });
-    QCOMPARE(json, YACReaderServerDataHelper::comicToJSON(2, QUuid(), comic));
+    auto expectedComic = YACReaderServerDataHelper::comicToJSON(2, QUuid(), comic);
+    expectedComic["series"] = "Series";
+    expectedComic["volume"] = "V1";
+    QCOMPARE(json, expectedComic);
 
     json = YACReaderServerDataHelper::comicItemToJSON(2, QUuid(), ComicItemCase::ComicInList { comic, sampleEntry(ListKind::ReadingList) });
-    auto expected = YACReaderServerDataHelper::comicToJSON(2, QUuid(), comic);
+    auto expected = expectedComic;
     expected["entry_id"] = "30";
     expected["reading_list_id"] = "3";
     QCOMPARE(json, expected);
@@ -182,6 +186,29 @@ void ServerDataHelperTest::comicItemJson()
     expected = YACReaderServerDataHelper::placeholderToJSON(2, QUuid(), samplePlaceholder(std::nullopt));
     expected["parent_id"] = "8";
     QCOMPARE(json, expected);
+}
+
+void ServerDataHelperTest::browserMetadataStaysRaw()
+{
+    ComicDB comic;
+    comic.info = sampleInfo();
+    comic.info.title = QVariant();
+    comic.info.series = QVariant();
+    comic.info.volume = "The Red Mother";
+    const auto v2 = YACReaderServerDataHelper::comicToJSON(2, QUuid(), comic);
+    QVERIFY(!v2.contains("volume"));
+    QVERIFY(!v2.contains("series"));
+    const auto json = YACReaderServerDataHelper::comicItemToJSON(2, QUuid(), ComicItemCase::Comic { comic });
+    QVERIFY(!json.contains("title"));
+    QVERIFY(!json.contains("series"));
+    QCOMPARE(json.value("volume").toString(), QString("The Red Mother"));
+    QCOMPARE(json.value("universal_number").toString(), QString("4"));
+    comic.info.volume = QVariant();
+    const auto empty = YACReaderServerDataHelper::comicItemToJSON(2, QUuid(), ComicItemCase::Comic { comic });
+    QVERIFY(!empty.contains("title"));
+    QVERIFY(!empty.contains("series"));
+    QVERIFY(!empty.contains("volume"));
+    QCOMPARE(empty.value("universal_number").toString(), QString("4"));
 }
 
 QTEST_GUILESS_MAIN(ServerDataHelperTest)

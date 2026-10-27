@@ -964,8 +964,8 @@
       return item.type === "deleted_comic" || item.type === "placeholder";
     }
 
-    // the fallbacks of the desktop (the title, the series and the number, the file name), written as comic cards
-    function missingComicTitle(item) {
+    // Display labels only; never substitute these fallbacks into server metadata.
+    function readableComicTitle(item) {
       var hasText = function (value) {
         return value !== undefined && value !== null && String(value).trim() !== "";
       };
@@ -981,27 +981,20 @@
       if (hasText(item.series)) {
         return String(item.series);
       }
+      if (hasText(item.volume) && hasText(item.universal_number)) {
+        return "#" + item.universal_number + " — " + item.volume;
+      }
+      if (hasText(item.volume)) {
+        return String(item.volume);
+      }
+      var fileName = item.file_name || item.last_known_name;
+      if (hasText(fileName)) {
+        return String(fileName);
+      }
       if (hasText(item.universal_number)) {
         return "#" + item.universal_number;
       }
-      return item.last_known_name || "Missing comic";
-    }
-
-    function readableComicTitle(comic) {
-      var number = comic.universal_number;
-      var title = comic.title && String(comic.title).trim();
-      var volume = comic.volume && String(comic.volume).trim();
-
-      if (number !== undefined && number !== null && String(number).trim() !== "") {
-        if (title) {
-          return "#" + number + " — " + title;
-        }
-        if (volume) {
-          return "#" + number + " — " + volume;
-        }
-      }
-
-      return title || volume || comic.file_name || "Untitled comic";
+      return "-";
     }
 
     function setPageHeading(title) {
@@ -1697,7 +1690,7 @@
       });
 
       var copy = element("div", "browser-card-copy");
-      copy.appendChild(element("div", "browser-card-title", missingComicTitle(item)));
+      copy.appendChild(element("div", "browser-card-title", readableComicTitle(item)));
       var numPages = Number(item.num_pages) || 0;
       copy.appendChild(element("div", "browser-card-meta", numPages ? (numPages === 1 ? "1 page" : numPages + " pages") : ""));
 
@@ -3328,7 +3321,7 @@
 
         var item = results[0];
         var trail = results[1];
-        var title = missingComicTitle(item);
+        var title = readableComicTitle(item);
 
         setPageHeading(title);
         if (container.kind === "folder") {
