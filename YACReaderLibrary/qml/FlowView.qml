@@ -155,7 +155,11 @@ Rectangle {
                 Image {
                     id: coverElement
                     anchors.fill: parent
-                    source: cover_path
+                    source: cover_path.toString() === "qrc:/images/unavailableCover.png"
+                            ? "qrc:/images/unavailableCover.svg" : cover_path
+                    // Render the SVG at the crop size; Image accounts for the display's pixel density.
+                    sourceSize: source.toString() === "qrc:/images/unavailableCover.svg"
+                                ? Qt.size(Math.ceil(Math.max(width, height * 480 / 700)), -1) : undefined
                     fillMode: Image.PreserveAspectCrop
                     smooth: true
                     mipmap: true
@@ -170,7 +174,7 @@ Rectangle {
 
                     onStatusChanged: {
                         if (status === Image.Error && model.available === false)
-                            source = "qrc:/images/unavailableCover.png"
+                            source = "qrc:/images/unavailableCover.svg"
                     }
                 }
 

@@ -1667,7 +1667,7 @@
       var cover = element("div", className + " missing-comic-cover");
       var fallback = element("img", "browser-cover-image");
       fallback.alt = "";
-      fallback.src = "/images/webui/unavailableCover.png";
+      fallback.src = "/images/webui/unavailableCover.svg";
       cover.appendChild(fallback);
       var url = coverUrl(item);
       if (url) {

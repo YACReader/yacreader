@@ -92,11 +92,6 @@ PropertiesDialog::PropertiesDialog(QWidget *parent)
 
     rootLayout->addWidget(coverBox, 0, 0, Qt::AlignBottom);
 
-    deletedComicNote = new QLabel;
-    deletedComicNote->setWordWrap(true);
-    deletedComicNote->hide();
-    rootLayout->addWidget(deletedComicNote, 1, 0);
-
     setModal(true);
 
     setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
@@ -535,16 +530,6 @@ void PropertiesDialog::loadComic(const ComicRecord &record)
         coverPageNumberLabel->setText("1");
     }
 
-    if (comic == nullptr) {
-        auto note = tr("The file of this comic is not in the library.");
-        if (const auto *deleted = std::get_if<ComicRecordCase::DeletedComic>(&record); deleted != nullptr && deleted->lastKnownFile)
-            note += "\n" + tr("Last known file: %1").arg(deleted->lastKnownFile->name);
-        deletedComicNote->setText(note);
-        deletedComicNote->show();
-    } else {
-        deletedComicNote->hide();
-    }
-
     numberEdit->setText(info.number.isNull() ? QString() : info.number.toString());
     countEdit->setText(info.count.isNull() ? QString() : info.count.toString());
     volumeEdit->setText(info.volume.isNull() ? QString() : info.volume.toString());
@@ -674,7 +659,6 @@ void PropertiesDialog::setComics(QList<ComicRecord> records)
 
     if (records.length() > 1) {
         updateCoverBoxForMultipleComics();
-        deletedComicNote->hide();
 
         // the reset needs the file, so it skips the deleted comics
         resetCoverButton->setEnabled(lastComicWithFile() != nullptr);
@@ -825,7 +809,6 @@ void PropertiesDialog::setTrackMode(bool track)
     issuesSummary->setVisible(track);
     coverBox->setHidden(track);
     comicVineLink->setHidden(track);
-    deletedComicNote->hide();
     previousButton->hide();
     nextButton->hide();
 

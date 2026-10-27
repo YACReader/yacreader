@@ -181,7 +181,11 @@ Rectangle {
         width: coverWidth
         height: coverHeight
         anchors { horizontalCenter: parent.horizontalCenter; top: realCell.top }
-        source: cell.cover_path
+        source: cell.cover_path.toString() === "qrc:/images/unavailableCover.png"
+                ? "qrc:/images/unavailableCover.svg" : cell.cover_path
+        // Render the SVG at the crop size; Image accounts for the display's pixel density.
+        sourceSize: source.toString() === "qrc:/images/unavailableCover.svg"
+                    ? Qt.size(Math.ceil(Math.max(width, height * 480 / 700)), -1) : undefined
         fillMode: Image.PreserveAspectCrop
         smooth: true
         mipmap: true
@@ -196,7 +200,7 @@ Rectangle {
 
         onStatusChanged: {
             if (status === Image.Error && cell.available === false)
-                source = "qrc:/images/unavailableCover.png"
+                source = "qrc:/images/unavailableCover.svg"
         }
     }
 

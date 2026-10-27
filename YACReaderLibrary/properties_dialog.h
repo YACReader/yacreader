@@ -135,8 +135,6 @@ private:
     QToolButton *resetCoverButton;
     QToolButton *loadCustomCoverImageButton;
 
-    QLabel *deletedComicNote;
-
     void createTabBar();
     void createCoverBox();
     void createGeneralInfoBox();
