@@ -17,43 +17,16 @@ private slots:
     void failedMigrationRollsBack();
     void failedOlderUpgradeRollsBack();
     void newLibraryUsesEntryTables();
-    void upgradeFrom9_17AddsTheEntrySource();
-    void upgradeFrom9_18AddsSmartLists();
-    void upgradeFrom9_19AddsListFolders();
-    void upgradeFrom9_20AddsFolderPlaceholders();
+    void upgradesHistoricalSchemas_data();
+    void upgradesHistoricalSchemas();
+    void failedFinalSchemaStepRollsBack();
 
 private:
     static bool createOldLibrary(const QString &libraryPath, const QString &version, const QStringList &extraStatements = { });
+    static bool createHistoricalLibrary(const QString &libraryPath, const QString &version);
     static QList<int> ints(const QString &libraryPath, const QString &sql);
     static QStringList strings(const QString &libraryPath, const QString &sql);
-    // a new library back without list folders (and without smart lists and folder placeholders): reading_list is
-    // rebuilt, because a column with a foreign key cannot be dropped
-    static bool removeListFolders(QSqlQuery &query);
 };
-
-bool DatabaseMigrationTest::removeListFolders(QSqlQuery &query)
-{
-    const QStringList statements = {
-        "PRAGMA foreign_keys = OFF",
-        "DROP TABLE folder_placeholder",
-        "DROP TABLE smart_list",
-        "DROP TABLE smart_list_folder",
-        "DROP INDEX reading_list_folder_index",
-        "CREATE TABLE reading_list_old (id INTEGER PRIMARY KEY, parentId INTEGER, ordering INTEGER DEFAULT 0, name TEXT NOT NULL, finished BOOLEAN DEFAULT 0, completed BOOLEAN DEFAULT 1, manga BOOLEAN DEFAULT 0, FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)",
-        "INSERT INTO reading_list_old SELECT id, parentId, ordering, name, finished, completed, manga FROM reading_list",
-        "DROP TABLE reading_list",
-        "ALTER TABLE reading_list_old RENAME TO reading_list",
-        "DROP TABLE reading_list_folder",
-        "PRAGMA foreign_keys = ON",
-    };
-    for (const auto &statement : statements) {
-        if (!query.exec(statement)) {
-            qWarning() << query.lastError().text() << statement;
-            return false;
-        }
-    }
-    return true;
-}
 
 bool DatabaseMigrationTest::createOldLibrary(const QString &libraryPath, const QString &version, const QStringList &extraStatements)
 {
@@ -98,6 +71,63 @@ bool DatabaseMigrationTest::createOldLibrary(const QString &libraryPath, const Q
                 qWarning() << query.lastError().text() << statement;
                 success = false;
             }
+        }
+        db.close();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    return success;
+}
+
+// Reconstruct the columns present at each historical migration boundary. Existing list data is
+// meaningful from v8 onward; older libraries did not have lists or tags yet.
+bool DatabaseMigrationTest::createHistoricalLibrary(const QString &libraryPath, const QString &version)
+{
+    if (!createOldLibrary(libraryPath, version))
+        return false;
+
+    QString connectionName;
+    bool success = true;
+    {
+        auto db = DataBaseManagement::loadDatabase(LibraryPaths::libraryDataPath(libraryPath));
+        connectionName = db.connectionName();
+        QSqlQuery query(db);
+        const auto exec = [&](const QString &sql) {
+            if (!query.exec(sql)) {
+                qWarning() << query.lastError().text() << sql;
+                success = false;
+            }
+        };
+        const QList<QPair<QString, QStringList>> comicColumns = {
+            { "7.0.0", { "hasBeenOpened", "rating", "currentPage", "bookmark1", "bookmark2", "bookmark3", "brightness", "contrast", "gamma" } },
+            { "7.0.3", { "comicVineID" } },
+            { "9.5.0", { "lastTimeOpened", "coverSizeRatio", "originalCoverSize" } },
+            { "9.8.0", { "manga" } },
+            { "9.13.0", { "added", "type", "editor", "imprint", "teams", "locations", "series", "alternateSeries", "alternateNumber", "alternateCount", "languageISO", "seriesGroup", "mainCharacterOrTeam", "review", "tags" } },
+            { "9.16.0", { "imageFiltersJson", "lastTimeImageFiltersSet", "lastTimeCoverSet", "usesExternalCover", "lastTimeMetadataSet" } },
+        };
+        for (const auto &[introduced, columns] : comicColumns) {
+            if (DataBaseManagement::compareVersions(version, introduced) < 0) {
+                for (const auto &column : columns)
+                    exec("ALTER TABLE comic_info DROP COLUMN " + column);
+            }
+        }
+        const QList<QPair<QString, QStringList>> folderColumns = {
+            { "7.0.3", { "finished BOOLEAN DEFAULT 0", "completed BOOLEAN DEFAULT 1" } },
+            { "9.5.0", { "numChildren INTEGER", "firstChildHash TEXT", "customImage TEXT" } },
+            { "9.8.0", { "manga BOOLEAN DEFAULT 0" } },
+            { "9.13.0", { "added INTEGER", "updated INTEGER", "type INTEGER DEFAULT 0" } },
+        };
+        for (const auto &[introduced, columns] : folderColumns) {
+            if (DataBaseManagement::compareVersions(version, introduced) >= 0) {
+                for (const auto &column : columns)
+                    exec("ALTER TABLE folder ADD COLUMN " + column);
+            }
+        }
+        if (DataBaseManagement::compareVersions(version, "9.5.0") >= 0)
+            exec("CREATE INDEX last_time_opened_index ON comic_info (lastTimeOpened)");
+        if (DataBaseManagement::compareVersions(version, "8.0.0") < 0) {
+            for (const auto &table : { "comic_reading_list", "comic_label", "comic_default_reading_list", "reading_list", "label", "default_reading_list" })
+                exec(QString("DROP TABLE %1").arg(table));
         }
         db.close();
     }
@@ -157,6 +187,69 @@ void DatabaseMigrationTest::migratesReadingListsAndLabels()
     QVERIFY(strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'index'").contains("comic_comic_info_id_index"));
     QCOMPARE(strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'trigger'"), QStringList({ "comic_delete_last_known_file" }));
     QVERIFY(strings(library.path(), "SELECT name FROM pragma_table_info('reading_list_entry')").contains("source"));
+}
+
+void DatabaseMigrationTest::upgradesHistoricalSchemas_data()
+{
+    QTest::addColumn<QString>("version");
+    for (const auto &version : { "6.0.0", "7.0.0", "7.0.3", "8.0.0", "9.4.0", "9.5.0", "9.8.0", "9.13.0", "9.14.0", "9.16.0" })
+        QTest::newRow(version) << QString(version);
+}
+
+void DatabaseMigrationTest::upgradesHistoricalSchemas()
+{
+    QFETCH(QString, version);
+    QTemporaryDir library;
+    QTemporaryDir freshLibrary;
+    QVERIFY(library.isValid());
+    QVERIFY(freshLibrary.isValid());
+    QVERIFY(createHistoricalLibrary(library.path(), version));
+    QVERIFY(DataBaseManagement::updateToCurrentVersion(library.path()));
+    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ "10.5.0" }));
+    QCOMPARE(ints(library.path(), "SELECT id FROM comic ORDER BY id"), QList<int>({ 100, 101, 110, 120 }));
+    if (DataBaseManagement::compareVersions(version, "8.0.0") >= 0) {
+        QCOMPARE(ints(library.path(), "SELECT comic_info_id FROM reading_list_entry ORDER BY ordering"), QList<int>({ 10, 11, 10 }));
+        QCOMPARE(ints(library.path(), "SELECT comic_info_id FROM label_entry ORDER BY ordering"), QList<int>({ 10, 12, 11 }));
+    } else {
+        QCOMPARE(ints(library.path(), "SELECT COUNT(*) FROM reading_list_entry"), QList<int>({ 0 }));
+        QCOMPARE(ints(library.path(), "SELECT COUNT(*) FROM label_entry"), QList<int>({ 0 }));
+    }
+
+    QDir().mkpath(LibraryPaths::libraryDataPath(freshLibrary.path()));
+    QString connectionName;
+    {
+        auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(freshLibrary.path()));
+        connectionName = db.connectionName();
+        db.close();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    // The release tables, indexes, trigger, and foreign keys match those of a newly created library.
+    const QString schema = "SELECT type || ':' || name || ':' || sql FROM sqlite_master WHERE "
+                           "tbl_name IN ('placeholder', 'reading_list_entry', 'label_entry', 'smart_list', "
+                           "'reading_list_folder', 'smart_list_folder', 'folder_placeholder') "
+                           "OR name = 'comic_delete_last_known_file' OR name = 'comic_comic_info_id_index' ORDER BY type, name";
+    QCOMPARE(strings(library.path(), schema), strings(freshLibrary.path(), schema));
+    QCOMPARE(strings(library.path(), "SELECT name FROM pragma_table_info('comic_info') ORDER BY name"),
+             strings(freshLibrary.path(), "SELECT name FROM pragma_table_info('comic_info') ORDER BY name"));
+    QVERIFY(strings(library.path(), "PRAGMA foreign_key_check").isEmpty());
+    const auto backups = DataBaseManagement::libraryBackups(library.path());
+    QCOMPARE(backups.size(), 1);
+}
+
+void DatabaseMigrationTest::failedFinalSchemaStepRollsBack()
+{
+    QTemporaryDir library;
+    QVERIFY(library.isValid());
+    QVERIFY(createOldLibrary(library.path(), "9.16.0", { "CREATE TABLE folder_placeholder (sentinel INTEGER)" }));
+    QVERIFY(!DataBaseManagement::updateToCurrentVersion(library.path()));
+    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ "9.16.0" }));
+    QCOMPARE(ints(library.path(), "SELECT COUNT(*) FROM comic_reading_list"), QList<int>({ 4 }));
+    QCOMPARE(ints(library.path(), "SELECT COUNT(*) FROM comic_label"), QList<int>({ 3 }));
+    const auto tables = strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'table'");
+    QVERIFY(!tables.contains("reading_list_entry"));
+    QVERIFY(!tables.contains("smart_list"));
+    QVERIFY(!tables.contains("reading_list_folder"));
+    QCOMPARE(strings(library.path(), "SELECT name FROM pragma_table_info('folder_placeholder')"), QStringList({ "sentinel" }));
 }
 
 void DatabaseMigrationTest::failedMigrationRollsBack()
@@ -220,128 +313,6 @@ void DatabaseMigrationTest::newLibraryUsesEntryTables()
     const auto columns = strings(library.path(), "SELECT name FROM pragma_table_info('reading_list_entry')");
     QVERIFY(columns.contains("source"));
     QVERIFY(columns.contains("source_format"));
-}
-
-// a 9.17.0 library (a development version) gets the source columns and keeps its entries
-void DatabaseMigrationTest::upgradeFrom9_17AddsTheEntrySource()
-{
-    QTemporaryDir library;
-    QVERIFY(library.isValid());
-    QDir().mkpath(LibraryPaths::libraryDataPath(library.path()));
-
-    QString connectionName;
-    {
-        auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(library.path()));
-        connectionName = db.connectionName();
-        QSqlQuery query(db);
-        QVERIFY(query.exec("ALTER TABLE reading_list_entry DROP COLUMN source"));
-        QVERIFY(query.exec("ALTER TABLE reading_list_entry DROP COLUMN source_format"));
-        QVERIFY(removeListFolders(query));
-        QVERIFY(query.exec("UPDATE db_info SET version = '9.17.0'"));
-        QVERIFY(query.exec("INSERT INTO comic_info (id, hash) VALUES (10, 'hash10')"));
-        QVERIFY(query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')"));
-        QVERIFY(query.exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 0, 10)"));
-        db.close();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
-
-    QVERIFY(DataBaseManagement::updateToCurrentVersion(library.path()));
-
-    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
-    QCOMPARE(ints(library.path(), "SELECT comic_info_id FROM reading_list_entry"), QList<int>({ 10 }));
-    const auto columns = strings(library.path(), "SELECT name FROM pragma_table_info('reading_list_entry')");
-    QVERIFY(columns.contains("source"));
-    QVERIFY(columns.contains("source_format"));
-    QVERIFY(strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'table'").contains("smart_list"));
-}
-
-void DatabaseMigrationTest::upgradeFrom9_18AddsSmartLists()
-{
-    QTemporaryDir library;
-    QVERIFY(library.isValid());
-    QDir().mkpath(LibraryPaths::libraryDataPath(library.path()));
-
-    QString connectionName;
-    {
-        auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(library.path()));
-        connectionName = db.connectionName();
-        QSqlQuery query(db);
-        QVERIFY(removeListFolders(query));
-        QVERIFY(query.exec("UPDATE db_info SET version = '9.18.0'"));
-        QVERIFY(query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List')"));
-        db.close();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
-
-    QVERIFY(DataBaseManagement::updateToCurrentVersion(library.path()));
-
-    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
-    QCOMPARE(strings(library.path(), "SELECT name FROM reading_list"), QStringList({ "List" }));
-    QCOMPARE(strings(library.path(), "SELECT name FROM pragma_table_info('smart_list') ORDER BY cid"),
-             QStringList({ "id", "name", "query", "ordering", "folder_id" }));
-}
-
-void DatabaseMigrationTest::upgradeFrom9_19AddsListFolders()
-{
-    QTemporaryDir library;
-    QVERIFY(library.isValid());
-    QDir().mkpath(LibraryPaths::libraryDataPath(library.path()));
-
-    QString connectionName;
-    {
-        auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(library.path()));
-        connectionName = db.connectionName();
-        QSqlQuery query(db);
-        QVERIFY(removeListFolders(query));
-        QVERIFY(DataBaseManagement::createSmartListTable(db));
-        QVERIFY(query.exec("UPDATE db_info SET version = '9.19.0'"));
-        QVERIFY(query.exec("INSERT INTO reading_list (id, name) VALUES (1, 'List'), (2, 'Child')"));
-        QVERIFY(query.exec("UPDATE reading_list SET parentId = 1 WHERE id = 2"));
-        QVERIFY(query.exec("INSERT INTO smart_list (id, name, query, ordering) VALUES (1, 'Unread', 'read:false', 0)"));
-        db.close();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
-
-    QVERIFY(DataBaseManagement::updateToCurrentVersion(library.path()));
-
-    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
-    QCOMPARE(strings(library.path(), "SELECT name FROM reading_list ORDER BY id"), QStringList({ "List", "Child" }));
-    QCOMPARE(strings(library.path(), "SELECT name FROM smart_list"), QStringList({ "Unread" }));
-    QCOMPARE(ints(library.path(), "SELECT COUNT(*) FROM reading_list WHERE folder_id IS NULL"), QList<int>({ 2 }));
-    const auto tables = strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'table'");
-    QVERIFY(tables.contains("reading_list_folder"));
-    QVERIFY(tables.contains("smart_list_folder"));
-    QVERIFY(strings(library.path(), "SELECT name FROM pragma_table_info('reading_list')").contains("folder_id"));
-    QCOMPARE(strings(library.path(), "SELECT \"table\" FROM pragma_foreign_key_list('smart_list')"), QStringList({ "smart_list_folder" }));
-    QVERIFY(tables.contains("folder_placeholder"));
-}
-
-void DatabaseMigrationTest::upgradeFrom9_20AddsFolderPlaceholders()
-{
-    QTemporaryDir library;
-    QVERIFY(library.isValid());
-    QDir().mkpath(LibraryPaths::libraryDataPath(library.path()));
-
-    QString connectionName;
-    {
-        auto db = DataBaseManagement::createDatabase(LibraryPaths::libraryDatabasePath(library.path()));
-        connectionName = db.connectionName();
-        QSqlQuery query(db);
-        QVERIFY(query.exec("DROP TABLE folder_placeholder"));
-        QVERIFY(query.exec("UPDATE db_info SET version = '9.20.0'"));
-        QVERIFY(query.exec("INSERT INTO placeholder (id, series) VALUES (1, 'Batman')"));
-        db.close();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
-
-    QVERIFY(DataBaseManagement::updateToCurrentVersion(library.path()));
-
-    QCOMPARE(strings(library.path(), "SELECT version FROM db_info"), QStringList({ DB_VERSION }));
-    QCOMPARE(strings(library.path(), "SELECT series FROM placeholder"), QStringList({ "Batman" }));
-    QCOMPARE(strings(library.path(), "SELECT name FROM pragma_table_info('folder_placeholder') ORDER BY cid"), QStringList({ "folder_id", "placeholder_id" }));
-    QCOMPARE(strings(library.path(), "SELECT \"table\" || ':' || on_delete FROM pragma_foreign_key_list('folder_placeholder') ORDER BY \"table\""),
-             QStringList({ "folder:CASCADE", "placeholder:RESTRICT" }));
-    QVERIFY(strings(library.path(), "SELECT name FROM sqlite_master WHERE type = 'index'").contains("folder_placeholder_placeholder_index"));
 }
 
 QTEST_GUILESS_MAIN(DatabaseMigrationTest)

@@ -546,17 +546,8 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
         // 8.0> tables
         success = success && DataBaseManagement::createV8Tables(database);
 
-        // 9.17.0> tables
-        success = success && DataBaseManagement::createV9_17Tables(database);
-
-        // 9.19.0> tables
-        success = success && DataBaseManagement::createSmartListTable(database);
-
-        // 9.20.0> tables
-        success = success && DataBaseManagement::createListFolderTables(database);
-
-        // 9.21.0> tables
-        success = success && DataBaseManagement::createFolderPlaceholderTable(database);
+        // One schema change for entries, placeholders, smart lists, and list folders.
+        success = success && DataBaseManagement::createV10_5Tables(database);
     }
 
     return success;
@@ -943,7 +934,7 @@ bool DataBaseManagement::createComicDeleteTrigger(QSqlDatabase &database)
                                         "END");
 }
 
-bool DataBaseManagement::createV9_17Tables(QSqlDatabase &database)
+bool DataBaseManagement::createV10_5Tables(QSqlDatabase &database)
 {
     bool success = true;
     {
@@ -982,6 +973,10 @@ bool DataBaseManagement::createV9_17Tables(QSqlDatabase &database)
         success = success && queryIndexComicInfoId.exec("CREATE INDEX comic_comic_info_id_index ON comic (comicInfoId)");
 
         success = success && createComicDeleteTrigger(database);
+
+        success = success && createSmartListTable(database);
+        success = success && createListFolderTables(database);
+        success = success && createFolderPlaceholderTable(database);
 
         // Upgrades run with foreign keys off, so the new constraints are checked here.
         QSqlQuery checkReadingListEntries(database);
@@ -1529,11 +1524,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_13 = compareVersions(oldVersion, "9.13.0") < 0;
     const bool pre9_14 = compareVersions(oldVersion, "9.14.0") < 0;
     const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
-    const bool pre9_17 = compareVersions(oldVersion, "9.17.0") < 0;
-    const bool pre9_18 = compareVersions(oldVersion, "9.18.0") < 0;
-    const bool pre9_19 = compareVersions(oldVersion, "9.19.0") < 0;
-    const bool pre9_20 = compareVersions(oldVersion, "9.20.0") < 0;
-    const bool pre9_21 = compareVersions(oldVersion, "9.21.0") < 0;
+    const bool pre10_5 = compareVersions(oldVersion, "10.5.0") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1746,28 +1737,8 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                     }
                 }
 
-                if (pre9_17) {
-                    bool successCreatingNewTables = createV9_17Tables(db);
-                    returnValue = returnValue && successCreatingNewTables;
-                } else if (pre9_18) {
-                    // createV9_17Tables has these columns already
-                    bool successAddingColumns = addColumns("reading_list_entry", { "source TEXT", "source_format TEXT" }, db);
-                    returnValue = returnValue && successAddingColumns;
-                }
-
-                if (pre9_19) {
-                    bool successCreatingSmartLists = createSmartListTable(db);
-                    returnValue = returnValue && successCreatingSmartLists;
-                }
-
-                if (pre9_20) {
-                    bool successCreatingListFolders = createListFolderTables(db);
-                    returnValue = returnValue && successCreatingListFolders;
-                }
-
-                if (pre9_21) {
-                    bool successCreatingFolderPlaceholders = createFolderPlaceholderTable(db);
-                    returnValue = returnValue && successCreatingFolderPlaceholders;
+                if (pre10_5) {
+                    returnValue = returnValue && createV10_5Tables(db);
                 }
 
                 if (returnValue) {
