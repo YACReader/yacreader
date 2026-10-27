@@ -546,18 +546,20 @@ if(APPLE)
 endif()
 
 # Translations
+set(yacreaderlibrary_translation_source_targets
+    YACReaderLibrary
+    db_helper
+    comic_backend
+    common_gui
+    custom_widgets_library
+    shortcuts_library
+    comic_vine
+    organize_files
+    cbl
+    cbl_gui
+)
 qt_add_translations(YACReaderLibrary
-    SOURCE_TARGETS
-        YACReaderLibrary
-        db_helper
-        comic_backend
-        common_gui
-        custom_widgets_library
-        shortcuts_library
-        comic_vine
-        organize_files
-        cbl
-        cbl_gui
+    SOURCE_TARGETS ${yacreaderlibrary_translation_source_targets}
     # Keep extraction scoped to targets used by this app and add the QML files
     # directly so qsTr() strings in QML are collected too.
     TS_FILES
@@ -573,10 +575,15 @@ qt_add_translations(YACReaderLibrary
         yacreaderlibrary_zh_HK.ts
         yacreaderlibrary_it.ts
         yacreaderlibrary_ko.ts
-        yacreaderlibrary_source.ts
         yacreaderlibrary_en.ts
     SOURCES
         ${yacreaderlibrary_qml_translation_files}
+)
+qt_add_lupdate(
+    SOURCE_TARGETS ${yacreaderlibrary_translation_source_targets}
+    TS_FILES yacreaderlibrary_source.ts
+    SOURCES ${yacreaderlibrary_qml_translation_files}
+    LUPDATE_TARGET YACReaderLibrary_source_lupdate
 )
 
 target_link_libraries(YACReaderLibrary PRIVATE

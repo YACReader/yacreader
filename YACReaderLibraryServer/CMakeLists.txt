@@ -24,10 +24,12 @@ if(BUILD_NUMBER)
 endif()
 
 # Translations
+set(yacreaderlibraryserver_translation_source_targets
+    YACReaderLibraryServer
+    comic_backend
+)
 qt_add_translations(YACReaderLibraryServer
-    SOURCE_TARGETS
-        YACReaderLibraryServer
-        comic_backend
+    SOURCE_TARGETS ${yacreaderlibraryserver_translation_source_targets}
     TS_FILES
         yacreaderlibraryserver_es.ts
         yacreaderlibraryserver_ru.ts
@@ -40,7 +42,11 @@ qt_add_translations(YACReaderLibraryServer
         yacreaderlibraryserver_zh_TW.ts
         yacreaderlibraryserver_zh_HK.ts
         yacreaderlibraryserver_ko.ts
-        yacreaderlibraryserver_source.ts
+)
+qt_add_lupdate(
+    SOURCE_TARGETS ${yacreaderlibraryserver_translation_source_targets}
+    TS_FILES yacreaderlibraryserver_source.ts
+    LUPDATE_TARGET YACReaderLibraryServer_source_lupdate
 )
 
 target_link_libraries(YACReaderLibraryServer PRIVATE
