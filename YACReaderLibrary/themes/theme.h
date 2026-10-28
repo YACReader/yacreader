@@ -110,6 +110,8 @@ struct ComicsViewTableTheme {
     QString tableViewQSS;
     QColor starRatingColor;
     QColor starRatingSelectedColor;
+    QIcon deletedComicIcon;
+    QIcon placeholderComicIcon;
 };
 
 struct EmptyContainerThemeTemplates {
@@ -130,6 +132,9 @@ struct EmptyContainerTheme {
     QPixmap emptyCurrentReadingsIcon;
     QPixmap emptyRecentIcon;
     QPixmap emptyReadingListIcon;
+    // the art of the list cards without a cover (a folder of lists), as files for QML
+    QUrl readingListArtUrl;
+    QUrl smartListArtUrl;
     QMap<int, QPixmap> emptyLabelIcons; // Keyed by YACReader::LabelColors enum value
 };
 
@@ -359,6 +364,8 @@ struct ReadingListIconsTheme {
 
     // Reading list icon
     QIcon listIcon;
+    // Smart list icon, in the colors of the reading list icon
+    QIcon smartListIcon;
 };
 
 struct DialogIconsTheme {

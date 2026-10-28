@@ -1,7 +1,6 @@
 #include "comic_query_result_processor.h"
 
 #include "comic_item.h"
-#include "comic_model.h"
 #include "data_base_management.h"
 #include "qnaturalsorting.h"
 #include "search_query.h"
@@ -24,7 +23,7 @@ void YACReader::ComicQueryResultProcessor::createModelData(const QString &filter
             try {
                 auto query = comicsSearchQuery(db, filter);
 
-                auto data = modelData(query);
+                auto data = new QList<ComicItem>(ComicItems::sortedForSearch(ComicItems::fromQuery(query)));
 
                 emit newData(data, databasePath);
             } catch (const std::exception &e) {
@@ -36,27 +35,4 @@ void YACReader::ComicQueryResultProcessor::createModelData(const QString &filter
         }
         QSqlDatabase::removeDatabase(connectionName);
     });
-}
-
-QList<ComicItem *> *YACReader::ComicQueryResultProcessor::modelData(QSqlQuery &sqlquery)
-{
-    auto list = new QList<ComicItem *>();
-
-    int numColumns = sqlquery.record().count();
-
-    while (sqlquery.next()) {
-        QList<QVariant> data;
-
-        for (int i = 0; i < numColumns; i++)
-            data << sqlquery.value(i);
-
-        list->append(new ComicItem(data));
-    }
-
-    std::sort(list->begin(), list->end(), [](const ComicItem *c1, const ComicItem *c2) {
-        return comicNumberLessThan(c1->data(ComicModel::Number), c1->data(ComicModel::FileName).toString(),
-                                   c2->data(ComicModel::Number), c2->data(ComicModel::FileName).toString());
-    });
-
-    return list;
 }

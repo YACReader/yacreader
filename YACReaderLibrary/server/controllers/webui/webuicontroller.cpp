@@ -92,7 +92,7 @@ void WebUIController::service(HttpRequest &request, HttpResponse &response)
     }
 
     const QRegularExpression libraryBrowserPath(
-            QStringLiteral(R"(^/webui/library/([0-9]+)(?:/(folder|comic)/([0-9]+)(?:/(read))?)?/?$)"));
+            QStringLiteral(R"(^/webui/library/([0-9]+)(?:/(folder|comic|reading_list_folder|reading_list|smart_list_folder|smart_list|tag)/([0-9]+)(?:/(read)|/(missing)/[0-9]+)?|/(reading_lists|smart_lists|tags|favorites|recent))?/?$)"));
     const QRegularExpressionMatch libraryBrowserMatch = libraryBrowserPath.match(QString::fromUtf8(path));
     if (libraryBrowserMatch.hasMatch()) {
         if (method != "GET") {
@@ -116,9 +116,19 @@ void WebUIController::service(HttpRequest &request, HttpResponse &response)
             response.write("404 invalid reader path", true);
             return;
         }
+        if (!libraryBrowserMatch.captured(5).isEmpty() && libraryBrowserMatch.captured(2) != QStringLiteral("folder") && libraryBrowserMatch.captured(2) != QStringLiteral("reading_list") && libraryBrowserMatch.captured(2) != QStringLiteral("tag")) {
+            response.setStatus(404, "Not Found");
+            response.setHeader("Content-Type", "text/plain; charset=utf-8");
+            response.write("404 invalid missing comic path", true);
+            return;
+        }
 
         const QString initialView = !libraryBrowserMatch.captured(4).isEmpty()
                 ? QStringLiteral("reader")
+                : !libraryBrowserMatch.captured(5).isEmpty()
+                ? QStringLiteral("missing")
+                : !libraryBrowserMatch.captured(6).isEmpty()
+                ? libraryBrowserMatch.captured(6)
                 : libraryBrowserMatch.captured(2).isEmpty()
                 ? QStringLiteral("folder")
                 : libraryBrowserMatch.captured(2);
@@ -714,6 +724,24 @@ void WebUIController::renderSettingsPage(HttpRequest &request, HttpResponse &res
             <button class="primary-button" type="submit">Save changes</button>
           </div>
         </form>
+
+        <section class="settings-card browser-settings-card" aria-labelledby="browser-heading">
+          <div class="settings-card-heading">
+            <div>
+              <div class="section-title">This browser</div>
+              <h3 id="browser-heading">Library browser</h3>
+            </div>
+          </div>
+          <div class="setting-row setting-row-with-control">
+            <label class="setting-copy" for="recentDays">
+              <span class="setting-name">Days to consider a comic recent</span>
+              <span class="setting-description">Recent shows the comics added in these days. This setting is saved in this browser only, and it changes at once.</span>
+            </label>
+            <div class="setting-control-group">
+              <select id="recentDays" data-recent-days aria-label="Days to consider a comic recent"></select>
+            </div>
+          </div>
+        </section>
       </div>
     </main>
   </div>

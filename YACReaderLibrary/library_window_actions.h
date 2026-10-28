@@ -4,6 +4,7 @@
 #include "qaction.h"
 
 #include <QAction>
+#include <QModelIndex>
 #include <QSettings>
 
 class LibraryWindow;
@@ -25,6 +26,8 @@ class LibraryDatabaseMaintenanceCoordinator;
 class LibraryRepairCoordinator;
 class RenameLibraryDialog;
 struct Theme;
+
+class ComicModel;
 
 class LibraryWindowActions
 {
@@ -129,7 +132,11 @@ public:
     QAction *rescanXMLFromCurrentFolderAction;
 
     // reading lists actions
+    QAction *newListMenuAction;
     QAction *addReadingListAction;
+    QAction *importReadingListsAction;
+    QAction *addSmartListAction;
+    QAction *addListFolderAction;
     QAction *deleteReadingListAction;
     QAction *addLabelAction;
     QAction *renameListAction;
@@ -160,6 +167,8 @@ public:
 
     void setComicActionsDisabled(bool disabled);
     void setComicSelectionActionsEnabled(bool enabled);
+    // each action is enabled when a selected row supports it; open and open folder use the current row
+    void setComicSelectionActionsEnabled(const ComicModel &model, const QModelIndexList &selection, const QModelIndex &current);
     void disableLibrariesActions(bool disabled);
     void disableNoUpdatedLibrariesActions(bool disabled);
     void disableFoldersActions(bool disabled);

@@ -22,6 +22,7 @@
 #include "yacreader_navigation_controller.h"
 #include "yacreader_options_dialog.h"
 
+#include <QMenu>
 #include <QtCore>
 
 LibraryWindowActions::LibraryWindowActions()
@@ -403,10 +404,40 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     rescanXMLFromCurrentFolderAction->setData(SCAN_XML_FROM_CURRENT_FOLDER_ACTION_YL);
     rescanXMLFromCurrentFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SCAN_XML_FROM_CURRENT_FOLDER_ACTION_YL));
 
-    addReadingListAction = new QAction(tr("Add new reading list"), window);
+    addReadingListAction = new QAction(tr("New reading list"), window);
     addReadingListAction->setData(ADD_READING_LIST_ACTION_YL);
     addReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_READING_LIST_ACTION_YL));
     addReadingListAction->setToolTip(tr("Add a new reading list to the current library"));
+    addReadingListAction->setIconVisibleInMenu(false);
+    window->addAction(addReadingListAction);
+
+    addSmartListAction = new QAction(tr("New smart list..."), window);
+    addSmartListAction->setData(ADD_SMART_LIST_ACTION_YL);
+    addSmartListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_SMART_LIST_ACTION_YL));
+    addSmartListAction->setToolTip(tr("Add a saved search to the current library"));
+    window->addAction(addSmartListAction);
+
+    addListFolderAction = new QAction(tr("New folder..."), window);
+    addListFolderAction->setData(ADD_LIST_FOLDER_ACTION_YL);
+    addListFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_LIST_FOLDER_ACTION_YL));
+    addListFolderAction->setToolTip(tr("Add a folder for reading lists or smart lists"));
+    window->addAction(addListFolderAction);
+
+    importReadingListsAction = new QAction(tr("Import reading lists..."), window);
+    importReadingListsAction->setData(IMPORT_READING_LISTS_ACTION_YL);
+    importReadingListsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_READING_LISTS_ACTION_YL));
+    importReadingListsAction->setToolTip(tr("Import CBL reading lists into the current library"));
+    window->addAction(importReadingListsAction);
+
+    newListMenuAction = new QAction(tr("New"), window);
+    newListMenuAction->setToolTip(tr("Add or import reading lists"));
+    auto newListMenu = new QMenu(window);
+    newListMenu->addAction(addReadingListAction);
+    newListMenu->addAction(addSmartListAction);
+    newListMenu->addAction(addListFolderAction);
+    newListMenu->addSeparator();
+    newListMenu->addAction(importReadingListsAction);
+    newListMenuAction->setMenu(newListMenu);
 
     deleteReadingListAction = new QAction(tr("Remove reading list"), window);
     deleteReadingListAction->setData(REMOVE_READING_LIST_ACTION_YL);
@@ -592,6 +623,9 @@ void LibraryWindowActions::createConnections(
 
     // lists
     QObject::connect(addReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addReadingList);
+    QObject::connect(importReadingListsAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::importReadingLists);
+    QObject::connect(addSmartListAction, &QAction::triggered, readingListManagementCoordinator, [readingListManagementCoordinator] { readingListManagementCoordinator->addSmartList(); });
+    QObject::connect(addListFolderAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addListFolder);
     QObject::connect(deleteReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::deleteCurrentList);
     QObject::connect(addLabelAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addLabel);
     QObject::connect(renameListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::renameCurrentList);
@@ -713,6 +747,9 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
     editShortcutsDialog->addActionsGroup("Lists", theme.shortcutsIcons.foldersIcon, // TODO change icon
                                          tmpList = QList<QAction *>()
                                                  << addReadingListAction
+                                                 << addSmartListAction
+                                                 << addListFolderAction
+                                                 << importReadingListsAction
                                                  << deleteReadingListAction
                                                  << addLabelAction
                                                  << renameListAction);
@@ -804,6 +841,37 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(bool enabled)
     addToMenuAction->setEnabled(enabled);
     addToFavoritesAction->setEnabled(enabled);
 }
+void LibraryWindowActions::setComicSelectionActionsEnabled(const ComicModel &model, const QModelIndexList &selection, const QModelIndex &current)
+{
+    const auto anySupports = [&](ComicAction action) {
+        return std::any_of(selection.cbegin(), selection.cend(), [&](const QModelIndex &index) { return model.supports(index, action); });
+    };
+
+    openComicAction->setEnabled(model.supports(current, ComicAction::Open));
+    openContainingFolderComicAction->setEnabled(model.supports(current, ComicAction::OpenContainingFolder));
+    saveCoversToAction->setEnabled(anySupports(ComicAction::SaveCover));
+    editSelectedComicsAction->setEnabled(anySupports(ComicAction::EditMetadata));
+    asignOrderAction->setEnabled(anySupports(ComicAction::AssignNumbers));
+    const bool setReadState = anySupports(ComicAction::SetReadState);
+    setAsReadAction->setEnabled(setReadState);
+    setAsNonReadAction->setEnabled(setReadState);
+    resetComicRatingAction->setEnabled(setReadState);
+    const bool setType = anySupports(ComicAction::SetType);
+    setNormalAction->setEnabled(setType);
+    setMangaAction->setEnabled(setType);
+    setWebComicAction->setEnabled(setType);
+    setWesternMangaAction->setEnabled(setType);
+    setYonkomaAction->setEnabled(setType);
+    deleteMetadataAction->setEnabled(anySupports(ComicAction::DeleteMetadata));
+    const bool changeFile = anySupports(ComicAction::ChangeFile);
+    deleteComicsAction->setEnabled(anySupports(ComicAction::RemoveFromList) || changeFile || anySupports(ComicAction::RemoveFromFolder));
+    renameComicsFilesAction->setEnabled(changeFile);
+    organizeComicsFilesAction->setEnabled(changeFile);
+    getInfoAction->setEnabled(anySupports(ComicAction::SearchComicVine));
+    addToMenuAction->setEnabled(anySupports(ComicAction::AddToList));
+    addToFavoritesAction->setEnabled(anySupports(ComicAction::AddToFavorites));
+}
+
 void LibraryWindowActions::disableLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
@@ -870,6 +938,7 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     setRootIndexAction->setIcon(sidebarIcons.setRootIcon);
     expandAllNodesAction->setIcon(sidebarIcons.expandIcon);
     colapseAllNodesAction->setIcon(sidebarIcons.colapseIcon);
+    newListMenuAction->setIcon(sidebarIcons.addNewIcon);
     addReadingListAction->setIcon(sidebarIcons.addNewIcon);
     deleteReadingListAction->setIcon(sidebarIcons.deleteIcon);
     addLabelAction->setIcon(sidebarIcons.addLabelIcon);

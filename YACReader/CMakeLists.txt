@@ -229,13 +229,15 @@ qt_add_resources(YACReader "yacreader_common_theme_images"
 )
 
 # Translations
+set(yacreader_translation_source_targets
+    YACReader
+    comic_backend
+    common_gui
+    custom_widgets_reader
+    shortcuts_reader
+)
 qt_add_translations(YACReader
-    SOURCE_TARGETS
-        YACReader
-        comic_backend
-        common_gui
-        custom_widgets_reader
-        shortcuts_reader
+    SOURCE_TARGETS ${yacreader_translation_source_targets}
     TS_FILES
         yacreader_es.ts
         yacreader_fr.ts
@@ -249,8 +251,12 @@ qt_add_translations(YACReader
         yacreader_zh_HK.ts
         yacreader_it.ts
         yacreader_ko.ts
-        yacreader_source.ts
         yacreader_en.ts
+)
+qt_add_lupdate(
+    SOURCE_TARGETS ${yacreader_translation_source_targets}
+    TS_FILES yacreader_source.ts
+    LUPDATE_TARGET YACReader_source_lupdate
 )
 
 target_link_libraries(YACReader PRIVATE

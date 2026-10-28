@@ -1,35 +1,24 @@
 #include "comic_db.h"
 
+#include "table_projection.h"
 #include "yacreader_global.h"
 
 #include <QFileInfo>
+#include <QSqlQuery>
+#include <QSqlRecord>
 #include <QVariant>
 
 //-----------------------------------------------------------------------------
 // COMIC------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-ComicDB::ComicDB()
-{
-}
-
-ComicDB::ComicDB(const ComicDB &comicDB)
-{
-    operator=(comicDB);
-}
-
-bool ComicDB::isDir() const
-{
-    return false;
-}
-
-QString ComicDB::toTXT()
+QString ComicDB::toTXT() const
 {
     QString txt;
 
     // Legacy info
-    txt.append(QString("comicid:%1\r\n").arg(id));
+    txt.append(QString("comicid:%1\r\n").arg(file.id.value()));
     txt.append(QString("hash:%1\r\n").arg(info.hash));
-    txt.append(QString("path:%1\r\n").arg(path));
+    txt.append(QString("path:%1\r\n").arg(file.path));
     txt.append(QString("numpages:%1\r\n").arg(info.numPages.toString()));
 
     // new 7.0
@@ -186,37 +175,14 @@ QString ComicDB::toTXT()
     return txt;
 }
 
-ComicDB &ComicDB::operator=(const ComicDB &other)
-{
-    LibraryItem::operator=(other);
-
-    this->_hasCover = other._hasCover;
-
-    this->info = other.info;
-
-    return *this;
-}
-
 QString ComicDB::getFileName() const
 {
-    return QFileInfo(path).fileName();
+    return QFileInfo(file.path).fileName();
 }
 
 QString ComicDB::getTitleOrFileName() const
 {
-    if (!info.title.isNull() && !info.title.toString().isEmpty())
-        return info.title.toString();
-    else
-        return QFileInfo(path).fileName();
-}
-
-QString ComicDB::getParentFolderName() const
-{
-    QStringList paths = path.split('/');
-    if (paths.length() < 2)
-        return "";
-    else
-        return paths[paths.length() - 2];
+    return titleOrFileName(info, QFileInfo(file.path).fileName());
 }
 
 qulonglong ComicDB::getFileSize() const
@@ -227,40 +193,70 @@ qulonglong ComicDB::getFileSize() const
 
 QString ComicDB::getTitleIncludingNumber() const
 {
-    if (!info.number.isNull()) {
-        return "#" + info.number.toString() + " - " + getTitleOrFileName();
-    }
-
-    return getTitleOrFileName();
+    return titleIncludingNumber(info, QFileInfo(file.path).fileName());
 }
 
 QString ComicDB::getInfoTitle() const
 {
-    if (!info.number.isNull() && !info.title.isNull() && !info.series.isNull())
+    return infoTitle(info, QFileInfo(file.path).fileName());
+}
+
+static bool hasText(const QVariant &value)
+{
+    return !value.isNull() && !value.toString().trimmed().isEmpty();
+}
+
+QString titleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
+{
+    if (hasText(info.title))
+        return info.title.toString();
+    if (hasText(info.series))
+        return info.series.toString();
+    if (hasText(info.volume))
+        return info.volume.toString();
+    return fileName.trimmed().isEmpty() ? QString() : fileName;
+}
+
+QString titleIncludingNumber(const DescriptiveComicMetadata &info, const QString &fileName)
+{
+    const auto title = titleOrFileName(info, fileName);
+    // Standalone labels need an issue number. Preserve filename fallbacks as-is:
+    // they often already contain the number, and must remain recognizable.
+    if (hasText(info.number)) {
+        if (!hasText(info.title) && hasText(info.series))
+            return title + " #" + info.number.toString();
+        if (hasText(info.title) || hasText(info.volume))
+            return "#" + info.number.toString() + " - " + title;
+        if (title.isEmpty())
+            return "#" + info.number.toString();
+    }
+    return title;
+}
+
+QString infoTitle(const DescriptiveComicMetadata &info, const QString &fileName)
+{
+    if (hasText(info.number) && hasText(info.title) && hasText(info.series))
         return "#" + info.number.toString() + " - " + info.title.toString() + " (" + info.series.toString() + ")";
 
-    if (!info.title.isNull() && !info.series.isNull())
+    if (hasText(info.title) && hasText(info.series))
         return info.title.toString() + " (" + info.series.toString() + ")";
 
-    if (!info.number.isNull() && !info.title.isNull())
+    if (hasText(info.number) && hasText(info.title))
         return "#" + info.number.toString() + " - " + info.title.toString();
 
-    if (!info.number.isNull() && !info.series.isNull())
+    if (hasText(info.number) && hasText(info.series))
         return "#" + info.number.toString() + " - " + info.series.toString();
 
-    if (!info.number.isNull())
-        return "#" + info.number.toString() + " - " + getTitleOrFileName();
+    return titleIncludingNumber(info, fileName);
+}
 
-    if (!info.title.isNull() && !info.series.isNull())
-        return info.title.toString() + " (" + info.series.toString() + ")";
-
-    if (!info.title.isNull())
-        return info.title.toString();
-
-    if (!info.series.isNull())
-        return info.series.toString();
-
-    return QFileInfo(path).fileName();
+QString parentFolderName(const QString &path)
+{
+    QStringList paths = path.split('/');
+    if (paths.length() < 2)
+        return "";
+    else
+        return paths[paths.length() - 2];
 }
 
 //-----------------------------------------------------------------------------
@@ -269,7 +265,6 @@ QString ComicDB::getInfoTitle() const
 ComicInfo::ComicInfo()
     : read(false),
       edited(false),
-      existOnDb(false),
       rating(0),
       hasBeenOpened(false),
       currentPage(1),
@@ -279,16 +274,6 @@ ComicInfo::ComicInfo()
       brightness(-1),
       contrast(-1),
       gamma(-1)
-{
-}
-
-ComicInfo::ComicInfo(const ComicInfo &comicInfo)
-    : QObject()
-{
-    operator=(comicInfo);
-}
-
-ComicInfo::~ComicInfo()
 {
 }
 
@@ -318,10 +303,6 @@ void ComicInfo::deleteMetadata()
 
     date = QVariant();
 
-    day = QVariant();
-    month = QVariant();
-    year = QVariant();
-
     publisher = QVariant();
     format = QVariant();
     color = QVariant();
@@ -349,196 +330,12 @@ void ComicInfo::deleteMetadata()
 
     comicVineID = QVariant();
 }
-// the default operator= should work
-ComicInfo &ComicInfo::operator=(const ComicInfo &comicInfo)
-{
-    hash = comicInfo.hash;
-    id = comicInfo.id;
-    existOnDb = comicInfo.existOnDb;
-    read = comicInfo.read;
-    edited = comicInfo.edited;
-
-    hasBeenOpened = comicInfo.hasBeenOpened;
-    rating = comicInfo.rating;
-    currentPage = comicInfo.currentPage;
-    bookmark1 = comicInfo.bookmark1;
-    bookmark2 = comicInfo.bookmark2;
-    bookmark3 = comicInfo.bookmark3;
-    brightness = comicInfo.brightness;
-    contrast = comicInfo.contrast;
-    gamma = comicInfo.gamma;
-
-    title = comicInfo.title;
-    coverPage = comicInfo.coverPage;
-    numPages = comicInfo.numPages;
-    number = comicInfo.number;
-    isBis = comicInfo.isBis;
-    count = comicInfo.count;
-    volume = comicInfo.volume;
-    storyArc = comicInfo.storyArc;
-    arcNumber = comicInfo.arcNumber;
-    arcCount = comicInfo.arcCount;
-    genere = comicInfo.genere;
-    writer = comicInfo.writer;
-    penciller = comicInfo.penciller;
-    inker = comicInfo.inker;
-    colorist = comicInfo.colorist;
-    letterer = comicInfo.letterer;
-    coverArtist = comicInfo.coverArtist;
-    date = comicInfo.date;
-    publisher = comicInfo.publisher;
-    format = comicInfo.format;
-    color = comicInfo.color;
-    ageRating = comicInfo.ageRating;
-    synopsis = comicInfo.synopsis;
-    characters = comicInfo.characters;
-    notes = comicInfo.notes;
-    comicVineID = comicInfo.comicVineID;
-
-    lastTimeOpened = comicInfo.lastTimeOpened;
-
-    coverSizeRatio = comicInfo.coverSizeRatio;
-    originalCoverSize = comicInfo.originalCoverSize;
-
-    added = comicInfo.added;
-    type = comicInfo.type;
-    editor = comicInfo.editor;
-    imprint = comicInfo.imprint;
-    teams = comicInfo.teams;
-    locations = comicInfo.locations;
-    series = comicInfo.series;
-    alternateSeries = comicInfo.alternateSeries;
-    alternateNumber = comicInfo.alternateNumber;
-    alternateCount = comicInfo.alternateCount;
-    languageISO = comicInfo.languageISO;
-    seriesGroup = comicInfo.seriesGroup;
-    mainCharacterOrTeam = comicInfo.mainCharacterOrTeam;
-    review = comicInfo.review;
-    tags = comicInfo.tags;
-
-    imageFiltersJson = comicInfo.imageFiltersJson;
-    lastTimeImageFiltersSet = comicInfo.lastTimeImageFiltersSet;
-    lastTimeCoverSet = comicInfo.lastTimeCoverSet;
-    usesExternalCover = comicInfo.usesExternalCover;
-    lastTimeMetadataSet = comicInfo.lastTimeMetadataSet;
-
-    return *this;
-}
-
-QPixmap ComicInfo::getCover(const QString &basePath)
+QPixmap ComicInfo::getCover(const QString &basePath) const
 {
     return QPixmap(YACReader::LibraryPaths::coverPath(basePath, hash));
 }
 
-QStringList ComicInfo::getWriters()
-{
-    if (writer.toString().length() > 0) {
-        return writer.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getPencillers()
-{
-    if (penciller.toString().length() > 0) {
-        return penciller.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getInkers()
-{
-    if (inker.toString().length() > 0) {
-        return inker.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getColorists()
-{
-    if (colorist.toString().length() > 0) {
-        return colorist.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getLetterers()
-{
-    if (letterer.toString().length() > 0) {
-        return letterer.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getCoverArtists()
-{
-    if (coverArtist.toString().length() > 0) {
-        return coverArtist.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getEditors()
-{
-    if (editor.toString().length() > 0) {
-        return editor.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getImprint()
-{
-    if (imprint.toString().length() > 0) {
-        return imprint.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getCharacters()
-{
-    if (characters.toString().length() > 0) {
-        return characters.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getTeams()
-{
-    if (teams.toString().length() > 0) {
-        return teams.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getLocations()
-{
-    if (locations.toString().length() > 0) {
-        return locations.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QStringList ComicInfo::getTags()
-{
-    if (tags.toString().length() > 0) {
-        return tags.toString().split("\n");
-    }
-
-    return QStringList();
-}
-
-QString ComicInfo::getTypeString()
+QString ComicInfo::getTypeString() const
 {
     if (type.isNull()) {
         return QStringLiteral("Null");
@@ -566,85 +363,158 @@ QString ComicInfo::getTypeString()
     return QStringLiteral("Unknown");
 }
 
-QString ComicInfo::getStoryArcInfoString()
+QString ComicDB::selectList(const QString &fileAlias, const QString &infoAlias)
 {
-    if (arcNumber.toString().length() > 0 && arcCount.toString().length() > 0 && storyArc.toString().length() > 0) {
-        return "(" + arcNumber.toString() + "/" + arcCount.toString() + ") " + storyArc.toString();
-    }
-
-    if (arcNumber.toString().length() > 0 && storyArc.toString().length() > 0) {
-        return "(" + arcNumber.toString() + ") " + storyArc.toString();
-    }
-
-    return storyArc.toString().length() > 0 ? storyArc.toString() : "";
+    return TableProjection::selectList(fileAlias, ComicFile::columns()) + ", " + TableProjection::selectList(infoAlias, ComicInfo::columns());
 }
 
-QString ComicInfo::getAlternateSeriesString()
+ComicDB::ColumnIndexes ComicDB::columnIndexes(const QSqlRecord &record, const QString &fileAlias, const QString &infoAlias)
 {
-    if (alternateNumber.toString().length() > 0 && alternateCount.toString().length() > 0 && alternateSeries.toString().length() > 0) {
-        return "(" + alternateNumber.toString() + "/" + alternateCount.toString() + ") " + alternateSeries.toString();
-    }
-
-    if (alternateNumber.toString().length() > 0 && alternateSeries.toString().length() > 0) {
-        return "(" + alternateNumber.toString() + ") " + alternateSeries.toString();
-    }
-
-    return alternateSeries.toString().length() > 0 ? alternateSeries.toString() : "";
+    return { TableProjection::columnIndexes(record, fileAlias, ComicFile::columns()), TableProjection::columnIndexes(record, infoAlias, ComicInfo::columns()) };
 }
 
-void ComicInfo::setRead(bool r)
+ComicDB ComicDB::fromRecord(const QSqlRecord &record, const QString &fileAlias, const QString &infoAlias)
 {
-    if (r != read) {
-        read = r;
-        emit readChanged();
-    }
+    ComicDB comic;
+    comic.file = ComicFile::fromRecord(record, fileAlias);
+    comic.info = ComicInfo::fromRecord(record, infoAlias);
+    return comic;
 }
 
-void ComicInfo::setRating(int r)
+ComicDB ComicDB::fromQuery(const QSqlQuery &query, const ColumnIndexes &columnIndexes)
 {
-    if (r != rating) {
-        rating = r;
-        emit ratingChanged();
-    }
+    ComicDB comic;
+    comic.file = ComicFile::fromQuery(query, columnIndexes.file);
+    comic.info = ComicInfo::fromQuery(query, columnIndexes.info);
+    return comic;
 }
 
-void ComicInfo::setFavorite(bool f)
+const QStringList &ComicInfo::columns()
 {
-    if (f != isFavorite) {
-        isFavorite = f;
-        emit favoriteChanged();
-    }
+    static const QStringList columns = [] {
+        QStringList result = { "hash", "edited", "read", "hasBeenOpened", "rating", "currentPage",
+                               "bookmark1", "bookmark2", "bookmark3", "brightness", "contrast", "gamma",
+                               "coverPage", "numPages", "lastTimeOpened", "coverSizeRatio", "originalCoverSize",
+                               "added", "type", "imageFiltersJson", "lastTimeImageFiltersSet", "lastTimeCoverSet",
+                               "usesExternalCover", "lastTimeMetadataSet" };
+        for (const auto &column : DescriptiveComicMetadata::columns())
+            result.append(QString::fromLatin1(column.name));
+        return result;
+    }();
+    return columns;
 }
+
+QT_WARNING_PUSH
+QT_WARNING_DISABLE_DEPRECATED
+bool ComicInfo::hasSameValues(const ComicInfo &other) const
+{
+    for (const auto &column : DescriptiveComicMetadata::columns()) {
+        if (this->*column.member != other.*column.member)
+            return false;
+    }
+
+    return id == other.id && hash == other.hash && read == other.read && edited == other.edited &&
+            hasBeenOpened == other.hasBeenOpened && rating == other.rating && currentPage == other.currentPage &&
+            bookmark1 == other.bookmark1 && bookmark2 == other.bookmark2 && bookmark3 == other.bookmark3 &&
+            brightness == other.brightness && contrast == other.contrast && gamma == other.gamma &&
+            coverPage == other.coverPage && numPages == other.numPages && lastTimeOpened == other.lastTimeOpened &&
+            coverSizeRatio == other.coverSizeRatio && originalCoverSize == other.originalCoverSize &&
+            added == other.added && type == other.type && imageFiltersJson == other.imageFiltersJson &&
+            lastTimeImageFiltersSet == other.lastTimeImageFiltersSet && lastTimeCoverSet == other.lastTimeCoverSet &&
+            usesExternalCover == other.usesExternalCover && lastTimeMetadataSet == other.lastTimeMetadataSet;
+}
+
+namespace {
+
+// `value(k)` is column k of {id} + ComicInfo::columns()
+template<typename Value>
+ComicInfo readComicInfo(const Value &value)
+{
+    ComicInfo info;
+
+    info.id = ComicInfoId(value(0).toULongLong());
+    info.hash = value(1).toString();
+    info.edited = value(2).toBool();
+    info.read = value(3).toBool();
+    info.hasBeenOpened = value(4).toBool();
+    info.rating = value(5).toInt();
+    info.currentPage = value(6).toInt();
+    info.bookmark1 = value(7).toInt();
+    info.bookmark2 = value(8).toInt();
+    info.bookmark3 = value(9).toInt();
+    info.brightness = value(10).toInt();
+    info.contrast = value(11).toInt();
+    info.gamma = value(12).toInt();
+    info.coverPage = value(13);
+    info.numPages = value(14);
+    info.lastTimeOpened = value(15);
+    info.coverSizeRatio = value(16);
+    info.originalCoverSize = value(17);
+    info.added = value(18);
+    info.type = value(19);
+    info.imageFiltersJson = value(20);
+    info.lastTimeImageFiltersSet = value(21);
+    info.lastTimeCoverSet = value(22);
+    info.usesExternalCover = value(23).toBool();
+    info.lastTimeMetadataSet = value(24);
+
+    constexpr int firstDescriptiveColumn = 25;
+    int column = firstDescriptiveColumn;
+    for (const auto &descriptive : DescriptiveComicMetadata::columns()) {
+        info.*descriptive.member = value(column++);
+    }
+
+    return info;
+}
+
+}
+
+ComicInfo ComicInfo::fromRecord(const QSqlRecord &record, const QString &alias)
+{
+    const auto indexes = TableProjection::columnIndexes(record, alias, columns());
+    return readComicInfo([&](int column) { return record.value(indexes.at(column)); });
+}
+
+ComicInfo ComicInfo::fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes)
+{
+    return readComicInfo([&](int column) { return query.value(columnIndexes.at(column)); });
+}
+QT_WARNING_POP
 
 QDataStream &operator<<(QDataStream &stream, const ComicDB &comic)
 {
-    stream << comic.id;
-    stream << comic.name;
-    stream << comic.parentId;
-    stream << comic.path;
-    stream << comic._hasCover;
+    stream << comic.file.id.value();
+    stream << comic.file.fileName;
+    stream << comic.file.folderId.value();
+    stream << comic.file.path;
+    stream << (comic.info.id != ComicInfoId()); // hasCover
     stream << comic.info;
     return stream;
 }
 
 QDataStream &operator>>(QDataStream &stream, ComicDB &comic)
 {
-    stream >> comic.id;
-    stream >> comic.name;
-    stream >> comic.parentId;
-    stream >> comic.path;
-    stream >> comic._hasCover;
+    qulonglong id;
+    qulonglong folderId;
+    bool hasCover;
+    stream >> id;
+    stream >> comic.file.fileName;
+    stream >> folderId;
+    stream >> comic.file.path;
+    stream >> hasCover;
     stream >> comic.info;
+    comic.file.id = ComicId(id);
+    comic.file.folderId = FolderId(folderId);
     return stream;
 }
 
 QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo)
 {
-    stream << comicInfo.id;
+    stream << comicInfo.id.value();
     stream << comicInfo.read;
     stream << comicInfo.edited;
     stream << comicInfo.hash;
-    stream << comicInfo.existOnDb;
+    stream << (comicInfo.id != ComicInfoId()); // existOnDb
 
     stream << comicInfo.hasBeenOpened;
     stream << comicInfo.rating;
@@ -725,11 +595,14 @@ QDataStream &operator<<(QDataStream &stream, const ComicInfo &comicInfo)
 
 QDataStream &operator>>(QDataStream &stream, ComicInfo &comicInfo)
 {
-    stream >> comicInfo.id;
+    qulonglong id;
+    stream >> id;
+    comicInfo.id = ComicInfoId(id);
     stream >> comicInfo.read;
     stream >> comicInfo.edited;
     stream >> comicInfo.hash;
-    stream >> comicInfo.existOnDb;
+    bool existOnDb;
+    stream >> existOnDb;
 
     stream >> comicInfo.hasBeenOpened;
     stream >> comicInfo.rating;

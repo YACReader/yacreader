@@ -1,5 +1,7 @@
 #include "yacreader_global_gui.h"
 
+#include "overloaded.h"
+
 #include <QAction>
 #include <QFileDialog>
 #include <QImageReader>
@@ -51,6 +53,65 @@ QList<qulonglong> YACReader::mimeDataToComicsIds(const QMimeData *data)
     QDataStream in(&rawData, QIODevice::ReadOnly);
     in >> comicIds; // deserialize the list of indentifiers
     return comicIds;
+}
+
+namespace {
+
+// the kind of each row in the rows format
+enum class RowKind {
+    Comic,
+    ReadingListEntry,
+    LabelEntry,
+    Placeholder,
+};
+
+}
+
+QList<ComicRowId> YACReader::mimeDataToRows(const QMimeData *data)
+{
+    QList<QPair<int, qulonglong>> values;
+    QByteArray rawData = data->data(YACReader::YACReaderLibraryComicRowsMimeDataFormat);
+    QDataStream in(&rawData, QIODevice::ReadOnly);
+    in >> values;
+
+    QList<ComicRowId> rows;
+    rows.reserve(values.size());
+    for (const auto &[kind, id] : std::as_const(values)) {
+        switch (static_cast<RowKind>(kind)) {
+        case RowKind::Comic:
+            rows.append(ComicId(id));
+            break;
+        case RowKind::ReadingListEntry:
+            rows.append(ListItemId { ListKind::ReadingList, id });
+            break;
+        case RowKind::LabelEntry:
+            rows.append(ListItemId { ListKind::Label, id });
+            break;
+        case RowKind::Placeholder:
+            rows.append(PlaceholderId(id));
+            break;
+        }
+    }
+    return rows;
+}
+
+void YACReader::setRowsMimeData(QMimeData *data, const QList<ComicRowId> &rows)
+{
+    QList<QPair<int, qulonglong>> values;
+    values.reserve(rows.size());
+    for (const auto &row : rows) {
+        values.append(std::visit(overloaded {
+                                         [](const ComicId &comic) { return QPair<int, qulonglong>(int(RowKind::Comic), comic.value()); },
+                                         [](const ListItemId &entry) { return QPair<int, qulonglong>(int(entry.listKind == ListKind::ReadingList ? RowKind::ReadingListEntry : RowKind::LabelEntry), entry.id); },
+                                         [](const PlaceholderId &placeholder) { return QPair<int, qulonglong>(int(RowKind::Placeholder), placeholder.value()); },
+                                 },
+                                 row));
+    }
+
+    QByteArray rawData;
+    QDataStream out(&rawData, QIODevice::WriteOnly);
+    out << values;
+    data->setData(YACReader::YACReaderLibraryComicRowsMimeDataFormat, rawData);
 }
 
 QAction *YACReader::wrappedToolbarAction(QAction *action)

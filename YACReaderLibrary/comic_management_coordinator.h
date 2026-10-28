@@ -18,6 +18,7 @@ class ComicVineDialog;
 class FolderModel;
 class FolderModelProxy;
 class PropertiesDialog;
+class QImage;
 class QProgressDialog;
 class QSettings;
 class QWidget;
@@ -51,6 +52,10 @@ public:
                                         LibraryPathProvider libraryPathProvider);
 
     bool hasCustomCoverInSelection() const;
+    // one missing entry or deleted comic, or several entries of a list
+    bool canMatchSelectionToLibraryComic() const;
+    // the folder the comics view shows, if it shows one
+    std::optional<qulonglong> shownFolderId() const;
 
 public slots:
     void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
@@ -63,6 +68,7 @@ public slots:
     void openComic(const ComicDB &comic, ComicModel::Mode mode);
     void openContainingFolderOfCurrentComic();
     void showComicVineScraper();
+    void trackMissingIssues(qulonglong folderId);
     void showProperties();
     void setSelectedComicsRead();
     void setSelectedComicsUnread();
@@ -72,8 +78,9 @@ public slots:
     void deleteMetadataFromSelectedComics();
     void deleteSelectedComics();
     void saveSelectedCoversTo();
-    void setCustomCover(qulonglong comicId, const QString &imagePath);
+    void setCustomCover(const ComicRowId &row, const QString &imagePath);
     void resetSelectedCustomCovers();
+    void matchSelectedToLibraryComic();
 
     void setComicUnread(qulonglong libraryId, const ComicDB &comic);
 
@@ -83,7 +90,7 @@ signals:
     void currentSourceRefreshStarted();
     void currentSourceRefreshAccepted();
     void currentSourceRefreshCancelled();
-    void comicNumbersAssigned(qint64 editedComicId);
+    void comicNumbersAssigned(const ComicRowId &firstRow);
     void comicDeletionFinished();
     void rootContinueReadingReloadRequested();
 
@@ -94,6 +101,11 @@ private:
         qulonglong sourceId;
     };
 
+    // entryId: the reading list entry of the opened row, 0 if none
+    void startReader(const ComicDB &comic, ComicModel::Mode mode, qulonglong entryId);
+    // on success, adds the new cover key of the placeholder to `changedCovers`
+    bool changePlaceholderCover(const Placeholder &placeholder, const QImage &cover, QHash<PlaceholderId, std::optional<QString>> &changedCovers);
+    void matchSelectedEntriesToLibraryComics(const QModelIndexList &selection);
     QProgressDialog *newProgressDialog(const QString &label, int maximum);
     void copyAndImportComics(const QList<QPair<QString, QString>> &comics,
                              const QModelIndex &destinationFolder,
@@ -102,12 +114,15 @@ private:
                              const QModelIndex &destinationFolder,
                              const QString &libraryPath);
     void processComicFiles(ComicFilesManager *comicFilesManager, QProgressDialog *progressDialog);
-    QList<qulonglong> selectedComicIds() const;
+    // the selected rows that support the action
+    QList<ComicRowId> selectedRowIds(ComicAction action) const;
     SourceContext currentSource() const;
-    QModelIndexList indexesForComicIds(const QList<qulonglong> &comicIds, const SourceContext &source) const;
+    // empty when the source changed or a row is no longer in the model
+    QModelIndexList indexesForRows(const QList<ComicRowId> &rowIds, const SourceContext &source) const;
     bool isCurrentSource(const SourceContext &source) const;
-    void deleteComicsFromDisk(const QList<qulonglong> &comicIds, const SourceContext &source);
-    void deleteComicsFromList(const QList<qulonglong> &comicIds, const SourceContext &source, int listType, qulonglong listId);
+    // the files of `rowIds` are deleted from the disk; the missing comics of `missingRowIds` are removed from the folder
+    void deleteComicsFromDisk(const QList<ComicRowId> &rowIds, const QList<ComicRowId> &missingRowIds, const SourceContext &source);
+    void deleteComicsFromList(const QList<ComicRowId> &rowIds, const SourceContext &source, int listType, qulonglong listId);
     void finishComicDeletion();
 
     QWidget *window;

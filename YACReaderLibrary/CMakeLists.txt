@@ -24,6 +24,16 @@ add_library(library_common STATIC
     yacreader_libraries.cpp
     comic_files_manager.h
     comic_files_manager.cpp
+    staged_cover.h
+    staged_cover.cpp
+    placeholder_cover.h
+    placeholder_cover.cpp
+    library_comic_match.h
+    library_comic_match.cpp
+    folder_placeholder_match.h
+    folder_placeholder_match.cpp
+    tracked_issues.h
+    tracked_issues.cpp
     ip_config_helper.h
     ip_config_helper.cpp
     libraries_update_coordinator.h
@@ -54,6 +64,16 @@ add_library(db_helper STATIC
     db/data_base_management.cpp
     db/reading_list.h
     db/reading_list.cpp
+    db/list_entry.h
+    db/list_entry.cpp
+    db/placeholder.h
+    db/placeholder.cpp
+    db/comic_item.h
+    db/comic_item.cpp
+    db/smart_list.h
+    db/smart_list.cpp
+    db/list_folder.h
+    db/list_folder.cpp
     db/query_lexer.h
     db/query_lexer.cpp
     db/search_field_registry.h
@@ -115,6 +135,20 @@ qt_add_executable(YACReaderLibrary WIN32
     options_dialog.cpp
     search_syntax_dialog.h
     search_syntax_dialog.cpp
+    search_filters_menu.h
+    search_filters_menu.cpp
+    smart_list_dialog.h
+    smart_list_dialog.cpp
+    new_list_folder_dialog.h
+    new_list_folder_dialog.cpp
+    move_to_folder_dialog.h
+    move_to_folder_dialog.cpp
+    reading_list_page.h
+    reading_list_page.cpp
+    delayed_progress_dialog.h
+    delayed_progress_dialog.cpp
+    empty_list_folder_widget.h
+    empty_list_folder_widget.cpp
     export_library_dialog.h
     export_library_dialog.cpp
     import_library_dialog.h
@@ -139,6 +173,8 @@ qt_add_executable(YACReaderLibrary WIN32
     yacreader_main_toolbar.cpp
     comics_view.h
     comics_view.cpp
+    comic_info_object.h
+    comic_info_object.cpp
     content_view_state.h
     comics_view_transition.h
     comics_view_transition.cpp
@@ -164,8 +200,7 @@ qt_add_executable(YACReaderLibrary WIN32
     db/folder_model.cpp
     db/comic_model.h
     db/comic_model.cpp
-    db/comic_item.h
-    db/comic_item.cpp
+    db/comic_record.h
     db/reading_list_model.h
     db/reading_list_model.cpp
     db/reading_list_item.h
@@ -306,6 +341,10 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/noLibrariesIcon.svg
     ${PROJECT_SOURCE_DIR}/images/noLibrariesLine.svg
     ${PROJECT_SOURCE_DIR}/images/notCover.png
+    ${PROJECT_SOURCE_DIR}/images/unavailableCover.png
+    ${PROJECT_SOURCE_DIR}/images/unavailableCover.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_table/deletedComic.svg
+    ${PROJECT_SOURCE_DIR}/images/comics_view_table/placeholderComic.svg
     ${PROJECT_SOURCE_DIR}/images/library_dialogs/openLibrary.svg
     ${PROJECT_SOURCE_DIR}/images/metadata_dialog/previousCoverPage.svg
     ${PROJECT_SOURCE_DIR}/images/readingRibbon.svg
@@ -346,6 +385,8 @@ set(yacreaderlibrary_image_files
     ${PROJECT_SOURCE_DIR}/images/lists/default_2.svg
     ${PROJECT_SOURCE_DIR}/images/lists/label_template.svg
     ${PROJECT_SOURCE_DIR}/images/lists/list.svg
+    ${PROJECT_SOURCE_DIR}/images/lists/smart_list.svg
+    ${PROJECT_SOURCE_DIR}/images/empty_container/smart_list_card.svg
     ${PROJECT_SOURCE_DIR}/images/clearSearchNew.svg
     ${PROJECT_SOURCE_DIR}/images/iconSearchNew.svg
 )
@@ -371,6 +412,7 @@ set(yacreaderlibrary_qml_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/SelectedComicsInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml
@@ -401,6 +443,7 @@ set(yacreaderlibrary_qml_translation_files
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/EmptyInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderCover.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderGridDelegate.qml
+    ${CMAKE_CURRENT_SOURCE_DIR}/qml/ListGridDelegate.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/FolderInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/SelectedComicsInfoView.qml
     ${CMAKE_CURRENT_SOURCE_DIR}/qml/LibraryInfoView.qml
@@ -503,16 +546,20 @@ if(APPLE)
 endif()
 
 # Translations
+set(yacreaderlibrary_translation_source_targets
+    YACReaderLibrary
+    db_helper
+    comic_backend
+    common_gui
+    custom_widgets_library
+    shortcuts_library
+    comic_vine
+    organize_files
+    cbl
+    cbl_gui
+)
 qt_add_translations(YACReaderLibrary
-    SOURCE_TARGETS
-        YACReaderLibrary
-        db_helper
-        comic_backend
-        common_gui
-        custom_widgets_library
-        shortcuts_library
-        comic_vine
-        organize_files
+    SOURCE_TARGETS ${yacreaderlibrary_translation_source_targets}
     # Keep extraction scoped to targets used by this app and add the QML files
     # directly so qsTr() strings in QML are collected too.
     TS_FILES
@@ -528,13 +575,19 @@ qt_add_translations(YACReaderLibrary
         yacreaderlibrary_zh_HK.ts
         yacreaderlibrary_it.ts
         yacreaderlibrary_ko.ts
-        yacreaderlibrary_source.ts
         yacreaderlibrary_en.ts
     SOURCES
         ${yacreaderlibrary_qml_translation_files}
 )
+qt_add_lupdate(
+    SOURCE_TARGETS ${yacreaderlibrary_translation_source_targets}
+    TS_FILES yacreaderlibrary_source.ts
+    SOURCES ${yacreaderlibrary_qml_translation_files}
+    LUPDATE_TARGET YACReaderLibrary_source_lupdate
+)
 
 target_link_libraries(YACReaderLibrary PRIVATE
+    Qt6::Concurrent
     Qt6::Core
     Qt6::Gui
     Qt6::GuiPrivate
@@ -556,6 +609,7 @@ target_link_libraries(YACReaderLibrary PRIVATE
     server
     comic_vine
     organize_files
+    cbl_gui
     cbx_backend
     concurrent_queue
     worker

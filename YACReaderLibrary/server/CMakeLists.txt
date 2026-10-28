@@ -13,6 +13,8 @@ add_library(server STATIC
     yacreader_http_session_store.cpp
     yacreader_server_data_helper.h
     yacreader_server_data_helper.cpp
+    cover_request.h
+    cover_request.cpp
     controllers/versioncontroller.h
     controllers/versioncontroller.cpp
     controllers/v2/comiccontroller_v2.h
@@ -63,6 +65,24 @@ add_library(server STATIC
     controllers/v2/searchcontroller_v2.cpp
     controllers/v2/itemupdatecontroller_v2.h
     controllers/v2/itemupdatecontroller_v2.cpp
+    controllers/v3/v3_response.h
+    controllers/v3/v3_response.cpp
+    controllers/v3/foldercontentcontroller_v3.h
+    controllers/v3/foldercontentcontroller_v3.cpp
+    controllers/v3/folderinfocontroller_v3.h
+    controllers/v3/folderinfocontroller_v3.cpp
+    controllers/v3/listcontentcontroller_v3.h
+    controllers/v3/listcontentcontroller_v3.cpp
+    controllers/v3/listsectioncontroller_v3.h
+    controllers/v3/listsectioncontroller_v3.cpp
+    controllers/v3/covercontroller_v3.h
+    controllers/v3/covercontroller_v3.cpp
+    controllers/v3/tagscontroller_v3.h
+    controllers/v3/tagscontroller_v3.cpp
+    controllers/v3/recentcontroller_v3.h
+    controllers/v3/recentcontroller_v3.cpp
+    controllers/v3/listitemcontroller_v3.h
+    controllers/v3/listitemcontroller_v3.cpp
     controllers/webui/webuicontroller.h
     controllers/webui/webuicontroller.cpp
 )
@@ -70,9 +90,10 @@ target_include_directories(server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers/v2
+    ${CMAKE_CURRENT_SOURCE_DIR}/controllers/v3
 )
 yacreader_apply_build_options(server)
-target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.3")
+target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.3" SERVER_V3_VERSION_NUMBER="3.0")
 if(UNIX AND NOT APPLE)
     target_compile_definitions(server PRIVATE
         "DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\"")

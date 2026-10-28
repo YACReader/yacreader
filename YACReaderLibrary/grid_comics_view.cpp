@@ -4,6 +4,7 @@
 #include "comic.h"
 #include "comic_db.h"
 #include "comic_files_manager.h"
+#include "comic_info_object.h"
 #include "cover_utils.h"
 #include "current_comic_view_helper.h"
 #include "folder_model.h"
@@ -27,6 +28,7 @@
 #include <QWidgetAction>
 
 #include <algorithm>
+#include <utility>
 
 namespace {
 QString pixmapDataUrl(const QPixmap &pixmap)
@@ -55,6 +57,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     selectionHelper = new YACReaderComicsSelectionHelper(this);
     connect(selectionHelper, &YACReaderComicsSelectionHelper::selectionChanged, this, [this]() {
         emit comicSelectionStateChanged(selectionHelper->numItemsSelected() > 0);
+        emit comicSelectionChanged();
         emit selectedComicsInfoChanged();
     });
 
@@ -109,8 +112,7 @@ GridComicsView::GridComicsView(QWidget *parent)
     bool showInfo = settings->value(COMICS_GRID_SHOW_INFO, false).toBool();
     ctxt->setContextProperty("showInfo", showInfo);
 
-    ctxt->setContextProperty("currentComic", &currentComic);
-    ctxt->setContextProperty("currentComicInfo", &currentComic.info);
+    publishCurrentComic(ctxt);
 
     showInfoAction = new QAction(tr("Show info"), this);
     showInfoAction->setCheckable(true);
@@ -277,11 +279,11 @@ void GridComicsView::setModel(ComicModel *model)
             updateInfoForIndex(index.row());
     });
 
-    updateCurrentComicBanner();
-
     selectionHelper->setModel(model);
     comicInfoHelper->setModel(model);
     contentModel->setComicModel(model);
+
+    updateCurrentComicBanner();
 
     if (model->getMode() != ComicModel::Folder)
         clearFolderModel();
@@ -475,6 +477,10 @@ void GridComicsView::rate(int index, int rating)
 
 void GridComicsView::requestItemContextMenu(const QPoint &point, int viewRow)
 {
+    // the cards of a folder of lists have no context menu
+    if (contentModel->isListCardRow(viewRow))
+        return;
+
     if (contentModel->isFolderRow(viewRow)) {
         emit openFolderContextMenu(point, contentModel->folderAt(viewRow));
         return;
@@ -504,7 +510,7 @@ void GridComicsView::setFolderModel(FolderModel *model, const QModelIndex &folde
         currentLocationInfo.insert(QStringLiteral("name"), rootName);
     } else {
         const auto folder = model->getFolder(folderIndex);
-        const auto cover = folder.customImage.isEmpty() ? model->getCoverUrlPathForComicHash(folder.firstChildHash) : model->getCoverUrlPathForFolderId(folder.id);
+        const auto cover = folder.customImage.isEmpty() ? model->getCoverUrlPathForComicHash(folder.firstChildHash) : model->getCoverUrlPathForFolderId(folder.id.value());
         currentLocationInfo = makeFolderInfo(folder, cover);
     }
     emit currentLocationInfoChanged();
@@ -555,6 +561,13 @@ void GridComicsView::setCurrentList(const QModelIndex &listIndex)
         sublistCount = listIndex.model()->rowCount(listIndex);
         break;
     }
+    case ReadingListModel::SmartList:
+        kind = QStringLiteral("smartList");
+        break;
+    case ReadingListModel::ReadingListFolder:
+    case ReadingListModel::SmartListFolder:
+        kind = QStringLiteral("listFolder");
+        break;
     case ReadingListModel::Separator:
         return;
     }
@@ -586,6 +599,10 @@ void GridComicsView::updateCurrentListIcon()
         icon = theme.emptyContainer.emptyLabelIcons.value(currentLocationInfo.value(QStringLiteral("labelColor")).toInt());
     else if (kind == QStringLiteral("readingList"))
         icon = theme.emptyContainer.emptyReadingListIcon;
+    else if (kind == QStringLiteral("smartList"))
+        icon = theme.emptyContainer.noSearchResultsIcon;
+    else if (kind == QStringLiteral("listFolder"))
+        icon = theme.emptyContainer.emptyFolderIcon;
     else
         return;
 
@@ -625,6 +642,8 @@ bool GridComicsView::isCurrentComicBannerVisible() const
 
 int GridComicsView::focusedFolderRow() const
 {
+    if (focusedListCardRow >= 0)
+        return focusedListCardRow;
     return focusedFolderIndex.isValid() ? focusedFolderIndex.row() : -1;
 }
 
@@ -682,16 +701,21 @@ ContentViewState GridComicsView::captureViewState() const
     } else if (viewRow >= 0 && viewRow < contentModel->rowCount()) {
         const auto index = contentModel->index(viewRow, 0);
         const auto kind = contentModel->data(index, GridContentModel::ItemKindRole).toInt();
-        state.topItem.kind = kind == GridContentModel::FolderItem ? ContentItemRef::Folder : ContentItemRef::Comic;
-        state.topItem.id = contentModel->data(index, GridContentModel::IdRole).toULongLong();
+        if (kind == GridContentModel::FolderItem) {
+            state.topItem.kind = ContentItemRef::Folder;
+            state.topItem.folderId = contentModel->data(index, GridContentModel::IdRole).toULongLong();
+        } else if (kind == GridContentModel::ComicItem) {
+            state.topItem.kind = ContentItemRef::Comic;
+            state.topItem.comic = model->rowId(model->index(contentModel->sourceComicRow(viewRow), 0));
+        }
     }
 
     if (focusedFolderIndex.isValid()) {
         state.currentItem.kind = ContentItemRef::Folder;
-        state.currentItem.id = focusedFolderIndex.data(FolderModel::IdRole).toULongLong();
+        state.currentItem.folderId = focusedFolderIndex.data(FolderModel::IdRole).toULongLong();
     } else if (const auto index = selectionHelper->currentIndex(); index.isValid()) {
         state.currentItem.kind = ContentItemRef::Comic;
-        state.currentItem.id = index.data(ComicModel::IdRole).toULongLong();
+        state.currentItem.comic = model->rowId(index);
     }
 
     return state;
@@ -708,7 +732,8 @@ void GridComicsView::openContinueReadingComic(int sourceRow)
     if (!rootContinueReadingModelStorage || sourceRow < 0 || sourceRow >= rootContinueReadingModelStorage->rowCount())
         return;
 
-    emit openComic(rootContinueReadingModelStorage->getComic(rootContinueReadingModelStorage->index(sourceRow, 0)), ComicModel::Folder);
+    if (const auto comic = rootContinueReadingModelStorage->getComic(rootContinueReadingModelStorage->index(sourceRow, 0)))
+        emit openComic(*comic, ComicModel::Folder);
 }
 
 void GridComicsView::requestContinueReadingComicContextMenu(const QPoint &point, int sourceRow)
@@ -716,7 +741,8 @@ void GridComicsView::requestContinueReadingComicContextMenu(const QPoint &point,
     if (!rootContinueReadingModelStorage || sourceRow < 0 || sourceRow >= rootContinueReadingModelStorage->rowCount())
         return;
 
-    emit openContinueReadingComicContextMenu(point, rootContinueReadingModelStorage->getComic(rootContinueReadingModelStorage->index(sourceRow, 0)));
+    if (const auto comic = rootContinueReadingModelStorage->getComic(rootContinueReadingModelStorage->index(sourceRow, 0)))
+        emit openContinueReadingComicContextMenu(point, *comic);
 }
 
 void GridComicsView::openFolder(int viewRow)
@@ -733,10 +759,33 @@ void GridComicsView::openFolder(int viewRow)
     });
 }
 
+void GridComicsView::openListCard(int viewRow)
+{
+    if (!contentModel->isListCardRow(viewRow))
+        return;
+
+    // selecting the list resets the model that owns the QML delegate
+    const auto card = contentModel->listCardAt(viewRow);
+    QTimer::singleShot(0, this, [this, card]() { emit listCardOpened(card.listType, card.id); });
+}
+
+void GridComicsView::setListCards(const QList<GridListCard> &cards)
+{
+    clearFocusedFolder();
+    contentModel->setListCards(cards);
+    updateCurrentComicBanner();
+}
+
 void GridComicsView::focusItem(int viewRow)
 {
     if (contentModel->isSpacerRow(viewRow))
         return;
+
+    if (contentModel->isListCardRow(viewRow)) {
+        selectionHelper->clear();
+        setFocusedFolder(viewRow);
+        return;
+    }
 
     if (contentModel->isFolderRow(viewRow)) {
         selectionHelper->clear();
@@ -829,15 +878,23 @@ void GridComicsView::updateCurrentComicBanner()
 
     const bool showCurrentComic = found &&
             filterEnabled == false &&
+            !contentModel->hasListCards() &&
             (mode == ComicModel::Mode::Folder || mode == ComicModel::Mode::ReadingList) &&
             settings->value(DISPLAY_CONTINUE_READING_IN_GRID_VIEW, true).toBool();
 
-    ctxt->setContextProperty("currentComic", &currentComic);
-    ctxt->setContextProperty("currentComicInfo", &(currentComic.info));
+    publishCurrentComic(ctxt);
     if (currentComicBannerVisible != showCurrentComic) {
         currentComicBannerVisible = showCurrentComic;
         emit currentComicBannerVisibleChanged();
     }
+}
+
+void GridComicsView::publishCurrentComic(QQmlContext *ctxt)
+{
+    auto previous = std::exchange(currentComicInfo, new ComicInfoObject(ComicRecordCase::Comic { currentComic }, false, this));
+    ctxt->setContextProperty("currentComic", currentComicInfo);
+    ctxt->setContextProperty("currentComicInfo", currentComicInfo);
+    delete previous;
 }
 
 void GridComicsView::clearFolderFocus()
@@ -884,6 +941,16 @@ QVariantMap GridComicsView::makeFolderInfo(const Folder &folder, const QVariant 
 
 void GridComicsView::setFocusedFolder(int viewRow)
 {
+    // a card is shown as focused like a folder; it has no folder info
+    if (contentModel->isListCardRow(viewRow)) {
+        focusedFolderIndex = QModelIndex();
+        focusedFolderInfo.clear();
+        focusedListCardRow = viewRow;
+        emit focusedFolderChanged();
+        return;
+    }
+    focusedListCardRow = -1;
+
     if (!contentModel->isFolderRow(viewRow)) {
         clearFocusedFolder();
         return;
@@ -902,9 +969,10 @@ void GridComicsView::setFocusedFolder(int viewRow)
 
 void GridComicsView::clearFocusedFolder()
 {
-    if (!focusedFolderIndex.isValid() && focusedFolderInfo.isEmpty())
+    if (!focusedFolderIndex.isValid() && focusedFolderInfo.isEmpty() && focusedListCardRow < 0)
         return;
 
+    focusedListCardRow = -1;
     focusedFolderIndex = QModelIndex();
     focusedFolderInfo.clear();
     emit focusedFolderChanged();
@@ -972,9 +1040,9 @@ int GridComicsView::viewRowForItem(const ContentItemRef &item) const
 {
     switch (item.kind) {
     case ContentItemRef::Comic:
-        return contentModel->viewRowForComicId(item.id);
+        return contentModel->viewRowForComicRow(model ? model->indexOf(item.comic).row() : -1);
     case ContentItemRef::Folder:
-        return contentModel->viewRowForFolderId(item.id);
+        return contentModel->viewRowForFolderId(item.folderId);
     case ContentItemRef::None:
     case ContentItemRef::Header:
         return -1;
@@ -1065,18 +1133,18 @@ void GridComicsView::droppedFiles(const QList<QUrl> &urls, Qt::DropAction action
 void GridComicsView::droppedImageAt(const QList<QUrl> &urls, int viewRow)
 {
     const auto imagePath = YACReader::droppedImagePath(urls);
-    if (imagePath.isEmpty() || viewRow < 0 || viewRow >= contentModel->rowCount())
+    if (imagePath.isEmpty() || viewRow < 0 || viewRow >= contentModel->rowCount() || contentModel->isListCardRow(viewRow))
         return;
 
     if (contentModel->isFolderRow(viewRow)) {
-        emit customFolderCoverRequested(contentModel->folderAt(viewRow).id, imagePath);
+        emit customFolderCoverRequested(contentModel->folderAt(viewRow).id.value(), imagePath);
         return;
     }
 
     const auto comicRow = contentModel->sourceComicRow(viewRow);
     const auto comicIndex = model && comicRow >= 0 ? model->index(comicRow, 0) : QModelIndex();
     if (comicIndex.isValid())
-        emit customComicCoverRequested(comicIndex.data(ComicModel::IdRole).toULongLong(), imagePath);
+        emit customComicCoverRequested(model->rowId(comicIndex), imagePath);
 }
 
 void GridComicsView::droppedComicsForResortingAt(const QString &data, int index)
@@ -1091,6 +1159,11 @@ void GridComicsView::activateItem(int viewRow)
 {
     if (viewRow < 0 || viewRow >= contentModel->rowCount() || contentModel->isSpacerRow(viewRow))
         return;
+
+    if (contentModel->isListCardRow(viewRow)) {
+        openListCard(viewRow);
+        return;
+    }
 
     if (contentModel->isFolderRow(viewRow)) {
         openFolder(viewRow);

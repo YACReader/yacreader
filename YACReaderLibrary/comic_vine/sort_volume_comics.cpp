@@ -1,6 +1,7 @@
 #include "sort_volume_comics.h"
 
 #include "local_comic_list_model.h"
+#include "scraper_checkbox.h"
 #include "scraper_tableview.h"
 #include "theme_manager.h"
 #include "volume_comics_model.h"
@@ -113,10 +114,15 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
 
     content->setRowStretch(0, 1);
 
+    missingIssuesCheck = new ScraperCheckBox(QString());
+    missingIssuesCheck->hide();
+
     l->addSpacing(15);
     l->addWidget(label, 0);
     l->addSpacing(5);
     l->addLayout(content, 1);
+    l->addSpacing(10);
+    l->addWidget(missingIssuesCheck);
 
     l->setContentsMargins(0, 0, 0, 0);
     setLayout(l);
@@ -139,7 +145,7 @@ SortVolumeComics::SortVolumeComics(QWidget *parent)
     initTheme(this);
 }
 
-void SortVolumeComics::setData(QList<ComicDB> &comics, const QString &json, const QString &vID)
+void SortVolumeComics::setData(const QList<ComicRecord> &comics, const QString &json, const QString &vID)
 {
     // set up models
     localComicsModel = new LocalComicListModel;
@@ -160,6 +166,12 @@ void SortVolumeComics::setData(QList<ComicDB> &comics, const QString &json, cons
     tableVolumeComics->setModel(volumeComicsModel);
 
     tableVolumeComics->resizeColumnToContents(0);
+
+    connect(localComicsModel, &QAbstractItemModel::rowsMoved, this, &SortVolumeComics::updateMissingIssues);
+    connect(localComicsModel, &QAbstractItemModel::rowsRemoved, this, &SortVolumeComics::updateMissingIssues);
+    connect(localComicsModel, &QAbstractItemModel::rowsInserted, this, &SortVolumeComics::updateMissingIssues);
+    missingIssuesCheck->setChecked(false);
+    updateMissingIssues();
 
     currentVolumeId = vID;
     paginator->update(json);
@@ -245,19 +257,48 @@ void SortVolumeComics::showRemovedComicsSelector()
 {
 }
 
-QList<QPair<ComicDB, QString>> SortVolumeComics::getMatchingInfo()
+void SortVolumeComics::setMissingIssuesOption(bool visible)
+{
+    missingIssuesCheck->setVisible(visible);
+}
+
+bool SortVolumeComics::addsMissingIssues() const
+{
+    // the page is hidden when the dialog asks
+    return !missingIssuesCheck->isHidden() && missingIssuesCheck->isEnabled() && missingIssuesCheck->isChecked();
+}
+
+QStringList SortVolumeComics::getMissingIssues()
 {
     const auto comicList = localComicsModel->getData();
-    QList<QPair<ComicDB, QString>> l;
+    QStringList issues;
+    for (int row = 0; row < volumeComicsModel->issueCount(); row++) {
+        if (row >= comicList.size() || !comicList.at(row))
+            issues.append(volumeComicsModel->getIssueJson(row));
+    }
+    return issues;
+}
+
+void SortVolumeComics::updateMissingIssues()
+{
+    const auto count = getMissingIssues().size();
+    missingIssuesCheck->setText(tr("Add the %n other issue(s) of this volume as missing comics", "", count));
+    missingIssuesCheck->setEnabled(count > 0);
+}
+
+QList<QPair<ComicRecord, QString>> SortVolumeComics::getMatchingInfo()
+{
+    const auto comicList = localComicsModel->getData();
+    QList<QPair<ComicRecord, QString>> l;
 
     int index = 0;
 
     QString id;
     for (const auto &c : comicList) {
         id = volumeComicsModel->getComicId(index);
-        if (!c.getFileName().isEmpty() && !id.isEmpty()) // there is a valid comic, and valid comic ID
+        if (c && !id.isEmpty()) // there is a valid comic, and valid comic ID
         {
-            l.push_back(QPair<ComicDB, QString>(c, id));
+            l.push_back(QPair<ComicRecord, QString>(*c, id));
         }
         index++;
     }

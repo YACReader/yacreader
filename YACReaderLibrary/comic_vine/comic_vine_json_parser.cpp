@@ -5,6 +5,7 @@
 #include "selected_volume_info.h"
 
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QJsonParseError>
 
 QString getCharacters(const QVariant &json_characters);
@@ -13,25 +14,38 @@ QPair<QString, QString> getFirstStoryArcIdAndName(const QVariant &json_story_arc
 QPair<QString, QString> getArcNumberAndArcCount(const QString &storyArcId, const QString &comicId);
 QList<QString> getNamesFromList(const QVariant &json_list);
 
-ComicDB YACReader::parseCVJSONComicInfo(ComicDB &comic, const QString &json, const SelectedVolumeInfo &volumeInfo)
+YACReader::ComicVineAnswer YACReader::comicVineAnswer(bool error, bool timeout, const QByteArray &body)
 {
+    const auto status = QJsonDocument::fromJson(body).object().value("status_code").toInt();
+    if (status == 107)
+        return ComicVineAnswer::LimitReached;
+    if (error || timeout || status != 1)
+        return ComicVineAnswer::Failed;
+    return ComicVineAnswer::Answered;
+}
+
+DescriptiveMetadataPatch YACReader::parseCVJSONComicInfo(const QString &json, const SelectedVolumeInfo &volumeInfo)
+{
+    using M = DescriptiveComicMetadata;
+    DescriptiveMetadataPatch patch;
+
     QJsonParseError Err;
 
     QVariantMap sc = QJsonDocument::fromJson(json.toUtf8(), &Err).toVariant().toMap();
     if (Err.error != QJsonParseError::NoError) {
         qDebug("Error detected");
-        return comic;
+        return patch;
     }
 
     int numResults = sc.value("number_of_total_results").toInt(); // fix to weird behaviour using hasNext
 
     if (numResults > 0) {
         QVariantMap result = sc.value("results").toMap();
-        comic.info.title = result.value("name");
-        comic.info.number = result.value("issue_number");
+        patch.set(&M::title, result.value("name"));
+        patch.set(&M::number, result.value("issue_number"));
 
         // changed in 9.13, volume actually means series in ComicVine
-        comic.info.series = result.value("volume").toMap().value("name");
+        patch.set(&M::series, result.value("volume").toMap().value("name"));
 
         if (result.contains("person_credits") && !result.value("person_credits").isNull()) {
             auto authors = getAuthors(result.value("person_credits"));
@@ -43,12 +57,12 @@ ComicDB YACReader::parseCVJSONComicInfo(ComicDB &comic, const QString &json, con
             QString letterer = authors.values("letterer").join("\n");
             QString coverArtist = authors.values("cover").join("\n");
 
-            comic.info.writer = writer;
-            comic.info.penciller = penciller;
-            comic.info.inker = inker;
-            comic.info.colorist = colorist;
-            comic.info.letterer = letterer;
-            comic.info.coverArtist = coverArtist;
+            patch.set(&M::writer, writer);
+            patch.set(&M::penciller, penciller);
+            patch.set(&M::inker, inker);
+            patch.set(&M::colorist, colorist);
+            patch.set(&M::letterer, letterer);
+            patch.set(&M::coverArtist, coverArtist);
         }
 
         if (result.contains("cover_date") && !result.value("cover_date").isNull()) {
@@ -58,20 +72,20 @@ ComicDB YACReader::parseCVJSONComicInfo(ComicDB &comic, const QString &json, con
 
             if (tempList.length() == 3) {
                 std::reverse(tempList.begin(), tempList.end());
-                comic.info.date = tempList.join("/");
+                patch.set(&M::date, tempList.join("/"));
             }
         }
 
         if (result.contains("description") && !result.value("description").isNull() && !result.value("description").toString().trimmed().isEmpty()) {
-            comic.info.synopsis = result.value("description");
+            patch.set(&M::synopsis, result.value("description"));
         } else if (result.contains("deck") && !result.value("deck").isNull() && !result.value("deck").toString().trimmed().isEmpty()) {
-            comic.info.synopsis = result.value("deck");
+            patch.set(&M::synopsis, result.value("deck"));
         } else if (!volumeInfo.description.trimmed().isEmpty() && volumeInfo.numIssues < 2) {
-            comic.info.synopsis = volumeInfo.description.trimmed();
+            patch.set(&M::synopsis, volumeInfo.description.trimmed());
         }
 
         if (result.contains("character_credits") && !result.value("character_credits").isNull()) {
-            comic.info.characters = getCharacters(result.value("character_credits"));
+            patch.set(&M::characters, getCharacters(result.value("character_credits")));
         }
 
         if (result.contains("story_arc_credits") && !result.value("story_arc_credits").isNull()) {
@@ -87,33 +101,31 @@ ComicDB YACReader::parseCVJSONComicInfo(ComicDB &comic, const QString &json, con
                     QString arcNumber = arcNumberAndArcCount.first;
                     QString arcCount = arcNumberAndArcCount.second;
 
-                    comic.info.storyArc = storyArcName;
-                    comic.info.arcNumber = arcNumber;
-                    comic.info.arcCount = arcCount;
+                    patch.set(&M::storyArc, storyArcName);
+                    patch.set(&M::arcNumber, arcNumber);
+                    patch.set(&M::arcCount, arcCount);
                 }
             }
         }
 
         if (result.contains("location_credits") && !result.value("location_credits").isNull()) {
-            comic.info.locations = getNamesFromList(result.value("location_credits")).join("\n");
+            patch.set(&M::locations, getNamesFromList(result.value("location_credits")).join("\n"));
         }
 
         if (result.contains("team_credits") && !result.value("team_credits").isNull()) {
-            comic.info.teams = getNamesFromList(result.value("team_credits")).join("\n");
+            patch.set(&M::teams, getNamesFromList(result.value("team_credits")).join("\n"));
         }
 
         if (result.contains("character_credits") && !result.value("character_credits").isNull()) {
-            comic.info.characters = getNamesFromList(result.value("character_credits")).join("\n");
+            patch.set(&M::characters, getNamesFromList(result.value("character_credits")).join("\n"));
         }
 
-        comic.info.count = volumeInfo.numIssues;
+        patch.set(&M::count, volumeInfo.numIssues);
 
-        comic.info.publisher = volumeInfo.publisher;
-
-        comic.info.edited = true;
+        patch.set(&M::publisher, volumeInfo.publisher);
     }
 
-    return comic;
+    return patch;
 }
 
 QString getCharacters(const QVariant &json_characters)

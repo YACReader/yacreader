@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
 #include <QPainter>
 #include <QPixmap>
 #include <QPushButton>
@@ -100,6 +101,10 @@ void YACReaderTitledToolBar::addAction(QAction *action)
     tb->setDefaultAction(action);
     tb->setIconSize(QSize(16, 16));
     tb->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    if (action->menu() != nullptr) {
+        tb->setPopupMode(QToolButton::InstantPopup);
+        tb->setStyleSheet("QToolButton::menu-indicator { image: none; }");
+    }
 
     mainLayout->addWidget(tb);
 }

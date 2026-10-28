@@ -31,17 +31,11 @@ namespace {
 
 void collectComicsRecursively(qulonglong libraryId, qulonglong folderId, QList<ComicDB> &out)
 {
-    const auto comics = DBHelper::getFolderComicsFromLibrary(libraryId, folderId);
-    for (auto *item : comics) {
-        if (auto *comic = static_cast<ComicDB *>(item))
-            out.append(*comic);
-    }
-    qDeleteAll(comics);
+    out.append(DBHelper::getFolderComicsFromLibrary(libraryId, folderId));
 
     const auto subfolders = DBHelper::getFolderSubfoldersFromLibrary(libraryId, folderId);
-    for (auto *item : subfolders)
-        collectComicsRecursively(libraryId, item->id, out);
-    qDeleteAll(subfolders);
+    for (const auto &folder : subfolders)
+        collectComicsRecursively(libraryId, folder.id.value(), out);
 }
 
 QList<ComicEntry> buildEntries(const QList<ComicDB> &comics, const QString &libraryRoot)
@@ -51,8 +45,8 @@ QList<ComicEntry> buildEntries(const QList<ComicDB> &comics, const QString &libr
 
     for (const ComicDB &comic : comics) {
         ComicEntry entry;
-        entry.comicId = comic.id;
-        entry.sourceAbsolute = QDir::cleanPath(libraryRoot + comic.path);
+        entry.comicId = comic.file.id.value();
+        entry.sourceAbsolute = QDir::cleanPath(libraryRoot + comic.file.path);
 
         const QFileInfo info(entry.sourceAbsolute);
         entry.missing = !info.exists();
@@ -136,7 +130,7 @@ void OrganizeFilesCoordinator::runOnFolder(OrganizeFiles::Mode mode, const QMode
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
     QList<ComicDB> comics;
-    collectComicsRecursively(library.id, folder.id, comics);
+    collectComicsRecursively(library.id, folder.id.value(), comics);
     QApplication::restoreOverrideCursor();
 
     if (comics.isEmpty()) {
@@ -149,7 +143,7 @@ void OrganizeFilesCoordinator::runOnFolder(OrganizeFiles::Mode mode, const QMode
 
 void OrganizeFilesCoordinator::runOnSelectedComics(OrganizeFiles::Mode mode)
 {
-    const auto selection = selectionProvider();
+    const auto selection = comicsModel->supportedIndexes(selectionProvider(), ComicAction::ChangeFile);
     if (selection.isEmpty())
         return;
 
@@ -260,6 +254,7 @@ bool OrganizeFilesCoordinator::applyToDatabase(const QList<FileMove> &moves,
             DBHelper::removeEmptyFolderRows(createdFolderIdsToRemove, db);
             DBHelper::syncFolderAddedFromContents(createdFolders, db);
             DBHelper::updateChildrenInfo(db);
+            const auto placeholderCoverKeys = DBHelper::removeUnusedPlaceholders(db).value_or(QStringList());
 
             if (!db.commit()) {
                 *error = tr("the library database could not be saved: %1").arg(db.lastError().text());
@@ -267,6 +262,8 @@ bool OrganizeFilesCoordinator::applyToDatabase(const QList<FileMove> &moves,
                 removedFolders.clear();
                 createdFolders.clear();
                 success = false;
+            } else {
+                DBHelper::removePlaceholderCovers(YACReader::LibraryPaths::libraryDataPath(libraryRoot), placeholderCoverKeys);
             }
         } else {
             db.rollback();

@@ -5,6 +5,7 @@
 #include "comics_view_transition.h"
 #include "empty_folder_widget.h"
 #include "empty_label_widget.h"
+#include "empty_list_folder_widget.h"
 #include "empty_reading_list_widget.h"
 #include "empty_special_list.h"
 #include "grid_comics_view.h"
@@ -44,16 +45,13 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
 
     connectComicsViewConnections(comicsView);
     toolbarOwner = comicsView;
-    connect(gridComicsView, &GridComicsView::comicSelectionStateChanged, this, [this](bool hasSelection) {
-        if (comicsViewStack->currentWidget() == gridComicsView)
-            libraryWindow->actions.setComicSelectionActionsEnabled(hasSelection);
-    });
     connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateSettings);
 
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
     comicsViewStack->addWidget(emptyLabelWidget = new EmptyLabelWidget());
     comicsViewStack->addWidget(emptySpecialList = new EmptySpecialListWidget());
     comicsViewStack->addWidget(emptyReadingList = new EmptyReadingListWidget());
+    comicsViewStack->addWidget(emptyListFolder = new EmptyListFolderWidget());
     comicsViewStack->addWidget(emptyFolderWidget = new EmptyFolderWidget());
     comicsViewStack->addWidget(noSearchResultsWidget = new NoSearchResultsWidget());
 
@@ -217,6 +215,11 @@ void YACReaderContentViewsManager::showEmptyReadingList()
     showStackWidget(emptyReadingList, true);
 }
 
+void YACReaderContentViewsManager::showEmptyListFolder()
+{
+    showStackWidget(emptyListFolder, true);
+}
+
 void YACReaderContentViewsManager::showEmptyFolder()
 {
     showStackWidget(emptyFolderWidget, false);
@@ -249,6 +252,7 @@ void YACReaderContentViewsManager::focusComicsViewViaShortcut()
 void YACReaderContentViewsManager::disconnectComicsViewConnections(ComicsView *widget)
 {
     disconnect(widget, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating);
+    disconnect(widget, &ComicsView::comicSelectionChanged, this, &YACReaderContentViewsManager::updateComicActionsForCurrentView);
     disconnect(libraryWindow->actions.showHideMarksAction, &QAction::toggled, widget, &ComicsView::setShowMarks);
     disconnect(libraryWindow->actions.selectAllComicsAction, &QAction::triggered, widget, &ComicsView::selectAll);
     if (comicManagementCoordinator != nullptr) {
@@ -267,6 +271,7 @@ void YACReaderContentViewsManager::disconnectComicsViewConnections(ComicsView *w
 void YACReaderContentViewsManager::connectComicsViewConnections(ComicsView *view)
 {
     connect(view, &ComicsView::comicRated, libraryWindow->comicsModel, &ComicModel::updateRating, Qt::UniqueConnection);
+    connect(view, &ComicsView::comicSelectionChanged, this, &YACReaderContentViewsManager::updateComicActionsForCurrentView, Qt::UniqueConnection);
     connect(libraryWindow->actions.showHideMarksAction, &QAction::toggled, view, &ComicsView::setShowMarks, Qt::UniqueConnection);
 
     connect(libraryWindow->actions.selectAllComicsAction, &QAction::triggered, view, &ComicsView::selectAll, Qt::UniqueConnection);
@@ -337,12 +342,26 @@ void YACReaderContentViewsManager::updateComicActionsForCurrentView()
         return;
 
     libraryWindow->setComicActionsDisabled(libraryWindow->comicsModel->rowCount() == 0);
+}
 
-    // Only the grid tracks a live comic selection, and it can have a folder focused
-    // instead of a comic. Every other view keeps the comic actions available as long
-    // as the current content has comics.
-    if (comicsView == gridComicsView)
-        libraryWindow->actions.setComicSelectionActionsEnabled(gridComicsView->hasComicSelection());
+void YACReaderContentViewsManager::applyComicSelectionActions()
+{
+    const auto *model = libraryWindow->comicsModel;
+    if (model == nullptr || model->rowCount() == 0)
+        return;
+
+    // The grid can have a folder focused instead of a comic. The other views act on the
+    // first comic when nothing is selected (LibraryWindow::getSelectedComics).
+    if (comicsView == gridComicsView && !gridComicsView->hasComicSelection()) {
+        libraryWindow->actions.setComicSelectionActionsEnabled(false);
+        return;
+    }
+
+    auto selection = comicsView->selectionModel()->selectedRows();
+    if (selection.isEmpty())
+        selection.append(model->index(0, 0));
+    const auto current = comicsView->currentIndex();
+    libraryWindow->actions.setComicSelectionActionsEnabled(*model, selection, current.isValid() ? current : selection.first());
 }
 
 void YACReaderContentViewsManager::setToolBarOwner(ComicsView *view)

@@ -959,17 +959,13 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     QFileInfo fi(path);
     currentComicPath = fi.absoluteFilePath();
 
-    if (!comic.info.title.isNull() && !comic.info.title.toString().isEmpty())
-        setWindowTitle("YACReader - " + comic.info.title.toString());
-    else
-        setWindowTitle("YACReader - " + fi.fileName());
+    setWindowTitle("YACReader - " + titleOrFileName(comic.info, fi.fileName()));
 
     applyLibraryReaderMode(comic.info.type.value<YACReader::FileType>());
 
     viewer->open(path, comic);
     enableActions();
-    int index = siblings.indexOf(comic);
-    updatePrevNextActions(index > 0, index + 1 < siblings.count());
+    updatePrevNextActions(currentSiblingIndex > 0, currentSiblingIndex >= 0 && currentSiblingIndex + 1 < siblings.count());
 
     optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 }
@@ -983,16 +979,16 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, YACR
 
     enableActions();
 
-    currentComicDB.id = comicId;
+    currentComicDB.file.id = ComicId(comicId);
     YACReaderLocalClient client;
     int tries = 1;
     bool success = false;
-    while (!(success = client.requestComicInfo(libraryId, currentComicDB, siblingComics, source)) && tries != 0)
+    while (!(success = client.requestComicInfo(libraryId, currentComicDB, siblingComics, currentSiblingIndex, source)) && tries != 0)
         tries--;
 
     if (success) {
         isClient = true;
-        open(path + currentComicDB.path, currentComicDB, siblingComics);
+        open(path + currentComicDB.file.path, currentComicDB, siblingComics);
     } else {
         isClient = false;
         QMessageBox::information(this, "Connection Error", "Unable to connect to YACReaderLibrary");
@@ -1522,8 +1518,7 @@ void MainWindowViewer::setUpShortcutsManagement()
 void MainWindowViewer::doubleMangaPageSwitch()
 {
     if (isClient) {
-        int index = siblingComics.indexOf(currentComicDB);
-        updatePrevNextActions(index > 0, index + 1 < siblingComics.size());
+        updatePrevNextActions(currentSiblingIndex > 0, currentSiblingIndex >= 0 && currentSiblingIndex + 1 < siblingComics.size());
     } else {
         updatePrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
     }
@@ -1597,13 +1592,10 @@ void MainWindowViewer::openPreviousComic()
     if (!siblingComics.isEmpty() && isClient) {
         sendComic();
 
-        int currentIndex = siblingComics.indexOf(currentComicDB);
-        if (currentIndex == -1)
-            return;
-        if (currentIndex - 1 >= 0 && currentIndex - 1 < siblingComics.count()) {
-            siblingComics[currentIndex] = currentComicDB; // updated
-            currentComicDB = siblingComics.at(currentIndex - 1);
-            open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
+        if (currentSiblingIndex - 1 >= 0 && currentSiblingIndex - 1 < siblingComics.count()) {
+            storeCurrentComicInSiblings();
+            currentComicDB = siblingComics.at(--currentSiblingIndex);
+            open(currentDirectory + currentComicDB.file.path, currentComicDB, siblingComics);
         }
         return;
     }
@@ -1617,13 +1609,10 @@ void MainWindowViewer::openNextComic()
     if (!siblingComics.isEmpty() && isClient) {
         sendComic();
 
-        int currentIndex = siblingComics.indexOf(currentComicDB);
-        if (currentIndex == -1)
-            return;
-        if (currentIndex + 1 > 0 && currentIndex + 1 < siblingComics.count()) {
-            siblingComics[currentIndex] = currentComicDB; // updated
-            currentComicDB = siblingComics.at(currentIndex + 1);
-            open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
+        if (currentSiblingIndex + 1 > 0 && currentSiblingIndex + 1 < siblingComics.count()) {
+            storeCurrentComicInSiblings();
+            currentComicDB = siblingComics.at(++currentSiblingIndex);
+            open(currentDirectory + currentComicDB.file.path, currentComicDB, siblingComics);
         }
 
         return;
@@ -1864,19 +1853,27 @@ void MainWindowViewer::sendComic()
 
     viewer->updateComic(currentComicDB);
 
-    int currentIndex = siblingComics.indexOf(currentComicDB);
-    bool sendNextComicInfo = (currentComicDB.info.currentPage == currentComicDB.info.numPages) && (currentIndex + 1 > 0 && currentIndex + 1 < siblingComics.count());
+    bool sendNextComicInfo = (currentComicDB.info.currentPage == currentComicDB.info.numPages) && (currentSiblingIndex + 1 > 0 && currentSiblingIndex + 1 < siblingComics.count());
 
     if (sendNextComicInfo) {
-        ComicDB &nextComic = siblingComics[currentIndex + 1];
+        ComicDB &nextComic = siblingComics[currentSiblingIndex + 1];
         nextComic.info.hasBeenOpened = true;
         int retries = 1;
-        while (!client->sendComicInfo(libraryId, currentComicDB, nextComic.id) && retries != 0)
+        while (!client->sendComicInfo(libraryId, currentComicDB, nextComic.file.id.value()) && retries != 0)
             retries--;
     } else {
         int retries = 1;
         while (!client->sendComicInfo(libraryId, currentComicDB) && retries != 0)
             retries--;
+    }
+}
+
+// the reading state belongs to the comic, so every occurrence gets it
+void MainWindowViewer::storeCurrentComicInSiblings()
+{
+    for (auto &sibling : siblingComics) {
+        if (sibling == currentComicDB)
+            sibling = currentComicDB;
     }
 }
 

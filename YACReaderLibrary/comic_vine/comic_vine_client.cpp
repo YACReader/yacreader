@@ -31,7 +31,7 @@ static const QString CV_SERIES_DETAIL = CV_WEB_ADDRESS + "/volume/4050-%1/?api_k
 
 // gets info for comics in a volume id %1
 static const QString CV_COMICS_INFO = CV_WEB_ADDRESS + "/issues/?api_key=" + CV_API_KEY +
-        "&limit=1000&format=json&field_list=name,issue_number,id,image&filter=volume:%1"
+        "&limit=1000&format=json&field_list=name,issue_number,id,image,cover_date,volume&filter=volume:%1"
         "&sort=cover_date:asc" // sorting by cover_date, because comic vine doesn't use natural sorting (issue_number -> 1 10 11 ... 100 2 20 21....)
         "&offset=%2";
 
@@ -217,6 +217,19 @@ QByteArray ComicVineClient::getStoryArcDetail(const QString &id, bool &outError,
     // connect(search,SIGNAL(dataReady(const QByteArray &)),this,SLOT(proccessComicDetailData(const QByteArray &)));
     // connect(search,SIGNAL(timeout()),this,SIGNAL(timeOut()));
     // connect(search,SIGNAL(finished()),search,SLOT(deleteLater()));
+    search->get();
+    search->wait();
+    outError = !(search->wasValid());
+    outTimeout = search->wasTimeout();
+    QByteArray result = search->getResult();
+    delete search;
+
+    return result;
+}
+
+QByteArray ComicVineClient::getImage(const QString &url, bool &outError, bool &outTimeout)
+{
+    HttpWorker *search = new HttpWorker(url, userAgent);
     search->get();
     search->wait();
     outError = !(search->wasValid());

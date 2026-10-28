@@ -24,6 +24,15 @@
 #include "controllers/v2/tagscontroller_v2.h"
 #include "controllers/v2/updatecomiccontroller_v2.h"
 #include "controllers/v2/updatelibrariescontroller_v2.h"
+#include "controllers/v3/covercontroller_v3.h"
+#include "controllers/v3/foldercontentcontroller_v3.h"
+#include "controllers/v3/folderinfocontroller_v3.h"
+#include "controllers/v3/listcontentcontroller_v3.h"
+#include "controllers/v3/listitemcontroller_v3.h"
+#include "controllers/v3/listsectioncontroller_v3.h"
+#include "controllers/v3/recentcontroller_v3.h"
+#include "controllers/v3/tagscontroller_v3.h"
+#include "controllers/v3/v3_response.h"
 #include "controllers/versioncontroller.h"
 #include "controllers/webui/webuicontroller.h"
 #include "db_helper.h"
@@ -34,6 +43,9 @@
 
 #include <QRegExp>
 
+#include <memory>
+#include <optional>
+
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpRequestHandler;
 using stefanfrings::HttpResponse;
@@ -43,7 +55,7 @@ QMutex RequestMapper::mutex;
 RequestMapper::RequestMapper(QObject *parent)
     : HttpRequestHandler(parent) { }
 
-void RequestMapper::loadSessionV2(HttpRequest &request, HttpResponse & /* response */)
+void RequestMapper::loadSession(HttpRequest &request, HttpResponse & /* response */)
 {
     QMutexLocker locker(&mutex);
 
@@ -72,6 +84,8 @@ void RequestMapper::service(HttpRequest &request, HttpResponse &response)
 
     if (path.startsWith("/v2")) {
         serviceV2(request, response);
+    } else if (path.startsWith("/v3")) {
+        serviceV3(request, response);
     } else if (path == "/" || path.startsWith("/webui")) {
         serviceWebUI(request, response);
     } else {
@@ -110,7 +124,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     QRegExp readingListContent("/v2/library/.+/reading_list/[0-9]+/content/?");
     QRegExp readingListInfo("/v2/library/.+/reading_list/[0-9]+/info/?");
     QRegExp search("/v2/library/.+/search/?");
-    QRegExp itemUpdate("/v2/library/[0-9]+/(comic|folder)/[0-9]+/?"); // PATCH: change fields of a comic or a folder (see server/API.md)
+    QRegExp itemUpdate("/v2/library/[0-9]+/(comic|folder)/[0-9]+/?"); // PATCH: change fields of a comic or a folder
 
     QRegExp sync("/v2/sync");
 
@@ -125,7 +139,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     path = QUrl::fromPercentEncoding(path).toUtf8();
 
     if (!sync.exactMatch(path)) // no session is needed for syncback info, until security will be added
-        loadSessionV2(request, response);
+        loadSession(request, response);
 
     // primera petición, se ha hecho un post, se sirven las bibliotecas si la seguridad mediante login no está habilitada
     if (path == "/v2/libraries") // Don't send data to the server using '/' !!!!
@@ -133,7 +147,7 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
         LibrariesControllerV2().service(request, response);
     } else {
         if (serverVersion.exactMatch(path)) {
-            VersionController().service(request, response);
+            VersionController(SERVER_VERSION_NUMBER).service(request, response);
         } else if (sync.exactMatch(path)) {
             SyncControllerV2 syncController;
             syncController.service(request, response);
@@ -213,4 +227,91 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
             }
         }
     }
+}
+
+// v3 has only the routes whose content changed; a v3 client uses v2 for the rest, with the same session
+void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
+{
+    const QByteArray path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
+
+    QRegExp serverVersion("/v3/version/?");
+    QRegExp folderContent("/v3/library/([0-9]+)/folder/([0-9]+)/content/?");
+    QRegExp folderInfo("/v3/library/([0-9]+)/folder/([0-9]+)/info/?");
+    QRegExp readingListContent("/v3/library/([0-9]+)/reading_list/([0-9]+)/content/?");
+    QRegExp labelContent("/v3/library/([0-9]+)/tag/([0-9]+)/content/?");
+    QRegExp readingLists("/v3/library/([0-9]+)/reading_lists/?");
+    QRegExp readingListFolderContent("/v3/library/([0-9]+)/reading_list_folder/([0-9]+)/content/?");
+    QRegExp smartLists("/v3/library/([0-9]+)/smart_lists/?");
+    QRegExp smartListFolderContent("/v3/library/([0-9]+)/smart_list_folder/([0-9]+)/content/?");
+    QRegExp smartListContent("/v3/library/([0-9]+)/smart_list/([0-9]+)/content/?");
+    QRegExp cover("/v3/library/([0-9]+)/cover/(.+)");
+    QRegExp tags("/v3/library/([0-9]+)/tags/?");
+    QRegExp recent("/v3/library/([0-9]+)/recent/?");
+    QRegExp readingList("/v3/library/([0-9]+)/reading_list/([0-9]+)/?");
+    QRegExp readingListFolder("/v3/library/([0-9]+)/reading_list_folder/([0-9]+)/?");
+    QRegExp smartList("/v3/library/([0-9]+)/smart_list/([0-9]+)/?");
+    QRegExp smartListFolder("/v3/library/([0-9]+)/smart_list_folder/([0-9]+)/?");
+
+    loadSession(request, response);
+
+    std::unique_ptr<HttpRequestHandler> controller;
+    std::optional<int> libraryId;
+    if (serverVersion.exactMatch(path)) {
+        controller = std::make_unique<VersionController>(SERVER_V3_VERSION_NUMBER);
+    } else if (folderContent.exactMatch(path)) {
+        libraryId = folderContent.cap(1).toInt();
+        controller = std::make_unique<FolderContentControllerV3>(*libraryId, FolderId(folderContent.cap(2).toULongLong()));
+    } else if (folderInfo.exactMatch(path)) {
+        libraryId = folderInfo.cap(1).toInt();
+        controller = std::make_unique<FolderInfoControllerV3>(*libraryId, FolderId(folderInfo.cap(2).toULongLong()));
+    } else if (readingListContent.exactMatch(path)) {
+        libraryId = readingListContent.cap(1).toInt();
+        controller = std::make_unique<ListContentControllerV3>(*libraryId, ReadingListId(readingListContent.cap(2).toULongLong()));
+    } else if (labelContent.exactMatch(path)) {
+        libraryId = labelContent.cap(1).toInt();
+        controller = std::make_unique<ListContentControllerV3>(*libraryId, LabelId(labelContent.cap(2).toULongLong()));
+    } else if (readingLists.exactMatch(path)) {
+        libraryId = readingLists.cap(1).toInt();
+        controller = std::make_unique<ListSectionControllerV3>(*libraryId, ListFolderKind::ReadingList, std::nullopt);
+    } else if (readingListFolderContent.exactMatch(path)) {
+        libraryId = readingListFolderContent.cap(1).toInt();
+        controller = std::make_unique<ListSectionControllerV3>(*libraryId, ListFolderKind::ReadingList, readingListFolderContent.cap(2).toULongLong());
+    } else if (smartLists.exactMatch(path)) {
+        libraryId = smartLists.cap(1).toInt();
+        controller = std::make_unique<ListSectionControllerV3>(*libraryId, ListFolderKind::SmartList, std::nullopt);
+    } else if (smartListFolderContent.exactMatch(path)) {
+        libraryId = smartListFolderContent.cap(1).toInt();
+        controller = std::make_unique<ListSectionControllerV3>(*libraryId, ListFolderKind::SmartList, smartListFolderContent.cap(2).toULongLong());
+    } else if (smartListContent.exactMatch(path)) {
+        libraryId = smartListContent.cap(1).toInt();
+        controller = std::make_unique<ListContentControllerV3>(*libraryId, SmartListId(smartListContent.cap(2).toULongLong()));
+    } else if (cover.exactMatch(path)) {
+        libraryId = cover.cap(1).toInt();
+        controller = std::make_unique<CoverControllerV3>(*libraryId, cover.cap(2));
+    } else if (tags.exactMatch(path)) {
+        libraryId = tags.cap(1).toInt();
+        controller = std::make_unique<TagsControllerV3>(*libraryId);
+    } else if (recent.exactMatch(path)) {
+        libraryId = recent.cap(1).toInt();
+        controller = std::make_unique<RecentControllerV3>(*libraryId);
+    } else if (readingList.exactMatch(path)) {
+        libraryId = readingList.cap(1).toInt();
+        controller = std::make_unique<ListItemControllerV3>(*libraryId, ReadingListId(readingList.cap(2).toULongLong()));
+    } else if (readingListFolder.exactMatch(path)) {
+        libraryId = readingListFolder.cap(1).toInt();
+        controller = std::make_unique<ListItemControllerV3>(*libraryId, ListFolderId { ListFolderKind::ReadingList, readingListFolder.cap(2).toULongLong() });
+    } else if (smartList.exactMatch(path)) {
+        libraryId = smartList.cap(1).toInt();
+        controller = std::make_unique<ListItemControllerV3>(*libraryId, SmartListId(smartList.cap(2).toULongLong()));
+    } else if (smartListFolder.exactMatch(path)) {
+        libraryId = smartListFolder.cap(1).toInt();
+        controller = std::make_unique<ListItemControllerV3>(*libraryId, ListFolderId { ListFolderKind::SmartList, smartListFolder.cap(2).toULongLong() });
+    }
+
+    if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId)))
+        V3Response::notFound(response);
+    else if (request.getMethod() != "GET")
+        V3Response::methodNotAllowed(response);
+    else
+        controller->service(request, response);
 }

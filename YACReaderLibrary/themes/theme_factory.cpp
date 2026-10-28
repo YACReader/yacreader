@@ -501,6 +501,8 @@ Theme makeTheme(const ThemeParams &params)
         theme.emptyContainer.emptyCurrentReadingsIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_current_readings.svg", ec.iconColor, params.meta.id), 167, 214, dpr);
         theme.emptyContainer.emptyRecentIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/lists/default_2.svg", rli.currentlyReadingMainColor, rli.specialListShadowColor, rli.currentlyReadingOuterColor, params.meta.id), 167, dpr);
         theme.emptyContainer.emptyReadingListIcon = renderSvgToPixmap(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.iconColor, params.meta.id), 248, 187, dpr);
+        theme.emptyContainer.readingListArtUrl = QUrl::fromLocalFile(recoloredSvgToThemeFile(":/images/empty_container/empty_reading_list.svg", ec.iconColor, params.meta.id));
+        theme.emptyContainer.smartListArtUrl = QUrl::fromLocalFile(recoloredSvgToThemeFile(":/images/empty_container/smart_list_card.svg", ec.iconColor, params.meta.id));
 
         // Generate empty label icons for each label color
         for (int c = YACReader::YRed; c <= YACReader::YDark; ++c) {
@@ -584,6 +586,17 @@ Theme makeTheme(const ThemeParams &params)
                                                       QString::number(cvta.itemBorderTopWidth));
     theme.comicsViewTable.starRatingColor = cvta.starRatingColor;
     theme.comicsViewTable.starRatingSelectedColor = cvta.starRatingSelectedColor;
+    {
+        QIcon deletedComic;
+        deletedComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/deletedComic.svg", cvta.itemTextColor, params.meta.id), QSize(), QIcon::Normal, QIcon::Off);
+        deletedComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/deletedComic.svg", cvta.selectedTextColor, params.meta.id, { .suffix = "_selected" }), QSize(), QIcon::Selected, QIcon::Off);
+        theme.comicsViewTable.deletedComicIcon = deletedComic;
+
+        QIcon placeholderComic;
+        placeholderComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/placeholderComic.svg", cvta.itemTextColor, params.meta.id), QSize(), QIcon::Normal, QIcon::Off);
+        placeholderComic.addFile(recoloredSvgToThemeFile(":/images/comics_view_table/placeholderComic.svg", cvta.selectedTextColor, params.meta.id, { .suffix = "_selected" }), QSize(), QIcon::Selected, QIcon::Off);
+        theme.comicsViewTable.placeholderComicIcon = placeholderComic;
+    }
     // end ComicsViewTable
 
     // GridAndInfoView
@@ -891,15 +904,17 @@ Theme makeTheme(const ThemeParams &params)
         theme.readingListIcons.currentlyReadingIcon = icon;
     }
 
-    // List icon (3 colors)
-    {
-        const QString normalPath = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.meta.id);
-        const QString selectedPath = recoloredSvgToThemeFile(":/images/lists/list.svg", rli.listMainSelectedColor, rli.listShadowSelectedColor, rli.listDetailSelectedColor, params.meta.id, { .suffix = "_selected" });
+    // List and smart list icons (3 colors)
+    auto makeListIcon = [&](const QString &basePath) {
+        const QString normalPath = recoloredSvgToThemeFile(basePath, rli.listMainColor, rli.listShadowColor, rli.listDetailColor, params.meta.id);
+        const QString selectedPath = recoloredSvgToThemeFile(basePath, rli.listMainSelectedColor, rli.listShadowSelectedColor, rli.listDetailSelectedColor, params.meta.id, { .suffix = "_selected" });
         QIcon icon;
         icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(selectedPath, QSize(), QIcon::Selected, QIcon::Off);
-        theme.readingListIcons.listIcon = icon;
-    }
+        return icon;
+    };
+    theme.readingListIcons.listIcon = makeListIcon(":/images/lists/list.svg");
+    theme.readingListIcons.smartListIcon = makeListIcon(":/images/lists/smart_list.svg");
     // end ReadingListIcons
 
     // MenuIcons

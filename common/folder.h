@@ -1,61 +1,39 @@
 #ifndef __FOLDER_H
 #define __FOLDER_H
 
-#include "library_item.h"
+#include "library_ids.h"
 #include "yacreader_global.h"
 
-#include <QList>
+#include <QString>
+#include <QStringList>
 
-class Folder : public LibraryItem
-{
-public:
-    bool knownParent;
-    bool knownId;
+class QSqlQuery;
+class QSqlRecord;
 
-    bool finished; // finished means read, the user has read all the content in this folder
-    bool completed; // completed means the folder has all the content, e.g. a series got its final issue and the user has collected all of them
+struct Folder {
+    FolderId id;
+    FolderId parentId;
+    QString name;
+    QString path;
 
-    qint32 numChildren; //-1 for unknown number of children
+    bool finished = false; // finished means read, the user has read all the content in this folder
+    bool completed = true; // completed means the folder has all the content, e.g. a series got its final issue and the user has collected all of them
+
+    qint32 numChildren = 0; // the column is nullable, but NULL means 0
     QString firstChildHash; // empty for unknown first child
     QString customImage; // empty for none custom image
 
-    YACReader::FileType type;
-    qint64 added; // epoch in seconds
-    qint64 updated; // epoch in seconds
+    YACReader::FileType type = YACReader::FileType::Comic;
+    qint64 added = 0; // epoch in seconds
+    qint64 updated = 0; // epoch in seconds
 
-    Folder();
-    Folder(qulonglong folderId, qulonglong parentId, const QString &folderName, const QString &folderPath);
-    Folder(qulonglong folderId,
-           qulonglong parentId,
-           const QString &folderName,
-           const QString &folderPath,
-           bool completed,
-           bool finished,
-           int numChildren,
-           const QString &firstChildHash,
-           const QString &customImage,
-           YACReader::FileType type,
-           qint64 added,
-           qint64 updated);
-    Folder(const QString &folderName, const QString &folderPath);
-    Folder(const Folder &folder);
-    Folder &operator=(const Folder &other);
+    friend bool operator==(const Folder &, const Folder &) = default;
 
-    inline void setId(qulonglong sid)
-    {
-        id = sid;
-        knownId = true;
-    }
-    inline void setFather(qulonglong pid)
-    {
-        parentId = pid;
-        knownParent = true;
-    }
-
-    inline bool isDir() const
-    {
-        return true;
-    }
+    static const QStringList &columns();
+    static Folder fromRecord(const QSqlRecord &record, const QString &alias);
+    static QList<int> columnIndexes(const QSqlRecord &record, const QString &alias);
+    static Folder fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes);
+    void bindTo(QSqlQuery &query) const;
 };
 
 #endif

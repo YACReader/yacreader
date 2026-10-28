@@ -19,6 +19,7 @@ class InfoComicsView;
 class ComicsViewTransition;
 class EmptyLabelWidget;
 class EmptySpecialListWidget;
+class EmptyListFolderWidget;
 class EmptyReadingListWidget;
 class EmptyFolderWidget;
 class NoSearchResultsWidget;
@@ -48,6 +49,7 @@ public:
     ComicsViewTransition *comicsViewTransition;
 
     void updateCurrentComicView();
+    void applyComicSelectionActions();
 
     void toFullscreen();
     void toNormal();
@@ -68,6 +70,7 @@ protected:
     EmptyLabelWidget *emptyLabelWidget;
     EmptySpecialListWidget *emptySpecialList;
     EmptyReadingListWidget *emptyReadingList;
+    EmptyListFolderWidget *emptyListFolder;
     EmptyFolderWidget *emptyFolderWidget;
     NoSearchResultsWidget *noSearchResultsWidget;
 
@@ -82,6 +85,7 @@ public slots:
     void showEmptyLabel(YACReader::LabelColors color);
     void showEmptySpecialList(ReadingListModel::TypeSpecialList type);
     void showEmptyReadingList();
+    void showEmptyListFolder();
     void showEmptyFolder();
     void showNoSearchResults();
 

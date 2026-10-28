@@ -18,7 +18,8 @@ signals:
     void finished();
 public slots:
     void readMessage();
-    bool requestComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings, YACReader::OpenComicSource source);
+    // position: the index of the opened comic in siblings, -1 if it is not there
+    bool requestComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings, qint32 &position, YACReader::OpenComicSource source);
     bool sendComicInfo(quint64 libraryId, ComicDB &comic);
     bool sendComicInfo(quint64 libraryId, ComicDB &comic, qulonglong nextComicId);
 

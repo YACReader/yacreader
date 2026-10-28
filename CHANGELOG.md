@@ -2,6 +2,36 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.5.0
+
+### YACReaderLibrary
+
+* Reading lists and labels keep comics whose files are removed from the library. Their covers show in gray, with their metadata and last known file name. You can still edit their metadata, get data from Comic Vine, set a custom cover, reorder them, and remove them from the list. When the same file comes back, at any path, the comic is available again.
+* Reading lists and labels keep a comic when its file is replaced, for example by a tool that writes ComicInfo.xml into the archive.
+* Import reading lists in CBL XML or JSON format. Preview and adjust matches to comics in your library, and keep missing books in the reading order so you can find them later.
+* Match missing books to library comics individually or across an entire reading list.
+* Export reading lists as CBL XML, JSON, or a web page.
+* Create smart lists that show the current results of a saved search.
+* Organize reading lists and smart lists in folders.
+* Track missing issues in regular folders, using Comic Vine or entering the issue numbers yourself. Edit their metadata and covers, and automatically match newly added files to the missing issues.
+* Include the same comic more than once in a reading list, with each appearance keeping its place in the reading order.
+* Sort search results by series, volume, and issue number.
+* The metadata editor saves only the fields that you change, also when you edit several comics. Comic Vine changes only the fields that it returns.
+* Report failed Comic Vine lookups and incomplete results.
+* Fix removing comics belonging to child reading lists from a parent list view.
+* Fix newly added comics sometimes appearing in the middle of a reading list instead of at the end.
+
+### Server
+
+* Add server API v3 so compatible mobile clients can browse missing comics, reading lists, and smart lists, including their folders, with content ordered as on the desktop. Existing clients remain supported.
+* Fix a security issue that could let cover requests access image files outside the library's covers folder.
+
+### WebUI
+
+* Browse reading lists, smart lists, their folders, Favorites, tags, and Recent from the library menu.
+* View missing comics in reading lists and folders, including their available metadata and covers.
+* Choose how many days count as recent in this browser's settings.
+
 ## 10.4.0
 
 ### YACReader

@@ -7,6 +7,7 @@
 #include "db_helper.h"
 #include "yacreader_http_session.h"
 #include "yacreader_libraries.h"
+#include "yacreader_server_data_helper.h"
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
@@ -34,15 +35,17 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
 
     YACReaderLibraries libraries = DBHelper::getLibraries();
 
-    ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
+    auto loadedComic = DBHelper::getComicInfo(libraryId, comicId);
 
-    if (!comic.info.existOnDb) {
+    if (!loadedComic) {
         response.setStatus(404, "Not Found");
         response.write("", true);
         return;
     }
 
-    Comic *comicFile = FactoryComic::newComic(libraries.getPath(libraryId) + comic.path);
+    ComicDB &comic = *loadedComic;
+
+    Comic *comicFile = FactoryComic::newComic(libraries.getPath(libraryId) + comic.file.path);
 
     if (comicFile != nullptr) {
         QThread *thread = nullptr;
@@ -57,25 +60,26 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
         connect(thread, &QThread::started, comicFile, &Comic::process);
         connect(thread, &QThread::finished, thread, &QObject::deleteLater);
 
-        comicFile->load(libraries.getPath(libraryId) + comic.path);
+        comicFile->load(libraries.getPath(libraryId) + comic.file.path);
 
         if (thread != nullptr)
             thread->start();
 
         QLOG_TRACE() << "remote comic requested";
-        ySession->setCurrentRemoteComic(comic.id, comicFile);
+        ySession->setCurrentRemoteComic(comic.file.id.value(), comicFile);
 
         response.setHeader("Content-Type", "text/plain; charset=utf-8");
         // TODO this field is not used by the client!
         response.write(QString("library:%1\r\n").arg(libraryName).toUtf8());
         response.write(QString("libraryId:%1\r\n").arg(libraryId).toUtf8());
 
-        QList<ComicDB> siblings = DBHelper::getReadingListFullContent(libraryId, readingListId);
+        // the later occurrences of a repeated comic are skipped, so previous and next never loop
+        const auto siblings = YACReaderServerDataHelper::firstOccurrences(DBHelper::getReadingListFullContent(libraryId, readingListId));
 
         bool found = false;
         int i;
         for (i = 0; i < siblings.length(); i++) {
-            if (siblings.at(i).id == comic.id) {
+            if (siblings.at(i).file.id == comic.file.id) {
                 found = true;
                 break;
             }
@@ -83,12 +87,12 @@ void ComicControllerInReadingListV2::service(HttpRequest &request, HttpResponse 
         if (found) {
             if (i > 0) {
                 ComicDB previousComic = siblings.at(i - 1);
-                response.write(QString("previousComic:%1\r\n").arg(previousComic.id).toUtf8());
+                response.write(QString("previousComic:%1\r\n").arg(previousComic.file.id.value()).toUtf8());
                 response.write(QString("previousComicHash:%1\r\n").arg(previousComic.info.hash).toUtf8());
             }
             if (i < siblings.length() - 1) {
                 ComicDB nextComic = siblings.at(i + 1);
-                response.write(QString("nextComic:%1\r\n").arg(nextComic.id).toUtf8());
+                response.write(QString("nextComic:%1\r\n").arg(nextComic.file.id.value()).toUtf8());
                 response.write(QString("nextComicHash:%1\r\n").arg(nextComic.info.hash).toUtf8());
             }
         } else {

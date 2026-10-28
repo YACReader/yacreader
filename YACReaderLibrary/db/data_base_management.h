@@ -144,6 +144,15 @@ public:
     static bool createComicInfoTable(QSqlDatabase &database, QString tableName);
     static bool createComicInfoTable9_14(QSqlDatabase &database, QString tableName);
     static bool createV8Tables(QSqlDatabase &database);
+    static bool createV10_5Tables(QSqlDatabase &database);
+    static bool createPlaceholderTable(QSqlDatabase &database);
+    static bool createReadingListEntryTable(QSqlDatabase &database);
+    static bool createLabelEntryTable(QSqlDatabase &database);
+    static bool createComicDeleteTrigger(QSqlDatabase &database);
+    static bool createSmartListTable(QSqlDatabase &database);
+    // the folder tables and the folder_id columns of reading_list and smart_list
+    static bool createListFolderTables(QSqlDatabase &database);
+    static bool createFolderPlaceholderTable(QSqlDatabase &database);
 
     static void exportComicsInfo(QString source, QString dest);
     static bool importComicsInfo(QString source, QString dest);

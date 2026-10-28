@@ -1,0 +1,4 @@
+qt_add_executable(table_projection_test main.cpp)
+yacreader_apply_build_options(table_projection_test)
+target_link_libraries(table_projection_test PRIVATE Qt6::Test Qt6::Sql db_helper library_common)
+add_test(NAME table_projection_test COMMAND table_projection_test)

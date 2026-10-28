@@ -5,6 +5,7 @@
 #include "comic_vine_json_parser.h"
 #include "data_base_management.h"
 #include "db_helper.h"
+#include "placeholder_cover.h"
 #include "response_parser.h"
 #include "scraper_lineedit.h"
 #include "search_single_comic.h"
@@ -19,6 +20,9 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QImage>
+#include <QJsonDocument>
+#include <QJsonObject>
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
@@ -48,6 +52,13 @@ void ComicVineDialog::closeEvent(QCloseEvent *event)
     QDialog::closeEvent(event);
 
     clearState();
+}
+
+void ComicVineDialog::done(int result)
+{
+    if (result == QDialog::Rejected)
+        run++;
+    QDialog::done(result);
 }
 
 void ComicVineDialog::doLayout()
@@ -119,15 +130,15 @@ void ComicVineDialog::goNext()
     //
     if (content->currentWidget() == seriesQuestionWidget) {
         if (seriesQuestionWidget->getYes()) {
-            QString volumeSearchString = comics[0].getParentFolderName();
+            QString volumeSearchString = parentFolderName(recordPath(comics[0]));
             mode = ScraperMode::Volume;
 
             showSearchVolume(volumeSearchString);
         } else {
             status = ScraperStatus::AutoSearching;
             mode = ScraperMode::SingleComicInList;
-            ComicDB comic = comics[currentIndex];
-            QString title = comic.getTitleOrFileName();
+            const auto &comic = comics[currentIndex];
+            QString title = titleOrFileName(recordMetadata(comic), recordFileName(comic));
             titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
 
             showLoading(tr("Looking for volume..."));
@@ -141,11 +152,12 @@ void ComicVineDialog::goNext()
     } else if (content->currentWidget() == sortVolumeComicsWidget) {
         showLoading();
 
-        // ComicDB-ComicVineID
-        QList<QPair<ComicDB, QString>> matchingInfo = sortVolumeComicsWidget->getMatchingInfo();
+        // comic - Comic Vine id
+        QList<QPair<ComicRecord, QString>> matchingInfo = sortVolumeComicsWidget->getMatchingInfo();
+        const auto missingIssues = folderId && sortVolumeComicsWidget->addsMissingIssues() ? sortVolumeComicsWidget->getMissingIssues() : QStringList();
         auto volumeInfo = selectVolumeWidget->getSelectedVolumeInfo();
 
-        QtConcurrent::run(&ComicVineDialog::getComicsInfo, this, matchingInfo, volumeInfo);
+        QtConcurrent::run(&ComicVineDialog::getComicsInfo, this, matchingInfo, missingIssues, volumeInfo, run.load());
 
     } else if (content->currentWidget() == selectComicWidget) {
         showLoading();
@@ -194,7 +206,7 @@ void ComicVineDialog::goBack()
     }
 }
 
-void ComicVineDialog::setComics(const QList<ComicDB> &comics)
+void ComicVineDialog::setComics(const QList<ComicRecord> &comics)
 {
     this->comics = comics;
 }
@@ -226,6 +238,11 @@ QSize ComicVineDialog::minimumSizeHint() const
 
 void ComicVineDialog::show()
 {
+    run++;
+    failedComics = 0;
+    basicMissingIssues = 0;
+    missingIssuesWithoutCover = 0;
+    limitReached = false;
     QDialog::show();
 
     currentIndex = 0;
@@ -238,9 +255,9 @@ void ComicVineDialog::show()
         status = ScraperStatus::AskingForInfo;
         mode = ScraperMode::SingleComic;
 
-        ComicDB singleComic = comics[0];
+        const auto &singleComic = comics[0];
 
-        QString title = singleComic.getTitleOrFileName();
+        QString title = titleOrFileName(recordMetadata(singleComic), recordFileName(singleComic));
         titleHeader->setSubTitle(title);
 
         showSearchSingleComic(volumeSearchStringFromComic(singleComic));
@@ -394,6 +411,7 @@ void ComicVineDialog::showSortVolumeComics(const QString &json)
     content->setCurrentWidget(sortVolumeComicsWidget);
 
     sortVolumeComicsWidget->setData(comics, json, currentVolumeId);
+    sortVolumeComicsWidget->setMissingIssuesOption(folderId.has_value());
 
     backButton->setVisible(true);
     nextButton->setVisible(true);
@@ -438,30 +456,128 @@ void ComicVineDialog::queryTimeOut()
     }
 }
 
-void ComicVineDialog::getComicsInfo(QList<QPair<ComicDB, QString>> matchingInfo, const SelectedVolumeInfo &volumeInfo)
+void ComicVineDialog::getComicsInfo(QList<QPair<ComicRecord, QString>> matchingInfo, const QStringList &missingIssues, const SelectedVolumeInfo &volumeInfo, int runId)
 {
-    QList<ComicDB> comics;
+    QList<QPair<ComicRecord, DescriptiveMetadataPatch>> patches;
     const auto &matches = matchingInfo;
     for (auto match : matches) {
+        if (run != runId)
+            return;
         auto comicVineClient = new ComicVineClient;
         // connect(comicVineClient,SIGNAL(searchResult(QString)),this,SLOT(debugClientResults(QString)));
         // connect(comicVineClient,SIGNAL(timeOut()),this,SLOT(queryTimeOut()));
         // connect(comicVineClient,SIGNAL(finished()),comicVineClient,SLOT(deleteLater()));
+        if (limitReached) {
+            failedComics++;
+            continue;
+        }
         bool error;
         bool timeout;
-        QByteArray result = comicVineClient->getComicDetail(match.second, error, timeout); // TODO check timeOut or Connection error
-        if (error || timeout)
-            continue; // TODO
-        ComicDB comic = YACReader::parseCVJSONComicInfo(match.first, result, volumeInfo); // TODO check result error
-        comic.info.comicVineID = match.second;
-        comics.push_back(comic);
+        QByteArray result = comicVineClient->getComicDetail(match.second, error, timeout);
+        if (!detailAnswered(error, timeout, result)) {
+            failedComics++;
+            continue;
+        }
+        auto patch = YACReader::parseCVJSONComicInfo(result, volumeInfo);
+        patch.set(&DescriptiveComicMetadata::comicVineID, match.second);
+        patches.append({ match.first, patch });
 
-        setLoadingMessage(tr("Retrieving tags for : %1").arg(match.first.getFileName()));
+        setLoadingMessage(tr("Retrieving tags for : %1").arg(recordFileName(match.first)));
     }
 
-    DBHelper::updateComicsInfo(comics, databasePath);
+    QList<MissingIssue> missing;
+    for (int i = 0; i < missingIssues.size(); i++) {
+        if (run != runId) {
+            removeCovers(missing);
+            return;
+        }
+        setLoadingMessage(tr("Creating missing comic %1 of %2").arg(i + 1).arg(missingIssues.size()));
+        missing.append(missingIssue(missingIssues.at(i), volumeInfo));
+    }
+    if (run != runId) {
+        removeCovers(missing);
+        return;
+    }
+
+    saveMetadata(patches, missing);
 
     finishSuccessfully();
+}
+
+// the full tags of the issue, or the values of the volume's list when they cannot be read; and its cover
+MissingIssue ComicVineDialog::missingIssue(const QString &issueJson, const SelectedVolumeInfo &volumeInfo)
+{
+    const auto issue = QJsonDocument::fromJson(issueJson.toUtf8()).object();
+    MissingIssue result;
+    result.comicVineId = QString::number(issue.value("id").toInteger());
+
+    ComicVineClient comicVineClient;
+    bool error;
+    bool timeout;
+    auto image = issue.value("image").toObject();
+    if (!limitReached) {
+        const auto detail = comicVineClient.getComicDetail(result.comicVineId, error, timeout);
+        if (detailAnswered(error, timeout, detail)) {
+            result.patch = YACReader::parseCVJSONComicInfo(detail, volumeInfo);
+            const auto detailImage = QJsonDocument::fromJson(detail).object().value("results").toObject().value("image").toObject();
+            if (!detailImage.isEmpty())
+                image = detailImage;
+        }
+    }
+    if (result.patch.isEmpty()) {
+        basicMissingIssues++;
+        const QJsonObject list { { "number_of_total_results", 1 }, { "results", issue } };
+        result.patch = YACReader::parseCVJSONComicInfo(QString::fromUtf8(QJsonDocument(list).toJson()), volumeInfo);
+    }
+    result.patch.set(&DescriptiveComicMetadata::comicVineID, result.comicVineId);
+
+    auto coverUrl = image.value("super_url").toString();
+    if (coverUrl.isEmpty())
+        coverUrl = image.value("medium_url").toString();
+    if (!coverUrl.isEmpty()) {
+        const auto cover = comicVineClient.getImage(coverUrl, error, timeout);
+        if (!error && !timeout)
+            result.coverKey = savePlaceholderCover(databasePath, QImage::fromData(cover));
+        if (!result.coverKey)
+            missingIssuesWithoutCover++;
+    }
+    return result;
+}
+
+bool ComicVineDialog::detailAnswered(bool error, bool timeout, const QByteArray &detail)
+{
+    const auto answer = YACReader::comicVineAnswer(error, timeout, detail);
+    if (answer == YACReader::ComicVineAnswer::LimitReached)
+        limitReached = true;
+    return answer == YACReader::ComicVineAnswer::Answered;
+}
+
+// only when something failed
+void ComicVineDialog::showFailures()
+{
+    QStringList lines;
+    if (failedComics > 0)
+        lines.append(tr("Comic Vine did not answer for %n comic(s).", "", failedComics));
+    if (basicMissingIssues > 0)
+        lines.append(tr("%n missing comic(s) got only the basic data of the volume.", "", basicMissingIssues));
+    if (missingIssuesWithoutCover > 0)
+        lines.append(tr("%n missing comic(s) have no cover.", "", missingIssuesWithoutCover));
+    if (lines.isEmpty())
+        return;
+
+    lines.append(limitReached ? tr("Comic Vine allows about 200 requests per hour; try again later for the comics that were not updated.")
+                              : tr("Try again later for the comics that were not updated."));
+    QMessageBox::warning(parentWidget(), tr("Comic Vine"), lines.join(QLatin1Char('\n')));
+}
+
+void ComicVineDialog::removeCovers(const QList<MissingIssue> &missingIssues)
+{
+    QStringList coverKeys;
+    for (const auto &issue : missingIssues) {
+        if (issue.coverKey)
+            coverKeys.append(*issue.coverKey);
+    }
+    DBHelper::removePlaceholderCovers(databasePath, coverKeys);
 }
 
 void ComicVineDialog::getComicInfo(const QString &comicId, const SelectedVolumeInfo &volumeInfo)
@@ -470,8 +586,9 @@ void ComicVineDialog::getComicInfo(const QString &comicId, const SelectedVolumeI
     auto comicVineClient = new ComicVineClient;
     bool error;
     bool timeout;
-    QByteArray result = comicVineClient->getComicDetail(comicId, error, timeout); // TODO check timeOut or Connection error
-    if (error || timeout) {
+    QByteArray result = comicVineClient->getComicDetail(comicId, error, timeout);
+    if (!detailAnswered(error, timeout, result)) {
+        failedComics++;
         if (mode == ScraperMode::SingleComic || currentIndex == (comics.count() - 1))
             finishSuccessfully();
         else
@@ -479,21 +596,10 @@ void ComicVineDialog::getComicInfo(const QString &comicId, const SelectedVolumeI
         return;
     }
 
-    ComicDB comic = YACReader::parseCVJSONComicInfo(comics[currentIndex], result, volumeInfo); // TODO check result error
-    comic.info.comicVineID = comicId;
-    setLoadingMessage(tr("Retrieving tags for : %1").arg(comics[currentIndex].getFileName()));
-    QString connectionName = "";
-    {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        db.open();
-        db.transaction();
-
-        DBHelper::update(&(comic.info), db);
-
-        db.commit();
-        connectionName = db.connectionName();
-    }
-    QSqlDatabase::removeDatabase(connectionName);
+    auto patch = YACReader::parseCVJSONComicInfo(result, volumeInfo);
+    patch.set(&DescriptiveComicMetadata::comicVineID, comicId);
+    setLoadingMessage(tr("Retrieving tags for : %1").arg(recordFileName(comics[currentIndex])));
+    saveMetadata({ { comics[currentIndex], patch } });
 
     if (mode == ScraperMode::SingleComic || currentIndex == (comics.count() - 1)) {
         finishSuccessfully();
@@ -510,23 +616,63 @@ void ComicVineDialog::toggleSkipButton()
         skipButton->setHidden(true);
 }
 
-QString ComicVineDialog::volumeSearchStringFromComic(const ComicDB &comic)
+QString ComicVineDialog::volumeSearchStringFromComic(const ComicRecord &comic)
 {
-    auto volume = comic.info.volume.toString().trimmed();
+    const auto &info = recordMetadata(comic);
+    auto volume = info.volume.toString().trimmed();
     if (!volume.isEmpty())
         return volume;
 
-    auto series = comic.info.series.toString().trimmed();
+    auto series = info.series.toString().trimmed();
     if (!series.isEmpty())
         return series;
 
-    auto alternateSeries = comic.info.alternateSeries.toString().trimmed();
+    auto alternateSeries = info.alternateSeries.toString().trimmed();
     if (!alternateSeries.isEmpty())
         return alternateSeries;
 
-    // extract information from file name
-    auto parentFolderName = comic.getParentFolderName();
-    return parentFolderName;
+    // the folder that holds the file, or held it for a deleted comic
+    return parentFolderName(recordPath(comic));
+}
+
+void ComicVineDialog::saveMetadata(const QList<QPair<ComicRecord, DescriptiveMetadataPatch>> &matches, const QList<MissingIssue> &missingIssues)
+{
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
+        db.transaction();
+
+        // each comic_info or placeholder is written once
+        QSet<ComicInfoId> written;
+        QSet<PlaceholderId> writtenPlaceholders;
+        for (const auto &[comic, patch] : matches) {
+            if (const auto *placeholder = recordPlaceholder(comic)) {
+                if (writtenPlaceholders.contains(placeholder->id) || !DBHelper::loadRecord(comic, db))
+                    continue;
+                writtenPlaceholders.insert(placeholder->id);
+                DBHelper::updatePlaceholderMetadata(placeholder->id, patch, db);
+                continue;
+            }
+            const auto id = recordInfo(comic)->id;
+            if (written.contains(id) || !DBHelper::loadRecord(comic, db))
+                continue;
+            written.insert(id);
+            DBHelper::updateComicInfoMetadata(id, patch, db);
+        }
+
+        std::optional<QStringList> unusedCovers = QStringList();
+        if (!missingIssues.isEmpty())
+            unusedCovers = folderId ? DBHelper::placeIssuesInFolder(missingIssues, *folderId, db) : std::nullopt;
+
+        if (unusedCovers && db.commit()) {
+            DBHelper::removePlaceholderCovers(databasePath, *unusedCovers);
+        } else {
+            db.rollback();
+            removeCovers(missingIssues);
+        }
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
 }
 
 void ComicVineDialog::goToNextComic()
@@ -538,9 +684,9 @@ void ComicVineDialog::goToNextComic()
 
     currentIndex++;
 
-    ComicDB comic = comics[currentIndex];
+    const auto &comic = comics[currentIndex];
 
-    QString title = comic.getTitleOrFileName();
+    QString title = titleOrFileName(recordMetadata(comic), recordFileName(comic));
     titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
 
     showSearchSingleComic(volumeSearchStringFromComic(comic));
@@ -558,7 +704,8 @@ void ComicVineDialog::finishSuccessfully()
     // closes and emits accepted exactly once.
     QMetaObject::invokeMethod(this, [this]() {
         clearState();
-        accept(); }, Qt::QueuedConnection);
+        accept();
+        showFailures(); }, Qt::QueuedConnection);
 }
 
 void ComicVineDialog::showLoading(const QString &message)
@@ -572,9 +719,10 @@ void ComicVineDialog::showLoading(const QString &message)
     closeButton->setVisible(true);
 }
 
+// the work threads also report their progress
 void ComicVineDialog::setLoadingMessage(const QString &message)
 {
-    loadingMessage->setText(message);
+    QMetaObject::invokeMethod(loadingMessage, [this, message] { loadingMessage->setText(message); });
 }
 
 void ComicVineDialog::search()

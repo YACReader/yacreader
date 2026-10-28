@@ -7,7 +7,7 @@
 
 #include <QUuid>
 
-// Changes fields of one comic or one folder (see YACReaderLibrary/server/API.md):
+// Changes fields of one comic or one folder:
 //   PATCH /v2/library/{id}/comic/{id}   {"read": bool, "file_type": int}
 //   PATCH /v2/library/{id}/folder/{id}  {"finished": bool, "completed": bool, "file_type": int}
 // The response is the updated item as JSON.

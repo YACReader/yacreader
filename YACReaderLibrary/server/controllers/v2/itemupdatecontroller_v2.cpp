@@ -163,7 +163,7 @@ UpdateResult updateFolder(QSqlDatabase &db, int legacyLibraryId, const QUuid &li
         return error.value();
     }
 
-    if (!DBHelper::loadFolder(folderId, db).knownId) {
+    if (!DBHelper::loadFolder(folderId, db)) {
         return errorResult(404, "Not Found", QStringLiteral("folder_not_found"));
     }
 
@@ -186,7 +186,10 @@ UpdateResult updateFolder(QSqlDatabase &db, int legacyLibraryId, const QUuid &li
     }
 
     const auto folder = DBHelper::loadFolder(folderId, db);
-    return { 200, "OK", QJsonDocument(YACReaderServerDataHelper::folderToJSON(legacyLibraryId, libraryId, folder)) };
+    if (!folder) {
+        return errorResult(404, "Not Found", QStringLiteral("folder_not_found"));
+    }
+    return { 200, "OK", QJsonDocument(YACReaderServerDataHelper::folderToJSON(legacyLibraryId, libraryId, *folder)) };
 }
 
 } // namespace

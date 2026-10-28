@@ -7,7 +7,25 @@
 
 class ComicModel;
 class FolderModel;
-class Folder;
+struct Folder;
+
+// a folder or a list in the grid of a folder of lists
+struct GridListCard {
+    enum Kind {
+        Folder,
+        ReadingList,
+        SmartList,
+    };
+
+    Kind kind = Folder;
+    // the ReadingListModel::TypeList of its row in the sidebar
+    int listType = 0;
+    qulonglong id = 0;
+    QString name;
+    // empty when the card shows its type
+    QUrl cover;
+    QUrl icon;
+};
 
 class GridContentModel : public QAbstractListModel
 {
@@ -17,7 +35,8 @@ public:
     enum ItemKind {
         FolderItem = 0,
         ComicItem,
-        SpacerItem
+        SpacerItem,
+        ListCardItem
     };
     Q_ENUM(ItemKind)
 
@@ -39,7 +58,15 @@ public:
         ShowRecentRole,
         RecentRangeRole,
         UpdatedRole,
-        FinishedRole
+        FinishedRole,
+        ReadableTitleRole,
+        KindRole,
+        AvailableRole,
+        LastKnownNameRole,
+        ListItemIdRole,
+        ListIdRole,
+        CardKindRole,
+        IconPathRole,
     };
 
     explicit GridContentModel(QObject *parent = nullptr);
@@ -51,6 +78,11 @@ public:
     void setComicModel(ComicModel *model);
     void setFolderModel(FolderModel *model, const QModelIndex &selectedFolderIndex);
     void clearFolderModel();
+    // only these cards, with no folder or comic rows, until a folder model or a comic model is set
+    void setListCards(const QList<GridListCard> &cards);
+    bool hasListCards() const;
+    bool isListCardRow(int viewRow) const;
+    GridListCard listCardAt(int viewRow) const;
     void setMixFoldersAndComics(bool enabled);
     void setStartComicsOnNewRow(bool enabled);
     void setGridColumnCount(int columns);
@@ -60,7 +92,6 @@ public:
     int visibleFolderCount() const;
     int sourceComicRow(int viewRow) const;
     int viewRowForComicRow(int sourceRow) const;
-    int viewRowForComicId(qulonglong id) const;
     int viewRowForFolderId(qulonglong id) const;
     QModelIndex sourceFolderIndex(int viewRow) const;
     Folder folderAt(int viewRow) const;
@@ -69,6 +100,7 @@ public:
 private:
     void reconnectModels();
     void resetFromSource();
+    void updateSourceIndexesFrom(int sourceRow);
     int sourceFolderCount() const;
     int spacerCount() const;
     bool forwardsFolderRowsDirectly() const;
@@ -82,6 +114,8 @@ private:
     bool startComicsOnNewRow = false;
     int gridColumnCount = 1;
     QList<QMetaObject::Connection> sourceConnections;
+    bool showsListCards = false;
+    QList<GridListCard> listCards;
 };
 
 #endif // GRID_CONTENT_MODEL_H

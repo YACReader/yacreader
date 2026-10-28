@@ -28,7 +28,7 @@ void YACReaderLocalClient::readMessage()
 }
 #include <QMessageBox>
 
-bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings, OpenComicSource source)
+bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB &comic, QList<ComicDB> &siblings, qint32 &position, OpenComicSource source)
 {
     localSocket->connectToServer(YACREADERLIBRARY_GUID);
     if (localSocket->isOpen()) {
@@ -107,6 +107,7 @@ bool YACReaderLocalClient::requestComicInfo(quint64 libraryId, ComicDB &comic, Q
         QDataStream dataStream(data);
         dataStream >> comic;
         dataStream >> siblings;
+        dataStream >> position;
         localSocket->close();
         return true;
     } else {

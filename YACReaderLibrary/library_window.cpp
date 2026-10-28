@@ -35,7 +35,7 @@
 #include "reading_list_model.h"
 #include "recent_visibility_coordinator.h"
 #include "rename_library_dialog.h"
-#include "search_syntax_dialog.h"
+#include "search_filters_menu.h"
 #include "server_config_dialog.h"
 #include "shortcuts_manager.h"
 #include "static.h"
@@ -329,7 +329,7 @@ void LibraryWindow::doLayout()
     foldersTitle->addAction(actions.expandAllNodesAction);
     foldersTitle->addAction(actions.colapseAllNodesAction);
 
-    readingListsTitle->addAction(actions.addReadingListAction);
+    readingListsTitle->addAction(actions.newListMenuAction);
     // readingListsTitle->addSepartor();
     readingListsTitle->addAction(actions.addLabelAction);
     // readingListsTitle->addSepartor();
@@ -483,10 +483,10 @@ void LibraryWindow::setupCoordinators()
     connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshStarted, navigationController, &YACReaderNavigationController::beginCurrentSourceRefresh);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshAccepted, navigationController, &YACReaderNavigationController::refreshCurrentSource);
     connect(comicManagementCoordinator, &ComicManagementCoordinator::currentSourceRefreshCancelled, navigationController, &YACReaderNavigationController::cancelCurrentSourceRefresh);
-    connect(comicManagementCoordinator, &ComicManagementCoordinator::comicNumbersAssigned, this, [this](qint64 editedComicId) {
+    connect(comicManagementCoordinator, &ComicManagementCoordinator::comicNumbersAssigned, this, [this](const ComicRowId &firstRow) {
         navigationController->loadFolderContent(foldersModelProxy->mapToSource(foldersView->currentIndex()));
 
-        const auto editedComic = comicsModel->getIndexFromId(editedComicId);
+        const auto editedComic = comicsModel->indexOf(firstRow);
         if (editedComic.isValid()) {
             contentViewsManager->comicsView->scrollTo(editedComic, QAbstractItemView::PositionAtCenter);
             contentViewsManager->comicsView->setCurrentIndex(editedComic);
@@ -503,8 +503,59 @@ void LibraryWindow::setupCoordinators()
                     return QModelIndex();
                 const auto selectedLists = listsView->selectionModel()->selectedIndexes();
                 return selectedLists.isEmpty() ? QModelIndex() : listsModelProxy->mapToSource(selectedLists.constFirst());
-            });
+            },
+            [this] { return currentPath(); },
+            settings);
     connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::currentListReselectionRequested, navigationController, &YACReaderNavigationController::reselectCurrentList);
+    connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::listEntriesChanged, navigationController, &YACReaderNavigationController::refreshCurrentSource);
+    listsView->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(listsView, &QWidget::customContextMenuRequested, this, [this](const QPoint &point) {
+        const auto index = listsModelProxy->mapToSource(listsView->indexAt(point));
+        if (!index.isValid())
+            return;
+        const auto type = index.data(ReadingListModel::TypeListsRole).toInt();
+        const QPersistentModelIndex list(index);
+        QMenu menu;
+        // the dialogs run their own event loop, so the actions run after the menu is gone
+        const auto addAction = [&](const QString &text, std::function<void()> action) {
+            connect(menu.addAction(text), &QAction::triggered, readingListManagementCoordinator, std::move(action), Qt::QueuedConnection);
+        };
+
+        switch (type) {
+        case ReadingListModel::SmartList:
+            addAction(tr("Edit smart list..."), [this, list] { readingListManagementCoordinator->editSmartList(list); });
+            addAction(tr("Delete smart list"), [this, list] { readingListManagementCoordinator->deleteList(list); });
+            menu.addSeparator();
+            addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
+            addAction(tr("Move to folder..."), [this, list] { readingListManagementCoordinator->moveToFolder(list); });
+            break;
+        case ReadingListModel::ReadingListFolder:
+        case ReadingListModel::SmartListFolder:
+            addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
+            addAction(tr("Rename folder..."), [this, list] { readingListManagementCoordinator->renameList(list); });
+            addAction(tr("Move to folder..."), [this, list] { readingListManagementCoordinator->moveToFolder(list); });
+            addAction(tr("Delete folder"), [this, list] { readingListManagementCoordinator->deleteList(list); });
+            break;
+        case ReadingListModel::ReadingList:
+        case ReadingListModel::Label: {
+            const auto listKind = type == ReadingListModel::Label ? ListKind::Label : ListKind::ReadingList;
+            const auto listId = index.data(ReadingListModel::IDRole).toULongLong();
+            const auto name = index.data(Qt::DisplayRole).toString();
+            addAction(tr("Match to library comics..."), [this, listKind, listId, name] { readingListManagementCoordinator->matchListToLibraryComics(listKind, listId, name); });
+            if (type == ReadingListModel::ReadingList) {
+                addAction(tr("Export reading list..."), [this, list] { readingListManagementCoordinator->exportReadingList(list); });
+                menu.addSeparator();
+                addAction(tr("New folder..."), [this, list] { readingListManagementCoordinator->addListFolderAt(list); });
+                if (!listsModel->isReadingSubList(index))
+                    addAction(tr("Move to folder..."), [this, list] { readingListManagementCoordinator->moveToFolder(list); });
+            }
+            break;
+        }
+        default:
+            return;
+        }
+        menu.exec(listsView->viewport()->mapToGlobal(point));
+    });
     folderManagementCoordinator = new FolderManagementCoordinator(
             foldersModel,
             this,
@@ -784,31 +835,11 @@ void LibraryWindow::createToolBars()
 
 QMenu *LibraryWindow::createSearchMenu()
 {
-    auto *menu = new QMenu(tr("Search filters"), this);
-    menu->setMinimumWidth(190);
+    auto *menu = createSearchFiltersMenu(this, settings, [this](const QString &query) { applySearchQuery(query); });
 
-    auto addFilter = [this, menu](const QString &label, const QString &query) {
-        auto *action = menu->addAction(label);
-        connect(action, &QAction::triggered, this, [this, query] {
-            applySearchQuery(query);
-        });
-    };
-
-    addFilter(tr("Unread"), QStringLiteral("read:false"));
-    addFilter(
-            tr("In progress"),
-            QStringLiteral("hasBeenOpened:true AND read:false"));
-    addFilter(tr("Highly rated"), QStringLiteral("rating>=4"));
-
-    auto *recentlyAdded = menu->addAction(tr("Recently added"));
-    connect(recentlyAdded, &QAction::triggered, this, [this] {
-        const int days = settings->value(NUM_DAYS_TO_CONSIDER_RECENT, 1).toInt();
-        applySearchQuery(QStringLiteral("added>%1").arg(days));
-    });
-
-    menu->addSeparator();
-    auto *syntaxAction = menu->addAction(tr("Search syntax…"));
-    connect(syntaxAction, &QAction::triggered, this, &LibraryWindow::showSearchSyntax);
+    // the macOS search field copies the menu once, so this item is always enabled
+    auto *saveAction = menu->addAction(tr("Save as smart list…"));
+    connect(saveAction, &QAction::triggered, this, [this] { readingListManagementCoordinator->addSmartList(searchText().trimmed()); });
 
     return menu;
 }
@@ -863,12 +894,6 @@ QString LibraryWindow::searchText() const
 #endif
 }
 
-void LibraryWindow::showSearchSyntax()
-{
-    auto *dialog = new SearchSyntaxDialog(this);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
-    dialog->open();
-}
 void LibraryWindow::createConnections()
 {
     actions.createConnections(
@@ -924,6 +949,9 @@ void LibraryWindow::createConnections()
     connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
 #endif
     connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, librarySearchCoordinator, &LibrarySearchCoordinator::search);
+    // a smart list dialog searches like the search field, and gives the search back to it when it closes
+    connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::searchRequested, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
+    connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::searchFinished, searchDebouncer, [this, searchDebouncer] { searchDebouncer->throttle(searchText()); });
 }
 
 void LibraryWindow::setCurrentLibraryAs(FileType fileType)
@@ -1026,12 +1054,12 @@ void LibraryWindow::enableNeededActions()
 
 void LibraryWindow::setComicActionsDisabled(bool disabled)
 {
-    if (!disabled && librariesUpdateCoordinator->isRunning()) {
-        setComicActionsDisabled(true);
-        return;
-    }
+    if (librariesUpdateCoordinator->isRunning())
+        disabled = true;
 
     actions.setComicActionsDisabled(disabled);
+    if (!disabled)
+        contentViewsManager->applyComicSelectionActions();
     setComicToolbarEntriesVisible(comicsModel != nullptr && comicsModel->rowCount() > 0);
 }
 

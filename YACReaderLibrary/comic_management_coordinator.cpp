@@ -1,16 +1,24 @@
 #include "comic_management_coordinator.h"
 
 #include "api_key_dialog.h"
+#include "cbl_import_dialog.h"
+#include "cbl_match_comic_dialog.h"
 #include "comic_files_manager.h"
 #include "comic_vine_dialog.h"
 #include "comics_remover.h"
 #include "cover_utils.h"
+#include "data_base_management.h"
 #include "db_helper.h"
+#include "folder.h"
 #include "folder_model.h"
 #include "initial_comic_info_extractor.h"
+#include "library_comic_match.h"
 #include "library_comic_opener.h"
+#include "placeholder_cover.h"
 #include "properties_dialog.h"
 #include "reading_list_model.h"
+#include "staged_cover.h"
+#include "tracked_issues.h"
 #include "yacreader_global_gui.h"
 
 #include <QCoreApplication>
@@ -71,6 +79,7 @@ ComicManagementCoordinator::ComicManagementCoordinator(QWidget *window,
     : QObject(window), window(window), settings(settings), comicsModel(comicsModel), foldersModel(foldersModel), foldersModelProxy(foldersModelProxy), propertiesDialog(propertiesDialog), comicVineDialog(comicVineDialog), selectionProvider(std::move(selectionProvider)), currentListProvider(std::move(currentListProvider)), currentFolderProvider(std::move(currentFolderProvider)), currentComicProvider(std::move(currentComicProvider)), comicOpeningAllowedProvider(std::move(comicOpeningAllowedProvider)), libraryIdProvider(std::move(libraryIdProvider)), libraryPathProvider(std::move(libraryPathProvider))
 {
     connect(propertiesDialog, &PropertiesDialog::coverChangedSignal, comicsModel, &ComicModel::notifyCoverChange);
+    connect(propertiesDialog, &PropertiesDialog::placeholderCoverChanged, comicsModel, &ComicModel::notifyPlaceholderCoverChange);
     connect(propertiesDialog, &QDialog::accepted, this, &ComicManagementCoordinator::currentSourceRefreshAccepted);
     connect(propertiesDialog, &QDialog::rejected, this, &ComicManagementCoordinator::currentSourceRefreshCancelled);
     connect(comicVineDialog, &QDialog::accepted, this, &ComicManagementCoordinator::currentSourceRefreshAccepted, Qt::QueuedConnection);
@@ -103,12 +112,12 @@ void ComicManagementCoordinator::moveAndImportComicsToFolder(const QList<QPair<Q
 
 void ComicManagementCoordinator::addSelectedComicsToFavorites()
 {
-    comicsModel->addComicsToFavorites(selectionProvider());
+    comicsModel->addComicsToFavorites(comicsModel->supportedIndexes(selectionProvider(), ComicAction::AddToFavorites));
 }
 
 void ComicManagementCoordinator::addSelectedComicsToLabel(qulonglong labelId)
 {
-    comicsModel->addComicsToLabel(selectionProvider(), labelId);
+    comicsModel->addComicsToLabel(comicsModel->supportedIndexes(selectionProvider(), ComicAction::AddToList), labelId);
 }
 
 void ComicManagementCoordinator::openCurrentComic()
@@ -117,13 +126,24 @@ void ComicManagementCoordinator::openCurrentComic()
         return;
 
     const auto currentComic = currentComicProvider();
-    if (!currentComic.isValid())
+    if (!comicsModel->supports(currentComic, ComicAction::Open))
         return;
 
-    openComic(comicsModel->getComic(currentComic), comicsModel->getMode());
+    const auto comic = comicsModel->getComic(currentComic);
+    if (!comic)
+        return;
+
+    const auto rowId = comicsModel->rowId(currentComic);
+    const auto entry = std::get_if<ListItemId>(&rowId);
+    startReader(*comic, comicsModel->getMode(), entry != nullptr && entry->listKind == ListKind::ReadingList ? entry->id : 0);
 }
 
 void ComicManagementCoordinator::openComic(const ComicDB &comic, ComicModel::Mode mode)
+{
+    startReader(comic, mode, 0);
+}
+
+void ComicManagementCoordinator::startReader(const ComicDB &comic, ComicModel::Mode mode, qulonglong entryId)
 {
     const auto source = mode == ComicModel::ReadingList
             ? OpenComicSource::Source::ReadingList
@@ -132,7 +152,7 @@ void ComicManagementCoordinator::openComic(const ComicDB &comic, ComicModel::Mod
     const auto thirdPartyReaderCommand = settings->value(THIRD_PARTY_READER_COMMAND, "").toString();
 
     if (thirdPartyReaderCommand.isEmpty()) {
-        const auto yacreaderFound = YACReader::openComic(comic, libraryIdProvider(), libraryPath, OpenComicSource { source, comicsModel->getSourceId() });
+        const auto yacreaderFound = YACReader::openComic(comic, libraryIdProvider(), libraryPath, OpenComicSource { source, comicsModel->getSourceId(), mode == ComicModel::ReadingList ? entryId : 0 });
         if (!yacreaderFound) {
 #ifdef Q_OS_WIN
             QMessageBox::critical(window, tr("YACReader not found"), tr("YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary."));
@@ -143,14 +163,14 @@ void ComicManagementCoordinator::openComic(const ComicDB &comic, ComicModel::Mod
         return;
     }
 
-    if (!YACReader::openComicInThirdPartyApp(thirdPartyReaderCommand, QDir::cleanPath(libraryPath + comic.path)))
+    if (!YACReader::openComicInThirdPartyApp(thirdPartyReaderCommand, QDir::cleanPath(libraryPath + comic.file.path)))
         QMessageBox::critical(window, tr("Error"), tr("Error opening comic with third party reader."));
 }
 
 void ComicManagementCoordinator::openContainingFolderOfCurrentComic()
 {
     const auto currentComic = currentComicProvider();
-    if (!currentComic.isValid())
+    if (!comicsModel->supports(currentComic, ComicAction::OpenContainingFolder))
         return;
 
     const QFileInfo file(QDir::cleanPath(libraryPathProvider() + comicsModel->getComicPath(currentComic)));
@@ -186,9 +206,15 @@ void ComicManagementCoordinator::showComicVineScraper()
     if (!comicVineSettings.contains(COMIC_VINE_API_KEY))
         return;
 
-    const auto comics = comicsModel->getComics(selectionProvider());
+    QList<ComicRecord> comics;
+    for (const auto &index : comicsModel->supportedIndexes(selectionProvider(), ComicAction::SearchComicVine))
+        comics.append(comicsModel->record(index));
+    if (comics.isEmpty())
+        return;
+
     comicVineDialog->databasePath = foldersModel->getDatabase();
     comicVineDialog->basePath = libraryPathProvider();
+    comicVineDialog->folderId = comicsModel->getMode() == ComicModel::Folder ? std::optional(FolderId(comicsModel->getSourceId())) : std::nullopt;
     comicVineDialog->setComics(comics);
 
     emit currentSourceRefreshStarted();
@@ -229,20 +255,66 @@ void ComicManagementCoordinator::moveAndImportComics(const QList<QPair<QString, 
 
 void ComicManagementCoordinator::showProperties()
 {
-    const auto indexList = selectionProvider();
-    const auto comics = comicsModel->getComics(indexList);
-    if (comics.isEmpty())
+    const auto indexList = comicsModel->supportedIndexes(selectionProvider(), ComicAction::EditMetadata);
+    if (indexList.isEmpty())
         return;
 
     propertiesDialog->databasePath = foldersModel->getDatabase();
     propertiesDialog->basePath = libraryPathProvider();
 
     if (indexList.length() > 1) {
-        propertiesDialog->setComics(comics);
+        QList<ComicRecord> records;
+        for (const auto &index : indexList)
+            records.append(comicsModel->record(index));
+        propertiesDialog->setComics(records);
     } else {
-        const auto allComics = comicsModel->getAllComics();
-        propertiesDialog->setComicsForSequentialEditing(allComics.indexOf(comics.constFirst()), allComics);
+        // sequential editing goes through the rows that can be edited, in view order
+        QList<ComicRecord> records;
+        int start = 0;
+        for (int row = 0; row < comicsModel->rowCount(); row++) {
+            const auto index = comicsModel->index(row, 0);
+            if (!comicsModel->supports(index, ComicAction::EditMetadata))
+                continue;
+            if (row == indexList.constFirst().row())
+                start = records.size();
+            records.append(comicsModel->record(index));
+        }
+        if (!propertiesDialog->setComicsForSequentialEditing(start, records))
+            return;
     }
+
+    emit currentSourceRefreshStarted();
+    propertiesDialog->show();
+}
+
+std::optional<qulonglong> ComicManagementCoordinator::shownFolderId() const
+{
+    if (comicsModel->getMode() != ComicModel::Folder)
+        return std::nullopt;
+    return comicsModel->getSourceId();
+}
+
+void ComicManagementCoordinator::trackMissingIssues(qulonglong folderId)
+{
+    const auto dataPath = foldersModel->getDatabase();
+    std::optional<Folder> folder;
+    std::optional<QStringList> numbers;
+    DescriptiveComicMetadata run;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+        folder = DBHelper::loadFolder(folderId, db);
+        numbers = folderIssueNumbers(FolderId(folderId), db);
+        run = folderRunMetadata(FolderId(folderId), db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!folder || !numbers)
+        return;
+
+    propertiesDialog->databasePath = dataPath;
+    propertiesDialog->basePath = libraryPathProvider();
+    propertiesDialog->setTrackMissingIssues(FolderId(folderId), folder->name, run, *numbers);
 
     emit currentSourceRefreshStarted();
     propertiesDialog->show();
@@ -250,20 +322,20 @@ void ComicManagementCoordinator::showProperties()
 
 void ComicManagementCoordinator::setSelectedComicsRead()
 {
-    comicsModel->setComicsRead(selectionProvider(), YACReader::Read);
+    comicsModel->setComicsRead(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetReadState), YACReader::Read);
     emit currentComicViewUpdateRequested();
 }
 
 void ComicManagementCoordinator::setSelectedComicsUnread()
 {
-    comicsModel->setComicsRead(selectionProvider(), YACReader::Unread);
+    comicsModel->setComicsRead(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetReadState), YACReader::Unread);
     emit currentComicViewUpdateRequested();
 }
 
 void ComicManagementCoordinator::setComicUnread(qulonglong libraryId, const ComicDB &comic)
 {
     auto info = comic.info;
-    info.setRead(false);
+    info.read = false;
     info.currentPage = 1;
     info.hasBeenOpened = false;
     info.lastTimeOpened = QVariant();
@@ -273,12 +345,12 @@ void ComicManagementCoordinator::setComicUnread(qulonglong libraryId, const Comi
 
 void ComicManagementCoordinator::setSelectedComicsType(YACReader::FileType type)
 {
-    comicsModel->setComicsType(selectionProvider(), type);
+    comicsModel->setComicsType(comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetType), type);
 }
 
 void ComicManagementCoordinator::resetSelectedComicRatings()
 {
-    const auto indexList = selectionProvider();
+    const auto indexList = comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetReadState);
     comicsModel->startTransaction();
     for (const auto &index : indexList)
         comicsModel->resetComicRating(index);
@@ -287,12 +359,12 @@ void ComicManagementCoordinator::resetSelectedComicRatings()
 
 void ComicManagementCoordinator::assignNumbers()
 {
-    const auto selectedIds = selectedComicIds();
+    const auto selectedIds = selectedRowIds(ComicAction::AssignNumbers);
     if (selectedIds.isEmpty())
         return;
 
     const auto source = currentSource();
-    const auto initialIndexes = indexesForComicIds(selectedIds, source);
+    const auto initialIndexes = indexesForRows(selectedIds, source);
     if (initialIndexes.isEmpty())
         return;
 
@@ -311,7 +383,7 @@ void ComicManagementCoordinator::assignNumbers()
             return;
     }
 
-    const auto indexList = indexesForComicIds(selectedIds, source);
+    const auto indexList = indexesForRows(selectedIds, source);
     if (indexList.isEmpty())
         return;
 
@@ -320,39 +392,43 @@ void ComicManagementCoordinator::assignNumbers()
 
 void ComicManagementCoordinator::deleteMetadataFromSelectedComics()
 {
-    auto comics = comicsModel->getComics(selectionProvider());
-    if (comics.isEmpty())
+    const auto indexes = comicsModel->supportedIndexes(selectionProvider(), ComicAction::DeleteMetadata);
+    if (indexes.isEmpty())
         return;
 
-    for (auto &comic : comics)
-        comic.info.deleteMetadata();
-
-    DBHelper::updateComicsInfo(comics, foldersModel->getDatabase());
-    comicsModel->reload();
+    comicsModel->deleteMetadata(indexes);
 }
 
 void ComicManagementCoordinator::deleteSelectedComics()
 {
-    const auto comicIds = selectedComicIds();
-    if (comicIds.isEmpty())
-        return;
-
-    const auto source = currentSource();
+    // a smart list has no entries, so its comics are deleted from the disk like the comics of a folder
     const auto listIndex = currentListProvider();
-    if (listIndex.isValid()) {
-        deleteComicsFromList(comicIds,
-                             source,
-                             listIndex.data(ReadingListModel::TypeListsRole).toInt(),
-                             listIndex.data(ReadingListModel::IDRole).toULongLong());
-    } else {
-        deleteComicsFromDisk(comicIds, source);
+    const auto listType = listIndex.data(ReadingListModel::TypeListsRole).toInt();
+    // a folder of lists shows no comics
+    if (listIndex.isValid() && (listType == ReadingListModel::ReadingListFolder || listType == ReadingListModel::SmartListFolder))
+        return;
+    const bool fromList = listIndex.isValid() && listType != ReadingListModel::SmartList;
+    const auto source = currentSource();
+    if (fromList) {
+        const auto rowIds = selectedRowIds(ComicAction::RemoveFromList);
+        if (!rowIds.isEmpty())
+            deleteComicsFromList(rowIds,
+                                 source,
+                                 listIndex.data(ReadingListModel::TypeListsRole).toInt(),
+                                 listIndex.data(ReadingListModel::IDRole).toULongLong());
+        return;
     }
+
+    const auto fileRowIds = selectedRowIds(ComicAction::ChangeFile);
+    const auto missingRowIds = selectedRowIds(ComicAction::RemoveFromFolder);
+    if (!fileRowIds.isEmpty() || !missingRowIds.isEmpty())
+        deleteComicsFromDisk(fileRowIds, missingRowIds, source);
 }
 
 void ComicManagementCoordinator::saveSelectedCoversTo()
 {
-    const auto comicIds = selectedComicIds();
-    if (comicIds.isEmpty())
+    const auto rowIds = selectedRowIds(ComicAction::SaveCover);
+    if (rowIds.isEmpty())
         return;
 
     const auto source = currentSource();
@@ -362,10 +438,15 @@ void ComicManagementCoordinator::saveSelectedCoversTo()
     if (destinationFolder.isEmpty())
         return;
 
-    const auto indexList = indexesForComicIds(comicIds, source);
+    const auto indexList = indexesForRows(rowIds, source);
     for (const auto &comic : indexList) {
         QString origin = comic.data(ComicModel::CoverPathRole).toString().remove("file:///").remove("file:");
-        const auto destination = QDir(destinationFolder).filePath(comic.data(ComicModel::FileNameRole).toString() + ".jpg");
+        auto name = comic.data(ComicModel::FileNameRole).toString();
+        if (name.isEmpty())
+            name = comic.data(ComicModel::LastKnownNameRole).toString();
+        if (name.isEmpty())
+            name = comic.data(ComicModel::ReadableTitle).toString();
+        const auto destination = QDir(destinationFolder).filePath(name + ".jpg");
 
         QLOG_DEBUG() << "From : " << origin;
         QLOG_DEBUG() << "To : " << destination;
@@ -374,13 +455,13 @@ void ComicManagementCoordinator::saveSelectedCoversTo()
     }
 }
 
-void ComicManagementCoordinator::setCustomCover(qulonglong comicId, const QString &imagePath)
+void ComicManagementCoordinator::setCustomCover(const ComicRowId &row, const QString &imagePath)
 {
     if (!comicOpeningAllowedProvider())
         return;
 
-    const auto index = comicsModel->getIndexFromId(comicId);
-    if (!index.isValid())
+    const auto index = comicsModel->indexOf(row);
+    if (!comicsModel->supports(index, ComicAction::SetCustomCover))
         return;
 
     const QImage cover(imagePath);
@@ -391,32 +472,229 @@ void ComicManagementCoordinator::setCustomCover(qulonglong comicId, const QStrin
         return;
     }
 
-    auto comic = comicsModel->getComic(index);
-    const auto coverPath = YACReader::LibraryPaths::coverPath(libraryPathProvider(), comic.info.hash);
-    if (!YACReader::saveCover(coverPath, cover)) {
+    const auto libraryPath = libraryPathProvider();
+    auto record = comicsModel->record(index);
+    if (const auto *placeholder = recordPlaceholder(record)) {
+        QHash<PlaceholderId, std::optional<QString>> changedCovers;
+        if (changePlaceholderCover(*placeholder, cover, changedCovers))
+            comicsModel->notifyPlaceholderCoverChange(changedCovers);
+        else
+            QMessageBox::warning(window,
+                                 QCoreApplication::translate("LibraryWindow", "Error saving cover"),
+                                 QCoreApplication::translate("LibraryWindow", "There was an error saving the cover image."));
+        return;
+    }
+    auto &info = *recordInfo(record);
+    info.coverPage = QVariant();
+    info.originalCoverSize = QStringLiteral("%1x%2").arg(cover.width()).arg(cover.height());
+    info.coverSizeRatio = static_cast<double>(cover.width()) / cover.height();
+    info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
+    info.usesExternalCover = true;
+
+    // the previous cover stays when any step fails
+    StagedCover staged(YACReader::LibraryPaths::coverPath(libraryPath, info.hash));
+    bool saved = staged.stage(cover);
+    if (saved) {
+        QString connectionName = "";
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(YACReader::LibraryPaths::libraryDataPath(libraryPath));
+            db.transaction();
+            saved = DBHelper::loadRecord(record, db) && DBHelper::updateComicInfoCover(info, db) && staged.install() && db.commit();
+            if (saved) {
+                staged.finish();
+            } else {
+                db.rollback();
+                staged.restore();
+            }
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+    }
+
+    if (!saved) {
         QMessageBox::warning(window,
                              QCoreApplication::translate("LibraryWindow", "Error saving cover"),
                              QCoreApplication::translate("LibraryWindow", "There was an error saving the cover image."));
         return;
     }
 
-    comic.info.coverPage = QVariant();
-    comic.info.originalCoverSize = QStringLiteral("%1x%2").arg(cover.width()).arg(cover.height());
-    comic.info.coverSizeRatio = static_cast<double>(cover.width()) / cover.height();
-    comic.info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
-    comic.info.usesExternalCover = true;
-    DBHelper::update(libraryIdProvider(), comic.info);
-    comicsModel->notifyCoverChange(comic);
+    comicsModel->notifyCoverChange({ info.id });
 }
 
+// a placeholder's cover is always its own image
 bool ComicManagementCoordinator::hasCustomCoverInSelection() const
 {
-    const auto comics = comicsModel->getComics(selectionProvider());
+    const auto indexes = comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetCustomCover);
+    const auto hasPlaceholderCover = std::any_of(indexes.cbegin(), indexes.cend(), [this](const QModelIndex &index) {
+        const auto record = comicsModel->record(index);
+        const auto *placeholder = recordPlaceholder(record);
+        return placeholder != nullptr && placeholder->coverKey.has_value();
+    });
+    if (hasPlaceholderCover)
+        return true;
+
+    const auto comics = comicsModel->getComics(indexes);
     return std::any_of(comics.cbegin(), comics.cend(), [](const ComicDB &comic) {
         return comic.info.usesExternalCover.toBool();
     });
 }
 
+bool ComicManagementCoordinator::canMatchSelectionToLibraryComic() const
+{
+    const auto selection = selectionProvider();
+    if (selection.size() == 1)
+        return comicsModel->supports(selection.constFirst(), ComicAction::MatchToLibraryComic);
+    return selection.size() > 1 && std::all_of(selection.cbegin(), selection.cend(), [this](const QModelIndex &index) { return comicsModel->listEntry(index).has_value(); });
+}
+
+// the comic is given to the entries of the missing comic in every list
+void ComicManagementCoordinator::matchSelectedToLibraryComic()
+{
+    if (!comicOpeningAllowedProvider() || !canMatchSelectionToLibraryComic())
+        return;
+
+    const auto selection = selectionProvider();
+    if (selection.size() > 1) {
+        matchSelectedEntriesToLibraryComics(selection);
+        return;
+    }
+
+    const auto index = selection.constFirst();
+    const auto record = comicsModel->record(index);
+    const auto entry = comicsModel->listEntry(index);
+    // a missing comic of a folder is matched to a comic of that folder
+    const auto rowId = comicsModel->rowId(index);
+    const auto folderId = std::holds_alternative<PlaceholderId>(rowId) ? std::optional(comicsModel->getSourceId()) : std::nullopt;
+    if (!entry && !folderId)
+        return;
+    MissingComic missing;
+    if (const auto *placeholder = recordPlaceholder(record))
+        missing = placeholder->id;
+    else if (const auto *info = recordInfo(record))
+        missing = info->id;
+    const auto source = currentSource();
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(source.libraryPath);
+
+    emit currentSourceRefreshStarted();
+    CblMatchComicDialog dialog(recordMetadata(record), source.libraryPath, folderId, window);
+    if (dialog.exec() != QDialog::Accepted || !dialog.chosenComic() || !isCurrentSource(source)) {
+        emit currentSourceRefreshCancelled();
+        return;
+    }
+    const auto comicInfoId = dialog.chosenComic()->id;
+
+    std::optional<QStringList> otherLists;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+        otherLists = entry ? otherListsWithEntriesOf({ missing }, entry->id.listKind, { entry->listId }, db)
+                           : otherListsWithEntriesOf({ missing }, ListKind::ReadingList, { }, db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    if (otherLists && !otherLists->isEmpty()) {
+        const auto answer = QMessageBox::question(window,
+                                                  QCoreApplication::translate("LibraryWindow", "Match to library comic"),
+                                                  QCoreApplication::translate("LibraryWindow", "This also gives the comic to entries in %n other list(s): %1", "", otherLists->size()).arg(otherLists->join(QStringLiteral(", "))),
+                                                  QMessageBox::Apply | QMessageBox::Cancel,
+                                                  QMessageBox::Apply);
+        if (answer != QMessageBox::Apply) {
+            emit currentSourceRefreshCancelled();
+            return;
+        }
+    }
+
+    bool matched = false;
+    ComicMatchFiles files;
+    if (otherLists) {
+        {
+            QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+            db.transaction();
+            matched = std::visit(overloaded {
+                                         [&](PlaceholderId id) { return matchPlaceholderToComic(id, comicInfoId, dataPath, db, files); },
+                                         [&](ComicInfoId id) { return matchDeletedComicToComic(id, comicInfoId, db, files); },
+                                 },
+                                 missing) &&
+                    db.commit();
+            if (!matched)
+                db.rollback();
+            connectionName = db.connectionName();
+        }
+        QSqlDatabase::removeDatabase(connectionName);
+        finishComicMatchFiles(dataPath, files, matched);
+    }
+
+    if (!matched) {
+        emit currentSourceRefreshCancelled();
+        QMessageBox::warning(window,
+                             QCoreApplication::translate("LibraryWindow", "Match to library comic"),
+                             QCoreApplication::translate("LibraryWindow", "The comic could not be matched. Nothing was changed."));
+        return;
+    }
+    emit currentSourceRefreshAccepted();
+}
+
+void ComicManagementCoordinator::matchSelectedEntriesToLibraryComics(const QModelIndexList &selection)
+{
+    QList<CblListEntry> entries;
+    for (const auto &index : selection) {
+        if (const auto entry = comicsModel->listEntry(index))
+            entries.append(cblListEntry(comicsModel->record(index), *entry));
+    }
+    const auto source = currentSource();
+
+    emit currentSourceRefreshStarted();
+    CblImportDialog dialog(currentListProvider().data().toString(), entries, source.libraryPath, window);
+    bool changed = false;
+    connect(&dialog, &CblImportDialog::listEntriesChanged, this, [&changed] { changed = true; });
+    dialog.exec();
+    if (changed)
+        emit currentSourceRefreshAccepted();
+    else
+        emit currentSourceRefreshCancelled();
+}
+
+// a new image gets a new file; the old file is removed after the commit, the new one on a failure.
+// A null `cover` clears the cover of the placeholder.
+bool ComicManagementCoordinator::changePlaceholderCover(const Placeholder &placeholder, const QImage &cover, QHash<PlaceholderId, std::optional<QString>> &changedCovers)
+{
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPathProvider());
+    std::optional<QString> newKey;
+    if (!cover.isNull()) {
+        newKey = savePlaceholderCover(dataPath, cover);
+        if (!newKey)
+            return false;
+    }
+
+    std::optional<QString> oldKey;
+    bool saved = false;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+        db.transaction();
+        const auto stored = DBHelper::loadRecord(ComicRecordCase::Placeholder { placeholder }, db);
+        if (stored)
+            oldKey = recordPlaceholder(*stored)->coverKey;
+        saved = stored && DBHelper::updatePlaceholderCover(placeholder.id, newKey, db) && db.commit();
+        if (!saved)
+            db.rollback();
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    if (!saved) {
+        if (newKey)
+            DBHelper::removePlaceholderCovers(dataPath, { *newKey });
+        return false;
+    }
+    if (oldKey)
+        DBHelper::removePlaceholderCovers(dataPath, { *oldKey });
+    changedCovers.insert(placeholder.id, newKey);
+    return true;
+}
+
+// a deleted comic keeps its custom cover: the original cannot be extracted without the file
 void ComicManagementCoordinator::resetSelectedCustomCovers()
 {
     if (!comicOpeningAllowedProvider())
@@ -424,13 +702,27 @@ void ComicManagementCoordinator::resetSelectedCustomCovers()
 
     const auto libraryPath = libraryPathProvider();
     const auto libraryId = libraryIdProvider();
-    const auto indexes = selectionProvider();
+    const auto indexes = comicsModel->supportedIndexes(selectionProvider(), ComicAction::SetCustomCover);
+    QSet<PlaceholderId> clearedPlaceholders;
+    QHash<PlaceholderId, std::optional<QString>> changedPlaceholderCovers;
+    QList<ComicInfoId> changedCovers;
     for (const auto &index : indexes) {
-        auto comic = comicsModel->getComic(index);
-        if (!comic.info.usesExternalCover.toBool())
+        // a placeholder goes back to no cover, which shows the default image
+        const auto record = comicsModel->record(index);
+        if (const auto *placeholder = recordPlaceholder(record)) {
+            if (placeholder->coverKey && !clearedPlaceholders.contains(placeholder->id)) {
+                clearedPlaceholders.insert(placeholder->id);
+                changePlaceholderCover(*placeholder, QImage(), changedPlaceholderCovers);
+            }
             continue;
+        }
 
-        YACReader::InitialComicInfoExtractor extractor(QDir::cleanPath(libraryPath + comic.path), QString(), 1);
+        auto loaded = comicsModel->getComic(index);
+        if (!loaded || !loaded->info.usesExternalCover.toBool())
+            continue;
+        auto &comic = *loaded;
+
+        YACReader::InitialComicInfoExtractor extractor(QDir::cleanPath(libraryPath + comic.file.path), QString(), 1);
         extractor.extract();
         if (!extractor.hasValidCover())
             continue;
@@ -447,8 +739,10 @@ void ComicManagementCoordinator::resetSelectedCustomCovers()
         comic.info.lastTimeCoverSet = QDateTime::currentSecsSinceEpoch();
         comic.info.usesExternalCover = false;
         DBHelper::update(libraryId, comic.info);
-        comicsModel->notifyCoverChange(comic);
+        changedCovers.append(comic.info.id);
     }
+    comicsModel->notifyCoverChange(changedCovers);
+    comicsModel->notifyPlaceholderCoverChange(changedPlaceholderCovers);
 }
 
 QProgressDialog *ComicManagementCoordinator::newProgressDialog(const QString &label, int maximum)
@@ -479,14 +773,14 @@ void ComicManagementCoordinator::processComicFiles(ComicFilesManager *comicFiles
     thread->start();
 }
 
-QList<qulonglong> ComicManagementCoordinator::selectedComicIds() const
+QList<ComicRowId> ComicManagementCoordinator::selectedRowIds(ComicAction action) const
 {
-    QList<qulonglong> comicIds;
-    const auto selection = selectionProvider();
-    comicIds.reserve(selection.size());
+    QList<ComicRowId> rowIds;
+    const auto selection = comicsModel->supportedIndexes(selectionProvider(), action);
+    rowIds.reserve(selection.size());
     for (const auto &index : selection)
-        comicIds.append(index.data(ComicModel::IdRole).toULongLong());
-    return comicIds;
+        rowIds.append(comicsModel->rowId(index));
+    return rowIds;
 }
 
 ComicManagementCoordinator::SourceContext ComicManagementCoordinator::currentSource() const
@@ -494,12 +788,12 @@ ComicManagementCoordinator::SourceContext ComicManagementCoordinator::currentSou
     return { libraryPathProvider(), static_cast<int>(comicsModel->getMode()), comicsModel->getSourceId() };
 }
 
-QModelIndexList ComicManagementCoordinator::indexesForComicIds(const QList<qulonglong> &comicIds, const SourceContext &source) const
+QModelIndexList ComicManagementCoordinator::indexesForRows(const QList<ComicRowId> &rowIds, const SourceContext &source) const
 {
     if (!isCurrentSource(source))
         return { };
 
-    auto indexes = comicsModel->getIndexesFromIds(comicIds);
+    auto indexes = comicsModel->indexesOf(rowIds);
     if (std::any_of(indexes.cbegin(), indexes.cend(), [](const QModelIndex &index) { return !index.isValid(); }))
         return { };
 
@@ -514,17 +808,32 @@ bool ComicManagementCoordinator::isCurrentSource(const SourceContext &source) co
     return QDir::cleanPath(foldersModel->getDatabase()) == QDir::cleanPath(YACReader::LibraryPaths::libraryDataPath(source.libraryPath)) && static_cast<int>(comicsModel->getMode()) == source.mode && comicsModel->getSourceId() == source.sourceId;
 }
 
-void ComicManagementCoordinator::deleteComicsFromDisk(const QList<qulonglong> &comicIds, const SourceContext &source)
+void ComicManagementCoordinator::deleteComicsFromDisk(const QList<ComicRowId> &rowIds, const QList<ComicRowId> &missingRowIds, const SourceContext &source)
 {
+    QString question;
+    if (missingRowIds.isEmpty())
+        question = QCoreApplication::translate("LibraryWindow", "All the selected comics will be deleted from your disk. Are you sure?");
+    else if (rowIds.isEmpty())
+        question = QCoreApplication::translate("LibraryWindow", "The selected missing comics will be removed from this folder. Are you sure?");
+    else
+        question = QCoreApplication::translate("LibraryWindow", "The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?");
     const auto answer = QMessageBox::question(window,
                                               QCoreApplication::translate("LibraryWindow", "Delete comics"),
-                                              QCoreApplication::translate("LibraryWindow", "All the selected comics will be deleted from your disk. Are you sure?"),
+                                              question,
                                               QMessageBox::Yes,
                                               QMessageBox::No);
     if (answer != QMessageBox::Yes)
         return;
 
-    auto indexList = indexesForComicIds(comicIds, source);
+    if (!missingRowIds.isEmpty()) {
+        const auto missingIndexes = indexesForRows(missingRowIds, source);
+        if (!missingIndexes.isEmpty())
+            comicsModel->removeMissingComicsFromFolder(missingIndexes);
+    }
+    if (rowIds.isEmpty())
+        return;
+
+    auto indexList = indexesForRows(rowIds, source);
     auto comics = comicsModel->getComics(indexList);
     if (comics.isEmpty())
         return;
@@ -532,13 +841,13 @@ void ComicManagementCoordinator::deleteComicsFromDisk(const QList<qulonglong> &c
     QList<QString> paths;
     paths.reserve(comics.size());
     for (const auto &comic : std::as_const(comics)) {
-        paths.append(source.libraryPath + comic.path);
-        QLOG_TRACE() << comic.path;
-        QLOG_TRACE() << comic.id;
-        QLOG_TRACE() << comic.parentId;
+        paths.append(source.libraryPath + comic.file.path);
+        QLOG_TRACE() << comic.file.path;
+        QLOG_TRACE() << comic.file.id.value();
+        QLOG_TRACE() << comic.file.folderId.value();
     }
 
-    auto remover = new ComicsRemover(indexList, paths, comics.constFirst().parentId);
+    auto remover = new ComicsRemover(indexList, paths, comics.constFirst().file.folderId.value());
     auto thread = new QThread(this);
     moveAndConnectRemoverToThread(remover, thread);
 
@@ -554,11 +863,24 @@ void ComicManagementCoordinator::deleteComicsFromDisk(const QList<qulonglong> &c
     thread->start();
 }
 
-void ComicManagementCoordinator::deleteComicsFromList(const QList<qulonglong> &comicIds, const SourceContext &source, int listType, qulonglong listId)
+void ComicManagementCoordinator::deleteComicsFromList(const QList<ComicRowId> &rowIds, const SourceContext &source, int listType, qulonglong listId)
 {
+    auto question = QCoreApplication::translate("LibraryWindow", "Comics will only be deleted from the current label/list. Are you sure?");
+    if (listType == ReadingListModel::SpecialList) {
+        switch (static_cast<ReadingListModel::TypeSpecialList>(listId)) {
+        case ReadingListModel::TypeSpecialList::Reading:
+            question = QCoreApplication::translate("LibraryWindow", "Remove the comics from Reading? Their reading progress will be reset.");
+            break;
+        case ReadingListModel::TypeSpecialList::Favorites:
+            question = QCoreApplication::translate("LibraryWindow", "The comics will be removed from Favorites. Are you sure?");
+            break;
+        case ReadingListModel::TypeSpecialList::Recent:
+            break;
+        }
+    }
     const auto answer = QMessageBox::question(window,
                                               QCoreApplication::translate("LibraryWindow", "Remove comics"),
-                                              QCoreApplication::translate("LibraryWindow", "Comics will only be deleted from the current label/list. Are you sure?"),
+                                              question,
                                               QMessageBox::Yes,
                                               QMessageBox::No);
     if (answer != QMessageBox::Yes)
@@ -568,7 +890,7 @@ void ComicManagementCoordinator::deleteComicsFromList(const QList<qulonglong> &c
     if (!currentList.isValid() || currentList.data(ReadingListModel::TypeListsRole).toInt() != listType || currentList.data(ReadingListModel::IDRole).toULongLong() != listId)
         return;
 
-    const auto indexList = indexesForComicIds(comicIds, source);
+    const auto indexList = indexesForRows(rowIds, source);
     if (indexList.isEmpty())
         return;
 
@@ -577,12 +899,13 @@ void ComicManagementCoordinator::deleteComicsFromList(const QList<qulonglong> &c
         comicsModel->deleteComicsFromSpecialList(indexList, listId);
         break;
     case ReadingListModel::Label:
-        comicsModel->deleteComicsFromLabel(indexList, listId);
-        break;
     case ReadingListModel::ReadingList:
-        comicsModel->deleteComicsFromReadingList(indexList, listId);
+        comicsModel->deleteComicsFromLists(indexList);
         break;
     case ReadingListModel::Separator:
+    case ReadingListModel::SmartList:
+    case ReadingListModel::ReadingListFolder:
+    case ReadingListModel::SmartListFolder:
         break;
     }
 }
