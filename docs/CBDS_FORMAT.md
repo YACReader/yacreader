@@ -1,13 +1,18 @@
 # ComicBookDS (`.cbds`) format
 
-ComicBookDS is a homebrew comic reader for the Nintendo DS. Its books are made on a PC with the
-PictoDS converter (Windows) or the open source `cbdsconv` script, and use the `.cbds` extension.
-This document describes what YACReader relies on and where that knowledge comes from.
+ComicBookDS is a homebrew comic reader for the Nintendo DS (last version 3.0, 2010). Its books
+use the `.cbds` extension and are made on a PC with PictoDS (a Java program for Windows, Linux
+and macOS; `.cbds` output since 2.0 beta 4 in January 2007, last version 2.1 from August 2007;
+earlier versions built a complete `.nds` program per book), with `pycbds` or with the open
+source `cbdsconv` script. This document describes what YACReader relies on and where that
+knowledge comes from.
 
 Sources:
 
 - 25 real `.cbds` books made by PictoDS (all `Version = 200`), inspected entry by entry.
   They are not part of the repository.
+- The project website <http://cbds.free.fr> (ComicBookDS user guide, PictoDS page and version
+  history).
 - The `cbdsconv` converter (<https://github.com/son-link/cbdsconv>, GPL), which writes the format.
 - Descriptions of ComicBookDS and PictoDS on gamebrew.org and fileinfo.com.
 
@@ -36,7 +41,11 @@ THMB_R/1.jpg ... THMB_R/N.jpg     thumbnail, rotated 90 degrees
 - Every page exists in five resolutions. In the real books: `IMAGE` 700 px wide (about 900-1030
   px high), `SMALL_N` 140x192, `SMALL_R` 256x187, `THMB_N` 33x46, `THMB_R` 62x45. `cbdsconv`
   targets 700x1054, 127x192, 30x46, 256x169 and 62x40, rotating the image by -90 degrees for
-  the `_R` variants (used by the DS when it is held sideways).
+  the `_R` variants.
+- The extra sizes match the DS screens (256x192) and the modes of the reader: `SMALL_*` is the
+  whole-page overview shown on the touch screen, `THMB_*` the thumbnails of the library and
+  thumbnail modes (10 per screen). `_N` and `_R` are the two orientations the reader switches
+  between (portrait and landscape, R button).
 - Only `IMAGE/` holds pages to display. All other folders are derived data of the reader.
 - `NAME/N.txt` holds the source file name of page N (Latin-1 text, CRLF). It is not needed to
   order the pages.
@@ -49,7 +58,7 @@ Latin-1 text with CRLF line endings, `;` comments and `key = value` lines, no se
 | Key | Meaning |
 |---|---|
 | `CbCredits1..3` | Credit lines shown by the reader (title, author, provider), often `Unknown` |
-| `LeftToRight` | `1` left to right, `0` right to left |
+| `LeftToRight` | Default reading direction of the book: `1` left to right (comic), `0` right to left (manga); the reader can switch it |
 | `NbPages` | Number of pages |
 | `Version` | Compatibility version, `200` in all known books |
 | `iWidth`, `iHeight`, `iQuality`, `iSize` | Target size and JPEG quality of `IMAGE` |
