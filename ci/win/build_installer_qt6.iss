@@ -41,6 +41,7 @@ Root: HKCR; Subkey: YACReader Data Base (ydb)\DefaultIcon; ValueType: string; Va
 Source: Qt6Widgets.dll; DestDir: {app}
 Source: Qt6Core.dll; DestDir: {app}
 Source: Qt6Core5Compat.dll; DestDir: {app}
+Source: Qt6Concurrent.dll; DestDir: {app}
 Source: Qt6Gui.dll; DestDir: {app}
 Source: Qt6Multimedia.dll; DestDir: {app}
 Source: Qt6Network.dll; DestDir: {app}
