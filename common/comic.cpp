@@ -638,9 +638,11 @@ void FileComic::process()
         }
     } else {
         pageFileNames = filter(YACReaderCbds::pageCandidates(_path, archiveFileNames));
-        // ComicBookDS pages are plain sequence numbers, never spreads like 1011.jpg
-        const auto sortingMode = YACReaderCbds::isCbds(_path, archiveFileNames) ? YACReaderNumericalSorting : YACReaderHeuristicSorting;
-        comic_pages_sort(pageFileNames, sortingMode);
+        if (YACReaderCbds::isCbds(_path, archiveFileNames)) {
+            YACReaderCbds::sortPages(pageFileNames);
+        } else {
+            comic_pages_sort(pageFileNames, YACReaderHeuristicSorting);
+        }
         for (const QString &fileName : std::as_const(pageFileNames)) {
             _pageArchiveIndexes.append(archiveFileNames.indexOf(fileName));
         }

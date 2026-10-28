@@ -50,7 +50,7 @@ add_library(cbds_page_index STATIC
 )
 target_include_directories(cbds_page_index PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 yacreader_apply_build_options(cbds_page_index)
-target_link_libraries(cbds_page_index PUBLIC Qt6::Core)
+target_link_libraries(cbds_page_index PUBLIC Qt6::Core naturalsort)
 
 # --- concurrent_queue ---
 add_library(concurrent_queue STATIC

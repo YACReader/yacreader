@@ -15,6 +15,7 @@ private slots:
     void ignoresNestedAndEscapingEntries();
     void fallsBackWhenThereAreNoPages();
     void leavesOtherArchivesUntouched();
+    void sortsPagesByNumber();
 };
 
 namespace {
@@ -116,6 +117,19 @@ void CbdsPageIndexTest::leavesOtherArchivesUntouched()
 
     const QStringList plain { "001.jpg", "002.jpg", "ComicInfo.xml" };
     QCOMPARE(YACReaderCbds::pageCandidates("comic.cbz", plain), plain);
+}
+
+void CbdsPageIndexTest::sortsPagesByNumber()
+{
+    // Archive order of real books, plus a number that looks like a spread of 10 and 11.
+    QStringList pages { "IMAGE/1.jpg", "IMAGE/10.jpg", "IMAGE/1011.jpg", "IMAGE/11.jpg", "IMAGE/2.jpg" };
+    YACReaderCbds::sortPages(pages);
+    QCOMPARE(pages, QStringList({ "IMAGE/1.jpg", "IMAGE/2.jpg", "IMAGE/10.jpg", "IMAGE/11.jpg", "IMAGE/1011.jpg" }));
+
+    // Every spelling pageCandidates() accepts sorts by the page number, the names stay as listed.
+    QStringList mixed { "/IMAGE/3.jpg", "image\\1.jpg", "IMAGE/2.jpg", "\\Image\\10.jpg" };
+    YACReaderCbds::sortPages(mixed);
+    QCOMPARE(mixed, QStringList({ "image\\1.jpg", "IMAGE/2.jpg", "/IMAGE/3.jpg", "\\Image\\10.jpg" }));
 }
 
 QTEST_GUILESS_MAIN(CbdsPageIndexTest)

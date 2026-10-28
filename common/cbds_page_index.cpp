@@ -1,5 +1,7 @@
 #include "cbds_page_index.h"
 
+#include "qnaturalsorting.h"
+
 #include <QFileInfo>
 
 #include <algorithm>
@@ -61,4 +63,11 @@ QStringList YACReaderCbds::pageCandidates(const QString &path, const QStringList
     // A book without IMAGE/ entries does not follow the known layout, falling back
     // to every image in the archive is better than refusing to open it.
     return pages.isEmpty() ? fileNames : pages;
+}
+
+void YACReaderCbds::sortPages(QStringList &pages)
+{
+    std::stable_sort(pages.begin(), pages.end(), [](const QString &left, const QString &right) {
+        return naturalSortLessThanCI(archivePathParts(left).join('/'), archivePathParts(right).join('/'));
+    });
 }

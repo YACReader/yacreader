@@ -56,8 +56,9 @@ Latin-1 text with CRLF line endings, `;` comments and `key = value` lines, no se
 | `oWidth`, `oHeight`, `oQuality`, `oSize` | Same for the `SMALL_*` previews |
 | `thWidth`, `thHeight`, `thQuality`, `thSize` | Same for the `THMB_*` thumbnails |
 
-`NbPages` cannot be trusted: `cbdsconv` writes the number of pages plus one and skips the number
-of any page it fails to convert, so a book can have gaps in its numbering.
+In the 21 intact PictoDS books `NbPages` matches the number of `IMAGE/` entries exactly. It is
+still not something to rely on in general: `cbdsconv` writes the number of pages plus one and
+skips the number of any page it fails to convert, so its books can have gaps in their numbering.
 
 ## How YACReader reads it
 
@@ -65,9 +66,10 @@ An archive is handled as a ComicBookDS book when its name ends in `.cbds` or whe
 `ComicBookDS_book.ini` entry at its root. For such a book only the files directly inside the
 top level `IMAGE/` folder are page candidates (see `common/cbds_page_index.cpp`). After that it
 goes through the same path as any other comic: unsupported files are filtered out by extension
-and the cover is the first page. Pages are sorted by natural (numeric) order in the reader and
-in the library. The reader's heuristic for spread files such as `1011.jpg` is not applied,
-because ComicBookDS page names are plain sequence numbers.
+and the cover is the first page. The reader and the library sort the pages the same way, by the
+natural (numeric) order of their names written as `IMAGE/<file>`, whatever separator, case or
+leading separator the archive uses. The reader's heuristic for spread files such as `1011.jpg`
+is not applied, because ComicBookDS page names are plain sequence numbers.
 
 - The ini file is not read. The page list comes from the archive, which is the only reliable
   source, and the optional metadata is not used yet. Broken, huge or missing ini files cannot
@@ -86,10 +88,11 @@ because ComicBookDS page names are plain sequence numbers.
 
 ## Damaged books
 
-Some books in the wild are truncated: the end of the file, including the ZIP central directory,
-is replaced by zeros. Such a file is not a valid ZIP archive and opens with an error, or only
-partially, depending on how much the decompression backend can recover. This is a data problem
-of the individual file, not a format variant.
+Some books in the wild are damaged: the file keeps its size, but from some point (in the books
+seen, a 64 KiB boundary) to the end the data is zeros, including the ZIP central directory. Such
+a file is not a valid ZIP archive and opens with an error, or only partially, depending on how
+much the decompression backend can recover from the local headers. This is a data problem of the
+individual file, not a format variant.
 
 ## Unknown
 

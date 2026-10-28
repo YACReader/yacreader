@@ -17,6 +17,11 @@ bool isCbds(const QString &path, const QStringList &fileNames);
 // listed by the archive so they can be looked up in fileNames afterwards.
 QStringList pageCandidates(const QString &path, const QStringList &fileNames);
 
+// Natural order of the pages of a CBDS book. Page names are plain sequence
+// numbers, so there is no spread detection, and the comparison ignores how the
+// path is written (separator, case, leading separator) like pageCandidates() does.
+void sortPages(QStringList &pages);
+
 }
 
 #endif // CBDS_PAGE_INDEX_H

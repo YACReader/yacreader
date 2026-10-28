@@ -134,7 +134,11 @@ void InitialComicInfoExtractor::extract()
         coverArchiveIndex = epub.coverArchiveIndex;
     } else {
         QList<QString> fileNames = FileComic::filter(YACReaderCbds::pageCandidates(_fileSource, order));
-        std::sort(fileNames.begin(), fileNames.end(), naturalSortLessThanCI);
+        if (YACReaderCbds::isCbds(_fileSource, order)) {
+            YACReaderCbds::sortPages(fileNames);
+        } else {
+            std::sort(fileNames.begin(), fileNames.end(), naturalSortLessThanCI);
+        }
         _numPages = fileNames.size();
         if (_coverPage > _numPages) {
             _coverPage = 1;
