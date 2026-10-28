@@ -37,9 +37,11 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReader
 * Avoid duplicated images in double page mode after a layout adjustment.
 * New setting to draw a fold shadow in the double page mode.
+* Support for ComicBookDS (.cbds) comics. Only the pages are shown, not the previews stored next to them.
 
 ### YACReaderLibrary
 * Reload the views only when a remote client changes the library that is open, and only after a sync that changed something.
+* Support for ComicBookDS (.cbds) comics.
 
 ### Server
 * New API to change comic and folder fields from remote clients and webui. You'll be able to set comics and folders as read/unread, completed and theirs types.

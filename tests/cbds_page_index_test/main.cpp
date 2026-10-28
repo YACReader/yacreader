@@ -45,6 +45,10 @@ void CbdsPageIndexTest::detectsBooksByIniOrSuffix()
     QVERIFY(!YACReaderCbds::isCbds("comic.cbz", { "extras/ComicBookDS_book.ini", "IMAGE/1.jpg" }));
     QVERIFY(!YACReaderCbds::isCbds("comic.cbz", { "IMAGE/1.jpg", "THMB_N/1.jpg" }));
     QVERIFY(!YACReaderCbds::isCbds("comic.cbds.cbz", { "IMAGE/1.jpg" }));
+
+    // Backends that list directories must not turn a folder with that name into a book.
+    QVERIFY(!YACReaderCbds::isCbds("comic.cbz", { "ComicBookDS_book.ini/", "IMAGE/1.jpg", "cover.jpg" }));
+    QVERIFY(!YACReaderCbds::isCbds("comic.cbz", { "ComicBookDS_book.ini\\", "IMAGE/1.jpg" }));
 }
 
 void CbdsPageIndexTest::keepsOnlyFullSizePages()
@@ -84,6 +88,7 @@ void CbdsPageIndexTest::ignoresNestedAndEscapingEntries()
         "../IMAGE/2.jpg",
         "IMAGE/../../outside.jpg",
         "IMAGE/sub/3.jpg",
+        "IMAGE/folder.jpg/",
         "other/IMAGE/4.jpg",
         "C:/IMAGE/5.jpg",
     };

@@ -9,9 +9,14 @@ namespace {
 const QString bookIniName = QStringLiteral("ComicBookDS_book.ini");
 const QString pagesFolder = QStringLiteral("IMAGE");
 
+// Leading separators are ignored, the names are relative to the archive root
+// anyway. Directory entries (trailing separator) have no parts so they never match.
 QStringList archivePathParts(QString name)
 {
     name.replace('\\', '/');
+    if (name.endsWith('/')) {
+        return { };
+    }
     return name.split('/', Qt::SkipEmptyParts);
 }
 

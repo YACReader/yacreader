@@ -64,8 +64,10 @@ of any page it fails to convert, so a book can have gaps in its numbering.
 An archive is handled as a ComicBookDS book when its name ends in `.cbds` or when it has a
 `ComicBookDS_book.ini` entry at its root. For such a book only the files directly inside the
 top level `IMAGE/` folder are page candidates (see `common/cbds_page_index.cpp`). After that it
-goes through the same path as any other comic: unsupported files are filtered out by extension,
-pages are sorted with the usual natural/heuristic sorting and the cover is the first page.
+goes through the same path as any other comic: unsupported files are filtered out by extension
+and the cover is the first page. Pages are sorted by natural (numeric) order in the reader and
+in the library. The reader's heuristic for spread files such as `1011.jpg` is not applied,
+because ComicBookDS page names are plain sequence numbers.
 
 - The ini file is not read. The page list comes from the archive, which is the only reliable
   source, and the optional metadata is not used yet. Broken, huge or missing ini files cannot
@@ -73,8 +75,14 @@ pages are sorted with the usual natural/heuristic sorting and the cover is the f
 - A book without any `IMAGE/` entry falls back to the regular behaviour (every image is a page).
 - The file is never modified or converted. Pages are read from the archive into memory like for
   CBZ.
-- Entries outside the root `IMAGE/` folder (nested folders, `..`, absolute names) are never pages.
-  YACReader does not extract archive entries to disk, so entry names cannot cause path traversal.
+- Only an entry of the form `IMAGE/<file>` is a page. `\` is accepted as a separator and a
+  leading `/` or `\` is ignored, so names are always relative to the archive root. Nested
+  folders, `..`, drive letters such as `C:/IMAGE/...` and directory entries never match. The
+  fallback above returns the archive list unchanged, as for any other comic.
+- YACReader does not extract archive entries to disk, so entry names cannot cause path traversal.
+- Detecting a book renamed to another extension needs the ini entry in the archive listing. The
+  unarr backend leaves empty entries out of its listing, so a renamed book with an empty ini is
+  read as a regular archive there. Files with the `.cbds` extension are not affected.
 
 ## Damaged books
 

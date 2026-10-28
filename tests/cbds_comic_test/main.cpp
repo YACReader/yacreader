@@ -23,7 +23,9 @@ class CbdsComicTest : public QObject
 
 private slots:
     void initTestCase();
+    void readerShowsOnlyFullSizePagesInOrder_data();
     void readerShowsOnlyFullSizePagesInOrder();
+    void readerAndLibraryAgreeOnPageNumbers();
     void coverAndPageCountForTheLibrary();
     void worksWithoutTheIni();
     void ignoresBrokenAndHugeIni();
@@ -76,41 +78,67 @@ void append(QByteArray &out, T value)
     out.append(reinterpret_cast<const char *>(&le), sizeof(T));
 }
 
-// Minimal stored (uncompressed) zip writer, enough to build test archives
-// without depending on a compression library.
-QByteArray zipArchive(const QList<QPair<QString, QByteArray>> &entries)
+enum class ZipLayout {
+    Stored,
+    // Like the books written by PictoDS: Deflate with the sizes and CRC in a
+    // data descriptor after each entry (general purpose flag bit 3).
+    DeflateWithDataDescriptor,
+};
+
+// Raw Deflate stream: qCompress() adds a 4 byte length, a 2 byte zlib header
+// and a 4 byte Adler-32 trailer around it.
+QByteArray rawDeflate(const QByteArray &data)
 {
+    const QByteArray zlib = qCompress(data, 9);
+    return zlib.mid(6, zlib.size() - 10);
+}
+
+// Minimal zip writer, enough to build test archives without depending on an
+// archiving library.
+QByteArray zipArchive(const QList<QPair<QString, QByteArray>> &entries, ZipLayout layout = ZipLayout::Stored)
+{
+    const bool deflate = layout == ZipLayout::DeflateWithDataDescriptor;
+    const quint16 flags = deflate ? 0x0008 : 0;
+    const quint16 method = deflate ? 8 : 0;
+
     QByteArray archive;
     QByteArray centralDirectory;
 
     for (const auto &[name, data] : entries) {
         const QByteArray encodedName = name.toUtf8();
         const quint32 crc = crc32(data);
+        const QByteArray stored = deflate ? rawDeflate(data) : data;
         const auto offset = static_cast<quint32>(archive.size());
 
         append<quint32>(archive, 0x04034b50);
         append<quint16>(archive, 20); // version needed
-        append<quint16>(archive, 0); // flags
-        append<quint16>(archive, 0); // stored
+        append<quint16>(archive, flags);
+        append<quint16>(archive, method);
         append<quint16>(archive, 0); // time
         append<quint16>(archive, 0x21); // date: 1980-01-01
-        append<quint32>(archive, crc);
-        append<quint32>(archive, data.size());
-        append<quint32>(archive, data.size());
+        append<quint32>(archive, deflate ? 0 : crc);
+        append<quint32>(archive, deflate ? 0 : stored.size());
+        append<quint32>(archive, deflate ? 0 : data.size());
         append<quint16>(archive, encodedName.size());
         append<quint16>(archive, 0);
         archive.append(encodedName);
-        archive.append(data);
+        archive.append(stored);
+        if (deflate) {
+            append<quint32>(archive, 0x08074b50);
+            append<quint32>(archive, crc);
+            append<quint32>(archive, stored.size());
+            append<quint32>(archive, data.size());
+        }
 
         append<quint32>(centralDirectory, 0x02014b50);
         append<quint16>(centralDirectory, 20); // version made by
         append<quint16>(centralDirectory, 20); // version needed
-        append<quint16>(centralDirectory, 0);
-        append<quint16>(centralDirectory, 0);
+        append<quint16>(centralDirectory, flags);
+        append<quint16>(centralDirectory, method);
         append<quint16>(centralDirectory, 0);
         append<quint16>(centralDirectory, 0x21);
         append<quint32>(centralDirectory, crc);
-        append<quint32>(centralDirectory, data.size());
+        append<quint32>(centralDirectory, stored.size());
         append<quint32>(centralDirectory, data.size());
         append<quint16>(centralDirectory, encodedName.size());
         append<quint16>(centralDirectory, 0); // extra
@@ -248,9 +276,18 @@ void CbdsComicTest::initTestCase()
     QVERIFY(archive.isValid());
 }
 
+void CbdsComicTest::readerShowsOnlyFullSizePagesInOrder_data()
+{
+    QTest::addColumn<bool>("deflate");
+    QTest::newRow("stored") << false;
+    QTest::newRow("deflate with data descriptor") << true;
+}
+
 void CbdsComicTest::readerShowsOnlyFullSizePagesInOrder()
 {
-    const QString path = writeFile(dir.filePath("book.cbds"), zipArchive(bookEntries()));
+    QFETCH(bool, deflate);
+    const ZipLayout layout = deflate ? ZipLayout::DeflateWithDataDescriptor : ZipLayout::Stored;
+    const QString path = writeFile(dir.filePath(deflate ? "book-deflate.cbds" : "book-stored.cbds"), zipArchive(bookEntries(), layout));
 
     const OpenResult result = openInReader(path);
 
@@ -264,9 +301,34 @@ void CbdsComicTest::readerShowsOnlyFullSizePagesInOrder()
     }
 }
 
+void CbdsComicTest::readerAndLibraryAgreeOnPageNumbers()
+{
+    // Page numbers are sequence numbers. A name like 1011 must not be taken for a
+    // spread of pages 10 and 11, the reader has to use the order the library uses.
+    QList<QPair<QString, QByteArray>> entries { { "ComicBookDS_book.ini", bookIni(pageCount + 1) } };
+    for (int page = 1; page <= pageCount; ++page) {
+        entries.append({ QString("IMAGE/%1.png").arg(page), image(pageRed(page), 0) });
+    }
+    entries.append({ "IMAGE/1011.png", image(255, 0) });
+    const QString path = writeFile(dir.filePath("numbers.cbds"), zipArchive(entries));
+
+    const OpenResult result = openInReader(path);
+
+    QVERIFY(!result.failed);
+    QCOMPARE(result.pages.size(), pageCount + 1);
+    for (int page = 0; page < pageCount; ++page) {
+        QCOMPARE(colorOf(result.pages.at(page)).red(), pageRed(page + 1));
+    }
+    QCOMPARE(colorOf(result.pages.last()).red(), 255);
+
+    YACReader::InitialComicInfoExtractor secondPage(path, "", 2);
+    secondPage.extract();
+    QCOMPARE(secondPage.getCoverImage().pixelColor(0, 0).red(), colorOf(result.pages.at(1)).red());
+}
+
 void CbdsComicTest::coverAndPageCountForTheLibrary()
 {
-    const QString path = writeFile(dir.filePath("cover.cbds"), zipArchive(bookEntries()));
+    const QString path = writeFile(dir.filePath("cover.cbds"), zipArchive(bookEntries(), ZipLayout::DeflateWithDataDescriptor));
 
     YACReader::InitialComicInfoExtractor extractor(path);
     extractor.extract();
@@ -441,6 +503,6 @@ void CbdsComicTest::libraryImportsAndRescansBooks()
     QCOMPARE(updated.first().numPages, pageCount);
 }
 
-QTEST_MAIN(CbdsComicTest)
+QTEST_GUILESS_MAIN(CbdsComicTest)
 
 #include "main.moc"
