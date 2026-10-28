@@ -1,5 +1,6 @@
 #include "initial_comic_info_extractor.h"
 
+#include "cbds_page_index.h"
 #include "comic.h"
 #include "compressed_archive.h"
 #include "cover_utils.h"
@@ -132,7 +133,7 @@ void InitialComicInfoExtractor::extract()
         _numPages = epub.pageCount;
         coverArchiveIndex = epub.coverArchiveIndex;
     } else {
-        QList<QString> fileNames = FileComic::filter(order);
+        QList<QString> fileNames = FileComic::filter(YACReaderCbds::pageCandidates(_fileSource, order));
         std::sort(fileNames.begin(), fileNames.end(), naturalSortLessThanCI);
         _numPages = fileNames.size();
         if (_coverPage > _numPages) {
