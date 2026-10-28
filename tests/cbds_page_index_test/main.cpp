@@ -103,6 +103,12 @@ void CbdsPageIndexTest::fallsBackWhenThereAreNoPages()
     QCOMPARE(YACReaderCbds::pageCandidates("book.cbds", withoutPages), withoutPages);
 
     QCOMPARE(YACReaderCbds::pageCandidates("empty.cbds", { }), QStringList());
+
+    // IMAGE/ entries that are not images do not make a book.
+    const auto isJpeg = [](const QString &name) { return name.endsWith(".jpg", Qt::CaseInsensitive); };
+    const QStringList noImages { "ComicBookDS_book.ini", "IMAGE/readme.txt", "1.jpg", "2.jpg" };
+    QCOMPARE(YACReaderCbds::pageCandidates("book.cbds", noImages, isJpeg), noImages);
+    QCOMPARE(YACReaderCbds::pageCandidates("book.cbds", { "IMAGE/1.jpg", "IMAGE/x.txt", "2.jpg" }, isJpeg), QStringList({ "IMAGE/1.jpg", "IMAGE/x.txt" }));
 }
 
 void CbdsPageIndexTest::leavesOtherArchivesUntouched()

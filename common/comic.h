@@ -133,6 +133,7 @@ public:
     static bool isSupportedImage(const QString &fileName, const QStringList &supportedExtensions);
     static YACReaderEpub::PageIndex epubPageIndex(const QStringList &fileNames, CompressedArchive &archive);
     static YACReaderEpub::ScanInfo epubScanInfo(const QStringList &fileNames, CompressedArchive &archive, int coverPage);
+    static QStringList cbdsPageCandidates(const QString &path, const QStringList &fileNames);
 
     // ExtractDelegate
     void fileExtracted(int index, const QByteArray &rawData);

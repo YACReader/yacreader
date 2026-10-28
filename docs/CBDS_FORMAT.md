@@ -74,7 +74,8 @@ is not applied, because ComicBookDS page names are plain sequence numbers.
 - The ini file is not read. The page list comes from the archive, which is the only reliable
   source, and the optional metadata is not used yet. Broken, huge or missing ini files cannot
   affect the result.
-- A book without any `IMAGE/` entry falls back to the regular behaviour (every image is a page).
+- A book without any supported image in `IMAGE/` falls back to the regular behaviour (every
+  image in the archive is a page).
 - The file is never modified or converted. Pages are read from the archive into memory like for
   CBZ.
 - Only an entry of the form `IMAGE/<file>` is a page. `\` is accepted as a separator and a

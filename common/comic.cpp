@@ -472,6 +472,12 @@ YACReaderEpub::ScanInfo FileComic::epubScanInfo(const QStringList &fileNames, Co
     return YACReaderEpub::readScanInfo(fileNames, [&archive](int index) { return archive.getRawDataAtIndex(index); }, coverPage, [&supportedExtensions](const QString &fileName) { return isSupportedImage(fileName, supportedExtensions); });
 }
 
+QStringList FileComic::cbdsPageCandidates(const QString &path, const QStringList &fileNames)
+{
+    const QStringList supportedExtensions = Comic::getSupportedImageLiteralFormats();
+    return YACReaderCbds::pageCandidates(path, fileNames, [&supportedExtensions](const QString &fileName) { return isSupportedImage(fileName, supportedExtensions); });
+}
+
 // DELEGATE methods
 void FileComic::fileExtracted(int index, const QByteArray &rawData)
 {
@@ -637,7 +643,7 @@ void FileComic::process()
             _pageArchiveIndexes.append(page.archiveIndex);
         }
     } else {
-        pageFileNames = filter(YACReaderCbds::pageCandidates(_path, archiveFileNames));
+        pageFileNames = filter(cbdsPageCandidates(_path, archiveFileNames));
         if (YACReaderCbds::isCbds(_path, archiveFileNames)) {
             YACReaderCbds::sortPages(pageFileNames);
         } else {

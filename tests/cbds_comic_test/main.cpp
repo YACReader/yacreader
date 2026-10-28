@@ -27,6 +27,7 @@ private slots:
     void readerShowsOnlyFullSizePagesInOrder();
     void readerAndLibraryAgreeOnPageNumbers();
     void pageOrderIgnoresPathSpelling();
+    void fallsBackWhenImageHasNoPictures();
     void coverAndPageCountForTheLibrary();
     void worksWithoutTheIni();
     void ignoresBrokenAndHugeIni();
@@ -325,6 +326,26 @@ void CbdsComicTest::readerAndLibraryAgreeOnPageNumbers()
     YACReader::InitialComicInfoExtractor secondPage(path, "", 2);
     secondPage.extract();
     QCOMPARE(secondPage.getCoverImage().pixelColor(0, 0).red(), colorOf(result.pages.at(1)).red());
+}
+
+void CbdsComicTest::fallsBackWhenImageHasNoPictures()
+{
+    const QString path = writeFile(dir.filePath("noimages.cbds"),
+                                   zipArchive({ { "ComicBookDS_book.ini", bookIni(2) },
+                                                { "IMAGE/readme.txt", "not a page" },
+                                                { "2.png", image(pageRed(2), 0) },
+                                                { "1.png", image(pageRed(1), 0) } }));
+
+    const OpenResult result = openInReader(path);
+
+    QVERIFY(!result.failed);
+    QCOMPARE(result.pages.size(), 2);
+    QCOMPARE(colorOf(result.pages.first()).red(), pageRed(1));
+
+    YACReader::InitialComicInfoExtractor extractor(path);
+    extractor.extract();
+    QCOMPARE(extractor.getNumPages(), 2);
+    QCOMPARE(extractor.getCoverImage().pixelColor(0, 0).red(), pageRed(1));
 }
 
 void CbdsComicTest::pageOrderIgnoresPathSpelling()

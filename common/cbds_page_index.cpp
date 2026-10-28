@@ -47,7 +47,7 @@ bool YACReaderCbds::isCbds(const QString &path, const QStringList &fileNames)
     return std::any_of(fileNames.cbegin(), fileNames.cend(), isBookIni);
 }
 
-QStringList YACReaderCbds::pageCandidates(const QString &path, const QStringList &fileNames)
+QStringList YACReaderCbds::pageCandidates(const QString &path, const QStringList &fileNames, const ImageFilter &acceptImage)
 {
     if (!isCbds(path, fileNames)) {
         return fileNames;
@@ -60,9 +60,10 @@ QStringList YACReaderCbds::pageCandidates(const QString &path, const QStringList
         }
     }
 
-    // A book without IMAGE/ entries does not follow the known layout, falling back
-    // to every image in the archive is better than refusing to open it.
-    return pages.isEmpty() ? fileNames : pages;
+    // A book without images in IMAGE/ does not follow the known layout, falling
+    // back to every image in the archive is better than refusing to open it.
+    const bool hasImages = acceptImage ? std::any_of(pages.cbegin(), pages.cend(), acceptImage) : !pages.isEmpty();
+    return hasImages ? pages : fileNames;
 }
 
 void YACReaderCbds::sortPages(QStringList &pages)

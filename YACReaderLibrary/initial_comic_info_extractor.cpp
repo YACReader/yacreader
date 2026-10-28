@@ -133,7 +133,7 @@ void InitialComicInfoExtractor::extract()
         _numPages = epub.pageCount;
         coverArchiveIndex = epub.coverArchiveIndex;
     } else {
-        QList<QString> fileNames = FileComic::filter(YACReaderCbds::pageCandidates(_fileSource, order));
+        QList<QString> fileNames = FileComic::filter(FileComic::cbdsPageCandidates(_fileSource, order));
         if (YACReaderCbds::isCbds(_fileSource, order)) {
             YACReaderCbds::sortPages(fileNames);
         } else {
