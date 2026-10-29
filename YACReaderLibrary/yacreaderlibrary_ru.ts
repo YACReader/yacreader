@@ -6,20 +6,80 @@
     <message>
         <location filename="../shortcuts_management/actions_shortcuts_model.cpp" line="74"/>
         <source>None</source>
-        <translation>Никто</translation>
+        <translation>Нет</translation>
     </message>
 </context>
 <context>
     <name>AddLabelDialog</name>
     <message>
+        <location filename="add_label_dialog.cpp" line="8"/>
+        <source>red</source>
+        <translation>Красный</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="9"/>
+        <source>orange</source>
+        <translation>Оранжевый</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="10"/>
+        <source>yellow</source>
+        <translation>Жёлтый</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="11"/>
+        <source>green</source>
+        <translation>Зелёный</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="12"/>
+        <source>cyan</source>
+        <translation>Голубой</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="13"/>
+        <source>blue</source>
+        <translation>Синий</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="14"/>
+        <source>violet</source>
+        <translation>Фиолетовый</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="15"/>
+        <source>purple</source>
+        <translation>Пурпурный</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="16"/>
+        <source>pink</source>
+        <translation>Розовый</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="17"/>
+        <source>white</source>
+        <translation>Белый</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="18"/>
+        <source>light</source>
+        <translation>Светлый</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="19"/>
+        <source>dark</source>
+        <translation>Тёмный</translation>
+    </message>
+    <message>
         <location filename="add_label_dialog.cpp" line="31"/>
         <source>Choose a color:</source>
-        <translation>Выбрать цвет:</translation>
+        <translation>Выберите цвет:</translation>
     </message>
     <message>
         <location filename="add_label_dialog.cpp" line="45"/>
         <source>accept</source>
-        <translation>добавить</translation>
+        <translation>принять</translation>
     </message>
     <message>
         <location filename="add_label_dialog.cpp" line="46"/>
@@ -42,7 +102,7 @@
     <message>
         <location filename="add_library_dialog.cpp" line="64"/>
         <source>Add an existing library</source>
-        <translation>Добавить в существующую библиотеку</translation>
+        <translation>Добавить существующую библиотеку</translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="30"/>
@@ -51,13 +111,13 @@
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="16"/>
-        <source>Comics folder : </source>
-        <translation>Папка комиксов : </translation>
+        <source>Comics folder: </source>
+        <translation>Папка комиксов: </translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="21"/>
-        <source>Library name : </source>
-        <translation>Имя библиотеки : </translation>
+        <source>Library name: </source>
+        <translation>Имя библиотеки: </translation>
     </message>
 </context>
 <context>
@@ -74,13 +134,13 @@
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>Для подключения к Comic Vine вам потребуется ваш личный API ключ. Приобретите его бесплатно вот &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;здесь&lt;/a&gt;</translation>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <translation>Для подключения к Comic Vine вам потребуется ваш личный ключ API. Получите его бесплатно &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;здесь&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="25"/>
         <source>Paste here your Comic Vine API key</source>
-        <translation>Вставьте сюда ваш Comic Vine API ключ</translation>
+        <translation>Вставьте сюда ваш ключ API Comic Vine</translation>
     </message>
 </context>
 <context>
@@ -98,22 +158,22 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>Осветить</translation>
+        <translation>Светлая</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Dark</source>
-        <translation>Темный</translation>
+        <translation>Темная</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Custom</source>
-        <translation>Обычай</translation>
+        <translation>Пользовательская</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
         <source>Remove</source>
-        <translation>Удалять</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
@@ -123,17 +183,17 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>Свет:</translation>
+        <translation>Светлая:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Dark:</source>
-        <translation>Темный:</translation>
+        <translation>Темная:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Custom:</source>
-        <translation>Пользовательский:</translation>
+        <translation>Пользовательская:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
@@ -204,7 +264,7 @@
     <message>
         <location filename="cbl/cbl_entries_view.cpp" line="77"/>
         <source>Find comic ›</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти комикс ›</translation>
     </message>
 </context>
 <context>
@@ -212,159 +272,159 @@
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="36"/>
         <source>Series</source>
-        <translation type="unfinished">Ряд</translation>
+        <translation>Серия</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="38"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="40"/>
         <source>Volume</source>
-        <translation type="unfinished">Объем</translation>
+        <translation>Том</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="42"/>
         <source>Year</source>
-        <translation type="unfinished"></translation>
+        <translation>Год</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="44"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="46"/>
         <location filename="cbl/cbl_entry_detail.cpp" line="147"/>
         <source>ComicVine ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID Comic Vine</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="149"/>
         <source>series and number</source>
-        <translation type="unfinished"></translation>
+        <translation>серия и номер</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="151"/>
         <source>series without the volume, and number</source>
-        <translation type="unfinished"></translation>
+        <translation>серия без тома и номер</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="153"/>
         <source>letters and digits of the series, and number</source>
-        <translation type="unfinished"></translation>
+        <translation>буквы и цифры серии и номер</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="155"/>
         <source>series with its year, and number</source>
-        <translation type="unfinished"></translation>
+        <translation>серия с годом и номер</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="170"/>
         <source>volume %1</source>
-        <translation type="unfinished"></translation>
+        <translation>том %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="201"/>
         <source>Comic in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>Комикс в вашей библиотеке</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="201"/>
         <source>Missing in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует в вашей библиотеке</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="204"/>
         <source>Changed by you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменено вами.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="206"/>
         <source>The entry has this comic.</source>
-        <translation type="unfinished"></translation>
+        <translation>Запись связана с этим комиксом.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="208"/>
         <source>Matched by %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставлено по %1.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="210"/>
         <source>Your library already has this comic as missing. Matched by %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Этот комикс уже отмечен в библиотеке как отсутствующий. Сопоставлено по %1.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="213"/>
         <source>Possible comic %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Возможный комикс %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="215"/>
         <location filename="cbl/cbl_entry_detail.cpp" line="276"/>
         <source>Changed by you: it is imported as missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменено вами: будет импортировано как отсутствующий комикс.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="217"/>
         <source>The comics have the same ComicVine ID.</source>
-        <translation type="unfinished"></translation>
+        <translation>У комиксов одинаковый ID Comic Vine.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="219"/>
         <source>The comic has the same series and number, but its volume or year is different.</source>
-        <translation type="unfinished"></translation>
+        <translation>У комикса та же серия и номер, но другой том или год.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="221"/>
         <source>The comics have the same series and number.</source>
-        <translation type="unfinished"></translation>
+        <translation>У комиксов одинаковая серия и номер.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="222"/>
         <source>Values that are different from the file are in amber.</source>
-        <translation type="unfinished"></translation>
+        <translation>Значения, отличающиеся от файла, выделены янтарным цветом.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="227"/>
         <source>Closest series in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>Наиболее похожие серии в библиотеке</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="231"/>
         <source>Library</source>
-        <translation type="unfinished">Библиотека</translation>
+        <translation>Библиотека</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="259"/>
         <source>Has %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Есть %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="276"/>
         <source>No comic found. Tried: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Комикс не найден. Проверено: %1.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="288"/>
         <source>In the file</source>
-        <translation type="unfinished"></translation>
+        <translation>В файле</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="289"/>
         <source>Entry %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Запись %1 из %2</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="314"/>
         <source>Use this comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать этот комикс</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="314"/>
         <source>Use this missing comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать этот отсутствующий комикс</translation>
     </message>
 </context>
 <context>
@@ -372,109 +432,109 @@
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="67"/>
         <source>‹ All entries</source>
-        <translation type="unfinished"></translation>
+        <translation>‹ Все записи</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="83"/>
         <source>Previous problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущая проблема</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="84"/>
         <source>Next problem</source>
-        <translation type="unfinished"></translation>
+        <translation>Следующая проблема</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="98"/>
         <source>Folders</source>
-        <translation type="unfinished">Папки</translation>
+        <translation>Папки</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="112"/>
         <source>Search the whole library</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать по всей библиотеке</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>Series</source>
-        <translation type="unfinished">Ряд</translation>
+        <translation>Серия</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>No.</source>
-        <translation type="unfinished"></translation>
+        <translation>№</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>Volume</source>
-        <translation type="unfinished">Объем</translation>
+        <translation>Том</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>Year</source>
-        <translation type="unfinished"></translation>
+        <translation>Год</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="162"/>
         <source>Go to the next problem after I choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейти к следующей проблеме после выбора</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="164"/>
         <source>Use this comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать этот комикс</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="178"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="254"/>
         <source>Search in this folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать в этой папке</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="270"/>
         <source>Entry %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Запись %1 из %2</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="279"/>
         <source>Missing: no comic found. Browse or search the library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует: комикс не найден. Просмотрите библиотеку или выполните поиск.</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_find_comic_page.cpp" line="282"/>
         <source>Ambiguous: %n possible comic(s). Browse or search the library.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Неоднозначно: %n возможный комикс. Просмотрите библиотеку или выполните поиск.</numerusform>
+            <numerusform>Неоднозначно: %n возможных комикса. Просмотрите библиотеку или выполните поиск.</numerusform>
+            <numerusform>Неоднозначно: %n возможных комиксов. Просмотрите библиотеку или выполните поиск.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="286"/>
         <source>Browse or search the library to choose another comic.</source>
-        <translation type="unfinished"></translation>
+        <translation>Просмотрите библиотеку или выполните поиск, чтобы выбрать другой комикс.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="290"/>
         <source>Problem %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Проблема %1 из %2</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_find_comic_page.cpp" line="290"/>
         <source>%n problem(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n проблема</numerusform>
+            <numerusform>%n проблемы</numerusform>
+            <numerusform>%n проблем</numerusform>
         </translation>
     </message>
     <message>
@@ -482,12 +542,12 @@
         <location filename="cbl/cbl_find_comic_page.cpp" line="411"/>
         <location filename="cbl/cbl_find_comic_page.cpp" line="416"/>
         <source>Library</source>
-        <translation type="unfinished">Библиотека</translation>
+        <translation>Библиотека</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="360"/>
         <source>Search results</source>
-        <translation type="unfinished"></translation>
+        <translation>Результаты поиска</translation>
     </message>
 </context>
 <context>
@@ -495,166 +555,166 @@
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="181"/>
         <source>Match to library comics — %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставление с комиксами библиотеки — %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="185"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>Применить</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="214"/>
         <source>Close</source>
-        <translation type="unfinished">Закрыть</translation>
+        <translation>Закрыть</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="215"/>
         <source>Skip</source>
-        <translation type="unfinished"></translation>
+        <translation>Пропустить</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="216"/>
         <source>Import</source>
-        <translation type="unfinished">Импортировать</translation>
+        <translation>Импортировать</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="268"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Название:</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="270"/>
         <source>A reading list with this name already exists. Import creates another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Список чтения с таким именем уже существует. При импорте будет создан ещё один.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="297"/>
         <source>Filter entries</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр записей</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="358"/>
         <source>Matching the books of %1 with your library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставление книг из %1 с библиотекой...</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="372"/>
         <source>Matching the entries of %1 with your library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставление записей из %1 с библиотекой...</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="431"/>
         <location filename="cbl/cbl_import_dialog.cpp" line="455"/>
         <source>Match to library comics</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставить с комиксами библиотеки</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_import_dialog.cpp" line="432"/>
         <source>This also gives comics to entries in %n other list(s): %1</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Комиксы также будут связаны с записями в %n другом списке: %1</numerusform>
+            <numerusform>Комиксы также будут связаны с записями в %n других списках: %1</numerusform>
+            <numerusform>Комиксы также будут связаны с записями в %n других списках: %1</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="455"/>
         <source>The changes could not be applied. Nothing was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось применить изменения. Ничего не изменено.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="469"/>
         <source>The file cannot be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удаётся открыть файл.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="472"/>
         <source>The file is damaged (line %1, column %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл повреждён (строка %1, столбец %2).</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="475"/>
         <source>The file is not a reading list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл не является списком чтения.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="481"/>
         <source>The library cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удаётся прочитать библиотеку.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="607"/>
         <source>Import reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт списков чтения</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="607"/>
         <source>The reading list could not be imported. Nothing was written.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось импортировать список чтения. Ничего не записано.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="630"/>
         <source>Import reading lists — %1 (%2 of %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт списков чтения — %1 (%2 из %3)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="632"/>
         <source>Import reading lists — %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт списков чтения — %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="641"/>
         <source>All (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Все (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="642"/>
         <source>Matched (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставленные (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="643"/>
         <source>Ambiguous (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Неоднозначные (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="644"/>
         <source>Missing (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствующие (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="645"/>
         <source>Changed by you (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменённые вами (%1)</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_import_dialog.cpp" line="650"/>
         <source>%1 of %n have a comic</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>С комиксом: %1 из %n</numerusform>
+            <numerusform>С комиксом: %1 из %n</numerusform>
+            <numerusform>С комиксом: %1 из %n</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="672"/>
         <source>Find comic...</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти комикс...</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="676"/>
         <source>Use the original match</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать исходное соответствие</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="679"/>
         <source>Make missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Отметить как отсутствующий</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="679"/>
         <source>Import as missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Импортировать как отсутствующий</translation>
     </message>
 </context>
 <context>
@@ -662,61 +722,61 @@
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="83"/>
         <source>Matched</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставлено</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="85"/>
         <source>Ambiguous</source>
-        <translation type="unfinished"></translation>
+        <translation>Неоднозначно</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="87"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="89"/>
         <source>Changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменено</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="115"/>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation>#</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="117"/>
         <source>In the file</source>
-        <translation type="unfinished"></translation>
+        <translation>В файле</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="119"/>
         <source>Comic in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>Комикс в вашей библиотеке</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="121"/>
         <source>Status</source>
-        <translation type="unfinished">Состояние</translation>
+        <translation>Состояние</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="240"/>
         <source>Already missing in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>Уже отмечен в библиотеке как отсутствующий</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_import_model.cpp" line="244"/>
         <source>%n possible comic(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n возможный комикс</numerusform>
+            <numerusform>%n возможных комикса</numerusform>
+            <numerusform>%n возможных комиксов</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="245"/>
         <source>Not in library</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет в библиотеке</translation>
     </message>
 </context>
 <context>
@@ -724,17 +784,17 @@
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="62"/>
         <source>Match to library comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставить с комиксом библиотеки</translation>
     </message>
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="65"/>
         <source>Loading the library...</source>
-        <translation type="unfinished"></translation>
+        <translation>Загрузка библиотеки...</translation>
     </message>
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="90"/>
         <source>The library cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удаётся прочитать библиотеку.</translation>
     </message>
 </context>
 <context>
@@ -743,17 +803,6 @@
         <location filename="classic_comics_view.cpp" line="105"/>
         <source>Hide comic flow</source>
         <translation>Скрыть Comic Flow</translation>
-    </message>
-</context>
-<context>
-    <name>ComicFilesCoordinator</name>
-    <message>
-        <source>Copying comics...</source>
-        <translation type="obsolete">Скопировать комиксы...</translation>
-    </message>
-    <message>
-        <source>Moving comics...</source>
-        <translation type="obsolete">Переместить комиксы...</translation>
     </message>
 </context>
 <context>
@@ -776,7 +825,7 @@
     <message>
         <location filename="qml/ComicInfoView.qml" line="398"/>
         <source>Locations</source>
-        <translation>Местоположение</translation>
+        <translation>Локации</translation>
     </message>
     <message>
         <location filename="qml/ComicInfoView.qml" line="430"/>
@@ -796,7 +845,7 @@
     <message>
         <location filename="qml/ComicInfoView.qml" line="506"/>
         <source>inker</source>
-        <translation>инкер</translation>
+        <translation>контуровщик</translation>
     </message>
     <message>
         <location filename="qml/ComicInfoView.qml" line="528"/>
@@ -888,12 +937,12 @@
     <message>
         <location filename="db/comic_model.cpp" line="785"/>
         <source>Series</source>
-        <translation>Ряд</translation>
+        <translation>Серия</translation>
     </message>
     <message>
         <location filename="db/comic_model.cpp" line="787"/>
         <source>Volume</source>
-        <translation>Объем</translation>
+        <translation>Том</translation>
     </message>
     <message>
         <location filename="db/comic_model.cpp" line="789"/>
@@ -908,12 +957,12 @@
     <message>
         <location filename="db/comic_model.cpp" line="773"/>
         <source>Pages</source>
-        <translation>Всего страниц</translation>
+        <translation>Страницы</translation>
     </message>
     <message>
         <location filename="db/comic_model.cpp" line="769"/>
         <source>Title</source>
-        <translation>Заголовок</translation>
+        <translation>Название</translation>
     </message>
     <message>
         <location filename="db/comic_model.cpp" line="779"/>
@@ -961,55 +1010,55 @@
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="485"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="601"/>
-        <source>Retrieving tags for : %1</source>
-        <translation>Получение тегов для : %1</translation>
+        <source>Retrieving tags for: %1</source>
+        <translation>Получение тегов для: %1</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="494"/>
         <source>Creating missing comic %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание отсутствующего комикса %1 из %2</translation>
     </message>
     <message numerus="yes">
         <location filename="comic_vine/comic_vine_dialog.cpp" line="560"/>
         <source>Comic Vine did not answer for %n comic(s).</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Comic Vine не ответил для %n комикса.</numerusform>
+            <numerusform>Comic Vine не ответил для %n комиксов.</numerusform>
+            <numerusform>Comic Vine не ответил для %n комиксов.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="comic_vine/comic_vine_dialog.cpp" line="562"/>
         <source>%n missing comic(s) got only the basic data of the volume.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n отсутствующий комикс получил только основные данные тома.</numerusform>
+            <numerusform>%n отсутствующих комикса получили только основные данные тома.</numerusform>
+            <numerusform>%n отсутствующих комиксов получили только основные данные тома.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="comic_vine/comic_vine_dialog.cpp" line="564"/>
         <source>%n missing comic(s) have no cover.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>У %n отсутствующего комикса нет обложки.</numerusform>
+            <numerusform>У %n отсутствующих комиксов нет обложки.</numerusform>
+            <numerusform>У %n отсутствующих комиксов нет обложки.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="568"/>
         <source>Comic Vine allows about 200 requests per hour; try again later for the comics that were not updated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine разрешает около 200 запросов в час; повторите попытку позже для необновлённых комиксов.</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="569"/>
         <source>Try again later for the comics that were not updated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторите попытку позже для необновлённых комиксов.</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="570"/>
         <source>Comic Vine</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="795"/>
@@ -1026,28 +1075,28 @@
         <location filename="comic_vine/comic_vine_dialog.cpp" line="744"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="783"/>
         <source>Looking for volume...</source>
-        <translation>Поиск информации...</translation>
+        <translation>Поиск тома...</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="142"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="690"/>
         <source>comic %1 of %2 - %3</source>
-        <translation>комикс %1 of %2 - %3</translation>
+        <translation>комикс %1 из %2 - %3</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="265"/>
         <source>%1 comics selected</source>
-        <translation>%1 было выбрано</translation>
+        <translation>Выбрано комиксов: %1</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="296"/>
-        <source>Error connecting to ComicVine</source>
-        <translation>Ошибка поключения к ComicVine</translation>
+        <source>Error connecting to Comic Vine</source>
+        <translation>Ошибка подключения к Comic Vine</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="763"/>
         <source>Retrieving volume info...</source>
-        <translation>Получение информации...</translation>
+        <translation>Получение информации о томе...</translation>
     </message>
 </context>
 <context>
@@ -1077,23 +1126,23 @@
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="57"/>
-        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
+        <source>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</source>
         <translation>Создание библиотеки может занять несколько минут. Вы можете остановить процесс и обновить библиотеку позже для завершения задачи.</translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="105"/>
         <source>The selected path does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Выбранный путь отсутствует, либо неверен. Убедитесь , что у вас есть доступ к этой папке</translation>
+        <translation>Выбранный путь не существует или недопустим. Убедитесь, что у вас есть доступ на запись в эту папку</translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="21"/>
-        <source>Comics folder : </source>
-        <translation>Папка комиксов : </translation>
+        <source>Comics folder: </source>
+        <translation>Папка комиксов: </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="26"/>
-        <source>Library Name : </source>
-        <translation>Имя библиотеки:</translation>
+        <source>Library Name: </source>
+        <translation>Имя библиотеки: </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="105"/>
@@ -1114,7 +1163,7 @@
     <message>
         <location filename="delayed_progress_dialog.cpp" line="60"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Отмена</translation>
     </message>
 </context>
 <context>
@@ -1136,13 +1185,13 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>Сочетание клавиш &quot;%1&quot; уже назначено для другой функции</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>Сочетание клавиш «%1» уже назначено для другой функции</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>Чтобы изменить горячую клавишу щелкните дважды по выбранной комбинации клавиш и введите новые сочетания клавиш.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>Чтобы изменить горячую клавишу, щелкните дважды по выбранной комбинации клавиш и введите новые сочетания клавиш.</translation>
     </message>
 </context>
 <context>
@@ -1179,7 +1228,7 @@
     <message>
         <location filename="empty_list_folder_widget.cpp" line="8"/>
         <source>This folder is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Эта папка пуста</translation>
     </message>
 </context>
 <context>
@@ -1200,7 +1249,7 @@
     <message>
         <location filename="empty_special_list.cpp" line="20"/>
         <source>You are not reading anything yet, come on!!</source>
-        <translation>Вы пока ничего не читаете. Может самое время почитать?</translation>
+        <translation>Вы пока ничего не читаете. Может, самое время почитать?</translation>
     </message>
     <message>
         <location filename="empty_special_list.cpp" line="27"/>
@@ -1212,13 +1261,13 @@
     <name>ExportComicsInfoDialog</name>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="14"/>
-        <source>Output file : </source>
-        <translation>Выходной файл (*.ydb) : </translation>
+        <source>Output file: </source>
+        <translation>Выходной файл (*.ydb): </translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="72"/>
         <source>Destination database name</source>
-        <translation>Имя этой базы данных</translation>
+        <translation>Имя базы данных назначения</translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="22"/>
@@ -1233,7 +1282,7 @@
     <message>
         <location filename="export_comics_info_dialog.cpp" line="87"/>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Выбранный путь для импортируемого файла отсутствует, либо неверен. Убедитесь , что у вас есть доступ к этой папке</translation>
+        <translation>Выбранный путь для выходного файла не существует или недопустим. Убедитесь, что у вас есть доступ на запись в эту папку</translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="55"/>
@@ -1243,7 +1292,7 @@
     <message>
         <location filename="export_comics_info_dialog.cpp" line="87"/>
         <source>Problem found while writing</source>
-        <translation>Обнаружена Ошибка записи</translation>
+        <translation>Проблема при записи</translation>
     </message>
 </context>
 <context>
@@ -1251,7 +1300,7 @@
     <message>
         <location filename="export_library_dialog.cpp" line="20"/>
         <source>Cancel</source>
-        <translation>Отменить</translation>
+        <translation>Отмена</translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="16"/>
@@ -1261,17 +1310,17 @@
     <message>
         <location filename="export_library_dialog.cpp" line="78"/>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Выбранный путь для импортируемого файла отсутствует, либо неверен. Убедитесь , что у вас есть доступ к этой папке</translation>
+        <translation>Выбранный путь для выходного файла не существует или недопустим. Убедитесь, что у вас есть доступ на запись в эту папку</translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="12"/>
-        <source>Output folder : </source>
-        <translation>Папка вывода : </translation>
+        <source>Output folder: </source>
+        <translation>Папка вывода: </translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="78"/>
         <source>Problem found while writing</source>
-        <translation>Проблема при написании</translation>
+        <translation>Проблема при записи</translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="59"/>
@@ -1281,7 +1330,7 @@
     <message>
         <location filename="export_library_dialog.cpp" line="83"/>
         <source>Destination directory</source>
-        <translation>Назначенная директория</translation>
+        <translation>Папка назначения</translation>
     </message>
 </context>
 <context>
@@ -1306,13 +1355,6 @@
         <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>Ошибка контрольной суммы CRC на странице (%1): некоторые страницы будут отображаться неправильно</translation>
-    </message>
-</context>
-<context>
-    <name>FolderContentView</name>
-    <message>
-        <source>Continue Reading...</source>
-        <translation type="vanished">Продолжить чтение...</translation>
     </message>
 </context>
 <context>
@@ -1394,22 +1436,6 @@
         <translation>Показать информацию</translation>
     </message>
     <message>
-        <source>Library</source>
-        <translation type="obsolete">Библиотека</translation>
-    </message>
-    <message>
-        <source>Folder</source>
-        <translation type="obsolete">Папка</translation>
-    </message>
-    <message>
-        <source>Favorites</source>
-        <translation type="obsolete">Избранное</translation>
-    </message>
-    <message>
-        <source>Recently added</source>
-        <translation type="obsolete">Недавно добавленные</translation>
-    </message>
-    <message>
         <location filename="grid_comics_view.cpp" line="910"/>
         <source>Manga</source>
         <translation>Манга</translation>
@@ -1445,7 +1471,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="28"/>
         <source>Help</source>
-        <translation>Настройки</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="31"/>
@@ -1477,8 +1503,8 @@
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="16"/>
-        <source>Info database location : </source>
-        <translation>Путь к файлу (*.ydb) : </translation>
+        <source>Info database location: </source>
+        <translation>Путь к файлу (*.ydb): </translation>
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="14"/>
@@ -1495,8 +1521,8 @@
     <name>ImportLibraryDialog</name>
     <message>
         <location filename="import_library_dialog.cpp" line="26"/>
-        <source>Destination folder : </source>
-        <translation>Папка назначения : </translation>
+        <source>Destination folder: </source>
+        <translation>Папка назначения: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="34"/>
@@ -1510,18 +1536,18 @@
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="115"/>
-        <source>Compresed library covers (*.clc)</source>
+        <source>Compressed library covers (*.clc)</source>
         <translation>Сжатая библиотека обложек (*.clc)</translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="22"/>
-        <source>Package location : </source>
-        <translation>Местоположение комплекта : </translation>
+        <source>Package location: </source>
+        <translation>Местоположение комплекта: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="17"/>
-        <source>Library Name : </source>
-        <translation>Имя библиотеки : </translation>
+        <source>Library Name: </source>
+        <translation>Имя библиотеки: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="85"/>
@@ -1543,13 +1569,13 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="319"/>
-        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;YACReaderLibrary сейчас создает библиотеку.&lt;/p&gt;&lt;p&gt; Создание библиотеки может занять несколько минут. Вы можете остановить процесс и обновить библиотеку позже для завершения задачи.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Creating a library could take several minutes. You can stop the process and update the library later to complete the task.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;YACReaderLibrary сейчас создает новую библиотеку.&lt;/p&gt;&lt;p&gt;Создание библиотеки может занять несколько минут. Вы можете остановить процесс и обновить библиотеку позже для завершения задачи.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="169"/>
         <source>Some of the comics being added...</source>
-        <translation>Поиск новых комиксов...</translation>
+        <translation>Добавляются некоторые комиксы...</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="330"/>
@@ -1558,8 +1584,8 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="331"/>
-        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Текущая библиотека обновляется. Для более быстрого обновления в дальнейшем старайтесь почаще обновлять вашу библиотеку после добавления новых комиксов.&lt;/p&gt;&lt;p&gt;Вы можете остановить этот процесс и продолжить обновление этой библиотеки позже.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;The current library is being updated. For faster updates, please update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Текущая библиотека обновляется. Для более быстрого обновления старайтесь почаще обновлять ваши библиотеки.&lt;/p&gt;&lt;p&gt;Вы можете остановить этот процесс и продолжить обновление этой библиотеки позже.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="342"/>
@@ -1578,7 +1604,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="355"/>
-        <source>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Текущая библиотека сканируется на предмет устаревших метаданных XML.&lt;/p&gt;&lt;p&gt;Это необходимо только один раз и только в том случае, если библиотека была создана с помощью YACReaderLibrary 9.8.2 или более ранней версии.&lt;/p&gt;</translation>
     </message>
     <message>
@@ -1592,29 +1618,29 @@
     <message>
         <location filename="library_creator.cpp" line="172"/>
         <source>Unable to create the library data folder: %1. Check folder access and available disk space.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать папку данных библиотеки: %1. Проверьте права доступа и свободное место на диске.</translation>
     </message>
     <message>
         <location filename="library_creator.cpp" line="177"/>
         <source>The library data folder is missing: %1. Restore it or recreate the library before updating.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует папка данных библиотеки: %1. Восстановите её или создайте библиотеку заново перед обновлением.</translation>
     </message>
     <message>
         <location filename="library_creator.cpp" line="225"/>
         <source>The library database is missing: %1. Restore a backup or recreate the library before updating.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует база данных библиотеки: %1. Восстановите резервную копию или создайте библиотеку заново перед обновлением.</translation>
     </message>
     <message>
         <location filename="library_creator.cpp" line="262"/>
         <location filename="library_creator.cpp" line="324"/>
         <source>Unable to start a library database transaction: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось начать транзакцию базы данных библиотеки: %1</translation>
     </message>
     <message>
         <location filename="library_creator.cpp" line="280"/>
         <location filename="library_creator.cpp" line="355"/>
         <source>Unable to commit the library database: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось зафиксировать транзакцию базы данных библиотеки: %1</translation>
     </message>
 </context>
 <context>
@@ -1645,22 +1671,22 @@
     <message>
         <location filename="library_maintenance_dialog.h" line="20"/>
         <source>This library is busy. Wait for maintenance to finish. If it appears stuck, close the application shown in Details, then retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Библиотека занята. Дождитесь окончания обслуживания. Если оно зависло, закройте приложение, указанное в разделе «Подробности», и повторите попытку.</translation>
     </message>
     <message>
         <location filename="library_maintenance_dialog.h" line="21"/>
         <source>An earlier maintenance operation may not have released this library. Before recovering access, make sure no YACReaderLibrary or YACReaderLibraryServer operation is using it, including on another computer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущая операция обслуживания могла не освободить библиотеку. Перед восстановлением доступа убедитесь, что её не использует ни одна операция YACReaderLibrary или YACReaderLibraryServer, в том числе на другом компьютере.</translation>
     </message>
     <message>
         <location filename="library_maintenance_dialog.h" line="25"/>
         <source>Retry</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторить</translation>
     </message>
     <message>
         <location filename="library_maintenance_dialog.h" line="26"/>
         <source>Recover and retry</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстановить доступ и повторить</translation>
     </message>
 </context>
 <context>
@@ -1668,42 +1694,42 @@
     <message>
         <location filename="db/data_base_management.cpp" line="319"/>
         <source>The library lock owner changed. Retry the operation and review the new owner before recovering it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Владелец блокировки библиотеки изменился. Повторите операцию и проверьте нового владельца перед восстановлением доступа.</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="323"/>
         <source>Unable to remove the maintenance lock: %1. Make sure the file is not read-only and that you can write to the library data folder, then retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось удалить блокировку обслуживания: %1. Убедитесь, что файл не доступен только для чтения и у вас есть право записи в папку данных библиотеки, затем повторите попытку.</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="379"/>
         <source>A folder is occupying the maintenance lock file path: %1. Rename or move that folder before retrying.</source>
-        <translation type="unfinished"></translation>
+        <translation>Путь файла блокировки обслуживания занят папкой: %1. Переименуйте или переместите эту папку перед повторной попыткой.</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="381"/>
         <source>Unable to create the library lock file: %1. Check write permissions for the library data folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать файл блокировки библиотеки: %1. Проверьте права записи в папку данных библиотеки.</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="383"/>
         <source>The library data folder is missing: %1. Restore the folder or recreate the library before updating it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует папка данных библиотеки: %1. Восстановите папку или создайте библиотеку заново перед обновлением.</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="389"/>
         <source>The library has a maintenance lock whose owner could not be verified (%1)%2</source>
-        <translation type="unfinished"></translation>
+        <translation>У библиотеки есть блокировка обслуживания, владельца которой не удалось проверить (%1)%2</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="390"/>
         <source>Another maintenance operation is using this library (%1)%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Эту библиотеку использует другая операция обслуживания (%1)%2</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="386"/>
         <source>Unable to create the library lock file: %1. Check available disk space and access to the library data folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать файл блокировки библиотеки: %1. Проверьте свободное место на диске и доступ к папке данных библиотеки.</translation>
     </message>
 </context>
 <context>
@@ -1727,27 +1753,27 @@
         <location filename="library_management_coordinator.cpp" line="105"/>
         <location filename="library_management_coordinator.cpp" line="110"/>
         <source>XML information rescan</source>
-        <translation type="unfinished"></translation>
+        <translation>Повторное сканирование XML</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="134"/>
         <source>Restore recovery</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстановление после сбоя восстановления</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="524"/>
         <source>Library upgrade</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновление библиотеки</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="565"/>
         <source>Library maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>Обслуживание библиотеки</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="582"/>
         <source>Recover library access</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстановить доступ к библиотеке</translation>
     </message>
 </context>
 <context>
@@ -1770,22 +1796,18 @@
     <message>
         <location filename="folder_management_coordinator.cpp" line="217"/>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
-        <translation>Выбранная папка и все ее содержимое будет удалено с вашего жёсткого диска. Вы уверены?</translation>
+        <translation>Выбранная папка и всё её содержимое будут удалены с вашего жёсткого диска. Вы уверены?</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="251"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <source>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
         <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
-        <translation>Возникла проблема при удалении выбранных папок. Пожалуйста, проверьте права на запись и убедитесь что другие приложения не используют эти папки или файлы.</translation>
-    </message>
-    <message>
-        <source>Remove and delete metadata</source>
-        <translation type="vanished">Удаление метаданных</translation>
+        <translation>Возникла проблема при удалении выбранных папок. Пожалуйста, проверьте права на запись и убедитесь, что другие приложения не используют эти папки или файлы в них.</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="215"/>
         <source>Old library</source>
-        <translation>Библиотека из старой версии YACreader</translation>
+        <translation>Старая библиотека</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="210"/>
@@ -1805,22 +1827,22 @@
     <message>
         <location filename="comic_management_coordinator.cpp" line="250"/>
         <source>Moving comics...</source>
-        <translation>Переместить комиксы...</translation>
+        <translation>Перемещение комиксов...</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="234"/>
         <source>Copying comics...</source>
-        <translation>Скопировать комиксы...</translation>
+        <translation>Копирование комиксов...</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="200"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>Библиотека &apos;%1&apos; больше не доступна. Вы хотите удалить ее?</translation>
+        <translation>Библиотека «%1» больше не доступна. Вы хотите удалить её?</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="440"/>
-        <source>Do you want remove </source>
-        <translation>Вы хотите удалить библиотеку </translation>
+        <source>Do you want to remove the library &apos;%1&apos;?</source>
+        <translation>Вы хотите удалить библиотеку «%1»?</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="209"/>
@@ -1830,7 +1852,7 @@
     <message>
         <location filename="library_management_coordinator.cpp" line="216"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>Библиотека &apos;%1&apos; была создана старой версией YACReaderLibrary. Она должна быть вновь создана. Вы хотите создать библиотеку сейчас?</translation>
+        <translation>Библиотека «%1» была создана старой версией YACReaderLibrary. Она должна быть создана заново. Вы хотите создать библиотеку сейчас?</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="436"/>
@@ -1841,14 +1863,14 @@
         <location filename="library_management_coordinator.cpp" line="486"/>
         <source>You are adding too many libraries.
 
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
 
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</source>
         <translation>Вы добавляете слишком много библиотек.
 
 Вероятно, вам нужна только одна библиотека в папке комиксов верхнего уровня, вы можете просматривать любые подпапки, используя раздел папок на левой боковой панели.
 
-YACReaderLibrary не помешает вам создать больше библиотек, но вы должны иметь не большое количество библиотек.</translation>
+YACReaderLibrary не помешает вам создать больше библиотек, но вам следует ограничить их количество.</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="627"/>
@@ -1858,23 +1880,23 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="comic_management_coordinator.cpp" line="375"/>
         <source>Assign comics numbers</source>
-        <translation>Порядковый номер</translation>
+        <translation>Назначить номера комиксам</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="134"/>
         <location filename="folder_management_coordinator.cpp" line="146"/>
         <location filename="folder_management_coordinator.cpp" line="200"/>
-        <source>Please, select a folder first</source>
+        <source>Please select a folder first</source>
         <translation>Пожалуйста, сначала выберите папку</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="199"/>
         <source>Library not available</source>
-        <translation>Библиотека не доступна</translation>
+        <translation>Библиотека недоступна</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="919"/>
-        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
+        <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
         <translation>Возникла проблема при удалении выбранных комиксов. Пожалуйста, проверьте права на запись для выбранных файлов или содержащую их папку.</translation>
     </message>
     <message>
@@ -1895,12 +1917,12 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="library_management_coordinator.cpp" line="492"/>
         <source>Library name already exists</source>
-        <translation>Имя папки уже используется</translation>
+        <translation>Имя библиотеки уже существует</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="493"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>Уже существует другая папка с именем &apos;%1&apos;.</translation>
+        <translation>Уже существует другая библиотека с именем «%1».</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="537"/>
@@ -1910,8 +1932,8 @@ YACReaderLibrary не помешает вам создать больше биб
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="376"/>
-        <source>Assign numbers starting in:</source>
-        <translation>Назначить порядковый номер начиная с:</translation>
+        <source>Assign numbers starting at:</source>
+        <translation>Назначить номера, начиная с:</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="184"/>
@@ -1940,7 +1962,7 @@ YACReaderLibrary не помешает вам создать больше биб
         <location filename="comic_management_coordinator.cpp" line="516"/>
         <location filename="folder_management_coordinator.cpp" line="347"/>
         <source>Error saving cover</source>
-        <translation>Не удалось сохранить обложку.</translation>
+        <translation>Не удалось сохранить обложку</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="484"/>
@@ -1953,31 +1975,31 @@ YACReaderLibrary не помешает вам создать больше биб
         <location filename="comic_management_coordinator.cpp" line="598"/>
         <location filename="comic_management_coordinator.cpp" line="631"/>
         <source>Match to library comic</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставить с комиксом библиотеки</translation>
     </message>
     <message numerus="yes">
         <location filename="comic_management_coordinator.cpp" line="599"/>
         <source>This also gives the comic to entries in %n other list(s): %1</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Комикс также будет связан с записями в %n другом списке: %1</numerusform>
+            <numerusform>Комикс также будет связан с записями в %n других списках: %1</numerusform>
+            <numerusform>Комикс также будет связан с записями в %n других списках: %1</numerusform>
         </translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="632"/>
         <source>The comic could not be matched. Nothing was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сопоставить комикс. Ничего не изменено.</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="817"/>
         <source>The selected missing comics will be removed from this folder. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбранные отсутствующие комиксы будут удалены из этой папки. Вы уверены?</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="819"/>
         <source>The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбранные комиксы будут удалены с диска, а выбранные отсутствующие комиксы — из этой папки. Вы уверены?</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="821"/>
@@ -1999,12 +2021,12 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="comic_management_coordinator.cpp" line="872"/>
         <source>Remove the comics from Reading? Their reading progress will be reset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Убрать комиксы из раздела «Читаю»? Прогресс чтения будет сброшен.</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="875"/>
         <source>The comics will be removed from Favorites. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Комиксы будут убраны из избранного. Вы уверены?</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="882"/>
@@ -2025,41 +2047,41 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="library_window.cpp" line="526"/>
         <source>Edit smart list...</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить умный список...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="527"/>
         <source>Delete smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить умный список</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="529"/>
         <location filename="library_window.cpp" line="534"/>
         <location filename="library_window.cpp" line="548"/>
         <source>New folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая папка...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="530"/>
         <location filename="library_window.cpp" line="536"/>
         <location filename="library_window.cpp" line="550"/>
         <source>Move to folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить в папку...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="535"/>
         <source>Rename folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Переименовать папку...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="544"/>
         <source>Match to library comics...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставить с комиксами библиотеки...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="546"/>
         <source>Export reading list...</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортировать список чтения...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="814"/>
@@ -2074,7 +2096,7 @@ YACReaderLibrary не помешает вам создать больше биб
     <message>
         <location filename="library_window.cpp" line="858"/>
         <source>Save as smart list…</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранить как умный список…</translation>
     </message>
     <message>
         <location filename="search_filters_menu.cpp" line="12"/>
@@ -2105,22 +2127,6 @@ YACReaderLibrary не помешает вам создать больше биб
         <location filename="search_filters_menu.cpp" line="31"/>
         <source>Search syntax…</source>
         <translation>Синтаксис поиска…</translation>
-    </message>
-    <message>
-        <source>A repair of this library is already running (%1). Wait for it to finish.</source>
-        <translation type="vanished">Восстановление этой библиотеки уже выполняется (%1). Дождитесь его завершения.</translation>
-    </message>
-    <message>
-        <source>The library is locked by a repair that did not finish.</source>
-        <translation type="vanished">Библиотека заблокирована незавершённым восстановлением.</translation>
-    </message>
-    <message>
-        <source>The library is locked by a repair started by %1.</source>
-        <translation type="vanished">Библиотека заблокирована восстановлением, запущенным %1.</translation>
-    </message>
-    <message>
-        <source>If you are sure that no other repair is running, the lock can be removed. Remove the lock and continue?</source>
-        <translation type="vanished">Если вы уверены, что никакое другое восстановление не выполняется, блокировку можно снять. Снять блокировку и продолжить?</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="700"/>
@@ -2219,10 +2225,6 @@ Folder: %1</source>
         <translation>Текущая база данных библиотеки повреждена. Всё равно восстановить выбранную резервную копию?</translation>
     </message>
     <message>
-        <source>The library maintenance lock may be stale. Remove it and retry?</source>
-        <translation type="vanished">Файл блокировки обслуживания библиотеки может быть устаревшим. Удалить его и повторить попытку?</translation>
-    </message>
-    <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="163"/>
         <source>
 
@@ -2259,7 +2261,7 @@ Restart YACReaderLibrary before attempting recovery again.</source>
     <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="211"/>
         <source>Repairing library database...</source>
-        <translation>Восстановление базы данных библиотеки...</translation>
+        <translation>Исправление базы данных библиотеки...</translation>
     </message>
     <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="47"/>
@@ -2270,18 +2272,14 @@ Restart YACReaderLibrary before attempting recovery again.</source>
         <translation>Восстановление базы данных библиотеки</translation>
     </message>
     <message>
-        <source>Another maintenance operation is currently using this library. Try again after it finishes.</source>
-        <translation type="vanished">Сейчас эту библиотеку использует другая операция обслуживания. Повторите попытку после её завершения.</translation>
-    </message>
-    <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="48"/>
         <source>Check the database of library &apos;%1&apos; and attempt to repair it if needed? Existing backups will not be changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить базу данных библиотеки &apos;%1&apos; и при необходимости попытаться исправить её? Существующие резервные копии не будут изменены.</translation>
     </message>
     <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="51"/>
         <source>Check and repair</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить и исправить</translation>
     </message>
     <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="239"/>
@@ -2344,11 +2342,6 @@ You can restore a backup from the Library menu or recreate the library.</source>
 Можно восстановить резервную копию из меню «Библиотека» или создать библиотеку заново.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="440"/>
-        <source> library?</source>
-        <translation>?</translation>
-    </message>
-    <message>
         <location filename="library_management_coordinator.cpp" line="439"/>
         <source>Are you sure?</source>
         <translation>Вы уверены?</translation>
@@ -2376,570 +2369,562 @@ Missing files: %3</source>
 <context>
     <name>LibraryWindowActions</name>
     <message>
-        <location filename="library_window_actions.cpp" line="47"/>
+        <location filename="library_window_actions.cpp" line="45"/>
         <source>Create a new library</source>
         <translation>Создать новую библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="52"/>
+        <location filename="library_window_actions.cpp" line="50"/>
         <source>Open an existing library</source>
         <translation>Открыть существующую библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="56"/>
-        <location filename="library_window_actions.cpp" line="57"/>
+        <location filename="library_window_actions.cpp" line="54"/>
+        <location filename="library_window_actions.cpp" line="55"/>
         <source>Export comics info</source>
         <translation>Экспортировать информацию комикса</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="61"/>
-        <location filename="library_window_actions.cpp" line="62"/>
+        <location filename="library_window_actions.cpp" line="59"/>
+        <location filename="library_window_actions.cpp" line="60"/>
         <source>Import comics info</source>
         <translation>Импортировать информацию комикса</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="66"/>
+        <location filename="library_window_actions.cpp" line="64"/>
         <source>Pack covers</source>
         <translation>Запаковать обложки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="67"/>
+        <location filename="library_window_actions.cpp" line="65"/>
         <source>Pack the covers of the selected library</source>
         <translation>Запаковать обложки выбранной библиотеки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="71"/>
+        <location filename="library_window_actions.cpp" line="69"/>
         <source>Unpack covers</source>
         <translation>Распаковать обложки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="72"/>
+        <location filename="library_window_actions.cpp" line="70"/>
         <source>Unpack a catalog</source>
         <translation>Распаковать каталог</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="76"/>
+        <location filename="library_window_actions.cpp" line="74"/>
         <source>Update library</source>
         <translation>Обновить библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="77"/>
+        <location filename="library_window_actions.cpp" line="75"/>
         <source>Update current library</source>
         <translation>Обновить эту библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="81"/>
+        <location filename="library_window_actions.cpp" line="79"/>
         <source>Back up library database</source>
         <translation>Создать резервную копию базы данных</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="82"/>
+        <location filename="library_window_actions.cpp" line="80"/>
         <source>Create a backup of the current library database</source>
         <translation>Создать резервную копию текущей базы данных библиотеки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="86"/>
+        <location filename="library_window_actions.cpp" line="84"/>
         <source>Restore library database backup</source>
         <translation>Восстановить резервную копию базы данных</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="87"/>
+        <location filename="library_window_actions.cpp" line="85"/>
         <source>Restore the current library database from a backup</source>
         <translation>Восстановить текущую базу данных библиотеки из резервной копии</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="91"/>
+        <location filename="library_window_actions.cpp" line="89"/>
         <source>Repair library database...</source>
-        <translation type="unfinished"></translation>
+        <translation>Исправить базу данных библиотеки...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="92"/>
+        <location filename="library_window_actions.cpp" line="90"/>
         <source>Check the current library database and attempt to repair any damage</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверить текущую базу данных библиотеки и попытаться исправить повреждения</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="96"/>
+        <location filename="library_window_actions.cpp" line="94"/>
         <source>Recover library access...</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстановить доступ к библиотеке...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="97"/>
+        <location filename="library_window_actions.cpp" line="95"/>
         <source>Recover access after an interrupted library maintenance operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстановить доступ после прерванного обслуживания библиотеки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="101"/>
+        <location filename="library_window_actions.cpp" line="99"/>
         <location filename="import_widget.cpp" line="366"/>
         <source>Repair covers and comic info</source>
         <translation>Восстановить обложки и сведения о комиксах</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="102"/>
+        <location filename="library_window_actions.cpp" line="100"/>
         <source>Retry comics with missing covers or incomplete information</source>
         <translation>Повторно обработать комиксы с отсутствующими обложками или неполными сведениями</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="106"/>
+        <location filename="library_window_actions.cpp" line="104"/>
         <source>Rename library</source>
         <translation>Переименовать библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="107"/>
+        <location filename="library_window_actions.cpp" line="105"/>
         <source>Rename current library</source>
         <translation>Переименовать эту библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="111"/>
+        <location filename="library_window_actions.cpp" line="109"/>
         <source>Remove library</source>
         <translation>Удалить библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="112"/>
+        <location filename="library_window_actions.cpp" line="110"/>
         <source>Remove current library from your collection</source>
         <translation>Удалить эту библиотеку из своей коллекции</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="116"/>
+        <location filename="library_window_actions.cpp" line="114"/>
         <source>Rescan library for XML info</source>
         <translation>Повторное сканирование библиотеки для получения информации XML</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="117"/>
-        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
+        <location filename="library_window_actions.cpp" line="115"/>
+        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files.</source>
         <translation>Пытается найти информацию XML, встроенную в файлы комиксов. Это необходимо делать только в том случае, если библиотека была создана с помощью версии 9.8.2 или более ранней, или если вы используете стороннее программное обеспечение для встраивания информации XML в файлы.</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="121"/>
+        <location filename="library_window_actions.cpp" line="119"/>
         <source>Open library folder...</source>
         <translation>Открыть папку библиотеки...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="122"/>
+        <location filename="library_window_actions.cpp" line="120"/>
         <source>Open the root folder of the current library</source>
         <translation>Открыть корневую папку текущей библиотеки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="126"/>
+        <location filename="library_window_actions.cpp" line="124"/>
         <source>Show library info</source>
         <translation>Показать информацию о библиотеке</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="127"/>
+        <location filename="library_window_actions.cpp" line="125"/>
         <source>Show information about the current library</source>
         <translation>Показать информацию о текущей библиотеке</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="131"/>
+        <location filename="library_window_actions.cpp" line="129"/>
         <source>Open current comic</source>
         <translation>Открыть выбранный комикс</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="132"/>
-        <source>Open current comic on YACReader</source>
+        <location filename="library_window_actions.cpp" line="130"/>
+        <source>Open current comic in YACReader</source>
         <translation>Открыть комикс в YACReader</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="136"/>
+        <location filename="library_window_actions.cpp" line="134"/>
         <source>Save selected covers to...</source>
         <translation>Сохранить выбранные обложки в...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="137"/>
+        <location filename="library_window_actions.cpp" line="135"/>
         <source>Save covers of the selected comics as JPG files</source>
         <translation>Сохранить обложки выбранных комиксов как JPG файлы</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="141"/>
-        <location filename="library_window_actions.cpp" line="277"/>
+        <location filename="library_window_actions.cpp" line="139"/>
+        <location filename="library_window_actions.cpp" line="275"/>
         <source>Set as read</source>
         <translation>Отметить как прочитано</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="142"/>
+        <location filename="library_window_actions.cpp" line="140"/>
         <source>Set comic as read</source>
         <translation>Отметить комикс как прочитано</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="146"/>
-        <location filename="library_window_actions.cpp" line="282"/>
+        <location filename="library_window_actions.cpp" line="144"/>
+        <location filename="library_window_actions.cpp" line="280"/>
         <source>Set as unread</source>
         <translation>Отметить как не прочитано</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="147"/>
+        <location filename="library_window_actions.cpp" line="145"/>
         <source>Set comic as unread</source>
         <translation>Отметить комикс как не прочитано</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="151"/>
-        <location filename="library_window_actions.cpp" line="297"/>
+        <location filename="library_window_actions.cpp" line="149"/>
+        <location filename="library_window_actions.cpp" line="295"/>
         <source>manga</source>
         <translation>манга</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="152"/>
+        <location filename="library_window_actions.cpp" line="150"/>
         <source>Set issue as manga</source>
         <translation>Установить выпуск как мангу</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="156"/>
-        <location filename="library_window_actions.cpp" line="302"/>
+        <location filename="library_window_actions.cpp" line="154"/>
+        <location filename="library_window_actions.cpp" line="300"/>
         <source>comic</source>
         <translation>комикс</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="157"/>
+        <location filename="library_window_actions.cpp" line="155"/>
         <source>Set issue as normal</source>
-        <translation>Установите проблему как обычно</translation>
+        <translation>Установить выпуск как обычный комикс</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="161"/>
+        <location filename="library_window_actions.cpp" line="159"/>
         <source>western manga</source>
-        <translation>вестерн манга</translation>
+        <translation>западная манга</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="162"/>
+        <location filename="library_window_actions.cpp" line="160"/>
         <source>Set issue as western manga</source>
         <translation>Установить выпуск как западную мангу</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="167"/>
-        <location filename="library_window_actions.cpp" line="312"/>
+        <location filename="library_window_actions.cpp" line="165"/>
+        <location filename="library_window_actions.cpp" line="310"/>
         <source>web comic</source>
         <translation>веб-комикс</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="168"/>
+        <location filename="library_window_actions.cpp" line="166"/>
         <source>Set issue as web comic</source>
         <translation>Установить выпуск как веб-комикс</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="173"/>
-        <location filename="library_window_actions.cpp" line="317"/>
+        <location filename="library_window_actions.cpp" line="171"/>
+        <location filename="library_window_actions.cpp" line="315"/>
         <source>yonkoma</source>
-        <translation>йонкома</translation>
+        <translation>ёнкома</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="174"/>
+        <location filename="library_window_actions.cpp" line="172"/>
         <source>Set issue as yonkoma</source>
-        <translation>Установить проблему как йонкома</translation>
+        <translation>Установить выпуск как ёнкома</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="178"/>
+        <location filename="library_window_actions.cpp" line="176"/>
         <source>Show/Hide marks</source>
-        <translation>Показать/Спрятать пометки</translation>
+        <translation>Показать/скрыть пометки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="179"/>
+        <location filename="library_window_actions.cpp" line="177"/>
         <source>Show or hide read marks</source>
-        <translation>Показать или спрятать отметку прочтено</translation>
+        <translation>Показать или скрыть отметки о прочтении</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="185"/>
+        <location filename="library_window_actions.cpp" line="183"/>
         <source>Show/Hide recent indicator</source>
-        <translation>Показать/скрыть индикатор последних событий</translation>
+        <translation>Показать/скрыть индикатор недавно добавленных</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="186"/>
+        <location filename="library_window_actions.cpp" line="184"/>
         <source>Show or hide recent indicator</source>
-        <translation>Показать или скрыть недавний индикатор</translation>
+        <translation>Показать или скрыть индикатор недавно добавленных</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="193"/>
-        <location filename="library_window_actions.cpp" line="194"/>
+        <location filename="library_window_actions.cpp" line="191"/>
+        <location filename="library_window_actions.cpp" line="192"/>
         <source>Fullscreen mode on/off</source>
         <translation>Полноэкранный режим включить/выключить</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="199"/>
+        <location filename="library_window_actions.cpp" line="197"/>
         <source>Help, About YACReader</source>
-        <translation>О программе</translation>
+        <translation>Справка, о программе YACReader</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="203"/>
+        <location filename="library_window_actions.cpp" line="201"/>
         <source>Add new folder</source>
         <translation>Добавить новую папку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="206"/>
+        <location filename="library_window_actions.cpp" line="204"/>
         <source>Add new folder to the current library</source>
         <translation>Добавить новую папку в текущую библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="208"/>
+        <location filename="library_window_actions.cpp" line="206"/>
         <source>Rename folder</source>
         <translation>Переименовать папку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="209"/>
+        <location filename="library_window_actions.cpp" line="207"/>
         <source>Rename the current folder on disk and in the library</source>
         <translation>Переименовать текущую папку на диске и в библиотеке</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="211"/>
+        <location filename="library_window_actions.cpp" line="209"/>
         <source>Delete folder</source>
         <translation>Удалить папку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="214"/>
+        <location filename="library_window_actions.cpp" line="212"/>
         <source>Delete current folder from disk</source>
         <translation>Удалить выбранную папку с жёсткого диска</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="219"/>
+        <location filename="library_window_actions.cpp" line="217"/>
         <source>Select root node</source>
-        <translation>Домашняя папка</translation>
+        <translation>Выбрать корневой узел</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="222"/>
+        <location filename="library_window_actions.cpp" line="220"/>
         <source>Expand all nodes</source>
         <translation>Раскрыть все папки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="227"/>
+        <location filename="library_window_actions.cpp" line="225"/>
         <source>Collapse all nodes</source>
         <translation>Свернуть все папки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="232"/>
+        <location filename="library_window_actions.cpp" line="230"/>
         <source>Show options dialog</source>
         <translation>Настройки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="237"/>
+        <location filename="library_window_actions.cpp" line="235"/>
         <source>Show comics server options dialog</source>
         <translation>Настройки сервера YACReader</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="241"/>
-        <location filename="library_window_actions.cpp" line="242"/>
+        <location filename="library_window_actions.cpp" line="239"/>
+        <location filename="library_window_actions.cpp" line="240"/>
         <source>Change between comics views</source>
-        <translation>Изменение внешнего вида потока комиксов</translation>
+        <translation>Переключение между видами комиксов</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="250"/>
+        <location filename="library_window_actions.cpp" line="248"/>
         <source>Open folder...</source>
         <translation>Открыть папку...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="255"/>
-        <location filename="library_window_actions.cpp" line="329"/>
+        <location filename="library_window_actions.cpp" line="253"/>
+        <location filename="library_window_actions.cpp" line="327"/>
         <source>Rename files...</source>
         <oldsource>Organize files</oldsource>
         <translation>Переименовать файлы...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="261"/>
-        <location filename="library_window_actions.cpp" line="335"/>
+        <location filename="library_window_actions.cpp" line="259"/>
+        <location filename="library_window_actions.cpp" line="333"/>
         <source>Organize into folders...</source>
         <translation>Разложить по папкам...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="267"/>
+        <location filename="library_window_actions.cpp" line="265"/>
         <source>Set as uncompleted</source>
         <translation>Отметить как не завершено</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="272"/>
+        <location filename="library_window_actions.cpp" line="270"/>
         <source>Set as completed</source>
         <translation>Отметить как завершено</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="287"/>
+        <location filename="library_window_actions.cpp" line="285"/>
         <source>Set custom cover</source>
-        <translation>Установить собственную обложку</translation>
+        <translation>Установить пользовательскую обложку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="292"/>
+        <location filename="library_window_actions.cpp" line="290"/>
         <source>Delete custom cover</source>
         <translation>Удалить пользовательскую обложку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="307"/>
+        <location filename="library_window_actions.cpp" line="305"/>
         <source>western manga (left to right)</source>
         <translation>западная манга (слева направо)</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="324"/>
+        <location filename="library_window_actions.cpp" line="322"/>
         <source>Open containing folder...</source>
-        <translation>Открыть выбранную папку...</translation>
+        <translation>Открыть папку, содержащую комикс...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="417"/>
+        <location filename="library_window_actions.cpp" line="415"/>
         <source>New reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый список чтения</translation>
     </message>
     <message>
-        <source>Reset comic rating</source>
-        <translation type="vanished">Сбросить рейтинг комикса</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="347"/>
+        <location filename="library_window_actions.cpp" line="345"/>
         <source>Select all comics</source>
         <translation>Выбрать все комиксы</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="352"/>
+        <location filename="library_window_actions.cpp" line="350"/>
         <source>Edit</source>
         <translation>Редактировать информацию</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="357"/>
+        <location filename="library_window_actions.cpp" line="355"/>
         <source>Assign current order to comics</source>
-        <translation>Назначить порядковый номер</translation>
+        <translation>Назначить комиксам номера по текущему порядку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="362"/>
+        <location filename="library_window_actions.cpp" line="360"/>
         <source>Update cover</source>
         <translation>Обновить обложки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="368"/>
+        <location filename="library_window_actions.cpp" line="366"/>
         <source>Delete selected comics</source>
-        <translation>Удалить выбранное</translation>
+        <translation>Удалить выбранные комиксы</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="373"/>
+        <location filename="library_window_actions.cpp" line="371"/>
         <source>Delete metadata from selected comics</source>
         <translation>Удалить метаданные из выбранных комиксов</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="380"/>
+        <location filename="library_window_actions.cpp" line="378"/>
         <source>Download tags from Comic Vine</source>
         <translation>Скачать теги из Comic Vine</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="383"/>
+        <location filename="library_window_actions.cpp" line="381"/>
         <source>Focus search line</source>
-        <translation>Строка поиска фокуса</translation>
+        <translation>Перейти к строке поиска</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="389"/>
+        <location filename="library_window_actions.cpp" line="387"/>
         <source>Focus comics view</source>
-        <translation>Просмотр комиксов в фокусе</translation>
+        <translation>Перейти к просмотру комиксов</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="394"/>
+        <location filename="library_window_actions.cpp" line="392"/>
         <source>Edit shortcuts</source>
         <translation>Редактировать горячие клавиши</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="400"/>
+        <location filename="library_window_actions.cpp" line="398"/>
         <source>&amp;Quit</source>
-        <translation>&amp;Qкостюм</translation>
+        <translation>&amp;Выход</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="407"/>
+        <location filename="library_window_actions.cpp" line="405"/>
         <source>Update folder</source>
         <translation>Обновить папку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="409"/>
+        <location filename="library_window_actions.cpp" line="407"/>
         <source>Update current folder</source>
         <translation>Обновить выбранную папку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="413"/>
+        <location filename="library_window_actions.cpp" line="411"/>
         <source>Scan legacy XML metadata</source>
         <translation>Сканировать устаревшие метаданные XML</translation>
     </message>
     <message>
-        <source>Add new reading list</source>
-        <translation type="vanished">Создать новый список чтения</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="420"/>
+        <location filename="library_window_actions.cpp" line="418"/>
         <source>Add a new reading list to the current library</source>
-        <translation>Создать новый список чтения</translation>
+        <translation>Создать новый список чтения в текущей библиотеке</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="424"/>
+        <location filename="library_window_actions.cpp" line="422"/>
         <source>New smart list...</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый умный список...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="427"/>
+        <location filename="library_window_actions.cpp" line="425"/>
         <source>Add a saved search to the current library</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить сохранённый поиск в текущую библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="430"/>
+        <location filename="library_window_actions.cpp" line="428"/>
         <source>New folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая папка...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="433"/>
+        <location filename="library_window_actions.cpp" line="431"/>
         <source>Add a folder for reading lists or smart lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить папку для списков чтения или умных списков</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="436"/>
+        <location filename="library_window_actions.cpp" line="434"/>
         <source>Import reading lists...</source>
-        <translation type="unfinished"></translation>
+        <translation>Импортировать списки чтения...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="439"/>
+        <location filename="library_window_actions.cpp" line="437"/>
         <source>Import CBL reading lists into the current library</source>
-        <translation type="unfinished"></translation>
+        <translation>Импортировать списки чтения CBL в текущую библиотеку</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="442"/>
+        <location filename="library_window_actions.cpp" line="440"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Создать</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="443"/>
+        <location filename="library_window_actions.cpp" line="441"/>
         <source>Add or import reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Добавить или импортировать списки чтения</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="452"/>
+        <location filename="library_window_actions.cpp" line="450"/>
         <source>Remove reading list</source>
         <translation>Удалить список чтения</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="455"/>
+        <location filename="library_window_actions.cpp" line="453"/>
         <source>Remove current reading list from the library</source>
-        <translation>Удалить выбранный ярлык/список чтения</translation>
+        <translation>Удалить текущий список чтения из библиотеки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="457"/>
+        <location filename="library_window_actions.cpp" line="455"/>
         <source>Add new label</source>
         <translation>Создать новый ярлык</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="460"/>
+        <location filename="library_window_actions.cpp" line="458"/>
         <source>Add a new label to this library</source>
-        <translation>Создать новый ярлык</translation>
+        <translation>Создать новый ярлык в этой библиотеке</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="462"/>
+        <location filename="library_window_actions.cpp" line="460"/>
         <source>Rename selected list</source>
         <translation>Переименовать выбранный список</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="465"/>
+        <location filename="library_window_actions.cpp" line="463"/>
         <source>Rename any selected labels or lists</source>
-        <translation>Переименовать выбранный ярлык/список чтения</translation>
+        <translation>Переименовать любые выбранные ярлыки или списки</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="468"/>
+        <location filename="library_window_actions.cpp" line="466"/>
         <source>Add to...</source>
         <translation>Добавить в...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="470"/>
+        <location filename="library_window_actions.cpp" line="468"/>
         <source>Favorites</source>
         <translation>Избранное</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="473"/>
+        <location filename="library_window_actions.cpp" line="471"/>
         <source>Add selected comics to favorites list</source>
         <translation>Добавить выбранные комиксы в список избранного</translation>
     </message>
     <message>
         <location filename="qml/ComicGridDelegate.qml" line="318"/>
-        <location filename="library_window_actions.cpp" line="341"/>
+        <location filename="library_window_actions.cpp" line="339"/>
         <source>Reset rating</source>
         <translation>Сбросить рейтинг</translation>
     </message>
@@ -2968,7 +2953,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="42"/>
-        <source>4koma (top to botom)</source>
+        <source>4koma (top to bottom)</source>
         <translation>4кома (сверху вниз)</translation>
     </message>
     <message>
@@ -2977,7 +2962,7 @@ Missing files: %3</source>
         <location filename="library_window_menus.cpp" line="347"/>
         <location filename="library_window_menus.cpp" line="441"/>
         <source>Set type</source>
-        <translation>Тип установки</translation>
+        <translation>Задать тип</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="167"/>
@@ -2997,14 +2982,14 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_menus.cpp" line="255"/>
         <source>Match to library comic...</source>
-        <translation type="unfinished"></translation>
+        <translation>Сопоставить с комиксом библиотеки...</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="261"/>
         <location filename="library_window_menus.cpp" line="327"/>
         <location filename="library_window_menus.cpp" line="427"/>
         <source>Track missing issues...</source>
-        <translation type="unfinished"></translation>
+        <translation>Отслеживать недостающие выпуски...</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="312"/>
@@ -3060,7 +3045,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_menus.cpp" line="325"/>
         <source>Set custom cover</source>
-        <translation>Установить собственную обложку</translation>
+        <translation>Установить пользовательскую обложку</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="281"/>
@@ -3115,17 +3100,17 @@ Missing files: %3</source>
     <message>
         <location filename="move_to_folder_dialog.cpp" line="16"/>
         <source>Move to folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить в папку</translation>
     </message>
     <message>
         <location filename="move_to_folder_dialog.cpp" line="43"/>
         <source>Top level</source>
-        <translation type="unfinished"></translation>
+        <translation>Верхний уровень</translation>
     </message>
     <message>
         <location filename="move_to_folder_dialog.cpp" line="56"/>
         <source>Move &quot;%1&quot; to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить «%1» в:</translation>
     </message>
 </context>
 <context>
@@ -3133,27 +3118,27 @@ Missing files: %3</source>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="13"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая папка</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="16"/>
         <source>Reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Списки чтения</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="17"/>
         <source>Smart lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Умные списки</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="26"/>
         <source>Folder name:</source>
-        <translation type="unfinished">Имя папки:</translation>
+        <translation>Имя папки:</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="27"/>
         <source>For:</source>
-        <translation type="unfinished"></translation>
+        <translation>Для:</translation>
     </message>
 </context>
 <context>
@@ -3170,8 +3155,8 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Вы можете создать библиотеку в любой папке, YACReaderLibrary будет импортировать все комиксы и папки из этой папки. Если вы уже ранее создавали библиотеки, их можно будет открыть.&lt; / p &gt; &lt;p&gt;Не забывайте, что Вы можете использовать YACReader в качестве отдельного приложения для чтения комиксов на вашем компьютере.&lt;/п&gt;</translation>
+        <source>&lt;p&gt;You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a standalone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Вы можете создать библиотеку в любой папке, YACReaderLibrary будет импортировать все комиксы и папки из этой папки. Если вы уже ранее создавали библиотеки, их можно будет открыть.&lt;/p&gt;&lt;p&gt;Не забывайте, что вы можете использовать YACReader в качестве отдельного приложения для чтения комиксов на вашем компьютере.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="26"/>
@@ -3191,7 +3176,7 @@ Missing files: %3</source>
     <name>OptionsDialog</name>
     <message>
         <location filename="options_dialog.cpp" line="403"/>
-        <source>Restore defautls</source>
+        <source>Restore defaults</source>
         <translation>Вернуть к первоначальным значениям</translation>
     </message>
     <message>
@@ -3217,12 +3202,12 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="216"/>
         <source>Comic Vine API key</source>
-        <translation>Comic Vine API ключ</translation>
+        <translation>Ключ API Comic Vine</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="213"/>
         <source>Edit Comic Vine API key</source>
-        <translation>Редактировать Comic Vine API ключ</translation>
+        <translation>Редактировать ключ API Comic Vine</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="391"/>
@@ -3237,7 +3222,7 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="401"/>
         <source>Use selected comic cover as background</source>
-        <translation>Обложка комикса фоновое изображение</translation>
+        <translation>Использовать обложку выбранного комикса как фон</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="35"/>
@@ -3253,12 +3238,12 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="36"/>
         <source>Grid view</source>
-        <translation>Фоновое изображение</translation>
+        <translation>Вид сеткой</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="37"/>
         <source>Appearance</source>
-        <translation>Появление</translation>
+        <translation>Внешний вид</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="177"/>
@@ -3283,12 +3268,12 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="194"/>
         <source>Close to tray</source>
-        <translation>Рядом с лотком</translation>
+        <translation>Закрывать в трей</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="195"/>
-        <source>Start into the system tray</source>
-        <translation>Запустите в системном трее</translation>
+        <source>Start in the system tray</source>
+        <translation>Запускать в системном трее</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="221"/>
@@ -3299,22 +3284,22 @@ Missing files: %3</source>
         <location filename="options_dialog.cpp" line="223"/>
         <source>Import metadata from ComicInfo.xml when adding new comics</source>
         <oldsource>Import metada from ComicInfo.xml when adding new comics</oldsource>
-        <translation>Импортируйте метаданные из ComicInfo.xml при добавлении новых комиксов.</translation>
+        <translation>Импортировать метаданные из ComicInfo.xml при добавлении новых комиксов</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="233"/>
         <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
-        <translation>Учитывайте «недавние» элементы, добавленные или обновленные X&#xa0;дней назад.</translation>
+        <translation>Считать «недавними» элементы, добавленные или обновленные X дней назад</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="245"/>
         <source>Third party reader</source>
-        <translation>Сторонний читатель</translation>
+        <translation>Сторонняя программа чтения</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="247"/>
         <source>Write {comic_file_path} where the path should go in the command</source>
-        <translation>Напишите {comic_file_path}, где должен идти путь в команде.</translation>
+        <translation>Укажите {comic_file_path} на месте пути в команде</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="248"/>
@@ -3329,12 +3314,12 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="277"/>
         <source>Try to detect changes automatically</source>
-        <translation>Попробуйте обнаружить изменения автоматически</translation>
+        <translation>Пытаться автоматически обнаруживать изменения</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="282"/>
         <source>Update libraries periodically</source>
-        <translation>Периодически обновляйте библиотеки</translation>
+        <translation>Периодически обновлять библиотеки</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="288"/>
@@ -3388,10 +3373,10 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="338"/>
-        <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
-During automatic updates the app will block some of the actions until the update is finished.
-To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
+        <source>WARNING! During library updates, writes to the database are disabled!
+Don&apos;t schedule updates while you may be actively using the app.
+During automatic updates, the app will block some of the actions until the update is finished.
+To stop an automatic update, tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
 Don&apos;t schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
@@ -3408,12 +3393,12 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="options_dialog.cpp" line="350"/>
         <source>Compare the modified date of files when updating a library (not recommended)</source>
-        <translation>Сравните дату изменения файлов при обновлении библиотеки (не рекомендуется)</translation>
+        <translation>Сравнивать дату изменения файлов при обновлении библиотеки (не рекомендуется)</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="417"/>
         <source>Display continue reading banner</source>
-        <translation>Отображение баннера продолжения чтения</translation>
+        <translation>Отображать баннер продолжения чтения</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="418"/>
@@ -3443,18 +3428,99 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="options_dialog.cpp" line="42"/>
         <source>Restart is needed</source>
-        <translation>Требуется перезагрузка</translation>
+        <translation>Требуется перезапуск</translation>
     </message>
 </context>
 <context>
     <name>OrganizeFiles</name>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="540"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="90"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="98"/>
+        <source>Unknown Series</source>
+        <translation>Неизвестная серия</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="92"/>
+        <source>series</source>
+        <translation>серия</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="94"/>
+        <source>Unknown Publisher</source>
+        <translation>Неизвестный издатель</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="96"/>
+        <source>publisher</source>
+        <translation>издатель</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="100"/>
+        <source>title</source>
+        <translation>название</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="333"/>
+        <source>Unknown Comic</source>
+        <translation>Неизвестный комикс</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="353"/>
+        <source>Series #Number - Title</source>
+        <translation>Серия №Номер - Название</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="354"/>
+        <source>Series #Number</source>
+        <translation>Серия №Номер</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="355"/>
+        <source>Series #Number (of Count)</source>
+        <translation>Серия №Номер (из Всего)</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="356"/>
+        <source>Number - Title</source>
+        <translation>Номер - Название</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="357"/>
+        <source>Series #Number (Year)</source>
+        <translation>Серия №Номер (Год)</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="362"/>
+        <source>Publisher / Series / Series #Number - Title</source>
+        <translation>Издатель / Серия / Серия №Номер - Название</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="363"/>
+        <source>Publisher / Imprint / Series / Series #Number - Title</source>
+        <translation>Издатель / Импринт / Серия / Серия №Номер - Название</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="364"/>
+        <source>Series / Series #Number</source>
+        <translation>Серия / Серия №Номер</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="365"/>
+        <source>Publisher / Series / Series #Number (Year)</source>
+        <translation>Издатель / Серия / Серия №Номер (Год)</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="366"/>
+        <source>Series / original file name</source>
+        <translation>Серия / исходное имя файла</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="535"/>
         <source>Renamed, %1 is already in use</source>
         <translation>Переименовано, имя %1 уже занято</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="543"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="538"/>
         <source>Missing metadata: %1</source>
         <translation>Отсутствуют метаданные: %1</translation>
     </message>
@@ -3462,6 +3528,31 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="organize_files/organize_files_journal.cpp" line="53"/>
         <source>%1 could not be created</source>
         <translation>Не удалось создать %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="79"/>
+        <source>%1 (copy also failed: %2)</source>
+        <translation>%1 (копирование также не удалось: %2)</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="85"/>
+        <source>the copy did not have the same size as the original</source>
+        <translation>размер копии отличается от оригинала</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="91"/>
+        <source>the original could not be deleted after it was copied</source>
+        <translation>не удалось удалить оригинал после копирования</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="302"/>
+        <source>The destination folder could not be created.</source>
+        <translation>Не удалось создать папку назначения.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="356"/>
+        <source>%1 (the file was left at %2)</source>
+        <translation>%1 (файл остался в %2)</translation>
     </message>
 </context>
 <context>
@@ -3476,10 +3567,6 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="organize_files/organize_files_coordinator.cpp" line="138"/>
         <source>This folder does not contain any comics.</source>
         <translation>В этой папке нет комиксов.</translation>
-    </message>
-    <message>
-        <source>This library is busy: %1</source>
-        <translation type="vanished">Эта библиотека занята: %1</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_coordinator.cpp" line="212"/>
@@ -3528,10 +3615,6 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
 </context>
 <context>
     <name>OrganizeFilesDialog</name>
-    <message>
-        <source>Format:</source>
-        <translation type="obsolete">Формат:</translation>
-    </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="152"/>
         <source>Organize files</source>
@@ -3664,17 +3747,9 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <translation>Отмена</translation>
     </message>
     <message>
-        <source>Copy the list</source>
-        <translation type="vanished">Скопировать список</translation>
-    </message>
-    <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="468"/>
         <source>Undo</source>
         <translation>Отменить</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="vanished">Закрыть</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="464"/>
@@ -4136,7 +4211,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="111"/>
         <source>Publishing</source>
-        <translation>Издатели</translation>
+        <translation>Публикация</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="328"/>
@@ -4151,7 +4226,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="330"/>
         <source>Color/BW:</source>
-        <translation>Цвет/BW:</translation>
+        <translation>Цвет/Ч/Б:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="668"/>
@@ -4196,7 +4271,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="144"/>
         <source>Load custom cover image</source>
-        <translation>Загрузить собственное изображение обложки</translation>
+        <translation>Загрузить пользовательское изображение обложки</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="188"/>
@@ -4206,23 +4281,23 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="194"/>
         <source>e.g. 1-5, 8, 0.5, Annual 1</source>
-        <translation type="unfinished"></translation>
+        <translation>напр. 1-5, 8, 0.5, Annual 1</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="208"/>
         <location filename="properties_dialog.cpp" line="807"/>
         <source>Issue number:</source>
-        <translation>Номер выпуска</translation>
+        <translation>Номер выпуска:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="226"/>
         <source>alt. number:</source>
-        <translation>альт. число:</translation>
+        <translation>альт. номер:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="232"/>
         <source>Alternate series:</source>
-        <translation>Альтернативный сериал:</translation>
+        <translation>Альтернативная серия:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="234"/>
@@ -4237,7 +4312,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="291"/>
         <source>Imprint:</source>
-        <translation>Выходные данные:</translation>
+        <translation>Импринт:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="316"/>
@@ -4262,7 +4337,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="370"/>
         <source>Locations:</source>
-        <translation>Местоположение:</translation>
+        <translation>Локации:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="376"/>
@@ -4272,115 +4347,115 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="398"/>
         <source>Review:</source>
-        <translation>Обзор:</translation>
+        <translation>Рецензия:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="399"/>
         <source>Notes:</source>
-        <translation>Заметки:</translation>
+        <translation>Примечания:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="795"/>
         <source>Track missing issues in &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Отслеживать недостающие выпуски в «%1»</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="807"/>
         <source>Issues:</source>
-        <translation type="unfinished"></translation>
+        <translation>Выпуски:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="819"/>
         <source>Track</source>
-        <translation type="unfinished"></translation>
+        <translation>Отслеживать</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="874"/>
         <source>At most %1 issues can be tracked at once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Можно отслеживать не более %1 выпусков за один раз.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="876"/>
         <source>Check the issues: a range must go up, and a part between commas cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>Проверьте выпуски: диапазон должен идти по возрастанию, а части между запятыми не могут быть пустыми.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="878"/>
         <source>No new issues to track.</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет новых выпусков для отслеживания.</translation>
     </message>
     <message numerus="yes">
         <location filename="properties_dialog.cpp" line="880"/>
         <source>%n issue(s) will be tracked: %1.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Будет отслеживаться %n выпуск: %1.</numerusform>
+            <numerusform>Будут отслеживаться %n выпуска: %1.</numerusform>
+            <numerusform>Будет отслеживаться %n выпусков: %1.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="882"/>
         <source>That is a lot of issues; check the numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выпусков много; проверьте номера.</translation>
     </message>
     <message numerus="yes">
         <location filename="properties_dialog.cpp" line="885"/>
         <source>%n issue(s) already in the folder.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n выпуск уже в папке.</numerusform>
+            <numerusform>%n выпуска уже в папке.</numerusform>
+            <numerusform>%n выпусков уже в папке.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="properties_dialog.cpp" line="887"/>
         <source>%n repeated issue(s).</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n повторный выпуск.</numerusform>
+            <numerusform>%n повторных выпуска.</numerusform>
+            <numerusform>%n повторных выпусков.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="956"/>
         <source>Issues not tracked</source>
-        <translation type="unfinished"></translation>
+        <translation>Неотслеживаемые выпуски</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="956"/>
         <source>The missing issues could not be tracked.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось начать отслеживание недостающих выпусков.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="999"/>
         <source>Comic skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Комикс пропущен</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="999"/>
         <source>A comic was removed from the library or now has a different file, so it is skipped.</source>
-        <translation type="unfinished"></translation>
+        <translation>Комикс был удалён из библиотеки или теперь связан с другим файлом, поэтому он пропущен.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1263"/>
         <location filename="properties_dialog.cpp" line="1267"/>
         <source>Changes not saved</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменения не сохранены</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1263"/>
         <source>A comic that you are editing was removed from the library or now has a different file. Your changes were not saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактируемый комикс был удалён из библиотеки или теперь связан с другим файлом. Ваши изменения не сохранены.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1267"/>
         <source>The changes could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить изменения.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1517"/>
         <source>Invalid cover</source>
-        <translation>Неверное покрытие</translation>
+        <translation>Неверная обложка</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1517"/>
@@ -4395,7 +4470,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="189"/>
         <source>Title:</source>
-        <translation>Заголовок:</translation>
+        <translation>Название:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="525"/>
@@ -4425,7 +4500,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="258"/>
         <source>Writer(s):</source>
-        <translation>Писатель(и):</translation>
+        <translation>Сценарист(ы):</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="400"/>
@@ -4450,17 +4525,17 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="281"/>
         <source>Cover Artist(s):</source>
-        <translation>Художник(и) Обложки:</translation>
+        <translation>Художник(и) обложки:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="503"/>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation>&lt;a style=&apos;color: ##666666; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; Открыть страницу этого комикса на сайте Comic Vine &lt;/a&gt;</translation>
+        <translation>Ссылка на Comic Vine: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; открыть &lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="210"/>
         <source>Volume:</source>
-        <translation>Объём :</translation>
+        <translation>Том:</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="329"/>
@@ -4470,7 +4545,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="278"/>
         <source>Letterer(s):</source>
-        <translation>Гравёр-шрифтовик(и):</translation>
+        <translation>Леттерер(ы):</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="198"/>
@@ -4482,7 +4557,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="215"/>
         <source>Arc number:</source>
-        <translation>Номер дуги:</translation>
+        <translation>Номер арки:</translation>
     </message>
 </context>
 <context>
@@ -4495,12 +4570,12 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>Не удается загрузить библиотеку распаковщика 7z из ./utils</translation>
+        <translation>не удается загрузить библиотеку 7z из ./utils</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="156"/>
         <source>Select custom cover</source>
-        <translation>Выбрать индивидуальную обложку</translation>
+        <translation>Выбрать пользовательскую обложку</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="156"/>
@@ -4549,38 +4624,38 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="69"/>
         <source>Import reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>Импорт списков чтения</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="71"/>
         <source>Reading lists (*.cbl *.json);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Списки чтения (*.cbl *.json);;Все файлы (*)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="113"/>
         <source>New smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый умный список</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="113"/>
         <location filename="reading_list_management_coordinator.cpp" line="131"/>
         <source>The smart list could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось сохранить умный список.</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="131"/>
         <source>Edit smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить умный список</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="149"/>
         <source>Delete folder</source>
-        <translation type="unfinished">Удалить папку</translation>
+        <translation>Удалить папку</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="150"/>
         <source>Delete the folder &quot;%1&quot; and everything in it? Its folders and lists are deleted; your comic files are not.</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить папку «%1» и всё её содержимое? Её папки и списки будут удалены, а файлы комиксов сохранятся.</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="154"/>
@@ -4590,7 +4665,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="155"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
-        <translation>Выбранные элементы будут удалены, ваши комиксы или папки НЕ БУДУТ удалены с вашего жёсткого диска. Вы уверены?</translation>
+        <translation>Выбранный элемент будет удалён, ваши комиксы или папки НЕ БУДУТ удалены с вашего жёсткого диска. Вы уверены?</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="191"/>
@@ -4600,72 +4675,72 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="191"/>
         <source>Rename folder</source>
-        <translation type="unfinished">Переименовать папку</translation>
+        <translation>Переименовать папку</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="192"/>
         <location filename="reading_list_management_coordinator.cpp" line="222"/>
         <source>Folder name:</source>
-        <translation type="unfinished">Имя папки:</translation>
+        <translation>Имя папки:</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="210"/>
         <location filename="reading_list_management_coordinator.cpp" line="222"/>
         <location filename="reading_list_management_coordinator.cpp" line="226"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Новая папка</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="210"/>
         <location filename="reading_list_management_coordinator.cpp" line="226"/>
         <source>The folder could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось создать папку.</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="240"/>
         <source>Reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>Список чтения</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="244"/>
         <source>CBL reading list (*.cbl)</source>
-        <translation type="unfinished"></translation>
+        <translation>Список чтения CBL (*.cbl)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="245"/>
         <source>JSON reading list (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>Список чтения JSON (*.json)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="246"/>
         <source>Web page (*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>Веб-страница (*.html)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="253"/>
         <location filename="reading_list_management_coordinator.cpp" line="325"/>
         <source>Export reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт списка чтения</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="303"/>
         <source>Exporting reading list...</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспорт списка чтения...</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="325"/>
         <source>The file could not be written.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось записать файл.</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="338"/>
         <source>Move to folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Переместить в папку</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="338"/>
         <source>&quot;%1&quot; could not be moved.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось переместить «%1».</translation>
     </message>
 </context>
 <context>
@@ -4673,16 +4748,16 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message numerus="yes">
         <location filename="reading_list_page.cpp" line="110"/>
         <source>%n comic(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n комикс</numerusform>
+            <numerusform>%n комикса</numerusform>
+            <numerusform>%n комиксов</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="reading_list_page.cpp" line="112"/>
         <source>%n missing</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n отсутствует</numerusform>
             <numerusform>%n отсутствуют</numerusform>
             <numerusform>%n отсутствуют</numerusform>
@@ -4691,12 +4766,12 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="reading_list_page.cpp" line="132"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует</translation>
     </message>
     <message>
         <location filename="reading_list_page.cpp" line="137"/>
         <source>Exported from YACReader on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Экспортировано из YACReader %1</translation>
     </message>
 </context>
 <context>
@@ -4718,16 +4793,16 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="rename_library_dialog.cpp" line="15"/>
-        <source>New Library Name : </source>
-        <translation>Новое имя библиотеки:</translation>
+        <source>New Library Name: </source>
+        <translation>Новое имя библиотеки: </translation>
     </message>
 </context>
 <context>
     <name>ScraperResultsPaginator</name>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="44"/>
-        <source>Number of %1 found : %2</source>
-        <translation>Количество из %1 найдено : %2</translation>
+        <source>Number of %1 found: %2</source>
+        <translation>Найдено %1: %2</translation>
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="21"/>
@@ -4737,8 +4812,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="20"/>
-        <source>Number of volumes found : %1</source>
-        <translation>Количество найденных томов : %1</translation>
+        <source>Number of volumes found: %1</source>
+        <translation>Количество найденных томов: %1</translation>
     </message>
 </context>
 <context>
@@ -4801,7 +4876,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="db/search_field_registry.cpp" line="106"/>
         <source>Textual tags</source>
-        <translation>Текстовые метки</translation>
+        <translation>Текстовые теги</translation>
     </message>
     <message>
         <location filename="db/search_field_registry.cpp" line="108"/>
@@ -4866,7 +4941,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="db/search_field_registry.cpp" line="121"/>
         <source>Locations appearing in the comic</source>
-        <translation>Места, появляющиеся в комиксе</translation>
+        <translation>Локации, появляющиеся в комиксе</translation>
     </message>
     <message>
         <location filename="db/search_field_registry.cpp" line="122"/>
@@ -5020,7 +5095,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="comic_vine/search_single_comic.cpp" line="14"/>
         <source>Please provide some additional information for this comic.</source>
         <oldsource>Please provide some additional information.</oldsource>
-        <translation>Пожалуйста, введите инфомарцию для поиска.</translation>
+        <translation>Пожалуйста, введите дополнительную информацию для этого комикса.</translation>
     </message>
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="18"/>
@@ -5099,6 +5174,11 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="search_syntax_dialog.cpp" line="176"/>
         <source>Just start typing. Plain text search across all metadata.</source>
         <translation>Просто начните вводить текст. Обычный текст ищется во всех метаданных.</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="180"/>
+        <source>%1 -&gt; search for `%1` in any database field</source>
+        <translation>%1 -&gt; ????? `%1` ? ????? ???? ???? ??????</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="185"/>
@@ -5195,7 +5275,9 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <source>Tips:
 Spaces act like AND, and searches are not case-sensitive.
 Use quotes to include spaces in a value.</source>
-        <translation>Советы: пробелы работают как AND, а поиск не учитывает регистр. Используйте кавычки, чтобы включить пробелы в значение.</translation>
+        <translation>Советы:
+Пробелы работают как AND, а поиск не учитывает регистр.
+Используйте кавычки, чтобы включить пробелы в значение.</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="251"/>
@@ -5290,7 +5372,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="search_syntax_dialog.cpp" line="350"/>
         <source>Search textual tags</source>
-        <translation>Поиск по текстовым меткам</translation>
+        <translation>Поиск по текстовым тегам</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="352"/>
@@ -5333,7 +5415,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="12"/>
         <source>Please provide some additional information.</source>
-        <translation>Пожалуйста, введите инфомарцию для поиска.</translation>
+        <translation>Пожалуйста, введите дополнительную информацию.</translation>
     </message>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="14"/>
@@ -5370,8 +5452,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="16"/>
-        <source>Please, select the right comic info.</source>
-        <translation>Пожалуйста, выберите правильную информацию об комиксе.</translation>
+        <source>Please select the right comic info.</source>
+        <translation>Пожалуйста, выберите правильную информацию о комиксе.</translation>
     </message>
 </context>
 <context>
@@ -5383,7 +5465,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="31"/>
-        <source>Please, select the right series for your comic.</source>
+        <source>Please select the right series for your comic.</source>
         <translation>Пожалуйста, выберите правильную серию для вашего комикса.</translation>
     </message>
     <message>
@@ -5417,59 +5499,59 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="26"/>
         <source>Unknown</source>
-        <translation type="unfinished">Неизвестно</translation>
+        <translation>Неизвестно</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="28"/>
         <source>%1 (%2 unknown)</source>
         <oldsource>%1 (%n unknown)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2 неизвестно)</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="36"/>
         <source>%1 series</source>
-        <translation type="unfinished"></translation>
+        <translation>Серий: %1</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="59"/>
         <source>%1 comics selected</source>
         <oldsource>%n comic(s) selected</oldsource>
-        <translation type="unfinished">%1 было выбрано</translation>
+        <translation>Выбрано комиксов: %1</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="78"/>
         <source>Read</source>
-        <translation type="unfinished">Прочитано</translation>
+        <translation>Прочитано</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="81"/>
         <source>In progress</source>
-        <translation type="unfinished">В процессе</translation>
+        <translation>В процессе</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="84"/>
         <source>Unread</source>
-        <translation type="unfinished">Непрочитанные</translation>
+        <translation>Непрочитанные</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="87"/>
         <source>Total pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Всего страниц</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="90"/>
         <source>Total size</source>
-        <translation type="unfinished"></translation>
+        <translation>Общий размер</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="93"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсутствует</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="75"/>
         <source>Series</source>
-        <translation type="unfinished">Ряд</translation>
+        <translation>Серия</translation>
     </message>
 </context>
 <context>
@@ -5486,8 +5568,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="comic_vine/series_question.cpp" line="12"/>
-        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
-        <translation>Вы пытаетесь получить информацию для нескольких комиксов одновременно, являются ли они все частью одной серии?</translation>
+        <source>You are trying to get information for various comics at once. Are they part of the same series?</source>
+        <translation>Вы пытаетесь получить информацию для нескольких комиксов одновременно. Являются ли они все частью одной серии?</translation>
     </message>
 </context>
 <context>
@@ -5544,30 +5626,10 @@ Use quotes to include spaces in a value.</source>
         <translation>YACReader доступен для iOS и Android. Установите его для &lt;a href=&apos;https://ios.yacreader.com&apos;&gt;iOS&lt;/a&gt; или &lt;a href=&apos;https://android.yacreader.com&apos;&gt;Android&lt;/a&gt;.</translation>
     </message>
     <message>
-        <source>enable the server</source>
-        <translation type="vanished">активировать сервер</translation>
-    </message>
-    <message>
-        <source>Server connectivity information</source>
-        <translation type="vanished">Информация о подключении</translation>
-    </message>
-    <message>
-        <source>Scan it!</source>
-        <translation type="vanished">Сканируйте!</translation>
-    </message>
-    <message>
         <location filename="server_config_dialog.cpp" line="80"/>
         <source>Set port</source>
         <oldsource>set port</oldsource>
         <translation>Установить порт</translation>
-    </message>
-    <message>
-        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</source>
-        <translation type="vanished">YACReader доступен для устройств iOS и Android.&lt;br/&gt;Найдите его для &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; или &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</translation>
-    </message>
-    <message>
-        <source>Choose an IP address</source>
-        <translation type="vanished">Выбрать IP адрес</translation>
     </message>
 </context>
 <context>
@@ -5575,27 +5637,27 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="smart_list_dialog.cpp" line="33"/>
         <source>New smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>Новый умный список</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="33"/>
         <source>Edit smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>Изменить умный список</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="45"/>
         <source>Search filters and syntax</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтры и синтаксис поиска</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="56"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Название:</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="57"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поиск:</translation>
     </message>
 </context>
 <context>
@@ -5618,20 +5680,20 @@ Use quotes to include spaces in a value.</source>
     <message numerus="yes">
         <location filename="comic_vine/sort_volume_comics.cpp" line="285"/>
         <source>Add the %n other issue(s) of this volume as missing comics</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Добавить %n другой выпуск этого тома как отсутствующий комикс</numerusform>
+            <numerusform>Добавить %n других выпуска этого тома как отсутствующие комиксы</numerusform>
+            <numerusform>Добавить %n других выпусков этого тома как отсутствующие комиксы</numerusform>
         </translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="99"/>
         <source>issues</source>
-        <translation>выпуск</translation>
+        <translation>выпуски</translation>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="60"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please sort the list of comics on the left until it matches the comics&apos; information.</source>
         <translation>Пожалуйста, отсортируйте список комиксов слева, пока он не будет соответствовать информации комикса.</translation>
     </message>
 </context>
@@ -5655,7 +5717,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>я</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -5670,7 +5732,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>Удерживайте, чтобы выбранное значение мигало в пользовательском интерфейсе (пурпурный / переключено / 0↔10). Релизы восстанавливают оригинал.</translation>
+        <translation>Удерживайте, чтобы выбранное значение мигало в интерфейсе (пурпурный / переключено / 0↔10). При отпускании восстанавливается исходное значение.</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
@@ -5680,17 +5742,17 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>Осветить</translation>
+        <translation>Светлая</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
         <source>Dark</source>
-        <translation>Темный</translation>
+        <translation>Темная</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>ID:</source>
-        <translation>ИДЕНТИФИКАТОР:</translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
@@ -5715,12 +5777,12 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
         <source>Value</source>
-        <translation>Ценить</translation>
+        <translation>Значение</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="149"/>
         <source>Save and apply</source>
-        <translation>Сохраните и примените</translation>
+        <translation>Сохранить и применить</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="150"/>
@@ -5750,7 +5812,7 @@ Use quotes to include spaces in a value.</source>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>истинный</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -5758,7 +5820,7 @@ Use quotes to include spaces in a value.</source>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>ЛОЖЬ</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
@@ -5791,7 +5853,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
         <source>Save failed</source>
-        <translation>Сохранить не удалось</translation>
+        <translation>Сохранение не удалось</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
@@ -5854,7 +5916,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="165"/>
-        <source>Updating....</source>
+        <source>Updating...</source>
         <translation>Обновление...</translation>
     </message>
 </context>
@@ -5876,7 +5938,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="120"/>
         <source>issues</source>
-        <translation>выпуск</translation>
+        <translation>выпуски</translation>
     </message>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="122"/>
@@ -5924,7 +5986,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation>Пользовательский:</translation>
+        <translation>Пользовательская:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="89"/>
@@ -5939,17 +6001,17 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="101"/>
         <source>Cover gap</source>
-        <translation>Охватить разрыв</translation>
+        <translation>Зазор между обложками</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="107"/>
         <source>Central gap</source>
-        <translation>Сфокусировать разрыв</translation>
+        <translation>Центральный зазор</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Масштабировать</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -5964,17 +6026,17 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="131"/>
         <source>Cover Angle</source>
-        <translation>Охватить угол</translation>
+        <translation>Угол обложек</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="137"/>
         <source>Visibility</source>
-        <translation>Прозрачность</translation>
+        <translation>Видимость</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="143"/>
         <source>Light</source>
-        <translation>Осветить</translation>
+        <translation>Освещение</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="149"/>
@@ -5993,8 +6055,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Использовать VSync (повысить качество изображения в полноэкранном режиме , хуже производительность)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>Использовать VSync (улучшает качество изображения в полноэкранном режиме, снижает производительность)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
@@ -6007,17 +6069,17 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="trayicon_controller.cpp" line="51"/>
         <source>&amp;Restore</source>
-        <translation>&amp;Rмагазин</translation>
+        <translation>&amp;Восстановить</translation>
     </message>
     <message>
         <location filename="trayicon_controller.cpp" line="78"/>
         <source>Systray</source>
-        <translation>Систрей</translation>
+        <translation>Системный трей</translation>
     </message>
     <message>
         <location filename="trayicon_controller.cpp" line="79"/>
         <source>YACReaderLibrary will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray icon.</source>
-        <translation>YACReaderLibrary продолжит работать в системном трее. Чтобы завершить работу программы, выберите &lt;b&gt;Выход&lt;/b&gt; в контекстном меню значка на панели задач.</translation>
+        <translation>YACReaderLibrary продолжит работать в системном трее. Чтобы завершить работу программы, выберите &lt;b&gt;Выход&lt;/b&gt; в контекстном меню значка в системном трее.</translation>
     </message>
 </context>
 <context>
@@ -6038,37 +6100,37 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="64"/>
         <source>The library database is missing. Restore a backup or recreate the library before rescanning XML information.</source>
-        <translation type="unfinished"></translation>
+        <translation>База данных библиотеки отсутствует. Восстановите резервную копию или создайте библиотеку заново перед повторным сканированием XML.</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="76"/>
         <source>Unable to load the archive backend: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось загрузить модуль работы с архивами: %1</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="91"/>
         <source>Unable to start an XML rescan transaction.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось начать транзакцию повторного сканирования XML.</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="107"/>
         <source>The selected folder is no longer in this library. Reload the library before rescanning.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбранной папки больше нет в этой библиотеке. Перезагрузите библиотеку перед повторным сканированием.</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="109"/>
         <source>Unable to read comics for the XML rescan.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось прочитать комиксы для повторного сканирования XML.</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="113"/>
         <source>Unable to commit XML metadata changes.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось зафиксировать изменения метаданных XML.</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="157"/>
         <source>Unable to update XML metadata for %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось обновить метаданные XML для %1.</translation>
     </message>
 </context>
 <context>
@@ -6076,13 +6138,13 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>
         <source>Restore to default</source>
-        <translation>Вернуть к первоначальным значениям</translation>
+        <translation>Восстановить значения по умолчанию</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="27"/>
         <source>Click to overwrite</source>
-        <translation>Изменить</translation>
+        <translation>Щелкните, чтобы перезаписать</translation>
     </message>
 </context>
 <context>
@@ -6090,7 +6152,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="10"/>
         <source>Restore to default</source>
-        <translation>Вернуть к первоначальным значениям</translation>
+        <translation>Восстановить значения по умолчанию</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="916"/>
@@ -6100,7 +6162,7 @@ Use quotes to include spaces in a value.</source>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="43"/>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="49"/>
         <source>Click to overwrite</source>
-        <translation>Изменить</translation>
+        <translation>Щелкните, чтобы перезаписать</translation>
     </message>
 </context>
 <context>
@@ -6146,7 +6208,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="42"/>
         <source>type to search</source>
-        <translation>Начать поиск</translation>
+        <translation>введите для поиска</translation>
     </message>
 </context>
 </TS>

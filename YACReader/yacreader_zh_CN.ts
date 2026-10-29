@@ -39,7 +39,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
         <source>Remove</source>
-        <translation>消除</translation>
+        <translation>移除</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
@@ -59,7 +59,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Custom:</source>
-        <translation>自定义:</translation>
+        <translation>自定义：</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
@@ -136,7 +136,7 @@
         <location filename="bookmarks_dialog.cpp" line="109"/>
         <location filename="bookmarks_dialog.cpp" line="126"/>
         <source>Loading...</source>
-        <translation>载入中...</translation>
+        <translation>加载中...</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="87"/>
@@ -145,7 +145,7 @@
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>尾页</translation>
     </message>
 </context>
@@ -176,13 +176,13 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>快捷键 &quot;%1&quot; 已被映射至其他功能</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>更改快捷键: 双击按键组合并输入新的映射.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>更改快捷键：双击按键组合并输入新的映射。</translation>
     </message>
 </context>
 <context>
@@ -204,13 +204,9 @@
         <translation>打开文件时出现未知错误</translation>
     </message>
     <message>
-        <source>Unsupported EPUB: %1</source>
-        <translation type="vanished">不支持的 EPUB 格式：%1</translation>
-    </message>
-    <message>
         <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>第 %1 页 CRC 校验失败: 部分页面将无法正确显示</translation>
+        <translation>第 %1 页 CRC 校验失败：部分页面将无法正确显示</translation>
     </message>
 </context>
 <context>
@@ -228,8 +224,8 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
-        <translation>总页数: </translation>
+        <source>Total pages: </source>
+        <translation>总页数： </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="26"/>
@@ -238,16 +234,16 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
-        <translation>页码 : </translation>
+        <source>Page: </source>
+        <translation>页码： </translation>
     </message>
 </context>
 <context>
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
-        <translation>页码 : </translation>
+        <source>Page: </source>
+        <translation>页码： </translation>
     </message>
 </context>
 <context>
@@ -278,7 +274,7 @@
     <message>
         <location filename="options_dialog.cpp" line="225"/>
         <source>Gamma</source>
-        <translation>Gamma值</translation>
+        <translation>Gamma 值</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="229"/>
@@ -333,7 +329,7 @@
     <message>
         <location filename="options_dialog.cpp" line="238"/>
         <source>Fit options</source>
-        <translation>适应项</translation>
+        <translation>适应选项</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="234"/>
@@ -343,7 +339,7 @@
     <message>
         <location filename="options_dialog.cpp" line="58"/>
         <source>Display</source>
-        <translation>展示</translation>
+        <translation>显示</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="60"/>
@@ -387,7 +383,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>单击屏幕的左半部分或右半部分即可翻页。</translation>
     </message>
     <message>
@@ -424,7 +420,7 @@ If none is active, Escape does nothing.</source>
         <translation>按 Esc 键会取消以下第一个处于活动状态的模式：
 
 1. 放大镜
-2. 字典
+2. 词典
 3. 跳转到页面栏
 4. 全屏
 
@@ -502,13 +498,13 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>滚动效果</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="181"/>
         <source>Disable mouse over activation</source>
-        <translation>禁用鼠标激活</translation>
+        <translation>禁用鼠标悬停激活</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="271"/>
@@ -528,7 +524,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="276"/>
         <source>Bilinear</source>
-        <translation>双线性</translation>
+        <translation>Bilinear</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="277"/>
@@ -566,7 +562,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>无法从 ./utils 载入 7z 库文件</translation>
+        <translation>无法从 ./utils 加载 7z 库文件</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="156"/>
@@ -609,7 +605,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>我</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -624,7 +620,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>按住可在 UI 中闪烁所选值（洋红色/切换/0↔10）。发布后恢复原样。</translation>
+        <translation>按住可在界面中闪烁所选值（洋红色/切换/0↔10）。松开后恢复原样。</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
@@ -654,7 +650,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
         <source>Variant:</source>
-        <translation>颜色设置：</translation>
+        <translation>变体：</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
@@ -664,7 +660,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
         <source>Parameter</source>
-        <translation>范围</translation>
+        <translation>参数</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
@@ -791,13 +787,13 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="1843"/>
         <source>Page not available!</source>
-        <translation>页面不可用!</translation>
+        <translation>页面不可用！</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>按下 &apos;O&apos; 以打开漫画.</translation>
+        <source>Press &apos;O&apos; to open a comic.</source>
+        <translation>按下 &apos;O&apos; 以打开漫画。</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="378"/>
@@ -807,7 +803,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="2181"/>
         <source>Cover!</source>
-        <translation>封面!</translation>
+        <translation>封面！</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="384"/>
@@ -827,12 +823,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="2195"/>
         <source>Last page!</source>
-        <translation>尾页!</translation>
+        <translation>尾页！</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
-        <translation>载入中... 请稍候!</translation>
+        <source>Loading... please wait!</source>
+        <translation>加载中...请稍候！</translation>
     </message>
 </context>
 <context>
@@ -840,7 +836,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="19"/>
         <source>Presets:</source>
-        <translation>预设:</translation>
+        <translation>预设：</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="21"/>
@@ -875,7 +871,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation>自定义:</translation>
+        <translation>自定义：</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="89"/>
@@ -900,7 +896,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>缩放</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -920,12 +916,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="137"/>
         <source>Visibility</source>
-        <translation>透明度</translation>
+        <translation>可见度</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="143"/>
         <source>Light</source>
-        <translation>明亮</translation>
+        <translation>光照</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="149"/>
@@ -944,13 +940,13 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>使用VSync (在全屏模式下提高图像质量, 性能更差)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>使用 VSync（在全屏模式下提高图像质量，但会降低性能）</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
         <source>Performance:</source>
-        <translation>性能:</translation>
+        <translation>性能：</translation>
     </message>
 </context>
 <context>
@@ -1024,12 +1020,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>放大</translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>缩小</translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="354"/>
@@ -1044,7 +1040,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1405"/>
         <source>Zoom out magnifying glass</source>
-        <translation>减小缩放级别</translation>
+        <translation>减小放大镜的 Zoom</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="334"/>
@@ -1160,7 +1156,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="360"/>
         <source>Open the latest comic opened in the previous reading session</source>
-        <translation>打开最近阅读漫画</translation>
+        <translation>打开上次阅读会话中最后打开的漫画</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="328"/>
@@ -1175,7 +1171,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="421"/>
         <source>Fit Width</source>
-        <translation>适合宽度</translation>
+        <translation>适应宽度</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="527"/>
@@ -1194,13 +1190,15 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
-        <translation>跳转至页面 ...</translation>
+        <source>Go to page...</source>
+        <translation>跳转至页面...</translation>
     </message>
     <message>
+        <location filename="main_window_viewer.cpp" line="540"/>
         <location filename="main_window_viewer.cpp" line="1349"/>
         <location filename="main_window_viewer.cpp" line="1415"/>
-        <source>Magnifiying glass</source>
+        <source>Magnifying glass</source>
+        <oldsource>Magnifiying glass</oldsource>
         <translation>放大镜</translation>
     </message>
     <message>
@@ -1216,7 +1214,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1422"/>
         <source>Toggle between fit to width and fit to height</source>
-        <translation>切换显示为&quot;适应宽度&quot;或&quot;适应高度&quot;</translation>
+        <translation>切换显示为“适应宽度”或“适应高度”</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1475"/>
@@ -1226,7 +1224,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1402"/>
         <source>Zoom in magnifying glass</source>
-        <translation>增大缩放级别</translation>
+        <translation>增大放大镜的 Zoom</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="633"/>
@@ -1348,7 +1346,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="476"/>
         <source>Reset zoom</source>
-        <translation>重置缩放</translation>
+        <translation>重置 Zoom</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="557"/>
@@ -1368,7 +1366,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="586"/>
         <source>Show Dictionary</source>
-        <translation>显示字典</translation>
+        <translation>显示词典</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1104"/>
@@ -1383,7 +1381,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1109"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation>文件已存在。是​​否要覆盖它？</translation>
+        <translation>文件已存在。是否要覆盖它？</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1115"/>
@@ -1408,7 +1406,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1150"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation>部分文件已存在。是​​否要覆盖它们？</translation>
+        <translation>部分文件已存在。是否要覆盖它们？</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1163"/>
@@ -1433,7 +1431,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="513"/>
         <source>Reverse reading order in double page mode</source>
-        <translation>双页模式 (逆序阅读)</translation>
+        <translation>双页模式（逆序阅读）</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="528"/>
@@ -1448,7 +1446,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="535"/>
         <source>Help, About YACReader</source>
-        <translation>帮助, 关于 YACReader</translation>
+        <translation>帮助，关于 YACReader</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="592"/>
@@ -1471,11 +1469,6 @@ If none is active, Escape does nothing.</source>
         <translation>隐藏/显示 工具栏</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="540"/>
-        <source>Magnifying glass</source>
-        <translation>放大镜</translation>
-    </message>
-    <message>
         <location filename="main_window_viewer.cpp" line="597"/>
         <source>Edit shortcuts</source>
         <translation>编辑快捷键</translation>
@@ -1494,13 +1487,14 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1350"/>
         <location filename="main_window_viewer.cpp" line="1426"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
+        <oldsource>Page adjustement</oldsource>
         <translation>页面调整</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="481"/>
         <source>Show zoom slider</source>
-        <translation>显示缩放滑块</translation>
+        <translation>显示 Zoom 滑块</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1481"/>
@@ -1510,7 +1504,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1553"/>
         <source>Do you want to download the new version?</source>
-        <translation>你要下载新版本吗?</translation>
+        <translation>您要下载新版本吗？</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="498"/>
@@ -1528,12 +1522,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation>暂无发行说明。</translation>
+        <translation>发行说明不可用。</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation>先前版本</translation>
+        <translation>以前的版本</translation>
     </message>
 </context>
 <context>

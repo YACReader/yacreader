@@ -437,7 +437,7 @@ void LibraryManagementCoordinator::askToRemoveLibrary(const QString &libraryName
 {
     QMessageBox messageBox(QMessageBox::Question,
                            QCoreApplication::translate("LibraryWindow", "Are you sure?"),
-                           QCoreApplication::translate("LibraryWindow", "Do you want remove ") + libraryName + QCoreApplication::translate("LibraryWindow", " library?"),
+                           QCoreApplication::translate("LibraryWindow", "Do you want to remove the library '%1'?").arg(libraryName),
                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No,
                            dialogParent);
     messageBox.button(QMessageBox::YesToAll)->setText(QCoreApplication::translate("LibraryWindow", "Remove and delete metadata and backups"));
@@ -483,7 +483,7 @@ void LibraryManagementCoordinator::warnIfLibraryCountIsHigh()
 
     QMessageBox::warning(dialogParent,
                          QCoreApplication::translate("LibraryWindow", "You are adding too many libraries."),
-                         QCoreApplication::translate("LibraryWindow", "You are adding too many libraries.\n\nYou probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.\n\nYACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low."));
+                         QCoreApplication::translate("LibraryWindow", "You are adding too many libraries.\n\nYou probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.\n\nYACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low."));
 }
 
 void LibraryManagementCoordinator::showLibraryAlreadyExists(const QString &libraryName)

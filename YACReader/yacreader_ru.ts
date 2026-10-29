@@ -6,7 +6,7 @@
     <message>
         <location filename="../shortcuts_management/actions_shortcuts_model.cpp" line="74"/>
         <source>None</source>
-        <translation>Никто</translation>
+        <translation>Нет</translation>
     </message>
 </context>
 <context>
@@ -24,22 +24,22 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>Осветить</translation>
+        <translation>Светлая</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Dark</source>
-        <translation>Темный</translation>
+        <translation>Темная</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Custom</source>
-        <translation>Обычай</translation>
+        <translation>Пользовательская</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
         <source>Remove</source>
-        <translation>Удалять</translation>
+        <translation>Удалить</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
@@ -49,17 +49,17 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>Свет:</translation>
+        <translation>Светлая:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Dark:</source>
-        <translation>Темный:</translation>
+        <translation>Темная:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Custom:</source>
-        <translation>Пользовательский:</translation>
+        <translation>Пользовательская:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
@@ -141,11 +141,11 @@
     <message>
         <location filename="bookmarks_dialog.cpp" line="87"/>
         <source>Click on any image to go to the bookmark</source>
-        <translation>Нажмите на любое изображение чтобы перейти к закладке</translation>
+        <translation>Нажмите на любое изображение, чтобы перейти к закладке</translation>
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>Последняя страница</translation>
     </message>
 </context>
@@ -176,13 +176,13 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>Сочетание клавиш &quot;%1&quot; уже назначено для другой функции</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>Сочетание клавиш «%1» уже назначено для другой функции</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>Чтобы изменить горячую клавишу дважды щелкните по выбранной комбинации клавиш и введите новые сочетания клавиш.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>Чтобы изменить горячую клавишу, дважды щелкните по выбранной комбинации клавиш и введите новые сочетания клавиш.</translation>
     </message>
 </context>
 <context>
@@ -224,8 +224,8 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
-        <translation>Общее количество страниц : </translation>
+        <source>Total pages: </source>
+        <translation>Общее количество страниц: </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="26"/>
@@ -234,16 +234,16 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
-        <translation>Страница :</translation>
+        <source>Page: </source>
+        <translation>Страница: </translation>
     </message>
 </context>
 <context>
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
-        <translation>Страница :</translation>
+        <source>Page: </source>
+        <translation>Страница: </translation>
     </message>
 </context>
 <context>
@@ -261,7 +261,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>Журнал изменений</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
@@ -279,12 +279,12 @@
     <message>
         <location filename="options_dialog.cpp" line="229"/>
         <source>Reset</source>
-        <translation>Вернуть к первоначальным значениям</translation>
+        <translation>Сбросить</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="38"/>
         <source>My comics path</source>
-        <translation>Папка комиксов</translation>
+        <translation>Путь к моим комиксам</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="309"/>
@@ -294,7 +294,7 @@
     <message>
         <location filename="options_dialog.cpp" line="78"/>
         <source>&quot;Go to flow&quot; size</source>
-        <translation>Размер &quot;Перейти к Comic Flow&quot;</translation>
+        <translation>Размер «Перейти к Comic Flow»</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="99"/>
@@ -314,7 +314,7 @@
     <message>
         <location filename="options_dialog.cpp" line="310"/>
         <source>Appearance</source>
-        <translation>Появление</translation>
+        <translation>Внешний вид</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="326"/>
@@ -349,12 +349,12 @@
     <message>
         <location filename="options_dialog.cpp" line="180"/>
         <source>Quick Navigation Mode</source>
-        <translation>Ползунок для быстрой навигации по страницам</translation>
+        <translation>Режим быстрой навигации</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="58"/>
         <source>Display</source>
-        <translation>Отображать</translation>
+        <translation>Отображение</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="60"/>
@@ -388,7 +388,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>Поведение прокрутки</translation>
     </message>
     <message>
@@ -399,12 +399,12 @@
     <message>
         <location filename="options_dialog.cpp" line="112"/>
         <source>Do not turn page using scroll</source>
-        <translation>Не переворачивайте страницу с помощью прокрутки</translation>
+        <translation>Не переворачивать страницу с помощью прокрутки</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="113"/>
         <source>Use single scroll step to turn page</source>
-        <translation>Используйте один шаг прокрутки, чтобы перевернуть страницу</translation>
+        <translation>Использовать один шаг прокрутки, чтобы перевернуть страницу</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="121"/>
@@ -414,7 +414,7 @@
     <message>
         <location filename="options_dialog.cpp" line="124"/>
         <source>Only Back/Forward buttons can turn pages</source>
-        <translation>Только кнопки «Назад/Вперед» могут перелистывать страницы.</translation>
+        <translation>Только кнопки «Назад/Вперед» могут перелистывать страницы</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="125"/>
@@ -423,7 +423,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>Нажмите левую или правую половину экрана, чтобы перелистывать страницы.</translation>
     </message>
     <message>
@@ -457,9 +457,9 @@
 
 If none is active, Escape does nothing.</source>
         <extracomment>Tooltip listing the order in which modes are cancelled. Only the first active mode in the list is cancelled per Escape keypress.</extracomment>
-        <translation>Клавиша Esc отключает первый активный режим из списка:
+        <translation>Клавиша Esc отменяет первый активный режим из списка:
 
-1. Лупа
+1. Увеличительное стекло
 2. Словарь
 3. Панель перехода к странице
 4. Полноэкранный режим
@@ -469,7 +469,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="176"/>
         <source>Use software-rendered &quot;go to flow&quot; (requires restart)</source>
-        <translation>Использовать программную отрисовку &quot;Перейти к Comic Flow&quot; (требуется перезапуск)</translation>
+        <translation>Использовать программную отрисовку «Перейти к Comic Flow» (требуется перезапуск)</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="177"/>
@@ -504,17 +504,17 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="276"/>
         <source>Bilinear</source>
-        <translation>Билинейный</translation>
+        <translation>Bilinear</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="277"/>
         <source>Lanczos (better quality)</source>
-        <translation>Ланцос (лучшее качество)</translation>
+        <translation>Lanczos (лучшее качество)</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="308"/>
         <source>Page Flow</source>
-        <translation>Поток Страниц</translation>
+        <translation>Поток страниц</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="307"/>
@@ -529,17 +529,17 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="317"/>
         <source>Restart is needed</source>
-        <translation>Требуется перезагрузка</translation>
+        <translation>Требуется перезапуск</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="238"/>
         <source>Fit options</source>
-        <translation>Варианты подгонки</translation>
+        <translation>Параметры подгонки</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="240"/>
         <source>Enlarge images to fit width/height</source>
-        <translation>Увеличьте изображения по ширине/высоте</translation>
+        <translation>Увеличивать изображения по ширине/высоте</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="251"/>
@@ -562,12 +562,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>не удается загрузить 7z lib из ./ utils</translation>
+        <translation>не удается загрузить библиотеку 7z из ./utils</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="156"/>
         <source>Select custom cover</source>
-        <translation>Выбрать индивидуальную обложку</translation>
+        <translation>Выбрать пользовательскую обложку</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="156"/>
@@ -605,7 +605,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>я</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -620,7 +620,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>Удерживайте, чтобы выбранное значение мигало в пользовательском интерфейсе (пурпурный / переключено / 0↔10). Релизы восстанавливают оригинал.</translation>
+        <translation>Удерживайте, чтобы выбранное значение мигало в интерфейсе (пурпурный / переключено / 0↔10). При отпускании восстанавливается исходное значение.</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
@@ -630,17 +630,17 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>Осветить</translation>
+        <translation>Светлая</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
         <source>Dark</source>
-        <translation>Темный</translation>
+        <translation>Темная</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>ID:</source>
-        <translation>ИДЕНТИФИКАТОР:</translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
@@ -665,12 +665,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
         <source>Value</source>
-        <translation>Ценить</translation>
+        <translation>Значение</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="149"/>
         <source>Save and apply</source>
-        <translation>Сохраните и примените</translation>
+        <translation>Сохранить и применить</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="150"/>
@@ -700,7 +700,7 @@ If none is active, Escape does nothing.</source>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>истинный</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -708,7 +708,7 @@ If none is active, Escape does nothing.</source>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>ЛОЖЬ</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
@@ -741,7 +741,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
         <source>Save failed</source>
-        <translation>Сохранить не удалось</translation>
+        <translation>Сохранение не удалось</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
@@ -792,8 +792,8 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Нажмите &quot;O&quot; чтобы открыть комикс.</translation>
+        <source>Press &apos;O&apos; to open a comic.</source>
+        <translation>Нажмите «O», чтобы открыть комикс.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="378"/>
@@ -803,7 +803,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="2181"/>
         <source>Cover!</source>
-        <translation>Начало!</translation>
+        <translation>Обложка!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="384"/>
@@ -823,12 +823,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="2195"/>
         <source>Last page!</source>
-        <translation>Конец!</translation>
+        <translation>Последняя страница!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
-        <translation>Загрузка... Пожалуйста подождите!</translation>
+        <source>Loading... please wait!</source>
+        <translation>Загрузка... Пожалуйста, подождите!</translation>
     </message>
 </context>
 <context>
@@ -871,7 +871,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation>Пользовательский:</translation>
+        <translation>Пользовательская:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="89"/>
@@ -886,17 +886,17 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="101"/>
         <source>Cover gap</source>
-        <translation>Осветить разрыв</translation>
+        <translation>Зазор между обложками</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="107"/>
         <source>Central gap</source>
-        <translation>Сфокусировать разрыв</translation>
+        <translation>Центральный зазор</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Масштабировать</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -911,17 +911,17 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="131"/>
         <source>Cover Angle</source>
-        <translation>Охватить угол</translation>
+        <translation>Угол обложек</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="137"/>
         <source>Visibility</source>
-        <translation>Прозрачность</translation>
+        <translation>Видимость</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="143"/>
         <source>Light</source>
-        <translation>Осветить</translation>
+        <translation>Освещение</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="149"/>
@@ -940,8 +940,8 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Использовать VSync (повысить формат изображения в полноэкранном режиме , хуже производительность)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>Использовать VSync (улучшает качество изображения в полноэкранном режиме, снижает производительность)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
@@ -984,7 +984,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="360"/>
         <source>Open the latest comic opened in the previous reading session</source>
-        <translation>Открыть комикс открытый в предыдущем сеансе чтения</translation>
+        <translation>Открыть последний комикс, открытый в предыдущем сеансе чтения</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="372"/>
@@ -1007,7 +1007,7 @@ If none is active, Escape does nothing.</source>
         <location filename="main_window_viewer.cpp" line="1104"/>
         <location filename="main_window_viewer.cpp" line="1115"/>
         <source>Save current page</source>
-        <translation>Сохранить текущию страницу</translation>
+        <translation>Сохранить текущую страницу</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="382"/>
@@ -1016,12 +1016,12 @@ If none is active, Escape does nothing.</source>
         <location filename="main_window_viewer.cpp" line="1145"/>
         <location filename="main_window_viewer.cpp" line="1163"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Извлечь страницу(ы)</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>Извлечь страницу(ы) из исходного файла</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
@@ -1033,7 +1033,7 @@ If none is active, Escape does nothing.</source>
         <location filename="main_window_viewer.cpp" line="1912"/>
         <location filename="main_window_viewer.cpp" line="1916"/>
         <source>Open previous comic</source>
-        <translation>Открыть предыдуший комикс</translation>
+        <translation>Открыть предыдущий комикс</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="394"/>
@@ -1079,7 +1079,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="415"/>
         <source>Fit image to height</source>
-        <translation>Подогнать по высоте</translation>
+        <translation>Подогнать изображение по высоте</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="421"/>
@@ -1089,7 +1089,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="422"/>
         <source>Fit image to width</source>
-        <translation>Подогнать по ширине</translation>
+        <translation>Подогнать изображение по ширине</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="428"/>
@@ -1114,22 +1114,22 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="476"/>
         <source>Reset zoom</source>
-        <translation>Сбросить масштаб</translation>
+        <translation>Сбросить Zoom</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="481"/>
         <source>Show zoom slider</source>
-        <translation>Показать ползунок масштабирования</translation>
+        <translation>Показать ползунок Zoom</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>Увеличить масштаб</translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>Уменьшить масштаб</translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="493"/>
@@ -1149,7 +1149,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="504"/>
         <source>Switch to double page mode</source>
-        <translation>Двухстраничный режим</translation>
+        <translation>Переключиться в двухстраничный режим</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="512"/>
@@ -1159,7 +1159,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="513"/>
         <source>Reverse reading order in double page mode</source>
-        <translation>Двухстраничный режим манги</translation>
+        <translation>Обратный порядок чтения в двухстраничном режиме</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="521"/>
@@ -1168,7 +1168,7 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
+        <source>Go to page...</source>
         <translation>Перейти к странице...</translation>
     </message>
     <message>
@@ -1179,7 +1179,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="528"/>
         <source>YACReader options</source>
-        <translation>Настройки</translation>
+        <translation>Настройки YACReader</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="534"/>
@@ -1190,17 +1190,19 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="535"/>
         <source>Help, About YACReader</source>
-        <translation>Справка</translation>
+        <translation>Справка, о программе YACReader</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1349"/>
+        <location filename="main_window_viewer.cpp" line="1415"/>
         <source>Magnifying glass</source>
         <translation>Увеличительное стекло</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="541"/>
         <source>Switch Magnifying glass</source>
-        <translation>Увеличительное стекло</translation>
+        <translation>Включить/выключить увеличительное стекло</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="547"/>
@@ -1250,12 +1252,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="586"/>
         <source>Show Dictionary</source>
-        <translation>Переводчик YACreader</translation>
+        <translation>Показать словарь</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="592"/>
         <source>Show go to flow</source>
-        <translation>Показать &quot;Перейти к Comic Flow&quot;</translation>
+        <translation>Показать «Перейти к Comic Flow»</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="597"/>
@@ -1265,7 +1267,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="618"/>
         <source>&amp;File</source>
-        <translation>&amp;Отображать панель инструментов</translation>
+        <translation>&amp;Файл</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="633"/>
@@ -1286,7 +1288,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="809"/>
         <source>View</source>
-        <translation>Посмотреть</translation>
+        <translation>Вид</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="826"/>
@@ -1306,7 +1308,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="950"/>
         <source>Comic files</source>
-        <translation>Файлы комикса </translation>
+        <translation>Файлы комиксов</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1034"/>
@@ -1317,7 +1319,7 @@ If none is active, Escape does nothing.</source>
         <location filename="main_window_viewer.cpp" line="1347"/>
         <location filename="main_window_viewer.cpp" line="1360"/>
         <source>Comics</source>
-        <translation>Комикс</translation>
+        <translation>Комиксы</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1371"/>
@@ -1348,23 +1350,17 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1402"/>
         <source>Zoom in magnifying glass</source>
-        <translation>Увеличить</translation>
+        <translation>Увеличить Zoom увеличительного стекла</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1405"/>
         <source>Zoom out magnifying glass</source>
-        <translation>Уменьшить</translation>
+        <translation>Уменьшить Zoom лупы</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1408"/>
         <source>Reset magnifying glass</source>
         <translation>Сбросить увеличительное стекло</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1349"/>
-        <location filename="main_window_viewer.cpp" line="1415"/>
-        <source>Magnifiying glass</source>
-        <translation>Увеличительное стекло</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1422"/>
@@ -1374,7 +1370,8 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1350"/>
         <location filename="main_window_viewer.cpp" line="1426"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
+        <oldsource>Page adjustement</oldsource>
         <translation>Настройка страницы</translation>
     </message>
     <message>
@@ -1385,12 +1382,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1109"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезаписать файл?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1109"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл уже существует. Перезаписать его?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1115"/>
@@ -1405,22 +1402,22 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1145"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось извлечь текущую страницу.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1150"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезаписать файлы?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1150"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Некоторые файлы уже существуют. Перезаписать их?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1163"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось извлечь некоторые страницы.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1444"/>
@@ -1435,22 +1432,22 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1450"/>
         <source>Autoscroll forward, horizontal first</source>
-        <translation>Автопрокрутка вперед, горизонтальная</translation>
+        <translation>Автопрокрутка вперед, сначала по горизонтали</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1454"/>
         <source>Autoscroll backward, horizontal first</source>
-        <translation>Автопрокрутка назад, горизонтальная</translation>
+        <translation>Автопрокрутка назад, сначала по горизонтали</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1458"/>
         <source>Autoscroll forward, vertical first</source>
-        <translation>Автопрокрутка вперед, вертикальная</translation>
+        <translation>Автопрокрутка вперед, сначала по вертикали</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1462"/>
         <source>Autoscroll backward, vertical first</source>
-        <translation>Автопрокрутка назад, вертикальная</translation>
+        <translation>Автопрокрутка назад, сначала по вертикали</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1466"/>
@@ -1506,7 +1503,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1553"/>
         <source>Do you want to download the new version?</source>
-        <translation>Хотите загрузить новую версию ?</translation>
+        <translation>Хотите загрузить новую версию?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1556"/>
@@ -1524,12 +1521,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Примечания к выпуску недоступны.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>Предыдущие версии</translation>
     </message>
 </context>
 <context>
@@ -1543,7 +1540,7 @@ If none is active, Escape does nothing.</source>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="27"/>
         <source>Click to overwrite</source>
-        <translation>Изменить</translation>
+        <translation>Щелкните, чтобы перезаписать</translation>
     </message>
 </context>
 <context>
@@ -1551,7 +1548,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="10"/>
         <source>Restore to default</source>
-        <translation>Вернуть начальные установки</translation>
+        <translation>Восстановить значения по умолчанию</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="9"/>
@@ -1559,7 +1556,7 @@ If none is active, Escape does nothing.</source>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="43"/>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="49"/>
         <source>Click to overwrite</source>
-        <translation>Изменить</translation>
+        <translation>Щелкните, чтобы перезаписать</translation>
     </message>
 </context>
 <context>
@@ -1600,7 +1597,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="width_slider.cpp" line="52"/>
         <source>Reset</source>
-        <translation>Сброс мастштаба</translation>
+        <translation>Сбросить</translation>
     </message>
 </context>
 <context>

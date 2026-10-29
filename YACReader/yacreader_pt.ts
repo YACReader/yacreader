@@ -24,7 +24,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>Luz</translation>
+        <translation>Claro</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
@@ -44,12 +44,12 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
         <source>Remove this user-imported theme</source>
-        <translation>Remova este tema importado pelo usuário</translation>
+        <translation>Remover este tema importado pelo usuário</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>Luz:</translation>
+        <translation>Claro:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
@@ -79,7 +79,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="175"/>
         <source>Open Theme Editor...</source>
-        <translation>Abra o Editor de Tema...</translation>
+        <translation>Abrir editor de tema...</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="184"/>
@@ -89,7 +89,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="185"/>
         <source>The current theme JSON could not be loaded.</source>
-        <translation>O tema atual JSON não pôde ser carregado.</translation>
+        <translation>Não foi possível carregar o JSON do tema atual.</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
@@ -145,7 +145,7 @@
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>Última Página</translation>
     </message>
 </context>
@@ -166,7 +166,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>Para alterar um atalho, clique duas vezes na combinação de teclas e digite as novas teclas.</translation>
     </message>
     <message>
@@ -181,7 +181,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>O atalho &quot;%1&quot; já está atribuído a outra função</translation>
     </message>
 </context>
@@ -224,8 +224,8 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
-        <translation>Total de páginas : </translation>
+        <source>Total pages: </source>
+        <translation>Total de páginas: </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="26"/>
@@ -234,16 +234,16 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
-        <translation>Página : </translation>
+        <source>Page: </source>
+        <translation>Página: </translation>
     </message>
 </context>
 <context>
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
-        <translation>Página : </translation>
+        <source>Page: </source>
+        <translation>Página: </translation>
     </message>
 </context>
 <context>
@@ -261,7 +261,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>Registro de alterações</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
@@ -274,7 +274,7 @@
     <message>
         <location filename="options_dialog.cpp" line="38"/>
         <source>My comics path</source>
-        <translation>Meu caminho de quadrinhos</translation>
+        <translation>Caminho dos meus quadrinhos</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="78"/>
@@ -309,22 +309,22 @@
     <message>
         <location filename="options_dialog.cpp" line="100"/>
         <source>Clear</source>
-        <translation>Claro</translation>
+        <translation>Limpar</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="342"/>
         <source>Comics directory</source>
-        <translation>Diretório de quadrinhos</translation>
+        <translation>Pasta de quadrinhos</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="317"/>
         <source>Restart is needed</source>
-        <translation>Reiniciar é necessário</translation>
+        <translation>É necessário reiniciar</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="58"/>
         <source>Display</source>
-        <translation>Mostrar</translation>
+        <translation>Exibição</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="60"/>
@@ -363,28 +363,28 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>Comportamento de rolagem</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="111"/>
         <source>Disable scroll animations and smooth scrolling</source>
-        <translation>Desative animações de rolagem e rolagem suave</translation>
+        <translation>Desativar animações de rolagem e rolagem suave</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="112"/>
         <source>Do not turn page using scroll</source>
-        <translation>Não vire a página usando scroll</translation>
+        <translation>Não virar a página ao rolar</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="113"/>
         <source>Use single scroll step to turn page</source>
-        <translation>Use uma única etapa de rolagem para virar a página</translation>
+        <translation>Usar um único passo de rolagem para virar a página</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="121"/>
         <source>Mouse mode</source>
-        <translation>Modo mouse</translation>
+        <translation>Modo do mouse</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="124"/>
@@ -398,7 +398,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>Clique na metade esquerda ou direita da tela para virar as páginas.</translation>
     </message>
     <message>
@@ -437,7 +437,7 @@ If none is active, Escape does nothing.</source>
 1. Lupa
 2. Dicionário
 3. Barra Ir para a página
-4. Ecrã inteiro
+4. Tela cheia
 
 Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     </message>
@@ -459,7 +459,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="options_dialog.cpp" line="181"/>
         <source>Disable mouse over activation</source>
-        <translation>Desativar ativação do mouse sobre</translation>
+        <translation>Desativar ativação ao passar o mouse</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="223"/>
@@ -479,7 +479,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="options_dialog.cpp" line="229"/>
         <source>Reset</source>
-        <translation>Reiniciar</translation>
+        <translation>Redefinir</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="234"/>
@@ -494,7 +494,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="options_dialog.cpp" line="240"/>
         <source>Enlarge images to fit width/height</source>
-        <translation>Amplie as imagens para caber na largura/altura</translation>
+        <translation>Ampliar imagens para caber na largura/altura</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="251"/>
@@ -529,7 +529,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="options_dialog.cpp" line="276"/>
         <source>Bilinear</source>
-        <translation>Interpola??o bilinear</translation>
+        <translation>Bilinear</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="277"/>
@@ -539,7 +539,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="options_dialog.cpp" line="307"/>
         <source>General</source>
-        <translation>Em geral</translation>
+        <translation>Geral</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="308"/>
@@ -562,7 +562,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>não é possível carregar 7z lib de ./utils</translation>
+        <translation>não foi possível carregar a biblioteca 7z de ./utils</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="156"/>
@@ -605,7 +605,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>eu</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -620,7 +620,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>Segure para piscar o valor selecionado na UI (magenta/alternado/0↔10). Os lançamentos restauram o original.</translation>
+        <translation>Segure para destacar o valor selecionado na interface (magenta / alternado / 0↔10). Ao soltar, o original é restaurado.</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
@@ -630,7 +630,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>Luz</translation>
+        <translation>Claro</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
@@ -640,7 +640,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>ID:</source>
-        <translation>EU IA:</translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
@@ -700,7 +700,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>verdadeiro</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -708,7 +708,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>falso</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
@@ -779,7 +779,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="431"/>
         <source>Expected a JSON object.</source>
-        <translation>Esperava um objeto JSON.</translation>
+        <translation>Era esperado um objeto JSON.</translation>
     </message>
 </context>
 <context>
@@ -787,12 +787,12 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
+        <source>Press &apos;O&apos; to open a comic.</source>
         <translation>Pressione &apos;O&apos; para abrir um quadrinho.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
+        <source>Loading... please wait!</source>
         <translation>Carregando... por favor, aguarde!</translation>
     </message>
     <message>
@@ -823,7 +823,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="viewer.cpp" line="2181"/>
         <source>Cover!</source>
-        <translation>Cobrir!</translation>
+        <translation>Capa!</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="2195"/>
@@ -846,12 +846,12 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="24"/>
         <source>Stripe look</source>
-        <translation>Olhar lista</translation>
+        <translation>Aparência em faixas</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="27"/>
         <source>Overlapped Stripe look</source>
-        <translation>Olhar lista sobreposta</translation>
+        <translation>Aparência em faixas sobrepostas</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="30"/>
@@ -886,17 +886,17 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="101"/>
         <source>Cover gap</source>
-        <translation>Cubra a lacuna</translation>
+        <translation>Espaço entre capas</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="107"/>
         <source>Central gap</source>
-        <translation>Lacuna central</translation>
+        <translation>Espaço central</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Amplia??o</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -911,7 +911,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="131"/>
         <source>Cover Angle</source>
-        <translation>Ângulo de cobertura</translation>
+        <translation>Ângulo da capa</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="137"/>
@@ -940,8 +940,8 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Use VSync (melhora a qualidade da imagem em modo tela cheia, pior desempenho)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>Usar VSync (melhora a qualidade da imagem em modo tela cheia, mas reduz o desempenho)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
@@ -974,27 +974,27 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="354"/>
         <source>Open image folder</source>
-        <translation>Abra a pasta de imagens</translation>
+        <translation>Abrir pasta de imagens</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="359"/>
         <source>Open latest comic</source>
-        <translation>Abra o último quadrinho</translation>
+        <translation>Abrir o último quadrinho</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="360"/>
         <source>Open the latest comic opened in the previous reading session</source>
-        <translation>Abra o último quadrinho aberto na sessão de leitura anterior</translation>
+        <translation>Abrir o último quadrinho aberto na sessão de leitura anterior</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="372"/>
         <source>Clear</source>
-        <translation>Claro</translation>
+        <translation>Limpar</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="373"/>
         <source>Clear open recent list</source>
-        <translation>Limpar lista recente aberta</translation>
+        <translation>Limpar lista de abertos recentemente</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="376"/>
@@ -1016,12 +1016,12 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
         <location filename="main_window_viewer.cpp" line="1145"/>
         <location filename="main_window_viewer.cpp" line="1163"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Extrair página(s)</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>Extrair página(s) da fonte original</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
@@ -1094,7 +1094,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="428"/>
         <source>Show full size</source>
-        <translation>Mostrar tamanho grande</translation>
+        <translation>Mostrar tamanho original</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="435"/>
@@ -1124,12 +1124,12 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>Ampliar</translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>Reduzir</translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="493"/>
@@ -1144,12 +1144,12 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="503"/>
         <source>Double page mode</source>
-        <translation>Modo dupla página</translation>
+        <translation>Modo de página dupla</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="504"/>
         <source>Switch to double page mode</source>
-        <translation>Alternar para o modo dupla página</translation>
+        <translation>Alternar para o modo de página dupla</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="512"/>
@@ -1168,7 +1168,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
+        <source>Go to page...</source>
         <translation>Ir para a página...</translation>
     </message>
     <message>
@@ -1194,6 +1194,8 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1349"/>
+        <location filename="main_window_viewer.cpp" line="1415"/>
         <source>Magnifying glass</source>
         <translation>Lupa</translation>
     </message>
@@ -1225,7 +1227,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="562"/>
         <source>Show keyboard shortcuts</source>
-        <translation>Mostrar teclas de atalhos</translation>
+        <translation>Mostrar atalhos de teclado</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="567"/>
@@ -1333,12 +1335,12 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
         <location filename="main_window_viewer.cpp" line="1348"/>
         <location filename="main_window_viewer.cpp" line="1377"/>
         <source>General</source>
-        <translation>Em geral</translation>
+        <translation>Geral</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1396"/>
         <source>Size up magnifying glass</source>
-        <translation>Dimensione a lupa</translation>
+        <translation>Aumentar o tamanho da lupa</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1399"/>
@@ -1348,7 +1350,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1402"/>
         <source>Zoom in magnifying glass</source>
-        <translation>Zoom na lupa</translation>
+        <translation>Aumentar o zoom da lupa</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1405"/>
@@ -1361,12 +1363,6 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
         <translation>Redefinir lupa</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1349"/>
-        <location filename="main_window_viewer.cpp" line="1415"/>
-        <source>Magnifiying glass</source>
-        <translation>Lupa</translation>
-    </message>
-    <message>
         <location filename="main_window_viewer.cpp" line="1422"/>
         <source>Toggle between fit to width and fit to height</source>
         <translation>Alternar entre ajustar à largura e ajustar à altura</translation>
@@ -1374,7 +1370,8 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1350"/>
         <location filename="main_window_viewer.cpp" line="1426"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
+        <oldsource>Page adjustement</oldsource>
         <translation>Ajuste de página</translation>
     </message>
     <message>
@@ -1385,17 +1382,17 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1109"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituir arquivo?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1109"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>O arquivo já existe. Deseja substituí-lo?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1115"/>
         <source>The current page could not be saved.</source>
-        <translation>Não foi possível guardar a página atual.</translation>
+        <translation>Não foi possível salvar a página atual.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1134"/>
@@ -1405,22 +1402,22 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1145"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível extrair a página atual.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1150"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>Substituir arquivos?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1150"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Alguns arquivos já existem. Deseja substituí-los?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1163"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Não foi possível extrair algumas páginas.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1444"/>
@@ -1460,7 +1457,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1469"/>
         <source>Move up</source>
-        <translation>Subir</translation>
+        <translation>Mover para cima</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1472"/>
@@ -1475,7 +1472,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1478"/>
         <source>Go to the first page</source>
-        <translation>Vá para a primeira página</translation>
+        <translation>Ir para a primeira página</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1481"/>
@@ -1524,12 +1521,12 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>As notas de versão não estão disponíveis.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>Versões anteriores</translation>
     </message>
 </context>
 <context>
@@ -1582,7 +1579,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="31"/>
         <source>Customize the keyboard shortcuts used by the application.</source>
-        <translation>Personalize os atalhos de teclado utilizados pela aplicação.</translation>
+        <translation>Personalize os atalhos de teclado utilizados pelo aplicativo.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
@@ -1600,7 +1597,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="width_slider.cpp" line="52"/>
         <source>Reset</source>
-        <translation>Reiniciar</translation>
+        <translation>Redefinir</translation>
     </message>
 </context>
 <context>
@@ -1619,7 +1616,7 @@ Se nenhum estiver ativo, a tecla Escape não faz nada.</translation>
     <message>
         <location filename="translator.cpp" line="100"/>
         <source>clear</source>
-        <translation>claro</translation>
+        <translation>limpar</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="195"/>

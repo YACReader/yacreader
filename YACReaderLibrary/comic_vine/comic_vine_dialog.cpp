@@ -293,7 +293,7 @@ void ComicVineDialog::processClientResults(const QString &string)
     p.loadJSONResponse(string);
     // QMessageBox::information(0,"Result", QString("Number of results : %1").arg(p.getNumResults()));
     if (p.responseError()) {
-        QMessageBox::critical(0, tr("Error connecting to ComicVine"), p.errorDescription());
+        QMessageBox::critical(0, tr("Error connecting to Comic Vine"), p.errorDescription());
         goBack();
     } else {
 
@@ -482,7 +482,7 @@ void ComicVineDialog::getComicsInfo(QList<QPair<ComicRecord, QString>> matchingI
         patch.set(&DescriptiveComicMetadata::comicVineID, match.second);
         patches.append({ match.first, patch });
 
-        setLoadingMessage(tr("Retrieving tags for : %1").arg(recordFileName(match.first)));
+        setLoadingMessage(tr("Retrieving tags for: %1").arg(recordFileName(match.first)));
     }
 
     QList<MissingIssue> missing;
@@ -598,7 +598,7 @@ void ComicVineDialog::getComicInfo(const QString &comicId, const SelectedVolumeI
 
     auto patch = YACReader::parseCVJSONComicInfo(result, volumeInfo);
     patch.set(&DescriptiveComicMetadata::comicVineID, comicId);
-    setLoadingMessage(tr("Retrieving tags for : %1").arg(recordFileName(comics[currentIndex])));
+    setLoadingMessage(tr("Retrieving tags for: %1").arg(recordFileName(comics[currentIndex])));
     saveMetadata({ { comics[currentIndex], patch } });
 
     if (mode == ScraperMode::SingleComic || currentIndex == (comics.count() - 1)) {

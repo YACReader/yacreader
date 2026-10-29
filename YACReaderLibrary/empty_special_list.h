@@ -5,6 +5,7 @@
 
 class EmptySpecialListWidget : public EmptyContainerInfo
 {
+    Q_OBJECT
 public:
     enum SpecialListType {
         None,
