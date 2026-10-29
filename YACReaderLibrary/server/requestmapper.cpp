@@ -27,6 +27,7 @@
 #include "controllers/v3/covercontroller_v3.h"
 #include "controllers/v3/foldercontentcontroller_v3.h"
 #include "controllers/v3/folderinfocontroller_v3.h"
+#include "controllers/v3/librarymaintenancecontroller_v3.h"
 #include "controllers/v3/listcontentcontroller_v3.h"
 #include "controllers/v3/listitemcontroller_v3.h"
 #include "controllers/v3/listsectioncontroller_v3.h"
@@ -251,11 +252,14 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     QRegExp readingListFolder("/v3/library/([0-9]+)/reading_list_folder/([0-9]+)/?");
     QRegExp smartList("/v3/library/([0-9]+)/smart_list/([0-9]+)/?");
     QRegExp smartListFolder("/v3/library/([0-9]+)/smart_list_folder/([0-9]+)/?");
+    QRegExp librariesMaintenance("/v3/libraries/maintenance/?");
+    QRegExp libraryLockRecovery("/v3/library/([0-9]+)/maintenance/recover/?");
 
     loadSession(request, response);
 
     std::unique_ptr<HttpRequestHandler> controller;
     std::optional<int> libraryId;
+    QByteArray method = "GET";
     if (serverVersion.exactMatch(path)) {
         controller = std::make_unique<VersionController>(SERVER_V3_VERSION_NUMBER);
     } else if (folderContent.exactMatch(path)) {
@@ -306,11 +310,17 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     } else if (smartListFolder.exactMatch(path)) {
         libraryId = smartListFolder.cap(1).toInt();
         controller = std::make_unique<ListItemControllerV3>(*libraryId, ListFolderId { ListFolderKind::SmartList, smartListFolder.cap(2).toULongLong() });
+    } else if (librariesMaintenance.exactMatch(path)) {
+        controller = std::make_unique<LibraryMaintenanceControllerV3>();
+    } else if (libraryLockRecovery.exactMatch(path)) {
+        libraryId = libraryLockRecovery.cap(1).toInt();
+        method = "POST";
+        controller = std::make_unique<LibraryMaintenanceControllerV3>(*libraryId);
     }
 
     if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId)))
         V3Response::notFound(response);
-    else if (request.getMethod() != "GET")
+    else if (request.getMethod() != method)
         V3Response::methodNotAllowed(response);
     else
         controller->service(request, response);
