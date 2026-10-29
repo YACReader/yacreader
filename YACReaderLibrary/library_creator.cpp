@@ -68,12 +68,18 @@ LibraryCreator::LibraryCreator(QSettings *settings)
 
 void LibraryCreator::createLibrary(const QString &source, const QString &target)
 {
+    stopRunning = false;
+    canceled = false;
     creation = true;
+    partialUpdate = false;
+    checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     processLibrary(source, target);
 }
 
 void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 {
+    stopRunning = false;
+    canceled = false;
     creation = false;
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = false;
@@ -84,15 +90,22 @@ void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 
 void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, qulonglong folderId)
 {
+    stopRunning = false;
+    canceled = false;
     creation = false;
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = true;
     _folderDestinationId = folderId;
+    _sourceFolder = sourceFolder;
+    processLibrary(source, target);
+}
 
+bool LibraryCreator::prepareFolderUpdate()
+{
     _currentPathFolders.clear();
 
-    QString relativeFolderPath = sourceFolder;
-    relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(source));
+    QString relativeFolderPath = _sourceFolder;
+    relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(_source));
 
     if (relativeFolderPath.startsWith("/")) {
         relativeFolderPath = relativeFolderPath.remove(0, 1); // remove firts '/'
@@ -108,13 +121,13 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     QLOG_DEBUG() << "folders found in relative path : " << folders << "-" << relativeFolderPath;
     QString connectionName = "";
     {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(target);
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_target);
 
-        if (!db.isValid()) {
+        if (!db.isValid() || !db.isOpen()) {
             QString error = "Unable to find database at: " + _target;
             QLOG_ERROR() << error;
             emit failedOpeningDB(error);
-            return;
+            return false;
         }
 
         _currentPathFolders.append({ rootFolder(db), true });
@@ -140,27 +153,33 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
 
     QLOG_DEBUG() << "Relative path : " << relativeFolderPath;
 
-    _sourceFolder = sourceFolder;
-
-    processLibrary(source, target);
+    return true;
 }
 
 void LibraryCreator::processLibrary(const QString &source, const QString &target)
 {
     _source = source;
     _target = target;
-    if (DataBaseManagement::checkValidDB(target + "/library.ydb") == "") {
-        _mode = creation ? CREATOR : UPDATER;
-    } else { //
-        _mode = UPDATER;
-    }
+    _mode = creation ? CREATOR : UPDATER;
 }
 
 //
 void LibraryCreator::run()
 {
-    stopRunning = false;
-    canceled = false;
+    lastMaintenanceFailure = { };
+    if (creation) {
+        if (!QDir().mkpath(_target)) {
+            emit failedCreatingDB(tr("Unable to create the library data folder: %1. Check folder access and available disk space.").arg(_target));
+            return;
+        }
+    } else {
+        if (!QDir(_target).exists()) {
+            emit failedOpeningDB(tr("The library data folder is missing: %1. Restore it or recreate the library before updating.").arg(_target));
+            return;
+        }
+        // An interrupted restore can legitimately leave the database absent.
+        // Recovery must run under the maintenance lock before checking it.
+    }
 #if !defined use_unarr && !defined use_libarchive
     auto sevenzLib = YACReader::load7zLibrary();
 
@@ -171,27 +190,43 @@ void LibraryCreator::run()
     }
     sevenzLib->deleteLater();
 #endif
-    if (_mode == CREATOR)
-        QDir().mkpath(_target);
-
     LibraryMaintenanceLock maintenanceLock(_source);
     if (!maintenanceLock.tryLock()) {
+        lastMaintenanceFailure = maintenanceLock.failure();
         const auto error = maintenanceLock.errorString();
         QLOG_ERROR() << error;
-        if (_mode == CREATOR)
+        if (creation)
             emit failedCreatingDB(error);
         else
             emit failedOpeningDB(error);
         return;
     }
+    _databaseConnection.clear();
+    const auto removeConnection = qScopeGuard([this] {
+        if (!_databaseConnection.isEmpty())
+            QSqlDatabase::removeDatabase(_databaseConnection);
+    });
 
-    if (_mode == UPDATER) {
-        QString recoveryError;
-        if (!DataBaseManagement::recoverInterruptedRestore(_source, &recoveryError, true)) {
-            QLOG_ERROR() << recoveryError;
+    QString recoveryError;
+    if (!DataBaseManagement::recoverInterruptedRestore(_source, &recoveryError, true)) {
+        QLOG_ERROR() << recoveryError;
+        if (creation)
+            emit failedCreatingDB(recoveryError);
+        else
             emit failedOpeningDB(recoveryError);
+        return;
+    }
+    // Recovery (or the previous owner) may have installed a database since
+    // this request was prepared. Decide only while holding the lock, on every
+    // run, so retrying creation never recreates a recovered valid library.
+    _mode = creation && DataBaseManagement::checkValidDB(LibraryPaths::libraryDatabasePath(_source)).isEmpty() ? CREATOR : UPDATER;
+    if (_mode == UPDATER) {
+        if (!QFile::exists(LibraryPaths::libraryDatabasePath(_source))) {
+            emit failedOpeningDB(tr("The library database is missing: %1. Restore a backup or recreate the library before updating.").arg(LibraryPaths::libraryDatabasePath(_source)));
             return;
         }
+        if (partialUpdate && !prepareFolderUpdate())
+            return;
     }
 
     if (_mode == CREATOR) {
@@ -208,6 +243,8 @@ void LibraryCreator::run()
         dir.mkpath(LibraryPaths::libraryCoversPathFromLibraryDataPath(_target));
 
         // se crea la base de datos .yacreaderlibrary/library.ydb
+        bool committed = false;
+        QString commitError;
         {
             auto _database = DataBaseManagement::createDatabase("library", _target); //
             _databaseConnection = _database.connectionName();
@@ -221,16 +258,28 @@ void LibraryCreator::run()
             _currentPathFolders.append({ rootFolder(_database), true });
 
             /*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
-            _database.transaction();
+            if (!_database.transaction()) {
+                emit failedCreatingDB(tr("Unable to start a library database transaction: %1").arg(_database.lastError().text()));
+                return;
+            }
             // se crea la librería
             create(QDir(_source));
 
             DBHelper::updateChildrenInfo(_database);
 
-            _database.commit();
+            if (!canceled)
+                committed = _database.commit();
+            if (!committed) {
+                commitError = _database.lastError().text();
+                _database.rollback();
+            }
             _database.close();
         }
-        QSqlDatabase::removeDatabase(_databaseConnection);
+        if (!committed) {
+            if (!canceled)
+                emit failedCreatingDB(tr("Unable to commit the library database: %1").arg(commitError));
+            return;
+        }
         emit created();
         QLOG_INFO() << "Create library END";
     } else {
@@ -242,6 +291,7 @@ void LibraryCreator::run()
             emit failedOpeningDB(error);
             return;
         }
+        bool committed = false;
         {
             auto _database = DataBaseManagement::loadDatabase(_target);
 
@@ -270,7 +320,10 @@ void LibraryCreator::run()
 
             QSqlQuery pragma("PRAGMA foreign_keys = ON", _database);
             pragma.exec();
-            _database.transaction();
+            if (!_database.transaction()) {
+                emit failedOpeningDB(tr("Unable to start a library database transaction: %1").arg(_database.lastError().text()));
+                return;
+            }
             missingComicMatchFiles = { };
             missingComicMatcher = { };
 
@@ -294,7 +347,13 @@ void LibraryCreator::run()
                 unusedPlaceholderCoverKeys = DBHelper::removeUnusedPlaceholders(_database).value_or(QStringList());
             }
 
-            const bool committed = _database.commit();
+            committed = !canceled && _database.commit();
+            if (!committed) {
+                const auto error = _database.lastError().text();
+                _database.rollback();
+                if (!canceled)
+                    emit failedOpeningDB(tr("Unable to commit the library database: %1").arg(error));
+            }
             if (committed) {
                 for (const auto &hash : std::as_const(unusedCoverHashes)) {
                     QFile::remove(LibraryPaths::coverPathFromLibraryDataPath(_target, hash));
@@ -305,7 +364,8 @@ void LibraryCreator::run()
             _database.close();
         }
 
-        QSqlDatabase::removeDatabase(_databaseConnection);
+        if (!committed)
+            return;
 
         // si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
         if (!partialUpdate) {
@@ -327,13 +387,11 @@ void LibraryCreator::run()
 
 void LibraryCreator::stop()
 {
-    QSqlDatabase::database(_databaseConnection).commit();
     stopRunning = true;
 }
 
 void LibraryCreator::cancel()
 {
-    QSqlDatabase::database(_databaseConnection).rollback();
     canceled = true;
     stopRunning = true;
 }

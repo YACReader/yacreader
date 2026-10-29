@@ -980,6 +980,74 @@ input[type="time"]:focus-visible {
   background: transparent;
 }
 
+.library-actions {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex: none;
+  gap: 2px;
+}
+
+.library-notice-toggle.icon-button,
+.library-notice-toggle.icon-button:hover,
+.library-notice-toggle.icon-button[aria-expanded="true"] {
+  color: var(--warning);
+}
+
+.library-notice-toggle.icon-button:hover,
+.library-notice-toggle.icon-button[aria-expanded="true"] {
+  background: var(--warning-soft);
+}
+
+.library-notice-popover {
+  display: flex;
+  width: min(300px, calc(100vw - 48px));
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  cursor: default;
+}
+
+.library-notice-popover[hidden] {
+  display: none;
+}
+
+.library-notice-popover h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.library-notice-popover p {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.library-notice-popover .notice-warning {
+  padding: 9px 10px;
+  border-radius: 8px;
+  background: var(--warning-soft);
+  color: var(--text);
+}
+
+.library-notice-popover .notice-owner {
+  color: var(--text-muted);
+  font-family: "Cascadia Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 11.5px;
+  overflow-wrap: anywhere;
+}
+
+.library-notice-popover .notice-error {
+  color: var(--danger);
+}
+
+.library-notice-popover .primary-button {
+  align-self: flex-end;
+  padding: 8px 14px;
+}
+
 .library-menu-popover {
   position: absolute;
   top: calc(100% + 6px);

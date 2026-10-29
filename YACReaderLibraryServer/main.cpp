@@ -92,7 +92,7 @@ int main(int argc, char **argv)
     parser.addOption({ "system-info", "Prints detailed information about the system environment, including OS version, hardware specifications, and available resources." });
     parser.addOption({ "update-library", "Run a full library update after restoring a backup." });
     parser.addOption({ "allow-invalid-current", "Allow restore when the current library database is invalid." });
-    parser.addOption({ "remove-stale-lock", "Remove a stale maintenance lock after validating that it is stale." });
+    parser.addOption({ "remove-stale-lock", "Attempt maintenance lock recovery. Use only after checking no maintenance operation is running on any computer." });
     parser.parse(app.arguments());
 
     const QStringList args = parser.positionalArguments();
@@ -304,10 +304,8 @@ int createLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
         return 1;
     }
 
-    ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
-    libraryCreatorUI->createLibrary(args.at(1), args.at(2));
-
-    return 0;
+    ConsoleUILibraryCreator libraryCreatorUI(settings);
+    return libraryCreatorUI.createLibrary(args.at(1), args.at(2), parser.isSet("remove-stale-lock")) ? 0 : 1;
 }
 
 // -----------------------------------------------------------------------------
@@ -327,7 +325,7 @@ int updateLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
     }
 
     ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
-    return libraryCreatorUI->updateLibrary(args.at(1)) ? 0 : 1;
+    return libraryCreatorUI->updateLibrary(args.at(1), parser.isSet("remove-stale-lock")) ? 0 : 1;
 }
 
 int backupLibrary(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout)
@@ -462,7 +460,7 @@ int repairLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
     }
 
     ConsoleUILibraryCreator libraryCreatorUI(settings);
-    return libraryCreatorUI.repairLibrary(args.at(1));
+    return libraryCreatorUI.repairLibrary(args.at(1), parser.isSet("remove-stale-lock"));
 }
 
 // -----------------------------------------------------------------------------
@@ -573,10 +571,8 @@ int rescanXmlInfo(QCoreApplication &app, QCommandLineParser &parser, QSettings *
         return 1;
     }
 
-    ConsoleUILibraryCreator *libraryCreatorUI = new ConsoleUILibraryCreator(settings);
-    libraryCreatorUI->rescanXMLInfoLibrary(args.at(1));
-
-    return 0;
+    ConsoleUILibraryCreator libraryCreatorUI(settings);
+    return libraryCreatorUI.rescanXMLInfoLibrary(args.at(1), parser.isSet("remove-stale-lock")) ? 0 : 1;
 }
 
 // -----------------------------------------------------------------------------

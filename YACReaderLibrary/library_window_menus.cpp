@@ -146,6 +146,8 @@ void LibraryWindowMenus::setupMenus()
 
     selectedLibrary->addAction(actions.backupLibraryAction);
     selectedLibrary->addAction(actions.restoreLibraryAction);
+    selectedLibrary->addAction(actions.repairLibraryDatabaseAction);
+    selectedLibrary->addAction(actions.recoverLibraryAccessAction);
     YACReader::addSperator(selectedLibrary);
 
     selectedLibrary->addAction(actions.exportComicsInfoAction);
@@ -174,6 +176,8 @@ void LibraryWindowMenus::setupMenus()
     libraryMenu->addSeparator();
     libraryMenu->addAction(actions.backupLibraryAction);
     libraryMenu->addAction(actions.restoreLibraryAction);
+    libraryMenu->addAction(actions.repairLibraryDatabaseAction);
+    libraryMenu->addAction(actions.recoverLibraryAccessAction);
     libraryMenu->addSeparator();
     libraryMenu->addAction(actions.exportComicsInfoAction);
     libraryMenu->addAction(actions.importComicsInfoAction);

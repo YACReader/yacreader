@@ -8,6 +8,7 @@
 #include "folder_model.h"
 #include "import_library_dialog.h"
 #include "library_creator.h"
+#include "library_maintenance_dialog.h"
 #include "package_manager.h"
 #include "xml_info_library_scanner.h"
 #include "yacreader_global.h"
@@ -57,7 +58,12 @@ LibraryManagementCoordinator::LibraryManagementCoordinator(QSettings *settings,
     connect(libraryCreator, &LibraryCreator::created, this, &LibraryManagementCoordinator::finishAddingLibrary);
     connect(libraryCreator, &LibraryCreator::updatedCurrentFolder, this, &LibraryManagementCoordinator::folderUpdateFinished);
     connect(libraryCreator, &LibraryCreator::comicAdded, this, &LibraryManagementCoordinator::comicAdded);
-    connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, &LibraryManagementCoordinator::creationFailed);
+    connect(libraryCreator, &LibraryCreator::failedCreatingDB, this, [this](const QString &error) {
+        if (!retryCreatorAfterLockFailure()) {
+            emit creationFailed(error);
+            emit operationAborted();
+        }
+    });
     connect(libraryCreator, &LibraryCreator::failedOpeningDB, this, &LibraryManagementCoordinator::handleCreatorOpeningFailure);
 
     connect(this, &LibraryManagementCoordinator::libraryReloadRequested, this, &LibraryManagementCoordinator::loadLibrary);
@@ -88,7 +94,22 @@ LibraryManagementCoordinator::LibraryManagementCoordinator(QSettings *settings,
     connect(packageManager, &PackageManager::imported, this, &LibraryManagementCoordinator::finishAddingLibrary);
     connect(packageManager, &PackageManager::failed, this, &LibraryManagementCoordinator::packageFailed);
 
-    connect(xmlInfoLibraryScanner, &QThread::finished, this, &LibraryManagementCoordinator::xmlScanFinished);
+    connect(xmlInfoLibraryScanner, &QThread::finished, this, [this] {
+        xmlInfoLibraryScanner->wait();
+        emit xmlScanFinished();
+        const auto error = xmlInfoLibraryScanner->errorString();
+        if (error.isEmpty())
+            return;
+        if (!xmlRecoveryAttempted && xmlInfoLibraryScanner->maintenanceFailure().error == QLockFile::LockFailedError) {
+            xmlRecoveryAttempted = true;
+            if (recoverLibraryMaintenance(this->dialogParent, xmlOperationLibraryPath, tr("XML information rescan"))) {
+                emit xmlScanStarted();
+                xmlInfoLibraryScanner->start();
+            }
+        } else {
+            QMessageBox::critical(this->dialogParent, tr("XML information rescan"), error);
+        }
+    });
     connect(xmlInfoLibraryScanner, &XMLInfoLibraryScanner::comicScanned, this, &LibraryManagementCoordinator::xmlComicScanned);
 }
 
@@ -102,13 +123,22 @@ void LibraryManagementCoordinator::loadLibrary(const QString &libraryName)
     loadLibraryAtPath(libraryName, libraries.getPath(libraryName));
 }
 
-void LibraryManagementCoordinator::loadLibraryAtPath(const QString &libraryName, const QString &libraryPath)
+void LibraryManagementCoordinator::loadLibraryAtPath(const QString &libraryName, const QString &libraryPath, bool recoveryAttempted)
 {
     emit loadStarted();
 
     QString recoveryError;
-    if (!DataBaseManagement::recoverInterruptedRestore(libraryPath, &recoveryError)) {
-        QMessageBox::critical(dialogParent, QCoreApplication::translate("LibraryWindow", "Restore recovery failed"), recoveryError);
+    QLockFile::LockError lockError;
+    if (!DataBaseManagement::recoverInterruptedRestore(libraryPath, &recoveryError, false, &lockError)) {
+        if (lockError == QLockFile::LockFailedError && !recoveryAttempted) {
+            if (recoverLibraryMaintenance(dialogParent, libraryPath, tr("Restore recovery"))) {
+                loadLibraryAtPath(libraryName, libraryPath, true);
+                return;
+            }
+        } else {
+            QMessageBox::critical(dialogParent, QCoreApplication::translate("LibraryWindow", "Restore recovery failed"), recoveryError);
+        }
+        emit libraryManagementOnlyRequested();
         return;
     }
 
@@ -230,6 +260,8 @@ void LibraryManagementCoordinator::createLibrary(const QString &source, const QS
     pendingLibraryPath = source;
     operationLibraryName = name;
     operationLibraryPath = source;
+    creatorRecoveryAttempted = false;
+    creatorIsCreation = true;
     emit creationStarted();
     libraryCreator->createLibrary(source, destination);
     libraryCreator->start();
@@ -260,6 +292,8 @@ void LibraryManagementCoordinator::updateFolder(const QModelIndex &folderIndex)
 
 void LibraryManagementCoordinator::updateLibrary(const QString &libraryName, const QString &libraryPath)
 {
+    creatorRecoveryAttempted = false;
+    creatorIsCreation = false;
     operationLibraryName = libraryName;
     operationLibraryPath = libraryPath;
     emit updateStarted();
@@ -269,6 +303,8 @@ void LibraryManagementCoordinator::updateLibrary(const QString &libraryName, con
 
 void LibraryManagementCoordinator::startFolderUpdate(const QString &libraryName, const QString &libraryPath, const QString &folderPath, qulonglong folderId)
 {
+    creatorRecoveryAttempted = false;
+    creatorIsCreation = false;
     operationLibraryName = libraryName;
     operationLibraryPath = libraryPath;
     libraryCreator->updateFolder(libraryPath, LibraryPaths::libraryDataPath(libraryPath), folderPath, folderId);
@@ -278,6 +314,8 @@ void LibraryManagementCoordinator::startFolderUpdate(const QString &libraryName,
 void LibraryManagementCoordinator::rescanCurrentLibraryForXMLInfo()
 {
     const auto libraryPath = libraries.getPath(currentLibraryNameProvider());
+    xmlOperationLibraryPath = libraryPath;
+    xmlRecoveryAttempted = false;
     emit xmlScanStarted();
     xmlInfoLibraryScanner->scanLibrary(libraryPath, LibraryPaths::libraryDataPath(libraryPath));
 }
@@ -293,6 +331,8 @@ void LibraryManagementCoordinator::rescanFolderForXMLInfo(const QModelIndex &fol
         return;
 
     const auto libraryPath = libraries.getPath(currentLibraryNameProvider());
+    xmlOperationLibraryPath = libraryPath;
+    xmlRecoveryAttempted = false;
     emit xmlScanStarted();
     xmlInfoLibraryScanner->scanFolder(
             libraryPath,
@@ -461,22 +501,84 @@ void LibraryManagementCoordinator::stop()
     xmlInfoLibraryScanner->wait();
 }
 
-void LibraryManagementCoordinator::startUpgrade(const QString &libraryName, const QString &libraryPath, const QString &libraryDataPath)
+void LibraryManagementCoordinator::startUpgrade(const QString &libraryName, const QString &libraryPath, const QString &libraryDataPath, bool recoveryAttempted)
 {
     emit upgradeStarted();
-    upgradeFuture = std::async(std::launch::async, [this, libraryName, libraryPath, libraryDataPath] {
-        if (!DataBaseManagement::updateToCurrentVersion(libraryPath))
-            emit upgradeFailed(libraryDataPath);
-        emit libraryReloadRequested(libraryName);
+    upgradeFuture = std::async(std::launch::async, [this, libraryName, libraryPath, libraryDataPath, recoveryAttempted] {
+        bool acquired;
+        bool locked;
+        bool success;
+        QString error;
+        {
+            LibraryMaintenanceLock lock(libraryPath);
+            acquired = lock.tryLock();
+            locked = !acquired && lock.error() == QLockFile::LockFailedError;
+            error = lock.errorString();
+            success = acquired && DataBaseManagement::updateToCurrentVersion(libraryPath, true);
+        }
+        QMetaObject::invokeMethod(this, [this, libraryName, libraryPath, libraryDataPath, recoveryAttempted, locked, acquired, error, success] {
+            emit operationUiResetRequested();
+            if (success) {
+                emit libraryReloadRequested(libraryName);
+            } else if (locked && !recoveryAttempted) {
+                if (recoverLibraryMaintenance(dialogParent, libraryPath, tr("Library upgrade")))
+                    startUpgrade(libraryName, libraryPath, libraryDataPath, true);
+                else
+                    emit libraryManagementOnlyRequested();
+            } else {
+                if (!acquired)
+                    emit openingError(error);
+                else
+                    emit upgradeFailed(libraryDataPath);
+                emit libraryManagementOnlyRequested();
+            } }, Qt::QueuedConnection);
     });
 }
 
 void LibraryManagementCoordinator::handleCreatorOpeningFailure(const QString &error)
 {
+    libraryCreator->wait();
+    if (retryCreatorAfterLockFailure())
+        return;
     emit operationUiResetRequested();
+    if (libraryCreator->maintenanceFailure().error != QLockFile::NoError) {
+        emit updateFailed(error);
+        emit operationAborted();
+        return;
+    }
     if (!operationLibraryPath.isEmpty() && QFile::exists(LibraryPaths::libraryDatabasePath(operationLibraryPath)) && !DataBaseManagement::isLibraryDatabaseValid(operationLibraryPath)) {
+        emit libraryManagementOnlyRequested();
         emit databaseRecoveryRequested(operationLibraryName);
         return;
     }
     emit updateFailed(error);
+    emit operationAborted();
+}
+
+bool LibraryManagementCoordinator::retryCreatorAfterLockFailure()
+{
+    if (creatorRecoveryAttempted || libraryCreator->maintenanceFailure().error != QLockFile::LockFailedError)
+        return false;
+    creatorRecoveryAttempted = true;
+    libraryCreator->wait();
+    emit operationUiResetRequested();
+    if (recoverLibraryMaintenance(dialogParent, operationLibraryPath, tr("Library maintenance"))) {
+        QMetaObject::invokeMethod(this, [this] {
+            if (creatorIsCreation)
+                emit creationStarted();
+            else
+                emit updateStarted();
+            libraryCreator->start(); }, Qt::QueuedConnection);
+    } else {
+        emit operationAborted();
+    }
+    return true;
+}
+
+void LibraryManagementCoordinator::recoverCurrentLibraryAccess()
+{
+    const auto libraryName = currentLibraryNameProvider();
+    const auto libraryPath = libraries.getPath(libraryName);
+    if (!libraryPath.isEmpty() && recoverLibraryMaintenance(dialogParent, libraryPath, tr("Recover library access")))
+        loadLibraryAtPath(libraryName, libraryPath, true);
 }

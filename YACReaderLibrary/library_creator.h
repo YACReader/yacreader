@@ -2,6 +2,7 @@
 #define __LIBRARY_CREATOR_H
 
 #include "comic_db.h"
+#include "data_base_management.h"
 #include "folder.h"
 #include "folder_placeholder_match.h"
 #include "library_comic_match.h"
@@ -18,6 +19,7 @@
 #include <QThread>
 #include <QtCore>
 
+#include <atomic>
 #include <optional>
 
 enum class ReplaceComicResult {
@@ -42,9 +44,12 @@ public:
     void updateFolder(const QString &source, const QString &target, const QString &folder, qulonglong folderId);
     void stop(); // used to stop the process and keep the changes
     void cancel(); // cancels this run and changes in the DB are rolled back
+    LibraryMaintenanceLockFailure maintenanceFailure() const { return lastMaintenanceFailure; }
+    bool wasCanceled() const { return canceled; }
 
 private:
     void processLibrary(const QString &source, const QString &target);
+    bool prepareFolderUpdate();
     enum Mode { CREATOR,
                 UPDATER };
     // atributos "globales" durante el proceso de creación y actualización
@@ -71,11 +76,12 @@ private:
     bool copyReplacedComicInfo(const ComicInfo &oldInfo, ComicInfo newInfo, const QFileInfo &fileInfo);
     // qulonglong insertFolder(qulonglong parentId,const Folder & folder);
     // qulonglong insertComic(const Comic & comic);
-    bool stopRunning;
-    bool canceled;
+    std::atomic_bool stopRunning { false };
+    std::atomic_bool canceled { false };
     // LibraryCreator está en modo creación si creation == true;
     bool creation;
     bool partialUpdate;
+    LibraryMaintenanceLockFailure lastMaintenanceFailure;
     qulonglong _folderDestinationId;
     QSettings *settings;
     bool checkModifiedDatesOnUpdate;

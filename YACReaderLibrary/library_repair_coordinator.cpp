@@ -2,6 +2,7 @@
 
 #include "comic_info_repairer.h"
 #include "data_base_management.h"
+#include "library_maintenance_dialog.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 
@@ -31,6 +32,7 @@ void LibraryRepairCoordinator::repairCurrentLibrary(const QString &dialogTitle)
     libraryName = currentLibraryNameProvider();
     libraryPath = libraries.getPath(libraryName);
     this->dialogTitle = dialogTitle;
+    recoveryAttempted = false;
     startRepair(false);
 }
 
@@ -55,26 +57,13 @@ void LibraryRepairCoordinator::handleFinished()
     emit repairFinished();
 
     if (summary.lockedByAnotherProcess) {
-        if (summary.lockHolderIsRunningLocally) {
-            QMessageBox::information(dialogParent,
-                                     dialogTitle,
-                                     QCoreApplication::translate("LibraryWindow", "A repair of this library is already running (%1). Wait for it to finish.").arg(summary.lockHolderInfo));
-            return;
+        if (!recoveryAttempted) {
+            recoveryAttempted = true;
+            if (recoverLibraryMaintenance(dialogParent, libraryPath, dialogTitle))
+                startRepair(false);
+        } else {
+            QMessageBox::critical(dialogParent, dialogTitle, summary.error);
         }
-
-        auto text = summary.lockHolderInfo.isEmpty()
-                ? QCoreApplication::translate("LibraryWindow", "The library is locked by a repair that did not finish.")
-                : QCoreApplication::translate("LibraryWindow", "The library is locked by a repair started by %1.").arg(summary.lockHolderInfo);
-        text += "\n\n";
-        text += QCoreApplication::translate("LibraryWindow", "If you are sure that no other repair is running, the lock can be removed. Remove the lock and continue?");
-
-        const auto answer = QMessageBox::question(dialogParent,
-                                                  dialogTitle,
-                                                  text,
-                                                  QMessageBox::Yes | QMessageBox::No,
-                                                  QMessageBox::No);
-        if (answer == QMessageBox::Yes)
-            startRepair(true);
         return;
     }
 
@@ -93,6 +82,10 @@ void LibraryRepairCoordinator::handleFinished()
 
 void LibraryRepairCoordinator::handleFailure(const QString &error)
 {
+    if (repairer->summary().maintenanceError != QLockFile::NoError) {
+        QMessageBox::critical(dialogParent, dialogTitle, error);
+        return;
+    }
     if (!libraryPath.isEmpty() && QFile::exists(LibraryPaths::libraryDatabasePath(libraryPath)) && !DataBaseManagement::isLibraryDatabaseValid(libraryPath)) {
         emit databaseRecoveryRequested(libraryName);
         return;

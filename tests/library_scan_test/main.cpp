@@ -1,6 +1,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "library_creator.h"
+#include "xml_info_library_scanner.h"
 #include "yacreader_global.h"
 
 #include <QBuffer>
@@ -93,6 +94,9 @@ private slots:
     void cleanup();
     void createAddsFoldersAndComics();
     void updateMergesDiskAndLibrary();
+    void canceledUpdateRollsBackAndReleasesLock();
+    void xmlRescanHonorsLocksAndCancellation();
+    void folderXmlRescanUsesDatabaseDescendants();
     void folderContentLoadersReturnSortedValues();
     void replacementDecision();
     void cleanupKeepsTheComicInfoOfEntries();
@@ -325,6 +329,84 @@ void LibraryScanTest::updateMergesDiskAndLibrary()
     QVERIFY(!newInfo.isEmpty());
     QVERIFY(newInfo != replacedInfo);
     QCOMPARE(value("SELECT numPages FROM comic_info WHERE id = " + newInfo), QString("1"));
+}
+
+void LibraryScanTest::canceledUpdateRollsBackAndReleasesLock()
+{
+    const auto before = rows("SELECT fileName FROM comic ORDER BY fileName");
+    QVERIFY(writeComic("new.cbz", Qt::gray));
+    QSettings settings(root->filePath("cancel-settings.ini"), QSettings::IniFormat);
+    settings.setValue(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false);
+    LibraryCreator creator(&settings);
+    int updated = 0;
+    connect(&creator, &LibraryCreator::updated, &creator, [&] { ++updated; }, Qt::DirectConnection);
+    connect(&creator, &LibraryCreator::comicAdded, &creator, [&] { creator.cancel(); }, Qt::DirectConnection);
+    creator.updateLibrary(source, LibraryPaths::libraryDataPath(source));
+    creator.start();
+    QVERIFY(creator.wait(30000));
+    QCOMPARE(updated, 0);
+    QCOMPARE(rows("SELECT fileName FROM comic ORDER BY fileName"), before);
+    {
+        LibraryMaintenanceLock next(source);
+        QVERIFY(next.tryLock());
+    }
+    QVERIFY(scan(false));
+    QVERIFY(value("SELECT id FROM comic WHERE fileName = 'new.cbz'") != "");
+}
+
+void LibraryScanTest::xmlRescanHonorsLocksAndCancellation()
+{
+    QFile file(source + "/a.cbz");
+    QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+    QVERIFY(file.write(storedZip({ { "page.png", png(Qt::red) }, { "ComicInfo.xml", "<ComicInfo><Title>Imported title</Title></ComicInfo>" } })) > 0);
+    file.close();
+    QVERIFY(withDatabase([](QSqlDatabase &db) {
+        return QSqlQuery(db).exec("UPDATE comic_info SET title = NULL WHERE id IN (SELECT comicInfoId FROM comic WHERE fileName = 'a.cbz')");
+    }));
+    XMLInfoLibraryScanner scanner;
+    {
+        LibraryMaintenanceLock owner(source);
+        QVERIFY(owner.tryLock());
+        scanner.scanLibrary(source, LibraryPaths::libraryDataPath(source));
+        QVERIFY(scanner.wait(30000));
+        QCOMPARE(scanner.maintenanceFailure().error, QLockFile::LockFailedError);
+        QVERIFY(!scanner.completedSuccessfully());
+    }
+    const auto cancel = connect(&scanner, &XMLInfoLibraryScanner::comicScanned, &scanner, [&] { scanner.cancel(); }, Qt::DirectConnection);
+    scanner.scanLibrary(source, LibraryPaths::libraryDataPath(source));
+    QVERIFY(scanner.wait(30000));
+    QVERIFY(scanner.wasCanceled());
+    QVERIFY(!scanner.completedSuccessfully());
+    QCOMPARE(value("SELECT COALESCE(title, '') FROM comic_info WHERE id IN (SELECT comicInfoId FROM comic WHERE fileName = 'a.cbz')"), QString());
+    disconnect(cancel);
+    scanner.scanLibrary(source, LibraryPaths::libraryDataPath(source));
+    QVERIFY(scanner.wait(30000));
+    QVERIFY2(scanner.completedSuccessfully(), qPrintable(scanner.errorString()));
+    QCOMPARE(value("SELECT title FROM comic_info WHERE id IN (SELECT comicInfoId FROM comic WHERE fileName = 'a.cbz')"), QString("Imported title"));
+    LibraryMaintenanceLock next(source);
+    QVERIFY(next.tryLock());
+}
+
+void LibraryScanTest::folderXmlRescanUsesDatabaseDescendants()
+{
+    for (const auto &path : { QString("a.cbz"), QString("b/b1.cbz") }) {
+        QFile file(source + "/" + path);
+        QVERIFY(file.open(QIODevice::WriteOnly | QIODevice::Truncate));
+        QVERIFY(file.write(storedZip({ { "page.png", png(Qt::red) }, { "ComicInfo.xml", "<ComicInfo><Title>Folder import</Title></ComicInfo>" } })) > 0);
+    }
+    QVERIFY(withDatabase([](QSqlDatabase &db) {
+        return QSqlQuery(db).exec("UPDATE comic_info SET title = NULL");
+    }));
+    XMLInfoLibraryScanner scanner;
+    scanner.scanFolder(source, LibraryPaths::libraryDataPath(source), source + "/b", { });
+    QVERIFY(scanner.wait(30000));
+    QVERIFY2(scanner.completedSuccessfully(), qPrintable(scanner.errorString()));
+    QCOMPARE(value("SELECT title FROM comic_info WHERE id IN (SELECT comicInfoId FROM comic WHERE fileName = 'b1.cbz')"), QString("Folder import"));
+    QCOMPARE(value("SELECT COALESCE(title, '') FROM comic_info WHERE id IN (SELECT comicInfoId FROM comic WHERE fileName = 'a.cbz')"), QString());
+    scanner.scanFolder(source, LibraryPaths::libraryDataPath(source), source, { });
+    QVERIFY(scanner.wait(30000));
+    QVERIFY2(scanner.completedSuccessfully(), qPrintable(scanner.errorString()));
+    QCOMPARE(value("SELECT title FROM comic_info WHERE id IN (SELECT comicInfoId FROM comic WHERE fileName = 'a.cbz')"), QString("Folder import"));
 }
 
 void LibraryScanTest::folderContentLoadersReturnSortedValues()

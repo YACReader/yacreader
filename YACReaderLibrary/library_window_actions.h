@@ -50,6 +50,8 @@ public:
     QAction *updateLibraryAction;
     QAction *backupLibraryAction;
     QAction *restoreLibraryAction;
+    QAction *repairLibraryDatabaseAction;
+    QAction *recoverLibraryAccessAction;
     QAction *repairLibraryAction;
     QAction *removeLibraryAction;
     QAction *helpAboutAction;

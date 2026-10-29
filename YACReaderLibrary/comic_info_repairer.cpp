@@ -441,14 +441,21 @@ void ComicInfoRepairer::run()
 
     LibraryMaintenanceLock maintenanceLock(source);
     if (!maintenanceLock.tryLock(removeStaleLock)) {
-        repairSummary.lockedByAnotherProcess = true;
+        repairSummary.maintenanceError = maintenanceLock.error();
+        repairSummary.lockedByAnotherProcess = maintenanceLock.error() == QLockFile::LockFailedError;
         repairSummary.lockHolderInfo = maintenanceLock.holderInfo();
-        repairSummary.lockHolderIsRunningLocally = maintenanceLock.holderIsRunningLocally();
+        repairSummary.lockHolderIsRunningLocally = maintenanceLock.holderIsRunning();
         repairSummary.error = maintenanceLock.errorString();
+        if (!repairSummary.lockedByAnotherProcess)
+            emit failed(repairSummary.error);
         return;
     }
 
     QString backupError;
+    if (!DataBaseManagement::recoverInterruptedRestore(source, &repairSummary.error, true)) {
+        emit failed(repairSummary.error);
+        return;
+    }
     if (!DataBaseManagement::backupLibrary(source, DatabaseBackupReason::BeforeRepair, &backupError)) {
         repairSummary.error = QString("Unable to back up library database: %1").arg(backupError);
         QLOG_ERROR() << repairSummary.error;

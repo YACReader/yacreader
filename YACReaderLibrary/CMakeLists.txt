@@ -118,6 +118,7 @@ qt_add_executable(YACReaderLibrary WIN32
     folder_management_coordinator.cpp
     library_database_maintenance_coordinator.h
     library_database_maintenance_coordinator.cpp
+    library_maintenance_dialog.h
     library_repair_coordinator.h
     library_repair_coordinator.cpp
     library_management_coordinator.h
@@ -548,6 +549,7 @@ endif()
 # Translations
 set(yacreaderlibrary_translation_source_targets
     YACReaderLibrary
+    library_common
     db_helper
     comic_backend
     common_gui
