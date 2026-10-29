@@ -656,7 +656,24 @@ void LibraryWindow::setupCoordinators()
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::updateStarted, importWidget, &ImportWidget::setUpdateLook);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::updateStarted, this, &LibraryWindow::showImportingWidget);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::operationUiResetRequested, this, &LibraryWindow::showRootWidget);
-    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::operationFinished, this, &LibraryWindow::showRootWidget);
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::operationAborted, this, [this] {
+        if (libraries.isEmpty()) {
+            showNoLibrariesWidget();
+        } else if (hasLoadedLibraryModels() && QFile::exists(LibraryPaths::libraryDatabasePath(libraries.getPath(selectedLibrary->currentText()))) && DataBaseManagement::isLibraryDatabaseValid(libraries.getPath(selectedLibrary->currentText()))) {
+            showRootWidget();
+            // Restore action availability, including imported-library restrictions.
+            applyLoadedLibrary(LibraryPaths::libraryDataPath(libraries.getPath(selectedLibrary->currentText())), importedCovers);
+        } else {
+            showRootWidget();
+            showLibraryManagementOnly();
+        }
+    });
+    connect(libraryManagementCoordinator, &LibraryManagementCoordinator::operationFinished, this, [this] {
+        if (libraries.isEmpty())
+            showNoLibrariesWidget();
+        else
+            showRootWidget();
+    });
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::currentLibraryReloadRequested, this, &LibraryWindow::reloadCurrentLibrary);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryAdded, this, &LibraryWindow::addLibraryToSelector);
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::libraryRemoved, this, &LibraryWindow::handleLibraryRemoved);
@@ -975,6 +992,7 @@ void LibraryWindow::applyLoadedLibrary(const QString &libraryDataPath, bool read
 
     if (readOnly) {
         actions.updateLibraryAction->setDisabled(true);
+        actions.recoverLibraryAccessAction->setDisabled(true);
         actions.repairLibraryAction->setDisabled(true);
         actions.openContainingFolderAction->setDisabled(true);
         actions.rescanLibraryForXMLInfoAction->setDisabled(true);
@@ -999,6 +1017,8 @@ void LibraryWindow::showLibraryManagementOnly()
     actions.renameLibraryAction->setEnabled(true);
     actions.removeLibraryAction->setEnabled(true);
     actions.restoreLibraryAction->setEnabled(true);
+    actions.recoverLibraryAccessAction->setEnabled(true);
+    actions.repairLibraryDatabaseAction->setEnabled(true);
 }
 
 void LibraryWindow::loadCoversFromCurrentModel()

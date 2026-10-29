@@ -20,6 +20,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Report failed Comic Vine lookups and incomplete results.
 * Fix removing comics belonging to child reading lists from a parent list view.
 * Fix newly added comics sometimes appearing in the middle of a reading list instead of at the end.
+* Fix library lock handling and add a way to clear these locks from the GUI and webui.
 
 ### Server
 

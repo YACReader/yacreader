@@ -57,26 +57,42 @@ enum class DatabaseBackupReason {
     Manual
 };
 
+struct LibraryMaintenanceLockFailure {
+    QLockFile::LockError error { QLockFile::NoError };
+    bool ownerIsRunning { false };
+    QString owner;
+    QString recoveryToken;
+};
+
 class LibraryMaintenanceLock
 {
 public:
     explicit LibraryMaintenanceLock(const QString &libraryPath);
     ~LibraryMaintenanceLock();
 
+    // true is an explicit recovery request, after confirming no other machine
+    // is using the library. Reuse this object to detect ownership changes.
     bool tryLock(bool removeStaleLock = false);
+    QLockFile::LockError error() const;
     QString errorString() const;
     QString holderInfo() const;
-    bool holderIsRunningLocally() const;
+    bool holderIsRunning() const;
+    QString recoveryToken() const;
+    LibraryMaintenanceLockFailure failure() const;
 
 private:
     bool tryLockFile(QLockFile &lock, bool removeStaleLock);
-    void captureLockInfo(QLockFile &lock);
+    QByteArray captureLockInfo(QLockFile &lock);
 
     std::unique_ptr<QLockFile> maintenanceLock;
     std::unique_ptr<QLockFile> legacyRepairLock;
     QString failedLockPath;
+    QLockFile::LockError lastError { QLockFile::NoError };
     QString currentHolderInfo;
-    bool currentHolderIsRunningLocally { false };
+    bool currentHolderIsRunning { false };
+    QHash<QString, QByteArray> observedLocks;
+    QHash<QString, QByteArray> expectedLocks;
+    QString recoveryError;
 };
 
 enum class DatabaseRestoreStatus {
@@ -131,6 +147,7 @@ private:
 
     static bool addColumns(const QString &tableName, const QStringList &columnDefs, const QSqlDatabase &db);
     static bool addConstraint(const QString &tableName, const QString &constraint, const QSqlDatabase &db);
+    static DatabaseRestoreResult restoreLibraryImpl(const QString &libraryPath, const QString &backupPath, bool allowInvalidCurrent, bool removeStaleLock, bool maintenanceLockHeld);
 
 public:
     DataBaseManagement();
@@ -162,7 +179,7 @@ public:
     static bool updateToCurrentVersion(const QString &libraryPath, bool maintenanceLockHeld = false);
     static bool backupLibrary(const QString &libraryPath, DatabaseBackupReason reason, QString *error = nullptr, const QString &destinationPath = { }, const QString &protectedBackup = { });
     static DatabaseRestoreResult restoreLibrary(const QString &libraryPath, const QString &backupPath, bool allowInvalidCurrent = false, bool removeStaleLock = false);
-    static bool recoverInterruptedRestore(const QString &libraryPath, QString *error = nullptr, bool maintenanceLockHeld = false);
+    static bool recoverInterruptedRestore(const QString &libraryPath, QString *error = nullptr, bool maintenanceLockHeld = false, QLockFile::LockError *lockError = nullptr);
     static bool prepareForRecreation(const QString &libraryPath, QString *error = nullptr, bool maintenanceLockHeld = false);
     static QFileInfoList libraryBackups(const QString &libraryPath);
     static bool isLibraryDatabaseValid(const QString &libraryPath);

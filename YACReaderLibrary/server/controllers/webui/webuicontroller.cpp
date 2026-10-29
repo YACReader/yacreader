@@ -309,11 +309,29 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
           <p class="library-description">Click a library to browse it · updating rescans its contents from disk.</p>
           <div class="library-grid">
             {loop Library}
-            <div class="library-card" data-library-card>
+            <div class="library-card" data-library-card data-library-id="{Library.Id}">
               <div class="library-initial" aria-hidden="true">{Library.Initial}</div>
               <div class="library-copy">
                 <a class="library-card-link" href="/webui/library/{Library.Id}" title="{Library.Name}">{Library.Name}</a>
                 <div class="library-path" title="{Library.Path}">{Library.Path}</div>
+              </div>
+              <div class="library-actions">
+              <div class="library-menu" data-menu data-lock-notice hidden>
+                <button class="icon-button library-menu-toggle library-notice-toggle" type="button" data-menu-toggle aria-haspopup="dialog" aria-expanded="false" aria-label="Update problem for {Library.Name}">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="9.5"/>
+                    <line x1="12" y1="7" x2="12" y2="13"/>
+                    <circle cx="12" cy="16.6" r="0.6" fill="currentColor"/>
+                  </svg>
+                </button>
+                <div class="library-menu-popover library-notice-popover" data-menu-popover role="dialog" aria-label="Update problem for {Library.Name}" hidden>
+                  <h3 data-lock-notice-title></h3>
+                  <p data-lock-notice-text></p>
+                  <p class="notice-warning" data-lock-notice-warning hidden>Before you recover, make sure no YACReader app is using this library, also on another computer.</p>
+                  <p class="notice-owner" data-lock-notice-owner></p>
+                  <p class="notice-error" data-lock-notice-error role="status" hidden></p>
+                  <button class="primary-button" type="button" data-lock-notice-action></button>
+                </div>
               </div>
               <div class="library-menu" data-menu>
                 <button class="icon-button library-menu-toggle" type="button" data-menu-toggle aria-haspopup="true" aria-expanded="false" aria-label="Actions for {Library.Name}">
@@ -340,6 +358,7 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
                     <span>Rescan ComicInfo.xml</span>
                   </button>
                 </div>
+              </div>
               </div>
               <div class="library-progress" aria-hidden="true"></div>
             </div>

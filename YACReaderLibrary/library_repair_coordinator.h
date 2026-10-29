@@ -44,6 +44,7 @@ private:
     QString libraryName;
     QString libraryPath;
     QString dialogTitle;
+    bool recoveryAttempted { false };
 };
 
 #endif

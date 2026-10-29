@@ -16,13 +16,36 @@
 #ifdef Q_OS_WIN
 #include <windows.h>
 #else
+#include <cerrno>
 #include <cstdio>
+#include <fcntl.h>
+#include <sys/file.h>
+#include <unistd.h>
 #endif
 
 using namespace YACReader;
 
 namespace {
 const auto backupTimestampFormat = QStringLiteral("yyyyMMdd-HHmmss");
+
+// QLockFile keeps a native lock on its file for as long as its owner runs
+bool lockFileIsHeld(const QString &path)
+{
+#ifdef Q_OS_WIN
+    const auto handle = CreateFileW(reinterpret_cast<const wchar_t *>(QDir::toNativeSeparators(path).utf16()), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (handle == INVALID_HANDLE_VALUE)
+        return GetLastError() == ERROR_SHARING_VIOLATION;
+    CloseHandle(handle);
+    return false;
+#else
+    const auto fd = ::open(QFile::encodeName(path).constData(), O_RDONLY | O_CLOEXEC);
+    if (fd < 0)
+        return false;
+    const auto held = ::flock(fd, LOCK_SH | LOCK_NB) == -1 && errno == EWOULDBLOCK;
+    ::close(fd);
+    return held;
+#endif
+}
 
 QString backupReasonName(DatabaseBackupReason reason)
 {
@@ -276,20 +299,50 @@ LibraryMaintenanceLock::~LibraryMaintenanceLock() = default;
 
 bool LibraryMaintenanceLock::tryLockFile(QLockFile &lock, bool removeStaleLock)
 {
+    const auto path = lock.fileName();
+    // recovery cannot remove a folder, so it must never be reported as contention
+    if (QFileInfo(path).isDir()) {
+        lastError = QLockFile::UnknownError;
+        failedLockPath = path;
+        return false;
+    }
     if (lock.tryLock())
         return true;
-    if (removeStaleLock && lock.removeStaleLockFile() && lock.tryLock())
+    lastError = lock.error();
+    failedLockPath = path;
+    if (lastError != QLockFile::LockFailedError)
+        return false;
+    const auto record = captureLockInfo(lock);
+    if (!removeStaleLock || currentHolderIsRunning)
+        return false;
+    if (expectedLocks.contains(path) && expectedLocks.value(path) != record) {
+        recoveryError = QCoreApplication::translate("LibraryMaintenanceLock", "The library lock owner changed. Retry the operation and review the new owner before recovering it.");
+        return false;
+    }
+    if (!lock.removeStaleLockFile()) {
+        recoveryError = QCoreApplication::translate("LibraryMaintenanceLock", "Unable to remove the maintenance lock: %1. Make sure the file is not read-only and that you can write to the library data folder, then retry.").arg(path);
+        return false;
+    }
+    if (lock.tryLock()) {
+        lastError = QLockFile::NoError;
+        failedLockPath.clear();
         return true;
-    captureLockInfo(lock);
-    failedLockPath = lock.fileName();
+    }
+    lastError = lock.error();
+    if (lastError == QLockFile::LockFailedError)
+        captureLockInfo(lock);
     return false;
 }
 
 bool LibraryMaintenanceLock::tryLock(bool removeStaleLock)
 {
+    expectedLocks = removeStaleLock ? observedLocks : QHash<QString, QByteArray>();
+    observedLocks.clear();
+    recoveryError.clear();
     failedLockPath.clear();
+    lastError = QLockFile::NoError;
     currentHolderInfo.clear();
-    currentHolderIsRunningLocally = false;
+    currentHolderIsRunning = false;
     if (!tryLockFile(*maintenanceLock, removeStaleLock))
         return false;
     if (!tryLockFile(*legacyRepairLock, removeStaleLock)) {
@@ -299,21 +352,47 @@ bool LibraryMaintenanceLock::tryLock(bool removeStaleLock)
     return true;
 }
 
-void LibraryMaintenanceLock::captureLockInfo(QLockFile &lock)
+QByteArray LibraryMaintenanceLock::captureLockInfo(QLockFile &lock)
 {
+    QFile file(lock.fileName());
+    const auto record = file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
+    observedLocks.insert(lock.fileName(), record);
+    currentHolderInfo.clear();
+    // a record without its native lock is stale, even if QLockFile could not remove it
+    currentHolderIsRunning = lockFileIsHeld(lock.fileName());
+
     qint64 pid = 0;
     QString hostname;
     QString appname;
-    if (lock.getLockInfo(&pid, &hostname, &appname)) {
+    if (lock.getLockInfo(&pid, &hostname, &appname))
         currentHolderInfo = QString("%1 (PID %2) on %3").arg(appname).arg(pid).arg(hostname.isEmpty() ? QString("unknown host") : hostname);
-        currentHolderIsRunningLocally = !hostname.isEmpty() && hostname == QSysInfo::machineHostName();
-    }
+    return record;
 }
 
 QString LibraryMaintenanceLock::errorString() const
 {
-    return QString("Another maintenance operation is using this library (%1)%2")
-            .arg(failedLockPath, currentHolderInfo.isEmpty() ? QString() : QString(": %1").arg(currentHolderInfo));
+    if (!recoveryError.isEmpty())
+        return recoveryError;
+    if (lastError == QLockFile::NoError)
+        return { };
+    if (QFileInfo(failedLockPath).isDir())
+        return QCoreApplication::translate("LibraryMaintenanceLock", "A folder is occupying the maintenance lock file path: %1. Rename or move that folder before retrying.").arg(failedLockPath);
+    if (lastError == QLockFile::PermissionError)
+        return QCoreApplication::translate("LibraryMaintenanceLock", "Unable to create the library lock file: %1. Check write permissions for the library data folder.").arg(failedLockPath);
+    if (!QFileInfo(failedLockPath).absoluteDir().exists())
+        return QCoreApplication::translate("LibraryMaintenanceLock", "The library data folder is missing: %1. Restore the folder or recreate the library before updating it.")
+                .arg(QFileInfo(failedLockPath).absolutePath());
+    if (lastError != QLockFile::LockFailedError)
+        return QCoreApplication::translate("LibraryMaintenanceLock", "Unable to create the library lock file: %1. Check available disk space and access to the library data folder.").arg(failedLockPath);
+    const auto holder = currentHolderInfo.isEmpty() ? QString() : QString(": %1").arg(currentHolderInfo);
+    if (!currentHolderIsRunning)
+        return QCoreApplication::translate("LibraryMaintenanceLock", "The library has a maintenance lock whose owner could not be verified (%1)%2").arg(failedLockPath, holder);
+    return QCoreApplication::translate("LibraryMaintenanceLock", "Another maintenance operation is using this library (%1)%2").arg(failedLockPath, holder);
+}
+
+QLockFile::LockError LibraryMaintenanceLock::error() const
+{
+    return lastError;
 }
 
 QString LibraryMaintenanceLock::holderInfo() const
@@ -321,9 +400,27 @@ QString LibraryMaintenanceLock::holderInfo() const
     return currentHolderInfo;
 }
 
-bool LibraryMaintenanceLock::holderIsRunningLocally() const
+bool LibraryMaintenanceLock::holderIsRunning() const
 {
-    return currentHolderIsRunningLocally;
+    return currentHolderIsRunning;
+}
+
+QString LibraryMaintenanceLock::recoveryToken() const
+{
+    if (lastError != QLockFile::LockFailedError || observedLocks.isEmpty())
+        return { };
+    QStringList paths = observedLocks.keys();
+    paths.sort();
+    QByteArray serialized;
+    QDataStream stream(&serialized, QIODevice::WriteOnly);
+    for (const auto &path : paths)
+        stream << path << observedLocks.value(path);
+    return QString::fromLatin1(QCryptographicHash::hash(serialized, QCryptographicHash::Sha256).toHex());
+}
+
+LibraryMaintenanceLockFailure LibraryMaintenanceLock::failure() const
+{
+    return { lastError, currentHolderIsRunning, currentHolderInfo, recoveryToken() };
 }
 
 static QString fields = "title,"
@@ -1508,6 +1605,11 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
         }
     }
 
+    QString recoveryError;
+    if (!recoverInterruptedRestore(libraryPath, &recoveryError, true)) {
+        QLOG_ERROR() << "Database upgrade recovery failed:" << recoveryError;
+        return false;
+    }
     QString libraryDatabasePath = LibraryPaths::libraryDatabasePath(libraryPath);
     QString backupError;
     if (!backupLibrary(libraryPath, DatabaseBackupReason::BeforeUpgrade, &backupError)) {
@@ -1803,8 +1905,9 @@ bool DataBaseManagement::backupLibrary(const QString &libraryPath, DatabaseBacku
     }
 
     const auto reasonName = backupReasonName(reason);
-    const auto finalPath = destinationPath.isEmpty()
-            ? backupsDirectory.filePath(QString("library-%1-db-%2-%3.ydb").arg(QDateTime::currentDateTime().toString(backupTimestampFormat), sourceVersion, reasonName))
+    const auto timestamp = QDateTime::currentDateTime().toString(backupTimestampFormat);
+    auto finalPath = destinationPath.isEmpty()
+            ? backupsDirectory.filePath(QString("library-%1-db-%2-%3.ydb").arg(timestamp, sourceVersion, reasonName))
             : QDir::cleanPath(destinationPath);
     if (QFileInfo(finalPath).absoluteFilePath() == QFileInfo(databasePath).absoluteFilePath()) {
         if (error)
@@ -1812,19 +1915,18 @@ bool DataBaseManagement::backupLibrary(const QString &libraryPath, DatabaseBacku
         return false;
     }
 
-    QString backupPath = finalPath;
-    if (!destinationPath.isEmpty()) {
-        QTemporaryFile temporary(finalPath + ".XXXXXX.tmp");
-        temporary.setAutoRemove(false);
-        if (!temporary.open()) {
-            if (error)
-                *error = temporary.errorString();
-            return false;
-        }
-        backupPath = temporary.fileName();
-        temporary.close();
-        temporary.remove();
+    // VACUUM writes a private staging file. A failed/concurrent attempt must
+    // never remove a completed backup that happens to share its timestamp.
+    QTemporaryFile temporary(finalPath + ".XXXXXX.tmp");
+    temporary.setAutoRemove(false);
+    if (!temporary.open()) {
+        if (error)
+            *error = temporary.errorString();
+        return false;
     }
+    const auto backupPath = temporary.fileName();
+    temporary.close();
+    temporary.remove();
     if (QFile::exists(backupPath)) {
         if (error)
             *error = QString("Backup file already exists: %1").arg(backupPath);
@@ -1846,6 +1948,18 @@ bool DataBaseManagement::backupLibrary(const QString &libraryPath, DatabaseBacku
         QLOG_ERROR() << "Database backup replacement failed" << finalPath << (error ? *error : QString());
         return false;
     }
+    if (destinationPath.isEmpty()) {
+        quint64 collision = 0;
+        while (!QFile::rename(backupPath, finalPath)) {
+            if (!QFile::exists(finalPath)) {
+                if (error)
+                    *error = QString("Unable to install database backup: %1").arg(finalPath);
+                QFile::remove(backupPath);
+                return false;
+            }
+            finalPath = backupsDirectory.filePath(QString("library-%1-%2-db-%3-%4.ydb").arg(timestamp).arg(++collision, 6, 10, QLatin1Char('0')).arg(sourceVersion, reasonName));
+        }
+    }
 
     QLOG_INFO() << "Database backup created" << finalPath;
     if (destinationPath.isEmpty())
@@ -1854,6 +1968,11 @@ bool DataBaseManagement::backupLibrary(const QString &libraryPath, DatabaseBacku
 }
 
 DatabaseRestoreResult DataBaseManagement::restoreLibrary(const QString &libraryPath, const QString &backupPath, bool allowInvalidCurrent, bool removeStaleLock)
+{
+    return restoreLibraryImpl(libraryPath, backupPath, allowInvalidCurrent, removeStaleLock, false);
+}
+
+DatabaseRestoreResult DataBaseManagement::restoreLibraryImpl(const QString &libraryPath, const QString &backupPath, bool allowInvalidCurrent, bool removeStaleLock, bool maintenanceLockHeld)
 {
     DatabaseRestoreResult result;
     QString selectedVersion;
@@ -1878,13 +1997,16 @@ DatabaseRestoreResult DataBaseManagement::restoreLibrary(const QString &libraryP
         return result;
     }
 
-    LibraryMaintenanceLock lock(libraryPath);
-    if (!lock.tryLock(removeStaleLock)) {
-        result.status = DatabaseRestoreStatus::LockFailed;
-        result.error = lock.errorString();
-        result.lockHolderInfo = lock.holderInfo();
-        result.lockHolderIsRunningLocally = lock.holderIsRunningLocally();
-        return result;
+    std::unique_ptr<LibraryMaintenanceLock> lock;
+    if (!maintenanceLockHeld) {
+        lock = std::make_unique<LibraryMaintenanceLock>(libraryPath);
+        if (!lock->tryLock(removeStaleLock)) {
+            result.status = lock->error() == QLockFile::LockFailedError ? DatabaseRestoreStatus::LockFailed : DatabaseRestoreStatus::Failed;
+            result.error = lock->errorString();
+            result.lockHolderInfo = lock->holderInfo();
+            result.lockHolderIsRunningLocally = lock->holderIsRunning();
+            return result;
+        }
     }
 
     if (!recoverInterruptedRestore(libraryPath, &result.error, true)) {
@@ -1993,8 +2115,10 @@ DatabaseRestoreResult DataBaseManagement::restoreLibrary(const QString &libraryP
     return result;
 }
 
-bool DataBaseManagement::recoverInterruptedRestore(const QString &libraryPath, QString *error, bool maintenanceLockHeld)
+bool DataBaseManagement::recoverInterruptedRestore(const QString &libraryPath, QString *error, bool maintenanceLockHeld, QLockFile::LockError *lockError)
 {
+    if (lockError)
+        *lockError = QLockFile::NoError;
     const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
     const auto stagedPath = stagedDatabasePath(databasePath);
     const auto rollbackPath = rollbackDatabasePath(databasePath);
@@ -2006,6 +2130,8 @@ bool DataBaseManagement::recoverInterruptedRestore(const QString &libraryPath, Q
     if (!maintenanceLockHeld) {
         lock = std::make_unique<LibraryMaintenanceLock>(libraryPath);
         if (!lock->tryLock()) {
+            if (lockError)
+                *lockError = lock->error();
             if (error)
                 *error = lock->errorString();
             return false;
@@ -2058,7 +2184,16 @@ bool DataBaseManagement::recoverInterruptedRestore(const QString &libraryPath, Q
 
 bool DataBaseManagement::prepareForRecreation(const QString &libraryPath, QString *error, bool maintenanceLockHeld)
 {
-    if (!recoverInterruptedRestore(libraryPath, error, maintenanceLockHeld))
+    std::unique_ptr<LibraryMaintenanceLock> lock;
+    if (!maintenanceLockHeld) {
+        lock = std::make_unique<LibraryMaintenanceLock>(libraryPath);
+        if (!lock->tryLock()) {
+            if (error)
+                *error = lock->errorString();
+            return false;
+        }
+    }
+    if (!recoverInterruptedRestore(libraryPath, error, true))
         return false;
 
     const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
@@ -2091,6 +2226,16 @@ bool DataBaseManagement::isLibraryDatabaseValid(const QString &libraryPath)
 DatabaseSalvageResult DataBaseManagement::salvageLibrary(const QString &libraryPath, bool removeStaleLock)
 {
     DatabaseSalvageResult result;
+    LibraryMaintenanceLock lock(libraryPath);
+    if (!lock.tryLock(removeStaleLock)) {
+        result.status = lock.error() == QLockFile::LockFailedError ? DatabaseSalvageStatus::LockFailed : DatabaseSalvageStatus::Failed;
+        result.error = lock.errorString();
+        result.lockHolderInfo = lock.holderInfo();
+        result.lockHolderIsRunningLocally = lock.holderIsRunning();
+        return result;
+    }
+    if (!recoverInterruptedRestore(libraryPath, &result.error, true))
+        return result;
     const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
     if (!QFile::exists(databasePath)) {
         result.error = QString("Library database not found: %1").arg(databasePath);
@@ -2103,15 +2248,6 @@ DatabaseSalvageResult DataBaseManagement::salvageLibrary(const QString &libraryP
 
     const auto salvagePath = salvageDatabasePath(databasePath);
     {
-        LibraryMaintenanceLock lock(libraryPath);
-        if (!lock.tryLock(removeStaleLock)) {
-            result.status = DatabaseSalvageStatus::LockFailed;
-            result.error = lock.errorString();
-            result.lockHolderInfo = lock.holderInfo();
-            result.lockHolderIsRunningLocally = lock.holderIsRunningLocally();
-            return result;
-        }
-
         result.preservedDatabasePath = damagedDatabasePath(libraryPath);
         if (!copyDatabaseUnit(databasePath, result.preservedDatabasePath, &result.error)) {
             result.preservedDatabasePath.clear();
@@ -2153,9 +2289,9 @@ DatabaseSalvageResult DataBaseManagement::salvageLibrary(const QString &libraryP
     }
 
     // the rebuilt database is installed through the restore machinery to get its
-    // staging, rollback, and crash-recovery guarantees; restoreLibrary acquires
-    // the maintenance lock itself, so it is released above
-    const auto restoreResult = restoreLibrary(libraryPath, salvagePath, true);
+    // staging, rollback, and crash-recovery guarantees. Keep the same lock:
+    // another update must not enter between rebuilding and installing it.
+    const auto restoreResult = restoreLibraryImpl(libraryPath, salvagePath, true, false, true);
     QFile::remove(salvagePath);
     if (!restoreResult.success()) {
         result.error = restoreResult.error;

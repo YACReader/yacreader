@@ -79,6 +79,8 @@ add_library(server STATIC
     controllers/v3/covercontroller_v3.cpp
     controllers/v3/tagscontroller_v3.h
     controllers/v3/tagscontroller_v3.cpp
+    controllers/v3/librarymaintenancecontroller_v3.h
+    controllers/v3/librarymaintenancecontroller_v3.cpp
     controllers/v3/recentcontroller_v3.h
     controllers/v3/recentcontroller_v3.cpp
     controllers/v3/listitemcontroller_v3.h

@@ -26,6 +26,8 @@ endif()
 # Translations
 set(yacreaderlibraryserver_translation_source_targets
     YACReaderLibraryServer
+    library_common
+    db_helper
     comic_backend
 )
 qt_add_translations(YACReaderLibraryServer

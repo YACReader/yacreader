@@ -3554,11 +3554,59 @@
 
     var polling = false;
     var active = null; // null | "all" | the card being updated
+    var noticeActions = Array.prototype.slice.call(container.querySelectorAll("[data-lock-notice-action]"));
 
     function setTriggersDisabled(disabled) {
-      triggers.forEach(function (trigger) {
+      triggers.concat(noticeActions).forEach(function (trigger) {
         trigger.disabled = disabled;
       });
+    }
+
+    function operationUrl(libraryId, operation) {
+      return "/v2/library/" + encodeURIComponent(libraryId) + (operation === "rescan-xml" ? "/rescan-xml" : "/update");
+    }
+
+    // A "!" button on a card explains why its last update or XML rescan could not
+    // take the library lock, and offers a retry or, for a stale lock, a recovery.
+    function applyLockProblems(problems) {
+      cards.forEach(function (card) {
+        var notice = card.querySelector("[data-lock-notice]");
+        if (!notice) {
+          return;
+        }
+        var libraryId = card.getAttribute("data-library-id");
+        var problem = (problems || []).filter(function (item) {
+          return String(item.library_id) === libraryId;
+        })[0];
+        if (!problem) {
+          if (!notice.hidden && menus) {
+            menus.closeAll(null);
+          }
+          notice.hidden = true;
+          return;
+        }
+        var stale = problem.state === "stale";
+        var operation = problem.operation === "rescan-xml" ? "XML rescan" : "update";
+        notice.querySelector("[data-lock-notice-title]").textContent = stale ? "Library locked" : "Library busy";
+        notice.querySelector("[data-lock-notice-text]").textContent = stale
+          ? "An earlier operation did not release this library, so the " + operation + " did not start. This can happen after a crash or a power cut."
+          : "Another operation is using this library, so the " + operation + " did not start. Wait for it to finish, then retry.";
+        notice.querySelector("[data-lock-notice-warning]").hidden = !stale;
+        var owner = notice.querySelector("[data-lock-notice-owner]");
+        owner.textContent = problem.owner ? (stale ? "Last owner: " : "Owner: ") + problem.owner : "";
+        owner.hidden = !problem.owner;
+        notice.querySelector("[data-lock-notice-error]").hidden = true;
+        var action = notice.querySelector("[data-lock-notice-action]");
+        action.textContent = (stale ? "Recover and retry " : "Retry ") + operation;
+        action.problem = problem;
+        notice.hidden = false;
+      });
+    }
+
+    function showNoticeError(card, message) {
+      var error = card.querySelector("[data-lock-notice-error]");
+      error.textContent = message;
+      error.hidden = false;
     }
 
     function showIndicators(target) {
@@ -3608,12 +3656,13 @@
     }
 
     function checkStatus() {
-      return fetch("/v2/libraries/update/status", { headers: { "Accept": "application/json" } })
+      return fetch("/v3/libraries/maintenance", { headers: { "Accept": "application/json" } })
         .then(function (response) {
           return response.ok ? response.json() : { running: false };
         })
         .then(function (data) {
           applyRunning(!!(data && data.running));
+          applyLockProblems(data && data.problems);
         });
     }
 
@@ -3667,6 +3716,53 @@
         } else {
           trigger("all", "/v2/libraries/update");
         }
+      });
+    });
+
+    noticeActions.forEach(function (button) {
+      var card = button.closest("[data-library-card]");
+      var popover = button.closest("[data-menu-popover]");
+      popover.addEventListener("click", function (event) {
+        event.stopPropagation();
+      });
+      button.addEventListener("click", function () {
+        var problem = button.problem;
+        if (button.disabled || !problem) {
+          return;
+        }
+        var url = operationUrl(problem.library_id, problem.operation);
+        if (problem.state !== "stale") {
+          trigger(card, url);
+          return;
+        }
+        setTriggersDisabled(true);
+        fetch("/v3/library/" + encodeURIComponent(problem.library_id) + "/maintenance/recover", {
+          method: "POST",
+          headers: { "Accept": "application/json", "Content-Type": "application/json" },
+          body: JSON.stringify({ recovery_token: problem.recovery_token })
+        })
+          .then(function (response) {
+            if (response.ok) {
+              trigger(card, url);
+              return;
+            }
+            return response.json().catch(function () { return {}; }).then(function (data) {
+              setTriggersDisabled(false);
+              if (data.status === "not_recoverable") {
+                // the server now reports the current owner; let the user review it first
+                return checkStatus().then(function () {
+                  showNoticeError(card, "The library lock owner changed. Check the new owner before you recover.");
+                });
+              }
+              showNoticeError(card, data.error
+                ? "Recovery failed: " + data.error
+                : "The library is busy now. Retry when the current operation finishes.");
+            });
+          })
+          .catch(function () {
+            setTriggersDisabled(false);
+            showNoticeError(card, "The server did not answer. Check the connection and retry.");
+          });
       });
     });
 
