@@ -204,7 +204,7 @@
     <message>
         <location filename="cbl/cbl_entries_view.cpp" line="77"/>
         <source>Find comic ›</source>
-        <translation type="unfinished"></translation>
+        <translation>查找漫画 ›</translation>
     </message>
 </context>
 <context>
@@ -212,159 +212,159 @@
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="36"/>
         <source>Series</source>
-        <translation type="unfinished">系列</translation>
+        <translation>系列</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="38"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>编号</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="40"/>
         <source>Volume</source>
-        <translation type="unfinished">卷</translation>
+        <translation>卷</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="42"/>
         <source>Year</source>
-        <translation type="unfinished"></translation>
+        <translation>年</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="44"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>格式</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="46"/>
         <location filename="cbl/cbl_entry_detail.cpp" line="147"/>
         <source>ComicVine ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ComicVine ID</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="149"/>
         <source>series and number</source>
-        <translation type="unfinished"></translation>
+        <translation>系列与编号</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="151"/>
         <source>series without the volume, and number</source>
-        <translation type="unfinished"></translation>
+        <translation>不含卷号与编号的系列</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="153"/>
         <source>letters and digits of the series, and number</source>
-        <translation type="unfinished"></translation>
+        <translation>该系列中的字母与数字，以及编号</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="155"/>
         <source>series with its year, and number</source>
-        <translation type="unfinished"></translation>
+        <translation>系列及其年份与编号</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="170"/>
         <source>volume %1</source>
-        <translation type="unfinished"></translation>
+        <translation>卷 %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="201"/>
         <source>Comic in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你库里的漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="201"/>
         <source>Missing in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你的库中缺失</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="204"/>
         <source>Changed by you.</source>
-        <translation type="unfinished"></translation>
+        <translation>被你更改。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="206"/>
         <source>The entry has this comic.</source>
-        <translation type="unfinished"></translation>
+        <translation>该条目包含这本漫画。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="208"/>
         <source>Matched by %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配 %1。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="210"/>
         <source>Your library already has this comic as missing. Matched by %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>你的库中已将此漫画标记为“缺失”。匹配 %1。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="213"/>
         <source>Possible comic %1</source>
-        <translation type="unfinished"></translation>
+        <translation>可能存在的漫画 %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="215"/>
         <location filename="cbl/cbl_entry_detail.cpp" line="276"/>
         <source>Changed by you: it is imported as missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>被你更改：导入时被标记为缺失。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="217"/>
         <source>The comics have the same ComicVine ID.</source>
-        <translation type="unfinished"></translation>
+        <translation>这些漫画拥有相同的 ComicVine ID。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="219"/>
         <source>The comic has the same series and number, but its volume or year is different.</source>
-        <translation type="unfinished"></translation>
+        <translation>这本漫画所属的系列和编号相同，但卷数或年份不同。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="221"/>
         <source>The comics have the same series and number.</source>
-        <translation type="unfinished"></translation>
+        <translation>这些漫画属于同一个系列，且编号相同。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="222"/>
         <source>Values that are different from the file are in amber.</source>
-        <translation type="unfinished"></translation>
+        <translation>与文件不同的值以琥珀色显示。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="227"/>
         <source>Closest series in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你库中最相似的系列</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="231"/>
         <source>Library</source>
-        <translation type="unfinished">库</translation>
+        <translation>库</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="259"/>
         <source>Has %1</source>
-        <translation type="unfinished"></translation>
+        <translation>包含 %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="276"/>
         <source>No comic found. Tried: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>未找到漫画。已尝试：%1。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="288"/>
         <source>In the file</source>
-        <translation type="unfinished"></translation>
+        <translation>在文件中</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="289"/>
         <source>Entry %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>条目 %1，共 %2</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="314"/>
         <source>Use this comic</source>
-        <translation type="unfinished"></translation>
+        <translation>使用这本漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="314"/>
         <source>Use this missing comic</source>
-        <translation type="unfinished"></translation>
+        <translation>使用这本缺失的漫画</translation>
     </message>
 </context>
 <context>
@@ -372,105 +372,105 @@
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="67"/>
         <source>‹ All entries</source>
-        <translation type="unfinished"></translation>
+        <translation>‹ 所有条目</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="83"/>
         <source>Previous problem</source>
-        <translation type="unfinished"></translation>
+        <translation>上一个问题</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="84"/>
         <source>Next problem</source>
-        <translation type="unfinished"></translation>
+        <translation>下一个问题</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="98"/>
         <source>Folders</source>
-        <translation type="unfinished">文件夹</translation>
+        <translation>文件夹</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="112"/>
         <source>Search the whole library</source>
-        <translation type="unfinished"></translation>
+        <translation>在整个库中搜索</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>文件</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>Series</source>
-        <translation type="unfinished">系列</translation>
+        <translation>系列</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>No.</source>
-        <translation type="unfinished"></translation>
+        <translation>No.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>Volume</source>
-        <translation type="unfinished">卷</translation>
+        <translation>卷</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>Year</source>
-        <translation type="unfinished"></translation>
+        <translation>年</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="162"/>
         <source>Go to the next problem after I choose</source>
-        <translation type="unfinished"></translation>
+        <translation>选择后，进入下一问题</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="164"/>
         <source>Use this comic</source>
-        <translation type="unfinished"></translation>
+        <translation>使用这本漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="178"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="254"/>
         <source>Search in this folder</source>
-        <translation type="unfinished"></translation>
+        <translation>在此文件夹中搜索</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="270"/>
         <source>Entry %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>条目 %1，共 %2</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="279"/>
         <source>Missing: no comic found. Browse or search the library.</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失：未找到漫画。请浏览或搜索库。</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_find_comic_page.cpp" line="282"/>
         <source>Ambiguous: %n possible comic(s). Browse or search the library.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>不确定：%n 本可能存在的漫画。请浏览或搜索库。</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="286"/>
         <source>Browse or search the library to choose another comic.</source>
-        <translation type="unfinished"></translation>
+        <translation>浏览或搜索库，选择另一本漫画。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="290"/>
         <source>Problem %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>第 %1 个问题，共 %2 个问题</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_find_comic_page.cpp" line="290"/>
         <source>%n problem(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 个问题</numerusform>
         </translation>
     </message>
     <message>
@@ -478,12 +478,12 @@
         <location filename="cbl/cbl_find_comic_page.cpp" line="411"/>
         <location filename="cbl/cbl_find_comic_page.cpp" line="416"/>
         <source>Library</source>
-        <translation type="unfinished">库</translation>
+        <translation>库</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="360"/>
         <source>Search results</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索结果</translation>
     </message>
 </context>
 <context>
@@ -491,162 +491,162 @@
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="181"/>
         <source>Match to library comics — %1</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画 — %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="185"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>应用</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="214"/>
         <source>Close</source>
-        <translation type="unfinished">关闭</translation>
+        <translation>关闭</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="215"/>
         <source>Skip</source>
-        <translation type="unfinished"></translation>
+        <translation>忽略</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="216"/>
         <source>Import</source>
-        <translation type="unfinished">导入</translation>
+        <translation>导入</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="268"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;名称：</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="270"/>
         <source>A reading list with this name already exists. Import creates another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>已存在同名的阅读列表。导入操作会再创建一个。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="297"/>
         <source>Filter entries</source>
-        <translation type="unfinished"></translation>
+        <translation>筛选条目</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="358"/>
         <source>Matching the books of %1 with your library...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在将 %1 中的书籍与您的库进行匹配……</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="372"/>
         <source>Matching the entries of %1 with your library...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在将 %1 中的条目与您的库进行匹配……</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="431"/>
         <location filename="cbl/cbl_import_dialog.cpp" line="455"/>
         <source>Match to library comics</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_import_dialog.cpp" line="432"/>
         <source>This also gives comics to entries in %n other list(s): %1</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>这还将这些漫画添加到了其他 %n 个列表中的条目里：%1</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="455"/>
         <source>The changes could not be applied. Nothing was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法应用这些更改。未作任何更改。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="469"/>
         <source>The file cannot be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法打开该文件。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="472"/>
         <source>The file is damaged (line %1, column %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>文件已损坏（第 %1 行，第 %2 列）。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="475"/>
         <source>The file is not a reading list.</source>
-        <translation type="unfinished"></translation>
+        <translation>该文件并非阅读列表。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="481"/>
         <source>The library cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法读取该库。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="607"/>
         <source>Import reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="607"/>
         <source>The reading list could not be imported. Nothing was written.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法导入阅读列表。未写入任何内容。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="630"/>
         <source>Import reading lists — %1 (%2 of %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表 — %1（%2 共 %3）</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="632"/>
         <source>Import reading lists — %1</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表 — %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="641"/>
         <source>All (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>全部 (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="642"/>
         <source>Matched (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配 (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="643"/>
         <source>Ambiguous (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>不确定 (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="644"/>
         <source>Missing (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失 (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="645"/>
         <source>Changed by you (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>被你更改 (%1)</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_import_dialog.cpp" line="650"/>
         <source>%1 of %n have a comic</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%1（共 %n）拥有漫画</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="672"/>
         <source>Find comic...</source>
-        <translation type="unfinished"></translation>
+        <translation>查找漫画……</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="676"/>
         <source>Use the original match</source>
-        <translation type="unfinished"></translation>
+        <translation>使用原始匹配</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="679"/>
         <source>Make missing</source>
-        <translation type="unfinished"></translation>
+        <translation>造成缺失</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="679"/>
         <source>Import as missing</source>
-        <translation type="unfinished"></translation>
+        <translation>作为缺失项导入</translation>
     </message>
 </context>
 <context>
@@ -654,59 +654,59 @@
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="83"/>
         <source>Matched</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="85"/>
         <source>Ambiguous</source>
-        <translation type="unfinished"></translation>
+        <translation>不确定</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="87"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="89"/>
         <source>Changed</source>
-        <translation type="unfinished"></translation>
+        <translation>已更改</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="115"/>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation>#</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="117"/>
         <source>In the file</source>
-        <translation type="unfinished"></translation>
+        <translation>在文件中</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="119"/>
         <source>Comic in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你库里的漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="121"/>
         <source>Status</source>
-        <translation type="unfinished">状态</translation>
+        <translation>状态</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="240"/>
         <source>Already missing in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你的库中尚缺此项</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_import_model.cpp" line="244"/>
         <source>%n possible comic(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 本可能存在的漫画</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="245"/>
         <source>Not in library</source>
-        <translation type="unfinished"></translation>
+        <translation>不在库内</translation>
     </message>
 </context>
 <context>
@@ -714,17 +714,17 @@
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="62"/>
         <source>Match to library comic</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="65"/>
         <source>Loading the library...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在加载库……</translation>
     </message>
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="90"/>
         <source>The library cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法读取该库。</translation>
     </message>
 </context>
 <context>
@@ -751,7 +751,7 @@
     <message>
         <location filename="comic_info_object.cpp" line="541"/>
         <source>Missing comic</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失漫画</translation>
     </message>
 </context>
 <context>
@@ -911,7 +911,7 @@
     <message>
         <location filename="db/comic_model.cpp" line="641"/>
         <source>Missing comic</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失漫画</translation>
     </message>
     <message>
         <location filename="db/comic_model.cpp" line="785"/>
@@ -970,43 +970,43 @@
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="494"/>
         <source>Creating missing comic %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>正在创建缺失的漫画 %1共 %2</translation>
     </message>
     <message numerus="yes">
         <location filename="comic_vine/comic_vine_dialog.cpp" line="560"/>
         <source>Comic Vine did not answer for %n comic(s).</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Comic Vine 未对 %n 本漫画做出响应。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="comic_vine/comic_vine_dialog.cpp" line="562"/>
         <source>%n missing comic(s) got only the basic data of the volume.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 缺失的漫画仅获取了卷的基本数据。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="comic_vine/comic_vine_dialog.cpp" line="564"/>
         <source>%n missing comic(s) have no cover.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 缺失的漫画没有封面。</numerusform>
         </translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="568"/>
         <source>Comic Vine allows about 200 requests per hour; try again later for the comics that were not updated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine 每小时允许约 200 次请求；对于未更新的漫画，请稍后再试。</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="569"/>
         <source>Try again later for the comics that were not updated.</source>
-        <translation type="unfinished"></translation>
+        <translation>对于未更新的漫画，请稍后再试。</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="570"/>
         <source>Comic Vine</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="795"/>
@@ -1111,7 +1111,7 @@
     <message>
         <location filename="delayed_progress_dialog.cpp" line="60"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -1176,7 +1176,7 @@
     <message>
         <location filename="empty_list_folder_widget.cpp" line="8"/>
         <source>This folder is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>此文件夹为空</translation>
     </message>
 </context>
 <context>
@@ -1805,41 +1805,41 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_window.cpp" line="526"/>
         <source>Edit smart list...</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑智能列表……</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="527"/>
         <source>Delete smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>删除智能列表</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="529"/>
         <location filename="library_window.cpp" line="534"/>
         <location filename="library_window.cpp" line="548"/>
         <source>New folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>新建文件夹...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="530"/>
         <location filename="library_window.cpp" line="536"/>
         <location filename="library_window.cpp" line="550"/>
         <source>Move to folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文件夹...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="535"/>
         <source>Rename folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名文件夹……</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="544"/>
         <source>Match to library comics...</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画……</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="546"/>
         <source>Export reading list...</source>
-        <translation type="unfinished"></translation>
+        <translation>导出阅读列表……</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="797"/>
@@ -1854,7 +1854,7 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_window.cpp" line="841"/>
         <source>Save as smart list…</source>
-        <translation type="unfinished"></translation>
+        <translation>另存为智能列表……</translation>
     </message>
     <message>
         <location filename="search_filters_menu.cpp" line="12"/>
@@ -2159,29 +2159,29 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <location filename="comic_management_coordinator.cpp" line="598"/>
         <location filename="comic_management_coordinator.cpp" line="631"/>
         <source>Match to library comic</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画</translation>
     </message>
     <message numerus="yes">
         <location filename="comic_management_coordinator.cpp" line="599"/>
         <source>This also gives the comic to entries in %n other list(s): %1</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>这还将此漫画添加到了其他 %n 个列表中的条目里：%1</numerusform>
         </translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="632"/>
         <source>The comic could not be matched. Nothing was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法匹配该漫画。没有任何改动。</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="817"/>
         <source>The selected missing comics will be removed from this folder. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>所选的缺失漫画将从该文件夹中移除。确定吗？</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="819"/>
         <source>The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>所选漫画将从您的磁盘中删除，所选的缺失漫画也将从该文件夹中移除。您确定吗？</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="821"/>
@@ -2203,12 +2203,12 @@ You can restore a backup from the Library menu or recreate the library.</source>
     <message>
         <location filename="comic_management_coordinator.cpp" line="872"/>
         <source>Remove the comics from Reading? Their reading progress will be reset.</source>
-        <translation type="unfinished"></translation>
+        <translation>要将这些漫画从“继续阅读”中移除吗？它们的阅读进度将会被重置。</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="875"/>
         <source>The comics will be removed from Favorites. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>漫画将从“收藏”中移除。确定吗？</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="882"/>
@@ -2620,7 +2620,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="407"/>
         <source>New reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>新的阅读列表</translation>
     </message>
     <message>
         <source>Reset comic rating</source>
@@ -2708,42 +2708,42 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="414"/>
         <source>New smart list...</source>
-        <translation type="unfinished"></translation>
+        <translation>新建智能列表……</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="417"/>
         <source>Add a saved search to the current library</source>
-        <translation type="unfinished"></translation>
+        <translation>将已保存的搜索添加到当前库</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="420"/>
         <source>New folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>新建文件夹...</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="423"/>
         <source>Add a folder for reading lists or smart lists</source>
-        <translation type="unfinished"></translation>
+        <translation>添加一个文件夹，用于存放阅读列表或智能列表</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="426"/>
         <source>Import reading lists...</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表……</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="429"/>
         <source>Import CBL reading lists into the current library</source>
-        <translation type="unfinished"></translation>
+        <translation>将 CBL 阅读列表导入当前库</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="432"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>新的</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="433"/>
         <source>Add or import reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>添加或导入阅读列表</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="442"/>
@@ -2850,14 +2850,14 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_menus.cpp" line="251"/>
         <source>Match to library comic...</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画……</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="257"/>
         <location filename="library_window_menus.cpp" line="323"/>
         <location filename="library_window_menus.cpp" line="423"/>
         <source>Track missing issues...</source>
-        <translation type="unfinished"></translation>
+        <translation>追踪缺失的期……</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="308"/>
@@ -2968,17 +2968,17 @@ Missing files: %3</source>
     <message>
         <location filename="move_to_folder_dialog.cpp" line="16"/>
         <source>Move to folder</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文件夹</translation>
     </message>
     <message>
         <location filename="move_to_folder_dialog.cpp" line="43"/>
         <source>Top level</source>
-        <translation type="unfinished"></translation>
+        <translation>顶层</translation>
     </message>
     <message>
         <location filename="move_to_folder_dialog.cpp" line="56"/>
         <source>Move &quot;%1&quot; to:</source>
-        <translation type="unfinished"></translation>
+        <translation>将 &quot;%1&quot; 移动到：</translation>
     </message>
 </context>
 <context>
@@ -2986,27 +2986,27 @@ Missing files: %3</source>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="13"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>新建文件夹</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="16"/>
         <source>Reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>阅读列表</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="17"/>
         <source>Smart lists</source>
-        <translation type="unfinished"></translation>
+        <translation>智能列表</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="26"/>
         <source>Folder name:</source>
-        <translation type="unfinished">文件夹名称:</translation>
+        <translation>文件夹名称:</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="27"/>
         <source>For:</source>
-        <translation type="unfinished"></translation>
+        <translation>为：</translation>
     </message>
 </context>
 <context>
@@ -3572,7 +3572,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="798"/>
         <source>new folder</source>
-        <translation>新文件夹</translation>
+        <translation>新建文件夹</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="799"/>
@@ -3971,7 +3971,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="194"/>
         <source>e.g. 1-5, 8, 0.5, Annual 1</source>
-        <translation type="unfinished"></translation>
+        <translation>例如. 1-5, 8, 0.5, 年度 1</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="238"/>
@@ -3986,94 +3986,94 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="795"/>
         <source>Track missing issues in &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>追踪 “%1” 中缺失的期</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="807"/>
         <source>Issues:</source>
-        <translation type="unfinished"></translation>
+        <translation>期：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="819"/>
         <source>Track</source>
-        <translation type="unfinished"></translation>
+        <translation>追踪</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="874"/>
         <source>At most %1 issues can be tracked at once.</source>
-        <translation type="unfinished"></translation>
+        <translation>最多可同时追踪 %1 个期。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="876"/>
         <source>Check the issues: a range must go up, and a part between commas cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>检查期：范围必须呈递增状态，且逗号之间的部分不能为空。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="878"/>
         <source>No new issues to track.</source>
-        <translation type="unfinished"></translation>
+        <translation>没有新的期需要追踪。</translation>
     </message>
     <message numerus="yes">
         <location filename="properties_dialog.cpp" line="880"/>
         <source>%n issue(s) will be tracked: %1.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>将追踪 %n 个期：%1。</numerusform>
         </translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="882"/>
         <source>That is a lot of issues; check the numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>期很多，查看一下编号。</translation>
     </message>
     <message numerus="yes">
         <location filename="properties_dialog.cpp" line="885"/>
         <source>%n issue(s) already in the folder.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>文件夹中已有 %n 个期。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="properties_dialog.cpp" line="887"/>
         <source>%n repeated issue(s).</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 个重复出现的期。</numerusform>
         </translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="956"/>
         <source>Issues not tracked</source>
-        <translation type="unfinished"></translation>
+        <translation>未追踪的期</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="956"/>
         <source>The missing issues could not be tracked.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法追踪到缺失的期。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="999"/>
         <source>Comic skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>已跳过漫画</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="999"/>
         <source>A comic was removed from the library or now has a different file, so it is skipped.</source>
-        <translation type="unfinished"></translation>
+        <translation>某本漫画已从库中移除，或者其对应的文件发生了改变，因此该漫画被跳过。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1263"/>
         <location filename="properties_dialog.cpp" line="1267"/>
         <source>Changes not saved</source>
-        <translation type="unfinished"></translation>
+        <translation>更改未保存</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1263"/>
         <source>A comic that you are editing was removed from the library or now has a different file. Your changes were not saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>您正在编辑的漫画已从库中删除或现在有不同的文件。您的更改未保存。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1267"/>
         <source>The changes could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法保存更改。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1517"/>
@@ -4361,38 +4361,38 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="69"/>
         <source>Import reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="71"/>
         <source>Reading lists (*.cbl *.json);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>阅读列表 (*.cbl *.json);;所有文件 (*)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="113"/>
         <source>New smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>新建智能列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="113"/>
         <location filename="reading_list_management_coordinator.cpp" line="131"/>
         <source>The smart list could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法保存智能列表。</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="131"/>
         <source>Edit smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑智能列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="149"/>
         <source>Delete folder</source>
-        <translation type="unfinished">删除文件夹</translation>
+        <translation>删除文件夹</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="150"/>
         <source>Delete the folder &quot;%1&quot; and everything in it? Its folders and lists are deleted; your comic files are not.</source>
-        <translation type="unfinished"></translation>
+        <translation>要删除文件夹 “%1” 及其中的所有内容吗？其中的文件夹和列表会被删除，但您的漫画文件不会受到影响。</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="154"/>
@@ -4412,72 +4412,72 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="191"/>
         <source>Rename folder</source>
-        <translation type="unfinished">重命名文件夹</translation>
+        <translation>重命名文件夹</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="192"/>
         <location filename="reading_list_management_coordinator.cpp" line="222"/>
         <source>Folder name:</source>
-        <translation type="unfinished">文件夹名称:</translation>
+        <translation>文件夹名称：</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="210"/>
         <location filename="reading_list_management_coordinator.cpp" line="222"/>
         <location filename="reading_list_management_coordinator.cpp" line="226"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>新建文件夹</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="210"/>
         <location filename="reading_list_management_coordinator.cpp" line="226"/>
         <source>The folder could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法创建文件夹。</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="240"/>
         <source>Reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>阅读列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="244"/>
         <source>CBL reading list (*.cbl)</source>
-        <translation type="unfinished"></translation>
+        <translation>CBL 阅读列表 (*.cbl)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="245"/>
         <source>JSON reading list (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON 阅读列表 (*.json)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="246"/>
         <source>Web page (*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>网页 (*.html)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="253"/>
         <location filename="reading_list_management_coordinator.cpp" line="325"/>
         <source>Export reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>导出阅读列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="303"/>
         <source>Exporting reading list...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在导出阅读列表……</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="325"/>
         <source>The file could not be written.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法写入文件。</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="338"/>
         <source>Move to folder</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文件夹</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="338"/>
         <source>&quot;%1&quot; could not be moved.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法移动 “%1”。</translation>
     </message>
 </context>
 <context>
@@ -4485,26 +4485,26 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message numerus="yes">
         <location filename="reading_list_page.cpp" line="110"/>
         <source>%n comic(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 本漫画</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="reading_list_page.cpp" line="112"/>
         <source>%n missing</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n 个缺失</numerusform>
         </translation>
     </message>
     <message>
         <location filename="reading_list_page.cpp" line="132"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失</translation>
     </message>
     <message>
         <location filename="reading_list_page.cpp" line="137"/>
         <source>Exported from YACReader on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>从 YACReader 导出 %1</translation>
     </message>
 </context>
 <context>
@@ -5272,7 +5272,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="93"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="75"/>
@@ -5383,27 +5383,27 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="smart_list_dialog.cpp" line="33"/>
         <source>New smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>新建智能列表</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="33"/>
         <source>Edit smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑智能列表</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="45"/>
         <source>Search filters and syntax</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索筛选条件与语法</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="56"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>名称：</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="57"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索：</translation>
     </message>
 </context>
 <context>
@@ -5426,8 +5426,8 @@ Use quotes to include spaces in a value.</source>
     <message numerus="yes">
         <location filename="comic_vine/sort_volume_comics.cpp" line="285"/>
         <source>Add the %n other issue(s) of this volume as missing comics</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>将本卷中的其他 %n 期内容添加为缺失漫画</numerusform>
         </translation>
     </message>
     <message>
