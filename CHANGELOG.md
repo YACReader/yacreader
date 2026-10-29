@@ -4,6 +4,10 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## 10.5.0
 
+### YACReader
+
+* Support for ComicBookDS (.cbds) comics. Only the pages are shown, not the previews stored next to them.
+
 ### YACReaderLibrary
 
 * Reading lists and labels keep comics whose files are removed from the library. Their covers show in gray, with their metadata and last known file name. You can still edit their metadata, get data from Comic Vine, set a custom cover, reorder them, and remove them from the list. When the same file comes back, at any path, the comic is available again.
@@ -20,6 +24,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Report failed Comic Vine lookups and incomplete results.
 * Fix removing comics belonging to child reading lists from a parent list view.
 * Fix newly added comics sometimes appearing in the middle of a reading list instead of at the end.
+* Support for ComicBookDS (.cbds) comics.
 
 ### Server
 
@@ -37,11 +42,9 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReader
 * Avoid duplicated images in double page mode after a layout adjustment.
 * New setting to draw a fold shadow in the double page mode.
-* Support for ComicBookDS (.cbds) comics. Only the pages are shown, not the previews stored next to them.
 
 ### YACReaderLibrary
 * Reload the views only when a remote client changes the library that is open, and only after a sync that changed something.
-* Support for ComicBookDS (.cbds) comics.
 
 ### Server
 * New API to change comic and folder fields from remote clients and webui. You'll be able to set comics and folders as read/unread, completed and theirs types.
