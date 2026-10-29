@@ -88,6 +88,16 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     restoreLibraryAction->setData(RESTORE_LIBRARY_ACTION_YL);
     restoreLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESTORE_LIBRARY_ACTION_YL));
 
+    repairLibraryDatabaseAction = new QAction(tr("Repair library database..."), window);
+    repairLibraryDatabaseAction->setToolTip(tr("Check the current library database and attempt to repair any damage"));
+    repairLibraryDatabaseAction->setData(REPAIR_LIBRARY_DATABASE_ACTION_YL);
+    repairLibraryDatabaseAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REPAIR_LIBRARY_DATABASE_ACTION_YL));
+
+    recoverLibraryAccessAction = new QAction(tr("Recover library access..."), window);
+    recoverLibraryAccessAction->setToolTip(tr("Recover access after an interrupted library maintenance operation"));
+    recoverLibraryAccessAction->setData(RECOVER_LIBRARY_ACCESS_ACTION_YL);
+    recoverLibraryAccessAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RECOVER_LIBRARY_ACCESS_ACTION_YL));
+
     repairLibraryAction = new QAction(tr("Repair covers and comic info"), window);
     repairLibraryAction->setToolTip(tr("Retry comics with missing covers or incomplete information"));
     repairLibraryAction->setData(REPAIR_LIBRARY_ACTION_YL);
@@ -631,6 +641,8 @@ void LibraryWindowActions::createConnections(
     QObject::connect(renameListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::renameCurrentList);
 
     QObject::connect(updateLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentLibrary);
+    QObject::connect(recoverLibraryAccessAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::recoverCurrentLibraryAccess);
+    QObject::connect(repairLibraryDatabaseAction, &QAction::triggered, libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::repairCurrentLibraryDatabase);
     QObject::connect(backupLibraryAction, &QAction::triggered, libraryDatabaseMaintenanceCoordinator, [this, libraryDatabaseMaintenanceCoordinator] {
         libraryDatabaseMaintenanceCoordinator->backupCurrentLibrary(backupLibraryAction->text());
     });
@@ -780,6 +792,8 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << updateLibraryAction
                                                  << backupLibraryAction
                                                  << restoreLibraryAction
+                                                 << repairLibraryDatabaseAction
+                                                 << recoverLibraryAccessAction
                                                  << repairLibraryAction
                                                  << renameLibraryAction
                                                  << removeLibraryAction
@@ -877,6 +891,8 @@ void LibraryWindowActions::disableLibrariesActions(bool disabled)
     updateLibraryAction->setDisabled(disabled);
     backupLibraryAction->setDisabled(disabled);
     restoreLibraryAction->setDisabled(disabled);
+    repairLibraryDatabaseAction->setDisabled(disabled);
+    recoverLibraryAccessAction->setDisabled(disabled);
     repairLibraryAction->setDisabled(disabled);
     renameLibraryAction->setDisabled(disabled);
     removeLibraryAction->setDisabled(disabled);
@@ -892,6 +908,8 @@ void LibraryWindowActions::disableNoUpdatedLibrariesActions(bool disabled)
     updateLibraryAction->setDisabled(disabled);
     backupLibraryAction->setDisabled(disabled);
     restoreLibraryAction->setDisabled(disabled);
+    repairLibraryDatabaseAction->setDisabled(disabled);
+    recoverLibraryAccessAction->setDisabled(disabled);
     repairLibraryAction->setDisabled(disabled);
     exportComicsInfoAction->setDisabled(disabled);
     importComicsInfoAction->setDisabled(disabled);

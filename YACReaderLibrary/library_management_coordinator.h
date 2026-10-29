@@ -71,6 +71,7 @@ public slots:
     void warnIfLibraryCountIsHigh();
     void showLibraryAlreadyExists(const QString &libraryName);
     void stop();
+    void recoverCurrentLibraryAccess();
 
 signals:
     void loadStarted();
@@ -87,6 +88,7 @@ signals:
     void creationStarted();
     void updateStarted();
     void operationUiResetRequested();
+    void operationAborted();
     void operationFinished();
     void currentLibraryReloadRequested();
     void libraryAdded(const QString &libraryName, const QString &libraryPath);
@@ -102,7 +104,8 @@ signals:
     void packageFailed(const QString &error);
 
 private:
-    void loadLibraryAtPath(const QString &libraryName, const QString &libraryPath);
+    bool retryCreatorAfterLockFailure();
+    void loadLibraryAtPath(const QString &libraryName, const QString &libraryPath, bool recoveryAttempted = false);
     void updateLibrary(const QString &libraryName, const QString &libraryPath);
     void startFolderUpdate(const QString &libraryName, const QString &libraryPath, const QString &folderPath, qulonglong folderId);
     void prepareImportedLibrary(const QString &libraryName, const QString &libraryPath);
@@ -110,7 +113,7 @@ private:
     void askToRemoveLibrary(const QString &libraryName);
     void deleteLibrary(const QString &libraryName, bool deleteMetadata);
     bool renameLibrary(const QString &currentName, const QString &newName);
-    void startUpgrade(const QString &libraryName, const QString &libraryPath, const QString &libraryDataPath);
+    void startUpgrade(const QString &libraryName, const QString &libraryPath, const QString &libraryDataPath, bool recoveryAttempted = false);
     void handleCreatorOpeningFailure(const QString &error);
 
     YACReaderLibraries &libraries;
@@ -130,6 +133,10 @@ private:
     QString pendingLibraryPath;
     QString operationLibraryName;
     QString operationLibraryPath;
+    bool creatorRecoveryAttempted { false };
+    bool creatorIsCreation { false };
+    QString xmlOperationLibraryPath;
+    bool xmlRecoveryAttempted { false };
     std::future<void> upgradeFuture;
 };
 

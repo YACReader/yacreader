@@ -5,6 +5,7 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "folder_model.h"
+#include "library_maintenance_dialog.h"
 #include "organize_files_dialog.h"
 #include "organize_files_journal.h"
 #include "yacreader_global.h"
@@ -165,9 +166,7 @@ void OrganizeFilesCoordinator::organizeComics(OrganizeFiles::Mode mode, const QL
     const QString cleanLibraryRoot = QDir::cleanPath(libraryRoot);
 
     LibraryMaintenanceLock maintenanceLock(cleanLibraryRoot);
-    if (!maintenanceLock.tryLock()) {
-        QMessageBox::warning(window, tr("Organize files"),
-                             tr("This library is busy: %1").arg(maintenanceLock.errorString()));
+    if (!acquireLibraryMaintenanceWithRecovery(maintenanceLock, cleanLibraryRoot, window, tr("Organize files"))) {
         return;
     }
 

@@ -20,6 +20,7 @@ public:
 
     void backupCurrentLibrary(const QString &dialogTitle);
     void restoreCurrentLibrary(const QString &dialogTitle);
+    void repairCurrentLibraryDatabase();
     void offerDatabaseRecovery(const QString &libraryName, const QString &restoreDialogTitle);
 
 signals:
@@ -34,8 +35,8 @@ signals:
 private:
     void backupLibrary(const QString &libraryPath, const QString &dialogTitle);
     void restoreLibrary(const QString &libraryName, const QString &libraryPath, const QString &dialogTitle);
-    void startLibraryRestore(const QString &libraryName, const QString &libraryPath, const QString &backupPath, const QString &dialogTitle, bool allowInvalidCurrent = false, bool removeStaleLock = false);
-    void startDatabaseSalvage(const QString &libraryName, const QString &libraryPath, bool removeStaleLock = false);
+    void startLibraryRestore(const QString &libraryName, const QString &libraryPath, const QString &backupPath, const QString &dialogTitle, bool allowInvalidCurrent = false, bool recoveryAttempted = false);
+    void startDatabaseSalvage(const QString &libraryName, const QString &libraryPath, bool recoveryAttempted = false);
 
     YACReaderLibraries &libraries;
     QWidget *dialogParent;
