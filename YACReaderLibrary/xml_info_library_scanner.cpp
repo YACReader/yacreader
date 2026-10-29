@@ -4,7 +4,6 @@
 #include "comic_db.h"
 #include "data_base_management.h"
 #include "db_helper.h"
-#include "folder_item.h"
 #include "initial_comic_info_extractor.h"
 #include "xml_info_parser.h"
 #include "yacreader_global.h"
@@ -24,34 +23,60 @@ void XMLInfoLibraryScanner::scanLibrary(const QString &source, const QString &ta
     this->target = target;
 
     this->stopRunning = false;
+    cancelRequested = false;
 
     partialUpdate = false;
 
     start();
 }
 
-void XMLInfoLibraryScanner::scanFolder(const QString &source, const QString &target, const QString &folder, const QModelIndex &dest)
+void XMLInfoLibraryScanner::scanFolder(const QString &source, const QString &target, const QString &folder, const QModelIndex & /* dest */)
 {
     this->source = source;
     this->target = target;
 
     this->stopRunning = false;
+    cancelRequested = false;
 
     partialUpdate = true;
-    folderDestinationModelIndex = dest;
+    const auto relative = QDir(source).relativeFilePath(folder);
+    folderPath = relative == "." ? QString("/") : "/" + relative;
 
     start();
 }
 
 void XMLInfoLibraryScanner::run()
 {
+    scanError.clear();
+    lockFailure = { };
+    completed = false;
+    if (cancelRequested)
+        return;
+    LibraryMaintenanceLock maintenance(source);
+    if (!maintenance.tryLock()) {
+        lockFailure = maintenance.failure();
+        scanError = maintenance.errorString();
+        emit failed(scanError);
+        return;
+    }
+    if (!DataBaseManagement::recoverInterruptedRestore(source, &scanError, true) || !QFile::exists(LibraryPaths::libraryDatabasePath(source))) {
+        if (scanError.isEmpty())
+            scanError = tr("The library database is missing. Restore a backup or recreate the library before rescanning XML information.");
+        emit failed(scanError);
+        return;
+    }
+    if (!DataBaseManagement::backupLibrary(source, DatabaseBackupReason::BeforeRepair, &scanError)) {
+        emit failed(scanError);
+        return;
+    }
 #if !defined use_unarr && !defined use_libarchive
     auto sevenzLib = YACReader::load7zLibrary();
 
     if (!sevenzLib->load()) {
-        QLOG_ERROR() << "Loading 7z.dll : " + sevenzLib->errorString() << Qt::endl;
-        QCoreApplication::exit(YACReader::SevenZNotFound);
-        exit();
+        scanError = tr("Unable to load the archive backend: %1").arg(sevenzLib->errorString());
+        emit failed(scanError);
+        sevenzLib->deleteLater();
+        return;
     }
     sevenzLib->deleteLater();
 #endif
@@ -62,39 +87,40 @@ void XMLInfoLibraryScanner::run()
         auto database = DataBaseManagement::loadDatabase(this->target);
         databaseConnection = database.connectionName();
 
-        database.transaction();
-
-        if (!partialUpdate) {
-            QSqlQuery comicsInfo("SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)", database);
-            comicsInfo.exec();
-
-            updateFromSQLQuery(database, comicsInfo);
+        if (!database.isOpen() || !database.transaction()) {
+            scanError = tr("Unable to start an XML rescan transaction.");
         } else {
-            if (folderDestinationModelIndex.isValid()) {
-                YACReader::iterate(folderDestinationModelIndex, folderDestinationModelIndex.model(), [&](const QModelIndex &idx) {
-                    if (stopRunning) {
-                        return false;
-                    }
-
-                    auto item = static_cast<FolderItem *>(idx.internalPointer());
-
-                    QSqlQuery comicsInfo(database);
-                    comicsInfo.prepare("SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE c.parentId = :parentId");
-                    comicsInfo.bindValue(":parentId", item->folder.id.value());
-                    comicsInfo.exec();
-
-                    updateFromSQLQuery(database, comicsInfo);
-
-                    return true;
-                });
+            QSqlQuery comicsInfo(database);
+            auto sql = "SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id)";
+            bool folderFound = true;
+            if (partialUpdate) {
+                QSqlQuery folder(database);
+                folder.prepare("SELECT id FROM folder WHERE path = :path");
+                folder.bindValue(":path", folderPath);
+                folderFound = folder.exec() && folder.next();
+                sql = "WITH RECURSIVE folders(id) AS (SELECT id FROM folder WHERE path = :path UNION SELECT f.id FROM folder f JOIN folders p ON f.parentId = p.id) " + sql + " WHERE c.parentId IN (SELECT id FROM folders)";
             }
+            comicsInfo.prepare(sql);
+            if (partialUpdate)
+                comicsInfo.bindValue(":path", folderPath);
+            if (!folderFound)
+                scanError = tr("The selected folder is no longer in this library. Reload the library before rescanning.");
+            else if (!comicsInfo.exec())
+                scanError = tr("Unable to read comics for the XML rescan.");
+            else if (updateFromSQLQuery(database, comicsInfo) && !cancelRequested) {
+                completed = database.commit();
+                if (!completed)
+                    scanError = tr("Unable to commit XML metadata changes.");
+            }
+            if (!completed)
+                database.rollback();
         }
-
-        database.commit();
         database.close();
     }
 
     QSqlDatabase::removeDatabase(databaseConnection);
+    if (!scanError.isEmpty())
+        emit failed(scanError);
 }
 
 void XMLInfoLibraryScanner::stop()
@@ -102,7 +128,13 @@ void XMLInfoLibraryScanner::stop()
     stopRunning = true;
 }
 
-void XMLInfoLibraryScanner::updateFromSQLQuery(QSqlDatabase &db, QSqlQuery &query)
+void XMLInfoLibraryScanner::cancel()
+{
+    cancelRequested = true;
+    stopRunning = true;
+}
+
+bool XMLInfoLibraryScanner::updateFromSQLQuery(QSqlDatabase &db, QSqlQuery &query)
 {
     const auto indexes = ComicDB::columnIndexes(query.record(), "c", "ci");
     while (query.next()) {
@@ -121,7 +153,11 @@ void XMLInfoLibraryScanner::updateFromSQLQuery(QSqlDatabase &db, QSqlQuery &quer
         ie.extract();
 
         if (parseXMLIntoInfo(ie.getXMLInfoRawData(), info)) {
-            DBHelper::update(&info, db);
+            if (!DBHelper::update(&info, db)) {
+                scanError = tr("Unable to update XML metadata for %1.").arg(path);
+                return false;
+            }
         }
     }
+    return true;
 }
