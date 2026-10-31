@@ -8,11 +8,14 @@
 
 static QImage scaleImageLancir(const QImage &image, int width, int height)
 {
-    QImage src = (image.format() == QImage::Format_ARGB32)
-            ? image
-            : image.convertToFormat(QImage::Format_ARGB32);
+    // Filter premultiplied channels so invisible pixels cannot bleed colour
+    // into visible neighbours; convert back to straight alpha afterwards.
+    // Opaque content is unaffected (premultiply/unpremultiply is the identity
+    // for alpha 255).
+    QImage src = image.convertToFormat(QImage::Format_ARGB32)
+                         .convertToFormat(QImage::Format_ARGB32_Premultiplied);
 
-    QImage dst(width, height, QImage::Format_ARGB32);
+    QImage dst(width, height, QImage::Format_ARGB32_Premultiplied);
 
     // SrcSSize / NewSSize are in elements; for uint8_t that equals bytes,
     // so bytesPerLine() covers any Qt row-alignment padding correctly.
@@ -24,7 +27,7 @@ static QImage scaleImageLancir(const QImage &image, int width, int height)
             src.constBits(), src.width(), src.height(),
             dst.bits(), width, height, 4, &params);
 
-    return dst;
+    return dst.convertToFormat(QImage::Format_ARGB32);
 }
 
 // ---- Bicubic (Catmull-Rom, separable two-pass resampler) ---------------------
