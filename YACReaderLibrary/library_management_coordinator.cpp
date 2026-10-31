@@ -17,6 +17,7 @@
 #include <QCoreApplication>
 #include <QDesktopServices>
 #include <QDir>
+#include <QDirListing>
 #include <QFile>
 #include <QGridLayout>
 #include <QMessageBox>
@@ -174,9 +175,15 @@ void LibraryManagementCoordinator::loadLibraryAtPath(const QString &libraryName,
         }
 
         if (versionComparison == 0) {
-            QDir rootDirectory(libraryPath);
-            rootDirectory.setFilter(QDir::AllDirs | QDir::Files | QDir::Hidden | QDir::NoSymLinks | QDir::NoDotAndDotDot);
-            emit libraryReady(libraryDataPath, rootDirectory.count() <= 1);
+            const auto flags = QDirListing::IteratorFlag::IncludeHidden | QDirListing::IteratorFlag::ExcludeSpecial;
+            int entryCount = 0;
+            for (const auto &entry : QDirListing(libraryPath, flags)) {
+                if (entry.isSymLink())
+                    continue;
+                if (++entryCount == 2)
+                    break;
+            }
+            emit libraryReady(libraryDataPath, entryCount <= 1);
             return;
         }
 

@@ -7,7 +7,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReader
 
 * Add Bicubic as a scaling method in Settings, offering sharper images than Bilinear and faster scaling than Lanczos.
-* Fix opening comics at page -1 after removing them from Continue reading. Comics with a saved position before the first page now open at the first page.
+* Fix opening comics at page -1 after removing them from the "Reading" list.
 
 ### YACReaderLibrary
 
@@ -26,6 +26,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix removing comics belonging to child reading lists from a parent list view.
 * Fix newly added comics sometimes appearing in the middle of a reading list instead of at the end.
 * Fix library lock handling and add a way to clear these locks from the GUI and webui.
+* Improve library opening speed over network shares. 
 
 ### Server
 
