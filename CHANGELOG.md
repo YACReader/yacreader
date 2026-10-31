@@ -4,6 +4,11 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## 10.5.0
 
+### YACReader
+
+* Add Bicubic as a scaling method in Settings, offering sharper images than Bilinear and faster scaling than Lanczos.
+* Fix opening comics at page -1 after removing them from Continue reading. Comics with a saved position before the first page now open at the first page.
+
 ### YACReaderLibrary
 
 * Reading lists and labels keep comics whose files are removed from the library. Their covers show in gray, with their metadata and last known file name. You can still edit their metadata, get data from Comic Vine, set a custom cover, reorder them, and remove them from the list. When the same file comes back, at any path, the comic is available again.
