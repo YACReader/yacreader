@@ -246,8 +246,6 @@ QPixmap scalePixmap(const QPixmap &pixmap, int width, int height, ScaleMethod me
         return QPixmap::fromImage(scaleImageLancir(pixmap.toImage(), width, height));
     case ScaleMethod::Bicubic:
         return QPixmap::fromImage(scaleImageBicubic(pixmap.toImage(), width, height));
-    case ScaleMethod::Lanczos3:
-        return QPixmap::fromImage(scaleImageLancir(pixmap.toImage(), width, height, 3.0));
     }
     return pixmap;
 }
