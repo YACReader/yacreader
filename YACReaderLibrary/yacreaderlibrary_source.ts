@@ -12,6 +12,66 @@
 <context>
     <name>AddLabelDialog</name>
     <message>
+        <location filename="add_label_dialog.cpp" line="8"/>
+        <source>red</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="9"/>
+        <source>orange</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="10"/>
+        <source>yellow</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="11"/>
+        <source>green</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="12"/>
+        <source>cyan</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="13"/>
+        <source>blue</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="14"/>
+        <source>violet</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="15"/>
+        <source>purple</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="16"/>
+        <source>pink</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="17"/>
+        <source>white</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="18"/>
+        <source>light</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="19"/>
+        <source>dark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="add_label_dialog.cpp" line="28"/>
         <source>Label name:</source>
         <translation type="unfinished"></translation>
@@ -51,12 +111,12 @@
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="16"/>
-        <source>Comics folder : </source>
+        <source>Comics folder: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="21"/>
-        <source>Library name : </source>
+        <source>Library name: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -69,7 +129,7 @@
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -963,13 +1023,13 @@
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="296"/>
-        <source>Error connecting to ComicVine</source>
+        <source>Error connecting to Comic Vine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="485"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="601"/>
-        <source>Retrieving tags for : %1</source>
+        <source>Retrieving tags for: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1054,17 +1114,17 @@
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="21"/>
-        <source>Comics folder : </source>
+        <source>Comics folder: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="26"/>
-        <source>Library Name : </source>
+        <source>Library Name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="57"/>
-        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
+        <source>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1103,7 +1163,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1118,7 +1178,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1199,7 +1259,7 @@
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="14"/>
-        <source>Output file : </source>
+        <source>Output file: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1237,7 +1297,7 @@
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="12"/>
-        <source>Output folder : </source>
+        <source>Output folder: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1431,7 +1491,7 @@
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="16"/>
-        <source>Info database location : </source>
+        <source>Info database location: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1449,7 +1509,7 @@
     <name>ImportLibraryDialog</name>
     <message>
         <location filename="import_library_dialog.cpp" line="26"/>
-        <source>Destination folder : </source>
+        <source>Destination folder: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1464,17 +1524,17 @@
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="115"/>
-        <source>Compresed library covers (*.clc)</source>
+        <source>Compressed library covers (*.clc)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="22"/>
-        <source>Package location : </source>
+        <source>Package location: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="17"/>
-        <source>Library Name : </source>
+        <source>Library Name: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1502,7 +1562,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="319"/>
-        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
+        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Creating a library could take several minutes. You can stop the process and update the library later to complete the task.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1512,7 +1572,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="331"/>
-        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being updated. For faster updates, please update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1532,7 +1592,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="355"/>
-        <source>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1708,7 +1768,7 @@
     <name>LibraryWindow</name>
     <message>
         <location filename="library_management_coordinator.cpp" line="440"/>
-        <source>Do you want remove </source>
+        <source>Do you want to remove the library &apos;%1&apos;?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1798,7 +1858,7 @@
         <location filename="folder_management_coordinator.cpp" line="134"/>
         <location filename="folder_management_coordinator.cpp" line="146"/>
         <location filename="folder_management_coordinator.cpp" line="200"/>
-        <source>Please, select a folder first</source>
+        <source>Please select a folder first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1824,7 +1884,7 @@
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="251"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <source>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
         <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
         <translation type="unfinished"></translation>
     </message>
@@ -1980,9 +2040,9 @@ Folder: %1</source>
         <location filename="library_management_coordinator.cpp" line="486"/>
         <source>You are adding too many libraries.
 
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
 
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2134,11 +2194,6 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="440"/>
-        <source> library?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="library_management_coordinator.cpp" line="443"/>
         <source>Remove and delete metadata and backups</source>
         <translation type="unfinished"></translation>
@@ -2150,7 +2205,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="919"/>
-        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
+        <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2160,7 +2215,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="376"/>
-        <source>Assign numbers starting in:</source>
+        <source>Assign numbers starting at:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2279,562 +2334,562 @@ Missing files: %3</source>
 <context>
     <name>LibraryWindowActions</name>
     <message>
-        <location filename="library_window_actions.cpp" line="47"/>
+        <location filename="library_window_actions.cpp" line="45"/>
         <source>Create a new library</source>
         <translation type="unfinished">Criar uma nova biblioteca</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="52"/>
+        <location filename="library_window_actions.cpp" line="50"/>
         <source>Open an existing library</source>
         <translation type="unfinished">Abrir uma biblioteca existente</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="56"/>
-        <location filename="library_window_actions.cpp" line="57"/>
+        <location filename="library_window_actions.cpp" line="54"/>
+        <location filename="library_window_actions.cpp" line="55"/>
         <source>Export comics info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="61"/>
-        <location filename="library_window_actions.cpp" line="62"/>
+        <location filename="library_window_actions.cpp" line="59"/>
+        <location filename="library_window_actions.cpp" line="60"/>
         <source>Import comics info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="66"/>
+        <location filename="library_window_actions.cpp" line="64"/>
         <source>Pack covers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="67"/>
+        <location filename="library_window_actions.cpp" line="65"/>
         <source>Pack the covers of the selected library</source>
         <translation type="unfinished">Pacote de capas da biblioteca selecionada</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="71"/>
+        <location filename="library_window_actions.cpp" line="69"/>
         <source>Unpack covers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="72"/>
+        <location filename="library_window_actions.cpp" line="70"/>
         <source>Unpack a catalog</source>
         <translation type="unfinished">Desempacotar um catálogo</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="76"/>
+        <location filename="library_window_actions.cpp" line="74"/>
         <source>Update library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="77"/>
+        <location filename="library_window_actions.cpp" line="75"/>
         <source>Update current library</source>
         <translation type="unfinished">Atualizar biblioteca atual</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="81"/>
+        <location filename="library_window_actions.cpp" line="79"/>
         <source>Back up library database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="82"/>
+        <location filename="library_window_actions.cpp" line="80"/>
         <source>Create a backup of the current library database</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="86"/>
+        <location filename="library_window_actions.cpp" line="84"/>
         <source>Restore library database backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="87"/>
+        <location filename="library_window_actions.cpp" line="85"/>
         <source>Restore the current library database from a backup</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="91"/>
+        <location filename="library_window_actions.cpp" line="89"/>
         <source>Repair library database...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="92"/>
+        <location filename="library_window_actions.cpp" line="90"/>
         <source>Check the current library database and attempt to repair any damage</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="96"/>
+        <location filename="library_window_actions.cpp" line="94"/>
         <source>Recover library access...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="97"/>
+        <location filename="library_window_actions.cpp" line="95"/>
         <source>Recover access after an interrupted library maintenance operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="101"/>
+        <location filename="library_window_actions.cpp" line="99"/>
         <location filename="import_widget.cpp" line="366"/>
         <source>Repair covers and comic info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="102"/>
+        <location filename="library_window_actions.cpp" line="100"/>
         <source>Retry comics with missing covers or incomplete information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="106"/>
+        <location filename="library_window_actions.cpp" line="104"/>
         <source>Rename library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="107"/>
+        <location filename="library_window_actions.cpp" line="105"/>
         <source>Rename current library</source>
         <translation type="unfinished">Renomear biblioteca atual</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="111"/>
+        <location filename="library_window_actions.cpp" line="109"/>
         <source>Remove library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="112"/>
+        <location filename="library_window_actions.cpp" line="110"/>
         <source>Remove current library from your collection</source>
         <translation type="unfinished">Remover biblioteca atual da sua coleção</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="116"/>
+        <location filename="library_window_actions.cpp" line="114"/>
         <source>Rescan library for XML info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="117"/>
-        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
+        <location filename="library_window_actions.cpp" line="115"/>
+        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="121"/>
+        <location filename="library_window_actions.cpp" line="119"/>
         <source>Open library folder...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="122"/>
+        <location filename="library_window_actions.cpp" line="120"/>
         <source>Open the root folder of the current library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="126"/>
+        <location filename="library_window_actions.cpp" line="124"/>
         <source>Show library info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="127"/>
+        <location filename="library_window_actions.cpp" line="125"/>
         <source>Show information about the current library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="131"/>
+        <location filename="library_window_actions.cpp" line="129"/>
         <source>Open current comic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="132"/>
-        <source>Open current comic on YACReader</source>
+        <location filename="library_window_actions.cpp" line="130"/>
+        <source>Open current comic in YACReader</source>
         <translation type="unfinished">Abrir quadrinho atual no YACReader</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="136"/>
+        <location filename="library_window_actions.cpp" line="134"/>
         <source>Save selected covers to...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="137"/>
+        <location filename="library_window_actions.cpp" line="135"/>
         <source>Save covers of the selected comics as JPG files</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="141"/>
-        <location filename="library_window_actions.cpp" line="277"/>
+        <location filename="library_window_actions.cpp" line="139"/>
+        <location filename="library_window_actions.cpp" line="275"/>
         <source>Set as read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="142"/>
+        <location filename="library_window_actions.cpp" line="140"/>
         <source>Set comic as read</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="146"/>
-        <location filename="library_window_actions.cpp" line="282"/>
+        <location filename="library_window_actions.cpp" line="144"/>
+        <location filename="library_window_actions.cpp" line="280"/>
         <source>Set as unread</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="147"/>
+        <location filename="library_window_actions.cpp" line="145"/>
         <source>Set comic as unread</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="151"/>
-        <location filename="library_window_actions.cpp" line="297"/>
+        <location filename="library_window_actions.cpp" line="149"/>
+        <location filename="library_window_actions.cpp" line="295"/>
         <source>manga</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="152"/>
+        <location filename="library_window_actions.cpp" line="150"/>
         <source>Set issue as manga</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="156"/>
-        <location filename="library_window_actions.cpp" line="302"/>
+        <location filename="library_window_actions.cpp" line="154"/>
+        <location filename="library_window_actions.cpp" line="300"/>
         <source>comic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="157"/>
+        <location filename="library_window_actions.cpp" line="155"/>
         <source>Set issue as normal</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="161"/>
+        <location filename="library_window_actions.cpp" line="159"/>
         <source>western manga</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="162"/>
+        <location filename="library_window_actions.cpp" line="160"/>
         <source>Set issue as western manga</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="167"/>
-        <location filename="library_window_actions.cpp" line="312"/>
+        <location filename="library_window_actions.cpp" line="165"/>
+        <location filename="library_window_actions.cpp" line="310"/>
         <source>web comic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="168"/>
+        <location filename="library_window_actions.cpp" line="166"/>
         <source>Set issue as web comic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="173"/>
-        <location filename="library_window_actions.cpp" line="317"/>
+        <location filename="library_window_actions.cpp" line="171"/>
+        <location filename="library_window_actions.cpp" line="315"/>
         <source>yonkoma</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="174"/>
+        <location filename="library_window_actions.cpp" line="172"/>
         <source>Set issue as yonkoma</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="178"/>
+        <location filename="library_window_actions.cpp" line="176"/>
         <source>Show/Hide marks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="179"/>
+        <location filename="library_window_actions.cpp" line="177"/>
         <source>Show or hide read marks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="185"/>
+        <location filename="library_window_actions.cpp" line="183"/>
         <source>Show/Hide recent indicator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="186"/>
+        <location filename="library_window_actions.cpp" line="184"/>
         <source>Show or hide recent indicator</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="193"/>
-        <location filename="library_window_actions.cpp" line="194"/>
+        <location filename="library_window_actions.cpp" line="191"/>
+        <location filename="library_window_actions.cpp" line="192"/>
         <source>Fullscreen mode on/off</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="199"/>
+        <location filename="library_window_actions.cpp" line="197"/>
         <source>Help, About YACReader</source>
         <translation type="unfinished">Ajuda, Sobre o YACReader</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="203"/>
+        <location filename="library_window_actions.cpp" line="201"/>
         <source>Add new folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="206"/>
+        <location filename="library_window_actions.cpp" line="204"/>
         <source>Add new folder to the current library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="208"/>
+        <location filename="library_window_actions.cpp" line="206"/>
         <source>Rename folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="209"/>
+        <location filename="library_window_actions.cpp" line="207"/>
         <source>Rename the current folder on disk and in the library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="211"/>
+        <location filename="library_window_actions.cpp" line="209"/>
         <source>Delete folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="214"/>
+        <location filename="library_window_actions.cpp" line="212"/>
         <source>Delete current folder from disk</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="219"/>
+        <location filename="library_window_actions.cpp" line="217"/>
         <source>Select root node</source>
         <translation type="unfinished">Selecionar raiz</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="222"/>
+        <location filename="library_window_actions.cpp" line="220"/>
         <source>Expand all nodes</source>
         <translation type="unfinished">Expandir todos</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="227"/>
+        <location filename="library_window_actions.cpp" line="225"/>
         <source>Collapse all nodes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="232"/>
+        <location filename="library_window_actions.cpp" line="230"/>
         <source>Show options dialog</source>
         <translation type="unfinished">Mostrar opções</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="237"/>
+        <location filename="library_window_actions.cpp" line="235"/>
         <source>Show comics server options dialog</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="241"/>
-        <location filename="library_window_actions.cpp" line="242"/>
+        <location filename="library_window_actions.cpp" line="239"/>
+        <location filename="library_window_actions.cpp" line="240"/>
         <source>Change between comics views</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="250"/>
+        <location filename="library_window_actions.cpp" line="248"/>
         <source>Open folder...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="255"/>
-        <location filename="library_window_actions.cpp" line="329"/>
+        <location filename="library_window_actions.cpp" line="253"/>
+        <location filename="library_window_actions.cpp" line="327"/>
         <source>Rename files...</source>
         <oldsource>Organize files</oldsource>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="261"/>
-        <location filename="library_window_actions.cpp" line="335"/>
+        <location filename="library_window_actions.cpp" line="259"/>
+        <location filename="library_window_actions.cpp" line="333"/>
         <source>Organize into folders...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="267"/>
+        <location filename="library_window_actions.cpp" line="265"/>
         <source>Set as uncompleted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="272"/>
+        <location filename="library_window_actions.cpp" line="270"/>
         <source>Set as completed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="287"/>
+        <location filename="library_window_actions.cpp" line="285"/>
         <source>Set custom cover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="292"/>
+        <location filename="library_window_actions.cpp" line="290"/>
         <source>Delete custom cover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="307"/>
+        <location filename="library_window_actions.cpp" line="305"/>
         <source>western manga (left to right)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="324"/>
+        <location filename="library_window_actions.cpp" line="322"/>
         <source>Open containing folder...</source>
         <translation type="unfinished">Abrir a pasta contendo...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="347"/>
+        <location filename="library_window_actions.cpp" line="345"/>
         <source>Select all comics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="352"/>
+        <location filename="library_window_actions.cpp" line="350"/>
         <source>Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="357"/>
+        <location filename="library_window_actions.cpp" line="355"/>
         <source>Assign current order to comics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="362"/>
+        <location filename="library_window_actions.cpp" line="360"/>
         <source>Update cover</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="368"/>
+        <location filename="library_window_actions.cpp" line="366"/>
         <source>Delete selected comics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="373"/>
+        <location filename="library_window_actions.cpp" line="371"/>
         <source>Delete metadata from selected comics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="380"/>
+        <location filename="library_window_actions.cpp" line="378"/>
         <source>Download tags from Comic Vine</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="383"/>
+        <location filename="library_window_actions.cpp" line="381"/>
         <source>Focus search line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="389"/>
+        <location filename="library_window_actions.cpp" line="387"/>
         <source>Focus comics view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="394"/>
+        <location filename="library_window_actions.cpp" line="392"/>
         <source>Edit shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="400"/>
+        <location filename="library_window_actions.cpp" line="398"/>
         <source>&amp;Quit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="407"/>
+        <location filename="library_window_actions.cpp" line="405"/>
         <source>Update folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="409"/>
+        <location filename="library_window_actions.cpp" line="407"/>
         <source>Update current folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="413"/>
+        <location filename="library_window_actions.cpp" line="411"/>
         <source>Scan legacy XML metadata</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="417"/>
+        <location filename="library_window_actions.cpp" line="415"/>
         <source>New reading list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="420"/>
+        <location filename="library_window_actions.cpp" line="418"/>
         <source>Add a new reading list to the current library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="424"/>
+        <location filename="library_window_actions.cpp" line="422"/>
         <source>New smart list...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="427"/>
+        <location filename="library_window_actions.cpp" line="425"/>
         <source>Add a saved search to the current library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="430"/>
+        <location filename="library_window_actions.cpp" line="428"/>
         <source>New folder...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="433"/>
+        <location filename="library_window_actions.cpp" line="431"/>
         <source>Add a folder for reading lists or smart lists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="436"/>
+        <location filename="library_window_actions.cpp" line="434"/>
         <source>Import reading lists...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="439"/>
+        <location filename="library_window_actions.cpp" line="437"/>
         <source>Import CBL reading lists into the current library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="442"/>
+        <location filename="library_window_actions.cpp" line="440"/>
         <source>New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="443"/>
+        <location filename="library_window_actions.cpp" line="441"/>
         <source>Add or import reading lists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="452"/>
+        <location filename="library_window_actions.cpp" line="450"/>
         <source>Remove reading list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="455"/>
+        <location filename="library_window_actions.cpp" line="453"/>
         <source>Remove current reading list from the library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="457"/>
+        <location filename="library_window_actions.cpp" line="455"/>
         <source>Add new label</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="460"/>
+        <location filename="library_window_actions.cpp" line="458"/>
         <source>Add a new label to this library</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="462"/>
+        <location filename="library_window_actions.cpp" line="460"/>
         <source>Rename selected list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="465"/>
+        <location filename="library_window_actions.cpp" line="463"/>
         <source>Rename any selected labels or lists</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="468"/>
+        <location filename="library_window_actions.cpp" line="466"/>
         <source>Add to...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="470"/>
+        <location filename="library_window_actions.cpp" line="468"/>
         <source>Favorites</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="473"/>
+        <location filename="library_window_actions.cpp" line="471"/>
         <source>Add selected comics to favorites list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="qml/ComicGridDelegate.qml" line="318"/>
-        <location filename="library_window_actions.cpp" line="341"/>
+        <location filename="library_window_actions.cpp" line="339"/>
         <source>Reset rating</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2863,7 +2918,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="42"/>
-        <source>4koma (top to botom)</source>
+        <source>4koma (top to bottom)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3060,7 +3115,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a standalone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3111,7 +3166,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="195"/>
-        <source>Start into the system tray</source>
+        <source>Start in the system tray</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3222,10 +3277,10 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="338"/>
-        <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
-During automatic updates the app will block some of the actions until the update is finished.
-To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
+        <source>WARNING! During library updates, writes to the database are disabled!
+Don&apos;t schedule updates while you may be actively using the app.
+During automatic updates, the app will block some of the actions until the update is finished.
+To stop an automatic update, tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
 Don&apos;t schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
@@ -3263,7 +3318,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="options_dialog.cpp" line="403"/>
-        <source>Restore defautls</source>
+        <source>Restore defaults</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -3341,18 +3396,124 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
 <context>
     <name>OrganizeFiles</name>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="540"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="90"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="98"/>
+        <source>Unknown Series</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="92"/>
+        <source>series</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="94"/>
+        <source>Unknown Publisher</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="96"/>
+        <source>publisher</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="100"/>
+        <source>title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="333"/>
+        <source>Unknown Comic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="353"/>
+        <source>Series #Number - Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="354"/>
+        <source>Series #Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="355"/>
+        <source>Series #Number (of Count)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="356"/>
+        <source>Number - Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="357"/>
+        <source>Series #Number (Year)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="362"/>
+        <source>Publisher / Series / Series #Number - Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="363"/>
+        <source>Publisher / Imprint / Series / Series #Number - Title</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="364"/>
+        <source>Series / Series #Number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="365"/>
+        <source>Publisher / Series / Series #Number (Year)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="366"/>
+        <source>Series / original file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="535"/>
         <source>Renamed, %1 is already in use</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="543"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="538"/>
         <source>Missing metadata: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_journal.cpp" line="53"/>
         <source>%1 could not be created</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="79"/>
+        <source>%1 (copy also failed: %2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="85"/>
+        <source>the copy did not have the same size as the original</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="91"/>
+        <source>the original could not be deleted after it was copied</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="302"/>
+        <source>The destination folder could not be created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="356"/>
+        <source>%1 (the file was left at %2)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4571,7 +4732,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="rename_library_dialog.cpp" line="15"/>
-        <source>New Library Name : </source>
+        <source>New Library Name: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4579,7 +4740,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <name>ScraperResultsPaginator</name>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="20"/>
-        <source>Number of volumes found : %1</source>
+        <source>Number of volumes found: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -4590,7 +4751,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="44"/>
-        <source>Number of %1 found : %2</source>
+        <source>Number of %1 found: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4954,6 +5115,11 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="search_syntax_dialog.cpp" line="180"/>
+        <source>%1 -&gt; search for `%1` in any database field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="search_syntax_dialog.cpp" line="185"/>
         <source>1. Search everywhere</source>
         <translation type="unfinished"></translation>
@@ -5203,7 +5369,7 @@ Use quotes to include spaces in a value.</source>
     <name>SelectComic</name>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="16"/>
-        <source>Please, select the right comic info.</source>
+        <source>Please select the right comic info.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5231,7 +5397,7 @@ Use quotes to include spaces in a value.</source>
     <name>SelectVolume</name>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="31"/>
-        <source>Please, select the right series for your comic.</source>
+        <source>Please select the right series for your comic.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5329,7 +5495,7 @@ Use quotes to include spaces in a value.</source>
     <name>SeriesQuestion</name>
     <message>
         <location filename="comic_vine/series_question.cpp" line="12"/>
-        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
+        <source>You are trying to get information for various comics at once. Are they part of the same series?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5435,7 +5601,7 @@ Use quotes to include spaces in a value.</source>
     <name>SortVolumeComics</name>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="60"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please sort the list of comics on the left until it matches the comics&apos; information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5678,7 +5844,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="165"/>
-        <source>Updating....</source>
+        <source>Updating...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5822,7 +5988,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

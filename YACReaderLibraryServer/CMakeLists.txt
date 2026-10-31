@@ -32,10 +32,12 @@ set(yacreaderlibraryserver_translation_source_targets
 )
 qt_add_translations(YACReaderLibraryServer
     SOURCE_TARGETS ${yacreaderlibraryserver_translation_source_targets}
+    LUPDATE_OPTIONS -no-obsolete
     TS_FILES
         yacreaderlibraryserver_es.ts
         yacreaderlibraryserver_ru.ts
         yacreaderlibraryserver_pt.ts
+        yacreaderlibraryserver_pt_PT.ts
         yacreaderlibraryserver_fr.ts
         yacreaderlibraryserver_nl.ts
         yacreaderlibraryserver_tr.ts
@@ -44,9 +46,11 @@ qt_add_translations(YACReaderLibraryServer
         yacreaderlibraryserver_zh_TW.ts
         yacreaderlibraryserver_zh_HK.ts
         yacreaderlibraryserver_ko.ts
+        yacreaderlibraryserver_it.ts
 )
 qt_add_lupdate(
     SOURCE_TARGETS ${yacreaderlibraryserver_translation_source_targets}
+    OPTIONS -no-obsolete
     TS_FILES yacreaderlibraryserver_source.ts
     LUPDATE_TARGET YACReaderLibraryServer_source_lupdate
 )

@@ -24,7 +24,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>Luz</translation>
+        <translation>Claro</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
@@ -145,7 +145,7 @@
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>Última página</translation>
     </message>
 </context>
@@ -166,23 +166,23 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>Para cambiar un atajo, haz doble clic en la combinación de teclas y escribe las nuevas teclas.</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="67"/>
         <source>Shortcuts settings</source>
-        <translation>Configuración de accesos directos</translation>
+        <translation>Configuración de atajos</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
         <source>Shortcut in use</source>
-        <translation>Accesos directos en uso</translation>
+        <translation>Atajo en uso</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>El acceso directo &quot;%1&quot; ya está asignado a otra función</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>El atajo &quot;%1&quot; ya está asignado a otra función</translation>
     </message>
 </context>
 <context>
@@ -201,7 +201,7 @@
     <message>
         <location filename="../common/comic.cpp" line="497"/>
         <source>Unknown error opening the file</source>
-        <translation>Error desconocido abriendo el archivo</translation>
+        <translation>Error desconocido al abrir el archivo</translation>
     </message>
     <message>
         <location filename="../common/comic.cpp" line="490"/>
@@ -224,8 +224,8 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
-        <translation>Páginas totales : </translation>
+        <source>Total pages: </source>
+        <translation>Páginas totales: </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="26"/>
@@ -234,16 +234,16 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
-        <translation>Página : </translation>
+        <source>Page: </source>
+        <translation>Página: </translation>
     </message>
 </context>
 <context>
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
-        <translation>Página : </translation>
+        <source>Page: </source>
+        <translation>Página: </translation>
     </message>
 </context>
 <context>
@@ -256,12 +256,12 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="31"/>
         <source>System info</source>
-        <translation>Información de sistema</translation>
+        <translation>Información del sistema</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>Registro de cambios</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
@@ -374,7 +374,7 @@
     <message>
         <location filename="options_dialog.cpp" line="342"/>
         <source>Comics directory</source>
-        <translation>Directorio de cómics</translation>
+        <translation>Carpeta de cómics</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="96"/>
@@ -389,7 +389,7 @@
     <message>
         <location filename="options_dialog.cpp" line="307"/>
         <source>General</source>
-        <translation>Opciones generales</translation>
+        <translation>General</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="223"/>
@@ -438,7 +438,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>Comportamiento del scroll</translation>
     </message>
     <message>
@@ -473,7 +473,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>Hacer clic en la mitad izquierda o derecha de la pantalla para cambiar de página.</translation>
     </message>
     <message>
@@ -557,12 +557,12 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>7z lib not found</source>
-        <translation>7z lib no encontrado</translation>
+        <translation>Biblioteca 7z no encontrada</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>imposible cargar 7z lib de ./utils</translation>
+        <translation>no se puede cargar la biblioteca 7z desde ./utils</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="156"/>
@@ -605,7 +605,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>?</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -630,7 +630,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>Luz</translation>
+        <translation>Claro</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
@@ -640,7 +640,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>ID:</source>
-        <translation>IDENTIFICACIÓN:</translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
@@ -700,7 +700,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>verdadero</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -708,7 +708,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>falso</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
@@ -792,8 +792,8 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Pulsa &apos;O&apos; para abrir un fichero.</translation>
+        <source>Press &apos;O&apos; to open a comic.</source>
+        <translation>Pulsa &apos;O&apos; para abrir un cómic.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="378"/>
@@ -827,8 +827,8 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
-        <translation>Cargando...espere, por favor!</translation>
+        <source>Loading... please wait!</source>
+        <translation>Cargando... ¡espera, por favor!</translation>
     </message>
 </context>
 <context>
@@ -866,7 +866,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="77"/>
         <source>Show advanced settings</source>
-        <translation>Opciones avanzadas</translation>
+        <translation>Mostrar opciones avanzadas</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
@@ -896,7 +896,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Ampliaci?n</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -936,11 +936,11 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="183"/>
         <source>High Performance</source>
-        <translation>Alto rendimiento</translation>
+        <translation>Rendimiento alto</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
         <translation>Utilizar VSync (mejora la calidad de imagen en pantalla completa, peor rendimiento)</translation>
     </message>
     <message>
@@ -1016,12 +1016,12 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
         <location filename="main_window_viewer.cpp" line="1145"/>
         <location filename="main_window_viewer.cpp" line="1163"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Extraer página(s)</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>Extraer página(s) del origen original</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
@@ -1038,7 +1038,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="394"/>
         <source>Next Comic</source>
-        <translation>Siguiente Cómic</translation>
+        <translation>Siguiente cómic</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="395"/>
@@ -1124,12 +1124,12 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>Ampliar+</translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>Reducir</translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="493"/>
@@ -1144,7 +1144,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="503"/>
         <source>Double page mode</source>
-        <translation>Modo a doble página</translation>
+        <translation>Modo de doble página</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="504"/>
@@ -1154,12 +1154,12 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="512"/>
         <source>Double page manga mode</source>
-        <translation>Modo de manga de página doble</translation>
+        <translation>Modo manga de doble página</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="513"/>
         <source>Reverse reading order in double page mode</source>
-        <translation>Invertir el orden de lectura en modo de página doble</translation>
+        <translation>Invertir el orden de lectura en modo de doble página</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="521"/>
@@ -1168,7 +1168,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
+        <source>Go to page...</source>
         <translation>Ir a página...</translation>
     </message>
     <message>
@@ -1190,17 +1190,19 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="535"/>
         <source>Help, About YACReader</source>
-        <translation>Ayuda, Sobre YACReader</translation>
+        <translation>Ayuda, Acerca de YACReader</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1349"/>
+        <location filename="main_window_viewer.cpp" line="1415"/>
         <source>Magnifying glass</source>
         <translation>Lupa</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="541"/>
         <source>Switch Magnifying glass</source>
-        <translation>Lupa On/Off</translation>
+        <translation>Alternar lupa</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="547"/>
@@ -1260,7 +1262,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="597"/>
         <source>Edit shortcuts</source>
-        <translation>Editar accesos directos</translation>
+        <translation>Editar atajos</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="618"/>
@@ -1333,7 +1335,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
         <location filename="main_window_viewer.cpp" line="1348"/>
         <location filename="main_window_viewer.cpp" line="1377"/>
         <source>General</source>
-        <translation>Opciones generales</translation>
+        <translation>General</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1396"/>
@@ -1348,23 +1350,17 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1402"/>
         <source>Zoom in magnifying glass</source>
-        <translation>Incrementar el aumento de la lupa</translation>
+        <translation>Aumentar el zoom de la lupa</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1405"/>
         <source>Zoom out magnifying glass</source>
-        <translation>Reducir el aumento de la lupa</translation>
+        <translation>Reducir el zoom de la lupa</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1408"/>
         <source>Reset magnifying glass</source>
-        <translation>Resetear lupa</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1349"/>
-        <location filename="main_window_viewer.cpp" line="1415"/>
-        <source>Magnifiying glass</source>
-        <translation>Lupa</translation>
+        <translation>Restablecer lupa</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1422"/>
@@ -1374,23 +1370,24 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1350"/>
         <location filename="main_window_viewer.cpp" line="1426"/>
-        <source>Page adjustement</source>
+        <source>Page adjustment</source>
+        <oldsource>Page adjustement</oldsource>
         <translation>Ajuste de página</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1104"/>
         <source>The current page is not ready. Please try again later.</source>
-        <translation>La página actual aún no está lista. Por favor, inténtelo de nuevo más tarde.</translation>
+        <translation>La página actual aún no está lista. Por favor, inténtalo de nuevo más tarde.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1109"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Sobrescribir el archivo?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1109"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>El archivo ya existe. ¿Quieres sobrescribirlo?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1115"/>
@@ -1400,27 +1397,27 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1134"/>
         <source>The selected pages are not ready. Please try again later.</source>
-        <translation>Las páginas seleccionadas aún no están listas. Por favor, inténtelo de nuevo más tarde.</translation>
+        <translation>Las páginas seleccionadas aún no están listas. Por favor, inténtalo de nuevo más tarde.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1145"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se ha podido extraer la página actual.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1150"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Sobrescribir los archivos?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1150"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Algunos archivos ya existen. ¿Quieres sobrescribirlos?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1163"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se han podido extraer algunas páginas.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1444"/>
@@ -1485,18 +1482,18 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1484"/>
         <source>Offset double page to the left</source>
-        <translation>Mover una página a la izquierda</translation>
+        <translation>Desplazar la doble página a la izquierda</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1486"/>
         <source>Offset double page to the right</source>
-        <translation>Mover una página a la derecha</translation>
+        <translation>Desplazar la doble página a la derecha</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1351"/>
         <location filename="main_window_viewer.cpp" line="1504"/>
         <source>Reading</source>
-        <translation>Leyendo</translation>
+        <translation>Lectura</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1552"/>
@@ -1506,7 +1503,7 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="main_window_viewer.cpp" line="1553"/>
         <source>Do you want to download the new version?</source>
-        <translation>¿Desea descargar la nueva versión?</translation>
+        <translation>¿Quieres descargar la nueva versión?</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1556"/>
@@ -1524,12 +1521,12 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Las notas de la versión no están disponibles.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>Versiones anteriores</translation>
     </message>
 </context>
 <context>
@@ -1587,12 +1584,12 @@ Si ninguno está activo, la tecla Esc no hace nada.</translation>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
-        <translation>Editar accesos directos</translation>
+        <translation>Editar atajos</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
-        <translation>Accesos directos</translation>
+        <translation>Atajos</translation>
     </message>
 </context>
 <context>

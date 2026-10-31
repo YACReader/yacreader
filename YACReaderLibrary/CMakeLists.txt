@@ -564,10 +564,12 @@ qt_add_translations(YACReaderLibrary
     SOURCE_TARGETS ${yacreaderlibrary_translation_source_targets}
     # Keep extraction scoped to targets used by this app and add the QML files
     # directly so qsTr() strings in QML are collected too.
+    LUPDATE_OPTIONS -no-obsolete
     TS_FILES
         yacreaderlibrary_es.ts
         yacreaderlibrary_ru.ts
         yacreaderlibrary_pt.ts
+        yacreaderlibrary_pt_PT.ts
         yacreaderlibrary_fr.ts
         yacreaderlibrary_nl.ts
         yacreaderlibrary_tr.ts
@@ -583,6 +585,7 @@ qt_add_translations(YACReaderLibrary
 )
 qt_add_lupdate(
     SOURCE_TARGETS ${yacreaderlibrary_translation_source_targets}
+    OPTIONS -no-obsolete
     TS_FILES yacreaderlibrary_source.ts
     SOURCES ${yacreaderlibrary_qml_translation_files}
     LUPDATE_TARGET YACReaderLibrary_source_lupdate

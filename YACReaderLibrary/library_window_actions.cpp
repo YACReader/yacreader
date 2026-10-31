@@ -31,8 +31,6 @@ LibraryWindowActions::LibraryWindowActions()
 
 void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *settings)
 {
-    auto tr = [](const char *text) { return QCoreApplication::translate("LibraryWindowActions", text); };
-
     backAction = new QAction(window);
     backAction->setData(BACK_ACTION_YL);
     backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
@@ -114,7 +112,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     removeLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_LIBRARY_ACTION_YL));
 
     rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), window);
-    rescanLibraryForXMLInfoAction->setToolTip(tr("Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files."));
+    rescanLibraryForXMLInfoAction->setToolTip(tr("Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files."));
     rescanLibraryForXMLInfoAction->setData(RESCAN_LIBRARY_XML_INFO_ACTION_YL);
     rescanLibraryForXMLInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESCAN_LIBRARY_XML_INFO_ACTION_YL));
 
@@ -129,7 +127,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     showLibraryInfo->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_LIBRARY_INFO_ACTION_YL));
 
     openComicAction = new QAction(tr("Open current comic"), window);
-    openComicAction->setToolTip(tr("Open current comic on YACReader"));
+    openComicAction->setToolTip(tr("Open current comic in YACReader"));
     openComicAction->setData(OPEN_COMIC_ACTION_YL);
     openComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_COMIC_ACTION_YL));
 

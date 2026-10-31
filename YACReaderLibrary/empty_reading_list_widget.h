@@ -5,6 +5,7 @@
 
 class EmptyReadingListWidget : public EmptyContainerInfo
 {
+    Q_OBJECT
 public:
     EmptyReadingListWidget(QWidget *parent = nullptr);
 

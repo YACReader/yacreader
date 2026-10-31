@@ -6,6 +6,8 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReader
 
+* Add Bicubic as a scaling method in Settings, offering sharper images than Bilinear and faster scaling than Lanczos.
+* Fix opening comics at page -1 after removing them from Continue reading. Comics with a saved position before the first page now open at the first page.
 * Support for ComicBookDS (.cbds) comics. Only the pages are shown, not the previews stored next to them.
 
 ### YACReaderLibrary

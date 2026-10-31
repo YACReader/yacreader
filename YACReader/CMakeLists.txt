@@ -238,11 +238,13 @@ set(yacreader_translation_source_targets
 )
 qt_add_translations(YACReader
     SOURCE_TARGETS ${yacreader_translation_source_targets}
+    LUPDATE_OPTIONS -no-obsolete
     TS_FILES
         yacreader_es.ts
         yacreader_fr.ts
         yacreader_ru.ts
         yacreader_pt.ts
+        yacreader_pt_PT.ts
         yacreader_nl.ts
         yacreader_tr.ts
         yacreader_de.ts
@@ -255,6 +257,7 @@ qt_add_translations(YACReader
 )
 qt_add_lupdate(
     SOURCE_TARGETS ${yacreader_translation_source_targets}
+    OPTIONS -no-obsolete
     TS_FILES yacreader_source.ts
     LUPDATE_TARGET YACReader_source_lupdate
 )

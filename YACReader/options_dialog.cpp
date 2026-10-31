@@ -105,7 +105,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     connect(clearBackgroundColorButton, &QAbstractButton::clicked, this, &OptionsDialog::clearBackgroundColor);
     colorBox->setLayout(colorSelection);
 
-    auto scrollBox = new QGroupBox(tr("Scroll behaviour"));
+    auto scrollBox = new QGroupBox(tr("Scroll behavior"));
     auto scrollLayout = new QVBoxLayout;
 
     disableScrollAnimations = new QCheckBox(tr("Disable scroll animations and smooth scrolling"));
@@ -123,7 +123,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
 
     normalMouseModeRadioButton = new QRadioButton(tr("Only Back/Forward buttons can turn pages"));
     leftRightNavigationMouseModeRadioButton = new QRadioButton(tr("Use the Left/Right buttons to turn pages."));
-    hotAreasMouseModeRadioButton = new QRadioButton(tr("Click left or right half of the screen to turn pages."));
+    hotAreasMouseModeRadioButton = new QRadioButton(tr("Click the left or right half of the screen to turn pages."));
 
     mouseModeLayout->addWidget(normalMouseModeRadioButton);
     mouseModeLayout->addWidget(leftRightNavigationMouseModeRadioButton);
@@ -275,6 +275,7 @@ OptionsDialog::OptionsDialog(QWidget *parent)
     scalingMethodCombo->addItem(tr("Nearest (fast, low quality)"));
     scalingMethodCombo->addItem(tr("Bilinear"));
     scalingMethodCombo->addItem(tr("Lanczos (better quality)"));
+    scalingMethodCombo->addItem(tr("Bicubic"));
     connect(scalingMethodCombo, &QComboBox::currentIndexChanged, this, [this](int index) {
         Configuration::getConfiguration().setScalingMethod(static_cast<ScaleMethod>(index));
         emit changedImageOptions();

@@ -18,12 +18,12 @@ CreateLibraryDialog::CreateLibraryDialog(QWidget *parent)
 
 void CreateLibraryDialog::setupUI()
 {
-    textLabel = new QLabel(tr("Comics folder : "));
+    textLabel = new QLabel(tr("Comics folder: "));
     path = new QLineEdit;
     textLabel->setBuddy(path);
     connect(path, &QLineEdit::textChanged, this, &CreateLibraryDialog::pathSetted);
 
-    nameLabel = new QLabel(tr("Library Name : "));
+    nameLabel = new QLabel(tr("Library Name: "));
     nameEdit = new QLineEdit;
     nameLabel->setBuddy(nameEdit);
     connect(nameEdit, &QLineEdit::textChanged, this, &CreateLibraryDialog::nameSetted);
@@ -54,7 +54,7 @@ void CreateLibraryDialog::setupUI()
     content->setColumnMinimumWidth(2, 0); // TODO
 
     auto bottomLayout = new QHBoxLayout;
-    bottomLayout->addWidget(message = new QLabel(tr("Create a library could take several minutes. You can stop the process and update the library later for completing the task.")));
+    bottomLayout->addWidget(message = new QLabel(tr("Creating a library could take several minutes. You can stop the process and update the library later to complete the task.")));
     message->setWordWrap(true);
     // message->hide();
     bottomLayout->addStretch();
@@ -162,7 +162,7 @@ UpdateLibraryDialog::UpdateLibraryDialog(QWidget *parent)
     : QDialog(parent)
 {
     auto mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(message = new QLabel(tr("Updating....")));
+    mainLayout->addWidget(message = new QLabel(tr("Updating...")));
     mainLayout->addWidget(currentFileLabel = new QLabel("\n\n\n\n"));
     currentFileLabel->setWordWrap(true);
 

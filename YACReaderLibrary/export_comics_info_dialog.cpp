@@ -11,7 +11,7 @@
 ExportComicsInfoDialog::ExportComicsInfoDialog(QWidget *parent)
     : QDialog(parent)
 {
-    textLabel = new QLabel(tr("Output file : "));
+    textLabel = new QLabel(tr("Output file: "));
     path = new QLineEdit;
     textLabel->setBuddy(path);
 

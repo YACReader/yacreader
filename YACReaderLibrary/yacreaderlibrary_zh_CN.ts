@@ -12,9 +12,69 @@
 <context>
     <name>AddLabelDialog</name>
     <message>
+        <location filename="add_label_dialog.cpp" line="8"/>
+        <source>red</source>
+        <translation>红色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="9"/>
+        <source>orange</source>
+        <translation>橙色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="10"/>
+        <source>yellow</source>
+        <translation>黄色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="11"/>
+        <source>green</source>
+        <translation>绿色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="12"/>
+        <source>cyan</source>
+        <translation>青色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="13"/>
+        <source>blue</source>
+        <translation>蓝色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="14"/>
+        <source>violet</source>
+        <translation>紫罗兰色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="15"/>
+        <source>purple</source>
+        <translation>紫色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="16"/>
+        <source>pink</source>
+        <translation>粉色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="17"/>
+        <source>white</source>
+        <translation>白色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="18"/>
+        <source>light</source>
+        <translation>浅色</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="19"/>
+        <source>dark</source>
+        <translation>深色</translation>
+    </message>
+    <message>
         <location filename="add_label_dialog.cpp" line="31"/>
         <source>Choose a color:</source>
-        <translation>选择标签颜色:</translation>
+        <translation>选择标签颜色：</translation>
     </message>
     <message>
         <location filename="add_label_dialog.cpp" line="45"/>
@@ -29,7 +89,7 @@
     <message>
         <location filename="add_label_dialog.cpp" line="28"/>
         <source>Label name:</source>
-        <translation>标签名称:</translation>
+        <translation>标签名称：</translation>
     </message>
 </context>
 <context>
@@ -51,13 +111,13 @@
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="16"/>
-        <source>Comics folder : </source>
-        <translation>漫画文件夹: </translation>
+        <source>Comics folder: </source>
+        <translation>漫画文件夹： </translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="21"/>
-        <source>Library name : </source>
-        <translation>库名: </translation>
+        <source>Library name: </source>
+        <translation>库名： </translation>
     </message>
 </context>
 <context>
@@ -74,13 +134,13 @@
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
-        <translation>你需要拥有自己的API密钥才能够连接Comic Vine. 你可以通过这个链接获得一个免费的&lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;API&lt;/a&gt;密钥</translation>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <translation>您需要拥有自己的 API 密钥才能连接 Comic Vine。您可以通过&lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;此链接&lt;/a&gt;免费获取一个 API 密钥</translation>
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="25"/>
         <source>Paste here your Comic Vine API key</source>
-        <translation>在此粘贴你的Comic Vine API</translation>
+        <translation>在此粘贴您的 Comic Vine API 密钥</translation>
     </message>
 </context>
 <context>
@@ -113,7 +173,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
         <source>Remove</source>
-        <translation>消除</translation>
+        <translation>移除</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
@@ -133,7 +193,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Custom:</source>
-        <translation>自定义:</translation>
+        <translation>自定义：</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
@@ -204,7 +264,7 @@
     <message>
         <location filename="cbl/cbl_entries_view.cpp" line="77"/>
         <source>Find comic ›</source>
-        <translation type="unfinished"></translation>
+        <translation>查找漫画 ›</translation>
     </message>
 </context>
 <context>
@@ -212,159 +272,159 @@
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="36"/>
         <source>Series</source>
-        <translation type="unfinished">系列</translation>
+        <translation>系列</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="38"/>
         <source>Number</source>
-        <translation type="unfinished"></translation>
+        <translation>编号</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="40"/>
         <source>Volume</source>
-        <translation type="unfinished">卷</translation>
+        <translation>卷</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="42"/>
         <source>Year</source>
-        <translation type="unfinished"></translation>
+        <translation>年</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="44"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>格式</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="46"/>
         <location filename="cbl/cbl_entry_detail.cpp" line="147"/>
         <source>ComicVine ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ComicVine ID</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="149"/>
         <source>series and number</source>
-        <translation type="unfinished"></translation>
+        <translation>系列与编号</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="151"/>
         <source>series without the volume, and number</source>
-        <translation type="unfinished"></translation>
+        <translation>不含卷号与编号的系列</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="153"/>
         <source>letters and digits of the series, and number</source>
-        <translation type="unfinished"></translation>
+        <translation>该系列中的字母与数字，以及编号</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="155"/>
         <source>series with its year, and number</source>
-        <translation type="unfinished"></translation>
+        <translation>系列及其年份与编号</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="170"/>
         <source>volume %1</source>
-        <translation type="unfinished"></translation>
+        <translation>卷 %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="201"/>
         <source>Comic in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你库里的漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="201"/>
         <source>Missing in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你的库中缺失</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="204"/>
         <source>Changed by you.</source>
-        <translation type="unfinished"></translation>
+        <translation>被你更改。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="206"/>
         <source>The entry has this comic.</source>
-        <translation type="unfinished"></translation>
+        <translation>该条目包含这本漫画。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="208"/>
         <source>Matched by %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配 %1。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="210"/>
         <source>Your library already has this comic as missing. Matched by %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>你的库中已将此漫画标记为“缺失”。匹配 %1。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="213"/>
         <source>Possible comic %1</source>
-        <translation type="unfinished"></translation>
+        <translation>可能存在的漫画 %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="215"/>
         <location filename="cbl/cbl_entry_detail.cpp" line="276"/>
         <source>Changed by you: it is imported as missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>被你更改：导入时被标记为缺失。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="217"/>
         <source>The comics have the same ComicVine ID.</source>
-        <translation type="unfinished"></translation>
+        <translation>这些漫画拥有相同的 ComicVine ID。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="219"/>
         <source>The comic has the same series and number, but its volume or year is different.</source>
-        <translation type="unfinished"></translation>
+        <translation>这本漫画所属的系列和编号相同，但卷数或年份不同。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="221"/>
         <source>The comics have the same series and number.</source>
-        <translation type="unfinished"></translation>
+        <translation>这些漫画属于同一个系列，且编号相同。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="222"/>
         <source>Values that are different from the file are in amber.</source>
-        <translation type="unfinished"></translation>
+        <translation>与文件不同的值以琥珀色显示。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="227"/>
         <source>Closest series in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你库中最相似的系列</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="231"/>
         <source>Library</source>
-        <translation type="unfinished">库</translation>
+        <translation>库</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="259"/>
         <source>Has %1</source>
-        <translation type="unfinished"></translation>
+        <translation>包含 %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="276"/>
         <source>No comic found. Tried: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>未找到漫画。已尝试：%1。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="288"/>
         <source>In the file</source>
-        <translation type="unfinished"></translation>
+        <translation>在文件中</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="289"/>
         <source>Entry %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>条目 %1，共 %2</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="314"/>
         <source>Use this comic</source>
-        <translation type="unfinished"></translation>
+        <translation>使用这本漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_entry_detail.cpp" line="314"/>
         <source>Use this missing comic</source>
-        <translation type="unfinished"></translation>
+        <translation>使用这本缺失的漫画</translation>
     </message>
 </context>
 <context>
@@ -372,105 +432,105 @@
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="67"/>
         <source>‹ All entries</source>
-        <translation type="unfinished"></translation>
+        <translation>‹ 所有条目</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="83"/>
         <source>Previous problem</source>
-        <translation type="unfinished"></translation>
+        <translation>上一个问题</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="84"/>
         <source>Next problem</source>
-        <translation type="unfinished"></translation>
+        <translation>下一个问题</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="98"/>
         <source>Folders</source>
-        <translation type="unfinished">文件夹</translation>
+        <translation>文件夹</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="112"/>
         <source>Search the whole library</source>
-        <translation type="unfinished"></translation>
+        <translation>在整个库中搜索</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>文件</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>Series</source>
-        <translation type="unfinished">系列</translation>
+        <translation>系列</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>No.</source>
-        <translation type="unfinished"></translation>
+        <translation>No.</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>Volume</source>
-        <translation type="unfinished">卷</translation>
+        <translation>卷</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
         <source>Year</source>
-        <translation type="unfinished"></translation>
+        <translation>年</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="162"/>
         <source>Go to the next problem after I choose</source>
-        <translation type="unfinished"></translation>
+        <translation>选择后，进入下一问题</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="164"/>
         <source>Use this comic</source>
-        <translation type="unfinished"></translation>
+        <translation>使用这本漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="178"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="254"/>
         <source>Search in this folder</source>
-        <translation type="unfinished"></translation>
+        <translation>在此文件夹中搜索</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="270"/>
         <source>Entry %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>条目 %1，共 %2</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="279"/>
         <source>Missing: no comic found. Browse or search the library.</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失：未找到漫画。请浏览或搜索库。</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_find_comic_page.cpp" line="282"/>
         <source>Ambiguous: %n possible comic(s). Browse or search the library.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>不确定：%n 本可能存在的漫画。请浏览或搜索库。</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="286"/>
         <source>Browse or search the library to choose another comic.</source>
-        <translation type="unfinished"></translation>
+        <translation>浏览或搜索库，选择另一本漫画。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="290"/>
         <source>Problem %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>第 %1 个问题，共 %2 个问题</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_find_comic_page.cpp" line="290"/>
         <source>%n problem(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 个问题</numerusform>
         </translation>
     </message>
     <message>
@@ -478,12 +538,12 @@
         <location filename="cbl/cbl_find_comic_page.cpp" line="411"/>
         <location filename="cbl/cbl_find_comic_page.cpp" line="416"/>
         <source>Library</source>
-        <translation type="unfinished">库</translation>
+        <translation>库</translation>
     </message>
     <message>
         <location filename="cbl/cbl_find_comic_page.cpp" line="360"/>
         <source>Search results</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索结果</translation>
     </message>
 </context>
 <context>
@@ -491,162 +551,162 @@
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="181"/>
         <source>Match to library comics — %1</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画 — %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="185"/>
         <source>Apply</source>
-        <translation type="unfinished"></translation>
+        <translation>应用</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="214"/>
         <source>Close</source>
-        <translation type="unfinished">关闭</translation>
+        <translation>关闭</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="215"/>
         <source>Skip</source>
-        <translation type="unfinished"></translation>
+        <translation>忽略</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="216"/>
         <source>Import</source>
-        <translation type="unfinished">导入</translation>
+        <translation>导入</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="268"/>
         <source>&amp;Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;名称：</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="270"/>
         <source>A reading list with this name already exists. Import creates another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>已存在同名的阅读列表。导入操作会再创建一个。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="297"/>
         <source>Filter entries</source>
-        <translation type="unfinished"></translation>
+        <translation>筛选条目</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="358"/>
         <source>Matching the books of %1 with your library...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在将 %1 中的书籍与您的库进行匹配……</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="372"/>
         <source>Matching the entries of %1 with your library...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在将 %1 中的条目与您的库进行匹配……</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="431"/>
         <location filename="cbl/cbl_import_dialog.cpp" line="455"/>
         <source>Match to library comics</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_import_dialog.cpp" line="432"/>
         <source>This also gives comics to entries in %n other list(s): %1</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>这还将这些漫画添加到了其他 %n 个列表中的条目里：%1</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="455"/>
         <source>The changes could not be applied. Nothing was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法应用这些更改。未作任何更改。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="469"/>
         <source>The file cannot be opened.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法打开该文件。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="472"/>
         <source>The file is damaged (line %1, column %2).</source>
-        <translation type="unfinished"></translation>
+        <translation>文件已损坏（第 %1 行，第 %2 列）。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="475"/>
         <source>The file is not a reading list.</source>
-        <translation type="unfinished"></translation>
+        <translation>该文件并非阅读列表。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="481"/>
         <source>The library cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法读取该库。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="607"/>
         <source>Import reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="607"/>
         <source>The reading list could not be imported. Nothing was written.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法导入阅读列表。未写入任何内容。</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="630"/>
         <source>Import reading lists — %1 (%2 of %3)</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表 — %1（%2 共 %3）</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="632"/>
         <source>Import reading lists — %1</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表 — %1</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="641"/>
         <source>All (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>全部 (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="642"/>
         <source>Matched (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配 (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="643"/>
         <source>Ambiguous (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>不确定 (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="644"/>
         <source>Missing (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失 (%1)</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="645"/>
         <source>Changed by you (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>被你更改 (%1)</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_import_dialog.cpp" line="650"/>
         <source>%1 of %n have a comic</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%1（共 %n）拥有漫画</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="672"/>
         <source>Find comic...</source>
-        <translation type="unfinished"></translation>
+        <translation>查找漫画……</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="676"/>
         <source>Use the original match</source>
-        <translation type="unfinished"></translation>
+        <translation>使用原始匹配</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="679"/>
         <source>Make missing</source>
-        <translation type="unfinished"></translation>
+        <translation>造成缺失</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="679"/>
         <source>Import as missing</source>
-        <translation type="unfinished"></translation>
+        <translation>作为缺失项导入</translation>
     </message>
 </context>
 <context>
@@ -654,59 +714,59 @@
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="83"/>
         <source>Matched</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="85"/>
         <source>Ambiguous</source>
-        <translation type="unfinished"></translation>
+        <translation>不确定</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="87"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="89"/>
         <source>Changed</source>
-        <translation type="unfinished"></translation>
+        <translation>已更改</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="115"/>
         <source>#</source>
-        <translation type="unfinished"></translation>
+        <translation>#</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="117"/>
         <source>In the file</source>
-        <translation type="unfinished"></translation>
+        <translation>在文件中</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="119"/>
         <source>Comic in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你库里的漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="121"/>
         <source>Status</source>
-        <translation type="unfinished">状态</translation>
+        <translation>状态</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="240"/>
         <source>Already missing in your library</source>
-        <translation type="unfinished"></translation>
+        <translation>你的库中尚缺此项</translation>
     </message>
     <message numerus="yes">
         <location filename="cbl/cbl_import_model.cpp" line="244"/>
         <source>%n possible comic(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 本可能存在的漫画</numerusform>
         </translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_model.cpp" line="245"/>
         <source>Not in library</source>
-        <translation type="unfinished"></translation>
+        <translation>不在库内</translation>
     </message>
 </context>
 <context>
@@ -714,17 +774,17 @@
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="62"/>
         <source>Match to library comic</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画</translation>
     </message>
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="65"/>
         <source>Loading the library...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在加载库……</translation>
     </message>
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="90"/>
         <source>The library cannot be read.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法读取该库。</translation>
     </message>
 </context>
 <context>
@@ -732,18 +792,7 @@
     <message>
         <location filename="classic_comics_view.cpp" line="105"/>
         <source>Hide comic flow</source>
-        <translation>隐藏漫画页面流</translation>
-    </message>
-</context>
-<context>
-    <name>ComicFilesCoordinator</name>
-    <message>
-        <source>Copying comics...</source>
-        <translation type="obsolete">复制漫画中...</translation>
-    </message>
-    <message>
-        <source>Moving comics...</source>
-        <translation type="obsolete">移动漫画中...</translation>
+        <translation>隐藏 Comic Flow</translation>
     </message>
 </context>
 <context>
@@ -761,7 +810,7 @@
     <message>
         <location filename="qml/ComicInfoView.qml" line="616"/>
         <source>imprint</source>
-        <translation>压印</translation>
+        <translation>出版品牌</translation>
     </message>
     <message>
         <location filename="qml/ComicInfoView.qml" line="364"/>
@@ -826,7 +875,7 @@
     <message>
         <location filename="qml/ComicInfoView.qml" line="550"/>
         <source>letterer</source>
-        <translation>字效师</translation>
+        <translation>嵌字师</translation>
     </message>
 </context>
 <context>
@@ -840,12 +889,12 @@
     <message>
         <location filename="comic_management_coordinator.cpp" line="158"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
-        <translation>未找到YACReader. YACReader应安装在与YACReaderLibrary相同的文件夹中.</translation>
+        <translation>未找到 YACReader。YACReader 应安装在与 YACReaderLibrary 相同的文件夹中。</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="160"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
-        <translation>未找到YACReader. YACReader的安装可能有问题.</translation>
+        <translation>未找到 YACReader。YACReader 的安装可能有问题。</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="167"/>
@@ -873,7 +922,7 @@
     <message>
         <location filename="db/comic_model.cpp" line="777"/>
         <source>Read</source>
-        <translation>阅读</translation>
+        <translation>已读</translation>
     </message>
     <message>
         <location filename="db/comic_model.cpp" line="775"/>
@@ -941,7 +990,7 @@
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="66"/>
         <source>skip</source>
-        <translation>忽略</translation>
+        <translation>跳过</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="70"/>
@@ -951,49 +1000,49 @@
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="485"/>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="601"/>
-        <source>Retrieving tags for : %1</source>
-        <translation>正在检索标签: %1</translation>
+        <source>Retrieving tags for: %1</source>
+        <translation>正在检索标签：%1</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="494"/>
         <source>Creating missing comic %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>正在创建缺失的漫画 %1共 %2</translation>
     </message>
     <message numerus="yes">
         <location filename="comic_vine/comic_vine_dialog.cpp" line="560"/>
         <source>Comic Vine did not answer for %n comic(s).</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Comic Vine 未对 %n 本漫画做出响应。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="comic_vine/comic_vine_dialog.cpp" line="562"/>
         <source>%n missing comic(s) got only the basic data of the volume.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 缺失的漫画仅获取了卷的基本数据。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="comic_vine/comic_vine_dialog.cpp" line="564"/>
         <source>%n missing comic(s) have no cover.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 缺失的漫画没有封面。</numerusform>
         </translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="568"/>
         <source>Comic Vine allows about 200 requests per hour; try again later for the comics that were not updated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine 每小时允许约 200 次请求；对于未更新的漫画，请稍后再试。</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="569"/>
         <source>Try again later for the comics that were not updated.</source>
-        <translation type="unfinished"></translation>
+        <translation>对于未更新的漫画，请稍后再试。</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="570"/>
         <source>Comic Vine</source>
-        <translation type="unfinished"></translation>
+        <translation>Comic Vine</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="795"/>
@@ -1025,8 +1074,8 @@
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="296"/>
-        <source>Error connecting to ComicVine</source>
-        <translation>ComicVine 连接时出错</translation>
+        <source>Error connecting to Comic Vine</source>
+        <translation>Comic Vine 连接时出错</translation>
     </message>
     <message>
         <location filename="comic_vine/comic_vine_dialog.cpp" line="763"/>
@@ -1061,23 +1110,23 @@
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="57"/>
-        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
+        <source>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</source>
         <translation>创建一个新的库可能需要几分钟时间，您可以先停止该进程，稍后可以通过更新库选项来更新数据。</translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="105"/>
         <source>The selected path does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>所选路径不存在或不是有效路径. 确保您具有此文件夹的写入权限</translation>
+        <translation>所选路径不存在或不是有效路径。确保您具有此文件夹的写入权限</translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="21"/>
-        <source>Comics folder : </source>
-        <translation>漫画文件夹: </translation>
+        <source>Comics folder: </source>
+        <translation>漫画文件夹： </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="26"/>
-        <source>Library Name : </source>
-        <translation>库名: </translation>
+        <source>Library Name: </source>
+        <translation>库名： </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="105"/>
@@ -1098,7 +1147,7 @@
     <message>
         <location filename="delayed_progress_dialog.cpp" line="60"/>
         <source>Cancel</source>
-        <translation type="unfinished">取消</translation>
+        <translation>取消</translation>
     </message>
 </context>
 <context>
@@ -1120,13 +1169,13 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
         <translation>快捷键 &quot;%1&quot; 已被映射至其他功能</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>更改快捷键: 双击按键组合并输入新的映射.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>更改快捷键：双击按键组合并输入新的映射。</translation>
     </message>
 </context>
 <context>
@@ -1163,7 +1212,7 @@
     <message>
         <location filename="empty_list_folder_widget.cpp" line="8"/>
         <source>This folder is empty</source>
-        <translation type="unfinished"></translation>
+        <translation>此文件夹为空</translation>
     </message>
 </context>
 <context>
@@ -1184,7 +1233,7 @@
     <message>
         <location filename="empty_special_list.cpp" line="20"/>
         <source>You are not reading anything yet, come on!!</source>
-        <translation>你还没有阅读任何东西，加油!!</translation>
+        <translation>您还没有阅读任何东西，加油！！</translation>
     </message>
     <message>
         <location filename="empty_special_list.cpp" line="27"/>
@@ -1196,8 +1245,8 @@
     <name>ExportComicsInfoDialog</name>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="14"/>
-        <source>Output file : </source>
-        <translation>输出文件: </translation>
+        <source>Output file: </source>
+        <translation>输出文件： </translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="72"/>
@@ -1217,7 +1266,7 @@
     <message>
         <location filename="export_comics_info_dialog.cpp" line="87"/>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>选定的输出文件路径不存在或路径无效. 确保您具有此文件夹的写入权限</translation>
+        <translation>选定的输出文件路径不存在或路径无效。确保您具有此文件夹的写入权限</translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="55"/>
@@ -1245,12 +1294,12 @@
     <message>
         <location filename="export_library_dialog.cpp" line="78"/>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>选定的输出文件路径不存在或路径无效. 确保您具有此文件夹的写入权限</translation>
+        <translation>选定的输出文件路径不存在或路径无效。确保您具有此文件夹的写入权限</translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="12"/>
-        <source>Output folder : </source>
-        <translation>输出文件夹: </translation>
+        <source>Output folder: </source>
+        <translation>输出文件夹： </translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="78"/>
@@ -1265,7 +1314,7 @@
     <message>
         <location filename="export_library_dialog.cpp" line="83"/>
         <source>Destination directory</source>
-        <translation>目标目录</translation>
+        <translation>目标文件夹</translation>
     </message>
 </context>
 <context>
@@ -1287,20 +1336,9 @@
         <translation>打开文件时出现未知错误</translation>
     </message>
     <message>
-        <source>Unsupported EPUB: %1</source>
-        <translation type="vanished">不支持的 EPUB 格式：%1</translation>
-    </message>
-    <message>
         <location filename="../common/comic.cpp" line="490"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>第 %1 页 CRC 校验失败: 部分页面将无法正确显示</translation>
-    </message>
-</context>
-<context>
-    <name>FolderContentView</name>
-    <message>
-        <source>Continue Reading...</source>
-        <translation type="vanished">继续阅读...</translation>
+        <translation>第 %1 页 CRC 校验失败：部分页面将无法正确显示</translation>
     </message>
 </context>
 <context>
@@ -1328,7 +1366,7 @@
     <message>
         <location filename="qml/FolderInfoView.qml" line="76"/>
         <source>Read</source>
-        <translation>阅读</translation>
+        <translation>已读</translation>
     </message>
     <message>
         <location filename="qml/FolderInfoView.qml" line="76"/>
@@ -1371,7 +1409,7 @@
     <message>
         <location filename="folder_management_coordinator.cpp" line="63"/>
         <source>Folder name:</source>
-        <translation>文件夹名称:</translation>
+        <translation>文件夹名称：</translation>
     </message>
 </context>
 <context>
@@ -1382,22 +1420,6 @@
         <translation>显示信息</translation>
     </message>
     <message>
-        <source>Library</source>
-        <translation type="obsolete">库</translation>
-    </message>
-    <message>
-        <source>Folder</source>
-        <translation type="obsolete">文件夹</translation>
-    </message>
-    <message>
-        <source>Favorites</source>
-        <translation type="obsolete">收藏夹</translation>
-    </message>
-    <message>
-        <source>Recently added</source>
-        <translation type="obsolete">最近添加</translation>
-    </message>
-    <message>
         <location filename="grid_comics_view.cpp" line="910"/>
         <source>Manga</source>
         <translation>日式漫画</translation>
@@ -1405,7 +1427,7 @@
     <message>
         <location filename="grid_comics_view.cpp" line="913"/>
         <source>Western manga</source>
-        <translation>西式漫画</translation>
+        <translation>欧美漫画</translation>
     </message>
     <message>
         <location filename="grid_comics_view.cpp" line="916"/>
@@ -1465,8 +1487,8 @@
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="16"/>
-        <source>Info database location : </source>
-        <translation>数据库地址: </translation>
+        <source>Info database location: </source>
+        <translation>数据库地址： </translation>
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="14"/>
@@ -1483,8 +1505,8 @@
     <name>ImportLibraryDialog</name>
     <message>
         <location filename="import_library_dialog.cpp" line="26"/>
-        <source>Destination folder : </source>
-        <translation>目标文件夹: </translation>
+        <source>Destination folder: </source>
+        <translation>目标文件夹： </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="34"/>
@@ -1498,18 +1520,18 @@
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="115"/>
-        <source>Compresed library covers (*.clc)</source>
+        <source>Compressed library covers (*.clc)</source>
         <translation>已压缩的库封面 (*.clc)</translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="22"/>
-        <source>Package location : </source>
-        <translation>打包地址: </translation>
+        <source>Package location: </source>
+        <translation>打包地址： </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="17"/>
-        <source>Library Name : </source>
-        <translation>库名: </translation>
+        <source>Library Name: </source>
+        <translation>库名： </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="85"/>
@@ -1537,16 +1559,16 @@
     <message>
         <location filename="import_widget.cpp" line="342"/>
         <source>Upgrading the library</source>
-        <translation>正在更新库</translation>
+        <translation>正在升级库</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="343"/>
         <source>&lt;p&gt;The current library is being upgraded, please wait.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;正在更新当前漫画库, 请稍候.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;正在更新当前漫画库，请稍候。&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="319"/>
-        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
+        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Creating a library could take several minutes. You can stop the process and update the library later to complete the task.&lt;/p&gt;</source>
         <translation>&lt;p&gt;YACReaderLibrary现在正在创建一个新库。&lt;/p&gt;&lt;p&gt;这可能需要几分钟时间，您可以先停止该进程，稍后可以通过更新库选项来更新数据。&lt;/p&gt;</translation>
     </message>
     <message>
@@ -1556,8 +1578,8 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="355"/>
-        <source>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;正在扫描当前库的旧版 XML metadata 信息。&lt;/p&gt;&lt;p&gt;这只需要执行一次，且只有当创建库的 YACReaderLibrary 版本低于 9.8.2 时。&lt;/p&gt;</translation>
+        <source>&lt;p&gt;The current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;正在扫描当前库的旧版 XML 元数据信息。&lt;/p&gt;&lt;p&gt;这只需要执行一次，且仅当该库由 YACReaderLibrary 9.8.2 或更早版本创建时才需要。&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="330"/>
@@ -1566,7 +1588,7 @@
     </message>
     <message>
         <location filename="import_widget.cpp" line="331"/>
-        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
+        <source>&lt;p&gt;The current library is being updated. For faster updates, please update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
         <translation>&lt;p&gt;正在更新当前库。要获得更快的更新，请经常更新您的库。&lt;/p&gt;&lt;p&gt;您可以停止该进程，稍后继续更新操作。&lt;/p&gt;</translation>
     </message>
     <message>
@@ -1580,29 +1602,29 @@
     <message>
         <location filename="library_creator.cpp" line="172"/>
         <source>Unable to create the library data folder: %1. Check folder access and available disk space.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法创建书库数据文件夹：%1。请检查文件夹访问权限和可用磁盘空间。</translation>
     </message>
     <message>
         <location filename="library_creator.cpp" line="177"/>
         <source>The library data folder is missing: %1. Restore it or recreate the library before updating.</source>
-        <translation type="unfinished"></translation>
+        <translation>书库数据文件夹缺失：%1。请先恢复该文件夹或重新创建书库，再进行更新。</translation>
     </message>
     <message>
         <location filename="library_creator.cpp" line="225"/>
         <source>The library database is missing: %1. Restore a backup or recreate the library before updating.</source>
-        <translation type="unfinished"></translation>
+        <translation>书库数据库缺失：%1。请先恢复备份或重新创建书库，再进行更新。</translation>
     </message>
     <message>
         <location filename="library_creator.cpp" line="262"/>
         <location filename="library_creator.cpp" line="324"/>
         <source>Unable to start a library database transaction: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>无法启动书库数据库事务：%1</translation>
     </message>
     <message>
         <location filename="library_creator.cpp" line="280"/>
         <location filename="library_creator.cpp" line="355"/>
         <source>Unable to commit the library database: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>无法提交书库数据库事务：%1</translation>
     </message>
 </context>
 <context>
@@ -1610,7 +1632,7 @@
     <message>
         <location filename="qml/LibraryInfoView.qml" line="40"/>
         <source>Library info</source>
-        <translation>图书馆信息</translation>
+        <translation>库信息</translation>
     </message>
     <message>
         <location filename="qml/LibraryInfoView.qml" line="74"/>
@@ -1633,22 +1655,22 @@
     <message>
         <location filename="library_maintenance_dialog.h" line="20"/>
         <source>This library is busy. Wait for maintenance to finish. If it appears stuck, close the application shown in Details, then retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>此书库正忙。请等待维护完成。如果似乎已卡住，请关闭“详细信息”中显示的应用程序，然后重试。</translation>
     </message>
     <message>
         <location filename="library_maintenance_dialog.h" line="21"/>
         <source>An earlier maintenance operation may not have released this library. Before recovering access, make sure no YACReaderLibrary or YACReaderLibraryServer operation is using it, including on another computer.</source>
-        <translation type="unfinished"></translation>
+        <translation>先前的维护操作可能未释放此书库。恢复访问前，请确保没有任何 YACReaderLibrary 或 YACReaderLibraryServer 操作正在使用它，包括其他计算机上的操作。</translation>
     </message>
     <message>
         <location filename="library_maintenance_dialog.h" line="25"/>
         <source>Retry</source>
-        <translation type="unfinished"></translation>
+        <translation>重试</translation>
     </message>
     <message>
         <location filename="library_maintenance_dialog.h" line="26"/>
         <source>Recover and retry</source>
-        <translation type="unfinished"></translation>
+        <translation>恢复并重试</translation>
     </message>
 </context>
 <context>
@@ -1656,42 +1678,42 @@
     <message>
         <location filename="db/data_base_management.cpp" line="319"/>
         <source>The library lock owner changed. Retry the operation and review the new owner before recovering it.</source>
-        <translation type="unfinished"></translation>
+        <translation>书库锁的所有者已更改。请重试操作并检查新的所有者，然后再恢复访问。</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="323"/>
         <source>Unable to remove the maintenance lock: %1. Make sure the file is not read-only and that you can write to the library data folder, then retry.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法移除维护锁：%1。请确保文件不是只读的，且您可以写入书库数据文件夹，然后重试。</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="379"/>
         <source>A folder is occupying the maintenance lock file path: %1. Rename or move that folder before retrying.</source>
-        <translation type="unfinished"></translation>
+        <translation>维护锁文件路径被文件夹占用：%1。请先重命名或移动该文件夹，然后重试。</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="381"/>
         <source>Unable to create the library lock file: %1. Check write permissions for the library data folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法创建书库锁文件：%1。请检查书库数据文件夹的写入权限。</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="383"/>
         <source>The library data folder is missing: %1. Restore the folder or recreate the library before updating it.</source>
-        <translation type="unfinished"></translation>
+        <translation>书库数据文件夹缺失：%1。请恢复该文件夹或重新创建书库，然后再更新。</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="389"/>
         <source>The library has a maintenance lock whose owner could not be verified (%1)%2</source>
-        <translation type="unfinished"></translation>
+        <translation>书库存在维护锁，但无法验证其所有者（%1）%2</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="390"/>
         <source>Another maintenance operation is using this library (%1)%2</source>
-        <translation type="unfinished"></translation>
+        <translation>另一个维护操作正在使用此书库（%1）%2</translation>
     </message>
     <message>
         <location filename="db/data_base_management.cpp" line="386"/>
         <source>Unable to create the library lock file: %1. Check available disk space and access to the library data folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法创建书库锁文件：%1。请检查可用磁盘空间和书库数据文件夹的访问权限。</translation>
     </message>
 </context>
 <context>
@@ -1715,27 +1737,27 @@
         <location filename="library_management_coordinator.cpp" line="105"/>
         <location filename="library_management_coordinator.cpp" line="110"/>
         <source>XML information rescan</source>
-        <translation type="unfinished"></translation>
+        <translation>重新扫描 XML 信息</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="134"/>
         <source>Restore recovery</source>
-        <translation type="unfinished"></translation>
+        <translation>恢复还原操作</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="524"/>
         <source>Library upgrade</source>
-        <translation type="unfinished"></translation>
+        <translation>书库升级</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="565"/>
         <source>Library maintenance</source>
-        <translation type="unfinished"></translation>
+        <translation>书库维护</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="582"/>
         <source>Recover library access</source>
-        <translation type="unfinished"></translation>
+        <translation>恢复书库访问</translation>
     </message>
 </context>
 <context>
@@ -1748,7 +1770,7 @@
     <message>
         <location filename="library_management_coordinator.cpp" line="164"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
-        <translation>此库是使用旧版本的YACReaderLibrary创建的. 它需要更新. 现在更新?</translation>
+        <translation>此库是使用旧版本的YACReaderLibrary创建的。它需要更新。现在更新？</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="53"/>
@@ -1758,22 +1780,18 @@
     <message>
         <location filename="folder_management_coordinator.cpp" line="154"/>
         <source>Folder name:</source>
-        <translation>文件夹名称:</translation>
+        <translation>文件夹名称：</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="217"/>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
-        <translation>所选文件夹及其所有内容将从磁盘中删除。 你确定吗?</translation>
+        <translation>所选文件夹及其所有内容将从磁盘中删除。您确定吗？</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="251"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <source>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
         <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
-        <translation>尝试删除所选文件夹时出现问题。 请检查写入权限，并确保没有其他应用程序在使用这些文件夹或文件。</translation>
-    </message>
-    <message>
-        <source>Remove and delete metadata</source>
-        <translation type="vanished">移除并删除元数据</translation>
+        <translation>尝试删除所选文件夹时出现问题。请检查写入权限，并确保没有其他应用程序在使用这些文件夹或文件。</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="215"/>
@@ -1788,12 +1806,12 @@
     <message>
         <location filename="comic_management_coordinator.cpp" line="868"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
-        <translation>漫画只会从当前标签/列表中删除。 你确定吗?</translation>
+        <translation>漫画只会从当前标签/列表中删除。您确定吗？</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="185"/>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
-        <translation>此库是使用较新版本的YACReaderLibrary创建的。 立即下载新版本?</translation>
+        <translation>此库是使用较新版本的YACReaderLibrary创建的。立即下载新版本？</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="250"/>
@@ -1808,12 +1826,12 @@
     <message>
         <location filename="library_management_coordinator.cpp" line="200"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>库 &apos;%1&apos; 不再可用。 你想删除它吗?</translation>
+        <translation>库 &apos;%1&apos; 不再可用。您想删除它吗？</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="440"/>
-        <source>Do you want remove </source>
-        <translation>你想要删除 </translation>
+        <source>Do you want to remove the library &apos;%1&apos;?</source>
+        <translation>您想要删除“%1”库？</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="209"/>
@@ -1823,7 +1841,7 @@
     <message>
         <location filename="library_management_coordinator.cpp" line="216"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>库 &apos;%1&apos; 是通过旧版本的YACReaderLibrary创建的。 必须再次创建。 你想现在创建吗?</translation>
+        <translation>库 &apos;%1&apos; 是通过旧版本的YACReaderLibrary创建的。必须再次创建。您想现在创建吗？</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="436"/>
@@ -1834,9 +1852,9 @@
         <location filename="library_management_coordinator.cpp" line="486"/>
         <source>You are adding too many libraries.
 
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
 
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</source>
         <translation>您添加的库太多了。
 
 一般情况只需要一个顶级的库，您可以使用左侧边栏中的文件夹功能来进行分类管理。
@@ -1851,13 +1869,13 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_management_coordinator.cpp" line="54"/>
         <source>There were errors during library upgrade in: </source>
-        <translation>漫画库更新时出现错误: </translation>
+        <translation>漫画库更新时出现错误： </translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="134"/>
         <location filename="folder_management_coordinator.cpp" line="146"/>
         <location filename="folder_management_coordinator.cpp" line="200"/>
-        <source>Please, select a folder first</source>
+        <source>Please select a folder first</source>
         <translation>请先选择一个文件夹</translation>
     </message>
     <message>
@@ -1867,13 +1885,13 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="919"/>
-        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
-        <translation>尝试删除所选漫画时出现问题。 请检查所选文件或包含文件夹中的写入权限。</translation>
+        <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
+        <translation>尝试删除所选漫画时出现问题。请检查所选文件或包含文件夹中的写入权限。</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="239"/>
         <source>YACReader Library</source>
-        <translation>YACReader 库</translation>
+        <translation>YACReader Library</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="485"/>
@@ -1903,8 +1921,8 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="376"/>
-        <source>Assign numbers starting in:</source>
-        <translation>从以下位置开始分配编号:</translation>
+        <source>Assign numbers starting at:</source>
+        <translation>起始编号：</translation>
     </message>
     <message>
         <location filename="library_management_coordinator.cpp" line="184"/>
@@ -1914,41 +1932,41 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_window.cpp" line="526"/>
         <source>Edit smart list...</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑智能列表……</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="527"/>
         <source>Delete smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>删除智能列表</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="529"/>
         <location filename="library_window.cpp" line="534"/>
         <location filename="library_window.cpp" line="548"/>
         <source>New folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>新建文件夹...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="530"/>
         <location filename="library_window.cpp" line="536"/>
         <location filename="library_window.cpp" line="550"/>
         <source>Move to folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文件夹...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="535"/>
         <source>Rename folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>重命名文件夹……</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="544"/>
         <source>Match to library comics...</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画……</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="546"/>
         <source>Export reading list...</source>
-        <translation type="unfinished"></translation>
+        <translation>导出阅读列表……</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="814"/>
@@ -1963,7 +1981,7 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_window.cpp" line="858"/>
         <source>Save as smart list…</source>
-        <translation type="unfinished"></translation>
+        <translation>另存为智能列表……</translation>
     </message>
     <message>
         <location filename="search_filters_menu.cpp" line="12"/>
@@ -1994,22 +2012,6 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <location filename="search_filters_menu.cpp" line="31"/>
         <source>Search syntax…</source>
         <translation>搜索语法…</translation>
-    </message>
-    <message>
-        <source>A repair of this library is already running (%1). Wait for it to finish.</source>
-        <translation type="vanished">此库的修复已在运行中（%1）。请等待其完成。</translation>
-    </message>
-    <message>
-        <source>The library is locked by a repair that did not finish.</source>
-        <translation type="vanished">库已被一个未完成的修复锁定。</translation>
-    </message>
-    <message>
-        <source>The library is locked by a repair started by %1.</source>
-        <translation type="vanished">库已被 %1 启动的修复锁定。</translation>
-    </message>
-    <message>
-        <source>If you are sure that no other repair is running, the lock can be removed. Remove the lock and continue?</source>
-        <translation type="vanished">如果您确定没有其他修复正在运行，可以移除该锁定。移除锁定并继续？</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="700"/>
@@ -2076,7 +2078,7 @@ Folder: %1</source>
         <location filename="library_database_maintenance_coordinator.cpp" line="71"/>
         <location filename="library_database_maintenance_coordinator.cpp" line="110"/>
         <source>YACReader library database (*.ydb)</source>
-        <translation>YACReader 资料库数据库 (*.ydb)</translation>
+        <translation>YACReader 库数据库 (*.ydb)</translation>
     </message>
     <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="91"/>
@@ -2106,10 +2108,6 @@ Folder: %1</source>
         <location filename="library_database_maintenance_coordinator.cpp" line="142"/>
         <source>The current library database is invalid. Restore the selected backup anyway?</source>
         <translation>当前资料库数据库无效。仍要恢复所选备份吗？</translation>
-    </message>
-    <message>
-        <source>The library maintenance lock may be stale. Remove it and retry?</source>
-        <translation type="vanished">资料库维护锁可能已失效。是否移除并重试？</translation>
     </message>
     <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="163"/>
@@ -2159,18 +2157,14 @@ Restart YACReaderLibrary before attempting recovery again.</source>
         <translation>修复资料库数据库</translation>
     </message>
     <message>
-        <source>Another maintenance operation is currently using this library. Try again after it finishes.</source>
-        <translation type="vanished">另一个维护操作正在使用此资料库。请在其完成后重试。</translation>
-    </message>
-    <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="48"/>
         <source>Check the database of library &apos;%1&apos; and attempt to repair it if needed? Existing backups will not be changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>是否检查书库“%1”的数据库，并在需要时尝试修复？现有备份不会更改。</translation>
     </message>
     <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="51"/>
         <source>Check and repair</source>
-        <translation type="unfinished"></translation>
+        <translation>检查并修复</translation>
     </message>
     <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="239"/>
@@ -2240,7 +2234,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
     <message>
         <location filename="library_window.cpp" line="627"/>
         <source>Library info</source>
-        <translation>图书馆信息</translation>
+        <translation>库信息</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="470"/>
@@ -2272,29 +2266,29 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <location filename="comic_management_coordinator.cpp" line="598"/>
         <location filename="comic_management_coordinator.cpp" line="631"/>
         <source>Match to library comic</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画</translation>
     </message>
     <message numerus="yes">
         <location filename="comic_management_coordinator.cpp" line="599"/>
         <source>This also gives the comic to entries in %n other list(s): %1</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>这还将此漫画添加到了其他 %n 个列表中的条目里：%1</numerusform>
         </translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="632"/>
         <source>The comic could not be matched. Nothing was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法匹配该漫画。没有任何改动。</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="817"/>
         <source>The selected missing comics will be removed from this folder. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>所选的缺失漫画将从该文件夹中移除。确定吗？</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="819"/>
         <source>The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>所选漫画将从您的磁盘中删除，所选的缺失漫画也将从该文件夹中移除。您确定吗？</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="821"/>
@@ -2311,17 +2305,17 @@ You can restore a backup from the Library menu or recreate the library.</source>
     <message>
         <location filename="comic_management_coordinator.cpp" line="815"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
-        <translation>所有选定的漫画都将从您的磁盘中删除。你确定吗?</translation>
+        <translation>所有选定的漫画都将从您的磁盘中删除。您确定吗？</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="872"/>
         <source>Remove the comics from Reading? Their reading progress will be reset.</source>
-        <translation type="unfinished"></translation>
+        <translation>要将这些漫画从“继续阅读”中移除吗？它们的阅读进度将会被重置。</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="875"/>
         <source>The comics will be removed from Favorites. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>漫画将从“收藏”中移除。确定吗？</translation>
     </message>
     <message>
         <location filename="comic_management_coordinator.cpp" line="882"/>
@@ -2340,14 +2334,9 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>无法删除</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="440"/>
-        <source> library?</source>
-        <translation> 库?</translation>
-    </message>
-    <message>
         <location filename="library_management_coordinator.cpp" line="439"/>
         <source>Are you sure?</source>
-        <translation>你确定吗?</translation>
+        <translation>您确定吗？</translation>
     </message>
     <message>
         <location filename="library_repair_coordinator.cpp" line="75"/>
@@ -2362,570 +2351,562 @@ Missing files: %3</source>
 <context>
     <name>LibraryWindowActions</name>
     <message>
-        <location filename="library_window_actions.cpp" line="47"/>
+        <location filename="library_window_actions.cpp" line="45"/>
         <source>Create a new library</source>
         <translation>创建一个新的库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="52"/>
+        <location filename="library_window_actions.cpp" line="50"/>
         <source>Open an existing library</source>
         <translation>打开现有的库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="56"/>
-        <location filename="library_window_actions.cpp" line="57"/>
+        <location filename="library_window_actions.cpp" line="54"/>
+        <location filename="library_window_actions.cpp" line="55"/>
         <source>Export comics info</source>
         <translation>导出漫画信息</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="61"/>
-        <location filename="library_window_actions.cpp" line="62"/>
+        <location filename="library_window_actions.cpp" line="59"/>
+        <location filename="library_window_actions.cpp" line="60"/>
         <source>Import comics info</source>
         <translation>导入漫画信息</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="66"/>
+        <location filename="library_window_actions.cpp" line="64"/>
         <source>Pack covers</source>
         <translation>打包封面</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="67"/>
+        <location filename="library_window_actions.cpp" line="65"/>
         <source>Pack the covers of the selected library</source>
         <translation>打包所选库的封面</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="71"/>
+        <location filename="library_window_actions.cpp" line="69"/>
         <source>Unpack covers</source>
         <translation>解压封面</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="72"/>
+        <location filename="library_window_actions.cpp" line="70"/>
         <source>Unpack a catalog</source>
         <translation>解压目录</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="76"/>
+        <location filename="library_window_actions.cpp" line="74"/>
         <source>Update library</source>
         <translation>更新库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="77"/>
+        <location filename="library_window_actions.cpp" line="75"/>
         <source>Update current library</source>
         <translation>更新当前库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="81"/>
+        <location filename="library_window_actions.cpp" line="79"/>
         <source>Back up library database</source>
         <translation>备份资料库数据库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="82"/>
+        <location filename="library_window_actions.cpp" line="80"/>
         <source>Create a backup of the current library database</source>
         <translation>创建当前资料库数据库的备份</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="86"/>
+        <location filename="library_window_actions.cpp" line="84"/>
         <source>Restore library database backup</source>
         <translation>恢复资料库数据库备份</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="87"/>
+        <location filename="library_window_actions.cpp" line="85"/>
         <source>Restore the current library database from a backup</source>
         <translation>从备份恢复当前资料库数据库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="91"/>
+        <location filename="library_window_actions.cpp" line="89"/>
         <source>Repair library database...</source>
-        <translation type="unfinished"></translation>
+        <translation>修复书库数据库...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="92"/>
+        <location filename="library_window_actions.cpp" line="90"/>
         <source>Check the current library database and attempt to repair any damage</source>
-        <translation type="unfinished"></translation>
+        <translation>检查当前书库数据库并尝试修复损坏</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="96"/>
+        <location filename="library_window_actions.cpp" line="94"/>
         <source>Recover library access...</source>
-        <translation type="unfinished"></translation>
+        <translation>恢复书库访问...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="97"/>
+        <location filename="library_window_actions.cpp" line="95"/>
         <source>Recover access after an interrupted library maintenance operation</source>
-        <translation type="unfinished"></translation>
+        <translation>在书库维护操作中断后恢复访问</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="101"/>
+        <location filename="library_window_actions.cpp" line="99"/>
         <location filename="import_widget.cpp" line="366"/>
         <source>Repair covers and comic info</source>
         <translation>修复封面和漫画信息</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="102"/>
+        <location filename="library_window_actions.cpp" line="100"/>
         <source>Retry comics with missing covers or incomplete information</source>
         <translation>重新处理缺少封面或信息不完整的漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="106"/>
+        <location filename="library_window_actions.cpp" line="104"/>
         <source>Rename library</source>
         <translation>重命名库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="107"/>
+        <location filename="library_window_actions.cpp" line="105"/>
         <source>Rename current library</source>
         <translation>重命名当前库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="111"/>
+        <location filename="library_window_actions.cpp" line="109"/>
         <source>Remove library</source>
         <translation>移除库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="112"/>
+        <location filename="library_window_actions.cpp" line="110"/>
         <source>Remove current library from your collection</source>
         <translation>从您的集合中移除当前库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="116"/>
+        <location filename="library_window_actions.cpp" line="114"/>
         <source>Rescan library for XML info</source>
         <translation>重新扫描库的 XML 信息</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="117"/>
-        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
-        <translation>尝试查找漫画文件内嵌的 XML 信息。只有当创建库的 YACReaderLibrary 版本低于 9.8.2 或者使用第三方软件嵌入 XML 信息时，才需要执行该操作。</translation>
+        <location filename="library_window_actions.cpp" line="115"/>
+        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files.</source>
+        <translation>尝试查找漫画文件内嵌的 XML 信息。只有当该库由 9.8.2 或更早版本创建，或者您使用第三方软件将 XML 信息嵌入文件时，才需要执行该操作。</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="121"/>
+        <location filename="library_window_actions.cpp" line="119"/>
         <source>Open library folder...</source>
         <translation>打开库文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="122"/>
+        <location filename="library_window_actions.cpp" line="120"/>
         <source>Open the root folder of the current library</source>
         <translation>打开当前库的根文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="126"/>
+        <location filename="library_window_actions.cpp" line="124"/>
         <source>Show library info</source>
-        <translation>显示图书馆信息</translation>
+        <translation>显示库信息</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="127"/>
+        <location filename="library_window_actions.cpp" line="125"/>
         <source>Show information about the current library</source>
         <translation>显示当前库的信息</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="131"/>
+        <location filename="library_window_actions.cpp" line="129"/>
         <source>Open current comic</source>
         <translation>打开当前漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="132"/>
-        <source>Open current comic on YACReader</source>
+        <location filename="library_window_actions.cpp" line="130"/>
+        <source>Open current comic in YACReader</source>
         <translation>用YACReader打开漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="136"/>
+        <location filename="library_window_actions.cpp" line="134"/>
         <source>Save selected covers to...</source>
-        <translation>选中的封面保存到...</translation>
+        <translation>将选中的封面保存到...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="137"/>
+        <location filename="library_window_actions.cpp" line="135"/>
         <source>Save covers of the selected comics as JPG files</source>
-        <translation>保存所选的封面为jpg</translation>
+        <translation>将所选漫画的封面保存为 JPG 文件</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="141"/>
-        <location filename="library_window_actions.cpp" line="277"/>
+        <location filename="library_window_actions.cpp" line="139"/>
+        <location filename="library_window_actions.cpp" line="275"/>
         <source>Set as read</source>
         <translation>设为已读</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="142"/>
+        <location filename="library_window_actions.cpp" line="140"/>
         <source>Set comic as read</source>
         <translation>漫画设为已读</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="146"/>
-        <location filename="library_window_actions.cpp" line="282"/>
+        <location filename="library_window_actions.cpp" line="144"/>
+        <location filename="library_window_actions.cpp" line="280"/>
         <source>Set as unread</source>
         <translation>设为未读</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="147"/>
+        <location filename="library_window_actions.cpp" line="145"/>
         <source>Set comic as unread</source>
         <translation>漫画设为未读</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="151"/>
-        <location filename="library_window_actions.cpp" line="297"/>
+        <location filename="library_window_actions.cpp" line="149"/>
+        <location filename="library_window_actions.cpp" line="295"/>
         <source>manga</source>
-        <translation>日本漫画</translation>
+        <translation>日式漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="152"/>
+        <location filename="library_window_actions.cpp" line="150"/>
         <source>Set issue as manga</source>
-        <translation>设置为漫画</translation>
+        <translation>设置为日式漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="156"/>
-        <location filename="library_window_actions.cpp" line="302"/>
+        <location filename="library_window_actions.cpp" line="154"/>
+        <location filename="library_window_actions.cpp" line="300"/>
         <source>comic</source>
         <translation>漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="157"/>
+        <location filename="library_window_actions.cpp" line="155"/>
         <source>Set issue as normal</source>
-        <translation>设置漫画为</translation>
+        <translation>设置为普通漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="161"/>
+        <location filename="library_window_actions.cpp" line="159"/>
         <source>western manga</source>
         <translation>欧美漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="162"/>
+        <location filename="library_window_actions.cpp" line="160"/>
         <source>Set issue as western manga</source>
         <translation>设置为欧美漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="167"/>
-        <location filename="library_window_actions.cpp" line="312"/>
+        <location filename="library_window_actions.cpp" line="165"/>
+        <location filename="library_window_actions.cpp" line="310"/>
         <source>web comic</source>
         <translation>网络漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="168"/>
+        <location filename="library_window_actions.cpp" line="166"/>
         <source>Set issue as web comic</source>
         <translation>设置为网络漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="173"/>
-        <location filename="library_window_actions.cpp" line="317"/>
+        <location filename="library_window_actions.cpp" line="171"/>
+        <location filename="library_window_actions.cpp" line="315"/>
         <source>yonkoma</source>
         <translation>四格漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="174"/>
+        <location filename="library_window_actions.cpp" line="172"/>
         <source>Set issue as yonkoma</source>
         <translation>设置为四格漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="178"/>
+        <location filename="library_window_actions.cpp" line="176"/>
         <source>Show/Hide marks</source>
         <translation>显示/隐藏标记</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="179"/>
+        <location filename="library_window_actions.cpp" line="177"/>
         <source>Show or hide read marks</source>
         <translation>显示或隐藏阅读标记</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="185"/>
+        <location filename="library_window_actions.cpp" line="183"/>
         <source>Show/Hide recent indicator</source>
         <translation>显示/隐藏最近的指示标志</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="186"/>
+        <location filename="library_window_actions.cpp" line="184"/>
         <source>Show or hide recent indicator</source>
         <translation>显示或隐藏最近的指示标志</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="193"/>
-        <location filename="library_window_actions.cpp" line="194"/>
+        <location filename="library_window_actions.cpp" line="191"/>
+        <location filename="library_window_actions.cpp" line="192"/>
         <source>Fullscreen mode on/off</source>
         <translation>全屏模式 开/关</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="199"/>
+        <location filename="library_window_actions.cpp" line="197"/>
         <source>Help, About YACReader</source>
-        <translation>帮助, 关于 YACReader</translation>
+        <translation>帮助，关于 YACReader</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="203"/>
+        <location filename="library_window_actions.cpp" line="201"/>
         <source>Add new folder</source>
         <translation>添加新的文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="206"/>
+        <location filename="library_window_actions.cpp" line="204"/>
         <source>Add new folder to the current library</source>
         <translation>在当前库下添加新的文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="208"/>
+        <location filename="library_window_actions.cpp" line="206"/>
         <source>Rename folder</source>
         <translation>重命名文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="209"/>
+        <location filename="library_window_actions.cpp" line="207"/>
         <source>Rename the current folder on disk and in the library</source>
         <translation>在磁盘和库中重命名当前文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="211"/>
+        <location filename="library_window_actions.cpp" line="209"/>
         <source>Delete folder</source>
         <translation>删除文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="214"/>
+        <location filename="library_window_actions.cpp" line="212"/>
         <source>Delete current folder from disk</source>
         <translation>从磁盘上删除当前文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="219"/>
+        <location filename="library_window_actions.cpp" line="217"/>
         <source>Select root node</source>
         <translation>选择根节点</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="222"/>
+        <location filename="library_window_actions.cpp" line="220"/>
         <source>Expand all nodes</source>
         <translation>展开所有节点</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="227"/>
+        <location filename="library_window_actions.cpp" line="225"/>
         <source>Collapse all nodes</source>
         <translation>折叠所有节点</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="232"/>
+        <location filename="library_window_actions.cpp" line="230"/>
         <source>Show options dialog</source>
         <translation>显示选项对话框</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="237"/>
+        <location filename="library_window_actions.cpp" line="235"/>
         <source>Show comics server options dialog</source>
         <translation>显示漫画服务器选项对话框</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="241"/>
-        <location filename="library_window_actions.cpp" line="242"/>
+        <location filename="library_window_actions.cpp" line="239"/>
+        <location filename="library_window_actions.cpp" line="240"/>
         <source>Change between comics views</source>
-        <translation>漫画视图之间的变化</translation>
+        <translation>切换漫画视图</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="250"/>
+        <location filename="library_window_actions.cpp" line="248"/>
         <source>Open folder...</source>
         <translation>打开文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="255"/>
-        <location filename="library_window_actions.cpp" line="329"/>
+        <location filename="library_window_actions.cpp" line="253"/>
+        <location filename="library_window_actions.cpp" line="327"/>
         <source>Rename files...</source>
         <oldsource>Organize files</oldsource>
         <translation>重命名文件...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="261"/>
-        <location filename="library_window_actions.cpp" line="335"/>
+        <location filename="library_window_actions.cpp" line="259"/>
+        <location filename="library_window_actions.cpp" line="333"/>
         <source>Organize into folders...</source>
         <translation>整理到文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="267"/>
+        <location filename="library_window_actions.cpp" line="265"/>
         <source>Set as uncompleted</source>
         <translation>设为未完成</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="272"/>
+        <location filename="library_window_actions.cpp" line="270"/>
         <source>Set as completed</source>
         <translation>设为已完成</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="287"/>
+        <location filename="library_window_actions.cpp" line="285"/>
         <source>Set custom cover</source>
         <translation>设置自定义封面</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="292"/>
+        <location filename="library_window_actions.cpp" line="290"/>
         <source>Delete custom cover</source>
         <translation>删除自定义封面</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="307"/>
+        <location filename="library_window_actions.cpp" line="305"/>
         <source>western manga (left to right)</source>
         <translation>欧美漫画（从左到右）</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="324"/>
+        <location filename="library_window_actions.cpp" line="322"/>
         <source>Open containing folder...</source>
-        <translation>打开包含文件夹...</translation>
+        <translation>打开所在文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="417"/>
+        <location filename="library_window_actions.cpp" line="415"/>
         <source>New reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>新的阅读列表</translation>
     </message>
     <message>
-        <source>Reset comic rating</source>
-        <translation type="vanished">重置漫画评分</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="347"/>
+        <location filename="library_window_actions.cpp" line="345"/>
         <source>Select all comics</source>
         <translation>全选漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="352"/>
+        <location filename="library_window_actions.cpp" line="350"/>
         <source>Edit</source>
         <translation>编辑</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="357"/>
+        <location filename="library_window_actions.cpp" line="355"/>
         <source>Assign current order to comics</source>
         <translation>将当前序号分配给漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="362"/>
+        <location filename="library_window_actions.cpp" line="360"/>
         <source>Update cover</source>
         <translation>更新封面</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="368"/>
+        <location filename="library_window_actions.cpp" line="366"/>
         <source>Delete selected comics</source>
         <translation>删除所选的漫画</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="373"/>
+        <location filename="library_window_actions.cpp" line="371"/>
         <source>Delete metadata from selected comics</source>
         <translation>从选定的漫画中删除元数据</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="380"/>
+        <location filename="library_window_actions.cpp" line="378"/>
         <source>Download tags from Comic Vine</source>
         <translation>从 Comic Vine 下载标签</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="383"/>
+        <location filename="library_window_actions.cpp" line="381"/>
         <source>Focus search line</source>
-        <translation>聚焦于搜索行</translation>
+        <translation>聚焦搜索栏</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="389"/>
+        <location filename="library_window_actions.cpp" line="387"/>
         <source>Focus comics view</source>
         <translation>聚焦于漫画视图</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="394"/>
+        <location filename="library_window_actions.cpp" line="392"/>
         <source>Edit shortcuts</source>
         <translation>编辑快捷键</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="400"/>
+        <location filename="library_window_actions.cpp" line="398"/>
         <source>&amp;Quit</source>
         <translation>退出(&amp;Q)</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="407"/>
+        <location filename="library_window_actions.cpp" line="405"/>
         <source>Update folder</source>
         <translation>更新文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="409"/>
+        <location filename="library_window_actions.cpp" line="407"/>
         <source>Update current folder</source>
         <translation>更新当前文件夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="413"/>
+        <location filename="library_window_actions.cpp" line="411"/>
         <source>Scan legacy XML metadata</source>
         <translation>扫描旧版 XML 元数据</translation>
     </message>
     <message>
-        <source>Add new reading list</source>
-        <translation type="vanished">添加新的阅读列表</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="420"/>
+        <location filename="library_window_actions.cpp" line="418"/>
         <source>Add a new reading list to the current library</source>
         <translation>在当前库添加新的阅读列表</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="424"/>
+        <location filename="library_window_actions.cpp" line="422"/>
         <source>New smart list...</source>
-        <translation type="unfinished"></translation>
+        <translation>新建智能列表……</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="427"/>
+        <location filename="library_window_actions.cpp" line="425"/>
         <source>Add a saved search to the current library</source>
-        <translation type="unfinished"></translation>
+        <translation>将已保存的搜索添加到当前库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="430"/>
+        <location filename="library_window_actions.cpp" line="428"/>
         <source>New folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>新建文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="433"/>
+        <location filename="library_window_actions.cpp" line="431"/>
         <source>Add a folder for reading lists or smart lists</source>
-        <translation type="unfinished"></translation>
+        <translation>添加一个文件夹，用于存放阅读列表或智能列表</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="436"/>
+        <location filename="library_window_actions.cpp" line="434"/>
         <source>Import reading lists...</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表……</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="439"/>
+        <location filename="library_window_actions.cpp" line="437"/>
         <source>Import CBL reading lists into the current library</source>
-        <translation type="unfinished"></translation>
+        <translation>将 CBL 阅读列表导入当前库</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="442"/>
+        <location filename="library_window_actions.cpp" line="440"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>新的</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="443"/>
+        <location filename="library_window_actions.cpp" line="441"/>
         <source>Add or import reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>添加或导入阅读列表</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="452"/>
+        <location filename="library_window_actions.cpp" line="450"/>
         <source>Remove reading list</source>
         <translation>移除阅读列表</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="455"/>
+        <location filename="library_window_actions.cpp" line="453"/>
         <source>Remove current reading list from the library</source>
         <translation>从当前库移除阅读列表</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="457"/>
+        <location filename="library_window_actions.cpp" line="455"/>
         <source>Add new label</source>
         <translation>添加新标签</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="460"/>
+        <location filename="library_window_actions.cpp" line="458"/>
         <source>Add a new label to this library</source>
         <translation>在当前库添加标签</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="462"/>
+        <location filename="library_window_actions.cpp" line="460"/>
         <source>Rename selected list</source>
         <translation>重命名列表</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="465"/>
+        <location filename="library_window_actions.cpp" line="463"/>
         <source>Rename any selected labels or lists</source>
         <translation>重命名任何选定的标签或列表</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="468"/>
+        <location filename="library_window_actions.cpp" line="466"/>
         <source>Add to...</source>
         <translation>添加到...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="470"/>
+        <location filename="library_window_actions.cpp" line="468"/>
         <source>Favorites</source>
         <translation>收藏夹</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="473"/>
+        <location filename="library_window_actions.cpp" line="471"/>
         <source>Add selected comics to favorites list</source>
         <translation>将所选漫画添加到收藏夹列表</translation>
     </message>
     <message>
         <location filename="qml/ComicGridDelegate.qml" line="318"/>
-        <location filename="library_window_actions.cpp" line="341"/>
+        <location filename="library_window_actions.cpp" line="339"/>
         <source>Reset rating</source>
         <translation>重置评分</translation>
     </message>
@@ -2940,7 +2921,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_menus.cpp" line="39"/>
         <source>manga</source>
-        <translation>日本漫画</translation>
+        <translation>日式漫画</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="40"/>
@@ -2954,7 +2935,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="42"/>
-        <source>4koma (top to botom)</source>
+        <source>4koma (top to bottom)</source>
         <translation>四格漫画（从上到下）</translation>
     </message>
     <message>
@@ -2983,14 +2964,14 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_menus.cpp" line="255"/>
         <source>Match to library comic...</source>
-        <translation type="unfinished"></translation>
+        <translation>匹配到库漫画……</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="261"/>
         <location filename="library_window_menus.cpp" line="327"/>
         <location filename="library_window_menus.cpp" line="427"/>
         <source>Track missing issues...</source>
-        <translation type="unfinished"></translation>
+        <translation>追踪缺失的期……</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="312"/>
@@ -3101,17 +3082,17 @@ Missing files: %3</source>
     <message>
         <location filename="move_to_folder_dialog.cpp" line="16"/>
         <source>Move to folder</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文件夹</translation>
     </message>
     <message>
         <location filename="move_to_folder_dialog.cpp" line="43"/>
         <source>Top level</source>
-        <translation type="unfinished"></translation>
+        <translation>顶层</translation>
     </message>
     <message>
         <location filename="move_to_folder_dialog.cpp" line="56"/>
         <source>Move &quot;%1&quot; to:</source>
-        <translation type="unfinished"></translation>
+        <translation>将 &quot;%1&quot; 移动到：</translation>
     </message>
 </context>
 <context>
@@ -3119,27 +3100,27 @@ Missing files: %3</source>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="13"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>新建文件夹</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="16"/>
         <source>Reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>阅读列表</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="17"/>
         <source>Smart lists</source>
-        <translation type="unfinished"></translation>
+        <translation>智能列表</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="26"/>
         <source>Folder name:</source>
-        <translation type="unfinished">文件夹名称:</translation>
+        <translation>文件夹名称:</translation>
     </message>
     <message>
         <location filename="new_list_folder_dialog.cpp" line="27"/>
         <source>For:</source>
-        <translation type="unfinished"></translation>
+        <translation>为：</translation>
     </message>
 </context>
 <context>
@@ -3147,16 +3128,16 @@ Missing files: %3</source>
     <message>
         <location filename="no_libraries_widget.cpp" line="24"/>
         <source>create your first library</source>
-        <translation>创建你的第一个库</translation>
+        <translation>创建您的第一个库</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="18"/>
         <source>You don&apos;t have any libraries yet</source>
-        <translation>你还没有库</translation>
+        <translation>您还没有库</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <source>&lt;p&gt;You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a standalone application for reading the comics on your computer.&lt;/p&gt;</source>
         <translation>&lt;p&gt;您可以在任何文件夹中创建库，YACReaderLibrary将导入此文件夹中的所有漫画和文件夹。如果已有库，则可以打开它们。&lt;/p&gt;&lt;p&gt;您可以把YACReader当成独立应用来阅读电脑上的漫画。&lt;/p&gt;</translation>
     </message>
     <message>
@@ -3192,7 +3173,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="403"/>
-        <source>Restore defautls</source>
+        <source>Restore defaults</source>
         <translation>恢复默认值</translation>
     </message>
     <message>
@@ -3217,7 +3198,7 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="195"/>
-        <source>Start into the system tray</source>
+        <source>Start in the system tray</source>
         <translation>启动至系统托盘</translation>
     </message>
     <message>
@@ -3263,7 +3244,7 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="247"/>
         <source>Write {comic_file_path} where the path should go in the command</source>
-        <translation>在命令中应将路径写入 {comic_file_path}</translation>
+        <translation>在命令中应出现路径的位置写入 {comic_file_path}</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="248"/>
@@ -3288,7 +3269,7 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="396"/>
         <source>Blur level</source>
-        <translation>模糊</translation>
+        <translation>模糊程度</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="427"/>
@@ -3333,17 +3314,17 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="216"/>
         <source>Comic Vine API key</source>
-        <translation>Comic Vine API 密匙</translation>
+        <translation>Comic Vine API 密钥</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="213"/>
         <source>Edit Comic Vine API key</source>
-        <translation>编辑Comic Vine API 密匙</translation>
+        <translation>编辑 Comic Vine API 密钥</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="191"/>
         <source>Tray icon settings (experimental)</source>
-        <translation>托盘图标设置 (实验特性)</translation>
+        <translation>托盘图标设置（实验特性）</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="34"/>
@@ -3373,11 +3354,11 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="338"/>
-        <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
-During automatic updates the app will block some of the actions until the update is finished.
-To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
-        <translation>警告！ 在库更新期间，将禁用对数据库的写入！
+        <source>WARNING! During library updates, writes to the database are disabled!
+Don&apos;t schedule updates while you may be actively using the app.
+During automatic updates, the app will block some of the actions until the update is finished.
+To stop an automatic update, tap on the loading indicator next to the Libraries title.</source>
+        <translation>警告！在库更新期间，将禁用对数据库的写入！
 当您可能正在积极使用该应用程序时，请勿安排更新。
 在自动更新期间，应用程序将阻止某些操作，直到更新完成。
 要停止自动更新，请点击库标题旁边的加载指示器。</translation>
@@ -3385,7 +3366,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="options_dialog.cpp" line="391"/>
         <source>Opacity level</source>
-        <translation>透明度</translation>
+        <translation>不透明度</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="417"/>
@@ -3400,7 +3381,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="options_dialog.cpp" line="233"/>
         <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
-        <translation>参考自 X 天前添加或更新的“最近”项目</translation>
+        <translation>将自 X 天前起添加或更新的项目视为“最近”项目</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="282"/>
@@ -3415,7 +3396,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="options_dialog.cpp" line="35"/>
         <source>Comic Flow</source>
-        <translation>漫画页面流</translation>
+        <translation>Comic Flow</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="36"/>
@@ -3431,12 +3412,93 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
 <context>
     <name>OrganizeFiles</name>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="540"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="90"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="98"/>
+        <source>Unknown Series</source>
+        <translation>未知系列</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="92"/>
+        <source>series</source>
+        <translation>系列</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="94"/>
+        <source>Unknown Publisher</source>
+        <translation>未知出版社</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="96"/>
+        <source>publisher</source>
+        <translation>出版社</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="100"/>
+        <source>title</source>
+        <translation>标题</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="333"/>
+        <source>Unknown Comic</source>
+        <translation>未知漫画</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="353"/>
+        <source>Series #Number - Title</source>
+        <translation>系列 #编号 - 标题</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="354"/>
+        <source>Series #Number</source>
+        <translation>系列 #编号</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="355"/>
+        <source>Series #Number (of Count)</source>
+        <translation>系列 #编号（共 总数）</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="356"/>
+        <source>Number - Title</source>
+        <translation>编号 - 标题</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="357"/>
+        <source>Series #Number (Year)</source>
+        <translation>系列 #编号（年份）</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="362"/>
+        <source>Publisher / Series / Series #Number - Title</source>
+        <translation>出版社 / 系列 / 系列 #编号 - 标题</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="363"/>
+        <source>Publisher / Imprint / Series / Series #Number - Title</source>
+        <translation>出版社 / 出版品牌 / 系列 / 系列 #编号 - 标题</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="364"/>
+        <source>Series / Series #Number</source>
+        <translation>系列 / 系列 #编号</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="365"/>
+        <source>Publisher / Series / Series #Number (Year)</source>
+        <translation>出版社 / 系列 / 系列 #编号（年份）</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="366"/>
+        <source>Series / original file name</source>
+        <translation>系列 / 原始文件名</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="535"/>
         <source>Renamed, %1 is already in use</source>
         <translation>已重命名，%1 已被占用</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="543"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="538"/>
         <source>Missing metadata: %1</source>
         <translation>缺少元数据：%1</translation>
     </message>
@@ -3444,6 +3506,31 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="organize_files/organize_files_journal.cpp" line="53"/>
         <source>%1 could not be created</source>
         <translation>无法创建 %1</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="79"/>
+        <source>%1 (copy also failed: %2)</source>
+        <translation>%1（复制也失败：%2）</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="85"/>
+        <source>the copy did not have the same size as the original</source>
+        <translation>副本与原件大小不同</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="91"/>
+        <source>the original could not be deleted after it was copied</source>
+        <translation>复制后无法删除原件</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="302"/>
+        <source>The destination folder could not be created.</source>
+        <translation>无法创建目标文件夹。</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="356"/>
+        <source>%1 (the file was left at %2)</source>
+        <translation>%1（文件留在 %2）</translation>
     </message>
 </context>
 <context>
@@ -3458,10 +3545,6 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="organize_files/organize_files_coordinator.cpp" line="138"/>
         <source>This folder does not contain any comics.</source>
         <translation>此文件夹不包含任何漫画。</translation>
-    </message>
-    <message>
-        <source>This library is busy: %1</source>
-        <translation type="vanished">此库正忙：%1</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_coordinator.cpp" line="212"/>
@@ -3508,10 +3591,6 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
 </context>
 <context>
     <name>OrganizeFilesDialog</name>
-    <message>
-        <source>Format:</source>
-        <translation type="obsolete">格式:</translation>
-    </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="152"/>
         <source>Organize files</source>
@@ -3644,17 +3723,9 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <translation>取消</translation>
     </message>
     <message>
-        <source>Copy the list</source>
-        <translation type="vanished">复制列表</translation>
-    </message>
-    <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="468"/>
         <source>Undo</source>
         <translation>撤销</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="vanished">关闭</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="464"/>
@@ -3689,7 +3760,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="625"/>
         <source>Preset name:</source>
-        <translation>预设名称:</translation>
+        <translation>预设名称：</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="645"/>
@@ -3704,7 +3775,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="798"/>
         <source>new folder</source>
-        <translation>新文件夹</translation>
+        <translation>新建文件夹</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="799"/>
@@ -4063,12 +4134,12 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="properties_dialog.cpp" line="217"/>
         <location filename="properties_dialog.cpp" line="228"/>
         <source>of:</source>
-        <translation>的：</translation>
+        <translation>共：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="312"/>
         <source>Day:</source>
-        <translation>日:</translation>
+        <translation>日：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="109"/>
@@ -4078,7 +4149,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="112"/>
         <source>Notes</source>
-        <translation>笔记</translation>
+        <translation>备注</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="130"/>
@@ -4103,12 +4174,12 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="194"/>
         <source>e.g. 1-5, 8, 0.5, Annual 1</source>
-        <translation type="unfinished"></translation>
+        <translation>例如. 1-5, 8, 0.5, 年度 1</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="238"/>
         <source>Size:</source>
-        <translation>大小:</translation>
+        <translation>大小：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="400"/>
@@ -4118,94 +4189,94 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="795"/>
         <source>Track missing issues in &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>追踪 “%1” 中缺失的期</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="807"/>
         <source>Issues:</source>
-        <translation type="unfinished"></translation>
+        <translation>期：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="819"/>
         <source>Track</source>
-        <translation type="unfinished"></translation>
+        <translation>追踪</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="874"/>
         <source>At most %1 issues can be tracked at once.</source>
-        <translation type="unfinished"></translation>
+        <translation>最多可同时追踪 %1 个期。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="876"/>
         <source>Check the issues: a range must go up, and a part between commas cannot be empty.</source>
-        <translation type="unfinished"></translation>
+        <translation>检查期：范围必须呈递增状态，且逗号之间的部分不能为空。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="878"/>
         <source>No new issues to track.</source>
-        <translation type="unfinished"></translation>
+        <translation>没有新的期需要追踪。</translation>
     </message>
     <message numerus="yes">
         <location filename="properties_dialog.cpp" line="880"/>
         <source>%n issue(s) will be tracked: %1.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>将追踪 %n 个期：%1。</numerusform>
         </translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="882"/>
         <source>That is a lot of issues; check the numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>期很多，查看一下编号。</translation>
     </message>
     <message numerus="yes">
         <location filename="properties_dialog.cpp" line="885"/>
         <source>%n issue(s) already in the folder.</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>文件夹中已有 %n 个期。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="properties_dialog.cpp" line="887"/>
         <source>%n repeated issue(s).</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 个重复出现的期。</numerusform>
         </translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="956"/>
         <source>Issues not tracked</source>
-        <translation type="unfinished"></translation>
+        <translation>未追踪的期</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="956"/>
         <source>The missing issues could not be tracked.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法追踪到缺失的期。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="999"/>
         <source>Comic skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>已跳过漫画</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="999"/>
         <source>A comic was removed from the library or now has a different file, so it is skipped.</source>
-        <translation type="unfinished"></translation>
+        <translation>某本漫画已从库中移除，或者其对应的文件发生了改变，因此该漫画被跳过。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1263"/>
         <location filename="properties_dialog.cpp" line="1267"/>
         <source>Changes not saved</source>
-        <translation type="unfinished"></translation>
+        <translation>更改未保存</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1263"/>
         <source>A comic that you are editing was removed from the library or now has a different file. Your changes were not saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>您正在编辑的漫画已从库中删除或现在有不同的文件。您的更改未保存。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1267"/>
         <source>The changes could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法保存更改。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="1517"/>
@@ -4225,7 +4296,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="320"/>
         <source>Year:</source>
-        <translation>年:</translation>
+        <translation>年：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="232"/>
@@ -4235,7 +4306,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="268"/>
         <source>Inker(s):</source>
-        <translation>上墨师:</translation>
+        <translation>上墨师：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="111"/>
@@ -4245,7 +4316,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="328"/>
         <source>Publisher:</source>
-        <translation>出版商:</translation>
+        <translation>出版社：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="108"/>
@@ -4260,7 +4331,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="330"/>
         <source>Color/BW:</source>
-        <translation>彩色/黑白:</translation>
+        <translation>彩色/黑白：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="668"/>
@@ -4270,43 +4341,43 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="261"/>
         <source>Penciller(s):</source>
-        <translation>线稿师:</translation>
+        <translation>线稿师：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="271"/>
         <source>Colorist(s):</source>
-        <translation>上色师:</translation>
+        <translation>上色师：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="291"/>
         <source>Imprint:</source>
-        <translation>压印：</translation>
+        <translation>出版品牌：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="236"/>
         <source>Genre:</source>
-        <translation>类型:</translation>
+        <translation>题材：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="208"/>
         <location filename="properties_dialog.cpp" line="807"/>
         <source>Issue number:</source>
-        <translation>期刊号:</translation>
+        <translation>期号：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="316"/>
         <source>Month:</source>
-        <translation>月:</translation>
+        <translation>月：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="399"/>
         <source>Notes:</source>
-        <translation>笔记:</translation>
+        <translation>备注：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="354"/>
         <source>Synopsis:</source>
-        <translation>简介:</translation>
+        <translation>简介：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="364"/>
@@ -4316,12 +4387,12 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="189"/>
         <source>Title:</source>
-        <translation>标题:</translation>
+        <translation>标题：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="215"/>
         <source>Arc number:</source>
-        <translation>世界线数量:</translation>
+        <translation>故事线编号：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="333"/>
@@ -4336,7 +4407,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="361"/>
         <source>Characters:</source>
-        <translation>角色:</translation>
+        <translation>角色：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="376"/>
@@ -4356,32 +4427,32 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="398"/>
         <source>Review:</source>
-        <translation>审查：</translation>
+        <translation>评论：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="331"/>
         <source>Age rating:</source>
-        <translation>年龄分级:</translation>
+        <translation>年龄分级：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="221"/>
         <source>Story arc:</source>
-        <translation>故事线:</translation>
+        <translation>故事线：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="188"/>
         <source>Series:</source>
-        <translation>系列:</translation>
+        <translation>系列：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="258"/>
         <source>Writer(s):</source>
-        <translation>作者:</translation>
+        <translation>编剧：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="525"/>
         <source>Comic not found. You should update your library.</source>
-        <translation>未找到漫画,请先更新您的库.</translation>
+        <translation>未找到漫画，请先更新您的库。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="288"/>
@@ -4401,7 +4472,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="281"/>
         <source>Cover Artist(s):</source>
-        <translation>封面设计:</translation>
+        <translation>封面设计：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="234"/>
@@ -4411,22 +4482,22 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="properties_dialog.cpp" line="503"/>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
-        <translation>Comic Vine 连接: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; 查看 &lt;/a&gt;</translation>
+        <translation>Comic Vine 链接：&lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; 查看 &lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="210"/>
         <source>Volume:</source>
-        <translation>卷:</translation>
+        <translation>卷：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="329"/>
         <source>Format:</source>
-        <translation>格式:</translation>
+        <translation>格式：</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="278"/>
         <source>Letterer(s):</source>
-        <translation>嵌字师:</translation>
+        <translation>嵌字师：</translation>
     </message>
 </context>
 <context>
@@ -4439,7 +4510,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>无法从 ./utils 载入 7z 库文件</translation>
+        <translation>无法从 ./utils 加载 7z 库文件</translation>
     </message>
     <message>
         <location filename="../common/yacreader_global_gui.cpp" line="156"/>
@@ -4488,43 +4559,43 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="reading_list_management_coordinator.cpp" line="53"/>
         <location filename="reading_list_management_coordinator.cpp" line="192"/>
         <source>List name:</source>
-        <translation>列表名称:</translation>
+        <translation>列表名称：</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="69"/>
         <source>Import reading lists</source>
-        <translation type="unfinished"></translation>
+        <translation>导入阅读列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="71"/>
         <source>Reading lists (*.cbl *.json);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>阅读列表 (*.cbl *.json);;所有文件 (*)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="113"/>
         <source>New smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>新建智能列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="113"/>
         <location filename="reading_list_management_coordinator.cpp" line="131"/>
         <source>The smart list could not be saved.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法保存智能列表。</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="131"/>
         <source>Edit smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑智能列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="149"/>
         <source>Delete folder</source>
-        <translation type="unfinished">删除文件夹</translation>
+        <translation>删除文件夹</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="150"/>
         <source>Delete the folder &quot;%1&quot; and everything in it? Its folders and lists are deleted; your comic files are not.</source>
-        <translation type="unfinished"></translation>
+        <translation>要删除文件夹 “%1” 及其中的所有内容吗？其中的文件夹和列表会被删除，但您的漫画文件不会受到影响。</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="154"/>
@@ -4534,7 +4605,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="155"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
-        <translation>所选项目将被删除，您的漫画或文件夹将不会从您的磁盘中删除。 你确定吗?</translation>
+        <translation>所选项目将被删除，您的漫画或文件夹将不会从您的磁盘中删除。您确定吗？</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="191"/>
@@ -4544,72 +4615,72 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="191"/>
         <source>Rename folder</source>
-        <translation type="unfinished">重命名文件夹</translation>
+        <translation>重命名文件夹</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="192"/>
         <location filename="reading_list_management_coordinator.cpp" line="222"/>
         <source>Folder name:</source>
-        <translation type="unfinished">文件夹名称:</translation>
+        <translation>文件夹名称：</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="210"/>
         <location filename="reading_list_management_coordinator.cpp" line="222"/>
         <location filename="reading_list_management_coordinator.cpp" line="226"/>
         <source>New folder</source>
-        <translation type="unfinished"></translation>
+        <translation>新建文件夹</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="210"/>
         <location filename="reading_list_management_coordinator.cpp" line="226"/>
         <source>The folder could not be created.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法创建文件夹。</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="240"/>
         <source>Reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>阅读列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="244"/>
         <source>CBL reading list (*.cbl)</source>
-        <translation type="unfinished"></translation>
+        <translation>CBL 阅读列表 (*.cbl)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="245"/>
         <source>JSON reading list (*.json)</source>
-        <translation type="unfinished"></translation>
+        <translation>JSON 阅读列表 (*.json)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="246"/>
         <source>Web page (*.html)</source>
-        <translation type="unfinished"></translation>
+        <translation>网页 (*.html)</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="253"/>
         <location filename="reading_list_management_coordinator.cpp" line="325"/>
         <source>Export reading list</source>
-        <translation type="unfinished"></translation>
+        <translation>导出阅读列表</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="303"/>
         <source>Exporting reading list...</source>
-        <translation type="unfinished"></translation>
+        <translation>正在导出阅读列表……</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="325"/>
         <source>The file could not be written.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法写入文件。</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="338"/>
         <source>Move to folder</source>
-        <translation type="unfinished"></translation>
+        <translation>移动到文件夹</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="338"/>
         <source>&quot;%1&quot; could not be moved.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法移动 “%1”。</translation>
     </message>
 </context>
 <context>
@@ -4617,26 +4688,26 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message numerus="yes">
         <location filename="reading_list_page.cpp" line="110"/>
         <source>%n comic(s)</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n 本漫画</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location filename="reading_list_page.cpp" line="112"/>
         <source>%n missing</source>
-        <translation type="unfinished">
+        <translation>
             <numerusform>%n 个缺失</numerusform>
         </translation>
     </message>
     <message>
         <location filename="reading_list_page.cpp" line="132"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失</translation>
     </message>
     <message>
         <location filename="reading_list_page.cpp" line="137"/>
         <source>Exported from YACReader on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>从 YACReader 导出 %1</translation>
     </message>
 </context>
 <context>
@@ -4658,16 +4729,16 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="rename_library_dialog.cpp" line="15"/>
-        <source>New Library Name : </source>
-        <translation>新库名: </translation>
+        <source>New Library Name: </source>
+        <translation>新库名： </translation>
     </message>
 </context>
 <context>
     <name>ScraperResultsPaginator</name>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="44"/>
-        <source>Number of %1 found : %2</source>
-        <translation>第 %1 页 共: %2 条</translation>
+        <source>Number of %1 found: %2</source>
+        <translation>找到的 %1 数量：%2</translation>
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="21"/>
@@ -4677,8 +4748,8 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="20"/>
-        <source>Number of volumes found : %1</source>
-        <translation>搜索结果: %1</translation>
+        <source>Number of volumes found: %1</source>
+        <translation>找到的卷数：%1</translation>
     </message>
 </context>
 <context>
@@ -4841,7 +4912,7 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
     <message>
         <location filename="db/search_field_registry.cpp" line="129"/>
         <source>Comic genre</source>
-        <translation>漫画类型</translation>
+        <translation>漫画题材</translation>
     </message>
     <message>
         <location filename="db/search_field_registry.cpp" line="130"/>
@@ -4960,12 +5031,12 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="comic_vine/search_single_comic.cpp" line="14"/>
         <source>Please provide some additional information for this comic.</source>
         <oldsource>Please provide some additional information.</oldsource>
-        <translation>请提供附加信息.</translation>
+        <translation>请提供附加信息。</translation>
     </message>
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="18"/>
         <source>Series:</source>
-        <translation>系列:</translation>
+        <translation>系列：</translation>
     </message>
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="21"/>
@@ -5039,6 +5110,11 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <location filename="search_syntax_dialog.cpp" line="176"/>
         <source>Just start typing. Plain text search across all metadata.</source>
         <translation>直接开始输入即可。纯文本会搜索所有元数据。</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="180"/>
+        <source>%1 -&gt; search for `%1` in any database field</source>
+        <translation>%1 -&gt; ??????????? `%1`</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="185"/>
@@ -5135,7 +5211,9 @@ To stop an automatic update tap on the loading indicator next to the Libraries t
         <source>Tips:
 Spaces act like AND, and searches are not case-sensitive.
 Use quotes to include spaces in a value.</source>
-        <translation>提示：空格等同于 AND，搜索不区分大小写。使用引号可在一个值中包含空格。</translation>
+        <translation>提示：
+空格等同于 AND，搜索不区分大小写。
+使用引号可在一个值中包含空格。</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="251"/>
@@ -5170,7 +5248,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="search_syntax_dialog.cpp" line="329"/>
         <source>Examples show the pattern—replace the values with your own.</source>
-        <translation>示例展示了格式，请将值替换为你自己的值。</translation>
+        <translation>示例展示了格式，请将值替换为您自己的值。</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="335"/>
@@ -5273,12 +5351,12 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="12"/>
         <source>Please provide some additional information.</source>
-        <translation>请提供附加信息.</translation>
+        <translation>请提供附加信息。</translation>
     </message>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="14"/>
         <source>Series:</source>
-        <translation>系列:</translation>
+        <translation>系列：</translation>
     </message>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="17"/>
@@ -5310,8 +5388,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="16"/>
-        <source>Please, select the right comic info.</source>
-        <translation>请正确选择漫画信息.</translation>
+        <source>Please select the right comic info.</source>
+        <translation>请正确选择漫画信息。</translation>
     </message>
 </context>
 <context>
@@ -5328,7 +5406,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="31"/>
-        <source>Please, select the right series for your comic.</source>
+        <source>Please select the right series for your comic.</source>
         <translation>请选择正确的漫画系列。</translation>
     </message>
     <message>
@@ -5379,7 +5457,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="78"/>
         <source>Read</source>
-        <translation>阅读</translation>
+        <translation>已读</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="81"/>
@@ -5404,7 +5482,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="93"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="75"/>
@@ -5426,8 +5504,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="comic_vine/series_question.cpp" line="12"/>
-        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
-        <translation>您正在尝试同时获取各种漫画的信息,它们是同一系列的吗?</translation>
+        <source>You are trying to get information for various comics at once. Are they part of the same series?</source>
+        <translation>您正在尝试同时获取多本漫画的信息，它们是同一系列的吗？</translation>
     </message>
 </context>
 <context>
@@ -5484,30 +5562,10 @@ Use quotes to include spaces in a value.</source>
         <translation>YACReader 支持 iOS 和 Android。获取 &lt;a href=&apos;https://ios.yacreader.com&apos;&gt;iOS&lt;/a&gt; 或 &lt;a href=&apos;https://android.yacreader.com&apos;&gt;Android&lt;/a&gt; 版本。</translation>
     </message>
     <message>
-        <source>enable the server</source>
-        <translation type="vanished">启用服务器</translation>
-    </message>
-    <message>
-        <source>Server connectivity information</source>
-        <translation type="vanished">服务器连接信息</translation>
-    </message>
-    <message>
-        <source>Scan it!</source>
-        <translation type="vanished">扫一扫!</translation>
-    </message>
-    <message>
         <location filename="server_config_dialog.cpp" line="80"/>
         <source>Set port</source>
         <oldsource>set port</oldsource>
         <translation>设置端口</translation>
-    </message>
-    <message>
-        <source>Choose an IP address</source>
-        <translation type="vanished">选择IP地址</translation>
-    </message>
-    <message>
-        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</source>
-        <translation type="vanished">YACReader 适用于 iOS 和 Android 设备。&lt;br/&gt;搜索 &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -5515,27 +5573,27 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="smart_list_dialog.cpp" line="33"/>
         <source>New smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>新建智能列表</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="33"/>
         <source>Edit smart list</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑智能列表</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="45"/>
         <source>Search filters and syntax</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索筛选条件与语法</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="56"/>
         <source>Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>名称：</translation>
     </message>
     <message>
         <location filename="smart_list_dialog.cpp" line="57"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索：</translation>
     </message>
 </context>
 <context>
@@ -5558,8 +5616,8 @@ Use quotes to include spaces in a value.</source>
     <message numerus="yes">
         <location filename="comic_vine/sort_volume_comics.cpp" line="285"/>
         <source>Add the %n other issue(s) of this volume as missing comics</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>将本卷中的其他 %n 期内容添加为缺失漫画</numerusform>
         </translation>
     </message>
     <message>
@@ -5569,7 +5627,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="comic_vine/sort_volume_comics.cpp" line="60"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <source>Please sort the list of comics on the left until it matches the comics&apos; information.</source>
         <translation>请在左侧对漫画列表进行排序，直到它与漫画的信息相符。</translation>
     </message>
 </context>
@@ -5593,7 +5651,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>我</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -5608,7 +5666,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>按住可在 UI 中闪烁所选值（洋红色/切换/0↔10）。发布后恢复原样。</translation>
+        <translation>按住可在界面中闪烁所选值（洋红色/切换/0↔10）。松开后恢复原样。</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
@@ -5618,12 +5676,12 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>亮度</translation>
+        <translation>明亮</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
         <source>Dark</source>
-        <translation>黑暗的</translation>
+        <translation>暗黑</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
@@ -5638,7 +5696,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
         <source>Variant:</source>
-        <translation>颜色设置：</translation>
+        <translation>变体：</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
@@ -5648,7 +5706,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
         <source>Parameter</source>
-        <translation>范围</translation>
+        <translation>参数</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
@@ -5792,7 +5850,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="165"/>
-        <source>Updating....</source>
+        <source>Updating...</source>
         <translation>更新中...</translation>
     </message>
 </context>
@@ -5819,7 +5877,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="comic_vine/model/volumes_model.cpp" line="122"/>
         <source>publisher</source>
-        <translation>出版者</translation>
+        <translation>出版社</translation>
     </message>
 </context>
 <context>
@@ -5827,7 +5885,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="19"/>
         <source>Presets:</source>
-        <translation>预设:</translation>
+        <translation>预设：</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="21"/>
@@ -5862,7 +5920,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation>自定义:</translation>
+        <translation>自定义：</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="89"/>
@@ -5887,7 +5945,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>缩放</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -5907,12 +5965,12 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="137"/>
         <source>Visibility</source>
-        <translation>透明度</translation>
+        <translation>可见度</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="143"/>
         <source>Light</source>
-        <translation>亮度</translation>
+        <translation>光照</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="149"/>
@@ -5931,13 +5989,13 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>使用VSync (在全屏模式下提高图像质量, 性能更差)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>使用 VSync（在全屏模式下提高图像质量，但会降低性能）</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
         <source>Performance:</source>
-        <translation>性能:</translation>
+        <translation>性能：</translation>
     </message>
 </context>
 <context>
@@ -5945,7 +6003,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="trayicon_controller.cpp" line="51"/>
         <source>&amp;Restore</source>
-        <translation>复位(&amp;R)</translation>
+        <translation>恢复(&amp;R)</translation>
     </message>
     <message>
         <location filename="trayicon_controller.cpp" line="78"/>
@@ -5955,7 +6013,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="trayicon_controller.cpp" line="79"/>
         <source>YACReaderLibrary will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray icon.</source>
-        <translation>YACReaderLibrary 将继续在系统托盘中运行. 想要终止程序, 请在系统托盘图标的上下文菜单中选择&lt;b&gt;退出&lt;/b&gt;.</translation>
+        <translation>YACReaderLibrary 将继续在系统托盘中运行。想要终止程序，请在系统托盘图标的上下文菜单中选择&lt;b&gt;退出&lt;/b&gt;。</translation>
     </message>
 </context>
 <context>
@@ -5976,37 +6034,37 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="64"/>
         <source>The library database is missing. Restore a backup or recreate the library before rescanning XML information.</source>
-        <translation type="unfinished"></translation>
+        <translation>书库数据库缺失。请先恢复备份或重新创建书库，再重新扫描 XML 信息。</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="76"/>
         <source>Unable to load the archive backend: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>无法加载压缩包后端：%1</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="91"/>
         <source>Unable to start an XML rescan transaction.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法启动 XML 重新扫描事务。</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="107"/>
         <source>The selected folder is no longer in this library. Reload the library before rescanning.</source>
-        <translation type="unfinished"></translation>
+        <translation>选中的文件夹已不在此书库中。请重新加载书库后再扫描。</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="109"/>
         <source>Unable to read comics for the XML rescan.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法读取用于 XML 重新扫描的漫画。</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="113"/>
         <source>Unable to commit XML metadata changes.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法提交 XML 元数据更改。</translation>
     </message>
     <message>
         <location filename="xml_info_library_scanner.cpp" line="157"/>
         <source>Unable to update XML metadata for %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>无法更新 %1 的 XML 元数据。</translation>
     </message>
 </context>
 <context>
@@ -6084,7 +6142,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="42"/>
         <source>type to search</source>
-        <translation>搜索类型</translation>
+        <translation>输入以搜索</translation>
     </message>
 </context>
 </TS>

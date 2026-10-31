@@ -4,6 +4,7 @@
 #include "qaction.h"
 
 #include <QAction>
+#include <QCoreApplication>
 #include <QModelIndex>
 #include <QSettings>
 
@@ -31,6 +32,7 @@ class ComicModel;
 
 class LibraryWindowActions
 {
+    Q_DECLARE_TR_FUNCTIONS(LibraryWindowActions)
 public:
     QAction *backAction;
     QAction *forwardAction;
