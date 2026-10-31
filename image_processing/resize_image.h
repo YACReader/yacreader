@@ -7,7 +7,8 @@
 enum class ScaleMethod {
     Nearest = 0,
     Bilinear = 1,
-    Lanczos = 2
+    Lanczos = 2,
+    Bicubic = 3
 };
 
 // Base scaling API — callers are responsible for supplying the correct target dimensions.
