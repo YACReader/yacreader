@@ -150,7 +150,11 @@ static QImage scaleImageBicubic(const QImage &image, int width, int height)
     const int sw = src.width();
     const int sh = src.height();
 
-    // Horizontal pass. RGB into signed 14-bit linear-light; alpha into 8.6.
+    // Horizontal pass. RGB is PREMULTIPLIED by alpha (in linear light) and
+    // stored as signed 14-bit linear; alpha itself is filtered straight in 8.6.
+    // Filtering premultiplied channels is what keeps invisible pixels from
+    // bleeding colour into visible neighbours (opaque red next to fully
+    // transparent blue must shrink to red at 50% alpha, not purple).
     std::vector<int16_t> tmp(size_t(width) * sh * 4);
     const auto hWeights = bicubicContributions(sw, width);
     const auto hPass = [&](int yBegin, int yEnd) {
@@ -161,10 +165,13 @@ static QImage scaleImageBicubic(const QImage &image, int width, int height)
                 int32_t b = 0, g = 0, r = 0, a = 0;
                 for (const auto &tap : hWeights[x]) {
                     const QRgb px = row[tap.index];
-                    b += int32_t(tap.weight * luts.decode[qBlue(px)]);
-                    g += int32_t(tap.weight * luts.decode[qGreen(px)]);
-                    r += int32_t(tap.weight * luts.decode[qRed(px)]);
-                    a += int32_t(tap.weight * qAlpha(px));
+                    const int pa = qAlpha(px);
+                    // Opaque stays exact (no rounding); others scale linear RGB by pa.
+                    const int pm = (pa == 255) ? 256 : pa;
+                    b += int32_t(tap.weight * ((int32_t(luts.decode[qBlue(px)]) * pm) >> 8));
+                    g += int32_t(tap.weight * ((int32_t(luts.decode[qGreen(px)]) * pm) >> 8));
+                    r += int32_t(tap.weight * ((int32_t(luts.decode[qRed(px)]) * pm) >> 8));
+                    a += int32_t(tap.weight * pa);
                 }
                 int16_t *out = &outRow[size_t(x) * 4];
                 out[0] = clampLinear14((b + (1 << 15)) >> 16);
@@ -175,7 +182,8 @@ static QImage scaleImageBicubic(const QImage &image, int width, int height)
         }
     };
 
-    // Vertical pass into the destination image.
+    // Vertical pass into the destination image, un-premultiplying with the
+    // filtered alpha before encoding back to sRGB.
     QImage dst(width, height, QImage::Format_ARGB32);
     const auto vWeights = bicubicContributions(sh, height);
     const auto vPass = [&](int yBegin, int yEnd) {
@@ -190,16 +198,20 @@ static QImage scaleImageBicubic(const QImage &image, int width, int height)
                     r += int64_t(tap.weight) * in[2];
                     a += int64_t(tap.weight) * in[3];
                 }
-                auto enc = [](int64_t acc) -> uint8_t {
-                    // acc = sum(2^16 weights * 2^14 linear) -> linear14 = acc >> 16
-                    int i = int((acc + (int64_t(1) << 15)) >> 16);
-                    if (i < 0)
-                        i = 0;
-                    if (i > 16384)
-                        i = 16384;
+                const uint8_t aOut = clampFinal(int((a + (1 << 21)) >> 22));
+                auto enc = [aOut](int64_t acc) -> uint8_t {
+                    // acc = sum(2^16 weights * 2^14 premultiplied linear) -> prem14
+                    int p = int((acc + (int64_t(1) << 15)) >> 16);
+                    if (p <= 0)
+                        return 0;
+                    if (p > 16384)
+                        p = 16384;
+                    int i = (aOut == 0 || aOut == 255)
+                            ? p
+                            : int(std::min<int64_t>(16384, (int64_t(p) * 255 + aOut / 2) / aOut));
                     return luts.encode[i];
                 };
-                row[x] = qRgba(enc(r), enc(g), enc(b), clampFinal(int((a + (1 << 21)) >> 22)));
+                row[x] = qRgba(enc(r), enc(g), enc(b), aOut);
             }
         }
     };
