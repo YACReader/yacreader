@@ -4,6 +4,10 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ## 10.5.0
 
+### YACReader
+
+* Support for ComicBookDS (.cbds) comics. Only the pages are shown, not the previews stored next to them.
+
 ### YACReaderLibrary
 
 * Reading lists and labels keep comics whose files are removed from the library. Their covers show in gray, with their metadata and last known file name. You can still edit their metadata, get data from Comic Vine, set a custom cover, reorder them, and remove them from the list. When the same file comes back, at any path, the comic is available again.
@@ -21,6 +25,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix removing comics belonging to child reading lists from a parent list view.
 * Fix newly added comics sometimes appearing in the middle of a reading list instead of at the end.
 * Fix library lock handling and add a way to clear these locks from the GUI and webui.
+* Support for ComicBookDS (.cbds) comics.
 
 ### Server
 
