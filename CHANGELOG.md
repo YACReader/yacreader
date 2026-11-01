@@ -40,6 +40,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * View missing comics in reading lists and folders, including their available metadata and covers.
 * Choose how many days count as recent in this browser's settings.
 * Improve the home page and add a connect device dialog. iOS and Android clients can use now the QR scaner with the webui.
+* Add mouse wheel page navigation to the reader.
 
 ## 10.4.0
 

@@ -2557,6 +2557,9 @@
         }
 
         function handleReaderKeys(event) {
+          if (event.altKey || event.ctrlKey || event.metaKey || document.body.classList.contains("mobile-promotion-open")) {
+            return;
+          }
           if (event.key === "ArrowLeft") {
             event.preventDefault();
             if (requestedPage > 0) {
@@ -2570,6 +2573,52 @@
           } else if (event.key === "Escape") {
             event.preventDefault();
             exitReader();
+          }
+        }
+
+        var wheelDelta = 0;
+        var wheelLocked = false;
+        var wheelTurnTime = 0;
+        var wheelIdleTimer = null;
+
+        function handleReaderWheel(event) {
+          if (event.ctrlKey) {
+            return;
+          }
+          event.preventDefault();
+          var delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+          if (event.deltaMode === 1) {
+            delta *= 40;
+          } else if (event.deltaMode === 2) {
+            delta *= 800;
+          }
+          var discreteStep = event.deltaMode !== 0 || Math.abs(delta) >= 100;
+
+          clearTimeout(wheelIdleTimer);
+          wheelIdleTimer = setTimeout(function () {
+            wheelLocked = false;
+            wheelDelta = 0;
+          }, 200);
+
+          if (wheelLocked) {
+            if (!discreteStep || Date.now() - wheelTurnTime < 250) {
+              return;
+            }
+            wheelLocked = false;
+            wheelDelta = 0;
+          }
+
+          wheelDelta += delta;
+          if (Math.abs(wheelDelta) < 50) {
+            return;
+          }
+          var step = wheelDelta > 0 ? 1 : -1;
+          wheelDelta = 0;
+          wheelLocked = true;
+          wheelTurnTime = Date.now();
+          var targetPage = requestedPage + step;
+          if (targetPage >= 0 && targetPage < numPages) {
+            loadPage(targetPage);
           }
         }
 
@@ -2594,6 +2643,7 @@
         });
         exitButton.addEventListener("click", exitReader);
         document.addEventListener("keydown", handleReaderKeys);
+        stage.addEventListener("wheel", handleReaderWheel, { passive: false });
         window.addEventListener("pagehide", handleReaderPageHide);
 
         readerCleanup = function () {
@@ -2609,6 +2659,7 @@
             URL.revokeObjectURL(pageCache[page]);
           });
           document.removeEventListener("keydown", handleReaderKeys);
+          clearTimeout(wheelIdleTimer);
           window.removeEventListener("pagehide", handleReaderPageHide);
         };
 
