@@ -6,11 +6,13 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReader
 
+* Support for ComicBookDS (.cbds) comics. Only the pages are shown, not the previews stored next to them.
 * Add Bicubic as a scaling method in Settings, offering sharper images than Bilinear and faster scaling than Lanczos.
 * Fix opening comics at page -1 after removing them from the "Reading" list.
 
 ### YACReaderLibrary
 
+* Support for ComicBookDS (.cbds) comics.
 * Reading lists and labels keep comics whose files are removed from the library. Their covers show in gray, with their metadata and last known file name. You can still edit their metadata, get data from Comic Vine, set a custom cover, reorder them, and remove them from the list. When the same file comes back, at any path, the comic is available again.
 * Reading lists and labels keep a comic when its file is replaced, for example by a tool that writes ComicInfo.xml into the archive.
 * Import reading lists in CBL XML or JSON format. Preview and adjust matches to comics in your library, and keep missing books in the reading order so you can find them later.
