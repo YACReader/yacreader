@@ -26,18 +26,20 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix removing comics belonging to child reading lists from a parent list view.
 * Fix newly added comics sometimes appearing in the middle of a reading list instead of at the end.
 * Fix library lock handling and add a way to clear these locks from the GUI and webui.
-* Improve library opening speed over network shares. 
+* Improve library opening speed over network shares.
 
 ### Server
 
 * Add server API v3 so compatible mobile clients can browse missing comics, reading lists, and smart lists, including their folders, with content ordered as on the desktop. Existing clients remain supported.
 * Fix a security issue that could let cover requests access image files outside the library's covers folder.
+* Fix memory leak updating libraries.
 
 ### WebUI
 
 * Browse reading lists, smart lists, their folders, Favorites, tags, and Recent from the library menu.
 * View missing comics in reading lists and folders, including their available metadata and covers.
 * Choose how many days count as recent in this browser's settings.
+* Improve the home page and add a connect device dialog. iOS and Android clients can use now the QR scaner with the webui.
 
 ## 10.4.0
 

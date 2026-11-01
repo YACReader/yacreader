@@ -3770,6 +3770,110 @@
     checkStatus().catch(function () {});
   }
 
+  // "Connect a device" dialog on the home page: QR codes are rendered by the server
+  // into a <template>, so nothing is shown (or laid out) until the user asks for it.
+  function initConnectDialog() {
+    var template = document.getElementById("connect-dialog-template");
+    var openers = Array.prototype.slice.call(document.querySelectorAll("[data-connect-open]"));
+    if (!template || !template.content || !openers.length) {
+      return;
+    }
+
+    var selectedAddress = null;
+    var overlay = null;
+
+    function openDialog(returnFocus) {
+      if (overlay) {
+        return;
+      }
+
+      overlay = template.content.firstElementChild.cloneNode(true);
+      var dialog = overlay.querySelector("[role='dialog']");
+      var closeButton = overlay.querySelector("[data-connect-close]");
+      var codes = Array.prototype.slice.call(overlay.querySelectorAll("[data-connect-qr]"));
+      var addressLabel = overlay.querySelector("[data-connect-address]");
+      var picker = overlay.querySelector("[data-connect-picker]");
+      var select = overlay.querySelector("[data-connect-select]");
+
+      function showAddress(address) {
+        selectedAddress = address;
+        codes.forEach(function (code) {
+          code.hidden = code.getAttribute("data-connect-qr") !== address;
+        });
+        addressLabel.textContent = address;
+      }
+
+      if (select.options.length > 1) {
+        picker.hidden = false;
+        if (selectedAddress) {
+          select.value = selectedAddress;
+        }
+        if (!select.value) {
+          select.selectedIndex = 0;
+        }
+        select.addEventListener("change", function () {
+          showAddress(select.value);
+        });
+      }
+      showAddress(select.value || select.options[0].value);
+
+      function closeDialog() {
+        document.removeEventListener("keydown", handleKeys);
+        document.body.classList.remove("mobile-promotion-open");
+        overlay.remove();
+        overlay = null;
+        if (returnFocus && returnFocus.isConnected) {
+          returnFocus.focus();
+        }
+      }
+
+      function handleKeys(event) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeDialog();
+          return;
+        }
+        if (event.key !== "Tab") {
+          return;
+        }
+
+        var focusable = Array.prototype.slice.call(dialog.querySelectorAll("a[href], button:not([disabled]), select")).filter(function (node) {
+          return node.offsetParent !== null;
+        });
+        if (!focusable.length) {
+          return;
+        }
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+
+      closeButton.addEventListener("click", closeDialog);
+      overlay.addEventListener("pointerdown", function (event) {
+        if (event.target === overlay) {
+          closeDialog();
+        }
+      });
+      document.addEventListener("keydown", handleKeys);
+
+      document.body.appendChild(overlay);
+      document.body.classList.add("mobile-promotion-open");
+      closeButton.focus();
+    }
+
+    openers.forEach(function (opener) {
+      opener.addEventListener("click", function () {
+        openDialog(opener);
+      });
+    });
+  }
+
   applyTheme(preferredTheme());
 
   document.addEventListener("DOMContentLoaded", function () {
@@ -3803,6 +3907,7 @@
     });
 
     initRecentDaysSetting();
+    initConnectDialog();
     initLibraryBrowser();
     var libraryMenus = initLibraryMenus();
     initUpdateLibraries(libraryMenus);

@@ -1,18 +1,23 @@
 #include "webuicontroller.h"
 
 #include "db_helper.h"
+#include "qrcodegen.hpp"
 #include "template.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 
 #include <QCoreApplication>
 #include <QDir>
+#include <QHostAddress>
+#include <QNetworkInterface>
 #include <QRegularExpression>
 #include <QSettings>
 #include <QSysInfo>
 #include <QTime>
 #include <QUrl>
 #include <QUuid>
+
+#include <algorithm>
 
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
@@ -36,6 +41,68 @@ QString requestPort(const HttpRequest &request)
     const QUrl requestUrl(QStringLiteral("http://") + QString::fromUtf8(request.getHeader("host")));
     const int port = requestUrl.port();
     return port > 0 ? QString::number(port) : QString(QChar(0x2014));
+}
+
+// "host:port" addresses that YACReader for iOS and Android can use to reach this server,
+// in the same format the desktop server dialog encodes in its QR code.
+QStringList connectAddresses(const HttpRequest &request)
+{
+    const QUrl requestUrl(QStringLiteral("http://") + QString::fromUtf8(request.getHeader("host")));
+    const QString port = QString::number(requestUrl.port(80));
+
+    QStringList hosts;
+
+    // The address this browser used is known to reach the server, so it goes first.
+    const QHostAddress requestAddress(requestUrl.host());
+    if (requestAddress.protocol() == QAbstractSocket::IPv4Protocol && !requestAddress.isLoopback()) {
+        hosts.append(requestAddress.toString());
+    }
+
+    // Same filter as the desktop dialog (getIpAddresses), limited to IPv4 because
+    // "host:port" is ambiguous for IPv6 addresses.
+    QStringList interfaceHosts;
+    const auto allAddresses = QNetworkInterface::allAddresses();
+    for (const QHostAddress &address : allAddresses) {
+        if (address.protocol() == QAbstractSocket::IPv4Protocol && address.isGlobal()) {
+            interfaceHosts.append(address.toString());
+        }
+    }
+    std::stable_partition(interfaceHosts.begin(), interfaceHosts.end(), [](const QString &host) {
+        return host.startsWith(QStringLiteral("192.168."));
+    });
+
+    for (const QString &host : std::as_const(interfaceHosts)) {
+        if (!hosts.contains(host)) {
+            hosts.append(host);
+        }
+    }
+
+    QStringList addresses;
+    for (const QString &host : std::as_const(hosts)) {
+        addresses.append(host + QLatin1Char(':') + port);
+    }
+    return addresses;
+}
+
+// Inline SVG, so it works with the page CSP (no data: URLs) and needs no extra request.
+QString qrCodeSvg(const QString &text)
+{
+    const qrcodegen::QrCode code = qrcodegen::QrCode::encodeText(text.toUtf8().constData(), qrcodegen::QrCode::Ecc::LOW);
+    const int border = 4;
+    const int size = code.getSize();
+
+    QString path;
+    for (int y = 0; y < size; ++y) {
+        for (int x = 0; x < size; ++x) {
+            if (code.getModule(x, y)) {
+                path += QStringLiteral("M%1 %2h1v1h-1z").arg(x + border).arg(y + border);
+            }
+        }
+    }
+
+    return QStringLiteral(R"(<svg class="connect-qr-image" viewBox="0 0 %1 %1" role="img" aria-label="QR code for %2" shape-rendering="crispEdges"><rect width="%1" height="%1" fill="#fff"/><path fill="#000" d="%3"/></svg>)")
+            .arg(size + border * 2)
+            .arg(text.toHtmlEscaped(), path);
 }
 
 QString checkedAttribute(bool checked)
@@ -194,7 +261,7 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
-  <title>Server status · YACReaderLibrary</title>
+  <title>Home · YACReaderLibrary</title>
   <link rel="stylesheet" href="/css/webui.css">
   <script src="/js/webui.js"></script>
 </head>
@@ -226,7 +293,7 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
             <circle cx="9" cy="9" r="6.4" stroke="currentColor" stroke-width="1.6"/>
             <circle cx="9" cy="9" r="2.6" fill="currentColor"/>
           </svg>
-          Status
+          Home
         </a>
         <a class="navigation-item" href="/webui/settings">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">
@@ -248,46 +315,21 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
     <main class="main">
       <header class="topbar">
         <div>
-          <div class="eyebrow">Overview</div>
-          <h1 class="page-title">Server status</h1>
+          <div class="eyebrow">Library Server</div>
+          <h1 class="page-title">Home</h1>
         </div>
+        {if connect.available}
+        <button class="ghost-button topbar-action" type="button" data-connect-open aria-haspopup="dialog">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/>
+            <path d="M10 5h4M11 18.5h2"/>
+          </svg>
+          <span>Connect a device</span>
+        </button>
+        {end connect.available}
       </header>
 
       <div class="content">
-        <section class="status-card">
-          <div class="status-copy">
-            <div class="status-pill">
-              <span class="online-dot" aria-hidden="true"></span>
-              Online
-            </div>
-            <h2 class="status-heading">YACReaderLibrary Server is up and running.</h2>
-            <p class="status-description">Your libraries are mounted and ready for YACReader clients on your network.</p>
-          </div>
-          <img class="hero-logo" src="/images/webui/YACLibraryServer.svg" alt="YACReader">
-        </section>
-
-        <section class="section" aria-labelledby="system-heading">
-          <div class="section-title" id="system-heading">System</div>
-          <div class="system-grid">
-            <div class="meta-card">
-              <span class="meta-label">YACReader</span>
-              <span class="meta-value">{yr.version}</span>
-            </div>
-            <div class="meta-card">
-              <span class="meta-label">Server</span>
-              <span class="meta-value">{server.version}</span>
-            </div>
-            <div class="meta-card">
-              <span class="meta-label">Operating system</span>
-              <span class="meta-value os">{os.name}</span>
-            </div>
-            <div class="meta-card">
-              <span class="meta-label">Port</span>
-              <span class="meta-value">{os.port}</span>
-            </div>
-          </div>
-        </section>
-
         <section class="section" id="libraries" aria-labelledby="libraries-heading" data-update-libraries>
           <div class="section-header">
             <div class="section-header-main">
@@ -363,13 +405,76 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
               <div class="library-progress" aria-hidden="true"></div>
             </div>
             {else Library}
-            <div class="empty-state">No libraries are configured yet.</div>
+            <div class="empty-state">No libraries yet. Add one in YACReaderLibrary on this computer, or run <code>YACReaderLibraryServer add-library &lt;name&gt; &lt;path&gt;</code> on a headless server.</div>
             {end Library}
+          </div>
+        </section>
+
+        <section class="section" aria-labelledby="server-heading">
+          <div class="section-title" id="server-heading">Server</div>
+          <div class="system-grid">
+            <div class="meta-card">
+              <span class="meta-label">Address</span>
+              <span class="meta-value" title="{connect.address}">{connect.address}</span>
+            </div>
+            <div class="meta-card">
+              <span class="meta-label">YACReader</span>
+              <span class="meta-value">{yr.version}</span>
+            </div>
+            <div class="meta-card">
+              <span class="meta-label">Server</span>
+              <span class="meta-value">{server.version}</span>
+            </div>
+            <div class="meta-card">
+              <span class="meta-label">Operating system</span>
+              <span class="meta-value os">{os.name}</span>
+            </div>
           </div>
         </section>
       </div>
     </main>
   </div>
+  {if connect.available}
+  <template id="connect-dialog-template">
+    <div class="mobile-promotion-overlay">
+      <section class="mobile-promotion-dialog connect-dialog" role="dialog" aria-modal="true" aria-labelledby="connect-dialog-title" aria-describedby="connect-dialog-copy">
+        <button class="mobile-promotion-close" type="button" data-connect-close aria-label="Close">
+          <svg class="mobile-promotion-close-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>
+        </button>
+        <header class="mobile-promotion-intro">
+          <h2 id="connect-dialog-title">Connect a device</h2>
+          <p id="connect-dialog-copy">In YACReader for iOS or Android, add a new server and scan this code, or type the address. Your device needs to be on the same network as this server.</p>
+        </header>
+        <div class="connect-body">
+          <div class="connect-qr">
+            {loop Address}
+            <div class="connect-qr-code" data-connect-qr="{Address.Value}" hidden>{Address.Svg}</div>
+            {end Address}
+          </div>
+          <div class="connect-details">
+            <span class="meta-label">Server address</span>
+            <span class="meta-value connect-address" data-connect-address></span>
+            <label class="connect-picker" data-connect-picker hidden>
+              <span class="connect-picker-hint">This computer has more than one network address. Pick the one on your device's network.</span>
+              <select data-connect-select aria-label="Network address">
+                {loop Address}
+                <option value="{Address.Value}">{Address.Value}</option>
+                {end Address}
+              </select>
+            </label>
+            <div class="connect-apps">
+              <span class="meta-label">Don't have the app yet?</span>
+              <div class="connect-store-links">
+                <a class="store-badge-link app-store-badge" href="https://apps.apple.com/app/id635717885" target="_blank" rel="noopener noreferrer" aria-label="Download YACReader on the App Store"><img src="/images/webui/app-store-badge.svg" alt=""></a>
+                <a class="store-badge-link google-play-badge" href="https://play.google.com/store/apps/details?id=com.yacreader.yacreader" target="_blank" rel="noopener noreferrer" aria-label="Get YACReader on Google Play"><img src="/images/webui/google-play-badge.png" alt=""></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </template>
+  {end connect.available}
 </body>
 </html>
 )HTML"),
@@ -380,6 +485,15 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
     statusPage.setVariable("os.port", requestPort(request));
     statusPage.setVariable("server.version", SERVER_VERSION_NUMBER);
     statusPage.setVariable("yr.version", VERSION);
+
+    const QStringList addresses = connectAddresses(request);
+    statusPage.setCondition("connect.available", !addresses.isEmpty());
+    statusPage.setVariable("connect.address", addresses.isEmpty() ? QString(QChar(0x2014)) : addresses.first().toHtmlEscaped());
+    statusPage.loop("Address", addresses.size());
+    for (int i = 0; i < addresses.size(); i++) {
+        statusPage.setVariable(QString("Address%1.Value").arg(i), addresses.at(i).toHtmlEscaped());
+        statusPage.setVariable(QString("Address%1.Svg").arg(i), qrCodeSvg(addresses.at(i)));
+    }
 
     YACReaderLibraries libraries = DBHelper::getLibraries();
     const QList<QString> libraryNames = libraries.getNames();
@@ -448,7 +562,7 @@ void WebUIController::renderLibraryBrowser(HttpRequest &request,
             <circle cx="9" cy="9" r="6.4" stroke="currentColor" stroke-width="1.6"/>
             <circle cx="9" cy="9" r="2.6" fill="currentColor"/>
           </svg>
-          Status
+          Home
         </a>
         <a class="navigation-item active" href="/webui/library/{library.id}" aria-current="page">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -596,7 +710,7 @@ void WebUIController::renderSettingsPage(HttpRequest &request, HttpResponse &res
             <circle cx="9" cy="9" r="6.4" stroke="currentColor" stroke-width="1.6"/>
             <circle cx="9" cy="9" r="2.6" fill="currentColor"/>
           </svg>
-          Status
+          Home
         </a>
         <a class="navigation-item active" href="/webui/settings" aria-current="page">
           <svg width="18" height="18" viewBox="0 0 18 18" fill="currentColor" aria-hidden="true">

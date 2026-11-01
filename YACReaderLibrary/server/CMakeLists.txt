@@ -107,6 +107,7 @@ target_link_libraries(server PUBLIC
     QtWebApp_httpserver
     QtWebApp_templateengine
     QsLog
+    QrCode
     common_all
     comic_backend
     db_helper
