@@ -66,7 +66,7 @@ public:
     void addStretch();
 
     void setMovable(bool movable) { };
-    void addSeparator() { };
+    void addSeparator();
 
     void setIconSize(const QSize &size) { };
 

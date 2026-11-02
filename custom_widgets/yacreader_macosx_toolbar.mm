@@ -8,9 +8,11 @@
 #import <Cocoa/Cocoa.h>
 #import <Foundation/Foundation.h>
 
+// size is in points, the returned NSImage is backed by a bitmap that matches the screen scale
 NSImage *QIconToNSImage(const QIcon &icon, const QSize &size, const QColor &color = QColor())
 {
-    QPixmap pixmap = icon.pixmap(size);
+    const qreal dpr = std::max(qApp->devicePixelRatio(), 2.0);
+    QPixmap pixmap = icon.pixmap(size, dpr);
     QImage qImage = pixmap.toImage().convertToFormat(QImage::Format_RGBA8888);
 
     if (color.isValid()) {
@@ -21,7 +23,7 @@ NSImage *QIconToNSImage(const QIcon &icon, const QSize &size, const QColor &colo
         p.begin(&mask);
         p.setCompositionMode(QPainter::CompositionMode_SourceIn);
         QBrush brush(color);
-        p.fillRect(QRect(0, 0, size.width(), size.height()), brush);
+        p.fillRect(mask.rect(), brush);
         p.end();
 
         p.begin(&qImage);
@@ -41,7 +43,8 @@ NSImage *QIconToNSImage(const QIcon &icon, const QSize &size, const QColor &colo
             kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big);
 
     CGImageRef cgImage = CGBitmapContextCreateImage(context);
-    NSImage *nsImage = [[NSImage alloc] initWithCGImage:cgImage size:NSMakeSize(qImage.width(), qImage.height())];
+    const QSizeF pointSize = QSizeF(qImage.size()) / qImage.devicePixelRatio();
+    NSImage *nsImage = [[NSImage alloc] initWithCGImage:cgImage size:NSMakeSize(pointSize.width(), pointSize.height())];
 
     // Clean up
     CGImageRelease(cgImage);
@@ -72,48 +75,41 @@ void bindActionToNSToolbarItem(QAction *action, NSToolbarItem *toolbarItem, cons
             return;
         }
 
-        __auto_type image = QIconToNSImage(icon, { 24, 24 }, iconColor);
+        // Same visual size as the SF Symbols used by native toolbars (e.g. Finder)
+        const QSize iconSize(16, 16);
+        __auto_type image = QIconToNSImage(icon, iconSize, iconColor);
 
         if (image.size.width == 0 || image.size.height == 0) {
             [image release];
             return;
         }
 
-        if (action->isChecked()) {
-            NSSize size = image.size;
-            NSImage *decoratedImage = [[NSImage alloc] initWithSize:size];
+        if (action->isCheckable()) {
+            // Checkable items need some room around the icon to draw the checked background
+            const bool checked = action->isChecked();
+            const CGFloat padding = 4;
+            NSSize iconPointSize = image.size;
+            NSSize size = NSMakeSize(iconPointSize.width + 2 * padding, iconPointSize.height + 2 * padding);
 
-            [decoratedImage lockFocus];
+            toolbarItem.image = [NSImage imageWithSize:size
+                                               flipped:NO
+                                        drawingHandler:^BOOL(NSRect rect) {
+                                            if (checked) {
+                                                NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:5 yRadius:5];
+                                                [[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:0.9] setFill];
+                                                [path fill];
+                                            }
 
-            NSRect rect = NSMakeRect(0, 0, size.width, size.height);
-            NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rect xRadius:8 yRadius:8];
-            [[NSColor colorWithCalibratedRed:0.8 green:0.8 blue:0.8 alpha:0.9] setFill];
-            [path fill];
-
-            NSRect imageRect = NSMakeRect(4, 4, size.width - 8, size.height - 8);
-            [image drawInRect:imageRect
-                     fromRect:NSZeroRect
-                    operation:NSCompositingOperationSourceOver
-                     fraction:1.0];
-
-            [decoratedImage unlockFocus];
-
-            toolbarItem.image = decoratedImage;
+                                            [image drawInRect:NSMakeRect(padding, padding, iconPointSize.width, iconPointSize.height)
+                                                     fromRect:NSZeroRect
+                                                    operation:NSCompositingOperationSourceOver
+                                                     fraction:1.0];
+                                            return YES;
+                                        }];
         } else {
-            NSSize size = image.size;
-            NSImage *decoratedImage = [[NSImage alloc] initWithSize:size];
-
-            [decoratedImage lockFocus];
-
-            NSRect imageRect = NSMakeRect(4, 4, size.width - 8, size.height - 8);
-            [image drawInRect:imageRect
-                     fromRect:NSZeroRect
-                    operation:NSCompositingOperationSourceOver
-                     fraction:1.0];
-
-            [decoratedImage unlockFocus];
-
-            toolbarItem.image = decoratedImage;
+            // Without an explicit color let AppKit tint the icon (light/dark appearance, disabled state)
+            [image setTemplate:!iconColor.isValid()];
+            toolbarItem.image = image;
         }
 
         [image release];
@@ -522,6 +518,18 @@ QAction *YACReaderMacOSXToolbar::actionFromIdentifier(const QString &identifier)
 
 #else
 
+// Separators split the toolbar items into visual groups, the stretch pushes the following items to the trailing edge
+static const char *toolbarStretchProperty = "yacreaderToolbarStretch";
+
+static NSToolbarItemIdentifier identifierForAction(QAction *action)
+{
+    if (action->isSeparator()) {
+        return action->property(toolbarStretchProperty).toBool() ? NSToolbarFlexibleSpaceItemIdentifier : NSToolbarSpaceItemIdentifier;
+    }
+
+    return [NSString stringWithFormat:@"action_%p", action];
+}
+
 @interface YACReaderToolbarDelegate : NSObject <NSToolbarDelegate> {
 @public
     YACReaderMacOSXToolbar *mytoolbar;
@@ -541,7 +549,7 @@ QAction *YACReaderMacOSXToolbar::actionFromIdentifier(const QString &identifier)
     NSMutableArray<NSToolbarItemIdentifier> *identifiers = [NSMutableArray arrayWithCapacity:actions.size()];
 
     for (QAction *action : actions) {
-        [identifiers addObject:[NSString stringWithFormat:@"action_%p", action]];
+        [identifiers addObject:identifierForAction(action)];
     }
 
     return identifiers;
@@ -552,11 +560,16 @@ QAction *YACReaderMacOSXToolbar::actionFromIdentifier(const QString &identifier)
     Q_UNUSED(toolbar);
 
     auto actions = mytoolbar->actions();
-    NSMutableArray<NSToolbarItemIdentifier> *identifiers = [NSMutableArray arrayWithCapacity:actions.size()];
+    NSMutableArray<NSToolbarItemIdentifier> *identifiers = [NSMutableArray arrayWithCapacity:actions.size() + 2];
 
     for (QAction *action : actions) {
-        [identifiers addObject:[NSString stringWithFormat:@"action_%p", action]];
+        if (!action->isSeparator()) {
+            [identifiers addObject:identifierForAction(action)];
+        }
     }
+
+    [identifiers addObject:NSToolbarSpaceItemIdentifier];
+    [identifiers addObject:NSToolbarFlexibleSpaceItemIdentifier];
 
     return identifiers;
 }
@@ -652,8 +665,19 @@ void YACReaderMacOSXToolbar::attachToWindow(QMainWindow *window)
     [nswindow setToolbar:toolbar];
 }
 
+void YACReaderMacOSXToolbar::addSeparator()
+{
+    auto *separator = new QAction(this);
+    separator->setSeparator(true);
+    addAction(separator);
+}
+
 void YACReaderMacOSXToolbar::addStretch()
 {
+    auto *stretch = new QAction(this);
+    stretch->setSeparator(true);
+    stretch->setProperty(toolbarStretchProperty, true);
+    addAction(stretch);
 }
 
 void YACReaderMacOSXToolbar::setHidden(bool hidden)
