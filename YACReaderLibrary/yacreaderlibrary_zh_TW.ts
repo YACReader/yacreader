@@ -1322,23 +1322,23 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="490"/>
+        <location filename="../common/comic.cpp" line="502"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>第 %1 頁 CRC 校驗失敗：部分頁面將無法正確顯示</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="497"/>
+        <location filename="../common/comic.cpp" line="509"/>
         <source>Unknown error opening the file</source>
         <translation>開啟檔案時出現未知錯誤</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="604"/>
+        <location filename="../common/comic.cpp" line="616"/>
         <source>7z not found</source>
         <translation>未找到 7z</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="610"/>
-        <location filename="../common/comic.cpp" line="626"/>
+        <location filename="../common/comic.cpp" line="622"/>
+        <location filename="../common/comic.cpp" line="638"/>
         <source>Format not supported</source>
         <translation>不支援的檔案格式</translation>
     </message>
@@ -1422,32 +1422,32 @@
         <translation>顯示資訊</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="910"/>
+        <location filename="grid_comics_view.cpp" line="909"/>
         <source>Manga</source>
         <translation>日式漫畫</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="913"/>
+        <location filename="grid_comics_view.cpp" line="912"/>
         <source>Western manga</source>
         <translation>西方漫畫</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="916"/>
+        <location filename="grid_comics_view.cpp" line="915"/>
         <source>Web comic</source>
         <translation>網路漫畫</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="919"/>
+        <location filename="grid_comics_view.cpp" line="918"/>
         <source>Yonkoma</source>
         <translation>四格漫畫</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="923"/>
+        <location filename="grid_comics_view.cpp" line="922"/>
         <source>Comic</source>
         <translation>漫畫</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="927"/>
+        <location filename="grid_comics_view.cpp" line="926"/>
         <source>Unknown</source>
         <translation>未知</translation>
     </message>
@@ -1721,43 +1721,43 @@
 <context>
     <name>LibraryManagementCoordinator</name>
     <message>
-        <location filename="library_management_coordinator.cpp" line="72"/>
+        <location filename="library_management_coordinator.cpp" line="73"/>
         <source>Error opening the library</source>
         <translation>開啟庫時出錯</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="75"/>
+        <location filename="library_management_coordinator.cpp" line="76"/>
         <source>Error creating the library</source>
         <translation>建立庫時出錯</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="78"/>
+        <location filename="library_management_coordinator.cpp" line="79"/>
         <source>Error updating the library</source>
         <translation>更新庫時出錯</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="105"/>
-        <location filename="library_management_coordinator.cpp" line="110"/>
+        <location filename="library_management_coordinator.cpp" line="106"/>
+        <location filename="library_management_coordinator.cpp" line="111"/>
         <source>XML information rescan</source>
         <translation>重新掃描 XML 資訊</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="134"/>
+        <location filename="library_management_coordinator.cpp" line="135"/>
         <source>Restore recovery</source>
         <translation>復原還原作業</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="524"/>
+        <location filename="library_management_coordinator.cpp" line="531"/>
         <source>Library upgrade</source>
         <translation>書庫升級</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="565"/>
+        <location filename="library_management_coordinator.cpp" line="572"/>
         <source>Library maintenance</source>
         <translation>書庫維護</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="582"/>
+        <location filename="library_management_coordinator.cpp" line="589"/>
         <source>Recover library access</source>
         <translation>恢復書庫存取</translation>
     </message>
@@ -1770,64 +1770,64 @@
         <translation>YACReader Library</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="199"/>
+        <location filename="library_management_coordinator.cpp" line="206"/>
         <source>Library not available</source>
         <oldsource>Library &apos;</oldsource>
         <translation>庫不可用</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="537"/>
+        <location filename="library_window.cpp" line="535"/>
         <location filename="folder_management_coordinator.cpp" line="216"/>
         <source>Delete folder</source>
         <translation>刪除資料夾</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="53"/>
+        <location filename="library_management_coordinator.cpp" line="54"/>
         <source>Upgrade failed</source>
         <translation>升級失敗</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="54"/>
+        <location filename="library_management_coordinator.cpp" line="55"/>
         <source>There were errors during library upgrade in: </source>
         <translation>漫畫庫升級時出現錯誤： </translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="139"/>
+        <location filename="library_management_coordinator.cpp" line="140"/>
         <source>Restore recovery failed</source>
         <translation>還原復原失敗</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="163"/>
+        <location filename="library_management_coordinator.cpp" line="164"/>
         <source>Update needed</source>
         <translation>需要更新</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="164"/>
+        <location filename="library_management_coordinator.cpp" line="165"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
         <translation>此庫是使用舊版本的YACReaderLibrary建立的。它需要更新。現在更新？</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="184"/>
+        <location filename="library_management_coordinator.cpp" line="191"/>
         <source>Download new version</source>
         <translation>下載新版本</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="185"/>
+        <location filename="library_management_coordinator.cpp" line="192"/>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
         <translation>此庫是使用較新版本的YACReaderLibrary建立的。立即下載新版本？</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="200"/>
+        <location filename="library_management_coordinator.cpp" line="207"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
         <translation>庫「%1」不再可用。您想刪除它嗎？</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="215"/>
+        <location filename="library_management_coordinator.cpp" line="222"/>
         <source>Old library</source>
         <translation>舊的庫</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="216"/>
+        <location filename="library_management_coordinator.cpp" line="223"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
         <translation>庫「%1」是通過舊版本的 YACReaderLibrary 建立的。必須再次建立。您想現在建立嗎？</translation>
     </message>
@@ -1887,12 +1887,12 @@
         <translation>儲存封面</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="485"/>
+        <location filename="library_management_coordinator.cpp" line="492"/>
         <source>You are adding too many libraries.</source>
         <translation>您新增的庫太多了。</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="486"/>
+        <location filename="library_management_coordinator.cpp" line="493"/>
         <source>You are adding too many libraries.
 
 You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
@@ -1905,27 +1905,27 @@ YACReaderLibrary will not stop you from creating more libraries, but you should 
 YACReaderLibrary 不會阻止您建立更多的庫，但是您應該保持較少的庫數量。</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="367"/>
+        <location filename="library_management_coordinator.cpp" line="374"/>
         <source>Library not found</source>
         <translation>未找到庫</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="368"/>
+        <location filename="library_management_coordinator.cpp" line="375"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
         <translation>所選資料夾不包含任何庫。</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="439"/>
+        <location filename="library_management_coordinator.cpp" line="446"/>
         <source>Are you sure?</source>
         <translation>您確定嗎？</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="440"/>
+        <location filename="library_management_coordinator.cpp" line="447"/>
         <source>Do you want to remove the library &apos;%1&apos;?</source>
         <translation>您想要刪除「%1」庫？</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="627"/>
+        <location filename="library_window.cpp" line="625"/>
         <source>Library info</source>
         <translation>庫資訊</translation>
     </message>
@@ -1946,56 +1946,56 @@ YACReaderLibrary 不會阻止您建立更多的庫，但是您應該保持較少
         <translation>無法刪除</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="526"/>
+        <location filename="library_window.cpp" line="524"/>
         <source>Edit smart list...</source>
         <translation>編輯智慧清單...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="527"/>
+        <location filename="library_window.cpp" line="525"/>
         <source>Delete smart list</source>
         <translation>刪除智慧清單</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="529"/>
-        <location filename="library_window.cpp" line="534"/>
-        <location filename="library_window.cpp" line="548"/>
+        <location filename="library_window.cpp" line="527"/>
+        <location filename="library_window.cpp" line="532"/>
+        <location filename="library_window.cpp" line="546"/>
         <source>New folder...</source>
         <translation>新增資料夾...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="530"/>
-        <location filename="library_window.cpp" line="536"/>
-        <location filename="library_window.cpp" line="550"/>
+        <location filename="library_window.cpp" line="528"/>
+        <location filename="library_window.cpp" line="534"/>
+        <location filename="library_window.cpp" line="548"/>
         <source>Move to folder...</source>
         <translation>移至資料夾...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="535"/>
+        <location filename="library_window.cpp" line="533"/>
         <source>Rename folder...</source>
         <translation>重新命名資料夾...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="544"/>
+        <location filename="library_window.cpp" line="542"/>
         <source>Match to library comics...</source>
         <translation>配對書庫中的漫畫...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="546"/>
+        <location filename="library_window.cpp" line="544"/>
         <source>Export reading list...</source>
         <translation>匯出閱讀清單...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="814"/>
+        <location filename="library_window.cpp" line="816"/>
         <source>Rename or organize files</source>
         <translation>重新命名或整理檔案</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="836"/>
+        <location filename="library_window.cpp" line="838"/>
         <source>Set the type of the selected comics</source>
         <translation>設定所選漫畫的類型</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="858"/>
+        <location filename="library_window.cpp" line="860"/>
         <source>Save as smart list…</source>
         <translation>儲存為智慧清單…</translation>
     </message>
@@ -2030,12 +2030,12 @@ YACReaderLibrary 不會阻止您建立更多的庫，但是您應該保持較少
         <translation>搜尋語法…</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="700"/>
+        <location filename="library_window.cpp" line="698"/>
         <source>Package operation failed</source>
         <translation>封裝作業失敗</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="700"/>
+        <location filename="library_window.cpp" line="698"/>
         <source>The covers package operation could not be completed.</source>
         <translation>無法完成封面套件作業。</translation>
     </message>
@@ -2238,7 +2238,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
 您可以從「漫畫庫」選單還原備份，或重新建立漫畫庫。</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="443"/>
+        <location filename="library_management_coordinator.cpp" line="450"/>
         <source>Remove and delete metadata and backups</source>
         <translation>移除並刪除中繼資料與備份</translation>
     </message>
@@ -2332,12 +2332,12 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>漫畫只會從目前標籤/列表中刪除。您確定嗎？</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="492"/>
+        <location filename="library_management_coordinator.cpp" line="499"/>
         <source>Library name already exists</source>
         <translation>庫名已存在</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="493"/>
+        <location filename="library_management_coordinator.cpp" line="500"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>已存在另一個名為「%1」的庫。</translation>
     </message>

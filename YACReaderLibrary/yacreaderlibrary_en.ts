@@ -1328,23 +1328,23 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="604"/>
+        <location filename="../common/comic.cpp" line="616"/>
         <source>7z not found</source>
         <translation>7z not found</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="490"/>
+        <location filename="../common/comic.cpp" line="502"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>CRC error on page (%1): some of the pages will not be displayed correctly</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="497"/>
+        <location filename="../common/comic.cpp" line="509"/>
         <source>Unknown error opening the file</source>
         <translation>Unknown error opening the file</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="610"/>
-        <location filename="../common/comic.cpp" line="626"/>
+        <location filename="../common/comic.cpp" line="622"/>
+        <location filename="../common/comic.cpp" line="638"/>
         <source>Format not supported</source>
         <translation>Format not supported</translation>
     </message>
@@ -1428,32 +1428,32 @@
         <translation>Show info</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="910"/>
+        <location filename="grid_comics_view.cpp" line="909"/>
         <source>Manga</source>
         <translation>Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="913"/>
+        <location filename="grid_comics_view.cpp" line="912"/>
         <source>Western manga</source>
         <translation>Western manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="916"/>
+        <location filename="grid_comics_view.cpp" line="915"/>
         <source>Web comic</source>
         <translation>Web comic</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="919"/>
+        <location filename="grid_comics_view.cpp" line="918"/>
         <source>Yonkoma</source>
         <translation>Yonkoma</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="923"/>
+        <location filename="grid_comics_view.cpp" line="922"/>
         <source>Comic</source>
         <translation>Comic</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="927"/>
+        <location filename="grid_comics_view.cpp" line="926"/>
         <source>Unknown</source>
         <translation>Unknown</translation>
     </message>
@@ -1727,43 +1727,43 @@
 <context>
     <name>LibraryManagementCoordinator</name>
     <message>
-        <location filename="library_management_coordinator.cpp" line="72"/>
+        <location filename="library_management_coordinator.cpp" line="73"/>
         <source>Error opening the library</source>
         <translation>Error opening the library</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="75"/>
+        <location filename="library_management_coordinator.cpp" line="76"/>
         <source>Error creating the library</source>
         <translation>Error creating the library</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="78"/>
+        <location filename="library_management_coordinator.cpp" line="79"/>
         <source>Error updating the library</source>
         <translation>Error updating the library</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="105"/>
-        <location filename="library_management_coordinator.cpp" line="110"/>
+        <location filename="library_management_coordinator.cpp" line="106"/>
+        <location filename="library_management_coordinator.cpp" line="111"/>
         <source>XML information rescan</source>
         <translation>XML information rescan</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="134"/>
+        <location filename="library_management_coordinator.cpp" line="135"/>
         <source>Restore recovery</source>
         <translation>Restore recovery</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="524"/>
+        <location filename="library_management_coordinator.cpp" line="531"/>
         <source>Library upgrade</source>
         <translation>Library upgrade</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="565"/>
+        <location filename="library_management_coordinator.cpp" line="572"/>
         <source>Library maintenance</source>
         <translation>Library maintenance</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="582"/>
+        <location filename="library_management_coordinator.cpp" line="589"/>
         <source>Recover library access</source>
         <translation>Recover library access</translation>
     </message>
@@ -1771,7 +1771,7 @@
 <context>
     <name>LibraryWindow</name>
     <message>
-        <location filename="library_management_coordinator.cpp" line="440"/>
+        <location filename="library_management_coordinator.cpp" line="447"/>
         <source>Do you want to remove the library &apos;%1&apos;?</source>
         <translation>Do you want to remove the library &apos;%1&apos;?</translation>
     </message>
@@ -1781,68 +1781,68 @@
         <translation>YACReader Library</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="439"/>
+        <location filename="library_management_coordinator.cpp" line="446"/>
         <source>Are you sure?</source>
         <translation>Are you sure?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="537"/>
+        <location filename="library_window.cpp" line="535"/>
         <location filename="folder_management_coordinator.cpp" line="216"/>
         <source>Delete folder</source>
         <translation>Delete folder</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="53"/>
+        <location filename="library_management_coordinator.cpp" line="54"/>
         <source>Upgrade failed</source>
         <translation>Upgrade failed</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="54"/>
+        <location filename="library_management_coordinator.cpp" line="55"/>
         <source>There were errors during library upgrade in: </source>
         <translation>There were errors during library upgrade in: </translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="139"/>
+        <location filename="library_management_coordinator.cpp" line="140"/>
         <source>Restore recovery failed</source>
         <translation>Restore recovery failed</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="163"/>
+        <location filename="library_management_coordinator.cpp" line="164"/>
         <source>Update needed</source>
         <translation>Update needed</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="164"/>
+        <location filename="library_management_coordinator.cpp" line="165"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
         <translation>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="184"/>
+        <location filename="library_management_coordinator.cpp" line="191"/>
         <source>Download new version</source>
         <translation>Download new version</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="185"/>
+        <location filename="library_management_coordinator.cpp" line="192"/>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
         <translation>This library was created with a newer version of YACReaderLibrary. Download the new version now?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="199"/>
+        <location filename="library_management_coordinator.cpp" line="206"/>
         <source>Library not available</source>
         <translation>Library not available</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="200"/>
+        <location filename="library_management_coordinator.cpp" line="207"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
         <translation>Library &apos;%1&apos; is no longer available. Do you want to remove it?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="215"/>
+        <location filename="library_management_coordinator.cpp" line="222"/>
         <source>Old library</source>
         <translation>Old library</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="216"/>
+        <location filename="library_management_coordinator.cpp" line="223"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
         <translation>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</translation>
     </message>
@@ -1903,56 +1903,56 @@
         <translation>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="526"/>
+        <location filename="library_window.cpp" line="524"/>
         <source>Edit smart list...</source>
         <translation>Edit smart list...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="527"/>
+        <location filename="library_window.cpp" line="525"/>
         <source>Delete smart list</source>
         <translation>Delete smart list</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="529"/>
-        <location filename="library_window.cpp" line="534"/>
-        <location filename="library_window.cpp" line="548"/>
+        <location filename="library_window.cpp" line="527"/>
+        <location filename="library_window.cpp" line="532"/>
+        <location filename="library_window.cpp" line="546"/>
         <source>New folder...</source>
         <translation>New folder...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="530"/>
-        <location filename="library_window.cpp" line="536"/>
-        <location filename="library_window.cpp" line="550"/>
+        <location filename="library_window.cpp" line="528"/>
+        <location filename="library_window.cpp" line="534"/>
+        <location filename="library_window.cpp" line="548"/>
         <source>Move to folder...</source>
         <translation>Move to folder...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="535"/>
+        <location filename="library_window.cpp" line="533"/>
         <source>Rename folder...</source>
         <translation>Rename folder...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="544"/>
+        <location filename="library_window.cpp" line="542"/>
         <source>Match to library comics...</source>
         <translation>Match to library comics...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="546"/>
+        <location filename="library_window.cpp" line="544"/>
         <source>Export reading list...</source>
         <translation>Export reading list...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="814"/>
+        <location filename="library_window.cpp" line="816"/>
         <source>Rename or organize files</source>
         <translation>Rename or organize files</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="836"/>
+        <location filename="library_window.cpp" line="838"/>
         <source>Set the type of the selected comics</source>
         <translation>Set the type of the selected comics</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="858"/>
+        <location filename="library_window.cpp" line="860"/>
         <source>Save as smart list…</source>
         <translation>Save as smart list…</translation>
     </message>
@@ -1987,12 +1987,12 @@
         <translation>Search syntax…</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="700"/>
+        <location filename="library_window.cpp" line="698"/>
         <source>Package operation failed</source>
         <translation>Package operation failed</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="700"/>
+        <location filename="library_window.cpp" line="698"/>
         <source>The covers package operation could not be completed.</source>
         <translation>The covers package operation could not be completed.</translation>
     </message>
@@ -2048,12 +2048,12 @@ Folder: %1</translation>
         <translation>Save covers</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="485"/>
+        <location filename="library_management_coordinator.cpp" line="492"/>
         <source>You are adding too many libraries.</source>
         <translation>You are adding too many libraries.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="486"/>
+        <location filename="library_management_coordinator.cpp" line="493"/>
         <source>You are adding too many libraries.
 
 You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
@@ -2066,12 +2066,12 @@ You probably only need one library in your top-level comics folder. You can brow
 YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="367"/>
+        <location filename="library_management_coordinator.cpp" line="374"/>
         <source>Library not found</source>
         <translation>Library not found</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="368"/>
+        <location filename="library_management_coordinator.cpp" line="375"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
         <translation>The selected folder doesn&apos;t contain any library.</translation>
     </message>
@@ -2228,12 +2228,12 @@ You can restore a backup from the Library menu or recreate the library.</source>
 You can restore a backup from the Library menu or recreate the library.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="443"/>
+        <location filename="library_management_coordinator.cpp" line="450"/>
         <source>Remove and delete metadata and backups</source>
         <translation>Remove and delete metadata and backups</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="627"/>
+        <location filename="library_window.cpp" line="625"/>
         <source>Library info</source>
         <translation>Library info</translation>
     </message>
@@ -2338,12 +2338,12 @@ You can restore a backup from the Library menu or recreate the library.</transla
         <translation>Comics will only be deleted from the current label/list. Are you sure?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="492"/>
+        <location filename="library_management_coordinator.cpp" line="499"/>
         <source>Library name already exists</source>
         <translation>Library name already exists</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="493"/>
+        <location filename="library_management_coordinator.cpp" line="500"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
         <translation>There is another library with the name &apos;%1&apos;.</translation>
     </message>
