@@ -843,9 +843,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                   "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
                                                   "PRIMARY KEY(label_id, comic_id))");
 
-        QSqlQuery queryIndexComicLabel(database);
-        success = success && queryIndexComicLabel.exec("CREATE INDEX comic_label_ordering_index ON label (ordering)");
-
         // READING LIST
         QSqlQuery queryReadingList(database);
         success = success && queryReadingList.exec("CREATE TABLE reading_list ("
@@ -858,9 +855,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                    "manga BOOLEAN DEFAULT 0, " // TODO never used, replace with `type`
                                                    "FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)");
 
-        QSqlQuery queryIndexReadingList(database);
-        success = success && queryIndexReadingList.exec("CREATE INDEX reading_list_ordering_index ON label (ordering)");
-
         // COMIC READING LIST
         QSqlQuery queryComicReadingList(database);
         success = success && queryComicReadingList.exec("CREATE TABLE comic_reading_list ("
@@ -870,9 +864,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                         "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
                                                         "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
                                                         "PRIMARY KEY(reading_list_id, comic_id))");
-
-        QSqlQuery queryIndexComicReadingList(database);
-        success = success && queryIndexComicReadingList.exec("CREATE INDEX comic_reading_list_ordering_index ON label (ordering)");
 
         // DEFAULT READING LISTS
         QSqlQuery queryDefaultReadingList(database);
@@ -891,9 +882,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                                "FOREIGN KEY(default_reading_list_id) REFERENCES default_reading_list(id) ON DELETE CASCADE, "
                                                                "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE,"
                                                                "PRIMARY KEY(default_reading_list_id, comic_id))");
-
-        QSqlQuery queryIndexComicDefaultReadingList(database);
-        success = success && queryIndexComicDefaultReadingList.exec("CREATE INDEX comic_default_reading_list_ordering_index ON label (ordering)");
 
         // INSERT DEFAULT READING LISTS
         QSqlQuery queryInsertDefaultReadingList(database);
@@ -1841,6 +1829,12 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
 
                 if (pre10_5) {
                     returnValue = returnValue && createV10_5Tables(db);
+
+                    // Libraries created before 10.5 have these ON label (ordering), duplicates of label_ordering_index.
+                    QSqlQuery dropWrongIndexes(db);
+                    for (const auto index : { "comic_label_ordering_index", "reading_list_ordering_index", "comic_reading_list_ordering_index", "comic_default_reading_list_ordering_index" }) {
+                        returnValue = returnValue && dropWrongIndexes.exec(QString("DROP INDEX IF EXISTS %1").arg(index));
+                    }
                 }
 
                 if (returnValue) {
