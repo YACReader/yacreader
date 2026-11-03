@@ -44,8 +44,9 @@ private:
 
     QList<QLabel *> dividers;
 
-    void addDivider();
-    void addWideDivider();
+    QToolButton *addButton();
+    void addDivider(int spacing = 5);
+    void updateCurrentFolderLabel();
 
 protected:
     void applyTheme(const Theme &theme) override;

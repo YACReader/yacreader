@@ -6,6 +6,8 @@
 #include "folder_model.h"
 #include "yacreader_treeview.h"
 
+#include <QApplication>
+
 YACReaderFoldersView::YACReaderFoldersView(QWidget *parent)
     : YACReaderTreeView(parent)
 {
@@ -108,12 +110,26 @@ void YACReaderFoldersViewItemDeletegate::paint(QPainter *painter, const QStyleOp
         auto daysInSeconds = index.data(FolderModel::RecentRangeRole).toLongLong();
 
         if (now - added < daysInSeconds || now - updated < daysInSeconds) {
+            // the dot sits on the top right corner of the folder icon, wherever the style puts it
+            QStyleOptionViewItem iconOption = opt;
+            initStyleOption(&iconOption, index);
+            const QWidget *widget = iconOption.widget;
+            const QStyle *style = widget ? widget->style() : QApplication::style();
+            const QRect iconRect = style->subElementRect(QStyle::SE_ItemViewItemDecoration, &iconOption, widget);
+
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing);
             painter->setBrush(QBrush(newItemDotColor));
             painter->setPen(QPen(QBrush(), 0));
-            painter->drawEllipse(opt.rect.x() + 13, opt.rect.y() + 2, 7, 7);
+            painter->drawEllipse(QRectF(iconRect.right() - 5, iconRect.top(), 7, 7));
             painter->restore();
         }
     }
+}
+
+QSize YACReaderFoldersViewItemDeletegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    auto size = QStyledItemDelegate::sizeHint(option, index);
+    size.setHeight(YACReaderTreeView::rowHeight);
+    return size;
 }

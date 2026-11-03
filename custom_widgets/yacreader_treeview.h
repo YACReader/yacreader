@@ -18,6 +18,10 @@ class YACReaderTreeView : public QTreeView, protected Themable
 public:
     explicit YACReaderTreeView(QWidget *parent = 0);
 
+    // shared by every sidebar row (libraries, folders, lists), so it does not change with the platform style
+    static constexpr int rowHeight = 20;
+    static constexpr int rowIconSize = 16;
+
 private:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;

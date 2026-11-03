@@ -168,8 +168,7 @@ void GridComicsView::createCoverSizeSliderWidget()
     bigZoomLabel = new QLabel();
     bigZoomLabel->setPixmap(comicsToolbar.bigGridZoomIcon.pixmap(18, 18));
     horizontalLayout->addWidget(bigZoomLabel);
-    horizontalLayout->addSpacing(10);
-    horizontalLayout->setContentsMargins(0, 0, 0, 0);
+    horizontalLayout->setContentsMargins(0, 0, 5, 0);
 
     coverSizeSliderWidget->setLayout(horizontalLayout);
     // TODO add shortcuts (ctrl-+ and ctrl-- for zooming in out, + ctrl-0 for reseting the zoom)

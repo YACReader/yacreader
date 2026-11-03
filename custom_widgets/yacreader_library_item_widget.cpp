@@ -1,6 +1,7 @@
 #include "yacreader_library_item_widget.h"
 
 #include "yacreader_global.h"
+#include "yacreader_treeview.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -13,7 +14,8 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     : QWidget(parent), name(n), path(p), isSelected(false)
 {
     QHBoxLayout *mainLayout = new QHBoxLayout;
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    // the options dot ends where the sidebar header icons end
+    mainLayout->setContentsMargins(0, 0, 4, 0);
     mainLayout->setSpacing(0);
 
     // installEventFilter(this);
@@ -25,11 +27,11 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
     options = new QToolButton(this);
 
     optionsIconLabel = new QLabel(options);
-    optionsIconLabel->move(4, 3);
-    optionsIconLabel->setFixedSize(14, 14);
+    optionsIconLabel->setFixedSize(YACReaderTreeView::rowHeight, YACReaderTreeView::rowHeight);
+    optionsIconLabel->setAlignment(Qt::AlignCenter);
 
     options->setHidden(true);
-    options->setIconSize(QSize(18, 18));
+    options->setFixedSize(YACReaderTreeView::rowHeight, YACReaderTreeView::rowHeight);
     options->setStyleSheet("QToolButton {border:none;}");
     connect(options, &QAbstractButton::clicked, this, &YACReaderLibraryItemWidget::showOptions);
     /*up = new QToolButton(this);
@@ -46,19 +48,19 @@ YACReaderLibraryItemWidget::YACReaderLibraryItemWidget(QString n /*ame*/, QStrin
 
     mainLayout->addWidget(icon);
     mainLayout->addWidget(nameLabel, 1, Qt::AlignLeft);
-    mainLayout->addWidget(options, Qt::AlignCenter);
+    mainLayout->addWidget(options, 0, Qt::AlignVCenter);
     /*mainLayout->addWidget(up);
         mainLayout->addWidget(down);*/
 
     setLayout(mainLayout);
 
-    QString iconStyleSheet = "QLabel {padding:0 0 0 24px; margin:0px}";
+    QString iconStyleSheet = "QLabel {padding:0 0 0 22px; margin:0px}";
     icon->setStyleSheet(iconStyleSheet);
 
-    QString nameLabelStyleSheet = "QLabel {padding:0 0 0 3px; margin:0px;}";
+    QString nameLabelStyleSheet = "QLabel {padding:0 0 0 4px; margin:0px;}";
     nameLabel->setStyleSheet(nameLabelStyleSheet);
 
-    setMinimumHeight(20);
+    setFixedHeight(YACReaderTreeView::rowHeight);
     setAttribute(Qt::WA_StyledBackground, true);
 
     initTheme(this);

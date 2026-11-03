@@ -21,55 +21,36 @@ YACReaderMainToolBar::YACReaderMainToolBar(QWidget *parent)
     f.setStyleStrategy(QFont::PreferAntialias);
     currentFolder->setFont(f);
 
-    QString qToolButtonStyleSheet = "QToolButton {border:none;}";
-
-    backButton = new QToolButton();
-    backButton->setStyleSheet(qToolButtonStyleSheet);
-
-    forwardButton = new QToolButton();
-    forwardButton->setStyleSheet(qToolButtonStyleSheet);
+    // every button has the same box and every icon the same 24px canvas, so spacing reads the same on all platforms
+    backButton = addButton();
+    forwardButton = addButton();
     forwardButton->setDisabled(true);
-
-    settingsButton = new QToolButton();
-    settingsButton->setStyleSheet(qToolButtonStyleSheet);
-    settingsButton->setIconSize(QSize(24, 24));
-
-    serverButton = new QToolButton();
-    serverButton->setStyleSheet(qToolButtonStyleSheet);
-    serverButton->setIconSize(QSize(17, 24));
-
-    helpButton = new QToolButton();
-    helpButton->setStyleSheet(qToolButtonStyleSheet);
-    helpButton->setIconSize(QSize(14, 25));
-
-    toggleComicsViewButton = new QToolButton;
-    toggleComicsViewButton->setStyleSheet(qToolButtonStyleSheet);
-    toggleComicsViewButton->setIconSize(QSize(24, 24));
-
-    fullscreenButton = new QToolButton();
-    fullscreenButton->setStyleSheet(qToolButtonStyleSheet);
-    fullscreenButton->setIconSize(QSize(24, 24));
+    settingsButton = addButton();
+    serverButton = addButton();
+    helpButton = addButton();
+    toggleComicsViewButton = addButton();
+    fullscreenButton = addButton();
 
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
-    mainLayout->addSpacing(12);
+    mainLayout->addSpacing(6);
     mainLayout->addWidget(backButton, 0, Qt::AlignVCenter);
-    addDivider();
+    addDivider(2);
     mainLayout->addWidget(forwardButton, 0, Qt::AlignVCenter);
 
-    mainLayout->addSpacing(34);
+    mainLayout->addSpacing(26);
     mainLayout->addWidget(settingsButton, 0, Qt::AlignVCenter);
-    addWideDivider();
+    addDivider();
     mainLayout->addWidget(serverButton, 0, Qt::AlignVCenter);
-    addWideDivider();
+    addDivider();
     mainLayout->addWidget(helpButton, 0, Qt::AlignVCenter);
 
     mainLayout->addStretch();
 
     mainLayout->addWidget(toggleComicsViewButton, 0, Qt::AlignVCenter);
 #ifndef Q_OS_MACOS
-    addWideDivider();
+    addDivider();
     mainLayout->addWidget(fullscreenButton, 0, Qt::AlignVCenter);
 #endif
 
@@ -87,9 +68,9 @@ QSize YACReaderMainToolBar::sizeHint() const
 
 void YACReaderMainToolBar::setSearchWidget(QWidget *w)
 {
-    addWideDivider();
+    addDivider();
     mainLayout->addWidget(w, 0, Qt::AlignVCenter);
-    mainLayout->addSpacing(6);
+    mainLayout->addSpacing(3);
 }
 
 void YACReaderMainToolBar::paintEvent(QPaintEvent *event)
@@ -102,52 +83,48 @@ void YACReaderMainToolBar::paintEvent(QPaintEvent *event)
 
 void YACReaderMainToolBar::resizeEvent(QResizeEvent *event)
 {
-    // 210px x 2 = 420px
-    int freeWidth = event->size().width() - 420;
-    int maxLabelWidth = freeWidth >= 0 ? freeWidth : 0;
-    currentFolder->setMaximumWidth(maxLabelWidth);
-    currentFolder->adjustSize();
-
-    QFontMetrics metrix(currentFolder->font());
-    QString clippedText = metrix.elidedText(currentFolderName, Qt::ElideRight, maxLabelWidth);
-
-    currentFolder->setText(clippedText);
-    currentFolder->adjustSize();
-    currentFolder->move((event->size().width() - currentFolder->width()) / 2, (event->size().height() - currentFolder->height()) / 2);
+    QWidget::resizeEvent(event);
+    updateCurrentFolderLabel();
 }
 
-void YACReaderMainToolBar::addDivider()
+QToolButton *YACReaderMainToolBar::addButton()
+{
+    auto button = new QToolButton();
+    button->setStyleSheet("QToolButton {border:none;}");
+    button->setIconSize(QSize(24, 24));
+    button->setFixedSize(28, 28);
+    return button;
+}
+
+void YACReaderMainToolBar::addDivider(int spacing)
 {
     QLabel *divider = new QLabel();
     divider->setPixmap(theme.mainToolbar.dividerPixmap);
     dividers.append(divider);
 
-    mainLayout->addSpacing(5);
+    mainLayout->addSpacing(spacing);
     mainLayout->addWidget(divider, 0, Qt::AlignVCenter);
-    mainLayout->addSpacing(5);
-}
-
-void YACReaderMainToolBar::addWideDivider()
-{
-    mainLayout->addSpacing(3);
-    addDivider();
-    mainLayout->addSpacing(3);
+    mainLayout->addSpacing(spacing);
 }
 
 void YACReaderMainToolBar::setCurrentFolderName(const QString &name)
 {
-    currentFolder->setText(name);
     currentFolderName = name;
-    currentFolder->adjustSize();
+    updateCurrentFolderLabel();
+}
 
-    int freeWidth = size().width() - 420;
-    int maxLabelWidth = freeWidth >= 0 ? freeWidth : 0;
-    currentFolder->setMaximumWidth(maxLabelWidth);
+void YACReaderMainToolBar::updateCurrentFolderLabel()
+{
+    // the title stays centered on the toolbar, so it can use twice the distance to the nearest button group
+    const int margin = 16;
+    const int center = width() / 2;
+    const int leftEdge = helpButton->geometry().right();
+    const int rightEdge = toggleComicsViewButton->geometry().left();
+    const int maxLabelWidth = qMax(0, 2 * (qMin(center - leftEdge, rightEdge - center) - margin));
 
     QFontMetrics metrix(currentFolder->font());
-    QString clippedText = metrix.elidedText(currentFolderName, Qt::ElideRight, maxLabelWidth);
-
-    currentFolder->setText(clippedText);
+    currentFolder->setMaximumWidth(maxLabelWidth);
+    currentFolder->setText(metrix.elidedText(currentFolderName, Qt::ElideRight, maxLabelWidth));
     currentFolder->adjustSize();
     currentFolder->move((width() - currentFolder->width()) / 2, (height() - currentFolder->height()) / 2);
 }

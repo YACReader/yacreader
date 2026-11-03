@@ -73,5 +73,7 @@ QSize YACReaderReadingListsViewItemDeletegate::sizeHint(const QStyleOptionViewIt
         return newSize;
     }
 
-    return QStyledItemDelegate::sizeHint(option, index);
+    auto size = QStyledItemDelegate::sizeHint(option, index);
+    size.setHeight(YACReaderTreeView::rowHeight);
+    return size;
 }

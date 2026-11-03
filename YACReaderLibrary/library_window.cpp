@@ -320,7 +320,6 @@ void LibraryWindow::doLayout()
 
     librariesTitle->addAction(actions.createLibraryAction);
     librariesTitle->addAction(actions.openLibraryAction);
-    librariesTitle->addSpacing(3);
 
     foldersTitle->addAction(actions.addFolderAction);
     foldersTitle->addAction(actions.deleteFolderAction);
@@ -335,7 +334,6 @@ void LibraryWindow::doLayout()
     // readingListsTitle->addSepartor();
     readingListsTitle->addAction(actions.renameListAction);
     readingListsTitle->addAction(actions.deleteReadingListAction);
-    readingListsTitle->addSpacing(3);
 
     // FINAL LAYOUT-------------------------------------------------------------
 
@@ -806,6 +804,10 @@ void LibraryWindow::createToolBars()
 #endif
 
     editInfoToolBar->setIconSize(QSize(18, 18));
+    // QSS padding on a QToolBar becomes a frame on all sides, so the start gets a spacer instead
+    auto startSpacer = new QWidget();
+    startSpacer->setFixedWidth(5);
+    editInfoToolBar->addWidget(startSpacer);
     editInfoToolBar->addAction(actions.openComicAction);
     editInfoToolBar->addSeparator();
     editInfoToolBar->addAction(actions.editSelectedComicsAction);
