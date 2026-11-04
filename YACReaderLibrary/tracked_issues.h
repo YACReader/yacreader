@@ -43,5 +43,8 @@ DescriptiveComicMetadata folderRunMetadata(FolderId folderId, QSqlDatabase &db);
 // In one transaction, a missing comic in the folder for each number that the folder does not have yet (as a comic
 // or a missing comic), with the values of `patch` and the cover `coverKey`; gives how many were tracked
 std::optional<int> trackIssuesInFolder(FolderId folderId, const QStringList &numbers, const DescriptiveMetadataPatch &patch, const std::optional<QString> &coverKey, QSqlDatabase &db);
+// In one transaction, a new missing comic for each number, appended in order to the reading list, also for numbers
+// the list already has
+std::optional<int> trackIssuesInReadingList(ReadingListId readingListId, const QStringList &numbers, const DescriptiveMetadataPatch &patch, const std::optional<QString> &coverKey, QSqlDatabase &db);
 
 #endif

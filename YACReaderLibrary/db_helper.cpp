@@ -863,6 +863,30 @@ bool DBHelper::insertPlaceholdersInFolder(const QList<Placeholder> &placeholders
     return true;
 }
 
+bool DBHelper::insertPlaceholdersInReadingList(const QList<Placeholder> &placeholders, ReadingListId readingListId, QSqlDatabase &db)
+{
+    QSqlQuery insert(db);
+    insert.prepare("INSERT INTO placeholder (" + TableProjection::insertColumns(Placeholder::columns()) + ") VALUES (" + TableProjection::insertValues(Placeholder::columns()) + ")");
+    QSqlQuery append(db);
+    append.prepare("INSERT INTO reading_list_entry (reading_list_id, ordering, placeholder_id) "
+                   "SELECT :reading_list_id, COALESCE(MAX(ordering), -1) + 1, :placeholder_id FROM reading_list_entry WHERE reading_list_id = :reading_list_id");
+
+    for (const auto &placeholder : placeholders) {
+        placeholder.bindTo(insert);
+        if (!insert.exec()) {
+            QLOG_ERROR() << "Unable to insert a placeholder:" << insert.lastError().text();
+            return false;
+        }
+        append.bindValue(":reading_list_id", readingListId.value());
+        append.bindValue(":placeholder_id", insert.lastInsertId());
+        if (!append.exec()) {
+            QLOG_ERROR() << "Unable to append a placeholder to a reading list:" << append.lastError().text();
+            return false;
+        }
+    }
+    return true;
+}
+
 std::optional<QStringList> DBHelper::placeIssuesInFolder(const QList<MissingIssue> &issues, FolderId folderId, QSqlDatabase &db)
 {
     QStringList unusedCovers;

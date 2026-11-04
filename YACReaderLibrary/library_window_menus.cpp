@@ -261,6 +261,10 @@ void LibraryWindowMenus::showComicsContextMenu(const QPoint &point, bool showFul
         auto trackAction = menu->addAction(tr("Track missing issues..."));
         connect(trackAction, &QAction::triggered, comicManagementCoordinator, [coordinator = comicManagementCoordinator, folderId = *folderId] { coordinator->trackMissingIssues(folderId); }, Qt::QueuedConnection);
     }
+    if (const auto readingListId = comicManagementCoordinator->shownReadingListId()) {
+        auto trackAction = menu->addAction(tr("Track missing issues..."));
+        connect(trackAction, &QAction::triggered, comicManagementCoordinator, [coordinator = comicManagementCoordinator, readingListId = *readingListId] { coordinator->trackMissingIssuesInReadingList(readingListId); }, Qt::QueuedConnection);
+    }
     if (YACReader::FeatureFlags::organizeFiles) {
         menu->addSeparator();
         menu->addAction(actions.renameComicsFilesAction);

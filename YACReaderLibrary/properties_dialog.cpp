@@ -5,6 +5,7 @@
 #include "db_helper.h"
 #include "folder_placeholder_match.h"
 #include "initial_comic_info_extractor.h"
+#include "overloaded.h"
 #include "placeholder_cover.h"
 #include "staged_cover.h"
 #include "tracked_issues.h"
@@ -208,6 +209,8 @@ void PropertiesDialog::createGeneralInfoBox()
     generalInfoLayout->addRow(numberLabel = new QLabel(tr("Issue number:")), numberAndSummary);
 
     generalInfoLayout->addRow(tr("Volume:"), volumeEdit = new YACReaderFieldEdit());
+    for (auto *edit : { series, title, volumeEdit })
+        connect(edit, &QLineEdit::textChanged, this, &PropertiesDialog::updateIssuesSummary);
 
     auto arc = new QHBoxLayout;
     arc->addWidget(storyArcEdit = new YACReaderFieldEdit(), 1);
@@ -786,7 +789,7 @@ void PropertiesDialog::setTrackMissingIssues(FolderId folderId, const QString &f
     coverChanged = false;
     customCover = QImage();
     records.clear();
-    trackedFolderId = folderId;
+    trackedIn = folderId;
     trackedFolderNumberKeys.clear();
     for (const auto &number : folderNumbers)
         trackedFolderNumberKeys.insert(issueNumberKey(number));
@@ -797,6 +800,21 @@ void PropertiesDialog::setTrackMissingIssues(FolderId folderId, const QString &f
     volumeEdit->setText(run.volume.toString());
     publisherEdit->setText(run.publisher.toString());
     issuesEdit->setText(missingIssueRanges(folderNumbers));
+    updateIssuesSummary();
+}
+
+void PropertiesDialog::setTrackMissingIssues(ReadingListId readingListId, const QString &listName)
+{
+    sequentialEditing = false;
+    updated = false;
+    coverChanged = false;
+    customCover = QImage();
+    records.clear();
+    trackedIn = readingListId;
+    trackedFolderNumberKeys.clear();
+
+    setTrackMode(true);
+    setWindowTitle(tr("Track missing issues in \"%1\"").arg(listName));
     updateIssuesSummary();
 }
 
@@ -840,7 +858,7 @@ void PropertiesDialog::setTrackingOneIssue(bool one)
         edit->setDisabled(!one);
     tabBar->setTabEnabled(tabBar->indexOf(plotBox), one);
     tabBar->setTabEnabled(tabBar->indexOf(notesBox), one);
-    if (!trackedFolderId)
+    if (!trackedIn)
         return;
 
     trackingOneIssue = one;
@@ -856,7 +874,7 @@ void PropertiesDialog::setTrackingOneIssue(bool one)
 
 void PropertiesDialog::updateIssuesSummary()
 {
-    if (!trackedFolderId)
+    if (!trackedIn)
         return;
 
     const auto issues = parseTrackedIssues(issuesEdit->text());
@@ -886,10 +904,15 @@ void PropertiesDialog::updateIssuesSummary()
     if (issues.repeated > 0)
         summary += QStringLiteral(" ") + tr("%n repeated issue(s).", "", issues.repeated);
 
-    issuesSummary->setText(summary);
-    saveButton->setEnabled(issues.valid && !newNumbers.isEmpty());
-
     const bool one = issues.valid && newNumbers.size() == 1;
+    const bool inReadingList = std::holds_alternative<ReadingListId>(*trackedIn);
+    const bool named = !series->text().trimmed().isEmpty() || !volumeEdit->text().trimmed().isEmpty() || (one && !title->text().trimmed().isEmpty());
+    if (inReadingList && !named)
+        summary += QStringLiteral(" ") + (one ? tr("Set a series, a volume, or a title.") : tr("Set a series or a volume."));
+
+    issuesSummary->setText(summary);
+    saveButton->setEnabled(issues.valid && !newNumbers.isEmpty() && (named || !inReadingList));
+
     if (one != trackingOneIssue)
         setTrackingOneIssue(one);
 }
@@ -945,7 +968,12 @@ bool PropertiesDialog::trackIssues()
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        tracked = trackIssuesInFolder(*trackedFolderId, issues.numbers, trackedMetadata(), coverKey, db);
+        const auto patch = trackedMetadata();
+        tracked = std::visit(overloaded {
+                                     [&](FolderId folderId) { return trackIssuesInFolder(folderId, issues.numbers, patch, coverKey, db); },
+                                     [&](ReadingListId readingListId) { return trackIssuesInReadingList(readingListId, issues.numbers, patch, coverKey, db); },
+                             },
+                             *trackedIn);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1342,7 +1370,7 @@ void PropertiesDialog::saveAndOpenNext()
 
 void PropertiesDialog::saveAndClose()
 {
-    if (!(trackedFolderId ? trackIssues() : updateComics()))
+    if (!(trackedIn ? trackIssues() : updateComics()))
         return;
 
     close();
@@ -1363,8 +1391,8 @@ void PropertiesDialog::setDisableUniqueValues(bool disabled)
 // every way of closing the dialog (Close, Save, Escape, the window button) comes here
 void PropertiesDialog::done(int result)
 {
-    if (trackedFolderId) {
-        trackedFolderId.reset();
+    if (trackedIn) {
+        trackedIn.reset();
         trackedFolderNumberKeys.clear();
         issuesEdit->clear();
         issuesSummary->clear();
@@ -1518,7 +1546,7 @@ void PropertiesDialog::loadCustomCoverImageFromPath(const QString &path)
         return;
     }
 
-    if (trackedFolderId) {
+    if (trackedIn) {
         if (!trackingOneIssue)
             return;
         customCover = image;

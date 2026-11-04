@@ -21,6 +21,7 @@ private slots:
     void gapsBecomeRanges();
     void folderNumbersAndRun();
     void trackingSkipsTheNumbersOfTheFolder();
+    void trackingAppendsToTheReadingList();
 
 private:
     bool exec(const QString &sql);
@@ -169,6 +170,24 @@ void TrackedIssuesTest::trackingSkipsTheNumbersOfTheFolder()
 
     QCOMPARE(trackIssuesInFolder(FolderId(2), { "4" }, patch, QString("cover4"), db), std::optional(1));
     QCOMPARE(rows("SELECT coverKey FROM placeholder WHERE number = '4'"), QList<QVariantList>({ { "cover4" } }));
+}
+
+void TrackedIssuesTest::trackingAppendsToTheReadingList()
+{
+    QVERIFY(exec("INSERT INTO reading_list (id, name) VALUES (1, 'Event')"));
+    QVERIFY(exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) VALUES (1, 0, 1)"));
+
+    DescriptiveMetadataPatch patch;
+    patch.set(&DescriptiveComicMetadata::series, "52");
+
+    QCOMPARE(trackIssuesInReadingList(ReadingListId(1), { "1", "3", "Annual 1" }, patch, std::nullopt, db), std::optional(3));
+    QCOMPARE(rows("SELECT e.ordering, COALESCE(e.comic_info_id, 0), COALESCE(p.series, ''), COALESCE(p.number, '') FROM reading_list_entry e "
+                  "LEFT JOIN placeholder p ON p.id = e.placeholder_id WHERE e.reading_list_id = 1 ORDER BY e.ordering"),
+             QList<QVariantList>({ { 0, 1, "", "" }, { 1, 0, "52", "1" }, { 2, 0, "52", "3" }, { 3, 0, "52", "Annual 1" } }));
+    QCOMPARE(rows("SELECT COUNT(*) FROM folder_placeholder"), QList<QVariantList>({ { 1 } }));
+
+    QCOMPARE(trackIssuesInReadingList(ReadingListId(2), { "4" }, patch, std::nullopt, db), std::nullopt);
+    QCOMPARE(rows("SELECT COUNT(*) FROM placeholder WHERE number = '4'"), QList<QVariantList>({ { 0 } }));
 }
 
 QTEST_GUILESS_MAIN(TrackedIssuesTest)

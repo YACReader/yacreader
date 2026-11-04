@@ -16,6 +16,7 @@
 #include "library_comic_opener.h"
 #include "placeholder_cover.h"
 #include "properties_dialog.h"
+#include "reading_list.h"
 #include "reading_list_model.h"
 #include "staged_cover.h"
 #include "tracked_issues.h"
@@ -315,6 +316,35 @@ void ComicManagementCoordinator::trackMissingIssues(qulonglong folderId)
     propertiesDialog->databasePath = dataPath;
     propertiesDialog->basePath = libraryPathProvider();
     propertiesDialog->setTrackMissingIssues(FolderId(folderId), folder->name, run, *numbers);
+
+    emit currentSourceRefreshStarted();
+    propertiesDialog->show();
+}
+
+std::optional<qulonglong> ComicManagementCoordinator::shownReadingListId() const
+{
+    if (comicsModel->getMode() != ComicModel::ReadingList)
+        return std::nullopt;
+    return comicsModel->getSourceId();
+}
+
+void ComicManagementCoordinator::trackMissingIssuesInReadingList(qulonglong readingListId)
+{
+    const auto dataPath = foldersModel->getDatabase();
+    std::optional<ReadingList> list;
+    QString connectionName = "";
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(dataPath);
+        list = DBHelper::loadReadingList(ReadingListId(readingListId), db);
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+    if (!list)
+        return;
+
+    propertiesDialog->databasePath = dataPath;
+    propertiesDialog->basePath = libraryPathProvider();
+    propertiesDialog->setTrackMissingIssues(list->id, list->name);
 
     emit currentSourceRefreshStarted();
     propertiesDialog->show();
