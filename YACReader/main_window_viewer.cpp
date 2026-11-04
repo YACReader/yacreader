@@ -1810,7 +1810,6 @@ void MainWindowViewer::dragEnterEvent(QDragEnterEvent *event)
     // accept just text/uri-list mime format
     if (event->mimeData()->hasFormat("text/uri-list")) {
         event->acceptProposedAction();
-        isClient = false;
     }
 }
 
