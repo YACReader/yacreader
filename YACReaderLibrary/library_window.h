@@ -52,6 +52,7 @@ class YACReaderLibraryListWidget;
 class YACReaderFoldersView;
 class HeaderModel;
 class LibraryHeader;
+class WindowFrame;
 class ComicVineDialog;
 class ComicsView;
 class ClassicComicsView;
@@ -136,6 +137,7 @@ public:
 
     HeaderModel *headerModel;
     LibraryHeader *libraryHeader;
+    WindowFrame *windowFrame = nullptr;
     QToolBar *treeActions;
     QToolBar *comicsToolBar;
     QToolBar *editInfoToolBar;
@@ -179,6 +181,7 @@ protected:
     virtual void closeEvent(QCloseEvent *event) override;
     void showEvent(QShowEvent *event) override;
     void applyTheme(const Theme &theme) override;
+    bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 
 public:
     LibraryWindow();

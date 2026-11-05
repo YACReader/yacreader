@@ -282,6 +282,17 @@ void LibraryWindow::applyTheme(const Theme &theme)
 
     // Update main toolbar and comics view toolbar icons
     actions.updateTheme(theme);
+
+    windowFrame->setColors({ theme.mainToolbar.backgroundColor,
+                             theme.mainToolbar.iconColor,
+                             theme.gridAndInfoView.backgroundColor });
+}
+
+bool LibraryWindow::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)
+{
+    if (windowFrame != nullptr && windowFrame->handleNativeEvent(eventType, message, result))
+        return true;
+    return QMainWindow::nativeEvent(eventType, message, result);
 }
 
 void LibraryWindow::doLayout()
@@ -383,7 +394,7 @@ void LibraryWindow::doLayout()
     importWidget = new ImportWidget();
     mainWidget->addWidget(importWidget);
 
-    WindowFrame::create(this, libraryHeader, settings->value(USE_SYSTEM_TITLE_BAR, false).toBool());
+    windowFrame = WindowFrame::create(this, libraryHeader, settings->value(USE_SYSTEM_TITLE_BAR, false).toBool());
 }
 
 void LibraryWindow::doDialogs()

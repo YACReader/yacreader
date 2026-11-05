@@ -259,6 +259,13 @@ target_sources(YACReaderLibrary PRIVATE
     library_header/window_frame.h
     library_header/window_frame.cpp
 )
+if(WIN32)
+    target_sources(YACReaderLibrary PRIVATE
+        library_header/caption_buttons.h
+        library_header/caption_buttons.cpp
+        library_header/window_frame_windows.cpp
+    )
+endif()
 
 target_include_directories(YACReaderLibrary PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -648,7 +655,7 @@ if(WIN32)
     if(MSVC)
         target_sources(YACReaderLibrary PRIVATE ${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest)
     endif()
-    target_link_libraries(YACReaderLibrary PRIVATE oleaut32 ole32 shell32 user32)
+    target_link_libraries(YACReaderLibrary PRIVATE oleaut32 ole32 shell32 user32 dwmapi)
 endif()
 
 if(APPLE)

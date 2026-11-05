@@ -8,6 +8,13 @@ qt_add_executable(library_header_test
     ${PROJECT_SOURCE_DIR}/common/themes/theme_manager.cpp
     ${PROJECT_SOURCE_DIR}/custom_widgets/yacreader_search_line_edit.cpp
 )
+if(WIN32)
+    target_sources(library_header_test PRIVATE
+        ${PROJECT_SOURCE_DIR}/YACReaderLibrary/library_header/caption_buttons.cpp
+        ${PROJECT_SOURCE_DIR}/YACReaderLibrary/library_header/window_frame_windows.cpp
+    )
+    target_link_libraries(library_header_test PRIVATE dwmapi)
+endif()
 yacreader_apply_build_options(library_header_test)
 target_include_directories(library_header_test PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary

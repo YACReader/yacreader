@@ -1,10 +1,18 @@
 #ifndef WINDOW_FRAME_H
 #define WINDOW_FRAME_H
 
+#include <QColor>
 #include <QObject>
 
 class QMainWindow;
 class LibraryHeader;
+
+// Plain colors, so the frame does not depend on the app theme.
+struct FrameColors {
+    QColor headerBackground;
+    QColor headerForeground;
+    QColor contentBackground;
+};
 
 // How the header joins the top-level window. The base class is the
 // conventional frame: the system draws the title bar and the header sits
@@ -16,6 +24,10 @@ public:
     // Call before the window is shown. useSystemTitleBar is the user setting
     // that keeps the conventional frame on every platform.
     static WindowFrame *create(QMainWindow *window, LibraryHeader *header, bool useSystemTitleBar);
+
+    virtual void setColors(const FrameColors &colors);
+    // Forwarded from QWidget::nativeEvent() of the window.
+    virtual bool handleNativeEvent(const QByteArray &eventType, void *message, qintptr *result);
 
 protected:
     WindowFrame(QMainWindow *window, LibraryHeader *header);

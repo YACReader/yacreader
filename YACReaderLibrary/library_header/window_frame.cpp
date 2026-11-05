@@ -21,7 +21,18 @@ WindowFrame *WindowFrame::create(QMainWindow *window, LibraryHeader *header, boo
     return new WindowFrame(window, header);
 }
 
+void WindowFrame::setColors(const FrameColors &)
+{
+}
+
+bool WindowFrame::handleNativeEvent(const QByteArray &, void *, qintptr *)
+{
+    return false;
+}
+
+#ifndef Q_OS_WIN
 WindowFrame *createPlatformWindowFrame(QMainWindow *, LibraryHeader *)
 {
     return nullptr;
 }
+#endif

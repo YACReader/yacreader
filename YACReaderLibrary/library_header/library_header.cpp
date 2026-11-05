@@ -126,10 +126,35 @@ void SidebarHeader::applyTheme(const HeaderColors &colors, const QIcon &icon)
 
 void SidebarHeader::setAppIdentityVisible(bool visible)
 {
-    if (appIcon == nullptr)
-        return;
-    appIcon->setVisible(visible);
-    appName->setVisible(visible);
+    identityVisible = visible;
+    updateVisibility();
+}
+
+void SidebarHeader::setLeadingInset(int inset)
+{
+    leadingInset = inset;
+    relayout();
+}
+
+void SidebarHeader::setControlsVisible(bool visible)
+{
+    controlsVisible = visible;
+    updateVisibility();
+}
+
+QList<QWidget *> SidebarHeader::interactiveWidgets() const
+{
+    return { buttons.begin(), buttons.end() };
+}
+
+void SidebarHeader::updateVisibility()
+{
+    if (appIcon != nullptr) {
+        appIcon->setVisible(identityVisible && controlsVisible);
+        appName->setVisible(identityVisible && controlsVisible);
+    }
+    for (QToolButton *button : std::as_const(buttons))
+        button->setVisible(controlsVisible);
 }
 
 void SidebarHeader::paintEvent(QPaintEvent *)
@@ -153,7 +178,7 @@ void SidebarHeader::relayout()
     }
     if (appIcon == nullptr)
         return;
-    const int left = 12;
+    const int left = 12 + leadingInset;
     appIcon->setGeometry(left, centeredY(height(), AppIconSize), AppIconSize, AppIconSize);
     const int nameLeft = left + AppIconSize + 8;
     const int nameWidth = qMax(0, right - 8 - nameLeft);
@@ -215,6 +240,28 @@ void ContentHeader::applyTheme(const HeaderColors &colors)
     update();
 }
 
+void ContentHeader::setTrailingInset(int inset)
+{
+    trailingInset = inset;
+    relayout();
+}
+
+void ContentHeader::setControlsVisible(bool visible)
+{
+    for (QWidget *widget : std::initializer_list<QWidget *> { back, forward, folderName, search, selector, fullscreen }) {
+        if (widget != nullptr)
+            widget->setVisible(visible);
+    }
+}
+
+QList<QWidget *> ContentHeader::interactiveWidgets() const
+{
+    QList<QWidget *> widgets { back, forward, search, selector };
+    if (fullscreen != nullptr)
+        widgets.append(fullscreen);
+    return widgets;
+}
+
 void ContentHeader::paintEvent(QPaintEvent *)
 {
     QPainter(this).fillRect(rect(), background);
@@ -229,7 +276,7 @@ void ContentHeader::resizeEvent(QResizeEvent *event)
 void ContentHeader::relayout()
 {
     const int h = height();
-    int right = width() - 12;
+    int right = width() - trailingInset - 12;
     if (fullscreen != nullptr) {
         right -= LibraryHeader::ButtonSize;
         fullscreen->move(right, centeredY(h, LibraryHeader::ButtonSize));
@@ -274,7 +321,7 @@ LibraryHeader::LibraryHeader(HeaderModel *model, QObject *parent)
     sidebar = new SidebarHeader(model);
     content = new ContentHeader(model);
     for (QWidget *part : { static_cast<QWidget *>(sidebar), static_cast<QWidget *>(content) }) {
-        part->setFixedHeight(Height);
+        part->setFixedHeight(headerHeight);
         part->setEnabled(model->isEnabled());
         connect(model, &HeaderModel::enabledChanged, part, &QWidget::setEnabled);
     }
@@ -298,4 +345,55 @@ void LibraryHeader::setVisible(bool visible)
 {
     sidebar->setVisible(visible);
     content->setVisible(visible);
+}
+
+void LibraryHeader::setHeight(int height)
+{
+    if (height == headerHeight)
+        return;
+    headerHeight = height;
+    sidebar->setFixedHeight(height);
+    content->setFixedHeight(height);
+}
+
+void LibraryHeader::setLeadingInset(int inset)
+{
+    sidebar->setLeadingInset(inset);
+}
+
+void LibraryHeader::setTrailingInset(int inset)
+{
+    content->setTrailingInset(inset);
+}
+
+void LibraryHeader::setControlsVisible(bool visible)
+{
+    sidebar->setControlsVisible(visible);
+    content->setControlsVisible(visible);
+}
+
+LibraryHeader::Hit LibraryHeader::hitTest(const QPoint &windowPos) const
+{
+    for (QWidget *part : { static_cast<QWidget *>(sidebar), static_cast<QWidget *>(content) }) {
+        if (!part->isVisible())
+            continue;
+        const QPoint local = part->mapFrom(part->window(), windowPos);
+        if (!part->rect().contains(local))
+            continue;
+        QWidget *child = part->childAt(local);
+        if (child == nullptr)
+            return Hit::Caption;
+        const QList<QWidget *> interactive = part == sidebar ? sidebar->interactiveWidgets() : content->interactiveWidgets();
+        for (QWidget *widget : interactive) {
+            if (widget == child || widget->isAncestorOf(child))
+                return Hit::Client;
+        }
+        return Hit::Caption;
+    }
+    return Hit::Outside;
+}
+
+int LibraryHeader::sidebarRightEdge() const
+{
+    return sidebar->mapTo(sidebar->window(), QPoint(sidebar->width(), 0)).x();
 }

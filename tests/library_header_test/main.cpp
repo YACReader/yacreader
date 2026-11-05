@@ -31,6 +31,8 @@ private slots:
     void selectorFollowsTheCheckedAction();
     void selectorSegmentTriggersItsAction();
     void systemTitleBarHidesTheAppIdentity();
+    void hitTestSeparatesControlsFromCaption();
+    void trailingInsetKeepsControlsOutOfTheCaptionButtons();
 
 private:
     std::unique_ptr<QObject> owner;
@@ -207,6 +209,41 @@ void LibraryHeaderTest::systemTitleBarHidesTheAppIdentity()
         QVERIFY(!label->isVisible());
     window.takeCentralWidget();
     sidebar->setParent(nullptr);
+}
+
+void LibraryHeaderTest::hitTestSeparatesControlsFromCaption()
+{
+    QWidget window;
+    content->setParent(&window);
+    content->setGeometry(0, 0, 900, LibraryHeader::Height);
+    window.resize(900, 300);
+    window.show();
+    QVERIFY(QTest::qWaitForWindowExposed(&window));
+
+    const QRect search = content->searchField()->geometry();
+    QCOMPARE(header->hitTest(search.center()), LibraryHeader::Hit::Client);
+
+    const auto selector = content->findChild<ViewSelector *>();
+    QCOMPARE(header->hitTest(selector->geometry().center()), LibraryHeader::Hit::Client);
+
+    // Empty space between the forward button and the search drags the window.
+    QCOMPARE(header->hitTest(QPoint(search.left() - 4, LibraryHeader::Height / 2)), LibraryHeader::Hit::Caption);
+    // The folder name is not interactive.
+    model->setFolderName("Comics");
+    QCOMPARE(header->hitTest(content->folderNameLabel()->geometry().center()), LibraryHeader::Hit::Caption);
+
+    QCOMPARE(header->hitTest(QPoint(450, 200)), LibraryHeader::Hit::Outside);
+
+    content->setParent(nullptr);
+}
+
+void LibraryHeaderTest::trailingInsetKeepsControlsOutOfTheCaptionButtons()
+{
+    showContent(900);
+    header->setTrailingInset(138);
+    for (QWidget *control : content->findChildren<QToolButton *>(Qt::FindDirectChildrenOnly))
+        QVERIFY(control->geometry().right() < 900 - 138);
+    QVERIFY(content->findChild<ViewSelector *>()->geometry().right() < 900 - 138);
 }
 
 QTEST_MAIN(LibraryHeaderTest)
