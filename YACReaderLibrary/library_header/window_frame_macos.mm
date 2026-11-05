@@ -73,6 +73,7 @@ namespace {
 
 constexpr int ItemIconSize = 18;
 constexpr int ViewIconSize = 16;
+constexpr CGFloat FolderLabelInset = 8;
 // The sidebar end spacer starts this far before the sidebar edge; with the
 // toolbar item spacing, the sidebar glass then ends in line with the sidebar
 // title buttons.
@@ -331,16 +332,29 @@ private:
         return item;
     }
 
+    // The label is inset so it doesn't sit against the navigation glass.
     NSToolbarItem *makeFolderItem()
     {
         NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:FolderId];
+        item.bordered = NO;
         folderLabel = [NSTextField labelWithString:model->folderName().toNSString()];
         folderLabel.font = [NSFont boldSystemFontOfSize:13];
         folderLabel.lineBreakMode = NSLineBreakByTruncatingTail;
+        folderLabel.translatesAutoresizingMaskIntoConstraints = NO;
         [folderLabel setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
                                               forOrientation:NSLayoutConstraintOrientationHorizontal];
-        [folderLabel.widthAnchor constraintLessThanOrEqualToConstant:280].active = YES;
-        item.view = folderLabel;
+
+        NSView *view = [[NSView alloc] initWithFrame:NSZeroRect];
+        [view addSubview:folderLabel];
+        [NSLayoutConstraint activateConstraints:@[
+            [folderLabel.leadingAnchor constraintEqualToAnchor:view.leadingAnchor
+                                                      constant:FolderLabelInset],
+            [folderLabel.trailingAnchor constraintEqualToAnchor:view.trailingAnchor],
+            [folderLabel.centerYAnchor constraintEqualToAnchor:view.centerYAnchor],
+            [view.heightAnchor constraintEqualToConstant:28],
+            [folderLabel.widthAnchor constraintLessThanOrEqualToConstant:280],
+        ]];
+        item.view = view;
         return item;
     }
 
