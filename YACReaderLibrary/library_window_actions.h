@@ -2,6 +2,7 @@
 #define LIBRARY_WINDOW_ACTIONS_H
 
 #include "qaction.h"
+#include "yacreader_global_gui.h"
 
 #include <QAction>
 #include <QCoreApplication>
@@ -68,6 +69,10 @@ public:
     QAction *optionsAction;
     QAction *serverConfigAction;
     QAction *toggleComicsViewAction;
+    // Checkable and exclusive; the content views manager checks the current view.
+    QAction *gridViewAction;
+    QAction *flowViewAction;
+    QAction *infoViewAction;
 
     // tree actions
     QAction *addFolderAction;
@@ -177,6 +182,7 @@ public:
     void disableNoUpdatedLibrariesActions(bool disabled);
     void disableFoldersActions(bool disabled);
     void disableAllActions();
+    QAction *comicsViewAction(YACReader::ComicsViewStatus status) const;
     void setUpShortcutsManagement(EditShortcutsDialog *editShortcutsDialog);
     void updateTheme(const Theme &theme);
 };

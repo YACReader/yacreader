@@ -14,10 +14,6 @@
 #include <QMainWindow>
 #include <QModelIndex>
 
-#ifdef Y_MAC_UI
-#include "yacreader_macosx_toolbar.h"
-#endif
-
 class QTreeView;
 class QDirModel;
 class QAction;
@@ -26,7 +22,6 @@ class QToolBar;
 class QComboBox;
 class QThread;
 class QStackedWidget;
-class YACReaderSearchLineEdit;
 class CreateLibraryDialog;
 class ExportLibraryDialog;
 class ImportLibraryDialog;
@@ -55,7 +50,8 @@ class YACReaderTableView;
 class YACReaderSideBar;
 class YACReaderLibraryListWidget;
 class YACReaderFoldersView;
-class YACReaderMainToolBar;
+class HeaderModel;
+class LibraryHeader;
 class ComicVineDialog;
 class ComicsView;
 class ClassicComicsView;
@@ -116,13 +112,6 @@ public:
 
     QSize slideSizeW;
     QSize slideSizeF;
-    // search filter
-#ifdef Y_MAC_UI
-    YACReaderMacOSXSearchLineEdit *searchEdit;
-#else
-    YACReaderSearchLineEdit *searchEdit;
-#endif
-
     YACReaderNavigationController *navigationController;
     YACReaderContentViewsManager *contentViewsManager;
     LibraryWindowMenus *menus;
@@ -145,11 +134,8 @@ public:
 
     LibraryWindowActions actions;
 
-#ifdef Y_MAC_UI
-    YACReaderMacOSXToolbar *libraryToolBar;
-#else
-    YACReaderMainToolBar *libraryToolBar;
-#endif
+    HeaderModel *headerModel;
+    LibraryHeader *libraryHeader;
     QToolBar *treeActions;
     QToolBar *comicsToolBar;
     QToolBar *editInfoToolBar;

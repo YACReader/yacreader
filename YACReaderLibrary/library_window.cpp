@@ -23,6 +23,9 @@
 #include "import_library_dialog.h"
 #include "import_widget.h"
 #include "library_database_maintenance_coordinator.h"
+#include "library_header/header_model.h"
+#include "library_header/library_header.h"
+#include "library_header/window_frame.h"
 #include "library_management_coordinator.h"
 #include "library_repair_coordinator.h"
 #include "library_search_coordinator.h"
@@ -48,9 +51,7 @@
 #include "yacreader_history_controller.h"
 #include "yacreader_http_server.h"
 #include "yacreader_library_list_widget.h"
-#include "yacreader_main_toolbar.h"
 #include "yacreader_reading_lists_view.h"
-#include "yacreader_search_line_edit.h"
 #include "yacreader_sidebar.h"
 #include "yacreader_titled_toolbar.h"
 #include "yacreader_tool_bar_stretch.h"
@@ -293,18 +294,22 @@ void LibraryWindow::doLayout()
     //---------------------------------------------------------------------------
     editInfoToolBar = new QToolBar();
 
-#ifdef Y_MAC_UI
-    libraryToolBar = new YACReaderMacOSXToolbar(this);
-#else
-    libraryToolBar = new YACReaderMainToolBar(this);
-#endif
-
-    // FOLDERS FILTER-------------------------------------------------------------
+    // HEADER---------------------------------------------------------------------
     //---------------------------------------------------------------------------
-#ifndef Y_MAC_UI
-    // in MacOSX the searchEdit is created using the toolbar wrapper
-    searchEdit = new YACReaderSearchLineEdit();
+    HeaderActions headerActions;
+    headerActions.back = actions.backAction;
+    headerActions.forward = actions.forwardAction;
+    headerActions.settings = actions.optionsAction;
+    headerActions.server = actions.serverConfigAction;
+    headerActions.help = actions.helpAboutAction;
+#ifndef Q_OS_MACOS
+    headerActions.fullscreen = actions.toggleFullScreenAction;
 #endif
+    headerActions.gridView = actions.gridViewAction;
+    headerActions.flowView = actions.flowViewAction;
+    headerActions.infoView = actions.infoViewAction;
+    headerModel = new HeaderModel(headerActions, this);
+    libraryHeader = new LibraryHeader(headerModel, this);
 
     // SIDEBAR--------------------------------------------------------------------
     //---------------------------------------------------------------------------
@@ -339,10 +344,20 @@ void LibraryWindow::doLayout()
 
     contentViewsManager = new YACReaderContentViewsManager(settings, this);
 
-    sHorizontal->addWidget(sideBar);
-#ifndef Y_MAC_UI
+    // Both header parts sit in the splitter columns, so they follow the sidebar width.
+    auto *leftLayout = new QVBoxLayout;
+    leftLayout->addWidget(libraryHeader->sidebarPart());
+    leftLayout->addWidget(sideBar);
+    leftLayout->setContentsMargins(0, 0, 0, 0);
+    leftLayout->setSpacing(0);
+
+    auto *leftWidget = new QWidget();
+    leftWidget->setLayout(leftLayout);
+
+    sHorizontal->addWidget(leftWidget);
+
     QVBoxLayout *rightLayout = new QVBoxLayout;
-    rightLayout->addWidget(libraryToolBar);
+    rightLayout->addWidget(libraryHeader->contentPart());
     rightLayout->addWidget(contentViewsManager->containerWidget());
 
     rightLayout->setContentsMargins(0, 0, 0, 0);
@@ -352,9 +367,6 @@ void LibraryWindow::doLayout()
     rightWidget->setLayout(rightLayout);
 
     sHorizontal->addWidget(rightWidget);
-#else
-    sHorizontal->addWidget(contentViewsManager->containerWidget());
-#endif
 
     sHorizontal->setStretchFactor(0, 0);
     sHorizontal->setStretchFactor(1, 1);
@@ -371,10 +383,7 @@ void LibraryWindow::doLayout()
     importWidget = new ImportWidget();
     mainWidget->addWidget(importWidget);
 
-    // collapsible disabled in macosx (only temporaly)
-#ifdef Y_MAC_UI
-    sHorizontal->setCollapsible(0, false);
-#endif
+    WindowFrame::create(this, libraryHeader, settings->value(USE_SYSTEM_TITLE_BAR, false).toBool());
 }
 
 void LibraryWindow::doDialogs()
@@ -681,10 +690,8 @@ void LibraryWindow::setupCoordinators()
             return;
 
         selectedLibrary->renameCurrentLibrary(newName);
-#ifndef Y_MAC_UI
         if (!foldersModelProxy->mapToSource(foldersView->currentIndex()).isValid())
-            libraryToolBar->setCurrentFolderName(newName);
-#endif
+            headerModel->setFolderName(newName);
     });
     connect(libraryManagementCoordinator, &LibraryManagementCoordinator::folderUpdateFinished, this, [this](qulonglong folderId) {
         reloadAfterCopyMove(foldersModel->getIndexFromFolderId(folderId));
@@ -754,55 +761,10 @@ QToolButton *createMenuToolButton(const QList<QAction *> &entries, const QString
 
 void LibraryWindow::createToolBars()
 {
+    // The view selector replaced the cycle button; the shortcut stays.
+    addAction(actions.toggleComicsViewAction);
 
-#ifdef Y_MAC_UI
-    // libraryToolBar->setIconSize(QSize(16,16)); //TODO make icon size dynamic
-
-    libraryToolBar->addAction(actions.backAction);
-    libraryToolBar->addAction(actions.forwardAction);
-
-    libraryToolBar->addSpace(10);
-
-#ifdef SERVER_RELEASE
-    libraryToolBar->addAction(actions.serverConfigAction);
-#endif
-    libraryToolBar->addAction(actions.optionsAction);
-    libraryToolBar->addAction(actions.helpAboutAction);
-
-    libraryToolBar->addSpace(10);
-
-    libraryToolBar->addAction(actions.toggleComicsViewAction);
-
-    libraryToolBar->addStretch();
-
-    // Native toolbar search edit
-    // libraryToolBar->addWidget(searchEdit);
-    searchEdit = libraryToolBar->addSearchEdit();
-    // connect(libraryToolBar,SIGNAL(searchTextChanged(YACReader::SearchModifiers,QString)),this,SLOT(setSearchFilter(YACReader::SearchModifiers, QString)));
-
-    // libraryToolBar->setMovable(false);
-
-    libraryToolBar->attachToWindow(this);
-
-#else
-    libraryToolBar->backButton->setDefaultAction(actions.backAction);
-    libraryToolBar->forwardButton->setDefaultAction(actions.forwardAction);
-    libraryToolBar->settingsButton->setDefaultAction(actions.optionsAction);
-    libraryToolBar->serverButton->setDefaultAction(actions.serverConfigAction);
-    libraryToolBar->helpButton->setDefaultAction(actions.helpAboutAction);
-    libraryToolBar->toggleComicsViewButton->setDefaultAction(actions.toggleComicsViewAction);
-#ifndef Q_OS_MACOS
-    libraryToolBar->fullscreenButton->setDefaultAction(actions.toggleFullScreenAction);
-#endif
-    libraryToolBar->setSearchWidget(searchEdit);
-#endif
-
-    auto *searchMenu = createSearchMenu();
-#ifdef Y_MAC_UI
-    libraryToolBar->setSearchMenu(searchMenu);
-#else
-    searchEdit->setSearchMenu(searchMenu);
-#endif
+    headerModel->setSearchMenu(createSearchMenu());
 
     editInfoToolBar->setIconSize(QSize(18, 18));
     // QSS padding on a QToolBar becomes a frame on all sides, so the start gets a spacer instead
@@ -866,52 +828,28 @@ QMenu *LibraryWindow::createSearchMenu()
 
 void LibraryWindow::applySearchQuery(const QString &query)
 {
-#ifdef Y_MAC_UI
-    libraryToolBar->setSearchText(query);
-    libraryToolBar->focusSearch();
-#else
-    searchEdit->setText(query);
-    searchEdit->setFocus(Qt::ShortcutFocusReason);
-#endif
+    headerModel->setSearchText(query);
+    headerModel->focusSearch();
 }
 
 void LibraryWindow::setSearchInputEnabled(bool enabled)
 {
-#ifdef Y_MAC_UI
-    libraryToolBar->setSearchEnabled(enabled);
-#else
-    searchEdit->setEnabled(enabled);
-#endif
+    headerModel->setSearchEnabled(enabled);
 }
 
 void LibraryWindow::clearSearchInput(bool notify)
 {
-#ifdef Y_MAC_UI
-    libraryToolBar->clearSearchText(notify);
-#else
-    if (notify)
-        searchEdit->clear();
-    else
-        searchEdit->clearText();
-#endif
+    headerModel->setSearchText(QString(), notify);
 }
 
 void LibraryWindow::focusSearchInput()
 {
-#ifdef Y_MAC_UI
-    libraryToolBar->focusSearch();
-#else
-    searchEdit->setFocus(Qt::ShortcutFocusReason);
-#endif
+    headerModel->focusSearch();
 }
 
 QString LibraryWindow::searchText() const
 {
-#ifdef Y_MAC_UI
-    return libraryToolBar->searchText();
-#else
-    return searchEdit->text();
-#endif
+    return headerModel->searchText();
 }
 
 void LibraryWindow::createConnections()
@@ -962,12 +900,7 @@ void LibraryWindow::createConnections()
     auto searchDebouncer = new KDToolBox::KDStringSignalDebouncer(this);
     searchDebouncer->setTimeout(400);
 
-// Search filter
-#ifdef Y_MAC_UI
-    connect(libraryToolBar, &YACReaderMacOSXToolbar::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
-#else
-    connect(searchEdit, &YACReaderSearchLineEdit::filterChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
-#endif
+    connect(headerModel, &HeaderModel::searchChanged, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
     connect(searchDebouncer, &KDToolBox::KDStringSignalDebouncer::triggered, librarySearchCoordinator, &LibrarySearchCoordinator::search);
     // a smart list dialog searches like the search field, and gives the search back to it when it closes
     connect(readingListManagementCoordinator, &ReadingListManagementCoordinator::searchRequested, searchDebouncer, &KDToolBox::KDStringSignalDebouncer::throttle);
@@ -1102,12 +1035,10 @@ void LibraryWindow::setComicToolbarEntriesVisible(bool visible)
 
 void LibraryWindow::setToolbarTitle(const QModelIndex &modelIndex)
 {
-#ifndef Y_MAC_UI
     if (!modelIndex.isValid())
-        libraryToolBar->setCurrentFolderName(selectedLibrary->currentText());
+        headerModel->setFolderName(selectedLibrary->currentText());
     else
-        libraryToolBar->setCurrentFolderName(modelIndex.data().toString());
-#endif
+        headerModel->setFolderName(modelIndex.data().toString());
 }
 
 // this methods is only using after deleting comics
@@ -1198,7 +1129,7 @@ void LibraryWindow::toFullScreen()
     fromMaximized = this->isMaximized();
 
     sideBar->hide();
-    libraryToolBar->hide();
+    libraryHeader->setVisible(false);
 
     contentViewsManager->toFullscreen();
 
@@ -1216,15 +1147,7 @@ void LibraryWindow::toNormal()
     else
         showNormal();
 
-#ifdef Y_MAC_UI
-    auto timer = new QTimer();
-    timer->setSingleShot(true);
-    timer->start();
-    connect(timer, &QTimer::timeout, libraryToolBar, &YACReaderMacOSXToolbar::show);
-    connect(timer, &QTimer::timeout, timer, &QTimer::deleteLater);
-#else
-    libraryToolBar->show();
-#endif
+    libraryHeader->setVisible(true);
 }
 
 void LibraryWindow::reloadOptions()
@@ -1294,9 +1217,7 @@ void LibraryWindow::showNoLibrariesWidget()
 
 void LibraryWindow::showRootWidget()
 {
-#ifndef Y_MAC_UI
-    libraryToolBar->setDisabled(false);
-#endif
+    headerModel->setEnabled(true);
     setSearchInputEnabled(true);
     mainWidget->setCurrentIndex(0);
 }
@@ -1305,9 +1226,7 @@ void LibraryWindow::showImportingWidget()
 {
     actions.disableAllActions();
     importWidget->clear();
-#ifndef Y_MAC_UI
-    libraryToolBar->setDisabled(true);
-#endif
+    headerModel->setEnabled(false);
     setSearchInputEnabled(false);
     mainWidget->setCurrentIndex(2);
 }

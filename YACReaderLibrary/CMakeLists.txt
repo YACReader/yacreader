@@ -170,8 +170,6 @@ qt_add_executable(YACReaderLibrary WIN32
     trayicon_controller.cpp
     yacreader_content_views_manager.h
     yacreader_content_views_manager.cpp
-    yacreader_main_toolbar.h
-    yacreader_main_toolbar.cpp
     comics_view.h
     comics_view.cpp
     comic_info_object.h
@@ -250,6 +248,17 @@ if(APPLE)
         trayhandler.mm
     )
 endif()
+
+target_sources(YACReaderLibrary PRIVATE
+    library_header/header_model.h
+    library_header/header_model.cpp
+    library_header/library_header.h
+    library_header/library_header.cpp
+    library_header/view_selector.h
+    library_header/view_selector.cpp
+    library_header/window_frame.h
+    library_header/window_frame.cpp
+)
 
 target_include_directories(YACReaderLibrary PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
