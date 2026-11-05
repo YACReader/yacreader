@@ -55,7 +55,7 @@ NSImage *templateImage(const QIcon &icon, int size)
         return nil;
     NSImage *nsImage = [[NSImage alloc] initWithCGImage:cgImage size:NSMakeSize(size, size)];
     CGImageRelease(cgImage);
-    nsImage.template = YES;
+    [nsImage setTemplate:YES];
     return nsImage;
 }
 
