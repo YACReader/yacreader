@@ -73,6 +73,13 @@ namespace {
 
 constexpr int ItemIconSize = 18;
 constexpr int ViewIconSize = 16;
+// The sidebar end spacer starts this far before the sidebar edge; with the
+// toolbar item spacing, the sidebar glass then ends in line with the sidebar
+// title buttons.
+constexpr CGFloat SidebarGroupInset = 4;
+// Width of the sidebar end spacer, which separates the sidebar glass from the
+// navigation glass; it puts back and forward in line with the content.
+constexpr CGFloat NavigationGap = 24;
 
 // Template images use only the alpha channel; AppKit draws them in the
 // toolbar colors (light/dark appearance, disabled state, Liquid Glass).
@@ -187,7 +194,9 @@ public:
         nsWindow.backgroundColor = toNSColor(colors.contentBackground);
     }
 
-    // The search is on the trailing edge, where macOS apps put it.
+    // The search is on the trailing edge, where macOS apps put it. The sidebar
+    // end spacer splits the sidebar and navigation items into two Liquid Glass
+    // groups.
     NSArray<NSToolbarItemIdentifier> *itemIdentifiers() const
     {
         NSMutableArray<NSToolbarItemIdentifier> *identifiers = [NSMutableArray arrayWithObject:SidebarLeadId];
@@ -301,15 +310,17 @@ private:
         return item;
     }
 
-    // The lead spacer grows so settings, server and help end at the sidebar
-    // edge; see alignWithSidebar().
+    // The lead spacer grows so settings, server and help end in line with the
+    // sidebar title buttons; see alignWithSidebar(). Spacers are unbordered so
+    // they stay out of the glass background of the neighbouring items.
     NSToolbarItem *makeSpacerItem(NSString *identifier)
     {
         const bool lead = [identifier isEqualToString:SidebarLeadId];
         NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
+        item.bordered = NO;
         NSView *view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 1, 28)];
         view.translatesAutoresizingMaskIntoConstraints = NO;
-        NSLayoutConstraint *width = [view.widthAnchor constraintEqualToConstant:lead ? 1 : 4];
+        NSLayoutConstraint *width = [view.widthAnchor constraintEqualToConstant:lead ? 1 : NavigationGap];
         width.active = YES;
         [view.heightAnchor constraintEqualToConstant:28].active = YES;
         item.view = view;
@@ -476,8 +487,9 @@ private:
         QTimer::singleShot(0, this, [this] { alignWithSidebar(); });
     }
 
-    // Moves the native items so settings, server and help end at the sidebar
-    // edge and navigation starts over the content, following the splitter.
+    // Moves the native items so the sidebar end spacer starts SidebarGroupInset
+    // before the sidebar edge, which lines up settings, server and help with
+    // the sidebar and navigation with the content, following the splitter.
     void alignWithSidebar()
     {
         alignmentPending = false;
@@ -485,7 +497,7 @@ private:
             return;
         [sidebarEnd.window layoutIfNeeded];
         const NSRect end = [sidebarEnd convertRect:sidebarEnd.bounds toView:nil];
-        const CGFloat delta = header->sidebarRightEdge() - NSMaxX(end);
+        const CGFloat delta = header->sidebarRightEdge() - SidebarGroupInset - NSMinX(end);
         if (std::abs(delta) < 0.5 || ++alignmentPasses > 3)
             return;
         sidebarLeadWidth.constant = std::max<CGFloat>(1, sidebarLeadWidth.constant + delta);
