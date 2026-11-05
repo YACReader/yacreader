@@ -504,17 +504,48 @@ private:
     // Moves the native items so the sidebar end spacer starts SidebarGroupInset
     // before the sidebar edge, which lines up settings, server and help with
     // the sidebar and navigation with the content, following the splitter.
+    // AppKit gives the lead spacer a minimum slot (about 36pt on macOS 26), so
+    // below that, changing its width doesn't move anything. When a change has
+    // no effect the items are at their leftmost position: that is where the
+    // sidebar edge can't go past, and the spacer keeps growing until it moves
+    // them again.
     void alignWithSidebar()
     {
         alignmentPending = false;
         if (sidebarEnd == nil || sidebarLeadWidth == nil || sidebarEnd.window == nil)
             return;
         [sidebarEnd.window layoutIfNeeded];
-        const NSRect end = [sidebarEnd convertRect:sidebarEnd.bounds toView:nil];
-        const CGFloat delta = header->sidebarRightEdge() - SidebarGroupInset - NSMinX(end);
-        if (std::abs(delta) < 0.5 || ++alignmentPasses > 3)
+        const CGFloat endX = NSMinX([sidebarEnd convertRect:sidebarEnd.bounds toView:nil]);
+        const CGFloat lead = sidebarLeadWidth.constant;
+        const bool stuck = lead != lastLead && lastLead > 0 && std::abs(endX - lastEndX) < 0.5;
+        if (stuck)
+            leftmostEndX = endX;
+        lastLead = lead;
+        lastEndX = endX;
+
+        QWidget *sidebarPart = header->sidebarPart();
+        const int sidebarLeft = sidebarPart->mapTo(sidebarPart->window(), QPoint(0, 0)).x();
+        const CGFloat minEndX = std::max(leftmostEndX, endX - (lead - 1));
+        sidebarPart->setMinimumWidth(qCeil(minEndX + SidebarGroupInset) - sidebarLeft);
+
+        const CGFloat targetX = header->sidebarRightEdge() - SidebarGroupInset;
+        const CGFloat delta = targetX - endX;
+        if (std::abs(delta) < 0.5)
             return;
-        sidebarLeadWidth.constant = std::max<CGFloat>(1, sidebarLeadWidth.constant + delta);
+        // Can't move further left; the minimum width widens the sidebar.
+        if (delta < 0 && endX <= leftmostEndX + 0.5)
+            return;
+        // Growing through the dead zone doesn't count as a pass; it ends once
+        // the spacer is wider than the sidebar.
+        if (stuck && delta > 0) {
+            if (lead > targetX)
+                return;
+            sidebarLeadWidth.constant = lead + std::max(delta, lead);
+        } else {
+            if (++alignmentPasses > 3)
+                return;
+            sidebarLeadWidth.constant = std::max<CGFloat>(1, lead + delta);
+        }
         QTimer::singleShot(0, this, [this] { alignWithSidebar(); });
     }
 
@@ -530,6 +561,9 @@ private:
     NSLayoutConstraint *sidebarLeadWidth = nil;
     bool alignmentPending = false;
     int alignmentPasses = 0;
+    CGFloat lastLead = 0;
+    CGFloat lastEndX = 0;
+    CGFloat leftmostEndX = 0;
 };
 
 @implementation YRLibraryHeaderToolbarDelegate
