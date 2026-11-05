@@ -374,7 +374,7 @@
     <message>
         <location filename="options_dialog.cpp" line="124"/>
         <source>Only Back/Forward buttons can turn pages</source>
-        <translation>只有后退/前进按钮可以翻页</translation>
+        <translation>仅“后退”/“前进”按钮可用于翻页</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="125"/>
@@ -474,7 +474,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="100"/>
         <source>Clear</source>
-        <translation>清空</translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="343"/>
@@ -524,7 +524,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="276"/>
         <source>Bilinear</source>
-        <translation>Bilinear</translation>
+        <translation>双线性（Bilinear）</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="277"/>
@@ -901,7 +901,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Zoom</translation>
+        <translation>缩放</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -1005,7 +1005,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="372"/>
         <source>Clear</source>
-        <translation>清空</translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="583"/>
@@ -1025,12 +1025,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>Zoom+</translation>
+        <translation>放大+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>Zoom-</translation>
+        <translation>缩小-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="354"/>
@@ -1045,7 +1045,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1405"/>
         <source>Zoom out magnifying glass</source>
-        <translation>减小放大镜的 Zoom</translation>
+        <translation>减小放大镜显示内容</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="334"/>
@@ -1229,7 +1229,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="1402"/>
         <source>Zoom in magnifying glass</source>
-        <translation>增大放大镜的 Zoom</translation>
+        <translation>增大放大镜显示内容</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="633"/>
@@ -1351,7 +1351,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="476"/>
         <source>Reset zoom</source>
-        <translation>重置 Zoom</translation>
+        <translation>重置缩放</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="557"/>
@@ -1446,7 +1446,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="373"/>
         <source>Clear open recent list</source>
-        <translation>清空最近访问列表</translation>
+        <translation>清除最近打开列表</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="535"/>
@@ -1499,7 +1499,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="481"/>
         <source>Show zoom slider</source>
-        <translation>显示 Zoom 滑块</translation>
+        <translation>显示缩放滑块</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1481"/>
@@ -1611,7 +1611,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="translator.cpp" line="100"/>
         <source>clear</source>
-        <translation>清空</translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location filename="translator.cpp" line="195"/>
