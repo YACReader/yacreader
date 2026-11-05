@@ -27,6 +27,37 @@ class MacWindowFrame;
 - (void)searchMenuItemClicked:(NSMenuItem *)sender;
 @end
 
+// Covers the header strip, which sits under the title bar but inside Qt's
+// view. AppKit won't move the window from there on its own (Qt's view is
+// opaque, so it doesn't let mouse-downs move the window), so the drag is
+// handed to the window server like Chromium and Zed do; it does the moving
+// and the tiling. Only the double-click action is ours, and it follows the
+// "Double-click a window's title bar to" setting.
+@interface YRHeaderDragView : NSView
+@end
+
+@implementation YRHeaderDragView
+- (BOOL)mouseDownCanMoveWindow
+{
+    return NO;
+}
+
+- (void)mouseDown:(NSEvent *)event
+{
+    if (event.clickCount != 2) {
+        [self.window performWindowDragWithEvent:event];
+        return;
+    }
+    // "Fill" (macOS 15+) has no public API; zoom is the closest match. The
+    // key is missing until the user changes the setting.
+    NSString *action = [NSUserDefaults.standardUserDefaults stringForKey:@"AppleActionOnDoubleClick"];
+    if ([action isEqualToString:@"Minimize"])
+        [self.window performMiniaturize:nil];
+    else if (![action isEqualToString:@"None"])
+        [self.window performZoom:nil];
+}
+@end
+
 static NSString *const SidebarLeadId = @"yr.sidebarLead";
 static NSString *const SettingsId = @"yr.settings";
 static NSString *const ServerId = @"yr.server";
@@ -99,6 +130,13 @@ public:
         nsWindow.toolbarStyle = NSWindowToolbarStyleUnified;
 
         header->setControlsVisible(false);
+
+        // The Qt header has no controls of its own here, so all of it drags.
+        NSView *qtView = (__bridge NSView *)reinterpret_cast<void *>(window->winId());
+        dragView = [[YRHeaderDragView alloc] initWithFrame:NSMakeRect(0, 0, NSWidth(qtView.bounds), LibraryHeader::Height)];
+        dragView.autoresizingMask = NSViewWidthSizable | (qtView.isFlipped ? NSViewMaxYMargin : NSViewMinYMargin);
+        [qtView addSubview:dragView];
+
         header->sidebarPart()->installEventFilter(this);
         header->contentPart()->installEventFilter(this);
 
@@ -135,6 +173,7 @@ public:
     ~MacWindowFrame() override
     {
         delegate->frame = nullptr;
+        [dragView removeFromSuperview];
         if (searchItem != nil)
             searchItem.searchField.delegate = nil;
         toolbar.delegate = nil;
@@ -405,7 +444,11 @@ private:
     void updateMetrics()
     {
         const QMargins safe = window->windowHandle()->safeAreaMargins();
-        header->setHeight(safe.top() > 0 ? safe.top() : LibraryHeader::Height);
+        const int height = safe.top() > 0 ? safe.top() : LibraryHeader::Height;
+        header->setHeight(height);
+
+        NSView *qtView = dragView.superview;
+        dragView.frame = NSMakeRect(0, qtView.isFlipped ? 0 : NSHeight(qtView.bounds) - height, NSWidth(qtView.bounds), height);
 
         int leading = 0;
         NSButton *zoom = [nsWindow() standardWindowButton:NSWindowZoomButton];
@@ -456,6 +499,7 @@ private:
     NSToolbarItemGroup *viewGroup = nil;
     NSSearchToolbarItem *searchItem = nil;
     NSTextField *folderLabel = nil;
+    YRHeaderDragView *dragView = nil;
     NSView *sidebarEnd = nil;
     NSLayoutConstraint *sidebarLeadWidth = nil;
     bool alignmentPending = false;
