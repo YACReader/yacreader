@@ -60,9 +60,12 @@ class MacWindowFrame;
 
 // Toolbar spacer that reports when it moves on screen. AppKit moves the views
 // that host the toolbar items, not the item views, so it watches the frames of
-// all its ancestors; it re-subscribes when the toolbar changes windows, as it
-// does in full screen.
-@interface YRToolbarSpacerView : NSView
+// all its ancestors; it re-subscribes when it changes windows, as it does in
+// full screen, or host views. Only moves are reported; its own width changes
+// are not.
+@interface YRToolbarSpacerView : NSView {
+    CGFloat lastX;
+}
 @property (copy) void (^positionChanged)(void);
 @end
 
@@ -70,8 +73,20 @@ class MacWindowFrame;
 - (void)viewDidMoveToWindow
 {
     [super viewDidMoveToWindow];
+    [self watchAncestors];
+}
+
+- (void)viewDidMoveToSuperview
+{
+    [super viewDidMoveToSuperview];
+    [self watchAncestors];
+}
+
+- (void)watchAncestors
+{
     NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
     [center removeObserver:self name:NSViewFrameDidChangeNotification object:nil];
+    lastX = NAN;
     if (self.window == nil)
         return;
     for (NSView *view = self; view != nil; view = view.superview) {
@@ -83,6 +98,10 @@ class MacWindowFrame;
 - (void)frameChanged:(NSNotification *)notification
 {
     Q_UNUSED(notification);
+    const CGFloat x = NSMinX([self convertRect:self.bounds toView:nil]);
+    if (x == lastX)
+        return;
+    lastX = x;
     if (self.positionChanged != nil)
         self.positionChanged();
 }
