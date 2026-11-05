@@ -94,6 +94,7 @@ class LibraryWindow : public QMainWindow, protected Themable
     Q_OBJECT
 public:
     YACReaderSideBar *sideBar;
+    QWidget *sidebarColumn;
     QSplitter *mainSplitter;
 
     CreateLibraryDialog *createLibraryDialog;

@@ -360,10 +360,10 @@ void LibraryWindow::doLayout()
     leftLayout->setContentsMargins(0, 0, 0, 0);
     leftLayout->setSpacing(0);
 
-    auto *leftWidget = new QWidget();
-    leftWidget->setLayout(leftLayout);
+    sidebarColumn = new QWidget();
+    sidebarColumn->setLayout(leftLayout);
 
-    sHorizontal->addWidget(leftWidget);
+    sHorizontal->addWidget(sidebarColumn);
 
     QVBoxLayout *rightLayout = new QVBoxLayout;
     rightLayout->addWidget(libraryHeader->contentPart());
@@ -1137,7 +1137,7 @@ void LibraryWindow::toFullScreen()
 {
     fromMaximized = this->isMaximized();
 
-    sideBar->hide();
+    sidebarColumn->hide();
     libraryHeader->setVisible(false);
 
     contentViewsManager->toFullscreen();
@@ -1147,7 +1147,7 @@ void LibraryWindow::toFullScreen()
 
 void LibraryWindow::toNormal()
 {
-    sideBar->show();
+    sidebarColumn->show();
 
     contentViewsManager->toNormal();
 
