@@ -74,6 +74,7 @@ namespace {
 constexpr int ItemIconSize = 18;
 constexpr int ViewIconSize = 16;
 constexpr CGFloat FolderLabelInset = 8;
+constexpr int MaxAlignmentPasses = 12;
 // The sidebar end spacer starts this far before the sidebar edge; with the
 // toolbar item spacing, the sidebar glass then ends in line with the sidebar
 // title buttons.
@@ -485,9 +486,13 @@ private:
         scheduleAlignment();
     }
 
+    // On show, the items are aligned before the window draws its first frame,
+    // so they don't jump into place after launch.
     bool eventFilter(QObject *watched, QEvent *event) override
     {
-        if (event->type() == QEvent::Resize || event->type() == QEvent::Move || event->type() == QEvent::Show)
+        if (event->type() == QEvent::Show)
+            alignWithSidebar();
+        else if (event->type() == QEvent::Resize || event->type() == QEvent::Move)
             scheduleAlignment();
         return WindowFrame::eventFilter(watched, event);
     }
@@ -497,23 +502,30 @@ private:
         if (alignmentPending)
             return;
         alignmentPending = true;
-        alignmentPasses = 0;
         QTimer::singleShot(0, this, [this] { alignWithSidebar(); });
     }
 
     // Moves the native items so the sidebar end spacer starts SidebarGroupInset
     // before the sidebar edge, which lines up settings, server and help with
     // the sidebar and navigation with the content, following the splitter.
-    // AppKit gives the lead spacer a minimum slot (about 36pt on macOS 26), so
-    // below that, changing its width doesn't move anything. When a change has
-    // no effect the items are at their leftmost position: that is where the
-    // sidebar edge can't go past, and the spacer keeps growing until it moves
-    // them again.
+    // Forcing the window layout applies each change right away, so all the
+    // passes run at once, before the window draws again.
     void alignWithSidebar()
     {
         alignmentPending = false;
         if (sidebarEnd == nil || sidebarLeadWidth == nil || sidebarEnd.window == nil)
             return;
+        for (int pass = 0; pass < MaxAlignmentPasses && alignmentStep(); ++pass) { }
+    }
+
+    // One pass of alignWithSidebar(); returns whether it moved the items.
+    // AppKit gives the lead spacer a minimum slot (about 36pt on macOS 26), so
+    // below that, changing its width doesn't move anything. When a change has
+    // no effect the items are at their leftmost position: that is where the
+    // sidebar edge can't go past, and the spacer keeps growing until it moves
+    // them again.
+    bool alignmentStep()
+    {
         [sidebarEnd.window layoutIfNeeded];
         const CGFloat endX = NSMinX([sidebarEnd convertRect:sidebarEnd.bounds toView:nil]);
         const CGFloat lead = sidebarLeadWidth.constant;
@@ -531,22 +543,19 @@ private:
         const CGFloat targetX = header->sidebarRightEdge() - SidebarGroupInset;
         const CGFloat delta = targetX - endX;
         if (std::abs(delta) < 0.5)
-            return;
+            return false;
         // Can't move further left; the minimum width widens the sidebar.
         if (delta < 0 && endX <= leftmostEndX + 0.5)
-            return;
-        // Growing through the dead zone doesn't count as a pass; it ends once
-        // the spacer is wider than the sidebar.
+            return false;
+        // Through the dead zone the spacer doubles, up to the sidebar width.
         if (stuck && delta > 0) {
             if (lead > targetX)
-                return;
+                return false;
             sidebarLeadWidth.constant = lead + std::max(delta, lead);
         } else {
-            if (++alignmentPasses > 3)
-                return;
             sidebarLeadWidth.constant = std::max<CGFloat>(1, lead + delta);
         }
-        QTimer::singleShot(0, this, [this] { alignWithSidebar(); });
+        return true;
     }
 
     HeaderModel *model;
@@ -560,7 +569,6 @@ private:
     NSView *sidebarEnd = nil;
     NSLayoutConstraint *sidebarLeadWidth = nil;
     bool alignmentPending = false;
-    int alignmentPasses = 0;
     CGFloat lastLead = 0;
     CGFloat lastEndX = 0;
     CGFloat leftmostEndX = 0;
