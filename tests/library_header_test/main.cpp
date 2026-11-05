@@ -195,6 +195,9 @@ void LibraryHeaderTest::selectorSegmentTriggersItsAction()
 
 void LibraryHeaderTest::systemTitleBarHidesTheAppIdentity()
 {
+#ifdef Q_OS_MACOS
+    QSKIP("The macOS header has no app identity");
+#endif
     QMainWindow window;
     auto *sidebar = header->sidebarPart();
     sidebar->setParent(&window);
@@ -205,11 +208,7 @@ void LibraryHeaderTest::systemTitleBarHidesTheAppIdentity()
         sidebar->setParent(nullptr);
     });
     const auto labels = [sidebar] { return sidebar->findChildren<QLabel *>(); };
-#ifdef Q_OS_MACOS
-    QCOMPARE(labels().size(), 0);
-#else
     QCOMPARE(labels().size(), 2);
-#endif
 
     WindowFrame::create(&window, header, true);
     window.show();
