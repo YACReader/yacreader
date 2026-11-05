@@ -170,8 +170,6 @@ qt_add_executable(YACReaderLibrary WIN32
     trayicon_controller.cpp
     yacreader_content_views_manager.h
     yacreader_content_views_manager.cpp
-    yacreader_main_toolbar.h
-    yacreader_main_toolbar.cpp
     comics_view.h
     comics_view.cpp
     comic_info_object.h
@@ -249,6 +247,28 @@ if(APPLE)
         trayhandler.h
         trayhandler.mm
     )
+endif()
+
+target_sources(YACReaderLibrary PRIVATE
+    library_header/header_model.h
+    library_header/header_model.cpp
+    library_header/library_header.h
+    library_header/library_header.cpp
+    library_header/view_selector.h
+    library_header/view_selector.cpp
+    library_header/window_frame.h
+    library_header/window_frame.cpp
+)
+if(WIN32)
+    target_sources(YACReaderLibrary PRIVATE
+        library_header/caption_buttons.h
+        library_header/caption_buttons.cpp
+        library_header/window_frame_windows.cpp
+    )
+endif()
+if(APPLE)
+    target_sources(YACReaderLibrary PRIVATE library_header/window_frame_macos.mm)
+    set_source_files_properties(library_header/window_frame_macos.mm PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
 endif()
 
 target_include_directories(YACReaderLibrary PRIVATE
@@ -639,7 +659,7 @@ if(WIN32)
     if(MSVC)
         target_sources(YACReaderLibrary PRIVATE ${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest)
     endif()
-    target_link_libraries(YACReaderLibrary PRIVATE oleaut32 ole32 shell32 user32)
+    target_link_libraries(YACReaderLibrary PRIVATE oleaut32 ole32 shell32 user32 dwmapi)
 endif()
 
 if(APPLE)

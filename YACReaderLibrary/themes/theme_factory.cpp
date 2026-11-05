@@ -212,8 +212,6 @@ struct GridAndInfoViewParams {
 };
 
 struct MainToolbarParams {
-    MainToolbarThemeTemplates t;
-
     QColor backgroundColor;
     QColor folderNameColor;
     QColor dividerColor;
@@ -647,35 +645,8 @@ Theme makeTheme(const ThemeParams &params)
     const auto &mt = params.mainToolbarParams;
     theme.mainToolbar.backgroundColor = mt.backgroundColor;
     theme.mainToolbar.folderNameColor = mt.folderNameColor;
-    theme.mainToolbar.toolbarQSS = mt.t.toolbarQSS;
-    theme.mainToolbar.folderNameLabelQSS = mt.t.folderNameLabelQSS.arg(mt.folderNameColor.name());
-
-    // Build divider pixmap with gradient (HiDPI aware)
-    {
-        const qreal dpr = qApp->devicePixelRatio();
-        const int width = 1;
-        const int height = 34;
-
-        QPixmap pixmap(width * dpr, height * dpr);
-        pixmap.setDevicePixelRatio(dpr);
-        pixmap.fill(Qt::transparent);
-
-        QPainter painter(&pixmap);
-        painter.setRenderHint(QPainter::Antialiasing);
-
-        QLinearGradient gradient(0, 0, 0, height);
-        QColor transparentColor = mt.dividerColor;
-        transparentColor.setAlpha(0);
-
-        gradient.setColorAt(0.0, transparentColor);
-        gradient.setColorAt(0.5, mt.dividerColor);
-        gradient.setColorAt(1.0, transparentColor);
-
-        painter.setPen(QPen(QBrush(gradient), 1));
-        painter.drawLine(0, 0, 0, height);
-
-        theme.mainToolbar.dividerPixmap = pixmap;
-    }
+    theme.mainToolbar.iconColor = mt.iconColor;
+    theme.mainToolbar.sidebarIconColor = params.sidebarIconsParams.iconColor;
 
     // Build icons with Normal and Disabled states
     auto makeToolbarIcon = [&](const QString &basePath) {
@@ -686,12 +657,20 @@ Theme makeTheme(const ThemeParams &params)
         icon.addFile(disabledPath, QSize(), QIcon::Disabled, QIcon::Off);
         return icon;
     };
+    auto makeSidebarToolbarIcon = [&](const QString &basePath) {
+        QIcon icon;
+        const QString normalPath = recoloredSvgToThemeFile(basePath, params.sidebarIconsParams.iconColor, params.meta.id, { .suffix = "_sidebar" });
+        const QString disabledPath = recoloredSvgToThemeFile(basePath, mt.iconDisabledColor, params.meta.id, { .suffix = "_disabled" });
+        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(disabledPath, QSize(), QIcon::Disabled, QIcon::Off);
+        return icon;
+    };
 
     theme.mainToolbar.backIcon = makeToolbarIcon(":/images/main_toolbar/back.svg");
     theme.mainToolbar.forwardIcon = makeToolbarIcon(":/images/main_toolbar/forward.svg");
-    theme.mainToolbar.settingsIcon = makeToolbarIcon(":/images/main_toolbar/settings.svg");
-    theme.mainToolbar.serverIcon = makeToolbarIcon(":/images/main_toolbar/server.svg");
-    theme.mainToolbar.helpIcon = makeToolbarIcon(":/images/main_toolbar/help.svg");
+    theme.mainToolbar.settingsIcon = makeSidebarToolbarIcon(":/images/main_toolbar/settings.svg");
+    theme.mainToolbar.serverIcon = makeSidebarToolbarIcon(":/images/main_toolbar/server.svg");
+    theme.mainToolbar.helpIcon = makeSidebarToolbarIcon(":/images/main_toolbar/help.svg");
     theme.mainToolbar.gridIcon = makeToolbarIcon(":/images/main_toolbar/grid.svg");
     theme.mainToolbar.flowIcon = makeToolbarIcon(":/images/main_toolbar/flow.svg");
     theme.mainToolbar.infoIcon = makeToolbarIcon(":/images/main_toolbar/info.svg");
