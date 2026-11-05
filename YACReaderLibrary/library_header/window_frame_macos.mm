@@ -176,11 +176,47 @@ public:
                 [searchItem beginSearchInteraction];
         });
 
+        // AppKit moves the traffic lights out of the window right after the
+        // "will" notifications, about half a second before the "did" ones.
+        NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
+        observers = [NSMutableArray array];
+        [observers addObject:[center addObserverForName:NSWindowWillEnterFullScreenNotification
+                                                 object:nsWindow
+                                                  queue:nil
+                                             usingBlock:^(NSNotification *) {
+                                                 setTrafficLightsHidden(true);
+                                             }]];
+        [observers addObject:[center addObserverForName:NSWindowWillExitFullScreenNotification
+                                                 object:nsWindow
+                                                  queue:nil
+                                             usingBlock:^(NSNotification *) {
+                                                 setTrafficLightsHidden(false);
+                                             }]];
+        for (NSNotificationName name in @[ NSWindowDidEnterFullScreenNotification, NSWindowDidExitFullScreenNotification ]) {
+            [observers addObject:[center addObserverForName:name
+                                                     object:nsWindow
+                                                      queue:nil
+                                                 usingBlock:^(NSNotification *) {
+                                                     updateMetrics();
+                                                 }]];
+        }
+        // In full screen the toolbar has its own window, which moves when the
+        // menu bar is revealed; the traffic lights come back with it.
+        [observers addObject:[center addObserverForName:NSWindowDidMoveNotification
+                                                 object:nil
+                                                  queue:nil
+                                             usingBlock:^(NSNotification *notification) {
+                                                 if (trafficLightsHidden && sidebarEnd != nil && notification.object == sidebarEnd.window && notification.object != this->nsWindow())
+                                                     scheduleAlignment();
+                                             }]];
+
         QTimer::singleShot(0, this, [this] { updateMetrics(); });
     }
 
     ~MacWindowFrame() override
     {
+        for (id observer in observers)
+            [NSNotificationCenter.defaultCenter removeObserver:observer];
         delegate->frame = nullptr;
         [dragView removeFromSuperview];
         if (searchItem != nil)
@@ -326,10 +362,12 @@ private:
         width.active = YES;
         [view.heightAnchor constraintEqualToConstant:28].active = YES;
         item.view = view;
-        if (lead)
+        if (lead) {
             sidebarLeadWidth = width;
-        else
+        } else {
             sidebarEnd = view;
+            sidebarEndWidth = width;
+        }
         return item;
     }
 
@@ -478,7 +516,7 @@ private:
 
         int leading = 0;
         NSButton *zoom = [nsWindow() standardWindowButton:NSWindowZoomButton];
-        if (zoom != nil && !zoom.hidden && zoom.window != nil) {
+        if (!trafficLightsHidden && zoom != nil && !zoom.hidden && zoom.window == nsWindow()) {
             const NSRect frame = [zoom convertRect:zoom.bounds toView:nil];
             leading = qCeil(NSMaxX(frame));
         }
@@ -515,7 +553,46 @@ private:
         alignmentPending = false;
         if (sidebarEnd == nil || sidebarLeadWidth == nil || sidebarEnd.window == nil)
             return;
+        if (trafficLightsHidden) {
+            alignWithHiddenTrafficLights();
+            return;
+        }
+        sidebarEndWidth.constant = NavigationGap;
         for (int pass = 0; pass < MaxAlignmentPasses && alignmentStep(); ++pass) { }
+    }
+
+    void setTrafficLightsHidden(bool hidden)
+    {
+        trafficLightsHidden = hidden;
+        // The lead spacer has a minimum slot, so it must leave the toolbar for
+        // the items to reach the leading edge.
+        const bool hasLead = [toolbar.items.firstObject.itemIdentifier isEqualToString:SidebarLeadId];
+        if (hidden && hasLead)
+            [toolbar removeItemAtIndex:0];
+        else if (!hidden && !hasLead)
+            [toolbar insertItemWithItemIdentifier:SidebarLeadId atIndex:0];
+        lastLead = 0;
+        lastEndX = 0;
+        leftmostEndX = 0;
+        hiddenLeftmostEndOffset = -1;
+        updateMetrics();
+    }
+
+    // Like native apps, settings, server and help sit at the leading edge and
+    // follow the traffic lights when the menu bar reveals them; the sidebar
+    // end spacer takes up that move, so navigation stays over the content.
+    // Screen coordinates, because the toolbar has its own window here.
+    void alignWithHiddenTrafficLights()
+    {
+        [sidebarEnd.window layoutIfNeeded];
+        const NSRect end = [sidebarEnd.window convertRectToScreen:[sidebarEnd convertRect:sidebarEnd.bounds toView:nil]];
+        QWidget *sidebarPart = header->sidebarPart();
+        const CGFloat endOffset = NSMinX(end) - sidebarPart->mapToGlobal(QPoint(0, 0)).x();
+        if (hiddenLeftmostEndOffset < 0 || endOffset < hiddenLeftmostEndOffset)
+            hiddenLeftmostEndOffset = endOffset;
+        sidebarPart->setMinimumWidth(qCeil(hiddenLeftmostEndOffset + SidebarGroupInset));
+
+        sidebarEndWidth.constant = std::max(NavigationGap, sidebarPart->width() - SidebarGroupInset + NavigationGap - endOffset);
     }
 
     // One pass of alignWithSidebar(); returns whether it moved the items.
@@ -568,10 +645,14 @@ private:
     YRHeaderDragView *dragView = nil;
     NSView *sidebarEnd = nil;
     NSLayoutConstraint *sidebarLeadWidth = nil;
+    NSLayoutConstraint *sidebarEndWidth = nil;
+    NSMutableArray *observers = nil;
     bool alignmentPending = false;
+    bool trafficLightsHidden = false;
     CGFloat lastLead = 0;
     CGFloat lastEndX = 0;
     CGFloat leftmostEndX = 0;
+    CGFloat hiddenLeftmostEndOffset = -1;
 };
 
 @implementation YRLibraryHeaderToolbarDelegate
