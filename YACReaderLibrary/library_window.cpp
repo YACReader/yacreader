@@ -188,8 +188,6 @@ void LibraryWindow::createSettings()
 
 void LibraryWindow::setupUI()
 {
-    setUnifiedTitleAndToolBarOnMac(true);
-
     historyController = new YACReaderHistoryController(this);
 
     actions.createActions(this, settings);

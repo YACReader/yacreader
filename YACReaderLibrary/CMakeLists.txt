@@ -266,6 +266,10 @@ if(WIN32)
         library_header/window_frame_windows.cpp
     )
 endif()
+if(APPLE)
+    target_sources(YACReaderLibrary PRIVATE library_header/window_frame_macos.mm)
+    set_source_files_properties(library_header/window_frame_macos.mm PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
+endif()
 
 target_include_directories(YACReaderLibrary PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}

@@ -15,6 +15,12 @@ if(WIN32)
     )
     target_link_libraries(library_header_test PRIVATE dwmapi)
 endif()
+if(APPLE)
+    set(library_header_test_macos_frame ${PROJECT_SOURCE_DIR}/YACReaderLibrary/library_header/window_frame_macos.mm)
+    target_sources(library_header_test PRIVATE ${library_header_test_macos_frame})
+    set_source_files_properties(${library_header_test_macos_frame} TARGET_DIRECTORY library_header_test PROPERTIES COMPILE_OPTIONS "-fobjc-arc")
+    target_link_libraries(library_header_test PRIVATE "-framework AppKit")
+endif()
 yacreader_apply_build_options(library_header_test)
 target_include_directories(library_header_test PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary

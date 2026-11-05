@@ -316,7 +316,7 @@ void ContentHeader::relayout()
 // LibraryHeader ---------------------------------------------------------------
 
 LibraryHeader::LibraryHeader(HeaderModel *model, QObject *parent)
-    : QObject(parent)
+    : QObject(parent), headerModel(model)
 {
     sidebar = new SidebarHeader(model);
     content = new ContentHeader(model);

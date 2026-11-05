@@ -30,7 +30,7 @@ bool WindowFrame::handleNativeEvent(const QByteArray &, void *, qintptr *)
     return false;
 }
 
-#ifndef Q_OS_WIN
+#if !defined(Q_OS_WIN) && !defined(Q_OS_MACOS)
 WindowFrame *createPlatformWindowFrame(QMainWindow *, LibraryHeader *)
 {
     return nullptr;

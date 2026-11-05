@@ -115,6 +115,7 @@ public:
 
     explicit LibraryHeader(HeaderModel *model, QObject *parent = nullptr);
 
+    HeaderModel *model() const { return headerModel; }
     SidebarHeader *sidebarPart() const { return sidebar; }
     ContentHeader *contentPart() const { return content; }
 
@@ -136,6 +137,7 @@ protected:
     void applyTheme(const Theme &theme) override;
 
 private:
+    HeaderModel *headerModel;
     SidebarHeader *sidebar;
     ContentHeader *content;
     int headerHeight = Height;
