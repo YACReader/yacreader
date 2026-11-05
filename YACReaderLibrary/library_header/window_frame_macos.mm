@@ -58,6 +58,41 @@ class MacWindowFrame;
 }
 @end
 
+// Toolbar spacer that reports when it moves on screen. AppKit moves the views
+// that host the toolbar items, not the item views, so it watches the frames of
+// all its ancestors; it re-subscribes when the toolbar changes windows, as it
+// does in full screen.
+@interface YRToolbarSpacerView : NSView
+@property (copy) void (^positionChanged)(void);
+@end
+
+@implementation YRToolbarSpacerView
+- (void)viewDidMoveToWindow
+{
+    [super viewDidMoveToWindow];
+    NSNotificationCenter *center = NSNotificationCenter.defaultCenter;
+    [center removeObserver:self name:NSViewFrameDidChangeNotification object:nil];
+    if (self.window == nil)
+        return;
+    for (NSView *view = self; view != nil; view = view.superview) {
+        view.postsFrameChangedNotifications = YES;
+        [center addObserver:self selector:@selector(frameChanged:) name:NSViewFrameDidChangeNotification object:view];
+    }
+}
+
+- (void)frameChanged:(NSNotification *)notification
+{
+    Q_UNUSED(notification);
+    if (self.positionChanged != nil)
+        self.positionChanged();
+}
+
+- (void)dealloc
+{
+    [NSNotificationCenter.defaultCenter removeObserver:self];
+}
+@end
+
 static NSString *const SidebarLeadId = @"yr.sidebarLead";
 static NSString *const SettingsId = @"yr.settings";
 static NSString *const ServerId = @"yr.server";
@@ -200,16 +235,6 @@ public:
                                                      updateMetrics();
                                                  }]];
         }
-        // In full screen the toolbar has its own window, which moves when the
-        // menu bar is revealed; the traffic lights come back with it.
-        [observers addObject:[center addObserverForName:NSWindowDidMoveNotification
-                                                 object:nil
-                                                  queue:nil
-                                             usingBlock:^(NSNotification *notification) {
-                                                 if (trafficLightsHidden && sidebarEnd != nil && notification.object == sidebarEnd.window && notification.object != this->nsWindow())
-                                                     scheduleAlignment();
-                                             }]];
-
         QTimer::singleShot(0, this, [this] { updateMetrics(); });
     }
 
@@ -218,6 +243,7 @@ public:
         for (id observer in observers)
             [NSNotificationCenter.defaultCenter removeObserver:observer];
         delegate->frame = nullptr;
+        sidebarEnd.positionChanged = nil;
         [dragView removeFromSuperview];
         if (searchItem != nil)
             searchItem.searchField.delegate = nil;
@@ -356,7 +382,7 @@ private:
         const bool lead = [identifier isEqualToString:SidebarLeadId];
         NSToolbarItem *item = [[NSToolbarItem alloc] initWithItemIdentifier:identifier];
         item.bordered = NO;
-        NSView *view = [[NSView alloc] initWithFrame:NSMakeRect(0, 0, 1, 28)];
+        YRToolbarSpacerView *view = [[YRToolbarSpacerView alloc] initWithFrame:NSMakeRect(0, 0, 1, 28)];
         view.translatesAutoresizingMaskIntoConstraints = NO;
         NSLayoutConstraint *width = [view.widthAnchor constraintEqualToConstant:lead ? 1 : NavigationGap];
         width.active = YES;
@@ -366,6 +392,12 @@ private:
             sidebarLeadWidth = width;
         } else {
             sidebarEnd = view;
+            // In full screen the items move when the traffic lights appear or
+            // hide; realigning keeps back and forward over the content.
+            view.positionChanged = ^{
+                if (trafficLightsHidden)
+                    scheduleAlignment();
+            };
             sidebarEndWidth = width;
         }
         return item;
@@ -643,7 +675,7 @@ private:
     NSSearchToolbarItem *searchItem = nil;
     NSTextField *folderLabel = nil;
     YRHeaderDragView *dragView = nil;
-    NSView *sidebarEnd = nil;
+    YRToolbarSpacerView *sidebarEnd = nil;
     NSLayoutConstraint *sidebarLeadWidth = nil;
     NSLayoutConstraint *sidebarEndWidth = nil;
     NSMutableArray *observers = nil;
