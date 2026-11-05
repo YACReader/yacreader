@@ -9,6 +9,7 @@
 #include <QApplication>
 #include <QLabel>
 #include <QMainWindow>
+#include <QScopeGuard>
 #include <QSignalSpy>
 #include <QTest>
 #include <QToolButton>
@@ -198,8 +199,17 @@ void LibraryHeaderTest::systemTitleBarHidesTheAppIdentity()
     auto *sidebar = header->sidebarPart();
     sidebar->setParent(&window);
     window.setCentralWidget(sidebar);
+    // The window must not delete the header part when a check fails.
+    const auto restore = qScopeGuard([&window, sidebar] {
+        window.takeCentralWidget();
+        sidebar->setParent(nullptr);
+    });
     const auto labels = [sidebar] { return sidebar->findChildren<QLabel *>(); };
+#ifdef Q_OS_MACOS
+    QCOMPARE(labels().size(), 0);
+#else
     QCOMPARE(labels().size(), 2);
+#endif
 
     WindowFrame::create(&window, header, true);
     window.show();
@@ -207,14 +217,13 @@ void LibraryHeaderTest::systemTitleBarHidesTheAppIdentity()
 
     for (QLabel *label : labels())
         QVERIFY(!label->isVisible());
-    window.takeCentralWidget();
-    sidebar->setParent(nullptr);
 }
 
 void LibraryHeaderTest::hitTestSeparatesControlsFromCaption()
 {
     QWidget window;
     content->setParent(&window);
+    const auto restore = qScopeGuard([this] { content->setParent(nullptr); });
     content->setGeometry(0, 0, 900, LibraryHeader::Height);
     window.resize(900, 300);
     window.show();
@@ -233,8 +242,6 @@ void LibraryHeaderTest::hitTestSeparatesControlsFromCaption()
     QCOMPARE(header->hitTest(content->folderNameLabel()->geometry().center()), LibraryHeader::Hit::Caption);
 
     QCOMPARE(header->hitTest(QPoint(450, 200)), LibraryHeader::Hit::Outside);
-
-    content->setParent(nullptr);
 }
 
 void LibraryHeaderTest::trailingInsetKeepsControlsOutOfTheCaptionButtons()
