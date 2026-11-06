@@ -44,7 +44,7 @@
     <message>
         <location filename="add_label_dialog.cpp" line="14"/>
         <source>violet</source>
-        <translation>紫罗兰色</translation>
+        <translation>蓝紫色</translation>
     </message>
     <message>
         <location filename="add_label_dialog.cpp" line="15"/>
@@ -591,12 +591,12 @@
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="358"/>
         <source>Matching the books of %1 with your library...</source>
-        <translation>正在将 %1 中的书籍与您的库进行匹配……</translation>
+        <translation>正在将 %1 中的书籍与您的库进行匹配...</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="372"/>
         <source>Matching the entries of %1 with your library...</source>
-        <translation>正在将 %1 中的条目与您的库进行匹配……</translation>
+        <translation>正在将 %1 中的条目与您的库进行匹配...</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="431"/>
@@ -691,7 +691,7 @@
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="672"/>
         <source>Find comic...</source>
-        <translation>查找漫画……</translation>
+        <translation>查找漫画...</translation>
     </message>
     <message>
         <location filename="cbl/cbl_import_dialog.cpp" line="676"/>
@@ -779,7 +779,7 @@
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="65"/>
         <source>Loading the library...</source>
-        <translation>正在加载库……</translation>
+        <translation>正在加载库...</translation>
     </message>
     <message>
         <location filename="cbl/cbl_match_comic_dialog.cpp" line="90"/>
@@ -792,7 +792,7 @@
     <message>
         <location filename="classic_comics_view.cpp" line="105"/>
         <source>Hide comic flow</source>
-        <translation>隐藏 Comic Flow</translation>
+        <translation>隐藏漫画流</translation>
     </message>
 </context>
 <context>
@@ -1911,7 +1911,7 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_management_coordinator.cpp" line="500"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>已存在另一个名为&apos;%1&apos;的库。</translation>
+        <translation>已存在另一个名为 &apos;%1&apos; 的库。</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="535"/>
@@ -1932,7 +1932,7 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_window.cpp" line="524"/>
         <source>Edit smart list...</source>
-        <translation>编辑智能列表……</translation>
+        <translation>编辑智能列表...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="525"/>
@@ -1956,17 +1956,17 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_window.cpp" line="533"/>
         <source>Rename folder...</source>
-        <translation>重命名文件夹……</translation>
+        <translation>重命名文件夹...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="542"/>
         <source>Match to library comics...</source>
-        <translation>匹配到库漫画……</translation>
+        <translation>匹配到库漫画...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="544"/>
         <source>Export reading list...</source>
-        <translation>导出阅读列表……</translation>
+        <translation>导出阅读列表...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="816"/>
@@ -1981,7 +1981,7 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_window.cpp" line="860"/>
         <source>Save as smart list…</source>
-        <translation>另存为智能列表……</translation>
+        <translation>另存为智能列表…</translation>
     </message>
     <message>
         <location filename="search_filters_menu.cpp" line="12"/>
@@ -2742,7 +2742,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="415"/>
         <source>New reading list</source>
-        <translation>新的阅读列表</translation>
+        <translation>新建阅读列表</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="345"/>
@@ -2822,7 +2822,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="422"/>
         <source>New smart list...</source>
-        <translation>新建智能列表……</translation>
+        <translation>新建智能列表...</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="425"/>
@@ -2842,7 +2842,7 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="434"/>
         <source>Import reading lists...</source>
-        <translation>导入阅读列表……</translation>
+        <translation>导入阅读列表...</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="437"/>
@@ -2964,14 +2964,14 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_menus.cpp" line="255"/>
         <source>Match to library comic...</source>
-        <translation>匹配到库漫画……</translation>
+        <translation>匹配到库漫画...</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="261"/>
         <location filename="library_window_menus.cpp" line="327"/>
         <location filename="library_window_menus.cpp" line="427"/>
         <source>Track missing issues...</source>
-        <translation>追踪缺失的期……</translation>
+        <translation>追踪缺失的期...</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="312"/>
@@ -3249,7 +3249,7 @@ Missing files: %3</source>
     <message>
         <location filename="options_dialog.cpp" line="248"/>
         <source>Clear</source>
-        <translation>清空</translation>
+        <translation>清除</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="290"/>
@@ -3396,7 +3396,7 @@ To stop an automatic update, tap on the loading indicator next to the Libraries 
     <message>
         <location filename="options_dialog.cpp" line="35"/>
         <source>Comic Flow</source>
-        <translation>Comic Flow</translation>
+        <translation>漫画流</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="36"/>
@@ -4665,7 +4665,7 @@ To stop an automatic update, tap on the loading indicator next to the Libraries 
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="303"/>
         <source>Exporting reading list...</source>
-        <translation>正在导出阅读列表……</translation>
+        <translation>正在导出阅读列表...</translation>
     </message>
     <message>
         <location filename="reading_list_management_coordinator.cpp" line="325"/>
@@ -5945,7 +5945,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Zoom</translation>
+        <translation>缩放</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
