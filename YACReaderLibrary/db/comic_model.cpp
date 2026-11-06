@@ -812,7 +812,7 @@ QVariant ComicModel::headerData(int section, Qt::Orientation orientation,
 
         if (ext.compare("cbr", Qt::CaseInsensitive) == 0)
             return QVariant(QIcon(":/images/comicRar.png"));
-        else if (ext.compare("cbz", Qt::CaseInsensitive) == 0)
+        else if (ext.compare("cbz", Qt::CaseInsensitive) == 0 || ext.compare("cbds", Qt::CaseInsensitive) == 0)
             return QVariant(QIcon(":/images/comicZip.png"));
         else if (Comic::fileIsEpub(fileName))
             return QVariant(QIcon(":/images/comicZip.png"));

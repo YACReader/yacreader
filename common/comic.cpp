@@ -2,6 +2,7 @@
 
 #include "QsLog.h"
 #include "bookmarks.h" //TODO desacoplar la dependencia con bookmarks
+#include "cbds_page_index.h"
 #include "comic_db.h"
 #include "compressed_archive.h"
 #include "epub_page_index.h"
@@ -78,7 +79,8 @@ const QStringList ComicArchiveExtensions = QStringList() << "*.cbr"
                                                          << "*.7z"
                                                          << "*.cb7"
                                                          << "*.arj"
-                                                         << "*.cbt";
+                                                         << "*.cbt"
+                                                         << "*.cbds";
 const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr"
                                                                 << "cbz"
                                                                 << "epub"
@@ -88,7 +90,8 @@ const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr"
                                                                 << "7z"
                                                                 << "cb7"
                                                                 << "arj"
-                                                                << "cbt";
+                                                                << "cbt"
+                                                                << "cbds";
 #else
 const QStringList ComicArchiveExtensions = QStringList() << "*.cbr"
                                                          << "*.cbz"
@@ -100,7 +103,8 @@ const QStringList ComicArchiveExtensions = QStringList() << "*.cbr"
                                                          << "*.7z"
                                                          << "*.cb7"
 #endif
-                                                         << "*.cbt";
+                                                         << "*.cbt"
+                                                         << "*.cbds";
 const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr"
                                                                 << "cbz"
                                                                 << "epub"
@@ -111,7 +115,8 @@ const QStringList LiteralComicArchiveExtensions = QStringList() << "cbr"
                                                                 << "7z"
                                                                 << "cb7"
 #endif
-                                                                << "cbt";
+                                                                << "cbt"
+                                                                << "cbds";
 #endif // use_unarr
 #ifndef NO_PDF
 const QStringList Comic::comicExtensions = QStringList() << ComicArchiveExtensions << "*.pdf";
@@ -479,6 +484,12 @@ YACReaderEpub::ScanInfo FileComic::epubScanInfo(const QStringList &fileNames, Co
     return YACReaderEpub::readScanInfo(fileNames, [&archive](int index) { return archive.getRawDataAtIndex(index); }, coverPage, [&supportedExtensions](const QString &fileName) { return isSupportedImage(fileName, supportedExtensions); });
 }
 
+QStringList FileComic::cbdsPageCandidates(const QString &path, const QStringList &fileNames)
+{
+    const QStringList supportedExtensions = Comic::getSupportedImageLiteralFormats();
+    return YACReaderCbds::pageCandidates(path, fileNames, [&supportedExtensions](const QString &fileName) { return isSupportedImage(fileName, supportedExtensions); });
+}
+
 // DELEGATE methods
 void FileComic::fileExtracted(int index, const QByteArray &rawData)
 {
@@ -644,8 +655,12 @@ void FileComic::process()
             _pageArchiveIndexes.append(page.archiveIndex);
         }
     } else {
-        pageFileNames = filter(archiveFileNames);
-        comic_pages_sort(pageFileNames, YACReaderHeuristicSorting);
+        pageFileNames = filter(cbdsPageCandidates(_path, archiveFileNames));
+        if (YACReaderCbds::isCbds(_path, archiveFileNames)) {
+            YACReaderCbds::sortPages(pageFileNames);
+        } else {
+            comic_pages_sort(pageFileNames, YACReaderHeuristicSorting);
+        }
         for (const QString &fileName : std::as_const(pageFileNames)) {
             _pageArchiveIndexes.append(archiveFileNames.indexOf(fileName));
         }
