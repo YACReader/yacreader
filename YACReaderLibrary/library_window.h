@@ -111,6 +111,7 @@ public:
     bool fullscreen;
     bool importedCovers; // if true, the library is read only (not updates,open comic or properties)
     bool fromMaximized;
+    QByteArray geometryBeforeFullScreen;
 
     QSize slideSizeW;
     QSize slideSizeF;

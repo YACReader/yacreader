@@ -44,6 +44,11 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Improve the home page and add a connect device dialog. iOS and Android clients can use now the QR scaner with the webui.
 * Add mouse wheel page navigation to the reader.
 
+### All GUI apps
+
+* Fix the apps sometimes getting stuck in fullscreen mode after a restart. YACReaderLibrary no longer starts in fullscreen mode, and YACReader still does when you close it in fullscreen mode, but you can always leave it.
+
+
 ## 10.4.0
 
 ### YACReader

@@ -243,6 +243,12 @@ void LibraryWindow::setupUI()
     if (settings->contains(MAIN_WINDOW_GEOMETRY)) {
         restoreGeometry(settings->value(MAIN_WINDOW_GEOMETRY).toByteArray());
         restoreState(settings->value(MAIN_WINDOW_STATE).toByteArray());
+#ifndef Q_OS_MACOS
+        // The library never starts in full screen; settings saved by 10.x can still have it.
+        // macOS has only the native full screen, which the user can always leave.
+        if (isFullScreen())
+            setWindowState(windowState() & ~Qt::WindowFullScreen);
+#endif
         // Guard against the window landing off-screen when a monitor is unplugged
         // between sessions. Qt 6 tries to remap the geometry to the primary screen
         // when the saved screen is gone, but the result can still be off-screen.
@@ -1142,6 +1148,7 @@ void LibraryWindow::toFullScreen()
 
     contentViewsManager->toFullscreen();
 
+    geometryBeforeFullScreen = saveGeometry();
     showFullScreen();
 }
 
@@ -1201,7 +1208,7 @@ void LibraryWindow::prepareToCloseApp()
     librariesUpdateCoordinator->stop();
     libraryRepairCoordinator->stop();
 
-    settings->setValue(MAIN_WINDOW_GEOMETRY, saveGeometry());
+    settings->setValue(MAIN_WINDOW_GEOMETRY, fullscreen ? geometryBeforeFullScreen : saveGeometry());
     settings->setValue(MAIN_WINDOW_STATE, saveState());
 
     contentViewsManager->prepareToClose();

@@ -95,6 +95,7 @@ private:
     bool fullscreen;
     bool toolbars;
     bool fromMaximized;
+    QByteArray geometryBeforeFullScreen;
 
     QString currentDirectory;
     QString currentComicPath;
