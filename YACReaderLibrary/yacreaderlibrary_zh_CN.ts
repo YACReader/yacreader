@@ -1966,7 +1966,7 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
     <message>
         <location filename="library_window.cpp" line="562"/>
         <source>Track missing issues...</source>
-        <translation type="unfinished">追踪缺失的期...</translation>
+        <translation>追踪缺失的期...</translation>
     </message>
     <message>
         <location filename="library_window.cpp" line="563"/>
@@ -2699,17 +2699,17 @@ Missing files: %3</source>
     <message>
         <location filename="library_window_actions.cpp" line="247"/>
         <source>Grid view</source>
-        <translation type="unfinished">网格视图</translation>
+        <translation>网格视图</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="248"/>
         <source>Flow view</source>
-        <translation type="unfinished"></translation>
+        <translation>流视图</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="249"/>
         <source>Info view</source>
-        <translation type="unfinished"></translation>
+        <translation>信息视图</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="258"/>
@@ -4267,12 +4267,12 @@ To stop an automatic update, tap on the loading indicator next to the Libraries 
     <message>
         <location filename="properties_dialog.cpp" line="911"/>
         <source>Set a series, a volume, or a title.</source>
-        <translation type="unfinished"></translation>
+        <translation>设置系列、卷或标题。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="911"/>
         <source>Set a series or a volume.</source>
-        <translation type="unfinished"></translation>
+        <translation>设置系列或卷。</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="984"/>
@@ -5891,7 +5891,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="library_header/view_selector.cpp" line="20"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>视图</translation>
     </message>
 </context>
 <context>
