@@ -28,7 +28,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix newly added comics sometimes appearing in the middle of a reading list instead of at the end.
 * Fix library lock handling and add a way to clear these locks from the GUI and webui.
 * Improve library opening speed over network shares.
-* Improve main toolbar on macOS.
+* Unify the title and tool bars for a more integrated look (Windows/macOS).
 
 ### Server
 

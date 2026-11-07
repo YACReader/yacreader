@@ -107,7 +107,7 @@ public:
     // Header icons are drawn on an 18 unit grid; 18 maps it 1:1 to pixels at 100%.
     static constexpr int IconSize = 18;
     static constexpr int ButtonSize = IconSize + 10;
-    static constexpr int Height = 40;
+    static constexpr int Height = 44;
 
     enum class Hit { Outside,
                      Client,
