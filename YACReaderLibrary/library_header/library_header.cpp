@@ -128,6 +128,7 @@ void SidebarHeader::setAppIdentityVisible(bool visible)
 {
     identityVisible = visible;
     updateVisibility();
+    relayout();
 }
 
 void SidebarHeader::setLeadingInset(int inset)
@@ -170,6 +171,15 @@ void SidebarHeader::resizeEvent(QResizeEvent *event)
 
 void SidebarHeader::relayout()
 {
+    // Without the app identity, the buttons sit where it would be.
+    if (appIcon == nullptr || !identityVisible) {
+        int left = 8 + leadingInset;
+        for (QToolButton *button : std::as_const(buttons)) {
+            button->move(left, centeredY(height(), LibraryHeader::ButtonSize));
+            left += LibraryHeader::ButtonSize + 2;
+        }
+        return;
+    }
     int right = width() - 8;
     for (auto it = buttons.rbegin(); it != buttons.rend(); ++it) {
         right -= LibraryHeader::ButtonSize;

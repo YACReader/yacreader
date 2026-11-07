@@ -4,7 +4,7 @@
 <context>
     <name>DBHelper</name>
     <message>
-        <location filename="../YACReaderLibrary/db_helper.cpp" line="1848"/>
+        <location filename="../YACReaderLibrary/db_helper.cpp" line="1872"/>
         <source>The folder entry could not be found in the library database.</source>
         <translation>라이브러리 데이터베이스에서 폴더 항목을 찾을 수 없습니다.</translation>
     </message>

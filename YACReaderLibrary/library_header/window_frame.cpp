@@ -12,12 +12,10 @@ WindowFrame::WindowFrame(QMainWindow *window, LibraryHeader *header)
     header->setAppIdentityVisible(false);
 }
 
-WindowFrame *WindowFrame::create(QMainWindow *window, LibraryHeader *header, bool useSystemTitleBar)
+WindowFrame *WindowFrame::create(QMainWindow *window, LibraryHeader *header)
 {
-    if (!useSystemTitleBar) {
-        if (WindowFrame *frame = createPlatformWindowFrame(window, header))
-            return frame;
-    }
+    if (WindowFrame *frame = createPlatformWindowFrame(window, header))
+        return frame;
     return new WindowFrame(window, header);
 }
 

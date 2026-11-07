@@ -21,9 +21,8 @@ class WindowFrame : public QObject
 {
     Q_OBJECT
 public:
-    // Call before the window is shown. useSystemTitleBar is the user setting
-    // that keeps the conventional frame on every platform.
-    static WindowFrame *create(QMainWindow *window, LibraryHeader *header, bool useSystemTitleBar);
+    // Call before the window is shown.
+    static WindowFrame *create(QMainWindow *window, LibraryHeader *header);
 
     virtual void setColors(const FrameColors &colors);
     // Forwarded from QWidget::nativeEvent() of the window.

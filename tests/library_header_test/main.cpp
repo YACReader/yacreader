@@ -16,6 +16,14 @@
 
 #include <memory>
 
+// The frame used where the system draws the title bar.
+class ConventionalFrame : public WindowFrame
+{
+public:
+    ConventionalFrame(QMainWindow *window, LibraryHeader *header)
+        : WindowFrame(window, header) { }
+};
+
 class LibraryHeaderTest : public QObject
 {
     Q_OBJECT
@@ -210,12 +218,18 @@ void LibraryHeaderTest::systemTitleBarHidesTheAppIdentity()
     const auto labels = [sidebar] { return sidebar->findChildren<QLabel *>(); };
     QCOMPARE(labels().size(), 2);
 
-    WindowFrame::create(&window, header, true);
+    ConventionalFrame frame(&window, header);
+    window.resize(300, 300);
     window.show();
     QVERIFY(QTest::qWaitForWindowExposed(&window));
 
     for (QLabel *label : labels())
         QVERIFY(!label->isVisible());
+    // The buttons take the place of the identity.
+    const auto buttons = sidebar->findChildren<QToolButton *>();
+    QVERIFY(!buttons.isEmpty());
+    for (QToolButton *button : buttons)
+        QVERIFY(button->geometry().right() < sidebar->width() / 2);
 }
 
 void LibraryHeaderTest::hitTestSeparatesControlsFromCaption()

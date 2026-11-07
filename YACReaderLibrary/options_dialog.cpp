@@ -71,8 +71,6 @@ void OptionsDialog::restoreOptions(QSettings *settings)
     startToTrayCheckbox->setChecked(settings->value(START_TO_TRAY, false).toBool());
     startToTrayCheckbox->setEnabled(trayIconCheckbox->isChecked());
 
-    useSystemTitleBarCheck->setChecked(settings->value(USE_SYSTEM_TITLE_BAR, false).toBool());
-
     comicInfoXMLCheckbox->setChecked(settings->value(IMPORT_COMIC_INFO_XML_METADATA, false).toBool());
 
     recentIntervalSlider->setValue(settings->value(NUM_DAYS_TO_CONSIDER_RECENT, 1).toInt());
@@ -189,16 +187,6 @@ QWidget *OptionsDialog::createGeneralTab()
     languageLayout->addWidget(languageCombo);
     languageBox->setLayout(languageLayout);
 
-    auto *windowBox = new QGroupBox(tr("Window"));
-    auto *windowLayout = new QVBoxLayout();
-    useSystemTitleBarCheck = new QCheckBox(tr("Use the system title bar"));
-    connect(useSystemTitleBarCheck, &QCheckBox::clicked, this,
-            [=, this](bool checked) {
-                settings->setValue(USE_SYSTEM_TITLE_BAR, checked);
-            });
-    windowLayout->addWidget(useSystemTitleBarCheck);
-    windowBox->setLayout(windowLayout);
-
     // Tray icon settings
     QGroupBox *trayIconBox = new QGroupBox(tr("Tray icon settings (experimental)"));
     QVBoxLayout *trayLayout = new QVBoxLayout();
@@ -266,7 +254,6 @@ QWidget *OptionsDialog::createGeneralTab()
 
     auto generalLayout = new QVBoxLayout();
     generalLayout->addWidget(languageBox);
-    generalLayout->addWidget(windowBox);
     generalLayout->addWidget(trayIconBox);
     generalLayout->addWidget(apiKeyBox);
     generalLayout->addWidget(comicInfoXMLBox);

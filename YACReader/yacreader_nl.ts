@@ -1008,18 +1008,18 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="377"/>
-        <location filename="main_window_viewer.cpp" line="1093"/>
-        <location filename="main_window_viewer.cpp" line="1104"/>
-        <location filename="main_window_viewer.cpp" line="1115"/>
+        <location filename="main_window_viewer.cpp" line="1095"/>
+        <location filename="main_window_viewer.cpp" line="1106"/>
+        <location filename="main_window_viewer.cpp" line="1117"/>
         <source>Save current page</source>
         <translation>Huidige pagina opslaan</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="382"/>
-        <location filename="main_window_viewer.cpp" line="1120"/>
-        <location filename="main_window_viewer.cpp" line="1134"/>
-        <location filename="main_window_viewer.cpp" line="1145"/>
-        <location filename="main_window_viewer.cpp" line="1163"/>
+        <location filename="main_window_viewer.cpp" line="1122"/>
+        <location filename="main_window_viewer.cpp" line="1136"/>
+        <location filename="main_window_viewer.cpp" line="1147"/>
+        <location filename="main_window_viewer.cpp" line="1165"/>
         <source>Extract page(s)</source>
         <translation>Pagina(&apos;s) extraheren</translation>
     </message>
@@ -1199,8 +1199,8 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
-        <location filename="main_window_viewer.cpp" line="1349"/>
-        <location filename="main_window_viewer.cpp" line="1415"/>
+        <location filename="main_window_viewer.cpp" line="1350"/>
+        <location filename="main_window_viewer.cpp" line="1416"/>
         <source>Magnifying glass</source>
         <translation>Vergrootglas</translation>
     </message>
@@ -1306,217 +1306,217 @@ Als geen enkele modus actief is, doet de Escape-toets niets.</translation>
         <translation>Venster</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="951"/>
+        <location filename="main_window_viewer.cpp" line="953"/>
         <source>Open Comic</source>
         <translation>Strip openen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="950"/>
+        <location filename="main_window_viewer.cpp" line="952"/>
         <source>Comic files</source>
         <translation>Stripbestanden</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1034"/>
+        <location filename="main_window_viewer.cpp" line="1036"/>
         <source>Open folder</source>
         <translation>Map openen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1347"/>
-        <location filename="main_window_viewer.cpp" line="1360"/>
+        <location filename="main_window_viewer.cpp" line="1348"/>
+        <location filename="main_window_viewer.cpp" line="1361"/>
         <source>Comics</source>
         <translation>Strips</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1371"/>
+        <location filename="main_window_viewer.cpp" line="1372"/>
         <source>Toggle fullscreen mode</source>
         <translation>Modus Volledig scherm in-/uitschakelen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1374"/>
+        <location filename="main_window_viewer.cpp" line="1375"/>
         <source>Hide/show toolbar</source>
         <translation>Werkbalk verbergen/tonen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1348"/>
-        <location filename="main_window_viewer.cpp" line="1377"/>
+        <location filename="main_window_viewer.cpp" line="1349"/>
+        <location filename="main_window_viewer.cpp" line="1378"/>
         <source>General</source>
         <translation>Algemeen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1396"/>
+        <location filename="main_window_viewer.cpp" line="1397"/>
         <source>Size up magnifying glass</source>
         <translation>Vergrootglas vergroten</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1399"/>
+        <location filename="main_window_viewer.cpp" line="1400"/>
         <source>Size down magnifying glass</source>
         <translation>Vergrootglas kleiner maken</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1402"/>
+        <location filename="main_window_viewer.cpp" line="1403"/>
         <source>Zoom in magnifying glass</source>
         <translation>Zoom van vergrootglas vergroten</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1405"/>
+        <location filename="main_window_viewer.cpp" line="1406"/>
         <source>Zoom out magnifying glass</source>
         <translation>Zoom van vergrootglas verkleinen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1408"/>
+        <location filename="main_window_viewer.cpp" line="1409"/>
         <source>Reset magnifying glass</source>
         <translation>Vergrootglas opnieuw instellen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1422"/>
+        <location filename="main_window_viewer.cpp" line="1423"/>
         <source>Toggle between fit to width and fit to height</source>
         <translation>Schakel tussen Aanpassen aan breedte en Aanpassen aan hoogte</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1350"/>
-        <location filename="main_window_viewer.cpp" line="1426"/>
+        <location filename="main_window_viewer.cpp" line="1351"/>
+        <location filename="main_window_viewer.cpp" line="1427"/>
         <source>Page adjustment</source>
         <oldsource>Page adjustement</oldsource>
         <translation>Pagina-aanpassing</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1104"/>
+        <location filename="main_window_viewer.cpp" line="1106"/>
         <source>The current page is not ready. Please try again later.</source>
         <translation>De huidige pagina is nog niet klaar. Probeer het later opnieuw.</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1109"/>
+        <location filename="main_window_viewer.cpp" line="1111"/>
         <source>Overwrite file?</source>
         <translation>Bestand overschrijven?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1109"/>
+        <location filename="main_window_viewer.cpp" line="1111"/>
         <source>The file already exists. Do you want to overwrite it?</source>
         <translation>Het bestand bestaat al. Wilt u het overschrijven?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1115"/>
+        <location filename="main_window_viewer.cpp" line="1117"/>
         <source>The current page could not be saved.</source>
         <translation>De huidige pagina kon niet worden opgeslagen.</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1134"/>
+        <location filename="main_window_viewer.cpp" line="1136"/>
         <source>The selected pages are not ready. Please try again later.</source>
         <translation>De geselecteerde pagina&apos;s zijn nog niet klaar. Probeer het later opnieuw.</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1145"/>
+        <location filename="main_window_viewer.cpp" line="1147"/>
         <source>The current page could not be extracted.</source>
         <translation>De huidige pagina kon niet worden geëxtraheerd.</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1150"/>
+        <location filename="main_window_viewer.cpp" line="1152"/>
         <source>Overwrite files?</source>
         <translation>Bestanden overschrijven?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1150"/>
+        <location filename="main_window_viewer.cpp" line="1152"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
         <translation>Sommige bestanden bestaan al. Wilt u ze overschrijven?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1163"/>
+        <location filename="main_window_viewer.cpp" line="1165"/>
         <source>Some pages could not be extracted.</source>
         <translation>Sommige pagina&apos;s konden niet worden geëxtraheerd.</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1444"/>
+        <location filename="main_window_viewer.cpp" line="1445"/>
         <source>Autoscroll down</source>
         <translation>Automatisch naar beneden scrollen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1447"/>
+        <location filename="main_window_viewer.cpp" line="1448"/>
         <source>Autoscroll up</source>
         <translation>Automatisch omhoog scrollen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1450"/>
+        <location filename="main_window_viewer.cpp" line="1451"/>
         <source>Autoscroll forward, horizontal first</source>
         <translation>Automatisch vooruit scrollen, eerst horizontaal</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1454"/>
+        <location filename="main_window_viewer.cpp" line="1455"/>
         <source>Autoscroll backward, horizontal first</source>
         <translation>Automatisch achteruit scrollen, eerst horizontaal</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1458"/>
+        <location filename="main_window_viewer.cpp" line="1459"/>
         <source>Autoscroll forward, vertical first</source>
         <translation>Automatisch vooruit scrollen, eerst verticaal</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1462"/>
+        <location filename="main_window_viewer.cpp" line="1463"/>
         <source>Autoscroll backward, vertical first</source>
         <translation>Automatisch achteruit scrollen, eerst verticaal</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1466"/>
+        <location filename="main_window_viewer.cpp" line="1467"/>
         <source>Move down</source>
         <translation>Ga naar beneden</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1469"/>
+        <location filename="main_window_viewer.cpp" line="1470"/>
         <source>Move up</source>
         <translation>Ga omhoog</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1472"/>
+        <location filename="main_window_viewer.cpp" line="1473"/>
         <source>Move left</source>
         <translation>Ga naar links</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1475"/>
+        <location filename="main_window_viewer.cpp" line="1476"/>
         <source>Move right</source>
         <translation>Ga naar rechts</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1478"/>
+        <location filename="main_window_viewer.cpp" line="1479"/>
         <source>Go to the first page</source>
         <translation>Ga naar de eerste pagina</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1481"/>
+        <location filename="main_window_viewer.cpp" line="1482"/>
         <source>Go to the last page</source>
         <translation>Ga naar de laatste pagina</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1484"/>
+        <location filename="main_window_viewer.cpp" line="1485"/>
         <source>Offset double page to the left</source>
         <translation>Dubbele pagina naar links verschuiven</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1486"/>
+        <location filename="main_window_viewer.cpp" line="1487"/>
         <source>Offset double page to the right</source>
         <translation>Dubbele pagina naar rechts verschuiven</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1351"/>
-        <location filename="main_window_viewer.cpp" line="1504"/>
+        <location filename="main_window_viewer.cpp" line="1352"/>
+        <location filename="main_window_viewer.cpp" line="1505"/>
         <source>Reading</source>
         <translation>Lezen</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1552"/>
+        <location filename="main_window_viewer.cpp" line="1553"/>
         <source>There is a new version available</source>
         <translation>Er is een nieuwe versie beschikbaar</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1553"/>
+        <location filename="main_window_viewer.cpp" line="1554"/>
         <source>Do you want to download the new version?</source>
         <translation>Wilt u de nieuwe versie downloaden?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1556"/>
+        <location filename="main_window_viewer.cpp" line="1557"/>
         <source>Remind me in 14 days</source>
         <translation>Herinner mij er over 14 dagen aan</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1557"/>
+        <location filename="main_window_viewer.cpp" line="1558"/>
         <source>Not now</source>
         <translation>Niet nu</translation>
     </message>

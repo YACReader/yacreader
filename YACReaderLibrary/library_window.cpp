@@ -392,7 +392,7 @@ void LibraryWindow::doLayout()
     importWidget = new ImportWidget();
     mainWidget->addWidget(importWidget);
 
-    windowFrame = WindowFrame::create(this, libraryHeader, settings->value(USE_SYSTEM_TITLE_BAR, false).toBool());
+    windowFrame = WindowFrame::create(this, libraryHeader);
 }
 
 void LibraryWindow::doDialogs()

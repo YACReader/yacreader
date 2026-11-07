@@ -40,7 +40,6 @@ private:
     QCheckBox *displayContinueReadingBannerCheck;
     QCheckBox *trayIconCheckbox;
     QCheckBox *startToTrayCheckbox;
-    QCheckBox *useSystemTitleBarCheck;
     QComboBox *languageCombo;
     QCheckBox *comicInfoXMLCheckbox;
     QSlider *recentIntervalSlider;
