@@ -2304,7 +2304,7 @@
         var pageAbortControllers = Object.create(null);
         var destroyed = false;
         var hasDisplayedPage = false;
-        var progressSynced = false;
+        var lastSyncedPage = null;
         var comicOpened = false;
 
         setPageHeading(title);
@@ -2363,10 +2363,10 @@
         }
 
         function syncProgress() {
-          if (!hasDisplayedPage || progressSynced) {
-            return progressSyncPromise;
+          if (!hasDisplayedPage || lastSyncedPage === currentPage) {
+            return;
           }
-          progressSynced = true;
+          lastSyncedPage = currentPage;
           var headers = apiHeaders("text/plain");
           headers["Content-Type"] = "text/plain; charset=utf-8";
           progressSyncPromise = fetch(comicProgressApi(comicId), {
@@ -2376,7 +2376,6 @@
             keepalive: true
           }).catch(function () {
           });
-          return progressSyncPromise;
         }
 
         function cancelledPageError() {
@@ -2618,8 +2617,8 @@
           }
         }
 
-        function handleReaderPageHide(event) {
-          if (!event.persisted) {
+        function handleReaderVisibilityChange() {
+          if (document.visibilityState === "hidden") {
             syncProgress();
           }
         }
@@ -2640,7 +2639,8 @@
         exitButton.addEventListener("click", exitReader);
         document.addEventListener("keydown", handleReaderKeys);
         stage.addEventListener("wheel", handleReaderWheel, { passive: false });
-        window.addEventListener("pagehide", handleReaderPageHide);
+        document.addEventListener("visibilitychange", handleReaderVisibilityChange);
+        window.addEventListener("pagehide", syncProgress);
 
         readerCleanup = function () {
           syncProgress();
@@ -2656,7 +2656,8 @@
           });
           document.removeEventListener("keydown", handleReaderKeys);
           clearTimeout(wheelIdleTimer);
-          window.removeEventListener("pagehide", handleReaderPageHide);
+          document.removeEventListener("visibilitychange", handleReaderVisibilityChange);
+          window.removeEventListener("pagehide", syncProgress);
         };
 
         var existingReaderState = !pushHistory && history.state && history.state.view === "reader"
