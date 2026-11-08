@@ -707,10 +707,18 @@
         return fetch(url, { headers: headers });
       }).then(function (response) {
         if (!response.ok) {
-          throw new Error("Request failed with status " + response.status);
+          var error = new Error("Request failed with status " + response.status);
+          error.status = response.status;
+          throw error;
         }
         return response.json();
       });
+    }
+
+    function notFoundError(message) {
+      var error = new Error(message);
+      error.status = 404;
+      return error;
     }
 
     function postJson(url, payload) {
@@ -1053,19 +1061,32 @@
       showLoading();
     }
 
-    function showError(retry) {
+    function showError(retry, error) {
       historyNavigationPending = false;
       historyTraversalPending = false;
       browserRoot.removeAttribute("aria-busy");
       browserRoot.replaceChildren();
 
+      var notFound = Boolean(error && error.status === 404);
+      var unreadable = Boolean(error && error.unreadable);
+      var title = notFound
+        ? "This item is no longer in the library"
+        : unreadable
+          ? "This comic cannot be opened"
+          : "Couldn’t load this content";
+      var details = notFound
+        ? "It may have been moved or removed. Update the library if this is not correct."
+        : unreadable
+          ? "This comic has no readable pages."
+          : "The server could not read this content. The library may be updating or no longer available.";
+
       var state = element("div", "browser-state");
       var icon = element("div", "browser-state-icon", "!");
-      var heading = element("h2", "", "Couldn’t load this library");
-      var description = element("p", "", "The server could not read this content. The library may be updating or no longer available.");
-      var button = element("button", "primary-button", "Try again");
+      var heading = element("h2", "", title);
+      var description = element("p", "", details);
+      var button = element("button", "primary-button", notFound || unreadable ? "Go to the library" : "Try again");
       button.type = "button";
-      button.addEventListener("click", retry);
+      button.addEventListener("click", notFound || unreadable ? function () { showFolder("1", true); } : retry);
 
       state.append(icon, heading, description, button);
       browserRoot.appendChild(state);
@@ -1825,13 +1846,13 @@
         var url = libraryUrl() + "?q=" + encodeURIComponent(normalizedQuery);
         var state = { view: "search", query: normalizedQuery };
         finishHistoryNavigation(state, url, pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showSearch(normalizedQuery, false);
-        });
+        }, error);
       });
     }
 
@@ -2036,13 +2057,13 @@
         var url = folderUrl(folderId);
         var state = { view: "folder", itemId: folderId };
         finishHistoryNavigation(state, url, pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showFolder(folderId, false);
-        });
+        }, error);
       });
     }
 
@@ -2292,7 +2313,9 @@
         var title = readableComicTitle(comic);
         var numPages = Math.max(0, Number(comic.num_pages) || 0);
         if (!numPages) {
-          throw new Error("This comic has no readable pages.");
+          var unreadableError = new Error("This comic has no readable pages.");
+          unreadableError.unreadable = true;
+          throw unreadableError;
         }
 
         var savedPage = Number(comic.current_page) || 1;
@@ -2669,14 +2692,14 @@
 
         updateNavigation();
         openComicAndLoad();
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         leaveReader();
         showError(function () {
           showReader(comicId, false);
-        });
+        }, error);
       });
     }
 
@@ -2932,13 +2955,13 @@
         var url = comicUrl(comicId);
         var state = { view: "comic", itemId: comicId };
         finishHistoryNavigation(state, url, pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showComic(comicId, false);
-        });
+        }, error);
       });
     }
 
@@ -3023,7 +3046,7 @@
         ? fetchJson(v3Api("/tags")).then(function (labels) {
           var label = labels.filter(function (item) { return String(item.id) === String(listId); })[0];
           if (!label) {
-            throw new Error("tag not found");
+            throw notFoundError("tag not found");
           }
           return label;
         })
@@ -3229,13 +3252,13 @@
 
         var state = { view: folderId ? section.kind + "_folder" : section.kind + "s", itemId: folderId || "" };
         finishHistoryNavigation(state, folderId ? listFolderUrl(section, folderId) : listSectionUrl(section), pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showListSection(section, folderId, false);
-        });
+        }, error);
       });
     }
 
@@ -3287,13 +3310,13 @@
         }
 
         finishHistoryNavigation({ view: section.kind, itemId: listId }, listUrl(section, listId), pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showList(section, listId, false);
-        });
+        }, error);
       });
     }
 
@@ -3331,13 +3354,13 @@
         }
 
         finishHistoryNavigation({ view: list.view, itemId: "" }, libraryUrl() + "/" + list.view, pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showComicList(list, false);
-        });
+        }, error);
       });
     }
 
@@ -3357,7 +3380,7 @@
               return isMissingComic(item) && missingComicKey(item, container) === key;
             })[0];
             if (!found) {
-              throw new Error("missing comic not found");
+              throw notFoundError("missing comic not found");
             }
             return found;
           }),
@@ -3441,13 +3464,13 @@
 
         var state = { view: "missing", itemId: container.kind + ":" + container.id, missingKey: key };
         finishHistoryNavigation(state, missingComicUrl(container, key), pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showMissingComic(container, key, false);
-        });
+        }, error);
       });
     }
 
