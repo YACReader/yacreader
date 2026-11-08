@@ -2578,15 +2578,25 @@
           if (event.altKey || event.ctrlKey || event.metaKey || document.body.classList.contains("mobile-promotion-open")) {
             return;
           }
-          if (event.key === "ArrowLeft") {
+          if (event.key === "ArrowLeft" || event.key === "PageUp") {
             event.preventDefault();
             if (requestedPage > 0) {
               loadPage(requestedPage - 1);
             }
-          } else if (event.key === "ArrowRight" || event.key === " ") {
+          } else if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
             event.preventDefault();
             if (requestedPage < numPages - 1) {
               loadPage(requestedPage + 1);
+            }
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            if (requestedPage > 0) {
+              loadPage(0);
+            }
+          } else if (event.key === "End") {
+            event.preventDefault();
+            if (requestedPage < numPages - 1) {
+              loadPage(numPages - 1);
             }
           } else if (event.key === "Escape") {
             event.preventDefault();
