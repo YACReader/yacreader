@@ -702,7 +702,10 @@
         headers["X-Request-Id"] = id;
       }
 
-      return fetch(url, { headers: headers }).then(function (response) {
+      // a read must not pass a progress save that is on its way, or it gets the old progress
+      return progressSyncPromise.then(function () {
+        return fetch(url, { headers: headers });
+      }).then(function (response) {
         if (!response.ok) {
           throw new Error("Request failed with status " + response.status);
         }
@@ -1957,9 +1960,7 @@
       Promise.all([
         fetchJson(folderContentApi(folderId)),
         folderTrail(folderId),
-        folderId === "1"
-          ? progressSyncPromise.then(function () { return fetchJson(continueReadingApi()); })
-          : Promise.resolve([])
+        folderId === "1" ? fetchJson(continueReadingApi()) : Promise.resolve([])
       ]).then(function (results) {
         if (version !== navigationVersion) {
           return;
