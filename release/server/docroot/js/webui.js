@@ -2080,8 +2080,7 @@
     }
 
     function fileTypeName(fileType) {
-      var names = ["Comic", "Manga", "Western manga", "Web comic", "Yonkoma"];
-      return names[Number(fileType)] || "";
+      return fileTypeNames[Number(fileType)] || "";
     }
 
     function formatFileSize(value) {
