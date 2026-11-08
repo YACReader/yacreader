@@ -262,6 +262,7 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <title>Home · YACReaderLibrary</title>
+  <link rel="icon" type="image/svg+xml" href="/images/webui/YACLibraryServer.svg">
   <link rel="stylesheet" href="/css/webui.css">
   <script src="/js/webui.js"></script>
 </head>
@@ -531,6 +532,7 @@ void WebUIController::renderLibraryBrowser(HttpRequest &request,
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <title>{library.name} · YACReaderLibrary</title>
+  <link rel="icon" type="image/svg+xml" href="/images/webui/YACLibraryServer.svg">
   <link rel="stylesheet" href="/css/webui.css">
   <script src="/js/webui.js"></script>
 </head>
@@ -679,6 +681,7 @@ void WebUIController::renderSettingsPage(HttpRequest &request, HttpResponse &res
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <title>Settings · YACReaderLibrary</title>
+  <link rel="icon" type="image/svg+xml" href="/images/webui/YACLibraryServer.svg">
   <link rel="stylesheet" href="/css/webui.css">
   <script src="/js/webui.js"></script>
 </head>
