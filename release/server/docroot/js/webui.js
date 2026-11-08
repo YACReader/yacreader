@@ -266,6 +266,14 @@
     closeButton.focus();
   }
 
+  function dropSavedSettingsParameter() {
+    var url = new URL(window.location.href);
+    if (url.searchParams.has("saved")) {
+      url.searchParams.delete("saved");
+      history.replaceState(history.state, "", url.pathname + url.search + url.hash);
+    }
+  }
+
   function initSidebarActions() {
     var sidebar = document.querySelector(".sidebar");
     var serverSummary = sidebar && sidebar.querySelector(".server-summary");
@@ -3958,6 +3966,7 @@
   applyTheme(preferredTheme());
 
   document.addEventListener("DOMContentLoaded", function () {
+    dropSavedSettingsParameter();
     initSidebarActions();
 
     var toggle = document.querySelector("[data-theme-toggle]");
