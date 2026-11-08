@@ -2200,6 +2200,7 @@
     function sanitizedHtml(value) {
       var allowedElements = {
         A: true,
+        B: true,
         BLOCKQUOTE: true,
         BR: true,
         CODE: true,
@@ -2211,6 +2212,7 @@
         H5: true,
         H6: true,
         HR: true,
+        I: true,
         LI: true,
         OL: true,
         P: true,
@@ -2223,6 +2225,7 @@
         TH: true,
         THEAD: true,
         TR: true,
+        U: true,
         UL: true
       };
       var discardedElements = {
