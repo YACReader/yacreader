@@ -60,6 +60,9 @@ HttpAnswer TestHttpServer::request(const QByteArray &method, const QString &path
     answer.status = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
     answer.contentType = reply->header(QNetworkRequest::ContentTypeHeader).toString();
     answer.body = reply->readAll();
+    answer.etag = reply->rawHeader("ETag");
+    answer.cacheControl = reply->rawHeader("Cache-Control");
+    answer.hasContentLength = reply->hasRawHeader("Content-Length");
     reply->deleteLater();
     return answer;
 }

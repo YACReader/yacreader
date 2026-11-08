@@ -19,6 +19,9 @@ struct HttpAnswer {
     int status = 0;
     QString contentType;
     QByteArray body;
+    QByteArray etag;
+    QByteArray cacheControl;
+    bool hasContentLength = false;
 };
 
 // the request mapper of the server on a local port, with its static files in rootPath/docroot
