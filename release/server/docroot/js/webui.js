@@ -446,6 +446,7 @@
     var progressSyncPromise = Promise.resolve();
     var historyNavigationPending = false;
     var historyTraversalPending = false;
+    var openedFromCard = false;
     var browserItemCollator = new Intl.Collator(undefined, {
       numeric: true,
       sensitivity: "base"
@@ -558,6 +559,7 @@
       if (pushHistory) {
         saveCurrentScrollPosition(returnToCard);
       }
+      openedFromCard = Boolean(pushHistory && returnToCard);
       historyNavigationPending = true;
     }
 
@@ -575,6 +577,7 @@
         : Object.assign({}, state, { scrollY: scrollY });
 
       if (pushHistory) {
+        nextState.openedFromCard = openedFromCard;
         history.pushState(nextState, "", url);
       } else {
         history.replaceState(nextState, "", url);
@@ -649,7 +652,10 @@
 
     if (browserBack) {
       browserBack.addEventListener("click", function () {
-        if (browserBackAction) {
+        if (history.state && history.state.openedFromCard) {
+          saveCurrentScrollPosition();
+          history.back();
+        } else if (browserBackAction) {
           browserBackAction();
         }
       });
@@ -668,15 +674,7 @@
 
       browserBack.hidden = false;
       browserBackAction = function () {
-        var state = history.state;
-        if (state
-            && state.view === "folder"
-            && String(state.enteredFromFolderId || "") === String(parentFolderId)) {
-          saveCurrentScrollPosition();
-          history.back();
-        } else {
-          showFolder(String(parentFolderId), true);
-        }
+        showFolder(String(parentFolderId), true);
       };
     }
 
@@ -1552,7 +1550,7 @@
       }
     }
 
-    function folderCard(folder, containingFolderId) {
+    function folderCard(folder) {
       var card = element("a", "browser-card folder-card");
       card.href = folderUrl(String(folder.id));
       card.dataset.browserHistoryKey = "folder:" + String(folder.id);
@@ -1561,7 +1559,7 @@
           return;
         }
         event.preventDefault();
-        showFolder(String(folder.id), true, containingFolderId, card);
+        showFolder(String(folder.id), true, card);
       });
 
       var cover = element("div", "browser-cover folder-cover");
@@ -1590,7 +1588,7 @@
       return withActionMenu(card, folder, function () {
         return folderMenuEntries(folder);
       }, function (updated, shell) {
-        replaceCard(shell, folderCard(updated, containingFolderId));
+        replaceCard(shell, folderCard(updated));
       });
     }
 
@@ -1946,7 +1944,7 @@
       return parts;
     }
 
-    function showFolder(folderId, pushHistory, enteredFromFolderId, returnToCard) {
+    function showFolder(folderId, pushHistory, returnToCard) {
       startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
       setSearchVisible(folderId === "1");
@@ -2024,7 +2022,7 @@
           var grid = element("div", "browser-grid");
           items.forEach(function (item) {
             if (item.type === "folder") {
-              grid.appendChild(folderCard(item, folderId));
+              grid.appendChild(folderCard(item));
             } else if (item.type === "comic") {
               grid.appendChild(comicCard(item));
             } else if (item.type === "placeholder") {
@@ -2036,9 +2034,6 @@
 
         var url = folderUrl(folderId);
         var state = { view: "folder", itemId: folderId };
-        if (pushHistory && enteredFromFolderId) {
-          state.enteredFromFolderId = String(enteredFromFolderId);
-        }
         finishHistoryNavigation(state, url, pushHistory, version);
       }).catch(function () {
         if (version !== navigationVersion) {
