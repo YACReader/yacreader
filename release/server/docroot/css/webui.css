@@ -2420,6 +2420,60 @@ input[type="time"]:focus-visible {
   cursor: default;
 }
 
+.reader-comic-overlay {
+  display: flex;
+  position: absolute;
+  z-index: 4;
+  inset: 0;
+  padding: 20px;
+  align-items: center;
+  justify-content: flex-end;
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.reader-comic-overlay.previous {
+  justify-content: flex-start;
+}
+
+.reader-comic-overlay-cover {
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+  cursor: pointer;
+}
+
+.reader-comic-overlay-cover img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(45vw, 300px);
+  max-height: 70vh;
+}
+
+.reader-comic-overlay-close {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  width: 125px;
+  height: 48px;
+  border: 0;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  cursor: pointer;
+  font: inherit;
+  transform: translateX(-50%);
+}
+
+.reader-comic-overlay-cover:focus-visible,
+.reader-comic-overlay-close:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
 .reader-page-button-icon {
   width: 26px;
   height: 26px;

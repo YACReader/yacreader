@@ -35,6 +35,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Add server API v3 so compatible mobile clients can browse missing comics, reading lists, and smart lists, including their folders, with content ordered as on the desktop. Existing clients remain supported.
 * Fix a security issue that could let cover requests access image files outside the library's covers folder.
 * Fix memory leak updating libraries.
+* Improve covers API performance.
 
 ### WebUI
 
@@ -43,6 +44,13 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Choose how many days count as recent in this browser's settings.
 * Improve the home page and add a connect device dialog. iOS and Android clients can use now the QR scaner with the webui.
 * Add mouse wheel page navigation to the reader.
+* Add PageUp, PageDown, Home and End keys to the reader.
+* The back button now returns to where you were, keeping the scroll position.
+* Save the reading progress when the tab goes to the background.
+* Show better error messages.
+* Add a favicon.
+* Open read comics on the first page.
+* Go to the next or previous comic from the reader. Comics opened from a list follow the order of that list, all others follow their folder.
 
 ### All GUI apps
 

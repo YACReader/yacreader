@@ -262,6 +262,7 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <title>Home · YACReaderLibrary</title>
+  <link rel="icon" type="image/svg+xml" href="/images/webui/YACLibraryServer.svg">
   <link rel="stylesheet" href="/css/webui.css">
   <script src="/js/webui.js"></script>
 </head>
@@ -531,6 +532,7 @@ void WebUIController::renderLibraryBrowser(HttpRequest &request,
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <title>{library.name} · YACReaderLibrary</title>
+  <link rel="icon" type="image/svg+xml" href="/images/webui/YACLibraryServer.svg">
   <link rel="stylesheet" href="/css/webui.css">
   <script src="/js/webui.js"></script>
 </head>
@@ -589,7 +591,7 @@ void WebUIController::renderLibraryBrowser(HttpRequest &request,
 
     <main class="main">
       <header class="topbar browser-topbar">
-        <button class="browser-back" data-browser-back type="button" aria-label="Go to containing folder" hidden>
+        <button class="browser-back" data-browser-back type="button" aria-label="Go back" hidden>
           <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="m15 18-6-6 6-6"/>
           </svg>
@@ -679,6 +681,7 @@ void WebUIController::renderSettingsPage(HttpRequest &request, HttpResponse &res
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="color-scheme" content="light dark">
   <title>Settings · YACReaderLibrary</title>
+  <link rel="icon" type="image/svg+xml" href="/images/webui/YACLibraryServer.svg">
   <link rel="stylesheet" href="/css/webui.css">
   <script src="/js/webui.js"></script>
 </head>

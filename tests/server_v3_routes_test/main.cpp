@@ -36,6 +36,8 @@ private slots:
     void contentOfAMissingListFolderIsNotFound();
     void smartListContentHasTheSearchOrder();
     void coverServesComicFolderAndPlaceholderCovers();
+    void coverIsTheFileOnDisk();
+    void coverIsRevalidatedWithItsETag();
     void tagsHaveTheOrderOfTheSidebar();
     void recentHasTheComicsAddedInTheLastDays();
     void listItemsAreTheItemsOfTheSections();
@@ -392,6 +394,42 @@ void ServerV3RoutesTest::coverServesComicFolderAndPlaceholderCovers()
     QCOMPARE(missing.body, QByteArray("404 not found"));
     QCOMPARE(server->request("GET", "/v3/library/77/cover/hash-2.jpg").status, 404);
     QCOMPARE(server->request("POST", library + "/cover/hash-2.jpg").status, 405);
+}
+
+void ServerV3RoutesTest::coverIsTheFileOnDisk()
+{
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
+    QFile file(YACReader::LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-2"));
+    QVERIFY(file.open(QIODevice::ReadOnly));
+
+    const auto answer = server->request("GET", QString("/v3/library/%1/cover/hash-2.jpg").arg(libraryId));
+    QCOMPARE(answer.status, 200);
+    QCOMPARE(answer.contentType, QString("image/jpeg"));
+    QCOMPARE(answer.body, file.readAll());
+}
+
+void ServerV3RoutesTest::coverIsRevalidatedWithItsETag()
+{
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
+    saveCover(YACReader::LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-etag"), { 20, 20 });
+    const auto path = QString("/v3/library/%1/cover/hash-etag.jpg").arg(libraryId);
+
+    const auto first = server->request("GET", path);
+    QCOMPARE(first.status, 200);
+    QCOMPARE(first.cacheControl, QByteArray("no-cache"));
+    QVERIFY(!first.etag.isEmpty());
+
+    const auto unchanged = server->request("GET", path, { }, { { "If-None-Match", first.etag } });
+    QCOMPARE(unchanged.status, 304);
+    QCOMPARE(unchanged.etag, first.etag);
+    QVERIFY(unchanged.body.isEmpty());
+    QVERIFY(!unchanged.hasContentLength);
+
+    saveCover(YACReader::LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-etag"), { 200, 300 });
+    const auto replaced = server->request("GET", path, { }, { { "If-None-Match", first.etag } });
+    QCOMPARE(replaced.status, 200);
+    QVERIFY(replaced.etag != first.etag);
+    QCOMPARE(imageSize(replaced), QSize(200, 300));
 }
 
 void ServerV3RoutesTest::coversOutsideTheCoversFolderAreNotFound()
