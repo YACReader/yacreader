@@ -5,6 +5,9 @@
 #include "data_base_management.h"
 #include "db_helper.h"
 #include "initial_comic_info_extractor.h"
+#include "library_comic_match.h"
+#include "library_item_types.h"
+#include "overloaded.h"
 #include "pdf_comic.h"
 #include "qnaturalsorting.h"
 #include "xml_info_parser.h"
@@ -20,6 +23,7 @@
 
 #include <algorithm>
 #include <utility>
+#include <variant>
 
 using namespace std;
 using namespace YACReader;
@@ -30,7 +34,11 @@ Folder rootFolder(QSqlDatabase &db)
     selectQuery.prepare("SELECT * FROM folder WHERE id = 1");
     selectQuery.exec();
 
-    auto root = Folder(1, 1, "root", "/");
+    Folder root;
+    root.id = FolderId(1);
+    root.parentId = FolderId(1);
+    root.name = "root";
+    root.path = "/";
 
     if (!selectQuery.next()) {
 
@@ -43,6 +51,14 @@ Folder rootFolder(QSqlDatabase &db)
     return root;
 }
 
+Folder newFolder(const QString &name, const QString &path)
+{
+    Folder folder;
+    folder.name = name;
+    folder.path = path;
+    return folder;
+}
+
 //--------------------------------------------------------------------------------
 LibraryCreator::LibraryCreator(QSettings *settings)
     : creation(false), partialUpdate(false), settings(settings)
@@ -52,12 +68,18 @@ LibraryCreator::LibraryCreator(QSettings *settings)
 
 void LibraryCreator::createLibrary(const QString &source, const QString &target)
 {
+    stopRunning = false;
+    canceled = false;
     creation = true;
+    partialUpdate = false;
+    checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     processLibrary(source, target);
 }
 
 void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 {
+    stopRunning = false;
+    canceled = false;
     creation = false;
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = false;
@@ -68,15 +90,22 @@ void LibraryCreator::updateLibrary(const QString &source, const QString &target)
 
 void LibraryCreator::updateFolder(const QString &source, const QString &target, const QString &sourceFolder, qulonglong folderId)
 {
+    stopRunning = false;
+    canceled = false;
     creation = false;
     checkModifiedDatesOnUpdate = settings->value(COMPARE_MODIFIED_DATE_ON_LIBRARY_UPDATES, false).toBool();
     partialUpdate = true;
     _folderDestinationId = folderId;
+    _sourceFolder = sourceFolder;
+    processLibrary(source, target);
+}
 
+bool LibraryCreator::prepareFolderUpdate()
+{
     _currentPathFolders.clear();
 
-    QString relativeFolderPath = sourceFolder;
-    relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(source));
+    QString relativeFolderPath = _sourceFolder;
+    relativeFolderPath = relativeFolderPath.remove(QDir::cleanPath(_source));
 
     if (relativeFolderPath.startsWith("/")) {
         relativeFolderPath = relativeFolderPath.remove(0, 1); // remove firts '/'
@@ -92,24 +121,31 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
     QLOG_DEBUG() << "folders found in relative path : " << folders << "-" << relativeFolderPath;
     QString connectionName = "";
     {
-        QSqlDatabase db = DataBaseManagement::loadDatabase(target);
+        QSqlDatabase db = DataBaseManagement::loadDatabase(_target);
 
-        if (!db.isValid()) {
+        if (!db.isValid() || !db.isOpen()) {
             QString error = "Unable to find database at: " + _target;
             QLOG_ERROR() << error;
             emit failedOpeningDB(error);
-            return;
+            return false;
         }
 
-        _currentPathFolders.append(rootFolder(db));
+        _currentPathFolders.append({ rootFolder(db), true });
 
         for (const auto &folderName : std::as_const(folders)) {
             if (folderName.isEmpty()) {
                 break;
             }
-            qulonglong parentId = _currentPathFolders.last().id;
-            _currentPathFolders.append(DBHelper::loadFolder(folderName, parentId, db));
-            QLOG_DEBUG() << "Folder appended : " << _currentPathFolders.last().id << " " << _currentPathFolders.last().name << " with parent" << _currentPathFolders.last().parentId;
+            qulonglong parentId = _currentPathFolders.last().folder.id.value();
+            if (auto folder = DBHelper::loadFolder(folderName, parentId, db)) {
+                _currentPathFolders.append({ *folder, true });
+            } else {
+                Folder missing;
+                missing.parentId = FolderId(parentId);
+                _currentPathFolders.append({ missing, false });
+            }
+            const auto &appended = _currentPathFolders.last().folder;
+            QLOG_DEBUG() << "Folder appended : " << appended.id.value() << " " << appended.name << " with parent" << appended.parentId.value();
         }
         connectionName = db.connectionName();
     }
@@ -117,27 +153,33 @@ void LibraryCreator::updateFolder(const QString &source, const QString &target, 
 
     QLOG_DEBUG() << "Relative path : " << relativeFolderPath;
 
-    _sourceFolder = sourceFolder;
-
-    processLibrary(source, target);
+    return true;
 }
 
 void LibraryCreator::processLibrary(const QString &source, const QString &target)
 {
     _source = source;
     _target = target;
-    if (DataBaseManagement::checkValidDB(target + "/library.ydb") == "") {
-        _mode = creation ? CREATOR : UPDATER;
-    } else { //
-        _mode = UPDATER;
-    }
+    _mode = creation ? CREATOR : UPDATER;
 }
 
 //
 void LibraryCreator::run()
 {
-    stopRunning = false;
-    canceled = false;
+    lastMaintenanceFailure = { };
+    if (creation) {
+        if (!QDir().mkpath(_target)) {
+            emit failedCreatingDB(tr("Unable to create the library data folder: %1. Check folder access and available disk space.").arg(_target));
+            return;
+        }
+    } else {
+        if (!QDir(_target).exists()) {
+            emit failedOpeningDB(tr("The library data folder is missing: %1. Restore it or recreate the library before updating.").arg(_target));
+            return;
+        }
+        // An interrupted restore can legitimately leave the database absent.
+        // Recovery must run under the maintenance lock before checking it.
+    }
 #if !defined use_unarr && !defined use_libarchive
     auto sevenzLib = YACReader::load7zLibrary();
 
@@ -148,27 +190,43 @@ void LibraryCreator::run()
     }
     sevenzLib->deleteLater();
 #endif
-    if (_mode == CREATOR)
-        QDir().mkpath(_target);
-
     LibraryMaintenanceLock maintenanceLock(_source);
     if (!maintenanceLock.tryLock()) {
+        lastMaintenanceFailure = maintenanceLock.failure();
         const auto error = maintenanceLock.errorString();
         QLOG_ERROR() << error;
-        if (_mode == CREATOR)
+        if (creation)
             emit failedCreatingDB(error);
         else
             emit failedOpeningDB(error);
         return;
     }
+    _databaseConnection.clear();
+    const auto removeConnection = qScopeGuard([this] {
+        if (!_databaseConnection.isEmpty())
+            QSqlDatabase::removeDatabase(_databaseConnection);
+    });
 
-    if (_mode == UPDATER) {
-        QString recoveryError;
-        if (!DataBaseManagement::recoverInterruptedRestore(_source, &recoveryError, true)) {
-            QLOG_ERROR() << recoveryError;
+    QString recoveryError;
+    if (!DataBaseManagement::recoverInterruptedRestore(_source, &recoveryError, true)) {
+        QLOG_ERROR() << recoveryError;
+        if (creation)
+            emit failedCreatingDB(recoveryError);
+        else
             emit failedOpeningDB(recoveryError);
+        return;
+    }
+    // Recovery (or the previous owner) may have installed a database since
+    // this request was prepared. Decide only while holding the lock, on every
+    // run, so retrying creation never recreates a recovered valid library.
+    _mode = creation && DataBaseManagement::checkValidDB(LibraryPaths::libraryDatabasePath(_source)).isEmpty() ? CREATOR : UPDATER;
+    if (_mode == UPDATER) {
+        if (!QFile::exists(LibraryPaths::libraryDatabasePath(_source))) {
+            emit failedOpeningDB(tr("The library database is missing: %1. Restore a backup or recreate the library before updating.").arg(LibraryPaths::libraryDatabasePath(_source)));
             return;
         }
+        if (partialUpdate && !prepareFolderUpdate())
+            return;
     }
 
     if (_mode == CREATOR) {
@@ -185,6 +243,8 @@ void LibraryCreator::run()
         dir.mkpath(LibraryPaths::libraryCoversPathFromLibraryDataPath(_target));
 
         // se crea la base de datos .yacreaderlibrary/library.ydb
+        bool committed = false;
+        QString commitError;
         {
             auto _database = DataBaseManagement::createDatabase("library", _target); //
             _databaseConnection = _database.connectionName();
@@ -195,19 +255,31 @@ void LibraryCreator::run()
                 return;
             }
 
-            _currentPathFolders.append(rootFolder(_database));
+            _currentPathFolders.append({ rootFolder(_database), true });
 
             /*QSqlQuery pragma("PRAGMA foreign_keys = ON",_database);*/
-            _database.transaction();
+            if (!_database.transaction()) {
+                emit failedCreatingDB(tr("Unable to start a library database transaction: %1").arg(_database.lastError().text()));
+                return;
+            }
             // se crea la librería
             create(QDir(_source));
 
             DBHelper::updateChildrenInfo(_database);
 
-            _database.commit();
+            if (!canceled)
+                committed = _database.commit();
+            if (!committed) {
+                commitError = _database.lastError().text();
+                _database.rollback();
+            }
             _database.close();
         }
-        QSqlDatabase::removeDatabase(_databaseConnection);
+        if (!committed) {
+            if (!canceled)
+                emit failedCreatingDB(tr("Unable to commit the library database: %1").arg(commitError));
+            return;
+        }
         emit created();
         QLOG_INFO() << "Create library END";
     } else {
@@ -219,6 +291,7 @@ void LibraryCreator::run()
             emit failedOpeningDB(error);
             return;
         }
+        bool committed = false;
         {
             auto _database = DataBaseManagement::loadDatabase(_target);
 
@@ -241,13 +314,18 @@ void LibraryCreator::run()
 
             if (!partialUpdate) {
                 _currentPathFolders.clear();
-                _currentPathFolders.append(rootFolder(_database));
+                _currentPathFolders.append({ rootFolder(_database), true });
                 QLOG_DEBUG() << "update whole library";
             }
 
             QSqlQuery pragma("PRAGMA foreign_keys = ON", _database);
             pragma.exec();
-            _database.transaction();
+            if (!_database.transaction()) {
+                emit failedOpeningDB(tr("Unable to start a library database transaction: %1").arg(_database.lastError().text()));
+                return;
+            }
+            missingComicMatchFiles = { };
+            missingComicMatcher = { };
 
             if (partialUpdate) {
                 update(QDir(_sourceFolder));
@@ -255,21 +333,39 @@ void LibraryCreator::run()
                 update(QDir(_source));
             }
 
+            QStringList unusedCoverHashes;
+            QStringList unusedPlaceholderCoverKeys;
             if (!canceled) {
                 if (partialUpdate) {
                     auto folder = DBHelper::updateChildrenInfo(_folderDestinationId, _database);
                     DBHelper::propagateFolderUpdatesToParent(folder, _database);
                 } else {
                     DBHelper::updateChildrenInfo(_database);
-                    cleanup(_database, _target);
+                    unusedCoverHashes = cleanup(_database, _target);
                 }
+                // removed folders took their placements with them
+                unusedPlaceholderCoverKeys = DBHelper::removeUnusedPlaceholders(_database).value_or(QStringList());
             }
 
-            _database.commit();
+            committed = !canceled && _database.commit();
+            if (!committed) {
+                const auto error = _database.lastError().text();
+                _database.rollback();
+                if (!canceled)
+                    emit failedOpeningDB(tr("Unable to commit the library database: %1").arg(error));
+            }
+            if (committed) {
+                for (const auto &hash : std::as_const(unusedCoverHashes)) {
+                    QFile::remove(LibraryPaths::coverPathFromLibraryDataPath(_target, hash));
+                }
+                DBHelper::removePlaceholderCovers(_target, unusedPlaceholderCoverKeys);
+            }
+            finishComicMatchFiles(_target, missingComicMatchFiles, committed);
             _database.close();
         }
 
-        QSqlDatabase::removeDatabase(_databaseConnection);
+        if (!committed)
+            return;
 
         // si estabamos en modo creación, se está añadiendo una librería que ya existía y se ha actualizado antes de añadirse.
         if (!partialUpdate) {
@@ -291,66 +387,45 @@ void LibraryCreator::run()
 
 void LibraryCreator::stop()
 {
-    QSqlDatabase::database(_databaseConnection).commit();
     stopRunning = true;
 }
 
 void LibraryCreator::cancel()
 {
-    QSqlDatabase::database(_databaseConnection).rollback();
     canceled = true;
     stopRunning = true;
 }
 
-void LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
+QStringList LibraryCreator::cleanup(QSqlDatabase &db, const QString &target)
 {
     auto coversPath = LibraryPaths::libraryCoversPathFromLibraryDataPath(target);
     QDir coversDir(coversPath);
     if (!coversDir.exists()) {
-        return;
+        return { };
     }
 
-    // delete from comic_info all the comics that don't have a comic associated from the comic table
-    QSqlQuery infoToDeleteQuery(db);
-    infoToDeleteQuery.prepare("SELECT ci.id, ci.hash FROM comic_info ci WHERE ci.id NOT IN (SELECT c.comicInfoId FROM comic c)");
-
-    if (!infoToDeleteQuery.exec()) {
-        QLOG_ERROR() << "Error getting comics to delete";
-        return;
-    }
-
-    while (infoToDeleteQuery.next()) {
-        QString hash = infoToDeleteQuery.value(1).toString();
-        QString coverPath = LibraryPaths::coverPathFromLibraryDataPath(target, hash);
-        QFile::remove(coverPath);
-    }
-
-    QSqlQuery deleteQuery(db);
-    deleteQuery.prepare("DELETE FROM comic_info WHERE id NOT IN (SELECT comicInfoId FROM comic)");
-    if (!deleteQuery.exec()) {
-        QLOG_ERROR() << "Error purging info from comic_info";
-        return;
-    }
+    return DBHelper::removeUnusedComicInfo(db);
 }
 
 // retorna el id del ultimo de los folders
 qulonglong LibraryCreator::insertFolders()
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
-    QList<Folder>::iterator i;
+    QList<ScanFolder>::iterator i;
     int currentId = 0;
     Folder currentParent;
     for (i = _currentPathFolders.begin(); i != _currentPathFolders.end(); ++i) {
-        if (!(i->knownId)) {
-            i->setFather(currentId);
-            i->type = currentParent.type;
-            currentId = DBHelper::insert(&(*i), _database); // insertFolder(currentId,*i);
-            i->setId(currentId);
+        if (!i->inDatabase) {
+            i->folder.parentId = FolderId(currentId);
+            i->folder.type = currentParent.type;
+            currentId = DBHelper::insert(&i->folder, _database); // insertFolder(currentId,*i);
+            i->folder.id = FolderId(currentId);
+            i->inDatabase = true;
         } else {
-            currentId = i->id;
+            currentId = i->folder.id.value();
         }
 
-        currentParent = *i;
+        currentParent = i->folder;
     }
     return currentId;
 }
@@ -378,7 +453,7 @@ void LibraryCreator::create(QDir dir)
         if (fileInfo.isDir()) {
             QLOG_TRACE() << "Parsing folder" << fileInfo.canonicalPath();
             // se añade al path actual el folder, aún no se sabe si habrá que añadirlo a la base de datos
-            _currentPathFolders.append(Folder(fileInfo.fileName(), relativePath));
+            _currentPathFolders.append({ newFolder(fileInfo.fileName(), relativePath), false });
             create(QDir(fileInfo.absoluteFilePath()));
             // una vez importada la información del folder, se retira del path actual ya que no volverá a ser visitado
             _currentPathFolders.pop_back();
@@ -405,7 +480,7 @@ QString pseudoHash(const QFileInfo &fileInfo)
     return QString(crypto.result().toHex().constData()) + QString::number(fileInfo.size());
 }
 
-void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo)
+bool LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &fileInfo, bool matchMissingComics)
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
 
@@ -421,7 +496,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
 
     // A comic_info row without pages describes a file that never produced a comic, so it
     // is no proof that the file is one: check it again instead of taking the shortcut.
-    const bool knownComic = comic.hasCover() && comic.info.numPages.toInt() > 0;
+    const bool knownComic = comic.info.id != ComicInfoId() && comic.info.numPages.toInt() > 0;
 
     if (!(knownComic && exists)) {
         ie.extract();
@@ -429,7 +504,7 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
             // Not a comic YACReader can show, so it does not belong to the library. It
             // leaves no cover behind either, otherwise the next scan would take that
             // cover as proof that the file had been imported before.
-            return;
+            return false;
         }
         numPages = ie.getNumPages();
         originalCoverSize = ie.getOriginalCoverSize();
@@ -450,47 +525,105 @@ void LibraryCreator::insertComic(const QString &relativePath, const QFileInfo &f
             comic.info.coverSizeRatio = static_cast<float>(originalCoverSize.first) / originalCoverSize.second;
         }
 
-        comic.parentId = _currentPathFolders.last().id;
-        comic.info.type = QVariant::fromValue(_currentPathFolders.last().type);
+        comic.file.folderId = _currentPathFolders.last().folder.id;
+        comic.info.type = QVariant::fromValue(_currentPathFolders.last().folder.type);
 
-        DBHelper::insert(&comic, _database, parsed);
+        const auto comicId = DBHelper::insert(&comic, _database, parsed);
+        if (comicId == 0)
+            return false;
+        if (matchMissingComics) {
+            comic.file.id = ComicId(comicId);
+            missingComicMatcher.match(comic, _target, _database, missingComicMatchFiles);
+        }
+        return true;
     }
+
+    return false;
+}
+
+ReplaceComicResult classifyReplaceComic(ComicInfoId oldComicInfoId,
+                                        std::optional<ComicInfoId> newComicInfoId,
+                                        bool newComicInfoExisted)
+{
+    if (!newComicInfoId) {
+        return ReplaceComicResult::NotInserted;
+    }
+
+    if (*newComicInfoId == oldComicInfoId) {
+        return ReplaceComicResult::SameComicInfo;
+    }
+
+    return newComicInfoExisted ? ReplaceComicResult::KnownComicInfo : ReplaceComicResult::NewComicInfo;
 }
 
 void LibraryCreator::replaceComic(const QString &relativePath, const QFileInfo &fileInfo, ComicDB *comic)
 {
     auto _database = QSqlDatabase::database(_databaseConnection);
 
+    const auto oldComicInfoId = comic->info.id;
+    const auto hash = pseudoHash(fileInfo);
+    const bool newComicInfoExisted = DBHelper::loadComicInfo(hash, _database).has_value();
+
+    QSqlQuery savepoint(_database);
+    if (!savepoint.exec("SAVEPOINT replace_comic")) {
+        QLOG_ERROR() << "Unable to replace" << relativePath << ":" << savepoint.lastError().text();
+        return;
+    }
+
     DBHelper::removeFromDB(comic, _database);
-    insertComic(relativePath, fileInfo);
 
-    QString hash = pseudoHash(fileInfo);
-
-    ComicDB insertedComic = DBHelper::loadComic(fileInfo.fileName(), relativePath, hash, _database);
-
-    if (!insertedComic.info.existOnDb) {
-        return;
+    std::optional<ComicInfo> newInfo;
+    if (insertComic(relativePath, fileInfo)) {
+        newInfo = DBHelper::loadComicInfo(hash, _database);
     }
 
-    if (insertedComic.info.coverSizeRatio.isNull()) {
-        return;
+    bool keepChanges = true;
+    switch (classifyReplaceComic(oldComicInfoId, newInfo ? std::optional(newInfo->id) : std::nullopt, newComicInfoExisted)) {
+    case ReplaceComicResult::NotInserted:
+        keepChanges = false;
+        break;
+    case ReplaceComicResult::SameComicInfo:
+        comic->info.added = fileInfo.lastModified().toSecsSinceEpoch();
+        keepChanges = DBHelper::updateAdded(&comic->info, _database);
+        break;
+    case ReplaceComicResult::NewComicInfo:
+        keepChanges = copyReplacedComicInfo(comic->info, *newInfo, fileInfo) && DBHelper::moveEntriesToComicInfo(oldComicInfoId, newInfo->id, _database);
+        break;
+    case ReplaceComicResult::KnownComicInfo:
+        keepChanges = DBHelper::moveEntriesToComicInfo(oldComicInfoId, newInfo->id, _database);
+        break;
     }
 
-    auto numPages = insertedComic.info.numPages;
-    auto coverSize = insertedComic.info.originalCoverSize;
-    auto coverRatio = insertedComic.info.coverSizeRatio;
-    auto id = insertedComic.info.id;
+    if (!keepChanges) {
+        savepoint.exec("ROLLBACK TO replace_comic");
+    }
+    savepoint.exec("RELEASE replace_comic");
+}
 
-    insertedComic.info = comic->info;
+// the new comic_info takes the values of the old one, except what comes from the new file
+bool LibraryCreator::copyReplacedComicInfo(const ComicInfo &oldInfo, ComicInfo newInfo, const QFileInfo &fileInfo)
+{
+    if (newInfo.coverSizeRatio.isNull()) {
+        return true;
+    }
 
-    insertedComic.info.numPages = numPages;
-    insertedComic.info.originalCoverSize = coverSize;
-    insertedComic.info.coverSizeRatio = coverRatio;
-    insertedComic.info.id = id;
-    insertedComic.info.coverPage = 1;
-    insertedComic.info.added = fileInfo.lastModified().toSecsSinceEpoch();
+    auto _database = QSqlDatabase::database(_databaseConnection);
 
-    DBHelper::update(&(insertedComic.info), _database);
+    const auto numPages = newInfo.numPages;
+    const auto coverSize = newInfo.originalCoverSize;
+    const auto coverRatio = newInfo.coverSizeRatio;
+    const auto id = newInfo.id;
+
+    newInfo = oldInfo;
+
+    newInfo.numPages = numPages;
+    newInfo.originalCoverSize = coverSize;
+    newInfo.coverSizeRatio = coverRatio;
+    newInfo.id = id;
+    newInfo.coverPage = 1;
+    newInfo.added = fileInfo.lastModified().toSecsSinceEpoch();
+
+    return DBHelper::update(&newInfo, _database);
 }
 
 void LibraryCreator::update(QDir dirS)
@@ -523,15 +656,21 @@ void LibraryCreator::update(QDir dirS)
     // QLOG_TRACE() << "END Getting info from dir" << dirS.absolutePath();
 
     // QLOG_TRACE() << "Getting info from DB" << dirS.absolutePath();
-    QList<LibraryItem *> folders = DBHelper::getFoldersFromParent(_currentPathFolders.last().id, _database);
-    QList<LibraryItem *> comics = DBHelper::getComicsFromParent(_currentPathFolders.last().id, _database);
+    QList<Folder> folders = DBHelper::getFoldersFromParent(_currentPathFolders.last().folder.id.value(), _database);
+    QList<ComicDB> comics = DBHelper::getComicsFromParent(_currentPathFolders.last().folder.id.value(), _database);
     // QLOG_TRACE() << "END Getting info from DB" << dirS.absolutePath();
 
-    QList<LibraryItem *> listD;
-    std::sort(folders.begin(), folders.end(), naturalSortLessThanCILibraryItem);
-    std::sort(comics.begin(), comics.end(), naturalSortLessThanCILibraryItem);
-    listD.append(folders);
-    listD.append(comics);
+    QList<DiskItem> listD;
+    std::sort(folders.begin(), folders.end(), [](const Folder &left, const Folder &right) {
+        return naturalSortLessThanCI(left.name, right.name);
+    });
+    std::sort(comics.begin(), comics.end(), [](const ComicDB &left, const ComicDB &right) {
+        return naturalSortLessThanCI(left.file.fileName, right.file.fileName);
+    });
+    for (const auto &folder : folders)
+        listD.append(folder);
+    for (const auto &comic : comics)
+        listD.append(comic);
     // QLOG_DEBUG() << "---------------------------------------------------------";
     // for (auto *info : listD)
     //	QLOG_DEBUG() << info->name;
@@ -545,7 +684,6 @@ void LibraryCreator::update(QDir dirS)
     int i, j;
     for (i = 0, j = 0; (i < lenghtS) || (j < lenghtD);) {
         if (stopRunning) {
-            qDeleteAll(listD);
             return;
         }
         updated = false;
@@ -555,10 +693,9 @@ void LibraryCreator::update(QDir dirS)
             // delete listD //from j
             for (; j < lenghtD; j++) {
                 if (stopRunning) {
-                    qDeleteAll(listD);
                     return;
                 }
-                DBHelper::removeFromDB(listD.at(j), (_database));
+                DBHelper::removeFromDB(listD[j], (_database));
             }
             updated = true;
         }
@@ -568,7 +705,6 @@ void LibraryCreator::update(QDir dirS)
             // create listS //from i
             for (; i < lenghtS; i++) {
                 if (stopRunning) {
-                    qDeleteAll(listD);
                     return;
                 }
                 QFileInfo fileInfoS = listS.at(i);
@@ -585,7 +721,7 @@ void LibraryCreator::update(QDir dirS)
 #else
                     QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                    _currentPathFolders.append(Folder(fileInfoS.fileName(), path)); // folder actual no está en la BD
+                    _currentPathFolders.append({ newFolder(fileInfoS.fileName(), path), false }); // folder actual no está en la BD
                     create(QDir(fileInfoS.absoluteFilePath()));
                     _currentPathFolders.pop_back();
                 } else // create comic
@@ -602,22 +738,27 @@ void LibraryCreator::update(QDir dirS)
 
                     QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                    insertComic(path, fileInfoS);
+                    insertComic(path, fileInfoS, true);
                 }
             }
             updated = true;
         }
         if (!updated) {
             QFileInfo fileInfoS = listS.at(i);
-            LibraryItem *fileInfoD = listD.at(j);
+            DiskItem &fileInfoD = listD[j];
             QString nameS = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(QDir::cleanPath(fileInfoS.absolutePath())); // remove source
-            QString nameD = "/" + fileInfoD->name;
+            QString nameD = "/" + std::visit(overloaded {
+                                                     [](const Folder &folder) { return folder.name; },
+                                                     [](const ComicDB &comic) { return comic.file.fileName; },
+                                             },
+                                             fileInfoD);
+            const bool isFolderD = std::holds_alternative<Folder>(fileInfoD);
 
             int comparation = QString::localeAwareCompare(nameS, nameD);
-            if (fileInfoS.isDir() && fileInfoD->isDir())
+            if (fileInfoS.isDir() && isFolderD)
                 if (comparation == 0) // same folder, update
                 {
-                    _currentPathFolders.append(*static_cast<Folder *>(fileInfoD)); // fileInfoD conoce su padre y su id
+                    _currentPathFolders.append({ std::get<Folder>(fileInfoD), true }); // fileInfoD conoce su padre y su id
                     update(QDir(fileInfoS.absoluteFilePath()));
                     _currentPathFolders.pop_back();
                     i++;
@@ -638,7 +779,7 @@ void LibraryCreator::update(QDir dirS)
 #else
                         QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                        _currentPathFolders.append(Folder(fileInfoS.fileName(), path));
+                        _currentPathFolders.append({ newFolder(fileInfoS.fileName(), path), false });
                         create(QDir(fileInfoS.absoluteFilePath()));
                         _currentPathFolders.pop_back();
                     }
@@ -669,12 +810,12 @@ void LibraryCreator::update(QDir dirS)
 #else
                         QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                        _currentPathFolders.append(Folder(fileInfoS.fileName(), path));
+                        _currentPathFolders.append({ newFolder(fileInfoS.fileName(), path), false });
                         create(QDir(fileInfoS.absoluteFilePath()));
                         _currentPathFolders.pop_back();
                     }
                     i++;
-                } else if (fileInfoD->isDir()) // delete this folder from library
+                } else if (isFolderD) // delete this folder from library
                 {
                     DBHelper::removeFromDB(fileInfoD, _database);
                     j++;
@@ -695,7 +836,7 @@ void LibraryCreator::update(QDir dirS)
 #else
                         QString path = QDir::cleanPath(fileInfoS.absoluteFilePath()).remove(_source);
 #endif
-                        insertComic(path, fileInfoS);
+                        insertComic(path, fileInfoS, true);
                         i++;
                     } else {
                         if (comparation > 0) // delete thumbnail
@@ -704,8 +845,8 @@ void LibraryCreator::update(QDir dirS)
                             j++;
                         } else // file with the same name
                         {
-                            if (fileInfoS.isFile() && !fileInfoD->isDir()) {
-                                auto comicDB = static_cast<ComicDB *>(fileInfoD);
+                            if (fileInfoS.isFile() && !isFolderD) {
+                                auto comicDB = std::get_if<ComicDB>(&fileInfoD);
                                 auto lastModified = fileInfoS.lastModified().toSecsSinceEpoch();
                                 auto added = comicDB->info.added.toULongLong();
 
@@ -740,6 +881,4 @@ void LibraryCreator::update(QDir dirS)
                 }
         }
     }
-
-    qDeleteAll(listD);
 }

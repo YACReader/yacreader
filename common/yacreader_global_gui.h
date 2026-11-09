@@ -1,6 +1,7 @@
 #ifndef __YACREADER_GLOBAL_GUI_H
 #define __YACREADER_GLOBAL_GUI_H
 
+#include "library_ids.h"
 #include "yacreader_global.h"
 
 #include <QMimeData>
@@ -97,7 +98,10 @@
 namespace YACReader {
 
 static const QString YACReaderLibrarComiscSelectionMimeDataFormat = "application/yacreaderlibrary-comics-ids";
-static const QString YACReaderLibrarSubReadingListMimeDataFormat = "application/yacreaderlibrary-sublist-rows";
+// a row of the lists sidebar: its type (ReadingListModel::TypeList) and its id
+static const QString YACReaderLibraryListRowMimeDataFormat = "application/yacreaderlibrary-list-row";
+// the dragged rows of the comics view, in order (ComicRowId)
+static const QString YACReaderLibraryComicRowsMimeDataFormat = "application/yacreaderlibrary-comic-rows";
 
 enum FlowType {
     CoverFlowLike = 0,
@@ -124,6 +128,8 @@ QAction *createSeparator();
 QIcon noHighlightedIcon(const QString &path);
 void colorize(QImage &img, const QColor &col);
 QList<qulonglong> mimeDataToComicsIds(const QMimeData *data);
+QList<ComicRowId> mimeDataToRows(const QMimeData *data);
+void setRowsMimeData(QMimeData *data, const QList<ComicRowId> &rows);
 QAction *wrappedToolbarAction(QAction *action);
 QPixmap hdpiPixmap(const QString &file, QSize size);
 QString imageFileLoader(QWidget *parent);

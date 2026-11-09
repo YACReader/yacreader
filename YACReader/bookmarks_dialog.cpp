@@ -24,7 +24,7 @@ BookmarksDialog::BookmarksDialog(QWidget *parent)
     // bookmarks
     auto bookmarksL = new QGridLayout();
 
-    pages.push_back(new QLabel(tr("Lastest Page")));
+    pages.push_back(new QLabel(tr("Latest Page")));
     for (int i = 0; i < 3; i++)
         pages.push_back(new QLabel("-"));
 

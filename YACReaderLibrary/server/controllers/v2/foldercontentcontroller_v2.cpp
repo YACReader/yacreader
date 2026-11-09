@@ -4,6 +4,8 @@
 #include "comic_db.h"
 #include "db_helper.h"
 #include "folder.h"
+#include "library_item_types.h"
+#include "overloaded.h"
 #include "qnaturalsorting.h"
 #include "yacreader_libraries.h"
 #include "yacreader_server_data_helper.h"
@@ -15,6 +17,27 @@
 using stefanfrings::HttpRequest;
 using stefanfrings::HttpResponse;
 using namespace std;
+
+namespace {
+
+/* Name-only ordering for server responses that mix folders and comics in a single
+ * list, where there is no issue number to lean on. Reading order is not this: for
+ * the comics of a folder use DBHelper::getFolderComicsFromLibraryForReading, which
+ * sorts by issue number the way the clients do.
+ **/
+bool folderContentItemLessThan(const FolderContentItem &a, const FolderContentItem &b)
+{
+    const auto name = [](const FolderContentItem &item) {
+        return std::visit(overloaded {
+                                  [](const Folder &folder) { return folder.name; },
+                                  [](const ComicDB &comic) { return comic.file.fileName; },
+                          },
+                          item);
+    };
+    return naturalSortLessThanCI(name(a), name(b));
+}
+
+}
 
 FolderContentControllerV2::FolderContentControllerV2() { }
 
@@ -40,29 +63,23 @@ void FolderContentControllerV2::serviceContent(const int &library, const qulongl
 #endif
     auto libraryUuid = DBHelper::getLibraries().getLibraryIdFromLegacyId(library);
 
-    QList<LibraryItem *> folderContent = DBHelper::getFolderSubfoldersFromLibrary(library, folderId);
-    QList<LibraryItem *> folderComics = DBHelper::getFolderComicsFromLibrary(library, folderId);
+    QList<FolderContentItem> folderContent;
+    for (const auto &folder : DBHelper::getFolderSubfoldersFromLibrary(library, folderId))
+        folderContent.append(folder);
+    for (const auto &comic : DBHelper::getFolderComicsFromLibrary(library, folderId))
+        folderContent.append(comic);
 
-    folderContent.append(folderComics);
-    std::sort(folderContent.begin(), folderContent.end(), LibraryItemSorter());
-
-    folderComics.clear();
+    std::sort(folderContent.begin(), folderContent.end(), folderContentItemLessThan);
 
     QJsonArray items;
 
-    ComicDB *currentComic;
-    Folder *currentFolder;
-    for (QList<LibraryItem *>::const_iterator itr = folderContent.constBegin(); itr != folderContent.constEnd(); itr++) {
-        if ((*itr)->isDir()) {
-            currentFolder = (Folder *)(*itr);
-            items.append(YACReaderServerDataHelper::folderToJSON(library, libraryUuid, *currentFolder));
-        } else {
-            currentComic = (ComicDB *)(*itr);
-            items.append(YACReaderServerDataHelper::comicToJSON(library, libraryUuid, *currentComic));
-        }
+    for (const auto &item : folderContent) {
+        items.append(std::visit(overloaded {
+                                        [&](const Folder &folder) { return YACReaderServerDataHelper::folderToJSON(library, libraryUuid, folder); },
+                                        [&](const ComicDB &comic) { return YACReaderServerDataHelper::comicToJSON(library, libraryUuid, comic); },
+                                },
+                                item));
     }
-
-    qDeleteAll(folderContent);
 
     QJsonDocument output(items);
 

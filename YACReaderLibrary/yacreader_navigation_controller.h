@@ -42,6 +42,9 @@ public slots:
     void loadSpecialListContent(const QModelIndex &listIndex);
     void loadLabelContent(const QModelIndex &listIndex);
     void loadReadingListContent(const QModelIndex &listIndex);
+    void loadSmartListContent(const QModelIndex &listIndex);
+    void loadListFolderContent(const QModelIndex &listIndex);
+    void openListCard(int listType, qulonglong id);
 
     void loadPreviousStatus();
     void reloadRootContinueReading();

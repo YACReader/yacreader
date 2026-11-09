@@ -31,7 +31,7 @@ void TagInfoControllerV2::serviceComics(const int &library, const qulonglong &ta
     for (const ComicDB &comic : comics) {
         response.write(QString("/v2/library/%1/comic/%2:%3:%4:%5:%6\r\n")
                                .arg(library)
-                               .arg(comic.id)
+                               .arg(comic.file.id.value())
                                .arg(comic.getFileName())
                                .arg(comic.getFileSize())
                                .arg(comic.info.read ? 1 : 0)

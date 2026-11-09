@@ -5,9 +5,11 @@ LocalComicListModel::LocalComicListModel(QObject *parent)
 {
 }
 
-void LocalComicListModel::load(QList<ComicDB> &comics)
+void LocalComicListModel::load(const QList<ComicRecord> &comics)
 {
-    _data = comics;
+    _data.clear();
+    for (const auto &comic : comics)
+        _data.append(comic);
 }
 
 QModelIndex LocalComicListModel::parent(const QModelIndex &index) const
@@ -49,7 +51,7 @@ QVariant LocalComicListModel::data(const QModelIndex &index, int role) const
     int row = index.row();
 
     // if(row < _data.count())
-    return _data[row].getFileName();
+    return _data[row] ? recordFileName(*_data[row]) : QString();
     // else
     // return QVariant();
 }
@@ -83,7 +85,7 @@ QModelIndex LocalComicListModel::index(int row, int column, const QModelIndex &p
     return createIndex(row, column);
 }
 
-QList<ComicDB> LocalComicListModel::getData()
+QList<std::optional<ComicRecord>> LocalComicListModel::getData()
 {
     return _data;
 }
@@ -106,7 +108,7 @@ void LocalComicListModel::removeComics(const QList<QModelIndex> &selectedIndexes
 
     beginInsertRows(QModelIndex(), _data.count() - _removed.count(), _data.count() - 1);
     for (int i = 0; i < _removed.count(); i++)
-        _data.append(ComicDB());
+        _data.append(std::nullopt);
     endInsertRows();
 }
 
@@ -114,7 +116,7 @@ void LocalComicListModel::restoreAll()
 {
     int numItemsToRemove = 0;
     for (int i = 0; numItemsToRemove < _removed.count(); i++) {
-        if (_data.at(i).getFileName().isEmpty()) {
+        if (!_data.at(i)) {
             beginRemoveRows(QModelIndex(), i, i);
             _data.removeAt(i);
             endRemoveRows();
@@ -172,5 +174,5 @@ void LocalComicListModel::addExtraRows(int numRows)
 {
     numExtraRows = numRows;
     for (int i = 0; i < numExtraRows; i++)
-        _data.append(ComicDB());
+        _data.append(std::nullopt);
 }

@@ -17,7 +17,7 @@ ScraperResultsPaginator::ScraperResultsPaginator(QWidget *parent)
     connect(nextPage, &QAbstractButton::clicked, this, &ScraperResultsPaginator::loadNextPage);
     connect(previousPage, &QAbstractButton::clicked, this, &ScraperResultsPaginator::loadPreviousPage);
 
-    numElements = new QLabel(tr("Number of volumes found : %1"));
+    numElements = new QLabel(tr("Number of volumes found: %1"));
     numPages = new QLabel(tr("page %1 of %2"));
 
     pagesButtonsLayout->addSpacing(15);
@@ -41,7 +41,7 @@ void ScraperResultsPaginator::update(const QString &json)
     rp.loadJSONResponse(json);
 
     currentPage = rp.getCurrentPage();
-    numElements->setText(tr("Number of %1 found : %2").arg(customLabel).arg(rp.getNumResults()));
+    numElements->setText(tr("Number of %1 found: %2").arg(customLabel).arg(rp.getNumResults()));
     numPages->setText(tr("page %1 of %2").arg(currentPage).arg(rp.getTotalPages()));
 
     previousPage->setDisabled(currentPage == 1);

@@ -8,6 +8,8 @@ Item {
 
     property bool active
 
+    opacity: enabled ? 1.0 : 0.4
+
     signal activeChangedByUser(bool active)
 
     MouseArea {

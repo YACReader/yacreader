@@ -14,16 +14,16 @@ ImportLibraryDialog::ImportLibraryDialog(QWidget *parent)
 
 void ImportLibraryDialog::setupUI()
 {
-    nameLabel = new QLabel(tr("Library Name : "));
+    nameLabel = new QLabel(tr("Library Name: "));
     nameEdit = new QLineEdit;
     nameLabel->setBuddy(nameEdit);
     connect(nameEdit, &QLineEdit::textChanged, this, &ImportLibraryDialog::nameEntered);
 
-    textLabel = new QLabel(tr("Package location : "));
+    textLabel = new QLabel(tr("Package location: "));
     path = new QLineEdit;
     textLabel->setBuddy(path);
 
-    destLabel = new QLabel(tr("Destination folder : "));
+    destLabel = new QLabel(tr("Destination folder: "));
     destPath = new QLineEdit;
     textLabel->setBuddy(destPath);
 
@@ -112,7 +112,7 @@ void ImportLibraryDialog::add()
 
 void ImportLibraryDialog::findPath()
 {
-    QString s = QFileDialog::getOpenFileName(0, "Covers Package", ".", tr("Compresed library covers (*.clc)"));
+    QString s = QFileDialog::getOpenFileName(0, "Covers Package", ".", tr("Compressed library covers (*.clc)"));
     if (!s.isEmpty()) {
         path->setText(s);
         if (!destPath->text().isEmpty() && !nameEdit->text().isEmpty())

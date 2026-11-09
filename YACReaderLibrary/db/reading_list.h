@@ -1,36 +1,44 @@
 #ifndef READING_LIST_H
 #define READING_LIST_H
 
-#include "yacreader_global.h"
+#include "library_ids.h"
 
-class ReadingList
-{
-public:
-    ReadingList(const QString &name, qulonglong id, int ordering);
+#include <QString>
+#include <QStringList>
 
-    qulonglong getId() const;
-    QString getName() const;
-    int getOrdering() const;
+#include <optional>
 
-private:
+class QSqlQuery;
+class QSqlRecord;
+
+struct ReadingList {
+    ReadingListId id;
+    std::optional<ReadingListId> parentId;
+    int ordering = 0;
     QString name;
-    qulonglong id;
-    int ordering;
+    bool finished = false;
+    bool completed = true;
+    // a reading list folder; only top level lists (no parentId) can be in one
+    std::optional<qulonglong> folderId;
+
+    static const QStringList &columns();
+    static ReadingList fromRecord(const QSqlRecord &record, const QString &alias);
+    static QList<int> columnIndexes(const QSqlRecord &record, const QString &alias);
+    static ReadingList fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes);
+    void bindTo(QSqlQuery &query) const;
 };
 
-class Label
-{
-public:
-    Label(const QString &name, qulonglong id, YACReader::LabelColors colorid);
-
-    YACReader::LabelColors getColorID() const;
-    QString getName() const;
-    qulonglong getId() const;
-
-private:
+struct Label {
+    LabelId id;
     QString name;
-    qulonglong id;
-    YACReader::LabelColors colorid;
+    QString color;
+    int ordering = 0;
+
+    static const QStringList &columns();
+    static Label fromRecord(const QSqlRecord &record, const QString &alias);
+    static QList<int> columnIndexes(const QSqlRecord &record, const QString &alias);
+    static Label fromQuery(const QSqlQuery &query, const QList<int> &columnIndexes);
+    void bindTo(QSqlQuery &query) const;
 };
 
 #endif // READING_LIST_H

@@ -118,11 +118,11 @@ Viewer::Viewer(QWidget *parent)
     content->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
     content->setMouseTracking(true);
 
-    // dedicated widget for status messages ("Press 'O' to open comic.", "Loading...", etc.)
+    // dedicated widget for status messages ("Press 'O' to open a comic.", "Loading...", etc.)
     messageLabel = new QLabel(this);
     messageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     messageLabel->setAlignment(Qt::AlignTop | Qt::AlignHCenter);
-    messageLabel->setText(tr("Press 'O' to open comic."));
+    messageLabel->setText(tr("Press 'O' to open a comic."));
     messageLabel->setFont(QFont("courier new", 12));
     messageLabel->setMouseTracking(true);
 
@@ -1812,7 +1812,7 @@ void Viewer::doubleMangaPageSwitch()
 
 void Viewer::resetContent()
 {
-    configureContent(tr("Press 'O' to open comic."));
+    configureContent(tr("Press 'O' to open a comic."));
     goToFlow->reset();
     continuousViewModel->reset();
     continuousPageProvider->reset();
@@ -1829,7 +1829,7 @@ void Viewer::setLoadingMessage()
     }
     emit pageAvailable(false);
     if (!continuousScroll) {
-        configureContent(tr("Loading...please wait!"));
+        configureContent(tr("Loading... please wait!"));
     }
 }
 

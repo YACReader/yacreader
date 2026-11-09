@@ -1,6 +1,8 @@
 #ifndef CONTENT_VIEW_STATE_H
 #define CONTENT_VIEW_STATE_H
 
+#include "comic_item.h"
+
 #include <QtGlobal>
 
 struct ContentItemRef {
@@ -12,7 +14,8 @@ struct ContentItemRef {
     };
 
     Kind kind = None;
-    qulonglong id = 0;
+    qulonglong folderId = 0;
+    ComicRowId comic;
 };
 
 struct ContentViewState {

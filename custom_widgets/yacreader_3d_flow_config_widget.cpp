@@ -191,7 +191,7 @@ YACReader3DFlowConfigWidget::YACReader3DFlowConfigWidget(QWidget *parent /* = 0 
 
     QHBoxLayout *vSyncLayout = new QHBoxLayout;
 
-    vSyncCheck = new QCheckBox(tr("Use VSync (improve the image quality in fullscreen mode, worse performance)"));
+    vSyncCheck = new QCheckBox(tr("Use VSync (improves image quality in fullscreen mode, but reduces performance)"));
     vSyncLayout->addStretch();
     vSyncLayout->addWidget(vSyncCheck);
 

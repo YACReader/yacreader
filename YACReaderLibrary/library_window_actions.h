@@ -2,8 +2,11 @@
 #define LIBRARY_WINDOW_ACTIONS_H
 
 #include "qaction.h"
+#include "yacreader_global_gui.h"
 
 #include <QAction>
+#include <QCoreApplication>
+#include <QModelIndex>
 #include <QSettings>
 
 class LibraryWindow;
@@ -26,8 +29,11 @@ class LibraryRepairCoordinator;
 class RenameLibraryDialog;
 struct Theme;
 
+class ComicModel;
+
 class LibraryWindowActions
 {
+    Q_DECLARE_TR_FUNCTIONS(LibraryWindowActions)
 public:
     QAction *backAction;
     QAction *forwardAction;
@@ -47,6 +53,8 @@ public:
     QAction *updateLibraryAction;
     QAction *backupLibraryAction;
     QAction *restoreLibraryAction;
+    QAction *repairLibraryDatabaseAction;
+    QAction *recoverLibraryAccessAction;
     QAction *repairLibraryAction;
     QAction *removeLibraryAction;
     QAction *helpAboutAction;
@@ -61,6 +69,10 @@ public:
     QAction *optionsAction;
     QAction *serverConfigAction;
     QAction *toggleComicsViewAction;
+    // Checkable and exclusive; the content views manager checks the current view.
+    QAction *gridViewAction;
+    QAction *flowViewAction;
+    QAction *infoViewAction;
 
     // tree actions
     QAction *addFolderAction;
@@ -129,7 +141,11 @@ public:
     QAction *rescanXMLFromCurrentFolderAction;
 
     // reading lists actions
+    QAction *newListMenuAction;
     QAction *addReadingListAction;
+    QAction *importReadingListsAction;
+    QAction *addSmartListAction;
+    QAction *addListFolderAction;
     QAction *deleteReadingListAction;
     QAction *addLabelAction;
     QAction *renameListAction;
@@ -160,10 +176,13 @@ public:
 
     void setComicActionsDisabled(bool disabled);
     void setComicSelectionActionsEnabled(bool enabled);
+    // each action is enabled when a selected row supports it; open and open folder use the current row
+    void setComicSelectionActionsEnabled(const ComicModel &model, const QModelIndexList &selection, const QModelIndex &current);
     void disableLibrariesActions(bool disabled);
     void disableNoUpdatedLibrariesActions(bool disabled);
     void disableFoldersActions(bool disabled);
     void disableAllActions();
+    QAction *comicsViewAction(YACReader::ComicsViewStatus status) const;
     void setUpShortcutsManagement(EditShortcutsDialog *editShortcutsDialog);
     void updateTheme(const Theme &theme);
 };

@@ -5,18 +5,18 @@
 
 namespace {
 const char *labelColorNames[] = {
-    QT_TR_NOOP("red"),
-    QT_TR_NOOP("orange"),
-    QT_TR_NOOP("yellow"),
-    QT_TR_NOOP("green"),
-    QT_TR_NOOP("cyan"),
-    QT_TR_NOOP("blue"),
-    QT_TR_NOOP("violet"),
-    QT_TR_NOOP("purple"),
-    QT_TR_NOOP("pink"),
-    QT_TR_NOOP("white"),
-    QT_TR_NOOP("light"),
-    QT_TR_NOOP("dark")
+    QT_TRANSLATE_NOOP("AddLabelDialog", "red"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "orange"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "yellow"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "green"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "cyan"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "blue"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "violet"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "purple"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "pink"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "white"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "light"),
+    QT_TRANSLATE_NOOP("AddLabelDialog", "dark")
 };
 }
 

@@ -1,0 +1,5 @@
+qt_add_executable(cbl_find_comic_page_test main.cpp)
+yacreader_apply_build_options(cbl_find_comic_page_test)
+target_link_libraries(cbl_find_comic_page_test PRIVATE Qt6::Core Qt6::Widgets Qt6::Sql Qt6::Test cbl_gui)
+add_test(NAME cbl_find_comic_page_test COMMAND cbl_find_comic_page_test)
+set_tests_properties(cbl_find_comic_page_test PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")

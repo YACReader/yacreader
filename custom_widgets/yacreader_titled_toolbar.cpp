@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QMenu>
 #include <QPainter>
 #include <QPixmap>
 #include <QPushButton>
@@ -62,7 +63,8 @@ YACReaderTitledToolBar::YACReaderTitledToolBar(const QString &title, QWidget *pa
     : QWidget(parent)
 {
     QHBoxLayout *mainLayout = new QHBoxLayout;
-    mainLayout->setContentsMargins(0, 0, 0, 0);
+    // buttons pad their 16px icon by 4px, so the last icon ends 10px from the edge, like the title starts
+    mainLayout->setContentsMargins(0, 0, 6, 0);
     mainLayout->setSpacing(0);
 
     QString styleSheet = "QWidget {border:0px;}";
@@ -99,7 +101,11 @@ void YACReaderTitledToolBar::addAction(QAction *action)
     tb->setCursor(QCursor(Qt::ArrowCursor));
     tb->setDefaultAction(action);
     tb->setIconSize(QSize(16, 16));
-    tb->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    tb->setFixedSize(24, 24);
+    if (action->menu() != nullptr) {
+        tb->setPopupMode(QToolButton::InstantPopup);
+        tb->setStyleSheet("QToolButton::menu-indicator { image: none; }");
+    }
 
     mainLayout->addWidget(tb);
 }
@@ -120,9 +126,9 @@ void YACReaderTitledToolBar::addSepartor()
     w->setStyleSheet(QString("QWidget {background-color:%1;}").arg(theme.sidebar.separatorColor.name()));
     separators.append(w);
 
-    mainLayout->addSpacing(10);
-    mainLayout->addWidget(w);
-    mainLayout->addSpacing(10);
+    mainLayout->addSpacing(6);
+    mainLayout->addWidget(w, 0, Qt::AlignVCenter);
+    mainLayout->addSpacing(6);
 }
 
 void YACReaderTitledToolBar::showBusyIndicator()

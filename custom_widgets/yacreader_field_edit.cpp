@@ -16,7 +16,6 @@ YACReaderFieldEdit::YACReaderFieldEdit(QWidget *parent)
 void YACReaderFieldEdit::focusInEvent(QFocusEvent *e)
 {
     if (e->reason() == Qt::MouseFocusReason) {
-        setModified(true);
         setPlaceholderText("");
     }
 

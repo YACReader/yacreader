@@ -13,7 +13,7 @@
 SelectComic::SelectComic(QWidget *parent)
     : QWidget(parent), model(0)
 {
-    label = new QLabel(tr("Please, select the right comic info."));
+    label = new QLabel(tr("Please select the right comic info."));
 
     auto l = new QVBoxLayout;
     QWidget *leftWidget = new QWidget;

@@ -1,0 +1,4 @@
+qt_add_executable(reading_list_and_label_entry_test main.cpp)
+yacreader_apply_build_options(reading_list_and_label_entry_test)
+target_link_libraries(reading_list_and_label_entry_test PRIVATE Qt6::Test Qt6::Sql db_helper library_common)
+add_test(NAME reading_list_and_label_entry_test COMMAND reading_list_and_label_entry_test)

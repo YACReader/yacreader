@@ -96,10 +96,10 @@ QSqlDatabase createDatabase(const QString &connectionName)
     query.exec("CREATE TABLE comic (id INTEGER PRIMARY KEY, parentId INTEGER NOT NULL, comicInfoId INTEGER NOT NULL, fileName TEXT NOT NULL, path TEXT, "
                "FOREIGN KEY(parentId) REFERENCES folder(id) ON DELETE CASCADE, FOREIGN KEY(comicInfoId) REFERENCES comic_info(id))");
     query.exec("CREATE TABLE label (id INTEGER PRIMARY KEY, name TEXT, ordering INTEGER, color INTEGER)");
-    query.exec("CREATE TABLE comic_label (id INTEGER PRIMARY KEY, label_id INTEGER, comic_id INTEGER, ordering INTEGER, "
-               "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE)");
-    query.exec("CREATE TABLE comic_reading_list (id INTEGER PRIMARY KEY, reading_list_id INTEGER, comic_id INTEGER, ordering INTEGER, "
-               "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE)");
+    query.exec("CREATE TABLE label_entry (id INTEGER PRIMARY KEY, label_id INTEGER, ordering INTEGER, comic_info_id INTEGER, "
+               "FOREIGN KEY(comic_info_id) REFERENCES comic_info(id) ON DELETE RESTRICT)");
+    query.exec("CREATE TABLE reading_list_entry (id INTEGER PRIMARY KEY, reading_list_id INTEGER, ordering INTEGER, comic_info_id INTEGER, "
+               "FOREIGN KEY(comic_info_id) REFERENCES comic_info(id) ON DELETE RESTRICT)");
 
     query.exec("INSERT INTO folder VALUES (1, 1, 'root', '/', 0, 1, NULL, NULL, NULL, 0, 1, 100, 100)");
     // customImage and type are the folder state that an undo has to bring back. They
@@ -108,8 +108,8 @@ QSqlDatabase createDatabase(const QString &connectionName)
     query.exec("INSERT INTO comic_info VALUES (1, 'hash1', 500)");
     query.exec("INSERT INTO comic VALUES (10, 2, 1, 'asm42.cbz', '/Unsorted/asm42.cbz')");
     query.exec("INSERT INTO label VALUES (1, 'To read', 0, 0)");
-    query.exec("INSERT INTO comic_label VALUES (1, 1, 10, 0)");
-    query.exec("INSERT INTO comic_reading_list VALUES (1, 1, 10, 0)");
+    query.exec("INSERT INTO label_entry VALUES (1, 1, 0, 1)");
+    query.exec("INSERT INTO reading_list_entry VALUES (1, 1, 0, 1)");
 
     return db;
 }
@@ -672,11 +672,11 @@ void OrganizeFilesTest::movesComicRowWithoutLosingCuration()
         QCOMPARE(query.value(1).toString(), QStringLiteral("042.cbz"));
         QCOMPARE(query.value(2).toString(), QStringLiteral("/Marvel/The Amazing Spider-Man/042.cbz"));
 
-        query.exec("SELECT COUNT(*) FROM comic_label WHERE comic_id = 10");
+        query.exec("SELECT COUNT(*) FROM label_entry WHERE comic_info_id = 1");
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toInt(), 1);
 
-        query.exec("SELECT COUNT(*) FROM comic_reading_list WHERE comic_id = 10");
+        query.exec("SELECT COUNT(*) FROM reading_list_entry WHERE comic_info_id = 1");
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toInt(), 1);
 
@@ -690,17 +690,17 @@ void OrganizeFilesTest::movesComicRowWithoutLosingCuration()
         QCOMPARE(query.value(0).toInt(), 0);
 
         // Checked again after the folder row is gone. The cascade runs from folder
-        // to comic and from comic to the curation tables, so this is the assertion
-        // that says the cleanup did not reach the comic.
+        // to comic, so this is the assertion that says the cleanup did not reach the
+        // comic.
         query.exec("SELECT COUNT(*) FROM comic WHERE id = 10");
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toInt(), 1);
 
-        query.exec("SELECT COUNT(*) FROM comic_label WHERE comic_id = 10");
+        query.exec("SELECT COUNT(*) FROM label_entry WHERE comic_info_id = 1");
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toInt(), 1);
 
-        query.exec("SELECT COUNT(*) FROM comic_reading_list WHERE comic_id = 10");
+        query.exec("SELECT COUNT(*) FROM reading_list_entry WHERE comic_info_id = 1");
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toInt(), 1);
     }
@@ -719,7 +719,7 @@ void OrganizeFilesTest::keepsAFolderThatStillHoldsAComic()
         QSqlQuery seed(db);
         seed.exec("INSERT INTO comic_info VALUES (2, 'hash2', 600)");
         seed.exec("INSERT INTO comic VALUES (11, 2, 2, 'gone.cbz', '/Unsorted/gone.cbz')");
-        seed.exec("INSERT INTO comic_label VALUES (2, 1, 11, 0)");
+        seed.exec("INSERT INTO label_entry VALUES (2, 1, 1, 2)");
 
         const auto parentId = DBHelper::ensureFolderPath(QStringLiteral("/Marvel"), db);
         QVERIFY(DBHelper::moveComic(10, parentId, QStringLiteral("042.cbz"), QStringLiteral("/Marvel/042.cbz"), db));
@@ -739,7 +739,7 @@ void OrganizeFilesTest::keepsAFolderThatStillHoldsAComic()
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toInt(), 1);
 
-        query.exec("SELECT COUNT(*) FROM comic_label WHERE comic_id = 11");
+        query.exec("SELECT COUNT(*) FROM label_entry WHERE comic_info_id = 2");
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toInt(), 1);
     }
@@ -964,11 +964,11 @@ void OrganizeFilesTest::undoPutsTheDatabaseBackExactlyAsItWas()
         QCOMPARE(query.value(1).toString(), QStringLiteral("asm42.cbz"));
         QCOMPARE(query.value(2).toString(), QStringLiteral("/Unsorted/asm42.cbz"));
 
-        query.exec("SELECT COUNT(*) FROM comic_label WHERE comic_id = 10");
+        query.exec("SELECT COUNT(*) FROM label_entry WHERE comic_info_id = 1");
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toInt(), 1);
 
-        query.exec("SELECT COUNT(*) FROM comic_reading_list WHERE comic_id = 10");
+        query.exec("SELECT COUNT(*) FROM reading_list_entry WHERE comic_info_id = 1");
         QVERIFY(query.next());
         QCOMPARE(query.value(0).toInt(), 1);
     }

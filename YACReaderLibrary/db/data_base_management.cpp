@@ -2,6 +2,7 @@
 
 #include "QsLog.h"
 #include "db_helper.h"
+#include "descriptive_comic_metadata.h"
 #include "initial_comic_info_extractor.h"
 
 #include <QImageReader>
@@ -15,13 +16,36 @@
 #ifdef Q_OS_WIN
 #include <windows.h>
 #else
+#include <cerrno>
 #include <cstdio>
+#include <fcntl.h>
+#include <sys/file.h>
+#include <unistd.h>
 #endif
 
 using namespace YACReader;
 
 namespace {
 const auto backupTimestampFormat = QStringLiteral("yyyyMMdd-HHmmss");
+
+// QLockFile keeps a native lock on its file for as long as its owner runs
+bool lockFileIsHeld(const QString &path)
+{
+#ifdef Q_OS_WIN
+    const auto handle = CreateFileW(reinterpret_cast<const wchar_t *>(QDir::toNativeSeparators(path).utf16()), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (handle == INVALID_HANDLE_VALUE)
+        return GetLastError() == ERROR_SHARING_VIOLATION;
+    CloseHandle(handle);
+    return false;
+#else
+    const auto fd = ::open(QFile::encodeName(path).constData(), O_RDONLY | O_CLOEXEC);
+    if (fd < 0)
+        return false;
+    const auto held = ::flock(fd, LOCK_SH | LOCK_NB) == -1 && errno == EWOULDBLOCK;
+    ::close(fd);
+    return held;
+#endif
+}
 
 QString backupReasonName(DatabaseBackupReason reason)
 {
@@ -275,20 +299,50 @@ LibraryMaintenanceLock::~LibraryMaintenanceLock() = default;
 
 bool LibraryMaintenanceLock::tryLockFile(QLockFile &lock, bool removeStaleLock)
 {
+    const auto path = lock.fileName();
+    // recovery cannot remove a folder, so it must never be reported as contention
+    if (QFileInfo(path).isDir()) {
+        lastError = QLockFile::UnknownError;
+        failedLockPath = path;
+        return false;
+    }
     if (lock.tryLock())
         return true;
-    if (removeStaleLock && lock.removeStaleLockFile() && lock.tryLock())
+    lastError = lock.error();
+    failedLockPath = path;
+    if (lastError != QLockFile::LockFailedError)
+        return false;
+    const auto record = captureLockInfo(lock);
+    if (!removeStaleLock || currentHolderIsRunning)
+        return false;
+    if (expectedLocks.contains(path) && expectedLocks.value(path) != record) {
+        recoveryError = QCoreApplication::translate("LibraryMaintenanceLock", "The library lock owner changed. Retry the operation and review the new owner before recovering it.");
+        return false;
+    }
+    if (!lock.removeStaleLockFile()) {
+        recoveryError = QCoreApplication::translate("LibraryMaintenanceLock", "Unable to remove the maintenance lock: %1. Make sure the file is not read-only and that you can write to the library data folder, then retry.").arg(path);
+        return false;
+    }
+    if (lock.tryLock()) {
+        lastError = QLockFile::NoError;
+        failedLockPath.clear();
         return true;
-    captureLockInfo(lock);
-    failedLockPath = lock.fileName();
+    }
+    lastError = lock.error();
+    if (lastError == QLockFile::LockFailedError)
+        captureLockInfo(lock);
     return false;
 }
 
 bool LibraryMaintenanceLock::tryLock(bool removeStaleLock)
 {
+    expectedLocks = removeStaleLock ? observedLocks : QHash<QString, QByteArray>();
+    observedLocks.clear();
+    recoveryError.clear();
     failedLockPath.clear();
+    lastError = QLockFile::NoError;
     currentHolderInfo.clear();
-    currentHolderIsRunningLocally = false;
+    currentHolderIsRunning = false;
     if (!tryLockFile(*maintenanceLock, removeStaleLock))
         return false;
     if (!tryLockFile(*legacyRepairLock, removeStaleLock)) {
@@ -298,21 +352,47 @@ bool LibraryMaintenanceLock::tryLock(bool removeStaleLock)
     return true;
 }
 
-void LibraryMaintenanceLock::captureLockInfo(QLockFile &lock)
+QByteArray LibraryMaintenanceLock::captureLockInfo(QLockFile &lock)
 {
+    QFile file(lock.fileName());
+    const auto record = file.open(QIODevice::ReadOnly) ? file.readAll() : QByteArray();
+    observedLocks.insert(lock.fileName(), record);
+    currentHolderInfo.clear();
+    // a record without its native lock is stale, even if QLockFile could not remove it
+    currentHolderIsRunning = lockFileIsHeld(lock.fileName());
+
     qint64 pid = 0;
     QString hostname;
     QString appname;
-    if (lock.getLockInfo(&pid, &hostname, &appname)) {
+    if (lock.getLockInfo(&pid, &hostname, &appname))
         currentHolderInfo = QString("%1 (PID %2) on %3").arg(appname).arg(pid).arg(hostname.isEmpty() ? QString("unknown host") : hostname);
-        currentHolderIsRunningLocally = !hostname.isEmpty() && hostname == QSysInfo::machineHostName();
-    }
+    return record;
 }
 
 QString LibraryMaintenanceLock::errorString() const
 {
-    return QString("Another maintenance operation is using this library (%1)%2")
-            .arg(failedLockPath, currentHolderInfo.isEmpty() ? QString() : QString(": %1").arg(currentHolderInfo));
+    if (!recoveryError.isEmpty())
+        return recoveryError;
+    if (lastError == QLockFile::NoError)
+        return { };
+    if (QFileInfo(failedLockPath).isDir())
+        return QCoreApplication::translate("LibraryMaintenanceLock", "A folder is occupying the maintenance lock file path: %1. Rename or move that folder before retrying.").arg(failedLockPath);
+    if (lastError == QLockFile::PermissionError)
+        return QCoreApplication::translate("LibraryMaintenanceLock", "Unable to create the library lock file: %1. Check write permissions for the library data folder.").arg(failedLockPath);
+    if (!QFileInfo(failedLockPath).absoluteDir().exists())
+        return QCoreApplication::translate("LibraryMaintenanceLock", "The library data folder is missing: %1. Restore the folder or recreate the library before updating it.")
+                .arg(QFileInfo(failedLockPath).absolutePath());
+    if (lastError != QLockFile::LockFailedError)
+        return QCoreApplication::translate("LibraryMaintenanceLock", "Unable to create the library lock file: %1. Check available disk space and access to the library data folder.").arg(failedLockPath);
+    const auto holder = currentHolderInfo.isEmpty() ? QString() : QString(": %1").arg(currentHolderInfo);
+    if (!currentHolderIsRunning)
+        return QCoreApplication::translate("LibraryMaintenanceLock", "The library has a maintenance lock whose owner could not be verified (%1)%2").arg(failedLockPath, holder);
+    return QCoreApplication::translate("LibraryMaintenanceLock", "Another maintenance operation is using this library (%1)%2").arg(failedLockPath, holder);
+}
+
+QLockFile::LockError LibraryMaintenanceLock::error() const
+{
+    return lastError;
 }
 
 QString LibraryMaintenanceLock::holderInfo() const
@@ -320,9 +400,27 @@ QString LibraryMaintenanceLock::holderInfo() const
     return currentHolderInfo;
 }
 
-bool LibraryMaintenanceLock::holderIsRunningLocally() const
+bool LibraryMaintenanceLock::holderIsRunning() const
 {
-    return currentHolderIsRunningLocally;
+    return currentHolderIsRunning;
+}
+
+QString LibraryMaintenanceLock::recoveryToken() const
+{
+    if (lastError != QLockFile::LockFailedError || observedLocks.isEmpty())
+        return { };
+    QStringList paths = observedLocks.keys();
+    paths.sort();
+    QByteArray serialized;
+    QDataStream stream(&serialized, QIODevice::WriteOnly);
+    for (const auto &path : paths)
+        stream << path << observedLocks.value(path);
+    return QString::fromLatin1(QCryptographicHash::hash(serialized, QCryptographicHash::Sha256).toHex());
+}
+
+LibraryMaintenanceLockFailure LibraryMaintenanceLock::failure() const
+{
+    return { lastError, currentHolderIsRunning, currentHolderInfo, recoveryToken() };
 }
 
 static QString fields = "title,"
@@ -544,6 +642,9 @@ bool DataBaseManagement::createTables(QSqlDatabase &database)
 
         // 8.0> tables
         success = success && DataBaseManagement::createV8Tables(database);
+
+        // One schema change for entries, placeholders, smart lists, and list folders.
+        success = success && DataBaseManagement::createV10_5Tables(database);
     }
 
     return success;
@@ -742,9 +843,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                   "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
                                                   "PRIMARY KEY(label_id, comic_id))");
 
-        QSqlQuery queryIndexComicLabel(database);
-        success = success && queryIndexComicLabel.exec("CREATE INDEX comic_label_ordering_index ON label (ordering)");
-
         // READING LIST
         QSqlQuery queryReadingList(database);
         success = success && queryReadingList.exec("CREATE TABLE reading_list ("
@@ -757,9 +855,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                    "manga BOOLEAN DEFAULT 0, " // TODO never used, replace with `type`
                                                    "FOREIGN KEY(parentId) REFERENCES reading_list(id) ON DELETE CASCADE)");
 
-        QSqlQuery queryIndexReadingList(database);
-        success = success && queryIndexReadingList.exec("CREATE INDEX reading_list_ordering_index ON label (ordering)");
-
         // COMIC READING LIST
         QSqlQuery queryComicReadingList(database);
         success = success && queryComicReadingList.exec("CREATE TABLE comic_reading_list ("
@@ -769,9 +864,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                         "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
                                                         "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE, "
                                                         "PRIMARY KEY(reading_list_id, comic_id))");
-
-        QSqlQuery queryIndexComicReadingList(database);
-        success = success && queryIndexComicReadingList.exec("CREATE INDEX comic_reading_list_ordering_index ON label (ordering)");
 
         // DEFAULT READING LISTS
         QSqlQuery queryDefaultReadingList(database);
@@ -791,9 +883,6 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
                                                                "FOREIGN KEY(comic_id) REFERENCES comic(id) ON DELETE CASCADE,"
                                                                "PRIMARY KEY(default_reading_list_id, comic_id))");
 
-        QSqlQuery queryIndexComicDefaultReadingList(database);
-        success = success && queryIndexComicDefaultReadingList.exec("CREATE INDEX comic_default_reading_list_ordering_index ON label (ordering)");
-
         // INSERT DEFAULT READING LISTS
         QSqlQuery queryInsertDefaultReadingList(database);
         // if(!queryInsertDefaultReadingList.prepare())
@@ -803,6 +892,183 @@ bool DataBaseManagement::createV8Tables(QSqlDatabase &database)
         success = success && queryInsertDefaultReadingList.exec("INSERT INTO default_reading_list (name) VALUES (\"Favorites\")");
 
         // Reading doesn't need its onw list
+    }
+    return success;
+}
+
+bool DataBaseManagement::createPlaceholderTable(QSqlDatabase &database)
+{
+    QStringList columns = { "id INTEGER PRIMARY KEY AUTOINCREMENT" };
+    for (const auto &column : DescriptiveComicMetadata::columns()) {
+        columns.append(QString::fromLatin1(column.name) + " " + QString::fromLatin1(column.sqlType));
+    }
+    columns.append("coverKey TEXT");
+
+    QSqlQuery queryPlaceholder(database);
+    return queryPlaceholder.exec("CREATE TABLE placeholder (" + columns.join(", ") + ")");
+}
+
+bool DataBaseManagement::createReadingListEntryTable(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        QSqlQuery queryReadingListEntry(database);
+        success = success && queryReadingListEntry.exec("CREATE TABLE reading_list_entry ("
+                                                        "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                        "reading_list_id INTEGER NOT NULL, "
+                                                        "ordering INTEGER NOT NULL, "
+                                                        "comic_info_id INTEGER, "
+                                                        "placeholder_id INTEGER, "
+                                                        "last_known_name TEXT, "
+                                                        "last_known_path TEXT, "
+                                                        // the CBL book of an imported entry, as in the file, and its format (xml or json)
+                                                        "source TEXT, "
+                                                        "source_format TEXT, "
+                                                        "FOREIGN KEY(reading_list_id) REFERENCES reading_list(id) ON DELETE CASCADE, "
+                                                        "FOREIGN KEY(comic_info_id) REFERENCES comic_info(id) ON DELETE RESTRICT, "
+                                                        "FOREIGN KEY(placeholder_id) REFERENCES placeholder(id) ON DELETE RESTRICT, "
+                                                        "CHECK ((comic_info_id IS NOT NULL AND placeholder_id IS NULL) "
+                                                        "OR (comic_info_id IS NULL AND placeholder_id IS NOT NULL)))");
+
+        QSqlQuery queryIndexReadingListEntry(database);
+        success = success && queryIndexReadingListEntry.exec("CREATE INDEX reading_list_entry_ordering_index ON reading_list_entry (reading_list_id, ordering)");
+        success = success && queryIndexReadingListEntry.exec("CREATE INDEX reading_list_entry_comic_info_index ON reading_list_entry (comic_info_id)");
+        success = success && queryIndexReadingListEntry.exec("CREATE INDEX reading_list_entry_placeholder_index ON reading_list_entry (placeholder_id)");
+    }
+    return success;
+}
+
+bool DataBaseManagement::createLabelEntryTable(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        QSqlQuery queryLabelEntry(database);
+        success = success && queryLabelEntry.exec("CREATE TABLE label_entry ("
+                                                  "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                  "label_id INTEGER NOT NULL, "
+                                                  "ordering INTEGER NOT NULL, "
+                                                  "comic_info_id INTEGER, "
+                                                  "placeholder_id INTEGER, "
+                                                  "last_known_name TEXT, "
+                                                  "last_known_path TEXT, "
+                                                  "FOREIGN KEY(label_id) REFERENCES label(id) ON DELETE CASCADE, "
+                                                  "FOREIGN KEY(comic_info_id) REFERENCES comic_info(id) ON DELETE RESTRICT, "
+                                                  "FOREIGN KEY(placeholder_id) REFERENCES placeholder(id) ON DELETE RESTRICT, "
+                                                  "CHECK ((comic_info_id IS NOT NULL AND placeholder_id IS NULL) "
+                                                  "OR (comic_info_id IS NULL AND placeholder_id IS NOT NULL)))");
+
+        QSqlQuery queryIndexLabelEntry(database);
+        success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_ordering_index ON label_entry (label_id, ordering)");
+        success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_comic_info_index ON label_entry (comic_info_id)");
+        success = success && queryIndexLabelEntry.exec("CREATE INDEX label_entry_placeholder_index ON label_entry (placeholder_id)");
+    }
+    return success;
+}
+
+bool DataBaseManagement::createSmartListTable(QSqlDatabase &database)
+{
+    QSqlQuery query(database);
+    return query.exec("CREATE TABLE smart_list ("
+                      "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                      "name TEXT NOT NULL, "
+                      "query TEXT NOT NULL, "
+                      "ordering INTEGER NOT NULL)");
+}
+
+// deleting a folder deletes its folders and lists, and so the child lists and entries of its reading lists
+bool DataBaseManagement::createListFolderTables(QSqlDatabase &database)
+{
+    bool success = true;
+    for (const auto &[folderTable, listTable] : { std::pair { "reading_list_folder", "reading_list" }, std::pair { "smart_list_folder", "smart_list" } }) {
+        QSqlQuery query(database);
+        success = success && query.exec(QString("CREATE TABLE %1 ("
+                                                "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                                                "parent_id INTEGER, "
+                                                "name TEXT NOT NULL, "
+                                                "ordering INTEGER NOT NULL DEFAULT 0, "
+                                                "FOREIGN KEY(parent_id) REFERENCES %1(id) ON DELETE CASCADE)")
+                                                .arg(folderTable));
+        success = success && query.exec(QString("CREATE INDEX %1_parent_index ON %1 (parent_id)").arg(folderTable));
+        success = success && addColumns(listTable, { QString("folder_id INTEGER REFERENCES %1(id) ON DELETE CASCADE").arg(folderTable) }, database);
+        success = success && query.exec(QString("CREATE INDEX %1_folder_index ON %1 (folder_id)").arg(listTable));
+    }
+    return success;
+}
+
+bool DataBaseManagement::createFolderPlaceholderTable(QSqlDatabase &database)
+{
+    QSqlQuery query(database);
+    return query.exec("CREATE TABLE folder_placeholder ("
+                      "folder_id INTEGER NOT NULL, "
+                      "placeholder_id INTEGER NOT NULL, "
+                      "FOREIGN KEY(folder_id) REFERENCES folder(id) ON DELETE CASCADE, "
+                      "FOREIGN KEY(placeholder_id) REFERENCES placeholder(id) ON DELETE RESTRICT, "
+                      "PRIMARY KEY(folder_id, placeholder_id))") &&
+            query.exec("CREATE INDEX folder_placeholder_placeholder_index ON folder_placeholder (placeholder_id)");
+}
+
+bool DataBaseManagement::createComicDeleteTrigger(QSqlDatabase &database)
+{
+    QSqlQuery queryComicDeleteTrigger(database);
+    return queryComicDeleteTrigger.exec("CREATE TRIGGER comic_delete_last_known_file AFTER DELETE ON comic "
+                                        "BEGIN "
+                                        "UPDATE reading_list_entry SET last_known_name = OLD.fileName, last_known_path = OLD.path "
+                                        "WHERE comic_info_id = OLD.comicInfoId; "
+                                        "UPDATE label_entry SET last_known_name = OLD.fileName, last_known_path = OLD.path "
+                                        "WHERE comic_info_id = OLD.comicInfoId; "
+                                        "END");
+}
+
+bool DataBaseManagement::createV10_5Tables(QSqlDatabase &database)
+{
+    bool success = true;
+    {
+        success = success && createPlaceholderTable(database);
+        success = success && createReadingListEntryTable(database);
+        success = success && createLabelEntryTable(database);
+
+        // Rows whose list, label, comic or comic_info no longer exists are not copied.
+        QSqlQuery copyReadingListEntries(database);
+        success = success && copyReadingListEntries.exec("INSERT INTO reading_list_entry (reading_list_id, ordering, comic_info_id) "
+                                                         "SELECT crl.reading_list_id, "
+                                                         "ROW_NUMBER() OVER (PARTITION BY crl.reading_list_id ORDER BY crl.ordering IS NULL, crl.ordering, crl.rowid) - 1, "
+                                                         "c.comicInfoId "
+                                                         "FROM comic_reading_list crl "
+                                                         "INNER JOIN reading_list rl ON rl.id = crl.reading_list_id "
+                                                         "INNER JOIN comic c ON c.id = crl.comic_id "
+                                                         "INNER JOIN comic_info ci ON ci.id = c.comicInfoId "
+                                                         "ORDER BY crl.reading_list_id, crl.ordering IS NULL, crl.ordering, crl.rowid");
+
+        QSqlQuery copyLabelEntries(database);
+        success = success && copyLabelEntries.exec("INSERT INTO label_entry (label_id, ordering, comic_info_id) "
+                                                   "SELECT cl.label_id, "
+                                                   "ROW_NUMBER() OVER (PARTITION BY cl.label_id ORDER BY cl.ordering IS NULL, cl.ordering, cl.rowid) - 1, "
+                                                   "c.comicInfoId "
+                                                   "FROM comic_label cl "
+                                                   "INNER JOIN label l ON l.id = cl.label_id "
+                                                   "INNER JOIN comic c ON c.id = cl.comic_id "
+                                                   "INNER JOIN comic_info ci ON ci.id = c.comicInfoId "
+                                                   "ORDER BY cl.label_id, cl.ordering IS NULL, cl.ordering, cl.rowid");
+
+        QSqlQuery dropOldTables(database);
+        success = success && dropOldTables.exec("DROP TABLE comic_reading_list");
+        success = success && dropOldTables.exec("DROP TABLE comic_label");
+
+        QSqlQuery queryIndexComicInfoId(database);
+        success = success && queryIndexComicInfoId.exec("CREATE INDEX comic_comic_info_id_index ON comic (comicInfoId)");
+
+        success = success && createComicDeleteTrigger(database);
+
+        success = success && createSmartListTable(database);
+        success = success && createListFolderTables(database);
+        success = success && createFolderPlaceholderTable(database);
+
+        // Upgrades run with foreign keys off, so the new constraints are checked here.
+        QSqlQuery checkReadingListEntries(database);
+        success = success && checkReadingListEntries.exec("PRAGMA foreign_key_check(reading_list_entry)") && !checkReadingListEntries.next();
+
+        QSqlQuery checkLabelEntries(database);
+        success = success && checkLabelEntries.exec("PRAGMA foreign_key_check(label_entry)") && !checkLabelEntries.next();
     }
     return success;
 }
@@ -1327,6 +1593,11 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
         }
     }
 
+    QString recoveryError;
+    if (!recoverInterruptedRestore(libraryPath, &recoveryError, true)) {
+        QLOG_ERROR() << "Database upgrade recovery failed:" << recoveryError;
+        return false;
+    }
     QString libraryDatabasePath = LibraryPaths::libraryDatabasePath(libraryPath);
     QString backupError;
     if (!backupLibrary(libraryPath, DatabaseBackupReason::BeforeUpgrade, &backupError)) {
@@ -1343,6 +1614,7 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
     const bool pre9_13 = compareVersions(oldVersion, "9.13.0") < 0;
     const bool pre9_14 = compareVersions(oldVersion, "9.14.0") < 0;
     const bool pre9_16 = compareVersions(oldVersion, "9.16.0") < 0;
+    const bool pre10_5 = compareVersions(oldVersion, "10.5.0") < 0;
 
     QString connectionName = "";
     bool returnValue = true;
@@ -1430,8 +1702,6 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                         selectQuery.prepare("SELECT id, hash FROM comic_info");
                         selectQuery.exec();
 
-                        db.transaction();
-
                         QSqlQuery updateCoverInfo(db);
                         updateCoverInfo.prepare("UPDATE comic_info SET coverSizeRatio = :coverSizeRatio WHERE id = :id");
 
@@ -1446,8 +1716,6 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
 
                             updateCoverInfo.exec();
                         }
-
-                        db.commit();
                     }
                 }
 
@@ -1559,6 +1827,16 @@ bool DataBaseManagement::updateToCurrentVersion(const QString &libraryPath, bool
                     }
                 }
 
+                if (pre10_5) {
+                    returnValue = returnValue && createV10_5Tables(db);
+
+                    // Libraries created before 10.5 have these ON label (ordering), duplicates of label_ordering_index.
+                    QSqlQuery dropWrongIndexes(db);
+                    for (const auto index : { "comic_label_ordering_index", "reading_list_ordering_index", "comic_reading_list_ordering_index", "comic_default_reading_list_ordering_index" }) {
+                        returnValue = returnValue && dropWrongIndexes.exec(QString("DROP INDEX IF EXISTS %1").arg(index));
+                    }
+                }
+
                 if (returnValue) {
                     QSqlQuery updateVersion(db);
                     updateVersion.prepare("UPDATE db_info SET "
@@ -1621,8 +1899,9 @@ bool DataBaseManagement::backupLibrary(const QString &libraryPath, DatabaseBacku
     }
 
     const auto reasonName = backupReasonName(reason);
-    const auto finalPath = destinationPath.isEmpty()
-            ? backupsDirectory.filePath(QString("library-%1-db-%2-%3.ydb").arg(QDateTime::currentDateTime().toString(backupTimestampFormat), sourceVersion, reasonName))
+    const auto timestamp = QDateTime::currentDateTime().toString(backupTimestampFormat);
+    auto finalPath = destinationPath.isEmpty()
+            ? backupsDirectory.filePath(QString("library-%1-db-%2-%3.ydb").arg(timestamp, sourceVersion, reasonName))
             : QDir::cleanPath(destinationPath);
     if (QFileInfo(finalPath).absoluteFilePath() == QFileInfo(databasePath).absoluteFilePath()) {
         if (error)
@@ -1630,19 +1909,18 @@ bool DataBaseManagement::backupLibrary(const QString &libraryPath, DatabaseBacku
         return false;
     }
 
-    QString backupPath = finalPath;
-    if (!destinationPath.isEmpty()) {
-        QTemporaryFile temporary(finalPath + ".XXXXXX.tmp");
-        temporary.setAutoRemove(false);
-        if (!temporary.open()) {
-            if (error)
-                *error = temporary.errorString();
-            return false;
-        }
-        backupPath = temporary.fileName();
-        temporary.close();
-        temporary.remove();
+    // VACUUM writes a private staging file. A failed/concurrent attempt must
+    // never remove a completed backup that happens to share its timestamp.
+    QTemporaryFile temporary(finalPath + ".XXXXXX.tmp");
+    temporary.setAutoRemove(false);
+    if (!temporary.open()) {
+        if (error)
+            *error = temporary.errorString();
+        return false;
     }
+    const auto backupPath = temporary.fileName();
+    temporary.close();
+    temporary.remove();
     if (QFile::exists(backupPath)) {
         if (error)
             *error = QString("Backup file already exists: %1").arg(backupPath);
@@ -1664,6 +1942,18 @@ bool DataBaseManagement::backupLibrary(const QString &libraryPath, DatabaseBacku
         QLOG_ERROR() << "Database backup replacement failed" << finalPath << (error ? *error : QString());
         return false;
     }
+    if (destinationPath.isEmpty()) {
+        quint64 collision = 0;
+        while (!QFile::rename(backupPath, finalPath)) {
+            if (!QFile::exists(finalPath)) {
+                if (error)
+                    *error = QString("Unable to install database backup: %1").arg(finalPath);
+                QFile::remove(backupPath);
+                return false;
+            }
+            finalPath = backupsDirectory.filePath(QString("library-%1-%2-db-%3-%4.ydb").arg(timestamp).arg(++collision, 6, 10, QLatin1Char('0')).arg(sourceVersion, reasonName));
+        }
+    }
 
     QLOG_INFO() << "Database backup created" << finalPath;
     if (destinationPath.isEmpty())
@@ -1672,6 +1962,11 @@ bool DataBaseManagement::backupLibrary(const QString &libraryPath, DatabaseBacku
 }
 
 DatabaseRestoreResult DataBaseManagement::restoreLibrary(const QString &libraryPath, const QString &backupPath, bool allowInvalidCurrent, bool removeStaleLock)
+{
+    return restoreLibraryImpl(libraryPath, backupPath, allowInvalidCurrent, removeStaleLock, false);
+}
+
+DatabaseRestoreResult DataBaseManagement::restoreLibraryImpl(const QString &libraryPath, const QString &backupPath, bool allowInvalidCurrent, bool removeStaleLock, bool maintenanceLockHeld)
 {
     DatabaseRestoreResult result;
     QString selectedVersion;
@@ -1696,13 +1991,16 @@ DatabaseRestoreResult DataBaseManagement::restoreLibrary(const QString &libraryP
         return result;
     }
 
-    LibraryMaintenanceLock lock(libraryPath);
-    if (!lock.tryLock(removeStaleLock)) {
-        result.status = DatabaseRestoreStatus::LockFailed;
-        result.error = lock.errorString();
-        result.lockHolderInfo = lock.holderInfo();
-        result.lockHolderIsRunningLocally = lock.holderIsRunningLocally();
-        return result;
+    std::unique_ptr<LibraryMaintenanceLock> lock;
+    if (!maintenanceLockHeld) {
+        lock = std::make_unique<LibraryMaintenanceLock>(libraryPath);
+        if (!lock->tryLock(removeStaleLock)) {
+            result.status = lock->error() == QLockFile::LockFailedError ? DatabaseRestoreStatus::LockFailed : DatabaseRestoreStatus::Failed;
+            result.error = lock->errorString();
+            result.lockHolderInfo = lock->holderInfo();
+            result.lockHolderIsRunningLocally = lock->holderIsRunning();
+            return result;
+        }
     }
 
     if (!recoverInterruptedRestore(libraryPath, &result.error, true)) {
@@ -1811,8 +2109,10 @@ DatabaseRestoreResult DataBaseManagement::restoreLibrary(const QString &libraryP
     return result;
 }
 
-bool DataBaseManagement::recoverInterruptedRestore(const QString &libraryPath, QString *error, bool maintenanceLockHeld)
+bool DataBaseManagement::recoverInterruptedRestore(const QString &libraryPath, QString *error, bool maintenanceLockHeld, QLockFile::LockError *lockError)
 {
+    if (lockError)
+        *lockError = QLockFile::NoError;
     const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
     const auto stagedPath = stagedDatabasePath(databasePath);
     const auto rollbackPath = rollbackDatabasePath(databasePath);
@@ -1824,6 +2124,8 @@ bool DataBaseManagement::recoverInterruptedRestore(const QString &libraryPath, Q
     if (!maintenanceLockHeld) {
         lock = std::make_unique<LibraryMaintenanceLock>(libraryPath);
         if (!lock->tryLock()) {
+            if (lockError)
+                *lockError = lock->error();
             if (error)
                 *error = lock->errorString();
             return false;
@@ -1876,7 +2178,16 @@ bool DataBaseManagement::recoverInterruptedRestore(const QString &libraryPath, Q
 
 bool DataBaseManagement::prepareForRecreation(const QString &libraryPath, QString *error, bool maintenanceLockHeld)
 {
-    if (!recoverInterruptedRestore(libraryPath, error, maintenanceLockHeld))
+    std::unique_ptr<LibraryMaintenanceLock> lock;
+    if (!maintenanceLockHeld) {
+        lock = std::make_unique<LibraryMaintenanceLock>(libraryPath);
+        if (!lock->tryLock()) {
+            if (error)
+                *error = lock->errorString();
+            return false;
+        }
+    }
+    if (!recoverInterruptedRestore(libraryPath, error, true))
         return false;
 
     const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
@@ -1909,6 +2220,16 @@ bool DataBaseManagement::isLibraryDatabaseValid(const QString &libraryPath)
 DatabaseSalvageResult DataBaseManagement::salvageLibrary(const QString &libraryPath, bool removeStaleLock)
 {
     DatabaseSalvageResult result;
+    LibraryMaintenanceLock lock(libraryPath);
+    if (!lock.tryLock(removeStaleLock)) {
+        result.status = lock.error() == QLockFile::LockFailedError ? DatabaseSalvageStatus::LockFailed : DatabaseSalvageStatus::Failed;
+        result.error = lock.errorString();
+        result.lockHolderInfo = lock.holderInfo();
+        result.lockHolderIsRunningLocally = lock.holderIsRunning();
+        return result;
+    }
+    if (!recoverInterruptedRestore(libraryPath, &result.error, true))
+        return result;
     const auto databasePath = LibraryPaths::libraryDatabasePath(libraryPath);
     if (!QFile::exists(databasePath)) {
         result.error = QString("Library database not found: %1").arg(databasePath);
@@ -1921,15 +2242,6 @@ DatabaseSalvageResult DataBaseManagement::salvageLibrary(const QString &libraryP
 
     const auto salvagePath = salvageDatabasePath(databasePath);
     {
-        LibraryMaintenanceLock lock(libraryPath);
-        if (!lock.tryLock(removeStaleLock)) {
-            result.status = DatabaseSalvageStatus::LockFailed;
-            result.error = lock.errorString();
-            result.lockHolderInfo = lock.holderInfo();
-            result.lockHolderIsRunningLocally = lock.holderIsRunningLocally();
-            return result;
-        }
-
         result.preservedDatabasePath = damagedDatabasePath(libraryPath);
         if (!copyDatabaseUnit(databasePath, result.preservedDatabasePath, &result.error)) {
             result.preservedDatabasePath.clear();
@@ -1971,9 +2283,9 @@ DatabaseSalvageResult DataBaseManagement::salvageLibrary(const QString &libraryP
     }
 
     // the rebuilt database is installed through the restore machinery to get its
-    // staging, rollback, and crash-recovery guarantees; restoreLibrary acquires
-    // the maintenance lock itself, so it is released above
-    const auto restoreResult = restoreLibrary(libraryPath, salvagePath, true);
+    // staging, rollback, and crash-recovery guarantees. Keep the same lock:
+    // another update must not enter between rebuilding and installing it.
+    const auto restoreResult = restoreLibraryImpl(libraryPath, salvagePath, true, false, true);
     QFile::remove(salvagePath);
     if (!restoreResult.success()) {
         result.error = restoreResult.error;

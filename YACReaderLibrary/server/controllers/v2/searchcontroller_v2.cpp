@@ -11,6 +11,7 @@
 
 #include <QJsonDocument>
 #include <QSqlDatabase>
+#include <QSqlRecord>
 #include <QUrl>
 
 SearchController::SearchController() { }
@@ -52,7 +53,7 @@ void SearchController::serviceSearch(int libraryId, const QString &query, stefan
         // comics
         try {
             auto sqlQuery = comicsSearchQuery(db, query);
-            getComics(libraryId, libraryUuid, db, sqlQuery, results);
+            getComics(libraryId, libraryUuid, sqlQuery, results);
         } catch (const std::exception &e) {
         }
 
@@ -68,32 +69,17 @@ void SearchController::serviceSearch(int libraryId, const QString &query, stefan
 // The results use the same JSON as the folder content, so the clients get the same fields (parent_id, path, etc.)
 void SearchController::getFolders(int libraryId, const QUuid &libraryUuid, QSqlQuery &sqlQuery, QJsonArray &items)
 {
-    // readFolderFromQuery reads the next row, knownId is false when there are no more rows
-    while (true) {
-        Folder folder;
-        DBHelper::readFolderFromQuery(folder, sqlQuery);
-        if (!folder.knownId) {
-            break;
-        }
-
-        items.append(YACReaderServerDataHelper::folderToJSON(libraryId, libraryUuid, folder));
+    const auto indexes = Folder::columnIndexes(sqlQuery.record(), "f");
+    while (sqlQuery.next()) {
+        items.append(YACReaderServerDataHelper::folderToJSON(libraryId, libraryUuid, Folder::fromQuery(sqlQuery, indexes)));
     }
 }
 
-void SearchController::getComics(int libraryId, const QUuid &libraryUuid, QSqlDatabase &db, QSqlQuery &sqlQuery, QJsonArray &items)
+void SearchController::getComics(int libraryId, const QUuid &libraryUuid, QSqlQuery &sqlQuery, QJsonArray &items)
 {
-    // The search query already contains the comic fields; load only the metadata, like in the folder content.
+    const auto indexes = ComicDB::columnIndexes(sqlQuery.record(), "c", "ci");
     while (sqlQuery.next()) {
-        ComicDB comic;
-        comic.id = sqlQuery.value("id").toULongLong();
-        comic.parentId = sqlQuery.value("parentId").toULongLong();
-        comic.name = sqlQuery.value("fileName").toString();
-        comic.path = sqlQuery.value("path").toString();
-        comic.info = DBHelper::loadComicInfo(sqlQuery.value("hash").toString(), db);
-        if (!comic.info.existOnDb) {
-            continue;
-        }
-
+        const auto comic = ComicDB::fromQuery(sqlQuery, indexes);
         items.append(YACReaderServerDataHelper::comicToJSON(libraryId, libraryUuid, comic));
     }
 }

@@ -137,6 +137,8 @@ int main(int argc, char *argv[])
     QCommandLineOption comicId("comicId", "", "comicId");
     QCommandLineOption libraryId("libraryId", "", "libraryId");
     QCommandLineOption readingListId("readingListId", "", "readingListId");
+    QCommandLineOption readingListEntryId("readingListEntryId", "", "readingListEntryId");
+    readingListEntryId.setFlags(QCommandLineOption::HiddenFromHelp);
     // hide comicId and libraryId from help
     comicId.setFlags(QCommandLineOption::HiddenFromHelp);
     libraryId.setFlags(QCommandLineOption::HiddenFromHelp);
@@ -146,6 +148,7 @@ int main(int argc, char *argv[])
     parser.addOption(comicId);
     parser.addOption(libraryId);
     parser.addOption(readingListId);
+    parser.addOption(readingListEntryId);
     parser.process(app);
 
     QString destLog = YACReader::getSettingsPath() + "/yacreader.log";
@@ -186,7 +189,7 @@ int main(int argc, char *argv[])
         OpenComicSource source;
 
         if (parser.isSet(readingListId)) {
-            source = OpenComicSource { OpenComicSource::ReadingList, parser.value(readingListId).toULongLong() };
+            source = OpenComicSource { OpenComicSource::ReadingList, parser.value(readingListId).toULongLong(), parser.value(readingListEntryId).toULongLong() };
         } else {
             source = OpenComicSource { OpenComicSource::Folder, 33 }; // Folder is not needed to get the comic information, the comid id points to a unique comic
         }

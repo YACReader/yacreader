@@ -1,12 +1,61 @@
 
 #include "libraries_update_coordinator.h"
 
+#include "QsLog.h"
+#include "data_base_management.h"
 #include "library_creator.h"
 #include "xml_info_library_scanner.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 
 using namespace YACReader;
+
+LibrariesUpdateCoordinator::~LibrariesUpdateCoordinator()
+{
+    stop();
+    if (updateFuture.valid())
+        updateFuture.wait();
+}
+
+QJsonArray LibrariesUpdateCoordinator::lockProblems() const
+{
+    QMutexLocker locker(&problemsMutex);
+    QJsonArray list;
+    for (const auto &library : libraries.getLibraries()) {
+        if (!problems.contains(library.getPath()))
+            continue;
+        auto problem = problems.value(library.getPath());
+        problem.insert("library_id", library.getLegacyId());
+        list.append(problem);
+    }
+    return list;
+}
+
+void LibrariesUpdateCoordinator::clearLockProblem(const QString &path)
+{
+    QMutexLocker locker(&problemsMutex);
+    problems.remove(path);
+}
+
+void LibrariesUpdateCoordinator::recordLockProblem(const QString &path, const QString &operation, const LibraryMaintenanceLockFailure &lockFailure)
+{
+    QJsonObject problem {
+        { "operation", operation },
+        { "state", lockFailure.ownerIsRunning ? "busy" : "stale" },
+        { "owner", lockFailure.owner },
+    };
+    if (!lockFailure.ownerIsRunning)
+        problem.insert("recovery_token", lockFailure.recoveryToken);
+    QMutexLocker locker(&problemsMutex);
+    problems.insert(path, problem);
+}
+
+void LibrariesUpdateCoordinator::recordFailure(const QString &path, const QString &operation, const QString &error, const LibraryMaintenanceLockFailure &lockFailure)
+{
+    QLOG_ERROR() << "Library" << operation << "failed:" << path << error;
+    if (lockFailure.error == QLockFile::LockFailedError)
+        recordLockProblem(path, operation, lockFailure);
+}
 
 LibrariesUpdateCoordinator::LibrariesUpdateCoordinator(QSettings *settings, YACReaderLibraries &libraries, const std::function<bool()> &canStartUpdateProvider, QObject *parent)
     : QObject(parent), libraries(libraries), canStartUpdateProvider(canStartUpdateProvider)
@@ -144,6 +193,43 @@ bool LibrariesUpdateCoordinator::isRunning() const
     return updateFuture.valid() && updateFuture.wait_for(std::chrono::seconds(0)) != std::future_status::ready;
 }
 
+LibrariesUpdateCoordinator::RecoveryResult LibrariesUpdateCoordinator::recoverLibraryLock(int id, const QString &recoveryToken, QString *error)
+{
+    if (isRunning())
+        return RecoveryResult::AlreadyRunning;
+    const auto path = libraries.getPath(id);
+    if (path.isEmpty())
+        return RecoveryResult::LibraryNotFound;
+    if (!canStartUpdateProvider())
+        return RecoveryResult::NotAllowed;
+
+    LibraryMaintenanceLock lock(path);
+    if (!lock.tryLock()) {
+        if (lock.error() != QLockFile::LockFailedError)
+            return RecoveryResult::NotRecoverable;
+        if (lock.holderIsRunning() || lock.recoveryToken() != recoveryToken) {
+            // the owner changed: show the current one, never the token that was rejected
+            QString operation;
+            {
+                QMutexLocker locker(&problemsMutex);
+                operation = problems.value(path).value("operation").toString("update");
+            }
+            recordLockProblem(path, operation, lock.failure());
+            return RecoveryResult::NotRecoverable;
+        }
+        if (!lock.tryLock(true)) {
+            if (error)
+                *error = lock.errorString();
+            return RecoveryResult::Failed;
+        }
+    }
+    if (!DataBaseManagement::recoverInterruptedRestore(path, error, true))
+        return RecoveryResult::Failed;
+    QLOG_INFO() << "Library maintenance lock recovered:" << path;
+    clearLockProblem(path);
+    return RecoveryResult::Recovered;
+}
+
 LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::startUpdate(const QStringList &paths)
 {
     QMutexLocker locker(&futureMutex);
@@ -197,48 +283,81 @@ LibrariesUpdateCoordinator::UpdateRequestResult LibrariesUpdateCoordinator::star
 
 void LibrariesUpdateCoordinator::updateLibrary(const QString &path)
 {
+    clearLockProblem(path);
     QDir pathDir(path);
     if (!pathDir.exists()) {
+        QLOG_ERROR() << "Library update failed: folder not found:" << path;
         return;
     }
 
     QEventLoop eventLoop;
     auto libraryCreator = new LibraryCreator(settings);
     std::shared_ptr<LibraryCreator> sharedPtr(libraryCreator);
-    currentLibraryCreator = sharedPtr;
 
     QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
 
     libraryCreator->updateLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath));
+    {
+        QMutexLocker locker(&workersMutex);
+        currentLibraryCreator = sharedPtr;
+        if (canceled)
+            libraryCreator->cancel();
+    }
+    QString error;
+    bool completed = false;
+    connect(libraryCreator, &LibraryCreator::failedOpeningDB, &eventLoop, [&](const QString &message) { error = message; });
+    connect(libraryCreator, &LibraryCreator::updated, &eventLoop, [&] { completed = true; });
 
     connect(libraryCreator, &LibraryCreator::finished, &eventLoop, &QEventLoop::quit);
 
     libraryCreator->start();
     eventLoop.exec();
+    libraryCreator->wait();
+    {
+        QMutexLocker locker(&workersMutex);
+        currentLibraryCreator.reset();
+    }
+    if (!libraryCreator->wasCanceled() && !canceled && !completed)
+        recordFailure(path, "update", error.isEmpty() ? QString("the update did not complete") : error, libraryCreator->maintenanceFailure());
 }
 
 void LibrariesUpdateCoordinator::rescanLibraryXml(const QString &path)
 {
+    clearLockProblem(path);
     QDir pathDir(path);
     if (!pathDir.exists()) {
+        QLOG_ERROR() << "Library XML rescan failed: folder not found:" << path;
         return;
     }
 
     QEventLoop eventLoop;
     auto scanner = new XMLInfoLibraryScanner();
     std::shared_ptr<XMLInfoLibraryScanner> sharedPtr(scanner);
-    currentXmlInfoLibraryScanner = sharedPtr;
 
     const QString cleanPath = QDir::cleanPath(pathDir.absolutePath());
     connect(scanner, &XMLInfoLibraryScanner::finished, &eventLoop, &QEventLoop::quit);
 
-    scanner->scanLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath));
+    {
+        QMutexLocker locker(&workersMutex);
+        currentXmlInfoLibraryScanner = sharedPtr;
+        scanner->scanLibrary(cleanPath, LibraryPaths::libraryDataPath(cleanPath));
+        if (canceled)
+            scanner->cancel();
+    }
     eventLoop.exec();
+    scanner->wait();
+    {
+        QMutexLocker locker(&workersMutex);
+        currentXmlInfoLibraryScanner.reset();
+    }
+    if (!canceled && !scanner->wasCanceled() && !scanner->errorString().isEmpty())
+        recordFailure(path, "rescan-xml", scanner->errorString(), scanner->maintenanceFailure());
 }
 
 void LibrariesUpdateCoordinator::stop()
 {
     canceled = true;
+    QMutexLocker locker(&workersMutex);
 
     if (auto libraryCreator = currentLibraryCreator.lock()) {
         libraryCreator->stop();
@@ -252,12 +371,13 @@ void LibrariesUpdateCoordinator::stop()
 void LibrariesUpdateCoordinator::cancel()
 {
     canceled = true;
+    QMutexLocker locker(&workersMutex);
 
     if (auto libraryCreator = currentLibraryCreator.lock()) {
         libraryCreator->cancel();
     }
 
     if (auto scanner = currentXmlInfoLibraryScanner.lock()) {
-        scanner->stop();
+        scanner->cancel();
     }
 }

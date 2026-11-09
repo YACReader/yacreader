@@ -15,6 +15,40 @@
     return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
+  var recentDaysKey = "yacreader-webui-recent-days";
+
+  // the days of Recent, 1 to 30 as in the apps
+  function recentDays() {
+    try {
+      var days = Number(localStorage.getItem(recentDaysKey));
+      if (Number.isInteger(days) && days >= 1 && days <= 30) {
+        return days;
+      }
+    } catch (error) {
+    }
+    return 7;
+  }
+
+  function initRecentDaysSetting() {
+    var select = document.querySelector("[data-recent-days]");
+    if (!select) {
+      return;
+    }
+    for (var days = 1; days <= 30; days++) {
+      var option = document.createElement("option");
+      option.value = String(days);
+      option.textContent = days === 1 ? "1 day" : days + " days";
+      select.appendChild(option);
+    }
+    select.value = String(recentDays());
+    select.addEventListener("change", function () {
+      try {
+        localStorage.setItem(recentDaysKey, select.value);
+      } catch (error) {
+      }
+    });
+  }
+
   function applyTheme(theme) {
     root.dataset.theme = theme;
 
@@ -232,6 +266,14 @@
     closeButton.focus();
   }
 
+  function dropSavedSettingsParameter() {
+    var url = new URL(window.location.href);
+    if (url.searchParams.has("saved")) {
+      url.searchParams.delete("saved");
+      history.replaceState(history.state, "", url.pathname + url.search + url.hash);
+    }
+  }
+
   function initSidebarActions() {
     var sidebar = document.querySelector(".sidebar");
     var serverSummary = sidebar && sidebar.querySelector(".server-summary");
@@ -412,6 +454,7 @@
     var progressSyncPromise = Promise.resolve();
     var historyNavigationPending = false;
     var historyTraversalPending = false;
+    var openedFromCard = false;
     var browserItemCollator = new Intl.Collator(undefined, {
       numeric: true,
       sensitivity: "base"
@@ -436,7 +479,8 @@
       if (left.view === "search") {
         return left.query === right.query;
       }
-      return String(left.itemId || "") === String(right.itemId || "");
+      return String(left.itemId || "") === String(right.itemId || "")
+        && String(left.missingKey || "") === String(right.missingKey || "");
     }
 
     function browserViewportTop() {
@@ -523,6 +567,7 @@
       if (pushHistory) {
         saveCurrentScrollPosition(returnToCard);
       }
+      openedFromCard = Boolean(pushHistory && returnToCard);
       historyNavigationPending = true;
     }
 
@@ -540,6 +585,7 @@
         : Object.assign({}, state, { scrollY: scrollY });
 
       if (pushHistory) {
+        nextState.openedFromCard = openedFromCard;
         history.pushState(nextState, "", url);
       } else {
         history.replaceState(nextState, "", url);
@@ -614,7 +660,10 @@
 
     if (browserBack) {
       browserBack.addEventListener("click", function () {
-        if (browserBackAction) {
+        if (history.state && history.state.openedFromCard) {
+          saveCurrentScrollPosition();
+          history.back();
+        } else if (browserBackAction) {
           browserBackAction();
         }
       });
@@ -633,15 +682,7 @@
 
       browserBack.hidden = false;
       browserBackAction = function () {
-        var state = history.state;
-        if (state
-            && state.view === "folder"
-            && String(state.enteredFromFolderId || "") === String(parentFolderId)) {
-          saveCurrentScrollPosition();
-          history.back();
-        } else {
-          showFolder(String(parentFolderId), true);
-        }
+        showFolder(String(parentFolderId), true);
       };
     }
 
@@ -669,12 +710,23 @@
         headers["X-Request-Id"] = id;
       }
 
-      return fetch(url, { headers: headers }).then(function (response) {
+      // a read must not pass a progress save that is on its way, or it gets the old progress
+      return progressSyncPromise.then(function () {
+        return fetch(url, { headers: headers });
+      }).then(function (response) {
         if (!response.ok) {
-          throw new Error("Request failed with status " + response.status);
+          var error = new Error("Request failed with status " + response.status);
+          error.status = response.status;
+          throw error;
         }
         return response.json();
       });
+    }
+
+    function notFoundError(message) {
+      var error = new Error(message);
+      error.status = 404;
+      return error;
     }
 
     function postJson(url, payload) {
@@ -721,8 +773,118 @@
       return comicUrl(comicId) + "/read";
     }
 
+    // the reading lists, smart lists, and tags sections have the same pages, with the routes and the words of each
+    // kind; tags have no folders
+    var listSections = {
+      reading_list: {
+        kind: "reading_list",
+        itemType: "reading_list",
+        itemWords: ["list", "lists"],
+        title: "Reading lists",
+        listTitle: "Reading list",
+        nameField: "reading_list_name",
+        artClass: "reading-list-art",
+        emptySection: ["No reading lists", "There are no reading lists in this library yet."],
+        emptyFolder: "There are no reading lists here yet.",
+        emptyList: ["This reading list is empty", "There are no comics in this list yet."]
+      },
+      smart_list: {
+        kind: "smart_list",
+        itemType: "smart_list",
+        itemWords: ["list", "lists"],
+        title: "Smart lists",
+        listTitle: "Smart list",
+        nameField: "smart_list_name",
+        artClass: "smart-list-art",
+        emptySection: ["No smart lists", "There are no smart lists in this library yet."],
+        emptyFolder: "There are no smart lists here yet.",
+        emptyList: ["No comics", "No comics match the search of this list."]
+      },
+      tag: {
+        kind: "tag",
+        itemType: "label",
+        itemWords: ["tag", "tags"],
+        title: "Tags",
+        listTitle: "Tag",
+        nameField: "label_name",
+        // the label art of the desktop in the color of the tag
+        artClass: "label-art",
+        artClassFor: function (label) {
+          return "label-art label-color-" + Number(label.color_id);
+        },
+        emptySection: ["No tags", "There are no tags in this library yet."],
+        emptyFolder: "",
+        emptyList: ["This tag is empty", "There are no comics with this tag yet."]
+      }
+    };
+
+    // Favorites and Recent are one list of comics each, with no folders
+    var comicLists = {
+      favorites: {
+        view: "favorites",
+        title: "Favorites",
+        api: function () {
+          return "/v2/library/" + encodeURIComponent(libraryId) + "/favs";
+        },
+        summary: function (count) {
+          return countLabel(count, "comic", "comics");
+        },
+        emptyList: function () {
+          return ["No favorites", "There are no comics in Favorites yet."];
+        }
+      },
+      recent: {
+        view: "recent",
+        title: "Recent",
+        api: function () {
+          return v3Api("/recent?days=" + recentDays());
+        },
+        summary: function (count) {
+          return countLabel(count, "comic", "comics") + " · added in the last " + countLabel(recentDays(), "day", "days");
+        },
+        emptyList: function () {
+          return ["No recent comics", "No comics were added in the last " + countLabel(recentDays(), "day", "days") + "."];
+        }
+      }
+    };
+
+    function listSectionUrl(section) {
+      return libraryUrl() + "/" + section.kind + "s";
+    }
+
+    function listFolderUrl(section, folderId) {
+      return libraryUrl() + "/" + section.kind + "_folder/" + encodeURIComponent(folderId);
+    }
+
+    function listUrl(section, listId) {
+      return libraryUrl() + "/" + section.kind + "/" + encodeURIComponent(listId);
+    }
+
+    // a missing comic is shown inside the content that has it ({ kind: "folder" or a list kind, id }); its key is
+    // the placeholder id in a folder and the entry id in a list
+    function missingComicUrl(container, key) {
+      var containerUrl = container.kind === "folder"
+        ? libraryUrl() + "/folder/" + encodeURIComponent(container.id)
+        : listUrl(listSections[container.kind], container.id);
+      return containerUrl + "/missing/" + encodeURIComponent(key);
+    }
+
+    function missingComicKey(item, container) {
+      return String(container.kind === "folder" ? item.placeholder_id : item.entry_id);
+    }
+
+    function v3Api(path) {
+      return "/v3/library/" + encodeURIComponent(libraryId) + path;
+    }
+
+    function containerContentApi(container) {
+      return container.kind === "folder"
+        ? folderContentApi(container.id)
+        : v3Api("/" + container.kind + "/" + encodeURIComponent(container.id) + "/content");
+    }
+
     function folderContentApi(folderId) {
-      return "/v2/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId) + "/content";
+      return "/v3/library/" + encodeURIComponent(libraryId) + "/folder/" + encodeURIComponent(folderId) + "/content";
     }
 
     function continueReadingApi() {
@@ -753,7 +915,7 @@
       return "/v2/library/" + encodeURIComponent(libraryId) + "/search";
     }
 
-    // PATCH these to change fields of an item (see YACReaderLibrary/server/API.md)
+    // PATCH these to change fields of an item
     function comicApi(comicId) {
       return "/v2/library/" + encodeURIComponent(libraryId) + "/comic/" + encodeURIComponent(comicId);
     }
@@ -794,8 +956,12 @@
 
     function coverUrl(item) {
       var filePath = "";
-      if (item.type === "comic" && item.hash) {
+      if ((item.type === "comic" || item.type === "deleted_comic") && item.hash) {
         filePath = encodeURIComponent(item.hash) + ".jpg";
+      } else if (item.type === "placeholder") {
+        filePath = safeCoverPath(item.cover);
+      } else if (item.type === "reading_list" && item.first_comic_hash) {
+        filePath = encodeURIComponent(item.first_comic_hash) + ".jpg";
       } else if (item.type === "folder") {
         if (item.custom_image) {
           filePath = safeCoverPath(item.custom_image);
@@ -808,24 +974,44 @@
         return "";
       }
 
-      return "/v2/library/" + encodeURIComponent(libraryId) + "/cover/" + filePath;
+      return "/v3/library/" + encodeURIComponent(libraryId) + "/cover/" + filePath;
     }
 
-    function readableComicTitle(comic) {
-      var number = comic.universal_number;
-      var title = comic.title && String(comic.title).trim();
-      var volume = comic.volume && String(comic.volume).trim();
+    function isMissingComic(item) {
+      return item.type === "deleted_comic" || item.type === "placeholder";
+    }
 
-      if (number !== undefined && number !== null && String(number).trim() !== "") {
-        if (title) {
-          return "#" + number + " — " + title;
-        }
-        if (volume) {
-          return "#" + number + " — " + volume;
-        }
+    // Display labels only; never substitute these fallbacks into server metadata.
+    function readableComicTitle(item) {
+      var hasText = function (value) {
+        return value !== undefined && value !== null && String(value).trim() !== "";
+      };
+      if (hasText(item.title) && hasText(item.universal_number)) {
+        return "#" + item.universal_number + " — " + item.title;
       }
-
-      return title || volume || comic.file_name || "Untitled comic";
+      if (hasText(item.title)) {
+        return String(item.title);
+      }
+      if (hasText(item.series) && hasText(item.universal_number)) {
+        return item.series + " #" + item.universal_number;
+      }
+      if (hasText(item.series)) {
+        return String(item.series);
+      }
+      if (hasText(item.volume) && hasText(item.universal_number)) {
+        return "#" + item.universal_number + " — " + item.volume;
+      }
+      if (hasText(item.volume)) {
+        return String(item.volume);
+      }
+      var fileName = item.file_name || item.last_known_name;
+      if (hasText(fileName)) {
+        return String(fileName);
+      }
+      if (hasText(item.universal_number)) {
+        return "#" + item.universal_number;
+      }
+      return "-";
     }
 
     function setPageHeading(title) {
@@ -883,19 +1069,32 @@
       showLoading();
     }
 
-    function showError(retry) {
+    function showError(retry, error) {
       historyNavigationPending = false;
       historyTraversalPending = false;
       browserRoot.removeAttribute("aria-busy");
       browserRoot.replaceChildren();
 
+      var notFound = Boolean(error && error.status === 404);
+      var unreadable = Boolean(error && error.unreadable);
+      var title = notFound
+        ? "This item is no longer in the library"
+        : unreadable
+          ? "This comic cannot be opened"
+          : "Couldn’t load this content";
+      var details = notFound
+        ? "It may have been moved or removed. Update the library if this is not correct."
+        : unreadable
+          ? "This comic has no readable pages."
+          : "The server could not read this content. The library may be updating or no longer available.";
+
       var state = element("div", "browser-state");
       var icon = element("div", "browser-state-icon", "!");
-      var heading = element("h2", "", "Couldn’t load this library");
-      var description = element("p", "", "The server could not read this content. The library may be updating or no longer available.");
-      var button = element("button", "primary-button", "Try again");
+      var heading = element("h2", "", title);
+      var description = element("p", "", details);
+      var button = element("button", "primary-button", notFound || unreadable ? "Go to the library" : "Try again");
       button.type = "button";
-      button.addEventListener("click", retry);
+      button.addEventListener("click", notFound || unreadable ? function () { showFolder("1", true); } : retry);
 
       state.append(icon, heading, description, button);
       browserRoot.appendChild(state);
@@ -1255,13 +1454,13 @@
       }
     }
 
-    function actionMenuButton(className, label, entriesProvider) {
+    function actionMenuButton(className, label, entriesProvider, iconMarkup) {
       var button = element("button", className);
       button.type = "button";
       button.setAttribute("aria-haspopup", "menu");
       button.setAttribute("aria-expanded", "false");
       button.setAttribute("aria-label", label);
-      button.appendChild(svgIcon("action-menu-button-icon", '<circle cx="5" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.7" fill="currentColor" stroke="none"/>'));
+      button.appendChild(svgIcon("action-menu-button-icon", iconMarkup || '<circle cx="5" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="1.7" fill="currentColor" stroke="none"/>'));
       button.addEventListener("click", function (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -1383,7 +1582,7 @@
       }
     }
 
-    function folderCard(folder, containingFolderId) {
+    function folderCard(folder) {
       var card = element("a", "browser-card folder-card");
       card.href = folderUrl(String(folder.id));
       card.dataset.browserHistoryKey = "folder:" + String(folder.id);
@@ -1392,7 +1591,7 @@
           return;
         }
         event.preventDefault();
-        showFolder(String(folder.id), true, containingFolderId, card);
+        showFolder(String(folder.id), true, card);
       });
 
       var cover = element("div", "browser-cover folder-cover");
@@ -1421,7 +1620,7 @@
       return withActionMenu(card, folder, function () {
         return folderMenuEntries(folder);
       }, function (updated, shell) {
-        replaceCard(shell, folderCard(updated, containingFolderId));
+        replaceCard(shell, folderCard(updated));
       });
     }
 
@@ -1439,7 +1638,7 @@
         if (options.continueReading) {
           showReader(comicId, true, comic, card);
         } else {
-          showComic(comicId, true, card);
+          showComic(comicId, true, card, options.listContext);
         }
       });
 
@@ -1484,6 +1683,51 @@
         }
         replaceCard(shell, comicCard(updated, options));
       });
+    }
+
+    // in grayscale, as in the desktop; the default cover when there is no cover file
+    function missingComicCover(item, className) {
+      var cover = element("div", className + " missing-comic-cover");
+      var fallback = element("img", "browser-cover-image");
+      fallback.alt = "";
+      fallback.src = "/images/webui/unavailableCover.svg";
+      cover.appendChild(fallback);
+      var url = coverUrl(item);
+      if (url) {
+        var image = element("img", "browser-cover-image");
+        image.alt = "";
+        image.loading = "lazy";
+        image.src = url;
+        image.addEventListener("error", function () {
+          image.remove();
+        });
+        cover.appendChild(image);
+      }
+      return cover;
+    }
+
+    function missingComicCard(item, container) {
+      var key = missingComicKey(item, container);
+      var card = element("a", "browser-card comic-card");
+      card.href = missingComicUrl(container, key);
+      card.dataset.browserHistoryKey = "missing:" + key;
+      card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
+        event.preventDefault();
+        showMissingComic(container, key, true, item, card);
+      });
+
+      var copy = element("div", "browser-card-copy");
+      copy.appendChild(element("div", "browser-card-title", readableComicTitle(item)));
+      var numPages = Number(item.num_pages) || 0;
+      copy.appendChild(element("div", "browser-card-meta", numPages ? (numPages === 1 ? "1 page" : numPages + " pages") : ""));
+
+      card.append(missingComicCover(item, "browser-cover comic-cover"), copy);
+      var shell = element("div", "browser-card-shell");
+      shell.appendChild(card);
+      return shell;
     }
 
     function continueReadingShelf(comics) {
@@ -1610,13 +1854,13 @@
         var url = libraryUrl() + "?q=" + encodeURIComponent(normalizedQuery);
         var state = { view: "search", query: normalizedQuery };
         finishHistoryNavigation(state, url, pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showSearch(normalizedQuery, false);
-        });
+        }, error);
       });
     }
 
@@ -1732,7 +1976,7 @@
       return parts;
     }
 
-    function showFolder(folderId, pushHistory, enteredFromFolderId, returnToCard) {
+    function showFolder(folderId, pushHistory, returnToCard) {
       startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
       setSearchVisible(folderId === "1");
@@ -1745,20 +1989,18 @@
       Promise.all([
         fetchJson(folderContentApi(folderId)),
         folderTrail(folderId),
-        folderId === "1"
-          ? progressSyncPromise.then(function () { return fetchJson(continueReadingApi()); })
-          : Promise.resolve([])
+        folderId === "1" ? fetchJson(continueReadingApi()) : Promise.resolve([])
       ]).then(function (results) {
         if (version !== navigationVersion) {
           return;
         }
 
-        var items = sortBrowserItems(results[0]);
+        var items = results[0];
         var trail = results[1];
         var continueReading = results[2].filter(function (item) { return item.type === "comic"; });
         var folderName = trail.length ? trail[trail.length - 1].name : libraryName;
         var folders = items.filter(function (item) { return item.type === "folder"; });
-        var comics = items.filter(function (item) { return item.type === "comic"; });
+        var comics = items.filter(function (item) { return item.type === "comic" || isMissingComic(item); });
         var parentFolderId = folderId === "1"
           ? null
           : trail.length > 1
@@ -1777,6 +2019,9 @@
         var titleRow = element("div", "browser-library-title-row");
         titleRow.appendChild(element("h2", "", folderName));
         var currentFolder = folderMetadataCache[folderId];
+        if (folderId === "1") {
+          titleRow.appendChild(actionMenuButton("icon-button browser-header-menu-button", "Lists", libraryMenuEntries, '<path d="M4 7h16M4 12h16M4 17h16"/>'));
+        }
         if (folderId !== "1" && currentFolder) {
           titleRow.appendChild(actionMenuButton("icon-button browser-header-menu-button", "Actions for " + folderName, function () {
             return folderMenuEntries(currentFolder);
@@ -1807,9 +2052,11 @@
           var grid = element("div", "browser-grid");
           items.forEach(function (item) {
             if (item.type === "folder") {
-              grid.appendChild(folderCard(item, folderId));
+              grid.appendChild(folderCard(item));
             } else if (item.type === "comic") {
               grid.appendChild(comicCard(item));
+            } else if (item.type === "placeholder") {
+              grid.appendChild(missingComicCard(item, { kind: "folder", id: folderId }));
             }
           });
           browserRoot.appendChild(grid);
@@ -1817,17 +2064,14 @@
 
         var url = folderUrl(folderId);
         var state = { view: "folder", itemId: folderId };
-        if (pushHistory && enteredFromFolderId) {
-          state.enteredFromFolderId = String(enteredFromFolderId);
-        }
         finishHistoryNavigation(state, url, pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showFolder(folderId, false);
-        });
+        }, error);
       });
     }
 
@@ -1836,8 +2080,7 @@
     }
 
     function fileTypeName(fileType) {
-      var names = ["Comic", "Manga", "Western manga", "Web comic", "Yonkoma"];
-      return names[Number(fileType)] || "";
+      return fileTypeNames[Number(fileType)] || "";
     }
 
     function formatFileSize(value) {
@@ -1956,6 +2199,7 @@
     function sanitizedHtml(value) {
       var allowedElements = {
         A: true,
+        B: true,
         BLOCKQUOTE: true,
         BR: true,
         CODE: true,
@@ -1967,6 +2211,7 @@
         H5: true,
         H6: true,
         HR: true,
+        I: true,
         LI: true,
         OL: true,
         P: true,
@@ -1979,6 +2224,7 @@
         TH: true,
         THEAD: true,
         TR: true,
+        U: true,
         UL: true
       };
       var discardedElements = {
@@ -2062,9 +2308,29 @@
       return result;
     }
 
-    function showReader(comicId, pushHistory, existingComic, returnToCard) {
+    function listContextFromHistory(comicId) {
+      var state = history.state;
+      return state && String(state.itemId) === String(comicId) && state.listContext || null;
+    }
+
+    function showListOfContext(listContext) {
+      if (comicLists[listContext.view]) {
+        showComicList(comicLists[listContext.view], true);
+      } else {
+        showList(listSections[listContext.view], listContext.id, true);
+      }
+    }
+
+    // options.listContext: the list that sets the previous and next comic, else the folder of the comic does;
+    // options.continued: opened from the previous or next comic, so the reader stays on the screen
+    function showReader(comicId, pushHistory, existingComic, returnToCard, options) {
+      options = options || {};
+      var listContext = options.listContext || (pushHistory ? null : listContextFromHistory(comicId));
       startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
+      if (options.continued) {
+        document.body.classList.add("web-reader-active");
+      }
       setSearchVisible(false);
       var version = ++navigationVersion;
       showNavigationLoading();
@@ -2077,10 +2343,12 @@
         var title = readableComicTitle(comic);
         var numPages = Math.max(0, Number(comic.num_pages) || 0);
         if (!numPages) {
-          throw new Error("This comic has no readable pages.");
+          var unreadableError = new Error("This comic has no readable pages.");
+          unreadableError.unreadable = true;
+          throw unreadableError;
         }
 
-        var savedPage = Number(comic.current_page) || 1;
+        var savedPage = comic.read ? 1 : Number(comic.current_page) || 1;
         var currentPage = Math.min(numPages - 1, Math.max(0, savedPage - 1));
         var requestedPage = currentPage;
         var pageRequestVersion = 0;
@@ -2089,8 +2357,10 @@
         var pageAbortControllers = Object.create(null);
         var destroyed = false;
         var hasDisplayedPage = false;
-        var progressSynced = false;
+        var lastSyncedPage = null;
         var comicOpened = false;
+        var neighbours = { previous: null, next: null };
+        var comicOverlay = null;
 
         setPageHeading(title);
         setBrowserBack(null);
@@ -2143,25 +2413,24 @@
 
         function updateNavigation() {
           pageIndicator.textContent = (requestedPage + 1) + " / " + numPages;
-          previousButton.disabled = !comicOpened || requestedPage <= 0;
-          nextButton.disabled = !comicOpened || requestedPage >= numPages - 1;
+          previousButton.disabled = !comicOpened || (requestedPage <= 0 && !neighbours.previous);
+          nextButton.disabled = !comicOpened || (requestedPage >= numPages - 1 && !neighbours.next);
         }
 
         function syncProgress() {
-          if (!hasDisplayedPage || progressSynced) {
-            return progressSyncPromise;
+          if (!hasDisplayedPage || lastSyncedPage === currentPage) {
+            return;
           }
-          progressSynced = true;
+          lastSyncedPage = currentPage;
           var headers = apiHeaders("text/plain");
           headers["Content-Type"] = "text/plain; charset=utf-8";
           progressSyncPromise = fetch(comicProgressApi(comicId), {
             method: "POST",
             headers: headers,
-            body: "currentPage:" + (currentPage + 1) + "\n",
+            body: "currentPage:" + (currentPage + 1) + "\n" + (currentPage === numPages - 1 && neighbours.next ? neighbours.next.id : ""),
             keepalive: true
           }).catch(function () {
           });
-          return progressSyncPromise;
         }
 
         function cancelledPageError() {
@@ -2301,6 +2570,123 @@
           });
         }
 
+        function neighboursFromOpenResponse(text) {
+          var values = {};
+          text.split(/\r?\n/).forEach(function (line) {
+            var separator = line.indexOf(":");
+            var key = line.slice(0, separator);
+            if (separator > 0 && !(key in values)) {
+              values[key] = line.slice(separator + 1);
+            }
+          });
+          return {
+            previous: values.previousComic ? { id: values.previousComic, hash: values.previousComicHash } : null,
+            next: values.nextComic ? { id: values.nextComic, hash: values.nextComicHash } : null
+          };
+        }
+
+        function loadNeighboursFromList() {
+          fetchJson(listContext.api).then(function (items) {
+            if (destroyed) {
+              return;
+            }
+            var comics = items.filter(function (item) { return item.type === "comic"; });
+            var position = listContext.position;
+            // a comic can be in a list more than once, so its position comes first
+            if (!comics[position] || String(comics[position].id) !== String(comicId)) {
+              position = comics.findIndex(function (item) { return String(item.id) === String(comicId); });
+            }
+            if (position < 0) {
+              return;
+            }
+            function neighbourAt(index) {
+              var item = comics[index];
+              return item ? { id: item.id, hash: item.hash, position: index } : null;
+            }
+            neighbours = { previous: neighbourAt(position - 1), next: neighbourAt(position + 1) };
+            updateNavigation();
+          }).catch(function () {
+          });
+        }
+
+        function openNeighbour(direction) {
+          var neighbour = neighbours[direction];
+          showReader(String(neighbour.id), false, null, null, {
+            listContext: listContext ? Object.assign({}, listContext, { position: neighbour.position }) : null,
+            continued: true
+          });
+        }
+
+        function closeComicOverlay() {
+          if (comicOverlay) {
+            comicOverlay.element.remove();
+            comicOverlay = null;
+          }
+        }
+
+        function showComicOverlay(direction) {
+          closeComicOverlay();
+
+          var overlay = element("div", "reader-comic-overlay " + direction);
+          overlay.addEventListener("click", function (event) {
+            if (event.target === overlay) {
+              closeComicOverlay();
+            }
+          });
+
+          var coverButton = element("button", "reader-comic-overlay-cover");
+          coverButton.type = "button";
+          coverButton.setAttribute("aria-label", direction === "next" ? "Open the next comic" : "Open the previous comic");
+          coverButton.addEventListener("click", function () {
+            openNeighbour(direction);
+          });
+          var cover = element("img");
+          cover.alt = "";
+          cover.addEventListener("error", function () {
+            cover.src = "/images/webui/unavailableCover.svg";
+          }, { once: true });
+          cover.src = coverUrl({ type: "comic", hash: neighbours[direction].hash }) || "/images/webui/unavailableCover.svg";
+          coverButton.appendChild(cover);
+
+          var closeButton = element("button", "reader-comic-overlay-close", "Close");
+          closeButton.type = "button";
+          closeButton.addEventListener("click", exitReader);
+
+          overlay.append(coverButton, closeButton);
+          stage.appendChild(overlay);
+          comicOverlay = { element: overlay, direction: direction };
+          coverButton.focus({ preventScroll: true });
+        }
+
+        function goBeyondComic(direction) {
+          if (!neighbours[direction]) {
+            return;
+          }
+          if (comicOverlay && comicOverlay.direction === direction) {
+            openNeighbour(direction);
+          } else {
+            showComicOverlay(direction);
+          }
+        }
+
+        function goToPrevious() {
+          if (requestedPage > 0) {
+            closeComicOverlay();
+            loadPage(requestedPage - 1);
+          } else {
+            goBeyondComic("previous");
+          }
+        }
+
+        function goToNext() {
+          if (requestedPage < numPages - 1) {
+            closeComicOverlay();
+            loadPage(requestedPage + 1);
+          } else {
+            goBeyondComic("next");
+          }
+        }
+
         function openComicAndLoad() {
           errorState.hidden = true;
           loading.hidden = false;
@@ -2312,8 +2698,15 @@
             if (!response.ok) {
               throw new Error("Comic request failed with status " + response.status);
             }
+            return response.text();
+          }).then(function (text) {
             if (destroyed) {
               return;
+            }
+            if (listContext) {
+              loadNeighboursFromList();
+            } else {
+              neighbours = neighboursFromOpenResponse(text);
             }
             comicOpened = true;
             loadPage(requestedPage);
@@ -2338,34 +2731,92 @@
         }
 
         function handleReaderKeys(event) {
-          if (event.key === "ArrowLeft") {
+          if (event.altKey || event.ctrlKey || event.metaKey || document.body.classList.contains("mobile-promotion-open")) {
+            return;
+          }
+          if (event.key === "ArrowLeft" || event.key === "PageUp") {
             event.preventDefault();
+            goToPrevious();
+          } else if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
+            event.preventDefault();
+            goToNext();
+          } else if (event.key === "Home") {
+            event.preventDefault();
+            closeComicOverlay();
             if (requestedPage > 0) {
-              loadPage(requestedPage - 1);
+              loadPage(0);
             }
-          } else if (event.key === "ArrowRight" || event.key === " ") {
+          } else if (event.key === "End") {
             event.preventDefault();
+            closeComicOverlay();
             if (requestedPage < numPages - 1) {
-              loadPage(requestedPage + 1);
+              loadPage(numPages - 1);
             }
           } else if (event.key === "Escape") {
             event.preventDefault();
-            exitReader();
+            if (comicOverlay) {
+              closeComicOverlay();
+            } else {
+              exitReader();
+            }
           }
         }
 
-        function handleReaderPageHide(event) {
-          if (!event.persisted) {
+        var wheelDelta = 0;
+        var wheelLocked = false;
+        var wheelTurnTime = 0;
+        var wheelIdleTimer = null;
+
+        function handleReaderWheel(event) {
+          if (event.ctrlKey) {
+            return;
+          }
+          event.preventDefault();
+          var delta = Math.abs(event.deltaX) > Math.abs(event.deltaY) ? event.deltaX : event.deltaY;
+          if (event.deltaMode === 1) {
+            delta *= 40;
+          } else if (event.deltaMode === 2) {
+            delta *= 800;
+          }
+          var discreteStep = event.deltaMode !== 0 || Math.abs(delta) >= 100;
+
+          clearTimeout(wheelIdleTimer);
+          wheelIdleTimer = setTimeout(function () {
+            wheelLocked = false;
+            wheelDelta = 0;
+          }, 200);
+
+          if (wheelLocked) {
+            if (!discreteStep || Date.now() - wheelTurnTime < 250) {
+              return;
+            }
+            wheelLocked = false;
+            wheelDelta = 0;
+          }
+
+          wheelDelta += delta;
+          if (Math.abs(wheelDelta) < 50) {
+            return;
+          }
+          var forward = wheelDelta > 0;
+          wheelDelta = 0;
+          wheelLocked = true;
+          wheelTurnTime = Date.now();
+          if (forward) {
+            goToNext();
+          } else {
+            goToPrevious();
+          }
+        }
+
+        function handleReaderVisibilityChange() {
+          if (document.visibilityState === "hidden") {
             syncProgress();
           }
         }
 
-        previousButton.addEventListener("click", function () {
-          loadPage(requestedPage - 1);
-        });
-        nextButton.addEventListener("click", function () {
-          loadPage(requestedPage + 1);
-        });
+        previousButton.addEventListener("click", goToPrevious);
+        nextButton.addEventListener("click", goToNext);
         retryButton.addEventListener("click", function () {
           if (comicOpened) {
             loadPage(requestedPage);
@@ -2375,7 +2826,9 @@
         });
         exitButton.addEventListener("click", exitReader);
         document.addEventListener("keydown", handleReaderKeys);
-        window.addEventListener("pagehide", handleReaderPageHide);
+        stage.addEventListener("wheel", handleReaderWheel, { passive: false });
+        document.addEventListener("visibilitychange", handleReaderVisibilityChange);
+        window.addEventListener("pagehide", syncProgress);
 
         readerCleanup = function () {
           syncProgress();
@@ -2390,30 +2843,38 @@
             URL.revokeObjectURL(pageCache[page]);
           });
           document.removeEventListener("keydown", handleReaderKeys);
-          window.removeEventListener("pagehide", handleReaderPageHide);
+          clearTimeout(wheelIdleTimer);
+          document.removeEventListener("visibilitychange", handleReaderVisibilityChange);
+          window.removeEventListener("pagehide", syncProgress);
         };
 
         var existingReaderState = !pushHistory && history.state && history.state.view === "reader"
           ? Boolean(history.state.fromComicDetail)
           : false;
         var url = readerUrl(comicId);
-        var state = { view: "reader", itemId: comicId, fromComicDetail: pushHistory || existingReaderState };
+        var state = {
+          view: "reader",
+          itemId: comicId,
+          fromComicDetail: !options.continued && (pushHistory || existingReaderState),
+          listContext: listContext
+        };
         finishHistoryNavigation(state, url, pushHistory, version);
 
         updateNavigation();
         openComicAndLoad();
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         leaveReader();
         showError(function () {
           showReader(comicId, false);
-        });
+        }, error);
       });
     }
 
-    function showComic(comicId, pushHistory, returnToCard) {
+    function showComic(comicId, pushHistory, returnToCard, listContext) {
+      listContext = listContext || (pushHistory ? null : listContextFromHistory(comicId));
       startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
       setSearchVisible(false);
@@ -2436,7 +2897,11 @@
         var parentId = String(comic.parent_id || "1");
 
         setPageHeading(title);
-        setBrowserBack(parentId);
+        if (listContext) {
+          setBrowserBackTo(function () { showListOfContext(listContext); });
+        } else {
+          setBrowserBack(parentId);
+        }
         renderBreadcrumbs(browserBreadcrumbParts(trail, title));
 
         browserRoot.removeAttribute("aria-busy");
@@ -2459,7 +2924,7 @@
         var read = element("button", "secondary-button comic-read-button", "Read");
         read.type = "button";
         read.addEventListener("click", function () {
-          showReader(comicId, true, comic);
+          showReader(comicId, true, comic, null, { listContext: listContext });
         });
         coverColumn.appendChild(read);
 
@@ -2663,15 +3128,527 @@
         browserRoot.appendChild(detail);
 
         var url = comicUrl(comicId);
-        var state = { view: "comic", itemId: comicId };
+        var state = { view: "comic", itemId: comicId, listContext: listContext };
         finishHistoryNavigation(state, url, pushHistory, version);
-      }).catch(function () {
+      }).catch(function (error) {
         if (version !== navigationVersion) {
           return;
         }
         showError(function () {
           showComic(comicId, false);
+        }, error);
+      });
+    }
+
+    // the lists of the library, as in the apps
+    function libraryMenuEntries() {
+      return [
+        {
+          label: "Reading lists",
+          run: function () {
+            showListSection(listSections.reading_list, null, true);
+          }
+        },
+        {
+          label: "Smart lists",
+          run: function () {
+            showListSection(listSections.smart_list, null, true);
+          }
+        },
+        {
+          label: "Favorites",
+          run: function () {
+            showComicList(comicLists.favorites, true);
+          }
+        },
+        {
+          label: "Tags",
+          run: function () {
+            showListSection(listSections.tag, null, true);
+          }
+        },
+        {
+          label: "Recent",
+          run: function () {
+            showComicList(comicLists.recent, true);
+          }
+        }
+      ];
+    }
+
+    function setBrowserBackTo(show) {
+      if (!browserBack) {
+        return;
+      }
+      browserBack.hidden = false;
+      browserBackAction = show;
+    }
+
+    var listFolderCache = {};
+
+    // the list folders from the top of the section down to folderId
+    function listFolderTrail(section, folderId) {
+      var trail = [];
+      var visited = {};
+
+      function load(currentId) {
+        if (!currentId || visited[currentId]) {
+          return Promise.resolve(trail);
+        }
+        visited[currentId] = true;
+
+        var path = "/" + section.kind + "_folder/" + encodeURIComponent(currentId);
+        var cached = listFolderCache[path];
+        return (cached ? Promise.resolve(cached) : fetchJson(v3Api(path))).then(function (folder) {
+          listFolderCache[path] = folder;
+          trail.unshift({
+            name: folder.folder_name || "Untitled folder",
+            href: listFolderUrl(section, currentId),
+            action: function () {
+              showListSection(section, currentId, true);
+            }
+          });
+          return load(folder.parent_id ? String(folder.parent_id) : "");
         });
+      }
+
+      return load(folderId ? String(folderId) : "");
+    }
+
+    // the folders of the list, then the list
+    function listTrail(section, listId) {
+      var loadList = section.kind === "tag"
+        ? fetchJson(v3Api("/tags")).then(function (labels) {
+          var label = labels.filter(function (item) { return String(item.id) === String(listId); })[0];
+          if (!label) {
+            throw notFoundError("tag not found");
+          }
+          return label;
+        })
+        : fetchJson(v3Api("/" + section.kind + "/" + encodeURIComponent(listId)));
+      return loadList.then(function (list) {
+        return listFolderTrail(section, list.folder_id).then(function (trail) {
+          return trail.concat([{
+            name: list[section.nameField] || "Untitled list",
+            list: list,
+            href: listUrl(section, listId),
+            action: function () {
+              showList(section, listId, true);
+            }
+          }]);
+        });
+      });
+    }
+
+    function listBreadcrumbParts(section, trail, finalLabel) {
+      var parts = [{
+        label: "Libraries",
+        href: "/webui#libraries"
+      }, {
+        label: libraryName,
+        href: libraryUrl(),
+        action: function () {
+          showFolder("1", true);
+        }
+      }];
+
+      if (trail.length === 0 && !finalLabel) {
+        parts.push({ label: section.title });
+        return parts;
+      }
+
+      parts.push({
+        label: section.title,
+        href: listSectionUrl(section),
+        action: function () {
+          showListSection(section, null, true);
+        }
+      });
+      trail.forEach(function (entry, index) {
+        var isLast = index === trail.length - 1 && !finalLabel;
+        parts.push({
+          label: entry.name,
+          href: isLast ? "" : entry.href,
+          action: isLast ? null : entry.action
+        });
+      });
+      if (finalLabel) {
+        parts.push({ label: finalLabel });
+      }
+      return parts;
+    }
+
+    // the folder shape of the desktop, with no image
+    function listFolderCard(section, folder) {
+      var folderId = String(folder.id);
+      var card = element("a", "browser-card folder-card");
+      card.href = listFolderUrl(section, folderId);
+      card.dataset.browserHistoryKey = section.kind + "_folder:" + folderId;
+      card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
+        event.preventDefault();
+        showListSection(section, folderId, true, card);
+      });
+
+      var cover = element("div", "browser-cover folder-cover");
+      cover.appendChild(element("div", "folder-cover-back"));
+      cover.appendChild(element("div", "folder-cover-middle"));
+      var front = element("div", "folder-cover-front");
+      front.appendChild(folderPlaceholder());
+      cover.appendChild(front);
+
+      var copy = element("div", "browser-card-copy");
+      copy.appendChild(element("div", "browser-card-title", folder.folder_name || "Untitled folder"));
+      card.append(cover, copy);
+      var shell = element("div", "browser-card-shell");
+      shell.appendChild(card);
+      return shell;
+    }
+
+    // a reading list shows the cover of its first comic, else the art of the desktop; a smart list shows its art
+    function listCard(section, list) {
+      var listId = String(list.id);
+      var card = element("a", "browser-card list-card");
+      card.href = listUrl(section, listId);
+      card.dataset.browserHistoryKey = section.kind + ":" + listId;
+      card.addEventListener("click", function (event) {
+        if (!shouldHandleInAppLink(event)) {
+          return;
+        }
+        event.preventDefault();
+        showList(section, listId, true, card);
+      });
+
+      var cover = element("div", "browser-cover list-cover");
+      var art = element("div", "list-art " + (section.artClassFor ? section.artClassFor(list) : section.artClass));
+      cover.appendChild(art);
+      var url = coverUrl(list);
+      if (url) {
+        art.hidden = true;
+        var image = element("img", "browser-cover-image");
+        image.alt = "";
+        image.loading = "lazy";
+        image.src = url;
+        image.addEventListener("error", function () {
+          image.remove();
+          art.hidden = false;
+        });
+        cover.appendChild(image);
+      }
+
+      var copy = element("div", "browser-card-copy");
+      copy.appendChild(element("div", "browser-card-title", list[section.nameField] || "Untitled list"));
+      card.append(cover, copy);
+      var shell = element("div", "browser-card-shell");
+      shell.appendChild(card);
+      return shell;
+    }
+
+    function pageHeader(sectionTitle, title, summary) {
+      var header = element("section", "browser-library-header");
+      header.appendChild(element("div", "section-title", sectionTitle));
+      var titleRow = element("div", "browser-library-title-row");
+      titleRow.appendChild(element("h2", "", title));
+      header.appendChild(titleRow);
+      header.appendChild(element("p", "", summary));
+      return header;
+    }
+
+    function emptyState(title, description, iconClass) {
+      var empty = element("div", "browser-state compact");
+      empty.appendChild(element("div", "browser-state-icon " + (iconClass || "folder-state-icon")));
+      empty.appendChild(element("h2", "", title));
+      empty.appendChild(element("p", "", description));
+      return empty;
+    }
+
+    function countLabel(count, singular, plural) {
+      return count === 1 ? "1 " + singular : count + " " + plural;
+    }
+
+    // a lists section (folderId: nothing) or one of its folders: its folders, then its lists
+    function showListSection(section, folderId, pushHistory, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      showNavigationLoading();
+
+      Promise.all([
+        fetchJson(folderId ? v3Api("/" + section.kind + "_folder/" + encodeURIComponent(folderId) + "/content") : v3Api("/" + section.kind + "s")),
+        listFolderTrail(section, folderId)
+      ]).then(function (results) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var items = results[0];
+        var trail = results[1];
+        var name = trail.length ? trail[trail.length - 1].name : section.title;
+        var folders = items.filter(function (item) { return item.type === section.kind + "_folder"; });
+        var lists = items.filter(function (item) { return item.type === section.itemType; });
+
+        setPageHeading(name);
+        setBrowserBackTo(trail.length > 1
+          ? trail[trail.length - 2].action
+          : folderId
+            ? function () { showListSection(section, null, true); }
+            : function () { showFolder("1", true); });
+        renderBreadcrumbs(listBreadcrumbParts(section, trail));
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+
+        var summaryParts = [];
+        if (folders.length) {
+          summaryParts.push(countLabel(folders.length, "folder", "folders"));
+        }
+        if (lists.length) {
+          summaryParts.push(countLabel(lists.length, section.itemWords[0], section.itemWords[1]));
+        }
+        browserRoot.appendChild(pageHeader(folderId ? "Folder" : "Library", name, summaryParts.join(" · ") || "No items"));
+
+        if (!items.length) {
+          browserRoot.appendChild(folderId
+            ? emptyState("This folder is empty", section.emptyFolder)
+            : emptyState(section.emptySection[0], section.emptySection[1]));
+        } else {
+          var grid = element("div", "browser-grid");
+          folders.forEach(function (folder) {
+            grid.appendChild(listFolderCard(section, folder));
+          });
+          lists.forEach(function (list) {
+            grid.appendChild(listCard(section, list));
+          });
+          browserRoot.appendChild(grid);
+        }
+
+        var state = { view: folderId ? section.kind + "_folder" : section.kind + "s", itemId: folderId || "" };
+        finishHistoryNavigation(state, folderId ? listFolderUrl(section, folderId) : listSectionUrl(section), pushHistory, version);
+      }).catch(function (error) {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showListSection(section, folderId, false);
+        }, error);
+      });
+    }
+
+    // the comics of a list, in the order of the desktop
+    function showList(section, listId, pushHistory, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      showNavigationLoading();
+
+      Promise.all([
+        fetchJson(v3Api("/" + section.kind + "/" + encodeURIComponent(listId) + "/content")),
+        listTrail(section, listId)
+      ]).then(function (results) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var items = results[0];
+        var trail = results[1];
+        var name = trail[trail.length - 1].name;
+        var container = { kind: section.kind, id: listId };
+
+        setPageHeading(name);
+        setBrowserBackTo(trail.length > 1
+          ? trail[trail.length - 2].action
+          : function () { showListSection(section, null, true); });
+        renderBreadcrumbs(listBreadcrumbParts(section, trail));
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+        browserRoot.appendChild(pageHeader(section.listTitle, name, countLabel(items.length, "comic", "comics")));
+
+        if (!items.length) {
+          var list = trail[trail.length - 1].list;
+          browserRoot.appendChild(emptyState(section.emptyList[0], section.emptyList[1],
+            section.artClassFor ? "list-state-icon " + section.artClassFor(list) : ""));
+        } else {
+          var grid = element("div", "browser-grid");
+          var listContext = { view: section.kind, id: listId, api: v3Api("/" + section.kind + "/" + encodeURIComponent(listId) + "/content") };
+          var comicPosition = 0;
+          items.forEach(function (item) {
+            if (item.type === "comic") {
+              grid.appendChild(comicCard(item, { listContext: Object.assign({}, listContext, { position: comicPosition++ }) }));
+            } else if (isMissingComic(item)) {
+              grid.appendChild(missingComicCard(item, container));
+            }
+          });
+          browserRoot.appendChild(grid);
+        }
+
+        finishHistoryNavigation({ view: section.kind, itemId: listId }, listUrl(section, listId), pushHistory, version);
+      }).catch(function (error) {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showList(section, listId, false);
+        }, error);
+      });
+    }
+
+    function showComicList(list, pushHistory, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      showNavigationLoading();
+
+      fetchJson(list.api()).then(function (items) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var comics = items.filter(function (item) { return item.type === "comic"; });
+
+        setPageHeading(list.title);
+        setBrowserBackTo(function () { showFolder("1", true); });
+        renderBreadcrumbs(listBreadcrumbParts(list, []));
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+        browserRoot.appendChild(pageHeader("Library", list.title, list.summary(comics.length)));
+
+        if (!comics.length) {
+          var empty = list.emptyList();
+          browserRoot.appendChild(emptyState(empty[0], empty[1]));
+        } else {
+          var grid = element("div", "browser-grid");
+          var listContext = { view: list.view, id: "", api: list.api() };
+          comics.forEach(function (comic, position) {
+            grid.appendChild(comicCard(comic, { listContext: Object.assign({}, listContext, { position: position }) }));
+          });
+          browserRoot.appendChild(grid);
+        }
+
+        finishHistoryNavigation({ view: list.view, itemId: "" }, libraryUrl() + "/" + list.view, pushHistory, version);
+      }).catch(function (error) {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showComicList(list, false);
+        }, error);
+      });
+    }
+
+    // what the item has, from the content that has it; there is no file to read
+    function showMissingComic(container, key, pushHistory, existingItem, returnToCard) {
+      startHistoryNavigation(pushHistory, returnToCard);
+      leaveReader();
+      setSearchVisible(false);
+      var version = ++navigationVersion;
+      showNavigationLoading();
+
+      Promise.all([
+        existingItem
+          ? Promise.resolve(existingItem)
+          : fetchJson(containerContentApi(container)).then(function (items) {
+            var found = items.filter(function (item) {
+              return isMissingComic(item) && missingComicKey(item, container) === key;
+            })[0];
+            if (!found) {
+              throw notFoundError("missing comic not found");
+            }
+            return found;
+          }),
+        container.kind === "folder" ? folderTrail(container.id) : listTrail(listSections[container.kind], container.id)
+      ]).then(function (results) {
+        if (version !== navigationVersion) {
+          return;
+        }
+
+        var item = results[0];
+        var trail = results[1];
+        var title = readableComicTitle(item);
+
+        setPageHeading(title);
+        if (container.kind === "folder") {
+          setBrowserBack(container.id);
+          renderBreadcrumbs(browserBreadcrumbParts(trail, title));
+        } else {
+          var section = listSections[container.kind];
+          setBrowserBackTo(function () {
+            showList(section, container.id, true);
+          });
+          renderBreadcrumbs(listBreadcrumbParts(section, trail, title));
+        }
+
+        browserRoot.removeAttribute("aria-busy");
+        browserRoot.replaceChildren();
+
+        var detail = element("article", "comic-detail");
+        var coverColumn = element("div", "comic-detail-cover-column");
+        coverColumn.appendChild(missingComicCover(item, "comic-detail-cover"));
+
+        var copy = element("div", "comic-detail-copy");
+        copy.appendChild(element("div", "section-title", "Comic information"));
+        var titleRow = element("div", "comic-detail-title-row");
+        titleRow.appendChild(element("h2", "", title));
+        copy.appendChild(titleRow);
+        if (item.last_known_name && item.last_known_name !== title) {
+          copy.appendChild(element("p", "comic-file-name", item.last_known_name));
+        }
+        copy.appendChild(element("p", "missing-comic-note", "This comic is missing from your library."));
+
+        var facts = element("div", "comic-facts");
+        var numPages = Number(item.num_pages) || 0;
+        if (numPages) {
+          facts.appendChild(element("span", "comic-fact", numPages === 1 ? "1 page" : numPages + " pages"));
+        }
+        if (item.read) {
+          facts.appendChild(element("span", "comic-fact success", "Read"));
+        } else if (Number(item.current_page) > 1) {
+          facts.appendChild(element("span", "comic-fact accent", "Page " + item.current_page));
+        }
+        var fileType = item.type === "deleted_comic" ? fileTypeName(item.file_type) : "";
+        if (fileType) {
+          facts.appendChild(element("span", "comic-fact", fileType));
+        }
+        if (facts.childNodes.length) {
+          copy.appendChild(facts);
+        }
+
+        var metadata = [
+          ["Series", item.series],
+          ["Issue", item.universal_number],
+          ["Volume", item.volume]
+        ].filter(function (entry) {
+          return hasValue(entry[1]);
+        });
+        if (metadata.length) {
+          var metadataSection = element("section", "comic-copy-section");
+          metadataSection.appendChild(element("h3", "", "Metadata"));
+          var metadataList = element("dl", "comic-metadata-grid");
+          metadata.forEach(function (entry) {
+            metadataList.appendChild(detailField(entry[0], entry[1]));
+          });
+          metadataSection.appendChild(metadataList);
+          copy.appendChild(metadataSection);
+        }
+
+        detail.append(coverColumn, copy);
+        browserRoot.appendChild(detail);
+
+        var state = { view: "missing", itemId: container.kind + ":" + container.id, missingKey: key };
+        finishHistoryNavigation(state, missingComicUrl(container, key), pushHistory, version);
+      }).catch(function (error) {
+        if (version !== navigationVersion) {
+          return;
+        }
+        showError(function () {
+          showMissingComic(container, key, false);
+        }, error);
       });
     }
 
@@ -2681,12 +3658,20 @@
         return { view: "search", query: query.trim() };
       }
       var escapedLibraryId = libraryId.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId + "(?:/(folder|comic)/([0-9]+)(?:/(read))?)?/?$"));
+      var match = window.location.pathname.match(new RegExp("^/webui/library/" + escapedLibraryId
+        + "(?:/(folder|comic|reading_list_folder|reading_list|smart_list_folder|smart_list|tag)/([0-9]+)(?:/read|/missing/([0-9]+))?|/(reading_lists|smart_lists|tags|favorites|recent))?/?$"));
       if (!match) {
         return { view: "folder", itemId: "1" };
       }
+      if (match[4]) {
+        return { view: match[4], itemId: "" };
+      }
+      if (match[3]) {
+        return { view: "missing", itemId: match[1] + ":" + match[2], missingKey: match[3] };
+      }
+      var reader = /\/read\/?$/.test(window.location.pathname);
       return {
-        view: match[3] ? "reader" : match[1] || "folder",
+        view: reader ? "reader" : match[1] || "folder",
         itemId: match[2] || "1"
       };
     }
@@ -2698,6 +3683,17 @@
         showReader(route.itemId, false);
       } else if (route.view === "comic") {
         showComic(route.itemId, false);
+      } else if (route.view === "missing") {
+        var separator = route.itemId.indexOf(":");
+        showMissingComic({ kind: route.itemId.slice(0, separator), id: route.itemId.slice(separator + 1) }, route.missingKey, false);
+      } else if (comicLists[route.view]) {
+        showComicList(comicLists[route.view], false);
+      } else if (route.view === "reading_lists" || route.view === "smart_lists" || route.view === "tags") {
+        showListSection(listSections[route.view.slice(0, -1)], null, false);
+      } else if (route.view === "reading_list_folder" || route.view === "smart_list_folder") {
+        showListSection(listSections[route.view.slice(0, -"_folder".length)], route.itemId, false);
+      } else if (route.view === "reading_list" || route.view === "smart_list" || route.view === "tag") {
+        showList(listSections[route.view], route.itemId, false);
       } else {
         showFolder(route.itemId, false);
       }
@@ -2734,8 +3730,10 @@
       showReader(initialItemId, false);
     } else if (initialView === "comic") {
       showComic(initialItemId, false);
-    } else {
+    } else if (initialView === "folder") {
       showFolder(initialItemId, false);
+    } else {
+      showRoute(initialRoute);
     }
   }
 
@@ -2805,11 +3803,59 @@
 
     var polling = false;
     var active = null; // null | "all" | the card being updated
+    var noticeActions = Array.prototype.slice.call(container.querySelectorAll("[data-lock-notice-action]"));
 
     function setTriggersDisabled(disabled) {
-      triggers.forEach(function (trigger) {
+      triggers.concat(noticeActions).forEach(function (trigger) {
         trigger.disabled = disabled;
       });
+    }
+
+    function operationUrl(libraryId, operation) {
+      return "/v2/library/" + encodeURIComponent(libraryId) + (operation === "rescan-xml" ? "/rescan-xml" : "/update");
+    }
+
+    // A "!" button on a card explains why its last update or XML rescan could not
+    // take the library lock, and offers a retry or, for a stale lock, a recovery.
+    function applyLockProblems(problems) {
+      cards.forEach(function (card) {
+        var notice = card.querySelector("[data-lock-notice]");
+        if (!notice) {
+          return;
+        }
+        var libraryId = card.getAttribute("data-library-id");
+        var problem = (problems || []).filter(function (item) {
+          return String(item.library_id) === libraryId;
+        })[0];
+        if (!problem) {
+          if (!notice.hidden && menus) {
+            menus.closeAll(null);
+          }
+          notice.hidden = true;
+          return;
+        }
+        var stale = problem.state === "stale";
+        var operation = problem.operation === "rescan-xml" ? "XML rescan" : "update";
+        notice.querySelector("[data-lock-notice-title]").textContent = stale ? "Library locked" : "Library busy";
+        notice.querySelector("[data-lock-notice-text]").textContent = stale
+          ? "An earlier operation did not release this library, so the " + operation + " did not start. This can happen after a crash or a power cut."
+          : "Another operation is using this library, so the " + operation + " did not start. Wait for it to finish, then retry.";
+        notice.querySelector("[data-lock-notice-warning]").hidden = !stale;
+        var owner = notice.querySelector("[data-lock-notice-owner]");
+        owner.textContent = problem.owner ? (stale ? "Last owner: " : "Owner: ") + problem.owner : "";
+        owner.hidden = !problem.owner;
+        notice.querySelector("[data-lock-notice-error]").hidden = true;
+        var action = notice.querySelector("[data-lock-notice-action]");
+        action.textContent = (stale ? "Recover and retry " : "Retry ") + operation;
+        action.problem = problem;
+        notice.hidden = false;
+      });
+    }
+
+    function showNoticeError(card, message) {
+      var error = card.querySelector("[data-lock-notice-error]");
+      error.textContent = message;
+      error.hidden = false;
     }
 
     function showIndicators(target) {
@@ -2859,12 +3905,13 @@
     }
 
     function checkStatus() {
-      return fetch("/v2/libraries/update/status", { headers: { "Accept": "application/json" } })
+      return fetch("/v3/libraries/maintenance", { headers: { "Accept": "application/json" } })
         .then(function (response) {
           return response.ok ? response.json() : { running: false };
         })
         .then(function (data) {
           applyRunning(!!(data && data.running));
+          applyLockProblems(data && data.problems);
         });
     }
 
@@ -2921,13 +3968,165 @@
       });
     });
 
+    noticeActions.forEach(function (button) {
+      var card = button.closest("[data-library-card]");
+      var popover = button.closest("[data-menu-popover]");
+      popover.addEventListener("click", function (event) {
+        event.stopPropagation();
+      });
+      button.addEventListener("click", function () {
+        var problem = button.problem;
+        if (button.disabled || !problem) {
+          return;
+        }
+        var url = operationUrl(problem.library_id, problem.operation);
+        if (problem.state !== "stale") {
+          trigger(card, url);
+          return;
+        }
+        setTriggersDisabled(true);
+        fetch("/v3/library/" + encodeURIComponent(problem.library_id) + "/maintenance/recover", {
+          method: "POST",
+          headers: { "Accept": "application/json", "Content-Type": "application/json" },
+          body: JSON.stringify({ recovery_token: problem.recovery_token })
+        })
+          .then(function (response) {
+            if (response.ok) {
+              trigger(card, url);
+              return;
+            }
+            return response.json().catch(function () { return {}; }).then(function (data) {
+              setTriggersDisabled(false);
+              if (data.status === "not_recoverable") {
+                // the server now reports the current owner; let the user review it first
+                return checkStatus().then(function () {
+                  showNoticeError(card, "The library lock owner changed. Check the new owner before you recover.");
+                });
+              }
+              showNoticeError(card, data.error
+                ? "Recovery failed: " + data.error
+                : "The library is busy now. Retry when the current operation finishes.");
+            });
+          })
+          .catch(function () {
+            setTriggersDisabled(false);
+            showNoticeError(card, "The server did not answer. Check the connection and retry.");
+          });
+      });
+    });
+
     // Reflect an update that may already be running (started elsewhere or before reload).
     checkStatus().catch(function () {});
+  }
+
+  // "Connect a device" dialog on the home page: QR codes are rendered by the server
+  // into a <template>, so nothing is shown (or laid out) until the user asks for it.
+  function initConnectDialog() {
+    var template = document.getElementById("connect-dialog-template");
+    var openers = Array.prototype.slice.call(document.querySelectorAll("[data-connect-open]"));
+    if (!template || !template.content || !openers.length) {
+      return;
+    }
+
+    var selectedAddress = null;
+    var overlay = null;
+
+    function openDialog(returnFocus) {
+      if (overlay) {
+        return;
+      }
+
+      overlay = template.content.firstElementChild.cloneNode(true);
+      var dialog = overlay.querySelector("[role='dialog']");
+      var closeButton = overlay.querySelector("[data-connect-close]");
+      var codes = Array.prototype.slice.call(overlay.querySelectorAll("[data-connect-qr]"));
+      var addressLabel = overlay.querySelector("[data-connect-address]");
+      var picker = overlay.querySelector("[data-connect-picker]");
+      var select = overlay.querySelector("[data-connect-select]");
+
+      function showAddress(address) {
+        selectedAddress = address;
+        codes.forEach(function (code) {
+          code.hidden = code.getAttribute("data-connect-qr") !== address;
+        });
+        addressLabel.textContent = address;
+      }
+
+      if (select.options.length > 1) {
+        picker.hidden = false;
+        if (selectedAddress) {
+          select.value = selectedAddress;
+        }
+        if (!select.value) {
+          select.selectedIndex = 0;
+        }
+        select.addEventListener("change", function () {
+          showAddress(select.value);
+        });
+      }
+      showAddress(select.value || select.options[0].value);
+
+      function closeDialog() {
+        document.removeEventListener("keydown", handleKeys);
+        document.body.classList.remove("mobile-promotion-open");
+        overlay.remove();
+        overlay = null;
+        if (returnFocus && returnFocus.isConnected) {
+          returnFocus.focus();
+        }
+      }
+
+      function handleKeys(event) {
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeDialog();
+          return;
+        }
+        if (event.key !== "Tab") {
+          return;
+        }
+
+        var focusable = Array.prototype.slice.call(dialog.querySelectorAll("a[href], button:not([disabled]), select")).filter(function (node) {
+          return node.offsetParent !== null;
+        });
+        if (!focusable.length) {
+          return;
+        }
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+
+      closeButton.addEventListener("click", closeDialog);
+      overlay.addEventListener("pointerdown", function (event) {
+        if (event.target === overlay) {
+          closeDialog();
+        }
+      });
+      document.addEventListener("keydown", handleKeys);
+
+      document.body.appendChild(overlay);
+      document.body.classList.add("mobile-promotion-open");
+      closeButton.focus();
+    }
+
+    openers.forEach(function (opener) {
+      opener.addEventListener("click", function () {
+        openDialog(opener);
+      });
+    });
   }
 
   applyTheme(preferredTheme());
 
   document.addEventListener("DOMContentLoaded", function () {
+    dropSavedSettingsParameter();
     initSidebarActions();
 
     var toggle = document.querySelector("[data-theme-toggle]");
@@ -2957,6 +4156,8 @@
       updateControl();
     });
 
+    initRecentDaysSetting();
+    initConnectDialog();
     initLibraryBrowser();
     var libraryMenus = initLibraryMenus();
     initUpdateLibraries(libraryMenus);

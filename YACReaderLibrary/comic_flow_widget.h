@@ -24,7 +24,7 @@ public slots:
     void unmarkSlide(int index);
     void setSlideSize(QSize size);
     void clear();
-    void setImagePaths(QStringList paths);
+    void setImagePaths(QStringList paths, QList<bool> grayscale = { });
     void setCenterIndex(int index);
     void setCenterIndexWithoutAnimation(int index);
     void showSlide(int index);
@@ -33,7 +33,7 @@ public slots:
     void setFlowType(YACReader::FlowType flowType);
     void render();
     void updateConfig(QSettings *settings);
-    void add(const QString &path, int index);
+    void add(const QString &path, int index, bool grayscale = false);
     void remove(int cover);
     void resortCovers(QList<int> newOrder);
 

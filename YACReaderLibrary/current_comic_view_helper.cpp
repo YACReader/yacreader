@@ -4,13 +4,9 @@
 
 ComicDB currentComicFromModel(ComicModel *model, bool &found)
 {
-    const auto comics = model->getAllComics();
-
-    for (const auto &comic : comics) {
-        if (comic.info.read == false) {
-            found = true;
-            return comic;
-        }
+    if (auto comic = model->firstUnreadComic()) {
+        found = true;
+        return *comic;
     }
 
     found = false;

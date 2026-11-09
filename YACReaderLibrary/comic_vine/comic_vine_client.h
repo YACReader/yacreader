@@ -31,6 +31,7 @@ public slots:
     void getAllVolumeComicsInfo(const QString &idVolume);
     QByteArray getComicDetail(const QString &id, bool &outError, bool &outTimeout);
     QByteArray getStoryArcDetail(const QString &id, bool &outError, bool &outTimeout);
+    QByteArray getImage(const QString &url, bool &outError, bool &outTimeout);
     void getComicCover(const QString &url);
 
     void getComicId(const QString &id, int comicNumber);

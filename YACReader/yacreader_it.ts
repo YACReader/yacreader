@@ -24,22 +24,22 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>Luce</translation>
+        <translation>Chiaro</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Dark</source>
-        <translation>Buio</translation>
+        <translation>Scuro</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Custom</source>
-        <translation>Costume</translation>
+        <translation>Personalizzato</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
         <source>Remove</source>
-        <translation>Rimuovere</translation>
+        <translation>Rimuovi</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
@@ -49,17 +49,17 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>Leggero:</translation>
+        <translation>Chiaro:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Dark:</source>
-        <translation>Buio:</translation>
+        <translation>Scuro:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Custom:</source>
-        <translation>Personalizzazione:</translation>
+        <translation>Personalizzato:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
@@ -74,7 +74,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="173"/>
         <source>Theme editor</source>
-        <translation>Redattore del tema</translation>
+        <translation>Editor del tema</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="175"/>
@@ -89,7 +89,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="185"/>
         <source>The current theme JSON could not be loaded.</source>
-        <translation>Impossibile caricare il tema corrente JSON.</translation>
+        <translation>Impossibile caricare il JSON del tema corrente.</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
@@ -145,7 +145,7 @@
     </message>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>Ultima Pagina</translation>
     </message>
 </context>
@@ -167,44 +167,44 @@
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="19"/>
         <source>Restore defaults</source>
-        <translation>Resetta al default</translation>
+        <translation>Ripristina predefiniti</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="67"/>
         <source>Shortcuts settings</source>
-        <translation>impostazione scorciatoie</translation>
+        <translation>Impostazioni scorciatoie</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>La scorciatoia &quot;%1&quot; è già assegnata ad un&apos;altra funzione</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>La scorciatoia &quot;%1&quot; è già assegnata a un&apos;altra funzione</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>Per cambiare una scorciatoia doppio click sulla combinazione tasti e digita la nuova combinazione.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>Per cambiare una scorciatoia, fai doppio clic sulla combinazione di tasti e digita la nuova combinazione.</translation>
     </message>
 </context>
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="610"/>
-        <location filename="../common/comic.cpp" line="626"/>
+        <location filename="../common/comic.cpp" line="622"/>
+        <location filename="../common/comic.cpp" line="638"/>
         <source>Format not supported</source>
         <translation>Formato non supportato</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="604"/>
+        <location filename="../common/comic.cpp" line="616"/>
         <source>7z not found</source>
         <translation>7z non trovato</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="497"/>
+        <location filename="../common/comic.cpp" line="509"/>
         <source>Unknown error opening the file</source>
         <translation>Errore sconosciuto aprendo il file</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="490"/>
+        <location filename="../common/comic.cpp" line="502"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>Errore CRC alla pagina (%1): alcune pagine non saranno visualizzate correttamente</translation>
     </message>
@@ -224,7 +224,7 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
+        <source>Total pages: </source>
         <translation>Pagine totali: </translation>
     </message>
     <message>
@@ -234,7 +234,7 @@
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>Pagina: </translation>
     </message>
 </context>
@@ -242,7 +242,7 @@
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
+        <source>Page: </source>
         <translation>Pagina: </translation>
     </message>
 </context>
@@ -261,7 +261,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>Registro modifiche</translation>
     </message>
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="25"/>
@@ -274,7 +274,7 @@
     <message>
         <location filename="options_dialog.cpp" line="225"/>
         <source>Gamma</source>
-        <translation>Valore gamma</translation>
+        <translation>Gamma</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="229"/>
@@ -287,7 +287,7 @@
         <translation>Percorso dei miei fumetti</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="309"/>
+        <location filename="options_dialog.cpp" line="310"/>
         <source>Image adjustment</source>
         <translation>Correzioni immagine</translation>
     </message>
@@ -304,7 +304,7 @@
     <message>
         <location filename="options_dialog.cpp" line="234"/>
         <source>Image options</source>
-        <translation>Opzione immagine</translation>
+        <translation>Opzioni immagine</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="224"/>
@@ -312,12 +312,12 @@
         <translation>Contrasto</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="310"/>
+        <location filename="options_dialog.cpp" line="311"/>
         <source>Appearance</source>
         <translation>Aspetto</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="326"/>
+        <location filename="options_dialog.cpp" line="327"/>
         <source>Options</source>
         <translation>Opzioni</translation>
     </message>
@@ -342,14 +342,14 @@
         <translation>Cancella</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="342"/>
+        <location filename="options_dialog.cpp" line="343"/>
         <source>Comics directory</source>
-        <translation>Cartella Fumetti</translation>
+        <translation>Cartella fumetti</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="180"/>
         <source>Quick Navigation Mode</source>
-        <translation>Modo navigazione rapida</translation>
+        <translation>Modalità navigazione rapida</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="58"/>
@@ -388,7 +388,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>Comportamento di scorrimento</translation>
     </message>
     <message>
@@ -404,7 +404,7 @@
     <message>
         <location filename="options_dialog.cpp" line="113"/>
         <source>Use single scroll step to turn page</source>
-        <translation>Utilizzare un singolo passaggio di scorrimento per voltare pagina</translation>
+        <translation>Usa un singolo passaggio di scorrimento per voltare pagina</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="121"/>
@@ -419,12 +419,12 @@
     <message>
         <location filename="options_dialog.cpp" line="125"/>
         <source>Use the Left/Right buttons to turn pages.</source>
-        <translation>Utilizzare i pulsanti Sinistra/Destra per girare le pagine.</translation>
+        <translation>Usa i pulsanti Sinistra/Destra per girare le pagine.</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
-        <translation>Fare clic sulla metà sinistra o destra dello schermo per girare le pagine.</translation>
+        <source>Click the left or right half of the screen to turn pages.</source>
+        <translation>Clicca sulla metà sinistra o destra dello schermo per girare le pagine.</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="134"/>
@@ -479,12 +479,12 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="options_dialog.cpp" line="181"/>
         <source>Disable mouse over activation</source>
-        <translation>Disabilita il mouse all&apos;attivazione</translation>
+        <translation>Disabilita l&apos;attivazione al passaggio del mouse</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="259"/>
         <source>Show book fold shadow</source>
-        <translation>Mostra l’ombra della piega del libro</translation>
+        <translation>Mostra l&apos;ombra della piega del libro</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="271"/>
@@ -494,7 +494,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="options_dialog.cpp" line="273"/>
         <source>Scaling method</source>
-        <translation>Metodo di scala</translation>
+        <translation>Metodo di ridimensionamento</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="275"/>
@@ -512,12 +512,17 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
         <translation>Lanczos (qualità migliore)</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="308"/>
+        <location filename="options_dialog.cpp" line="278"/>
+        <source>Bicubic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="309"/>
         <source>Page Flow</source>
         <translation>Flusso pagine</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="307"/>
+        <location filename="options_dialog.cpp" line="308"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
@@ -527,9 +532,9 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
         <translation>Luminosità</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="317"/>
+        <location filename="options_dialog.cpp" line="318"/>
         <source>Restart is needed</source>
-        <translation>Riavvio Necessario</translation>
+        <translation>Riavvio necessario</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="238"/>
@@ -562,15 +567,15 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>Impossibile caricare 7z da ./utils</translation>
+        <translation>Impossibile caricare la libreria 7z da ./utils</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="156"/>
         <source>Select custom cover</source>
         <translation>Seleziona la copertina personalizzata</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="156"/>
         <source>Images (%1)</source>
         <translation>Immagini (%1)</translation>
     </message>
@@ -590,7 +595,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="59"/>
         <source>Theme Editor</source>
-        <translation>Redattore del tema</translation>
+        <translation>Editor del tema</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="63"/>
@@ -605,7 +610,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>io</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -620,7 +625,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>Tieni premuto per far lampeggiare il valore selezionato nell&apos;interfaccia utente (magenta / alternato / 0↔10). Le versioni ripristinano l&apos;originale.</translation>
+        <translation>Tieni premuto per far lampeggiare il valore selezionato nell&apos;interfaccia (magenta / alternato / 0↔10). Al rilascio viene ripristinato l&apos;originale.</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
@@ -630,17 +635,17 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>Luce</translation>
+        <translation>Chiaro</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
         <source>Dark</source>
-        <translation>Buio</translation>
+        <translation>Scuro</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>ID:</source>
-        <translation>Identificativo:</translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
@@ -690,7 +695,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="209"/>
         <source>Double-click to edit color</source>
-        <translation>Fare doppio clic per modificare il colore</translation>
+        <translation>Fai doppio clic per modificare il colore</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -700,7 +705,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>VERO</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -708,17 +713,17 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>falso</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
         <source>Double-click to toggle</source>
-        <translation>Fare doppio clic per attivare/disattivare</translation>
+        <translation>Fai doppio clic per attivare/disattivare</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="218"/>
         <source>Double-click to edit value</source>
-        <translation>Fare doppio clic per modificare il valore</translation>
+        <translation>Fai doppio clic per modificare il valore</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="232"/>
@@ -792,13 +797,13 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>Premi &quot;O&quot; per aprire il fumettto.</translation>
+        <source>Press &apos;O&apos; to open a comic.</source>
+        <translation>Premi &quot;O&quot; per aprire un fumetto.</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="378"/>
         <source>Error opening comic</source>
-        <translation>Errore nell&apos;apertura</translation>
+        <translation>Errore nell&apos;apertura del fumetto</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="2181"/>
@@ -827,8 +832,8 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
-        <translation>In caricamento...Attendi!</translation>
+        <source>Loading... please wait!</source>
+        <translation>Caricamento... Attendi!</translation>
     </message>
 </context>
 <context>
@@ -871,7 +876,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation>Personalizzazione:</translation>
+        <translation>Personalizzato:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="89"/>
@@ -886,7 +891,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="101"/>
         <source>Cover gap</source>
-        <translation>Distanza Copertine</translation>
+        <translation>Distanza tra le copertine</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="107"/>
@@ -896,17 +901,17 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Ingrandimento</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
         <source>Y offset</source>
-        <translation>Compensazione Y</translation>
+        <translation>Offset Y</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="125"/>
         <source>Z offset</source>
-        <translation>Compensazione Z</translation>
+        <translation>Offset Z</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="131"/>
@@ -931,17 +936,17 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="181"/>
         <source>Low Performance</source>
-        <translation>Prestazioni Basse</translation>
+        <translation>Prestazioni basse</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="183"/>
         <source>High Performance</source>
-        <translation>Prestazioni Alte</translation>
+        <translation>Prestazioni alte</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>Usa VSync (migliora la qualtà a tutto schermo, peggiora le prestazioni)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>Usa VSync (migliora la qualità dell&apos;immagine a schermo intero, peggiora le prestazioni)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
@@ -959,7 +964,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="328"/>
         <source>Open a comic</source>
-        <translation>Apri un Fumetto</translation>
+        <translation>Apri un fumetto</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="334"/>
@@ -974,7 +979,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="354"/>
         <source>Open image folder</source>
-        <translation>Apri la crettal immagini</translation>
+        <translation>Apri la cartella di immagini</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="359"/>
@@ -994,7 +999,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="373"/>
         <source>Clear open recent list</source>
-        <translation>Svuota la lista degli aperti</translation>
+        <translation>Svuota l&apos;elenco dei file recenti</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="376"/>
@@ -1003,37 +1008,37 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="377"/>
-        <location filename="main_window_viewer.cpp" line="1097"/>
-        <location filename="main_window_viewer.cpp" line="1108"/>
-        <location filename="main_window_viewer.cpp" line="1119"/>
+        <location filename="main_window_viewer.cpp" line="1095"/>
+        <location filename="main_window_viewer.cpp" line="1106"/>
+        <location filename="main_window_viewer.cpp" line="1117"/>
         <source>Save current page</source>
         <translation>Salva la pagina corrente</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="382"/>
-        <location filename="main_window_viewer.cpp" line="1124"/>
-        <location filename="main_window_viewer.cpp" line="1138"/>
-        <location filename="main_window_viewer.cpp" line="1149"/>
-        <location filename="main_window_viewer.cpp" line="1167"/>
+        <location filename="main_window_viewer.cpp" line="1122"/>
+        <location filename="main_window_viewer.cpp" line="1136"/>
+        <location filename="main_window_viewer.cpp" line="1147"/>
+        <location filename="main_window_viewer.cpp" line="1165"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Estrai pagina/e</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>Estrai pagina/e dalla sorgente originale</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
         <source>Previous Comic</source>
-        <translation>Fumetto precendente</translation>
+        <translation>Fumetto precedente</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="389"/>
-        <location filename="main_window_viewer.cpp" line="1915"/>
-        <location filename="main_window_viewer.cpp" line="1919"/>
+        <location filename="main_window_viewer.cpp" line="1912"/>
+        <location filename="main_window_viewer.cpp" line="1916"/>
         <source>Open previous comic</source>
-        <translation>Apri il fumetto precendente</translation>
+        <translation>Apri il fumetto precedente</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="394"/>
@@ -1042,8 +1047,8 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="395"/>
-        <location filename="main_window_viewer.cpp" line="1914"/>
-        <location filename="main_window_viewer.cpp" line="1920"/>
+        <location filename="main_window_viewer.cpp" line="1911"/>
+        <location filename="main_window_viewer.cpp" line="1917"/>
         <source>Open next comic</source>
         <translation>Apri il prossimo fumetto</translation>
     </message>
@@ -1054,8 +1059,8 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="402"/>
-        <location filename="main_window_viewer.cpp" line="1917"/>
-        <location filename="main_window_viewer.cpp" line="1921"/>
+        <location filename="main_window_viewer.cpp" line="1914"/>
+        <location filename="main_window_viewer.cpp" line="1918"/>
         <source>Go to previous page</source>
         <translation>Vai alla pagina precedente</translation>
     </message>
@@ -1066,10 +1071,10 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="409"/>
-        <location filename="main_window_viewer.cpp" line="1916"/>
-        <location filename="main_window_viewer.cpp" line="1922"/>
+        <location filename="main_window_viewer.cpp" line="1913"/>
+        <location filename="main_window_viewer.cpp" line="1919"/>
         <source>Go to next page</source>
-        <translation>Vai alla prossima Pagina</translation>
+        <translation>Vai alla prossima pagina</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="414"/>
@@ -1084,7 +1089,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="421"/>
         <source>Fit Width</source>
-        <translation>Adatta Larghezza</translation>
+        <translation>Adatta larghezza</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="422"/>
@@ -1094,7 +1099,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="428"/>
         <source>Show full size</source>
-        <translation>Mostra dimesioni reali</translation>
+        <translation>Mostra dimensioni reali</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="435"/>
@@ -1114,7 +1119,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="476"/>
         <source>Reset zoom</source>
-        <translation>Resetta Zoom</translation>
+        <translation>Resetta zoom</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="481"/>
@@ -1124,12 +1129,12 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>Aumenta</translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>Riduci</translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="493"/>
@@ -1144,7 +1149,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="503"/>
         <source>Double page mode</source>
-        <translation>Modalita doppia pagina</translation>
+        <translation>Modalità doppia pagina</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="504"/>
@@ -1159,7 +1164,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="513"/>
         <source>Reverse reading order in double page mode</source>
-        <translation>Ordine lettura inverso in modo doppia pagina</translation>
+        <translation>Ordine di lettura inverso in modalità doppia pagina</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="521"/>
@@ -1168,8 +1173,8 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
-        <translation>Vai a Pagina ...</translation>
+        <source>Go to page...</source>
+        <translation>Vai a pagina...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="527"/>
@@ -1190,37 +1195,39 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="535"/>
         <source>Help, About YACReader</source>
-        <translation>Aiuto, crediti YACReader</translation>
+        <translation>Aiuto, informazioni su YACReader</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1350"/>
+        <location filename="main_window_viewer.cpp" line="1416"/>
         <source>Magnifying glass</source>
         <translation>Lente ingrandimento</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="541"/>
         <source>Switch Magnifying glass</source>
-        <translation>Passa a lente ingrandimento</translation>
+        <translation>Attiva/Disattiva lente d&apos;ingrandimento</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="547"/>
         <source>Set bookmark</source>
-        <translation>Imposta Segnalibro</translation>
+        <translation>Imposta segnalibro</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="548"/>
         <source>Set a bookmark on the current page</source>
-        <translation>Imposta segnalibro a pagina corrente</translation>
+        <translation>Imposta un segnalibro nella pagina corrente</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="556"/>
         <source>Show bookmarks</source>
-        <translation>Mostra segnalibro</translation>
+        <translation>Mostra segnalibri</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="557"/>
         <source>Show the bookmarks of the current comic</source>
-        <translation>Mostra il segnalibro del fumetto corrente</translation>
+        <translation>Mostra i segnalibri del fumetto corrente</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="562"/>
@@ -1260,12 +1267,12 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="597"/>
         <source>Edit shortcuts</source>
-        <translation>Edita scorciatoie</translation>
+        <translation>Modifica scorciatoie</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="618"/>
         <source>&amp;File</source>
-        <translation>&amp;Documento</translation>
+        <translation>&amp;File</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="633"/>
@@ -1276,17 +1283,17 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="main_window_viewer.cpp" line="783"/>
         <source>File</source>
-        <translation>Documento</translation>
+        <translation>File</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="805"/>
         <source>Edit</source>
-        <translation>Edita</translation>
+        <translation>Modifica</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="809"/>
         <source>View</source>
-        <translation>Mostra</translation>
+        <translation>Visualizza</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="826"/>
@@ -1299,222 +1306,217 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
         <translation>Finestra</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="951"/>
+        <location filename="main_window_viewer.cpp" line="953"/>
         <source>Open Comic</source>
-        <translation>Apri Fumetto</translation>
+        <translation>Apri fumetto</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="950"/>
+        <location filename="main_window_viewer.cpp" line="952"/>
         <source>Comic files</source>
-        <translation>File Fumetto</translation>
+        <translation>File di fumetti</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1038"/>
+        <location filename="main_window_viewer.cpp" line="1036"/>
         <source>Open folder</source>
         <translation>Apri cartella</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1351"/>
-        <location filename="main_window_viewer.cpp" line="1364"/>
+        <location filename="main_window_viewer.cpp" line="1348"/>
+        <location filename="main_window_viewer.cpp" line="1361"/>
         <source>Comics</source>
-        <translation>Fumetto</translation>
+        <translation>Fumetti</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1375"/>
+        <location filename="main_window_viewer.cpp" line="1372"/>
         <source>Toggle fullscreen mode</source>
         <translation>Attiva/Disattiva schermo intero</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1378"/>
+        <location filename="main_window_viewer.cpp" line="1375"/>
         <source>Hide/show toolbar</source>
-        <translation>Mostra/Nascondi Barra strumenti</translation>
+        <translation>Mostra/Nascondi barra strumenti</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1352"/>
-        <location filename="main_window_viewer.cpp" line="1381"/>
+        <location filename="main_window_viewer.cpp" line="1349"/>
+        <location filename="main_window_viewer.cpp" line="1378"/>
         <source>General</source>
         <translation>Generale</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1400"/>
+        <location filename="main_window_viewer.cpp" line="1397"/>
         <source>Size up magnifying glass</source>
-        <translation>Ingrandisci lente ingrandimento</translation>
+        <translation>Ingrandisci la lente d&apos;ingrandimento</translation>
+    </message>
+    <message>
+        <location filename="main_window_viewer.cpp" line="1400"/>
+        <source>Size down magnifying glass</source>
+        <translation>Riduci la lente d&apos;ingrandimento</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1403"/>
-        <source>Size down magnifying glass</source>
-        <translation>Riduci lente ingrandimento</translation>
+        <source>Zoom in magnifying glass</source>
+        <translation>Aumenta lo zoom della lente</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1406"/>
-        <source>Zoom in magnifying glass</source>
-        <translation>Ingrandisci in lente di ingrandimento</translation>
+        <source>Zoom out magnifying glass</source>
+        <translation>Riduci lo zoom della lente</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1409"/>
-        <source>Zoom out magnifying glass</source>
-        <translation>Riduci in lente di ingrandimento</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1412"/>
         <source>Reset magnifying glass</source>
         <translation>Reimposta la lente d&apos;ingrandimento</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1353"/>
-        <location filename="main_window_viewer.cpp" line="1419"/>
-        <source>Magnifiying glass</source>
-        <translation>Lente ingrandimento</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1426"/>
+        <location filename="main_window_viewer.cpp" line="1423"/>
         <source>Toggle between fit to width and fit to height</source>
-        <translation>Passa tra adatta in larghezza ad altezza</translation>
+        <translation>Passa tra adatta alla larghezza e adatta all&apos;altezza</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1354"/>
-        <location filename="main_window_viewer.cpp" line="1430"/>
-        <source>Page adjustement</source>
-        <translation>Correzioni di pagna</translation>
+        <location filename="main_window_viewer.cpp" line="1351"/>
+        <location filename="main_window_viewer.cpp" line="1427"/>
+        <source>Page adjustment</source>
+        <oldsource>Page adjustement</oldsource>
+        <translation>Regolazione della pagina</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1108"/>
+        <location filename="main_window_viewer.cpp" line="1106"/>
         <source>The current page is not ready. Please try again later.</source>
         <translation>La pagina corrente non è ancora pronta. Riprova più tardi.</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1113"/>
+        <location filename="main_window_viewer.cpp" line="1111"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sovrascrivere il file?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1113"/>
+        <location filename="main_window_viewer.cpp" line="1111"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Il file esiste già. Vuoi sovrascriverlo?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1119"/>
+        <location filename="main_window_viewer.cpp" line="1117"/>
         <source>The current page could not be saved.</source>
         <translation>Non è stato possibile salvare la pagina corrente.</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1138"/>
+        <location filename="main_window_viewer.cpp" line="1136"/>
         <source>The selected pages are not ready. Please try again later.</source>
         <translation>Le pagine selezionate non sono ancora pronte. Riprova più tardi.</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1149"/>
+        <location filename="main_window_viewer.cpp" line="1147"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Non è stato possibile estrarre la pagina corrente.</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1154"/>
+        <location filename="main_window_viewer.cpp" line="1152"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sovrascrivere i file?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1154"/>
+        <location filename="main_window_viewer.cpp" line="1152"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Alcuni file esistono già. Vuoi sovrascriverli?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1167"/>
+        <location filename="main_window_viewer.cpp" line="1165"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Non è stato possibile estrarre alcune pagine.</translation>
+    </message>
+    <message>
+        <location filename="main_window_viewer.cpp" line="1445"/>
+        <source>Autoscroll down</source>
+        <translation>Scorrimento automatico in giù</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1448"/>
-        <source>Autoscroll down</source>
-        <translation>Autoscorri Giù</translation>
+        <source>Autoscroll up</source>
+        <translation>Scorrimento automatico in su</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1451"/>
-        <source>Autoscroll up</source>
-        <translation>Autoscorri Sù</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1454"/>
         <source>Autoscroll forward, horizontal first</source>
-        <translation>Autoscorri avanti, priorità Orizzontale</translation>
+        <translation>Scorrimento automatico in avanti, prima orizzontale</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1458"/>
+        <location filename="main_window_viewer.cpp" line="1455"/>
         <source>Autoscroll backward, horizontal first</source>
-        <translation>Autoscorri indietro, priorità Orizzontale</translation>
+        <translation>Scorrimento automatico indietro, prima orizzontale</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1462"/>
+        <location filename="main_window_viewer.cpp" line="1459"/>
         <source>Autoscroll forward, vertical first</source>
-        <translation>Autoscorri avanti, priorità Verticale</translation>
+        <translation>Scorrimento automatico in avanti, prima verticale</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1466"/>
+        <location filename="main_window_viewer.cpp" line="1463"/>
         <source>Autoscroll backward, vertical first</source>
-        <translation>Autoscorri indietro, priorità Verticale</translation>
+        <translation>Scorrimento automatico indietro, prima verticale</translation>
+    </message>
+    <message>
+        <location filename="main_window_viewer.cpp" line="1467"/>
+        <source>Move down</source>
+        <translation>Sposta in giù</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1470"/>
-        <source>Move down</source>
-        <translation>Muovi Giù</translation>
+        <source>Move up</source>
+        <translation>Sposta in su</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1473"/>
-        <source>Move up</source>
-        <translation>Muovi Sù</translation>
+        <source>Move left</source>
+        <translation>Sposta a sinistra</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1476"/>
-        <source>Move left</source>
-        <translation>Muovi Sinistra</translation>
+        <source>Move right</source>
+        <translation>Sposta a destra</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1479"/>
-        <source>Move right</source>
-        <translation>Muovi Destra</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1482"/>
         <source>Go to the first page</source>
         <translation>Vai alla pagina iniziale</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1485"/>
+        <location filename="main_window_viewer.cpp" line="1482"/>
         <source>Go to the last page</source>
         <translation>Vai all&apos;ultima pagina</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1488"/>
+        <location filename="main_window_viewer.cpp" line="1485"/>
         <source>Offset double page to the left</source>
         <translation>Doppia pagina spostata a sinistra</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1490"/>
+        <location filename="main_window_viewer.cpp" line="1487"/>
         <source>Offset double page to the right</source>
         <translation>Doppia pagina spostata a destra</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1355"/>
-        <location filename="main_window_viewer.cpp" line="1508"/>
+        <location filename="main_window_viewer.cpp" line="1352"/>
+        <location filename="main_window_viewer.cpp" line="1505"/>
         <source>Reading</source>
-        <translation>Leggi</translation>
+        <translation>Lettura</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1557"/>
+        <location filename="main_window_viewer.cpp" line="1553"/>
         <source>There is a new version available</source>
         <translation>Nuova versione disponibile</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1558"/>
+        <location filename="main_window_viewer.cpp" line="1554"/>
         <source>Do you want to download the new version?</source>
         <translation>Vuoi scaricare la nuova versione?</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1561"/>
+        <location filename="main_window_viewer.cpp" line="1557"/>
         <source>Remind me in 14 days</source>
         <translation>Ricordamelo in 14 giorni</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1562"/>
+        <location filename="main_window_viewer.cpp" line="1558"/>
         <source>Not now</source>
         <translation>Non ora</translation>
     </message>
@@ -1524,12 +1526,12 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le note di rilascio non sono disponibili.</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>Versioni precedenti</translation>
     </message>
 </context>
 <context>
@@ -1537,11 +1539,11 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>
         <source>Restore to default</source>
-        <translation>Resetta al default</translation>
+        <translation>Ripristina predefinito</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="27"/>
         <source>Click to overwrite</source>
         <translation>Clicca per sovrascrivere</translation>
     </message>
@@ -1551,13 +1553,13 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="10"/>
         <source>Restore to default</source>
-        <translation>Resetta al default</translation>
+        <translation>Ripristina predefinito</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="19"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="44"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="50"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="18"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="43"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="49"/>
         <source>Click to overwrite</source>
         <translation>Clicca per sovrascrivere</translation>
     </message>
@@ -1572,12 +1574,12 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
         <source>Cancel</source>
-        <translation>Cancella</translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
-        <translation>Scorciatoia</translation>
+        <translation>Scorciatoie</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="29"/>
@@ -1592,7 +1594,7 @@ Se non è attiva alcuna modalità, il tasto Esc non esegue alcuna azione.</trans
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
-        <translation>Edita Scorciatoia</translation>
+        <translation>Modifica scorciatoie</translation>
     </message>
 </context>
 <context>

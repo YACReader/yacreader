@@ -229,18 +229,22 @@ qt_add_resources(YACReader "yacreader_common_theme_images"
 )
 
 # Translations
+set(yacreader_translation_source_targets
+    YACReader
+    comic_backend
+    common_gui
+    custom_widgets_reader
+    shortcuts_reader
+)
 qt_add_translations(YACReader
-    SOURCE_TARGETS
-        YACReader
-        comic_backend
-        common_gui
-        custom_widgets_reader
-        shortcuts_reader
+    SOURCE_TARGETS ${yacreader_translation_source_targets}
+    LUPDATE_OPTIONS -no-obsolete
     TS_FILES
         yacreader_es.ts
         yacreader_fr.ts
         yacreader_ru.ts
         yacreader_pt.ts
+        yacreader_pt_PT.ts
         yacreader_nl.ts
         yacreader_tr.ts
         yacreader_de.ts
@@ -249,8 +253,13 @@ qt_add_translations(YACReader
         yacreader_zh_HK.ts
         yacreader_it.ts
         yacreader_ko.ts
-        yacreader_source.ts
         yacreader_en.ts
+)
+qt_add_lupdate(
+    SOURCE_TARGETS ${yacreader_translation_source_targets}
+    OPTIONS -no-obsolete
+    TS_FILES yacreader_source.ts
+    LUPDATE_TARGET YACReader_source_lupdate
 )
 
 target_link_libraries(YACReader PRIVATE
@@ -277,7 +286,7 @@ target_link_libraries(YACReader PRIVATE
 if(WIN32)
     target_sources(YACReader PRIVATE icon.rc)
     if(MSVC)
-        target_link_options(YACReader PRIVATE "/MANIFESTINPUT:${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest")
+        target_sources(YACReader PRIVATE ${PROJECT_SOURCE_DIR}/cmake/windows/yacreader.manifest)
     endif()
     target_link_libraries(YACReader PRIVATE oleaut32 ole32 shell32 user32)
 endif()

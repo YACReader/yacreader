@@ -316,7 +316,7 @@ void ImportWidget::setImportLook()
 {
     iconLabel->setPixmap(theme.importWidget.importingIcon);
     text->setText(tr("Importing comics"));
-    textDescription->setText(tr("<p>YACReaderLibrary is now creating a new library.</p><p>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</p>"));
+    textDescription->setText(tr("<p>YACReaderLibrary is now creating a new library.</p><p>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</p>"));
 
     stopButton->setVisible(true);
     coversLabel->setVisible(true);
@@ -328,7 +328,7 @@ void ImportWidget::setUpdateLook()
 {
     iconLabel->setPixmap(theme.importWidget.updatingIcon);
     text->setText(tr("Updating the library"));
-    textDescription->setText(tr("<p>The current library is being updated. For faster updates, please, update your libraries frequently.</p><p>You can stop the process and continue updating this library later.</p>"));
+    textDescription->setText(tr("<p>The current library is being updated. For faster updates, please update your libraries frequently.</p><p>You can stop the process and continue updating this library later.</p>"));
 
     stopButton->setVisible(true);
     coversLabel->setVisible(true);
@@ -352,7 +352,7 @@ void ImportWidget::setXMLScanLook()
 {
     iconLabel->setPixmap(theme.importWidget.updatingIcon);
     text->setText(tr("Scanning the library"));
-    textDescription->setText(tr("<p>Current library is being scanned for legacy XML metadata information.</p><p>This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.</p>"));
+    textDescription->setText(tr("<p>The current library is being scanned for legacy XML metadata information.</p><p>This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.</p>"));
 
     stopButton->setVisible(true);
     coversLabel->setVisible(false);

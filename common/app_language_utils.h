@@ -41,11 +41,27 @@ inline bool loadFromLocale(QTranslator &translator, const QString &prefix, const
     return false;
 }
 
+// The language picker stores the suffix of an installed file (e.g. pt_PT), so that file is tried first.
+// QTranslator::load(QLocale, ...) walks pt_Latn_PT -> pt before trying pt_PT, so a generic pt file would shadow pt_PT
+inline bool loadFromLanguageCode(QTranslator &translator, const QString &prefix, const QString &languageCode)
+{
+    const auto dirs = translationDirectories();
+    for (const auto &dir : dirs) {
+        if (translator.load(prefix + "_" + languageCode, dir))
+            return true;
+    }
+
+    return false;
+}
+
 inline bool loadTranslator(QTranslator &translator, const QString &prefix, const QString &languageOverride = QString())
 {
     auto selectedLanguage = languageOverride.trimmed();
     if (!selectedLanguage.isEmpty()) {
         selectedLanguage.replace('-', '_');
+
+        if (loadFromLanguageCode(translator, prefix, selectedLanguage))
+            return true;
 
         if (loadFromLocale(translator, prefix, QLocale(selectedLanguage)))
             return true;

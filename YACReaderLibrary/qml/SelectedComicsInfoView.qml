@@ -50,6 +50,7 @@ Rectangle {
             readonly property var covers: root.selectionInfo.covers ?? []
             coverSource: covers.length > 0 ? covers[0] : ""
             stackedCoverSources: covers
+            grayscaleCovers: root.selectionInfo.coversGrayscale ?? []
         }
 
         Text {
@@ -88,6 +89,9 @@ Rectangle {
 
             MetadataText { text: qsTr("Total size"); color: root.secondaryTextColor }
             MetadataText { text: root.selectionInfo.size ?? ""; color: infoTextColor; Layout.fillWidth: true }
+
+            MetadataText { text: qsTr("Missing"); color: root.secondaryTextColor; visible: (root.selectionInfo.missingCount ?? 0) > 0 }
+            MetadataText { text: root.selectionInfo.missingCount ?? 0; color: infoTextColor; Layout.fillWidth: true; visible: (root.selectionInfo.missingCount ?? 0) > 0 }
         }
     }
 }

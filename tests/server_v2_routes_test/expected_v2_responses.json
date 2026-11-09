@@ -1,0 +1,167 @@
+{
+    "GET /v2/libraries": {
+        "body": "[{\"id\":1,\"name\":\"Server routes\",\"uuid\":\"{library_uuid}\"}]",
+        "content_type": "application/json",
+        "status": 200
+    },
+    "GET /v2/library/77/folder/1/content": {
+        "body": "404 not found",
+        "content_type": "",
+        "status": 404
+    },
+    "GET /v2/library/{library}/comic/1/fullinfo": {
+        "body": "{\"added\":1001,\"bookmark1\":-1,\"bookmark2\":-1,\"bookmark3\":-1,\"brightness\":-1,\"comic_info_id\":\"1\",\"contrast\":-1,\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"edited\":false,\"file_name\":\"c1.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"gamma\":-1,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"1\",\"last_time_cover_set\":0,\"last_time_image_filters_set\":0,\"last_time_metadata_set\":0,\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c1.cbz\",\"rating\":0,\"read\":false,\"series\":\"Series\",\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\",\"uses_external_cover\":false,\"volume\":\"V1\"}",
+        "content_type": "application/json",
+        "status": 200
+    },
+    "GET /v2/library/{library}/comic/1/info": {
+        "body": "fileName:c1.cbz\r\nfileSize:1001\r\nlibraryId:1\r\ncomicid:1\r\nhash:11111111111111111111111111111111111111111001\r\npath:/Series/c1.cbz\r\nnumpages:20\r\nrating:0\r\ncurrentPage:3\r\ncontrast:-1\r\nread:0\r\ncoverPage:1\r\ntitle:Ten\r\nnumber:10\r\nvolume:V1\r\nmanga:0\r\nlastTimeOpened:5000\r\nadded:1001\r\ntype:0\r\nseries:Series\r\nlastTimeImageFiltersSet:0\r\nlastTimeCoverSet:0\r\nusesExternalCover:0\r\nlastTimeMetadataSet:0\r\n",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/comic/4/fullinfo": {
+        "body": "",
+        "content_type": "application/json",
+        "status": 404
+    },
+    "GET /v2/library/{library}/cover/11111111111111111111111111111111111111111001.jpg": {
+        "body": "image 60x80",
+        "content_type": "image/jpeg",
+        "status": 200
+    },
+    "GET /v2/library/{library}/cover/22222222222222222222222222222222222222221002.jpg": {
+        "body": "404 not found",
+        "content_type": "image/jpeg",
+        "status": 404
+    },
+    "GET /v2/library/{library}/cover/44444444444444444444444444444444444444441004.jpg": {
+        "body": "image 64x96",
+        "content_type": "image/jpeg",
+        "status": 200
+    },
+    "GET /v2/library/{library}/cover/folders/3.jpg": {
+        "body": "image 50x50",
+        "content_type": "image/jpeg",
+        "status": 200
+    },
+    "GET /v2/library/{library}/cover/placeholders/00000000-0000-0000-0000-000000000001.jpg": {
+        "body": "image 30x40",
+        "content_type": "image/jpeg",
+        "status": 200
+    },
+    "GET /v2/library/{library}/favs": {
+        "body": "[{\"added\":1002,\"comic_info_id\":\"2\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":20,\"file_name\":\"c2.cbz\",\"file_size\":\"1002\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"22222222222222222222222222222222222222221002\",\"id\":\"2\",\"last_time_opened\":4000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":2,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c2.cbz\",\"read\":true,\"title\":\"Two\",\"type\":\"comic\",\"universal_number\":\"2\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"c1.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"1\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c1.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"}]",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/folder/1/content": {
+        "body": "[{\"added\":100,\"completed\":true,\"custom_image\":\"\",\"file_type\":0,\"finished\":false,\"first_comic_hash\":\"22222222222222222222222222222222222222222002\",\"folder_name\":\"Series\",\"id\":\"2\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"num_children\":4,\"parent_id\":\"1\",\"path\":\"/Series\",\"type\":\"folder\",\"updated\":200}]",
+        "content_type": "application/json",
+        "status": 200
+    },
+    "GET /v2/library/{library}/folder/1/info": {
+        "body": "/v2/library/1/comic/1:c1.cbz:1001:0:11111111111111111111111111111111111111111001\r\n/v2/library/1/comic/2:c2.cbz:1002:1:22222222222222222222222222222222222222221002\r\n/v2/library/1/comic/3:c3.cbz:1003:0:33333333333333333333333333333333333333331003\r\n/v2/library/1/comic/5:c5.cbz:1005:0:55555555555555555555555555555555555555551005\r\n/v2/library/1/comic/6:copy.cbz:1001:0:11111111111111111111111111111111111111111001\r\n",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/folder/2/content": {
+        "body": "[{\"added\":101,\"completed\":true,\"custom_image\":\"/folders/3.jpg\",\"file_type\":1,\"finished\":true,\"first_comic_hash\":\"55555555555555555555555555555555555555555005\",\"folder_name\":\"Arc\",\"id\":\"3\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"num_children\":1,\"parent_id\":\"2\",\"path\":\"/Series/Arc\",\"type\":\"folder\",\"updated\":201},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"c1.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"1\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c1.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"},{\"added\":1002,\"comic_info_id\":\"2\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":20,\"file_name\":\"c2.cbz\",\"file_size\":\"1002\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"22222222222222222222222222222222222222221002\",\"id\":\"2\",\"last_time_opened\":4000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":2,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c2.cbz\",\"read\":true,\"title\":\"Two\",\"type\":\"comic\",\"universal_number\":\"2\"},{\"added\":1003,\"comic_info_id\":\"3\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":1,\"file_name\":\"c3.cbz\",\"file_size\":\"1003\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"33333333333333333333333333333333333333331003\",\"id\":\"3\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":0,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c3.cbz\",\"read\":false,\"type\":\"comic\"}]",
+        "content_type": "application/json",
+        "status": 200
+    },
+    "GET /v2/library/{library}/folder/2/metadata": {
+        "body": "{\"added\":100,\"completed\":true,\"custom_image\":\"\",\"file_type\":0,\"finished\":false,\"first_comic_hash\":\"22222222222222222222222222222222222222222002\",\"folder_name\":\"Series\",\"id\":\"2\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"num_children\":4,\"parent_id\":\"1\",\"path\":\"/Series\",\"type\":\"folder\",\"updated\":200}",
+        "content_type": "application/json",
+        "status": 200
+    },
+    "GET /v2/library/{library}/folder/3/content": {
+        "body": "[{\"added\":1005,\"comic_info_id\":\"5\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":0,\"file_name\":\"c5.cbz\",\"file_size\":\"1005\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"55555555555555555555555555555555555555551005\",\"id\":\"5\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":1,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/c5.cbz\",\"read\":false,\"title\":\"Arc One\",\"type\":\"comic\",\"universal_number\":\"1\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"copy.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"6\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/copy.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"}]",
+        "content_type": "application/json",
+        "status": 200
+    },
+    "GET /v2/library/{library}/folder/99/metadata": {
+        "body": "404 not found",
+        "content_type": "application/json",
+        "status": 404
+    },
+    "GET /v2/library/{library}/reading": {
+        "body": "[{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"c1.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"1\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c1.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"copy.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"6\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/copy.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"}]",
+        "content_type": "application/json",
+        "status": 200
+    },
+    "GET /v2/library/{library}/reading_list/1/content": {
+        "body": "[{\"added\":1002,\"comic_info_id\":\"2\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":20,\"file_name\":\"c2.cbz\",\"file_size\":\"1002\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"22222222222222222222222222222222222222221002\",\"id\":\"2\",\"last_time_opened\":4000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":2,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c2.cbz\",\"read\":true,\"title\":\"Two\",\"type\":\"comic\",\"universal_number\":\"2\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"c1.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"1\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c1.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"},{\"added\":1002,\"comic_info_id\":\"2\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":20,\"file_name\":\"c2.cbz\",\"file_size\":\"1002\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"22222222222222222222222222222222222222221002\",\"id\":\"2\",\"last_time_opened\":4000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":2,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c2.cbz\",\"read\":true,\"title\":\"Two\",\"type\":\"comic\",\"universal_number\":\"2\"},{\"added\":1005,\"comic_info_id\":\"5\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":0,\"file_name\":\"c5.cbz\",\"file_size\":\"1005\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"55555555555555555555555555555555555555551005\",\"id\":\"5\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":1,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/c5.cbz\",\"read\":false,\"title\":\"Arc One\",\"type\":\"comic\",\"universal_number\":\"1\"},{\"added\":1003,\"comic_info_id\":\"3\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":1,\"file_name\":\"c3.cbz\",\"file_size\":\"1003\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"33333333333333333333333333333333333333331003\",\"id\":\"3\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":0,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c3.cbz\",\"read\":false,\"type\":\"comic\"}]",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/reading_list/1/info": {
+        "body": "/v2/library/1/comic/2:c2.cbz:1002:1:22222222222222222222222222222222222222221002\r\n/v2/library/1/comic/1:c1.cbz:1001:0:11111111111111111111111111111111111111111001\r\n/v2/library/1/comic/2:c2.cbz:1002:1:22222222222222222222222222222222222222221002\r\n/v2/library/1/comic/5:c5.cbz:1005:0:55555555555555555555555555555555555555551005\r\n/v2/library/1/comic/3:c3.cbz:1003:0:33333333333333333333333333333333333333331003\r\n",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/reading_list/2/content": {
+        "body": "[{\"added\":1005,\"comic_info_id\":\"5\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":0,\"file_name\":\"c5.cbz\",\"file_size\":\"1005\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"55555555555555555555555555555555555555551005\",\"id\":\"5\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":1,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/c5.cbz\",\"read\":false,\"title\":\"Arc One\",\"type\":\"comic\",\"universal_number\":\"1\"}]",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/reading_list/4/content": {
+        "body": "[{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"c1.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"1\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c1.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"}]",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/reading_list/5/content": {
+        "body": "[]",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/reading_lists": {
+        "body": "[{\"id\":\"4\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"reading_list_name\":\"An event\",\"type\":\"reading_list\"},{\"id\":\"6\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"reading_list_name\":\"Another list\",\"type\":\"reading_list\"},{\"id\":\"1\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"reading_list_name\":\"Main list\",\"type\":\"reading_list\"},{\"id\":\"5\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"reading_list_name\":\"Old event\",\"type\":\"reading_list\"}]",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/tag/1/content": {
+        "body": "[{\"added\":1003,\"comic_info_id\":\"3\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":1,\"file_name\":\"c3.cbz\",\"file_size\":\"1003\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"33333333333333333333333333333333333333331003\",\"id\":\"3\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":0,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c3.cbz\",\"read\":false,\"type\":\"comic\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"c1.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"1\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c1.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"}]",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/tag/1/info": {
+        "body": "/v2/library/1/comic/3:c3.cbz:1003:0:33333333333333333333333333333333333333331003\r\n/v2/library/1/comic/1:c1.cbz:1001:0:11111111111111111111111111111111111111111001\r\n",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/tag/2/content": {
+        "body": "[]",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/tags": {
+        "body": "[{\"color_id\":2,\"id\":\"1\",\"label_name\":\"Tag\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"type\":\"label\"},{\"color_id\":5,\"id\":\"2\",\"label_name\":\"Empty\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"type\":\"label\"}]",
+        "content_type": "text/plain; charset=utf-8",
+        "status": 200
+    },
+    "GET /v2/library/{library}/unknown": {
+        "body": "404 not found",
+        "content_type": "",
+        "status": 404
+    },
+    "GET /v2/version": {
+        "body": "2.3",
+        "content_type": "",
+        "status": 200
+    },
+    "POST /v2/library/{library}/search {\"query\":\"Arc\"}": {
+        "body": "[{\"added\":101,\"completed\":true,\"custom_image\":\"/folders/3.jpg\",\"file_type\":1,\"finished\":true,\"first_comic_hash\":\"55555555555555555555555555555555555555555005\",\"folder_name\":\"Arc\",\"id\":\"3\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"num_children\":1,\"parent_id\":\"2\",\"path\":\"/Series/Arc\",\"type\":\"folder\",\"updated\":201},{\"added\":1005,\"comic_info_id\":\"5\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":0,\"file_name\":\"c5.cbz\",\"file_size\":\"1005\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"55555555555555555555555555555555555555551005\",\"id\":\"5\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":1,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/c5.cbz\",\"read\":false,\"title\":\"Arc One\",\"type\":\"comic\",\"universal_number\":\"1\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"copy.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"6\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/copy.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"}]",
+        "content_type": "application/json",
+        "status": 200
+    },
+    "POST /v2/library/{library}/search {\"query\":\"Series\"}": {
+        "body": "[{\"added\":100,\"completed\":true,\"custom_image\":\"\",\"file_type\":0,\"finished\":false,\"first_comic_hash\":\"22222222222222222222222222222222222222222002\",\"folder_name\":\"Series\",\"id\":\"2\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"num_children\":4,\"parent_id\":\"1\",\"path\":\"/Series\",\"type\":\"folder\",\"updated\":200},{\"added\":101,\"completed\":true,\"custom_image\":\"/folders/3.jpg\",\"file_type\":1,\"finished\":true,\"first_comic_hash\":\"55555555555555555555555555555555555555555005\",\"folder_name\":\"Arc\",\"id\":\"3\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"num_children\":1,\"parent_id\":\"2\",\"path\":\"/Series/Arc\",\"type\":\"folder\",\"updated\":201},{\"added\":1002,\"comic_info_id\":\"2\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":20,\"file_name\":\"c2.cbz\",\"file_size\":\"1002\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"22222222222222222222222222222222222222221002\",\"id\":\"2\",\"last_time_opened\":4000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":2,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c2.cbz\",\"read\":true,\"title\":\"Two\",\"type\":\"comic\",\"universal_number\":\"2\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"c1.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"1\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c1.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"copy.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"6\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/copy.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"},{\"added\":1003,\"comic_info_id\":\"3\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":1,\"file_name\":\"c3.cbz\",\"file_size\":\"1003\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"33333333333333333333333333333333333333331003\",\"id\":\"3\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":0,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c3.cbz\",\"read\":false,\"type\":\"comic\"}]",
+        "content_type": "application/json",
+        "status": 200
+    },
+    "POST /v2/library/{library}/search {\"query\":\"read:false\"}": {
+        "body": "[{\"added\":100,\"completed\":true,\"custom_image\":\"\",\"file_type\":0,\"finished\":false,\"first_comic_hash\":\"22222222222222222222222222222222222222222002\",\"folder_name\":\"Series\",\"id\":\"2\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"num_children\":4,\"parent_id\":\"1\",\"path\":\"/Series\",\"type\":\"folder\",\"updated\":200},{\"added\":101,\"completed\":true,\"custom_image\":\"/folders/3.jpg\",\"file_type\":1,\"finished\":true,\"first_comic_hash\":\"55555555555555555555555555555555555555555005\",\"folder_name\":\"Arc\",\"id\":\"3\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"num_children\":1,\"parent_id\":\"2\",\"path\":\"/Series/Arc\",\"type\":\"folder\",\"updated\":201},{\"added\":1005,\"comic_info_id\":\"5\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":0,\"file_name\":\"c5.cbz\",\"file_size\":\"1005\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"55555555555555555555555555555555555555551005\",\"id\":\"5\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":1,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/c5.cbz\",\"read\":false,\"title\":\"Arc One\",\"type\":\"comic\",\"universal_number\":\"1\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"c1.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"1\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c1.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"},{\"added\":1001,\"comic_info_id\":\"1\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":3,\"file_name\":\"copy.cbz\",\"file_size\":\"1001\",\"file_type\":0,\"has_been_opened\":true,\"hash\":\"11111111111111111111111111111111111111111001\",\"id\":\"6\",\"last_time_opened\":5000,\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":10,\"original_cover_size\":\"600x800\",\"parent_id\":\"3\",\"path\":\"/Series/Arc/copy.cbz\",\"read\":false,\"title\":\"Ten\",\"type\":\"comic\",\"universal_number\":\"10\"},{\"added\":1003,\"comic_info_id\":\"3\",\"cover_page\":1,\"cover_size_ratio\":0.75,\"current_page\":1,\"file_name\":\"c3.cbz\",\"file_size\":\"1003\",\"file_type\":0,\"has_been_opened\":false,\"hash\":\"33333333333333333333333333333333333333331003\",\"id\":\"3\",\"library_id\":\"1\",\"library_uuid\":\"{library_uuid}\",\"manga\":false,\"num_pages\":20,\"number\":0,\"original_cover_size\":\"600x800\",\"parent_id\":\"2\",\"path\":\"/Series/c3.cbz\",\"read\":false,\"type\":\"comic\"}]",
+        "content_type": "application/json",
+        "status": 200
+    }
+}

@@ -4,7 +4,6 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.12
 
 import com.yacreader.ComicInfo 1.0
-import com.yacreader.ComicDB 1.0
 
 
 Rectangle {
@@ -50,6 +49,7 @@ Rectangle {
                     y: 5
 
                     read: comicInfo ? comicInfo.read ?? false : false
+                    enabled: comicInfo ? comicInfo.canSetReadState ?? true : true
 
                     onReadChangedByUser: {
                         comicInfo.read = read;
@@ -84,6 +84,7 @@ Rectangle {
                     Layout.topMargin: 5
 
                     read: comicInfo ? comicInfo.read ?? false : false
+                    enabled: comicInfo ? comicInfo.canSetReadState ?? true : true
 
                     onReadChangedByUser: {
                         comicInfo.read = read;
@@ -101,6 +102,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignTop
 
                     active: comicInfo ? comicInfo.isFavorite ?? false : false
+                    enabled: comicInfo ? comicInfo.available ?? true : true
 
                     onActiveChangedByUser: {
                         if(active)
@@ -116,6 +118,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignTop
                     Layout.rightMargin: 30
                     rating: comicInfo ? comicInfo.rating ?? 0 : 0
+                    enabled: comicInfo ? comicInfo.canSetReadState ?? true : true
 
                     onRatingChangedByUser: {
                         comicInfo.rating = rating;
@@ -157,6 +160,7 @@ Rectangle {
                         Layout.alignment: Qt.AlignTop
 
                         active: comicInfo ? comicInfo.isFavorite ?? false : false
+                        enabled: comicInfo ? comicInfo.available ?? true : true
 
                         onActiveChangedByUser: {
                             if(active)
@@ -172,6 +176,7 @@ Rectangle {
                         Layout.alignment: Qt.AlignTop
                         Layout.rightMargin: 30
                         rating: comicInfo ? comicInfo.rating ?? 0 : 0
+                    enabled: comicInfo ? comicInfo.canSetReadState ?? true : true
 
                         onRatingChangedByUser: {
                             comicInfo.rating = rating;

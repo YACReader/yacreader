@@ -31,6 +31,7 @@ InfoComicsView::InfoComicsView(QWidget *parent)
     view->setSource(QUrl("qrc:/qml/InfoComicsView.qml"));
 
     selectionHelper = new YACReaderComicsSelectionHelper(this);
+    connect(selectionHelper, &YACReaderComicsSelectionHelper::selectionChanged, this, &ComicsView::comicSelectionChanged);
     comicInfoHelper = new YACReaderComicInfoHelper(this);
 
     auto l = new QVBoxLayout;
@@ -154,7 +155,7 @@ ContentViewState InfoComicsView::captureViewState() const
     const auto index = selectionHelper->currentIndex();
     if (index.isValid()) {
         state.topItem.kind = ContentItemRef::Comic;
-        state.topItem.id = index.data(ComicModel::IdRole).toULongLong();
+        state.topItem.comic = model->rowId(index);
         state.fallbackComicRow = index.row();
         state.currentItem = state.topItem;
     }
@@ -166,7 +167,7 @@ void InfoComicsView::restoreViewState(const ContentViewState &state)
     if (!model || model->rowCount() == 0)
         return;
 
-    auto index = state.currentItem.kind == ContentItemRef::Comic ? model->getIndexFromId(state.currentItem.id) : QModelIndex();
+    auto index = state.currentItem.kind == ContentItemRef::Comic ? model->indexOf(state.currentItem.comic) : QModelIndex();
     if (!index.isValid() && state.fallbackComicRow >= 0)
         index = model->index(qBound(0, state.fallbackComicRow, model->rowCount() - 1), 0);
     if (!index.isValid())
@@ -256,8 +257,8 @@ void InfoComicsView::droppedImage(const QList<QUrl> &urls)
 {
     const auto imagePath = YACReader::droppedImagePath(urls);
     const auto index = currentIndex();
-    if (!imagePath.isEmpty() && index.isValid())
-        emit customComicCoverRequested(index.data(ComicModel::IdRole).toULongLong(), imagePath);
+    if (!imagePath.isEmpty() && index.isValid() && model)
+        emit customComicCoverRequested(model->rowId(index), imagePath);
 }
 
 void InfoComicsView::requestedContextMenu(const QPoint &point)

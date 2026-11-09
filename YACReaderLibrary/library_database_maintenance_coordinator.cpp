@@ -1,6 +1,7 @@
 #include "library_database_maintenance_coordinator.h"
 
 #include "data_base_management.h"
+#include "library_maintenance_dialog.h"
 #include "yacreader_global.h"
 #include "yacreader_libraries.h"
 
@@ -33,6 +34,25 @@ void LibraryDatabaseMaintenanceCoordinator::restoreCurrentLibrary(const QString 
 {
     const auto libraryName = currentLibraryNameProvider();
     restoreLibrary(libraryName, libraries.getPath(libraryName), dialogTitle);
+}
+
+void LibraryDatabaseMaintenanceCoordinator::repairCurrentLibraryDatabase()
+{
+    const auto libraryName = currentLibraryNameProvider();
+    const auto libraryPath = libraries.getPath(libraryName);
+    if (libraryPath.isEmpty())
+        return;
+
+    QMessageBox messageBox(QMessageBox::Question,
+                           QCoreApplication::translate("LibraryWindow", "Library database repair"),
+                           QCoreApplication::translate("LibraryWindow", "Check the database of library '%1' and attempt to repair it if needed? Existing backups will not be changed.").arg(libraryName),
+                           QMessageBox::Cancel,
+                           dialogParent);
+    const auto repairButton = messageBox.addButton(QCoreApplication::translate("LibraryWindow", "Check and repair"), QMessageBox::AcceptRole);
+    messageBox.setDefaultButton(QMessageBox::Cancel);
+    messageBox.exec();
+    if (messageBox.clickedButton() == repairButton)
+        startDatabaseSalvage(libraryName, libraryPath);
 }
 
 void LibraryDatabaseMaintenanceCoordinator::backupLibrary(const QString &libraryPath, const QString &dialogTitle)
@@ -100,7 +120,7 @@ void LibraryDatabaseMaintenanceCoordinator::restoreLibrary(const QString &librar
         startLibraryRestore(libraryName, libraryPath, backupPath, dialogTitle);
 }
 
-void LibraryDatabaseMaintenanceCoordinator::startLibraryRestore(const QString &libraryName, const QString &libraryPath, const QString &backupPath, const QString &dialogTitle, bool allowInvalidCurrent, bool removeStaleLock)
+void LibraryDatabaseMaintenanceCoordinator::startLibraryRestore(const QString &libraryName, const QString &libraryPath, const QString &backupPath, const QString &dialogTitle, bool allowInvalidCurrent, bool recoveryAttempted)
 {
     auto result = std::make_shared<DatabaseRestoreResult>();
     auto progress = new QProgressDialog(QCoreApplication::translate("LibraryWindow", "Restoring library database..."), QString(), 0, 0, dialogParent);
@@ -110,10 +130,10 @@ void LibraryDatabaseMaintenanceCoordinator::startLibraryRestore(const QString &l
 
     emit maintenanceStarted();
 
-    auto worker = QThread::create([libraryPath, backupPath, allowInvalidCurrent, removeStaleLock, result] {
-        *result = DataBaseManagement::restoreLibrary(libraryPath, backupPath, allowInvalidCurrent, removeStaleLock);
+    auto worker = QThread::create([libraryPath, backupPath, allowInvalidCurrent, result] {
+        *result = DataBaseManagement::restoreLibrary(libraryPath, backupPath, allowInvalidCurrent);
     });
-    connect(worker, &QThread::finished, this, [this, libraryName, libraryPath, backupPath, dialogTitle, allowInvalidCurrent, result, progress] {
+    connect(worker, &QThread::finished, this, [this, libraryName, libraryPath, backupPath, dialogTitle, allowInvalidCurrent, recoveryAttempted, result, progress] {
         progress->deleteLater();
 
         if (result->status == DatabaseRestoreStatus::InvalidCurrentDatabase && !allowInvalidCurrent) {
@@ -123,18 +143,13 @@ void LibraryDatabaseMaintenanceCoordinator::startLibraryRestore(const QString &l
                                                      QMessageBox::Yes | QMessageBox::Cancel,
                                                      QMessageBox::Cancel);
             if (answer == QMessageBox::Yes) {
-                startLibraryRestore(libraryName, libraryPath, backupPath, dialogTitle, true);
+                startLibraryRestore(libraryName, libraryPath, backupPath, dialogTitle, true, recoveryAttempted);
                 return;
             }
             emit invalidDatabaseRestoreCancelled();
             return;
-        } else if (result->status == DatabaseRestoreStatus::LockFailed && !result->lockHolderIsRunningLocally) {
-            const auto answer = QMessageBox::warning(dialogParent,
-                                                     dialogTitle,
-                                                     QCoreApplication::translate("LibraryWindow", "The library maintenance lock may be stale. Remove it and retry?"),
-                                                     QMessageBox::Yes | QMessageBox::Cancel,
-                                                     QMessageBox::Cancel);
-            if (answer == QMessageBox::Yes) {
+        } else if (result->status == DatabaseRestoreStatus::LockFailed && !recoveryAttempted) {
+            if (recoverLibraryMaintenance(dialogParent, libraryPath, dialogTitle)) {
                 startLibraryRestore(libraryName, libraryPath, backupPath, dialogTitle, allowInvalidCurrent, true);
                 return;
             }
@@ -187,7 +202,7 @@ void LibraryDatabaseMaintenanceCoordinator::offerDatabaseRecovery(const QString 
         restoreLibrary(libraryName, libraryPath, restoreDialogTitle);
 }
 
-void LibraryDatabaseMaintenanceCoordinator::startDatabaseSalvage(const QString &libraryName, const QString &libraryPath, bool removeStaleLock)
+void LibraryDatabaseMaintenanceCoordinator::startDatabaseSalvage(const QString &libraryName, const QString &libraryPath, bool recoveryAttempted)
 {
     if (libraryPath.isEmpty())
         return;
@@ -198,25 +213,20 @@ void LibraryDatabaseMaintenanceCoordinator::startDatabaseSalvage(const QString &
     progress->setWindowModality(Qt::WindowModal);
     progress->setMinimumDuration(0);
 
-    auto worker = QThread::create([libraryPath, removeStaleLock, result] {
-        *result = DataBaseManagement::salvageLibrary(libraryPath, removeStaleLock);
+    auto worker = QThread::create([libraryPath, result] {
+        *result = DataBaseManagement::salvageLibrary(libraryPath);
     });
-    connect(worker, &QThread::finished, this, [this, libraryName, libraryPath, result, progress] {
+    connect(worker, &QThread::finished, this, [this, libraryName, libraryPath, recoveryAttempted, result, progress] {
         progress->deleteLater();
 
         if (result->status == DatabaseSalvageStatus::LockFailed) {
-            if (!result->lockHolderIsRunningLocally) {
-                const auto answer = QMessageBox::warning(dialogParent,
-                                                         QCoreApplication::translate("LibraryWindow", "Library database repair"),
-                                                         QCoreApplication::translate("LibraryWindow", "The library maintenance lock may be stale. Remove it and retry?"),
-                                                         QMessageBox::Yes | QMessageBox::Cancel,
-                                                         QMessageBox::Cancel);
-                if (answer == QMessageBox::Yes)
+            if (!recoveryAttempted) {
+                if (recoverLibraryMaintenance(dialogParent, libraryPath, QCoreApplication::translate("LibraryWindow", "Library database repair")))
                     startDatabaseSalvage(libraryName, libraryPath, true);
             } else {
                 QMessageBox::warning(dialogParent,
                                      QCoreApplication::translate("LibraryWindow", "Library database repair"),
-                                     QCoreApplication::translate("LibraryWindow", "Another maintenance operation is currently using this library. Try again after it finishes."));
+                                     result->error);
             }
             return;
         }

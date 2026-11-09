@@ -16,7 +16,7 @@ class QLibrary;
 
 // Used to check if the database needs to be updated, the version is stored in the database.
 // This value is only incremented when the database structure changes.
-#define DB_VERSION "9.16.0"
+#define DB_VERSION "10.5.0"
 
 #define IMPORT_COMIC_INFO_XML_METADATA "IMPORT_COMIC_INFO_XML_METADATA"
 #define ORGANIZE_FILES_RELATIVE_TO_ROOT "ORGANIZE_FILES_RELATIVE_TO_ROOT"
@@ -106,6 +106,8 @@ struct OpenComicSource {
 
     Source source;
     qulonglong sourceId;
+    // the reading list entry that was opened, 0 if none; a reading list can have a comic more than once
+    qulonglong entryId = 0;
 };
 
 QDataStream &operator<<(QDataStream &stream, const OpenComicSource &source);
@@ -174,6 +176,16 @@ struct LibraryPaths {
         return QDir(libraryCustomFoldersCoverPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(folderId));
     }
 
+    static QString libraryPlaceholdersCoverPathFromLibraryDataPath(const QString &libraryDataPath) // libraryDataPath + /covers/placeholders
+    {
+        return QDir(libraryCoversPathFromLibraryDataPath(libraryDataPath)).filePath("placeholders");
+    }
+
+    static QString placeholderCoverPathFromDataPath(const QString &libraryDataPath, const QString &coverKey) // libraryDataPath + /covers/placeholders/coverKey + .jpg
+    {
+        return QDir(libraryPlaceholdersCoverPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(coverKey));
+    }
+
     static QString coverPathFromLibraryDataPath(const QString &libraryDataPath, const QString &hash) // libraryDataPath + /covers/hash + .jpg
     {
         return QDir(libraryCoversPathFromLibraryDataPath(libraryDataPath)).filePath(coverFileName(hash));
@@ -182,11 +194,6 @@ struct LibraryPaths {
     static QString coverFileName(const QString &id) // id + .jpg (it can be a comic hash or a folder id)
     {
         return id + ".jpg";
-    }
-
-    static QString coverPathWithFileName(const QString &libraryPath, const QString &fileName) // libraryPath + /.yacreaderlibrary/covers/hash + fileName
-    {
-        return QDir(libraryCoversFolderPath(libraryPath)).filePath(fileName);
     }
 
     static QString idPath(const QString &libraryPath) // libraryPath + /.yacreaderlibrary/id

@@ -9,7 +9,6 @@
 #include <functional>
 #include <memory>
 
-class ComicItem;
 class ComicModel;
 class FolderItem;
 class FolderModel;
@@ -43,7 +42,7 @@ signals:
     void comicActionsDisabledChanged(bool disabled);
 
 private slots:
-    void applyComicResults(QList<ComicItem *> *data, const QString &databasePath);
+    void applyComicResults(QList<ComicItem> *data, const QString &databasePath);
     void applyFolderResults(QMap<unsigned long long, FolderItem *> *filteredItems, FolderItem *root);
 
 private:

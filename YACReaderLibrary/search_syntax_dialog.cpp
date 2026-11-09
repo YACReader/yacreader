@@ -177,7 +177,7 @@ QWidget *SearchSyntaxDialog::createQuickGuideTab()
             plainSearch);
     plainSearchDescription->setWordWrap(true);
     plainSearchLayout->addWidget(plainSearchDescription);
-    plainSearchLayout->addWidget(codeLabel(QStringLiteral("san -> searchs `san` in any field of the database"), plainSearch));
+    plainSearchLayout->addWidget(codeLabel(tr("%1 -> search for `%1` in any database field").arg(QStringLiteral("san")), plainSearch));
     layout->addWidget(plainSearch);
 
     auto *steps = new QHBoxLayout();

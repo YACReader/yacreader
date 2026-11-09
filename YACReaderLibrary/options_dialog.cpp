@@ -192,7 +192,7 @@ QWidget *OptionsDialog::createGeneralTab()
     QVBoxLayout *trayLayout = new QVBoxLayout();
 
     trayIconCheckbox = new QCheckBox(tr("Close to tray"));
-    startToTrayCheckbox = new QCheckBox(tr("Start into the system tray"));
+    startToTrayCheckbox = new QCheckBox(tr("Start in the system tray"));
 
     connect(trayIconCheckbox, &QCheckBox::clicked, this,
             [=, this](bool checked) {
@@ -335,10 +335,10 @@ QWidget *OptionsDialog::createLibrariesTab()
 
     // Without word wrapping this label is the widest widget in the whole dialog, and because
     // QStackedWidget hints at the width of its widest page it would size every other section too.
-    auto updatesWarningLabel = new QLabel(tr("WARNING! During library updates writes to the database are disabled!\n"
-                                             "Don't schedule updates while you may be using the app actively.\n"
-                                             "During automatic updates the app will block some of the actions until the update is finished.\n"
-                                             "To stop an automatic update tap on the loading indicator next to the Libraries title."));
+    auto updatesWarningLabel = new QLabel(tr("WARNING! During library updates, writes to the database are disabled!\n"
+                                             "Don't schedule updates while you may be actively using the app.\n"
+                                             "During automatic updates, the app will block some of the actions until the update is finished.\n"
+                                             "To stop an automatic update, tap on the loading indicator next to the Libraries title."));
     updatesWarningLabel->setWordWrap(true);
     librariesBoxLayout->addWidget(updatesWarningLabel);
 
@@ -400,7 +400,7 @@ QWidget *OptionsDialog::createGridTab()
 
     useCurrentComicCoverCheck = new QCheckBox(tr("Use selected comic cover as background"));
 
-    resetButton = new QPushButton(tr("Restore defautls"));
+    resetButton = new QPushButton(tr("Restore defaults"));
 
     auto gridBackgroundLayout = new QVBoxLayout();
     gridBackgroundLayout->addWidget(useBackgroundImageCheck);

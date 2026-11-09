@@ -8,7 +8,6 @@ import QtQuick.Effects
 import com.yacreader.ComicModel 1.0
 
 import com.yacreader.ComicInfo 1.0
-import com.yacreader.ComicDB 1.0
 import com.yacreader.GridContentModel 1.0
 
 import QtQuick.Controls.Basic
@@ -80,6 +79,22 @@ SplitView {
                                                            localPosition.y)
                         contextMenuHelper.requestItemContextMenu(Qt.point(coordinates.x, coordinates.y), folderCell.index)
                     }
+                }
+            }
+
+            DelegateChoice {
+                roleValue: GridContentModel.ListCardItem
+
+                ListGridDelegate {
+                    width: grid.cellWidth
+                    height: grid.cellHeight
+                    selected: currentIndexHelper.focusedFolderRow === index
+
+                    onFocusRequested: {
+                        comicsSelectionHelper.clear()
+                        grid.focusItemFromPointer(index)
+                    }
+                    onOpenRequested: currentIndexHelper.openListCard(index)
                 }
             }
 

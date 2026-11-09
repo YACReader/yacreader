@@ -40,6 +40,7 @@ list(PREPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Compiler options (MSVC flags)
 include(cmake/CompilerOptions.cmake)
+include(cmake/SevenZipRuntime.cmake)
 
 # --- Build options ---
 
@@ -127,6 +128,7 @@ if(BUILD_SERVER_STANDALONE)
     )
 else()
     find_package(Qt6 6.9 REQUIRED COMPONENTS
+        Concurrent
         Core
         Core5Compat
         Gui
@@ -169,6 +171,7 @@ if(NOT BUILD_SERVER_STANDALONE)
 endif()
 
 add_subdirectory(YACReaderLibrary/server)
+add_subdirectory(YACReaderLibrary/cbl)
 
 if(NOT BUILD_SERVER_STANDALONE)
     add_subdirectory(YACReaderLibrary/comic_vine)

@@ -29,7 +29,7 @@ GoToFlowToolBar::GoToFlowToolBar(QWidget *parent)
     connect(slider, &QSlider::valueChanged, this, &GoToFlowToolBar::setCenter);
     connect(slider, &QSlider::valueChanged, this, &GoToFlowToolBar::setPage);
 
-    pageHint = new QLabel("<b>" + tr("Page : ") + "</b>", this);
+    pageHint = new QLabel("<b>" + tr("Page: ") + "</b>", this);
     v = new QIntValidator();
     v->setBottom(1);
     edit = new QLineEdit();

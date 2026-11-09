@@ -1,7 +1,6 @@
 #include "yacreader_table_view.h"
 
 #include "QsLog.h"
-#include "comic_item.h"
 #include "comic_model.h"
 #include "cover_utils.h"
 #include "yacreader_global_gui.h"
@@ -38,6 +37,7 @@ YACReaderTableView::YACReaderTableView(QWidget *parent)
     setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     setItemDelegateForColumn(ComicModel::Rating, new YACReaderRatingDelegate(this));
+    setItemDelegateForColumn(ComicModel::State, new YACReaderComicStateDelegate(this));
     setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     setMouseTracking(true);
@@ -221,12 +221,42 @@ void YACReaderTableView::resizeEvent(QResizeEvent *event)
 }
 
 //------------------------------------------------------------------------------
+// YACReaderComicStateDelegate---------------------------------------------------
+//------------------------------------------------------------------------------
+void YACReaderComicStateDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QStyledItemDelegate::paint(painter, option, index);
+
+    auto tableView = qobject_cast<YACReaderTableView *>(parent());
+    if (tableView == nullptr)
+        return;
+
+    const auto kind = index.data(ComicModel::KindRole).toString();
+    QIcon icon;
+    if (kind == QStringLiteral("DeletedComicInList"))
+        icon = tableView->deletedComicIcon();
+    else if (kind == QStringLiteral("PlaceholderInList"))
+        icon = tableView->placeholderComicIcon();
+    else
+        return;
+
+    const int size = 12;
+    const QRect iconRect(option.rect.center() - QPoint(size / 2 - 1, size / 2 - 1), QSize(size, size));
+    icon.paint(painter, iconRect, Qt::AlignCenter, (option.state & QStyle::State_Selected) ? QIcon::Selected : QIcon::Normal);
+}
+
+QSize YACReaderComicStateDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    return { 20, QStyledItemDelegate::sizeHint(option, index).height() };
+}
+
+//------------------------------------------------------------------------------
 // YACReaderRatingDelegate-------------------------------------------------------
 //------------------------------------------------------------------------------
 void YACReaderRatingDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                                     const QModelIndex &index) const
 {
-    int rating = ((ComicItem *)index.internalPointer())->data(ComicModel::Rating).toInt();
+    int rating = index.data(ComicModel::RatingRole).toInt();
 
     StarRating starRating(rating);
 
@@ -254,7 +284,7 @@ QSize YACReaderRatingDelegate::sizeHint(const QStyleOptionViewItem &option,
                                         const QModelIndex &index) const
 {
     Q_UNUSED(option)
-    int rating = ((ComicItem *)index.internalPointer())->data(ComicModel::Rating).toInt();
+    int rating = index.data(ComicModel::RatingRole).toInt();
     StarRating starRating(rating);
     return starRating.sizeHint();
 }
@@ -276,7 +306,7 @@ QWidget *YACReaderRatingDelegate::createEditor(QWidget *parent,
 void YACReaderRatingDelegate::setEditorData(QWidget *editor,
                                             const QModelIndex &index) const
 {
-    int rating = ((ComicItem *)index.internalPointer())->data(ComicModel::Rating).toInt();
+    int rating = index.data(ComicModel::RatingRole).toInt();
 
     StarRating starRating(rating);
 

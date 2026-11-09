@@ -15,6 +15,8 @@ public:
     explicit YACReaderTableView(QWidget *parent = 0);
     QColor starRatingColor() const { return theme.comicsViewTable.starRatingColor; }
     QColor starRatingSelectedColor() const { return theme.comicsViewTable.starRatingSelectedColor; }
+    QIcon deletedComicIcon() const { return theme.comicsViewTable.deletedComicIcon; }
+    QIcon placeholderComicIcon() const { return theme.comicsViewTable.placeholderComicIcon; }
 
 protected:
     void applyTheme(const Theme &theme) override;
@@ -45,6 +47,20 @@ private:
 
     // drag from here
     QPoint startDragPos;
+};
+
+//---
+
+class YACReaderComicStateDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+public:
+    YACReaderComicStateDelegate(QWidget *parent = nullptr)
+        : QStyledItemDelegate(parent) { }
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override;
 };
 
 //---

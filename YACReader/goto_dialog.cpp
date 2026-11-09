@@ -13,7 +13,7 @@ GoToDialog::GoToDialog(QWidget *parent)
 
 void GoToDialog::setupUI()
 {
-    textLabel = new QLabel(tr("Page : "));
+    textLabel = new QLabel(tr("Page: "));
     pageNumber = new QLineEdit;
     v = new QIntValidator(this);
     v->setBottom(1);
@@ -37,7 +37,7 @@ void GoToDialog::setupUI()
     bottomLayout->addWidget(cancel);
 
     auto mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(numPagesLabel = new QLabel(tr("Total pages : ")));
+    mainLayout->addWidget(numPagesLabel = new QLabel(tr("Total pages: ")));
     mainLayout->addLayout(topLayout);
     mainLayout->addStretch();
     mainLayout->addLayout(bottomLayout);
@@ -67,7 +67,7 @@ void GoToDialog::goTo()
 
 void GoToDialog::setNumPages(unsigned int numPages)
 {
-    numPagesLabel->setText(tr("Total pages : ") + QString::number(numPages));
+    numPagesLabel->setText(tr("Total pages: ") + QString::number(numPages));
     v->setTop(numPages);
 }
 

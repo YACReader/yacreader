@@ -22,6 +22,66 @@
         <translation>Etiket adı:</translation>
     </message>
     <message>
+        <location filename="add_label_dialog.cpp" line="8"/>
+        <source>red</source>
+        <translation>Kırmızı</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="9"/>
+        <source>orange</source>
+        <translation>Turuncu</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="10"/>
+        <source>yellow</source>
+        <translation>Sarı</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="11"/>
+        <source>green</source>
+        <translation>Yeşil</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="12"/>
+        <source>cyan</source>
+        <translation>Camgöbeği</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="13"/>
+        <source>blue</source>
+        <translation>Mavi</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="14"/>
+        <source>violet</source>
+        <translation>Menekşe</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="15"/>
+        <source>purple</source>
+        <translation>Mor</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="16"/>
+        <source>pink</source>
+        <translation>Pembe</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="17"/>
+        <source>white</source>
+        <translation>Beyaz</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="18"/>
+        <source>light</source>
+        <translation>Açık</translation>
+    </message>
+    <message>
+        <location filename="add_label_dialog.cpp" line="19"/>
+        <source>dark</source>
+        <translation>Koyu</translation>
+    </message>
+    <message>
         <location filename="add_label_dialog.cpp" line="31"/>
         <source>Choose a color:</source>
         <translation>Renk seçiniz:</translation>
@@ -42,7 +102,7 @@
     <message>
         <location filename="add_library_dialog.cpp" line="64"/>
         <source>Add an existing library</source>
-        <translation>Kütüphaneye ekle</translation>
+        <translation>Mevcut bir kütüphane ekle</translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="30"/>
@@ -51,13 +111,13 @@
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="16"/>
-        <source>Comics folder : </source>
-        <translation>Çizgi roman klasörü : </translation>
+        <source>Comics folder: </source>
+        <translation>Çizgi roman klasörü: </translation>
     </message>
     <message>
         <location filename="add_library_dialog.cpp" line="21"/>
-        <source>Library name : </source>
-        <translation>Kütüphane adı : </translation>
+        <source>Library name: </source>
+        <translation>Kütüphane adı: </translation>
     </message>
 </context>
 <context>
@@ -69,7 +129,7 @@
     </message>
     <message>
         <location filename="comic_vine/api_key_dialog.cpp" line="21"/>
-        <source>Before you can connect to Comic Vine, you need your own API key. Please, get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
+        <source>Before you can connect to Comic Vine, you need your own API key. Please get one free &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;here&lt;/a&gt;</source>
         <translation>Comic Vine&apos;a bağlanmadan önce kendi API anahtarınıza ihtiyacınız var. Lütfen &lt;a href=&quot;http://www.comicvine.com/api/&quot;&gt;buradan&lt;/a&gt; ücretsiz bir tane edinin</translation>
     </message>
     <message>
@@ -98,22 +158,22 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>Işık</translation>
+        <translation>Açık</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Dark</source>
-        <translation>Karanlık</translation>
+        <translation>Koyu</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Custom</source>
-        <translation>Gelenek</translation>
+        <translation>Özel</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
         <source>Remove</source>
-        <translation>Kaldırmak</translation>
+        <translation>Kaldır</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
@@ -123,17 +183,17 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>Işık:</translation>
+        <translation>Açık:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Dark:</source>
-        <translation>Karanlık:</translation>
+        <translation>Koyu:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Custom:</source>
-        <translation>Kişisel:</translation>
+        <translation>Özel:</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
@@ -163,7 +223,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="185"/>
         <source>The current theme JSON could not be loaded.</source>
-        <translation>Geçerli tema JSON yüklenemedi.</translation>
+        <translation>Geçerli temanın JSON verisi yüklenemedi.</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
@@ -200,103 +260,620 @@
     </message>
 </context>
 <context>
+    <name>CblEntriesView</name>
+    <message>
+        <location filename="cbl/cbl_entries_view.cpp" line="77"/>
+        <source>Find comic ›</source>
+        <translation>Çizgi roman bul ›</translation>
+    </message>
+</context>
+<context>
+    <name>CblEntryDetail</name>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="36"/>
+        <source>Series</source>
+        <translation>Seri</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="38"/>
+        <source>Number</source>
+        <translation>Sayı</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="40"/>
+        <source>Volume</source>
+        <translation>Cilt</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="42"/>
+        <source>Year</source>
+        <translation>Yıl</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="44"/>
+        <source>Format</source>
+        <translation>Biçim</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="46"/>
+        <location filename="cbl/cbl_entry_detail.cpp" line="147"/>
+        <source>ComicVine ID</source>
+        <translation>Comic Vine kimliği</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="149"/>
+        <source>series and number</source>
+        <translation>seri ve sayı</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="151"/>
+        <source>series without the volume, and number</source>
+        <translation>cilt olmadan seri ve sayı</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="153"/>
+        <source>letters and digits of the series, and number</source>
+        <translation>serinin harfleri ve rakamları ile sayı</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="155"/>
+        <source>series with its year, and number</source>
+        <translation>yılıyla birlikte seri ve sayı</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="170"/>
+        <source>volume %1</source>
+        <translation>cilt %1</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="201"/>
+        <source>Comic in your library</source>
+        <translation>Kitaplığınızdaki çizgi roman</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="201"/>
+        <source>Missing in your library</source>
+        <translation>Kitaplığınızda eksik</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="204"/>
+        <source>Changed by you.</source>
+        <translation>Sizin tarafınızdan değiştirildi.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="206"/>
+        <source>The entry has this comic.</source>
+        <translation>Bu kayıt bu çizgi romanla eşleştirilmiş.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="208"/>
+        <source>Matched by %1.</source>
+        <translation>%1 ile eşleştirildi.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="210"/>
+        <source>Your library already has this comic as missing. Matched by %1.</source>
+        <translation>Kitaplığınızda bu çizgi roman zaten eksik olarak kayıtlı. %1 ile eşleştirildi.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="213"/>
+        <source>Possible comic %1</source>
+        <translation>Olası çizgi roman %1</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="215"/>
+        <location filename="cbl/cbl_entry_detail.cpp" line="276"/>
+        <source>Changed by you: it is imported as missing.</source>
+        <translation>Sizin tarafınızdan değiştirildi: eksik olarak içe aktarılır.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="217"/>
+        <source>The comics have the same ComicVine ID.</source>
+        <translation>Çizgi romanların Comic Vine kimliği aynı.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="219"/>
+        <source>The comic has the same series and number, but its volume or year is different.</source>
+        <translation>Çizgi romanın serisi ve sayısı aynı, ancak cildi veya yılı farklı.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="221"/>
+        <source>The comics have the same series and number.</source>
+        <translation>Çizgi romanların serisi ve sayısı aynı.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="222"/>
+        <source>Values that are different from the file are in amber.</source>
+        <translation>Dosyadakinden farklı değerler kehribar rengindedir.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="227"/>
+        <source>Closest series in your library</source>
+        <translation>Kitaplığınızdaki en yakın seriler</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="231"/>
+        <source>Library</source>
+        <translation>Kütüphane</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="259"/>
+        <source>Has %1</source>
+        <translation>%1 var</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="276"/>
+        <source>No comic found. Tried: %1.</source>
+        <translation>Çizgi roman bulunamadı. Denenen: %1.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="288"/>
+        <source>In the file</source>
+        <translation>Dosyada</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="289"/>
+        <source>Entry %1 of %2</source>
+        <translation>Kayıt %1 / %2</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="314"/>
+        <source>Use this comic</source>
+        <translation>Bu çizgi romanı kullan</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_entry_detail.cpp" line="314"/>
+        <source>Use this missing comic</source>
+        <translation>Bu eksik çizgi romanı kullan</translation>
+    </message>
+</context>
+<context>
+    <name>CblFindComicPage</name>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="67"/>
+        <source>‹ All entries</source>
+        <translation>‹ Tüm kayıtlar</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="83"/>
+        <source>Previous problem</source>
+        <translation>Önceki sorun</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="84"/>
+        <source>Next problem</source>
+        <translation>Sonraki sorun</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="98"/>
+        <source>Folders</source>
+        <translation>Klasörler</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="112"/>
+        <source>Search the whole library</source>
+        <translation>Tüm kitaplıkta ara</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
+        <source>File</source>
+        <translation>Dosya</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
+        <source>Series</source>
+        <translation>Seri</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
+        <source>No.</source>
+        <translation>No.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
+        <source>Volume</source>
+        <translation>Cilt</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="134"/>
+        <source>Year</source>
+        <translation>Yıl</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="162"/>
+        <source>Go to the next problem after I choose</source>
+        <translation>Seçimimden sonra sonraki soruna geç</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="164"/>
+        <source>Use this comic</source>
+        <translation>Bu çizgi romanı kullan</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="178"/>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="254"/>
+        <source>Search in this folder</source>
+        <translation>Bu klasörde ara</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="270"/>
+        <source>Entry %1 of %2</source>
+        <translation>Kayıt %1 / %2</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="279"/>
+        <source>Missing: no comic found. Browse or search the library.</source>
+        <translation>Eksik: çizgi roman bulunamadı. Kitaplığa göz atın veya arayın.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="cbl/cbl_find_comic_page.cpp" line="282"/>
+        <source>Ambiguous: %n possible comic(s). Browse or search the library.</source>
+        <translation>
+            <numerusform>Belirsiz: %n olası çizgi roman. Kitaplığa göz atın veya arayın.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="286"/>
+        <source>Browse or search the library to choose another comic.</source>
+        <translation>Başka bir çizgi roman seçmek için kitaplığa göz atın veya arayın.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="290"/>
+        <source>Problem %1 of %2</source>
+        <translation>Sorun %1 / %2</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="cbl/cbl_find_comic_page.cpp" line="290"/>
+        <source>%n problem(s)</source>
+        <translation>
+            <numerusform>%n sorun</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="309"/>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="411"/>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="416"/>
+        <source>Library</source>
+        <translation>Kütüphane</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_find_comic_page.cpp" line="360"/>
+        <source>Search results</source>
+        <translation>Arama sonuçları</translation>
+    </message>
+</context>
+<context>
+    <name>CblImportDialog</name>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="181"/>
+        <source>Match to library comics — %1</source>
+        <translation>Kitaplıktaki çizgi romanlarla eşleştir — %1</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="185"/>
+        <source>Apply</source>
+        <translation>Uygula</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="214"/>
+        <source>Close</source>
+        <translation>Kapat</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="215"/>
+        <source>Skip</source>
+        <translation>Atla</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="216"/>
+        <source>Import</source>
+        <translation>İçe aktar</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="268"/>
+        <source>&amp;Name:</source>
+        <translation>&amp;Ad:</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="270"/>
+        <source>A reading list with this name already exists. Import creates another one.</source>
+        <translation>Bu adda bir okuma listesi zaten var. İçe aktarma başka bir liste oluşturur.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="297"/>
+        <source>Filter entries</source>
+        <translation>Kayıtları filtrele</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="358"/>
+        <source>Matching the books of %1 with your library...</source>
+        <translation>%1 içindeki kitaplar kitaplığınızla eşleştiriliyor...</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="372"/>
+        <source>Matching the entries of %1 with your library...</source>
+        <translation>%1 içindeki kayıtlar kitaplığınızla eşleştiriliyor...</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="431"/>
+        <location filename="cbl/cbl_import_dialog.cpp" line="455"/>
+        <source>Match to library comics</source>
+        <translation>Kitaplıktaki çizgi romanlarla eşleştir</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="cbl/cbl_import_dialog.cpp" line="432"/>
+        <source>This also gives comics to entries in %n other list(s): %1</source>
+        <translation>
+            <numerusform>Bu işlem %n başka listedeki kayıtlara da çizgi roman atar: %1</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="455"/>
+        <source>The changes could not be applied. Nothing was changed.</source>
+        <translation>Değişiklikler uygulanamadı. Hiçbir şey değiştirilmedi.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="469"/>
+        <source>The file cannot be opened.</source>
+        <translation>Dosya açılamıyor.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="472"/>
+        <source>The file is damaged (line %1, column %2).</source>
+        <translation>Dosya hasarlı (satır %1, sütun %2).</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="475"/>
+        <source>The file is not a reading list.</source>
+        <translation>Dosya bir okuma listesi değil.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="481"/>
+        <source>The library cannot be read.</source>
+        <translation>Kitaplık okunamıyor.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="607"/>
+        <source>Import reading lists</source>
+        <translation>Okuma listelerini içe aktar</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="607"/>
+        <source>The reading list could not be imported. Nothing was written.</source>
+        <translation>Okuma listesi içe aktarılamadı. Hiçbir şey yazılmadı.</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="630"/>
+        <source>Import reading lists — %1 (%2 of %3)</source>
+        <translation>Okuma listelerini içe aktar — %1 (%2 / %3)</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="632"/>
+        <source>Import reading lists — %1</source>
+        <translation>Okuma listelerini içe aktar — %1</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="641"/>
+        <source>All (%1)</source>
+        <translation>Tümü (%1)</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="642"/>
+        <source>Matched (%1)</source>
+        <translation>Eşleşen (%1)</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="643"/>
+        <source>Ambiguous (%1)</source>
+        <translation>Belirsiz (%1)</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="644"/>
+        <source>Missing (%1)</source>
+        <translation>Eksik (%1)</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="645"/>
+        <source>Changed by you (%1)</source>
+        <translation>Sizin değiştirdikleriniz (%1)</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="cbl/cbl_import_dialog.cpp" line="650"/>
+        <source>%1 of %n have a comic</source>
+        <translation>
+            <numerusform>%n kayıttan %1 tanesinde çizgi roman var</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="672"/>
+        <source>Find comic...</source>
+        <translation>Çizgi roman bul...</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="676"/>
+        <source>Use the original match</source>
+        <translation>İlk eşleşmeyi kullan</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="679"/>
+        <source>Make missing</source>
+        <translation>Eksik olarak işaretle</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_dialog.cpp" line="679"/>
+        <source>Import as missing</source>
+        <translation>Eksik olarak içe aktar</translation>
+    </message>
+</context>
+<context>
+    <name>CblImportModel</name>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="83"/>
+        <source>Matched</source>
+        <translation>Eşleşti</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="85"/>
+        <source>Ambiguous</source>
+        <translation>Belirsiz</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="87"/>
+        <source>Missing</source>
+        <translation>Eksik</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="89"/>
+        <source>Changed</source>
+        <translation>Değiştirildi</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="115"/>
+        <source>#</source>
+        <translation>#</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="117"/>
+        <source>In the file</source>
+        <translation>Dosyada</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="119"/>
+        <source>Comic in your library</source>
+        <translation>Kitaplığınızdaki çizgi roman</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="121"/>
+        <source>Status</source>
+        <translation>Durum</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="240"/>
+        <source>Already missing in your library</source>
+        <translation>Kitaplığınızda zaten eksik</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="cbl/cbl_import_model.cpp" line="244"/>
+        <source>%n possible comic(s)</source>
+        <translation>
+            <numerusform>%n olası çizgi roman</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_import_model.cpp" line="245"/>
+        <source>Not in library</source>
+        <translation>Kitaplıkta yok</translation>
+    </message>
+</context>
+<context>
+    <name>CblMatchComicDialog</name>
+    <message>
+        <location filename="cbl/cbl_match_comic_dialog.cpp" line="62"/>
+        <source>Match to library comic</source>
+        <translation>Kitaplıktaki çizgi romanla eşleştir</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_match_comic_dialog.cpp" line="65"/>
+        <source>Loading the library...</source>
+        <translation>Kitaplık yükleniyor...</translation>
+    </message>
+    <message>
+        <location filename="cbl/cbl_match_comic_dialog.cpp" line="90"/>
+        <source>The library cannot be read.</source>
+        <translation>Kitaplık okunamıyor.</translation>
+    </message>
+</context>
+<context>
     <name>ClassicComicsView</name>
     <message>
-        <location filename="classic_comics_view.cpp" line="100"/>
+        <location filename="classic_comics_view.cpp" line="105"/>
         <source>Hide comic flow</source>
         <translation>Comic Flow&apos;u gizle</translation>
     </message>
 </context>
 <context>
-    <name>ComicFilesCoordinator</name>
-    <message>
-        <source>Copying comics...</source>
-        <translation type="obsolete">Çizgi romanlar kopyalanıyor...</translation>
-    </message>
-    <message>
-        <source>Moving comics...</source>
-        <translation type="obsolete">Çizgi romanlar taşınıyor...</translation>
-    </message>
-</context>
-<context>
     <name>ComicInfoView</name>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="334"/>
+        <location filename="qml/ComicInfoView.qml" line="339"/>
         <source>Main character or team</source>
         <translation>Ana karakter veya takım</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="359"/>
+        <location filename="qml/ComicInfoView.qml" line="364"/>
         <source>Teams</source>
         <translation>Takımlar</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="393"/>
+        <location filename="qml/ComicInfoView.qml" line="398"/>
         <source>Locations</source>
         <translation>Konumlar</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="425"/>
+        <location filename="qml/ComicInfoView.qml" line="430"/>
         <source>Authors</source>
         <translation>Yazarlar</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="457"/>
+        <location filename="qml/ComicInfoView.qml" line="462"/>
         <source>writer</source>
         <translation>yazar</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="479"/>
+        <location filename="qml/ComicInfoView.qml" line="484"/>
         <source>penciller</source>
         <translation>çizer</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="501"/>
+        <location filename="qml/ComicInfoView.qml" line="506"/>
         <source>inker</source>
         <translation>mürekkepleyen</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="523"/>
+        <location filename="qml/ComicInfoView.qml" line="528"/>
         <source>colorist</source>
         <translation>renklendiren</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="545"/>
+        <location filename="qml/ComicInfoView.qml" line="550"/>
         <source>letterer</source>
         <translation>harflendiren</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="567"/>
+        <location filename="qml/ComicInfoView.qml" line="572"/>
         <source>cover artist</source>
         <translation>kapak çizeri</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="589"/>
+        <location filename="qml/ComicInfoView.qml" line="594"/>
         <source>editor</source>
         <translation>editör</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="611"/>
+        <location filename="qml/ComicInfoView.qml" line="616"/>
         <source>imprint</source>
         <translation>yayın markası</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="626"/>
+        <location filename="qml/ComicInfoView.qml" line="631"/>
         <source>Publisher</source>
         <translation>Yayınevi</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="678"/>
+        <location filename="qml/ComicInfoView.qml" line="683"/>
         <source>color</source>
         <translation>renk</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="678"/>
+        <location filename="qml/ComicInfoView.qml" line="683"/>
         <source>b/w</source>
         <translation>s/b</translation>
     </message>
     <message>
-        <location filename="qml/ComicInfoView.qml" line="302"/>
+        <location filename="qml/ComicInfoView.qml" line="307"/>
         <source>Characters</source>
         <translation>Karakterler</translation>
     </message>
@@ -304,28 +881,28 @@
 <context>
     <name>ComicManagementCoordinator</name>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="138"/>
-        <location filename="comic_management_coordinator.cpp" line="140"/>
+        <location filename="comic_management_coordinator.cpp" line="159"/>
+        <location filename="comic_management_coordinator.cpp" line="161"/>
         <source>YACReader not found</source>
         <translation>YACReader bulunamadı</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="138"/>
+        <location filename="comic_management_coordinator.cpp" line="159"/>
         <source>YACReader not found. YACReader should be installed in the same folder as YACReaderLibrary.</source>
         <translation>YACReader bulunamadı. YACReader, YACReaderLibrary ile aynı klasöre kurulmalıdır.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="140"/>
+        <location filename="comic_management_coordinator.cpp" line="161"/>
         <source>YACReader not found. There might be a problem with your YACReader installation.</source>
         <translation>YACReader bulunamadı. YACReader kurulumunuzda bir sorun olabilir.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="147"/>
+        <location filename="comic_management_coordinator.cpp" line="168"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="147"/>
+        <location filename="comic_management_coordinator.cpp" line="168"/>
         <source>Error opening comic with third party reader.</source>
         <translation>Çizgi roman üçüncü taraf okuyucuyla açılırken hata oluştu.</translation>
     </message>
@@ -333,136 +910,177 @@
 <context>
     <name>ComicModel</name>
     <message>
-        <location filename="db/comic_model.cpp" line="382"/>
+        <location filename="db/comic_model.cpp" line="738"/>
         <source>no</source>
         <translation>hayır</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="382"/>
+        <location filename="db/comic_model.cpp" line="738"/>
         <source>yes</source>
         <translation>evet</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="421"/>
+        <location filename="db/comic_model.cpp" line="777"/>
         <source>Read</source>
-        <translation>Oku</translation>
+        <translation>Okundu</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="419"/>
+        <location filename="db/comic_model.cpp" line="775"/>
         <source>Size</source>
         <translation>Boyut</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="417"/>
+        <location filename="db/comic_model.cpp" line="773"/>
         <source>Pages</source>
         <translation>Sayfalar</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="413"/>
+        <location filename="db/comic_model.cpp" line="769"/>
         <source>Title</source>
         <translation>Başlık</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="415"/>
+        <location filename="db/comic_model.cpp" line="771"/>
         <source>File Name</source>
         <translation>Dosya Adı</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="423"/>
+        <location filename="db/comic_model.cpp" line="779"/>
         <source>Current Page</source>
-        <translation>Geçreli Sayfa</translation>
+        <translation>Geçerli Sayfa</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="425"/>
+        <location filename="db/comic_model.cpp" line="781"/>
         <source>Publication Date</source>
         <translation>Yayın Tarihi</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="427"/>
+        <location filename="db/comic_model.cpp" line="783"/>
         <source>Rating</source>
-        <translation>Reyting</translation>
+        <translation>Derecelendirme</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="429"/>
+        <location filename="db/comic_model.cpp" line="785"/>
         <source>Series</source>
         <translation>Seri</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="431"/>
+        <location filename="db/comic_model.cpp" line="787"/>
         <source>Volume</source>
-        <translation>Hacim</translation>
+        <translation>Cilt</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="433"/>
+        <location filename="db/comic_model.cpp" line="789"/>
         <source>Story Arc</source>
-        <translation>Hikaye Arkı</translation>
+        <translation>Hikâye Yayı</translation>
     </message>
 </context>
 <context>
     <name>ComicVineDialog</name>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="55"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="66"/>
         <source>skip</source>
         <translation>geç</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="56"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="67"/>
         <source>back</source>
         <translation>geri</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="57"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="68"/>
         <source>next</source>
         <translation>sonraki</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="58"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="69"/>
         <source>search</source>
         <translation>ara</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="59"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="70"/>
         <source>close</source>
         <translation>kapat</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="133"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="596"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="635"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="144"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="744"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="783"/>
         <source>Looking for volume...</source>
-        <translation>Sayılar aranıyor...</translation>
+        <translation>Cilt aranıyor...</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="131"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="544"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="142"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="690"/>
         <source>comic %1 of %2 - %3</source>
         <translation>çizgi roman %1 / %2 - %3</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="248"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="265"/>
         <source>%1 comics selected</source>
         <translation>%1 çizgi roman seçildi</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="279"/>
-        <source>Error connecting to ComicVine</source>
-        <translation>ComicVine sitesine bağlanılırken hata</translation>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="296"/>
+        <source>Error connecting to Comic Vine</source>
+        <translation>Comic Vine sitesine bağlanılırken hata</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="459"/>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="484"/>
-        <source>Retrieving tags for : %1</source>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="485"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="601"/>
+        <source>Retrieving tags for: %1</source>
         <translation>%1 için etiketler alınıyor</translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="615"/>
-        <source>Retrieving volume info...</source>
-        <translation>Sayı bilgileri alınıyor...</translation>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="494"/>
+        <source>Creating missing comic %1 of %2</source>
+        <translation>Eksik çizgi roman oluşturuluyor: %1 / %2</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="560"/>
+        <source>Comic Vine did not answer for %n comic(s).</source>
+        <translation>
+            <numerusform>Comic Vine %n çizgi roman için yanıt vermedi.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="562"/>
+        <source>%n missing comic(s) got only the basic data of the volume.</source>
+        <translation>
+            <numerusform>%n eksik çizgi roman yalnızca cildin temel verilerini aldı.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="564"/>
+        <source>%n missing comic(s) have no cover.</source>
+        <translation>
+            <numerusform>%n eksik çizgi romanın kapağı yok.</numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="comic_vine/comic_vine_dialog.cpp" line="647"/>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="568"/>
+        <source>Comic Vine allows about 200 requests per hour; try again later for the comics that were not updated.</source>
+        <translation>Comic Vine saatte yaklaşık 200 isteğe izin verir; güncellenmeyen çizgi romanlar için daha sonra yeniden deneyin.</translation>
+    </message>
+    <message>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="569"/>
+        <source>Try again later for the comics that were not updated.</source>
+        <translation>Güncellenmeyen çizgi romanlar için daha sonra yeniden deneyin.</translation>
+    </message>
+    <message>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="570"/>
+        <source>Comic Vine</source>
+        <translation>Comic Vine</translation>
+    </message>
+    <message>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="763"/>
+        <source>Retrieving volume info...</source>
+        <translation>Cilt bilgileri alınıyor...</translation>
+    </message>
+    <message>
+        <location filename="comic_vine/comic_vine_dialog.cpp" line="795"/>
         <source>Looking for comic...</source>
-        <translation>Çizgi romanlar aranıyor...</translation>
+        <translation>Çizgi roman aranıyor...</translation>
     </message>
 </context>
 <context>
@@ -492,36 +1110,44 @@
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="57"/>
-        <source>Create a library could take several minutes. You can stop the process and update the library later for completing the task.</source>
-        <translation>Yeni kütüphanenin oluşturulması birkaç dakika sürecek.</translation>
+        <source>Creating a library could take several minutes. You can stop the process and update the library later to complete the task.</source>
+        <translation>Kütüphane oluşturmak birkaç dakika sürebilir. İşlemi durdurabilir ve görevi tamamlamak için kütüphaneyi daha sonra güncelleyebilirsiniz.</translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="105"/>
         <source>The selected path does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Seçilen dizine yazma iznimiz yok yazma izni olduğundan emin ol</translation>
+        <translation>Seçilen yol mevcut değil veya geçerli bir yol değil. Bu klasöre yazma erişiminiz olduğundan emin olun</translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="21"/>
-        <source>Comics folder : </source>
-        <translation>Çizgi roman klasörü : </translation>
+        <source>Comics folder: </source>
+        <translation>Çizgi roman klasörü: </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="26"/>
-        <source>Library Name : </source>
-        <translation>Kütüphane Adı : </translation>
+        <source>Library Name: </source>
+        <translation>Kütüphane Adı: </translation>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="105"/>
         <source>Path not found</source>
-        <translation>Dizin bulunamadı</translation>
+        <translation>Yol bulunamadı</translation>
     </message>
 </context>
 <context>
     <name>DBHelper</name>
     <message>
-        <location filename="db_helper.cpp" line="1451"/>
+        <location filename="db_helper.cpp" line="1872"/>
         <source>The folder entry could not be found in the library database.</source>
         <translation>Klasör kaydı kütüphane veritabanında bulunamadı.</translation>
+    </message>
+</context>
+<context>
+    <name>DelayedProgressDialog</name>
+    <message>
+        <location filename="delayed_progress_dialog.cpp" line="60"/>
+        <source>Cancel</source>
+        <translation>Vazgeç</translation>
     </message>
 </context>
 <context>
@@ -533,7 +1159,7 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
         <translation>Bir kısayolu değiştirmek için tuş kombinasyonuna çift tıklayın ve yeni tuşları girin.</translation>
     </message>
     <message>
@@ -548,8 +1174,8 @@
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>&quot;%1&quot; kısayalou zaten başka bir işlev tarafından kullanılıyor</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>&quot;%1&quot; kısayolu zaten başka bir işleve atanmış</translation>
     </message>
 </context>
 <context>
@@ -582,6 +1208,14 @@
     </message>
 </context>
 <context>
+    <name>EmptyListFolderWidget</name>
+    <message>
+        <location filename="empty_list_folder_widget.cpp" line="8"/>
+        <source>This folder is empty</source>
+        <translation>Bu klasör boş</translation>
+    </message>
+</context>
+<context>
     <name>EmptyReadingListWidget</name>
     <message>
         <location filename="empty_reading_list_widget.cpp" line="8"/>
@@ -599,7 +1233,7 @@
     <message>
         <location filename="empty_special_list.cpp" line="20"/>
         <source>You are not reading anything yet, come on!!</source>
-        <translation>Henüz bir şey okumuyorsun, hadi ama!</translation>
+        <translation>Henüz bir şey okumuyorsunuz, hadi ama!</translation>
     </message>
     <message>
         <location filename="empty_special_list.cpp" line="27"/>
@@ -611,13 +1245,13 @@
     <name>ExportComicsInfoDialog</name>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="14"/>
-        <source>Output file : </source>
-        <translation>Çıkış dosyası : </translation>
+        <source>Output file: </source>
+        <translation>Çıktı dosyası: </translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="72"/>
         <source>Destination database name</source>
-        <translation>Hedef adı</translation>
+        <translation>Hedef veritabanı adı</translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="22"/>
@@ -632,17 +1266,17 @@
     <message>
         <location filename="export_comics_info_dialog.cpp" line="87"/>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Seçilen dizine yazma iznimiz yok yazma izni olduğundan emin ol</translation>
+        <translation>Çıktı dosyası için seçilen yol mevcut değil veya geçerli bir yol değil. Bu klasöre yazma erişiminiz olduğundan emin olun</translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="55"/>
         <source>Export comics info</source>
-        <translation>Çizgi roman bilgilerini göster</translation>
+        <translation>Çizgi roman bilgilerini dışa aktar</translation>
     </message>
     <message>
         <location filename="export_comics_info_dialog.cpp" line="87"/>
         <source>Problem found while writing</source>
-        <translation>Yazma sırasında bir problem oldu</translation>
+        <translation>Yazma sırasında bir sorun bulundu</translation>
     </message>
 </context>
 <context>
@@ -655,22 +1289,22 @@
     <message>
         <location filename="export_library_dialog.cpp" line="16"/>
         <source>Create</source>
-        <translation>Yeni bir  tane yap</translation>
+        <translation>Oluştur</translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="78"/>
         <source>The selected path for the output file does not exist or is not a valid path. Be sure that you have write access to this folder</source>
-        <translation>Seçilen konuma yeni bir kütüphane yazılamıyor</translation>
+        <translation>Çıktı dosyası için seçilen yol mevcut değil veya geçerli bir yol değil. Bu klasöre yazma erişiminiz olduğundan emin olun</translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="12"/>
-        <source>Output folder : </source>
-        <translation>Çıktı klasörü : </translation>
+        <source>Output folder: </source>
+        <translation>Çıktı klasörü: </translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="78"/>
         <source>Problem found while writing</source>
-        <translation>Yazım aşamasında bir problem bulundu</translation>
+        <translation>Yazma sırasında bir sorun bulundu</translation>
     </message>
     <message>
         <location filename="export_library_dialog.cpp" line="59"/>
@@ -680,38 +1314,31 @@
     <message>
         <location filename="export_library_dialog.cpp" line="83"/>
         <source>Destination directory</source>
-        <translation>Hedef dizin</translation>
+        <translation>Hedef klasör</translation>
     </message>
 </context>
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="604"/>
+        <location filename="../common/comic.cpp" line="616"/>
         <source>7z not found</source>
         <translation>7z bulunamadı</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="490"/>
+        <location filename="../common/comic.cpp" line="502"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>CRC hatası, sayfada (%1): bazı sayfalar düzgün görüntülenmeyecek</translation>
+        <translation>(%1). sayfada CRC hatası: bazı sayfalar düzgün görüntülenmeyecek</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="497"/>
+        <location filename="../common/comic.cpp" line="509"/>
         <source>Unknown error opening the file</source>
         <translation>Dosya açılırken bilinmeyen hata</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="610"/>
-        <location filename="../common/comic.cpp" line="626"/>
+        <location filename="../common/comic.cpp" line="622"/>
+        <location filename="../common/comic.cpp" line="638"/>
         <source>Format not supported</source>
-        <translation>Dosya biçimi desteklenmiyor</translation>
-    </message>
-</context>
-<context>
-    <name>FolderContentView</name>
-    <message>
-        <source>Continue Reading...</source>
-        <translation type="vanished">Okumaya Devam Et...</translation>
+        <translation>Biçim desteklenmiyor</translation>
     </message>
 </context>
 <context>
@@ -739,7 +1366,7 @@
     <message>
         <location filename="qml/FolderInfoView.qml" line="76"/>
         <source>Read</source>
-        <translation>Oku</translation>
+        <translation>Okundu</translation>
     </message>
     <message>
         <location filename="qml/FolderInfoView.qml" line="76"/>
@@ -788,53 +1415,37 @@
 <context>
     <name>GridComicsView</name>
     <message>
-        <location filename="grid_comics_view.cpp" line="115"/>
+        <location filename="grid_comics_view.cpp" line="117"/>
         <source>Show info</source>
         <translation>Bilgi göster</translation>
     </message>
     <message>
-        <source>Library</source>
-        <translation type="obsolete">Kütüphane</translation>
-    </message>
-    <message>
-        <source>Folder</source>
-        <translation type="obsolete">Klasör</translation>
-    </message>
-    <message>
-        <source>Favorites</source>
-        <translation type="obsolete">Favoriler</translation>
-    </message>
-    <message>
-        <source>Recently added</source>
-        <translation type="obsolete">Yakın zamanda eklenen</translation>
-    </message>
-    <message>
-        <location filename="grid_comics_view.cpp" line="853"/>
+        <location filename="grid_comics_view.cpp" line="909"/>
         <source>Manga</source>
         <translation>Manga</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="856"/>
+        <location filename="grid_comics_view.cpp" line="912"/>
         <source>Western manga</source>
         <translation>Batı mangası</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="859"/>
+        <location filename="grid_comics_view.cpp" line="915"/>
         <source>Web comic</source>
         <translation>Web çizgi romanı</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="862"/>
+        <location filename="grid_comics_view.cpp" line="918"/>
         <source>Yonkoma</source>
         <translation>Yonkoma</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="866"/>
+        <location filename="grid_comics_view.cpp" line="922"/>
         <source>Comic</source>
         <translation>Çizgi roman</translation>
     </message>
     <message>
-        <location filename="grid_comics_view.cpp" line="870"/>
+        <location filename="grid_comics_view.cpp" line="926"/>
         <source>Unknown</source>
         <translation>Bilinmiyor</translation>
     </message>
@@ -872,17 +1483,17 @@
     <message>
         <location filename="import_comics_info_dialog.cpp" line="20"/>
         <source>Import</source>
-        <translation>Çıkart</translation>
+        <translation>İçe aktar</translation>
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="16"/>
-        <source>Info database location : </source>
-        <translation>Bilgi veritabanı konumu : </translation>
+        <source>Info database location: </source>
+        <translation>Bilgi veritabanı konumu: </translation>
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="14"/>
         <source>Import comics info</source>
-        <translation>Çizgi roman bilgilerini çıkart</translation>
+        <translation>Çizgi roman bilgilerini içe aktar</translation>
     </message>
     <message>
         <location filename="import_comics_info_dialog.cpp" line="80"/>
@@ -894,8 +1505,8 @@
     <name>ImportLibraryDialog</name>
     <message>
         <location filename="import_library_dialog.cpp" line="26"/>
-        <source>Destination folder : </source>
-        <translation>Hedef klasör : </translation>
+        <source>Destination folder: </source>
+        <translation>Hedef klasör: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="34"/>
@@ -909,18 +1520,18 @@
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="115"/>
-        <source>Compresed library covers (*.clc)</source>
+        <source>Compressed library covers (*.clc)</source>
         <translation>Sıkıştırılmış kütüphane kapakları (*.clc)</translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="22"/>
-        <source>Package location : </source>
-        <translation>Paket konumu : </translation>
+        <source>Package location: </source>
+        <translation>Paket konumu: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="17"/>
-        <source>Library Name : </source>
-        <translation>Kütüphane Adı : </translation>
+        <source>Library Name: </source>
+        <translation>Kütüphane Adı: </translation>
     </message>
     <message>
         <location filename="import_library_dialog.cpp" line="85"/>
@@ -938,52 +1549,82 @@
     <message>
         <location filename="import_widget.cpp" line="318"/>
         <source>Importing comics</source>
-        <translation>önemli çizgi romanlar</translation>
+        <translation>Çizgi romanlar içe aktarılıyor</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="319"/>
-        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Create a library could take several minutes. You can stop the process and update the library later for completing the task.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;YACReaderKütüphane şu anda yeni bir kütüphane oluşturuyor&lt;/p&gt;&lt;p&gt;Kütüphanenin oluşturulması birkaç dakika alacak.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;YACReaderLibrary is now creating a new library.&lt;/p&gt;&lt;p&gt;Creating a library could take several minutes. You can stop the process and update the library later to complete the task.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;YACReaderLibrary şu anda yeni bir kütüphane oluşturuyor.&lt;/p&gt;&lt;p&gt;Kütüphane oluşturmak birkaç dakika sürebilir. İşlemi durdurabilir ve görevi tamamlamak için kütüphaneyi daha sonra güncelleyebilirsiniz.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="169"/>
         <source>Some of the comics being added...</source>
-        <translation>Bazı çizgi romanlar önceden eklenmiş...</translation>
+        <translation>Bazı çizgi romanlar ekleniyor...</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="330"/>
         <source>Updating the library</source>
-        <translation>Kütüphaneyi güncelle</translation>
+        <translation>Kütüphane güncelleniyor</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="331"/>
-        <source>&lt;p&gt;The current library is being updated. For faster updates, please, update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Kütüphane güncelleniyor&lt;/p&gt;&lt;p&gt;Güncellemeyi daha sonra iptal edebilirsin.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;The current library is being updated. For faster updates, please update your libraries frequently.&lt;/p&gt;&lt;p&gt;You can stop the process and continue updating this library later.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Geçerli kütüphane güncelleniyor. Daha hızlı güncellemeler için lütfen kütüphanelerinizi sık sık güncelleyin.&lt;/p&gt;&lt;p&gt;İşlemi durdurabilir ve bu kütüphaneyi daha sonra güncellemeye devam edebilirsiniz.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="342"/>
         <source>Upgrading the library</source>
-        <translation>Kütüphane güncelleniyor</translation>
+        <translation>Kütüphane yükseltiliyor</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="343"/>
         <source>&lt;p&gt;The current library is being upgraded, please wait.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Mevcut kütüphane güncelleniyor, lütfen bekleyin.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Geçerli kütüphane yükseltiliyor, lütfen bekleyin.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="354"/>
         <source>Scanning the library</source>
-        <translation>Kütüphaneyi taramak</translation>
+        <translation>Kütüphane taranıyor</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="355"/>
-        <source>&lt;p&gt;Current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was crated with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Geçerli kitaplık, eski XML meta veri bilgileri için taranıyor.&lt;/p&gt;&lt;p&gt;Bu yalnızca bir kez gereklidir ve yalnızca kitaplığın YACReaderLibrary 9.8.2 veya daha eski bir sürümle oluşturulmuş olması durumunda gereklidir.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;The current library is being scanned for legacy XML metadata information.&lt;/p&gt;&lt;p&gt;This is only needed once, and only if the library was created with YACReaderLibrary 9.8.2 or earlier.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Geçerli kütüphane, eski XML meta veri bilgileri için taranıyor.&lt;/p&gt;&lt;p&gt;Bu yalnızca bir kez gereklidir ve yalnızca kütüphane YACReaderLibrary 9.8.2 veya daha eski bir sürümle oluşturulmuşsa gereklidir.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="import_widget.cpp" line="367"/>
         <source>&lt;p&gt;The current library is being checked for missing covers and incomplete comic information.&lt;/p&gt;&lt;p&gt;This can take several minutes. You can stop the process and run it again later.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Geçerli kitaplıkta eksik kapaklar ve tamamlanmamış çizgi roman bilgileri denetleniyor.&lt;/p&gt;&lt;p&gt;Bu işlem birkaç dakika sürebilir. İşlemi durdurup daha sonra yeniden çalıştırabilirsiniz.&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Geçerli kütüphanede eksik kapaklar ve tamamlanmamış çizgi roman bilgileri denetleniyor.&lt;/p&gt;&lt;p&gt;Bu işlem birkaç dakika sürebilir. İşlemi durdurup daha sonra yeniden çalıştırabilirsiniz.&lt;/p&gt;</translation>
+    </message>
+</context>
+<context>
+    <name>LibraryCreator</name>
+    <message>
+        <location filename="library_creator.cpp" line="172"/>
+        <source>Unable to create the library data folder: %1. Check folder access and available disk space.</source>
+        <translation>Kitaplık veri klasörü oluşturulamadı: %1. Klasör erişimini ve kullanılabilir disk alanını kontrol edin.</translation>
+    </message>
+    <message>
+        <location filename="library_creator.cpp" line="177"/>
+        <source>The library data folder is missing: %1. Restore it or recreate the library before updating.</source>
+        <translation>Kitaplık veri klasörü eksik: %1. Güncellemeden önce klasörü geri yükleyin veya kitaplığı yeniden oluşturun.</translation>
+    </message>
+    <message>
+        <location filename="library_creator.cpp" line="225"/>
+        <source>The library database is missing: %1. Restore a backup or recreate the library before updating.</source>
+        <translation>Kitaplık veritabanı eksik: %1. Güncellemeden önce bir yedeği geri yükleyin veya kitaplığı yeniden oluşturun.</translation>
+    </message>
+    <message>
+        <location filename="library_creator.cpp" line="262"/>
+        <location filename="library_creator.cpp" line="324"/>
+        <source>Unable to start a library database transaction: %1</source>
+        <translation>Kitaplık veritabanı işlemi başlatılamadı: %1</translation>
+    </message>
+    <message>
+        <location filename="library_creator.cpp" line="280"/>
+        <location filename="library_creator.cpp" line="355"/>
+        <source>Unable to commit the library database: %1</source>
+        <translation>Kitaplık veritabanı işlemi kalıcılaştırılamadı: %1</translation>
     </message>
 </context>
 <context>
@@ -1010,142 +1651,225 @@
     </message>
 </context>
 <context>
+    <name>LibraryMaintenanceDialog</name>
+    <message>
+        <location filename="library_maintenance_dialog.h" line="20"/>
+        <source>This library is busy. Wait for maintenance to finish. If it appears stuck, close the application shown in Details, then retry.</source>
+        <translation>Bu kitaplık meşgul. Bakımın bitmesini bekleyin. Takılmış görünüyorsa Ayrıntılar bölümünde gösterilen uygulamayı kapatıp yeniden deneyin.</translation>
+    </message>
+    <message>
+        <location filename="library_maintenance_dialog.h" line="21"/>
+        <source>An earlier maintenance operation may not have released this library. Before recovering access, make sure no YACReaderLibrary or YACReaderLibraryServer operation is using it, including on another computer.</source>
+        <translation>Önceki bir bakım işlemi bu kitaplığı serbest bırakmamış olabilir. Erişimi kurtarmadan önce başka bir bilgisayar da dahil olmak üzere hiçbir YACReaderLibrary veya YACReaderLibraryServer işleminin kitaplığı kullanmadığından emin olun.</translation>
+    </message>
+    <message>
+        <location filename="library_maintenance_dialog.h" line="25"/>
+        <source>Retry</source>
+        <translation>Yeniden dene</translation>
+    </message>
+    <message>
+        <location filename="library_maintenance_dialog.h" line="26"/>
+        <source>Recover and retry</source>
+        <translation>Kurtar ve yeniden dene</translation>
+    </message>
+</context>
+<context>
+    <name>LibraryMaintenanceLock</name>
+    <message>
+        <location filename="db/data_base_management.cpp" line="319"/>
+        <source>The library lock owner changed. Retry the operation and review the new owner before recovering it.</source>
+        <translation>Kitaplık kilidinin sahibi değişti. Erişimi kurtarmadan önce işlemi yeniden deneyip yeni sahibi inceleyin.</translation>
+    </message>
+    <message>
+        <location filename="db/data_base_management.cpp" line="323"/>
+        <source>Unable to remove the maintenance lock: %1. Make sure the file is not read-only and that you can write to the library data folder, then retry.</source>
+        <translation>Bakım kilidi kaldırılamadı: %1. Dosyanın salt okunur olmadığından ve kitaplık veri klasörüne yazabildiğinizden emin olup yeniden deneyin.</translation>
+    </message>
+    <message>
+        <location filename="db/data_base_management.cpp" line="379"/>
+        <source>A folder is occupying the maintenance lock file path: %1. Rename or move that folder before retrying.</source>
+        <translation>Bakım kilidi dosyasının yolunu bir klasör kullanıyor: %1. Yeniden denemeden önce bu klasörü yeniden adlandırın veya taşıyın.</translation>
+    </message>
+    <message>
+        <location filename="db/data_base_management.cpp" line="381"/>
+        <source>Unable to create the library lock file: %1. Check write permissions for the library data folder.</source>
+        <translation>Kitaplık kilidi dosyası oluşturulamadı: %1. Kitaplık veri klasörünün yazma izinlerini kontrol edin.</translation>
+    </message>
+    <message>
+        <location filename="db/data_base_management.cpp" line="383"/>
+        <source>The library data folder is missing: %1. Restore the folder or recreate the library before updating it.</source>
+        <translation>Kitaplık veri klasörü eksik: %1. Güncellemeden önce klasörü geri yükleyin veya kitaplığı yeniden oluşturun.</translation>
+    </message>
+    <message>
+        <location filename="db/data_base_management.cpp" line="389"/>
+        <source>The library has a maintenance lock whose owner could not be verified (%1)%2</source>
+        <translation>Kitaplığın sahibi doğrulanamayan bir bakım kilidi var (%1)%2</translation>
+    </message>
+    <message>
+        <location filename="db/data_base_management.cpp" line="390"/>
+        <source>Another maintenance operation is using this library (%1)%2</source>
+        <translation>Başka bir bakım işlemi bu kitaplığı kullanıyor (%1)%2</translation>
+    </message>
+    <message>
+        <location filename="db/data_base_management.cpp" line="386"/>
+        <source>Unable to create the library lock file: %1. Check available disk space and access to the library data folder.</source>
+        <translation>Kitaplık kilidi dosyası oluşturulamadı: %1. Kullanılabilir disk alanını ve kitaplık veri klasörüne erişimi kontrol edin.</translation>
+    </message>
+</context>
+<context>
     <name>LibraryManagementCoordinator</name>
     <message>
-        <location filename="library_management_coordinator.cpp" line="66"/>
+        <location filename="library_management_coordinator.cpp" line="73"/>
         <source>Error opening the library</source>
-        <translation>Haa kütüphanesini aç</translation>
+        <translation>Kütüphane açılırken hata oluştu</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="69"/>
+        <location filename="library_management_coordinator.cpp" line="76"/>
         <source>Error creating the library</source>
-        <translation>Kütüphane oluşturma sorunu</translation>
+        <translation>Kütüphane oluşturulurken hata oluştu</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="72"/>
+        <location filename="library_management_coordinator.cpp" line="79"/>
         <source>Error updating the library</source>
-        <translation>Kütüphane güncelleme sorunu</translation>
+        <translation>Kütüphane güncellenirken hata oluştu</translation>
+    </message>
+    <message>
+        <location filename="library_management_coordinator.cpp" line="106"/>
+        <location filename="library_management_coordinator.cpp" line="111"/>
+        <source>XML information rescan</source>
+        <translation>XML bilgilerini yeniden tara</translation>
+    </message>
+    <message>
+        <location filename="library_management_coordinator.cpp" line="135"/>
+        <source>Restore recovery</source>
+        <translation>Geri yükleme kurtarması</translation>
+    </message>
+    <message>
+        <location filename="library_management_coordinator.cpp" line="531"/>
+        <source>Library upgrade</source>
+        <translation>Kitaplık yükseltmesi</translation>
+    </message>
+    <message>
+        <location filename="library_management_coordinator.cpp" line="572"/>
+        <source>Library maintenance</source>
+        <translation>Kitaplık bakımı</translation>
+    </message>
+    <message>
+        <location filename="library_management_coordinator.cpp" line="589"/>
+        <source>Recover library access</source>
+        <translation>Kitaplık erişimini kurtar</translation>
     </message>
 </context>
 <context>
     <name>LibraryWindow</name>
     <message>
-        <location filename="library_management_coordinator.cpp" line="328"/>
+        <location filename="library_management_coordinator.cpp" line="375"/>
         <source>The selected folder doesn&apos;t contain any library.</source>
-        <translation>Seçilen dosya kütüphanede yok.</translation>
+        <translation>Seçilen klasör herhangi bir kütüphane içermiyor.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="134"/>
+        <location filename="library_management_coordinator.cpp" line="165"/>
         <source>This library was created with a previous version of YACReaderLibrary. It needs to be updated. Update now?</source>
-        <translation>Bu kütüphane YACReaderKütüphabenin bir önceki versiyonun oluşturulmuş, güncellemeye ihtiyacın var. Şimdi güncellemek ister misin ?</translation>
+        <translation>Bu kütüphane YACReaderLibrary&apos;nin önceki bir sürümüyle oluşturulmuş. Güncellenmesi gerekiyor. Şimdi güncellensin mi?</translation>
     </message>
     <message>
-        <source>Remove and delete metadata</source>
-        <translation type="vanished">Metadata&apos;yı kaldır ve sil</translation>
-    </message>
-    <message>
-        <location filename="library_management_coordinator.cpp" line="185"/>
+        <location filename="library_management_coordinator.cpp" line="222"/>
         <source>Old library</source>
         <translation>Eski kütüphane</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="155"/>
+        <location filename="library_management_coordinator.cpp" line="192"/>
         <source>This library was created with a newer version of YACReaderLibrary. Download the new version now?</source>
-        <translation>Bu kütüphane YACRKütüphanenin üst bir versiyonunda oluşturulmu. Yeni versiyonu indirmek ister misiniz ?
-</translation>
+        <translation>Bu kütüphane YACReaderLibrary&apos;nin daha yeni bir sürümüyle oluşturulmuş. Yeni sürüm şimdi indirilsin mi?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="170"/>
+        <location filename="library_management_coordinator.cpp" line="207"/>
         <source>Library &apos;%1&apos; is no longer available. Do you want to remove it?</source>
-        <translation>Kütüphane &apos;%1&apos;ulaşılabilir değil.  Kaldırmak ister misin?</translation>
+        <translation>&apos;%1&apos; kütüphanesi artık kullanılamıyor. Kaldırmak ister misiniz?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="400"/>
-        <source>Do you want remove </source>
-        <translation>Kaldırmak ister misin</translation>
+        <location filename="library_management_coordinator.cpp" line="447"/>
+        <source>Do you want to remove the library &apos;%1&apos;?</source>
+        <translation>Şu kütüphaneyi kaldırmak ister misiniz: &apos;%1&apos;?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="186"/>
+        <location filename="library_management_coordinator.cpp" line="223"/>
         <source>Library &apos;%1&apos; has been created with an older version of YACReaderLibrary. It must be created again. Do you want to create the library now?</source>
-        <translation>Kütüphane &apos;%1 YACRKütüphanenin eski bir sürümünde oluşturulmuş, Kütüphaneyi yeniden oluşturmak ister misin?</translation>
+        <translation>&apos;%1&apos; kütüphanesi YACReaderLibrary&apos;nin daha eski bir sürümüyle oluşturulmuş. Yeniden oluşturulması gerekiyor. Kütüphaneyi şimdi oluşturmak ister misiniz?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="169"/>
+        <location filename="library_management_coordinator.cpp" line="206"/>
         <source>Library not available</source>
-        <translation>Kütüphane ulaşılabilir değil</translation>
+        <translation>Kütüphane kullanılamıyor</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="239"/>
+        <location filename="library_window.cpp" line="238"/>
         <source>YACReader Library</source>
         <translation>YACReader Kütüphane</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="133"/>
+        <location filename="library_management_coordinator.cpp" line="164"/>
         <source>Update needed</source>
         <translation>Güncelleme gerekli</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="452"/>
+        <location filename="library_management_coordinator.cpp" line="499"/>
         <source>Library name already exists</source>
-        <translation>Kütüphane ismi zaten alınmış</translation>
+        <translation>Kütüphane adı zaten var</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="453"/>
+        <location filename="library_management_coordinator.cpp" line="500"/>
         <source>There is another library with the name &apos;%1&apos;.</source>
-        <translation>Bu başka bir kütüphanenin adı &apos;%1&apos;.</translation>
+        <translation>&apos;%1&apos; adında başka bir kütüphane zaten var.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="154"/>
+        <location filename="library_management_coordinator.cpp" line="191"/>
         <source>Download new version</source>
-        <translation>Yeni versiyonu indir</translation>
+        <translation>Yeni sürümü indir</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="520"/>
+        <location filename="comic_management_coordinator.cpp" line="851"/>
         <source>Delete comics</source>
         <translation>Çizgi romanları sil</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="521"/>
+        <location filename="comic_management_coordinator.cpp" line="845"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
-        <translation>Seçilen tüm çizgi romanlar diskten silinecek emin misin ?</translation>
+        <translation>Seçilen tüm çizgi romanlar diskinizden silinecek. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="327"/>
+        <location filename="library_management_coordinator.cpp" line="374"/>
         <source>Library not found</source>
         <translation>Kütüphane bulunamadı</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="400"/>
-        <source> library?</source>
-        <translation> kütüphane?</translation>
-    </message>
-    <message>
-        <location filename="library_management_coordinator.cpp" line="399"/>
+        <location filename="library_management_coordinator.cpp" line="446"/>
         <source>Are you sure?</source>
-        <translation>Emin misin?</translation>
+        <translation>Emin misiniz?</translation>
     </message>
     <message>
+        <location filename="library_window.cpp" line="553"/>
         <location filename="folder_management_coordinator.cpp" line="216"/>
         <source>Delete folder</source>
         <translation>Klasörü sil</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="52"/>
+        <location filename="library_management_coordinator.cpp" line="54"/>
         <source>Upgrade failed</source>
         <translation>Yükseltme başarısız oldu</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="53"/>
+        <location filename="library_management_coordinator.cpp" line="55"/>
         <source>There were errors during library upgrade in: </source>
         <translation>Kütüphane yükseltmesi sırasında hatalar oluştu: </translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="208"/>
+        <location filename="comic_management_coordinator.cpp" line="235"/>
         <source>Copying comics...</source>
         <translation>Çizgi romanlar kopyalanıyor...</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="224"/>
+        <location filename="comic_management_coordinator.cpp" line="251"/>
         <source>Moving comics...</source>
         <translation>Çizgi romanlar taşınıyor...</translation>
     </message>
@@ -1165,7 +1889,7 @@
         <location filename="folder_management_coordinator.cpp" line="134"/>
         <location filename="folder_management_coordinator.cpp" line="146"/>
         <location filename="folder_management_coordinator.cpp" line="200"/>
-        <source>Please, select a folder first</source>
+        <source>Please select a folder first</source>
         <translation>Lütfen, önce bir klasör seçiniz</translation>
     </message>
     <message>
@@ -1181,92 +1905,121 @@
     <message>
         <location filename="folder_management_coordinator.cpp" line="217"/>
         <source>The selected folder and all its contents will be deleted from your disk. Are you sure?</source>
-        <translation>Seçilen klasör ve tüm içeriği diskinizden silinecek. Emin misin?</translation>
+        <translation>Seçilen klasör ve tüm içeriği diskinizden silinecek. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="595"/>
+        <location filename="comic_management_coordinator.cpp" line="948"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Silinemedi</translation>
     </message>
     <message>
         <location filename="folder_management_coordinator.cpp" line="251"/>
-        <source>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
+        <source>There was an issue trying to delete the selected folders. Please check for write permissions and be sure that no applications are using these folders or any of the contained files.</source>
         <oldsource>There was an issue trying to delete the selected folders. Please, check for write permissions and be sure that any applications are using these folders or any of the contained files.</oldsource>
         <translation>Seçili klasörleri silmeye çalışırken bir sorun oluştu. Lütfen yazma izinlerini kontrol edin ve hiçbir uygulamanın bu klasörleri veya içerdikleri dosyaları kullanmadığından emin olun.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="746"/>
+        <location filename="library_window.cpp" line="542"/>
+        <source>Edit smart list...</source>
+        <translation>Akıllı listeyi düzenle...</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="543"/>
+        <source>Delete smart list</source>
+        <translation>Akıllı listeyi sil</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="545"/>
+        <location filename="library_window.cpp" line="550"/>
+        <location filename="library_window.cpp" line="565"/>
+        <source>New folder...</source>
+        <translation>Yeni klasör...</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="546"/>
+        <location filename="library_window.cpp" line="552"/>
+        <location filename="library_window.cpp" line="567"/>
+        <source>Move to folder...</source>
+        <translation>Klasöre taşı...</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="551"/>
+        <source>Rename folder...</source>
+        <translation>Klasörü yeniden adlandır...</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="560"/>
+        <source>Match to library comics...</source>
+        <translation>Kitaplıktaki çizgi romanlarla eşleştir...</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="562"/>
+        <source>Track missing issues...</source>
+        <translation type="unfinished">Eksik sayıları takip et...</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="563"/>
+        <source>Export reading list...</source>
+        <translation>Okuma listesini dışa aktar...</translation>
+    </message>
+    <message>
+        <location filename="library_window.cpp" line="788"/>
         <source>Rename or organize files</source>
         <translation>Dosyaları yeniden adlandır veya düzenle</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="768"/>
+        <location filename="library_window.cpp" line="810"/>
         <source>Set the type of the selected comics</source>
         <translation>Seçili çizgi romanların türünü ayarla</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="787"/>
+        <location filename="library_window.cpp" line="832"/>
+        <source>Save as smart list…</source>
+        <translation>Akıllı liste olarak kaydet…</translation>
+    </message>
+    <message>
+        <location filename="search_filters_menu.cpp" line="12"/>
         <source>Search filters</source>
         <translation>Arama filtreleri</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="797"/>
+        <location filename="search_filters_menu.cpp" line="20"/>
         <source>Unread</source>
         <translation>Okunmamış</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="799"/>
+        <location filename="search_filters_menu.cpp" line="21"/>
         <source>In progress</source>
         <translation>Devam eden</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="801"/>
+        <location filename="search_filters_menu.cpp" line="22"/>
         <source>Highly rated</source>
         <translation>Yüksek puanlı</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="803"/>
+        <location filename="search_filters_menu.cpp" line="24"/>
         <source>Recently added</source>
         <translation>Yakın zamanda eklenen</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="810"/>
+        <location filename="search_filters_menu.cpp" line="31"/>
         <source>Search syntax…</source>
         <translation>Arama söz dizimi…</translation>
     </message>
     <message>
-        <location filename="library_repair_coordinator.cpp" line="61"/>
-        <source>A repair of this library is already running (%1). Wait for it to finish.</source>
-        <translation>Bu kütüphanenin onarımı zaten çalışıyor (%1). Bitmesini bekleyin.</translation>
-    </message>
-    <message>
-        <location filename="library_repair_coordinator.cpp" line="66"/>
-        <source>The library is locked by a repair that did not finish.</source>
-        <translation>Kütüphane, tamamlanmamış bir onarım tarafından kilitlendi.</translation>
-    </message>
-    <message>
-        <location filename="library_repair_coordinator.cpp" line="67"/>
-        <source>The library is locked by a repair started by %1.</source>
-        <translation>Kütüphane, %1 tarafından başlatılan bir onarım tarafından kilitlendi.</translation>
-    </message>
-    <message>
-        <location filename="library_repair_coordinator.cpp" line="69"/>
-        <source>If you are sure that no other repair is running, the lock can be removed. Remove the lock and continue?</source>
-        <translation>Başka bir onarımın çalışmadığından eminseniz kilit kaldırılabilir. Kilit kaldırılıp devam edilsin mi?</translation>
-    </message>
-    <message>
-        <location filename="library_window.cpp" line="632"/>
+        <location filename="library_window.cpp" line="715"/>
         <source>Package operation failed</source>
         <translation>Paket işlemi başarısız oldu</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="632"/>
+        <location filename="library_window.cpp" line="715"/>
         <source>The covers package operation could not be completed.</source>
         <translation>Kapak paketi işlemi tamamlanamadı.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="111"/>
+        <location filename="library_management_coordinator.cpp" line="140"/>
         <source>Restore recovery failed</source>
         <translation>Geri yükleme kurtarması başarısız oldu</translation>
     </message>
@@ -1317,22 +2070,22 @@ Klasör: %1</translation>
         <translation>Kütüphane veritabanı güncellenemedi ve klasörün diskteki yeni adı geri alınamadı. Kütüphanenin şimdi elle güncellenmesi gerekiyor.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="360"/>
+        <location filename="comic_management_coordinator.cpp" line="466"/>
         <source>Save covers</source>
         <translation>Kapakları kaydet</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="445"/>
+        <location filename="library_management_coordinator.cpp" line="492"/>
         <source>You are adding too many libraries.</source>
         <translation>Çok fazla kütüphane ekliyorsunuz.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="446"/>
+        <location filename="library_management_coordinator.cpp" line="493"/>
         <source>You are adding too many libraries.
 
-You probably only need one library in your top level comics folder, you can browse any subfolders using the folders section in the left sidebar.
+You probably only need one library in your top-level comics folder. You can browse any subfolders using the folders section in the left sidebar.
 
-YACReaderLibrary will not stop you from creating more libraries but you should keep the number of libraries low.</source>
+YACReaderLibrary will not stop you from creating more libraries, but you should keep the number of libraries low.</source>
         <translation>Çok fazla kütüphane ekliyorsunuz.
 
 Muhtemelen üst düzey çizgi roman klasörünüzde yalnızca bir kütüphaneye ihtiyacınız vardır, sol kenar çubuğundaki klasörler bölümünü kullanarak herhangi bir alt klasöre göz atabilirsiniz.
@@ -1340,48 +2093,42 @@ Muhtemelen üst düzey çizgi roman klasörünüzde yalnızca bir kütüphaneye 
 YACReaderLibrary daha fazla kütüphane oluşturmanıza engel olmaz ancak kütüphane sayısını düşük tutmalısınız.</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="51"/>
-        <location filename="library_database_maintenance_coordinator.cpp" line="90"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="71"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="110"/>
         <source>YACReader library database (*.ydb)</source>
-        <translation>YACReader kitaplık veritabanı (*.ydb)</translation>
+        <translation>YACReader kütüphane veritabanı (*.ydb)</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="71"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="91"/>
         <source>The library database backup was created at:
 %1</source>
-        <translation>Kitaplık veritabanı yedeği şu konumda oluşturuldu:
+        <translation>Kütüphane veritabanı yedeği şu konumda oluşturuldu:
 %1</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="75"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="95"/>
         <source>Unable to create the library database backup:
 %1</source>
-        <translation>Kitaplık veritabanı yedeği oluşturulamadı:
+        <translation>Kütüphane veritabanı yedeği oluşturulamadı:
 %1</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="96"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="116"/>
         <source>Close YACReaderLibraryServer and any other YACReader application using this library before restoring. Continue?</source>
-        <translation>Geri yüklemeden önce YACReaderLibraryServer&apos;ı ve bu kitaplığı kullanan diğer tüm YACReader uygulamalarını kapatın. Devam edilsin mi?</translation>
+        <translation>Geri yüklemeden önce YACReaderLibraryServer&apos;ı ve bu kütüphaneyi kullanan diğer tüm YACReader uygulamalarını kapatın. Devam edilsin mi?</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="106"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="126"/>
         <source>Restoring library database...</source>
-        <translation>Kitaplık veritabanı geri yükleniyor...</translation>
+        <translation>Kütüphane veritabanı geri yükleniyor...</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="122"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="142"/>
         <source>The current library database is invalid. Restore the selected backup anyway?</source>
-        <translation>Geçerli kitaplık veritabanı geçersiz. Seçilen yedek yine de geri yüklensin mi?</translation>
+        <translation>Geçerli kütüphane veritabanı geçersiz. Seçilen yedek yine de geri yüklensin mi?</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="134"/>
-        <location filename="library_database_maintenance_coordinator.cpp" line="211"/>
-        <source>The library maintenance lock may be stale. Remove it and retry?</source>
-        <translation>Kitaplık bakım kilidi eski kalmış olabilir. Kaldırıp yeniden denensin mi?</translation>
-    </message>
-    <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="148"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="163"/>
         <source>
 
 Restart YACReaderLibrary before attempting recovery again.</source>
@@ -1390,82 +2137,88 @@ Restart YACReaderLibrary before attempting recovery again.</source>
 Kurtarmayı yeniden denemeden önce YACReaderLibrary&apos;yi yeniden başlatın.</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="160"/>
-        <source>The library database was restored successfully. Update the library now?</source>
-        <translation>Kitaplık veritabanı başarıyla geri yüklendi. Kitaplık şimdi güncellensin mi?</translation>
-    </message>
-    <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="174"/>
-        <source>Library database damaged</source>
-        <translation>Kitaplık veritabanı hasarlı</translation>
-    </message>
-    <message>
         <location filename="library_database_maintenance_coordinator.cpp" line="175"/>
-        <source>The database of library &apos;%1&apos; is damaged, so normal updates, maintenance, and backups are unavailable. YACReader can attempt to repair the database. Some damaged data may not be recoverable. Existing backups will not be changed.</source>
-        <translation>&apos;%1&apos; kitaplığının veritabanı hasarlı olduğundan normal güncellemeler, bakım ve yedeklemeler kullanılamıyor. YACReader veritabanını onarmayı deneyebilir. Bazı hasarlı veriler kurtarılamayabilir. Mevcut yedekler değiştirilmeyecektir.</translation>
+        <source>The library database was restored successfully. Update the library now?</source>
+        <translation>Kütüphane veritabanı başarıyla geri yüklendi. Kütüphane şimdi güncellensin mi?</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="178"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="189"/>
+        <source>Library database damaged</source>
+        <translation>Kütüphane veritabanı hasarlı</translation>
+    </message>
+    <message>
+        <location filename="library_database_maintenance_coordinator.cpp" line="190"/>
+        <source>The database of library &apos;%1&apos; is damaged, so normal updates, maintenance, and backups are unavailable. YACReader can attempt to repair the database. Some damaged data may not be recoverable. Existing backups will not be changed.</source>
+        <translation>&apos;%1&apos; kütüphanesinin veritabanı hasarlı olduğundan normal güncellemeler, bakım ve yedeklemeler kullanılamıyor. YACReader veritabanını onarmayı deneyebilir. Bazı hasarlı veriler kurtarılamayabilir. Mevcut yedekler değiştirilmeyecektir.</translation>
+    </message>
+    <message>
+        <location filename="library_database_maintenance_coordinator.cpp" line="193"/>
         <source>Attempt repair</source>
         <translation>Onarmayı dene</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="179"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="194"/>
         <source>Restore a backup...</source>
         <translation>Bir yedeği geri yükle...</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="196"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="211"/>
         <source>Repairing library database...</source>
-        <translation>Kitaplık veritabanı onarılıyor...</translation>
+        <translation>Kütüphane veritabanı onarılıyor...</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="210"/>
-        <location filename="library_database_maintenance_coordinator.cpp" line="218"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="47"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="224"/>
         <location filename="library_database_maintenance_coordinator.cpp" line="228"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="238"/>
         <source>Library database repair</source>
-        <translation>Kitaplık veritabanını onar</translation>
+        <translation>Kütüphane veritabanını onar</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="219"/>
-        <source>Another maintenance operation is currently using this library. Try again after it finishes.</source>
-        <translation>Başka bir bakım işlemi şu anda bu kitaplığı kullanıyor. İşlem bittikten sonra yeniden deneyin.</translation>
+        <location filename="library_database_maintenance_coordinator.cpp" line="48"/>
+        <source>Check the database of library &apos;%1&apos; and attempt to repair it if needed? Existing backups will not be changed.</source>
+        <translation>&apos;%1&apos; kitaplığının veritabanı kontrol edilsin ve gerekirse onarılmaya çalışılsın mı? Mevcut yedekler değiştirilmeyecek.</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="229"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="51"/>
+        <source>Check and repair</source>
+        <translation>Kontrol et ve onar</translation>
+    </message>
+    <message>
+        <location filename="library_database_maintenance_coordinator.cpp" line="239"/>
         <source>The library database is already valid.</source>
-        <translation>Kitaplık veritabanı zaten geçerli.</translation>
+        <translation>Kütüphane veritabanı zaten geçerli.</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="232"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="242"/>
         <source>Library database repaired</source>
-        <translation>Kitaplık veritabanı onarıldı</translation>
+        <translation>Kütüphane veritabanı onarıldı</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="233"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="243"/>
         <source>The library database was repaired by rebuilding its indexes. The damaged original was preserved at:
 %1</source>
-        <translation>Kitaplık veritabanı dizinleri yeniden oluşturularak onarıldı. Hasarlı özgün dosya şu konumda korundu:
+        <translation>Kütüphane veritabanı dizinleri yeniden oluşturularak onarıldı. Hasarlı özgün dosya şu konumda korundu:
 %1</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="236"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="246"/>
         <source>Library database rebuilt</source>
-        <translation>Kitaplık veritabanı yeniden oluşturuldu</translation>
+        <translation>Kütüphane veritabanı yeniden oluşturuldu</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="237"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="247"/>
         <source>The library database was rebuilt successfully. The damaged original was preserved at:
 %1
 
 Update the library now?</source>
-        <translation>Kitaplık veritabanı başarıyla yeniden oluşturuldu. Hasarlı özgün dosya şu konumda korundu:
+        <translation>Kütüphane veritabanı başarıyla yeniden oluşturuldu. Hasarlı özgün dosya şu konumda korundu:
 %1
 
-Kitaplık şimdi güncellensin mi?</translation>
+Kütüphane şimdi güncellensin mi?</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="246"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="256"/>
         <source>
 
 The damaged original was preserved at:
@@ -1476,82 +2229,122 @@ Hasarlı özgün dosya şu konumda korundu:
 %1</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="248"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="258"/>
         <source>Library database repair failed</source>
-        <translation>Kitaplık veritabanı onarılamadı</translation>
+        <translation>Kütüphane veritabanı onarılamadı</translation>
     </message>
     <message>
-        <location filename="library_database_maintenance_coordinator.cpp" line="249"/>
+        <location filename="library_database_maintenance_coordinator.cpp" line="259"/>
         <source>The library database could not be repaired:
 %1%2
 
 You can restore a backup from the Library menu or recreate the library.</source>
-        <translation>Kitaplık veritabanı onarılamadı:
+        <translation>Kütüphane veritabanı onarılamadı:
 %1%2
 
-Kitaplık menüsünden bir yedeği geri yükleyebilir veya kitaplığı yeniden oluşturabilirsiniz.</translation>
+Kütüphane menüsünden bir yedeği geri yükleyebilir veya kütüphaneyi yeniden oluşturabilirsiniz.</translation>
     </message>
     <message>
-        <location filename="library_management_coordinator.cpp" line="403"/>
+        <location filename="library_management_coordinator.cpp" line="450"/>
         <source>Remove and delete metadata and backups</source>
         <translation>Meta verileri ve yedekleri kaldır ve sil</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="576"/>
+        <location filename="library_window.cpp" line="644"/>
         <source>Library info</source>
         <translation>Kütüphane bilgisi</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="596"/>
-        <source>There was an issue trying to delete the selected comics. Please, check for write permissions in the selected files or containing folder.</source>
-        <translation>Seçilen çizgi romanlar silinmeye çalışılırken bir sorun oluştu. Lütfen seçilen dosyalarda veya klasörleri içeren yazma izinlerini kontrol edin.</translation>
+        <location filename="comic_management_coordinator.cpp" line="949"/>
+        <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
+        <translation>Seçilen çizgi romanlar silinmeye çalışılırken bir sorun oluştu. Lütfen seçilen dosyalarda veya bunları içeren klasörde yazma izinlerini kontrol edin.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="303"/>
+        <location filename="comic_management_coordinator.cpp" line="405"/>
         <source>Assign comics numbers</source>
         <translation>Çizgi roman numaraları ata</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="304"/>
-        <source>Assign numbers starting in:</source>
-        <translation>Şunlardan başlayarak numaralar ata:</translation>
+        <location filename="comic_management_coordinator.cpp" line="406"/>
+        <source>Assign numbers starting at:</source>
+        <translation>Şu numaradan başlayarak numaralar ata:</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="389"/>
+        <location filename="comic_management_coordinator.cpp" line="500"/>
         <location filename="folder_management_coordinator.cpp" line="339"/>
         <source>Invalid image</source>
         <translation>Geçersiz resim</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="390"/>
+        <location filename="comic_management_coordinator.cpp" line="501"/>
         <location filename="folder_management_coordinator.cpp" line="340"/>
         <source>The selected file is not a valid image.</source>
         <translation>Seçilen dosya geçerli bir resim değil.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="398"/>
+        <location filename="comic_management_coordinator.cpp" line="513"/>
+        <location filename="comic_management_coordinator.cpp" line="546"/>
         <location filename="folder_management_coordinator.cpp" line="347"/>
         <source>Error saving cover</source>
         <translation>Kapak kaydedilirken hata oluştu</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="399"/>
+        <location filename="comic_management_coordinator.cpp" line="514"/>
+        <location filename="comic_management_coordinator.cpp" line="547"/>
         <location filename="folder_management_coordinator.cpp" line="348"/>
         <source>There was an error saving the cover image.</source>
         <translation>Kapak resmi kaydedilirken bir hata oluştu.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="560"/>
+        <location filename="comic_management_coordinator.cpp" line="628"/>
+        <location filename="comic_management_coordinator.cpp" line="661"/>
+        <source>Match to library comic</source>
+        <translation>Kitaplıktaki çizgi romanla eşleştir</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="comic_management_coordinator.cpp" line="629"/>
+        <source>This also gives the comic to entries in %n other list(s): %1</source>
+        <translation>
+            <numerusform>Bu işlem %n başka listedeki kayıtlara da bu çizgi romanı atar: %1</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="662"/>
+        <source>The comic could not be matched. Nothing was changed.</source>
+        <translation>Çizgi roman eşleştirilemedi. Hiçbir şey değiştirilmedi.</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="847"/>
+        <source>The selected missing comics will be removed from this folder. Are you sure?</source>
+        <translation>Seçili eksik çizgi romanlar bu klasörden kaldırılacak. Emin misiniz?</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="849"/>
+        <source>The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?</source>
+        <translation>Seçili çizgi romanlar diskinizden silinecek ve seçili eksik çizgi romanlar bu klasörden kaldırılacak. Emin misiniz?</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="902"/>
+        <source>Remove the comics from Reading? Their reading progress will be reset.</source>
+        <translation>Çizgi romanlar Okunuyor bölümünden kaldırılsın mı? Okuma ilerlemeleri sıfırlanacak.</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="905"/>
+        <source>The comics will be removed from Favorites. Are you sure?</source>
+        <translation>Çizgi romanlar Favorilerden kaldırılacak. Emin misiniz?</translation>
+    </message>
+    <message>
+        <location filename="comic_management_coordinator.cpp" line="912"/>
         <source>Remove comics</source>
         <translation>Çizgi romanları kaldır</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="561"/>
+        <location filename="comic_management_coordinator.cpp" line="898"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
-        <translation>Çizgi romanlar yalnızca mevcut etiketten/listeden silinecektir. Emin misin?</translation>
+        <translation>Çizgi romanlar yalnızca mevcut etiketten/listeden silinecektir. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="library_repair_coordinator.cpp" line="86"/>
+        <location filename="library_repair_coordinator.cpp" line="75"/>
         <source>Repaired: %1
 Failed: %2
 Missing files: %3</source>
@@ -1570,39 +2363,39 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="library_window_actions.cpp" line="51"/>
         <source>Open an existing library</source>
-        <translation>Çıkış kütüphanesini aç</translation>
+        <translation>Mevcut bir kütüphaneyi aç</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="55"/>
         <location filename="library_window_actions.cpp" line="56"/>
         <source>Export comics info</source>
-        <translation>Çizgi roman bilgilerini göster</translation>
+        <translation>Çizgi roman bilgilerini dışa aktar</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="60"/>
         <location filename="library_window_actions.cpp" line="61"/>
         <source>Import comics info</source>
-        <translation>Çizgi roman bilgilerini çıkart</translation>
+        <translation>Çizgi roman bilgilerini içe aktar</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="65"/>
         <source>Pack covers</source>
-        <translation>Paket kapakları</translation>
+        <translation>Kapakları paketle</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="66"/>
         <source>Pack the covers of the selected library</source>
-        <translation>Kütüphanede ki kapakları paketle</translation>
+        <translation>Seçili kütüphanedeki kapakları paketle</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="70"/>
         <source>Unpack covers</source>
-        <translation>Kapakları aç</translation>
+        <translation>Kapakları paketten çıkar</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="71"/>
         <source>Unpack a catalog</source>
-        <translation>Kataloğu çkart</translation>
+        <translation>Kataloğu paketten çıkar</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="75"/>
@@ -1612,457 +2405,528 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="library_window_actions.cpp" line="76"/>
         <source>Update current library</source>
-        <translation>Kütüphaneyi güncelle</translation>
+        <translation>Geçerli kütüphaneyi güncelle</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="80"/>
         <source>Back up library database</source>
-        <translation>Kitaplık veritabanını yedekle</translation>
+        <translation>Kütüphane veritabanını yedekle</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="81"/>
         <source>Create a backup of the current library database</source>
-        <translation>Geçerli kitaplık veritabanının yedeğini oluştur</translation>
+        <translation>Geçerli kütüphane veritabanının yedeğini oluştur</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="85"/>
         <source>Restore library database backup</source>
-        <translation>Kitaplık veritabanı yedeğini geri yükle</translation>
+        <translation>Kütüphane veritabanı yedeğini geri yükle</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="86"/>
         <source>Restore the current library database from a backup</source>
-        <translation>Geçerli kitaplık veritabanını bir yedekten geri yükle</translation>
+        <translation>Geçerli kütüphane veritabanını bir yedekten geri yükle</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="90"/>
+        <source>Repair library database...</source>
+        <translation>Kitaplık veritabanını onar...</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="91"/>
+        <source>Check the current library database and attempt to repair any damage</source>
+        <translation>Geçerli kitaplık veritabanını kontrol et ve hasarı onarmaya çalış</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="95"/>
+        <source>Recover library access...</source>
+        <translation>Kitaplık erişimini kurtar...</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="96"/>
+        <source>Recover access after an interrupted library maintenance operation</source>
+        <translation>Kesintiye uğrayan kitaplık bakımından sonra erişimi kurtar</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="100"/>
         <location filename="import_widget.cpp" line="366"/>
         <source>Repair covers and comic info</source>
         <translation>Kapakları ve çizgi roman bilgilerini onar</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="91"/>
+        <location filename="library_window_actions.cpp" line="101"/>
         <source>Retry comics with missing covers or incomplete information</source>
         <translation>Kapağı eksik veya bilgileri tamamlanmamış çizgi romanları yeniden işle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="95"/>
+        <location filename="library_window_actions.cpp" line="105"/>
         <source>Rename library</source>
         <translation>Kütüphaneyi yeniden adlandır</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="96"/>
-        <source>Rename current library</source>
-        <translation>Kütüphaneyi adlandır</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="100"/>
-        <source>Remove library</source>
-        <translation>Kütüphaneyi sil</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="101"/>
-        <source>Remove current library from your collection</source>
-        <translation>Kütüphaneyi koleksiyonundan kaldır</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="105"/>
-        <source>Rescan library for XML info</source>
-        <translation>XML bilgisi için kitaplığı yeniden tarayın</translation>
-    </message>
-    <message>
         <location filename="library_window_actions.cpp" line="106"/>
-        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files.</source>
-        <translation>Komik dosyalara gömülü XML bilgilerini bulmaya çalışır. Bunu yalnızca kitaplık 9.8.2 veya önceki sürümlerle oluşturulmuşsa veya XML bilgilerini dosyalara eklemek için üçüncü taraf yazılım kullanıyorsanız yapmanız gerekir.</translation>
+        <source>Rename current library</source>
+        <translation>Geçerli kütüphaneyi yeniden adlandır</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="110"/>
+        <source>Remove library</source>
+        <translation>Kütüphaneyi kaldır</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="111"/>
+        <source>Remove current library from your collection</source>
+        <translation>Geçerli kütüphaneyi koleksiyonunuzdan kaldır</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="115"/>
+        <source>Rescan library for XML info</source>
+        <translation>Kütüphaneyi XML bilgisi için yeniden tara</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="116"/>
+        <source>Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files.</source>
+        <translation>Çizgi roman dosyalarına gömülü XML bilgilerini bulmaya çalışır. Bunu yalnızca kütüphane 9.8.2 veya önceki sürümlerle oluşturulmuşsa ya da XML bilgilerini dosyalara eklemek için üçüncü taraf yazılım kullanıyorsanız yapmanız gerekir.</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="120"/>
         <source>Open library folder...</source>
         <translation>Kütüphane klasörünü aç...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="111"/>
+        <location filename="library_window_actions.cpp" line="121"/>
         <source>Open the root folder of the current library</source>
         <translation>Geçerli kütüphanenin kök klasörünü aç</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="115"/>
+        <location filename="library_window_actions.cpp" line="125"/>
         <source>Show library info</source>
-        <translation>Kitaplık bilgilerini göster</translation>
+        <translation>Kütüphane bilgilerini göster</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="116"/>
+        <location filename="library_window_actions.cpp" line="126"/>
         <source>Show information about the current library</source>
-        <translation>Geçerli kitaplık hakkındaki bilgileri göster</translation>
+        <translation>Geçerli kütüphane hakkındaki bilgileri göster</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="120"/>
+        <location filename="library_window_actions.cpp" line="130"/>
         <source>Open current comic</source>
         <translation>Seçili çizgi romanı aç</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="121"/>
-        <source>Open current comic on YACReader</source>
-        <translation>YACReader&apos;ı geçerli çizgi roman okuyucsu seç</translation>
+        <location filename="library_window_actions.cpp" line="131"/>
+        <source>Open current comic in YACReader</source>
+        <translation>Geçerli çizgi romanı YACReader&apos;da aç</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="125"/>
+        <location filename="library_window_actions.cpp" line="135"/>
         <source>Save selected covers to...</source>
         <translation>Seçilen kapakları şuraya kaydet...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="126"/>
+        <location filename="library_window_actions.cpp" line="136"/>
         <source>Save covers of the selected comics as JPG files</source>
         <translation>Seçilen çizgi romanların kapaklarını JPG dosyaları olarak kaydet</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="130"/>
-        <location filename="library_window_actions.cpp" line="266"/>
+        <location filename="library_window_actions.cpp" line="140"/>
+        <location filename="library_window_actions.cpp" line="285"/>
         <source>Set as read</source>
         <translation>Okundu olarak işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="131"/>
+        <location filename="library_window_actions.cpp" line="141"/>
         <source>Set comic as read</source>
         <translation>Çizgi romanı okundu olarak işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="135"/>
-        <location filename="library_window_actions.cpp" line="271"/>
+        <location filename="library_window_actions.cpp" line="145"/>
+        <location filename="library_window_actions.cpp" line="290"/>
         <source>Set as unread</source>
-        <translation>Hepsini okunmadı işaretle</translation>
+        <translation>Okunmadı olarak işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="136"/>
+        <location filename="library_window_actions.cpp" line="146"/>
         <source>Set comic as unread</source>
-        <translation>Çizgi Romanı okunmadı olarak seç</translation>
+        <translation>Çizgi romanı okunmadı olarak işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="140"/>
-        <location filename="library_window_actions.cpp" line="286"/>
+        <location filename="library_window_actions.cpp" line="150"/>
+        <location filename="library_window_actions.cpp" line="305"/>
         <source>manga</source>
-        <translation>manga t?r?</translation>
+        <translation>manga</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="141"/>
+        <location filename="library_window_actions.cpp" line="151"/>
         <source>Set issue as manga</source>
         <translation>Sayıyı manga olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="145"/>
-        <location filename="library_window_actions.cpp" line="291"/>
+        <location filename="library_window_actions.cpp" line="155"/>
+        <location filename="library_window_actions.cpp" line="310"/>
         <source>comic</source>
-        <translation>komik</translation>
+        <translation>çizgi roman</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="146"/>
+        <location filename="library_window_actions.cpp" line="156"/>
         <source>Set issue as normal</source>
         <translation>Sayıyı normal olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="150"/>
+        <location filename="library_window_actions.cpp" line="160"/>
         <source>western manga</source>
         <translation>batı mangası</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="151"/>
+        <location filename="library_window_actions.cpp" line="161"/>
         <source>Set issue as western manga</source>
-        <translation>Konuyu western mangası olarak ayarla</translation>
+        <translation>Sayıyı batı mangası olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="156"/>
-        <location filename="library_window_actions.cpp" line="301"/>
+        <location filename="library_window_actions.cpp" line="166"/>
+        <location filename="library_window_actions.cpp" line="320"/>
         <source>web comic</source>
         <translation>web çizgi romanı</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="157"/>
-        <source>Set issue as web comic</source>
-        <translation>Sorunu web çizgi romanı olarak ayarla</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="162"/>
-        <location filename="library_window_actions.cpp" line="306"/>
-        <source>yonkoma</source>
-        <translation>d?rt panelli</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="163"/>
-        <source>Set issue as yonkoma</source>
-        <translation>Sorunu yonkoma olarak ayarla</translation>
-    </message>
-    <message>
         <location filename="library_window_actions.cpp" line="167"/>
+        <source>Set issue as web comic</source>
+        <translation>Sayıyı web çizgi romanı olarak ayarla</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="172"/>
+        <location filename="library_window_actions.cpp" line="325"/>
+        <source>yonkoma</source>
+        <translation>yonkoma</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="173"/>
+        <source>Set issue as yonkoma</source>
+        <translation>Sayıyı yonkoma olarak ayarla</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="177"/>
         <source>Show/Hide marks</source>
-        <translation>Altçizgileri aç/kapa</translation>
+        <translation>İşaretleri göster/gizle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="168"/>
+        <location filename="library_window_actions.cpp" line="178"/>
         <source>Show or hide read marks</source>
-        <translation>Okundu işaretlerini göster yada gizle</translation>
+        <translation>Okundu işaretlerini göster veya gizle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="174"/>
+        <location filename="library_window_actions.cpp" line="184"/>
         <source>Show/Hide recent indicator</source>
-        <translation>Son göstergeyi Göster/Gizle</translation>
+        <translation>Son eklenenler göstergesini göster/gizle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="175"/>
+        <location filename="library_window_actions.cpp" line="185"/>
         <source>Show or hide recent indicator</source>
-        <translation>Son göstergeyi göster veya gizle</translation>
+        <translation>Son eklenenler göstergesini göster veya gizle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="182"/>
-        <location filename="library_window_actions.cpp" line="183"/>
+        <location filename="library_window_actions.cpp" line="192"/>
+        <location filename="library_window_actions.cpp" line="193"/>
         <source>Fullscreen mode on/off</source>
         <translation>Tam ekran modu açık/kapalı</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="188"/>
+        <location filename="library_window_actions.cpp" line="198"/>
         <source>Help, About YACReader</source>
-        <translation>Yardım, Bigli, YACReader</translation>
+        <translation>Yardım, YACReader Hakkında</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="192"/>
+        <location filename="library_window_actions.cpp" line="202"/>
         <source>Add new folder</source>
         <translation>Yeni klasör ekle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="195"/>
+        <location filename="library_window_actions.cpp" line="205"/>
         <source>Add new folder to the current library</source>
-        <translation>Geçerli kitaplığa yeni klasör ekle</translation>
+        <translation>Geçerli kütüphaneye yeni klasör ekle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="197"/>
+        <location filename="library_window_actions.cpp" line="207"/>
         <source>Rename folder</source>
         <translation>Klasörü yeniden adlandır</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="198"/>
+        <location filename="library_window_actions.cpp" line="208"/>
         <source>Rename the current folder on disk and in the library</source>
         <translation>Geçerli klasörü diskte ve kütüphanede yeniden adlandır</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="200"/>
+        <location filename="library_window_actions.cpp" line="210"/>
         <source>Delete folder</source>
         <translation>Klasörü sil</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="203"/>
+        <location filename="library_window_actions.cpp" line="213"/>
         <source>Delete current folder from disk</source>
         <translation>Geçerli klasörü diskten sil</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="208"/>
+        <location filename="library_window_actions.cpp" line="218"/>
         <source>Select root node</source>
-        <translation>Kökü seçin</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="211"/>
-        <source>Expand all nodes</source>
-        <translation>Tüm düğümleri büyüt</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="216"/>
-        <source>Collapse all nodes</source>
-        <translation>Tüm düğümleri kapat</translation>
+        <translation>Kök düğümü seç</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="221"/>
+        <source>Expand all nodes</source>
+        <translation>Tüm düğümleri genişlet</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="226"/>
+        <source>Collapse all nodes</source>
+        <translation>Tüm düğümleri daralt</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="231"/>
         <source>Show options dialog</source>
         <translation>Ayarları göster</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="226"/>
+        <location filename="library_window_actions.cpp" line="236"/>
         <source>Show comics server options dialog</source>
-        <translation>Çizgi romanların server ayarlarını göster</translation>
+        <translation>Çizgi roman sunucusu ayarlarını göster</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="230"/>
-        <location filename="library_window_actions.cpp" line="231"/>
+        <location filename="library_window_actions.cpp" line="240"/>
+        <location filename="library_window_actions.cpp" line="241"/>
         <source>Change between comics views</source>
         <translation>Çizgi roman görünümleri arasında değiştir</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="239"/>
-        <source>Open folder...</source>
-        <translation>Dosyayı aç...</translation>
+        <location filename="library_window_actions.cpp" line="247"/>
+        <source>Grid view</source>
+        <translation type="unfinished">Izgara görünümü</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="244"/>
-        <location filename="library_window_actions.cpp" line="318"/>
+        <location filename="library_window_actions.cpp" line="248"/>
+        <source>Flow view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="249"/>
+        <source>Info view</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="258"/>
+        <source>Open folder...</source>
+        <translation>Klasörü aç...</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="263"/>
+        <location filename="library_window_actions.cpp" line="337"/>
         <source>Rename files...</source>
         <oldsource>Organize files</oldsource>
         <translation>Dosyaları yeniden adlandır...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="250"/>
-        <location filename="library_window_actions.cpp" line="324"/>
+        <location filename="library_window_actions.cpp" line="269"/>
+        <location filename="library_window_actions.cpp" line="343"/>
         <source>Organize into folders...</source>
         <translation>Klasörlere düzenle...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="256"/>
+        <location filename="library_window_actions.cpp" line="275"/>
         <source>Set as uncompleted</source>
         <translation>Tamamlanmamış olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="261"/>
+        <location filename="library_window_actions.cpp" line="280"/>
         <source>Set as completed</source>
         <translation>Tamamlanmış olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="276"/>
+        <location filename="library_window_actions.cpp" line="295"/>
         <source>Set custom cover</source>
         <translation>Özel kapak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="281"/>
+        <location filename="library_window_actions.cpp" line="300"/>
         <source>Delete custom cover</source>
         <translation>Özel kapağı sil</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="296"/>
+        <location filename="library_window_actions.cpp" line="315"/>
         <source>western manga (left to right)</source>
         <translation>Batı mangası (soldan sağa)</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="313"/>
+        <location filename="library_window_actions.cpp" line="332"/>
         <source>Open containing folder...</source>
-        <translation>Klasör açılıyor...</translation>
+        <translation>Bulunduğu klasörü aç...</translation>
     </message>
     <message>
-        <source>Reset comic rating</source>
-        <translation type="vanished">Çizgi roman reytingini sıfırla</translation>
+        <location filename="library_window_actions.cpp" line="425"/>
+        <source>New reading list</source>
+        <translation>Yeni okuma listesi</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="336"/>
+        <location filename="library_window_actions.cpp" line="355"/>
         <source>Select all comics</source>
         <translation>Tüm çizgi romanları seç</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="341"/>
+        <location filename="library_window_actions.cpp" line="360"/>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="346"/>
+        <location filename="library_window_actions.cpp" line="365"/>
         <source>Assign current order to comics</source>
         <translation>Geçerli sırayı çizgi romanlara ata</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="351"/>
+        <location filename="library_window_actions.cpp" line="370"/>
         <source>Update cover</source>
         <translation>Kapağı güncelle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="357"/>
+        <location filename="library_window_actions.cpp" line="376"/>
         <source>Delete selected comics</source>
         <translation>Seçili çizgi romanları sil</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="362"/>
+        <location filename="library_window_actions.cpp" line="381"/>
         <source>Delete metadata from selected comics</source>
         <translation>Seçilen çizgi romanlardan meta verileri sil</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="369"/>
+        <location filename="library_window_actions.cpp" line="388"/>
         <source>Download tags from Comic Vine</source>
         <translation>Etiketleri Comic Vine sitesinden indir</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="372"/>
+        <location filename="library_window_actions.cpp" line="391"/>
         <source>Focus search line</source>
         <translation>Arama satırına odaklan</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="378"/>
+        <location filename="library_window_actions.cpp" line="397"/>
         <source>Focus comics view</source>
-        <translation>Çizgi roman görünümüne odaklanın</translation>
+        <translation>Çizgi roman görünümüne odaklan</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="383"/>
+        <location filename="library_window_actions.cpp" line="402"/>
         <source>Edit shortcuts</source>
         <translation>Kısayolları düzenle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="389"/>
+        <location filename="library_window_actions.cpp" line="408"/>
         <source>&amp;Quit</source>
         <translation>&amp;Çıkış</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="396"/>
+        <location filename="library_window_actions.cpp" line="415"/>
         <source>Update folder</source>
         <translation>Klasörü güncelle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="398"/>
+        <location filename="library_window_actions.cpp" line="417"/>
         <source>Update current folder</source>
         <translation>Geçerli klasörü güncelle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="402"/>
+        <location filename="library_window_actions.cpp" line="421"/>
         <source>Scan legacy XML metadata</source>
-        <translation>Eski XML meta verilerini tarayın</translation>
+        <translation>Eski XML meta verilerini tara</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="406"/>
-        <source>Add new reading list</source>
-        <translation>Yeni okuma listesi ekle</translation>
-    </message>
-    <message>
-        <location filename="library_window_actions.cpp" line="409"/>
+        <location filename="library_window_actions.cpp" line="428"/>
         <source>Add a new reading list to the current library</source>
-        <translation>Geçerli kitaplığa yeni bir okuma listesi ekle</translation>
+        <translation>Geçerli kütüphaneye yeni bir okuma listesi ekle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="411"/>
+        <location filename="library_window_actions.cpp" line="432"/>
+        <source>New smart list...</source>
+        <translation>Yeni akıllı liste...</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="435"/>
+        <source>Add a saved search to the current library</source>
+        <translation>Geçerli kitaplığa kayıtlı bir arama ekle</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="438"/>
+        <source>New folder...</source>
+        <translation>Yeni klasör...</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="441"/>
+        <source>Add a folder for reading lists or smart lists</source>
+        <translation>Okuma listeleri veya akıllı listeler için klasör ekle</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="444"/>
+        <source>Import reading lists...</source>
+        <translation>Okuma listelerini içe aktar...</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="447"/>
+        <source>Import CBL reading lists into the current library</source>
+        <translation>CBL okuma listelerini geçerli kitaplığa içe aktar</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="450"/>
+        <source>New</source>
+        <translation>Yeni</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="451"/>
+        <source>Add or import reading lists</source>
+        <translation>Okuma listesi ekle veya içe aktar</translation>
+    </message>
+    <message>
+        <location filename="library_window_actions.cpp" line="460"/>
         <source>Remove reading list</source>
         <translation>Okuma listesini kaldır</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="414"/>
+        <location filename="library_window_actions.cpp" line="463"/>
         <source>Remove current reading list from the library</source>
         <translation>Geçerli okuma listesini kütüphaneden kaldır</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="416"/>
+        <location filename="library_window_actions.cpp" line="465"/>
         <source>Add new label</source>
         <translation>Yeni etiket ekle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="419"/>
+        <location filename="library_window_actions.cpp" line="468"/>
         <source>Add a new label to this library</source>
-        <translation>Bu kitaplığa yeni bir etiket ekle</translation>
+        <translation>Bu kütüphaneye yeni bir etiket ekle</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="421"/>
+        <location filename="library_window_actions.cpp" line="470"/>
         <source>Rename selected list</source>
         <translation>Seçilen listeyi yeniden adlandır</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="424"/>
+        <location filename="library_window_actions.cpp" line="473"/>
         <source>Rename any selected labels or lists</source>
         <translation>Seçilen etiketleri ya da listeleri yeniden adlandır</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="427"/>
+        <location filename="library_window_actions.cpp" line="476"/>
         <source>Add to...</source>
         <translation>Şuraya ekle...</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="429"/>
+        <location filename="library_window_actions.cpp" line="478"/>
         <source>Favorites</source>
         <translation>Favoriler</translation>
     </message>
     <message>
-        <location filename="library_window_actions.cpp" line="432"/>
+        <location filename="library_window_actions.cpp" line="481"/>
         <source>Add selected comics to favorites list</source>
         <translation>Seçilen çizgi romanları favoriler listesine ekle</translation>
     </message>
     <message>
-        <location filename="qml/ComicGridDelegate.qml" line="300"/>
-        <location filename="library_window_actions.cpp" line="330"/>
+        <location filename="qml/ComicGridDelegate.qml" line="318"/>
+        <location filename="library_window_actions.cpp" line="349"/>
         <source>Reset rating</source>
         <translation>Puanı sıfırla</translation>
     </message>
@@ -2072,12 +2936,12 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="library_window_menus.cpp" line="38"/>
         <source>comic</source>
-        <translation>komik</translation>
+        <translation>çizgi roman</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="39"/>
         <source>manga</source>
-        <translation>manga t?r?</translation>
+        <translation>manga</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="40"/>
@@ -2091,91 +2955,104 @@ Eksik dosyalar: %3</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="42"/>
-        <source>4koma (top to botom)</source>
+        <source>4koma (top to bottom)</source>
         <translation>4koma (yukarıdan aşağıya)</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="135"/>
-        <location filename="library_window_menus.cpp" line="236"/>
-        <location filename="library_window_menus.cpp" line="331"/>
-        <location filename="library_window_menus.cpp" line="421"/>
+        <location filename="library_window_menus.cpp" line="240"/>
+        <location filename="library_window_menus.cpp" line="351"/>
+        <location filename="library_window_menus.cpp" line="445"/>
         <source>Set type</source>
         <translation>Türü ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="165"/>
+        <location filename="library_window_menus.cpp" line="167"/>
         <source>Library</source>
         <translation>Kütüphane</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="187"/>
+        <location filename="library_window_menus.cpp" line="191"/>
         <source>Folder</source>
         <translation>Klasör</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="209"/>
+        <location filename="library_window_menus.cpp" line="213"/>
         <source>Comic</source>
         <translation>Çizgi roman</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="299"/>
-        <source>Open folder...</source>
-        <translation>Dosyayı aç...</translation>
+        <location filename="library_window_menus.cpp" line="255"/>
+        <source>Match to library comic...</source>
+        <translation>Kitaplıktaki çizgi romanla eşleştir...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="301"/>
+        <location filename="library_window_menus.cpp" line="261"/>
+        <location filename="library_window_menus.cpp" line="265"/>
+        <location filename="library_window_menus.cpp" line="331"/>
+        <location filename="library_window_menus.cpp" line="431"/>
+        <source>Track missing issues...</source>
+        <translation>Eksik sayıları takip et...</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="316"/>
+        <source>Open folder...</source>
+        <translation>Klasörü aç...</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="318"/>
         <source>Update folder</source>
         <translation>Klasörü güncelle</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="303"/>
+        <location filename="library_window_menus.cpp" line="320"/>
         <source>Rename folder</source>
         <translation>Klasörü yeniden adlandır</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="305"/>
+        <location filename="library_window_menus.cpp" line="322"/>
         <source>Rename files...</source>
         <translation>Dosyaları yeniden adlandır...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="306"/>
+        <location filename="library_window_menus.cpp" line="323"/>
         <source>Organize into folders...</source>
         <translation>Klasörlere düzenle...</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="307"/>
+        <location filename="library_window_menus.cpp" line="324"/>
         <source>Rescan library for XML info</source>
-        <translation>XML bilgisi için kitaplığı yeniden tarayın</translation>
+        <translation>Kütüphaneyi XML bilgisi için yeniden tara</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="308"/>
+        <location filename="library_window_menus.cpp" line="325"/>
         <source>Set as uncompleted</source>
         <translation>Tamamlanmamış olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="309"/>
+        <location filename="library_window_menus.cpp" line="326"/>
         <source>Set as completed</source>
         <translation>Tamamlanmış olarak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="310"/>
+        <location filename="library_window_menus.cpp" line="327"/>
         <source>Set as read</source>
         <translation>Okundu olarak işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="311"/>
-        <location filename="library_window_menus.cpp" line="361"/>
+        <location filename="library_window_menus.cpp" line="328"/>
+        <location filename="library_window_menus.cpp" line="382"/>
         <source>Set as unread</source>
-        <translation>Hepsini okunmadı işaretle</translation>
+        <translation>Okunmadı olarak işaretle</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="312"/>
+        <location filename="library_window_menus.cpp" line="329"/>
         <source>Set custom cover</source>
         <translation>Özel kapak ayarla</translation>
     </message>
     <message>
-        <location filename="library_window_menus.cpp" line="268"/>
-        <location filename="library_window_menus.cpp" line="313"/>
+        <location filename="library_window_menus.cpp" line="285"/>
+        <location filename="library_window_menus.cpp" line="330"/>
         <source>Delete custom cover</source>
         <translation>Özel kapağı sil</translation>
     </message>
@@ -2216,9 +3093,55 @@ Eksik dosyalar: %3</translation>
 <context>
     <name>LocalComicListModel</name>
     <message>
-        <location filename="comic_vine/model/local_comic_list_model.cpp" line="72"/>
+        <location filename="comic_vine/model/local_comic_list_model.cpp" line="74"/>
         <source>file name</source>
         <translation>dosya adı</translation>
+    </message>
+</context>
+<context>
+    <name>MoveToFolderDialog</name>
+    <message>
+        <location filename="move_to_folder_dialog.cpp" line="16"/>
+        <source>Move to folder</source>
+        <translation>Klasöre taşı</translation>
+    </message>
+    <message>
+        <location filename="move_to_folder_dialog.cpp" line="43"/>
+        <source>Top level</source>
+        <translation>En üst düzey</translation>
+    </message>
+    <message>
+        <location filename="move_to_folder_dialog.cpp" line="56"/>
+        <source>Move &quot;%1&quot; to:</source>
+        <translation>&quot;%1&quot; şuraya taşınsın:</translation>
+    </message>
+</context>
+<context>
+    <name>NewListFolderDialog</name>
+    <message>
+        <location filename="new_list_folder_dialog.cpp" line="13"/>
+        <source>New folder</source>
+        <translation>Yeni klasör</translation>
+    </message>
+    <message>
+        <location filename="new_list_folder_dialog.cpp" line="16"/>
+        <source>Reading lists</source>
+        <translation>Okuma listeleri</translation>
+    </message>
+    <message>
+        <location filename="new_list_folder_dialog.cpp" line="17"/>
+        <source>Smart lists</source>
+        <translation>Akıllı listeler</translation>
+    </message>
+    <message>
+        <location filename="new_list_folder_dialog.cpp" line="26"/>
+        <source>Folder name:</source>
+        <translation>Klasör adı:</translation>
+    </message>
+    <message>
+        <location filename="new_list_folder_dialog.cpp" line="27"/>
+        <source>For:</source>
+        <translation>İçin:</translation>
     </message>
 </context>
 <context>
@@ -2226,17 +3149,17 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="no_libraries_widget.cpp" line="24"/>
         <source>create your first library</source>
-        <translation>İlk kütüphaneni oluştur</translation>
+        <translation>İlk kütüphanenizi oluşturun</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="18"/>
         <source>You don&apos;t have any libraries yet</source>
-        <translation>Henüz bir kütüphaneye sahip değilsin</translation>
+        <translation>Henüz bir kütüphaneniz yok</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="20"/>
-        <source>&lt;p&gt;You can create a library in any folder, YACReaderLibrary will import all comics and folders from this folder. If you have created any library in the past you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a stand alone application for reading the comics on your computer.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Yeni bir kütüphane oluşturabilmeniçin kütüphane&lt;/p&gt;&lt;p&gt;No olvides que puedes usar YACReader como una aplicación independiente para leer los cómics en tu ordenador.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;You can create a library in any folder. YACReaderLibrary will import all comics and folders from this folder. If you have created any libraries in the past, you can open them.&lt;/p&gt;&lt;p&gt;Don&apos;t forget that you can use YACReader as a standalone application for reading the comics on your computer.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;Herhangi bir klasörde kütüphane oluşturabilirsiniz; YACReaderLibrary bu klasördeki tüm çizgi romanları ve klasörleri içe aktaracaktır. Daha önce bir kütüphane oluşturduysanız onları açabilirsiniz.&lt;/p&gt;&lt;p&gt;YACReader&apos;ı bilgisayarınızdaki çizgi romanları okumak için bağımsız bir uygulama olarak da kullanabileceğinizi unutmayın.&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="no_libraries_widget.cpp" line="26"/>
@@ -2287,11 +3210,11 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="options_dialog.cpp" line="194"/>
         <source>Close to tray</source>
-        <translation>Tepsiyi kapat</translation>
+        <translation>Sistem tepsisine kapat</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="195"/>
-        <source>Start into the system tray</source>
+        <source>Start in the system tray</source>
         <translation>Sistem tepsisinde başlat</translation>
     </message>
     <message>
@@ -2318,7 +3241,7 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="options_dialog.cpp" line="233"/>
         <source>Consider &apos;recent&apos; items added or updated since X days ago</source>
-        <translation>X gün öncesinden bu yana eklenen veya güncellenen &apos;en son&apos; öğeleri göz önünde bulundurun</translation>
+        <translation>Son X gün içinde eklenen veya güncellenen öğeleri &apos;yeni&apos; olarak kabul edin</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="245"/>
@@ -2338,7 +3261,7 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="options_dialog.cpp" line="272"/>
         <source>Update libraries at startup</source>
-        <translation>Başlangıçta kitaplıkları güncelleyin</translation>
+        <translation>Başlangıçta kütüphaneleri güncelle</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="277"/>
@@ -2348,7 +3271,7 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="options_dialog.cpp" line="282"/>
         <source>Update libraries periodically</source>
-        <translation>Kitaplıkları düzenli aralıklarla güncelleyin</translation>
+        <translation>Kütüphaneleri düzenli aralıklarla güncelleyin</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="288"/>
@@ -2393,26 +3316,26 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="options_dialog.cpp" line="303"/>
         <source>Update libraries at certain time</source>
-        <translation>Kitaplıkları belirli bir zamanda güncelle</translation>
+        <translation>Kütüphaneleri belirli bir zamanda güncelle</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="309"/>
         <source>Time:</source>
-        <translation>Zaman:</translation>
+        <translation>Saat:</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="338"/>
-        <source>WARNING! During library updates writes to the database are disabled!
-Don&apos;t schedule updates while you may be using the app actively.
-During automatic updates the app will block some of the actions until the update is finished.
-To stop an automatic update tap on the loading indicator next to the Libraries title.</source>
+        <source>WARNING! During library updates, writes to the database are disabled!
+Don&apos;t schedule updates while you may be actively using the app.
+During automatic updates, the app will block some of the actions until the update is finished.
+To stop an automatic update, tap on the loading indicator next to the Libraries title.</source>
         <oldsource>WARNING! During library updates writes to the database are disabled!
 Don&apos;t schedule updates while you may be using the app actively.
 To stop an automatic update tap on the loading indicator next to the Libraries title.</oldsource>
         <translation>UYARI! Kütüphane güncellemeleri sırasında veritabanına yazma işlemi devre dışı bırakılır!
 Uygulamayı aktif olarak kullanırken güncelleme planlamayın.
 Otomatik güncellemeler sırasında uygulama, güncelleme bitene kadar bazı eylemleri engelleyecektir.
-Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki yükleme göstergesine dokunun.</translation>
+Otomatik güncellemeyi durdurmak için Kütüphaneler başlığının yanındaki yükleme göstergesine dokunun.</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="348"/>
@@ -2422,7 +3345,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <message>
         <location filename="options_dialog.cpp" line="350"/>
         <source>Compare the modified date of files when updating a library (not recommended)</source>
-        <translation>Kitaplığı güncellerken dosyaların değiştirilme tarihini karşılaştırın (önerilmez)</translation>
+        <translation>Kütüphaneyi güncellerken dosyaların değiştirilme tarihini karşılaştırın (önerilmez)</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="389"/>
@@ -2432,7 +3355,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <message>
         <location filename="options_dialog.cpp" line="391"/>
         <source>Opacity level</source>
-        <translation>Matlık düzeyi</translation>
+        <translation>Opaklık düzeyi</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="396"/>
@@ -2442,11 +3365,11 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <message>
         <location filename="options_dialog.cpp" line="401"/>
         <source>Use selected comic cover as background</source>
-        <translation>Seçilen çizgi roman kapanığı arka plan olarak kullan</translation>
+        <translation>Seçilen çizgi romanın kapağını arka plan olarak kullan</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="403"/>
-        <source>Restore defautls</source>
+        <source>Restore defaults</source>
         <translation>Varsayılanları geri yükle</translation>
     </message>
     <message>
@@ -2457,7 +3380,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <message>
         <location filename="options_dialog.cpp" line="417"/>
         <source>Display continue reading banner</source>
-        <translation>Okuma devam et bannerını göster</translation>
+        <translation>Okumaya devam et banner&apos;ını göster</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="418"/>
@@ -2514,76 +3437,177 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
 <context>
     <name>OrganizeFiles</name>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="540"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="90"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="98"/>
+        <source>Unknown Series</source>
+        <translation>Bilinmeyen Seri</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="92"/>
+        <source>series</source>
+        <translation>seri</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="94"/>
+        <source>Unknown Publisher</source>
+        <translation>Bilinmeyen Yayıncı</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="96"/>
+        <source>publisher</source>
+        <translation>yayıncı</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="100"/>
+        <source>title</source>
+        <translation>başlık</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="333"/>
+        <source>Unknown Comic</source>
+        <translation>Bilinmeyen Çizgi Roman</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="353"/>
+        <source>Series #Number - Title</source>
+        <translation>Seri #Sayı - Başlık</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="354"/>
+        <source>Series #Number</source>
+        <translation>Seri #Sayı</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="355"/>
+        <source>Series #Number (of Count)</source>
+        <translation>Seri #Sayı (Toplam içinde)</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="356"/>
+        <source>Number - Title</source>
+        <translation>Sayı - Başlık</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="357"/>
+        <source>Series #Number (Year)</source>
+        <translation>Seri #Sayı (Yıl)</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="362"/>
+        <source>Publisher / Series / Series #Number - Title</source>
+        <translation>Yayıncı / Seri / Seri #Sayı - Başlık</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="363"/>
+        <source>Publisher / Imprint / Series / Series #Number - Title</source>
+        <translation>Yayıncı / Yayın markası / Seri / Seri #Sayı - Başlık</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="364"/>
+        <source>Series / Series #Number</source>
+        <translation>Seri / Seri #Sayı</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="365"/>
+        <source>Publisher / Series / Series #Number (Year)</source>
+        <translation>Yayıncı / Seri / Seri #Sayı (Yıl)</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="366"/>
+        <source>Series / original file name</source>
+        <translation>Seri / özgün dosya adı</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_plan.cpp" line="535"/>
         <source>Renamed, %1 is already in use</source>
         <translation>Yeniden adlandırıldı, %1 zaten kullanımda</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_plan.cpp" line="543"/>
+        <location filename="organize_files/organize_files_plan.cpp" line="538"/>
         <source>Missing metadata: %1</source>
-        <translation>Eksik üstveri: %1</translation>
+        <translation>Eksik meta veri: %1</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_journal.cpp" line="53"/>
         <source>%1 could not be created</source>
         <translation>%1 oluşturulamadı</translation>
     </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="79"/>
+        <source>%1 (copy also failed: %2)</source>
+        <translation>%1 (kopyalama da başarısız oldu: %2)</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="85"/>
+        <source>the copy did not have the same size as the original</source>
+        <translation>kopyanın boyutu özgün dosyayla aynı değildi</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="91"/>
+        <source>the original could not be deleted after it was copied</source>
+        <translation>özgün dosya kopyalandıktan sonra silinemedi</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="302"/>
+        <source>The destination folder could not be created.</source>
+        <translation>Hedef klasör oluşturulamadı.</translation>
+    </message>
+    <message>
+        <location filename="organize_files/organize_files_worker.cpp" line="356"/>
+        <source>%1 (the file was left at %2)</source>
+        <translation>%1 (dosya %2 konumunda bırakıldı)</translation>
+    </message>
 </context>
 <context>
     <name>OrganizeFilesCoordinator</name>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="143"/>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="175"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="138"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="169"/>
         <source>Organize files</source>
         <translation>Dosyaları düzenle</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="143"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="138"/>
         <source>This folder does not contain any comics.</source>
         <translation>Bu klasör hiç çizgi roman içermiyor.</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="176"/>
-        <source>This library is busy: %1</source>
-        <translation>Bu kütüphane meşgul: %1</translation>
-    </message>
-    <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="219"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="212"/>
         <source>the library database could not be opened</source>
         <translation>kütüphane veritabanı açılamadı</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="226"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="219"/>
         <source>the library database could not be locked for writing</source>
         <translation>kütüphane veritabanı yazma için kilitlenemedi</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="235"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="228"/>
         <source>a folder entry could not be restored</source>
         <translation>bir klasör kaydı geri yüklenemedi</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="246"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="239"/>
         <source>a comic entry could not be updated</source>
         <translation>bir çizgi roman kaydı güncellenemedi</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="265"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="259"/>
         <source>the library database could not be saved: %1</source>
         <translation>kütüphane veritabanı kaydedilemedi: %1</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="310"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="306"/>
         <source>the record of the last organize run could not be read</source>
         <translation>son düzenleme işleminin kaydı okunamadı</translation>
     </message>
     <message>
-        <location filename="organize_files/organize_files_coordinator.cpp" line="335"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="331"/>
         <source>the folder %1 could not be created</source>
         <translation>%1 klasörü oluşturulamadı</translation>
     </message>
     <message numerus="yes">
-        <location filename="organize_files/organize_files_coordinator.cpp" line="383"/>
+        <location filename="organize_files/organize_files_coordinator.cpp" line="379"/>
         <source>%n file(s) could not be moved back</source>
         <translation>
             <numerusform>%n dosya geri taşınamadı</numerusform>
@@ -2592,10 +3616,6 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
 </context>
 <context>
     <name>OrganizeFilesDialog</name>
-    <message>
-        <source>Format:</source>
-        <translation type="obsolete">Formato:</translation>
-    </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="152"/>
         <source>Organize files</source>
@@ -2728,17 +3748,9 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
         <translation>Vazgeç</translation>
     </message>
     <message>
-        <source>Copy the list</source>
-        <translation type="vanished">Listeyi kopyala</translation>
-    </message>
-    <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="468"/>
         <source>Undo</source>
         <translation>Geri al</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="vanished">Kapat</translation>
     </message>
     <message>
         <location filename="organize_files/organize_files_dialog.cpp" line="464"/>
@@ -3143,274 +4155,383 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
 <context>
     <name>PropertiesDialog</name>
     <message>
-        <location filename="properties_dialog.cpp" line="283"/>
+        <location filename="properties_dialog.cpp" line="315"/>
         <source>Day:</source>
         <translation>Gün:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="90"/>
+        <location filename="properties_dialog.cpp" line="110"/>
         <source>Plot</source>
-        <translation>Argumento</translation>
+        <translation>Konu</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="209"/>
+        <location filename="properties_dialog.cpp" line="241"/>
         <source>Size:</source>
         <translation>Boyut:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="291"/>
+        <location filename="properties_dialog.cpp" line="323"/>
         <source>Year:</source>
         <translation>Yıl:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="239"/>
+        <location filename="properties_dialog.cpp" line="271"/>
         <source>Inker(s):</source>
-        <translation>Mürekkep(ler):</translation>
+        <translation>Mürekkepleyen(ler):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="92"/>
+        <location filename="properties_dialog.cpp" line="112"/>
         <source>Publishing</source>
         <translation>Yayın</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="299"/>
+        <location filename="properties_dialog.cpp" line="331"/>
         <source>Publisher:</source>
         <translation>Yayıncı:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="89"/>
+        <location filename="properties_dialog.cpp" line="109"/>
         <source>General info</source>
         <translation>Genel bilgi</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="301"/>
+        <location filename="properties_dialog.cpp" line="333"/>
         <source>Color/BW:</source>
-        <translation>Renk/BW:</translation>
+        <translation>Renk/S-B:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="594"/>
+        <location filename="properties_dialog.cpp" line="671"/>
         <source>Edit selected comics information</source>
         <translation>Seçilen çizgi roman bilgilerini düzenle</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="232"/>
+        <location filename="properties_dialog.cpp" line="264"/>
         <source>Penciller(s):</source>
         <translation>Çizenler:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="242"/>
+        <location filename="properties_dialog.cpp" line="274"/>
         <source>Colorist(s):</source>
         <translation>Renklendiren:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="179"/>
+        <location filename="properties_dialog.cpp" line="209"/>
+        <location filename="properties_dialog.cpp" line="825"/>
         <source>Issue number:</source>
-        <translation>Yayın numarası:</translation>
+        <translation>Sayı numarası:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="287"/>
+        <location filename="properties_dialog.cpp" line="319"/>
         <source>Month:</source>
         <translation>Ay:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="370"/>
+        <location filename="properties_dialog.cpp" line="402"/>
         <source>Notes:</source>
         <translation>Notlar:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="325"/>
+        <location filename="properties_dialog.cpp" line="357"/>
         <source>Synopsis:</source>
         <translation>Özet:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="170"/>
+        <location filename="properties_dialog.cpp" line="190"/>
         <source>Title:</source>
         <translation>Başlık:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="488"/>
+        <location filename="properties_dialog.cpp" line="528"/>
         <source>Not found</source>
-        <translation>Bulunamad</translation>
+        <translation>Bulunamadı</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="332"/>
+        <location filename="properties_dialog.cpp" line="364"/>
         <source>Characters:</source>
         <translation>Karakterler:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="91"/>
+        <location filename="properties_dialog.cpp" line="111"/>
         <source>Authors</source>
         <translation>Yazarlar</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="302"/>
+        <location filename="properties_dialog.cpp" line="334"/>
         <source>Age rating:</source>
         <translation>Yaş sınırı:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="192"/>
+        <location filename="properties_dialog.cpp" line="224"/>
         <source>Story arc:</source>
-        <translation>Hiakye:</translation>
+        <translation>Hikâye yayı:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="93"/>
+        <location filename="properties_dialog.cpp" line="113"/>
         <source>Notes</source>
         <translation>Notlar</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="111"/>
+        <location filename="properties_dialog.cpp" line="131"/>
         <source>Load previous page as cover</source>
         <translation>Önceki sayfayı kapak olarak yükle</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="115"/>
+        <location filename="properties_dialog.cpp" line="135"/>
         <source>Load next page as cover</source>
         <translation>Sonraki sayfayı kapak olarak yükle</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="120"/>
+        <location filename="properties_dialog.cpp" line="140"/>
         <source>Reset cover to the default image</source>
         <translation>Kapağı varsayılan görüntüye sıfırla</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="125"/>
+        <location filename="properties_dialog.cpp" line="145"/>
         <source>Load custom cover image</source>
         <translation>Özel kapak resmini yükle</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="169"/>
+        <location filename="properties_dialog.cpp" line="189"/>
         <source>Series:</source>
-        <translation>Seriler:</translation>
+        <translation>Seri:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="197"/>
+        <location filename="properties_dialog.cpp" line="195"/>
+        <source>e.g. 1-5, 8, 0.5, Annual 1</source>
+        <translation>ör. 1-5, 8, 0.5, Annual 1</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="229"/>
         <source>alt. number:</source>
         <translation>alternatif sayı:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="203"/>
+        <location filename="properties_dialog.cpp" line="235"/>
         <source>Alternate series:</source>
         <translation>Alternatif seri:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="205"/>
+        <location filename="properties_dialog.cpp" line="237"/>
         <source>Series Group:</source>
         <translation>Seri Grubu:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="229"/>
+        <location filename="properties_dialog.cpp" line="261"/>
         <source>Writer(s):</source>
         <translation>Yazarlar:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="259"/>
+        <location filename="properties_dialog.cpp" line="291"/>
         <source>Editor(s):</source>
         <translation>Editör(ler):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="262"/>
+        <location filename="properties_dialog.cpp" line="294"/>
         <source>Imprint:</source>
-        <translation>Künye:</translation>
+        <translation>Yayın markası:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="303"/>
+        <location filename="properties_dialog.cpp" line="335"/>
         <source>Type:</source>
         <translation>Tip:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="304"/>
+        <location filename="properties_dialog.cpp" line="336"/>
         <source>Language (ISO):</source>
         <translation>Dil (ISO):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="335"/>
+        <location filename="properties_dialog.cpp" line="367"/>
         <source>Teams:</source>
         <translation>Takımlar:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="341"/>
+        <location filename="properties_dialog.cpp" line="373"/>
         <source>Locations:</source>
         <translation>Konumlar:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="347"/>
+        <location filename="properties_dialog.cpp" line="379"/>
         <source>Main character or team:</source>
         <translation>Ana karakter veya takım:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="369"/>
+        <location filename="properties_dialog.cpp" line="401"/>
         <source>Review:</source>
-        <translation>Gözden geçirmek:</translation>
+        <translation>İnceleme:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="371"/>
+        <location filename="properties_dialog.cpp" line="403"/>
         <source>Tags:</source>
         <translation>Etiketler:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="488"/>
+        <location filename="properties_dialog.cpp" line="528"/>
         <source>Comic not found. You should update your library.</source>
-        <translation>Çizgi roman bulunamadı. Kütüphaneyi güncellemelisin.</translation>
+        <translation>Çizgi roman bulunamadı. Kütüphanenizi güncellemelisiniz.</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="556"/>
+        <location filename="properties_dialog.cpp" line="604"/>
         <source>Edit comic information</source>
         <translation>Çizgi roman bilgisini düzenle</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="1219"/>
+        <location filename="properties_dialog.cpp" line="798"/>
+        <location filename="properties_dialog.cpp" line="817"/>
+        <source>Track missing issues in &quot;%1&quot;</source>
+        <translation>&quot;%1&quot; içindeki eksik sayıları takip et</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="825"/>
+        <source>Issues:</source>
+        <translation>Sayılar:</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="837"/>
+        <source>Track</source>
+        <translation>Takip et</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="892"/>
+        <source>At most %1 issues can be tracked at once.</source>
+        <translation>Tek seferde en fazla %1 sayı takip edilebilir.</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="894"/>
+        <source>Check the issues: a range must go up, and a part between commas cannot be empty.</source>
+        <translation>Sayıları kontrol edin: aralıklar artan sırada olmalı ve virgüller arasındaki kısımlar boş olmamalıdır.</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="896"/>
+        <source>No new issues to track.</source>
+        <translation>Takip edilecek yeni sayı yok.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="properties_dialog.cpp" line="898"/>
+        <source>%n issue(s) will be tracked: %1.</source>
+        <translation>
+            <numerusform>%n sayı takip edilecek: %1.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="900"/>
+        <source>That is a lot of issues; check the numbers.</source>
+        <translation>Çok fazla sayı var; numaraları kontrol edin.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="properties_dialog.cpp" line="903"/>
+        <source>%n issue(s) already in the folder.</source>
+        <translation>
+            <numerusform>%n sayı zaten klasörde.</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="properties_dialog.cpp" line="905"/>
+        <source>%n repeated issue(s).</source>
+        <translation>
+            <numerusform>%n yinelenen sayı.</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="911"/>
+        <source>Set a series, a volume, or a title.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="911"/>
+        <source>Set a series or a volume.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="984"/>
+        <source>Issues not tracked</source>
+        <translation>Takip edilmeyen sayılar</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="984"/>
+        <source>The missing issues could not be tracked.</source>
+        <translation>Eksik sayılar takip edilemedi.</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1027"/>
+        <source>Comic skipped</source>
+        <translation>Çizgi roman atlandı</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1027"/>
+        <source>A comic was removed from the library or now has a different file, so it is skipped.</source>
+        <translation>Bir çizgi roman kitaplıktan kaldırıldı veya artık farklı bir dosyası var, bu nedenle atlanıyor.</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1291"/>
+        <location filename="properties_dialog.cpp" line="1295"/>
+        <source>Changes not saved</source>
+        <translation>Değişiklikler kaydedilmedi</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1291"/>
+        <source>A comic that you are editing was removed from the library or now has a different file. Your changes were not saved.</source>
+        <translation>Düzenlediğiniz bir çizgi roman kitaplıktan kaldırıldı veya artık farklı bir dosyası var. Değişiklikleriniz kaydedilmedi.</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1295"/>
+        <source>The changes could not be saved.</source>
+        <translation>Değişiklikler kaydedilemedi.</translation>
+    </message>
+    <message>
+        <location filename="properties_dialog.cpp" line="1545"/>
         <source>Invalid cover</source>
         <translation>Geçersiz kapak</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="1219"/>
+        <location filename="properties_dialog.cpp" line="1545"/>
         <source>The image is invalid.</source>
         <translation>Resim geçersiz.</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="102"/>
+        <location filename="properties_dialog.cpp" line="122"/>
         <source>Cover page</source>
         <translation>Kapak sayfası</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="252"/>
+        <location filename="properties_dialog.cpp" line="284"/>
         <source>Cover Artist(s):</source>
-        <translation>Kapak artisti:</translation>
+        <translation>Kapak çizeri:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="181"/>
+        <location filename="properties_dialog.cpp" line="211"/>
         <source>Volume:</source>
         <translation>Cilt:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="300"/>
+        <location filename="properties_dialog.cpp" line="332"/>
         <source>Format:</source>
-        <translation>Formato:</translation>
+        <translation>Biçim:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="249"/>
+        <location filename="properties_dialog.cpp" line="281"/>
         <source>Letterer(s):</source>
-        <translation>Mesaj(lar):</translation>
+        <translation>Harflendiren(ler):</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="174"/>
-        <location filename="properties_dialog.cpp" line="188"/>
         <location filename="properties_dialog.cpp" line="199"/>
+        <location filename="properties_dialog.cpp" line="220"/>
+        <location filename="properties_dialog.cpp" line="231"/>
         <source>of:</source>
-        <translation>ile ilgili:</translation>
+        <translation>toplam:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="186"/>
+        <location filename="properties_dialog.cpp" line="218"/>
         <source>Arc number:</source>
-        <translation>Ark numarası:</translation>
+        <translation>Hikâye yayı numarası:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="207"/>
+        <location filename="properties_dialog.cpp" line="239"/>
         <source>Genre:</source>
         <translation>Tür:</translation>
     </message>
     <message>
-        <location filename="properties_dialog.cpp" line="468"/>
+        <location filename="properties_dialog.cpp" line="506"/>
         <source>Comic Vine link: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; view &lt;/a&gt;</source>
         <translation>Comic Vine bağlantısı: &lt;a style=&apos;color: #FFCB00; text-decoration:none; font-weight:bold;&apos; href=&quot;http://www.comicvine.com/comic/4000-%1/&quot;&gt; görüntüle &lt;/a&gt;</translation>
     </message>
@@ -3420,20 +4541,20 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>7z lib not found</source>
-        <translation>7z lib bulunamadı</translation>
+        <translation>7z kütüphanesi bulunamadı</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>./utils&apos;den 7z lib yüklenemiyor</translation>
+        <translation>./utils içinden 7z kütüphanesi yüklenemedi</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="156"/>
         <source>Select custom cover</source>
         <translation>Özel kapak seçin</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="156"/>
         <source>Images (%1)</source>
         <translation>Resimler (%1)</translation>
     </message>
@@ -3455,7 +4576,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <message>
         <location filename="../custom_widgets/yacreader_sidebar.cpp" line="150"/>
         <source>Folders</source>
-        <translation>Klasör</translation>
+        <translation>Klasörler</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_sidebar.cpp" line="151"/>
@@ -3466,30 +4587,163 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
 <context>
     <name>ReadingListManagementCoordinator</name>
     <message>
-        <location filename="reading_list_management_coordinator.cpp" line="33"/>
+        <location filename="reading_list_management_coordinator.cpp" line="52"/>
         <source>Add new reading lists</source>
         <translation>Yeni okuma listeleri ekle</translation>
     </message>
     <message>
-        <location filename="reading_list_management_coordinator.cpp" line="34"/>
-        <location filename="reading_list_management_coordinator.cpp" line="81"/>
+        <location filename="reading_list_management_coordinator.cpp" line="53"/>
+        <location filename="reading_list_management_coordinator.cpp" line="192"/>
         <source>List name:</source>
         <translation>Liste adı:</translation>
     </message>
     <message>
-        <location filename="reading_list_management_coordinator.cpp" line="54"/>
+        <location filename="reading_list_management_coordinator.cpp" line="69"/>
+        <source>Import reading lists</source>
+        <translation>Okuma listelerini içe aktar</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="71"/>
+        <source>Reading lists (*.cbl *.json);;All files (*)</source>
+        <translation>Okuma listeleri (*.cbl *.json);;Tüm dosyalar (*)</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="113"/>
+        <source>New smart list</source>
+        <translation>Yeni akıllı liste</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="113"/>
+        <location filename="reading_list_management_coordinator.cpp" line="131"/>
+        <source>The smart list could not be saved.</source>
+        <translation>Akıllı liste kaydedilemedi.</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="131"/>
+        <source>Edit smart list</source>
+        <translation>Akıllı listeyi düzenle</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="149"/>
+        <source>Delete folder</source>
+        <translation>Klasörü sil</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="150"/>
+        <source>Delete the folder &quot;%1&quot; and everything in it? Its folders and lists are deleted; your comic files are not.</source>
+        <translation>&quot;%1&quot; klasörü ve içindeki her şey silinsin mi? İçindeki klasörler ve listeler silinir; çizgi roman dosyalarınız korunur.</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="154"/>
         <source>Delete list/label</source>
         <translation>Listeyi/Etiketi sil</translation>
     </message>
     <message>
-        <location filename="reading_list_management_coordinator.cpp" line="55"/>
+        <location filename="reading_list_management_coordinator.cpp" line="155"/>
         <source>The selected item will be deleted, your comics or folders will NOT be deleted from your disk. Are you sure?</source>
-        <translation>Seçilen öğe silinecek, çizgi romanlarınız veya klasörleriniz diskinizden SİLİNMEYECEKTİR. Emin misin?</translation>
+        <translation>Seçilen öğe silinecek, çizgi romanlarınız veya klasörleriniz diskinizden SİLİNMEYECEKTİR. Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="reading_list_management_coordinator.cpp" line="80"/>
+        <location filename="reading_list_management_coordinator.cpp" line="191"/>
         <source>Rename list name</source>
         <translation>Listeyi yeniden adlandır</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="191"/>
+        <source>Rename folder</source>
+        <translation>Klasörü yeniden adlandır</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="192"/>
+        <location filename="reading_list_management_coordinator.cpp" line="222"/>
+        <source>Folder name:</source>
+        <translation>Klasör adı:</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="210"/>
+        <location filename="reading_list_management_coordinator.cpp" line="222"/>
+        <location filename="reading_list_management_coordinator.cpp" line="226"/>
+        <source>New folder</source>
+        <translation>Yeni klasör</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="210"/>
+        <location filename="reading_list_management_coordinator.cpp" line="226"/>
+        <source>The folder could not be created.</source>
+        <translation>Klasör oluşturulamadı.</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="240"/>
+        <source>Reading list</source>
+        <translation>Okuma listesi</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="244"/>
+        <source>CBL reading list (*.cbl)</source>
+        <translation>CBL okuma listesi (*.cbl)</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="245"/>
+        <source>JSON reading list (*.json)</source>
+        <translation>JSON okuma listesi (*.json)</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="246"/>
+        <source>Web page (*.html)</source>
+        <translation>Web sayfası (*.html)</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="253"/>
+        <location filename="reading_list_management_coordinator.cpp" line="325"/>
+        <source>Export reading list</source>
+        <translation>Okuma listesini dışa aktar</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="303"/>
+        <source>Exporting reading list...</source>
+        <translation>Okuma listesi dışa aktarılıyor...</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="325"/>
+        <source>The file could not be written.</source>
+        <translation>Dosya yazılamadı.</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="338"/>
+        <source>Move to folder</source>
+        <translation>Klasöre taşı</translation>
+    </message>
+    <message>
+        <location filename="reading_list_management_coordinator.cpp" line="338"/>
+        <source>&quot;%1&quot; could not be moved.</source>
+        <translation>&quot;%1&quot; taşınamadı.</translation>
+    </message>
+</context>
+<context>
+    <name>ReadingListPage</name>
+    <message numerus="yes">
+        <location filename="reading_list_page.cpp" line="110"/>
+        <source>%n comic(s)</source>
+        <translation>
+            <numerusform>%n çizgi roman</numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="reading_list_page.cpp" line="112"/>
+        <source>%n missing</source>
+        <translation>
+            <numerusform>%n eksik</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="reading_list_page.cpp" line="132"/>
+        <source>Missing</source>
+        <translation>Eksik</translation>
+    </message>
+    <message>
+        <location filename="reading_list_page.cpp" line="137"/>
+        <source>Exported from YACReader on %1</source>
+        <translation>%1 tarihinde YACReader&apos;dan dışa aktarıldı</translation>
     </message>
 </context>
 <context>
@@ -3497,7 +4751,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <message>
         <location filename="rename_library_dialog.cpp" line="49"/>
         <source>Rename current library</source>
-        <translation>Kütüphaneyi yeniden adlandır</translation>
+        <translation>Geçerli kütüphaneyi yeniden adlandır</translation>
     </message>
     <message>
         <location filename="rename_library_dialog.cpp" line="24"/>
@@ -3511,16 +4765,16 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     </message>
     <message>
         <location filename="rename_library_dialog.cpp" line="15"/>
-        <source>New Library Name : </source>
-        <translation>Yeni Kütüphane Adı : </translation>
+        <source>New Library Name: </source>
+        <translation>Yeni Kütüphane Adı: </translation>
     </message>
 </context>
 <context>
     <name>ScraperResultsPaginator</name>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="20"/>
-        <source>Number of volumes found : %1</source>
-        <translation>Bulunan bölüm sayısı: %1</translation>
+        <source>Number of volumes found: %1</source>
+        <translation>Bulunan cilt sayısı: %1</translation>
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="21"/>
@@ -3530,8 +4784,8 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     </message>
     <message>
         <location filename="comic_vine/scraper_results_paginator.cpp" line="44"/>
-        <source>Number of %1 found : %2</source>
-        <translation>Sayı %1, bulunan : %2</translation>
+        <source>Number of %1 found: %2</source>
+        <translation>Bulunan %1 sayısı: %2</translation>
     </message>
 </context>
 <context>
@@ -3818,7 +5072,7 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="18"/>
         <source>Series:</source>
-        <translation>Seriler:</translation>
+        <translation>Seri:</translation>
     </message>
     <message>
         <location filename="comic_vine/search_single_comic.cpp" line="21"/>
@@ -3892,6 +5146,11 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
         <location filename="search_syntax_dialog.cpp" line="176"/>
         <source>Just start typing. Plain text search across all metadata.</source>
         <translation>Yazmaya başlamanız yeterlidir. Düz metin tüm üst verilerde aranır.</translation>
+    </message>
+    <message>
+        <location filename="search_syntax_dialog.cpp" line="180"/>
+        <source>%1 -&gt; search for `%1` in any database field</source>
+        <translation>%1 -&gt; herhangi bir veritaban? alan?nda `%1` ara</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="185"/>
@@ -3988,7 +5247,9 @@ Otomatik güncellemeyi durdurmak için Kitaplıklar başlığının yanındaki y
         <source>Tips:
 Spaces act like AND, and searches are not case-sensitive.
 Use quotes to include spaces in a value.</source>
-        <translation>İpuçları: Boşluklar AND gibi davranır ve aramalar büyük/küçük harfe duyarlı değildir. Bir değerde boşluk kullanmak için tırnak işaretlerini kullanın.</translation>
+        <translation>İpuçları:
+Boşluklar AND gibi davranır ve aramalar büyük/küçük harfe duyarlı değildir.
+Bir değerde boşluk kullanmak için tırnak işaretlerini kullanın.</translation>
     </message>
     <message>
         <location filename="search_syntax_dialog.cpp" line="251"/>
@@ -4131,7 +5392,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="14"/>
         <source>Series:</source>
-        <translation>Seriler:</translation>
+        <translation>Seri:</translation>
     </message>
     <message>
         <location filename="comic_vine/search_volume.cpp" line="17"/>
@@ -4143,13 +5404,13 @@ Use quotes to include spaces in a value.</source>
     <name>SelectComic</name>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="16"/>
-        <source>Please, select the right comic info.</source>
+        <source>Please select the right comic info.</source>
         <translation>Lütfen, doğru çizgi roman bilgisini seçin.</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="37"/>
         <source>comics</source>
-        <translation>çizgi roman</translation>
+        <translation>çizgi romanlar</translation>
     </message>
     <message>
         <location filename="comic_vine/select_comic.cpp" line="106"/>
@@ -4171,7 +5432,7 @@ Use quotes to include spaces in a value.</source>
     <name>SelectVolume</name>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="31"/>
-        <source>Please, select the right series for your comic.</source>
+        <source>Please select the right series for your comic.</source>
         <translation>Çizgi romanınız için doğru seriyi seçin.</translation>
     </message>
     <message>
@@ -4182,7 +5443,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="61"/>
         <source>volumes</source>
-        <translation>sayı</translation>
+        <translation>ciltler</translation>
     </message>
     <message>
         <location filename="comic_vine/select_volume.cpp" line="144"/>
@@ -4210,54 +5471,59 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="26"/>
         <source>Unknown</source>
-        <translation type="unfinished">Bilinmiyor</translation>
+        <translation>Bilinmiyor</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="28"/>
         <source>%1 (%2 unknown)</source>
         <oldsource>%1 (%n unknown)</oldsource>
-        <translation type="unfinished"></translation>
+        <translation>%1 (%2 bilinmiyor)</translation>
     </message>
     <message>
         <location filename="qml/SelectedComicsInfoView.qml" line="36"/>
         <source>%1 series</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 seri</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="58"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="59"/>
         <source>%1 comics selected</source>
         <oldsource>%n comic(s) selected</oldsource>
-        <translation type="unfinished">%1 çizgi roman seçildi</translation>
+        <translation>%1 çizgi roman seçildi</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="77"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="78"/>
         <source>Read</source>
-        <translation type="unfinished">Oku</translation>
+        <translation>Okundu</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="80"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="81"/>
         <source>In progress</source>
-        <translation type="unfinished">Devam eden</translation>
+        <translation>Devam eden</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="83"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="84"/>
         <source>Unread</source>
-        <translation type="unfinished">Okunmamış</translation>
+        <translation>Okunmamış</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="86"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="87"/>
         <source>Total pages</source>
-        <translation type="unfinished"></translation>
+        <translation>Toplam sayfa</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="89"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="90"/>
         <source>Total size</source>
-        <translation type="unfinished"></translation>
+        <translation>Toplam boyut</translation>
     </message>
     <message>
-        <location filename="qml/SelectedComicsInfoView.qml" line="74"/>
+        <location filename="qml/SelectedComicsInfoView.qml" line="93"/>
+        <source>Missing</source>
+        <translation>Eksik</translation>
+    </message>
+    <message>
+        <location filename="qml/SelectedComicsInfoView.qml" line="75"/>
         <source>Series</source>
-        <translation type="unfinished">Seri</translation>
+        <translation>Seri</translation>
     </message>
 </context>
 <context>
@@ -4274,8 +5540,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="comic_vine/series_question.cpp" line="12"/>
-        <source>You are trying to get information for various comics at once, are they part of the same series?</source>
-        <translation>Aynı anda çeşitli çizgi romanlar için bilgi almaya çalışıyorsunuz, bunlar aynı serinin parçası mı?</translation>
+        <source>You are trying to get information for various comics at once. Are they part of the same series?</source>
+        <translation>Aynı anda çeşitli çizgi romanlar için bilgi almaya çalışıyorsunuz. Bunlar aynı serinin parçası mı?</translation>
     </message>
 </context>
 <context>
@@ -4294,7 +5560,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="server_config_dialog.cpp" line="54"/>
         <source>Devices on this network can reach your library at the address below.</source>
-        <translation>Bu ağdaki cihazlar aşağıdaki adresten kitaplığınıza erişebilir.</translation>
+        <translation>Bu ağdaki cihazlar aşağıdaki adresten kütüphanenize erişebilir.</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="68"/>
@@ -4304,7 +5570,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="server_config_dialog.cpp" line="69"/>
         <source>Port</source>
-        <translation>Liman</translation>
+        <translation>Port</translation>
     </message>
     <message>
         <location filename="server_config_dialog.cpp" line="96"/>
@@ -4332,58 +5598,73 @@ Use quotes to include spaces in a value.</source>
         <translation>YACReader, iOS ve Android için kullanılabilir. &lt;a href=&apos;https://ios.yacreader.com&apos;&gt;iOS&lt;/a&gt; veya &lt;a href=&apos;https://android.yacreader.com&apos;&gt;Android&lt;/a&gt; sürümünü keşfedin.</translation>
     </message>
     <message>
-        <source>enable the server</source>
-        <translation type="vanished">erişilebilir server</translation>
-    </message>
-    <message>
         <location filename="server_config_dialog.cpp" line="80"/>
         <source>Set port</source>
         <oldsource>set port</oldsource>
         <translation>Portu ayarla</translation>
     </message>
+</context>
+<context>
+    <name>SmartListDialog</name>
     <message>
-        <source>Server connectivity information</source>
-        <translation type="vanished">Sunucu bağlantı bilgileri</translation>
+        <location filename="smart_list_dialog.cpp" line="33"/>
+        <source>New smart list</source>
+        <translation>Yeni akıllı liste</translation>
     </message>
     <message>
-        <source>Scan it!</source>
-        <translation type="vanished">Tara!</translation>
+        <location filename="smart_list_dialog.cpp" line="33"/>
+        <source>Edit smart list</source>
+        <translation>Akıllı listeyi düzenle</translation>
     </message>
     <message>
-        <source>YACReader is available for iOS and Android devices.&lt;br/&gt;Discover it for &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; or &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt;.</source>
-        <translation type="vanished">YACReader, iOS ve Android cihazlarda kullanılabilir.&lt;br/&gt;Bunu &lt;a href=&apos;https://ios.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;iOS&lt;/a&gt; veya &lt;a href=&apos;https://android.yacreader.com&apos; style=&apos;color:rgb(193, 148, 65)&apos;&gt;Android&lt;/a&gt; için keşfedin.</translation>
+        <location filename="smart_list_dialog.cpp" line="45"/>
+        <source>Search filters and syntax</source>
+        <translation>Arama filtreleri ve sözdizimi</translation>
     </message>
     <message>
-        <source>Choose an IP address</source>
-        <translation type="vanished">IP adresi seçin</translation>
+        <location filename="smart_list_dialog.cpp" line="56"/>
+        <source>Name:</source>
+        <translation>Ad:</translation>
+    </message>
+    <message>
+        <location filename="smart_list_dialog.cpp" line="57"/>
+        <source>Search:</source>
+        <translation>Arama:</translation>
     </message>
 </context>
 <context>
     <name>SortVolumeComics</name>
     <message>
-        <location filename="comic_vine/sort_volume_comics.cpp" line="59"/>
-        <source>Please, sort the list of comics on the left until it matches the comics&apos; information.</source>
+        <location filename="comic_vine/sort_volume_comics.cpp" line="60"/>
+        <source>Please sort the list of comics on the left until it matches the comics&apos; information.</source>
         <translation>Lütfen, çizgi romanların bilgileriyle eşleşene kadar soldaki çizgi roman listesini sıralayın.</translation>
     </message>
     <message>
-        <location filename="comic_vine/sort_volume_comics.cpp" line="61"/>
+        <location filename="comic_vine/sort_volume_comics.cpp" line="62"/>
         <source>sort comics to match comic information</source>
         <translation>çizgi roman bilgilerini eşleştirmek için çizgi romanları sıralayın</translation>
     </message>
     <message>
-        <location filename="comic_vine/sort_volume_comics.cpp" line="98"/>
+        <location filename="comic_vine/sort_volume_comics.cpp" line="99"/>
         <source>issues</source>
         <translation>sayı</translation>
     </message>
     <message>
-        <location filename="comic_vine/sort_volume_comics.cpp" line="126"/>
+        <location filename="comic_vine/sort_volume_comics.cpp" line="132"/>
         <source>remove selected comics</source>
         <translation>seçilen çizgi romanları kaldır</translation>
     </message>
     <message>
-        <location filename="comic_vine/sort_volume_comics.cpp" line="127"/>
+        <location filename="comic_vine/sort_volume_comics.cpp" line="133"/>
         <source>restore all removed comics</source>
-        <translation>tüm seçilen çizgi romanları geri yükle</translation>
+        <translation>kaldırılan tüm çizgi romanları geri yükle</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="comic_vine/sort_volume_comics.cpp" line="285"/>
+        <source>Add the %n other issue(s) of this volume as missing comics</source>
+        <translation>
+            <numerusform>Bu cildin diğer %n sayısını eksik çizgi roman olarak ekle</numerusform>
+        </translation>
     </message>
 </context>
 <context>
@@ -4406,7 +5687,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>Ben</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -4421,32 +5702,32 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>Kullanıcı arayüzünde seçilen değeri (macenta / geçişli / 0↔10) yanıp sönmek için basılı tutun. Sürümler orijinali geri yükler.</translation>
+        <translation>Kullanıcı arayüzünde seçilen değeri (macenta / geçişli / 0↔10) yanıp söndürmek için basılı tutun. Bırakıldığında orijinal değer geri yüklenir.</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
         <source>Search…</source>
-        <translation>Aramak…</translation>
+        <translation>Ara…</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>Işık</translation>
+        <translation>Açık</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
         <source>Dark</source>
-        <translation>Karanlık</translation>
+        <translation>Koyu</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>ID:</source>
-        <translation>İD:</translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
         <source>Display name:</source>
-        <translation>Ekran adı:</translation>
+        <translation>Görünen ad:</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
@@ -4501,7 +5782,7 @@ Use quotes to include spaces in a value.</source>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>doğru</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -4509,7 +5790,7 @@ Use quotes to include spaces in a value.</source>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>YANLIŞ</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
@@ -4605,8 +5886,16 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="create_library_dialog.cpp" line="165"/>
-        <source>Updating....</source>
+        <source>Updating...</source>
         <translation>Güncelleniyor...</translation>
+    </message>
+</context>
+<context>
+    <name>ViewSelector</name>
+    <message>
+        <location filename="library_header/view_selector.cpp" line="20"/>
+        <source>View</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4640,7 +5929,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="19"/>
         <source>Presets:</source>
-        <translation>Hazırlayan:</translation>
+        <translation>Ön ayarlar:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="21"/>
@@ -4670,12 +5959,12 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="77"/>
         <source>Show advanced settings</source>
-        <translation>Daha fazla ayar göster</translation>
+        <translation>Gelişmiş ayarları göster</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation>Kişisel:</translation>
+        <translation>Özel:</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="89"/>
@@ -4695,22 +5984,22 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="107"/>
         <source>Central gap</source>
-        <translation>Boş merkez</translation>
+        <translation>Merkez boşluğu</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>Yakınlaş</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
         <source>Y offset</source>
-        <translation>Y dengesi</translation>
+        <translation>Y ofseti</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="125"/>
         <source>Z offset</source>
-        <translation>Z dengesi</translation>
+        <translation>Z ofseti</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="131"/>
@@ -4720,7 +6009,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="137"/>
         <source>Visibility</source>
-        <translation>Görünülebilirlik</translation>
+        <translation>Görünürlük</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="143"/>
@@ -4744,8 +6033,8 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>VSync kullan</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>VSync kullan (tam ekran modunda görüntü kalitesini artırır, performansı düşürür)</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
@@ -4768,7 +6057,7 @@ Use quotes to include spaces in a value.</source>
     <message>
         <location filename="trayicon_controller.cpp" line="79"/>
         <source>YACReaderLibrary will keep running in the system tray. To terminate the program, choose &lt;b&gt;Quit&lt;/b&gt; in the context menu of the system tray icon.</source>
-        <translation>YACReaderLibrary sistem tepsisinde çalışmaya devam edecektir. Programı sonlandırmak için sistem tepsisi simgesinin bağlam menüsünden &lt;b&gt;Çık&lt;/b&gt;&apos;ı seçin.</translation>
+        <translation>YACReaderLibrary sistem tepsisinde çalışmaya devam edecektir. Programı sonlandırmak için sistem tepsisi simgesinin bağlam menüsünden &lt;b&gt;Çıkış&lt;/b&gt;&apos;ı seçin.</translation>
     </message>
 </context>
 <context>
@@ -4785,6 +6074,44 @@ Use quotes to include spaces in a value.</source>
     </message>
 </context>
 <context>
+    <name>YACReader::XMLInfoLibraryScanner</name>
+    <message>
+        <location filename="xml_info_library_scanner.cpp" line="64"/>
+        <source>The library database is missing. Restore a backup or recreate the library before rescanning XML information.</source>
+        <translation>Kitaplık veritabanı eksik. XML bilgilerini yeniden taramadan önce bir yedeği geri yükleyin veya kitaplığı yeniden oluşturun.</translation>
+    </message>
+    <message>
+        <location filename="xml_info_library_scanner.cpp" line="76"/>
+        <source>Unable to load the archive backend: %1</source>
+        <translation>Arşiv arka ucu yüklenemedi: %1</translation>
+    </message>
+    <message>
+        <location filename="xml_info_library_scanner.cpp" line="91"/>
+        <source>Unable to start an XML rescan transaction.</source>
+        <translation>XML yeniden tarama işlemi başlatılamadı.</translation>
+    </message>
+    <message>
+        <location filename="xml_info_library_scanner.cpp" line="107"/>
+        <source>The selected folder is no longer in this library. Reload the library before rescanning.</source>
+        <translation>Seçili klasör artık bu kitaplıkta değil. Yeniden taramadan önce kitaplığı yeniden yükleyin.</translation>
+    </message>
+    <message>
+        <location filename="xml_info_library_scanner.cpp" line="109"/>
+        <source>Unable to read comics for the XML rescan.</source>
+        <translation>XML yeniden taraması için çizgi romanlar okunamadı.</translation>
+    </message>
+    <message>
+        <location filename="xml_info_library_scanner.cpp" line="113"/>
+        <source>Unable to commit XML metadata changes.</source>
+        <translation>XML üst verisi değişiklikleri kalıcılaştırılamadı.</translation>
+    </message>
+    <message>
+        <location filename="xml_info_library_scanner.cpp" line="157"/>
+        <source>Unable to update XML metadata for %1.</source>
+        <translation>%1 için XML üst verisi güncellenemedi.</translation>
+    </message>
+</context>
+<context>
     <name>YACReaderFieldEdit</name>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>
@@ -4793,7 +6120,7 @@ Use quotes to include spaces in a value.</source>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="27"/>
         <source>Click to overwrite</source>
         <translation>Üstüne yazmak için tıkla</translation>
     </message>
@@ -4806,10 +6133,12 @@ Use quotes to include spaces in a value.</source>
         <translation>Varsayılana dön</translation>
     </message>
     <message>
+        <location filename="properties_dialog.cpp" line="939"/>
+        <location filename="properties_dialog.cpp" line="953"/>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="19"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="44"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="50"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="18"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="43"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="49"/>
         <source>Click to overwrite</source>
         <translation>Üstüne yazmak için tıkla</translation>
     </message>

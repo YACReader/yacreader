@@ -271,7 +271,9 @@ QString YACReader::WhatsNewDialog::renderHtmlDocument(const QString &content) co
 
 QString YACReader::WhatsNewDialog::renderIntro() const
 {
-    return "A more capable server!";
+    return "Your reading lists just got a lot more useful! "
+           "Import and share CBL reading lists, organize them in folders, and use smart lists to keep up with your collection. "
+           "You can also keep track of missing comics, and browse your lists in the WebUI.";
 }
 
 QString YACReader::WhatsNewDialog::renderFooter() const

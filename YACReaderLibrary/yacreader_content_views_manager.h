@@ -19,6 +19,7 @@ class InfoComicsView;
 class ComicsViewTransition;
 class EmptyLabelWidget;
 class EmptySpecialListWidget;
+class EmptyListFolderWidget;
 class EmptyReadingListWidget;
 class EmptyFolderWidget;
 class NoSearchResultsWidget;
@@ -48,6 +49,7 @@ public:
     ComicsViewTransition *comicsViewTransition;
 
     void updateCurrentComicView();
+    void applyComicSelectionActions();
 
     void toFullscreen();
     void toNormal();
@@ -68,6 +70,7 @@ protected:
     EmptyLabelWidget *emptyLabelWidget;
     EmptySpecialListWidget *emptySpecialList;
     EmptyReadingListWidget *emptyReadingList;
+    EmptyListFolderWidget *emptyListFolder;
     EmptyFolderWidget *emptyFolderWidget;
     NoSearchResultsWidget *noSearchResultsWidget;
 
@@ -75,6 +78,7 @@ protected:
 
 public slots:
     void toggleComicsView();
+    void selectComicsView(YACReader::ComicsViewStatus status);
     void focusComicsViewViaShortcut();
 
     void showComicsView();
@@ -82,6 +86,7 @@ public slots:
     void showEmptyLabel(YACReader::LabelColors color);
     void showEmptySpecialList(ReadingListModel::TypeSpecialList type);
     void showEmptyReadingList();
+    void showEmptyListFolder();
     void showEmptyFolder();
     void showNoSearchResults();
 
@@ -92,6 +97,8 @@ protected slots:
     void connectComicsViewConnections(ComicsView *view);
 
     void switchToNextComicsView(const ContentViewState &viewState);
+    void switchToComicsViewStatus(YACReader::ComicsViewStatus status, const ContentViewState &viewState);
+    ComicsView *comicsViewFor(YACReader::ComicsViewStatus status);
     void switchToComicsView(ComicsView *from, ComicsView *to, const ContentViewState &viewState);
     void setToolBarOwner(ComicsView *view);
     void setViewSelectorEnabled(bool enabled);

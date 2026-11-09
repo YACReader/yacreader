@@ -39,7 +39,7 @@ TypeActions addTypeActions(QMenu *menu)
         new QAction(LibraryWindowMenus::tr("manga"), menu),
         new QAction(LibraryWindowMenus::tr("western manga (left to right)"), menu),
         new QAction(LibraryWindowMenus::tr("web comic"), menu),
-        new QAction(LibraryWindowMenus::tr("4koma (top to botom)"), menu)
+        new QAction(LibraryWindowMenus::tr("4koma (top to bottom)"), menu)
     };
 
     const QList<QAction *> actions { typeActions.comic, typeActions.manga, typeActions.westernManga, typeActions.webComic, typeActions.yonkoma };
@@ -146,6 +146,8 @@ void LibraryWindowMenus::setupMenus()
 
     selectedLibrary->addAction(actions.backupLibraryAction);
     selectedLibrary->addAction(actions.restoreLibraryAction);
+    selectedLibrary->addAction(actions.repairLibraryDatabaseAction);
+    selectedLibrary->addAction(actions.recoverLibraryAccessAction);
     YACReader::addSperator(selectedLibrary);
 
     selectedLibrary->addAction(actions.exportComicsInfoAction);
@@ -174,6 +176,8 @@ void LibraryWindowMenus::setupMenus()
     libraryMenu->addSeparator();
     libraryMenu->addAction(actions.backupLibraryAction);
     libraryMenu->addAction(actions.restoreLibraryAction);
+    libraryMenu->addAction(actions.repairLibraryDatabaseAction);
+    libraryMenu->addAction(actions.recoverLibraryAccessAction);
     libraryMenu->addSeparator();
     libraryMenu->addAction(actions.exportComicsInfoAction);
     libraryMenu->addAction(actions.importComicsInfoAction);
@@ -247,7 +251,20 @@ void LibraryWindowMenus::showComicsContextMenu(const QPoint &point, bool showFul
     menu->addSeparator();
     menu->addAction(actions.editSelectedComicsAction);
     menu->addAction(actions.getInfoAction);
+    if (comicManagementCoordinator->canMatchSelectionToLibraryComic()) {
+        auto matchAction = menu->addAction(tr("Match to library comic..."));
+        // the dialog runs its own event loop, so the menu is gone first
+        connect(matchAction, &QAction::triggered, comicManagementCoordinator, &ComicManagementCoordinator::matchSelectedToLibraryComic, Qt::QueuedConnection);
+    }
     menu->addAction(actions.asignOrderAction);
+    if (const auto folderId = comicManagementCoordinator->shownFolderId()) {
+        auto trackAction = menu->addAction(tr("Track missing issues..."));
+        connect(trackAction, &QAction::triggered, comicManagementCoordinator, [coordinator = comicManagementCoordinator, folderId = *folderId] { coordinator->trackMissingIssues(folderId); }, Qt::QueuedConnection);
+    }
+    if (const auto readingListId = comicManagementCoordinator->shownReadingListId()) {
+        auto trackAction = menu->addAction(tr("Track missing issues..."));
+        connect(trackAction, &QAction::triggered, comicManagementCoordinator, [coordinator = comicManagementCoordinator, readingListId = *readingListId] { coordinator->trackMissingIssuesInReadingList(readingListId); }, Qt::QueuedConnection);
+    }
     if (YACReader::FeatureFlags::organizeFiles) {
         menu->addSeparator();
         menu->addAction(actions.renameComicsFilesAction);
@@ -292,7 +309,7 @@ void LibraryWindowMenus::showGridFoldersContextMenu(const QPoint &point, const F
     auto menu = new QMenu(window);
     connect(menu, &QMenu::aboutToHide, menu, &QObject::deleteLater);
 
-    const auto folderId = folder.id;
+    const auto folderId = folder.id.value();
     const auto libraryPath = libraryPathProvider();
     const auto &theme = themeProvider();
 
@@ -311,10 +328,13 @@ void LibraryWindowMenus::showGridFoldersContextMenu(const QPoint &point, const F
     auto setFolderAsUnreadAction = new QAction(tr("Set as unread"), menu);
     auto setFolderCoverAction = new QAction(tr("Set custom cover"), menu);
     auto deleteCustomFolderCoverAction = new QAction(tr("Delete custom cover"), menu);
+    auto trackMissingIssuesAction = new QAction(tr("Track missing issues..."), menu);
 
     menu->addAction(openContainingFolderAction);
     menu->addAction(renameFolderAction);
     menu->addAction(updateFolderAction);
+    menu->addSeparator();
+    menu->addAction(trackMissingIssuesAction);
     if (YACReader::FeatureFlags::organizeFiles) {
         menu->addSeparator();
         menu->addAction(renameFilesAction);
@@ -346,6 +366,7 @@ void LibraryWindowMenus::showGridFoldersContextMenu(const QPoint &point, const F
     connectTypeActions(typeActions, menu, [this, folderId, libraryPath](YACReader::FileType type) { folderManagementCoordinator->setFolderType(folderId, libraryPath, type); });
     connect(setFolderCoverAction, &QAction::triggered, menu, [this, folderId, libraryPath] { folderManagementCoordinator->selectAndSetCustomCover(folderId, libraryPath); });
     connect(deleteCustomFolderCoverAction, &QAction::triggered, menu, [this, folderId, libraryPath] { folderManagementCoordinator->resetCustomCover(folderId, libraryPath); });
+    connect(trackMissingIssuesAction, &QAction::triggered, comicManagementCoordinator, [coordinator = comicManagementCoordinator, folderId] { coordinator->trackMissingIssues(folderId); }, Qt::QueuedConnection);
 
     menu->addSeparator();
     menu->addAction(setFolderCoverAction);
@@ -406,6 +427,9 @@ void LibraryWindowMenus::showFoldersContextMenu(const QPoint &point)
     menu.addAction(actions.openContainingFolderAction);
     menu.addAction(actions.renameFolderAction);
     menu.addAction(actions.updateFolderAction);
+    menu.addSeparator();
+    auto trackAction = menu.addAction(tr("Track missing issues..."));
+    connect(trackAction, &QAction::triggered, comicManagementCoordinator, [coordinator = comicManagementCoordinator, folderId = folder.id.value()] { coordinator->trackMissingIssues(folderId); }, Qt::QueuedConnection);
     if (YACReader::FeatureFlags::organizeFiles) {
         menu.addSeparator();
         menu.addAction(actions.renameFilesAction);

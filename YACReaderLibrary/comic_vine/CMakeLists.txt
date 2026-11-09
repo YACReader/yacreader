@@ -68,5 +68,6 @@ target_link_libraries(comic_vine PUBLIC
     common_gui
     custom_widgets_library
     db_helper
+    library_common
     QsLog
 )

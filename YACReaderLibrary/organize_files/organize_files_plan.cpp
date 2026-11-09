@@ -11,11 +11,6 @@ namespace {
 
 using OrganizeFiles::ComicEntry;
 
-QString translated(const char *text)
-{
-    return QCoreApplication::translate("OrganizeFiles", text);
-}
-
 bool isReservedDeviceName(const QString &segment)
 {
     static const QStringList reserved = {
@@ -92,17 +87,17 @@ QString resolveToken(const QString &name,
 
     if (value.isEmpty() && !insideGroup) {
         if (name == QLatin1String("series")) {
-            value = translated("Unknown Series");
+            value = QCoreApplication::translate("OrganizeFiles", "Unknown Series");
             if (fallbackFields != nullptr)
-                *fallbackFields << translated("series");
+                *fallbackFields << QCoreApplication::translate("OrganizeFiles", "series");
         } else if (name == QLatin1String("publisher")) {
-            value = translated("Unknown Publisher");
+            value = QCoreApplication::translate("OrganizeFiles", "Unknown Publisher");
             if (fallbackFields != nullptr)
-                *fallbackFields << translated("publisher");
+                *fallbackFields << QCoreApplication::translate("OrganizeFiles", "publisher");
         } else if (name == QLatin1String("title")) {
-            value = entry.series.trimmed().isEmpty() ? translated("Unknown Series") : entry.series.trimmed();
+            value = entry.series.trimmed().isEmpty() ? QCoreApplication::translate("OrganizeFiles", "Unknown Series") : entry.series.trimmed();
             if (fallbackFields != nullptr)
-                *fallbackFields << translated("title");
+                *fallbackFields << QCoreApplication::translate("OrganizeFiles", "title");
         }
     }
 
@@ -335,7 +330,7 @@ QString buildRelativePath(const QString &pattern, const ComicEntry &entry, QStri
         if (fallback.isEmpty())
             fallback = sanitizeSegment(entry.title);
         if (fallback.isEmpty())
-            fallback = translated("Unknown Comic");
+            fallback = QCoreApplication::translate("OrganizeFiles", "Unknown Comic");
 
         segments << fallback;
     }
@@ -355,20 +350,20 @@ QList<QPair<QString, QString>> presets(Mode mode)
 {
     if (mode == Mode::Rename) {
         return {
-            { translated("Series #Number - Title"), QStringLiteral("{series}< #{number:000}>< - {title}>") },
-            { translated("Series #Number"), QStringLiteral("{series}< #{number:000}>") },
-            { translated("Series #Number (of Count)"), QStringLiteral("{series}< #{number:000}>< (of {count})>") },
-            { translated("Number - Title"), QStringLiteral("{number:000}< - {title}>") },
-            { translated("Series #Number (Year)"), QStringLiteral("{series}< #{number:000}>< ({year})>") }
+            { QCoreApplication::translate("OrganizeFiles", "Series #Number - Title"), QStringLiteral("{series}< #{number:000}>< - {title}>") },
+            { QCoreApplication::translate("OrganizeFiles", "Series #Number"), QStringLiteral("{series}< #{number:000}>") },
+            { QCoreApplication::translate("OrganizeFiles", "Series #Number (of Count)"), QStringLiteral("{series}< #{number:000}>< (of {count})>") },
+            { QCoreApplication::translate("OrganizeFiles", "Number - Title"), QStringLiteral("{number:000}< - {title}>") },
+            { QCoreApplication::translate("OrganizeFiles", "Series #Number (Year)"), QStringLiteral("{series}< #{number:000}>< ({year})>") }
         };
     }
 
     return {
-        { translated("Publisher / Series / Series #Number - Title"), QStringLiteral("{publisher}/{series}/{series}< #{number:000}>< - {title}>") },
-        { translated("Publisher / Imprint / Series / Series #Number - Title"), QStringLiteral("{publisher}/<{imprint}/>{series}/{series}< #{number:000}>< - {title}>") },
-        { translated("Series / Series #Number"), QStringLiteral("{series}/{series}< #{number:000}>") },
-        { translated("Publisher / Series / Series #Number (Year)"), QStringLiteral("{publisher}/{series}/{series}< #{number:000}>< ({year})>") },
-        { translated("Series / original file name"), QStringLiteral("{series}/{filename}") }
+        { QCoreApplication::translate("OrganizeFiles", "Publisher / Series / Series #Number - Title"), QStringLiteral("{publisher}/{series}/{series}< #{number:000}>< - {title}>") },
+        { QCoreApplication::translate("OrganizeFiles", "Publisher / Imprint / Series / Series #Number - Title"), QStringLiteral("{publisher}/<{imprint}/>{series}/{series}< #{number:000}>< - {title}>") },
+        { QCoreApplication::translate("OrganizeFiles", "Series / Series #Number"), QStringLiteral("{series}/{series}< #{number:000}>") },
+        { QCoreApplication::translate("OrganizeFiles", "Publisher / Series / Series #Number (Year)"), QStringLiteral("{publisher}/{series}/{series}< #{number:000}>< ({year})>") },
+        { QCoreApplication::translate("OrganizeFiles", "Series / original file name"), QStringLiteral("{series}/{filename}") }
     };
 }
 

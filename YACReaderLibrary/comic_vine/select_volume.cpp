@@ -28,7 +28,7 @@ SelectVolume::SelectVolume(QWidget *parent)
     proxyModel = new QSortFilterProxyModel;
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
 
-    label = new QLabel(tr("Please, select the right series for your comic."));
+    label = new QLabel(tr("Please select the right series for your comic."));
 
     auto l = new QVBoxLayout;
     QWidget *leftWidget = new QWidget;

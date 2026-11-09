@@ -1,0 +1,4 @@
+qt_add_executable(descriptive_metadata_test main.cpp)
+yacreader_apply_build_options(descriptive_metadata_test)
+target_link_libraries(descriptive_metadata_test PRIVATE Qt6::Test Qt6::Sql db_helper library_common)
+add_test(NAME descriptive_metadata_test COMMAND descriptive_metadata_test)

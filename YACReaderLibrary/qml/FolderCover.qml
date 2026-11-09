@@ -8,6 +8,7 @@ Item {
     // Covers of the stack, from front to back. The first entry is the front
     // cover, so only the two next ones are stacked behind it.
     property var stackedCoverSources: []
+    property var grayscaleCovers: []
     property bool selected: false
     property bool showRecentIndicator: false
     property bool showFinishedMark: false
@@ -26,6 +27,7 @@ Item {
         required property url coverSource
         property real cornerRadius: 10
         property color outlineColor: "transparent"
+        property bool grayscale: false
 
         Image {
             id: coverImage
@@ -61,6 +63,7 @@ Item {
             maskSource: coverMask
             maskThresholdMin: 0.5
             maskSpreadAtMin: 1.0
+            saturation: cover.grayscale ? -1.0 : 0.0
         }
 
         Rectangle {
@@ -89,6 +92,7 @@ Item {
         coverSource: root.backCoverSource
         cornerRadius: root.cornerRadius
         outlineColor: placeholderFolder1BorderColor
+        grayscale: root.grayscaleCovers[2] ?? false
         visible: root.backCoverSource.toString().length > 0
     }
 
@@ -109,6 +113,7 @@ Item {
         coverSource: root.midCoverSource
         cornerRadius: root.cornerRadius
         outlineColor: placeholderFolder2BorderColor
+        grayscale: root.grayscaleCovers[1] ?? false
         visible: root.midCoverSource.toString().length > 0
     }
 
@@ -117,6 +122,7 @@ Item {
         coverSource: root.coverSource
         cornerRadius: root.cornerRadius
         outlineColor: folderCoverBorderColor
+        grayscale: root.grayscaleCovers[0] ?? false
     }
 
     Rectangle {

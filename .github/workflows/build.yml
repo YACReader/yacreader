@@ -6,9 +6,6 @@ on:
       - master
       - develop
   pull_request:
-    branches:
-      - master
-      - develop
 
 env:
   IS_ORIGINAL_REPO: ${{ github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop') }}
@@ -143,6 +140,57 @@ jobs:
   # macOS Qt6 Universal build
   macos-qt6-universal:
     name: macOS (Qt6 Universal)
+    runs-on: macos-26
+    needs: [initialization, code-format-validation]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          pip3 install --break-system-packages aqtinstall
+          python3 -m aqt install-qt mac desktop 6.12.0 -m qt5compat qtmultimedia qtimageformats qtshadertools qtspeech
+          echo "${{ github.workspace }}/6.12.0/macos/bin" >> $GITHUB_PATH
+          npm install -g appdmg
+
+      - name: Import Code Signing Certificate
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        uses: apple-actions/import-codesign-certs@v2
+        with:
+          p12-file-base64: ${{ secrets.MACOS_CERTIFICATE_P12_BASE64 }}
+          p12-password: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+
+      - name: Build
+        env:
+          MACOSX_DEPLOYMENT_TARGET: "14.4"
+        run: |
+          VERSION="$(tr -d '\r\n' < VERSION)"
+          SKIP_CODESIGN="${{ env.IS_FORK }}"
+          SKIP_CODESIGN=$(echo "$SKIP_CODESIGN" | tr '[:upper:]' '[:lower:]')
+          ./compileOSX.sh $VERSION ${{ needs.initialization.outputs.build_number }} $SKIP_CODESIGN Qt6 universal
+
+      - name: Run tests
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Notarize
+        if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
+        run: |
+          xcrun notarytool submit *.dmg --apple-id "${{ secrets.MACOS_APPLE_ID }}" --team-id "${{ secrets.MACOS_TEAM_ID }}" --password "${{ secrets.MACOS_APP_PASSWORD }}" --wait
+          xcrun stapler staple *.dmg
+
+      - name: Upload DMG
+        uses: actions/upload-artifact@v6
+        with:
+          name: macos-qt6-universal-${{ needs.initialization.outputs.build_number }}-dmg
+          path: "*.dmg"
+
+  # macOS Qt6 Universal legacy build (macOS 12+, older Qt)
+  macos-qt6-universal-legacy:
+    name: macOS (Qt6 Universal Legacy)
     runs-on: macos-15
     needs: [initialization, code-format-validation]
     steps:
@@ -170,6 +218,7 @@ jobs:
       - name: Build
         env:
           MACOSX_DEPLOYMENT_TARGET: "12"
+          DMG_NAME_SUFFIX: "-legacy"
         run: |
           VERSION="$(tr -d '\r\n' < VERSION)"
           SKIP_CODESIGN="${{ env.IS_FORK }}"
@@ -188,7 +237,7 @@ jobs:
       - name: Upload DMG
         uses: actions/upload-artifact@v6
         with:
-          name: macos-qt6-universal-${{ needs.initialization.outputs.build_number }}-dmg
+          name: macos-qt6-universal-legacy-${{ needs.initialization.outputs.build_number }}-dmg
           path: "*.dmg"
 
   # Windows x64 Qt6 build
@@ -555,6 +604,7 @@ jobs:
       - linux-qt6
       - linux-qt6-7zip
       - macos-qt6-universal
+      - macos-qt6-universal-legacy
       - windows-x64-qt6
       - windows-arm64-qt6
       - docker-amd64
@@ -623,6 +673,7 @@ jobs:
       - linux-qt6
       - linux-qt6-7zip
       - macos-qt6-universal
+      - macos-qt6-universal-legacy
       - windows-x64-qt6
       - windows-arm64-qt6
       - docker-amd64

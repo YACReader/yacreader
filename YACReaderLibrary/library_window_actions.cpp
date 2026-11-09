@@ -22,6 +22,8 @@
 #include "yacreader_navigation_controller.h"
 #include "yacreader_options_dialog.h"
 
+#include <QActionGroup>
+#include <QMenu>
 #include <QtCore>
 
 LibraryWindowActions::LibraryWindowActions()
@@ -30,8 +32,6 @@ LibraryWindowActions::LibraryWindowActions()
 
 void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *settings)
 {
-    auto tr = [](const char *text) { return QCoreApplication::translate("LibraryWindowActions", text); };
-
     backAction = new QAction(window);
     backAction->setData(BACK_ACTION_YL);
     backAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(BACK_ACTION_YL));
@@ -87,6 +87,16 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     restoreLibraryAction->setData(RESTORE_LIBRARY_ACTION_YL);
     restoreLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESTORE_LIBRARY_ACTION_YL));
 
+    repairLibraryDatabaseAction = new QAction(tr("Repair library database..."), window);
+    repairLibraryDatabaseAction->setToolTip(tr("Check the current library database and attempt to repair any damage"));
+    repairLibraryDatabaseAction->setData(REPAIR_LIBRARY_DATABASE_ACTION_YL);
+    repairLibraryDatabaseAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REPAIR_LIBRARY_DATABASE_ACTION_YL));
+
+    recoverLibraryAccessAction = new QAction(tr("Recover library access..."), window);
+    recoverLibraryAccessAction->setToolTip(tr("Recover access after an interrupted library maintenance operation"));
+    recoverLibraryAccessAction->setData(RECOVER_LIBRARY_ACCESS_ACTION_YL);
+    recoverLibraryAccessAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RECOVER_LIBRARY_ACCESS_ACTION_YL));
+
     repairLibraryAction = new QAction(tr("Repair covers and comic info"), window);
     repairLibraryAction->setToolTip(tr("Retry comics with missing covers or incomplete information"));
     repairLibraryAction->setData(REPAIR_LIBRARY_ACTION_YL);
@@ -103,7 +113,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     removeLibraryAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(REMOVE_LIBRARY_ACTION_YL));
 
     rescanLibraryForXMLInfoAction = new QAction(tr("Rescan library for XML info"), window);
-    rescanLibraryForXMLInfoAction->setToolTip(tr("Tries to find XML info embedded in comic files. You only need to do this if the library was created with 9.8.2 or earlier versions or if you are using third party software to embed XML info in the files."));
+    rescanLibraryForXMLInfoAction->setToolTip(tr("Tries to find XML info embedded in comic files. You only need to do this if the library was created with version 9.8.2 or earlier, or if you are using third party software to embed XML info in the files."));
     rescanLibraryForXMLInfoAction->setData(RESCAN_LIBRARY_XML_INFO_ACTION_YL);
     rescanLibraryForXMLInfoAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(RESCAN_LIBRARY_XML_INFO_ACTION_YL));
 
@@ -118,7 +128,7 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     showLibraryInfo->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SHOW_LIBRARY_INFO_ACTION_YL));
 
     openComicAction = new QAction(tr("Open current comic"), window);
-    openComicAction->setToolTip(tr("Open current comic on YACReader"));
+    openComicAction->setToolTip(tr("Open current comic in YACReader"));
     openComicAction->setData(OPEN_COMIC_ACTION_YL);
     openComicAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(OPEN_COMIC_ACTION_YL));
 
@@ -232,6 +242,15 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
 
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
+
+    auto *comicsViewGroup = new QActionGroup(window);
+    gridViewAction = new QAction(tr("Grid view"), comicsViewGroup);
+    flowViewAction = new QAction(tr("Flow view"), comicsViewGroup);
+    infoViewAction = new QAction(tr("Info view"), comicsViewGroup);
+    for (QAction *action : { gridViewAction, flowViewAction, infoViewAction }) {
+        action->setCheckable(true);
+        action->setToolTip(action->text());
+    }
 
     //----
 
@@ -403,10 +422,40 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
     rescanXMLFromCurrentFolderAction->setData(SCAN_XML_FROM_CURRENT_FOLDER_ACTION_YL);
     rescanXMLFromCurrentFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(SCAN_XML_FROM_CURRENT_FOLDER_ACTION_YL));
 
-    addReadingListAction = new QAction(tr("Add new reading list"), window);
+    addReadingListAction = new QAction(tr("New reading list"), window);
     addReadingListAction->setData(ADD_READING_LIST_ACTION_YL);
     addReadingListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_READING_LIST_ACTION_YL));
     addReadingListAction->setToolTip(tr("Add a new reading list to the current library"));
+    addReadingListAction->setIconVisibleInMenu(false);
+    window->addAction(addReadingListAction);
+
+    addSmartListAction = new QAction(tr("New smart list..."), window);
+    addSmartListAction->setData(ADD_SMART_LIST_ACTION_YL);
+    addSmartListAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_SMART_LIST_ACTION_YL));
+    addSmartListAction->setToolTip(tr("Add a saved search to the current library"));
+    window->addAction(addSmartListAction);
+
+    addListFolderAction = new QAction(tr("New folder..."), window);
+    addListFolderAction->setData(ADD_LIST_FOLDER_ACTION_YL);
+    addListFolderAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(ADD_LIST_FOLDER_ACTION_YL));
+    addListFolderAction->setToolTip(tr("Add a folder for reading lists or smart lists"));
+    window->addAction(addListFolderAction);
+
+    importReadingListsAction = new QAction(tr("Import reading lists..."), window);
+    importReadingListsAction->setData(IMPORT_READING_LISTS_ACTION_YL);
+    importReadingListsAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(IMPORT_READING_LISTS_ACTION_YL));
+    importReadingListsAction->setToolTip(tr("Import CBL reading lists into the current library"));
+    window->addAction(importReadingListsAction);
+
+    newListMenuAction = new QAction(tr("New"), window);
+    newListMenuAction->setToolTip(tr("Add or import reading lists"));
+    auto newListMenu = new QMenu(window);
+    newListMenu->addAction(addReadingListAction);
+    newListMenu->addAction(addSmartListAction);
+    newListMenu->addAction(addListFolderAction);
+    newListMenu->addSeparator();
+    newListMenu->addAction(importReadingListsAction);
+    newListMenuAction->setMenu(newListMenu);
 
     deleteReadingListAction = new QAction(tr("Remove reading list"), window);
     deleteReadingListAction->setData(REMOVE_READING_LIST_ACTION_YL);
@@ -592,11 +641,16 @@ void LibraryWindowActions::createConnections(
 
     // lists
     QObject::connect(addReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addReadingList);
+    QObject::connect(importReadingListsAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::importReadingLists);
+    QObject::connect(addSmartListAction, &QAction::triggered, readingListManagementCoordinator, [readingListManagementCoordinator] { readingListManagementCoordinator->addSmartList(); });
+    QObject::connect(addListFolderAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addListFolder);
     QObject::connect(deleteReadingListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::deleteCurrentList);
     QObject::connect(addLabelAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::addLabel);
     QObject::connect(renameListAction, &QAction::triggered, readingListManagementCoordinator, &ReadingListManagementCoordinator::renameCurrentList);
 
     QObject::connect(updateLibraryAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::updateCurrentLibrary);
+    QObject::connect(recoverLibraryAccessAction, &QAction::triggered, libraryManagementCoordinator, &LibraryManagementCoordinator::recoverCurrentLibraryAccess);
+    QObject::connect(repairLibraryDatabaseAction, &QAction::triggered, libraryDatabaseMaintenanceCoordinator, &LibraryDatabaseMaintenanceCoordinator::repairCurrentLibraryDatabase);
     QObject::connect(backupLibraryAction, &QAction::triggered, libraryDatabaseMaintenanceCoordinator, [this, libraryDatabaseMaintenanceCoordinator] {
         libraryDatabaseMaintenanceCoordinator->backupCurrentLibrary(backupLibraryAction->text());
     });
@@ -627,6 +681,9 @@ void LibraryWindowActions::createConnections(
     QObject::connect(toggleFullScreenAction, &QAction::triggered, window, &LibraryWindow::toggleFullScreen);
 #endif
     QObject::connect(toggleComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::toggleComicsView);
+    QObject::connect(gridViewAction, &QAction::triggered, contentViewsManager, [contentViewsManager] { contentViewsManager->selectComicsView(YACReader::Grid); });
+    QObject::connect(flowViewAction, &QAction::triggered, contentViewsManager, [contentViewsManager] { contentViewsManager->selectComicsView(YACReader::Flow); });
+    QObject::connect(infoViewAction, &QAction::triggered, contentViewsManager, [contentViewsManager] { contentViewsManager->selectComicsView(YACReader::Info); });
     QObject::connect(optionsAction, &QAction::triggered, optionsDialog, &QWidget::show);
 #ifdef SERVER_RELEASE
     QObject::connect(serverConfigAction, &QAction::triggered, serverConfigDialog, &QWidget::show);
@@ -713,6 +770,9 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
     editShortcutsDialog->addActionsGroup("Lists", theme.shortcutsIcons.foldersIcon, // TODO change icon
                                          tmpList = QList<QAction *>()
                                                  << addReadingListAction
+                                                 << addSmartListAction
+                                                 << addListFolderAction
+                                                 << importReadingListsAction
                                                  << deleteReadingListAction
                                                  << addLabelAction
                                                  << renameListAction);
@@ -743,6 +803,8 @@ void LibraryWindowActions::setUpShortcutsManagement(EditShortcutsDialog *editSho
                                                  << updateLibraryAction
                                                  << backupLibraryAction
                                                  << restoreLibraryAction
+                                                 << repairLibraryDatabaseAction
+                                                 << recoverLibraryAccessAction
                                                  << repairLibraryAction
                                                  << renameLibraryAction
                                                  << removeLibraryAction
@@ -804,11 +866,44 @@ void LibraryWindowActions::setComicSelectionActionsEnabled(bool enabled)
     addToMenuAction->setEnabled(enabled);
     addToFavoritesAction->setEnabled(enabled);
 }
+void LibraryWindowActions::setComicSelectionActionsEnabled(const ComicModel &model, const QModelIndexList &selection, const QModelIndex &current)
+{
+    const auto anySupports = [&](ComicAction action) {
+        return std::any_of(selection.cbegin(), selection.cend(), [&](const QModelIndex &index) { return model.supports(index, action); });
+    };
+
+    openComicAction->setEnabled(model.supports(current, ComicAction::Open));
+    openContainingFolderComicAction->setEnabled(model.supports(current, ComicAction::OpenContainingFolder));
+    saveCoversToAction->setEnabled(anySupports(ComicAction::SaveCover));
+    editSelectedComicsAction->setEnabled(anySupports(ComicAction::EditMetadata));
+    asignOrderAction->setEnabled(anySupports(ComicAction::AssignNumbers));
+    const bool setReadState = anySupports(ComicAction::SetReadState);
+    setAsReadAction->setEnabled(setReadState);
+    setAsNonReadAction->setEnabled(setReadState);
+    resetComicRatingAction->setEnabled(setReadState);
+    const bool setType = anySupports(ComicAction::SetType);
+    setNormalAction->setEnabled(setType);
+    setMangaAction->setEnabled(setType);
+    setWebComicAction->setEnabled(setType);
+    setWesternMangaAction->setEnabled(setType);
+    setYonkomaAction->setEnabled(setType);
+    deleteMetadataAction->setEnabled(anySupports(ComicAction::DeleteMetadata));
+    const bool changeFile = anySupports(ComicAction::ChangeFile);
+    deleteComicsAction->setEnabled(anySupports(ComicAction::RemoveFromList) || changeFile || anySupports(ComicAction::RemoveFromFolder));
+    renameComicsFilesAction->setEnabled(changeFile);
+    organizeComicsFilesAction->setEnabled(changeFile);
+    getInfoAction->setEnabled(anySupports(ComicAction::SearchComicVine));
+    addToMenuAction->setEnabled(anySupports(ComicAction::AddToList));
+    addToFavoritesAction->setEnabled(anySupports(ComicAction::AddToFavorites));
+}
+
 void LibraryWindowActions::disableLibrariesActions(bool disabled)
 {
     updateLibraryAction->setDisabled(disabled);
     backupLibraryAction->setDisabled(disabled);
     restoreLibraryAction->setDisabled(disabled);
+    repairLibraryDatabaseAction->setDisabled(disabled);
+    recoverLibraryAccessAction->setDisabled(disabled);
     repairLibraryAction->setDisabled(disabled);
     renameLibraryAction->setDisabled(disabled);
     removeLibraryAction->setDisabled(disabled);
@@ -824,6 +919,8 @@ void LibraryWindowActions::disableNoUpdatedLibrariesActions(bool disabled)
     updateLibraryAction->setDisabled(disabled);
     backupLibraryAction->setDisabled(disabled);
     restoreLibraryAction->setDisabled(disabled);
+    repairLibraryDatabaseAction->setDisabled(disabled);
+    recoverLibraryAccessAction->setDisabled(disabled);
     repairLibraryAction->setDisabled(disabled);
     exportComicsInfoAction->setDisabled(disabled);
     importComicsInfoAction->setDisabled(disabled);
@@ -853,6 +950,19 @@ void LibraryWindowActions::disableAllActions()
     disableFoldersActions(true);
 }
 
+QAction *LibraryWindowActions::comicsViewAction(YACReader::ComicsViewStatus status) const
+{
+    switch (status) {
+    case YACReader::Flow:
+        return flowViewAction;
+    case YACReader::Info:
+        return infoViewAction;
+    case YACReader::Grid:
+    default:
+        return gridViewAction;
+    }
+}
+
 void LibraryWindowActions::updateTheme(const Theme &theme)
 {
     const auto &mainToolbar = theme.mainToolbar;
@@ -870,6 +980,7 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     setRootIndexAction->setIcon(sidebarIcons.setRootIcon);
     expandAllNodesAction->setIcon(sidebarIcons.expandIcon);
     colapseAllNodesAction->setIcon(sidebarIcons.colapseIcon);
+    newListMenuAction->setIcon(sidebarIcons.addNewIcon);
     addReadingListAction->setIcon(sidebarIcons.addNewIcon);
     deleteReadingListAction->setIcon(sidebarIcons.deleteIcon);
     addLabelAction->setIcon(sidebarIcons.addLabelIcon);
@@ -881,6 +992,9 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     helpAboutAction->setIcon(mainToolbar.helpIcon);
     optionsAction->setIcon(mainToolbar.settingsIcon);
     serverConfigAction->setIcon(mainToolbar.serverIcon);
+    gridViewAction->setIcon(mainToolbar.gridIcon);
+    flowViewAction->setIcon(mainToolbar.flowIcon);
+    infoViewAction->setIcon(mainToolbar.infoIcon);
 #ifndef Q_OS_MACOS
     toggleFullScreenAction->setIcon(mainToolbar.fullscreenIcon);
 #endif

@@ -24,22 +24,22 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>Light</source>
-        <translation>亮度</translation>
+        <translation>淺色</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Dark</source>
-        <translation>黑暗的</translation>
+        <translation>深色</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Custom</source>
-        <translation>風俗</translation>
+        <translation>自訂</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
         <source>Remove</source>
-        <translation>消除</translation>
+        <translation>移除</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
@@ -49,22 +49,22 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
         <source>Light:</source>
-        <translation>光：</translation>
+        <translation>淺色：</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Dark:</source>
-        <translation>黑暗的：</translation>
+        <translation>深色：</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Custom:</source>
-        <translation>自定義:</translation>
+        <translation>自訂：</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
         <source>Import theme...</source>
-        <translation>導入主題...</translation>
+        <translation>匯入主題...</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="121"/>
@@ -94,7 +94,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
         <source>Import theme</source>
-        <translation>導入主題</translation>
+        <translation>匯入主題</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
@@ -122,14 +122,14 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="295"/>
         <source>Import failed</source>
-        <translation>導入失敗</translation>
+        <translation>匯入失敗</translation>
     </message>
 </context>
 <context>
     <name>BookmarksDialog</name>
     <message>
         <location filename="bookmarks_dialog.cpp" line="27"/>
-        <source>Lastest Page</source>
+        <source>Latest Page</source>
         <translation>尾頁</translation>
     </message>
     <message>
@@ -162,59 +162,59 @@
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="19"/>
         <source>Restore defaults</source>
-        <translation>恢復默認</translation>
+        <translation>恢復預設</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="20"/>
-        <source>To change a shortcut, double click in the key combination and type the new keys.</source>
-        <translation>更改快捷鍵: 雙擊按鍵組合並輸入新的映射.</translation>
+        <source>To change a shortcut, double-click the key combination and type the new keys.</source>
+        <translation>更改快速鍵：雙擊按鍵組合並輸入新的映射。</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="67"/>
         <source>Shortcuts settings</source>
-        <translation>快捷鍵設置</translation>
+        <translation>快速鍵設定</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
         <source>Shortcut in use</source>
-        <translation>快捷鍵被佔用</translation>
+        <translation>快速鍵被佔用</translation>
     </message>
     <message>
         <location filename="../shortcuts_management/edit_shortcuts_dialog.cpp" line="118"/>
-        <source>The shortcut &quot;%1&quot; is already assigned to other function</source>
-        <translation>快捷鍵 &quot;%1&quot; 已被映射至其他功能</translation>
+        <source>The shortcut &quot;%1&quot; is already assigned to another function</source>
+        <translation>快速鍵「%1」已被映射至其他功能</translation>
     </message>
 </context>
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="490"/>
+        <location filename="../common/comic.cpp" line="502"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
-        <translation>第 %1 頁 CRC 校驗失敗: 部分頁面將無法正確顯示</translation>
+        <translation>第 %1 頁 CRC 校驗失敗：部分頁面將無法正確顯示</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="497"/>
+        <location filename="../common/comic.cpp" line="509"/>
         <source>Unknown error opening the file</source>
-        <translation>打開檔時出現未知錯誤</translation>
+        <translation>開啟檔案時出現未知錯誤</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="604"/>
+        <location filename="../common/comic.cpp" line="616"/>
         <source>7z not found</source>
         <translation>未找到 7z</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="610"/>
-        <location filename="../common/comic.cpp" line="626"/>
+        <location filename="../common/comic.cpp" line="622"/>
+        <location filename="../common/comic.cpp" line="638"/>
         <source>Format not supported</source>
-        <translation>不支持的檔格式</translation>
+        <translation>不支援的檔案格式</translation>
     </message>
 </context>
 <context>
     <name>GoToDialog</name>
     <message>
         <location filename="goto_dialog.cpp" line="16"/>
-        <source>Page : </source>
-        <translation>頁碼 : </translation>
+        <source>Page: </source>
+        <translation>頁碼： </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="24"/>
@@ -229,8 +229,8 @@
     <message>
         <location filename="goto_dialog.cpp" line="40"/>
         <location filename="goto_dialog.cpp" line="70"/>
-        <source>Total pages : </source>
-        <translation>總頁數: </translation>
+        <source>Total pages: </source>
+        <translation>總頁數： </translation>
     </message>
     <message>
         <location filename="goto_dialog.cpp" line="52"/>
@@ -242,8 +242,8 @@
     <name>GoToFlowToolBar</name>
     <message>
         <location filename="goto_flow_toolbar.cpp" line="32"/>
-        <source>Page : </source>
-        <translation>頁碼 : </translation>
+        <source>Page: </source>
+        <translation>頁碼： </translation>
     </message>
 </context>
 <context>
@@ -266,7 +266,7 @@
     <message>
         <location filename="../custom_widgets/help_about_dialog.cpp" line="40"/>
         <source>Changelog</source>
-        <translation type="unfinished"></translation>
+        <translation>更新日誌</translation>
     </message>
 </context>
 <context>
@@ -299,7 +299,7 @@
     <message>
         <location filename="options_dialog.cpp" line="181"/>
         <source>Disable mouse over activation</source>
-        <translation>禁用滑鼠啟動</translation>
+        <translation>停用滑鼠懸停啟動</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="271"/>
@@ -319,7 +319,7 @@
     <message>
         <location filename="options_dialog.cpp" line="276"/>
         <source>Bilinear</source>
-        <translation>雙線性</translation>
+        <translation>Bilinear</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="277"/>
@@ -327,7 +327,7 @@
         <translation>Lanczos（品質更好）</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="317"/>
+        <location filename="options_dialog.cpp" line="318"/>
         <source>Restart is needed</source>
         <translation>需要重啟</translation>
     </message>
@@ -339,7 +339,7 @@
     <message>
         <location filename="options_dialog.cpp" line="58"/>
         <source>Display</source>
-        <translation>展示</translation>
+        <translation>顯示</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="60"/>
@@ -368,7 +368,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="108"/>
-        <source>Scroll behaviour</source>
+        <source>Scroll behavior</source>
         <translation>滾動效果</translation>
     </message>
     <message>
@@ -403,7 +403,7 @@
     </message>
     <message>
         <location filename="options_dialog.cpp" line="126"/>
-        <source>Click left or right half of the screen to turn pages.</source>
+        <source>Click the left or right half of the screen to turn pages.</source>
         <translation>點擊螢幕的左半部或右半部即可翻頁。</translation>
     </message>
     <message>
@@ -440,7 +440,7 @@ If none is active, Escape does nothing.</source>
         <translation>按 Esc 鍵會取消下列第一個正在使用的模式：
 
 1. 放大鏡
-2. 字典
+2. 詞典
 3. 前往頁面列
 4. 全螢幕
 
@@ -464,12 +464,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="225"/>
         <source>Gamma</source>
-        <translation>Gamma值</translation>
+        <translation>Gamma 值</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="229"/>
         <source>Reset</source>
-        <translation>重置</translation>
+        <translation>重設</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="234"/>
@@ -479,7 +479,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="options_dialog.cpp" line="238"/>
         <source>Fit options</source>
-        <translation>適應項</translation>
+        <translation>適應選項</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="240"/>
@@ -502,14 +502,19 @@ If none is active, Escape does nothing.</source>
         <translation>顯示書頁折疊陰影</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="307"/>
+        <location filename="options_dialog.cpp" line="278"/>
+        <source>Bicubic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="options_dialog.cpp" line="308"/>
         <source>General</source>
         <translation>常規</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="310"/>
+        <location filename="options_dialog.cpp" line="311"/>
         <source>Appearance</source>
-        <translation>外貌</translation>
+        <translation>外觀</translation>
     </message>
     <message>
         <location filename="options_dialog.cpp" line="45"/>
@@ -532,22 +537,22 @@ If none is active, Escape does nothing.</source>
         <translation>清空</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="308"/>
+        <location filename="options_dialog.cpp" line="309"/>
         <source>Page Flow</source>
         <translation>頁面流</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="309"/>
+        <location filename="options_dialog.cpp" line="310"/>
         <source>Image adjustment</source>
-        <translation>圖像調整</translation>
+        <translation>影像調整</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="326"/>
+        <location filename="options_dialog.cpp" line="327"/>
         <source>Options</source>
         <translation>選項</translation>
     </message>
     <message>
-        <location filename="options_dialog.cpp" line="342"/>
+        <location filename="options_dialog.cpp" line="343"/>
         <source>Comics directory</source>
         <translation>漫畫目錄</translation>
     </message>
@@ -557,20 +562,20 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>7z lib not found</source>
-        <translation>未找到 7z 庫檔</translation>
+        <translation>找不到 7z 函式庫</translation>
     </message>
     <message>
         <location filename="../common/exit_check.cpp" line="13"/>
         <source>unable to load 7z lib from ./utils</source>
-        <translation>無法從 ./utils 載入 7z 庫檔</translation>
+        <translation>無法從 ./utils 載入 7z 函式庫</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="156"/>
         <source>Select custom cover</source>
         <translation>選擇自訂封面</translation>
     </message>
     <message>
-        <location filename="../common/yacreader_global_gui.cpp" line="95"/>
+        <location filename="../common/yacreader_global_gui.cpp" line="156"/>
         <source>Images (%1)</source>
         <translation>圖片 (%1)</translation>
     </message>
@@ -605,7 +610,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
         <source>i</source>
-        <translation>我</translation>
+        <translation>i</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
@@ -620,7 +625,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
-        <translation>按住可在 UI 中閃爍所選值（洋紅色/切換/0↔10）。發布後恢復原樣。</translation>
+        <translation>按住可在 UI 中閃爍所選值（洋紅色/切換/0↔10）。放開後恢復原樣。</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
@@ -630,12 +635,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
         <source>Light</source>
-        <translation>亮度</translation>
+        <translation>淺色</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
         <source>Dark</source>
-        <translation>黑暗的</translation>
+        <translation>深色</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
@@ -655,27 +660,27 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
         <source>Theme info</source>
-        <translation>主題訊息</translation>
+        <translation>主題資訊</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
         <source>Parameter</source>
-        <translation>範圍</translation>
+        <translation>參數</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
         <source>Value</source>
-        <translation>價值</translation>
+        <translation>值</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="149"/>
         <source>Save and apply</source>
-        <translation>儲存並應用</translation>
+        <translation>儲存並套用</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="150"/>
         <source>Export to file...</source>
-        <translation>匯出到文件...</translation>
+        <translation>匯出到檔案...</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="151"/>
@@ -700,7 +705,7 @@ If none is active, Escape does nothing.</source>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>true</source>
-        <translation>真的</translation>
+        <translation>true</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
@@ -708,12 +713,12 @@ If none is active, Escape does nothing.</source>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
         <source>false</source>
-        <translation>錯誤的</translation>
+        <translation>false</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
         <source>Double-click to toggle</source>
-        <translation>按兩下切換</translation>
+        <translation>雙擊切換</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="218"/>
@@ -741,13 +746,13 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
         <source>Save failed</source>
-        <translation>保存失敗</translation>
+        <translation>儲存失敗</translation>
     </message>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
         <source>Could not open file for writing:
 %1</source>
-        <translation>無法開啟文件進行寫入：
+        <translation>無法開啟檔案進行寫入：
 %1</translation>
     </message>
     <message>
@@ -787,8 +792,8 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="125"/>
         <location filename="viewer.cpp" line="1815"/>
-        <source>Press &apos;O&apos; to open comic.</source>
-        <translation>按下 &apos;O&apos; 以打開漫畫.</translation>
+        <source>Press &apos;O&apos; to open a comic.</source>
+        <translation>按下 &apos;O&apos; 以開啟漫畫。</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="372"/>
@@ -803,7 +808,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="viewer.cpp" line="378"/>
         <source>Error opening comic</source>
-        <translation>打開漫畫時發生錯誤</translation>
+        <translation>開啟漫畫時發生錯誤</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="384"/>
@@ -812,23 +817,23 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="viewer.cpp" line="1832"/>
-        <source>Loading...please wait!</source>
-        <translation>載入中... 請稍候!</translation>
+        <source>Loading... please wait!</source>
+        <translation>載入中... 請稍候！</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="1843"/>
         <source>Page not available!</source>
-        <translation>頁面不可用!</translation>
+        <translation>頁面不可用！</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="2181"/>
         <source>Cover!</source>
-        <translation>封面!</translation>
+        <translation>封面！</translation>
     </message>
     <message>
         <location filename="viewer.cpp" line="2195"/>
         <source>Last page!</source>
-        <translation>尾頁!</translation>
+        <translation>尾頁！</translation>
     </message>
 </context>
 <context>
@@ -836,7 +841,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="19"/>
         <source>Presets:</source>
-        <translation>預設:</translation>
+        <translation>預設：</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="21"/>
@@ -866,12 +871,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="77"/>
         <source>Show advanced settings</source>
-        <translation>顯示高級選項</translation>
+        <translation>顯示進階選項</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="86"/>
         <source>Custom:</source>
-        <translation>自定義:</translation>
+        <translation>自訂：</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="89"/>
@@ -896,7 +901,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="113"/>
         <source>Zoom</source>
-        <translation>縮放</translation>
+        <translation>Zoom</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="119"/>
@@ -916,12 +921,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="137"/>
         <source>Visibility</source>
-        <translation>透明度</translation>
+        <translation>可見度</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="143"/>
         <source>Light</source>
-        <translation>亮度</translation>
+        <translation>光照</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="149"/>
@@ -931,22 +936,22 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="181"/>
         <source>Low Performance</source>
-        <translation>低性能</translation>
+        <translation>低效能</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="183"/>
         <source>High Performance</source>
-        <translation>高性能</translation>
+        <translation>高效能</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="194"/>
-        <source>Use VSync (improve the image quality in fullscreen mode, worse performance)</source>
-        <translation>使用VSync (在全屏模式下提高圖像品質, 性能更差)</translation>
+        <source>Use VSync (improves image quality in fullscreen mode, but reduces performance)</source>
+        <translation>使用 VSync（在全螢幕模式下提高影像品質，但會降低效能）</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_3d_flow_config_widget.cpp" line="202"/>
         <source>Performance:</source>
-        <translation>性能:</translation>
+        <translation>效能：</translation>
     </message>
 </context>
 <context>
@@ -954,12 +959,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="327"/>
         <source>&amp;Open</source>
-        <translation>打開(&amp;O)</translation>
+        <translation>開啟(&amp;O)</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="328"/>
         <source>Open a comic</source>
-        <translation>打開漫畫</translation>
+        <translation>開啟漫畫</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="334"/>
@@ -969,22 +974,22 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="353"/>
         <source>Open Folder</source>
-        <translation>打開檔夾</translation>
+        <translation>開啟資料夾</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="354"/>
         <source>Open image folder</source>
-        <translation>打開圖片檔夾</translation>
+        <translation>開啟圖片資料夾</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="359"/>
         <source>Open latest comic</source>
-        <translation>打開最近的漫畫</translation>
+        <translation>開啟最近的漫畫</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="360"/>
         <source>Open the latest comic opened in the previous reading session</source>
-        <translation>打開最近閱讀漫畫</translation>
+        <translation>開啟上次閱讀工作階段中最後開啟的漫畫</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="372"/>
@@ -994,34 +999,34 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="373"/>
         <source>Clear open recent list</source>
-        <translation>清空最近訪問列表</translation>
+        <translation>清除最近開啟清單</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="376"/>
         <source>Save</source>
-        <translation>保存</translation>
+        <translation>儲存</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="377"/>
-        <location filename="main_window_viewer.cpp" line="1097"/>
-        <location filename="main_window_viewer.cpp" line="1108"/>
-        <location filename="main_window_viewer.cpp" line="1119"/>
+        <location filename="main_window_viewer.cpp" line="1095"/>
+        <location filename="main_window_viewer.cpp" line="1106"/>
+        <location filename="main_window_viewer.cpp" line="1117"/>
         <source>Save current page</source>
-        <translation>保存當前頁面</translation>
+        <translation>儲存目前頁面</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="382"/>
-        <location filename="main_window_viewer.cpp" line="1124"/>
-        <location filename="main_window_viewer.cpp" line="1138"/>
-        <location filename="main_window_viewer.cpp" line="1149"/>
-        <location filename="main_window_viewer.cpp" line="1167"/>
+        <location filename="main_window_viewer.cpp" line="1122"/>
+        <location filename="main_window_viewer.cpp" line="1136"/>
+        <location filename="main_window_viewer.cpp" line="1147"/>
+        <location filename="main_window_viewer.cpp" line="1165"/>
         <source>Extract page(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>擷取頁面</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="383"/>
         <source>Extract page(s) from the original source</source>
-        <translation type="unfinished"></translation>
+        <translation>從原始來源擷取頁面</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="388"/>
@@ -1030,10 +1035,10 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="389"/>
-        <location filename="main_window_viewer.cpp" line="1915"/>
-        <location filename="main_window_viewer.cpp" line="1919"/>
+        <location filename="main_window_viewer.cpp" line="1912"/>
+        <location filename="main_window_viewer.cpp" line="1916"/>
         <source>Open previous comic</source>
-        <translation>打開上一個漫畫</translation>
+        <translation>開啟上一個漫畫</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="394"/>
@@ -1042,10 +1047,10 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="395"/>
-        <location filename="main_window_viewer.cpp" line="1914"/>
-        <location filename="main_window_viewer.cpp" line="1920"/>
+        <location filename="main_window_viewer.cpp" line="1911"/>
+        <location filename="main_window_viewer.cpp" line="1917"/>
         <source>Open next comic</source>
-        <translation>打開下一個漫畫</translation>
+        <translation>開啟下一個漫畫</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="400"/>
@@ -1054,8 +1059,8 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="402"/>
-        <location filename="main_window_viewer.cpp" line="1917"/>
-        <location filename="main_window_viewer.cpp" line="1921"/>
+        <location filename="main_window_viewer.cpp" line="1914"/>
+        <location filename="main_window_viewer.cpp" line="1918"/>
         <source>Go to previous page</source>
         <translation>轉至上一頁</translation>
     </message>
@@ -1066,8 +1071,8 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="409"/>
-        <location filename="main_window_viewer.cpp" line="1916"/>
-        <location filename="main_window_viewer.cpp" line="1922"/>
+        <location filename="main_window_viewer.cpp" line="1913"/>
+        <location filename="main_window_viewer.cpp" line="1919"/>
         <source>Go to next page</source>
         <translation>轉至下一頁</translation>
     </message>
@@ -1084,7 +1089,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="421"/>
         <source>Fit Width</source>
-        <translation>適合寬度</translation>
+        <translation>適應寬度</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="422"/>
@@ -1114,22 +1119,22 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="476"/>
         <source>Reset zoom</source>
-        <translation>重置縮放</translation>
+        <translation>重設 Zoom</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="481"/>
         <source>Show zoom slider</source>
-        <translation>顯示縮放滑塊</translation>
+        <translation>顯示 Zoom 滑桿</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="483"/>
         <source>Zoom+</source>
-        <translation>放大</translation>
+        <translation>Zoom+</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="488"/>
         <source>Zoom-</source>
-        <translation>縮小</translation>
+        <translation>Zoom-</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="493"/>
@@ -1159,7 +1164,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="513"/>
         <source>Reverse reading order in double page mode</source>
-        <translation>雙頁模式 (逆序閱讀)</translation>
+        <translation>雙頁模式（逆序閱讀）</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="521"/>
@@ -1168,8 +1173,8 @@ If none is active, Escape does nothing.</source>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="522"/>
-        <source>Go to page ...</source>
-        <translation>跳轉至頁面 ...</translation>
+        <source>Go to page...</source>
+        <translation>跳轉至頁面...</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="527"/>
@@ -1190,10 +1195,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="535"/>
         <source>Help, About YACReader</source>
-        <translation>幫助, 關於 YACReader</translation>
+        <translation>幫助，關於 YACReader</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="540"/>
+        <location filename="main_window_viewer.cpp" line="1350"/>
+        <location filename="main_window_viewer.cpp" line="1416"/>
         <source>Magnifying glass</source>
         <translation>放大鏡</translation>
     </message>
@@ -1205,12 +1212,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="547"/>
         <source>Set bookmark</source>
-        <translation>設置書簽</translation>
+        <translation>設定書簽</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="548"/>
         <source>Set a bookmark on the current page</source>
-        <translation>在當前頁面設置書簽</translation>
+        <translation>在目前頁面設定書簽</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="556"/>
@@ -1220,12 +1227,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="557"/>
         <source>Show the bookmarks of the current comic</source>
-        <translation>顯示當前漫畫的書簽</translation>
+        <translation>顯示目前漫畫的書簽</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="562"/>
         <source>Show keyboard shortcuts</source>
-        <translation>顯示鍵盤快捷鍵</translation>
+        <translation>顯示鍵盤快速鍵</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="567"/>
@@ -1250,7 +1257,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="586"/>
         <source>Show Dictionary</source>
-        <translation>顯示字典</translation>
+        <translation>顯示詞典</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="592"/>
@@ -1260,23 +1267,23 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="597"/>
         <source>Edit shortcuts</source>
-        <translation>編輯快捷鍵</translation>
+        <translation>編輯快速鍵</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="618"/>
         <source>&amp;File</source>
-        <translation>檔(&amp;F)</translation>
+        <translation>檔案(&amp;F)</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="633"/>
         <location filename="main_window_viewer.cpp" line="795"/>
         <source>Open recent</source>
-        <translation>最近打開的檔</translation>
+        <translation>最近開啟的檔案</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="783"/>
         <source>File</source>
-        <translation>檔</translation>
+        <translation>檔案</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="805"/>
@@ -1286,7 +1293,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="809"/>
         <source>View</source>
-        <translation>查看</translation>
+        <translation>檢視</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="826"/>
@@ -1296,225 +1303,220 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="main_window_viewer.cpp" line="834"/>
         <source>Window</source>
-        <translation>窗口</translation>
+        <translation>視窗</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="951"/>
+        <location filename="main_window_viewer.cpp" line="953"/>
         <source>Open Comic</source>
-        <translation>打開漫畫</translation>
+        <translation>開啟漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="950"/>
+        <location filename="main_window_viewer.cpp" line="952"/>
         <source>Comic files</source>
-        <translation>漫畫檔</translation>
+        <translation>漫畫檔案</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1038"/>
+        <location filename="main_window_viewer.cpp" line="1036"/>
         <source>Open folder</source>
-        <translation>打開檔夾</translation>
+        <translation>開啟資料夾</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1351"/>
-        <location filename="main_window_viewer.cpp" line="1364"/>
+        <location filename="main_window_viewer.cpp" line="1348"/>
+        <location filename="main_window_viewer.cpp" line="1361"/>
         <source>Comics</source>
         <translation>漫畫</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1375"/>
+        <location filename="main_window_viewer.cpp" line="1372"/>
         <source>Toggle fullscreen mode</source>
-        <translation>切換全屏模式</translation>
+        <translation>切換全螢幕模式</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1378"/>
+        <location filename="main_window_viewer.cpp" line="1375"/>
         <source>Hide/show toolbar</source>
-        <translation>隱藏/顯示 工具欄</translation>
+        <translation>隱藏/顯示工具列</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1352"/>
-        <location filename="main_window_viewer.cpp" line="1381"/>
+        <location filename="main_window_viewer.cpp" line="1349"/>
+        <location filename="main_window_viewer.cpp" line="1378"/>
         <source>General</source>
         <translation>常規</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1400"/>
+        <location filename="main_window_viewer.cpp" line="1397"/>
         <source>Size up magnifying glass</source>
         <translation>增大放大鏡尺寸</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1403"/>
+        <location filename="main_window_viewer.cpp" line="1400"/>
         <source>Size down magnifying glass</source>
         <translation>減小放大鏡尺寸</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1406"/>
+        <location filename="main_window_viewer.cpp" line="1403"/>
         <source>Zoom in magnifying glass</source>
-        <translation>增大縮放級別</translation>
+        <translation>增大放大鏡的 Zoom</translation>
+    </message>
+    <message>
+        <location filename="main_window_viewer.cpp" line="1406"/>
+        <source>Zoom out magnifying glass</source>
+        <translation>減小放大鏡的 Zoom</translation>
     </message>
     <message>
         <location filename="main_window_viewer.cpp" line="1409"/>
-        <source>Zoom out magnifying glass</source>
-        <translation>減小縮放級別</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1412"/>
         <source>Reset magnifying glass</source>
         <translation>重置放大鏡</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1353"/>
-        <location filename="main_window_viewer.cpp" line="1419"/>
-        <source>Magnifiying glass</source>
-        <translation>放大鏡</translation>
-    </message>
-    <message>
-        <location filename="main_window_viewer.cpp" line="1426"/>
+        <location filename="main_window_viewer.cpp" line="1423"/>
         <source>Toggle between fit to width and fit to height</source>
-        <translation>切換顯示為&quot;適應寬度&quot;或&quot;適應高度&quot;</translation>
+        <translation>切換顯示為「適應寬度」或「適應高度」</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1354"/>
-        <location filename="main_window_viewer.cpp" line="1430"/>
-        <source>Page adjustement</source>
+        <location filename="main_window_viewer.cpp" line="1351"/>
+        <location filename="main_window_viewer.cpp" line="1427"/>
+        <source>Page adjustment</source>
+        <oldsource>Page adjustement</oldsource>
         <translation>頁面調整</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1108"/>
+        <location filename="main_window_viewer.cpp" line="1106"/>
         <source>The current page is not ready. Please try again later.</source>
         <translation>目前頁面尚未準備就緒。請稍後再試。</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1113"/>
+        <location filename="main_window_viewer.cpp" line="1111"/>
         <source>Overwrite file?</source>
-        <translation type="unfinished"></translation>
+        <translation>要覆寫檔案嗎？</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1113"/>
+        <location filename="main_window_viewer.cpp" line="1111"/>
         <source>The file already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>檔案已存在。要覆寫嗎？</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1119"/>
+        <location filename="main_window_viewer.cpp" line="1117"/>
         <source>The current page could not be saved.</source>
         <translation>無法儲存目前頁面。</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1138"/>
+        <location filename="main_window_viewer.cpp" line="1136"/>
         <source>The selected pages are not ready. Please try again later.</source>
         <translation>所選頁面尚未準備就緒。請稍後再試。</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1149"/>
+        <location filename="main_window_viewer.cpp" line="1147"/>
         <source>The current page could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>無法擷取目前頁面。</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1154"/>
+        <location filename="main_window_viewer.cpp" line="1152"/>
         <source>Overwrite files?</source>
-        <translation type="unfinished"></translation>
+        <translation>要覆寫這些檔案嗎？</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1154"/>
+        <location filename="main_window_viewer.cpp" line="1152"/>
         <source>Some files already exist. Do you want to overwrite them?</source>
-        <translation type="unfinished"></translation>
+        <translation>部分檔案已存在。要覆寫它們嗎？</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1167"/>
+        <location filename="main_window_viewer.cpp" line="1165"/>
         <source>Some pages could not be extracted.</source>
-        <translation type="unfinished"></translation>
+        <translation>部分頁面無法擷取。</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1448"/>
+        <location filename="main_window_viewer.cpp" line="1445"/>
         <source>Autoscroll down</source>
         <translation>向下自動滾動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1451"/>
+        <location filename="main_window_viewer.cpp" line="1448"/>
         <source>Autoscroll up</source>
         <translation>向上自動滾動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1454"/>
+        <location filename="main_window_viewer.cpp" line="1451"/>
         <source>Autoscroll forward, horizontal first</source>
-        <translation>向前自動滾動，水準優先</translation>
+        <translation>向前自動滾動，水平優先</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1458"/>
+        <location filename="main_window_viewer.cpp" line="1455"/>
         <source>Autoscroll backward, horizontal first</source>
-        <translation>向後自動滾動，水準優先</translation>
+        <translation>向後自動滾動，水平優先</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1462"/>
+        <location filename="main_window_viewer.cpp" line="1459"/>
         <source>Autoscroll forward, vertical first</source>
         <translation>向前自動滾動，垂直優先</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1466"/>
+        <location filename="main_window_viewer.cpp" line="1463"/>
         <source>Autoscroll backward, vertical first</source>
         <translation>向後自動滾動，垂直優先</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1470"/>
+        <location filename="main_window_viewer.cpp" line="1467"/>
         <source>Move down</source>
         <translation>向下移動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1473"/>
+        <location filename="main_window_viewer.cpp" line="1470"/>
         <source>Move up</source>
         <translation>向上移動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1476"/>
+        <location filename="main_window_viewer.cpp" line="1473"/>
         <source>Move left</source>
         <translation>向左移動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1479"/>
+        <location filename="main_window_viewer.cpp" line="1476"/>
         <source>Move right</source>
         <translation>向右移動</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1482"/>
+        <location filename="main_window_viewer.cpp" line="1479"/>
         <source>Go to the first page</source>
         <translation>轉到第一頁</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1485"/>
+        <location filename="main_window_viewer.cpp" line="1482"/>
         <source>Go to the last page</source>
         <translation>轉到最後一頁</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1488"/>
+        <location filename="main_window_viewer.cpp" line="1485"/>
         <source>Offset double page to the left</source>
         <translation>雙頁向左偏移</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1490"/>
+        <location filename="main_window_viewer.cpp" line="1487"/>
         <source>Offset double page to the right</source>
         <translation>雙頁向右偏移</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1355"/>
-        <location filename="main_window_viewer.cpp" line="1508"/>
+        <location filename="main_window_viewer.cpp" line="1352"/>
+        <location filename="main_window_viewer.cpp" line="1505"/>
         <source>Reading</source>
         <translation>閱讀</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1557"/>
+        <location filename="main_window_viewer.cpp" line="1553"/>
         <source>There is a new version available</source>
         <translation>有新版本可用</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1558"/>
+        <location filename="main_window_viewer.cpp" line="1554"/>
         <source>Do you want to download the new version?</source>
-        <translation>你要下載新版本嗎?</translation>
+        <translation>您要下載新版本嗎？</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1561"/>
+        <location filename="main_window_viewer.cpp" line="1557"/>
         <source>Remind me in 14 days</source>
         <translation>14天後提醒我</translation>
     </message>
     <message>
-        <location filename="main_window_viewer.cpp" line="1562"/>
+        <location filename="main_window_viewer.cpp" line="1558"/>
         <source>Not now</source>
         <translation>現在不</translation>
     </message>
@@ -1524,42 +1526,42 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="182"/>
         <source>Release notes are not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>版本資訊無法使用。</translation>
     </message>
     <message>
         <location filename="../custom_widgets/whats_new_dialog.cpp" line="238"/>
         <source>Previous versions</source>
-        <translation type="unfinished"></translation>
+        <translation>舊版本</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFieldEdit</name>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="28"/>
+        <location filename="../custom_widgets/yacreader_field_edit.cpp" line="27"/>
         <source>Click to overwrite</source>
         <translation>點擊以覆蓋</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_edit.cpp" line="11"/>
         <source>Restore to default</source>
-        <translation>恢復默認</translation>
+        <translation>恢復預設</translation>
     </message>
 </context>
 <context>
     <name>YACReaderFieldPlainTextEdit</name>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="9"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="19"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="44"/>
-        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="50"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="18"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="43"/>
+        <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="49"/>
         <source>Click to overwrite</source>
         <translation>點擊以覆蓋</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_field_plain_text_edit.cpp" line="10"/>
         <source>Restore to default</source>
-        <translation>恢復默認</translation>
+        <translation>恢復預設</translation>
     </message>
 </context>
 <context>
@@ -1567,7 +1569,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="21"/>
         <source>Save</source>
-        <translation>保存</translation>
+        <translation>儲存</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="22"/>
@@ -1587,12 +1589,12 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="32"/>
         <source>Edit shortcuts</source>
-        <translation>編輯快捷鍵</translation>
+        <translation>編輯快速鍵</translation>
     </message>
     <message>
         <location filename="../custom_widgets/yacreader_options_dialog.cpp" line="27"/>
         <source>Shortcuts</source>
-        <translation>快捷鍵</translation>
+        <translation>快速鍵</translation>
     </message>
 </context>
 <context>
@@ -1600,7 +1602,7 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="width_slider.cpp" line="52"/>
         <source>Reset</source>
-        <translation>重置</translation>
+        <translation>重設</translation>
     </message>
 </context>
 <context>

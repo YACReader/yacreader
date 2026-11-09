@@ -1,0 +1,4 @@
+qt_add_executable(database_migration_test main.cpp)
+yacreader_apply_build_options(database_migration_test)
+target_link_libraries(database_migration_test PRIVATE Qt6::Test Qt6::Sql db_helper library_common)
+add_test(NAME database_migration_test COMMAND database_migration_test)

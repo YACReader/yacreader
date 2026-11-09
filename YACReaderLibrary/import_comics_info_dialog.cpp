@@ -13,7 +13,7 @@ ImportComicsInfoDialog::ImportComicsInfoDialog(QWidget *parent)
     setModal(true);
     setWindowTitle(tr("Import comics info"));
 
-    textLabel = new QLabel(tr("Info database location : "));
+    textLabel = new QLabel(tr("Info database location: "));
     path = new QLineEdit;
     textLabel->setBuddy(path);
 

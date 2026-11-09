@@ -49,6 +49,8 @@ public slots:
     void centerComicFlow(const QModelIndex &mi);
     void updateTableView(int i);
     void saveTableHeadersStatus();
+    void updateStateColumn();
+    void scheduleStateColumnUpdate();
     void saveSplitterStatus();
     void applyModelChanges(const QModelIndex &topLeft, const QModelIndex &bottomRight, const QVector<int> &roles);
     void removeItemsFromFlow(const QModelIndex &parent, int from, int to);
@@ -65,6 +67,7 @@ protected slots:
     void requestedHeaderContextMenu(const QPoint &point);
 
 private:
+    bool stateColumnUpdateScheduled = false;
     YACReaderTableView *tableView;
     QToolBar *toolbar;
     QWidget *comics;
@@ -85,6 +88,7 @@ private:
     void showSearchingIcon();
     void hideSearchingIcon();
     void updateSearchingIconPosition();
+    static QString flowCoverPath(const QModelIndex &index);
 
     QMutex settingsMutex;
 };

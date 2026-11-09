@@ -180,7 +180,7 @@ void MainWindowViewer::syncModeActions(bool manga, bool continuousScroll)
         }
     }
 
-    doubleMangaPageSwitch();
+    refreshPrevNextActions();
 }
 
 MainWindowViewer::~MainWindowViewer()
@@ -267,6 +267,10 @@ void MainWindowViewer::setupUI()
         move(QPoint((widthDesktopResolution - width) / 2, ((heightDesktopResolution - height) - 40) / 2));
         resize(QSize(width, height));
     } else {
+        // Only the FULLSCREEN setting starts the viewer in full screen (see toFullScreen() below);
+        // a full screen state in the saved geometry would leave fullscreen out of sync.
+        if (isFullScreen())
+            setWindowState(windowState() & ~Qt::WindowFullScreen);
         // Guard against the window landing off-screen when a monitor is unplugged
         // between sessions. Qt 6 tries to remap the geometry to the primary screen
         // when the saved screen is gone, but the result can still be off-screen.
@@ -516,10 +520,10 @@ void MainWindowViewer::createActions()
     doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
     doubleMangaPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_MANGA_PAGE_ACTION_Y));
     connect(doubleMangaPageAction, &QAction::triggered, viewer, &Viewer::doubleMangaPageSwitch);
-    connect(doubleMangaPageAction, &QAction::triggered, this, &MainWindowViewer::doubleMangaPageSwitch);
+    connect(doubleMangaPageAction, &QAction::triggered, this, &MainWindowViewer::refreshPrevNextActions);
 
     goToPageAction = new QAction(tr("Go To"), this);
-    goToPageAction->setToolTip(tr("Go to page ..."));
+    goToPageAction->setToolTip(tr("Go to page..."));
     goToPageAction->setData(GO_TO_PAGE_ACTION_Y);
     goToPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(GO_TO_PAGE_ACTION_Y));
     connect(goToPageAction, &QAction::triggered, viewer, &Viewer::showGoToDialog);
@@ -918,6 +922,8 @@ void MainWindowViewer::openComicFromRecentAction(QAction *action)
             openFolderFromPath(action->data().toString());
         }
     } else {
+        // these neighbours belong to the comic shown before, so the reset must not use them
+        previousComicPath = nextComicPath = "";
         viewer->resetContent();
         viewer->showMessageErrorOpening();
     }
@@ -959,17 +965,13 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     QFileInfo fi(path);
     currentComicPath = fi.absoluteFilePath();
 
-    if (!comic.info.title.isNull() && !comic.info.title.toString().isEmpty())
-        setWindowTitle("YACReader - " + comic.info.title.toString());
-    else
-        setWindowTitle("YACReader - " + fi.fileName());
+    setWindowTitle("YACReader - " + titleOrFileName(comic.info, fi.fileName()));
 
     applyLibraryReaderMode(comic.info.type.value<YACReader::FileType>());
 
     viewer->open(path, comic);
     enableActions();
-    int index = siblings.indexOf(comic);
-    updatePrevNextActions(index > 0, index + 1 < siblings.count());
+    updatePrevNextActions(currentSiblingIndex > 0, currentSiblingIndex >= 0 && currentSiblingIndex + 1 < siblings.count());
 
     optionsDialog->setFilters(currentComicDB.info.brightness, currentComicDB.info.contrast, currentComicDB.info.gamma);
 }
@@ -983,16 +985,16 @@ void MainWindowViewer::open(QString path, qint64 comicId, qint64 libraryId, YACR
 
     enableActions();
 
-    currentComicDB.id = comicId;
+    currentComicDB.file.id = ComicId(comicId);
     YACReaderLocalClient client;
     int tries = 1;
     bool success = false;
-    while (!(success = client.requestComicInfo(libraryId, currentComicDB, siblingComics, source)) && tries != 0)
+    while (!(success = client.requestComicInfo(libraryId, currentComicDB, siblingComics, currentSiblingIndex, source)) && tries != 0)
         tries--;
 
     if (success) {
         isClient = true;
-        open(path + currentComicDB.path, currentComicDB, siblingComics);
+        open(path + currentComicDB.file.path, currentComicDB, siblingComics);
     } else {
         isClient = false;
         QMessageBox::information(this, "Connection Error", "Unable to connect to YACReaderLibrary");
@@ -1251,6 +1253,7 @@ void MainWindowViewer::toFullScreen()
     hideToolBars();
     viewer->hide();
     viewer->fullscreen = true; // TODO, change by the right use of windowState();
+    geometryBeforeFullScreen = saveGeometry();
     setWindowState(Qt::WindowFullScreen);
     viewer->show();
     if (viewer->magnifyingGlassIsVisible())
@@ -1340,8 +1343,7 @@ void MainWindowViewer::checkNewVersion()
 void MainWindowViewer::processReset()
 {
     disableActions();
-    if (!isClient || siblingComics.size() <= 1)
-        disablePreviousNextComicActions();
+    refreshPrevNextActions();
 }
 
 void MainWindowViewer::setUpShortcutsManagement()
@@ -1350,8 +1352,8 @@ void MainWindowViewer::setUpShortcutsManagement()
     QMap<QString, std::function<QIcon(const Theme &)>> iconMapping;
     iconMapping[tr("Comics")] = [](const Theme &t) { return t.shortcutsIcons.comicsIcon; };
     iconMapping[tr("General")] = [](const Theme &t) { return t.shortcutsIcons.generalIcon; };
-    iconMapping[tr("Magnifiying glass")] = [](const Theme &t) { return t.shortcutsIcons.magnifyingGlassIcon; };
-    iconMapping[tr("Page adjustement")] = [](const Theme &t) { return t.shortcutsIcons.pageIcon; };
+    iconMapping[tr("Magnifying glass")] = [](const Theme &t) { return t.shortcutsIcons.magnifyingGlassIcon; };
+    iconMapping[tr("Page adjustment")] = [](const Theme &t) { return t.shortcutsIcons.pageIcon; };
     iconMapping[tr("Reading")] = [](const Theme &t) { return t.shortcutsIcons.readingIcon; };
     editShortcutsDialog->setGroupIconMapping(iconMapping);
 
@@ -1416,7 +1418,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                       zoomInMglassAction, zoomOutMglassAction,
                       resetMglassAction };
 
-    editShortcutsDialog->addActionsGroup(tr("Magnifiying glass"), theme.shortcutsIcons.magnifyingGlassIcon,
+    editShortcutsDialog->addActionsGroup(tr("Magnifying glass"), theme.shortcutsIcons.magnifyingGlassIcon,
                                          tmpList = QList<QAction *>()
                                                  << showMagnifyingGlassAction
                                                  << mglassActions);
@@ -1427,7 +1429,7 @@ void MainWindowViewer::setUpShortcutsManagement()
                                                                 CHANGE_FIT_ACTION_Y);
     connect(toggleFitToScreenAction, &QAction::triggered, this, &MainWindowViewer::toggleWidthHeight);
 
-    editShortcutsDialog->addActionsGroup(tr("Page adjustement"), theme.shortcutsIcons.pageIcon,
+    editShortcutsDialog->addActionsGroup(tr("Page adjustment"), theme.shortcutsIcons.pageIcon,
                                          tmpList = QList<QAction *>()
                                                  << adjustHeightAction
                                                  << adjustWidthAction
@@ -1519,11 +1521,10 @@ void MainWindowViewer::setUpShortcutsManagement()
     ShortcutsManager::getShortcutsManager().registerActions(allActions);
 }
 
-void MainWindowViewer::doubleMangaPageSwitch()
+void MainWindowViewer::refreshPrevNextActions()
 {
     if (isClient) {
-        int index = siblingComics.indexOf(currentComicDB);
-        updatePrevNextActions(index > 0, index + 1 < siblingComics.size());
+        updatePrevNextActions(currentSiblingIndex > 0, currentSiblingIndex >= 0 && currentSiblingIndex + 1 < siblingComics.size());
     } else {
         updatePrevNextActions(!previousComicPath.isEmpty(), !nextComicPath.isEmpty());
     }
@@ -1584,10 +1585,9 @@ void MainWindowViewer::closeEvent(QCloseEvent *event)
 
     viewer->save();
     Configuration &conf = Configuration::getConfiguration();
-    // saveGeometry() encodes the current screen, the maximized/fullscreen state, and
-    // the normal (pre-maximize) geometry in one blob, so restoreGeometry() puts the
-    // window back on the right monitor in the right state regardless of how it was closed.
-    conf.setGeometry(saveGeometry());
+    // In full screen, save the geometry from before it: it keeps the maximized state, which
+    // showFullScreen() clears. Full screen at start comes from the FULLSCREEN setting.
+    conf.setGeometry(fullscreen ? geometryBeforeFullScreen : saveGeometry());
 
     event->accept();
 }
@@ -1597,13 +1597,10 @@ void MainWindowViewer::openPreviousComic()
     if (!siblingComics.isEmpty() && isClient) {
         sendComic();
 
-        int currentIndex = siblingComics.indexOf(currentComicDB);
-        if (currentIndex == -1)
-            return;
-        if (currentIndex - 1 >= 0 && currentIndex - 1 < siblingComics.count()) {
-            siblingComics[currentIndex] = currentComicDB; // updated
-            currentComicDB = siblingComics.at(currentIndex - 1);
-            open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
+        if (currentSiblingIndex - 1 >= 0 && currentSiblingIndex - 1 < siblingComics.count()) {
+            storeCurrentComicInSiblings();
+            currentComicDB = siblingComics.at(--currentSiblingIndex);
+            open(currentDirectory + currentComicDB.file.path, currentComicDB, siblingComics);
         }
         return;
     }
@@ -1617,13 +1614,10 @@ void MainWindowViewer::openNextComic()
     if (!siblingComics.isEmpty() && isClient) {
         sendComic();
 
-        int currentIndex = siblingComics.indexOf(currentComicDB);
-        if (currentIndex == -1)
-            return;
-        if (currentIndex + 1 > 0 && currentIndex + 1 < siblingComics.count()) {
-            siblingComics[currentIndex] = currentComicDB; // updated
-            currentComicDB = siblingComics.at(currentIndex + 1);
-            open(currentDirectory + currentComicDB.path, currentComicDB, siblingComics);
+        if (currentSiblingIndex + 1 > 0 && currentSiblingIndex + 1 < siblingComics.count()) {
+            storeCurrentComicInSiblings();
+            currentComicDB = siblingComics.at(++currentSiblingIndex);
+            open(currentDirectory + currentComicDB.file.path, currentComicDB, siblingComics);
         }
 
         return;
@@ -1821,7 +1815,6 @@ void MainWindowViewer::dragEnterEvent(QDragEnterEvent *event)
     // accept just text/uri-list mime format
     if (event->mimeData()->hasFormat("text/uri-list")) {
         event->acceptProposedAction();
-        isClient = false;
     }
 }
 
@@ -1864,19 +1857,27 @@ void MainWindowViewer::sendComic()
 
     viewer->updateComic(currentComicDB);
 
-    int currentIndex = siblingComics.indexOf(currentComicDB);
-    bool sendNextComicInfo = (currentComicDB.info.currentPage == currentComicDB.info.numPages) && (currentIndex + 1 > 0 && currentIndex + 1 < siblingComics.count());
+    bool sendNextComicInfo = (currentComicDB.info.currentPage == currentComicDB.info.numPages) && (currentSiblingIndex + 1 > 0 && currentSiblingIndex + 1 < siblingComics.count());
 
     if (sendNextComicInfo) {
-        ComicDB &nextComic = siblingComics[currentIndex + 1];
+        ComicDB &nextComic = siblingComics[currentSiblingIndex + 1];
         nextComic.info.hasBeenOpened = true;
         int retries = 1;
-        while (!client->sendComicInfo(libraryId, currentComicDB, nextComic.id) && retries != 0)
+        while (!client->sendComicInfo(libraryId, currentComicDB, nextComic.file.id.value()) && retries != 0)
             retries--;
     } else {
         int retries = 1;
         while (!client->sendComicInfo(libraryId, currentComicDB) && retries != 0)
             retries--;
+    }
+}
+
+// the reading state belongs to the comic, so every occurrence gets it
+void MainWindowViewer::storeCurrentComicInSiblings()
+{
+    for (auto &sibling : siblingComics) {
+        if (sibling == currentComicDB)
+            sibling = currentComicDB;
     }
 }
 

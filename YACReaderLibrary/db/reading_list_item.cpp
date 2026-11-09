@@ -6,20 +6,7 @@
 
 #include <QFileIconProvider>
 
-ListItem::ListItem(const QList<QVariant> &data)
-    : itemData(data)
-{
-}
-
-int ListItem::columnCount()
-{
-    return itemData.count();
-}
-
-QVariant ListItem::data(int column) const
-{
-    return itemData.at(column);
-}
+#include <algorithm>
 
 qulonglong ListItem::getId() const
 {
@@ -28,26 +15,23 @@ qulonglong ListItem::getId() const
 
 //------------------------------------------------------
 
-SpecialListItem::SpecialListItem(const QList<QVariant> &data)
-    : ListItem(data)
+SpecialListItem::SpecialListItem(const SpecialList &list)
+    : list(list)
 {
 }
 
 QIcon SpecialListItem::getIcon() const
 {
-    if (itemData.count() > Id) {
-        int id = itemData.at(Id).toInt();
-        const auto &icons = ThemeManager::instance().getCurrentTheme().readingListIcons;
-        switch (id) {
-        case 0:
-            return icons.readingListIcon;
-        case 1:
-            return icons.favoritesIcon;
-        case 2:
-            return icons.currentlyReadingIcon;
-        default:
-            break;
-        }
+    const auto &icons = ThemeManager::instance().getCurrentTheme().readingListIcons;
+    switch (list.id) {
+    case 0:
+        return icons.readingListIcon;
+    case 1:
+        return icons.favoritesIcon;
+    case 2:
+        return icons.currentlyReadingIcon;
+    default:
+        break;
     }
 
     QLOG_WARN() << "Icon for SpecialListItem not available";
@@ -55,42 +39,34 @@ QIcon SpecialListItem::getIcon() const
     return QIcon();
 }
 
+QString SpecialListItem::name() const
+{
+    return list.name;
+}
+
 qulonglong SpecialListItem::getId() const
 {
-    if (itemData.count() > Id) {
-        return itemData.at(Id).toInt();
-    }
-
-    return 0;
+    return list.id;
 }
 
 ReadingListModel::TypeSpecialList SpecialListItem::getType() const
 {
-    if (itemData.count() > Id) {
-        int id = itemData.at(Id).toInt();
-        return (ReadingListModel::TypeSpecialList)id;
-    }
-
-    QLOG_WARN() << "TypeSpecialList not available";
-
-    return (ReadingListModel::TypeSpecialList)0;
+    return (ReadingListModel::TypeSpecialList)list.id;
 }
 
 //------------------------------------------------------
 
-LabelItem::LabelItem(const QList<QVariant> &data)
-    : ListItem(data)
+LabelItem::LabelItem(const Label &label)
+    : label(label)
 {
 }
 
 QIcon LabelItem::getIcon() const
 {
-    if (itemData.count() > Color) {
-        QString color = itemData.at(Color).toString().toLower();
-        const auto &icons = ThemeManager::instance().getCurrentTheme().readingListIcons;
-        if (icons.labelIcons.contains(color)) {
-            return icons.labelIcons[color];
-        }
+    const QString color = label.color.toLower();
+    const auto &icons = ThemeManager::instance().getCurrentTheme().readingListIcons;
+    if (icons.labelIcons.contains(color)) {
+        return icons.labelIcons[color];
     }
 
     QLOG_WARN() << "Icon for label item not available";
@@ -100,60 +76,35 @@ QIcon LabelItem::getIcon() const
 
 YACReader::LabelColors LabelItem::colorid() const
 {
-    if (itemData.count() > Ordering) {
-        return YACReader::LabelColors(itemData.at(Ordering).toInt());
-    }
-
-    QLOG_WARN() << "Label color for label item not available";
-
-    return (YACReader::LabelColors)0;
+    return YACReader::LabelColors(label.ordering);
 }
 
 QString LabelItem::name() const
 {
-    if (itemData.count() > Name) {
-        return itemData.at(Name).toString();
-    }
-
-    QLOG_WARN() << "Name for label item not available";
-
-    return "";
+    return label.name;
 }
 
 void LabelItem::setName(const QString &name)
 {
-    if (itemData.count() > Name) {
-        itemData[Name] = name;
-    }
+    label.name = name;
 }
 
 qulonglong LabelItem::getId() const
 {
-    if (itemData.count() > Id) {
-        return YACReader::LabelColors(itemData.at(Id).toULongLong());
-    }
-
-    QLOG_WARN() << "Id for Label item not available";
-
-    return 0;
+    return label.id.value();
 }
 
 //------------------------------------------------------
 
-ReadingListItem::ReadingListItem(const QList<QVariant> &data, ReadingListItem *p)
-    : ListItem(data), parent(p)
+ReadingListItem::ReadingListItem(const ReadingList &list, ReadingListItem *p)
+    : parent(p), list(list)
 {
 }
 
+// a child list is a list too; folders of lists have their own icon
 QIcon ReadingListItem::getIcon() const
 {
-    const auto &theme = ThemeManager::instance().getCurrentTheme();
-    if (parent->getId() == 0)
-        return theme.readingListIcons.listIcon; // top level list
-    else if (theme.sidebarIcons.useSystemFolderIcons)
-        return QFileIconProvider().icon(QFileIconProvider::Folder);
-    else
-        return theme.navigationTree.folderIcon; // sublist
+    return ThemeManager::instance().getCurrentTheme().readingListIcons.listIcon;
 }
 
 int ReadingListItem::childCount() const
@@ -217,43 +168,27 @@ void ReadingListItem::removeChild(ReadingListItem *item)
 
 qulonglong ReadingListItem::getId() const
 {
-    if (itemData.count() > Id)
-        return itemData.at(Id).toULongLong();
-
-    QLOG_WARN() << "Name for reading list item not available";
-
-    return 0;
+    return list.id.value();
 }
 
 QString ReadingListItem::name() const
 {
-    if (itemData.count() > Name)
-        return itemData.at(Name).toString();
-
-    QLOG_WARN() << "Name for reading list item not available";
-
-    return "";
+    return list.name;
 }
 
 void ReadingListItem::setName(const QString &name)
 {
-    if (itemData.count() > Name)
-        itemData[Name] = name;
+    list.name = name;
 }
 
 int ReadingListItem::getOrdering() const
 {
-    if (itemData.count() > Ordering)
-        return itemData[Ordering].toInt();
-
-    QLOG_WARN() << "Ordering for Item not available";
-    return 0;
+    return list.ordering;
 }
 
 void ReadingListItem::setOrdering(const int ordering)
 {
-    if (itemData.count() > Ordering)
-        itemData[Ordering] = ordering;
+    list.ordering = ordering;
 }
 
 QList<ReadingListItem *> ReadingListItem::children()
@@ -269,12 +204,146 @@ int ReadingListItem::row() const
     return 0;
 }
 
-ReadingListSeparatorItem::ReadingListSeparatorItem()
-    : ListItem(QList<QVariant>())
+SmartListItem::SmartListItem(const ::SmartList &list)
+    : list(list)
 {
 }
+
+QIcon SmartListItem::getIcon() const
+{
+    return ThemeManager::instance().getCurrentTheme().readingListIcons.smartListIcon;
+}
+
+QString SmartListItem::name() const
+{
+    return list.name;
+}
+
+qulonglong SmartListItem::getId() const
+{
+    return list.id.value();
+}
+
+//------------------------------------------------------
+
+ListFolderItem::ListFolderItem(const ListFolder &folder)
+    : folder(folder)
+{
+}
+
+ListFolderItem::~ListFolderItem()
+{
+    qDeleteAll(folders);
+    qDeleteAll(lists);
+}
+
+// the icon of the folders of the library tree
+QIcon ListFolderItem::getIcon() const
+{
+    const auto &theme = ThemeManager::instance().getCurrentTheme();
+    if (theme.sidebarIcons.useSystemFolderIcons)
+        return QFileIconProvider().icon(QFileIconProvider::Folder);
+    return theme.navigationTree.folderIcon;
+}
+
+QString ListFolderItem::name() const
+{
+    return folder.name;
+}
+
+qulonglong ListFolderItem::getId() const
+{
+    return folder.id.id;
+}
+
+int ListFolderItem::childCount() const
+{
+    return folders.count() + lists.count();
+}
+
+ListItem *ListFolderItem::child(int row) const
+{
+    if (row < folders.count())
+        return folders.at(row);
+    return lists.at(row - folders.count());
+}
+
+int ListFolderItem::rowOf(const ListItem *child) const
+{
+    for (int i = 0; i < folders.count(); ++i) {
+        if (folders.at(i) == child)
+            return i;
+    }
+    const auto list = lists.indexOf(const_cast<ListItem *>(child));
+    return list < 0 ? -1 : folders.count() + list;
+}
+
+int ListFolderItem::insertFolderByName(ListFolderItem *item)
+{
+    item->container = this;
+    const auto row = rowForFolderName(item->name());
+    folders.insert(row, item);
+    return row;
+}
+
+int ListFolderItem::insertListByName(ListItem *item)
+{
+    const auto row = rowForListName(item->name());
+    lists.insert(row - folders.count(), item);
+    return row;
+}
+
+void ListFolderItem::appendFolder(ListFolderItem *item)
+{
+    item->container = this;
+    folders.append(item);
+}
+
+void ListFolderItem::appendList(ListItem *item)
+{
+    lists.append(item);
+}
+
+void ListFolderItem::sortByName()
+{
+    const auto name = [](const ListItem *item) { return item->name(); };
+    sortListSectionItems(folders, name);
+    sortListSectionItems(lists, name);
+}
+
+int ListFolderItem::rowForFolderName(const QString &name, const ListItem *ignored) const
+{
+    return std::count_if(folders.cbegin(), folders.cend(), [&](const ListFolderItem *folder) {
+        return folder != ignored && naturalSortLessThanCI(folder->name(), name);
+    });
+}
+
+int ListFolderItem::rowForListName(const QString &name, const ListItem *ignored) const
+{
+    return folders.count() + std::count_if(lists.cbegin(), lists.cend(), [&](const ListItem *list) {
+               return list != ignored && naturalSortLessThanCI(list->name(), name);
+           });
+}
+
+void ListFolderItem::removeChild(ListItem *item)
+{
+    for (int i = 0; i < folders.count(); ++i) {
+        if (folders.at(i) == item) {
+            folders.removeAt(i);
+            return;
+        }
+    }
+    lists.removeOne(item);
+}
+
+//------------------------------------------------------
 
 QIcon ReadingListSeparatorItem::getIcon() const
 {
     return QIcon();
+}
+
+QString ReadingListSeparatorItem::name() const
+{
+    return QString();
 }

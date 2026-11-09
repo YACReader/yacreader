@@ -32,7 +32,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
         int currentRating;
         unsigned long long lastTimeOpened;
         QString hash;
-        QMap<qulonglong, QList<ComicInfo>> comics;
+        QMap<qulonglong, QList<ComicProgressUpdate>> comics;
         QList<ComicInfo> comicsWithNoLibrary;
 
         const auto libraries = DBHelper::getLibraries();
@@ -75,7 +75,6 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                 ComicInfo info;
                 info.currentPage = currentPage;
                 info.hash = hash; // TODO remove the hash check and add UUIDs for libraries
-                info.id = comicId;
 
                 currentRating = comicInfoProgress.at(5).toInt();
                 info.rating = currentRating;
@@ -94,9 +93,9 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                 }
 
                 if (!comics.contains(libraryId)) {
-                    comics[libraryId] = QList<ComicInfo>();
+                    comics[libraryId] = QList<ComicProgressUpdate>();
                 }
-                comics[libraryId].push_back(info);
+                comics[libraryId].push_back({ ComicId(comicId), info });
             } else { // iOS
                 if (comicInfoProgress.length() < 6) {
                     continue;
@@ -111,7 +110,6 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                     ComicInfo info;
                     info.currentPage = currentPage;
                     info.hash = hash; // TODO remove the hash check and add UUIDs for libraries
-                    info.id = comicId;
 
                     currentRating = comicInfoProgress.at(4).toInt();
                     info.rating = currentRating;
@@ -124,7 +122,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                     }
 
                     if (!comics.contains(libraryId)) {
-                        comics[libraryId] = QList<ComicInfo>();
+                        comics[libraryId] = QList<ComicProgressUpdate>();
                     }
 
                     if (comicInfoProgress.length() >= 9) { // info includes image filters
@@ -134,7 +132,7 @@ void SyncControllerV2::service(HttpRequest &request, HttpResponse &response)
                         clientSendsImageFilters = true;
                     }
 
-                    comics[libraryId].push_back(info);
+                    comics[libraryId].push_back({ ComicId(comicId), info });
 
                 } else {
                     hash = comicInfoProgress.at(2);

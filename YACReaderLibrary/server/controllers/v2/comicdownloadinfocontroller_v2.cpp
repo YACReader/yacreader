@@ -20,13 +20,15 @@ void ComicDownloadInfoControllerV2::service(HttpRequest &request, HttpResponse &
     qulonglong libraryId = pathElements.at(3).toLongLong();
     qulonglong comicId = pathElements.at(5).toULongLong();
 
-    ComicDB comic = DBHelper::getComicInfo(libraryId, comicId);
+    auto loadedComic = DBHelper::getComicInfo(libraryId, comicId);
 
-    if (!comic.info.existOnDb) {
+    if (!loadedComic) {
         response.setStatus(404, "Not Found");
         response.write("", true);
         return;
     }
+
+    ComicDB &comic = *loadedComic;
 
     // TODO: check if the comic wasn't found;
     response.write(QString("fileName:%1\r\n").arg(comic.getFileName()).toUtf8());
