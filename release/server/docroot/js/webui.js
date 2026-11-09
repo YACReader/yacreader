@@ -2328,7 +2328,7 @@
           throw unreadableError;
         }
 
-        var savedPage = Number(comic.current_page) || 1;
+        var savedPage = comic.read ? 1 : Number(comic.current_page) || 1;
         var currentPage = Math.min(numPages - 1, Math.max(0, savedPage - 1));
         var requestedPage = currentPage;
         var pageRequestVersion = 0;
