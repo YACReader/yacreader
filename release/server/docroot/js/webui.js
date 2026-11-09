@@ -1638,7 +1638,7 @@
         if (options.continueReading) {
           showReader(comicId, true, comic, card);
         } else {
-          showComic(comicId, true, card);
+          showComic(comicId, true, card, options.listContext);
         }
       });
 
@@ -2308,9 +2308,29 @@
       return result;
     }
 
-    function showReader(comicId, pushHistory, existingComic, returnToCard) {
+    function listContextFromHistory(comicId) {
+      var state = history.state;
+      return state && String(state.itemId) === String(comicId) && state.listContext || null;
+    }
+
+    function showListOfContext(listContext) {
+      if (comicLists[listContext.view]) {
+        showComicList(comicLists[listContext.view], true);
+      } else {
+        showList(listSections[listContext.view], listContext.id, true);
+      }
+    }
+
+    // options.listContext: the list that sets the previous and next comic, else the folder of the comic does;
+    // options.continued: opened from the previous or next comic, so the reader stays on the screen
+    function showReader(comicId, pushHistory, existingComic, returnToCard, options) {
+      options = options || {};
+      var listContext = options.listContext || (pushHistory ? null : listContextFromHistory(comicId));
       startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
+      if (options.continued) {
+        document.body.classList.add("web-reader-active");
+      }
       setSearchVisible(false);
       var version = ++navigationVersion;
       showNavigationLoading();
@@ -2339,6 +2359,8 @@
         var hasDisplayedPage = false;
         var lastSyncedPage = null;
         var comicOpened = false;
+        var neighbours = { previous: null, next: null };
+        var comicOverlay = null;
 
         setPageHeading(title);
         setBrowserBack(null);
@@ -2391,8 +2413,8 @@
 
         function updateNavigation() {
           pageIndicator.textContent = (requestedPage + 1) + " / " + numPages;
-          previousButton.disabled = !comicOpened || requestedPage <= 0;
-          nextButton.disabled = !comicOpened || requestedPage >= numPages - 1;
+          previousButton.disabled = !comicOpened || (requestedPage <= 0 && !neighbours.previous);
+          nextButton.disabled = !comicOpened || (requestedPage >= numPages - 1 && !neighbours.next);
         }
 
         function syncProgress() {
@@ -2405,7 +2427,7 @@
           progressSyncPromise = fetch(comicProgressApi(comicId), {
             method: "POST",
             headers: headers,
-            body: "currentPage:" + (currentPage + 1) + "\n",
+            body: "currentPage:" + (currentPage + 1) + "\n" + (currentPage === numPages - 1 && neighbours.next ? neighbours.next.id : ""),
             keepalive: true
           }).catch(function () {
           });
@@ -2548,6 +2570,123 @@
           });
         }
 
+        function neighboursFromOpenResponse(text) {
+          var values = {};
+          text.split(/\r?\n/).forEach(function (line) {
+            var separator = line.indexOf(":");
+            var key = line.slice(0, separator);
+            if (separator > 0 && !(key in values)) {
+              values[key] = line.slice(separator + 1);
+            }
+          });
+          return {
+            previous: values.previousComic ? { id: values.previousComic, hash: values.previousComicHash } : null,
+            next: values.nextComic ? { id: values.nextComic, hash: values.nextComicHash } : null
+          };
+        }
+
+        function loadNeighboursFromList() {
+          fetchJson(listContext.api).then(function (items) {
+            if (destroyed) {
+              return;
+            }
+            var comics = items.filter(function (item) { return item.type === "comic"; });
+            var position = listContext.position;
+            // a comic can be in a list more than once, so its position comes first
+            if (!comics[position] || String(comics[position].id) !== String(comicId)) {
+              position = comics.findIndex(function (item) { return String(item.id) === String(comicId); });
+            }
+            if (position < 0) {
+              return;
+            }
+            function neighbourAt(index) {
+              var item = comics[index];
+              return item ? { id: item.id, hash: item.hash, position: index } : null;
+            }
+            neighbours = { previous: neighbourAt(position - 1), next: neighbourAt(position + 1) };
+            updateNavigation();
+          }).catch(function () {
+          });
+        }
+
+        function openNeighbour(direction) {
+          var neighbour = neighbours[direction];
+          showReader(String(neighbour.id), false, null, null, {
+            listContext: listContext ? Object.assign({}, listContext, { position: neighbour.position }) : null,
+            continued: true
+          });
+        }
+
+        function closeComicOverlay() {
+          if (comicOverlay) {
+            comicOverlay.element.remove();
+            comicOverlay = null;
+          }
+        }
+
+        function showComicOverlay(direction) {
+          closeComicOverlay();
+
+          var overlay = element("div", "reader-comic-overlay " + direction);
+          overlay.addEventListener("click", function (event) {
+            if (event.target === overlay) {
+              closeComicOverlay();
+            }
+          });
+
+          var coverButton = element("button", "reader-comic-overlay-cover");
+          coverButton.type = "button";
+          coverButton.setAttribute("aria-label", direction === "next" ? "Open the next comic" : "Open the previous comic");
+          coverButton.addEventListener("click", function () {
+            openNeighbour(direction);
+          });
+          var cover = element("img");
+          cover.alt = "";
+          cover.addEventListener("error", function () {
+            cover.src = "/images/webui/unavailableCover.svg";
+          }, { once: true });
+          cover.src = coverUrl({ type: "comic", hash: neighbours[direction].hash }) || "/images/webui/unavailableCover.svg";
+          coverButton.appendChild(cover);
+
+          var closeButton = element("button", "reader-comic-overlay-close", "Close");
+          closeButton.type = "button";
+          closeButton.addEventListener("click", exitReader);
+
+          overlay.append(coverButton, closeButton);
+          stage.appendChild(overlay);
+          comicOverlay = { element: overlay, direction: direction };
+          coverButton.focus({ preventScroll: true });
+        }
+
+        function goBeyondComic(direction) {
+          if (!neighbours[direction]) {
+            return;
+          }
+          if (comicOverlay && comicOverlay.direction === direction) {
+            openNeighbour(direction);
+          } else {
+            showComicOverlay(direction);
+          }
+        }
+
+        function goToPrevious() {
+          if (requestedPage > 0) {
+            closeComicOverlay();
+            loadPage(requestedPage - 1);
+          } else {
+            goBeyondComic("previous");
+          }
+        }
+
+        function goToNext() {
+          if (requestedPage < numPages - 1) {
+            closeComicOverlay();
+            loadPage(requestedPage + 1);
+          } else {
+            goBeyondComic("next");
+          }
+        }
+
         function openComicAndLoad() {
           errorState.hidden = true;
           loading.hidden = false;
@@ -2559,8 +2698,15 @@
             if (!response.ok) {
               throw new Error("Comic request failed with status " + response.status);
             }
+            return response.text();
+          }).then(function (text) {
             if (destroyed) {
               return;
+            }
+            if (listContext) {
+              loadNeighboursFromList();
+            } else {
+              neighbours = neighboursFromOpenResponse(text);
             }
             comicOpened = true;
             loadPage(requestedPage);
@@ -2590,27 +2736,29 @@
           }
           if (event.key === "ArrowLeft" || event.key === "PageUp") {
             event.preventDefault();
-            if (requestedPage > 0) {
-              loadPage(requestedPage - 1);
-            }
+            goToPrevious();
           } else if (event.key === "ArrowRight" || event.key === "PageDown" || event.key === " ") {
             event.preventDefault();
-            if (requestedPage < numPages - 1) {
-              loadPage(requestedPage + 1);
-            }
+            goToNext();
           } else if (event.key === "Home") {
             event.preventDefault();
+            closeComicOverlay();
             if (requestedPage > 0) {
               loadPage(0);
             }
           } else if (event.key === "End") {
             event.preventDefault();
+            closeComicOverlay();
             if (requestedPage < numPages - 1) {
               loadPage(numPages - 1);
             }
           } else if (event.key === "Escape") {
             event.preventDefault();
-            exitReader();
+            if (comicOverlay) {
+              closeComicOverlay();
+            } else {
+              exitReader();
+            }
           }
         }
 
@@ -2650,13 +2798,14 @@
           if (Math.abs(wheelDelta) < 50) {
             return;
           }
-          var step = wheelDelta > 0 ? 1 : -1;
+          var forward = wheelDelta > 0;
           wheelDelta = 0;
           wheelLocked = true;
           wheelTurnTime = Date.now();
-          var targetPage = requestedPage + step;
-          if (targetPage >= 0 && targetPage < numPages) {
-            loadPage(targetPage);
+          if (forward) {
+            goToNext();
+          } else {
+            goToPrevious();
           }
         }
 
@@ -2666,12 +2815,8 @@
           }
         }
 
-        previousButton.addEventListener("click", function () {
-          loadPage(requestedPage - 1);
-        });
-        nextButton.addEventListener("click", function () {
-          loadPage(requestedPage + 1);
-        });
+        previousButton.addEventListener("click", goToPrevious);
+        nextButton.addEventListener("click", goToNext);
         retryButton.addEventListener("click", function () {
           if (comicOpened) {
             loadPage(requestedPage);
@@ -2707,7 +2852,12 @@
           ? Boolean(history.state.fromComicDetail)
           : false;
         var url = readerUrl(comicId);
-        var state = { view: "reader", itemId: comicId, fromComicDetail: pushHistory || existingReaderState };
+        var state = {
+          view: "reader",
+          itemId: comicId,
+          fromComicDetail: !options.continued && (pushHistory || existingReaderState),
+          listContext: listContext
+        };
         finishHistoryNavigation(state, url, pushHistory, version);
 
         updateNavigation();
@@ -2723,7 +2873,8 @@
       });
     }
 
-    function showComic(comicId, pushHistory, returnToCard) {
+    function showComic(comicId, pushHistory, returnToCard, listContext) {
+      listContext = listContext || (pushHistory ? null : listContextFromHistory(comicId));
       startHistoryNavigation(pushHistory, returnToCard);
       leaveReader();
       setSearchVisible(false);
@@ -2746,7 +2897,11 @@
         var parentId = String(comic.parent_id || "1");
 
         setPageHeading(title);
-        setBrowserBack(parentId);
+        if (listContext) {
+          setBrowserBackTo(function () { showListOfContext(listContext); });
+        } else {
+          setBrowserBack(parentId);
+        }
         renderBreadcrumbs(browserBreadcrumbParts(trail, title));
 
         browserRoot.removeAttribute("aria-busy");
@@ -2769,7 +2924,7 @@
         var read = element("button", "secondary-button comic-read-button", "Read");
         read.type = "button";
         read.addEventListener("click", function () {
-          showReader(comicId, true, comic);
+          showReader(comicId, true, comic, null, { listContext: listContext });
         });
         coverColumn.appendChild(read);
 
@@ -2973,7 +3128,7 @@
         browserRoot.appendChild(detail);
 
         var url = comicUrl(comicId);
-        var state = { view: "comic", itemId: comicId };
+        var state = { view: "comic", itemId: comicId, listContext: listContext };
         finishHistoryNavigation(state, url, pushHistory, version);
       }).catch(function (error) {
         if (version !== navigationVersion) {
@@ -3319,9 +3474,11 @@
             section.artClassFor ? "list-state-icon " + section.artClassFor(list) : ""));
         } else {
           var grid = element("div", "browser-grid");
+          var listContext = { view: section.kind, id: listId, api: v3Api("/" + section.kind + "/" + encodeURIComponent(listId) + "/content") };
+          var comicPosition = 0;
           items.forEach(function (item) {
             if (item.type === "comic") {
-              grid.appendChild(comicCard(item));
+              grid.appendChild(comicCard(item, { listContext: Object.assign({}, listContext, { position: comicPosition++ }) }));
             } else if (isMissingComic(item)) {
               grid.appendChild(missingComicCard(item, container));
             }
@@ -3367,8 +3524,9 @@
           browserRoot.appendChild(emptyState(empty[0], empty[1]));
         } else {
           var grid = element("div", "browser-grid");
-          comics.forEach(function (comic) {
-            grid.appendChild(comicCard(comic));
+          var listContext = { view: list.view, id: "", api: list.api() };
+          comics.forEach(function (comic, position) {
+            grid.appendChild(comicCard(comic, { listContext: Object.assign({}, listContext, { position: position }) }));
           });
           browserRoot.appendChild(grid);
         }
