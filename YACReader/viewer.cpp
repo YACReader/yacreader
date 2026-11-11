@@ -445,6 +445,12 @@ void Viewer::goToFirstPage()
 }
 void Viewer::goToLastPage()
 {
+    if (doublePage && !continuousScroll) {
+        direction = 1;
+        render->goToLastPage();
+        return;
+    }
+
     goTo(this->render->numPages() - 1);
 }
 void Viewer::goTo(unsigned int page)
@@ -464,6 +470,7 @@ void Viewer::goTo(unsigned int page)
 
 void Viewer::onImageOptionsChanged()
 {
+    render->updateDoublePageSettings();
     if (continuousScroll) {
         continuousWidget->invalidateScaledImageCache();
     } else {

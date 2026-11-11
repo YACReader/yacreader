@@ -2,6 +2,12 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.5.1
+
+### YACReader
+
+* Fix double page mode when turning pages quickly. It also improves the double page mode behavior.
+
 ## 10.5.0
 
 ### YACReader
@@ -55,7 +61,6 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### All GUI apps
 
 * Fix the apps sometimes getting stuck in fullscreen mode after a restart. YACReaderLibrary no longer starts in fullscreen mode, and YACReader still does when you close it in fullscreen mode, but you can always leave it.
-
 
 ## 10.4.0
 
