@@ -8,6 +8,11 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 * Fix double page mode when turning pages quickly. It also improves the double page mode behavior.
 
+### YACReaderLibrary
+
+* Show the search menu button next to the clear button so "save as smart list" actually works (Windows & Linux).
+* Don't use the QML cache on Linux systems that have the risk to use a stale cache causing white content screens (which are actualy failures at runtime).
+
 ## 10.5.0
 
 ### YACReader
