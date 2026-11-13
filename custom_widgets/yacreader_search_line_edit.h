@@ -36,8 +36,11 @@ private:
     QToolButton *menuButton;
     QLabel *searchLabel;
 
+    void positionButtons();
+
     int paddingLeft;
     int paddingRight;
+    int basePaddingRight;
 };
 
 #endif // YACREADER_SEARCH_LINE_EDIT_H
