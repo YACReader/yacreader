@@ -139,6 +139,13 @@ int main(int argc, char **argv)
         qputenv("QT_D3D_NO_FLIP", "1");
 #endif
 
+#ifdef Q_OS_LINUX
+    // Reproducible builds (Flatpak, Nix, distro packages) give QML files a fixed timestamp, so the
+    // QML disk cache is never invalidated and stale compiled QML is loaded after updates.
+    if (!qEnvironmentVariableIsSet("QML_DISABLE_DISK_CACHE") && !qEnvironmentVariableIsSet("QML_FORCE_DISK_CACHE"))
+        qputenv("QML_DISABLE_DISK_CACHE", "1");
+#endif
+
     QApplication app(argc, argv);
 
     app.setApplicationName("YACReaderLibrary");

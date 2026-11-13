@@ -6,8 +6,12 @@
 #include <QStyle>
 #include <QToolButton>
 
+namespace {
+const int menuButtonSpacing = 2;
+}
+
 YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
-    : QLineEdit(parent), paddingLeft(0), paddingRight(0)
+    : QLineEdit(parent), paddingLeft(0), paddingRight(0), basePaddingRight(0)
 {
     clearButton = new QToolButton(this);
     menuButton = new QToolButton(this);
@@ -30,7 +34,8 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
 
     int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
     paddingLeft = 15 + frameWidth + 6 + 5;
-    paddingRight = 12 + frameWidth + 10;
+    basePaddingRight = 12 + frameWidth + 10;
+    paddingRight = basePaddingRight;
 
     QSize msz = minimumSizeHint();
     setMinimumSize(qMax(msz.width(), clearButton->sizeHint().height() + frameWidth * 2 + 2),
@@ -49,7 +54,11 @@ YACReaderSearchLineEdit::YACReaderSearchLineEdit(QWidget *parent)
 void YACReaderSearchLineEdit::setSearchMenu(QMenu *menu)
 {
     menuButton->setMenu(menu);
-    menuButton->setVisible(menu != nullptr && QLineEdit::text().isEmpty());
+    menuButton->setVisible(menu != nullptr);
+
+    paddingRight = basePaddingRight + (menu != nullptr ? menuButton->width() + menuButtonSpacing : 0);
+    applyTheme(theme);
+    positionButtons();
 }
 
 void YACReaderSearchLineEdit::applyTheme(const Theme &theme)
@@ -101,22 +110,29 @@ const QString YACReaderSearchLineEdit::text()
 
 void YACReaderSearchLineEdit::resizeEvent(QResizeEvent *)
 {
-    const QSize clearSize = clearButton->sizeHint();
-    const int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
-    const int marginRight = style()->pixelMetric(QStyle::PM_LayoutRightMargin);
-    const int menuX = rect().right() - frameWidth - menuButton->width() - marginRight - 6;
-    menuButton->move(menuX, (height() - menuButton->height()) / 2);
-    clearButton->move(rect().right() - frameWidth - clearSize.width() - marginRight - 6,
-                      (rect().bottom() + 2 - clearSize.height()) / 2);
+    positionButtons();
 
     QSize szl = searchLabel->sizeHint();
     searchLabel->move(8, (rect().bottom() + 2 - szl.height()) / 2);
 }
 
+void YACReaderSearchLineEdit::positionButtons()
+{
+    const QSize clearSize = clearButton->sizeHint();
+    const int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
+    const int marginRight = style()->pixelMetric(QStyle::PM_LayoutRightMargin);
+    const int rightEdge = rect().right() - frameWidth - marginRight - 6;
+    const int menuX = rightEdge - menuButton->width();
+    menuButton->move(menuX, (height() - menuButton->height()) / 2);
+
+    const int clearRight = menuButton->menu() != nullptr ? menuX - menuButtonSpacing : rightEdge;
+    clearButton->move(clearRight - clearSize.width(),
+                      (rect().bottom() + 2 - clearSize.height()) / 2);
+}
+
 void YACReaderSearchLineEdit::updateCloseButton(const QString &text)
 {
     clearButton->setVisible(!text.isEmpty());
-    menuButton->setVisible(menuButton->menu() != nullptr && text.isEmpty());
 }
 
 void YACReaderSearchLineEdit::processText(const QString &text)

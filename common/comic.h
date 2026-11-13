@@ -110,6 +110,8 @@ signals:
     void errorOpening();
     void errorOpening(QString);
     void crcErrorFound(QString);
+    // the page could not be extracted, its data will never be loaded
+    void pageFailed(int index);
     void isBookmark(bool);
     void bookmarksUpdated();
     void isCover();

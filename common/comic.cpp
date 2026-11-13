@@ -496,6 +496,7 @@ void FileComic::crcError(int index)
     QStringList pageNumbers;
     for (int page : pages) {
         pageNumbers.append(QString::number(page + 1));
+        emit pageFailed(page);
     }
 
     const QString affectedPages = pageNumbers.isEmpty() ? QString::number(index + 1) : pageNumbers.join(QStringLiteral(", "));
