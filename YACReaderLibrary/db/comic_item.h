@@ -71,6 +71,8 @@ QList<ComicItem> loadReadingList(ReadingListId readingListId, QSqlDatabase &db, 
 std::optional<QList<ComicItem>> loadSmartList(SmartListId smartListId, QSqlDatabase &db);
 // the comics with a file added in the last `days` days, the newest first
 QList<ComicItem> loadRecent(qint64 days, QSqlDatabase &db);
+// the comics of the Favorites list, in their order
+QList<ComicItem> loadFavorites(QSqlDatabase &db);
 
 bool folderLessThan(const ComicItem &c1, const ComicItem &c2);
 // search results and smart lists: each series stays together, in volume and number order

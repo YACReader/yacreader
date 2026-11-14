@@ -1026,16 +1026,7 @@ QList<ComicItem> ComicModel::createFavoritesModelData(const QString &databasePat
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
-        selectQuery.setForwardOnly(true);
-        selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
-                                                                         "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                                                         "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
-                                                                         "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
-                                                                         "ORDER BY cdrl.ordering");
-        selectQuery.bindValue(":parentDefaultListId", 1);
-        selectQuery.exec();
-        modelData = ComicItems::fromQuery(selectQuery);
+        modelData = ComicItems::loadFavorites(db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
