@@ -78,6 +78,7 @@ public:
         LastKnownNameRole,
         ListItemIdRole,
         ListIdRole,
+        FullTitleWithoutNumberOrFileNameRole,
     };
 
     enum Mode {

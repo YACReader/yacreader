@@ -235,6 +235,7 @@ void ComicModelTest::identityRolesFollowTheCase()
     QCOMPARE(roles.value(ComicModel::LastKnownNameRole), QByteArray("last_known_name"));
     QCOMPARE(roles.value(ComicModel::ListItemIdRole), QByteArray("list_item_id"));
     QCOMPARE(roles.value(ComicModel::ListIdRole), QByteArray("list_id"));
+    QCOMPARE(roles.value(ComicModel::FullTitleWithoutNumberOrFileNameRole), QByteArray("full_title_without_number_or_file_name"));
 }
 
 void ComicModelTest::rowIdsNameEachOccurrence()
@@ -436,6 +437,7 @@ void ComicModelTest::deletedComicRowsShowTheirInfoAndLastKnownFile()
     QVERIFY(deleted.data(ComicModel::FileNameRole).isNull());
     QCOMPARE(deleted.data(ComicModel::TitleRole).toString(), QString("Title 3"));
     QCOMPARE(deleted.data(ComicModel::ReadableTitle).toString(), QString("Series 3 #3 - Title 3"));
+    QCOMPARE(deleted.data(ComicModel::FullTitleWithoutNumberOrFileNameRole).toString(), QString("Series 3 - Title 3"));
     QCOMPARE(deleted.data(ComicModel::RatingRole).toInt(), 3);
     QCOMPARE(model.index(0, ComicModel::FileName).data().toString(), QString("c3.cbz"));
     QCOMPARE(model.index(0, ComicModel::Path).data().toString(), QString("/Series/c3.cbz"));
@@ -904,6 +906,7 @@ void ComicModelTest::placeholderRowsShowTheirMetadata()
     model.setupReadingListModelData(1, dataPath);
     QCOMPARE(index.data(ComicModel::TitleRole).toString(), QString("-"));
     QCOMPARE(index.data(ComicModel::ReadableTitle).toString(), QString("-"));
+    QCOMPARE(index.data(ComicModel::FullTitleWithoutNumberOrFileNameRole).toString(), QString("-"));
     QVERIFY(model.index(2, ComicModel::Title).data(Qt::DisplayRole).isNull());
     QVERIFY(exec("UPDATE placeholder SET title = 'Actual title' WHERE id = 1"));
     model.setupReadingListModelData(1, dataPath);
