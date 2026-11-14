@@ -233,6 +233,19 @@ QString titleIncludingNumber(const DescriptiveComicMetadata &info, const QString
     return title;
 }
 
+QString fullTitle(const DescriptiveComicMetadata &info, const QString &fileName)
+{
+    if (!hasText(info.series))
+        return titleIncludingNumber(info, fileName);
+
+    auto title = info.series.toString();
+    if (hasText(info.number))
+        title += " #" + info.number.toString();
+    if (hasText(info.title))
+        title += " - " + info.title.toString();
+    return title;
+}
+
 QString infoTitle(const DescriptiveComicMetadata &info, const QString &fileName)
 {
     if (hasText(info.number) && hasText(info.title) && hasText(info.series))
