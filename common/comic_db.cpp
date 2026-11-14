@@ -246,6 +246,13 @@ QString fullTitle(const DescriptiveComicMetadata &info, const QString &fileName)
     return title;
 }
 
+QString fullTitleWithoutNumber(const DescriptiveComicMetadata &info, const QString &fileName)
+{
+    if (hasText(info.series) && hasText(info.title))
+        return info.series.toString() + " - " + info.title.toString();
+    return titleOrFileName(info, fileName);
+}
+
 QString parentFolderName(const QString &path)
 {
     QStringList paths = path.split('/');

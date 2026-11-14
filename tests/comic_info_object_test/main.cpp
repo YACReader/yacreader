@@ -318,24 +318,25 @@ void ComicInfoObjectTest::titleFallback_data()
     QTest::addColumn<QString>("expected");
     QTest::addColumn<QString>("expectedWithNumber");
     QTest::addColumn<QString>("expectedFull");
+    QTest::addColumn<QString>("expectedFullWithoutNumber");
 
-    QTest::newRow("title") << QVariant("The Long Night") << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night" << "Batman #3 - The Long Night";
-    QTest::newRow("title and series") << QVariant("The Long Night") << QVariant("Batman") << QVariant() << QVariant() << "b.cbz" << "The Long Night" << "The Long Night" << "Batman - The Long Night";
-    QTest::newRow("title and number") << QVariant("The Long Night") << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night" << "#3 - The Long Night";
-    QTest::newRow("title only") << QVariant("The Long Night") << QVariant() << QVariant() << QVariant() << "b.cbz" << "The Long Night" << "The Long Night" << "The Long Night";
-    QTest::newRow("series and number") << QVariant() << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "Batman" << "Batman #3" << "Batman #3";
-    QTest::newRow("empty title") << QVariant("") << QVariant("Batman") << QVariant() << QVariant("3") << "b.cbz" << "Batman" << "Batman #3" << "Batman #3";
-    QTest::newRow("series") << QVariant() << QVariant("Batman") << QVariant() << QVariant() << "b.cbz" << "Batman" << "Batman" << "Batman";
-    QTest::newRow("volume and number") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant("1") << "The Red Mother #001.cbr" << "The Red Mother" << "#1 - The Red Mother" << "#1 - The Red Mother";
-    QTest::newRow("volume without file") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant("1") << "" << "The Red Mother" << "#1 - The Red Mother" << "#1 - The Red Mother";
-    QTest::newRow("volume") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant() << "" << "The Red Mother" << "The Red Mother" << "The Red Mother";
-    QTest::newRow("whitespace metadata") << QVariant("  ") << QVariant(" ") << QVariant("The Red Mother") << QVariant("0") << "" << "The Red Mother" << "#0 - The Red Mother" << "#0 - The Red Mother";
-    QTest::newRow("number with file") << QVariant() << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz";
-    QTest::newRow("number without file") << QVariant() << QVariant() << QVariant() << QVariant("3") << "" << "" << "#3" << "#3";
-    QTest::newRow("fractional number") << QVariant() << QVariant() << QVariant("Annual") << QVariant("1.5") << "" << "Annual" << "#1.5 - Annual" << "#1.5 - Annual";
-    QTest::newRow("file name") << QVariant() << QVariant() << QVariant() << QVariant() << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz";
-    QTest::newRow("blank metadata with file") << QVariant("") << QVariant(" ") << QVariant(" ") << QVariant(" ") << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz";
-    QTest::newRow("nothing") << QVariant() << QVariant() << QVariant() << QVariant() << "" << "" << "" << "";
+    QTest::newRow("title") << QVariant("The Long Night") << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night" << "Batman #3 - The Long Night" << "Batman - The Long Night";
+    QTest::newRow("title and series") << QVariant("The Long Night") << QVariant("Batman") << QVariant() << QVariant() << "b.cbz" << "The Long Night" << "The Long Night" << "Batman - The Long Night" << "Batman - The Long Night";
+    QTest::newRow("title and number") << QVariant("The Long Night") << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night" << "#3 - The Long Night" << "The Long Night";
+    QTest::newRow("title only") << QVariant("The Long Night") << QVariant() << QVariant() << QVariant() << "b.cbz" << "The Long Night" << "The Long Night" << "The Long Night" << "The Long Night";
+    QTest::newRow("series and number") << QVariant() << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "Batman" << "Batman #3" << "Batman #3" << "Batman";
+    QTest::newRow("empty title") << QVariant("") << QVariant("Batman") << QVariant() << QVariant("3") << "b.cbz" << "Batman" << "Batman #3" << "Batman #3" << "Batman";
+    QTest::newRow("series") << QVariant() << QVariant("Batman") << QVariant() << QVariant() << "b.cbz" << "Batman" << "Batman" << "Batman" << "Batman";
+    QTest::newRow("volume and number") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant("1") << "The Red Mother #001.cbr" << "The Red Mother" << "#1 - The Red Mother" << "#1 - The Red Mother" << "The Red Mother";
+    QTest::newRow("volume without file") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant("1") << "" << "The Red Mother" << "#1 - The Red Mother" << "#1 - The Red Mother" << "The Red Mother";
+    QTest::newRow("volume") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant() << "" << "The Red Mother" << "The Red Mother" << "The Red Mother" << "The Red Mother";
+    QTest::newRow("whitespace metadata") << QVariant("  ") << QVariant(" ") << QVariant("The Red Mother") << QVariant("0") << "" << "The Red Mother" << "#0 - The Red Mother" << "#0 - The Red Mother" << "The Red Mother";
+    QTest::newRow("number with file") << QVariant() << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz";
+    QTest::newRow("number without file") << QVariant() << QVariant() << QVariant() << QVariant("3") << "" << "" << "#3" << "#3" << "";
+    QTest::newRow("fractional number") << QVariant() << QVariant() << QVariant("Annual") << QVariant("1.5") << "" << "Annual" << "#1.5 - Annual" << "#1.5 - Annual" << "Annual";
+    QTest::newRow("file name") << QVariant() << QVariant() << QVariant() << QVariant() << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz";
+    QTest::newRow("blank metadata with file") << QVariant("") << QVariant(" ") << QVariant(" ") << QVariant(" ") << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz";
+    QTest::newRow("nothing") << QVariant() << QVariant() << QVariant() << QVariant() << "" << "" << "" << "" << "";
 }
 
 void ComicInfoObjectTest::titleFallback()
@@ -348,6 +349,7 @@ void ComicInfoObjectTest::titleFallback()
     QFETCH(QString, expected);
     QFETCH(QString, expectedWithNumber);
     QFETCH(QString, expectedFull);
+    QFETCH(QString, expectedFullWithoutNumber);
 
     DescriptiveComicMetadata info;
     info.title = title;
@@ -357,6 +359,7 @@ void ComicInfoObjectTest::titleFallback()
     QCOMPARE(titleOrFileName(info, fileName), expected);
     QCOMPARE(titleIncludingNumber(info, fileName), expectedWithNumber);
     QCOMPARE(fullTitle(info, fileName), expectedFull);
+    QCOMPARE(fullTitleWithoutNumber(info, fileName), expectedFullWithoutNumber);
 
     ComicInfo deleted;
     static_cast<DescriptiveComicMetadata &>(deleted) = info;

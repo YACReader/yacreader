@@ -118,6 +118,7 @@ Q_DECLARE_METATYPE(ComicDB)
 QString titleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName);
 QString titleIncludingNumber(const DescriptiveComicMetadata &info, const QString &fileName);
 QString fullTitle(const DescriptiveComicMetadata &info, const QString &fileName);
+QString fullTitleWithoutNumber(const DescriptiveComicMetadata &info, const QString &fileName);
 // the name of the folder that holds `path` (a path in the library, with '/')
 QString parentFolderName(const QString &path);
 
