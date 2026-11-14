@@ -575,7 +575,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     QHash<int, QByteArray> roles;
 
     roles[NumberRole] = "number";
-    roles[TitleRole] = "title";
+    roles[ShortTitleWithoutNumberOrFileNameRole] = "short_title_without_number_or_file_name";
     roles[FileNameRole] = "file_name";
     roles[NumPagesRole] = "num_pages";
     roles[IdRole] = "id";
@@ -588,7 +588,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[HasBeenOpenedRole] = "has_been_opened";
     roles[CoverPathRole] = "cover_path";
     roles[PublicationDate] = "date";
-    roles[ReadableTitle] = "readable_title";
+    roles[FullTitleOrFileNameRole] = "full_title_or_file_name";
     roles[AddedRole] = "added_date";
     roles[TypeRole] = "type";
     roles[ShowRecentRole] = "show_recent";
@@ -659,9 +659,9 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 
     if (role == NumberRole)
         return value(Number);
-    else if (role == TitleRole)
+    else if (role == ShortTitleWithoutNumberOrFileNameRole)
         return title();
-    else if (role == ReadableTitle) {
+    else if (role == FullTitleOrFileNameRole) {
         const auto &metadata = rowMetadata(item);
         // Continue-reading cards and action labels have no separate number field.
         return orDash(fullTitleOrFileName(metadata, rowFileName(item)));

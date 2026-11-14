@@ -87,7 +87,7 @@ Rectangle {
                     anchors { top: cover.bottom; left: cover.left; right: cover.right; leftMargin: 4; rightMargin: 4; topMargin: 4 }
                     maximumLineCount: 2
                     wrapMode: Text.WordWrap
-                    text: readable_title
+                    text: full_title_or_file_name
                     elide: Text.ElideRight
                     color: itemTitleColor
                     font.letterSpacing: fontSpacing

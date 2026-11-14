@@ -277,7 +277,7 @@ void ReadingListManagementCoordinator::exportReadingList(const QModelIndex &list
             const auto index = listModel.index(row, 0);
             const auto &metadata = recordMetadata(listModel.record(index));
             const auto cover = index.data(ComicModel::CoverPathRole).toUrl();
-            entries.append({ index.data(ComicModel::TitleRole).toString(),
+            entries.append({ index.data(ComicModel::ShortTitleWithoutNumberOrFileNameRole).toString(),
                              readingListPageDetails(metadata.series.toString(), metadata.number.toString(), metadata.volume.toString(), metadata.date.toString()),
                              QByteArray(),
                              !index.data(ComicModel::AvailableRole).toBool() });

@@ -40,7 +40,7 @@ private:
 // grid role -> comic model role
 static const QList<QPair<int, int>> forwardedRoles = {
     { GridContentModel::IdRole, ComicModel::IdRole },
-    { GridContentModel::ReadableTitleRole, ComicModel::ReadableTitle },
+    { GridContentModel::ReadableTitleRole, ComicModel::FullTitleOrFileNameRole },
     { GridContentModel::KindRole, ComicModel::KindRole },
     { GridContentModel::AvailableRole, ComicModel::AvailableRole },
     { GridContentModel::LastKnownNameRole, ComicModel::LastKnownNameRole },
@@ -115,7 +115,7 @@ void GridContentModelTest::comicRowsForwardTheComicRoles()
             QCOMPARE(viewIndex.data(GridContentModel::ItemKindRole).toInt(), int(GridContentModel::ComicItem));
             for (const auto &[gridRole, comicRole] : forwardedRoles)
                 QCOMPARE(viewIndex.data(gridRole), sourceIndex.data(comicRole));
-            QCOMPARE(viewIndex.data(GridContentModel::TitleRole), sourceIndex.data(list ? ComicModel::FullTitleWithoutNumberOrFileNameRole : ComicModel::TitleRole));
+            QCOMPARE(viewIndex.data(GridContentModel::TitleRole), sourceIndex.data(list ? ComicModel::FullTitleWithoutNumberOrFileNameRole : ComicModel::ShortTitleWithoutNumberOrFileNameRole));
         }
     }
 

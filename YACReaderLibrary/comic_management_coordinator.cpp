@@ -475,7 +475,7 @@ void ComicManagementCoordinator::saveSelectedCoversTo()
         if (name.isEmpty())
             name = comic.data(ComicModel::LastKnownNameRole).toString();
         if (name.isEmpty())
-            name = comic.data(ComicModel::ReadableTitle).toString();
+            name = comic.data(ComicModel::FullTitleOrFileNameRole).toString();
         const auto destination = QDir(destinationFolder).filePath(name + ".jpg");
 
         QLOG_DEBUG() << "From : " << origin;

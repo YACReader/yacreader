@@ -51,7 +51,7 @@ public:
 
     enum Roles {
         NumberRole = Qt::UserRole + 1,
-        TitleRole,
+        ShortTitleWithoutNumberOrFileNameRole,
         FileNameRole,
         NumPagesRole,
         IdRole,
@@ -64,7 +64,7 @@ public:
         HasBeenOpenedRole,
         CoverPathRole,
         PublicationDateRole,
-        ReadableTitle,
+        FullTitleOrFileNameRole,
         AddedRole,
         TypeRole,
         ShowRecentRole,

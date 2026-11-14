@@ -111,7 +111,7 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
     case NumberRole:
         return sourceIndex.data(ComicModel::NumberRole);
     case TitleRole:
-        return sourceIndex.data(comicModel->getMode() == ComicModel::Folder ? ComicModel::TitleRole : ComicModel::FullTitleWithoutNumberOrFileNameRole);
+        return sourceIndex.data(comicModel->getMode() == ComicModel::Folder ? ComicModel::ShortTitleWithoutNumberOrFileNameRole : ComicModel::FullTitleWithoutNumberOrFileNameRole);
     case FileNameRole:
         return sourceIndex.data(ComicModel::FileNameRole);
     case NumPagesRole:
@@ -137,7 +137,7 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
     case RecentRangeRole:
         return sourceIndex.data(ComicModel::RecentRangeRole);
     case ReadableTitleRole:
-        return sourceIndex.data(ComicModel::ReadableTitle);
+        return sourceIndex.data(ComicModel::FullTitleOrFileNameRole);
     case KindRole:
         return sourceIndex.data(ComicModel::KindRole);
     case AvailableRole:
