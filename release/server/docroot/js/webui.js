@@ -987,7 +987,7 @@
         return value !== undefined && value !== null && String(value).trim() !== "";
       };
       if (hasText(item.title) && hasText(item.universal_number)) {
-        return "#" + item.universal_number + " — " + item.title;
+        return "#" + item.universal_number + " - " + item.title;
       }
       if (hasText(item.title)) {
         return String(item.title);
@@ -999,7 +999,7 @@
         return String(item.series);
       }
       if (hasText(item.volume) && hasText(item.universal_number)) {
-        return "#" + item.universal_number + " — " + item.volume;
+        return "#" + item.universal_number + " - " + item.volume;
       }
       if (hasText(item.volume)) {
         return String(item.volume);
