@@ -421,6 +421,7 @@ void ComicModelTest::reorderMovesADeletedComic()
 void ComicModelTest::deletedComicRowsShowTheirInfoAndLastKnownFile()
 {
     QVERIFY(exec("DELETE FROM comic WHERE id = 3"));
+    QVERIFY(exec("UPDATE comic_info SET series = 'Series 3' WHERE id = 3"));
 
     ComicModel model;
     model.setupReadingListModelData(1, dataPath);
@@ -434,7 +435,7 @@ void ComicModelTest::deletedComicRowsShowTheirInfoAndLastKnownFile()
     QVERIFY(deleted.data(ComicModel::IdRole).isNull());
     QVERIFY(deleted.data(ComicModel::FileNameRole).isNull());
     QCOMPARE(deleted.data(ComicModel::TitleRole).toString(), QString("Title 3"));
-    QCOMPARE(deleted.data(ComicModel::ReadableTitle).toString(), QString("#3 - Title 3"));
+    QCOMPARE(deleted.data(ComicModel::ReadableTitle).toString(), QString("Series 3 #3 - Title 3"));
     QCOMPARE(deleted.data(ComicModel::RatingRole).toInt(), 3);
     QCOMPARE(model.index(0, ComicModel::FileName).data().toString(), QString("c3.cbz"));
     QCOMPARE(model.index(0, ComicModel::Path).data().toString(), QString("/Series/c3.cbz"));

@@ -663,7 +663,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     else if (role == ReadableTitle) {
         const auto &metadata = rowMetadata(item);
         // Continue-reading cards and action labels have no separate number field.
-        return orDash(titleIncludingNumber(metadata, rowFileName(item)));
+        return orDash(fullTitle(metadata, rowFileName(item)));
     } else if (role == FileNameRole)
         return rowComic(item) ? value(FileName) : QVariant();
     else if (role == RatingRole)
