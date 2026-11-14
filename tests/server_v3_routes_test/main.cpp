@@ -40,6 +40,9 @@ private slots:
     void coverIsRevalidatedWithItsETag();
     void tagsHaveTheOrderOfTheSidebar();
     void recentHasTheComicsAddedInTheLastDays();
+    void favoritesHaveTheOrderOfTheList();
+    void readingHasTheOpenedComicsThatAreNotRead();
+    void searchHasTheFoldersAndTheComicsOfTheDesktopSearch();
     void listItemsAreTheItemsOfTheSections();
     void coversOutsideTheCoversFolderAreNotFound();
     void folderInfoHasTheComicsAndPlaceholdersOfTheWholeTree();
@@ -112,7 +115,7 @@ void ServerV3RoutesTest::versionIsTheVersionOfV3()
     for (const auto &path : { QString("/v3/version"), QString("/v3/version/") }) {
         const auto answer = server->request("GET", path);
         QCOMPARE(answer.status, 200);
-        QCOMPARE(answer.body, QByteArray("3.0"));
+        QCOMPARE(answer.body, QByteArray("3.1"));
     }
     QCOMPARE(server->request("GET", "/v2/version").body, QByteArray("2.3"));
 }
@@ -127,7 +130,7 @@ void ServerV3RoutesTest::unknownRoutesAreNotFound()
 {
     const auto library = QString("/v3/library/%1").arg(libraryId);
     // the routes that stay in v2 are not in v3
-    for (const auto &path : { QString("/v3"), QString("/v3/"), QString("/v3/versions"), QString("/v3/libraries"), library + "/favs", library + "/reading",
+    for (const auto &path : { QString("/v3"), QString("/v3/"), QString("/v3/versions"), QString("/v3/libraries"),
                               library + "/comic/1/fullinfo", QString("/v3/library/77/folder/1/content") }) {
         const auto answer = server->request("GET", path);
         QCOMPARE(answer.status, 404);
@@ -338,6 +341,67 @@ void ServerV3RoutesTest::recentHasTheComicsAddedInTheLastDays()
     }
     QCOMPARE(server->request("GET", "/v3/library/77/recent").status, 404);
     QCOMPARE(server->request("POST", library + "/recent").status, 405);
+}
+
+void ServerV3RoutesTest::favoritesHaveTheOrderOfTheList()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(itemKeys(items(library + "/favs")), QStringList());
+
+    QVERIFY(exec("INSERT INTO comic_default_reading_list (comic_id, default_reading_list_id, ordering) VALUES (2, 1, 1), (3, 1, 0)"));
+    const auto favorites = items(library + "/favs/");
+    QCOMPARE(itemKeys(favorites), QStringList({ "comic 3", "comic 2" }));
+    QCOMPARE(favorites.at(1).toObject().value("series").toString(), QString("Beta"));
+    QCOMPARE(favorites.at(1).toObject().value("title").toString(), QString("Two"));
+    QCOMPARE(favorites.at(1).toObject().value("universal_number").toString(), QString("2"));
+    QVERIFY(exec("DELETE FROM comic_default_reading_list"));
+
+    QCOMPARE(server->request("GET", "/v3/library/77/favs").status, 404);
+    QCOMPARE(server->request("POST", library + "/favs").status, 405);
+}
+
+void ServerV3RoutesTest::readingHasTheOpenedComicsThatAreNotRead()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(itemKeys(items(library + "/reading")), QStringList());
+
+    QVERIFY(exec("UPDATE comic_info SET hasBeenOpened = 1, read = 0, lastTimeOpened = 100 WHERE id = 1"));
+    QVERIFY(exec("UPDATE comic_info SET hasBeenOpened = 1, read = 0, lastTimeOpened = 300 WHERE id = 2"));
+    QVERIFY(exec("UPDATE comic_info SET hasBeenOpened = 1, read = 1, lastTimeOpened = 200 WHERE id = 3"));
+    const auto reading = items(library + "/reading/");
+    QCOMPARE(itemKeys(reading), QStringList({ "comic 2", "comic 1" }));
+    QCOMPARE(reading.at(0).toObject().value("series").toString(), QString("Beta"));
+    QCOMPARE(reading.at(0).toObject().value("title").toString(), QString("Two"));
+    QCOMPARE(reading.at(0).toObject().value("universal_number").toString(), QString("2"));
+    QVERIFY(exec("UPDATE comic_info SET hasBeenOpened = 0, read = 0, lastTimeOpened = NULL"));
+
+    QCOMPARE(server->request("GET", "/v3/library/77/reading").status, 404);
+    QCOMPARE(server->request("POST", library + "/reading").status, 405);
+}
+
+void ServerV3RoutesTest::searchHasTheFoldersAndTheComicsOfTheDesktopSearch()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto search = [&](const QByteArray &body) {
+        const auto answer = server->request("POST", library + "/search", body);
+        if (answer.status != 200 || answer.contentType != "application/json")
+            qWarning() << body << answer.status << answer.contentType;
+        return QJsonDocument::fromJson(answer.body).array();
+    };
+
+    // the folder of the comics that match, then the comics by series, volume, and number
+    const auto results = search("{\"query\":\"beta\"}");
+    QCOMPARE(itemKeys(results), QStringList({ "folder 2", "comic 2", "comic 1" }));
+    QCOMPARE(results.at(1).toObject().value("series").toString(), QString("Beta"));
+    QCOMPARE(results.at(1).toObject().value("title").toString(), QString("Two"));
+    QCOMPARE(results.at(1).toObject().value("universal_number").toString(), QString("2"));
+    // a query that cannot be parsed and a body without a query have no results
+    QCOMPARE(itemKeys(search("{\"query\":\"series:(batman\"}")), QStringList());
+    QCOMPARE(itemKeys(search("{}")), QStringList());
+    QCOMPARE(itemKeys(search("")), QStringList());
+
+    QCOMPARE(server->request("POST", "/v3/library/77/search", "{\"query\":\"beta\"}").status, 404);
+    QCOMPARE(server->request("GET", library + "/search").status, 405);
 }
 
 static QJsonObject itemObject(TestHttpServer &server, const QString &path)

@@ -240,6 +240,15 @@ QList<ComicItem> loadFavorites(QSqlDatabase &db)
     return fromQuery(query);
 }
 
+QList<ComicItem> loadReading(QSqlDatabase &db)
+{
+    static const QString sql = "SELECT " + ComicDB::selectList("c", "ci") + " FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) WHERE ci.hasBeenOpened = 1 AND ci.read = 0 ORDER BY ci.lastTimeOpened DESC";
+    QSqlQuery query(db);
+    query.setForwardOnly(true);
+    query.exec(sql);
+    return fromQuery(query);
+}
+
 bool folderLessThan(const ComicItem &c1, const ComicItem &c2)
 {
     return comicNumberLessThan(rowMetadata(c1).number, rowFileName(c1), rowMetadata(c2).number, rowFileName(c2));

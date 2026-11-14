@@ -1057,15 +1057,7 @@ QList<ComicItem> ComicModel::createReadingModelData(const QString &databasePath)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
-        selectQuery.setForwardOnly(true);
-        selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
-                                                                         "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                                                         "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
-                                                                         "ORDER BY ci.lastTimeOpened DESC");
-        selectQuery.exec();
-
-        modelData = ComicItems::fromQuery(selectQuery);
+        modelData = ComicItems::loadReading(db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
