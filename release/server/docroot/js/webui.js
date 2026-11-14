@@ -986,7 +986,7 @@
     }
 
     // Display labels only; never substitute these fallbacks into server metadata.
-    function readableComicTitle(item) {
+    function shortTitleOrFileName(item) {
       if (hasText(item.title) && hasText(item.universal_number)) {
         return "#" + item.universal_number + " - " + item.title;
       }
@@ -1017,7 +1017,7 @@
 
     function fullTitleOrFileName(item) {
       if (!hasText(item.series)) {
-        return readableComicTitle(item);
+        return shortTitleOrFileName(item);
       }
       var title = String(item.series);
       if (hasText(item.universal_number)) {
@@ -1682,7 +1682,7 @@
       }
 
       var copy = element("div", "browser-card-copy");
-      copy.appendChild(element("div", "browser-card-title", options.folderContent ? readableComicTitle(comic) : fullTitleOrFileName(comic)));
+      copy.appendChild(element("div", "browser-card-title", options.folderContent ? shortTitleOrFileName(comic) : fullTitleOrFileName(comic)));
       var meta = options.continueReading && currentPage > 0 && numPages > 0
         ? "Page " + currentPage + " of " + numPages
         : numPages === 1 ? "1 page" : numPages + " pages";
@@ -1735,7 +1735,7 @@
       });
 
       var copy = element("div", "browser-card-copy");
-      copy.appendChild(element("div", "browser-card-title", container.kind === "folder" ? readableComicTitle(item) : fullTitleOrFileName(item)));
+      copy.appendChild(element("div", "browser-card-title", container.kind === "folder" ? shortTitleOrFileName(item) : fullTitleOrFileName(item)));
       var numPages = Number(item.num_pages) || 0;
       copy.appendChild(element("div", "browser-card-meta", numPages ? (numPages === 1 ? "1 page" : numPages + " pages") : ""));
 
