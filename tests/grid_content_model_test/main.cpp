@@ -96,7 +96,7 @@ bool GridContentModelTest::exec(const QString &sql)
 
 void GridContentModelTest::comicRowsForwardTheComicRoles()
 {
-    QVERIFY(exec("UPDATE comic_info SET series = 'Series 2' WHERE id = 2"));
+    QVERIFY(exec("UPDATE comic_info SET series = 'Batman', number = '7', title = 'The Long Night' WHERE id = 2"));
 
     ComicModel comics;
     GridContentModel grid;
@@ -122,11 +122,11 @@ void GridContentModelTest::comicRowsForwardTheComicRoles()
     QCOMPARE(grid.index(0, 0).data(GridContentModel::KindRole).toString(), QString("ComicInList"));
     QCOMPARE(grid.index(0, 0).data(GridContentModel::ListItemIdRole).toULongLong(), 7ULL);
     QCOMPARE(grid.index(1, 0).data(GridContentModel::ListIdRole).toULongLong(), 1ULL);
-    QCOMPARE(grid.index(0, 0).data(GridContentModel::TitleRole).toString(), QString("Series 2 - Title 2"));
-    QCOMPARE(grid.index(0, 0).data(GridContentModel::ReadableTitleRole).toString(), QString("Series 2 #2 - Title 2"));
+    QCOMPARE(grid.index(0, 0).data(GridContentModel::TitleRole).toString(), QString("Batman - The Long Night"));
+    QCOMPARE(grid.index(0, 0).data(GridContentModel::ReadableTitleRole).toString(), QString("Batman #7 - The Long Night"));
 
     comics.setupFolderModelData(2, dataPath);
-    QCOMPARE(grid.index(1, 0).data(GridContentModel::TitleRole).toString(), QString("Title 2"));
+    QCOMPARE(grid.index(1, 0).data(GridContentModel::TitleRole).toString(), QString("The Long Night"));
 }
 
 void GridContentModelTest::folderRowsHaveOnlyTheirTitle()
