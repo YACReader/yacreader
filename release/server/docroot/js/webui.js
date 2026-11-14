@@ -981,11 +981,12 @@
       return item.type === "deleted_comic" || item.type === "placeholder";
     }
 
+    function hasText(value) {
+      return value !== undefined && value !== null && String(value).trim() !== "";
+    }
+
     // Display labels only; never substitute these fallbacks into server metadata.
     function readableComicTitle(item) {
-      var hasText = function (value) {
-        return value !== undefined && value !== null && String(value).trim() !== "";
-      };
       if (hasText(item.title) && hasText(item.universal_number)) {
         return "#" + item.universal_number + " - " + item.title;
       }
@@ -1012,6 +1013,20 @@
         return "#" + item.universal_number;
       }
       return "-";
+    }
+
+    function fullTitleOrFileName(item) {
+      if (!hasText(item.series)) {
+        return readableComicTitle(item);
+      }
+      var title = String(item.series);
+      if (hasText(item.universal_number)) {
+        title += " #" + item.universal_number;
+      }
+      if (hasText(item.title)) {
+        title += " - " + item.title;
+      }
+      return title;
     }
 
     function setPageHeading(title) {
@@ -2340,7 +2355,7 @@
           return;
         }
 
-        var title = readableComicTitle(comic);
+        var title = fullTitleOrFileName(comic);
         var numPages = Math.max(0, Number(comic.num_pages) || 0);
         if (!numPages) {
           var unreadableError = new Error("This comic has no readable pages.");
@@ -2893,7 +2908,7 @@
 
         var comic = results[0];
         var trail = results[1];
-        var title = readableComicTitle(comic);
+        var title = fullTitleOrFileName(comic);
         var parentId = String(comic.parent_id || "1");
 
         setPageHeading(title);
@@ -3570,7 +3585,7 @@
 
         var item = results[0];
         var trail = results[1];
-        var title = readableComicTitle(item);
+        var title = fullTitleOrFileName(item);
 
         setPageHeading(title);
         if (container.kind === "folder") {
