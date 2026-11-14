@@ -513,7 +513,7 @@ QString ComicInfoObject::getAlternateSeriesString() const
 
 QString ComicInfoObject::getTitleOrFileName() const
 {
-    return orDash(titleOrFileName(recordMetadata(record), fileName));
+    return orDash(shortTitleWithoutNumberOrFileName(recordMetadata(record), fileName));
 }
 
 qulonglong ComicInfoObject::getFileSize() const
@@ -527,12 +527,12 @@ qulonglong ComicInfoObject::getFileSize() const
 
 QString ComicInfoObject::getTitleIncludingNumber() const
 {
-    return orDash(titleIncludingNumber(recordMetadata(record), fileName));
+    return orDash(shortTitleOrFileName(recordMetadata(record), fileName));
 }
 
 QString ComicInfoObject::getFullTitle() const
 {
-    return orDash(fullTitle(recordMetadata(record), fileName));
+    return orDash(fullTitleOrFileName(recordMetadata(record), fileName));
 }
 
 // Display fallback only; never stored in the comic's metadata.

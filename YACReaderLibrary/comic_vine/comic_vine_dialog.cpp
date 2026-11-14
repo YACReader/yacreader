@@ -138,7 +138,7 @@ void ComicVineDialog::goNext()
             status = ScraperStatus::AutoSearching;
             mode = ScraperMode::SingleComicInList;
             const auto &comic = comics[currentIndex];
-            QString title = titleOrFileName(recordMetadata(comic), recordFileName(comic));
+            QString title = shortTitleWithoutNumberOrFileName(recordMetadata(comic), recordFileName(comic));
             titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
 
             showLoading(tr("Looking for volume..."));
@@ -257,7 +257,7 @@ void ComicVineDialog::show()
 
         const auto &singleComic = comics[0];
 
-        QString title = titleOrFileName(recordMetadata(singleComic), recordFileName(singleComic));
+        QString title = shortTitleWithoutNumberOrFileName(recordMetadata(singleComic), recordFileName(singleComic));
         titleHeader->setSubTitle(title);
 
         showSearchSingleComic(volumeSearchStringFromComic(singleComic));
@@ -686,7 +686,7 @@ void ComicVineDialog::goToNextComic()
 
     const auto &comic = comics[currentIndex];
 
-    QString title = titleOrFileName(recordMetadata(comic), recordFileName(comic));
+    QString title = shortTitleWithoutNumberOrFileName(recordMetadata(comic), recordFileName(comic));
     titleHeader->setSubTitle(tr("comic %1 of %2 - %3").arg(currentIndex + 1).arg(comics.length()).arg(title));
 
     showSearchSingleComic(volumeSearchStringFromComic(comic));

@@ -356,10 +356,10 @@ void ComicInfoObjectTest::titleFallback()
     info.series = series;
     info.volume = volume;
     info.number = number;
-    QCOMPARE(titleOrFileName(info, fileName), expected);
-    QCOMPARE(titleIncludingNumber(info, fileName), expectedWithNumber);
-    QCOMPARE(fullTitle(info, fileName), expectedFull);
-    QCOMPARE(fullTitleWithoutNumber(info, fileName), expectedFullWithoutNumber);
+    QCOMPARE(shortTitleWithoutNumberOrFileName(info, fileName), expected);
+    QCOMPARE(shortTitleOrFileName(info, fileName), expectedWithNumber);
+    QCOMPARE(fullTitleOrFileName(info, fileName), expectedFull);
+    QCOMPARE(fullTitleWithoutNumberOrFileName(info, fileName), expectedFullWithoutNumber);
 
     ComicInfo deleted;
     static_cast<DescriptiveComicMetadata &>(deleted) = info;

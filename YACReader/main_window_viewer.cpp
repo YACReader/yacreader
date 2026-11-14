@@ -965,7 +965,7 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     QFileInfo fi(path);
     currentComicPath = fi.absoluteFilePath();
 
-    setWindowTitle("YACReader - " + fullTitle(comic.info, fi.fileName()));
+    setWindowTitle("YACReader - " + fullTitleOrFileName(comic.info, fi.fileName()));
 
     applyLibraryReaderMode(comic.info.type.value<YACReader::FileType>());
 

@@ -640,7 +640,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     const auto value = [&item](int column) { return columnValue(item, column); };
     // Display fallback only; the metadata and API keep their original values.
     const auto orDash = [](const QString &title) { return title.isEmpty() ? QStringLiteral("-") : title; };
-    const auto title = [&] { return orDash(titleOrFileName(rowMetadata(item), rowFileName(item))); };
+    const auto title = [&] { return orDash(shortTitleWithoutNumberOrFileName(rowMetadata(item), rowFileName(item))); };
 
     auto sizeString = [=] {
         auto bytes = value(ComicModel::Hash).toString().right(value(ComicModel::Hash).toString().length() - 40).toULongLong();
@@ -664,9 +664,9 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     else if (role == ReadableTitle) {
         const auto &metadata = rowMetadata(item);
         // Continue-reading cards and action labels have no separate number field.
-        return orDash(fullTitle(metadata, rowFileName(item)));
+        return orDash(fullTitleOrFileName(metadata, rowFileName(item)));
     } else if (role == FullTitleWithoutNumberOrFileNameRole)
-        return orDash(fullTitleWithoutNumber(rowMetadata(item), rowFileName(item)));
+        return orDash(fullTitleWithoutNumberOrFileName(rowMetadata(item), rowFileName(item)));
     else if (role == FileNameRole)
         return rowComic(item) ? value(FileName) : QVariant();
     else if (role == RatingRole)
