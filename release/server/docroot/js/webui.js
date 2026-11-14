@@ -1020,6 +1020,9 @@
         return shortTitleOrFileName(item);
       }
       var title = String(item.series);
+      if (hasText(item.volume) && String(item.volume).trim() !== title.trim()) {
+        title += " " + item.volume;
+      }
       if (hasText(item.universal_number)) {
         title += " #" + item.universal_number;
       }
