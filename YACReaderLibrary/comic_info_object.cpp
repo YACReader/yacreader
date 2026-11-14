@@ -520,7 +520,7 @@ qulonglong ComicInfoObject::getFileSize() const
     return info->hash.right(info->hash.length() - 40).toLongLong();
 }
 
-QString ComicInfoObject::getFullTitle() const
+QString ComicInfoObject::getFullTitleOrFileName() const
 {
     return orDash(fullTitleOrFileName(recordMetadata(record), fileName));
 }

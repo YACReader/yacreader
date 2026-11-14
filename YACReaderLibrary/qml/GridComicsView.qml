@@ -273,7 +273,7 @@ SplitView {
                                 font.pixelSize: 21
                                 wrapMode: Text.WordWrap
 
-                                text: currentComic?.getFullTitle() ?? ""
+                                text: currentComic?.getFullTitleOrFileName() ?? ""
                             }
 
                             Flow {

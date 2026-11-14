@@ -144,7 +144,7 @@ Rectangle {
                     font.pixelSize: mainContainer.compact ? 18 : 21;
                     wrapMode: Text.WordWrap
 
-                    text: comic ? comic.getFullTitle() ?? "" : ""
+                    text: comic ? comic.getFullTitleOrFileName() ?? "" : ""
                 }
 
                 RowLayout

@@ -177,7 +177,7 @@ public:
     Q_INVOKABLE QString getAlternateSeriesString() const;
 
     Q_INVOKABLE qulonglong getFileSize() const;
-    Q_INVOKABLE QString getFullTitle() const;
+    Q_INVOKABLE QString getFullTitleOrFileName() const;
 
 signals:
     void readChanged();
