@@ -91,7 +91,7 @@ public:
     qulonglong getFileSize() const;
 
     QString getTitleIncludingNumber() const;
-    QString getInfoTitle() const;
+    QString getFullTitle() const;
 
     QString toTXT() const;
 
@@ -118,7 +118,6 @@ Q_DECLARE_METATYPE(ComicDB)
 QString titleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName);
 QString titleIncludingNumber(const DescriptiveComicMetadata &info, const QString &fileName);
 QString fullTitle(const DescriptiveComicMetadata &info, const QString &fileName);
-QString infoTitle(const DescriptiveComicMetadata &info, const QString &fileName);
 // the name of the folder that holds `path` (a path in the library, with '/')
 QString parentFolderName(const QString &path);
 

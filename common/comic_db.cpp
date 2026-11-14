@@ -196,9 +196,9 @@ QString ComicDB::getTitleIncludingNumber() const
     return titleIncludingNumber(info, QFileInfo(file.path).fileName());
 }
 
-QString ComicDB::getInfoTitle() const
+QString ComicDB::getFullTitle() const
 {
-    return infoTitle(info, QFileInfo(file.path).fileName());
+    return fullTitle(info, QFileInfo(file.path).fileName());
 }
 
 static bool hasText(const QVariant &value)
@@ -244,23 +244,6 @@ QString fullTitle(const DescriptiveComicMetadata &info, const QString &fileName)
     if (hasText(info.title))
         title += " - " + info.title.toString();
     return title;
-}
-
-QString infoTitle(const DescriptiveComicMetadata &info, const QString &fileName)
-{
-    if (hasText(info.number) && hasText(info.title) && hasText(info.series))
-        return "#" + info.number.toString() + " - " + info.title.toString() + " (" + info.series.toString() + ")";
-
-    if (hasText(info.title) && hasText(info.series))
-        return info.title.toString() + " (" + info.series.toString() + ")";
-
-    if (hasText(info.number) && hasText(info.title))
-        return "#" + info.number.toString() + " - " + info.title.toString();
-
-    if (hasText(info.number) && hasText(info.series))
-        return "#" + info.number.toString() + " - " + info.series.toString();
-
-    return titleIncludingNumber(info, fileName);
 }
 
 QString parentFolderName(const QString &path)

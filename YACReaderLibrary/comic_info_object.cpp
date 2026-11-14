@@ -530,9 +530,9 @@ QString ComicInfoObject::getTitleIncludingNumber() const
     return orDash(titleIncludingNumber(recordMetadata(record), fileName));
 }
 
-QString ComicInfoObject::getInfoTitle() const
+QString ComicInfoObject::getFullTitle() const
 {
-    return orDash(infoTitle(recordMetadata(record), fileName));
+    return orDash(fullTitle(recordMetadata(record), fileName));
 }
 
 // Display fallback only; never stored in the comic's metadata.

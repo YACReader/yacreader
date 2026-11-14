@@ -88,7 +88,7 @@ void ComicInfoObjectTest::exposesTheQmlProperties()
                                 "getCoverArtists()", "getEditors()", "getImprint()", "getCharacters()", "getTeams()",
                                 "getLocations()", "getTags()", "getTypeString()", "getStoryArcInfoString()",
                                 "getAlternateSeriesString()", "getTitleOrFileName()", "getFileSize()",
-                                "getTitleIncludingNumber()", "getInfoTitle()" })
+                                "getTitleIncludingNumber()", "getFullTitle()" })
         QVERIFY2(metaObject->indexOfMethod(method) >= 0, method);
 }
 
@@ -106,7 +106,7 @@ void ComicInfoObjectTest::readsTheComic()
     QCOMPARE(object.property("isFavorite").toBool(), true);
     QCOMPARE(object.getWriters(), QStringList({ "Writer A", "Writer B" }));
     QCOMPARE(object.getStoryArcInfoString(), comic.info.getStoryArcInfoString());
-    QCOMPARE(object.getInfoTitle(), comic.getInfoTitle());
+    QCOMPARE(object.getFullTitle(), comic.getFullTitle());
     QCOMPARE(object.getTitleIncludingNumber(), comic.getTitleIncludingNumber());
 
     ComicInfoObject empty;
@@ -128,7 +128,7 @@ void ComicInfoObjectTest::readsADeletedComic()
     QCOMPARE(deleted.property("id").toULongLong(), 42ULL);
     QCOMPARE(deleted.property("rating").toInt(), 4);
     QCOMPARE(deleted.getTitleOrFileName(), QString("last.cbz"));
-    QCOMPARE(deleted.getInfoTitle(), QString("last.cbz"));
+    QCOMPARE(deleted.getFullTitle(), QString("last.cbz"));
     QCOMPARE(deleted.getFileSize(), comic.getFileSize());
 
     ComicInfoObject withoutName(ComicRecordCase::DeletedComic { comic.info, std::nullopt }, false);
@@ -152,7 +152,7 @@ void ComicInfoObjectTest::readsAPlaceholder()
     QCOMPARE(object.property("number").toString(), QString("3"));
     QCOMPARE(object.getWriters(), QStringList({ "Writer A", "Writer B" }));
     QCOMPARE(object.getStoryArcInfoString(), QString("Arc"));
-    QCOMPARE(object.getInfoTitle(), QString("#3 - Expected Series"));
+    QCOMPARE(object.getFullTitle(), QString("Expected Series #3"));
     QCOMPARE(object.property("id").toULongLong(), 0ULL);
     QCOMPARE(object.property("read").toBool(), false);
     QCOMPARE(object.property("rating").toInt(), 0);
@@ -357,14 +357,13 @@ void ComicInfoObjectTest::titleFallback()
     QCOMPARE(titleOrFileName(info, fileName), expected);
     QCOMPARE(titleIncludingNumber(info, fileName), expectedWithNumber);
     QCOMPARE(fullTitle(info, fileName), expectedFull);
-    if (series.toString().trimmed().isEmpty())
-        QCOMPARE(infoTitle(info, fileName), expectedWithNumber);
 
     ComicInfo deleted;
     static_cast<DescriptiveComicMetadata &>(deleted) = info;
     ComicInfoObject object(ComicRecordCase::DeletedComic { deleted, LastKnownFile { fileName, fileName } }, false);
     QCOMPARE(object.getTitleOrFileName(), expected.isEmpty() ? QString("-") : expected);
     QCOMPARE(object.getTitleIncludingNumber(), expectedWithNumber.isEmpty() ? QString("-") : expectedWithNumber);
+    QCOMPARE(object.getFullTitle(), expectedFull.isEmpty() ? QString("-") : expectedFull);
     QCOMPARE(info.title, title);
     QCOMPARE(info.series, series);
     QCOMPARE(info.volume, volume);
