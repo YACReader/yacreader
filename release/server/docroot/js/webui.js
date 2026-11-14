@@ -824,7 +824,7 @@
         view: "favorites",
         title: "Favorites",
         api: function () {
-          return "/v2/library/" + encodeURIComponent(libraryId) + "/favs";
+          return "/v3/library/" + encodeURIComponent(libraryId) + "/favs";
         },
         summary: function (count) {
           return countLabel(count, "comic", "comics");
@@ -888,7 +888,7 @@
     }
 
     function continueReadingApi() {
-      return "/v2/library/" + encodeURIComponent(libraryId) + "/reading";
+      return "/v3/library/" + encodeURIComponent(libraryId) + "/reading";
     }
 
     function folderMetadataApi(folderId) {
@@ -912,7 +912,7 @@
     }
 
     function searchApi() {
-      return "/v2/library/" + encodeURIComponent(libraryId) + "/search";
+      return "/v3/library/" + encodeURIComponent(libraryId) + "/search";
     }
 
     // PATCH these to change fields of an item
