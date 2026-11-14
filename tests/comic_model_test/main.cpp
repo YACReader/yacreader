@@ -879,7 +879,7 @@ void ComicModelTest::placeholderRowsShowTheirMetadata()
     QCOMPARE(index.data(ComicModel::SeriesRole).toString(), QString("Expected Series"));
     QCOMPARE(index.data(ComicModel::VolumeRole).toString(), QString("2020"));
     QCOMPARE(index.data(ComicModel::ShortTitleWithoutNumberOrFileNameRole).toString(), QString("Expected Series"));
-    QCOMPARE(index.data(ComicModel::FullTitleOrFileNameRole).toString(), QString("Expected Series #7"));
+    QCOMPARE(index.data(ComicModel::FullTitleOrFileNameRole).toString(), QString("Expected Series 2020 #7"));
     QVERIFY(model.index(2, ComicModel::Title).data(Qt::DisplayRole).isNull());
 
     QVERIFY(model.hasUnavailableRows());

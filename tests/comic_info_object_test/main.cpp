@@ -317,11 +317,13 @@ void ComicInfoObjectTest::titleFallback_data()
     QTest::addColumn<QString>("expectedFull");
     QTest::addColumn<QString>("expectedFullWithoutNumber");
 
-    QTest::newRow("title") << QVariant("The Long Night") << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night" << "Batman #3 - The Long Night" << "Batman - The Long Night";
+    QTest::newRow("title") << QVariant("The Long Night") << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night" << "Batman 2011 #3 - The Long Night" << "Batman 2011 - The Long Night";
     QTest::newRow("title and series") << QVariant("The Long Night") << QVariant("Batman") << QVariant() << QVariant() << "b.cbz" << "The Long Night" << "The Long Night" << "Batman - The Long Night" << "Batman - The Long Night";
     QTest::newRow("title and number") << QVariant("The Long Night") << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night" << "#3 - The Long Night" << "The Long Night";
     QTest::newRow("title only") << QVariant("The Long Night") << QVariant() << QVariant() << QVariant() << "b.cbz" << "The Long Night" << "The Long Night" << "The Long Night" << "The Long Night";
-    QTest::newRow("series and number") << QVariant() << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "Batman" << "Batman #3" << "Batman #3" << "Batman";
+    QTest::newRow("series and number") << QVariant() << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "Batman" << "Batman #3" << "Batman 2011 #3" << "Batman 2011";
+    QTest::newRow("series equal to volume") << QVariant("First Cycle") << QVariant("American Vampire") << QVariant("American Vampire") << QVariant("1") << "a.cbz" << "First Cycle" << "#1 - First Cycle" << "American Vampire #1 - First Cycle" << "American Vampire - First Cycle";
+    QTest::newRow("text volume") << QVariant() << QVariant("Fables") << QVariant("Deluxe Edition") << QVariant("1") << "f.cbz" << "Fables" << "Fables #1" << "Fables Deluxe Edition #1" << "Fables Deluxe Edition";
     QTest::newRow("empty title") << QVariant("") << QVariant("Batman") << QVariant() << QVariant("3") << "b.cbz" << "Batman" << "Batman #3" << "Batman #3" << "Batman";
     QTest::newRow("series") << QVariant() << QVariant("Batman") << QVariant() << QVariant() << "b.cbz" << "Batman" << "Batman" << "Batman" << "Batman";
     QTest::newRow("volume and number") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant("1") << "The Red Mother #001.cbr" << "The Red Mother" << "#1 - The Red Mother" << "#1 - The Red Mother" << "The Red Mother";

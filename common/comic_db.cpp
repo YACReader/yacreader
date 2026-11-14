@@ -218,12 +218,21 @@ QString shortTitleOrFileName(const DescriptiveComicMetadata &info, const QString
     return title;
 }
 
+static QString seriesAndVolume(const DescriptiveComicMetadata &info)
+{
+    const auto series = info.series.toString();
+    const auto volume = info.volume.toString();
+    if (!hasText(info.volume) || volume.trimmed() == series.trimmed())
+        return series;
+    return series + " " + volume;
+}
+
 QString fullTitleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
 {
     if (!hasText(info.series))
         return shortTitleOrFileName(info, fileName);
 
-    auto title = info.series.toString();
+    auto title = seriesAndVolume(info);
     if (hasText(info.number))
         title += " #" + info.number.toString();
     if (hasText(info.title))
@@ -233,9 +242,13 @@ QString fullTitleOrFileName(const DescriptiveComicMetadata &info, const QString 
 
 QString fullTitleWithoutNumberOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
 {
-    if (hasText(info.series) && hasText(info.title))
-        return info.series.toString() + " - " + info.title.toString();
-    return shortTitleWithoutNumberOrFileName(info, fileName);
+    if (!hasText(info.series))
+        return shortTitleWithoutNumberOrFileName(info, fileName);
+
+    auto title = seriesAndVolume(info);
+    if (hasText(info.title))
+        title += " - " + info.title.toString();
+    return title;
 }
 
 QString parentFolderName(const QString &path)
