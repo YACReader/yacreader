@@ -40,7 +40,6 @@ private:
 // grid role -> comic model role
 static const QList<QPair<int, int>> forwardedRoles = {
     { GridContentModel::IdRole, ComicModel::IdRole },
-    { GridContentModel::ReadableTitleRole, ComicModel::FullTitleOrFileNameRole },
     { GridContentModel::KindRole, ComicModel::KindRole },
     { GridContentModel::AvailableRole, ComicModel::AvailableRole },
     { GridContentModel::LastKnownNameRole, ComicModel::LastKnownNameRole },
@@ -123,7 +122,6 @@ void GridContentModelTest::comicRowsForwardTheComicRoles()
     QCOMPARE(grid.index(0, 0).data(GridContentModel::ListItemIdRole).toULongLong(), 7ULL);
     QCOMPARE(grid.index(1, 0).data(GridContentModel::ListIdRole).toULongLong(), 1ULL);
     QCOMPARE(grid.index(0, 0).data(GridContentModel::TitleRole).toString(), QString("Batman - The Long Night"));
-    QCOMPARE(grid.index(0, 0).data(GridContentModel::ReadableTitleRole).toString(), QString("Batman #7 - The Long Night"));
 
     comics.setupFolderModelData(2, dataPath);
     QCOMPARE(grid.index(1, 0).data(GridContentModel::TitleRole).toString(), QString("The Long Night"));
@@ -143,7 +141,7 @@ void GridContentModelTest::folderRowsHaveOnlyTheirTitle()
     QCOMPARE(grid.rowCount(), 3);
     const auto folderRow = grid.index(0, 0);
     QCOMPARE(folderRow.data(GridContentModel::ItemKindRole).toInt(), int(GridContentModel::FolderItem));
-    QCOMPARE(folderRow.data(GridContentModel::ReadableTitleRole).toString(), QString("Child"));
+    QCOMPARE(folderRow.data(GridContentModel::TitleRole).toString(), QString("Child"));
     for (const auto role : { GridContentModel::KindRole, GridContentModel::AvailableRole, GridContentModel::LastKnownNameRole, GridContentModel::ListItemIdRole, GridContentModel::ListIdRole })
         QVERIFY(!folderRow.data(role).isValid());
     QCOMPARE(grid.index(1, 0).data(GridContentModel::KindRole).toString(), QString("Comic"));
@@ -153,7 +151,7 @@ void GridContentModelTest::roleNames()
 {
     GridContentModel grid;
     const auto names = grid.roleNames();
-    QCOMPARE(names.value(GridContentModel::ReadableTitleRole), QByteArray("readable_title"));
+    QCOMPARE(names.value(GridContentModel::TitleRole), QByteArray("title"));
     QCOMPARE(names.value(GridContentModel::KindRole), QByteArray("kind"));
     QCOMPARE(names.value(GridContentModel::AvailableRole), QByteArray("available"));
     QCOMPARE(names.value(GridContentModel::LastKnownNameRole), QByteArray("last_known_name"));

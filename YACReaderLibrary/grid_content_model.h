@@ -59,7 +59,6 @@ public:
         RecentRangeRole,
         UpdatedRole,
         FinishedRole,
-        ReadableTitleRole,
         KindRole,
         AvailableRole,
         LastKnownNameRole,
