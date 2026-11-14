@@ -1682,7 +1682,7 @@
       }
 
       var copy = element("div", "browser-card-copy");
-      copy.appendChild(element("div", "browser-card-title", readableComicTitle(comic)));
+      copy.appendChild(element("div", "browser-card-title", options.folderContent ? readableComicTitle(comic) : fullTitleOrFileName(comic)));
       var meta = options.continueReading && currentPage > 0 && numPages > 0
         ? "Page " + currentPage + " of " + numPages
         : numPages === 1 ? "1 page" : numPages + " pages";
@@ -1735,7 +1735,7 @@
       });
 
       var copy = element("div", "browser-card-copy");
-      copy.appendChild(element("div", "browser-card-title", readableComicTitle(item)));
+      copy.appendChild(element("div", "browser-card-title", container.kind === "folder" ? readableComicTitle(item) : fullTitleOrFileName(item)));
       var numPages = Number(item.num_pages) || 0;
       copy.appendChild(element("div", "browser-card-meta", numPages ? (numPages === 1 ? "1 page" : numPages + " pages") : ""));
 
@@ -2069,7 +2069,7 @@
             if (item.type === "folder") {
               grid.appendChild(folderCard(item));
             } else if (item.type === "comic") {
-              grid.appendChild(comicCard(item));
+              grid.appendChild(comicCard(item, { folderContent: true }));
             } else if (item.type === "placeholder") {
               grid.appendChild(missingComicCard(item, { kind: "folder", id: folderId }));
             }
