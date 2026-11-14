@@ -39,7 +39,6 @@ private:
 
 // grid role -> comic model role
 static const QList<QPair<int, int>> forwardedRoles = {
-    { GridContentModel::TitleRole, ComicModel::TitleRole },
     { GridContentModel::IdRole, ComicModel::IdRole },
     { GridContentModel::ReadableTitleRole, ComicModel::ReadableTitle },
     { GridContentModel::KindRole, ComicModel::KindRole },
@@ -97,6 +96,8 @@ bool GridContentModelTest::exec(const QString &sql)
 
 void GridContentModelTest::comicRowsForwardTheComicRoles()
 {
+    QVERIFY(exec("UPDATE comic_info SET series = 'Series 2' WHERE id = 2"));
+
     ComicModel comics;
     GridContentModel grid;
     grid.setComicModel(&comics);
@@ -114,13 +115,18 @@ void GridContentModelTest::comicRowsForwardTheComicRoles()
             QCOMPARE(viewIndex.data(GridContentModel::ItemKindRole).toInt(), int(GridContentModel::ComicItem));
             for (const auto &[gridRole, comicRole] : forwardedRoles)
                 QCOMPARE(viewIndex.data(gridRole), sourceIndex.data(comicRole));
+            QCOMPARE(viewIndex.data(GridContentModel::TitleRole), sourceIndex.data(list ? ComicModel::FullTitleWithoutNumberOrFileNameRole : ComicModel::TitleRole));
         }
     }
 
     QCOMPARE(grid.index(0, 0).data(GridContentModel::KindRole).toString(), QString("ComicInList"));
     QCOMPARE(grid.index(0, 0).data(GridContentModel::ListItemIdRole).toULongLong(), 7ULL);
     QCOMPARE(grid.index(1, 0).data(GridContentModel::ListIdRole).toULongLong(), 1ULL);
-    QCOMPARE(grid.index(0, 0).data(GridContentModel::ReadableTitleRole).toString(), QString("#2 - Title 2"));
+    QCOMPARE(grid.index(0, 0).data(GridContentModel::TitleRole).toString(), QString("Series 2 - Title 2"));
+    QCOMPARE(grid.index(0, 0).data(GridContentModel::ReadableTitleRole).toString(), QString("Series 2 #2 - Title 2"));
+
+    comics.setupFolderModelData(2, dataPath);
+    QCOMPARE(grid.index(1, 0).data(GridContentModel::TitleRole).toString(), QString("Title 2"));
 }
 
 void GridContentModelTest::folderRowsHaveOnlyTheirTitle()
