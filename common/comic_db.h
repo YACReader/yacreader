@@ -82,16 +82,10 @@ public:
     // return comic file name
     QString getFileName() const;
 
-    // returns comic title if it isn't null or empty, in other case returns fileName
-    QString getTitleOrFileName() const;
-
     // returns parent folder name
 
     // return the size of the file in bytes
     qulonglong getFileSize() const;
-
-    QString getTitleIncludingNumber() const;
-    QString getFullTitle() const;
 
     QString toTXT() const;
 

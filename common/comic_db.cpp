@@ -180,25 +180,10 @@ QString ComicDB::getFileName() const
     return QFileInfo(file.path).fileName();
 }
 
-QString ComicDB::getTitleOrFileName() const
-{
-    return shortTitleWithoutNumberOrFileName(info, QFileInfo(file.path).fileName());
-}
-
 qulonglong ComicDB::getFileSize() const
 {
     // the size is encoded in the hash after the SHA-1
     return info.hash.right(info.hash.length() - 40).toLongLong();
-}
-
-QString ComicDB::getTitleIncludingNumber() const
-{
-    return shortTitleOrFileName(info, QFileInfo(file.path).fileName());
-}
-
-QString ComicDB::getFullTitle() const
-{
-    return fullTitleOrFileName(info, QFileInfo(file.path).fileName());
 }
 
 static bool hasText(const QVariant &value)

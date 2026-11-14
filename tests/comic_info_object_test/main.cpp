@@ -87,8 +87,7 @@ void ComicInfoObjectTest::exposesTheQmlProperties()
     for (const auto *method : { "getWriters()", "getPencillers()", "getInkers()", "getColorists()", "getLetterers()",
                                 "getCoverArtists()", "getEditors()", "getImprint()", "getCharacters()", "getTeams()",
                                 "getLocations()", "getTags()", "getTypeString()", "getStoryArcInfoString()",
-                                "getAlternateSeriesString()", "getTitleOrFileName()", "getFileSize()",
-                                "getTitleIncludingNumber()", "getFullTitle()" })
+                                "getAlternateSeriesString()", "getFileSize()", "getFullTitle()" })
         QVERIFY2(metaObject->indexOfMethod(method) >= 0, method);
 }
 
@@ -106,8 +105,7 @@ void ComicInfoObjectTest::readsTheComic()
     QCOMPARE(object.property("isFavorite").toBool(), true);
     QCOMPARE(object.getWriters(), QStringList({ "Writer A", "Writer B" }));
     QCOMPARE(object.getStoryArcInfoString(), comic.info.getStoryArcInfoString());
-    QCOMPARE(object.getFullTitle(), comic.getFullTitle());
-    QCOMPARE(object.getTitleIncludingNumber(), comic.getTitleIncludingNumber());
+    QCOMPARE(object.getFullTitle(), fullTitleOrFileName(comic.info, comic.getFileName()));
 
     ComicInfoObject empty;
     QCOMPARE(empty.property("isFavorite").toBool(), false);
@@ -127,12 +125,11 @@ void ComicInfoObjectTest::readsADeletedComic()
     QCOMPARE(deleted.property("available").toBool(), false);
     QCOMPARE(deleted.property("id").toULongLong(), 42ULL);
     QCOMPARE(deleted.property("rating").toInt(), 4);
-    QCOMPARE(deleted.getTitleOrFileName(), QString("last.cbz"));
     QCOMPARE(deleted.getFullTitle(), QString("last.cbz"));
     QCOMPARE(deleted.getFileSize(), comic.getFileSize());
 
     ComicInfoObject withoutName(ComicRecordCase::DeletedComic { comic.info, std::nullopt }, false);
-    QCOMPARE(withoutName.getTitleOrFileName(), QString("-"));
+    QCOMPARE(withoutName.getFullTitle(), QString("-"));
 }
 
 // the descriptive metadata only; no comic state, and the read state and rating cannot be set
@@ -364,8 +361,6 @@ void ComicInfoObjectTest::titleFallback()
     ComicInfo deleted;
     static_cast<DescriptiveComicMetadata &>(deleted) = info;
     ComicInfoObject object(ComicRecordCase::DeletedComic { deleted, LastKnownFile { fileName, fileName } }, false);
-    QCOMPARE(object.getTitleOrFileName(), expected.isEmpty() ? QString("-") : expected);
-    QCOMPARE(object.getTitleIncludingNumber(), expectedWithNumber.isEmpty() ? QString("-") : expectedWithNumber);
     QCOMPARE(object.getFullTitle(), expectedFull.isEmpty() ? QString("-") : expectedFull);
     QCOMPARE(info.title, title);
     QCOMPARE(info.series, series);

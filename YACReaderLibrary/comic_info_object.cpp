@@ -511,11 +511,6 @@ QString ComicInfoObject::getAlternateSeriesString() const
     return recordMetadata(record).getAlternateSeriesString();
 }
 
-QString ComicInfoObject::getTitleOrFileName() const
-{
-    return orDash(shortTitleWithoutNumberOrFileName(recordMetadata(record), fileName));
-}
-
 qulonglong ComicInfoObject::getFileSize() const
 {
     const auto *info = recordInfo(record);
@@ -523,11 +518,6 @@ qulonglong ComicInfoObject::getFileSize() const
         return { };
     // the size is encoded in the hash after the SHA-1
     return info->hash.right(info->hash.length() - 40).toLongLong();
-}
-
-QString ComicInfoObject::getTitleIncludingNumber() const
-{
-    return orDash(shortTitleOrFileName(recordMetadata(record), fileName));
 }
 
 QString ComicInfoObject::getFullTitle() const
