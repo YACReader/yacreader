@@ -260,10 +260,12 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     QRegExp smartListFolder("/v3/library/([0-9]+)/smart_list_folder/([0-9]+)/?");
     QRegExp librariesMaintenance("/v3/libraries/maintenance/?");
     QRegExp libraryLockRecovery("/v3/library/([0-9]+)/maintenance/recover/?");
+    QRegExp comicUpdate("/v3/library/([0-9]+)/comic/([0-9]+)/?"); // PATCH: change fields of a comic
 
     loadSession(request, response);
 
     std::unique_ptr<HttpRequestHandler> controller;
+    ItemUpdateControllerV2 *itemUpdateController = nullptr;
     std::optional<int> libraryId;
     QByteArray method = "GET";
     if (serverVersion.exactMatch(path)) {
@@ -332,12 +334,23 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
         libraryId = libraryLockRecovery.cap(1).toInt();
         method = "POST";
         controller = std::make_unique<LibraryMaintenanceControllerV3>(*libraryId);
+    } else if (comicUpdate.exactMatch(path)) {
+        libraryId = comicUpdate.cap(1).toInt();
+        method = "PATCH";
+        auto updateController = std::make_unique<ItemUpdateControllerV2>(ItemUpdateControllerV2::Api::V3);
+        itemUpdateController = updateController.get();
+        controller = std::move(updateController);
     }
 
-    if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId)))
+    if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId))) {
         V3Response::notFound(response);
-    else if (request.getMethod() != method)
+    } else if (request.getMethod() != method) {
         V3Response::methodNotAllowed(response);
-    else
+    } else {
         controller->service(request, response);
+
+        if (itemUpdateController != nullptr && !itemUpdateController->changedLibraryId.isNull()) {
+            emit libraryContentChanged(itemUpdateController->changedLibraryId);
+        }
+    }
 }

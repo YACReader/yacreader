@@ -13,6 +13,7 @@ private slots:
     void setComicReadOnlyChangesReadFlag();
     void setComicUnreadResetsProgressLikeTheDesktop();
     void setComicTypeOnlyChangesType();
+    void setComicRatingOnlyChangesRating();
     void setFolderFinishedAndCompletedOnlyChangeTheirFlags();
     void updateFolderTreeTypeChangesTheWholeSubtree();
 };
@@ -106,6 +107,26 @@ void LibraryItemActionsTest::setComicTypeOnlyChangesType()
         QCOMPARE(value(db, "comic_info", 102, "currentPage").toInt(), 3);
         QCOMPARE(value(db, "comic_info", 102, "read").toInt(), 0);
         QCOMPARE(value(db, "comic_info", 100, "type").toInt(), 0);
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+}
+
+void LibraryItemActionsTest::setComicRatingOnlyChangesRating()
+{
+    const QString connectionName = "setComicRating";
+    {
+        auto db = createDatabase(connectionName);
+        QVERIFY(DBHelper::setComicRating(12, 5, db));
+
+        QCOMPARE(value(db, "comic_info", 102, "rating").toInt(), 5);
+        QCOMPARE(value(db, "comic_info", 102, "currentPage").toInt(), 3);
+        QCOMPARE(value(db, "comic_info", 102, "read").toInt(), 0);
+        QCOMPARE(value(db, "comic_info", 102, "lastTimeOpened").toLongLong(), 1700000200LL);
+        QCOMPARE(value(db, "comic_info", 100, "rating").toInt(), 4);
+
+        // 0 clears the rating
+        QVERIFY(DBHelper::setComicRating(10, 0, db));
+        QCOMPARE(value(db, "comic_info", 100, "rating").toInt(), 0);
     }
     QSqlDatabase::removeDatabase(connectionName);
 }

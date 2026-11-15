@@ -140,6 +140,7 @@ public:
     // targeted updates, they only write the columns that change; unread matches ComicModel::setComicsRead(Unread)
     static bool setComicRead(qulonglong comicId, bool read, QSqlDatabase &db);
     static bool setComicType(qulonglong comicId, YACReader::FileType type, QSqlDatabase &db);
+    static bool setComicRating(qulonglong comicId, int rating, QSqlDatabase &db);
     static bool setFolderFinished(qulonglong folderId, bool finished, QSqlDatabase &db);
     static bool setFolderCompleted(qulonglong folderId, bool completed, QSqlDatabase &db);
     static void setComicAsReading(qulonglong libraryId, ComicId comicId);

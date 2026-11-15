@@ -2428,6 +2428,23 @@ bool DBHelper::setComicType(qulonglong comicId, YACReader::FileType type, QSqlDa
     return true;
 }
 
+bool DBHelper::setComicRating(qulonglong comicId, int rating, QSqlDatabase &db)
+{
+    QSqlQuery updateComicInfo(db);
+    updateComicInfo.prepare("UPDATE comic_info SET "
+                            "rating = :rating "
+                            "WHERE id = (SELECT comicInfoId FROM comic WHERE id = :id)");
+    updateComicInfo.bindValue(":rating", rating);
+    updateComicInfo.bindValue(":id", comicId);
+
+    if (!updateComicInfo.exec()) {
+        QLOG_ERROR() << "setComicRating failed for comic" << comicId << ":" << updateComicInfo.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
 bool DBHelper::setFolderFinished(qulonglong folderId, bool finished, QSqlDatabase &db)
 {
     QSqlQuery updateFolder(db);

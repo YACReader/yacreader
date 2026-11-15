@@ -45,6 +45,10 @@ private slots:
     void searchHasTheFoldersAndTheComicsOfTheDesktopSearch();
     void listItemsAreTheItemsOfTheSections();
     void coversOutsideTheCoversFolderAreNotFound();
+    void comicRatingChangesOnlyTheRating();
+    void comicRatingOutOfRangeChangesNothing();
+    void comicRatingIsNotInV2();
+    void comicUpdateOfAMissingComicIsNotFound();
     void folderInfoHasTheComicsAndPlaceholdersOfTheWholeTree();
 
 private:
@@ -508,6 +512,69 @@ void ServerV3RoutesTest::coversOutsideTheCoversFolderAreNotFound()
         QCOMPARE(answer.status, 404);
         QCOMPARE(answer.body, QByteArray("404 not found"));
     }
+}
+
+static QJsonObject jsonObject(const HttpAnswer &answer)
+{
+    return QJsonDocument::fromJson(answer.body).object();
+}
+
+void ServerV3RoutesTest::comicRatingChangesOnlyTheRating()
+{
+    const auto comic = QString("/v3/library/%1/comic/2").arg(libraryId);
+    const auto fullInfo = QString("/v2/library/%1/comic/2/fullinfo").arg(libraryId);
+    const auto before = jsonObject(server->request("GET", fullInfo));
+
+    const auto answer = server->request("PATCH", comic, R"({"rating":4})");
+    QCOMPARE(answer.status, 200);
+    QCOMPARE(answer.contentType, QString("application/json"));
+    // the body is the full comic JSON
+    auto expected = before;
+    expected["rating"] = 4;
+    QCOMPARE(jsonObject(answer), expected);
+    QCOMPARE(jsonObject(server->request("GET", fullInfo)), expected);
+
+    const auto cleared = server->request("PATCH", comic + "/", R"({"rating":0})");
+    QCOMPARE(cleared.status, 200);
+    QCOMPARE(jsonObject(cleared).value("rating").toInt(), 0);
+
+    QCOMPARE(server->request("PATCH", comic, QByteArray(R"({"rating":)") + QByteArray::number(before.value("rating").toInt()) + "}").status, 200);
+    QCOMPARE(jsonObject(server->request("GET", fullInfo)), before);
+}
+
+void ServerV3RoutesTest::comicRatingOutOfRangeChangesNothing()
+{
+    const auto comic = QString("/v3/library/%1/comic/2").arg(libraryId);
+    const auto fullInfo = QString("/v2/library/%1/comic/2/fullinfo").arg(libraryId);
+    const auto before = jsonObject(server->request("GET", fullInfo));
+
+    for (const auto &body : { R"({"rating":6})", R"({"rating":-1})", R"({"rating":2.5})", R"({"rating":"2"})", R"({"rating":true})", R"({"read":true,"rating":9})" }) {
+        const auto answer = server->request("PATCH", comic, body);
+        QCOMPARE(answer.status, 400);
+        QCOMPARE(jsonObject(answer), QJsonObject({ { "error", "invalid_value" }, { "field", "rating" } }));
+    }
+    QCOMPARE(server->request("PATCH", comic, R"({"rating":2})", { { "Content-Type", "text/plain" } }).status, 415);
+    QCOMPARE(jsonObject(server->request("GET", fullInfo)), before);
+}
+
+// v2 is frozen
+void ServerV3RoutesTest::comicRatingIsNotInV2()
+{
+    const auto answer = server->request("PATCH", QString("/v2/library/%1/comic/2").arg(libraryId), R"({"rating":2})");
+    QCOMPARE(answer.status, 400);
+    QCOMPARE(jsonObject(answer), QJsonObject({ { "error", "unknown_field" }, { "field", "rating" } }));
+}
+
+void ServerV3RoutesTest::comicUpdateOfAMissingComicIsNotFound()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    // comic_info 4 is a deleted comic: it has no comic id
+    const auto answer = server->request("PATCH", library + "/comic/4", R"({"rating":2})");
+    QCOMPARE(answer.status, 404);
+    QCOMPARE(jsonObject(answer), QJsonObject({ { "error", "comic_not_found" } }));
+    QCOMPARE(server->request("PATCH", "/v3/library/77/comic/2", R"({"rating":2})").status, 404);
+    QCOMPARE(server->request("GET", library + "/comic/2").status, 405);
+    QCOMPARE(server->request("PATCH", library + "/folder/2", R"({"finished":true})").status, 404);
 }
 
 // adds comics and placeholders to the subfolders, so it runs last
