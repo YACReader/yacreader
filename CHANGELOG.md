@@ -16,6 +16,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### Server
 
 * Add API v3.1 with new endpoints for favorites, continue reading and search, so compatible clients can show the same titles as the desktop apps.
+* New APIs to make remote info view possible in the clients.
 
 ### WebUI
 
