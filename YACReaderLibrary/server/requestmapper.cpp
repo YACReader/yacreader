@@ -31,6 +31,7 @@
 #include "controllers/v3/librarymaintenancecontroller_v3.h"
 #include "controllers/v3/listcontentcontroller_v3.h"
 #include "controllers/v3/listitemcontroller_v3.h"
+#include "controllers/v3/missingcomiccontroller_v3.h"
 #include "controllers/v3/listsectioncontroller_v3.h"
 #include "controllers/v3/readingcomicscontroller_v3.h"
 #include "controllers/v3/recentcontroller_v3.h"
@@ -261,6 +262,8 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     QRegExp librariesMaintenance("/v3/libraries/maintenance/?");
     QRegExp libraryLockRecovery("/v3/library/([0-9]+)/maintenance/recover/?");
     QRegExp comicUpdate("/v3/library/([0-9]+)/comic/([0-9]+)/?"); // PATCH: change fields of a comic
+    QRegExp deletedComic("/v3/library/([0-9]+)/deleted_comic/([0-9]+)/?");
+    QRegExp placeholder("/v3/library/([0-9]+)/placeholder/([0-9]+)/?");
 
     loadSession(request, response);
 
@@ -340,6 +343,12 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
         auto updateController = std::make_unique<ItemUpdateControllerV2>(ItemUpdateControllerV2::Api::V3);
         itemUpdateController = updateController.get();
         controller = std::move(updateController);
+    } else if (deletedComic.exactMatch(path)) {
+        libraryId = deletedComic.cap(1).toInt();
+        controller = std::make_unique<MissingComicControllerV3>(*libraryId, ComicInfoId(deletedComic.cap(2).toULongLong()));
+    } else if (placeholder.exactMatch(path)) {
+        libraryId = placeholder.cap(1).toInt();
+        controller = std::make_unique<MissingComicControllerV3>(*libraryId, PlaceholderId(placeholder.cap(2).toULongLong()));
     }
 
     if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId))) {

@@ -91,6 +91,8 @@ add_library(server STATIC
     controllers/v3/searchcontroller_v3.cpp
     controllers/v3/listitemcontroller_v3.h
     controllers/v3/listitemcontroller_v3.cpp
+    controllers/v3/missingcomiccontroller_v3.h
+    controllers/v3/missingcomiccontroller_v3.cpp
     controllers/webui/webuicontroller.h
     controllers/webui/webuicontroller.cpp
 )

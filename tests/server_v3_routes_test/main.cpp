@@ -49,6 +49,8 @@ private slots:
     void comicRatingOutOfRangeChangesNothing();
     void comicRatingIsNotInV2();
     void comicUpdateOfAMissingComicIsNotFound();
+    void missingComicsHaveTheirListItemAndAllTheirMetadata();
+    void missingComicsThatAreNotInTheLibraryAreNotFound();
     void folderInfoHasTheComicsAndPlaceholdersOfTheWholeTree();
 
 private:
@@ -575,6 +577,69 @@ void ServerV3RoutesTest::comicUpdateOfAMissingComicIsNotFound()
     QCOMPARE(server->request("PATCH", "/v3/library/77/comic/2", R"({"rating":2})").status, 404);
     QCOMPARE(server->request("GET", library + "/comic/2").status, 405);
     QCOMPARE(server->request("PATCH", library + "/folder/2", R"({"finished":true})").status, 404);
+}
+
+static QJsonObject withoutEntry(QJsonObject item)
+{
+    for (const auto &key : { "entry_id", "reading_list_id", "last_known_name", "parent_id" })
+        item.remove(key);
+    return item;
+}
+
+void ServerV3RoutesTest::missingComicsHaveTheirListItemAndAllTheirMetadata()
+{
+    QVERIFY(exec("UPDATE comic_info SET writer = 'Writer', synopsis = 'Synopsis', arcNumber = '2', color = 1 WHERE id IN (2, 4)"));
+    QVERIFY(exec("UPDATE comic_info SET rating = 3 WHERE id = 4"));
+    QVERIFY(exec("UPDATE placeholder SET writer = 'Writer', synopsis = 'Synopsis', arcNumber = '2', color = 1 WHERE id = 1"));
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto listItems = items(library + "/reading_list/1/content");
+
+    const auto deleted = server->request("GET", library + "/deleted_comic/4");
+    QCOMPARE(deleted.status, 200);
+    QCOMPARE(deleted.contentType, QString("application/json"));
+    const auto deletedJson = jsonObject(deleted);
+    auto deletedItem = withoutEntry(listItems.at(2).toObject());
+    QCOMPARE(deletedItem.value("type").toString(), QString("deleted_comic"));
+    for (const auto &key : deletedItem.keys())
+        QCOMPARE(deletedJson.value(key), deletedItem.value(key));
+    QCOMPARE(deletedJson.value("rating").toInt(), 3);
+
+    const auto placeholder = server->request("GET", library + "/placeholder/1/");
+    QCOMPARE(placeholder.status, 200);
+    const auto placeholderJson = jsonObject(placeholder);
+    const auto placeholderItem = withoutEntry(listItems.at(1).toObject());
+    QCOMPARE(placeholderItem.value("type").toString(), QString("placeholder"));
+    for (const auto &key : placeholderItem.keys())
+        QCOMPARE(placeholderJson.value(key), placeholderItem.value(key));
+    // a placeholder has no rating and no reading state
+    QVERIFY(!placeholderJson.contains("rating"));
+    QVERIFY(!placeholderJson.contains("current_page"));
+
+    // the descriptive fields have the names and the types of the full comic info
+    const auto comic = jsonObject(server->request("GET", QString("/v2/library/%1/comic/2/fullinfo").arg(libraryId)));
+    for (const auto &key : { "writer", "synopsis", "arc_number", "color", "universal_number" }) {
+        QVERIFY2(comic.contains(key), key);
+        QCOMPARE(deletedJson.value(key).type(), comic.value(key).type());
+        QCOMPARE(placeholderJson.value(key).type(), comic.value(key).type());
+    }
+    QCOMPARE(deletedJson.value("writer").toString(), QString("Writer"));
+    QCOMPARE(placeholderJson.value("synopsis").toString(), QString("Synopsis"));
+    QCOMPARE(placeholderJson.value("arc_number").toString(), QString("2"));
+    QCOMPARE(placeholderJson.value("color").toBool(), true);
+
+    QVERIFY(exec("UPDATE comic_info SET writer = NULL, synopsis = NULL, arcNumber = NULL, color = NULL WHERE id IN (2, 4)"));
+    QVERIFY(exec("UPDATE placeholder SET writer = NULL, synopsis = NULL, arcNumber = NULL, color = NULL WHERE id = 1"));
+}
+
+void ServerV3RoutesTest::missingComicsThatAreNotInTheLibraryAreNotFound()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(server->request("GET", library + "/deleted_comic/99").status, 404);
+    QCOMPARE(server->request("GET", library + "/placeholder/99").status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/deleted_comic/4").status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/placeholder/1").status, 404);
+    QCOMPARE(server->request("POST", library + "/deleted_comic/4").status, 405);
+    QCOMPARE(server->request("PATCH", library + "/placeholder/1", R"({"rating":2})").status, 405);
 }
 
 // adds comics and placeholders to the subfolders, so it runs last

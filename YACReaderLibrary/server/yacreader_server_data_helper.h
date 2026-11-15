@@ -26,6 +26,10 @@ public:
 
     static QJsonObject deletedComicToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicInfo &info);
     static QJsonObject placeholderToJSON(const qulonglong libraryId, const QUuid libraryUuid, const Placeholder &placeholder);
+    // the list item and all the descriptive fields, with the same names as the full comic info
+    static QJsonObject fullDeletedComicToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicInfo &info);
+    static QJsonObject fullPlaceholderToJSON(const qulonglong libraryId, const QUuid libraryUuid, const Placeholder &placeholder);
+    static void addDescriptiveMetadata(const DescriptiveComicMetadata &metadata, QJsonObject &json);
     // v3 content: comics, deleted comics, and placeholders, with their entry in lists
     static QJsonObject comicItemToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicItem &item);
     // v3 lists sections

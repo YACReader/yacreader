@@ -124,49 +124,57 @@ QJsonObject YACReaderServerDataHelper::comicToJSON(const qulonglong libraryId, c
     return json;
 }
 
+void YACReaderServerDataHelper::addDescriptiveMetadata(const DescriptiveComicMetadata &metadata, QJsonObject &json)
+{
+    variantToJson("title", QMetaType::QString, metadata.title, json);
+    variantToJson("universal_number", QMetaType::QString, metadata.number, json);
+    variantToJson("volume", QMetaType::QString, metadata.volume, json);
+    variantToJson("total_volume_count", QMetaType::Int, metadata.count, json);
+    variantToJson("genre", QMetaType::QString, metadata.genere, json);
+    variantToJson("date", QMetaType::QString, metadata.date, json);
+    variantToJson("synopsis", QMetaType::QString, metadata.synopsis, json);
+
+    // 9.13
+    variantToJson("count", QMetaType::Int, metadata.count, json);
+    variantToJson("story_arc", QMetaType::QString, metadata.storyArc, json);
+    variantToJson("arc_number", QMetaType::QString, metadata.arcNumber, json);
+    variantToJson("arc_count", QMetaType::Int, metadata.arcCount, json);
+    variantToJson("writer", QMetaType::QString, metadata.writer, json);
+    variantToJson("penciller", QMetaType::QString, metadata.penciller, json);
+    variantToJson("inker", QMetaType::QString, metadata.inker, json);
+    variantToJson("colorist", QMetaType::QString, metadata.colorist, json);
+    variantToJson("letterer", QMetaType::QString, metadata.letterer, json);
+    variantToJson("cover_artist", QMetaType::QString, metadata.coverArtist, json);
+    variantToJson("publisher", QMetaType::QString, metadata.publisher, json);
+    variantToJson("format", QMetaType::QString, metadata.format, json);
+    variantToJson("color", QMetaType::Bool, metadata.color, json);
+    variantToJson("age_rating", QMetaType::QString, metadata.ageRating, json);
+    variantToJson("editor", QMetaType::QString, metadata.editor, json);
+    variantToJson("characters", QMetaType::QString, metadata.characters, json);
+    variantToJson("notes", QMetaType::QString, metadata.notes, json);
+    variantToJson("imprint", QMetaType::QString, metadata.imprint, json);
+    variantToJson("teams", QMetaType::QString, metadata.teams, json);
+    variantToJson("locations", QMetaType::QString, metadata.locations, json);
+    variantToJson("series", QMetaType::QString, metadata.series, json);
+    variantToJson("alternate_series", QMetaType::QString, metadata.alternateSeries, json);
+    variantToJson("alternate_number", QMetaType::QString, metadata.alternateNumber, json);
+    variantToJson("alternate_count", QMetaType::Int, metadata.alternateCount, json);
+    variantToJson("language_iso", QMetaType::QString, metadata.languageISO, json);
+    variantToJson("series_group", QMetaType::QString, metadata.seriesGroup, json);
+    variantToJson("main_character_or_team", QMetaType::QString, metadata.mainCharacterOrTeam, json);
+    variantToJson("review", QMetaType::QString, metadata.review, json);
+    variantToJson("tags", QMetaType::QString, metadata.tags, json);
+    // 9.14
+    variantToJson("comic_vine_id", QMetaType::QString, metadata.comicVineID, json);
+}
+
 QJsonObject YACReaderServerDataHelper::fullComicToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicDB &comic)
 {
     QJsonObject json = comicToJSON(libraryId, libraryUuid, comic);
 
-    variantToJson("volume", QMetaType::QString, comic.info.volume, json);
-    variantToJson("total_volume_count", QMetaType::Int, comic.info.count, json);
-    variantToJson("genre", QMetaType::QString, comic.info.genere, json);
-    variantToJson("date", QMetaType::QString, comic.info.date, json);
-    variantToJson("synopsis", QMetaType::QString, comic.info.synopsis, json);
-
-    // 9.13
-    variantToJson("count", QMetaType::Int, comic.info.count, json);
-    variantToJson("story_arc", QMetaType::QString, comic.info.storyArc, json);
-    variantToJson("arc_number", QMetaType::QString, comic.info.arcNumber, json);
-    variantToJson("arc_count", QMetaType::Int, comic.info.arcCount, json);
-    variantToJson("writer", QMetaType::QString, comic.info.writer, json);
-    variantToJson("penciller", QMetaType::QString, comic.info.penciller, json);
-    variantToJson("inker", QMetaType::QString, comic.info.inker, json);
-    variantToJson("colorist", QMetaType::QString, comic.info.colorist, json);
-    variantToJson("letterer", QMetaType::QString, comic.info.letterer, json);
-    variantToJson("cover_artist", QMetaType::QString, comic.info.coverArtist, json);
-    variantToJson("publisher", QMetaType::QString, comic.info.publisher, json);
-    variantToJson("format", QMetaType::QString, comic.info.format, json);
-    variantToJson("color", QMetaType::Bool, comic.info.color, json);
-    variantToJson("age_rating", QMetaType::QString, comic.info.ageRating, json);
-    variantToJson("editor", QMetaType::QString, comic.info.editor, json);
-    variantToJson("characters", QMetaType::QString, comic.info.characters, json);
-    variantToJson("notes", QMetaType::QString, comic.info.notes, json);
-    variantToJson("imprint", QMetaType::QString, comic.info.imprint, json);
-    variantToJson("teams", QMetaType::QString, comic.info.teams, json);
-    variantToJson("locations", QMetaType::QString, comic.info.locations, json);
-    variantToJson("series", QMetaType::QString, comic.info.series, json);
-    variantToJson("alternate_series", QMetaType::QString, comic.info.alternateSeries, json);
-    variantToJson("alternate_number", QMetaType::QString, comic.info.alternateNumber, json);
-    variantToJson("alternate_count", QMetaType::Int, comic.info.alternateCount, json);
-    variantToJson("language_iso", QMetaType::QString, comic.info.languageISO, json);
-    variantToJson("series_group", QMetaType::QString, comic.info.seriesGroup, json);
-    variantToJson("main_character_or_team", QMetaType::QString, comic.info.mainCharacterOrTeam, json);
-    variantToJson("review", QMetaType::QString, comic.info.review, json);
-    variantToJson("tags", QMetaType::QString, comic.info.tags, json);
+    addDescriptiveMetadata(comic.info, json);
     // 9.14
     json["rating"] = comic.info.rating;
-    variantToJson("comic_vine_id", QMetaType::QString, comic.info.comicVineID, json);
     json["edited"] = comic.info.edited;
     json["bookmark1"] = comic.info.bookmark1;
     json["bookmark2"] = comic.info.bookmark2;
@@ -270,6 +278,21 @@ QJsonObject YACReaderServerDataHelper::placeholderToJSON(const qulonglong librar
         json["cover"] = "/placeholders/" + YACReader::LibraryPaths::coverFileName(*placeholder.coverKey);
     }
 
+    return json;
+}
+
+QJsonObject YACReaderServerDataHelper::fullDeletedComicToJSON(const qulonglong libraryId, const QUuid libraryUuid, const ComicInfo &info)
+{
+    auto json = deletedComicToJSON(libraryId, libraryUuid, info);
+    addDescriptiveMetadata(info, json);
+    json["rating"] = info.rating;
+    return json;
+}
+
+QJsonObject YACReaderServerDataHelper::fullPlaceholderToJSON(const qulonglong libraryId, const QUuid libraryUuid, const Placeholder &placeholder)
+{
+    auto json = placeholderToJSON(libraryId, libraryUuid, placeholder);
+    addDescriptiveMetadata(placeholder, json);
     return json;
 }
 
