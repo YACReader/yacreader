@@ -293,7 +293,7 @@ jobs:
 
       - name: Sign executables with SignPath
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
-        uses: signpath/github-action-submit-signing-request@v1
+        uses: signpath/github-action-submit-signing-request@v3
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
@@ -346,7 +346,7 @@ jobs:
 
       - name: Submit to SignPath
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
-        uses: signpath/github-action-submit-signing-request@v1
+        uses: signpath/github-action-submit-signing-request@v3
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
@@ -431,7 +431,7 @@ jobs:
 
       - name: Submit to SignPath
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
-        uses: signpath/github-action-submit-signing-request@v1
+        uses: signpath/github-action-submit-signing-request@v3
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
@@ -512,7 +512,7 @@ jobs:
 
       - name: Submit to SignPath
         if: github.repository == 'YACReader/yacreader' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop')
-        uses: signpath/github-action-submit-signing-request@v1
+        uses: signpath/github-action-submit-signing-request@v3
         with:
           api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
           organization-id: ${{ secrets.SIGNPATH_ORGANIZATION_ID }}
