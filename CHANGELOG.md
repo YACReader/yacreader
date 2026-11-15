@@ -2,6 +2,25 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.6.0
+
+### YACReader
+
+* Show the full title of the comic in the window title: series, volume, number and title.
+
+### YACReaderLibrary
+
+* Show comic titles the same way in all views. The info panel, the current comic banner and continue reading show the full title: series, volume, number and title.
+* Show the series next to the title in the grid cells of reading lists, labels, smart lists and search results, so comics from different series are easy to tell apart.
+
+### Server
+
+* Add API v3.1 with new endpoints for favorites, continue reading and search, so compatible clients can show the same titles as the desktop apps.
+
+### WebUI
+
+* Show the full title in lists, comic pages and the reader, using the same format as the rest of the apps.
+
 ## 10.5.2
 
 ### YACReaderLibrary
