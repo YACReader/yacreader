@@ -2,6 +2,12 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.5.2
+
+### YACReaderLibrary
+
+* Fix creating new libraries with SQLite builds that don't accept double-quoted strings (e.g. FreeBSD).
+
 ## 10.5.1
 
 ### YACReader
