@@ -180,25 +180,10 @@ QString ComicDB::getFileName() const
     return QFileInfo(file.path).fileName();
 }
 
-QString ComicDB::getTitleOrFileName() const
-{
-    return titleOrFileName(info, QFileInfo(file.path).fileName());
-}
-
 qulonglong ComicDB::getFileSize() const
 {
     // the size is encoded in the hash after the SHA-1
     return info.hash.right(info.hash.length() - 40).toLongLong();
-}
-
-QString ComicDB::getTitleIncludingNumber() const
-{
-    return titleIncludingNumber(info, QFileInfo(file.path).fileName());
-}
-
-QString ComicDB::getInfoTitle() const
-{
-    return infoTitle(info, QFileInfo(file.path).fileName());
 }
 
 static bool hasText(const QVariant &value)
@@ -206,7 +191,7 @@ static bool hasText(const QVariant &value)
     return !value.isNull() && !value.toString().trimmed().isEmpty();
 }
 
-QString titleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
+QString shortTitleWithoutNumberOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
 {
     if (hasText(info.title))
         return info.title.toString();
@@ -217,9 +202,9 @@ QString titleOrFileName(const DescriptiveComicMetadata &info, const QString &fil
     return fileName.trimmed().isEmpty() ? QString() : fileName;
 }
 
-QString titleIncludingNumber(const DescriptiveComicMetadata &info, const QString &fileName)
+QString shortTitleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
 {
-    const auto title = titleOrFileName(info, fileName);
+    const auto title = shortTitleWithoutNumberOrFileName(info, fileName);
     // Standalone labels need an issue number. Preserve filename fallbacks as-is:
     // they often already contain the number, and must remain recognizable.
     if (hasText(info.number)) {
@@ -233,21 +218,37 @@ QString titleIncludingNumber(const DescriptiveComicMetadata &info, const QString
     return title;
 }
 
-QString infoTitle(const DescriptiveComicMetadata &info, const QString &fileName)
+static QString seriesAndVolume(const DescriptiveComicMetadata &info)
 {
-    if (hasText(info.number) && hasText(info.title) && hasText(info.series))
-        return "#" + info.number.toString() + " - " + info.title.toString() + " (" + info.series.toString() + ")";
+    const auto series = info.series.toString();
+    const auto volume = info.volume.toString();
+    if (!hasText(info.volume) || volume.trimmed() == series.trimmed())
+        return series;
+    return series + " " + volume;
+}
 
-    if (hasText(info.title) && hasText(info.series))
-        return info.title.toString() + " (" + info.series.toString() + ")";
+QString fullTitleOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
+{
+    if (!hasText(info.series))
+        return shortTitleOrFileName(info, fileName);
 
-    if (hasText(info.number) && hasText(info.title))
-        return "#" + info.number.toString() + " - " + info.title.toString();
+    auto title = seriesAndVolume(info);
+    if (hasText(info.number))
+        title += " #" + info.number.toString();
+    if (hasText(info.title))
+        title += " - " + info.title.toString();
+    return title;
+}
 
-    if (hasText(info.number) && hasText(info.series))
-        return "#" + info.number.toString() + " - " + info.series.toString();
+QString fullTitleWithoutNumberOrFileName(const DescriptiveComicMetadata &info, const QString &fileName)
+{
+    if (!hasText(info.series))
+        return shortTitleWithoutNumberOrFileName(info, fileName);
 
-    return titleIncludingNumber(info, fileName);
+    auto title = seriesAndVolume(info);
+    if (hasText(info.title))
+        title += " - " + info.title.toString();
+    return title;
 }
 
 QString parentFolderName(const QString &path)

@@ -2,6 +2,43 @@
 
 Version counting is based on semantic versioning (Major.Feature.Patch)
 
+## 10.6.0
+
+### YACReader
+
+* Show the full title of the comic in the window title: series, volume, number and title.
+
+### YACReaderLibrary
+
+* Show comic titles the same way in all views. The info panel, the current comic banner and continue reading show the full title: series, volume, number and title.
+* Show the series next to the title in the grid cells of reading lists, labels, smart lists and search results, so comics from different series are easy to tell apart.
+
+### Server
+
+* Add API v3.1 with new endpoints for favorites, continue reading and search, so compatible clients can show the same titles as the desktop apps.
+* New APIs to make remote info view possible in the clients.
+
+### WebUI
+
+* Show the full title in lists, comic pages and the reader, using the same format as the rest of the apps.
+
+## 10.5.2
+
+### YACReaderLibrary
+
+* Fix creating new libraries with SQLite builds that don't accept double-quoted strings (e.g. FreeBSD).
+
+## 10.5.1
+
+### YACReader
+
+* Fix double page mode when turning pages quickly. It also improves the double page mode behavior.
+
+### YACReaderLibrary
+
+* Show the search menu button next to the clear button so "save as smart list" actually works (Windows & Linux).
+* Don't use the QML cache on Linux systems that have the risk to use a stale cache causing white content screens (which are actualy failures at runtime).
+
 ## 10.5.0
 
 ### YACReader
@@ -9,6 +46,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Support for ComicBookDS (.cbds) comics. Only the pages are shown, not the previews stored next to them.
 * Add Bicubic as a scaling method in Settings, offering sharper images than Bilinear and faster scaling than Lanczos.
 * Fix opening comics at page -1 after removing them from the "Reading" list.
+* Improve toolbar on macOS.
 
 ### YACReaderLibrary
 
@@ -28,18 +66,34 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 * Fix removing comics belonging to child reading lists from a parent list view.
 * Fix newly added comics sometimes appearing in the middle of a reading list instead of at the end.
 * Fix library lock handling and add a way to clear these locks from the GUI and webui.
-* Improve library opening speed over network shares. 
+* Improve library opening speed over network shares.
+* Unify the title and tool bars for a more integrated look (Windows/macOS).
 
 ### Server
 
 * Add server API v3 so compatible mobile clients can browse missing comics, reading lists, and smart lists, including their folders, with content ordered as on the desktop. Existing clients remain supported.
 * Fix a security issue that could let cover requests access image files outside the library's covers folder.
+* Fix memory leak updating libraries.
+* Improve covers API performance.
 
 ### WebUI
 
 * Browse reading lists, smart lists, their folders, Favorites, tags, and Recent from the library menu.
 * View missing comics in reading lists and folders, including their available metadata and covers.
 * Choose how many days count as recent in this browser's settings.
+* Improve the home page and add a connect device dialog. iOS and Android clients can use now the QR scaner with the webui.
+* Add mouse wheel page navigation to the reader.
+* Add PageUp, PageDown, Home and End keys to the reader.
+* The back button now returns to where you were, keeping the scroll position.
+* Save the reading progress when the tab goes to the background.
+* Show better error messages.
+* Add a favicon.
+* Open read comics on the first page.
+* Go to the next or previous comic from the reader. Comics opened from a list follow the order of that list, all others follow their folder.
+
+### All GUI apps
+
+* Fix the apps sometimes getting stuck in fullscreen mode after a restart. YACReaderLibrary no longer starts in fullscreen mode, and YACReader still does when you close it in fullscreen mode, but you can always leave it.
 
 ## 10.4.0
 

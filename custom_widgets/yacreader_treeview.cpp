@@ -12,6 +12,8 @@ YACReaderTreeView::YACReaderTreeView(QWidget *parent)
     setContextMenuPolicy(Qt::CustomContextMenu);
 
     header()->hide();
+    setIndentation(20);
+    setIconSize(QSize(rowIconSize, rowIconSize));
     setUniformRowHeights(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setAttribute(Qt::WA_MacShowFocusRect, false);

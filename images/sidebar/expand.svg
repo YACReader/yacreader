@@ -12,6 +12,6 @@
       }
     </style>
   </defs>
-  <polyline class="st0" points="12 4.5 12 13 3.5 13"/>
-  <polyline class="st1" points="12 3.5 12 12 3.5 12"/>
+  <polyline class="st0" points="12 5 12 13 4 13"/>
+  <polyline class="st1" points="12 4 12 12 4 12"/>
 </svg>

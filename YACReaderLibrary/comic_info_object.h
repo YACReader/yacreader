@@ -176,10 +176,8 @@ public:
     Q_INVOKABLE QString getStoryArcInfoString() const;
     Q_INVOKABLE QString getAlternateSeriesString() const;
 
-    Q_INVOKABLE QString getTitleOrFileName() const;
     Q_INVOKABLE qulonglong getFileSize() const;
-    Q_INVOKABLE QString getTitleIncludingNumber() const;
-    Q_INVOKABLE QString getInfoTitle() const;
+    Q_INVOKABLE QString getFullTitleOrFileName() const;
 
 signals:
     void readChanged();

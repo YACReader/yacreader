@@ -35,7 +35,6 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
             return index.row();
         case TitleRole:
         case FileNameRole:
-        case ReadableTitleRole:
             return card.name;
         case IdRole:
             return card.id;
@@ -67,7 +66,6 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
             return sourceIndex.row();
         case TitleRole:
         case FileNameRole:
-        case ReadableTitleRole:
             return sourceIndex.data(FolderModel::FolderNameRole);
         case IdRole:
             return sourceIndex.data(FolderModel::IdRole);
@@ -111,7 +109,7 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
     case NumberRole:
         return sourceIndex.data(ComicModel::NumberRole);
     case TitleRole:
-        return sourceIndex.data(ComicModel::TitleRole);
+        return sourceIndex.data(comicModel->getMode() == ComicModel::Folder ? ComicModel::ShortTitleWithoutNumberOrFileNameRole : ComicModel::FullTitleWithoutNumberOrFileNameRole);
     case FileNameRole:
         return sourceIndex.data(ComicModel::FileNameRole);
     case NumPagesRole:
@@ -136,8 +134,6 @@ QVariant GridContentModel::data(const QModelIndex &index, int role) const
         return sourceIndex.data(ComicModel::ShowRecentRole);
     case RecentRangeRole:
         return sourceIndex.data(ComicModel::RecentRangeRole);
-    case ReadableTitleRole:
-        return sourceIndex.data(ComicModel::ReadableTitle);
     case KindRole:
         return sourceIndex.data(ComicModel::KindRole);
     case AvailableRole:
@@ -174,7 +170,6 @@ QHash<int, QByteArray> GridContentModel::roleNames() const
         { RecentRangeRole, "recent_range" },
         { UpdatedRole, "updated" },
         { FinishedRole, "is_finished" },
-        { ReadableTitleRole, "readable_title" },
         { KindRole, "kind" },
         { AvailableRole, "available" },
         { LastKnownNameRole, "last_known_name" },

@@ -4,7 +4,7 @@
 <context>
     <name>DBHelper</name>
     <message>
-        <location filename="../YACReaderLibrary/db_helper.cpp" line="1848"/>
+        <location filename="../YACReaderLibrary/db_helper.cpp" line="1872"/>
         <source>The folder entry could not be found in the library database.</source>
         <translation>라이브러리 데이터베이스에서 폴더 항목을 찾을 수 없습니다.</translation>
     </message>
@@ -12,23 +12,23 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="490"/>
+        <location filename="../common/comic.cpp" line="502"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>%1번 페이지에서 CRC 오류 발생: 일부 페이지가 올바르게 표시되지 않을 수 있습니다</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="497"/>
+        <location filename="../common/comic.cpp" line="509"/>
         <source>Unknown error opening the file</source>
         <translation>파일을 여는 중 알 수 없는 오류가 발생했습니다</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="604"/>
+        <location filename="../common/comic.cpp" line="616"/>
         <source>7z not found</source>
         <translation>7z를 찾을 수 없습니다</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="610"/>
-        <location filename="../common/comic.cpp" line="626"/>
+        <location filename="../common/comic.cpp" line="622"/>
+        <location filename="../common/comic.cpp" line="638"/>
         <source>Format not supported</source>
         <translation>지원하지 않는 형식입니다</translation>
     </message>

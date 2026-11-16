@@ -14,10 +14,6 @@
 #include <QMainWindow>
 #include <QModelIndex>
 
-#ifdef Y_MAC_UI
-#include "yacreader_macosx_toolbar.h"
-#endif
-
 class QTreeView;
 class QDirModel;
 class QAction;
@@ -26,7 +22,6 @@ class QToolBar;
 class QComboBox;
 class QThread;
 class QStackedWidget;
-class YACReaderSearchLineEdit;
 class CreateLibraryDialog;
 class ExportLibraryDialog;
 class ImportLibraryDialog;
@@ -55,7 +50,9 @@ class YACReaderTableView;
 class YACReaderSideBar;
 class YACReaderLibraryListWidget;
 class YACReaderFoldersView;
-class YACReaderMainToolBar;
+class HeaderModel;
+class LibraryHeader;
+class WindowFrame;
 class ComicVineDialog;
 class ComicsView;
 class ClassicComicsView;
@@ -97,6 +94,7 @@ class LibraryWindow : public QMainWindow, protected Themable
     Q_OBJECT
 public:
     YACReaderSideBar *sideBar;
+    QWidget *sidebarColumn;
     QSplitter *mainSplitter;
 
     CreateLibraryDialog *createLibraryDialog;
@@ -113,16 +111,10 @@ public:
     bool fullscreen;
     bool importedCovers; // if true, the library is read only (not updates,open comic or properties)
     bool fromMaximized;
+    QByteArray geometryBeforeFullScreen;
 
     QSize slideSizeW;
     QSize slideSizeF;
-    // search filter
-#ifdef Y_MAC_UI
-    YACReaderMacOSXSearchLineEdit *searchEdit;
-#else
-    YACReaderSearchLineEdit *searchEdit;
-#endif
-
     YACReaderNavigationController *navigationController;
     YACReaderContentViewsManager *contentViewsManager;
     LibraryWindowMenus *menus;
@@ -145,11 +137,9 @@ public:
 
     LibraryWindowActions actions;
 
-#ifdef Y_MAC_UI
-    YACReaderMacOSXToolbar *libraryToolBar;
-#else
-    YACReaderMainToolBar *libraryToolBar;
-#endif
+    HeaderModel *headerModel;
+    LibraryHeader *libraryHeader;
+    WindowFrame *windowFrame = nullptr;
     QToolBar *treeActions;
     QToolBar *comicsToolBar;
     QToolBar *editInfoToolBar;
@@ -193,6 +183,7 @@ protected:
     virtual void closeEvent(QCloseEvent *event) override;
     void showEvent(QShowEvent *event) override;
     void applyTheme(const Theme &theme) override;
+    bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 
 public:
     LibraryWindow();

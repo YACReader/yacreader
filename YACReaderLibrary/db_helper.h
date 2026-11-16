@@ -83,6 +83,8 @@ public:
     static bool placePlaceholderInFolder(PlaceholderId placeholderId, FolderId folderId, QSqlDatabase &db);
     // No transaction. Inserts each placeholder and places it in the folder.
     static bool insertPlaceholdersInFolder(const QList<Placeholder> &placeholders, FolderId folderId, QSqlDatabase &db);
+    // No transaction. Inserts each placeholder and appends an entry for it to the reading list.
+    static bool insertPlaceholdersInReadingList(const QList<Placeholder> &placeholders, ReadingListId readingListId, QSqlDatabase &db);
     static std::optional<QStringList> removePlaceholdersFromFolder(const QList<PlaceholderId> &placeholderIds, FolderId folderId, QSqlDatabase &db);
     // No transaction. Each issue is expected in the folder: the placeholder of that issue is reused, else a new one is
     // made, and the patch is written to it; nothing when a comic of the folder is that issue. A cover key becomes the
@@ -138,6 +140,7 @@ public:
     // targeted updates, they only write the columns that change; unread matches ComicModel::setComicsRead(Unread)
     static bool setComicRead(qulonglong comicId, bool read, QSqlDatabase &db);
     static bool setComicType(qulonglong comicId, YACReader::FileType type, QSqlDatabase &db);
+    static bool setComicRating(qulonglong comicId, int rating, QSqlDatabase &db);
     static bool setFolderFinished(qulonglong folderId, bool finished, QSqlDatabase &db);
     static bool setFolderCompleted(qulonglong folderId, bool completed, QSqlDatabase &db);
     static void setComicAsReading(qulonglong libraryId, ComicId comicId);

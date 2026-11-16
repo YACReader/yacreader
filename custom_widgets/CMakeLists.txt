@@ -29,16 +29,14 @@ set(WIDGETS_COMMON_SOURCES
     yacreader_3d_flow_config_widget.cpp
 )
 
-# macOS toolbar (shared by both apps)
+# --- custom_widgets_reader (YACReader-specific) ---
+add_library(custom_widgets_reader STATIC ${WIDGETS_COMMON_SOURCES})
 if(APPLE)
-    list(APPEND WIDGETS_COMMON_SOURCES
+    target_sources(custom_widgets_reader PRIVATE
         yacreader_macosx_toolbar.h
         yacreader_macosx_toolbar.mm
     )
 endif()
-
-# --- custom_widgets_reader (YACReader-specific) ---
-add_library(custom_widgets_reader STATIC ${WIDGETS_COMMON_SOURCES})
 target_include_directories(custom_widgets_reader PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 yacreader_apply_build_options(custom_widgets_reader)
 # App-specific theme.h needed because themable.h → theme_manager.h → theme.h
@@ -90,7 +88,7 @@ add_library(custom_widgets_library STATIC
 )
 target_include_directories(custom_widgets_library PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 yacreader_apply_build_options(custom_widgets_library)
-# App-specific theme.h + YACReaderLibrary headers needed by macosx_toolbar
+# App-specific theme.h + YACReaderLibrary headers
 target_include_directories(custom_widgets_library PRIVATE
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary/themes
     ${PROJECT_SOURCE_DIR}/YACReaderLibrary

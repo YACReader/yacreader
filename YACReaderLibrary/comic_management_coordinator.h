@@ -56,6 +56,7 @@ public:
     bool canMatchSelectionToLibraryComic() const;
     // the folder the comics view shows, if it shows one
     std::optional<qulonglong> shownFolderId() const;
+    std::optional<qulonglong> shownReadingListId() const;
 
 public slots:
     void copyAndImportComicsToCurrentFolder(const QList<QPair<QString, QString>> &comics);
@@ -69,6 +70,7 @@ public slots:
     void openContainingFolderOfCurrentComic();
     void showComicVineScraper();
     void trackMissingIssues(qulonglong folderId);
+    void trackMissingIssuesInReadingList(qulonglong readingListId);
     void showProperties();
     void setSelectedComicsRead();
     void setSelectedComicsUnread();

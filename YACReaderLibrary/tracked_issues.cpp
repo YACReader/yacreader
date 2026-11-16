@@ -222,3 +222,24 @@ std::optional<int> trackIssuesInFolder(FolderId folderId, const QStringList &num
         return std::nullopt;
     return int(placeholders.size());
 }
+
+std::optional<int> trackIssuesInReadingList(ReadingListId readingListId, const QStringList &numbers, const DescriptiveMetadataPatch &patch, const std::optional<QString> &coverKey, QSqlDatabase &db)
+{
+    QList<Placeholder> placeholders;
+    for (const auto &number : numbers) {
+        Placeholder placeholder;
+        patch.applyTo(placeholder);
+        placeholder.number = number;
+        placeholder.coverKey = coverKey;
+        placeholders.append(placeholder);
+    }
+
+    db.transaction();
+    if (!DBHelper::insertPlaceholdersInReadingList(placeholders, readingListId, db)) {
+        db.rollback();
+        return std::nullopt;
+    }
+    if (!db.commit())
+        return std::nullopt;
+    return int(placeholders.size());
+}

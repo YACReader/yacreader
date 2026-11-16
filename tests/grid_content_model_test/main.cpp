@@ -39,9 +39,7 @@ private:
 
 // grid role -> comic model role
 static const QList<QPair<int, int>> forwardedRoles = {
-    { GridContentModel::TitleRole, ComicModel::TitleRole },
     { GridContentModel::IdRole, ComicModel::IdRole },
-    { GridContentModel::ReadableTitleRole, ComicModel::ReadableTitle },
     { GridContentModel::KindRole, ComicModel::KindRole },
     { GridContentModel::AvailableRole, ComicModel::AvailableRole },
     { GridContentModel::LastKnownNameRole, ComicModel::LastKnownNameRole },
@@ -97,6 +95,8 @@ bool GridContentModelTest::exec(const QString &sql)
 
 void GridContentModelTest::comicRowsForwardTheComicRoles()
 {
+    QVERIFY(exec("UPDATE comic_info SET series = 'Batman', number = '7', title = 'The Long Night' WHERE id = 2"));
+
     ComicModel comics;
     GridContentModel grid;
     grid.setComicModel(&comics);
@@ -114,13 +114,17 @@ void GridContentModelTest::comicRowsForwardTheComicRoles()
             QCOMPARE(viewIndex.data(GridContentModel::ItemKindRole).toInt(), int(GridContentModel::ComicItem));
             for (const auto &[gridRole, comicRole] : forwardedRoles)
                 QCOMPARE(viewIndex.data(gridRole), sourceIndex.data(comicRole));
+            QCOMPARE(viewIndex.data(GridContentModel::TitleRole), sourceIndex.data(list ? ComicModel::FullTitleWithoutNumberOrFileNameRole : ComicModel::ShortTitleWithoutNumberOrFileNameRole));
         }
     }
 
     QCOMPARE(grid.index(0, 0).data(GridContentModel::KindRole).toString(), QString("ComicInList"));
     QCOMPARE(grid.index(0, 0).data(GridContentModel::ListItemIdRole).toULongLong(), 7ULL);
     QCOMPARE(grid.index(1, 0).data(GridContentModel::ListIdRole).toULongLong(), 1ULL);
-    QCOMPARE(grid.index(0, 0).data(GridContentModel::ReadableTitleRole).toString(), QString("#2 - Title 2"));
+    QCOMPARE(grid.index(0, 0).data(GridContentModel::TitleRole).toString(), QString("Batman - The Long Night"));
+
+    comics.setupFolderModelData(2, dataPath);
+    QCOMPARE(grid.index(1, 0).data(GridContentModel::TitleRole).toString(), QString("The Long Night"));
 }
 
 void GridContentModelTest::folderRowsHaveOnlyTheirTitle()
@@ -137,7 +141,7 @@ void GridContentModelTest::folderRowsHaveOnlyTheirTitle()
     QCOMPARE(grid.rowCount(), 3);
     const auto folderRow = grid.index(0, 0);
     QCOMPARE(folderRow.data(GridContentModel::ItemKindRole).toInt(), int(GridContentModel::FolderItem));
-    QCOMPARE(folderRow.data(GridContentModel::ReadableTitleRole).toString(), QString("Child"));
+    QCOMPARE(folderRow.data(GridContentModel::TitleRole).toString(), QString("Child"));
     for (const auto role : { GridContentModel::KindRole, GridContentModel::AvailableRole, GridContentModel::LastKnownNameRole, GridContentModel::ListItemIdRole, GridContentModel::ListIdRole })
         QVERIFY(!folderRow.data(role).isValid());
     QCOMPARE(grid.index(1, 0).data(GridContentModel::KindRole).toString(), QString("Comic"));
@@ -147,7 +151,7 @@ void GridContentModelTest::roleNames()
 {
     GridContentModel grid;
     const auto names = grid.roleNames();
-    QCOMPARE(names.value(GridContentModel::ReadableTitleRole), QByteArray("readable_title"));
+    QCOMPARE(names.value(GridContentModel::TitleRole), QByteArray("title"));
     QCOMPARE(names.value(GridContentModel::KindRole), QByteArray("kind"));
     QCOMPARE(names.value(GridContentModel::AvailableRole), QByteArray("available"));
     QCOMPARE(names.value(GridContentModel::LastKnownNameRole), QByteArray("last_known_name"));

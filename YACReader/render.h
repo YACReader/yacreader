@@ -2,11 +2,13 @@
 #define RENDER_H
 
 #include "comic.h"
+#include "double_page_layout.h"
 
 #include <QByteArray>
 #include <QImage>
 #include <QPainter>
 #include <QPixmap>
+#include <QSize>
 #include <QThread>
 #include <QVector>
 //-----------------------------------------------------------------------------
@@ -141,10 +143,10 @@ public slots:
     QPixmap *getCurrentDoublePage(qreal *seamRatio = nullptr, Qt::Orientation *seamOrientation = nullptr);
     QPixmap *getCurrentDoubleMangaPage(qreal *seamRatio = nullptr, Qt::Orientation *seamOrientation = nullptr);
     bool currentPageIsDoublePage();
-    bool nextPageIsDoublePage();
-    bool previousPageIsDoublePage();
     const QImage *bufferedImage(int absolutePageIndex) const;
     void goTo(int index);
+    // in double page mode it goes to the last view, so the last pages are paired like when reading to the end
+    void goToLastPage();
     void doublePageSwitch();
     void setManga(bool manga);
     void doubleMangaPageSwitch();
@@ -154,6 +156,10 @@ public slots:
     void update();
     void setNumPages(unsigned int numPages);
     void pageRawDataReady(int page);
+    void pageFailed(int page);
+    void allPagesProcessed();
+    // reads the double page settings again (cover as a single page)
+    void updateDoublePageSettings();
     //--comic interface
     void nextPage();
     void previousPage();
@@ -208,8 +214,10 @@ private:
     bool doubleMangaPage;
     int previousIndex;
     int currentIndex;
-    QVector<int> doublePageViewHistory;
-    int doublePageViewHistoryPosition;
+    // the view of each page is computed from what is known about the pages, see DoublePageLayout
+    DoublePageNavigator doublePageNavigator;
+    QVector<QSize> pageSizes;
+    QVector<bool> failedPages;
     // QPixmap * currentPage;
     int currentPageBufferedIndex;
     int numLeftPages;
@@ -225,9 +233,20 @@ private:
     int imageRotation;
     QVector<ImageFilter *> filters;
     void resetDoublePageNavigation();
-    int nextDoublePageViewIndex();
-    int previousDoublePageViewIndex();
-    bool doublePageHistoryTracksCurrentIndex() const;
+    DoublePageLayout::View currentDoublePageView() const;
+    bool doublePageLayoutIsReady();
+    void readPageSize(int page);
+    DoublePageLayout::PageShape pageShapeOnScreen(int page) const;
+    void updatePageShape(int page);
+    void updateAllPageShapes();
+    int shownSinglePage() const;
+    bool pageCannotBeRendered(int page) const;
+    void showDoublePageViewIfRendered(int renderedPage = -1);
+    void showDoublePageViewWithFailedPages();
+    void refreshDoublePageView(const DoublePageLayout::View &viewBefore);
+    void moveToDoublePageView(int page);
+    void nextDoublePageView();
+    void previousDoublePageView();
     QMutex mutex;
 
     friend class PageRender;

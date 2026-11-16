@@ -31,6 +31,7 @@ class CoverLabel;
 #include "yacreader_global.h"
 
 #include <optional>
+#include <variant>
 
 class PropertiesDialog : public QDialog
 {
@@ -162,8 +163,8 @@ private:
     // false when the save was refused; the dialog then keeps the values
     bool updateComics();
 
-    // track mode: the dialog creates missing comics in a folder instead of editing comics
-    std::optional<FolderId> trackedFolderId;
+    // track mode: the dialog creates missing comics in a folder or a reading list instead of editing comics
+    std::optional<std::variant<FolderId, ReadingListId>> trackedIn;
     QSet<QString> trackedFolderNumberKeys;
     QString saveButtonText;
     // one issue to track: its own fields and cover are enabled
@@ -201,6 +202,7 @@ public slots:
     // track missing issues in the folder; `run` gives the series, volume, and publisher, `folderNumbers` the numbers
     // the folder already has
     void setTrackMissingIssues(FolderId folderId, const QString &folderName, const DescriptiveComicMetadata &run, const QStringList &folderNumbers);
+    void setTrackMissingIssues(ReadingListId readingListId, const QString &listName);
     // false when no record from `currentComicIndex` on still exists
     bool setComicsForSequentialEditing(int currentComicIndex, QList<ComicRecord> records);
     void saveAndOpenPrevious();

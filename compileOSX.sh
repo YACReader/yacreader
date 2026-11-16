@@ -11,6 +11,11 @@ QT_VERSION=${4:-""}
 
 ARCH=${5:-"arm64"}
 
+DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET:-"12"}
+
+# The dmg title has a length limit, so the suffix only goes into the file name
+DMG_NAME_SUFFIX=${DMG_NAME_SUFFIX:-""}
+
 echo "building macos binaries with these params: ${VERSION} ${BUILD_NUMBER} ${SKIP_CODESIGN} ${QT_VERSION} ${ARCH}"
 
 if [ "$6" == "clean" ]; then
@@ -37,7 +42,7 @@ cmake -B build \
     -DBUILD_NUMBER="${BUILD_NUMBER}" \
     -DCMAKE_BUILD_TYPE=Release \
     -DCMAKE_OSX_ARCHITECTURES="${ARCHS}" \
-    -DCMAKE_OSX_DEPLOYMENT_TARGET=12
+    -DCMAKE_OSX_DEPLOYMENT_TARGET="${DEPLOYMENT_TARGET}"
 
 cmake --build build --parallel
 
@@ -113,11 +118,11 @@ sed -i'' -e "s/#VERSION#/$VERSION/g" dmg.json
 sed -i'' -e "s/#BUILD_NUMBER#/$BUILD_NUMBER/g" dmg.json
 sed -i'' -e "s/#QT_VERSION#/$QT_VERSION/g" dmg.json
 sed -i'' -e "s/#ARCH_NAME#/$ARCH_NAME/g" dmg.json
-appdmg dmg.json "$dest.dmg"
+appdmg dmg.json "${dest}${DMG_NAME_SUFFIX}.dmg"
 
 if [ "$SKIP_CODESIGN" = false ]; then
 	echo "Signing dmg"
-	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" --options runtime "./${dest}.dmg"
+	codesign --force --deep --sign "Developer ID Application: LUIS ANGEL SAN MARTIN ROD (9B6KKVW3WM)" --options runtime "./${dest}${DMG_NAME_SUFFIX}.dmg"
 fi
 
 echo "Done!"

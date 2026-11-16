@@ -78,6 +78,7 @@ protected:
 
 public slots:
     void toggleComicsView();
+    void selectComicsView(YACReader::ComicsViewStatus status);
     void focusComicsViewViaShortcut();
 
     void showComicsView();
@@ -96,6 +97,8 @@ protected slots:
     void connectComicsViewConnections(ComicsView *view);
 
     void switchToNextComicsView(const ContentViewState &viewState);
+    void switchToComicsViewStatus(YACReader::ComicsViewStatus status, const ContentViewState &viewState);
+    ComicsView *comicsViewFor(YACReader::ComicsViewStatus status);
     void switchToComicsView(ComicsView *from, ComicsView *to, const ContentViewState &viewState);
     void setToolBarOwner(ComicsView *view);
     void setViewSelectorEnabled(bool enabled);

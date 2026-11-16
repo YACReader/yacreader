@@ -36,10 +36,21 @@ private slots:
     void contentOfAMissingListFolderIsNotFound();
     void smartListContentHasTheSearchOrder();
     void coverServesComicFolderAndPlaceholderCovers();
+    void coverIsTheFileOnDisk();
+    void coverIsRevalidatedWithItsETag();
     void tagsHaveTheOrderOfTheSidebar();
     void recentHasTheComicsAddedInTheLastDays();
+    void favoritesHaveTheOrderOfTheList();
+    void readingHasTheOpenedComicsThatAreNotRead();
+    void searchHasTheFoldersAndTheComicsOfTheDesktopSearch();
     void listItemsAreTheItemsOfTheSections();
     void coversOutsideTheCoversFolderAreNotFound();
+    void comicRatingChangesOnlyTheRating();
+    void comicRatingOutOfRangeChangesNothing();
+    void comicRatingIsNotInV2();
+    void comicUpdateOfAMissingComicIsNotFound();
+    void missingComicsHaveTheirListItemAndAllTheirMetadata();
+    void missingComicsThatAreNotInTheLibraryAreNotFound();
     void folderInfoHasTheComicsAndPlaceholdersOfTheWholeTree();
 
 private:
@@ -110,7 +121,7 @@ void ServerV3RoutesTest::versionIsTheVersionOfV3()
     for (const auto &path : { QString("/v3/version"), QString("/v3/version/") }) {
         const auto answer = server->request("GET", path);
         QCOMPARE(answer.status, 200);
-        QCOMPARE(answer.body, QByteArray("3.0"));
+        QCOMPARE(answer.body, QByteArray("3.1"));
     }
     QCOMPARE(server->request("GET", "/v2/version").body, QByteArray("2.3"));
 }
@@ -125,7 +136,7 @@ void ServerV3RoutesTest::unknownRoutesAreNotFound()
 {
     const auto library = QString("/v3/library/%1").arg(libraryId);
     // the routes that stay in v2 are not in v3
-    for (const auto &path : { QString("/v3"), QString("/v3/"), QString("/v3/versions"), QString("/v3/libraries"), library + "/favs", library + "/reading",
+    for (const auto &path : { QString("/v3"), QString("/v3/"), QString("/v3/versions"), QString("/v3/libraries"),
                               library + "/comic/1/fullinfo", QString("/v3/library/77/folder/1/content") }) {
         const auto answer = server->request("GET", path);
         QCOMPARE(answer.status, 404);
@@ -338,6 +349,67 @@ void ServerV3RoutesTest::recentHasTheComicsAddedInTheLastDays()
     QCOMPARE(server->request("POST", library + "/recent").status, 405);
 }
 
+void ServerV3RoutesTest::favoritesHaveTheOrderOfTheList()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(itemKeys(items(library + "/favs")), QStringList());
+
+    QVERIFY(exec("INSERT INTO comic_default_reading_list (comic_id, default_reading_list_id, ordering) VALUES (2, 1, 1), (3, 1, 0)"));
+    const auto favorites = items(library + "/favs/");
+    QCOMPARE(itemKeys(favorites), QStringList({ "comic 3", "comic 2" }));
+    QCOMPARE(favorites.at(1).toObject().value("series").toString(), QString("Beta"));
+    QCOMPARE(favorites.at(1).toObject().value("title").toString(), QString("Two"));
+    QCOMPARE(favorites.at(1).toObject().value("universal_number").toString(), QString("2"));
+    QVERIFY(exec("DELETE FROM comic_default_reading_list"));
+
+    QCOMPARE(server->request("GET", "/v3/library/77/favs").status, 404);
+    QCOMPARE(server->request("POST", library + "/favs").status, 405);
+}
+
+void ServerV3RoutesTest::readingHasTheOpenedComicsThatAreNotRead()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(itemKeys(items(library + "/reading")), QStringList());
+
+    QVERIFY(exec("UPDATE comic_info SET hasBeenOpened = 1, read = 0, lastTimeOpened = 100 WHERE id = 1"));
+    QVERIFY(exec("UPDATE comic_info SET hasBeenOpened = 1, read = 0, lastTimeOpened = 300 WHERE id = 2"));
+    QVERIFY(exec("UPDATE comic_info SET hasBeenOpened = 1, read = 1, lastTimeOpened = 200 WHERE id = 3"));
+    const auto reading = items(library + "/reading/");
+    QCOMPARE(itemKeys(reading), QStringList({ "comic 2", "comic 1" }));
+    QCOMPARE(reading.at(0).toObject().value("series").toString(), QString("Beta"));
+    QCOMPARE(reading.at(0).toObject().value("title").toString(), QString("Two"));
+    QCOMPARE(reading.at(0).toObject().value("universal_number").toString(), QString("2"));
+    QVERIFY(exec("UPDATE comic_info SET hasBeenOpened = 0, read = 0, lastTimeOpened = NULL"));
+
+    QCOMPARE(server->request("GET", "/v3/library/77/reading").status, 404);
+    QCOMPARE(server->request("POST", library + "/reading").status, 405);
+}
+
+void ServerV3RoutesTest::searchHasTheFoldersAndTheComicsOfTheDesktopSearch()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto search = [&](const QByteArray &body) {
+        const auto answer = server->request("POST", library + "/search", body);
+        if (answer.status != 200 || answer.contentType != "application/json")
+            qWarning() << body << answer.status << answer.contentType;
+        return QJsonDocument::fromJson(answer.body).array();
+    };
+
+    // the folder of the comics that match, then the comics by series, volume, and number
+    const auto results = search("{\"query\":\"beta\"}");
+    QCOMPARE(itemKeys(results), QStringList({ "folder 2", "comic 2", "comic 1" }));
+    QCOMPARE(results.at(1).toObject().value("series").toString(), QString("Beta"));
+    QCOMPARE(results.at(1).toObject().value("title").toString(), QString("Two"));
+    QCOMPARE(results.at(1).toObject().value("universal_number").toString(), QString("2"));
+    // a query that cannot be parsed and a body without a query have no results
+    QCOMPARE(itemKeys(search("{\"query\":\"series:(batman\"}")), QStringList());
+    QCOMPARE(itemKeys(search("{}")), QStringList());
+    QCOMPARE(itemKeys(search("")), QStringList());
+
+    QCOMPARE(server->request("POST", "/v3/library/77/search", "{\"query\":\"beta\"}").status, 404);
+    QCOMPARE(server->request("GET", library + "/search").status, 405);
+}
+
 static QJsonObject itemObject(TestHttpServer &server, const QString &path)
 {
     const auto answer = server.request("GET", path);
@@ -394,6 +466,42 @@ void ServerV3RoutesTest::coverServesComicFolderAndPlaceholderCovers()
     QCOMPARE(server->request("POST", library + "/cover/hash-2.jpg").status, 405);
 }
 
+void ServerV3RoutesTest::coverIsTheFileOnDisk()
+{
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
+    QFile file(YACReader::LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-2"));
+    QVERIFY(file.open(QIODevice::ReadOnly));
+
+    const auto answer = server->request("GET", QString("/v3/library/%1/cover/hash-2.jpg").arg(libraryId));
+    QCOMPARE(answer.status, 200);
+    QCOMPARE(answer.contentType, QString("image/jpeg"));
+    QCOMPARE(answer.body, file.readAll());
+}
+
+void ServerV3RoutesTest::coverIsRevalidatedWithItsETag()
+{
+    const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
+    saveCover(YACReader::LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-etag"), { 20, 20 });
+    const auto path = QString("/v3/library/%1/cover/hash-etag.jpg").arg(libraryId);
+
+    const auto first = server->request("GET", path);
+    QCOMPARE(first.status, 200);
+    QCOMPARE(first.cacheControl, QByteArray("no-cache"));
+    QVERIFY(!first.etag.isEmpty());
+
+    const auto unchanged = server->request("GET", path, { }, { { "If-None-Match", first.etag } });
+    QCOMPARE(unchanged.status, 304);
+    QCOMPARE(unchanged.etag, first.etag);
+    QVERIFY(unchanged.body.isEmpty());
+    QVERIFY(!unchanged.hasContentLength);
+
+    saveCover(YACReader::LibraryPaths::coverPathFromLibraryDataPath(dataPath, "hash-etag"), { 200, 300 });
+    const auto replaced = server->request("GET", path, { }, { { "If-None-Match", first.etag } });
+    QCOMPARE(replaced.status, 200);
+    QVERIFY(replaced.etag != first.etag);
+    QCOMPARE(imageSize(replaced), QSize(200, 300));
+}
+
 void ServerV3RoutesTest::coversOutsideTheCoversFolderAreNotFound()
 {
     const auto dataPath = YACReader::LibraryPaths::libraryDataPath(libraryPath);
@@ -406,6 +514,132 @@ void ServerV3RoutesTest::coversOutsideTheCoversFolderAreNotFound()
         QCOMPARE(answer.status, 404);
         QCOMPARE(answer.body, QByteArray("404 not found"));
     }
+}
+
+static QJsonObject jsonObject(const HttpAnswer &answer)
+{
+    return QJsonDocument::fromJson(answer.body).object();
+}
+
+void ServerV3RoutesTest::comicRatingChangesOnlyTheRating()
+{
+    const auto comic = QString("/v3/library/%1/comic/2").arg(libraryId);
+    const auto fullInfo = QString("/v2/library/%1/comic/2/fullinfo").arg(libraryId);
+    const auto before = jsonObject(server->request("GET", fullInfo));
+
+    const auto answer = server->request("PATCH", comic, R"({"rating":4})");
+    QCOMPARE(answer.status, 200);
+    QCOMPARE(answer.contentType, QString("application/json"));
+    // the body is the full comic JSON
+    auto expected = before;
+    expected["rating"] = 4;
+    QCOMPARE(jsonObject(answer), expected);
+    QCOMPARE(jsonObject(server->request("GET", fullInfo)), expected);
+
+    const auto cleared = server->request("PATCH", comic + "/", R"({"rating":0})");
+    QCOMPARE(cleared.status, 200);
+    QCOMPARE(jsonObject(cleared).value("rating").toInt(), 0);
+
+    QCOMPARE(server->request("PATCH", comic, QByteArray(R"({"rating":)") + QByteArray::number(before.value("rating").toInt()) + "}").status, 200);
+    QCOMPARE(jsonObject(server->request("GET", fullInfo)), before);
+}
+
+void ServerV3RoutesTest::comicRatingOutOfRangeChangesNothing()
+{
+    const auto comic = QString("/v3/library/%1/comic/2").arg(libraryId);
+    const auto fullInfo = QString("/v2/library/%1/comic/2/fullinfo").arg(libraryId);
+    const auto before = jsonObject(server->request("GET", fullInfo));
+
+    for (const auto &body : { R"({"rating":6})", R"({"rating":-1})", R"({"rating":2.5})", R"({"rating":"2"})", R"({"rating":true})", R"({"read":true,"rating":9})" }) {
+        const auto answer = server->request("PATCH", comic, body);
+        QCOMPARE(answer.status, 400);
+        QCOMPARE(jsonObject(answer), QJsonObject({ { "error", "invalid_value" }, { "field", "rating" } }));
+    }
+    QCOMPARE(server->request("PATCH", comic, R"({"rating":2})", { { "Content-Type", "text/plain" } }).status, 415);
+    QCOMPARE(jsonObject(server->request("GET", fullInfo)), before);
+}
+
+// v2 is frozen
+void ServerV3RoutesTest::comicRatingIsNotInV2()
+{
+    const auto answer = server->request("PATCH", QString("/v2/library/%1/comic/2").arg(libraryId), R"({"rating":2})");
+    QCOMPARE(answer.status, 400);
+    QCOMPARE(jsonObject(answer), QJsonObject({ { "error", "unknown_field" }, { "field", "rating" } }));
+}
+
+void ServerV3RoutesTest::comicUpdateOfAMissingComicIsNotFound()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    // comic_info 4 is a deleted comic: it has no comic id
+    const auto answer = server->request("PATCH", library + "/comic/4", R"({"rating":2})");
+    QCOMPARE(answer.status, 404);
+    QCOMPARE(jsonObject(answer), QJsonObject({ { "error", "comic_not_found" } }));
+    QCOMPARE(server->request("PATCH", "/v3/library/77/comic/2", R"({"rating":2})").status, 404);
+    QCOMPARE(server->request("GET", library + "/comic/2").status, 405);
+    QCOMPARE(server->request("PATCH", library + "/folder/2", R"({"finished":true})").status, 404);
+}
+
+static QJsonObject withoutEntry(QJsonObject item)
+{
+    for (const auto &key : { "entry_id", "reading_list_id", "last_known_name", "parent_id" })
+        item.remove(key);
+    return item;
+}
+
+void ServerV3RoutesTest::missingComicsHaveTheirListItemAndAllTheirMetadata()
+{
+    QVERIFY(exec("UPDATE comic_info SET writer = 'Writer', synopsis = 'Synopsis', arcNumber = '2', color = 1 WHERE id IN (2, 4)"));
+    QVERIFY(exec("UPDATE comic_info SET rating = 3 WHERE id = 4"));
+    QVERIFY(exec("UPDATE placeholder SET writer = 'Writer', synopsis = 'Synopsis', arcNumber = '2', color = 1 WHERE id = 1"));
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto listItems = items(library + "/reading_list/1/content");
+
+    const auto deleted = server->request("GET", library + "/deleted_comic/4");
+    QCOMPARE(deleted.status, 200);
+    QCOMPARE(deleted.contentType, QString("application/json"));
+    const auto deletedJson = jsonObject(deleted);
+    auto deletedItem = withoutEntry(listItems.at(2).toObject());
+    QCOMPARE(deletedItem.value("type").toString(), QString("deleted_comic"));
+    for (const auto &key : deletedItem.keys())
+        QCOMPARE(deletedJson.value(key), deletedItem.value(key));
+    QCOMPARE(deletedJson.value("rating").toInt(), 3);
+
+    const auto placeholder = server->request("GET", library + "/placeholder/1/");
+    QCOMPARE(placeholder.status, 200);
+    const auto placeholderJson = jsonObject(placeholder);
+    const auto placeholderItem = withoutEntry(listItems.at(1).toObject());
+    QCOMPARE(placeholderItem.value("type").toString(), QString("placeholder"));
+    for (const auto &key : placeholderItem.keys())
+        QCOMPARE(placeholderJson.value(key), placeholderItem.value(key));
+    // a placeholder has no rating and no reading state
+    QVERIFY(!placeholderJson.contains("rating"));
+    QVERIFY(!placeholderJson.contains("current_page"));
+
+    // the descriptive fields have the names and the types of the full comic info
+    const auto comic = jsonObject(server->request("GET", QString("/v2/library/%1/comic/2/fullinfo").arg(libraryId)));
+    for (const auto &key : { "writer", "synopsis", "arc_number", "color", "universal_number" }) {
+        QVERIFY2(comic.contains(key), key);
+        QCOMPARE(deletedJson.value(key).type(), comic.value(key).type());
+        QCOMPARE(placeholderJson.value(key).type(), comic.value(key).type());
+    }
+    QCOMPARE(deletedJson.value("writer").toString(), QString("Writer"));
+    QCOMPARE(placeholderJson.value("synopsis").toString(), QString("Synopsis"));
+    QCOMPARE(placeholderJson.value("arc_number").toString(), QString("2"));
+    QCOMPARE(placeholderJson.value("color").toBool(), true);
+
+    QVERIFY(exec("UPDATE comic_info SET writer = NULL, synopsis = NULL, arcNumber = NULL, color = NULL WHERE id IN (2, 4)"));
+    QVERIFY(exec("UPDATE placeholder SET writer = NULL, synopsis = NULL, arcNumber = NULL, color = NULL WHERE id = 1"));
+}
+
+void ServerV3RoutesTest::missingComicsThatAreNotInTheLibraryAreNotFound()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    QCOMPARE(server->request("GET", library + "/deleted_comic/99").status, 404);
+    QCOMPARE(server->request("GET", library + "/placeholder/99").status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/deleted_comic/4").status, 404);
+    QCOMPARE(server->request("GET", "/v3/library/77/placeholder/1").status, 404);
+    QCOMPARE(server->request("POST", library + "/deleted_comic/4").status, 405);
+    QCOMPARE(server->request("PATCH", library + "/placeholder/1", R"({"rating":2})").status, 405);
 }
 
 // adds comics and placeholders to the subfolders, so it runs last

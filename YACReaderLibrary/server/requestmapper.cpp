@@ -25,13 +25,17 @@
 #include "controllers/v2/updatecomiccontroller_v2.h"
 #include "controllers/v2/updatelibrariescontroller_v2.h"
 #include "controllers/v3/covercontroller_v3.h"
+#include "controllers/v3/favoritescontroller_v3.h"
 #include "controllers/v3/foldercontentcontroller_v3.h"
 #include "controllers/v3/folderinfocontroller_v3.h"
 #include "controllers/v3/librarymaintenancecontroller_v3.h"
 #include "controllers/v3/listcontentcontroller_v3.h"
 #include "controllers/v3/listitemcontroller_v3.h"
 #include "controllers/v3/listsectioncontroller_v3.h"
+#include "controllers/v3/missingcomiccontroller_v3.h"
+#include "controllers/v3/readingcomicscontroller_v3.h"
 #include "controllers/v3/recentcontroller_v3.h"
+#include "controllers/v3/searchcontroller_v3.h"
 #include "controllers/v3/tagscontroller_v3.h"
 #include "controllers/v3/v3_response.h"
 #include "controllers/versioncontroller.h"
@@ -248,16 +252,23 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     QRegExp cover("/v3/library/([0-9]+)/cover/(.+)");
     QRegExp tags("/v3/library/([0-9]+)/tags/?");
     QRegExp recent("/v3/library/([0-9]+)/recent/?");
+    QRegExp favorites("/v3/library/([0-9]+)/favs/?");
+    QRegExp reading("/v3/library/([0-9]+)/reading/?");
+    QRegExp search("/v3/library/([0-9]+)/search/?");
     QRegExp readingList("/v3/library/([0-9]+)/reading_list/([0-9]+)/?");
     QRegExp readingListFolder("/v3/library/([0-9]+)/reading_list_folder/([0-9]+)/?");
     QRegExp smartList("/v3/library/([0-9]+)/smart_list/([0-9]+)/?");
     QRegExp smartListFolder("/v3/library/([0-9]+)/smart_list_folder/([0-9]+)/?");
     QRegExp librariesMaintenance("/v3/libraries/maintenance/?");
     QRegExp libraryLockRecovery("/v3/library/([0-9]+)/maintenance/recover/?");
+    QRegExp comicUpdate("/v3/library/([0-9]+)/comic/([0-9]+)/?"); // PATCH: change fields of a comic
+    QRegExp deletedComic("/v3/library/([0-9]+)/deleted_comic/([0-9]+)/?");
+    QRegExp placeholder("/v3/library/([0-9]+)/placeholder/([0-9]+)/?");
 
     loadSession(request, response);
 
     std::unique_ptr<HttpRequestHandler> controller;
+    ItemUpdateControllerV2 *itemUpdateController = nullptr;
     std::optional<int> libraryId;
     QByteArray method = "GET";
     if (serverVersion.exactMatch(path)) {
@@ -298,6 +309,16 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     } else if (recent.exactMatch(path)) {
         libraryId = recent.cap(1).toInt();
         controller = std::make_unique<RecentControllerV3>(*libraryId);
+    } else if (favorites.exactMatch(path)) {
+        libraryId = favorites.cap(1).toInt();
+        controller = std::make_unique<FavoritesControllerV3>(*libraryId);
+    } else if (reading.exactMatch(path)) {
+        libraryId = reading.cap(1).toInt();
+        controller = std::make_unique<ReadingComicsControllerV3>(*libraryId);
+    } else if (search.exactMatch(path)) {
+        libraryId = search.cap(1).toInt();
+        method = "POST";
+        controller = std::make_unique<SearchControllerV3>(*libraryId);
     } else if (readingList.exactMatch(path)) {
         libraryId = readingList.cap(1).toInt();
         controller = std::make_unique<ListItemControllerV3>(*libraryId, ReadingListId(readingList.cap(2).toULongLong()));
@@ -316,12 +337,29 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
         libraryId = libraryLockRecovery.cap(1).toInt();
         method = "POST";
         controller = std::make_unique<LibraryMaintenanceControllerV3>(*libraryId);
+    } else if (comicUpdate.exactMatch(path)) {
+        libraryId = comicUpdate.cap(1).toInt();
+        method = "PATCH";
+        auto updateController = std::make_unique<ItemUpdateControllerV2>(ItemUpdateControllerV2::Api::V3);
+        itemUpdateController = updateController.get();
+        controller = std::move(updateController);
+    } else if (deletedComic.exactMatch(path)) {
+        libraryId = deletedComic.cap(1).toInt();
+        controller = std::make_unique<MissingComicControllerV3>(*libraryId, ComicInfoId(deletedComic.cap(2).toULongLong()));
+    } else if (placeholder.exactMatch(path)) {
+        libraryId = placeholder.cap(1).toInt();
+        controller = std::make_unique<MissingComicControllerV3>(*libraryId, PlaceholderId(placeholder.cap(2).toULongLong()));
     }
 
-    if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId)))
+    if (controller == nullptr || (libraryId && !DBHelper::getLibraries().contains(*libraryId))) {
         V3Response::notFound(response);
-    else if (request.getMethod() != method)
+    } else if (request.getMethod() != method) {
         V3Response::methodNotAllowed(response);
-    else
+    } else {
         controller->service(request, response);
+
+        if (itemUpdateController != nullptr && !itemUpdateController->changedLibraryId.isNull()) {
+            emit libraryContentChanged(itemUpdateController->changedLibraryId);
+        }
+    }
 }

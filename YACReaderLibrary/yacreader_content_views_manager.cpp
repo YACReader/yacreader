@@ -45,6 +45,7 @@ YACReaderContentViewsManager::YACReaderContentViewsManager(QSettings *settings, 
 
     connectComicsViewConnections(comicsView);
     toolbarOwner = comicsView;
+    libraryWindow->actions.comicsViewAction(comicsViewStatus)->setChecked(true);
     connect(libraryWindow->optionsDialog, &YACReaderOptionsDialog::optionsChanged, gridComicsView, &GridComicsView::updateSettings);
 
     comicsViewStack->addWidget(comicsViewTransition = new ComicsViewTransition());
@@ -378,7 +379,9 @@ void YACReaderContentViewsManager::setToolBarOwner(ComicsView *view)
 
 void YACReaderContentViewsManager::setViewSelectorEnabled(bool enabled)
 {
-    libraryWindow->actions.toggleComicsViewAction->setEnabled(enabled);
+    auto &actions = libraryWindow->actions;
+    for (QAction *action : { actions.toggleComicsViewAction, actions.gridViewAction, actions.flowViewAction, actions.infoViewAction })
+        action->setEnabled(enabled);
 }
 
 void YACReaderContentViewsManager::updateViewSelectorIcon(const Theme &theme)
@@ -399,9 +402,6 @@ void YACReaderContentViewsManager::updateViewSelectorIcon(const Theme &theme)
     }
 
     libraryWindow->actions.toggleComicsViewAction->setIcon(icon);
-#ifdef Y_MAC_UI
-    libraryWindow->libraryToolBar->updateViewSelectorIcon(icon);
-#endif
 }
 
 void YACReaderContentViewsManager::showComicsViewTransition()
@@ -412,36 +412,59 @@ void YACReaderContentViewsManager::showComicsViewTransition()
 void YACReaderContentViewsManager::switchToNextComicsView(const ContentViewState &viewState)
 {
     switch (comicsViewStatus) {
-    case Flow: {
-        switchToComicsView(classicComicsView, gridComicsView, viewState);
-        comicsViewStatus = Grid;
-
+    case Flow:
+        switchToComicsViewStatus(Grid, viewState);
+        break;
+    case Grid:
+        switchToComicsViewStatus(Info, viewState);
+        break;
+    case Info:
+        switchToComicsViewStatus(Flow, viewState);
         break;
     }
+}
 
-    case Grid: {
-        if (infoComicsView == nullptr)
-            infoComicsView = new InfoComicsView();
+void YACReaderContentViewsManager::selectComicsView(ComicsViewStatus status)
+{
+    if (status == comicsViewStatus)
+        return;
 
-        switchToComicsView(gridComicsView, infoComicsView, viewState);
-        comicsViewStatus = Info;
-
-        break;
+    const auto viewState = captureViewState();
+    if (comicsViewStack->currentWidget() == comicsView) {
+        QTimer::singleShot(0, this, &YACReaderContentViewsManager::showComicsViewTransition);
+        QTimer::singleShot(100, this, [this, status, viewState]() { switchToComicsViewStatus(status, viewState); });
+    } else {
+        switchToComicsViewStatus(status, viewState);
     }
+}
 
-    case Info: {
+ComicsView *YACReaderContentViewsManager::comicsViewFor(ComicsViewStatus status)
+{
+    switch (status) {
+    case Flow:
         if (classicComicsView == nullptr)
             classicComicsView = new ClassicComicsView();
-
-        switchToComicsView(infoComicsView, classicComicsView, viewState);
-        comicsViewStatus = Flow;
-
-        break;
+        return classicComicsView;
+    case Info:
+        if (infoComicsView == nullptr)
+            infoComicsView = new InfoComicsView();
+        return infoComicsView;
+    case Grid:
+    default:
+        return gridComicsView;
     }
-    }
+}
 
-    updateViewSelectorIcon(theme);
-    libraryWindow->settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);
+void YACReaderContentViewsManager::switchToComicsViewStatus(ComicsViewStatus status, const ContentViewState &viewState)
+{
+    if (status != comicsViewStatus) {
+        switchToComicsView(comicsView, comicsViewFor(status), viewState);
+        comicsViewStatus = status;
+
+        updateViewSelectorIcon(theme);
+        libraryWindow->actions.comicsViewAction(comicsViewStatus)->setChecked(true);
+        libraryWindow->settings->setValue(COMICS_VIEW_STATUS, comicsViewStatus);
+    }
 
     if (comicsViewStack->currentWidget() == comicsViewTransition)
         showComicsView();

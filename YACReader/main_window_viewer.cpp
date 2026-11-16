@@ -180,7 +180,7 @@ void MainWindowViewer::syncModeActions(bool manga, bool continuousScroll)
         }
     }
 
-    doubleMangaPageSwitch();
+    refreshPrevNextActions();
 }
 
 MainWindowViewer::~MainWindowViewer()
@@ -267,6 +267,10 @@ void MainWindowViewer::setupUI()
         move(QPoint((widthDesktopResolution - width) / 2, ((heightDesktopResolution - height) - 40) / 2));
         resize(QSize(width, height));
     } else {
+        // Only the FULLSCREEN setting starts the viewer in full screen (see toFullScreen() below);
+        // a full screen state in the saved geometry would leave fullscreen out of sync.
+        if (isFullScreen())
+            setWindowState(windowState() & ~Qt::WindowFullScreen);
         // Guard against the window landing off-screen when a monitor is unplugged
         // between sessions. Qt 6 tries to remap the geometry to the primary screen
         // when the saved screen is gone, but the result can still be off-screen.
@@ -516,7 +520,7 @@ void MainWindowViewer::createActions()
     doubleMangaPageAction->setData(DOUBLE_MANGA_PAGE_ACTION_Y);
     doubleMangaPageAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(DOUBLE_MANGA_PAGE_ACTION_Y));
     connect(doubleMangaPageAction, &QAction::triggered, viewer, &Viewer::doubleMangaPageSwitch);
-    connect(doubleMangaPageAction, &QAction::triggered, this, &MainWindowViewer::doubleMangaPageSwitch);
+    connect(doubleMangaPageAction, &QAction::triggered, this, &MainWindowViewer::refreshPrevNextActions);
 
     goToPageAction = new QAction(tr("Go To"), this);
     goToPageAction->setToolTip(tr("Go to page..."));
@@ -918,6 +922,8 @@ void MainWindowViewer::openComicFromRecentAction(QAction *action)
             openFolderFromPath(action->data().toString());
         }
     } else {
+        // these neighbours belong to the comic shown before, so the reset must not use them
+        previousComicPath = nextComicPath = "";
         viewer->resetContent();
         viewer->showMessageErrorOpening();
     }
@@ -959,7 +965,7 @@ void MainWindowViewer::open(QString path, ComicDB &comic, QList<ComicDB> &siblin
     QFileInfo fi(path);
     currentComicPath = fi.absoluteFilePath();
 
-    setWindowTitle("YACReader - " + titleOrFileName(comic.info, fi.fileName()));
+    setWindowTitle("YACReader - " + fullTitleOrFileName(comic.info, fi.fileName()));
 
     applyLibraryReaderMode(comic.info.type.value<YACReader::FileType>());
 
@@ -1247,6 +1253,7 @@ void MainWindowViewer::toFullScreen()
     hideToolBars();
     viewer->hide();
     viewer->fullscreen = true; // TODO, change by the right use of windowState();
+    geometryBeforeFullScreen = saveGeometry();
     setWindowState(Qt::WindowFullScreen);
     viewer->show();
     if (viewer->magnifyingGlassIsVisible())
@@ -1336,8 +1343,7 @@ void MainWindowViewer::checkNewVersion()
 void MainWindowViewer::processReset()
 {
     disableActions();
-    if (!isClient || siblingComics.size() <= 1)
-        disablePreviousNextComicActions();
+    refreshPrevNextActions();
 }
 
 void MainWindowViewer::setUpShortcutsManagement()
@@ -1515,7 +1521,7 @@ void MainWindowViewer::setUpShortcutsManagement()
     ShortcutsManager::getShortcutsManager().registerActions(allActions);
 }
 
-void MainWindowViewer::doubleMangaPageSwitch()
+void MainWindowViewer::refreshPrevNextActions()
 {
     if (isClient) {
         updatePrevNextActions(currentSiblingIndex > 0, currentSiblingIndex >= 0 && currentSiblingIndex + 1 < siblingComics.size());
@@ -1579,10 +1585,9 @@ void MainWindowViewer::closeEvent(QCloseEvent *event)
 
     viewer->save();
     Configuration &conf = Configuration::getConfiguration();
-    // saveGeometry() encodes the current screen, the maximized/fullscreen state, and
-    // the normal (pre-maximize) geometry in one blob, so restoreGeometry() puts the
-    // window back on the right monitor in the right state regardless of how it was closed.
-    conf.setGeometry(saveGeometry());
+    // In full screen, save the geometry from before it: it keeps the maximized state, which
+    // showFullScreen() clears. Full screen at start comes from the FULLSCREEN setting.
+    conf.setGeometry(fullscreen ? geometryBeforeFullScreen : saveGeometry());
 
     event->accept();
 }
@@ -1810,7 +1815,6 @@ void MainWindowViewer::dragEnterEvent(QDragEnterEvent *event)
     // accept just text/uri-list mime format
     if (event->mimeData()->hasFormat("text/uri-list")) {
         event->acceptProposedAction();
-        isClient = false;
     }
 }
 

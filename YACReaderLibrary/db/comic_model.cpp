@@ -575,7 +575,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     QHash<int, QByteArray> roles;
 
     roles[NumberRole] = "number";
-    roles[TitleRole] = "title";
+    roles[ShortTitleWithoutNumberOrFileNameRole] = "short_title_without_number_or_file_name";
     roles[FileNameRole] = "file_name";
     roles[NumPagesRole] = "num_pages";
     roles[IdRole] = "id";
@@ -588,7 +588,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[HasBeenOpenedRole] = "has_been_opened";
     roles[CoverPathRole] = "cover_path";
     roles[PublicationDate] = "date";
-    roles[ReadableTitle] = "readable_title";
+    roles[FullTitleOrFileNameRole] = "full_title_or_file_name";
     roles[AddedRole] = "added_date";
     roles[TypeRole] = "type";
     roles[ShowRecentRole] = "show_recent";
@@ -602,6 +602,7 @@ QHash<int, QByteArray> ComicModel::roleNames() const
     roles[LastKnownNameRole] = "last_known_name";
     roles[ListItemIdRole] = "list_item_id";
     roles[ListIdRole] = "list_id";
+    roles[FullTitleWithoutNumberOrFileNameRole] = "full_title_without_number_or_file_name";
 
     return roles;
 }
@@ -639,7 +640,7 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
     const auto value = [&item](int column) { return columnValue(item, column); };
     // Display fallback only; the metadata and API keep their original values.
     const auto orDash = [](const QString &title) { return title.isEmpty() ? QStringLiteral("-") : title; };
-    const auto title = [&] { return orDash(titleOrFileName(rowMetadata(item), rowFileName(item))); };
+    const auto title = [&] { return orDash(shortTitleWithoutNumberOrFileName(rowMetadata(item), rowFileName(item))); };
 
     auto sizeString = [=] {
         auto bytes = value(ComicModel::Hash).toString().right(value(ComicModel::Hash).toString().length() - 40).toULongLong();
@@ -658,13 +659,15 @@ QVariant ComicModel::data(const QModelIndex &index, int role) const
 
     if (role == NumberRole)
         return value(Number);
-    else if (role == TitleRole)
+    else if (role == ShortTitleWithoutNumberOrFileNameRole)
         return title();
-    else if (role == ReadableTitle) {
+    else if (role == FullTitleOrFileNameRole) {
         const auto &metadata = rowMetadata(item);
         // Continue-reading cards and action labels have no separate number field.
-        return orDash(titleIncludingNumber(metadata, rowFileName(item)));
-    } else if (role == FileNameRole)
+        return orDash(fullTitleOrFileName(metadata, rowFileName(item)));
+    } else if (role == FullTitleWithoutNumberOrFileNameRole)
+        return orDash(fullTitleWithoutNumberOrFileName(rowMetadata(item), rowFileName(item)));
+    else if (role == FileNameRole)
         return rowComic(item) ? value(FileName) : QVariant();
     else if (role == RatingRole)
         return value(Rating);
@@ -1023,16 +1026,7 @@ QList<ComicItem> ComicModel::createFavoritesModelData(const QString &databasePat
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
-        selectQuery.setForwardOnly(true);
-        selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
-                                                                         "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                                                         "INNER JOIN comic_default_reading_list cdrl ON (c.id == cdrl.comic_id) "
-                                                                         "WHERE cdrl.default_reading_list_id = :parentDefaultListId "
-                                                                         "ORDER BY cdrl.ordering");
-        selectQuery.bindValue(":parentDefaultListId", 1);
-        selectQuery.exec();
-        modelData = ComicItems::fromQuery(selectQuery);
+        modelData = ComicItems::loadFavorites(db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);
@@ -1063,15 +1057,7 @@ QList<ComicItem> ComicModel::createReadingModelData(const QString &databasePath)
     QString connectionName = "";
     {
         QSqlDatabase db = DataBaseManagement::loadDatabase(databasePath);
-        QSqlQuery selectQuery(db);
-        selectQuery.setForwardOnly(true);
-        selectQuery.prepare("SELECT " + ComicDB::selectList("c", "ci") + " "
-                                                                         "FROM comic c INNER JOIN comic_info ci ON (c.comicInfoId = ci.id) "
-                                                                         "WHERE ci.hasBeenOpened = 1 AND ci.read = 0 "
-                                                                         "ORDER BY ci.lastTimeOpened DESC");
-        selectQuery.exec();
-
-        modelData = ComicItems::fromQuery(selectQuery);
+        modelData = ComicItems::loadReading(db);
         connectionName = db.connectionName();
     }
     QSqlDatabase::removeDatabase(connectionName);

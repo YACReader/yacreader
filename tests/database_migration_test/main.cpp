@@ -54,6 +54,10 @@ bool DatabaseMigrationTest::createOldLibrary(const QString &libraryPath, const Q
         success = success && DataBaseManagement::createV8Tables(db);
 
         statements = {
+            "CREATE INDEX comic_label_ordering_index ON label (ordering)",
+            "CREATE INDEX reading_list_ordering_index ON label (ordering)",
+            "CREATE INDEX comic_reading_list_ordering_index ON label (ordering)",
+            "CREATE INDEX comic_default_reading_list_ordering_index ON label (ordering)",
             "INSERT INTO folder (id, parentId, name, path) VALUES (1, 1, 'root', '/')",
             "INSERT INTO comic_info (id, hash) VALUES (10, 'hash10'), (11, 'hash11'), (12, 'hash12')",
             "INSERT INTO comic (id, parentId, comicInfoId, fileName, path) VALUES "
@@ -229,6 +233,9 @@ void DatabaseMigrationTest::upgradesHistoricalSchemas()
                            "'reading_list_folder', 'smart_list_folder', 'folder_placeholder') "
                            "OR name = 'comic_delete_last_known_file' OR name = 'comic_comic_info_id_index' ORDER BY type, name";
     QCOMPARE(strings(library.path(), schema), strings(freshLibrary.path(), schema));
+    const QString labelIndexes = "SELECT name FROM sqlite_master WHERE type = 'index' AND tbl_name = 'label'";
+    QCOMPARE(strings(library.path(), labelIndexes), QStringList({ "label_ordering_index" }));
+    QCOMPARE(strings(freshLibrary.path(), labelIndexes), QStringList({ "label_ordering_index" }));
     QCOMPARE(strings(library.path(), "SELECT name FROM pragma_table_info('comic_info') ORDER BY name"),
              strings(freshLibrary.path(), "SELECT name FROM pragma_table_info('comic_info') ORDER BY name"));
     QVERIFY(strings(library.path(), "PRAGMA foreign_key_check").isEmpty());

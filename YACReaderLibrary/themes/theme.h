@@ -284,14 +284,6 @@ struct GridAndInfoViewTheme {
     QColor buttonShadowColor;
 };
 
-struct MainToolbarThemeTemplates {
-    // Toolbar QSS: %1 = background color
-    QString toolbarQSS = "QToolButton {border:none;}";
-
-    // Folder name label QSS: %1 = text color
-    QString folderNameLabelQSS = "QLabel {color:%1; font-size:22px; font-weight:bold;}";
-};
-
 struct ContentSplitterThemeTemplates {
     QString horizontalSplitterQSS = "QSplitter::handle { image: none; background-color: %1; height: %2px; }";
     QString verticalSplitterQSS = "QSplitter::handle { image: none; background-color: %1; height: %2px; }";
@@ -299,7 +291,7 @@ struct ContentSplitterThemeTemplates {
 
 struct ComicsViewToolbarThemeTemplates {
     QString toolbarQSS = "QToolBar { border: none; background: %1; }\n"
-                         "QToolBar::separator { background: %2; width: 1px; margin: 5px 4px; }\n"
+                         "QToolBar::separator { background: %2; width: 1px; margin: 6px 5px; }\n"
                          "QToolButton:checked { background-color: %3; }\n";
 };
 
@@ -444,7 +436,8 @@ struct ComicsViewToolbarTheme {
 struct MainToolbarTheme {
     QColor backgroundColor;
     QColor folderNameColor;
-    QPixmap dividerPixmap;
+    QColor iconColor;
+    QColor sidebarIconColor; // Settings, server and help sit on the sidebar color
 
     // Icons (contain both Normal and Disabled states)
     QIcon backIcon;
@@ -456,10 +449,6 @@ struct MainToolbarTheme {
     QIcon flowIcon;
     QIcon infoIcon;
     QIcon fullscreenIcon;
-
-    // QSS
-    QString toolbarQSS;
-    QString folderNameLabelQSS;
 };
 
 struct MetadataScraperDialogTheme {

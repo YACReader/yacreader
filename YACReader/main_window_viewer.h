@@ -77,7 +77,7 @@ public slots:
     void checkNewVersion();
     void processReset();
     void setUpShortcutsManagement();
-    void doubleMangaPageSwitch();
+    void refreshPrevNextActions();
 
     void toggleFitToWidthSlider();
 
@@ -95,6 +95,7 @@ private:
     bool fullscreen;
     bool toolbars;
     bool fromMaximized;
+    QByteArray geometryBeforeFullScreen;
 
     QString currentDirectory;
     QString currentComicPath;

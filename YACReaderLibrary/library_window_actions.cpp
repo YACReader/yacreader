@@ -22,6 +22,7 @@
 #include "yacreader_navigation_controller.h"
 #include "yacreader_options_dialog.h"
 
+#include <QActionGroup>
 #include <QMenu>
 #include <QtCore>
 
@@ -241,6 +242,15 @@ void LibraryWindowActions::createActions(LibraryWindow *window, QSettings *setti
 
     toggleComicsViewAction->setData(TOGGLE_COMICS_VIEW_ACTION_YL);
     toggleComicsViewAction->setShortcut(ShortcutsManager::getShortcutsManager().getShortcut(TOGGLE_COMICS_VIEW_ACTION_YL));
+
+    auto *comicsViewGroup = new QActionGroup(window);
+    gridViewAction = new QAction(tr("Grid view"), comicsViewGroup);
+    flowViewAction = new QAction(tr("Flow view"), comicsViewGroup);
+    infoViewAction = new QAction(tr("Info view"), comicsViewGroup);
+    for (QAction *action : { gridViewAction, flowViewAction, infoViewAction }) {
+        action->setCheckable(true);
+        action->setToolTip(action->text());
+    }
 
     //----
 
@@ -671,6 +681,9 @@ void LibraryWindowActions::createConnections(
     QObject::connect(toggleFullScreenAction, &QAction::triggered, window, &LibraryWindow::toggleFullScreen);
 #endif
     QObject::connect(toggleComicsViewAction, &QAction::triggered, contentViewsManager, &YACReaderContentViewsManager::toggleComicsView);
+    QObject::connect(gridViewAction, &QAction::triggered, contentViewsManager, [contentViewsManager] { contentViewsManager->selectComicsView(YACReader::Grid); });
+    QObject::connect(flowViewAction, &QAction::triggered, contentViewsManager, [contentViewsManager] { contentViewsManager->selectComicsView(YACReader::Flow); });
+    QObject::connect(infoViewAction, &QAction::triggered, contentViewsManager, [contentViewsManager] { contentViewsManager->selectComicsView(YACReader::Info); });
     QObject::connect(optionsAction, &QAction::triggered, optionsDialog, &QWidget::show);
 #ifdef SERVER_RELEASE
     QObject::connect(serverConfigAction, &QAction::triggered, serverConfigDialog, &QWidget::show);
@@ -937,6 +950,19 @@ void LibraryWindowActions::disableAllActions()
     disableFoldersActions(true);
 }
 
+QAction *LibraryWindowActions::comicsViewAction(YACReader::ComicsViewStatus status) const
+{
+    switch (status) {
+    case YACReader::Flow:
+        return flowViewAction;
+    case YACReader::Info:
+        return infoViewAction;
+    case YACReader::Grid:
+    default:
+        return gridViewAction;
+    }
+}
+
 void LibraryWindowActions::updateTheme(const Theme &theme)
 {
     const auto &mainToolbar = theme.mainToolbar;
@@ -966,6 +992,9 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     helpAboutAction->setIcon(mainToolbar.helpIcon);
     optionsAction->setIcon(mainToolbar.settingsIcon);
     serverConfigAction->setIcon(mainToolbar.serverIcon);
+    gridViewAction->setIcon(mainToolbar.gridIcon);
+    flowViewAction->setIcon(mainToolbar.flowIcon);
+    infoViewAction->setIcon(mainToolbar.infoIcon);
 #ifndef Q_OS_MACOS
     toggleFullScreenAction->setIcon(mainToolbar.fullscreenIcon);
 #endif

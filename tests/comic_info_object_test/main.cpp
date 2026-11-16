@@ -87,8 +87,7 @@ void ComicInfoObjectTest::exposesTheQmlProperties()
     for (const auto *method : { "getWriters()", "getPencillers()", "getInkers()", "getColorists()", "getLetterers()",
                                 "getCoverArtists()", "getEditors()", "getImprint()", "getCharacters()", "getTeams()",
                                 "getLocations()", "getTags()", "getTypeString()", "getStoryArcInfoString()",
-                                "getAlternateSeriesString()", "getTitleOrFileName()", "getFileSize()",
-                                "getTitleIncludingNumber()", "getInfoTitle()" })
+                                "getAlternateSeriesString()", "getFileSize()", "getFullTitleOrFileName()" })
         QVERIFY2(metaObject->indexOfMethod(method) >= 0, method);
 }
 
@@ -106,8 +105,7 @@ void ComicInfoObjectTest::readsTheComic()
     QCOMPARE(object.property("isFavorite").toBool(), true);
     QCOMPARE(object.getWriters(), QStringList({ "Writer A", "Writer B" }));
     QCOMPARE(object.getStoryArcInfoString(), comic.info.getStoryArcInfoString());
-    QCOMPARE(object.getInfoTitle(), comic.getInfoTitle());
-    QCOMPARE(object.getTitleIncludingNumber(), comic.getTitleIncludingNumber());
+    QCOMPARE(object.getFullTitleOrFileName(), fullTitleOrFileName(comic.info, comic.getFileName()));
 
     ComicInfoObject empty;
     QCOMPARE(empty.property("isFavorite").toBool(), false);
@@ -127,12 +125,11 @@ void ComicInfoObjectTest::readsADeletedComic()
     QCOMPARE(deleted.property("available").toBool(), false);
     QCOMPARE(deleted.property("id").toULongLong(), 42ULL);
     QCOMPARE(deleted.property("rating").toInt(), 4);
-    QCOMPARE(deleted.getTitleOrFileName(), QString("last.cbz"));
-    QCOMPARE(deleted.getInfoTitle(), QString("last.cbz"));
+    QCOMPARE(deleted.getFullTitleOrFileName(), QString("last.cbz"));
     QCOMPARE(deleted.getFileSize(), comic.getFileSize());
 
     ComicInfoObject withoutName(ComicRecordCase::DeletedComic { comic.info, std::nullopt }, false);
-    QCOMPARE(withoutName.getTitleOrFileName(), QString("-"));
+    QCOMPARE(withoutName.getFullTitleOrFileName(), QString("-"));
 }
 
 // the descriptive metadata only; no comic state, and the read state and rating cannot be set
@@ -152,7 +149,7 @@ void ComicInfoObjectTest::readsAPlaceholder()
     QCOMPARE(object.property("number").toString(), QString("3"));
     QCOMPARE(object.getWriters(), QStringList({ "Writer A", "Writer B" }));
     QCOMPARE(object.getStoryArcInfoString(), QString("Arc"));
-    QCOMPARE(object.getInfoTitle(), QString("#3 - Expected Series"));
+    QCOMPARE(object.getFullTitleOrFileName(), QString("Expected Series #3"));
     QCOMPARE(object.property("id").toULongLong(), 0ULL);
     QCOMPARE(object.property("read").toBool(), false);
     QCOMPARE(object.property("rating").toInt(), 0);
@@ -317,21 +314,28 @@ void ComicInfoObjectTest::titleFallback_data()
     QTest::addColumn<QString>("fileName");
     QTest::addColumn<QString>("expected");
     QTest::addColumn<QString>("expectedWithNumber");
+    QTest::addColumn<QString>("expectedFull");
+    QTest::addColumn<QString>("expectedFullWithoutNumber");
 
-    QTest::newRow("title") << QVariant("The Long Night") << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night";
-    QTest::newRow("series and number") << QVariant() << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "Batman" << "Batman #3";
-    QTest::newRow("empty title") << QVariant("") << QVariant("Batman") << QVariant() << QVariant("3") << "b.cbz" << "Batman" << "Batman #3";
-    QTest::newRow("series") << QVariant() << QVariant("Batman") << QVariant() << QVariant() << "b.cbz" << "Batman" << "Batman";
-    QTest::newRow("volume and number") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant("1") << "The Red Mother #001.cbr" << "The Red Mother" << "#1 - The Red Mother";
-    QTest::newRow("volume without file") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant("1") << "" << "The Red Mother" << "#1 - The Red Mother";
-    QTest::newRow("volume") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant() << "" << "The Red Mother" << "The Red Mother";
-    QTest::newRow("whitespace metadata") << QVariant("  ") << QVariant(" ") << QVariant("The Red Mother") << QVariant("0") << "" << "The Red Mother" << "#0 - The Red Mother";
-    QTest::newRow("number with file") << QVariant() << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "b.cbz" << "b.cbz";
-    QTest::newRow("number without file") << QVariant() << QVariant() << QVariant() << QVariant("3") << "" << "" << "#3";
-    QTest::newRow("fractional number") << QVariant() << QVariant() << QVariant("Annual") << QVariant("1.5") << "" << "Annual" << "#1.5 - Annual";
-    QTest::newRow("file name") << QVariant() << QVariant() << QVariant() << QVariant() << "b.cbz" << "b.cbz" << "b.cbz";
-    QTest::newRow("blank metadata with file") << QVariant("") << QVariant(" ") << QVariant(" ") << QVariant(" ") << "b.cbz" << "b.cbz" << "b.cbz";
-    QTest::newRow("nothing") << QVariant() << QVariant() << QVariant() << QVariant() << "" << "" << "";
+    QTest::newRow("title") << QVariant("The Long Night") << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night" << "Batman 2011 #3 - The Long Night" << "Batman 2011 - The Long Night";
+    QTest::newRow("title and series") << QVariant("The Long Night") << QVariant("Batman") << QVariant() << QVariant() << "b.cbz" << "The Long Night" << "The Long Night" << "Batman - The Long Night" << "Batman - The Long Night";
+    QTest::newRow("title and number") << QVariant("The Long Night") << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "The Long Night" << "#3 - The Long Night" << "#3 - The Long Night" << "The Long Night";
+    QTest::newRow("title only") << QVariant("The Long Night") << QVariant() << QVariant() << QVariant() << "b.cbz" << "The Long Night" << "The Long Night" << "The Long Night" << "The Long Night";
+    QTest::newRow("series and number") << QVariant() << QVariant("Batman") << QVariant("2011") << QVariant("3") << "b.cbz" << "Batman" << "Batman #3" << "Batman 2011 #3" << "Batman 2011";
+    QTest::newRow("series equal to volume") << QVariant("First Cycle") << QVariant("American Vampire") << QVariant("American Vampire") << QVariant("1") << "a.cbz" << "First Cycle" << "#1 - First Cycle" << "American Vampire #1 - First Cycle" << "American Vampire - First Cycle";
+    QTest::newRow("text volume") << QVariant() << QVariant("Fables") << QVariant("Deluxe Edition") << QVariant("1") << "f.cbz" << "Fables" << "Fables #1" << "Fables Deluxe Edition #1" << "Fables Deluxe Edition";
+    QTest::newRow("empty title") << QVariant("") << QVariant("Batman") << QVariant() << QVariant("3") << "b.cbz" << "Batman" << "Batman #3" << "Batman #3" << "Batman";
+    QTest::newRow("series") << QVariant() << QVariant("Batman") << QVariant() << QVariant() << "b.cbz" << "Batman" << "Batman" << "Batman" << "Batman";
+    QTest::newRow("volume and number") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant("1") << "The Red Mother #001.cbr" << "The Red Mother" << "#1 - The Red Mother" << "#1 - The Red Mother" << "The Red Mother";
+    QTest::newRow("volume without file") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant("1") << "" << "The Red Mother" << "#1 - The Red Mother" << "#1 - The Red Mother" << "The Red Mother";
+    QTest::newRow("volume") << QVariant() << QVariant() << QVariant("The Red Mother") << QVariant() << "" << "The Red Mother" << "The Red Mother" << "The Red Mother" << "The Red Mother";
+    QTest::newRow("whitespace metadata") << QVariant("  ") << QVariant(" ") << QVariant("The Red Mother") << QVariant("0") << "" << "The Red Mother" << "#0 - The Red Mother" << "#0 - The Red Mother" << "The Red Mother";
+    QTest::newRow("number with file") << QVariant() << QVariant() << QVariant() << QVariant("3") << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz";
+    QTest::newRow("number without file") << QVariant() << QVariant() << QVariant() << QVariant("3") << "" << "" << "#3" << "#3" << "";
+    QTest::newRow("fractional number") << QVariant() << QVariant() << QVariant("Annual") << QVariant("1.5") << "" << "Annual" << "#1.5 - Annual" << "#1.5 - Annual" << "Annual";
+    QTest::newRow("file name") << QVariant() << QVariant() << QVariant() << QVariant() << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz";
+    QTest::newRow("blank metadata with file") << QVariant("") << QVariant(" ") << QVariant(" ") << QVariant(" ") << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz" << "b.cbz";
+    QTest::newRow("nothing") << QVariant() << QVariant() << QVariant() << QVariant() << "" << "" << "" << "" << "";
 }
 
 void ComicInfoObjectTest::titleFallback()
@@ -343,22 +347,23 @@ void ComicInfoObjectTest::titleFallback()
     QFETCH(QString, fileName);
     QFETCH(QString, expected);
     QFETCH(QString, expectedWithNumber);
+    QFETCH(QString, expectedFull);
+    QFETCH(QString, expectedFullWithoutNumber);
 
     DescriptiveComicMetadata info;
     info.title = title;
     info.series = series;
     info.volume = volume;
     info.number = number;
-    QCOMPARE(titleOrFileName(info, fileName), expected);
-    QCOMPARE(titleIncludingNumber(info, fileName), expectedWithNumber);
-    if (series.toString().trimmed().isEmpty())
-        QCOMPARE(infoTitle(info, fileName), expectedWithNumber);
+    QCOMPARE(shortTitleWithoutNumberOrFileName(info, fileName), expected);
+    QCOMPARE(shortTitleOrFileName(info, fileName), expectedWithNumber);
+    QCOMPARE(fullTitleOrFileName(info, fileName), expectedFull);
+    QCOMPARE(fullTitleWithoutNumberOrFileName(info, fileName), expectedFullWithoutNumber);
 
     ComicInfo deleted;
     static_cast<DescriptiveComicMetadata &>(deleted) = info;
     ComicInfoObject object(ComicRecordCase::DeletedComic { deleted, LastKnownFile { fileName, fileName } }, false);
-    QCOMPARE(object.getTitleOrFileName(), expected.isEmpty() ? QString("-") : expected);
-    QCOMPARE(object.getTitleIncludingNumber(), expectedWithNumber.isEmpty() ? QString("-") : expectedWithNumber);
+    QCOMPARE(object.getFullTitleOrFileName(), expectedFull.isEmpty() ? QString("-") : expectedFull);
     QCOMPARE(info.title, title);
     QCOMPARE(info.series, series);
     QCOMPARE(info.volume, volume);
