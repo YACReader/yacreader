@@ -12,23 +12,23 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="502"/>
+        <location filename="../common/comic.cpp" line="503"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>第 %1 頁 CRC 校驗失敗：部分頁面將無法正確顯示</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="509"/>
+        <location filename="../common/comic.cpp" line="510"/>
         <source>Unknown error opening the file</source>
         <translation>開啟檔案時出現未知錯誤</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="616"/>
+        <location filename="../common/comic.cpp" line="617"/>
         <source>7z not found</source>
         <translation>未找到 7z</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="622"/>
-        <location filename="../common/comic.cpp" line="638"/>
+        <location filename="../common/comic.cpp" line="623"/>
+        <location filename="../common/comic.cpp" line="639"/>
         <source>Format not supported</source>
         <translation>不支援的檔案格式</translation>
     </message>

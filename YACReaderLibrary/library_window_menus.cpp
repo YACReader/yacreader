@@ -379,10 +379,13 @@ void LibraryWindowMenus::showGridFoldersContextMenu(const QPoint &point, const F
 void LibraryWindowMenus::showContinueReadingContextMenu(const QPoint &point, const ComicDB &comic)
 {
     QMenu menu;
+    auto goToLocationAction = new QAction(tr("Go to location"), &menu);
+    menu.addAction(goToLocationAction);
     auto setAsUnreadAction = new QAction(tr("Set as unread"), &menu);
     setAsUnreadAction->setIcon(themeProvider().comicsViewToolbar.setAsUnreadIcon);
     menu.addAction(setAsUnreadAction);
 
+    connect(goToLocationAction, &QAction::triggered, &menu, [this, comic] { emit comicLocationRequested(comic); });
     connect(setAsUnreadAction, &QAction::triggered, &menu, [this, comic] { comicManagementCoordinator->setComicUnread(libraryIdProvider(), comic); });
     menu.exec(point);
 }

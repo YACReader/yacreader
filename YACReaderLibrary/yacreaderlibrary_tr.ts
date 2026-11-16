@@ -910,67 +910,67 @@
 <context>
     <name>ComicModel</name>
     <message>
-        <location filename="db/comic_model.cpp" line="738"/>
+        <location filename="db/comic_model.cpp" line="741"/>
         <source>no</source>
         <translation>hayır</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="738"/>
+        <location filename="db/comic_model.cpp" line="741"/>
         <source>yes</source>
         <translation>evet</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="777"/>
+        <location filename="db/comic_model.cpp" line="780"/>
         <source>Read</source>
         <translation>Okundu</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="775"/>
+        <location filename="db/comic_model.cpp" line="778"/>
         <source>Size</source>
         <translation>Boyut</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="773"/>
+        <location filename="db/comic_model.cpp" line="776"/>
         <source>Pages</source>
         <translation>Sayfalar</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="769"/>
+        <location filename="db/comic_model.cpp" line="772"/>
         <source>Title</source>
         <translation>Başlık</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="771"/>
+        <location filename="db/comic_model.cpp" line="774"/>
         <source>File Name</source>
         <translation>Dosya Adı</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="779"/>
+        <location filename="db/comic_model.cpp" line="782"/>
         <source>Current Page</source>
         <translation>Geçerli Sayfa</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="781"/>
+        <location filename="db/comic_model.cpp" line="784"/>
         <source>Publication Date</source>
         <translation>Yayın Tarihi</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="783"/>
+        <location filename="db/comic_model.cpp" line="786"/>
         <source>Rating</source>
         <translation>Derecelendirme</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="785"/>
+        <location filename="db/comic_model.cpp" line="788"/>
         <source>Series</source>
         <translation>Seri</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="787"/>
+        <location filename="db/comic_model.cpp" line="790"/>
         <source>Volume</source>
         <translation>Cilt</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="789"/>
+        <location filename="db/comic_model.cpp" line="792"/>
         <source>Story Arc</source>
         <translation>Hikâye Yayı</translation>
     </message>
@@ -1320,23 +1320,23 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="616"/>
+        <location filename="../common/comic.cpp" line="617"/>
         <source>7z not found</source>
         <translation>7z bulunamadı</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="502"/>
+        <location filename="../common/comic.cpp" line="503"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>(%1). sayfada CRC hatası: bazı sayfalar düzgün görüntülenmeyecek</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="509"/>
+        <location filename="../common/comic.cpp" line="510"/>
         <source>Unknown error opening the file</source>
         <translation>Dosya açılırken bilinmeyen hata</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="622"/>
-        <location filename="../common/comic.cpp" line="638"/>
+        <location filename="../common/comic.cpp" line="623"/>
+        <location filename="../common/comic.cpp" line="639"/>
         <source>Format not supported</source>
         <translation>Biçim desteklenmiyor</translation>
     </message>
@@ -1803,7 +1803,7 @@
         <translation>Kütüphane kullanılamıyor</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="238"/>
+        <location filename="library_window.cpp" line="240"/>
         <source>YACReader Library</source>
         <translation>YACReader Kütüphane</translation>
     </message>
@@ -1848,7 +1848,7 @@
         <translation>Emin misiniz?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="553"/>
+        <location filename="library_window.cpp" line="561"/>
         <location filename="folder_management_coordinator.cpp" line="216"/>
         <source>Delete folder</source>
         <translation>Klasörü sil</translation>
@@ -1920,61 +1920,61 @@
         <translation>Seçili klasörleri silmeye çalışırken bir sorun oluştu. Lütfen yazma izinlerini kontrol edin ve hiçbir uygulamanın bu klasörleri veya içerdikleri dosyaları kullanmadığından emin olun.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="542"/>
+        <location filename="library_window.cpp" line="550"/>
         <source>Edit smart list...</source>
         <translation>Akıllı listeyi düzenle...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="543"/>
+        <location filename="library_window.cpp" line="551"/>
         <source>Delete smart list</source>
         <translation>Akıllı listeyi sil</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="545"/>
-        <location filename="library_window.cpp" line="550"/>
-        <location filename="library_window.cpp" line="565"/>
+        <location filename="library_window.cpp" line="553"/>
+        <location filename="library_window.cpp" line="558"/>
+        <location filename="library_window.cpp" line="573"/>
         <source>New folder...</source>
         <translation>Yeni klasör...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="546"/>
-        <location filename="library_window.cpp" line="552"/>
-        <location filename="library_window.cpp" line="567"/>
+        <location filename="library_window.cpp" line="554"/>
+        <location filename="library_window.cpp" line="560"/>
+        <location filename="library_window.cpp" line="575"/>
         <source>Move to folder...</source>
         <translation>Klasöre taşı...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="551"/>
+        <location filename="library_window.cpp" line="559"/>
         <source>Rename folder...</source>
         <translation>Klasörü yeniden adlandır...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="560"/>
+        <location filename="library_window.cpp" line="568"/>
         <source>Match to library comics...</source>
         <translation>Kitaplıktaki çizgi romanlarla eşleştir...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="562"/>
+        <location filename="library_window.cpp" line="570"/>
         <source>Track missing issues...</source>
-        <translation type="unfinished">Eksik sayıları takip et...</translation>
+        <translation>Eksik sayıları takip et...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="563"/>
+        <location filename="library_window.cpp" line="571"/>
         <source>Export reading list...</source>
         <translation>Okuma listesini dışa aktar...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="788"/>
+        <location filename="library_window.cpp" line="796"/>
         <source>Rename or organize files</source>
         <translation>Dosyaları yeniden adlandır veya düzenle</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="810"/>
+        <location filename="library_window.cpp" line="818"/>
         <source>Set the type of the selected comics</source>
         <translation>Seçili çizgi romanların türünü ayarla</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="832"/>
+        <location filename="library_window.cpp" line="840"/>
         <source>Save as smart list…</source>
         <translation>Akıllı liste olarak kaydet…</translation>
     </message>
@@ -2009,12 +2009,12 @@
         <translation>Arama söz dizimi…</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="715"/>
+        <location filename="library_window.cpp" line="723"/>
         <source>Package operation failed</source>
         <translation>Paket işlemi başarısız oldu</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="715"/>
+        <location filename="library_window.cpp" line="723"/>
         <source>The covers package operation could not be completed.</source>
         <translation>Kapak paketi işlemi tamamlanamadı.</translation>
     </message>
@@ -2250,7 +2250,7 @@ Kütüphane menüsünden bir yedeği geri yükleyebilir veya kütüphaneyi yenid
         <translation>Meta verileri ve yedekleri kaldır ve sil</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="644"/>
+        <location filename="library_window.cpp" line="652"/>
         <source>Library info</source>
         <translation>Kütüphane bilgisi</translation>
     </message>
@@ -2699,17 +2699,17 @@ Eksik dosyalar: %3</translation>
     <message>
         <location filename="library_window_actions.cpp" line="247"/>
         <source>Grid view</source>
-        <translation type="unfinished">Izgara görünümü</translation>
+        <translation>Izgara görünümü</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="248"/>
         <source>Flow view</source>
-        <translation type="unfinished"></translation>
+        <translation>Flow görünümü</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="249"/>
         <source>Info view</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilgi görünümü</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="258"/>
@@ -2962,7 +2962,7 @@ Eksik dosyalar: %3</translation>
         <location filename="library_window_menus.cpp" line="135"/>
         <location filename="library_window_menus.cpp" line="240"/>
         <location filename="library_window_menus.cpp" line="351"/>
-        <location filename="library_window_menus.cpp" line="445"/>
+        <location filename="library_window_menus.cpp" line="448"/>
         <source>Set type</source>
         <translation>Türü ayarla</translation>
     </message>
@@ -2990,7 +2990,7 @@ Eksik dosyalar: %3</translation>
         <location filename="library_window_menus.cpp" line="261"/>
         <location filename="library_window_menus.cpp" line="265"/>
         <location filename="library_window_menus.cpp" line="331"/>
-        <location filename="library_window_menus.cpp" line="431"/>
+        <location filename="library_window_menus.cpp" line="434"/>
         <source>Track missing issues...</source>
         <translation>Eksik sayıları takip et...</translation>
     </message>
@@ -3041,7 +3041,7 @@ Eksik dosyalar: %3</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="328"/>
-        <location filename="library_window_menus.cpp" line="382"/>
+        <location filename="library_window_menus.cpp" line="384"/>
         <source>Set as unread</source>
         <translation>Okunmadı olarak işaretle</translation>
     </message>
@@ -3049,6 +3049,11 @@ Eksik dosyalar: %3</translation>
         <location filename="library_window_menus.cpp" line="329"/>
         <source>Set custom cover</source>
         <translation>Özel kapak ayarla</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="382"/>
+        <source>Go to location</source>
+        <translation>Konuma git</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="285"/>
@@ -4435,12 +4440,12 @@ Otomatik güncellemeyi durdurmak için Kütüphaneler başlığının yanındaki
     <message>
         <location filename="properties_dialog.cpp" line="911"/>
         <source>Set a series, a volume, or a title.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bir seri, cilt veya başlık belirleyin.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="911"/>
         <source>Set a series or a volume.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bir seri veya cilt belirleyin.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="984"/>
@@ -5895,7 +5900,7 @@ Bir değerde boşluk kullanmak için tırnak işaretlerini kullanın.</translati
     <message>
         <location filename="library_header/view_selector.cpp" line="20"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Görünüm</translation>
     </message>
 </context>
 <context>
@@ -6179,12 +6184,12 @@ Bir değerde boşluk kullanmak için tırnak işaretlerini kullanın.</translati
 <context>
     <name>YACReaderSearchLineEdit</name>
     <message>
-        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="23"/>
+        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="27"/>
         <source>Search filters</source>
         <translation>Arama filtreleri</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="42"/>
+        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="47"/>
         <source>type to search</source>
         <translation>aramak için yazınız</translation>
     </message>

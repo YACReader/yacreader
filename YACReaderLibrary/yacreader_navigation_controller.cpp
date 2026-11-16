@@ -256,6 +256,30 @@ void YACReaderNavigationController::openListCard(int listType, qulonglong id)
     selectedList(proxyIndex);
 }
 
+void YACReaderNavigationController::goToComicLocation(const ComicDB &comic)
+{
+    const auto folderId = comic.file.folderId.value();
+    if (folderId == FolderModel::RootFolderId) {
+        const auto comicIndex = libraryWindow->comicsModel->getIndexFromId(comic.file.id.value());
+        if (!comicIndex.isValid())
+            return;
+
+        contentViewsManager->comicsView->scrollTo(comicIndex, QAbstractItemView::PositionAtCenter);
+        contentViewsManager->comicsView->setCurrentIndex(comicIndex);
+        return;
+    }
+
+    const auto sourceIndex = libraryWindow->foldersModel->index(folderId);
+    const auto proxyIndex = libraryWindow->foldersModelProxy->mapFromSource(sourceIndex);
+    if (!proxyIndex.isValid())
+        return;
+
+    for (auto parent = proxyIndex.parent(); parent.isValid(); parent = parent.parent())
+        libraryWindow->foldersView->expand(parent);
+    libraryWindow->foldersView->scrollTo(proxyIndex);
+    navigateToFolder(sourceIndex);
+}
+
 // an empty smart list is a search with no results
 void YACReaderNavigationController::loadSmartListContent(const QModelIndex &listIndex)
 {

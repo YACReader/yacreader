@@ -1272,6 +1272,12 @@
 
       if (options.continueReading) {
         entries.push({
+          label: "Go to location",
+          run: function () {
+            goToComicLocation(comic);
+          }
+        });
+        entries.push({
           label: "Remove from this list",
           run: function () {
             setComicRead(comic, false, "Removed from the list");
@@ -1780,6 +1786,27 @@
 
       shelf.append(heading, list);
       return shelf;
+    }
+
+    function goToComicLocation(comic) {
+      var parentId = String(comic.parent_id || "1");
+      if (parentId !== "1") {
+        showFolder(parentId, true);
+        return;
+      }
+
+      var key = "comic:" + String(comic.id);
+      var cards = browserRoot.querySelectorAll(".browser-grid [data-browser-history-key]");
+      for (var i = 0; i < cards.length; i++) {
+        if (cards[i].dataset.browserHistoryKey === key) {
+          var bounds = cards[i].getBoundingClientRect();
+          var viewportTop = browserViewportTop();
+          var availableHeight = Math.max(0, window.innerHeight - viewportTop);
+          window.scrollTo(0, window.scrollY + bounds.top - viewportTop - Math.max(0, (availableHeight - bounds.height) / 2));
+          cards[i].focus({ preventScroll: true });
+          return;
+        }
+      }
     }
 
     function setSearchValue(query) {

@@ -915,67 +915,67 @@
 <context>
     <name>ComicModel</name>
     <message>
-        <location filename="db/comic_model.cpp" line="738"/>
+        <location filename="db/comic_model.cpp" line="741"/>
         <source>yes</source>
         <translation>sim</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="738"/>
+        <location filename="db/comic_model.cpp" line="741"/>
         <source>no</source>
         <translation>não</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="769"/>
+        <location filename="db/comic_model.cpp" line="772"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="771"/>
+        <location filename="db/comic_model.cpp" line="774"/>
         <source>File Name</source>
         <translation>Nome do arquivo</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="773"/>
+        <location filename="db/comic_model.cpp" line="776"/>
         <source>Pages</source>
         <translation>Páginas</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="775"/>
+        <location filename="db/comic_model.cpp" line="778"/>
         <source>Size</source>
         <translation>Tamanho</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="777"/>
+        <location filename="db/comic_model.cpp" line="780"/>
         <source>Read</source>
         <translation>Lido</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="779"/>
+        <location filename="db/comic_model.cpp" line="782"/>
         <source>Current Page</source>
         <translation>Página atual</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="781"/>
+        <location filename="db/comic_model.cpp" line="784"/>
         <source>Publication Date</source>
         <translation>Data de publicação</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="783"/>
+        <location filename="db/comic_model.cpp" line="786"/>
         <source>Rating</source>
         <translation>Avaliação</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="785"/>
+        <location filename="db/comic_model.cpp" line="788"/>
         <source>Series</source>
         <translation>Série</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="787"/>
+        <location filename="db/comic_model.cpp" line="790"/>
         <source>Volume</source>
         <translation>Volume</translation>
     </message>
     <message>
-        <location filename="db/comic_model.cpp" line="789"/>
+        <location filename="db/comic_model.cpp" line="792"/>
         <source>Story Arc</source>
         <translation>Arco da história</translation>
     </message>
@@ -1328,23 +1328,23 @@
 <context>
     <name>FileComic</name>
     <message>
-        <location filename="../common/comic.cpp" line="616"/>
+        <location filename="../common/comic.cpp" line="617"/>
         <source>7z not found</source>
         <translation>7z não encontrado</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="502"/>
+        <location filename="../common/comic.cpp" line="503"/>
         <source>CRC error on page (%1): some of the pages will not be displayed correctly</source>
         <translation>Erro CRC na página (%1): algumas páginas não serão exibidas corretamente</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="509"/>
+        <location filename="../common/comic.cpp" line="510"/>
         <source>Unknown error opening the file</source>
         <translation>Erro desconhecido ao abrir o arquivo</translation>
     </message>
     <message>
-        <location filename="../common/comic.cpp" line="622"/>
-        <location filename="../common/comic.cpp" line="638"/>
+        <location filename="../common/comic.cpp" line="623"/>
+        <location filename="../common/comic.cpp" line="639"/>
         <source>Format not supported</source>
         <translation>Formato não suportado</translation>
     </message>
@@ -1776,7 +1776,7 @@
         <translation>Você deseja remover a biblioteca &apos;%1&apos;?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="238"/>
+        <location filename="library_window.cpp" line="240"/>
         <source>YACReader Library</source>
         <translation>Biblioteca YACReader</translation>
     </message>
@@ -1786,7 +1786,7 @@
         <translation>Você tem certeza?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="553"/>
+        <location filename="library_window.cpp" line="561"/>
         <location filename="folder_management_coordinator.cpp" line="216"/>
         <source>Delete folder</source>
         <translation>Excluir pasta</translation>
@@ -1903,61 +1903,61 @@
         <translation>Ocorreu um problema ao tentar excluir as pastas selecionadas. Por favor, verifique as permissões de gravação e certifique-se de que nenhum aplicativo esteja usando essas pastas ou qualquer um dos arquivos contidos.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="542"/>
+        <location filename="library_window.cpp" line="550"/>
         <source>Edit smart list...</source>
         <translation>Editar lista inteligente...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="543"/>
+        <location filename="library_window.cpp" line="551"/>
         <source>Delete smart list</source>
         <translation>Excluir lista inteligente</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="545"/>
-        <location filename="library_window.cpp" line="550"/>
-        <location filename="library_window.cpp" line="565"/>
+        <location filename="library_window.cpp" line="553"/>
+        <location filename="library_window.cpp" line="558"/>
+        <location filename="library_window.cpp" line="573"/>
         <source>New folder...</source>
         <translation>Nova pasta...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="546"/>
-        <location filename="library_window.cpp" line="552"/>
-        <location filename="library_window.cpp" line="567"/>
+        <location filename="library_window.cpp" line="554"/>
+        <location filename="library_window.cpp" line="560"/>
+        <location filename="library_window.cpp" line="575"/>
         <source>Move to folder...</source>
         <translation>Mover para pasta...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="551"/>
+        <location filename="library_window.cpp" line="559"/>
         <source>Rename folder...</source>
         <translation>Renomear pasta...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="560"/>
+        <location filename="library_window.cpp" line="568"/>
         <source>Match to library comics...</source>
         <translation>Associar aos quadrinhos da biblioteca...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="562"/>
+        <location filename="library_window.cpp" line="570"/>
         <source>Track missing issues...</source>
-        <translation type="unfinished">Registrar edições ausentes...</translation>
+        <translation>Registrar edições ausentes...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="563"/>
+        <location filename="library_window.cpp" line="571"/>
         <source>Export reading list...</source>
         <translation>Exportar lista de leitura...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="788"/>
+        <location filename="library_window.cpp" line="796"/>
         <source>Rename or organize files</source>
         <translation>Renomear ou organizar arquivos</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="810"/>
+        <location filename="library_window.cpp" line="818"/>
         <source>Set the type of the selected comics</source>
         <translation>Definir o tipo dos quadrinhos selecionados</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="832"/>
+        <location filename="library_window.cpp" line="840"/>
         <source>Save as smart list…</source>
         <translation>Salvar como lista inteligente…</translation>
     </message>
@@ -1992,12 +1992,12 @@
         <translation>Sintaxe de pesquisa…</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="715"/>
+        <location filename="library_window.cpp" line="723"/>
         <source>Package operation failed</source>
         <translation>Falha na operação de pacote</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="715"/>
+        <location filename="library_window.cpp" line="723"/>
         <source>The covers package operation could not be completed.</source>
         <translation>Não foi possível concluir a operação com o pacote de capas.</translation>
     </message>
@@ -2238,7 +2238,7 @@ Você pode restaurar um backup no menu Biblioteca ou recriar a biblioteca.</tran
         <translation>Remover e excluir metadados e backups</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="644"/>
+        <location filename="library_window.cpp" line="652"/>
         <source>Library info</source>
         <translation>Informações da biblioteca</translation>
     </message>
@@ -2708,17 +2708,17 @@ Arquivos ausentes: %3</translation>
     <message>
         <location filename="library_window_actions.cpp" line="247"/>
         <source>Grid view</source>
-        <translation type="unfinished">Visualização em grade</translation>
+        <translation>Visualização em grade</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="248"/>
         <source>Flow view</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualização Flow</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="249"/>
         <source>Info view</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualização de informações</translation>
     </message>
     <message>
         <location filename="library_window_actions.cpp" line="258"/>
@@ -2971,7 +2971,7 @@ Arquivos ausentes: %3</translation>
         <location filename="library_window_menus.cpp" line="135"/>
         <location filename="library_window_menus.cpp" line="240"/>
         <location filename="library_window_menus.cpp" line="351"/>
-        <location filename="library_window_menus.cpp" line="445"/>
+        <location filename="library_window_menus.cpp" line="448"/>
         <source>Set type</source>
         <translation>Definir tipo</translation>
     </message>
@@ -2999,7 +2999,7 @@ Arquivos ausentes: %3</translation>
         <location filename="library_window_menus.cpp" line="261"/>
         <location filename="library_window_menus.cpp" line="265"/>
         <location filename="library_window_menus.cpp" line="331"/>
-        <location filename="library_window_menus.cpp" line="431"/>
+        <location filename="library_window_menus.cpp" line="434"/>
         <source>Track missing issues...</source>
         <translation>Registrar edições ausentes...</translation>
     </message>
@@ -3050,7 +3050,7 @@ Arquivos ausentes: %3</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="328"/>
-        <location filename="library_window_menus.cpp" line="382"/>
+        <location filename="library_window_menus.cpp" line="384"/>
         <source>Set as unread</source>
         <translation>Definir como não lido</translation>
     </message>
@@ -3058,6 +3058,11 @@ Arquivos ausentes: %3</translation>
         <location filename="library_window_menus.cpp" line="329"/>
         <source>Set custom cover</source>
         <translation>Definir capa personalizada</translation>
+    </message>
+    <message>
+        <location filename="library_window_menus.cpp" line="382"/>
+        <source>Go to location</source>
+        <translation>Ir para o local</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="285"/>
@@ -4505,12 +4510,12 @@ Para interromper uma atualização automática, toque no indicador de carregamen
     <message>
         <location filename="properties_dialog.cpp" line="911"/>
         <source>Set a series, a volume, or a title.</source>
-        <translation type="unfinished"></translation>
+        <translation>Defina uma série, um volume ou um título.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="911"/>
         <source>Set a series or a volume.</source>
-        <translation type="unfinished"></translation>
+        <translation>Defina uma série ou um volume.</translation>
     </message>
     <message>
         <location filename="properties_dialog.cpp" line="984"/>
@@ -5926,7 +5931,7 @@ Use aspas para incluir espaços em um valor.</translation>
     <message>
         <location filename="library_header/view_selector.cpp" line="20"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualização</translation>
     </message>
 </context>
 <context>
@@ -6210,12 +6215,12 @@ Use aspas para incluir espaços em um valor.</translation>
 <context>
     <name>YACReaderSearchLineEdit</name>
     <message>
-        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="23"/>
+        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="27"/>
         <source>Search filters</source>
         <translation>Filtros de pesquisa</translation>
     </message>
     <message>
-        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="42"/>
+        <location filename="../custom_widgets/yacreader_search_line_edit.cpp" line="47"/>
         <source>type to search</source>
         <translation>digite para pesquisar</translation>
     </message>

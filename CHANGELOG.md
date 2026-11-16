@@ -12,6 +12,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 * Show comic titles the same way in all views. The info panel, the current comic banner and continue reading show the full title: series, volume, number and title.
 * Show the series next to the title in the grid cells of reading lists, labels, smart lists and search results, so comics from different series are easy to tell apart.
+* Add "Go to location" to the continue reading context menu.
 
 ### Server
 
@@ -21,6 +22,7 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### WebUI
 
 * Show the full title in lists, comic pages and the reader, using the same format as the rest of the apps.
+* Add "Go to location" to the continue reading menu.
 
 ## 10.5.2
 

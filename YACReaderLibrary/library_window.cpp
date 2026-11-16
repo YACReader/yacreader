@@ -232,6 +232,8 @@ void LibraryWindow::setupUI()
     connect(menus, &LibraryWindowMenus::currentLibraryTypeChangeRequested, this, &LibraryWindow::setCurrentLibraryAs);
     connect(menus, &LibraryWindowMenus::folderUpdateRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::updateFolder);
     connect(menus, &LibraryWindowMenus::folderXmlRescanRequested, libraryManagementCoordinator, &LibraryManagementCoordinator::rescanFolderForXMLInfo);
+    // the request comes from a QML delegate of the continue reading model that the navigation replaces
+    connect(menus, &LibraryWindowMenus::comicLocationRequested, navigationController, &YACReaderNavigationController::goToComicLocation, Qt::QueuedConnection);
 
     createConnections();
 

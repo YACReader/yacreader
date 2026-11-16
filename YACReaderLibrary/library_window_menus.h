@@ -64,6 +64,7 @@ signals:
     void currentLibraryTypeChangeRequested(YACReader::FileType type);
     void folderUpdateRequested(const QModelIndex &folder);
     void folderXmlRescanRequested(const QModelIndex &folder);
+    void comicLocationRequested(const ComicDB &comic);
 
 private:
     void showComicsContextMenu(const QPoint &point, bool showFullScreenAction);

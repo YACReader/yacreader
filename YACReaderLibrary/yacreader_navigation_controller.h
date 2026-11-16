@@ -8,6 +8,7 @@
 
 #include <optional>
 
+class ComicDB;
 class LibraryWindow;
 class LibrarySearchCoordinator;
 class YACReaderLibrarySourceContainer;
@@ -45,6 +46,7 @@ public slots:
     void loadSmartListContent(const QModelIndex &listIndex);
     void loadListFolderContent(const QModelIndex &listIndex);
     void openListCard(int listType, qulonglong id);
+    void goToComicLocation(const ComicDB &comic);
 
     void loadPreviousStatus();
     void reloadRootContinueReading();
