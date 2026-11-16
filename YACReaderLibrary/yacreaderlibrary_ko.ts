@@ -1883,7 +1883,7 @@
         <translation>선택한 폴더와 그 안의 모든 내용이 디스크에서 삭제됩니다. 계속하시겠습니까?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="948"/>
+        <location filename="comic_management_coordinator.cpp" line="956"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>삭제할 수 없음</translation>
@@ -2040,7 +2040,7 @@ Folder: %1</source>
         <translation>라이브러리 데이터베이스를 업데이트하지 못했고 디스크의 폴더 이름 변경도 되돌리지 못했습니다. 이제 라이브러리를 수동으로 업데이트해야 합니다.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="466"/>
+        <location filename="comic_management_coordinator.cpp" line="474"/>
         <source>Save covers</source>
         <translation>표지 저장</translation>
     </message>
@@ -2235,101 +2235,101 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>라이브러리 정보</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="949"/>
+        <location filename="comic_management_coordinator.cpp" line="957"/>
         <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
         <translation>선택한 만화를 삭제하는 중 문제가 발생했습니다. 선택한 파일이나 포함된 폴더의 쓰기 권한을 확인하세요.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="405"/>
+        <location filename="comic_management_coordinator.cpp" line="413"/>
         <source>Assign comics numbers</source>
         <translation>만화에 번호 부여</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="406"/>
+        <location filename="comic_management_coordinator.cpp" line="414"/>
         <source>Assign numbers starting at:</source>
         <translation>다음 번호부터 부여:</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="500"/>
+        <location filename="comic_management_coordinator.cpp" line="508"/>
         <location filename="folder_management_coordinator.cpp" line="339"/>
         <source>Invalid image</source>
         <translation>잘못된 이미지</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="501"/>
+        <location filename="comic_management_coordinator.cpp" line="509"/>
         <location filename="folder_management_coordinator.cpp" line="340"/>
         <source>The selected file is not a valid image.</source>
         <translation>선택한 파일이 유효한 이미지가 아닙니다.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="513"/>
-        <location filename="comic_management_coordinator.cpp" line="546"/>
+        <location filename="comic_management_coordinator.cpp" line="521"/>
+        <location filename="comic_management_coordinator.cpp" line="554"/>
         <location filename="folder_management_coordinator.cpp" line="347"/>
         <source>Error saving cover</source>
         <translation>표지 저장 오류</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="514"/>
-        <location filename="comic_management_coordinator.cpp" line="547"/>
+        <location filename="comic_management_coordinator.cpp" line="522"/>
+        <location filename="comic_management_coordinator.cpp" line="555"/>
         <location filename="folder_management_coordinator.cpp" line="348"/>
         <source>There was an error saving the cover image.</source>
         <translation>표지 이미지를 저장하는 중 오류가 발생했습니다.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="628"/>
-        <location filename="comic_management_coordinator.cpp" line="661"/>
+        <location filename="comic_management_coordinator.cpp" line="636"/>
+        <location filename="comic_management_coordinator.cpp" line="669"/>
         <source>Match to library comic</source>
         <translation>라이브러리 만화와 연결</translation>
     </message>
     <message numerus="yes">
-        <location filename="comic_management_coordinator.cpp" line="629"/>
+        <location filename="comic_management_coordinator.cpp" line="637"/>
         <source>This also gives the comic to entries in %n other list(s): %1</source>
         <translation>
             <numerusform>다른 목록 %n개의 항목에도 이 만화가 연결됩니다: %1</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="662"/>
+        <location filename="comic_management_coordinator.cpp" line="670"/>
         <source>The comic could not be matched. Nothing was changed.</source>
         <translation>만화를 연결하지 못했습니다. 아무것도 변경되지 않았습니다.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="847"/>
+        <location filename="comic_management_coordinator.cpp" line="855"/>
         <source>The selected missing comics will be removed from this folder. Are you sure?</source>
         <translation>선택한 누락된 만화가 이 폴더에서 제거됩니다. 계속할까요?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="849"/>
+        <location filename="comic_management_coordinator.cpp" line="857"/>
         <source>The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?</source>
         <translation>선택한 만화는 디스크에서 삭제되고 선택한 누락된 만화는 이 폴더에서 제거됩니다. 계속할까요?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="851"/>
+        <location filename="comic_management_coordinator.cpp" line="859"/>
         <source>Delete comics</source>
         <translation>만화 삭제</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="845"/>
+        <location filename="comic_management_coordinator.cpp" line="853"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>선택한 만화가 모두 디스크에서 삭제됩니다. 확실합니까?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="902"/>
+        <location filename="comic_management_coordinator.cpp" line="910"/>
         <source>Remove the comics from Reading? Their reading progress will be reset.</source>
         <translation>읽는 중에서 만화를 제거할까요? 읽기 진행 상황이 초기화됩니다.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="905"/>
+        <location filename="comic_management_coordinator.cpp" line="913"/>
         <source>The comics will be removed from Favorites. Are you sure?</source>
         <translation>만화가 즐겨찾기에서 제거됩니다. 계속할까요?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="912"/>
+        <location filename="comic_management_coordinator.cpp" line="920"/>
         <source>Remove comics</source>
         <translation>만화 제거</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="898"/>
+        <location filename="comic_management_coordinator.cpp" line="906"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>만화가 현재 라벨/목록에서만 삭제됩니다. 확실합니까?</translation>
     </message>
@@ -2962,7 +2962,7 @@ Missing files: %3</source>
         <location filename="library_window_menus.cpp" line="135"/>
         <location filename="library_window_menus.cpp" line="240"/>
         <location filename="library_window_menus.cpp" line="351"/>
-        <location filename="library_window_menus.cpp" line="448"/>
+        <location filename="library_window_menus.cpp" line="452"/>
         <source>Set type</source>
         <translation>유형 설정</translation>
     </message>
@@ -2990,7 +2990,7 @@ Missing files: %3</source>
         <location filename="library_window_menus.cpp" line="261"/>
         <location filename="library_window_menus.cpp" line="265"/>
         <location filename="library_window_menus.cpp" line="331"/>
-        <location filename="library_window_menus.cpp" line="434"/>
+        <location filename="library_window_menus.cpp" line="438"/>
         <source>Track missing issues...</source>
         <translation>누락된 호 추적...</translation>
     </message>
@@ -3036,12 +3036,13 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="327"/>
+        <location filename="library_window_menus.cpp" line="384"/>
         <source>Set as read</source>
         <translation>읽음으로 표시</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="328"/>
-        <location filename="library_window_menus.cpp" line="384"/>
+        <location filename="library_window_menus.cpp" line="387"/>
         <source>Set as unread</source>
         <translation>읽지 않음으로 표시</translation>
     </message>

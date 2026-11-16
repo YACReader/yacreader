@@ -1859,12 +1859,12 @@ YACReaderLibrary ne vous empêchera pas de créer plus de bibliothèques, mais v
         <translation>Télécharger la nouvelle version</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="851"/>
+        <location filename="comic_management_coordinator.cpp" line="859"/>
         <source>Delete comics</source>
         <translation>Supprimer les bandes dessinées</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="845"/>
+        <location filename="comic_management_coordinator.cpp" line="853"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Toutes les bandes dessinées sélectionnées seront supprimées de votre disque. Êtes-vous sûr&#xa0;?</translation>
     </message>
@@ -1929,7 +1929,7 @@ YACReaderLibrary ne vous empêchera pas de créer plus de bibliothèques, mais v
         <translation>Le dossier sélectionné et tout son contenu seront supprimés de votre disque. Êtes-vous sûr&#xa0;?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="948"/>
+        <location filename="comic_management_coordinator.cpp" line="956"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Impossible de supprimer</translation>
@@ -2091,7 +2091,7 @@ Dossier&#xa0;: %1</translation>
         <translation>La base de données de la bibliothèque n&apos;a pas pu être mise à jour et le renommage du dossier sur le disque n&apos;a pas pu être annulé. La bibliothèque doit maintenant être mise à jour manuellement.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="466"/>
+        <location filename="comic_management_coordinator.cpp" line="474"/>
         <source>Save covers</source>
         <translation>Enregistrer les couvertures</translation>
     </message>
@@ -2263,54 +2263,54 @@ Vous pouvez restaurer une sauvegarde depuis le menu Bibliothèque ou recréer la
         <translation>Informations sur la bibliothèque</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="949"/>
+        <location filename="comic_management_coordinator.cpp" line="957"/>
         <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
         <translation>Un problème est survenu lors de la tentative de suppression des bandes dessinées sélectionnées. Veuillez vérifier les autorisations d&apos;écriture dans les fichiers sélectionnés ou le dossier contenant.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="405"/>
+        <location filename="comic_management_coordinator.cpp" line="413"/>
         <source>Assign comics numbers</source>
         <translation>Attribuer des numéros de bandes dessinées</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="406"/>
+        <location filename="comic_management_coordinator.cpp" line="414"/>
         <source>Assign numbers starting at:</source>
         <translation>Attribuez des numéros commençant par&#xa0;:</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="500"/>
+        <location filename="comic_management_coordinator.cpp" line="508"/>
         <location filename="folder_management_coordinator.cpp" line="339"/>
         <source>Invalid image</source>
         <translation>Image invalide</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="501"/>
+        <location filename="comic_management_coordinator.cpp" line="509"/>
         <location filename="folder_management_coordinator.cpp" line="340"/>
         <source>The selected file is not a valid image.</source>
         <translation>Le fichier sélectionné n&apos;est pas une image valide.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="513"/>
-        <location filename="comic_management_coordinator.cpp" line="546"/>
+        <location filename="comic_management_coordinator.cpp" line="521"/>
+        <location filename="comic_management_coordinator.cpp" line="554"/>
         <location filename="folder_management_coordinator.cpp" line="347"/>
         <source>Error saving cover</source>
         <translation>Erreur lors de l&apos;enregistrement de la couverture</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="514"/>
-        <location filename="comic_management_coordinator.cpp" line="547"/>
+        <location filename="comic_management_coordinator.cpp" line="522"/>
+        <location filename="comic_management_coordinator.cpp" line="555"/>
         <location filename="folder_management_coordinator.cpp" line="348"/>
         <source>There was an error saving the cover image.</source>
         <translation>Une erreur s&apos;est produite lors de l&apos;enregistrement de l&apos;image de couverture.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="628"/>
-        <location filename="comic_management_coordinator.cpp" line="661"/>
+        <location filename="comic_management_coordinator.cpp" line="636"/>
+        <location filename="comic_management_coordinator.cpp" line="669"/>
         <source>Match to library comic</source>
         <translation>Associer à une BD de la bibliothèque</translation>
     </message>
     <message numerus="yes">
-        <location filename="comic_management_coordinator.cpp" line="629"/>
+        <location filename="comic_management_coordinator.cpp" line="637"/>
         <source>This also gives the comic to entries in %n other list(s): %1</source>
         <translation>
             <numerusform>Cela associe aussi la BD aux entrées de %n autre liste : %1</numerusform>
@@ -2318,37 +2318,37 @@ Vous pouvez restaurer une sauvegarde depuis le menu Bibliothèque ou recréer la
         </translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="662"/>
+        <location filename="comic_management_coordinator.cpp" line="670"/>
         <source>The comic could not be matched. Nothing was changed.</source>
         <translation>Impossible d&apos;associer la BD. Rien n&apos;a été modifié.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="847"/>
+        <location filename="comic_management_coordinator.cpp" line="855"/>
         <source>The selected missing comics will be removed from this folder. Are you sure?</source>
         <translation>Les BD manquantes sélectionnées seront retirées de ce dossier. Voulez-vous continuer ?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="849"/>
+        <location filename="comic_management_coordinator.cpp" line="857"/>
         <source>The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?</source>
         <translation>Les BD sélectionnées seront supprimées de votre disque et les BD manquantes sélectionnées seront retirées de ce dossier. Voulez-vous continuer ?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="902"/>
+        <location filename="comic_management_coordinator.cpp" line="910"/>
         <source>Remove the comics from Reading? Their reading progress will be reset.</source>
         <translation>Retirer les BD de « En cours de lecture » ? Leur progression de lecture sera réinitialisée.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="905"/>
+        <location filename="comic_management_coordinator.cpp" line="913"/>
         <source>The comics will be removed from Favorites. Are you sure?</source>
         <translation>Les BD seront retirées des favoris. Voulez-vous continuer ?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="912"/>
+        <location filename="comic_management_coordinator.cpp" line="920"/>
         <source>Remove comics</source>
         <translation>Retirer les bandes dessinées</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="898"/>
+        <location filename="comic_management_coordinator.cpp" line="906"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Les bandes dessinées seront uniquement retirées de l&apos;étiquette/liste actuelle. Êtes-vous sûr&#xa0;?</translation>
     </message>
@@ -2971,7 +2971,7 @@ Fichiers manquants&#xa0;: %3</translation>
         <location filename="library_window_menus.cpp" line="135"/>
         <location filename="library_window_menus.cpp" line="240"/>
         <location filename="library_window_menus.cpp" line="351"/>
-        <location filename="library_window_menus.cpp" line="448"/>
+        <location filename="library_window_menus.cpp" line="452"/>
         <source>Set type</source>
         <translation>Définir le type</translation>
     </message>
@@ -2999,7 +2999,7 @@ Fichiers manquants&#xa0;: %3</translation>
         <location filename="library_window_menus.cpp" line="261"/>
         <location filename="library_window_menus.cpp" line="265"/>
         <location filename="library_window_menus.cpp" line="331"/>
-        <location filename="library_window_menus.cpp" line="434"/>
+        <location filename="library_window_menus.cpp" line="438"/>
         <source>Track missing issues...</source>
         <translation>Suivre les numéros manquants...</translation>
     </message>
@@ -3045,12 +3045,13 @@ Fichiers manquants&#xa0;: %3</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="327"/>
+        <location filename="library_window_menus.cpp" line="384"/>
         <source>Set as read</source>
         <translation>Marquer comme lu</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="328"/>
-        <location filename="library_window_menus.cpp" line="384"/>
+        <location filename="library_window_menus.cpp" line="387"/>
         <source>Set as unread</source>
         <translation>Marquer comme non lu</translation>
     </message>

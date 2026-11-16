@@ -381,11 +381,15 @@ void LibraryWindowMenus::showContinueReadingContextMenu(const QPoint &point, con
     QMenu menu;
     auto goToLocationAction = new QAction(tr("Go to location"), &menu);
     menu.addAction(goToLocationAction);
+    auto setAsReadAction = new QAction(tr("Set as read"), &menu);
+    setAsReadAction->setIcon(themeProvider().comicsViewToolbar.setAsReadIcon);
+    menu.addAction(setAsReadAction);
     auto setAsUnreadAction = new QAction(tr("Set as unread"), &menu);
     setAsUnreadAction->setIcon(themeProvider().comicsViewToolbar.setAsUnreadIcon);
     menu.addAction(setAsUnreadAction);
 
     connect(goToLocationAction, &QAction::triggered, &menu, [this, comic] { emit comicLocationRequested(comic); });
+    connect(setAsReadAction, &QAction::triggered, &menu, [this, comic] { comicManagementCoordinator->setComicRead(libraryIdProvider(), comic); });
     connect(setAsUnreadAction, &QAction::triggered, &menu, [this, comic] { comicManagementCoordinator->setComicUnread(libraryIdProvider(), comic); });
     menu.exec(point);
 }

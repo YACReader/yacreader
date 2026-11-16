@@ -84,6 +84,7 @@ public slots:
     void resetSelectedCustomCovers();
     void matchSelectedToLibraryComic();
 
+    void setComicRead(qulonglong libraryId, const ComicDB &comic);
     void setComicUnread(qulonglong libraryId, const ComicDB &comic);
 
 signals:

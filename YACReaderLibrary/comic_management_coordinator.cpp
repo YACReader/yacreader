@@ -362,6 +362,14 @@ void ComicManagementCoordinator::setSelectedComicsUnread()
     emit currentComicViewUpdateRequested();
 }
 
+void ComicManagementCoordinator::setComicRead(qulonglong libraryId, const ComicDB &comic)
+{
+    auto info = comic.info;
+    info.read = true;
+    DBHelper::update(libraryId, info);
+    emit rootContinueReadingReloadRequested();
+}
+
 void ComicManagementCoordinator::setComicUnread(qulonglong libraryId, const ComicDB &comic)
 {
     auto info = comic.info;

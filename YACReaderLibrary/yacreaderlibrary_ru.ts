@@ -1815,7 +1815,7 @@
         <translation>Ошибка доступа к пути папки</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="898"/>
+        <location filename="comic_management_coordinator.cpp" line="906"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>Комиксы будут удалены только из выбранного списка/ярлыка. Вы уверены?</translation>
     </message>
@@ -1855,7 +1855,7 @@
         <translation>Библиотека «%1» была создана старой версией YACReaderLibrary. Она должна быть создана заново. Вы хотите создать библиотеку сейчас?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="466"/>
+        <location filename="comic_management_coordinator.cpp" line="474"/>
         <source>Save covers</source>
         <translation>Сохранить обложки</translation>
     </message>
@@ -1878,7 +1878,7 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Информация о библиотеке</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="405"/>
+        <location filename="comic_management_coordinator.cpp" line="413"/>
         <source>Assign comics numbers</source>
         <translation>Назначить номера комиксам</translation>
     </message>
@@ -1895,7 +1895,7 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Библиотека недоступна</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="949"/>
+        <location filename="comic_management_coordinator.cpp" line="957"/>
         <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
         <translation>Возникла проблема при удалении выбранных комиксов. Пожалуйста, проверьте права на запись для выбранных файлов или содержащую их папку.</translation>
     </message>
@@ -1931,7 +1931,7 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Удалить папку</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="406"/>
+        <location filename="comic_management_coordinator.cpp" line="414"/>
         <source>Assign numbers starting at:</source>
         <translation>Назначить номера, начиная с:</translation>
     </message>
@@ -1946,39 +1946,39 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Удалить библиотеку, метаданные и резервные копии</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="500"/>
+        <location filename="comic_management_coordinator.cpp" line="508"/>
         <location filename="folder_management_coordinator.cpp" line="339"/>
         <source>Invalid image</source>
         <translation>Неверное изображение</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="501"/>
+        <location filename="comic_management_coordinator.cpp" line="509"/>
         <location filename="folder_management_coordinator.cpp" line="340"/>
         <source>The selected file is not a valid image.</source>
         <translation>Выбранный файл не является допустимым изображением.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="513"/>
-        <location filename="comic_management_coordinator.cpp" line="546"/>
+        <location filename="comic_management_coordinator.cpp" line="521"/>
+        <location filename="comic_management_coordinator.cpp" line="554"/>
         <location filename="folder_management_coordinator.cpp" line="347"/>
         <source>Error saving cover</source>
         <translation>Не удалось сохранить обложку</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="514"/>
-        <location filename="comic_management_coordinator.cpp" line="547"/>
+        <location filename="comic_management_coordinator.cpp" line="522"/>
+        <location filename="comic_management_coordinator.cpp" line="555"/>
         <location filename="folder_management_coordinator.cpp" line="348"/>
         <source>There was an error saving the cover image.</source>
         <translation>Не удалось сохранить изображение обложки.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="628"/>
-        <location filename="comic_management_coordinator.cpp" line="661"/>
+        <location filename="comic_management_coordinator.cpp" line="636"/>
+        <location filename="comic_management_coordinator.cpp" line="669"/>
         <source>Match to library comic</source>
         <translation>Сопоставить с комиксом библиотеки</translation>
     </message>
     <message numerus="yes">
-        <location filename="comic_management_coordinator.cpp" line="629"/>
+        <location filename="comic_management_coordinator.cpp" line="637"/>
         <source>This also gives the comic to entries in %n other list(s): %1</source>
         <translation>
             <numerusform>Комикс также будет связан с записями в %n другом списке: %1</numerusform>
@@ -1987,22 +1987,22 @@ YACReaderLibrary не помешает вам создать больше биб
         </translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="662"/>
+        <location filename="comic_management_coordinator.cpp" line="670"/>
         <source>The comic could not be matched. Nothing was changed.</source>
         <translation>Не удалось сопоставить комикс. Ничего не изменено.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="847"/>
+        <location filename="comic_management_coordinator.cpp" line="855"/>
         <source>The selected missing comics will be removed from this folder. Are you sure?</source>
         <translation>Выбранные отсутствующие комиксы будут удалены из этой папки. Вы уверены?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="849"/>
+        <location filename="comic_management_coordinator.cpp" line="857"/>
         <source>The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?</source>
         <translation>Выбранные комиксы будут удалены с диска, а выбранные отсутствующие комиксы — из этой папки. Вы уверены?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="851"/>
+        <location filename="comic_management_coordinator.cpp" line="859"/>
         <source>Delete comics</source>
         <translation>Удалить комиксы</translation>
     </message>
@@ -2014,22 +2014,22 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Ни одна папка не была выбрана</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="845"/>
+        <location filename="comic_management_coordinator.cpp" line="853"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>Все выбранные комиксы будут удалены с вашего жёсткого диска. Вы уверены?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="902"/>
+        <location filename="comic_management_coordinator.cpp" line="910"/>
         <source>Remove the comics from Reading? Their reading progress will be reset.</source>
         <translation>Убрать комиксы из раздела «Читаю»? Прогресс чтения будет сброшен.</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="905"/>
+        <location filename="comic_management_coordinator.cpp" line="913"/>
         <source>The comics will be removed from Favorites. Are you sure?</source>
         <translation>Комиксы будут убраны из избранного. Вы уверены?</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="912"/>
+        <location filename="comic_management_coordinator.cpp" line="920"/>
         <source>Remove comics</source>
         <translation>Убрать комиксы</translation>
     </message>
@@ -2039,7 +2039,7 @@ YACReaderLibrary не помешает вам создать больше биб
         <translation>Библиотека не найдена</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="948"/>
+        <location filename="comic_management_coordinator.cpp" line="956"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>Не удалось удалить</translation>
@@ -2980,7 +2980,7 @@ Missing files: %3</source>
         <location filename="library_window_menus.cpp" line="135"/>
         <location filename="library_window_menus.cpp" line="240"/>
         <location filename="library_window_menus.cpp" line="351"/>
-        <location filename="library_window_menus.cpp" line="448"/>
+        <location filename="library_window_menus.cpp" line="452"/>
         <source>Set type</source>
         <translation>Задать тип</translation>
     </message>
@@ -3008,7 +3008,7 @@ Missing files: %3</source>
         <location filename="library_window_menus.cpp" line="261"/>
         <location filename="library_window_menus.cpp" line="265"/>
         <location filename="library_window_menus.cpp" line="331"/>
-        <location filename="library_window_menus.cpp" line="434"/>
+        <location filename="library_window_menus.cpp" line="438"/>
         <source>Track missing issues...</source>
         <translation>Отслеживать недостающие выпуски...</translation>
     </message>
@@ -3054,12 +3054,13 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="327"/>
+        <location filename="library_window_menus.cpp" line="384"/>
         <source>Set as read</source>
         <translation>Отметить как прочитано</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="328"/>
-        <location filename="library_window_menus.cpp" line="384"/>
+        <location filename="library_window_menus.cpp" line="387"/>
         <source>Set as unread</source>
         <translation>Отметить как не прочитано</translation>
     </message>

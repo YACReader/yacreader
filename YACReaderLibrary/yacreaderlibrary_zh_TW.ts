@@ -1882,7 +1882,7 @@
         <translation>嘗試刪除所選資料夾時出現問題。請檢查寫入權限，並確保沒有其他應用程式在使用這些資料夾或檔案。</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="466"/>
+        <location filename="comic_management_coordinator.cpp" line="474"/>
         <source>Save covers</source>
         <translation>儲存封面</translation>
     </message>
@@ -1930,17 +1930,17 @@ YACReaderLibrary 不會阻止您建立更多的庫，但是您應該保持較少
         <translation>庫資訊</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="405"/>
+        <location filename="comic_management_coordinator.cpp" line="413"/>
         <source>Assign comics numbers</source>
         <translation>分配漫畫編號</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="406"/>
+        <location filename="comic_management_coordinator.cpp" line="414"/>
         <source>Assign numbers starting at:</source>
         <translation>起始編號：</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="948"/>
+        <location filename="comic_management_coordinator.cpp" line="956"/>
         <location filename="folder_management_coordinator.cpp" line="250"/>
         <source>Unable to delete</source>
         <translation>無法刪除</translation>
@@ -2248,91 +2248,91 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>移除並刪除中繼資料與備份</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="949"/>
+        <location filename="comic_management_coordinator.cpp" line="957"/>
         <source>There was an issue trying to delete the selected comics. Please check for write permissions in the selected files or containing folder.</source>
         <translation>嘗試刪除所選漫畫時出現問題。請檢查所選檔案或所在資料夾中的寫入權限。</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="500"/>
+        <location filename="comic_management_coordinator.cpp" line="508"/>
         <location filename="folder_management_coordinator.cpp" line="339"/>
         <source>Invalid image</source>
         <translation>圖片無效</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="501"/>
+        <location filename="comic_management_coordinator.cpp" line="509"/>
         <location filename="folder_management_coordinator.cpp" line="340"/>
         <source>The selected file is not a valid image.</source>
         <translation>所選檔案不是有效影像。</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="513"/>
-        <location filename="comic_management_coordinator.cpp" line="546"/>
+        <location filename="comic_management_coordinator.cpp" line="521"/>
+        <location filename="comic_management_coordinator.cpp" line="554"/>
         <location filename="folder_management_coordinator.cpp" line="347"/>
         <source>Error saving cover</source>
         <translation>儲存封面時發生錯誤</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="514"/>
-        <location filename="comic_management_coordinator.cpp" line="547"/>
+        <location filename="comic_management_coordinator.cpp" line="522"/>
+        <location filename="comic_management_coordinator.cpp" line="555"/>
         <location filename="folder_management_coordinator.cpp" line="348"/>
         <source>There was an error saving the cover image.</source>
         <translation>儲存封面圖片時發生錯誤。</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="628"/>
-        <location filename="comic_management_coordinator.cpp" line="661"/>
+        <location filename="comic_management_coordinator.cpp" line="636"/>
+        <location filename="comic_management_coordinator.cpp" line="669"/>
         <source>Match to library comic</source>
         <translation>配對書庫中的漫畫</translation>
     </message>
     <message numerus="yes">
-        <location filename="comic_management_coordinator.cpp" line="629"/>
+        <location filename="comic_management_coordinator.cpp" line="637"/>
         <source>This also gives the comic to entries in %n other list(s): %1</source>
         <translation>
             <numerusform>這也會將此漫畫關聯到其他 %n 個清單中的項目：%1</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="662"/>
+        <location filename="comic_management_coordinator.cpp" line="670"/>
         <source>The comic could not be matched. Nothing was changed.</source>
         <translation>無法配對漫畫。未作任何變更。</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="847"/>
+        <location filename="comic_management_coordinator.cpp" line="855"/>
         <source>The selected missing comics will be removed from this folder. Are you sure?</source>
         <translation>選取的缺少漫畫將從此資料夾中移除。確定嗎？</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="849"/>
+        <location filename="comic_management_coordinator.cpp" line="857"/>
         <source>The selected comics will be deleted from your disk, and the selected missing comics will be removed from this folder. Are you sure?</source>
         <translation>選取的漫畫將從磁碟中刪除，選取的缺少漫畫將從此資料夾中移除。確定嗎？</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="851"/>
+        <location filename="comic_management_coordinator.cpp" line="859"/>
         <source>Delete comics</source>
         <translation>刪除漫畫</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="845"/>
+        <location filename="comic_management_coordinator.cpp" line="853"/>
         <source>All the selected comics will be deleted from your disk. Are you sure?</source>
         <translation>所有選定的漫畫都將從您的磁碟中刪除。您確定嗎？</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="902"/>
+        <location filename="comic_management_coordinator.cpp" line="910"/>
         <source>Remove the comics from Reading? Their reading progress will be reset.</source>
         <translation>是否從「正在閱讀」中移除漫畫？閱讀進度將重設。</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="905"/>
+        <location filename="comic_management_coordinator.cpp" line="913"/>
         <source>The comics will be removed from Favorites. Are you sure?</source>
         <translation>漫畫將從「收藏」中移除。確定嗎？</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="912"/>
+        <location filename="comic_management_coordinator.cpp" line="920"/>
         <source>Remove comics</source>
         <translation>移除漫畫</translation>
     </message>
     <message>
-        <location filename="comic_management_coordinator.cpp" line="898"/>
+        <location filename="comic_management_coordinator.cpp" line="906"/>
         <source>Comics will only be deleted from the current label/list. Are you sure?</source>
         <translation>漫畫只會從目前標籤/列表中刪除。您確定嗎？</translation>
     </message>
@@ -2965,7 +2965,7 @@ Missing files: %3</source>
         <location filename="library_window_menus.cpp" line="135"/>
         <location filename="library_window_menus.cpp" line="240"/>
         <location filename="library_window_menus.cpp" line="351"/>
-        <location filename="library_window_menus.cpp" line="448"/>
+        <location filename="library_window_menus.cpp" line="452"/>
         <source>Set type</source>
         <translation>設定類型</translation>
     </message>
@@ -2993,7 +2993,7 @@ Missing files: %3</source>
         <location filename="library_window_menus.cpp" line="261"/>
         <location filename="library_window_menus.cpp" line="265"/>
         <location filename="library_window_menus.cpp" line="331"/>
-        <location filename="library_window_menus.cpp" line="434"/>
+        <location filename="library_window_menus.cpp" line="438"/>
         <source>Track missing issues...</source>
         <translation>追蹤缺少期數...</translation>
     </message>
@@ -3039,12 +3039,13 @@ Missing files: %3</source>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="327"/>
+        <location filename="library_window_menus.cpp" line="384"/>
         <source>Set as read</source>
         <translation>設為已讀</translation>
     </message>
     <message>
         <location filename="library_window_menus.cpp" line="328"/>
-        <location filename="library_window_menus.cpp" line="384"/>
+        <location filename="library_window_menus.cpp" line="387"/>
         <source>Set as unread</source>
         <translation>設為未讀</translation>
     </message>
