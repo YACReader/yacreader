@@ -362,6 +362,7 @@ struct ServerConfigDialogParams {
     QColor textColor;
     QColor secondaryTextColor;
     QColor borderColor;
+    QColor cardColor;
     QColor accentColor;
     QColor accentForegroundColor;
     QColor linkColor;
@@ -988,9 +989,7 @@ Theme makeTheme(const ThemeParams &params)
 
     // ServerConfigDialog
     const auto &scd = params.serverConfigDialogParams;
-    QColor cardColor = scd.backgroundColor;
-    cardColor = cardColor.darker(cardColor.lightness() > 127 ? 104 : 112);
-    theme.serverConfigDialog.dialogQSS = scd.t.dialogQSS.arg(scd.backgroundColor.name(), scd.textColor.name(), scd.borderColor.name(), scd.accentColor.name(), cardColor.name(), recolor(":/images/chevronDown.svg", scd.accentColor, "_accent"), scd.secondaryTextColor.name(), scd.accentForegroundColor.name(), recolor(":/images/chevronDown.svg", scd.secondaryTextColor, "_disabled"));
+    theme.serverConfigDialog.dialogQSS = scd.t.dialogQSS.arg(scd.backgroundColor.name(), scd.textColor.name(), scd.borderColor.name(), scd.accentColor.name(), scd.cardColor.name(), recolor(":/images/chevronDown.svg", scd.accentColor, "_accent"), scd.secondaryTextColor.name(), scd.accentForegroundColor.name(), recolor(":/images/chevronDown.svg", scd.secondaryTextColor, "_disabled"));
     theme.serverConfigDialog.titleLabelQSS = scd.t.titleLabelQSS.arg(scd.titleTextColor.name());
     theme.serverConfigDialog.qrMessageLabelQSS = scd.t.qrMessageLabelQSS.arg(scd.qrMessageTextColor.name());
     theme.serverConfigDialog.propagandaLabelQSS = scd.t.propagandaLabelQSS.arg(scd.propagandaTextColor.name());
@@ -1164,6 +1163,7 @@ Theme makeTheme(const QJsonObject &json)
         scd2.textColor = colorFromJson(o, "textColor", scd2.textColor);
         scd2.secondaryTextColor = colorFromJson(o, "secondaryTextColor", scd2.secondaryTextColor);
         scd2.borderColor = colorFromJson(o, "borderColor", scd2.borderColor);
+        scd2.cardColor = colorFromJson(o, "cardColor", scd2.cardColor);
         scd2.accentColor = colorFromJson(o, "accentColor", scd2.accentColor);
         scd2.accentForegroundColor = colorFromJson(o, "accentForegroundColor", scd2.accentForegroundColor);
         scd2.linkColor = colorFromJson(o, "linkColor", scd2.linkColor);

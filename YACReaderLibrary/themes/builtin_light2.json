@@ -246,6 +246,7 @@
         "accentForegroundColor": "#E1E2E7",
         "backgroundColor": "#E1E2E7",
         "borderColor": "#6D779C",
+        "cardColor": "#D8D9DE",
         "linkColor": "#1C5FB8",
         "propagandaTextColor": "#5A6085",
         "qrBackgroundColor": "#E1E2E7",
