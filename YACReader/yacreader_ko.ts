@@ -12,104 +12,109 @@
 <context>
     <name>AppearanceTabWidget</name>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="38"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="39"/>
         <source>Color scheme</source>
         <translation>색 구성표</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="46"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>System</source>
         <translation>시스템</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Light</source>
         <translation>밝은</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Dark</source>
         <translation>어두운</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="50"/>
         <source>Custom</source>
         <translation>사용자 지정</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="106"/>
         <source>Remove</source>
         <translation>제거</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="108"/>
         <source>Remove this user-imported theme</source>
         <translation>사용자가 가져온 이 테마 제거</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Light:</source>
         <translation>밝은:</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Dark:</source>
         <translation>어두운:</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="118"/>
         <source>Custom:</source>
         <translation>사용자 지정:</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="120"/>
         <source>Import theme...</source>
         <translation>테마 가져오기...</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="121"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="122"/>
         <source>Theme</source>
         <translation>테마</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="173"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="180"/>
         <source>Theme editor</source>
         <translation>테마 편집기</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="175"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="182"/>
         <source>Open Theme Editor...</source>
         <translation>테마 편집기 열기...</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="184"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="194"/>
         <source>Theme editor error</source>
         <translation>테마 편집기 오류</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="185"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="195"/>
         <source>The current theme JSON could not be loaded.</source>
         <translation>현재 테마 JSON을 불러올 수 없습니다.</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="255"/>
+        <source>This theme was made for an older version and cannot be applied. Open it in the theme editor to update it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="313"/>
         <source>Import theme</source>
         <translation>테마 가져오기</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="313"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON 파일 (*.json);;모든 파일 (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="321"/>
         <source>Could not import theme from:
 %1</source>
         <translation>다음에서 테마를 가져올 수 없습니다:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="322"/>
         <source>Could not import theme from:
 %1
 
@@ -120,7 +125,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="295"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="323"/>
         <source>Import failed</source>
         <translation>가져오기 실패</translation>
     </message>
@@ -580,12 +585,12 @@ If none is active, Escape does nothing.</source>
         <translation>이미지 (%1)</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_repository.cpp" line="152"/>
+        <location filename="../common/themes/theme_repository.cpp" line="171"/>
         <source>The file could not be read or is not valid JSON.</source>
         <translation>파일을 읽을 수 없거나 유효한 JSON이 아닙니다.</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_repository.cpp" line="161"/>
+        <location filename="../common/themes/theme_repository.cpp" line="180"/>
         <source>This theme is for %1, not %2.</source>
         <translation>이 테마는 %2가 아닌 %1용입니다.</translation>
     </message>
@@ -593,196 +598,208 @@ If none is active, Escape does nothing.</source>
 <context>
     <name>ThemeEditorDialog</name>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="59"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="62"/>
         <source>Theme Editor</source>
         <translation>테마 편집기</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="63"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="66"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="64"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="67"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="68"/>
         <source>i</source>
         <translation>i</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="72"/>
         <source>Expand all</source>
         <translation>모두 펼치기</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="70"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="73"/>
         <source>Collapse all</source>
         <translation>모두 접기</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="74"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
         <translation>누르고 있으면 UI에서 선택한 값이 깜박입니다 (마젠타 / 토글 / 0↔10). 놓으면 원래대로 돌아갑니다.</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="79"/>
         <source>Search…</source>
         <translation>검색…</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="97"/>
         <source>Light</source>
         <translation>밝은</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>Dark</source>
         <translation>어두운</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="101"/>
         <source>ID:</source>
         <translation>ID:</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
         <source>Display name:</source>
         <translation>표시 이름:</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="103"/>
         <source>Variant:</source>
         <translation>변형:</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="105"/>
         <source>Theme info</source>
         <translation>테마 정보</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="128"/>
         <source>Parameter</source>
         <translation>매개변수</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="128"/>
         <source>Value</source>
         <translation>값</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="149"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="153"/>
         <source>Save and apply</source>
         <translation>저장 후 적용</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="150"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="154"/>
         <source>Export to file...</source>
         <translation>파일로 내보내기...</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="151"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="155"/>
         <source>Load from file...</source>
         <translation>파일에서 불러오기...</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="152"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="156"/>
         <source>Close</source>
         <translation>닫기</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="209"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="213"/>
         <source>Double-click to edit color</source>
         <translation>두 번 클릭하여 색 편집</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="264"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="265"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="459"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="222"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="306"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="307"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="534"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="539"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="570"/>
         <source>true</source>
         <translation>true</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="265"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="222"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="307"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="539"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="570"/>
         <source>false</source>
         <translation>false</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="220"/>
         <source>Double-click to toggle</source>
         <translation>두 번 클릭하여 전환</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="218"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="225"/>
         <source>Double-click to edit value</source>
         <translation>두 번 클릭하여 값 편집</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="232"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="280"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="285"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="240"/>
+        <source>Missing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="247"/>
+        <source>%n value(s) missing</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="267"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="328"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="333"/>
         <source>Edit: %1</source>
         <translation>편집: %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="399"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="470"/>
         <source>Save theme</source>
         <translation>테마 저장</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="399"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="414"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="470"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="485"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON 파일 (*.json);;모든 파일 (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="476"/>
         <source>Save failed</source>
         <translation>저장 실패</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="476"/>
         <source>Could not open file for writing:
 %1</source>
         <translation>쓰기 위해 파일을 열 수 없습니다:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="414"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="485"/>
         <source>Load theme</source>
         <translation>테마 불러오기</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="420"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="427"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="431"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="491"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="498"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="502"/>
         <source>Load failed</source>
         <translation>불러오기 실패</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="420"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="491"/>
         <source>Could not open file:
 %1</source>
         <translation>파일을 열 수 없습니다:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="427"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="498"/>
         <source>Invalid JSON:
 %1</source>
         <translation>잘못된 JSON:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="431"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="502"/>
         <source>Expected a JSON object.</source>
         <translation>JSON 객체가 필요합니다.</translation>
     </message>

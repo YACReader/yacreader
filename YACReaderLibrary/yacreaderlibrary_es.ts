@@ -146,104 +146,109 @@
 <context>
     <name>AppearanceTabWidget</name>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="38"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="39"/>
         <source>Color scheme</source>
         <translation>Esquema de color</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="46"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>System</source>
         <translation>Sistema</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Light</source>
         <translation>Claro</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Dark</source>
         <translation>Oscuro</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="50"/>
         <source>Custom</source>
         <translation>Personalizado</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="106"/>
         <source>Remove</source>
         <translation>Eliminar</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="108"/>
         <source>Remove this user-imported theme</source>
         <translation>Eliminar este tema importado por el usuario</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Light:</source>
         <translation>Claro:</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Dark:</source>
         <translation>Oscuro:</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="118"/>
         <source>Custom:</source>
         <translation>Personalizado:</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="120"/>
         <source>Import theme...</source>
         <translation>Importar tema...</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="121"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="122"/>
         <source>Theme</source>
         <translation>Tema</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="173"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="180"/>
         <source>Theme editor</source>
         <translation>Editor de temas</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="175"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="182"/>
         <source>Open Theme Editor...</source>
         <translation>Abrir editor de temas...</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="184"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="194"/>
         <source>Theme editor error</source>
         <translation>Error del editor de temas</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="185"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="195"/>
         <source>The current theme JSON could not be loaded.</source>
         <translation>No se ha podido cargar el JSON del tema actual.</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="255"/>
+        <source>This theme was made for an older version and cannot be applied. Open it in the theme editor to update it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="313"/>
         <source>Import theme</source>
         <translation>Importar tema</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="313"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>Archivos JSON (*.json);;Todos los archivos (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="321"/>
         <source>Could not import theme from:
 %1</source>
         <translation>No se pudo importar el tema desde:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="322"/>
         <source>Could not import theme from:
 %1
 
@@ -254,7 +259,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="295"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="323"/>
         <source>Import failed</source>
         <translation>Error al importar</translation>
     </message>
@@ -1867,7 +1872,7 @@
         <translation>¿Estás seguro?</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="561"/>
+        <location filename="library_window.cpp" line="559"/>
         <location filename="folder_management_coordinator.cpp" line="216"/>
         <source>Delete folder</source>
         <translation>Borrar carpeta</translation>
@@ -1933,61 +1938,61 @@
         <translation>Se produjo un problema al intentar eliminar las carpetas seleccionadas. Por favor, verifica los permisos de escritura y asegúrate de que no haya aplicaciones usando estas carpetas o alguno de los archivos contenidos en ellas.</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="550"/>
+        <location filename="library_window.cpp" line="548"/>
         <source>Edit smart list...</source>
         <translation>Editar lista inteligente...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="551"/>
+        <location filename="library_window.cpp" line="549"/>
         <source>Delete smart list</source>
         <translation>Eliminar lista inteligente</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="553"/>
-        <location filename="library_window.cpp" line="558"/>
-        <location filename="library_window.cpp" line="573"/>
+        <location filename="library_window.cpp" line="551"/>
+        <location filename="library_window.cpp" line="556"/>
+        <location filename="library_window.cpp" line="571"/>
         <source>New folder...</source>
         <translation>Nueva carpeta...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="554"/>
-        <location filename="library_window.cpp" line="560"/>
-        <location filename="library_window.cpp" line="575"/>
+        <location filename="library_window.cpp" line="552"/>
+        <location filename="library_window.cpp" line="558"/>
+        <location filename="library_window.cpp" line="573"/>
         <source>Move to folder...</source>
         <translation>Mover a carpeta...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="559"/>
+        <location filename="library_window.cpp" line="557"/>
         <source>Rename folder...</source>
         <translation>Renombrar carpeta...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="568"/>
+        <location filename="library_window.cpp" line="566"/>
         <source>Match to library comics...</source>
         <translation>Emparejar con cómics de la biblioteca...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="570"/>
+        <location filename="library_window.cpp" line="568"/>
         <source>Track missing issues...</source>
         <translation>Registrar números ausentes...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="571"/>
+        <location filename="library_window.cpp" line="569"/>
         <source>Export reading list...</source>
         <translation>Exportar lista de lectura...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="796"/>
+        <location filename="library_window.cpp" line="794"/>
         <source>Rename or organize files</source>
         <translation>Renombrar u organizar archivos</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="818"/>
+        <location filename="library_window.cpp" line="816"/>
         <source>Set the type of the selected comics</source>
         <translation>Establecer el tipo de los cómics seleccionados</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="840"/>
+        <location filename="library_window.cpp" line="838"/>
         <source>Save as smart list…</source>
         <translation>Guardar como lista inteligente…</translation>
     </message>
@@ -2022,12 +2027,12 @@
         <translation>Sintaxis de búsqueda…</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="723"/>
+        <location filename="library_window.cpp" line="721"/>
         <source>Package operation failed</source>
         <translation>Error en la operación de empaquetado</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="723"/>
+        <location filename="library_window.cpp" line="721"/>
         <source>The covers package operation could not be completed.</source>
         <translation>No se ha podido completar la operación con el paquete de portadas.</translation>
     </message>
@@ -2263,7 +2268,7 @@ Puedes restaurar una copia de seguridad desde el menú Biblioteca o volver a cre
         <translation>Eliminar y borrar metadatos y copias de seguridad</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="652"/>
+        <location filename="library_window.cpp" line="650"/>
         <source>Library info</source>
         <translation>Información de la biblioteca</translation>
     </message>
@@ -4593,12 +4598,12 @@ Para detener una actualización automática, toca en el indicador de carga junto
         <translation>Imágenes (%1)</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_repository.cpp" line="152"/>
+        <location filename="../common/themes/theme_repository.cpp" line="171"/>
         <source>The file could not be read or is not valid JSON.</source>
         <translation>No se pudo leer el archivo o no es un JSON válido.</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_repository.cpp" line="161"/>
+        <location filename="../common/themes/theme_repository.cpp" line="180"/>
         <source>This theme is for %1, not %2.</source>
         <translation>Este tema es para %1, no para %2.</translation>
     </message>
@@ -5707,196 +5712,209 @@ Usa comillas para incluir espacios en un valor.</translation>
 <context>
     <name>ThemeEditorDialog</name>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="59"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="62"/>
         <source>Theme Editor</source>
         <translation>Editor de temas</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="63"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="66"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="64"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="67"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="68"/>
         <source>i</source>
         <translation>i</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="72"/>
         <source>Expand all</source>
         <translation>Expandir todo</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="70"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="73"/>
         <source>Collapse all</source>
         <translation>Contraer todo</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="74"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
         <translation>Mantén pulsado para resaltar temporalmente el valor seleccionado en la interfaz (magenta / alternado / 0↔10). Al soltar se restaura el original.</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="79"/>
         <source>Search…</source>
         <translation>Buscar…</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="97"/>
         <source>Light</source>
         <translation>Claro</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>Dark</source>
         <translation>Oscuro</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="101"/>
         <source>ID:</source>
         <translation>ID:</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
         <source>Display name:</source>
         <translation>Nombre para mostrar:</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="103"/>
         <source>Variant:</source>
         <translation>Variante:</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="105"/>
         <source>Theme info</source>
         <translation>Información del tema</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="128"/>
         <source>Parameter</source>
         <translation>Parámetro</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="128"/>
         <source>Value</source>
         <translation>Valor</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="149"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="153"/>
         <source>Save and apply</source>
         <translation>Guardar y aplicar</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="150"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="154"/>
         <source>Export to file...</source>
         <translation>Exportar a archivo...</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="151"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="155"/>
         <source>Load from file...</source>
         <translation>Cargar desde archivo...</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="152"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="156"/>
         <source>Close</source>
         <translation>Cerrar</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="209"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="213"/>
         <source>Double-click to edit color</source>
         <translation>Doble clic para editar el color</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="264"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="265"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="459"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="222"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="306"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="307"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="534"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="539"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="570"/>
         <source>true</source>
         <translation>true</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="265"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="222"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="307"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="539"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="570"/>
         <source>false</source>
         <translation>false</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="220"/>
         <source>Double-click to toggle</source>
         <translation>Doble clic para alternar</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="218"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="225"/>
         <source>Double-click to edit value</source>
         <translation>Doble clic para editar el valor</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="232"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="280"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="285"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="240"/>
+        <source>Missing</source>
+        <translation type="unfinished">Ausente</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="247"/>
+        <source>%n value(s) missing</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="267"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="328"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="333"/>
         <source>Edit: %1</source>
         <translation>Editar: %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="399"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="470"/>
         <source>Save theme</source>
         <translation>Guardar tema</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="399"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="414"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="470"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="485"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>Archivos JSON (*.json);;Todos los archivos (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="476"/>
         <source>Save failed</source>
         <translation>Error al guardar</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="476"/>
         <source>Could not open file for writing:
 %1</source>
         <translation>No se pudo abrir el archivo para escribir:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="414"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="485"/>
         <source>Load theme</source>
         <translation>Cargar tema</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="420"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="427"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="431"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="491"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="498"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="502"/>
         <source>Load failed</source>
         <translation>Error al cargar</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="420"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="491"/>
         <source>Could not open file:
 %1</source>
         <translation>No se pudo abrir el archivo:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="427"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="498"/>
         <source>Invalid JSON:
 %1</source>
         <translation>JSON no válido:
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="431"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="502"/>
         <source>Expected a JSON object.</source>
         <translation>Se esperaba un objeto JSON.</translation>
     </message>

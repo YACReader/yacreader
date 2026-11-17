@@ -146,104 +146,109 @@
 <context>
     <name>AppearanceTabWidget</name>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="38"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="39"/>
         <source>Color scheme</source>
         <translation>配色方案</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="46"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
         <source>System</source>
         <translation>系统</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="47"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
         <source>Light</source>
         <translation>明亮</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="48"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
         <source>Dark</source>
         <translation>暗黑</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="49"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="50"/>
         <source>Custom</source>
         <translation>自定义</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="105"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="106"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="107"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="108"/>
         <source>Remove this user-imported theme</source>
         <translation>删除此用户导入的主题</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="115"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
         <source>Light:</source>
         <translation>明亮：</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="116"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
         <source>Dark:</source>
         <translation>暗黑：</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="117"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="118"/>
         <source>Custom:</source>
         <translation>自定义：</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="119"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="120"/>
         <source>Import theme...</source>
         <translation>导入主题...</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="121"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="122"/>
         <source>Theme</source>
         <translation>主题</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="173"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="180"/>
         <source>Theme editor</source>
         <translation>主题编辑器</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="175"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="182"/>
         <source>Open Theme Editor...</source>
         <translation>打开主题编辑器...</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="184"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="194"/>
         <source>Theme editor error</source>
         <translation>主题编辑器错误</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="185"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="195"/>
         <source>The current theme JSON could not be loaded.</source>
         <translation>无法加载当前主题 JSON。</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="255"/>
+        <source>This theme was made for an older version and cannot be applied. Open it in the theme editor to update it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="313"/>
         <source>Import theme</source>
         <translation>导入主题</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="285"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="313"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON 文件 (*.json);;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="293"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="321"/>
         <source>Could not import theme from:
 %1</source>
         <translation>无法从以下位置导入主题：
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="294"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="322"/>
         <source>Could not import theme from:
 %1
 
@@ -254,7 +259,7 @@
 %2</translation>
     </message>
     <message>
-        <location filename="../common/themes/appearance_tab_widget.cpp" line="295"/>
+        <location filename="../common/themes/appearance_tab_widget.cpp" line="323"/>
         <source>Import failed</source>
         <translation>导入失败</translation>
     </message>
@@ -1914,7 +1919,7 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <translation>已存在另一个名为 &apos;%1&apos; 的库。</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="561"/>
+        <location filename="library_window.cpp" line="559"/>
         <location filename="folder_management_coordinator.cpp" line="216"/>
         <source>Delete folder</source>
         <translation>删除文件夹</translation>
@@ -1930,61 +1935,61 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <translation>下载新版本</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="550"/>
+        <location filename="library_window.cpp" line="548"/>
         <source>Edit smart list...</source>
         <translation>编辑智能列表...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="551"/>
+        <location filename="library_window.cpp" line="549"/>
         <source>Delete smart list</source>
         <translation>删除智能列表</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="553"/>
-        <location filename="library_window.cpp" line="558"/>
-        <location filename="library_window.cpp" line="573"/>
+        <location filename="library_window.cpp" line="551"/>
+        <location filename="library_window.cpp" line="556"/>
+        <location filename="library_window.cpp" line="571"/>
         <source>New folder...</source>
         <translation>新建文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="554"/>
-        <location filename="library_window.cpp" line="560"/>
-        <location filename="library_window.cpp" line="575"/>
+        <location filename="library_window.cpp" line="552"/>
+        <location filename="library_window.cpp" line="558"/>
+        <location filename="library_window.cpp" line="573"/>
         <source>Move to folder...</source>
         <translation>移动到文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="559"/>
+        <location filename="library_window.cpp" line="557"/>
         <source>Rename folder...</source>
         <translation>重命名文件夹...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="568"/>
+        <location filename="library_window.cpp" line="566"/>
         <source>Match to library comics...</source>
         <translation>匹配到库漫画...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="570"/>
+        <location filename="library_window.cpp" line="568"/>
         <source>Track missing issues...</source>
         <translation>追踪缺失的期...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="571"/>
+        <location filename="library_window.cpp" line="569"/>
         <source>Export reading list...</source>
         <translation>导出阅读列表...</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="796"/>
+        <location filename="library_window.cpp" line="794"/>
         <source>Rename or organize files</source>
         <translation>重命名或整理文件</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="818"/>
+        <location filename="library_window.cpp" line="816"/>
         <source>Set the type of the selected comics</source>
         <translation>设置所选漫画的类型</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="840"/>
+        <location filename="library_window.cpp" line="838"/>
         <source>Save as smart list…</source>
         <translation>另存为智能列表…</translation>
     </message>
@@ -2019,12 +2024,12 @@ YACReaderLibrary不会阻止您创建更多的库，但是您应该保持较低�
         <translation>搜索语法…</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="723"/>
+        <location filename="library_window.cpp" line="721"/>
         <source>Package operation failed</source>
         <translation>打包操作失败</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="723"/>
+        <location filename="library_window.cpp" line="721"/>
         <source>The covers package operation could not be completed.</source>
         <translation>封面包操作无法完成。</translation>
     </message>
@@ -2237,7 +2242,7 @@ You can restore a backup from the Library menu or recreate the library.</source>
         <translation>移除并删除元数据和备份</translation>
     </message>
     <message>
-        <location filename="library_window.cpp" line="652"/>
+        <location filename="library_window.cpp" line="650"/>
         <source>Library info</source>
         <translation>库信息</translation>
     </message>
@@ -4561,12 +4566,12 @@ To stop an automatic update, tap on the loading indicator next to the Libraries 
         <translation>图片 (%1)</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_repository.cpp" line="152"/>
+        <location filename="../common/themes/theme_repository.cpp" line="171"/>
         <source>The file could not be read or is not valid JSON.</source>
         <translation>无法读取该文件或者该文件不是有效的 JSON。</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_repository.cpp" line="161"/>
+        <location filename="../common/themes/theme_repository.cpp" line="180"/>
         <source>This theme is for %1, not %2.</source>
         <translation>此主题适用于 %1，而不是 %2。</translation>
     </message>
@@ -5672,196 +5677,208 @@ Use quotes to include spaces in a value.</source>
 <context>
     <name>ThemeEditorDialog</name>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="59"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="62"/>
         <source>Theme Editor</source>
         <translation>主题编辑器</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="63"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="66"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="64"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="67"/>
         <source>-</source>
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="65"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="68"/>
         <source>i</source>
         <translation>i</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="69"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="72"/>
         <source>Expand all</source>
         <translation>全部展开</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="70"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="73"/>
         <source>Collapse all</source>
         <translation>全部折叠</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="71"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="74"/>
         <source>Hold to flash the selected value in the UI (magenta / toggled / 0↔10). Releases restore the original.</source>
         <translation>按住可在界面中闪烁所选值（洋红色/切换/0↔10）。松开后恢复原样。</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="76"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="79"/>
         <source>Search…</source>
         <translation>搜索…</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="94"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="97"/>
         <source>Light</source>
         <translation>明亮</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="95"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
         <source>Dark</source>
         <translation>暗黑</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="98"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="101"/>
         <source>ID:</source>
         <translation>ID：</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="99"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
         <source>Display name:</source>
         <translation>显示名称：</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="100"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="103"/>
         <source>Variant:</source>
         <translation>变体：</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="102"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="105"/>
         <source>Theme info</source>
         <translation>主题信息</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="128"/>
         <source>Parameter</source>
         <translation>参数</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="125"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="128"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="149"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="153"/>
         <source>Save and apply</source>
         <translation>保存并应用</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="150"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="154"/>
         <source>Export to file...</source>
         <translation>导出到文件...</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="151"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="155"/>
         <source>Load from file...</source>
         <translation>从文件加载...</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="152"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="156"/>
         <source>Close</source>
         <translation>关闭</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="209"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="213"/>
         <source>Double-click to edit color</source>
         <translation>双击编辑颜色</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="264"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="265"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="459"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="222"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="306"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="307"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="534"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="539"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="570"/>
         <source>true</source>
         <translation>true</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="211"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="265"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="464"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="495"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="222"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="307"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="539"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="570"/>
         <source>false</source>
         <translation>false</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="214"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="220"/>
         <source>Double-click to toggle</source>
         <translation>双击切换</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="218"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="225"/>
         <source>Double-click to edit value</source>
         <translation>双击编辑值</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="232"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="280"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="285"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="240"/>
+        <source>Missing</source>
+        <translation type="unfinished">缺失</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="247"/>
+        <source>%n value(s) missing</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="267"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="328"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="333"/>
         <source>Edit: %1</source>
         <translation>编辑：%1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="399"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="470"/>
         <source>Save theme</source>
         <translation>保存主题</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="399"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="414"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="470"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="485"/>
         <source>JSON files (*.json);;All files (*)</source>
         <translation>JSON 文件 (*.json);;所有文件 (*)</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="476"/>
         <source>Save failed</source>
         <translation>保存失败</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="405"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="476"/>
         <source>Could not open file for writing:
 %1</source>
         <translation>无法打开文件进行写入：
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="414"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="485"/>
         <source>Load theme</source>
         <translation>加载主题</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="420"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="427"/>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="431"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="491"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="498"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="502"/>
         <source>Load failed</source>
         <translation>加载失败</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="420"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="491"/>
         <source>Could not open file:
 %1</source>
         <translation>无法打开文件：
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="427"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="498"/>
         <source>Invalid JSON:
 %1</source>
         <translation>无效的 JSON：
 %1</translation>
     </message>
     <message>
-        <location filename="../common/themes/theme_editor_dialog.cpp" line="431"/>
+        <location filename="../common/themes/theme_editor_dialog.cpp" line="502"/>
         <source>Expected a JSON object.</source>
         <translation>需要一个 JSON 对象。</translation>
     </message>
