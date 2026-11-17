@@ -112,10 +112,27 @@
     },
     "mainToolbar": {
         "backgroundColor": "#FCF7ED",
-        "dividerColor": "#D8CDBA",
+        "buttonHoverColor": "#1A545464",
+        "buttonPressedColor": "#10545464",
         "folderNameColor": "#545464",
         "iconColor": "#545464",
-        "iconDisabledColor": "#A6A294"
+        "iconDisabledColor": "#A6A294",
+        "sidebarButtons": {
+            "hoverColor": "#1A716E61",
+            "iconColor": "#716E61",
+            "iconDisabledColor": "#A6A294",
+            "pressedColor": "#10716E61"
+        },
+        "viewModeSelector": {
+            "backgroundColor": "#14545464",
+            "checkedColor": "#30545464",
+            "checkedIconColor": "#545464",
+            "checkedIconDisabledColor": "#8D8B93",
+            "hoverColor": "#1A545464",
+            "iconColor": "#545464",
+            "iconDisabledColor": "#A6A294",
+            "pressedColor": "#10545464"
+        }
     },
     "menuIcons": {
         "iconColor": "#716E61"
@@ -125,7 +142,7 @@
         "id": "builtin/light5",
         "targetApp": "YACReaderLibrary",
         "variant": "light",
-        "version": "10.1.0"
+        "version": "10.6.0"
     },
     "metadataScraperDialog": {
         "busyIndicatorColor": "#545464",

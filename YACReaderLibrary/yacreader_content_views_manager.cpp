@@ -386,18 +386,18 @@ void YACReaderContentViewsManager::setViewSelectorEnabled(bool enabled)
 
 void YACReaderContentViewsManager::updateViewSelectorIcon(const Theme &theme)
 {
-    const auto &mainToolbar = theme.mainToolbar;
+    const auto &viewModeSelector = theme.mainToolbar.viewModeSelector;
 
     QIcon icon;
     switch (comicsViewStatus) {
     case Flow:
-        icon = mainToolbar.gridIcon;
+        icon = viewModeSelector.gridIcon;
         break;
     case Grid:
-        icon = mainToolbar.infoIcon;
+        icon = viewModeSelector.infoIcon;
         break;
     case Info:
-        icon = mainToolbar.flowIcon;
+        icon = viewModeSelector.flowIcon;
         break;
     }
 

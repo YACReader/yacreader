@@ -989,12 +989,12 @@ void LibraryWindowActions::updateTheme(const Theme &theme)
     // Main toolbar icons
     backAction->setIcon(mainToolbar.backIcon);
     forwardAction->setIcon(mainToolbar.forwardIcon);
-    helpAboutAction->setIcon(mainToolbar.helpIcon);
-    optionsAction->setIcon(mainToolbar.settingsIcon);
-    serverConfigAction->setIcon(mainToolbar.serverIcon);
-    gridViewAction->setIcon(mainToolbar.gridIcon);
-    flowViewAction->setIcon(mainToolbar.flowIcon);
-    infoViewAction->setIcon(mainToolbar.infoIcon);
+    helpAboutAction->setIcon(mainToolbar.sidebarButtons.helpIcon);
+    optionsAction->setIcon(mainToolbar.sidebarButtons.settingsIcon);
+    serverConfigAction->setIcon(mainToolbar.sidebarButtons.serverIcon);
+    gridViewAction->setIcon(mainToolbar.viewModeSelector.gridIcon);
+    flowViewAction->setIcon(mainToolbar.viewModeSelector.flowIcon);
+    infoViewAction->setIcon(mainToolbar.viewModeSelector.infoIcon);
 #ifndef Q_OS_MACOS
     toggleFullScreenAction->setIcon(mainToolbar.fullscreenIcon);
 #endif

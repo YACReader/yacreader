@@ -49,12 +49,6 @@ QString buttonQss(const QColor &hover, const QColor &pressed)
             .arg(hover.name(QColor::HexArgb), pressed.name(QColor::HexArgb));
 }
 
-QColor withAlpha(QColor color, int alpha)
-{
-    color.setAlpha(alpha);
-    return color;
-}
-
 int centeredY(int height, int itemHeight)
 {
     return (height - itemHeight) / 2;
@@ -78,18 +72,17 @@ HeaderColors headerColors(const Theme &theme)
     HeaderColors c;
     c.sidebarBackground = theme.sidebar.backgroundColor;
     c.sidebarText = theme.sidebar.titleTextColor;
-    c.sidebarButtonHover = withAlpha(mt.sidebarIconColor, 0x1A);
-    c.sidebarButtonPressed = withAlpha(mt.sidebarIconColor, 0x10);
+    c.sidebarButtonHover = mt.sidebarButtons.hoverColor;
+    c.sidebarButtonPressed = mt.sidebarButtons.pressedColor;
     c.toolbarBackground = mt.backgroundColor;
     c.folderName = mt.folderNameColor;
-    c.icon = mt.iconColor;
-    // Overlays of the toolbar foreground, so every theme gets matching states.
-    c.buttonHover = withAlpha(mt.iconColor, 0x1A);
-    c.buttonPressed = withAlpha(mt.iconColor, 0x10);
-    c.selectorBackground = withAlpha(mt.iconColor, 0x14);
-    c.selectorHover = withAlpha(mt.iconColor, 0x1A);
-    c.selectorPressed = withAlpha(mt.iconColor, 0x10);
-    c.selectorChecked = withAlpha(mt.iconColor, 0x30);
+    c.buttonHover = mt.buttonHoverColor;
+    c.buttonPressed = mt.buttonPressedColor;
+    c.selectorBackground = mt.viewModeSelector.backgroundColor;
+    c.selectorHover = mt.viewModeSelector.hoverColor;
+    c.selectorPressed = mt.viewModeSelector.pressedColor;
+    c.selectorChecked = mt.viewModeSelector.checkedColor;
+    c.selectorIcon = mt.viewModeSelector.iconColor;
     return c;
 }
 

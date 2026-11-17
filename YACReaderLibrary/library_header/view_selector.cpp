@@ -47,7 +47,7 @@ void ViewSelector::applyTheme(const HeaderColors &colors)
                                 "QToolButton:checked { background: %4; }"
                                 "QToolButton:focus { border: 1px solid %5; }")
                                 .arg(Radius - Padding)
-                                .arg(rgba(colors.selectorHover), rgba(colors.selectorPressed), rgba(colors.selectorChecked), rgba(colors.icon));
+                                .arg(rgba(colors.selectorHover), rgba(colors.selectorPressed), rgba(colors.selectorChecked), rgba(colors.selectorIcon));
     for (QToolButton *button : std::as_const(buttons))
         button->setStyleSheet(qss);
     update();

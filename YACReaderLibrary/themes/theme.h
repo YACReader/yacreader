@@ -433,22 +433,45 @@ struct ComicsViewToolbarTheme {
     QIcon smallGridZoomIcon;
 };
 
+// Settings, server and help, on the sidebar part of the header
+struct SidebarButtonsTheme {
+    QColor hoverColor;
+    QColor pressedColor;
+
+    // Icons (contain both Normal and Disabled states)
+    QIcon settingsIcon;
+    QIcon serverIcon;
+    QIcon helpIcon;
+};
+
+// Grid, flow and info segments
+struct ViewModeSelectorTheme {
+    QColor backgroundColor;
+    QColor hoverColor;
+    QColor pressedColor;
+    QColor checkedColor;
+    QColor iconColor;
+
+    // Icons (contain Normal and Disabled states, each in Off and On)
+    QIcon gridIcon;
+    QIcon flowIcon;
+    QIcon infoIcon;
+};
+
 struct MainToolbarTheme {
     QColor backgroundColor;
     QColor folderNameColor;
     QColor iconColor;
-    QColor sidebarIconColor; // Settings, server and help sit on the sidebar color
+    QColor buttonHoverColor;
+    QColor buttonPressedColor;
 
     // Icons (contain both Normal and Disabled states)
     QIcon backIcon;
     QIcon forwardIcon;
-    QIcon settingsIcon;
-    QIcon serverIcon;
-    QIcon helpIcon;
-    QIcon gridIcon;
-    QIcon flowIcon;
-    QIcon infoIcon;
     QIcon fullscreenIcon;
+
+    SidebarButtonsTheme sidebarButtons;
+    ViewModeSelectorTheme viewModeSelector;
 };
 
 struct MetadataScraperDialogTheme {

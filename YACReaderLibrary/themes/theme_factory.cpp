@@ -211,12 +211,34 @@ struct GridAndInfoViewParams {
     QColor buttonShadowColor;
 };
 
+struct SidebarButtonsParams {
+    QColor iconColor;
+    QColor iconDisabledColor;
+    QColor hoverColor;
+    QColor pressedColor;
+};
+
+struct ViewModeSelectorParams {
+    QColor backgroundColor;
+    QColor hoverColor;
+    QColor pressedColor;
+    QColor checkedColor;
+    QColor iconColor;
+    QColor iconDisabledColor;
+    QColor checkedIconColor;
+    QColor checkedIconDisabledColor;
+};
+
 struct MainToolbarParams {
     QColor backgroundColor;
     QColor folderNameColor;
-    QColor dividerColor;
     QColor iconColor;
     QColor iconDisabledColor;
+    QColor buttonHoverColor;
+    QColor buttonPressedColor;
+
+    SidebarButtonsParams sidebarButtons;
+    ViewModeSelectorParams viewModeSelector;
 };
 
 struct ContentSplitterParams {
@@ -646,35 +668,49 @@ Theme makeTheme(const ThemeParams &params)
     theme.mainToolbar.backgroundColor = mt.backgroundColor;
     theme.mainToolbar.folderNameColor = mt.folderNameColor;
     theme.mainToolbar.iconColor = mt.iconColor;
-    theme.mainToolbar.sidebarIconColor = params.sidebarIconsParams.iconColor;
+    theme.mainToolbar.buttonHoverColor = mt.buttonHoverColor;
+    theme.mainToolbar.buttonPressedColor = mt.buttonPressedColor;
 
     // Build icons with Normal and Disabled states
-    auto makeToolbarIcon = [&](const QString &basePath) {
+    auto makeToolbarIcon = [&](const QString &basePath, const QColor &color, const QColor &disabledColor) {
         QIcon icon;
-        const QString normalPath = recoloredSvgToThemeFile(basePath, mt.iconColor, params.meta.id);
-        const QString disabledPath = recoloredSvgToThemeFile(basePath, mt.iconDisabledColor, params.meta.id, { .suffix = "_disabled" });
-        icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
-        icon.addFile(disabledPath, QSize(), QIcon::Disabled, QIcon::Off);
-        return icon;
-    };
-    auto makeSidebarToolbarIcon = [&](const QString &basePath) {
-        QIcon icon;
-        const QString normalPath = recoloredSvgToThemeFile(basePath, params.sidebarIconsParams.iconColor, params.meta.id, { .suffix = "_sidebar" });
-        const QString disabledPath = recoloredSvgToThemeFile(basePath, mt.iconDisabledColor, params.meta.id, { .suffix = "_disabled" });
+        const QString normalPath = recoloredSvgToThemeFile(basePath, color, params.meta.id);
+        const QString disabledPath = recoloredSvgToThemeFile(basePath, disabledColor, params.meta.id, { .suffix = "_disabled" });
         icon.addFile(normalPath, QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(disabledPath, QSize(), QIcon::Disabled, QIcon::Off);
         return icon;
     };
 
-    theme.mainToolbar.backIcon = makeToolbarIcon(":/images/main_toolbar/back.svg");
-    theme.mainToolbar.forwardIcon = makeToolbarIcon(":/images/main_toolbar/forward.svg");
-    theme.mainToolbar.settingsIcon = makeSidebarToolbarIcon(":/images/main_toolbar/settings.svg");
-    theme.mainToolbar.serverIcon = makeSidebarToolbarIcon(":/images/main_toolbar/server.svg");
-    theme.mainToolbar.helpIcon = makeSidebarToolbarIcon(":/images/main_toolbar/help.svg");
-    theme.mainToolbar.gridIcon = makeToolbarIcon(":/images/main_toolbar/grid.svg");
-    theme.mainToolbar.flowIcon = makeToolbarIcon(":/images/main_toolbar/flow.svg");
-    theme.mainToolbar.infoIcon = makeToolbarIcon(":/images/main_toolbar/info.svg");
-    theme.mainToolbar.fullscreenIcon = makeToolbarIcon(":/images/main_toolbar/fullscreen.svg");
+    theme.mainToolbar.backIcon = makeToolbarIcon(":/images/main_toolbar/back.svg", mt.iconColor, mt.iconDisabledColor);
+    theme.mainToolbar.forwardIcon = makeToolbarIcon(":/images/main_toolbar/forward.svg", mt.iconColor, mt.iconDisabledColor);
+    theme.mainToolbar.fullscreenIcon = makeToolbarIcon(":/images/main_toolbar/fullscreen.svg", mt.iconColor, mt.iconDisabledColor);
+
+    const auto &sbb = mt.sidebarButtons;
+    theme.mainToolbar.sidebarButtons.hoverColor = sbb.hoverColor;
+    theme.mainToolbar.sidebarButtons.pressedColor = sbb.pressedColor;
+    theme.mainToolbar.sidebarButtons.settingsIcon = makeToolbarIcon(":/images/main_toolbar/settings.svg", sbb.iconColor, sbb.iconDisabledColor);
+    theme.mainToolbar.sidebarButtons.serverIcon = makeToolbarIcon(":/images/main_toolbar/server.svg", sbb.iconColor, sbb.iconDisabledColor);
+    theme.mainToolbar.sidebarButtons.helpIcon = makeToolbarIcon(":/images/main_toolbar/help.svg", sbb.iconColor, sbb.iconDisabledColor);
+
+    const auto &vms = mt.viewModeSelector;
+    theme.mainToolbar.viewModeSelector.backgroundColor = vms.backgroundColor;
+    theme.mainToolbar.viewModeSelector.hoverColor = vms.hoverColor;
+    theme.mainToolbar.viewModeSelector.pressedColor = vms.pressedColor;
+    theme.mainToolbar.viewModeSelector.checkedColor = vms.checkedColor;
+    theme.mainToolbar.viewModeSelector.iconColor = vms.iconColor;
+
+    auto makeViewModeIcon = [&](const QString &basePath) {
+        QIcon icon;
+        icon.addFile(recoloredSvgToThemeFile(basePath, vms.iconColor, params.meta.id), QSize(), QIcon::Normal, QIcon::Off);
+        icon.addFile(recoloredSvgToThemeFile(basePath, vms.iconDisabledColor, params.meta.id, { .suffix = "_disabled" }), QSize(), QIcon::Disabled, QIcon::Off);
+        icon.addFile(recoloredSvgToThemeFile(basePath, vms.checkedIconColor, params.meta.id, { .suffix = "_checked" }), QSize(), QIcon::Normal, QIcon::On);
+        icon.addFile(recoloredSvgToThemeFile(basePath, vms.checkedIconDisabledColor, params.meta.id, { .suffix = "_checked_disabled" }), QSize(), QIcon::Disabled, QIcon::On);
+        return icon;
+    };
+
+    theme.mainToolbar.viewModeSelector.gridIcon = makeViewModeIcon(":/images/main_toolbar/grid.svg");
+    theme.mainToolbar.viewModeSelector.flowIcon = makeViewModeIcon(":/images/main_toolbar/flow.svg");
+    theme.mainToolbar.viewModeSelector.infoIcon = makeViewModeIcon(":/images/main_toolbar/info.svg");
     // end MainToolbar
 
     // SidebarIcons
@@ -1139,9 +1175,28 @@ Theme makeTheme(const QJsonObject &json)
         auto &mt = p.mainToolbarParams;
         mt.backgroundColor = colorFromJson(o, "backgroundColor", mt.backgroundColor);
         mt.folderNameColor = colorFromJson(o, "folderNameColor", mt.folderNameColor);
-        mt.dividerColor = colorFromJson(o, "dividerColor", mt.dividerColor);
         mt.iconColor = colorFromJson(o, "iconColor", mt.iconColor);
         mt.iconDisabledColor = colorFromJson(o, "iconDisabledColor", mt.iconDisabledColor);
+        mt.buttonHoverColor = colorFromJson(o, "buttonHoverColor", mt.buttonHoverColor);
+        mt.buttonPressedColor = colorFromJson(o, "buttonPressedColor", mt.buttonPressedColor);
+
+        const auto sb = o["sidebarButtons"].toObject();
+        auto &sbb = mt.sidebarButtons;
+        sbb.iconColor = colorFromJson(sb, "iconColor", sbb.iconColor);
+        sbb.iconDisabledColor = colorFromJson(sb, "iconDisabledColor", sbb.iconDisabledColor);
+        sbb.hoverColor = colorFromJson(sb, "hoverColor", sbb.hoverColor);
+        sbb.pressedColor = colorFromJson(sb, "pressedColor", sbb.pressedColor);
+
+        const auto vm = o["viewModeSelector"].toObject();
+        auto &vms = mt.viewModeSelector;
+        vms.backgroundColor = colorFromJson(vm, "backgroundColor", vms.backgroundColor);
+        vms.hoverColor = colorFromJson(vm, "hoverColor", vms.hoverColor);
+        vms.pressedColor = colorFromJson(vm, "pressedColor", vms.pressedColor);
+        vms.checkedColor = colorFromJson(vm, "checkedColor", vms.checkedColor);
+        vms.iconColor = colorFromJson(vm, "iconColor", vms.iconColor);
+        vms.iconDisabledColor = colorFromJson(vm, "iconDisabledColor", vms.iconDisabledColor);
+        vms.checkedIconColor = colorFromJson(vm, "checkedIconColor", vms.checkedIconColor);
+        vms.checkedIconDisabledColor = colorFromJson(vm, "checkedIconDisabledColor", vms.checkedIconDisabledColor);
     }
 
     if (json.contains("contentSplitter")) {

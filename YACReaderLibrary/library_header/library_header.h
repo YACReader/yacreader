@@ -23,13 +23,13 @@ struct HeaderColors {
     QColor sidebarButtonPressed;
     QColor toolbarBackground;
     QColor folderName;
-    QColor icon;
     QColor buttonHover;
     QColor buttonPressed;
     QColor selectorBackground;
     QColor selectorHover;
     QColor selectorPressed;
     QColor selectorChecked;
+    QColor selectorIcon;
 };
 
 HeaderColors headerColors(const Theme &theme);
