@@ -48,6 +48,22 @@ void collectMissingThemeKeys(const QJsonObject &reference, const QJsonObject &th
     }
 }
 
+QJsonObject keepReferenceThemeKeys(const QJsonObject &reference, const QJsonObject &theme, bool topLevel)
+{
+    QJsonObject result;
+    for (auto it = reference.constBegin(); it != reference.constEnd(); ++it) {
+        if (topLevel && it.key() == QLatin1String("meta"))
+            continue;
+        const QJsonValue value = theme.value(it.key());
+        if (it.value().isObject()) {
+            result.insert(it.key(), keepReferenceThemeKeys(it.value().toObject(), value.toObject(), false));
+        } else if (sameThemeValueType(it.value(), value)) {
+            result.insert(it.key(), value);
+        }
+    }
+    return result;
+}
+
 }
 
 QStringList missingThemeKeys(const QJsonObject &reference, const QJsonObject &theme)
@@ -55,6 +71,14 @@ QStringList missingThemeKeys(const QJsonObject &reference, const QJsonObject &th
     QStringList missing;
     collectMissingThemeKeys(reference, theme, { }, missing);
     return missing;
+}
+
+QJsonObject referenceThemeKeys(const QJsonObject &reference, const QJsonObject &theme)
+{
+    QJsonObject result = keepReferenceThemeKeys(reference, theme, true);
+    if (theme.contains(QLatin1String("meta")))
+        result.insert(QLatin1String("meta"), theme.value(QLatin1String("meta")));
+    return result;
 }
 
 bool isThemeHexColorString(const QString &value)

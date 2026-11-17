@@ -185,14 +185,17 @@ AppearanceTabWidget::AppearanceTabWidget(
 
     connect(openBtn, &QPushButton::clicked, this, [this]() {
         if (!themeEditor) {
-            QJsonObject json = this->currentThemeJson();
+            if (!this->repository)
+                return;
+            const QString incompatibleId = selectedIncompatibleThemeId();
+            QJsonObject json = incompatibleId.isEmpty() ? this->currentThemeJson() : this->repository->loadThemeJson(incompatibleId);
             if (json.isEmpty()) {
                 QMessageBox::critical(this,
                                       tr("Theme editor error"),
                                       tr("The current theme JSON could not be loaded."));
                 return;
             }
-            themeEditor = new ThemeEditorDialog(json, this);
+            themeEditor = new ThemeEditorDialog(json, this->repository->referenceThemeJson(), this);
             themeEditor->setAttribute(Qt::WA_DeleteOnClose);
             connect(themeEditor, &ThemeEditorDialog::themeJsonChanged, this,
                     [this](const QJsonObject &json) { this->applyTheme(json); });
@@ -212,6 +215,8 @@ AppearanceTabWidget::AppearanceTabWidget(
                         if (this->themeEditor)
                             this->themeEditor->updateSavedId(id);
                     });
+            if (!incompatibleId.isEmpty())
+                this->applyTheme(themeEditor->currentParams());
         }
         themeEditor->show();
         themeEditor->raise();
@@ -279,6 +284,17 @@ void AppearanceTabWidget::updateDeleteButton(QComboBox *combo, QPushButton *btn)
 {
     const QString id = combo->currentData().toString();
     btn->setEnabled(!id.isEmpty() && id.startsWith(QLatin1String("user/")));
+}
+
+QString AppearanceTabWidget::selectedIncompatibleThemeId() const
+{
+    const std::pair<QWidget *, QComboBox *> rows[] = { { lightRow, lightCombo }, { darkRow, darkCombo }, { customRow, customCombo } };
+    for (const auto &[row, combo] : rows) {
+        const QString id = combo->currentData().toString();
+        if (row->isVisibleTo(this) && !id.isEmpty() && !repository->isCompatible(id))
+            return id;
+    }
+    return { };
 }
 
 void AppearanceTabWidget::updateModeRows()

@@ -56,6 +56,7 @@ private:
     void populateCombo(QComboBox *combo, std::optional<ThemeVariant> variantFilter, const QString &selectedId);
     void repopulateCombos();
     void updateDeleteButton(QComboBox *combo, QPushButton *btn);
+    QString selectedIncompatibleThemeId() const;
     void updateModeRows();
     void importTheme();
     void deleteTheme(QComboBox *combo, QPushButton *deleteBtn);

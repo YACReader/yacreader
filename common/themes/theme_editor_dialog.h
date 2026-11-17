@@ -7,6 +7,7 @@
 class QComboBox;
 class QLabel;
 class QLineEdit;
+class QPushButton;
 class QTreeWidget;
 class QTreeWidgetItem;
 
@@ -17,7 +18,7 @@ class ThemeEditorDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ThemeEditorDialog(const QJsonObject &params, QWidget *parent = nullptr);
+    explicit ThemeEditorDialog(const QJsonObject &json, const QJsonObject &reference, QWidget *parent = nullptr);
 
     QJsonObject currentParams() const { return params; }
 
@@ -28,7 +29,10 @@ signals:
     void saveToLibraryRequested(const QJsonObject &json);
 
 private:
-    void populate(QTreeWidgetItem *parent, const QJsonObject &obj, const QStringList &path);
+    void populate(QTreeWidgetItem *parent, const QJsonObject &referenceObj, const QStringList &path);
+    void setMissing(QTreeWidgetItem *item);
+    void updateSaveState();
+    QJsonObject paramsToSave();
     void editColorItem(QTreeWidgetItem *item);
     void applyColorToItem(QTreeWidgetItem *item, const QColor &color);
     void toggleBoolItem(QTreeWidgetItem *item);
@@ -43,10 +47,16 @@ private:
     void identifyReleased();
 
     static QIcon colorIcon(const QColor &color);
+    static QJsonValue jsonPathValue(const QJsonObject &root, const QStringList &path);
     static void setJsonPath(QJsonObject &root, const QStringList &path, const QJsonValue &value);
+    static void removeJsonPath(QJsonObject &root, const QStringList &path);
 
     QTreeWidget *tree;
     QLineEdit *searchEdit;
+    QLabel *missingLabel;
+    QPushButton *saveLibBtn;
+    QPushButton *exportBtn;
+    QJsonObject reference;
     QJsonObject params;
 
     // Meta UI

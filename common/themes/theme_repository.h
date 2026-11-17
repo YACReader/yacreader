@@ -25,6 +25,7 @@ public:
     bool contains(const QString &themeId) const;
     bool isCompatible(const QString &themeId) const;
     QStringList missingKeys(const QJsonObject &themeJson) const;
+    QJsonObject referenceThemeJson() const { return referenceJson; }
     QJsonObject loadThemeJson(const QString &themeId) const;
 
     QString saveUserTheme(QJsonObject themeJson);

@@ -1,6 +1,7 @@
 #include "theme_editor_dialog.h"
 
 #include "theme_json_utils.h"
+#include "version.h"
 
 #include <QApplication>
 #include <QColorDialog>
@@ -19,6 +20,7 @@
 #include <QMessageBox>
 #include <QPixmap>
 #include <QPushButton>
+#include <QStyle>
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QUuid>
@@ -34,6 +36,7 @@ static const int IsColorRole = Qt::UserRole + 1;
 static const int IsBoolRole = Qt::UserRole + 2;
 // Role used to distinguish numeric items.
 static const int IsNumberRole = Qt::UserRole + 3;
+static const int IsMissingRole = Qt::UserRole + 4;
 
 // Converts a camelCase JSON key to a human-readable display string.
 // "metadataScraperDialog" → "Metadata scraper dialog"
@@ -53,8 +56,8 @@ static QString displayKey(const QString &key)
     return result;
 }
 
-ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &params, QWidget *parent)
-    : QDialog(parent), params(normalizeThemeJson(params))
+ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &json, const QJsonObject &reference, QWidget *parent)
+    : QDialog(parent), reference(reference), params(referenceThemeKeys(reference, normalizeThemeJson(json)))
 {
     setWindowTitle(tr("Theme Editor"));
     resize(520, 700);
@@ -129,7 +132,7 @@ ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &params, QWidget *parent)
     tree->setUniformRowHeights(true);
     tree->setAlternatingRowColors(true);
 
-    populate(nullptr, params, { });
+    populate(nullptr, reference, { });
     tree->expandAll();
 
     connect(expandBtn, &QPushButton::clicked, tree, &QTreeWidget::expandAll);
@@ -146,12 +149,13 @@ ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &params, QWidget *parent)
     });
 
     // --- bottom buttons ---
-    auto *saveLibBtn = new QPushButton(tr("Save and apply"), this);
-    auto *exportBtn = new QPushButton(tr("Export to file..."), this);
+    missingLabel = new QLabel(this);
+    saveLibBtn = new QPushButton(tr("Save and apply"), this);
+    exportBtn = new QPushButton(tr("Export to file..."), this);
     auto *loadBtn = new QPushButton(tr("Load from file..."), this);
     auto *closeBtn = new QPushButton(tr("Close"), this);
     connect(saveLibBtn, &QPushButton::clicked, this, [this]() {
-        emit saveToLibraryRequested(this->params);
+        emit saveToLibraryRequested(paramsToSave());
     });
     connect(exportBtn, &QPushButton::clicked, this, &ThemeEditorDialog::saveToFile);
     connect(loadBtn, &QPushButton::clicked, this, &ThemeEditorDialog::loadFromFile);
@@ -161,6 +165,7 @@ ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &params, QWidget *parent)
     buttons->addWidget(exportBtn);
     buttons->addWidget(loadBtn);
     buttons->addStretch();
+    buttons->addWidget(missingLabel);
     buttons->addWidget(closeBtn);
 
     auto *layout = new QVBoxLayout(this);
@@ -170,20 +175,22 @@ ThemeEditorDialog::ThemeEditorDialog(const QJsonObject &params, QWidget *parent)
     layout->addLayout(buttons);
 
     setLayout(layout);
+
+    updateSaveState();
 }
 
-void ThemeEditorDialog::populate(QTreeWidgetItem *parent, const QJsonObject &obj, const QStringList &path)
+void ThemeEditorDialog::populate(QTreeWidgetItem *parent, const QJsonObject &referenceObj, const QStringList &path)
 {
-    for (auto it = obj.constBegin(); it != obj.constEnd(); ++it) {
+    for (auto it = referenceObj.constBegin(); it != referenceObj.constEnd(); ++it) {
         const QString key = it.key();
 
         // "meta" is handled by the dedicated UI above the tree
         if (path.isEmpty() && key == "meta")
             continue;
-        const QJsonValue val = it.value();
+        const QJsonValue referenceVal = it.value();
         const QStringList childPath = path + QStringList(key);
 
-        if (val.isObject()) {
+        if (referenceVal.isObject()) {
             // Group row
             QTreeWidgetItem *group = parent ? new QTreeWidgetItem(parent)
                                             : new QTreeWidgetItem(tree);
@@ -192,7 +199,7 @@ void ThemeEditorDialog::populate(QTreeWidgetItem *parent, const QJsonObject &obj
             group->setFont(0, bold);
             group->setText(0, displayKey(key));
             group->setFlags(group->flags() & ~Qt::ItemIsSelectable);
-            populate(group, val.toObject(), childPath);
+            populate(group, referenceVal.toObject(), childPath);
         } else {
             // Leaf row
             QTreeWidgetItem *item = parent ? new QTreeWidgetItem(parent)
@@ -200,33 +207,61 @@ void ThemeEditorDialog::populate(QTreeWidgetItem *parent, const QJsonObject &obj
             item->setText(0, displayKey(key));
             item->setData(0, PathRole, childPath);
 
-            const QString strVal = val.toString();
-            if (val.isString() && isThemeHexColorString(strVal)) {
-                const QColor color(strVal);
-                item->setIcon(1, colorIcon(color));
-                item->setText(1, strVal);
+            const QJsonValue val = jsonPathValue(params, childPath);
+            if (referenceVal.isString() && isThemeHexColorString(referenceVal.toString())) {
                 item->setData(0, IsColorRole, true);
                 item->setToolTip(1, tr("Double-click to edit color"));
-            } else if (val.isBool()) {
-                item->setText(1, val.toBool() ? tr("true") : tr("false"));
-                item->setData(0, IsColorRole, false);
+                if (!val.isUndefined()) {
+                    item->setIcon(1, colorIcon(QColor(val.toString())));
+                    item->setText(1, val.toString());
+                }
+            } else if (referenceVal.isBool()) {
                 item->setData(0, IsBoolRole, true);
                 item->setToolTip(1, tr("Double-click to toggle"));
-            } else if (val.isDouble()) {
-                item->setText(1, QString::number(val.toDouble()));
+                if (!val.isUndefined())
+                    item->setText(1, val.toBool() ? tr("true") : tr("false"));
+            } else if (referenceVal.isDouble()) {
                 item->setData(0, IsNumberRole, true);
                 item->setToolTip(1, tr("Double-click to edit value"));
-            } else {
-                item->setText(1, strVal);
-                item->setData(0, IsColorRole, false);
+                if (!val.isUndefined())
+                    item->setText(1, QString::number(val.toDouble()));
+            } else if (!val.isUndefined()) {
+                item->setText(1, val.toString());
             }
+            if (val.isUndefined())
+                setMissing(item);
         }
     }
 }
 
+void ThemeEditorDialog::setMissing(QTreeWidgetItem *item)
+{
+    item->setData(0, IsMissingRole, true);
+    item->setText(1, tr("Missing"));
+    item->setIcon(1, style()->standardIcon(QStyle::SP_MessageBoxWarning));
+}
+
+void ThemeEditorDialog::updateSaveState()
+{
+    const int missing = missingThemeKeys(reference, params).size();
+    missingLabel->setText(tr("%n value(s) missing", "", missing));
+    missingLabel->setVisible(missing > 0);
+    saveLibBtn->setEnabled(missing == 0);
+    exportBtn->setEnabled(missing == 0);
+}
+
+QJsonObject ThemeEditorDialog::paramsToSave()
+{
+    auto meta = params["meta"].toObject();
+    meta["version"] = QStringLiteral(VERSION);
+    params["meta"] = meta;
+    return params;
+}
+
 void ThemeEditorDialog::editColorItem(QTreeWidgetItem *item)
 {
-    const QColor current(item->text(1));
+    const bool wasMissing = item->data(0, IsMissingRole).toBool();
+    const QColor current = wasMissing ? QColor() : QColor(item->text(1));
     QColorDialog dialog(current, this);
     dialog.setOption(QColorDialog::ShowAlphaChannel, true);
     dialog.setWindowTitle(tr("Edit: %1").arg(item->text(0)));
@@ -239,6 +274,10 @@ void ThemeEditorDialog::editColorItem(QTreeWidgetItem *item)
 
     if (dialog.exec() == QDialog::Accepted) {
         applyColorToItem(item, dialog.selectedColor());
+    } else if (wasMissing) {
+        removeJsonPath(params, item->data(0, PathRole).toStringList());
+        setMissing(item);
+        updateSaveState();
     } else {
         // Revert to original if cancelled
         applyColorToItem(item, current);
@@ -255,24 +294,33 @@ void ThemeEditorDialog::applyColorToItem(QTreeWidgetItem *item, const QColor &co
     item->setText(1, normalizedHexStr);
     item->setIcon(1, colorIcon(color));
 
+    item->setData(0, IsMissingRole, false);
+
     const QStringList path = item->data(0, PathRole).toStringList();
     setJsonPath(params, path, normalizedHexStr);
+    updateSaveState();
 }
 
 void ThemeEditorDialog::toggleBoolItem(QTreeWidgetItem *item)
 {
     const bool newValue = item->text(1) != tr("true");
     item->setText(1, newValue ? tr("true") : tr("false"));
+    item->setIcon(1, QIcon());
+    item->setData(0, IsMissingRole, false);
     const QStringList path = item->data(0, PathRole).toStringList();
     setJsonPath(params, path, newValue);
+    updateSaveState();
     emit themeJsonChanged(params);
 }
 
 void ThemeEditorDialog::editNumberItem(QTreeWidgetItem *item)
 {
-    const double current = item->text(1).toDouble();
+    const QStringList path = item->data(0, PathRole).toStringList();
+    const bool wasMissing = item->data(0, IsMissingRole).toBool();
+    const double current = wasMissing ? 0.0 : item->text(1).toDouble();
     // Use integer dialog when the stored value has no fractional part
-    const bool isInt = (current == std::floor(current));
+    const double typeSample = wasMissing ? jsonPathValue(reference, path).toDouble() : current;
+    const bool isInt = (typeSample == std::floor(typeSample));
     bool ok = false;
     double newValue;
     if (isInt) {
@@ -288,8 +336,10 @@ void ThemeEditorDialog::editNumberItem(QTreeWidgetItem *item)
     if (!ok)
         return;
     item->setText(1, isInt ? QString::number(static_cast<int>(newValue)) : QString::number(newValue));
-    const QStringList path = item->data(0, PathRole).toStringList();
+    item->setIcon(1, QIcon());
+    item->setData(0, IsMissingRole, false);
     setJsonPath(params, path, newValue);
+    updateSaveState();
     emit themeJsonChanged(params);
 }
 
@@ -345,6 +395,14 @@ QIcon ThemeEditorDialog::colorIcon(const QColor &color)
     return QIcon(pix);
 }
 
+QJsonValue ThemeEditorDialog::jsonPathValue(const QJsonObject &root, const QStringList &path)
+{
+    QJsonValue value = root;
+    for (const auto &key : path)
+        value = value.toObject().value(key);
+    return value;
+}
+
 void ThemeEditorDialog::setJsonPath(QJsonObject &root, const QStringList &path, const QJsonValue &value)
 {
     if (path.isEmpty())
@@ -355,6 +413,19 @@ void ThemeEditorDialog::setJsonPath(QJsonObject &root, const QStringList &path, 
     }
     QJsonObject sub = root[path[0]].toObject();
     setJsonPath(sub, path.mid(1), value);
+    root[path[0]] = sub;
+}
+
+void ThemeEditorDialog::removeJsonPath(QJsonObject &root, const QStringList &path)
+{
+    if (path.isEmpty())
+        return;
+    if (path.size() == 1) {
+        root.remove(path[0]);
+        return;
+    }
+    QJsonObject sub = root[path[0]].toObject();
+    removeJsonPath(sub, path.mid(1));
     root[path[0]] = sub;
 }
 
@@ -405,7 +476,7 @@ void ThemeEditorDialog::saveToFile()
         QMessageBox::warning(this, tr("Save failed"), tr("Could not open file for writing:\n%1").arg(path));
         return;
     }
-    file.write(serializeNormalizedThemeJson(params));
+    file.write(serializeNormalizedThemeJson(paramsToSave()));
 }
 
 void ThemeEditorDialog::loadFromFile()
@@ -432,11 +503,13 @@ void ThemeEditorDialog::loadFromFile()
         return;
     }
 
-    params = normalizeThemeJson(doc.object());
+    params = referenceThemeKeys(reference, normalizeThemeJson(doc.object()));
     syncMetaFromParams();
     tree->clear();
-    populate(nullptr, params, { });
+    populate(nullptr, reference, { });
     tree->expandAll();
+    filterTree(searchEdit->text());
+    updateSaveState();
     emit themeJsonChanged(params);
 }
 
@@ -449,6 +522,8 @@ void ThemeEditorDialog::identifyPressed()
     const QStringList path = item->data(0, PathRole).toStringList();
     if (path.isEmpty())
         return; // group row, not a leaf
+    if (item->data(0, IsMissingRole).toBool())
+        return;
 
     if (item->data(0, IsColorRole).toBool()) {
         identifySnapshot = QJsonValue(item->text(1));

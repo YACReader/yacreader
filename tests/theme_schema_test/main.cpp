@@ -78,6 +78,9 @@ private slots:
     void olderVersionIsIncompatible();
     void missingVersionIsIncompatible();
     void incompatibleUserThemeIsListed();
+    void referenceKeysDropExtraKeys();
+    void referenceKeysDropWrongTypes();
+    void referenceKeysKeepMeta();
 };
 
 void ThemeSchemaTest::builtinsHaveTheReferenceKeys()
@@ -190,6 +193,36 @@ void ThemeSchemaTest::incompatibleUserThemeIsListed()
     for (const auto &theme : repository.availableThemes())
         listed = listed || theme.id == id;
     QVERIFY(listed);
+}
+
+void ThemeSchemaTest::referenceKeysDropExtraKeys()
+{
+    const auto reference = referenceTheme();
+    const QString section = firstColorKey(reference).first;
+    auto theme = withValue(reference, section, "unknownColor", "#FFFFFF");
+    theme["unknownSection"] = QJsonObject { { "color", "#FFFFFF" } };
+
+    QCOMPARE(referenceThemeKeys(reference, theme), reference);
+}
+
+void ThemeSchemaTest::referenceKeysDropWrongTypes()
+{
+    const auto reference = referenceTheme();
+    const auto [section, key] = firstColorKey(reference);
+    const auto expected = withValue(reference, section, key, QJsonValue::Undefined);
+
+    QCOMPARE(referenceThemeKeys(reference, withValue(reference, section, key, "not a color")), expected);
+    QCOMPARE(referenceThemeKeys(reference, withValue(reference, section, key, 42)), expected);
+}
+
+void ThemeSchemaTest::referenceKeysKeepMeta()
+{
+    auto theme = withVersion(referenceTheme(), "9.99.0");
+    auto meta = theme["meta"].toObject();
+    meta["custom"] = "value";
+    theme["meta"] = meta;
+
+    QCOMPARE(referenceThemeKeys(referenceTheme(), theme)["meta"].toObject(), meta);
 }
 
 QTEST_GUILESS_MAIN(ThemeSchemaTest)
