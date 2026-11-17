@@ -7,12 +7,14 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 ### YACReader
 
 * Show the full title of the comic in the window title: series, volume, number and title.
+* Fixed some themes issues.
 
 ### YACReaderLibrary
 
 * Show comic titles the same way in all views. The info panel, the current comic banner and continue reading show the full title: series, volume, number and title.
 * Show the series next to the title in the grid cells of reading lists, labels, smart lists and search results, so comics from different series are easy to tell apart.
 * Add "Go to location" and "Set as read" to the continue reading context menu.
+* Improve the main toolbar theming on Windows. If you created a custom theme you'll need to update it.
 
 ### Server
 
