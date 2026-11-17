@@ -159,11 +159,6 @@ QString itemLabel(const QAction *action)
     return action->text().isEmpty() ? action->toolTip() : action->text();
 }
 
-NSColor *toNSColor(const QColor &color)
-{
-    return [NSColor colorWithSRGBRed:color.redF() green:color.greenF() blue:color.blueF() alpha:color.alphaF()];
-}
-
 } // namespace
 
 // Traffic lights stay native (never drawn by us). The header parts paint the
@@ -275,7 +270,10 @@ public:
         NSWindow *nsWindow = this->nsWindow();
         const bool dark = theme.mainToolbar.backgroundColor.lightnessF() < 0.5;
         nsWindow.appearance = [NSAppearance appearanceNamed:dark ? NSAppearanceNameDarkAqua : NSAppearanceNameAqua];
-        nsWindow.backgroundColor = toNSColor(theme.gridAndInfoView.backgroundColor);
+
+        // The window background is never visible: Qt's view covers it. Set it again if some case shows it.
+        // const QColor background = theme.gridAndInfoView.backgroundColor;
+        // nsWindow.backgroundColor = [NSColor colorWithSRGBRed:background.redF() green:background.greenF() blue:background.blueF() alpha:background.alphaF()];
     }
 
     // The search is on the trailing edge, where macOS apps put it. The sidebar
