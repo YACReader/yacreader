@@ -12,6 +12,7 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QStyle>
 #include <QToolButton>
 #include <QVBoxLayout>
 
@@ -142,19 +143,25 @@ AppearanceTabWidget::AppearanceTabWidget(
     connect(lightCombo, &QComboBox::currentIndexChanged, this, [this](int) {
         if (!this->config)
             return;
-        this->config->setLightThemeId(lightCombo->currentData().toString());
+        const QString id = lightCombo->currentData().toString();
+        if (this->repository && this->repository->isCompatible(id))
+            this->config->setLightThemeId(id);
         updateDeleteButton(lightCombo, lightDeleteBtn);
     });
     connect(darkCombo, &QComboBox::currentIndexChanged, this, [this](int) {
         if (!this->config)
             return;
-        this->config->setDarkThemeId(darkCombo->currentData().toString());
+        const QString id = darkCombo->currentData().toString();
+        if (this->repository && this->repository->isCompatible(id))
+            this->config->setDarkThemeId(id);
         updateDeleteButton(darkCombo, darkDeleteBtn);
     });
     connect(customCombo, &QComboBox::currentIndexChanged, this, [this](int) {
         if (!this->config)
             return;
-        this->config->setFixedThemeId(customCombo->currentData().toString());
+        const QString id = customCombo->currentData().toString();
+        if (this->repository && this->repository->isCompatible(id))
+            this->config->setFixedThemeId(id);
         updateDeleteButton(customCombo, customDeleteBtn);
     });
 
@@ -237,6 +244,11 @@ void AppearanceTabWidget::populateCombo(QComboBox *combo,
         if (variantFilter && entry.variant != *variantFilter)
             continue;
         combo->addItem(entry.displayName, entry.id);
+        if (!repository->isCompatible(entry.id)) {
+            const int index = combo->count() - 1;
+            combo->setItemIcon(index, style()->standardIcon(QStyle::SP_MessageBoxWarning));
+            combo->setItemData(index, tr("This theme was made for an older version and cannot be applied. Open it in the theme editor to update it."), Qt::ToolTipRole);
+        }
     }
 
     // Restore selection; fall back to first item if the saved ID is no longer present
