@@ -1,5 +1,6 @@
 #include "header_model.h"
 #include "library_header.h"
+#include "theme.h"
 #include "window_frame.h"
 
 #include <QAction>
@@ -269,12 +270,12 @@ public:
         toolbar.delegate = nil;
     }
 
-    void setColors(const FrameColors &colors) override
+    void applyTheme(const Theme &theme) override
     {
         NSWindow *nsWindow = this->nsWindow();
-        const bool dark = colors.headerBackground.lightnessF() < 0.5;
+        const bool dark = theme.mainToolbar.backgroundColor.lightnessF() < 0.5;
         nsWindow.appearance = [NSAppearance appearanceNamed:dark ? NSAppearanceNameDarkAqua : NSAppearanceNameAqua];
-        nsWindow.backgroundColor = toNSColor(colors.contentBackground);
+        nsWindow.backgroundColor = toNSColor(theme.gridAndInfoView.backgroundColor);
     }
 
     // The search is on the trailing edge, where macOS apps put it. The sidebar

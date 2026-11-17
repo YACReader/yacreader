@@ -465,6 +465,7 @@ struct MainToolbarTheme {
     QColor backgroundColor;
     QColor folderNameColor;
     QColor iconColor;
+    QColor iconDisabledColor;
     QColor buttonHoverColor;
     QColor buttonPressedColor;
 

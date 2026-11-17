@@ -1,5 +1,6 @@
 #include "caption_buttons.h"
 #include "library_header.h"
+#include "theme.h"
 #include "window_frame.h"
 
 #include <QCursor>
@@ -39,12 +40,6 @@ CaptionButtons::Button buttonForHit(WPARAM hit)
     }
 }
 
-QColor withAlpha(QColor color, int alpha)
-{
-    color.setAlpha(alpha);
-    return color;
-}
-
 // The window keeps its native frame (WS_OVERLAPPEDWINDOW): shadow, resize
 // borders, snap, animations and the system menu stay with Windows. Only the
 // caption row becomes client area, where the header is drawn.
@@ -66,17 +61,17 @@ public:
         window->installEventFilter(this);
     }
 
-    void setColors(const FrameColors &frameColors) override
+    void applyTheme(const Theme &theme) override
     {
-        const QColor foreground = frameColors.headerForeground;
+        const auto &toolbar = theme.mainToolbar;
         CaptionButtonColors colors;
-        colors.foreground = foreground;
-        colors.inactiveForeground = withAlpha(foreground, 0x80);
-        colors.hover = withAlpha(foreground, 0x1A);
-        colors.pressed = withAlpha(foreground, 0x33);
+        colors.foreground = toolbar.iconColor;
+        colors.inactiveForeground = toolbar.iconDisabledColor;
+        colors.hover = toolbar.buttonHoverColor;
+        colors.pressed = toolbar.buttonPressedColor;
         buttons->setColors(colors);
         // Dark resize borders and system menu on dark headers.
-        const BOOL dark = frameColors.headerBackground.lightnessF() < 0.5;
+        const BOOL dark = toolbar.backgroundColor.lightnessF() < 0.5;
         DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &dark, sizeof(dark));
     }
 

@@ -19,7 +19,7 @@ WindowFrame *WindowFrame::create(QMainWindow *window, LibraryHeader *header)
     return new WindowFrame(window, header);
 }
 
-void WindowFrame::setColors(const FrameColors &)
+void WindowFrame::applyTheme(const Theme &)
 {
 }
 

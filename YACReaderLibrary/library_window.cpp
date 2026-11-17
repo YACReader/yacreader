@@ -289,9 +289,7 @@ void LibraryWindow::applyTheme(const Theme &theme)
     // Update main toolbar and comics view toolbar icons
     actions.updateTheme(theme);
 
-    windowFrame->setColors({ theme.mainToolbar.backgroundColor,
-                             theme.mainToolbar.iconColor,
-                             theme.gridAndInfoView.backgroundColor });
+    windowFrame->applyTheme(theme);
 }
 
 bool LibraryWindow::nativeEvent(const QByteArray &eventType, void *message, qintptr *result)

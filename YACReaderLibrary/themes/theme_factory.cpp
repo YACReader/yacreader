@@ -668,6 +668,7 @@ Theme makeTheme(const ThemeParams &params)
     theme.mainToolbar.backgroundColor = mt.backgroundColor;
     theme.mainToolbar.folderNameColor = mt.folderNameColor;
     theme.mainToolbar.iconColor = mt.iconColor;
+    theme.mainToolbar.iconDisabledColor = mt.iconDisabledColor;
     theme.mainToolbar.buttonHoverColor = mt.buttonHoverColor;
     theme.mainToolbar.buttonPressedColor = mt.buttonPressedColor;
 
