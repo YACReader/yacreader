@@ -225,11 +225,14 @@ Theme makeTheme(const ThemeParams &params)
     theme.shortcutsIcons.readingIcon = makeShortcutsIcon(":/images/shortcuts/shortcuts_group_reading.svg");
     // end ShortcutsIcons
 
-    // FindFolder icon (used in OptionsDialog)
+    // DialogIcons
     {
-        const QString path = recoloredSvgToThemeFile(":/images/find_folder.svg", params.toolbarParams.iconColor, params.meta.id);
+        const auto &di = params.dialogIconsParams;
         const qreal dpr = qApp->devicePixelRatio();
-        theme.dialogIcons.findFolderIcon = QIcon(renderSvgToPixmap(path, 13, 13, dpr));
+        const QString findFolderPath = recoloredSvgToThemeFile(":/images/find_folder.svg", di.iconColor, params.meta.id);
+        theme.dialogIcons.findFolderIcon = QIcon(renderSvgToPixmap(findFolderPath, 13, 13, dpr));
+        const QString goToPath = recoloredSvgToThemeFile(":/images/goto.svg", di.iconColor, params.meta.id);
+        theme.dialogIcons.goToDialogIcon = renderSvgToPixmap(goToPath, 128, dpr);
     }
 
     // Translator

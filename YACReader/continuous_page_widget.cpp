@@ -266,8 +266,6 @@ void ContinuousPageWidget::paintEvent(QPaintEvent *event)
                 painter.drawImage(pageRect, *img);
             }
         } else {
-            // placeholder
-            painter.fillRect(pageRect, QColor(45, 45, 45));
             painter.setPen(theme.viewer.defaultTextColor);
             painter.drawText(pageRect, Qt::AlignCenter, tr("Loading page %1").arg(i + 1));
         }

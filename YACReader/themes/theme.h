@@ -117,12 +117,6 @@ struct ToolbarTheme {
     QIcon doublePageAction18x18;
     QIcon doubleMangaPageAction;
     QIcon doubleMangaPageAction18x18;
-    QIcon increasePageZoomAction;
-    QIcon increasePageZoomAction18x18;
-    QIcon decreasePageZoomAction;
-    QIcon decreasePageZoomAction18x18;
-    QIcon resetZoomAction;
-    QIcon resetZoomAction18x18;
     QIcon showZoomSliderlAction;
     QIcon showZoomSliderlAction18x18;
     QIcon goToPageAction;
