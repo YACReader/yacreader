@@ -27,6 +27,34 @@ QJsonValue normalizeThemeJsonValue(const QJsonValue &value)
     return value;
 }
 
+bool sameThemeValueType(const QJsonValue &reference, const QJsonValue &value)
+{
+    if (reference.isString() && isThemeHexColorString(reference.toString()))
+        return value.isString() && isThemeHexColorString(value.toString());
+    return reference.type() == value.type();
+}
+
+void collectMissingThemeKeys(const QJsonObject &reference, const QJsonObject &theme, const QString &prefix, QStringList &missing)
+{
+    for (auto it = reference.constBegin(); it != reference.constEnd(); ++it) {
+        if (prefix.isEmpty() && it.key() == QLatin1String("meta"))
+            continue;
+        const QString path = prefix.isEmpty() ? it.key() : prefix + '.' + it.key();
+        const QJsonValue value = theme.value(it.key());
+        if (it.value().isObject())
+            collectMissingThemeKeys(it.value().toObject(), value.toObject(), path, missing);
+        else if (!sameThemeValueType(it.value(), value))
+            missing.append(path);
+    }
+}
+
+}
+
+QStringList missingThemeKeys(const QJsonObject &reference, const QJsonObject &theme)
+{
+    QStringList missing;
+    collectMissingThemeKeys(reference, theme, { }, missing);
+    return missing;
 }
 
 bool isThemeHexColorString(const QString &value)

@@ -46,7 +46,7 @@ void ThemeManager::setTheme(const Theme &theme)
 Theme ThemeManager::themeFromId(const QString &id, ThemeVariant fallbackVariant)
 {
     // Try the repository first (handles both builtin and user themes via JSON)
-    if (repository && repository->contains(id)) {
+    if (repository && repository->contains(id) && repository->isCompatible(id)) {
         QJsonObject json = repository->loadThemeJson(id);
         if (!json.isEmpty())
             return makeTheme(json);

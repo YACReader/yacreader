@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     auto *appearanceConfig = new AppearanceConfiguration(
             YACReader::getSettingsPath() + "/YACReader.ini", qApp);
     auto *themeRepo = new ThemeRepository(
-            ":/themes", YACReader::getSettingsPath() + "/themes/user", "YACReader");
+            ":/themes", YACReader::getSettingsPath() + "/themes/user", "YACReader", minimumThemeVersion);
     ThemeManager::instance().initialize(appearanceConfig, themeRepo);
 
     if (QIcon::hasThemeIcon("YACReader")) {

@@ -7,6 +7,9 @@
 
 #include <QIcon>
 #include <QJsonObject>
+#include <QVersionNumber>
+
+inline const QVersionNumber minimumThemeVersion { 10, 0, 0 };
 
 struct ToolbarThemeTemplates {
     QString toolbarQSS = "QToolBar { border: none; background: %1; }\n"

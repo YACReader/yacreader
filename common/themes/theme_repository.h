@@ -6,6 +6,8 @@
 #include <QJsonObject>
 #include <QList>
 #include <QString>
+#include <QStringList>
+#include <QVersionNumber>
 
 struct ThemeListEntry {
     QString id;
@@ -17,10 +19,12 @@ struct ThemeListEntry {
 class ThemeRepository
 {
 public:
-    explicit ThemeRepository(const QString &qrcPrefix, const QString &userThemesDir, const QString &targetApp);
+    explicit ThemeRepository(const QString &qrcPrefix, const QString &userThemesDir, const QString &targetApp, const QVersionNumber &minimumThemeVersion);
 
     QList<ThemeListEntry> availableThemes() const;
     bool contains(const QString &themeId) const;
+    bool isCompatible(const QString &themeId) const;
+    QStringList missingKeys(const QJsonObject &themeJson) const;
     QJsonObject loadThemeJson(const QString &themeId) const;
 
     QString saveUserTheme(QJsonObject themeJson);
@@ -33,6 +37,8 @@ private:
     QString qrcPrefix;
     QString userThemesDir;
     QString targetApp;
+    QVersionNumber minimumThemeVersion;
+    QJsonObject referenceJson;
 
     struct BuiltinEntry {
         QString id;
@@ -50,6 +56,7 @@ private:
 
     void scanBuiltins();
     void scanUserThemes();
+    bool isCompatible(const ThemeMeta &meta) const;
     static ThemeMeta extractMeta(const QJsonObject &json);
     static QJsonObject readJsonFile(const QString &path);
     QString filePathForUserTheme(const QString &uuid) const;

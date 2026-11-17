@@ -157,7 +157,7 @@ int main(int argc, char **argv)
     auto *appearanceConfig = new AppearanceConfiguration(
             YACReader::getSettingsPath() + "/YACReaderLibrary.ini", qApp);
     auto *themeRepo = new ThemeRepository(
-            ":/themes", YACReader::getSettingsPath() + "/themes/user", "YACReaderLibrary");
+            ":/themes", YACReader::getSettingsPath() + "/themes/user", "YACReaderLibrary", minimumThemeVersion);
     ThemeManager::instance().initialize(appearanceConfig, themeRepo);
 
     // Set window icon according to Freedesktop icon specification

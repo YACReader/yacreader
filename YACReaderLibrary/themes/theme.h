@@ -7,6 +7,9 @@
 #include "yacreader_icon.h"
 
 #include <QJsonObject>
+#include <QVersionNumber>
+
+inline const QVersionNumber minimumThemeVersion { 10, 6, 0 };
 
 struct MetadataScraperDialogThemeTemplates {
     QString defaultLabelQSS = "QLabel {color:%1; font-size:12px;font-family:Arial;}";

@@ -35,9 +35,10 @@ int builtinSortRank(const QString &name)
 }
 }
 
-ThemeRepository::ThemeRepository(const QString &qrcPrefix, const QString &userThemesDir, const QString &targetApp)
-    : qrcPrefix(qrcPrefix), userThemesDir(userThemesDir), targetApp(targetApp)
+ThemeRepository::ThemeRepository(const QString &qrcPrefix, const QString &userThemesDir, const QString &targetApp, const QVersionNumber &minimumThemeVersion)
+    : qrcPrefix(qrcPrefix), userThemesDir(userThemesDir), targetApp(targetApp), minimumThemeVersion(minimumThemeVersion)
 {
+    referenceJson = readJsonFile(QDir(qrcPrefix).absoluteFilePath(QStringLiteral("builtin_dark.json")));
     scanBuiltins();
     scanUserThemes();
 }
@@ -67,6 +68,24 @@ bool ThemeRepository::contains(const QString &themeId) const
             return true;
 
     return false;
+}
+
+bool ThemeRepository::isCompatible(const QString &themeId) const
+{
+    for (const auto &b : builtins)
+        if (b.id == themeId)
+            return isCompatible(b.meta);
+
+    for (const auto &u : userThemes)
+        if (u.id == themeId)
+            return isCompatible(u.meta);
+
+    return false;
+}
+
+QStringList ThemeRepository::missingKeys(const QJsonObject &themeJson) const
+{
+    return missingThemeKeys(referenceJson, themeJson);
 }
 
 QJsonObject ThemeRepository::loadThemeJson(const QString &themeId) const
@@ -243,6 +262,11 @@ void ThemeRepository::scanUserThemes()
         entry.meta = meta;
         userThemes.append(entry);
     }
+}
+
+bool ThemeRepository::isCompatible(const ThemeMeta &meta) const
+{
+    return QVersionNumber::fromString(meta.version) >= minimumThemeVersion;
 }
 
 ThemeMeta ThemeRepository::extractMeta(const QJsonObject &json)

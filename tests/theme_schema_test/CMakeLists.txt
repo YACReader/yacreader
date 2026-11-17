@@ -1,0 +1,11 @@
+function(add_theme_schema_test name app)
+    qt_add_executable(${name} main.cpp)
+    yacreader_apply_build_options(${name})
+    target_include_directories(${name} PRIVATE ${PROJECT_SOURCE_DIR}/${app}/themes)
+    target_compile_definitions(${name} PRIVATE THEMES_DIR="${PROJECT_SOURCE_DIR}/${app}/themes")
+    target_link_libraries(${name} PRIVATE Qt6::Core Qt6::Gui Qt6::Test common_gui)
+    add_test(NAME ${name} COMMAND ${name})
+endfunction()
+
+add_theme_schema_test(theme_schema_library_test YACReaderLibrary)
+add_theme_schema_test(theme_schema_reader_test YACReader)
