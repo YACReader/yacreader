@@ -94,7 +94,7 @@
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="255"/>
         <source>This theme was made for an older version and cannot be applied. Open it in the theme editor to update it.</source>
-        <translation type="unfinished"></translation>
+        <translation>此主题是为旧版本制作的，无法应用。请在主题编辑器中将其打开以进行更新。</translation>
     </message>
     <message>
         <location filename="../common/themes/appearance_tab_widget.cpp" line="313"/>
@@ -733,13 +733,13 @@ If none is active, Escape does nothing.</source>
     <message>
         <location filename="../common/themes/theme_editor_dialog.cpp" line="240"/>
         <source>Missing</source>
-        <translation type="unfinished"></translation>
+        <translation>缺失</translation>
     </message>
     <message numerus="yes">
         <location filename="../common/themes/theme_editor_dialog.cpp" line="247"/>
         <source>%n value(s) missing</source>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>缺少 %n 个值</numerusform>
         </translation>
     </message>
     <message>
