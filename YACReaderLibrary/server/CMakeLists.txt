@@ -79,6 +79,8 @@ add_library(server STATIC
     controllers/v3/covercontroller_v3.cpp
     controllers/v3/tagscontroller_v3.h
     controllers/v3/tagscontroller_v3.cpp
+    controllers/v3/itemupdatecontroller_v3.h
+    controllers/v3/itemupdatecontroller_v3.cpp
     controllers/v3/librarymaintenancecontroller_v3.h
     controllers/v3/librarymaintenancecontroller_v3.cpp
     controllers/v3/recentcontroller_v3.h
@@ -103,7 +105,7 @@ target_include_directories(server PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/controllers/v3
 )
 yacreader_apply_build_options(server)
-target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.3" SERVER_V3_VERSION_NUMBER="3.1")
+target_compile_definitions(server PUBLIC SERVER_VERSION_NUMBER="2.3" SERVER_V3_VERSION_NUMBER="3.2")
 if(UNIX AND NOT APPLE)
     target_compile_definitions(server PRIVATE
         "DATADIR=\"${CMAKE_INSTALL_FULL_DATADIR}\"")

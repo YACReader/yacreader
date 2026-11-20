@@ -28,6 +28,7 @@
 #include "controllers/v3/favoritescontroller_v3.h"
 #include "controllers/v3/foldercontentcontroller_v3.h"
 #include "controllers/v3/folderinfocontroller_v3.h"
+#include "controllers/v3/itemupdatecontroller_v3.h"
 #include "controllers/v3/librarymaintenancecontroller_v3.h"
 #include "controllers/v3/listcontentcontroller_v3.h"
 #include "controllers/v3/listitemcontroller_v3.h"
@@ -234,7 +235,6 @@ void RequestMapper::serviceV2(HttpRequest &request, HttpResponse &response)
     }
 }
 
-// v3 has only the routes whose content changed; a v3 client uses v2 for the rest, with the same session
 void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
 {
     const QByteArray path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
@@ -262,13 +262,14 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     QRegExp librariesMaintenance("/v3/libraries/maintenance/?");
     QRegExp libraryLockRecovery("/v3/library/([0-9]+)/maintenance/recover/?");
     QRegExp comicUpdate("/v3/library/([0-9]+)/comic/([0-9]+)/?"); // PATCH: change fields of a comic
+    QRegExp folderUpdate("/v3/library/([0-9]+)/folder/([0-9]+)/?"); // PATCH: change fields of a folder
     QRegExp deletedComic("/v3/library/([0-9]+)/deleted_comic/([0-9]+)/?");
     QRegExp placeholder("/v3/library/([0-9]+)/placeholder/([0-9]+)/?");
 
     loadSession(request, response);
 
     std::unique_ptr<HttpRequestHandler> controller;
-    ItemUpdateControllerV2 *itemUpdateController = nullptr;
+    ItemUpdateControllerV3 *itemUpdateController = nullptr;
     std::optional<int> libraryId;
     QByteArray method = "GET";
     if (serverVersion.exactMatch(path)) {
@@ -340,7 +341,13 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     } else if (comicUpdate.exactMatch(path)) {
         libraryId = comicUpdate.cap(1).toInt();
         method = "PATCH";
-        auto updateController = std::make_unique<ItemUpdateControllerV2>(ItemUpdateControllerV2::Api::V3);
+        auto updateController = std::make_unique<ItemUpdateControllerV3>(*libraryId, ComicId(comicUpdate.cap(2).toULongLong()));
+        itemUpdateController = updateController.get();
+        controller = std::move(updateController);
+    } else if (folderUpdate.exactMatch(path)) {
+        libraryId = folderUpdate.cap(1).toInt();
+        method = "PATCH";
+        auto updateController = std::make_unique<ItemUpdateControllerV3>(*libraryId, FolderId(folderUpdate.cap(2).toULongLong()));
         itemUpdateController = updateController.get();
         controller = std::move(updateController);
     } else if (deletedComic.exactMatch(path)) {

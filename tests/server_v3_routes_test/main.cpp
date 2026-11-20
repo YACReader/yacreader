@@ -49,6 +49,8 @@ private slots:
     void comicRatingOutOfRangeChangesNothing();
     void comicRatingIsNotInV2();
     void comicUpdateOfAMissingComicIsNotFound();
+    void folderUpdateChangesTheFolder();
+    void wrongFolderUpdateChangesNothing();
     void missingComicsHaveTheirListItemAndAllTheirMetadata();
     void missingComicsThatAreNotInTheLibraryAreNotFound();
     void folderInfoHasTheComicsAndPlaceholdersOfTheWholeTree();
@@ -121,7 +123,7 @@ void ServerV3RoutesTest::versionIsTheVersionOfV3()
     for (const auto &path : { QString("/v3/version"), QString("/v3/version/") }) {
         const auto answer = server->request("GET", path);
         QCOMPARE(answer.status, 200);
-        QCOMPARE(answer.body, QByteArray("3.1"));
+        QCOMPARE(answer.body, QByteArray("3.2"));
     }
     QCOMPARE(server->request("GET", "/v2/version").body, QByteArray("2.3"));
 }
@@ -576,7 +578,50 @@ void ServerV3RoutesTest::comicUpdateOfAMissingComicIsNotFound()
     QCOMPARE(jsonObject(answer), QJsonObject({ { "error", "comic_not_found" } }));
     QCOMPARE(server->request("PATCH", "/v3/library/77/comic/2", R"({"rating":2})").status, 404);
     QCOMPARE(server->request("GET", library + "/comic/2").status, 405);
-    QCOMPARE(server->request("PATCH", library + "/folder/2", R"({"finished":true})").status, 404);
+}
+
+// the same fields, checks and answer as the v2 folder update
+void ServerV3RoutesTest::folderUpdateChangesTheFolder()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto metadata = QString("/v2/library/%1/folder/3/metadata").arg(libraryId);
+    const auto before = jsonObject(server->request("GET", metadata));
+
+    const auto answer = server->request("PATCH", library + "/folder/3", QJsonDocument(QJsonObject { { "finished", !before.value("finished").toBool() }, { "completed", !before.value("completed").toBool() } }).toJson());
+    QCOMPARE(answer.status, 200);
+    QCOMPARE(answer.contentType, QString("application/json"));
+    auto expected = before;
+    expected["finished"] = !before.value("finished").toBool();
+    expected["completed"] = !before.value("completed").toBool();
+    QCOMPARE(jsonObject(answer), expected);
+    QCOMPARE(jsonObject(server->request("GET", metadata)), expected);
+
+    // the type applies to the folder and all its content
+    QCOMPARE(jsonObject(server->request("PATCH", library + "/folder/2/", R"({"file_type":1})")).value("file_type").toInt(), 1);
+    QCOMPARE(jsonObject(server->request("GET", metadata)).value("file_type").toInt(), 1);
+    QCOMPARE(jsonObject(server->request("GET", QString("/v2/library/%1/comic/2/fullinfo").arg(libraryId))).value("file_type").toInt(), 1);
+
+    QCOMPARE(server->request("PATCH", library + "/folder/2", R"({"file_type":0})").status, 200);
+    QCOMPARE(server->request("PATCH", library + "/folder/3", QJsonDocument(QJsonObject { { "finished", before.value("finished") }, { "completed", before.value("completed") } }).toJson()).status, 200);
+    QCOMPARE(jsonObject(server->request("GET", metadata)), before);
+}
+
+void ServerV3RoutesTest::wrongFolderUpdateChangesNothing()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto metadata = QString("/v2/library/%1/folder/3/metadata").arg(libraryId);
+    const auto before = jsonObject(server->request("GET", metadata));
+
+    QCOMPARE(jsonObject(server->request("PATCH", library + "/folder/3", R"({"finished":true,"rating":2})")), QJsonObject({ { "error", "unknown_field" }, { "field", "rating" } }));
+    QCOMPARE(jsonObject(server->request("PATCH", library + "/folder/3", R"({"finished":1})")), QJsonObject({ { "error", "invalid_value" }, { "field", "finished" } }));
+    QCOMPARE(jsonObject(server->request("PATCH", library + "/folder/3", R"({})")), QJsonObject({ { "error", "no_fields" } }));
+    QCOMPARE(server->request("PATCH", library + "/folder/3", R"({"finished":true})", { { "Content-Type", "text/plain" } }).status, 415);
+    const auto missing = server->request("PATCH", library + "/folder/99", R"({"finished":true})");
+    QCOMPARE(missing.status, 404);
+    QCOMPARE(jsonObject(missing), QJsonObject({ { "error", "folder_not_found" } }));
+    QCOMPARE(server->request("PATCH", "/v3/library/77/folder/3", R"({"finished":true})").status, 404);
+    QCOMPARE(server->request("GET", library + "/folder/3").status, 405);
+    QCOMPARE(jsonObject(server->request("GET", metadata)), before);
 }
 
 static QJsonObject withoutEntry(QJsonObject item)

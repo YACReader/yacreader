@@ -51,25 +51,17 @@ void writeResult(HttpResponse &response, const UpdateResult &result)
 enum class FieldType {
     Bool,
     FileType,
-    Rating,
 };
 
-using Api = ItemUpdateControllerV2::Api;
-
 // The fields that clients can change. The names are the same as in the item JSON.
-// v2 is frozen: new comic fields go only to v3.
-const QHash<QString, FieldType> &comicFields(Api api)
+// v2 is frozen: new fields go only to v3.
+const QHash<QString, FieldType> &comicFields()
 {
-    static const QHash<QString, FieldType> v2Fields {
+    static const QHash<QString, FieldType> fields {
         { QStringLiteral("read"), FieldType::Bool },
         { QStringLiteral("file_type"), FieldType::FileType },
     };
-    static const QHash<QString, FieldType> v3Fields {
-        { QStringLiteral("read"), FieldType::Bool },
-        { QStringLiteral("file_type"), FieldType::FileType },
-        { QStringLiteral("rating"), FieldType::Rating },
-    };
-    return api == Api::V2 ? v2Fields : v3Fields;
+    return fields;
 }
 
 const QHash<QString, FieldType> &folderFields()
@@ -100,8 +92,6 @@ bool isValidValue(FieldType type, const QJsonValue &value)
         return value.isBool();
     case FieldType::FileType:
         return isIntegerInRange(value, static_cast<int>(YACReader::FileType::Comic), static_cast<int>(YACReader::FileType::Yonkoma));
-    case FieldType::Rating:
-        return isIntegerInRange(value, 0, 5);
     }
     return false;
 }
@@ -148,9 +138,9 @@ bool runInTransaction(QSqlDatabase &db, const std::function<bool()> &apply)
 }
 
 // `legacyLibraryId` is still needed in the JSON items because the clients use it.
-UpdateResult updateComic(Api api, QSqlDatabase &db, int legacyLibraryId, const QUuid &libraryId, qulonglong comicId, const QJsonObject &json)
+UpdateResult updateComic(QSqlDatabase &db, int legacyLibraryId, const QUuid &libraryId, qulonglong comicId, const QJsonObject &json)
 {
-    if (auto error = validate(json, comicFields(api))) {
+    if (auto error = validate(json, comicFields())) {
         return error.value();
     }
 
@@ -167,9 +157,6 @@ UpdateResult updateComic(Api api, QSqlDatabase &db, int legacyLibraryId, const Q
         if (json.contains("file_type") && !DBHelper::setComicType(comicId, fileType(json.value("file_type")), db)) {
             return false;
         }
-        if (json.contains("rating") && !DBHelper::setComicRating(comicId, json.value("rating").toInt(), db)) {
-            return false;
-        }
         return true;
     });
 
@@ -178,9 +165,7 @@ UpdateResult updateComic(Api api, QSqlDatabase &db, int legacyLibraryId, const Q
     }
 
     const auto comic = DBHelper::loadComic(comicId, db, found);
-    const auto item = api == Api::V2 ? YACReaderServerDataHelper::comicToJSON(legacyLibraryId, libraryId, comic)
-                                     : YACReaderServerDataHelper::fullComicToJSON(legacyLibraryId, libraryId, comic);
-    return { 200, "OK", QJsonDocument(item) };
+    return { 200, "OK", QJsonDocument(YACReaderServerDataHelper::comicToJSON(legacyLibraryId, libraryId, comic)) };
 }
 
 UpdateResult updateFolder(QSqlDatabase &db, int legacyLibraryId, const QUuid &libraryId, qulonglong folderId, const QJsonObject &json)
@@ -220,11 +205,6 @@ UpdateResult updateFolder(QSqlDatabase &db, int legacyLibraryId, const QUuid &li
 
 } // namespace
 
-ItemUpdateControllerV2::ItemUpdateControllerV2(Api api)
-    : api(api)
-{
-}
-
 void ItemUpdateControllerV2::service(HttpRequest &request, HttpResponse &response)
 {
     if (request.getMethod() != "PATCH") {
@@ -246,7 +226,7 @@ void ItemUpdateControllerV2::service(HttpRequest &request, HttpResponse &respons
         return;
     }
 
-    // /v2/library/{libraryId}/{comic|folder}/{itemId} or /v3/library/{libraryId}/comic/{itemId}
+    // /v2/library/{libraryId}/{comic|folder}/{itemId}
     const QString path = QUrl::fromPercentEncoding(request.getPath());
     const QStringList pathElements = path.split('/');
     const int legacyLibraryId = pathElements.value(3).toInt();
@@ -263,7 +243,7 @@ void ItemUpdateControllerV2::service(HttpRequest &request, HttpResponse &respons
         if (!db.isOpen()) {
             result = databaseError();
         } else if (itemType == "comic") {
-            result = updateComic(api, db, legacyLibraryId, libraryId, itemId, json.object());
+            result = updateComic(db, legacyLibraryId, libraryId, itemId, json.object());
         } else {
             result = updateFolder(db, legacyLibraryId, libraryId, itemId, json.object());
         }
