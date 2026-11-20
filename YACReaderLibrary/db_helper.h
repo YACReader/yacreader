@@ -190,7 +190,7 @@ public:
     static QList<Label> getLabels(qulonglong libraryId);
 
     static bool updateFolderTreeType(qulonglong id, QSqlDatabase &db, YACReader::FileType type);
-    static void updateDBType(QSqlDatabase &db, YACReader::FileType type);
+    static bool updateDBType(QSqlDatabase &db, YACReader::FileType type);
 
     // load
     static std::optional<Folder> loadFolder(qulonglong id, QSqlDatabase &db);

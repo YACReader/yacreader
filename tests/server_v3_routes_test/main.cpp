@@ -51,6 +51,8 @@ private slots:
     void comicUpdateOfAMissingComicIsNotFound();
     void folderUpdateChangesTheFolder();
     void wrongFolderUpdateChangesNothing();
+    void libraryTypeChangesAllFoldersAndComics();
+    void wrongLibraryUpdateChangesNothing();
     void missingComicsHaveTheirListItemAndAllTheirMetadata();
     void missingComicsThatAreNotInTheLibraryAreNotFound();
     void folderInfoHasTheComicsAndPlaceholdersOfTheWholeTree();
@@ -685,6 +687,47 @@ void ServerV3RoutesTest::missingComicsThatAreNotInTheLibraryAreNotFound()
     QCOMPARE(server->request("GET", "/v3/library/77/placeholder/1").status, 404);
     QCOMPARE(server->request("POST", library + "/deleted_comic/4").status, 405);
     QCOMPARE(server->request("PATCH", library + "/placeholder/1", R"({"rating":2})").status, 405);
+}
+
+void ServerV3RoutesTest::libraryTypeChangesAllFoldersAndComics()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto v2Library = QString("/v2/library/%1").arg(libraryId);
+    YACReaderLibraries libraries;
+    libraries.load();
+
+    const auto answer = server->request("PATCH", library, R"({"file_type":2})");
+    QCOMPARE(answer.status, 200);
+    QCOMPARE(answer.contentType, QString("application/json"));
+    QCOMPARE(jsonObject(answer), QJsonObject({ { "library_id", QString::number(libraryId) }, { "library_uuid", libraries.getLibraryIdFromLegacyId(libraryId).toString() }, { "file_type", 2 } }));
+    for (const auto &folder : { "1", "2", "3", "4", "5" })
+        QCOMPARE(jsonObject(server->request("GET", v2Library + "/folder/" + folder + "/metadata")).value("file_type").toInt(), 2);
+    for (const auto &comic : { "1", "2", "3" })
+        QCOMPARE(jsonObject(server->request("GET", v2Library + "/comic/" + comic + "/fullinfo")).value("file_type").toInt(), 2);
+    // missing comics too, as in YACReaderLibrary
+    QCOMPARE(jsonObject(server->request("GET", library + "/deleted_comic/4")).value("file_type").toInt(), 2);
+
+    QCOMPARE(jsonObject(server->request("PATCH", library + "/", R"({"file_type":0})")).value("file_type").toInt(), 0);
+    QCOMPARE(jsonObject(server->request("GET", v2Library + "/comic/2/fullinfo")).value("file_type").toInt(), 0);
+}
+
+void ServerV3RoutesTest::wrongLibraryUpdateChangesNothing()
+{
+    const auto library = QString("/v3/library/%1").arg(libraryId);
+    const auto rootFolder = QString("/v2/library/%1/folder/1/metadata").arg(libraryId);
+
+    for (const auto &body : { R"({"file_type":5})", R"({"file_type":-1})", R"({"file_type":1.5})", R"({"file_type":"1"})", R"({"file_type":true})" }) {
+        const auto answer = server->request("PATCH", library, body);
+        QCOMPARE(answer.status, 400);
+        QCOMPARE(jsonObject(answer), QJsonObject({ { "error", "invalid_value" }, { "field", "file_type" } }));
+    }
+    QCOMPARE(jsonObject(server->request("PATCH", library, R"({"file_type":1,"finished":true})")), QJsonObject({ { "error", "unknown_field" }, { "field", "finished" } }));
+    QCOMPARE(jsonObject(server->request("PATCH", library, R"({})")), QJsonObject({ { "error", "no_fields" } }));
+    QCOMPARE(jsonObject(server->request("PATCH", library, R"([1])")), QJsonObject({ { "error", "invalid_json" } }));
+    QCOMPARE(server->request("PATCH", library, R"({"file_type":1})", { { "Content-Type", "text/plain" } }).status, 415);
+    QCOMPARE(server->request("PATCH", "/v3/library/77", R"({"file_type":1})").status, 404);
+    QCOMPARE(server->request("GET", library).status, 405);
+    QCOMPARE(jsonObject(server->request("GET", rootFolder)).value("file_type").toInt(), 0);
 }
 
 // adds comics and placeholders to the subfolders, so it runs last

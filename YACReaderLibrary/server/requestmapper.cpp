@@ -240,6 +240,7 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
     const QByteArray path = QUrl::fromPercentEncoding(request.getPath()).toUtf8();
 
     QRegExp serverVersion("/v3/version/?");
+    QRegExp libraryUpdate("/v3/library/([0-9]+)/?"); // PATCH: change the library type
     QRegExp folderContent("/v3/library/([0-9]+)/folder/([0-9]+)/content/?");
     QRegExp folderInfo("/v3/library/([0-9]+)/folder/([0-9]+)/info/?");
     QRegExp readingListContent("/v3/library/([0-9]+)/reading_list/([0-9]+)/content/?");
@@ -342,6 +343,12 @@ void RequestMapper::serviceV3(HttpRequest &request, HttpResponse &response)
         libraryId = comicUpdate.cap(1).toInt();
         method = "PATCH";
         auto updateController = std::make_unique<ItemUpdateControllerV3>(*libraryId, ComicId(comicUpdate.cap(2).toULongLong()));
+        itemUpdateController = updateController.get();
+        controller = std::move(updateController);
+    } else if (libraryUpdate.exactMatch(path)) {
+        libraryId = libraryUpdate.cap(1).toInt();
+        method = "PATCH";
+        auto updateController = std::make_unique<ItemUpdateControllerV3>(*libraryId, LibraryItem { });
         itemUpdateController = updateController.get();
         controller = std::move(updateController);
     } else if (folderUpdate.exactMatch(path)) {

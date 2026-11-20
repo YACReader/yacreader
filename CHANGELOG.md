@@ -20,11 +20,13 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 * Add API v3.1 with new endpoints for favorites, continue reading and search, so compatible clients can show the same titles as the desktop apps.
 * New APIs to make remote info view possible in the clients.
+* Add `set-library-type` command to set the type of a library, as in YACReaderLibrary. Valid types: `comic`, `manga`, `western-manga`, `web-comic`, `yonkoma`. Example: `YACReaderLibraryServer set-library-type "/path/to/library" western-manga`.
 
 ### WebUI
 
 * Show the full title in lists, comic pages and the reader, using the same format as the rest of the apps.
 * Add "Go to location" to the continue reading menu.
+* Add "Set type" to the library menu in the libraries page.
 
 ## 10.5.2
 

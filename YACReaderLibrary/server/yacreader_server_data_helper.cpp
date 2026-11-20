@@ -56,6 +56,19 @@ QString YACReaderServerDataHelper::comicToYSFormat(const qulonglong libraryId, c
             .arg(comic.info.read ? 1 : 0);
 }
 
+QJsonObject YACReaderServerDataHelper::libraryToJSON(const qulonglong libraryId, const QUuid libraryUuid, YACReader::FileType type)
+{
+    QJsonObject json;
+
+    json["library_id"] = QString::number(libraryId);
+    if (!libraryUuid.isNull()) {
+        json["library_uuid"] = libraryUuid.toString();
+    }
+    json["file_type"] = static_cast<int>(type);
+
+    return json;
+}
+
 QJsonObject YACReaderServerDataHelper::folderToJSON(const qulonglong libraryId, const QUuid libraryUuid, const Folder &folder)
 {
     QJsonObject json;

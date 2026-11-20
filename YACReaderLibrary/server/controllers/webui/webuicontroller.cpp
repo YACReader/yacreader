@@ -400,6 +400,26 @@ void WebUIController::renderStatusPage(HttpRequest &request, HttpResponse &respo
                     </svg>
                     <span>Rescan ComicInfo.xml</span>
                   </button>
+                  <div class="action-menu-separator" role="separator"></div>
+                  <div class="library-submenu" data-library-type-menu data-library-id="{Library.Id}">
+                    <button class="menu-item library-submenu-toggle" type="button" role="menuitem" aria-haspopup="menu" aria-expanded="false" data-library-type-toggle>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                        <line x1="7" y1="7" x2="7.01" y2="7"/>
+                      </svg>
+                      <span>Set type</span>
+                      <svg class="library-submenu-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="9 18 15 12 9 6"/>
+                      </svg>
+                    </button>
+                    <div class="library-menu-popover library-submenu-popover" role="menu" aria-label="Type of {Library.Name}" data-library-type-popover hidden>
+                      <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-library-type="0"><span class="action-menu-check"></span><span>Comic</span></button>
+                      <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-library-type="1"><span class="action-menu-check"></span><span>Manga</span></button>
+                      <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-library-type="2"><span class="action-menu-check"></span><span>Western manga</span></button>
+                      <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-library-type="3"><span class="action-menu-check"></span><span>Web comic</span></button>
+                      <button class="menu-item" type="button" role="menuitemradio" aria-checked="false" data-library-type="4"><span class="action-menu-check"></span><span>Yonkoma</span></button>
+                    </div>
+                  </div>
                 </div>
               </div>
               </div>

@@ -75,6 +75,14 @@ const QHash<QString, FieldType> &folderFields()
     return fields;
 }
 
+const QHash<QString, FieldType> &libraryFields()
+{
+    static const QHash<QString, FieldType> fields {
+        { QStringLiteral("file_type"), FieldType::FileType },
+    };
+    return fields;
+}
+
 bool isIntegerInRange(const QJsonValue &value, int min, int max)
 {
     if (!value.isDouble()) {
@@ -208,6 +216,29 @@ UpdateResult updateFolder(QSqlDatabase &db, int libraryId, const QUuid &libraryU
     return { 200, "OK", QJsonDocument(YACReaderServerDataHelper::folderToJSON(libraryId, libraryUuid, *folder)) };
 }
 
+// the type applies to all the folders and comics of the library, as in YACReaderLibrary
+UpdateResult updateLibrary(QSqlDatabase &db, int libraryId, const QUuid &libraryUuid, const QJsonObject &json)
+{
+    if (auto error = validate(json, libraryFields())) {
+        return error.value();
+    }
+
+    const bool success = runInTransaction(db, [&] {
+        return DBHelper::updateDBType(db, fileType(json.value("file_type")));
+    });
+
+    if (!success) {
+        return databaseError();
+    }
+
+    // the root folder has the library type
+    const auto rootFolder = DBHelper::loadFolder(1, db);
+    if (!rootFolder) {
+        return databaseError();
+    }
+    return { 200, "OK", QJsonDocument(YACReaderServerDataHelper::libraryToJSON(libraryId, libraryUuid, rootFolder->type)) };
+}
+
 } // namespace
 
 ItemUpdateControllerV3::ItemUpdateControllerV3(int libraryId, UpdatedItemId itemId)
@@ -243,6 +274,7 @@ void ItemUpdateControllerV3::service(HttpRequest &request, HttpResponse &respons
             result = std::visit(overloaded {
                                         [&](ComicId id) { return updateComic(db, libraryId, libraryUuid, id, json.object()); },
                                         [&](FolderId id) { return updateFolder(db, libraryId, libraryUuid, id, json.object()); },
+                                        [&](LibraryItem) { return updateLibrary(db, libraryId, libraryUuid, json.object()); },
                                 },
                                 itemId);
         }

@@ -10,11 +10,16 @@
 
 #include <variant>
 
-using UpdatedItemId = std::variant<ComicId, FolderId>;
+// the library itself, its id is the library id
+struct LibraryItem {
+};
 
-// Changes fields of one comic or one folder:
+using UpdatedItemId = std::variant<ComicId, FolderId, LibraryItem>;
+
+// Changes fields of one comic, one folder or the library:
 //   PATCH /v3/library/{id}/comic/{id}   {"read": bool, "file_type": int, "rating": int}
 //   PATCH /v3/library/{id}/folder/{id}  {"finished": bool, "completed": bool, "file_type": int}
+//   PATCH /v3/library/{id}              {"file_type": int}
 // The response is the updated item as JSON, the full comic JSON for a comic.
 class ItemUpdateControllerV3 : public stefanfrings::HttpRequestHandler
 {

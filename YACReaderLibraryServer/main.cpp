@@ -18,7 +18,9 @@
 #include <QCommandLineParser>
 #include <QCoreApplication>
 #include <QDir>
+#include <QHash>
 #include <QImageReader>
+#include <QSqlDatabase>
 #include <QSysInfo>
 
 using namespace QsLogging;
@@ -31,6 +33,7 @@ int removeLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *
 int listLibraries(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
 int setPort(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
 int rescanXmlInfo(QCoreApplication &app, QCommandLineParser &parser, QSettings *settings);
+int setLibraryType(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
 int repairLibrary(QCoreApplication &app, QCommandLineParser &parser, QSettings *settings);
 int backupLibrary(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
 int listBackups(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout);
@@ -86,7 +89,7 @@ int main(int argc, char **argv)
                                              .arg(settingsPath));
     parser.addHelpOption();
     const QCommandLineOption versionOption = parser.addVersionOption();
-    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, repair-library, backup-library, list-backups, restore-library, repair-library-db, add-library, remove-library, list-libraries, set-port, rescan-xml-info]");
+    parser.addPositionalArgument("command", "The command to execute. [start, create-library, update-library, repair-library, backup-library, list-backups, restore-library, repair-library-db, add-library, remove-library, list-libraries, set-port, rescan-xml-info, set-library-type]");
     parser.addOption({ "loglevel", "Set log level. Valid values: trace, info, debug, warn, error.", "loglevel", "info" });
     parser.addOption({ "port", "Set server port (temporary). Valid values: 1-65535", "port" });
     parser.addOption({ "system-info", "Prints detailed information about the system environment, including OS version, hardware specifications, and available resources." });
@@ -144,6 +147,8 @@ int main(int argc, char **argv)
         return setPort(app, parser, qout);
     } else if (command == "rescan-xml-info") {
         return rescanXmlInfo(app, parser, settings);
+    } else if (command == "set-library-type") {
+        return setLibraryType(app, parser, qout);
     } else // error
     {
         parser.process(app);
@@ -573,6 +578,65 @@ int rescanXmlInfo(QCoreApplication &app, QCommandLineParser &parser, QSettings *
 
     ConsoleUILibraryCreator libraryCreatorUI(settings);
     return libraryCreatorUI.rescanXMLInfoLibrary(args.at(1), parser.isSet("remove-stale-lock")) ? 0 : 1;
+}
+
+// -----------------------------------------------------------------------------
+// set-library-type-------------------------------------------------------------
+// -----------------------------------------------------------------------------
+int setLibraryType(QCoreApplication &app, QCommandLineParser &parser, QTextStream &qout)
+{
+    parser.clearPositionalArguments();
+    parser.addPositionalArgument("set-library-type", "Sets the type of all the folders and comics in an existing library at <path>");
+    parser.addPositionalArgument("path", "Path to the library", "<path>");
+    parser.addPositionalArgument("type", "Valid values: comic, manga, western-manga, web-comic, yonkoma", "<type>");
+    parser.process(app);
+
+    const QStringList args = parser.positionalArguments();
+    if (args.length() != 3) {
+        parser.showHelp(1);
+        return 1;
+    }
+
+    static const QHash<QString, YACReader::FileType> types {
+        { "comic", YACReader::FileType::Comic },
+        { "manga", YACReader::FileType::Manga },
+        { "western-manga", YACReader::FileType::WesternManga },
+        { "web-comic", YACReader::FileType::WebComic },
+        { "yonkoma", YACReader::FileType::Yonkoma },
+    };
+    const auto type = types.constFind(args.at(2).toLower());
+    if (type == types.constEnd()) {
+        qout << "Invalid library type: " << args.at(2) << Qt::endl;
+        parser.showHelp(1);
+        return 1;
+    }
+
+    const QString path = QDir::cleanPath(args.at(1));
+    if (!QFile::exists(YACReader::LibraryPaths::libraryDatabasePath(path))) {
+        qout << "No library found in path: " << path << Qt::endl;
+        return 1;
+    }
+
+    bool success = false;
+    QString connectionName;
+    {
+        QSqlDatabase db = DataBaseManagement::loadDatabase(YACReader::LibraryPaths::libraryDataPath(path));
+        if (db.isOpen() && db.transaction()) {
+            success = DBHelper::updateDBType(db, type.value()) && db.commit();
+            if (!success)
+                db.rollback();
+        }
+        connectionName = db.connectionName();
+    }
+    QSqlDatabase::removeDatabase(connectionName);
+
+    if (!success) {
+        qout << "The library type could not be saved." << Qt::endl;
+        return 1;
+    }
+
+    qout << "Library type set to " << type.key() << Qt::endl;
+    return 0;
 }
 
 // -----------------------------------------------------------------------------

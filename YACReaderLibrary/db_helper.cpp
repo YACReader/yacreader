@@ -2475,19 +2475,21 @@ bool DBHelper::setFolderCompleted(qulonglong folderId, bool completed, QSqlDatab
     return true;
 }
 
-void DBHelper::updateDBType(QSqlDatabase &db, YACReader::FileType type)
+bool DBHelper::updateDBType(QSqlDatabase &db, YACReader::FileType type)
 {
     QSqlQuery updateFolderQuery(db);
     updateFolderQuery.prepare("UPDATE folder "
                               "SET type = :type");
     updateFolderQuery.bindValue(":type", static_cast<int>(type));
-    updateFolderQuery.exec();
+    bool success = updateFolderQuery.exec();
 
     QSqlQuery updateComicInfo(db);
     updateComicInfo.prepare("UPDATE comic_info "
                             "SET type = :type");
     updateComicInfo.bindValue(":type", static_cast<int>(type));
-    updateComicInfo.exec();
+    success = updateComicInfo.exec() && success;
+
+    return success;
 }
 
 std::optional<Folder> DBHelper::loadFolder(qulonglong id, QSqlDatabase &db)

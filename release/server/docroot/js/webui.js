@@ -83,6 +83,26 @@
     return icon;
   }
 
+  var toast = null;
+  var toastTimer = null;
+
+  function showToast(message, isError) {
+    if (!toast) {
+      toast = element("div", "browser-toast");
+      toast.setAttribute("role", "status");
+      toast.setAttribute("aria-live", "polite");
+      document.body.appendChild(toast);
+    }
+
+    toast.textContent = message;
+    toast.classList.toggle("error", Boolean(isError));
+    toast.classList.add("visible");
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(function () {
+      toast.classList.remove("visible");
+    }, 3200);
+  }
+
   function storeBadge(className, imageSource, href, ariaLabel) {
     var link = element("a", "store-badge-link " + className);
     link.href = href;
@@ -1156,8 +1176,6 @@
     var fileTypeNames = ["Comic", "Manga", "Western manga", "Web comic", "Yonkoma"];
     var itemViews = [];
     var activeActionMenu = null;
-    var toast = null;
-    var toastTimer = null;
 
     function itemKey(item) {
       return item.type + ":" + String(item.id);
@@ -1183,23 +1201,6 @@
           }
         });
       });
-    }
-
-    function showToast(message, isError) {
-      if (!toast) {
-        toast = element("div", "browser-toast");
-        toast.setAttribute("role", "status");
-        toast.setAttribute("aria-live", "polite");
-        document.body.appendChild(toast);
-      }
-
-      toast.textContent = message;
-      toast.classList.toggle("error", Boolean(isError));
-      toast.classList.add("visible");
-      window.clearTimeout(toastTimer);
-      toastTimer = window.setTimeout(function () {
-        toast.classList.remove("visible");
-      }, 3200);
     }
 
     function actionErrorMessage(error) {
@@ -3801,6 +3802,10 @@
         if (toggle) {
           toggle.setAttribute("aria-expanded", "false");
         }
+        menu.querySelectorAll("[data-library-type-menu]").forEach(function (submenu) {
+          submenu.querySelector("[data-library-type-popover]").hidden = true;
+          submenu.querySelector("[data-library-type-toggle]").setAttribute("aria-expanded", "false");
+        });
       });
     }
 
@@ -3814,7 +3819,7 @@
       toggle.addEventListener("click", function (event) {
         event.stopPropagation();
         var willOpen = popover.hidden;
-        closeAll(menu);
+        closeAll(null);
         popover.hidden = !willOpen;
         toggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
       });
@@ -3831,6 +3836,88 @@
     });
 
     return { closeAll: closeAll };
+  }
+
+  // "Set type" in a library card menu: sets the type of every folder and comic of
+  // the library, as in YACReaderLibrary. The check shows the type of the root folder, as in YACReaderLibrary.
+  function initLibraryTypeMenus(menus) {
+    var typeNames = ["Comic", "Manga", "Western manga", "Web comic", "Yonkoma"];
+
+    document.querySelectorAll("[data-library-type-menu]").forEach(function (submenu) {
+      var libraryId = encodeURIComponent(submenu.getAttribute("data-library-id"));
+      var libraryUrl = "/v3/library/" + libraryId;
+      var rootFolderUrl = "/v2/library/" + libraryId + "/folder/1/metadata";
+      var toggle = submenu.querySelector("[data-library-type-toggle]");
+      var popover = submenu.querySelector("[data-library-type-popover]");
+      var items = Array.prototype.slice.call(popover.querySelectorAll("[data-library-type]"));
+      var currentType = null;
+
+      function showCurrentType(type) {
+        currentType = type;
+        items.forEach(function (item) {
+          var checked = Number(item.getAttribute("data-library-type")) === type;
+          var check = item.querySelector(".action-menu-check");
+          item.setAttribute("aria-checked", checked ? "true" : "false");
+          check.replaceChildren();
+          if (checked) {
+            check.appendChild(svgIcon("action-menu-check-icon", '<path d="M20 6 9 17l-5-5"/>'));
+          }
+        });
+      }
+
+      toggle.addEventListener("click", function (event) {
+        event.stopPropagation();
+        var willOpen = popover.hidden;
+        popover.hidden = !willOpen;
+        toggle.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        if (!willOpen) {
+          return;
+        }
+
+        fetch(rootFolderUrl, { headers: { "Accept": "application/json" } })
+          .then(function (response) {
+            return response.ok ? response.json() : null;
+          })
+          .then(function (folder) {
+            if (folder) {
+              showCurrentType(Number(folder.file_type));
+            }
+          })
+          .catch(function () {});
+      });
+
+      items.forEach(function (item) {
+        item.addEventListener("click", function (event) {
+          event.stopPropagation();
+          if (menus) {
+            menus.closeAll(null);
+          }
+
+          var type = Number(item.getAttribute("data-library-type"));
+          if (type === currentType) {
+            return;
+          }
+
+          fetch(libraryUrl, {
+            method: "PATCH",
+            headers: { "Accept": "application/json", "Content-Type": "application/json" },
+            body: JSON.stringify({ file_type: type })
+          })
+            .then(function (response) {
+              if (!response.ok) {
+                throw response;
+              }
+              showCurrentType(type);
+              showToast("Library type set to " + typeNames[type]);
+            })
+            .catch(function (error) {
+              showToast(error && error.status === 503
+                ? "The library is busy. Try again in a moment."
+                : "The library type could not be saved. Try again.", true);
+            });
+        });
+      });
+    });
   }
 
   function initUpdateLibraries(menus) {
@@ -4206,5 +4293,6 @@
     initLibraryBrowser();
     var libraryMenus = initLibraryMenus();
     initUpdateLibraries(libraryMenus);
+    initLibraryTypeMenus(libraryMenus);
   });
 }());

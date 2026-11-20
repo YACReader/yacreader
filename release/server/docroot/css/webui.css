@@ -1081,6 +1081,31 @@ input[type="time"]:focus-visible {
   box-shadow: var(--shadow);
 }
 
+.library-submenu {
+  position: relative;
+}
+
+.library-submenu-chevron {
+  margin-left: auto;
+  color: var(--text-muted);
+}
+
+.library-submenu-toggle[aria-expanded="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+/* Opens to the left: the card menu is at the right edge of the card. */
+.library-submenu-popover {
+  top: -6px;
+  right: calc(100% + 10px);
+  min-width: 170px;
+}
+
+.library-submenu-popover .menu-item[aria-checked="true"] {
+  color: var(--accent-strong);
+}
+
 .menu-item {
   display: flex;
   width: 100%;
@@ -3008,6 +3033,16 @@ input[type="time"]:disabled {
 }
 
 @media (max-width: 560px) {
+  /* no room for a flyout on phones, so the types open inside the menu */
+  .library-submenu-popover {
+    position: static;
+    min-width: 0;
+    padding: 2px 0 0 12px;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
   .mobile-promotion-overlay {
     align-items: start;
     padding: 12px;
