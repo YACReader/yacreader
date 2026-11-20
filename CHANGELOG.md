@@ -6,11 +6,13 @@ Version counting is based on semantic versioning (Major.Feature.Patch)
 
 ### YACReader
 
+* Support for ComicBookDS (.cbds) comics. Only the pages are shown, not the previews stored next to them.
 * Show the full title of the comic in the window title: series, volume, number and title.
 * Fixed some themes issues.
 
 ### YACReaderLibrary
 
+* Support for ComicBookDS (.cbds) comics.
 * Show comic titles the same way in all views. The info panel, the current comic banner and continue reading show the full title: series, volume, number and title.
 * Show the series next to the title in the grid cells of reading lists, labels, smart lists and search results, so comics from different series are easy to tell apart.
 * Add "Go to location" and "Set as read" to the continue reading context menu.
