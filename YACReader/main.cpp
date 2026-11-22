@@ -155,7 +155,11 @@ int main(int argc, char *argv[])
     QDir().mkpath(YACReader::getSettingsPath());
 
     Logger &logger = Logger::instance();
+#ifdef QT_DEBUG
     logger.setLoggingLevel(QsLogging::TraceLevel);
+#else
+    logger.setLoggingLevel(QsLogging::ErrorLevel);
+#endif
 
     if (parser.isSet("loglevel")) {
         if (parser.value("loglevel") == "trace") {
