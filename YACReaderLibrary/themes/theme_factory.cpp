@@ -265,6 +265,7 @@ struct ServerConfigDialogThemeTemplates {
     QString dialogQSS = "ServerConfigDialog { background-color: %1; }"
                         "QComboBox, QLineEdit { background-color: %1; color: %2; border: 1px solid %3; border-radius: 5px; padding: 7px 10px; min-height: 18px; }"
                         "QComboBox { padding-right: 28px; }"
+                        "QComboBox QLineEdit { border: none; padding: 0; background: transparent; min-height: 0; }"
                         "QComboBox::drop-down { subcontrol-origin: border; subcontrol-position: top right; width: 28px; border: none; background: transparent; }"
                         "QComboBox::down-arrow { image: url('%6'); width: 10px; height: 6px; }"
                         "QComboBox:focus, QLineEdit:focus { border-color: %4; }"
@@ -286,6 +287,11 @@ struct ServerConfigDialogThemeTemplates {
     QString checkBoxQSS = "QCheckBox { color: %1; font-size: 13px; spacing: 9px; }"
                           "QCheckBox::indicator { width: 14px; height: 14px; border: 1px solid %2; border-radius: 3px; background: transparent; }"
                           "QCheckBox::indicator:checked { background-color: %2; image: url(%3); }";
+    // %1 = border, %2 = accent, %3 = icon, %4 = icon when pinned, %5 = icon when disabled
+    QString pinButtonQSS = "QPushButton { min-width: 34px; max-width: 34px; min-height: 34px; max-height: 34px; padding: 0; border: 1px solid %1; border-radius: 5px; background: transparent; image: url('%3'); }"
+                           "QPushButton:hover { border-color: %2; }"
+                           "QPushButton:checked { background-color: %2; border-color: %2; image: url('%4'); }"
+                           "QPushButton:disabled { border-color: %1; background: transparent; image: url('%5'); }";
 };
 
 struct LibraryItemParams {
@@ -996,6 +1002,7 @@ Theme makeTheme(const ThemeParams &params)
     theme.serverConfigDialog.textLabelQSS = scd.t.textLabelQSS.arg(scd.textColor.name());
     theme.serverConfigDialog.secondaryLabelQSS = scd.t.secondaryLabelQSS.arg(scd.secondaryTextColor.name());
     theme.serverConfigDialog.checkBoxQSS = scd.t.checkBoxQSS.arg(scd.textColor.name(), scd.accentColor.name(), recolor(":/images/comic_vine/checkBoxTick.svg", scd.accentForegroundColor, "_server_config"));
+    theme.serverConfigDialog.pinButtonQSS = scd.t.pinButtonQSS.arg(scd.borderColor.name(), scd.accentColor.name(), recolor(":/images/pin.svg", scd.secondaryTextColor, "_pin"), recolor(":/images/pin.svg", scd.accentForegroundColor, "_pin_pinned"), recolor(":/images/pin.svg", scd.borderColor, "_pin_disabled"));
     theme.serverConfigDialog.linkColor = scd.linkColor;
     theme.serverConfigDialog.qrBackgroundColor = scd.qrBackgroundColor;
     theme.serverConfigDialog.qrForegroundColor = scd.qrForegroundColor;

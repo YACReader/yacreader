@@ -408,6 +408,7 @@ struct ServerConfigDialogTheme {
     QString textLabelQSS;
     QString secondaryLabelQSS;
     QString checkBoxQSS;
+    QString pinButtonQSS;
     QColor linkColor;
     QColor qrBackgroundColor;
     QColor qrForegroundColor;
