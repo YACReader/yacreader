@@ -116,9 +116,10 @@ MainWindowViewer::MainWindowViewer()
 
 void MainWindowViewer::afterLaunchTasks()
 {
-    WhatsNewController whatsNewController;
-
-    whatsNewController.showWhatsNewIfNeeded(this);
+    QTimer::singleShot(0, this, [this] {
+        WhatsNewController whatsNewController;
+        whatsNewController.showWhatsNewIfNeeded(this);
+    });
 }
 
 void MainWindowViewer::applySavedReaderMode()
