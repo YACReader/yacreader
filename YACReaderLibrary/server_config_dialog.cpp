@@ -10,8 +10,11 @@
 #include <QDesktopServices>
 #include <QFrame>
 #include <QGridLayout>
+#include <QHostAddress>
+#include <QHostInfo>
 #include <QHBoxLayout>
 #include <QIntValidator>
+#include <QNetworkInterface>
 #include <QPainter>
 #include <QPalette>
 #include <QSettings>
@@ -73,6 +76,14 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     ip = new QComboBox(detailsWidget);
     ip->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     ip->setMinimumWidth(100);
+    // Editable: besides the detected addresses, an IP or a host name can be typed
+    ip->setEditable(true);
+    ip->setInsertPolicy(QComboBox::NoInsert);
+
+    pinButton = new QPushButton(detailsWidget);
+    pinButton->setCheckable(true);
+    pinButton->setCursor(Qt::PointingHandCursor);
+    pinButton->setFocusPolicy(Qt::TabFocus);
     port = new QLineEdit(QStringLiteral("8080"), detailsWidget);
     port->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
     port->setMinimumWidth(55);
@@ -81,9 +92,20 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     accept->setObjectName(QStringLiteral("primaryButton"));
     accept->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
 
-    formLayout->addWidget(ip, 1, 0);
+    auto ipLayout = new QHBoxLayout;
+    ipLayout->setContentsMargins(0, 0, 0, 0);
+    ipLayout->setSpacing(7);
+    ipLayout->addWidget(ip);
+    ipLayout->addWidget(pinButton);
+
+    formLayout->addLayout(ipLayout, 1, 0);
     formLayout->addWidget(port, 1, 2);
     formLayout->addWidget(accept, 1, 4);
+
+    pinWarningLabel = new QLabel(tr("This address is not assigned to this computer on the current network."), detailsWidget);
+    pinWarningLabel->setWordWrap(true);
+    pinWarningLabel->hide();
+    formLayout->addWidget(pinWarningLabel, 2, 0, 1, 5);
     detailsLayout->addLayout(formLayout);
     detailsLayout->addSpacing(26);
 
@@ -129,6 +151,7 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     detailsLayout->addWidget(propagandaLabel);
 
     connect(ip, &QComboBox::currentTextChanged, this, &ServerConfigDialog::regenerateQR);
+    connect(pinButton, &QPushButton::toggled, this, &ServerConfigDialog::setPinned);
     connect(port, &QLineEdit::textChanged, this, [this] {
         accept->setEnabled(check->isChecked() && port->hasAcceptableInput() && port->text() != httpServer->getPort());
     });
@@ -143,7 +166,15 @@ ServerConfigDialog::ServerConfigDialog(QWidget *parent)
     QSettings settings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
     settings.beginGroup(QStringLiteral("libraryConfig"));
     const bool serverEnabled = settings.value(SERVER_ON, true).toBool();
+    pinnedAddress = settings.value(SERVER_PINNED_ADDRESS).toString().trimmed();
+    // A hand-edited or corrupted value must not end up in the QR code
+    if (!isValidServerHost(pinnedAddress) && QHostAddress(pinnedAddress).isNull())
+        pinnedAddress.clear();
     settings.endGroup();
+    {
+        const QSignalBlocker pinBlocker(pinButton);
+        pinButton->setChecked(!pinnedAddress.isEmpty());
+    }
 
     initTheme(this);
     accept->setMinimumWidth(qMax(102, accept->sizeHint().width()));
@@ -177,6 +208,8 @@ void ServerConfigDialog::applyTheme(const Theme &theme)
     ipLabel->setStyleSheet(theme.serverConfigDialog.secondaryLabelQSS);
     portLabel->setStyleSheet(theme.serverConfigDialog.secondaryLabelQSS);
     check->setStyleSheet(theme.serverConfigDialog.checkBoxQSS);
+    pinButton->setStyleSheet(theme.serverConfigDialog.pinButtonQSS);
+    pinWarningLabel->setStyleSheet(theme.serverConfigDialog.secondaryLabelQSS);
 
     backgroundDecoration->setPixmap(theme.serverConfigDialog.backgroundDecoration);
     backgroundDecoration->lower();
@@ -188,6 +221,7 @@ void ServerConfigDialog::showEvent(QShowEvent *event)
 {
     QDialog::showEvent(event);
     generateQR();
+    refreshHostNameCandidates();
 }
 
 void ServerConfigDialog::enableServer(int status)
@@ -217,13 +251,30 @@ void ServerConfigDialog::generateQR()
     }
 
     const QSignalBlocker blocker(ip);
-    const auto addresses = getIpAddresses();
+    // Keep what the user chose instead of falling back to the first address every time
+    const QString selected = ip->currentText().trimmed();
+    availableAddresses = getIpAddresses();
+    // Computer names go last: the first IP stays the default, but a name is one click away
+    for (const auto &hostName : std::as_const(verifiedHostNames)) {
+        if (!availableAddresses.contains(hostName))
+            availableAddresses.append(hostName);
+    }
     ip->clear();
-    ip->addItems(addresses);
+    ip->addItems(availableAddresses);
     port->setText(httpServer->getPort());
 
-    if (!addresses.isEmpty())
-        generateQR(addresses.first() + ":" + httpServer->getPort());
+    const QString address = resolveServerAddress(pinnedAddress, availableAddresses, selected);
+    const int index = ip->findText(address);
+    if (index >= 0)
+        ip->setCurrentIndex(index);
+    else
+        ip->setEditText(address);
+
+    updateIpControls();
+    updatePinWarning();
+
+    if (!address.isEmpty())
+        generateQR(address + ":" + httpServer->getPort());
     else
         refreshWebInterface();
 }
@@ -259,9 +310,11 @@ void ServerConfigDialog::generateQR(const QString &serverAddress)
     refreshWebInterface();
 }
 
-void ServerConfigDialog::regenerateQR(const QString &address)
+void ServerConfigDialog::regenerateQR(const QString &text)
 {
-    if (httpServer->isRunning() && !address.isEmpty())
+    const QString address = text.trimmed();
+    updateIpControls();
+    if (httpServer->isRunning() && isUsableAddress(address))
         generateQR(address + ":" + httpServer->getPort());
     else
         refreshWebInterface();
@@ -288,9 +341,10 @@ void ServerConfigDialog::updatePort()
 
 QString ServerConfigDialog::webInterfaceUrl() const
 {
-    if (ip->currentText().isEmpty())
+    const QString address = currentAddress();
+    if (!isUsableAddress(address))
         return { };
-    return QStringLiteral("http://%1:%2/webui").arg(ip->currentText(), httpServer->getPort());
+    return QStringLiteral("http://%1:%2/webui").arg(address, httpServer->getPort());
 }
 
 void ServerConfigDialog::refreshWebInterface()
@@ -303,11 +357,102 @@ void ServerConfigDialog::refreshWebInterface()
 
 void ServerConfigDialog::setConnectionControlsEnabled(bool enabled)
 {
-    ip->setEnabled(enabled);
+    updateIpControls();
     port->setEnabled(enabled);
     accept->setEnabled(enabled && port->hasAcceptableInput() && port->text() != httpServer->getPort());
     if (!enabled) {
         copyLinkButton->setEnabled(false);
         openWebUiButton->setEnabled(false);
+    }
+}
+
+QString ServerConfigDialog::currentAddress() const
+{
+    return ip->currentText().trimmed();
+}
+
+bool ServerConfigDialog::isUsableAddress(const QString &address) const
+{
+    // Detected addresses are always valid (they can be IPv6); typed ones must be an IPv4 or a host name
+    return !address.isEmpty() && (availableAddresses.contains(address) || isValidServerHost(address));
+}
+
+void ServerConfigDialog::setPinned(bool pinned)
+{
+    if (pinned) {
+        const QString address = currentAddress();
+        if (!isUsableAddress(address)) {
+            // Nothing valid to pin: undo the toggle without re-entering this slot
+            const QSignalBlocker blocker(pinButton);
+            pinButton->setChecked(false);
+            return;
+        }
+        pinnedAddress = address;
+    } else {
+        pinnedAddress.clear();
+    }
+
+    QSettings settings(YACReader::getSettingsPath() + "/YACReaderLibrary.ini", QSettings::IniFormat);
+    settings.beginGroup(QStringLiteral("libraryConfig"));
+    if (pinnedAddress.isEmpty())
+        settings.remove(SERVER_PINNED_ADDRESS);
+    else
+        settings.setValue(SERVER_PINNED_ADDRESS, pinnedAddress);
+    settings.endGroup();
+
+    updateIpControls();
+    generateQR();
+}
+
+void ServerConfigDialog::updateIpControls()
+{
+    const bool pinned = !pinnedAddress.isEmpty();
+    const bool serverEnabled = check->isChecked();
+
+    // While pinned the address is locked: unpin to change it
+    ip->setEnabled(serverEnabled && !pinned);
+    pinButton->setEnabled(serverEnabled && (pinned || isUsableAddress(currentAddress())));
+    pinButton->setToolTip(pinned ? tr("Unpin this address") : tr("Pin this address so it never changes"));
+}
+
+void ServerConfigDialog::updatePinWarning()
+{
+    // Only an IPv4 can be checked against the network interfaces; a host name cannot
+    QHostAddress pinnedIp;
+    const bool pinnedIsIpv4 = pinnedIp.setAddress(pinnedAddress) && pinnedIp.protocol() == QAbstractSocket::IPv4Protocol;
+    pinWarningLabel->setVisible(httpServer->isRunning() && pinnedIsIpv4 && !availableAddresses.contains(pinnedAddress));
+}
+
+void ServerConfigDialog::refreshHostNameCandidates()
+{
+    const auto candidates = localHostNameCandidates(QHostInfo::localHostName(), QHostInfo::localDomainName());
+
+    // Names are only offered if this computer can resolve them to one of its own addresses,
+    // which is the best check available without asking another device. The lookups are
+    // asynchronous (a name that is not announced can take seconds to fail) and tied to the
+    // dialog, so they are dropped if it is closed.
+    for (const auto &candidate : candidates) {
+        QHostInfo::lookupHost(candidate, this, [this, candidate](const QHostInfo &info) {
+            const bool reachable = info.error() == QHostInfo::NoError
+                    && resolvesToLocalAddress(info.addresses(), QNetworkInterface::allAddresses());
+
+            if (!reachable) {
+                verifiedHostNames.removeAll(candidate);
+                return;
+            }
+            if (verifiedHostNames.contains(candidate))
+                return;
+            verifiedHostNames.append(candidate);
+
+            // Add it to the list without touching what the user is typing or has selected
+            if (!availableAddresses.contains(candidate) && httpServer->isRunning()) {
+                availableAddresses.append(candidate);
+                const QSignalBlocker blocker(ip);
+                const QString current = ip->currentText();
+                ip->addItem(candidate);
+                ip->setEditText(current);
+                updateIpControls();
+            }
+        });
     }
 }

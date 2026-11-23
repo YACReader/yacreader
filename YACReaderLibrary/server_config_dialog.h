@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QStringList>
 
 class QFrame;
 
@@ -26,8 +27,19 @@ private:
     QString webInterfaceUrl() const;
     void refreshWebInterface();
     void setConnectionControlsEnabled(bool enabled);
+    void updateIpControls();
+    void updatePinWarning();
+    void refreshHostNameCandidates();
+    void setPinned(bool pinned);
+    bool isUsableAddress(const QString &address) const;
+    QString currentAddress() const;
 
     QComboBox *ip;
+    QPushButton *pinButton;
+    QLabel *pinWarningLabel;
+    QStringList availableAddresses;
+    QStringList verifiedHostNames; // computer names that resolve back to this machine
+    QString pinnedAddress;
     QLineEdit *port;
     QCheckBox *check;
     QPushButton *accept;
@@ -49,7 +61,7 @@ private:
 public slots:
     void generateQR();
     void generateQR(const QString &serverAddress);
-    void regenerateQR(const QString &address);
+    void regenerateQR(const QString &text);
     void enableServer(int status);
     void updatePort();
 
