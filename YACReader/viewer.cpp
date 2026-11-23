@@ -17,6 +17,7 @@
 #include "resize_image.h"
 #include "translator.h"
 
+#include <QApplication>
 #include <QFile>
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -1859,6 +1860,8 @@ void Viewer::configureContent(QString msg)
 
 void Viewer::hideCursor()
 {
+    if (QApplication::activeModalWidget())
+        return;
 #ifdef Q_OS_MACOS // TODO_Y_MAC_UI isn't BlankCursor supported in macos?
     setCursor(QCursor(QBitmap(1, 1), QBitmap(1, 1)));
 #else
